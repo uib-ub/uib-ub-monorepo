@@ -2,7 +2,7 @@
 import { useContext, useEffect } from "react"
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { useDataset } from "@/lib/search-params";
+import { usePerspective } from "@/lib/search-params";
 import TreeItem from "./tree-item";
 import { treeSettings } from "@/config/server-config";
 import Clickable from "@/components/ui/clickable/clickable";
@@ -14,7 +14,7 @@ export default function TreeResults() {
   const [cadastralData, setCadastralData] = useState<any>(null)
   const [fetchError, setFetchError] = useState<any>(null)
 
-  const dataset = useDataset()
+  const perspective = usePerspective()
   const { docAdm, docLoading, parentLoading } = useContext(DocContext)
   const { preferredTabs } = useContext(GlobalContext)
 
@@ -50,7 +50,7 @@ export default function TreeResults() {
     if (docLoading || parentLoading) return
     if (groupBy == 'adm1' && treeAdm) return // Workaround for invalid state
 
-    const url = new URLSearchParams({dataset})
+    const url = new URLSearchParams({perspective})
     if (groupBy) url.set('groupBy', groupBy)
     if (treeAdm) url.set('adm', treeAdm)
     setIsLoading(true)
@@ -63,7 +63,7 @@ export default function TreeResults() {
     })
 
     
-  }, [groupBy, treeAdm, dataset, docLoading, parentLoading, docAdm])
+  }, [groupBy, treeAdm, perspective, docLoading, parentLoading, docAdm])
 
 
 
@@ -72,12 +72,12 @@ export default function TreeResults() {
   <div className="pt-2 pb-4 mx-2 !text-base flex">
   <Clickable link id="tree-title" aria-label="Innholdsfortegnelse" 
                     className="breadcrumb-link self-center  text-base" 
-                    only={{dataset, adm: null, nav: 'tree', mode: searchParams.get('mode')}}>
+                    only={{adm: null, nav: 'tree', mode: searchParams.get('mode')}}>
       <PiHouseFill aria-hidden="true" className="text-base"/>
       </Clickable>
       &nbsp;/&nbsp;
       {groupBy == 'adm2' ? <>{treeAdm}</>
-      : <Clickable link className="breadcrumb-link !text-base" only={{dataset, adm: treeAdm.split("__")[1], nav: 'tree', mode: searchParams.get('mode')}}>
+      : <Clickable link className="breadcrumb-link !text-base" only={{adm: treeAdm.split("__")[1], nav: 'tree', mode: searchParams.get('mode')}}>
               {treeAdm.split("__")[1]}
           </Clickable>}
           {!groupBy && <>
@@ -97,16 +97,15 @@ export default function TreeResults() {
   <ul className="flex flex-col divide-y divide-neutral-200">
 
   {groupBy ? cadastralData?.aggregations?.[groupBy]?.buckets
-  .sort((a: any, b: any)=> treeSettings[dataset]?.aggSort ? a.aggNum.buckets[0]?.key.localeCompare(b.aggNum.buckets[0]?.key) : a.aggNum.localeCompare(b?.key))
+  .sort((a: any, b: any)=> treeSettings[perspective]?.aggSort ? a.aggNum.buckets[0]?.key.localeCompare(b.aggNum.buckets[0]?.key) : a.aggNum.localeCompare(b?.key))
   .map((item: Record<string, any>) => {
     return <li key={item.key}>
       <Clickable link 
                  className="no-underline px-4 p-2 inline-block" 
-                 only={{dataset, 
-                        adm: groupBy == 'adm2' ? item.key + "__" + treeAdm : item.key, 
+                 only={{ adm: groupBy == 'adm2' ? item.key + "__" + treeAdm : item.key, 
                         nav: 'tree', 
-                        mode: searchParams.get('mode') == 'doc' ? preferredTabs[dataset] : searchParams.get('mode')}}>  
-      {treeSettings[dataset].showNumber && (treeAdm ? item.aggNum.buckets[0]?.key : item.aggNum.buckets[0]?.key.slice(0,2))} {item.key}
+                        mode: searchParams.get('mode') == 'doc' ? preferredTabs[perspective] : searchParams.get('mode')}}>  
+      {treeSettings[perspective].showNumber && (treeAdm ? item.aggNum.buckets[0]?.key : item.aggNum.buckets[0]?.key.slice(0,2))} {item.key}
         <span className="bg-neutral-100 rounded-full px-2 ml-2">{item.doc_count}</span></Clickable></li>
   })
 

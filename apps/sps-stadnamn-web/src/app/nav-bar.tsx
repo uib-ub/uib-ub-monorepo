@@ -1,8 +1,5 @@
 'use client'
 import Link from "next/link";
-import { GlobalContext } from "./global-provider";
-import { useContext } from "react";
-import { useDataset } from "@/lib/search-params";
 export default function NavBar({ handleBlur, ...props }: any) {
     return (
         <nav id="top " {...props}>

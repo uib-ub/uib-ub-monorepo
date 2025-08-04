@@ -8,7 +8,7 @@ import { treeSettings } from '@/config/server-config';
 export async function GET(request: Request) {
   const {termFilters, reservedParams} = extractFacets(request)
   const { simple_query_string } = getQueryString(reservedParams)
-  const dataset = reservedParams.dataset || 'search' // == 'search' ? '*' : reservedParams.dataset;
+  const perspective = reservedParams.perspective || 'all' // == 'search' ? '*' : reservedParams.dataset;
 
   const zoom: number = parseInt(reservedParams.zoom)
 
@@ -22,9 +22,9 @@ export async function GET(request: Request) {
     collapse: {
       field: "group.id"
     },
-    sort: treeSettings[dataset]?.geoSort ? [
+    sort: treeSettings[perspective]?.geoSort ? [
       {
-        [treeSettings[dataset].geoSort]: {
+        [treeSettings[perspective].geoSort]: {
           "missing": "_first",
           "order": "asc"
         },
@@ -73,6 +73,6 @@ export async function GET(request: Request) {
   }
 
   //console.log("QUERY", query)
-  const [data, status] = await postQuery(dataset, query)
+  const [data, status] = await postQuery(perspective, query)
   return Response.json(data, {status: status})
 }

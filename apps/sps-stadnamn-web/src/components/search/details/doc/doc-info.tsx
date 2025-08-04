@@ -1,21 +1,18 @@
-import CopyLink from "@/components/doc/copy-link"
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiX, PiTag, PiInfoFill, PiCaretLeft, PiInfoLight, PiTreeViewLight, PiTreeViewFill, PiDatabaseLight, PiDatabaseFill, PiMapPinAreaLight, PiMapPinAreaFill, PiFunnelLight, PiFunnelFill } from "react-icons/pi"
+import { PiInfoFill, PiCaretLeft } from "react-icons/pi"
 import ClientThumbnail from "../../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import Clickable from "@/components/ui/clickable/clickable"
-import { useDataset, useMode } from "@/lib/search-params"
+import { usePerspective, useMode } from "@/lib/search-params"
 import { useContext, useMemo } from "react"
 import { DocContext } from "@/app/doc-provider"
 import { treeSettings } from "@/config/server-config"
 import CadastreBreadcrumb from "./cadastre-breadcrumb"
 import { GlobalContext } from "@/app/global-provider"
 import CollapsibleHeading from '@/components/doc/collapsible-heading';
-import CoordinateInfo from "./coordinate-info"
 import ExternalLinkTooltip from "@/components/ui/clickable/external-link-tooltip"
-import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import IconLink from "@/components/ui/icon-link"
 import FacetsInfobox from "@/components/doc/facets-infobox"
 import SearchDocInfo from "@/components/doc/search-doc-info"
@@ -23,13 +20,12 @@ import { facetConfig } from "@/config/search-config"
 import { getFieldValue } from "@/lib/utils"
 import ErrorMessage from "@/components/error-message"
 import Timeline from "@/components/doc/timeline"
-import IconButton from "@/components/ui/icon-button"
 
 
 
 export default function DocInfo({docParams}: {docParams?: any}) {
     const searchParams = useSearchParams()
-    const dataset = useDataset()
+    const perspective = usePerspective()
     let { docDataset, docData, sameMarkerList } = useContext(DocContext)
     if (docParams) {
         docDataset = docParams.docDataset
@@ -59,9 +55,9 @@ export default function DocInfo({docParams}: {docParams?: any}) {
 
     return <><article className={`instance-info flex flex-col gap-4 p-4 pb-8 mobile-padding ${parent && isMobile ? 'relative' : ''}`}>
 
-      {(((docDataset && dataset != docDataset) || docData?._source?.within) || !isMobile) && <div className="!mt-0">
+      {(((docDataset && perspective != docDataset) || docData?._source?.within) || !isMobile) && <div className="!mt-0">
 
-        { dataset == 'all' && <div className="flex gap-1  items-center">
+        { perspective == 'all' && <div className="flex gap-1  items-center">
           
           <span className="text-neutral-800 uppercase font-semibold tracking-wider text-sm">{datasetTitles[docDataset as string]}</span>
           
@@ -77,19 +73,19 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         
 
 
-        { dataset != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
+        { perspective != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
         <div className={`absolute top-0 lg:top-2 right-0 flex gap-2`}>
           
 
           {!isMobile && mode == 'doc' &&
                   <Clickable 
                     remove={["mode", "sourceDataset", "sourceLabel", "parent"]} 
-                    add={preferredTabs[dataset] ? {mode: preferredTabs[dataset]} : {}}
+                    add={preferredTabs[perspective] ? {mode: preferredTabs[perspective]} : {}}
                     className=" flex items-center gap-1 text-lg btn btn-outline" 
                     aria-label="Tilbake">
                     <PiCaretLeft className="text-primary-600" aria-hidden="true"/>
-                    {preferredTabs[dataset] == 'table' && 'Tilbake til tabellen'}
-                    {preferredTabs[dataset] == 'list' && 'Tilbake til listen'}
+                    {preferredTabs[perspective] == 'table' && 'Tilbake til tabellen'}
+                    {preferredTabs[perspective] == 'list' && 'Tilbake til listen'}
 
                   </Clickable>
           }
@@ -185,7 +181,6 @@ export default function DocInfo({docParams}: {docParams?: any}) {
               const uuid = hit.fields?.uuid[0] || hit._source.uuid
               const children = hit.fields?.children?.[0] || hit._source?.children
               const label = hit.fields?.label || hit._source?.label
-              const docDataset = hit._index.split('-')[2]
 
             return <Clickable link key={hit._id} role="tab" aria-selected={[uuid, children].includes(doc)} className="rounded-tabs" add={{doc: children ? children : uuid}}>
                 {label}

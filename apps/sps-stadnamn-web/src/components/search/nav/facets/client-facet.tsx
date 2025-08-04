@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useSearchQuery, useDataset } from '@/lib/search-params';
+import { useSearchQuery, usePerspective } from '@/lib/search-params';
 import { PiFunnel } from 'react-icons/pi';
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/app/global-provider';
@@ -10,7 +10,7 @@ import { fieldConfig } from '@/config/search-config';
 
 export default function ClientFacet({ facetName }: { facetName: string }) {
   const router = useRouter()
-  const dataset = useDataset()
+  const perspective = usePerspective()
   const { removeFilterParams, facetFilters } = useSearchQuery()
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
   const paramsExceptFacet = useMemo(() => removeFilterParams(facetName), [removeFilterParams, facetName])
@@ -31,12 +31,12 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   }
 
   useEffect(() => {
-    fetch(`/api/facet?dataset=${dataset}&facets=group.adm1,group.adm2,group.adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
+    fetch(`/api/facet?perspective=${perspective}&facets=group.adm1,group.adm2,group.adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
       console.log(es_data)
       setFacetAggregation(es_data.aggregations?.["group.adm1"])
       setFacetIsLoading(false);
     })
-    }, [paramsExceptFacet, dataset]
+    }, [paramsExceptFacet, perspective]
     )
 
 
@@ -93,10 +93,10 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
 
   const sortBuckets = (buckets: any) => {
     const orderCompare = (a: string, b: string) => {
-      return facetOptions[dataset]?.[currentFacet]?.sort === 'asc' ? a.localeCompare(b, 'nb') : b.localeCompare(a, 'nb'); 
+      return facetOptions[perspective]?.[currentFacet]?.sort === 'asc' ? a.localeCompare(b, 'nb') : b.localeCompare(a, 'nb'); 
     }
     return [...buckets].sort((a, b) => {
-      if (facetOptions[dataset]?.[currentFacet]?.sort === 'doc_count') {
+      if (facetOptions[perspective]?.[currentFacet]?.sort === 'doc_count') {
         return parseInt(b.doc_count) - parseInt(a.doc_count);
       } else {
         if (a.label && b.label) {

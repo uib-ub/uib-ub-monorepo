@@ -1,12 +1,11 @@
 'use client'
 import MapExplorer from "./map-explorer"
-import { useDataset, useMode } from "@/lib/search-params"
+import { usePerspective, useMode } from "@/lib/search-params"
 import StatusSection from "./status-section"
 import TableExplorer from "./table/table-explorer"
 import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
 import { useSearchParams } from "next/navigation"
-import { ChildrenContext } from "@/app/children-provider"
 import DocSkeleton from "../doc/doc-skeleton"
 import DocInfo from "./details/doc/doc-info"
 import ListExplorer from "./list/list-explorer"

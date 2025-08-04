@@ -1,23 +1,22 @@
 'use client'
-import { useDataset } from "@/lib/search-params"
+import { usePerspective } from "@/lib/search-params"
 import ClientFacet from "./client-facet"
-import { contentSettings } from "@/config/server-config"
 import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchParams } from "next/navigation"
 import ServerFacet from "./server-facet"
-import { facetConfig, fieldConfig } from "@/config/search-config"
-import { PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiFileX } from "react-icons/pi"
+import { facetConfig } from "@/config/search-config"
+import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi"
 import { GlobalContext } from "@/app/global-provider"
-import { useContext, useState } from "react"
+import { useContext } from "react"
 import { datasetTitles } from "@/config/metadata-config"
 
 export default function FacetSection() {
-    const dataset = useDataset()
+    const perspective = usePerspective()
     const searchParams = useSearchParams()
     const { isMobile } = useContext(GlobalContext)
     const facet = searchParams.get('facet') || 'adm'
     const indexDatasets = searchParams.getAll('indexDataset')
-    const filterDataset = dataset == 'all' ? indexDatasets.length == 1 ? indexDatasets[0] : 'all' : dataset
+    const filterDataset = perspective == 'all' ? indexDatasets.length == 1 ? indexDatasets[0] : 'all' : perspective
     
     const availableFacets = filterDataset == 'all'
         ? facetConfig['all'].filter(f => indexDatasets.length > 0 ? f.datasets?.find((d: string) => indexDatasets.includes(d)) : f.key == 'indexDataset' || (f.datasets?.length && f.datasets?.length > 1)).sort((a, b) => (a.key === 'indexDataset' ? -1 : b.key === 'indexDataset' ? 1 : (b?.datasets?.length || 0) - (a?.datasets?.length || 0)))

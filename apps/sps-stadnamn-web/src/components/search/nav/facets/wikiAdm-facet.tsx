@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useSearchQuery, useDataset } from '@/lib/search-params';
+import { useSearchQuery, usePerspective } from '@/lib/search-params';
 import { PiMagnifyingGlass, PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/app/global-provider';
@@ -8,7 +8,7 @@ import IconButton from '@/components/ui/icon-button';
 
 export default function WikiAdmFacet() {
   const router = useRouter()
-  const dataset = useDataset()
+  const perspective = usePerspective()
   const { removeFilterParams } = useSearchQuery()
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
   const facetName = 'wikiAdm'

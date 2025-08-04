@@ -2,30 +2,30 @@ import { useQueryState } from "nuqs"
 import { PiArrowCounterClockwise, PiCaretDown, PiCaretDownBold, PiSortAscending, PiSortDescending } from "react-icons/pi"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { facetConfig } from "@/config/search-config"
-import { useDataset } from "@/lib/search-params"
+import { usePerspective } from "@/lib/search-params"
 import { contentSettings } from "@/config/server-config"
 
 export default function SortSelector() {
     const [asc, setAsc] = useQueryState('asc')
     const [desc, setDesc] = useQueryState('desc')
-    const dataset = useDataset()
+    const perspective = usePerspective()
 
     // Build sort options from facet config
     const sortOptions = [
         { field: "label.keyword", label: "Oppslagsord" },
         // Add administrative areas if configured
-        ...(contentSettings[dataset]?.adm ? [{
-            field: Array.from({length: contentSettings[dataset]?.adm || 0}, 
+        ...(contentSettings[perspective]?.adm ? [{
+            field: Array.from({length: contentSettings[perspective]?.adm || 0}, 
                 (_, i) => `adm${i+1}.keyword`).join(","),
             label: "Område"
         }] : []),
         // Add cadastre if configured
-        ...(contentSettings[dataset]?.cadastre ? [{
+        ...(contentSettings[perspective]?.cadastre ? [{
             field: 'cadastre__gnr,cadastre__bnr',
             label: "Matrikkel"
         }] : []),
         // Add fields from facet config
-        ...(facetConfig[dataset]?.filter(item => item.table)?.map(facet => ({
+        ...(facetConfig[perspective]?.filter(item => item.table)?.map(facet => ({
             field: facet.type ? facet.key : facet.key.replace("__", ".") + ".keyword",
             label: facet.label
         })) || [])

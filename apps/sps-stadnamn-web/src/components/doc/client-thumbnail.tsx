@@ -1,7 +1,4 @@
 import { DocContext } from "@/app/doc-provider"
-import { datasetTitles } from "@/config/metadata-config"
-import { useDataset } from "@/lib/search-params"
-import Image from "next/image"
 import Link from "next/link"
 import { useContext, useEffect, useState } from "react"
 import { PiCaretLeft, PiCaretRight } from "react-icons/pi"
@@ -9,10 +6,8 @@ import { PiCaretLeft, PiCaretRight } from "react-icons/pi"
 export default function ClientThumbnail({ iiif }: { iiif: string | string[]  }) {
     const [imgIndex, setImgIndex] = useState(0)
     const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null)
-    const height = 240
     const width = 320
     const aspectRatio = 9 / 16
-    const dataset = useDataset()
     const { docDataset } = useContext(DocContext)
 
     const [manifest, setManifest] = useState<string | null>(null)
@@ -58,11 +53,6 @@ export default function ClientThumbnail({ iiif }: { iiif: string | string[]  }) 
         )}
         
         <div className="flex gap-1 justify-between">
-            {manifestDataset && dataset == 'search' && docDataset != manifestDataset && (
-                <span className="flex items-center gap-2 text-neutral-800 min-w-0">
-                    <span className="truncate">{datasetTitles[manifestDataset]}</span>
-                </span>
-            )}
             {Array.isArray(iiif) && iiif.length > 1 && (
                 <div className="flex ml-auto">
                     <button 

@@ -1,26 +1,25 @@
-import { useState, useEffect, useContext, ChangeEvent, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useDataset, useSearchQuery } from '@/lib/search-params';
+import { usePerspective, useSearchQuery } from '@/lib/search-params';
 import { facetConfig, fieldConfig } from '@/config/search-config';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 
 import { datasetTitles } from '@/config/metadata-config';
 
 import FacetToolbar from './facet-toolbar';
-import { GlobalContext } from '@/app/global-provider';
 import { getSkeletonLength } from '@/lib/utils';
 
 
 export default function ServerFacet() {
   const router = useRouter()
-  const dataset = useDataset()
+  const perspective = usePerspective()
   const searchParams = useSearchParams()
   const { removeFilterParams } = useSearchQuery()
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [facetLoading, setFacetLoading] = useState(true);
   const [facetSearch, setFacetSearch] = useState('');
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
-  const availableFacets = useMemo(() => facetConfig[dataset], [dataset]);
+  const availableFacets = useMemo(() => facetConfig[perspective], [perspective]);
   const facet = searchParams.get('facet') || searchParams.get('nav')
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
   const paramsExceptFacet = facet ? removeFilterParams(facet) : searchParams.toString()
@@ -32,7 +31,7 @@ export default function ServerFacet() {
     }
 
     // Fetch data only if we have a valid facet
-    fetch(`/api/facet?facets=${facet}${
+    fetch(`/api/facet?perspective=${perspective}&facets=${facet}${
       facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${
         paramsExceptFacet ? '&' + paramsExceptFacet : ''}${
           sortMode != 'doc_count' ? '&facetSort=' + sortMode : ''}`).then(response => response.json()).then(es_data => {
@@ -47,7 +46,7 @@ export default function ServerFacet() {
 
       setFacetLoading(false);
     })
-  }, [facet, availableFacets, paramsExceptFacet, facetSearch, sortMode])
+  }, [facet, availableFacets, paramsExceptFacet, facetSearch, sortMode, perspective])
 
 
   // Return null if we don't have a valid facet
@@ -129,7 +128,7 @@ export default function ServerFacet() {
 
     { (facetLoading || facetAggregation?.buckets.length) ?
     <fieldset>
-      <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[dataset][facet].label}`}</legend>
+      <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[perspective][facet].label}`}</legend>
       <ul role="status" aria-live="polite" className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
         {facetAggregation?.buckets.length ? facetAggregation?.buckets
           .map((item: any, index: number) => 

@@ -7,7 +7,7 @@ export async function POST(request: Request) {
         uuids: body.children,
         mode: body.mode,
         within: body.within,
-        dataset: body.dataset
+        dataset: body.perspective
     })
 
     return Response.json(data, { status: status })

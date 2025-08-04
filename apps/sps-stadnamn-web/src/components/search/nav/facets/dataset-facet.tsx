@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, ChangeEvent, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useDataset, useSearchQuery } from '@/lib/search-params';
+import { usePerspective, useSearchQuery } from '@/lib/search-params';
 import { facetConfig, fieldConfig } from '@/config/search-config';
 import { PiMagnifyingGlass, PiInfo, PiInfoFill, PiCaretDown, PiCaretRight, PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
 
@@ -30,7 +30,7 @@ const createSearchRegex = (() => {
 
 export default function DatasetFacet() {
   const router = useRouter()
-  const dataset = useDataset()
+  const perspective = usePerspective()
   const searchParams = useSearchParams()
   const { removeFilterParams } = useSearchQuery()
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
@@ -39,14 +39,18 @@ export default function DatasetFacet() {
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
   const [deepCollectionExpanded, setDeepCollectionExpanded] = useState(false);
-  const availableFacets = useMemo(() => facetConfig[dataset], [dataset]);
+  const availableFacets = useMemo(() => facetConfig[perspective], [perspective]);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
-  const paramsExceptFacet = removeFilterParams('indexDataset') || searchParams.toString()
+  const paramsExceptFacet = removeFilterParams('indexDataset')
 
   useEffect(() => {
 
     // Fetch data only if we have a valid facet
-    fetch(`/api/facet?facets=indexDataset${
+
+
+      console.log(paramsExceptFacet)
+
+    fetch(`/api/facet?perspective=all&facets=indexDataset${
       facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${
         paramsExceptFacet ? '&' + paramsExceptFacet : ''}${
           sortMode != 'doc_count' ? '&facetSort=' + sortMode : ''}`).then(response => response.json()).then(es_data => {
@@ -135,7 +139,7 @@ export default function DatasetFacet() {
     <>
     <div className="flex flex-col gap-2 pb-4">
     <div className='flex flex-col gap-2'>
-    {dataset == 'all' && 
+    {perspective == 'all' && 
         <div className="px-3 py-2 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors">
           <div className="flex items-start gap-3">
             <label className="flex items-start gap-3 flex-1">

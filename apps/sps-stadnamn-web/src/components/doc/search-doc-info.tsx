@@ -5,7 +5,7 @@ import { datasetTitles } from "@/config/metadata-config";
 import { useSearchParams } from "next/navigation";
 import { useContext } from "react";
 import { GlobalContext } from "@/app/global-provider";
-import { useDataset, useMode } from "@/lib/search-params";
+import { usePerspective, useMode } from "@/lib/search-params";
 import AudioExplorer from "./audio-explorer";
 
 
@@ -17,7 +17,6 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
     const sourceLabel = searchParams.get('sourceLabel')
     const sourceDataset = searchParams.get('sourceDataset')
     const { isMobile } = useContext(GlobalContext)
-    const dataset = useDataset()
     const mode = useMode()
     
     const attestationLabels = docSource.attestations?.map((item: any) => item.label)
@@ -28,19 +27,6 @@ export default function SearchDocInfo({docSource}: {docSource: any}) {
 
 
     return <>
-    {docSource.recordings?.length > 0 && dataset == 'search' &&
-          <AudioExplorer recordings={docSource.recordings}/>
-
-        }
-
-    
-            
-            
-            
-
-  
-    
-
     <div className={` flex flex-col gap-2`}>
 
     {!(isMobile && parent && mode == 'map') && <>

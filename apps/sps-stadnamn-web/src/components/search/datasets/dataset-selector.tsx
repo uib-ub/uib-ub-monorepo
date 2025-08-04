@@ -1,12 +1,11 @@
 import { Fragment, useContext, useEffect, useState} from 'react';
 import { datasetTitles, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config'
-import { PiCaretRight, PiFunnel, PiFunnelFill, PiMagnifyingGlass } from 'react-icons/pi';
+import { PiCaretRight, PiFunnel, PiMagnifyingGlass } from 'react-icons/pi';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Clickable from '@/components/ui/clickable/clickable';
-import { useDataset } from '@/lib/search-params';
+import { usePerspective } from '@/lib/search-params';
 import { GlobalContext } from '@/app/global-provider';
-import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 
 
 
@@ -14,9 +13,8 @@ export default function DatasetSelector() {
   const searchParams = useSearchParams()
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filteredDatasets, setFilteredDatasets] = useState<string[]>([])
-  const dataset = useDataset()
+  const perspective = usePerspective()
   const { isMobile } = useContext(GlobalContext)
-  const [showAll, setShowAll] = useState(false)
 
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +43,7 @@ export default function DatasetSelector() {
       setFilteredDatasets(no_subindices)
     }
   }
-  , [searchTerm, dataset])
+  , [searchTerm, perspective])
 
     return <>
         <div className='flex flex-col justify-between w-full px-2'>
@@ -72,13 +70,13 @@ export default function DatasetSelector() {
               .map((itemDataset, index) => (
                 <Fragment key={itemDataset}>
                   <li className="flex w-full">
-                    { (dataset == 'search' || dataset == 'all') ?
-                      <div className={`flex flex-col gap-6 p-4 w-full ${itemDataset == dataset ? 'bg-accent-50 border-l-4 border-accent-600' : ''}`}>
+                    { perspective == 'all' ?
+                      <div className={`flex flex-col gap-6 p-4 w-full ${itemDataset == perspective ? 'bg-accent-50 border-l-4 border-accent-600' : ''}`}>
                         <div className="flex-1 gap-2">
                           {isMobile ? <h4 className="text-lg font-semibold text-neutral-900 mb-1">{datasetTitles[itemDataset]}</h4> : <h3 className="text-lg font-semibold text-neutral-900 mb-1">{datasetTitles[itemDataset]}</h3>}
                           <p className="text-neutral-700 text-sm">{datasetShortDescriptions[itemDataset]}</p>      
                         </div>
-                        {itemDataset == dataset ? 
+                        {itemDataset == perspective ? 
                         <em className='text-neutral-700 ml-auto'>Gjeldande søkevisning</em>
                         : <div className="flex flex-col xl:flex-row gap-2">
                           <Clickable 
@@ -93,7 +91,7 @@ export default function DatasetSelector() {
                           {itemDataset != 'all' && itemDataset != 'search' && <Clickable 
                             className="btn btn-outline xl:btn-compact flex items-center gap-2 text-base !pl-2" 
                             link 
-                            add={dataset == 'all' ? {indexDataset: itemDataset, nav: 'filters', facet: 'indexDataset'} : {datasets: itemDataset, nav: 'filters', facet: 'datasets'}} 
+                            add={perspective == 'all' ? {indexDataset: itemDataset, nav: 'filters', facet: 'indexDataset'} : {datasets: itemDataset, nav: 'filters', facet: 'datasets'}} 
                           >
                             <PiFunnel className="text-neutral-600 text-lg" aria-hidden="true"/>
                             Bruk som filter
@@ -105,7 +103,7 @@ export default function DatasetSelector() {
                       <Clickable 
                         link 
                         only={{dataset: itemDataset, q: searchParams.get('q'), nav: 'datasets' }} 
-                        className={`w-full h-full p-4  no-underline transition-colors duration-200 ${itemDataset == dataset ? 'bg-accent-50 border-l-4 border-accent-600' : 'hover:bg-neutral-50'}`}
+                        className={`w-full h-full p-4  no-underline transition-colors duration-200 ${itemDataset == perspective ? 'bg-accent-50 border-l-4 border-accent-600' : 'hover:bg-neutral-50'}`}
                       >
                         {isMobile ? <h4 className="text-lg font-semibold text-neutral-900 mb-1">{datasetTitles[itemDataset]}</h4> : <h3 className="text-lg font-semibold text-neutral-900 mb-1">{datasetTitles[itemDataset]}</h3>}
                         <p className="text-neutral-700">{datasetShortDescriptions[itemDataset]}</p>      

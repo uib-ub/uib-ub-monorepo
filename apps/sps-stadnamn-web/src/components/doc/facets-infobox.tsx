@@ -4,12 +4,12 @@ import { PiFunnel, PiMagnifyingGlass } from "react-icons/pi";
 import { facetConfig } from "@/config/search-config";
 import { getValueByPath } from "@/lib/utils";
 import { createSerializer, parseAsString } from "nuqs";
-import { useDataset } from "@/lib/search-params";
+import { usePerspective } from "@/lib/search-params";
 import Clickable from "../ui/clickable/clickable";
 import { datasetTitles } from "@/config/metadata-config";
 
 export default function FacetsInfobox({ source, docDataset, filteredFacets }: { source: Record<string,any>, docDataset: string | null, filteredFacets: any[] }) {
-  const dataset = useDataset()
+  const perspective = usePerspective()
   if (!docDataset) return null;
 
   const serialize = createSerializer({
@@ -44,10 +44,10 @@ export default function FacetsInfobox({ source, docDataset, filteredFacets }: { 
     
 
     const subitemRenderer = (item: any) => {
-      if (dataset == docDataset || dataset == 'all') {
+      if (perspective == docDataset || perspective == 'all') {
         return (
           <Link className="no-underline flex items-center gap-1" 
-                href={item.hrefParams ? buildHref(item.hrefParams) : item.href || serialize({dataset,  [item.key]: item.value, nav: 'results'})}>
+                href={item.hrefParams ? buildHref(item.hrefParams) : item.href || serialize({[item.key]: item.value, nav: 'results'})}>
                       {item.value}
                       <PiMagnifyingGlass aria-hidden={true} className="inline text-primary-600"/>
           </Link>
@@ -63,7 +63,7 @@ export default function FacetsInfobox({ source, docDataset, filteredFacets }: { 
     const buildHref = (params: Record<string, string>) => {
       // Add parameter if value isn't null or empty string
       const newParams = Object.fromEntries(Object.entries(params).filter(([key, value]) => value !== null && value !== ''));
-      return serialize({dataset, nav: 'results', ...newParams})
+      return serialize({nav: 'results', ...newParams})
     }
     return <div className="flex flex-col gap-2 py-3">
             <div className="flex flex-col sm:flex-row flex-wrap gap-6">
@@ -81,7 +81,7 @@ export default function FacetsInfobox({ source, docDataset, filteredFacets }: { 
                 </div>
             ))}
           </div>
-          {dataset !== docDataset && dataset !== 'all' && (
+          {perspective !== docDataset && perspective !== 'all' && (
             <Clickable
               link 
               only={{dataset: docDataset, doc: source.uuid}}

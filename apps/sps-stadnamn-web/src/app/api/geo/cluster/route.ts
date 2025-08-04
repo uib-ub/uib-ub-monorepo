@@ -9,9 +9,9 @@ import { FaGalacticSenate } from 'react-icons/fa';
 export async function GET(request: Request) {
   const {termFilters, reservedParams} = extractFacets(request)
   const { simple_query_string } = getQueryString(reservedParams)
-  const dataset = reservedParams.dataset || 'search' // == 'search' ? '*' : reservedParams.dataset;
+  const perspective = reservedParams.perspective || 'all' // == 'search' ? '*' : reservedParams.dataset;
 
-  const sortArray = getSortArray(dataset)
+  const sortArray = getSortArray(perspective)
   const zoom = parseInt(reservedParams.zoom)
   const totalHits = reservedParams.totalHits
   //console.log(reservedParams.bottomRightLat, reservedParams.bottomRightLng)
@@ -95,10 +95,7 @@ export async function GET(request: Request) {
                 top_hits: {
                     _source: ["label", "uuid"],
                     size: zoom < 6 ? 20 : zoom == 18 ? 100 : 10,//topHitsSize[reservedParams.zoom as keyof typeof topHitsSize] ?? 20,
-                    sort: dataset == 'search' ? [
-                        {"ranking": "asc"}, 
-                        {"uuid": "asc"}
-                    ] : {"uuid": "asc"} 
+                    sort: {"uuid": "asc"} 
                     
                     }
                 },
@@ -158,6 +155,6 @@ export async function GET(request: Request) {
   }
 
   //console.log("QUERY", query)
-  const [data, status] = await postQuery(dataset, query)
+  const [data, status] = await postQuery(perspective, query)
   return Response.json(data, {status: status})
 }

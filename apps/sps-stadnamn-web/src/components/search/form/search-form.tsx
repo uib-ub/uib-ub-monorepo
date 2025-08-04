@@ -6,7 +6,7 @@ import { useQueryState } from 'nuqs';
 import { datasetTitles } from '@/config/metadata-config';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { fulltextFields } from '@/config/search-config';
-import { useDataset, useMode, useSearchQuery } from '@/lib/search-params';
+import { usePerspective, useMode, useSearchQuery } from '@/lib/search-params';
 import Form from 'next/form'
 import Options from './options';
 import { GlobalContext } from '@/app/global-provider';
@@ -22,7 +22,7 @@ export default function SearchForm() {
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
-    const dataset = useDataset()
+    const perspective = usePerspective()
 
     const { facetFilters } = useSearchQuery()
     const mode = useMode()
@@ -56,13 +56,13 @@ export default function SearchForm() {
     return pathname == '/search' ? <>   
         <div className="sr-only xl:not-sr-only flex !px-4 divide-x-2 divide-primary-400 gap-4 overflow-clip items-center content-center !w-[calc(25svw-0.5rem)]">
             <Link href="/" scroll={false} className="text-base font-serif uppercase no-underline">Stadnamnportalen</Link>
-            <h1 className="!text-lg text-neutral-800 px-3 truncate">{datasetTitles[dataset]}</h1></div>   
+            <h1 className="!text-lg text-neutral-800 px-3 truncate">{datasetTitles[perspective]}</h1></div>   
         <div className="h-full flex grow">
 
             <Form ref={form} action="/search" className="flex w-full h-full" onSubmit={() => setAllowFlyTo(true)}>
 
             <div className='flex w-full pr-1 bg-white focus-within:border-b-2 focus-within:border-primary-600 xl:border-none xl:outline xl:outline-1 xl:outline-neutral-300 xl:focus-within:border-neutral-200 xl:rounded-md xl:m-1 items-center relative group focus-within:xl:outline-2 focus-within:xl:outline-neutral-600'>
-            {(isMobile && dataset != 'search') && <Clickable only={{dataset: 'search', zoom: searchParams.get('zoom'), center: searchParams.get('center')}} aria-hidden="true" className="flex no-underline max-w-[50%] text-sm flex-nowrap items-center gap-1 bg-accent-700 text-white rounded-md px-2 py-1 whitespace-nowrap"><span className="truncate">{datasetTitles[dataset]}</span><PiX className="text-xs" aria-hidden="true"/></Clickable>
+            {isMobile && <Clickable only={{zoom: searchParams.get('zoom'), center: searchParams.get('center')}} aria-hidden="true" className="flex no-underline max-w-[50%] text-sm flex-nowrap items-center gap-1 bg-accent-700 text-white rounded-md px-2 py-1 whitespace-nowrap"><span className="truncate">{datasetTitles[perspective]}</span><PiX className="text-xs" aria-hidden="true"/></Clickable>
             }
             <label htmlFor="search-input" className="sr-only">Søk</label>
             <input 
@@ -74,10 +74,10 @@ export default function SearchForm() {
                 autoFocus={true}
                 value={inputValue} 
                 onChange={(event) => setInputValue(event.target.value)} 
-                className={`bg-transparent ${dataset == 'search' ? 'px-4' : 'pr-4 pl-4'} focus:outline-none flex w-full shrink`}
+                className={`bg-transparent pr-4 pl-4 focus:outline-none flex w-full shrink`}
             />
             
-            {searchParams.get('dataset') && <input type="hidden" name="dataset" value={searchParams.get('dataset') || ''}/>}
+            {false && searchParams.get('dataset') && <input type="hidden" name="dataset" value={searchParams.get('dataset') || ''}/>}
             
             { inputValue && 
             <ClickableIcon  onClick={() => { clearQuery() }} 
@@ -87,7 +87,7 @@ export default function SearchForm() {
                             label="Tøm søk"><PiX className="text-2xl lg:text-xl text-neutral-600 group-focus-within:text-neutral-800 m-1"/></ClickableIcon> }
             <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-2xl lg:text-xl shrink-0 text-neutral-600 group-focus-within:text-neutral-800" aria-hidden="true"/></button>
             </div>
-            {fulltextFields[dataset]?.length > 0 && 
+            {fulltextFields[perspective]?.length > 0 && 
                 <Options/>
             }
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''}/>}
@@ -95,7 +95,7 @@ export default function SearchForm() {
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value}/>)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''}/>}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''}/>}
-            {mode == 'doc' && preferredTabs[dataset] && preferredTabs[dataset] != 'map' && <input type="hidden" name="mode" value={preferredTabs[dataset] || ''}/>}
+            {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''}/>}
             
         </Form>
         </div>

@@ -1,6 +1,6 @@
 import { facetConfig } from "@/config/search-config"
 import { contentSettings, treeSettings } from "@/config/server-config"
-import { useDataset, useMode } from "@/lib/search-params"
+import { usePerspective, useMode } from "@/lib/search-params"
 import { useSearchParams } from "next/navigation"
 import { useQueryState } from "nuqs"
 import { Fragment, useContext, useState } from "react"
@@ -16,7 +16,7 @@ import { DownloadButton } from "./download-button"
 import Clickable from "@/components/ui/clickable/clickable"
 
 export default function TableExplorer() {
-    const dataset = useDataset()
+    const perspective = usePerspective()
     const searchParams = useSearchParams()
     const { tableData, totalHits, isLoading } = useContext(SearchContext)
 
@@ -25,15 +25,15 @@ export default function TableExplorer() {
     const doc = searchParams.get('doc')
 
     const [columnSelectorOpen, setColumnSelectorOpen] = useState(false)
-    const localStorageKey = `visibleColumns_${dataset}`;
+    const localStorageKey = `visibleColumns_${perspective}`;
 
     const mode = useMode()
     const { isMobile } = useContext(GlobalContext)
 
-    const [visibleColumns, setVisibleColumns] = useState<string[]>(['adm', ...facetConfig[dataset].filter(item => item.table).map(facet => facet.key)])
+    const [visibleColumns, setVisibleColumns] = useState<string[]>(['adm', ...facetConfig[perspective].filter(item => item.table).map(facet => facet.key)])
 
     // Hide adm if only one value is present and it has no sublevels
-    const showCadastre = contentSettings[dataset]?.cadastre
+    const showCadastre = contentSettings[perspective]?.cadastre
 
     const joinWithSlash = (adm: string|string[]) => Array.isArray(adm) ? adm.join('/') : adm;
 
@@ -53,11 +53,11 @@ export default function TableExplorer() {
       }
 
     const resetColumns = () => {
-        const facetColumns = (facetConfig[dataset]?.filter(item => item.table).map(facet => facet.key) || []).filter((key): key is string => key !== undefined);
-        if (contentSettings[dataset]?.adm) {
+        const facetColumns = (facetConfig[perspective]?.filter(item => item.table).map(facet => facet.key) || []).filter((key): key is string => key !== undefined);
+        if (contentSettings[perspective]?.adm) {
           facetColumns.unshift('adm')
         }
-        if (contentSettings[dataset]?.cadastre) {
+        if (contentSettings[perspective]?.cadastre) {
           facetColumns.push('cadastre')
         }
         setVisibleColumns(facetColumns)
@@ -86,9 +86,9 @@ export default function TableExplorer() {
                         Kolonner
                     </button>
                     { // Reset button if visible columns is different from default
-                    visibleColumns.length !== (facetConfig[dataset]?.filter(item => item.table).length
-                                                        + (contentSettings[dataset]?.adm ? 1 : 0 )
-                                                        + (contentSettings[dataset]?.cadastre ? 1 : 0 )
+                    visibleColumns.length !== (facetConfig[perspective]?.filter(item => item.table).length
+                                                        + (contentSettings[perspective]?.adm ? 1 : 0 )
+                                                        + (contentSettings[perspective]?.cadastre ? 1 : 0 )
                                                         || 0) &&
                     <button type="button" className='btn btn-outline btn-compact pl-2' onClick={resetColumns}>
                         <PiArrowCounterClockwise className='text-xl mr-2' aria-hidden="true"/>
@@ -106,7 +106,7 @@ export default function TableExplorer() {
                     </div>
                     
                     { columnSelectorOpen && <div className='flex gap-4 px-2 flex-wrap' id="column-selector">
-                        { contentSettings[dataset]?.adm && <div>
+                        { contentSettings[perspective]?.adm && <div>
                             <label className="flex gap-2">
                                 <input
                                 type="checkbox"
@@ -116,7 +116,7 @@ export default function TableExplorer() {
                                 Område
                             </label>
                         </div>}
-                        { contentSettings[dataset]?.cadastre && <div>
+                        { contentSettings[perspective]?.cadastre && <div>
                             <label className="flex gap-2">
                                 <input
                                 type="checkbox"
@@ -126,7 +126,7 @@ export default function TableExplorer() {
                                 Matrikkel
                             </label>
                         </div>}
-                        {facetConfig[dataset]?.map((facet: any) => (
+                        {facetConfig[perspective]?.map((facet: any) => (
                             <div key={facet.key}>
                             <label className="flex gap-2">
                                 <input
@@ -153,7 +153,7 @@ export default function TableExplorer() {
                                 
                                 {
                                     visibleColumns.includes('adm') && <th> 
-                                        <SortHeader field={Array.from({length: contentSettings[dataset]?.adm || 0}, (_, i) => `adm${i+1}.keyword`).join(",")} label="Område"/>
+                                        <SortHeader field={Array.from({length: contentSettings[perspective]?.adm || 0}, (_, i) => `adm${i+1}.keyword`).join(",")} label="Område"/>
                                     </th>
                                 }
                                 { showCadastre && visibleColumns.includes('cadastre') &&
@@ -161,7 +161,7 @@ export default function TableExplorer() {
                                     <SortHeader field='adm1.keyword,adm2.keyword,cadastre__gnr,cadastre__bnr' label="Matrikkel" description="Gnr/Bnr kommunevis"/>
                                     </th>
                                 }
-                                { facetConfig[dataset]?.filter(item => item.key && visibleColumns.includes(item.key))?.map((facet: any) => (
+                                { facetConfig[perspective]?.filter(item => item.key && visibleColumns.includes(item.key))?.map((facet: any) => (
                                     <th key={facet.key}>
                                         <SortHeader field={facet.type ? facet.key : facet.key.replace("__", ".") + ".keyword"} label={facet.label} description={facet.description}/>
                                     </th>
@@ -181,7 +181,7 @@ export default function TableExplorer() {
                                             remove={['nav']}
                                             aria-current={doc == hit._source?.uuid}
                                             add={{doc: hit._source?.uuid, 
-                                                ...(hit._source.children?.length || (treeSettings[dataset] && hit._source.sosi == 'gard')) && !isMobile ? {parent: hit._source?.uuid} : {}
+                                                ...(hit._source.children?.length || (treeSettings[perspective] && hit._source.sosi == 'gard')) && !isMobile ? {parent: hit._source?.uuid} : {}
                                             }}
                                         >
                                             <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current=true]:border-accent-800 border-2 border-transparent">
@@ -212,7 +212,7 @@ export default function TableExplorer() {
                                         {hit._source.cadastre && formatCadastre(hit._source.cadastre)}
                                     </td>
                                 }
-                                { facetConfig[dataset]?.filter(item => item.key && visibleColumns.includes(item.key))?.map((facet: any) => (
+                                { facetConfig[perspective]?.filter(item => item.key && visibleColumns.includes(item.key))?.map((facet: any) => (
                                     facet.key.includes("__") ? 
                                         <td key={facet.key}>
                                             {[...new Set(hit._source[facet.key.split("__")[0]]

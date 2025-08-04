@@ -15,19 +15,19 @@ export function useQueryStringWithout(omit : string[]) {
     return new URLSearchParams(useQueryWithout(omit)).toString();
 }
 
-export function useDataset() {
+export function usePerspective() {
     const searchParams = useSearchParams()
-    const datasetParams = searchParams.getAll('dataset')
-    if (datasetParams.length > 1) {
+    const datasetParams = searchParams.getAll('indexDataset')
+    if (datasetParams.length == 1) {
         return datasetParams[0]
     }
-    return datasetParams[0] || 'all'
+    return 'all'
 }
 
 export function useMode() {
     const searchParams = useSearchParams()
-    const dataset = useDataset()
-    return searchParams?.get('mode') || contentSettings[dataset]?.display || 'map'
+    const perspective = usePerspective()
+    return searchParams?.get('mode') || contentSettings[perspective]?.display || 'map'
 }
 
 
@@ -40,8 +40,8 @@ export function useMode() {
  */
 export function useSearchQuery() {
     const searchParams = useSearchParams()
-    const dataset = useDataset()
-    const validFields = ['q', ...Object.keys(fieldConfig[dataset])]
+    const perspective = usePerspective()
+    const validFields = ['q', ...Object.keys(fieldConfig[perspective])]
     const facetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
     const nav = searchParams.get('nav')
@@ -83,7 +83,7 @@ export function useSearchQuery() {
     const searchFilterParamsString = searchQuery.toString()
     
     // Params that don't require the results section to be shown
-    searchQuery.set('dataset', dataset)
+    //searchQuery.set('dataset', dataset)
     
     const fulltext = searchParams.get('fulltext')
     if (fulltext && nav != 'tree') {

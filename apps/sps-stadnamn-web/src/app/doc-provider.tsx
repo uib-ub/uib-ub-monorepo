@@ -1,7 +1,6 @@
 'use client'
 import { createContext, MutableRefObject, useRef } from 'react'
 import { useState, useEffect } from 'react';
-import { useDataset } from '@/lib/search-params';
 import { useSearchParams } from 'next/navigation';
 
 interface DocContextData {
@@ -34,7 +33,6 @@ export const DocContext = createContext<DocContextData>({
 
 export default function DocProvider({ children }: {  children: React.ReactNode }) {
     const searchParams = useSearchParams()
-    const dataset = useDataset()
     const [ sameMarkerList, setSameMarkerList ] = useState<any[] | null>(null)
     const [docData, setDocData] = useState<any | null>(null)
     const docView = useRef<Record<string, string> | null>(null)
@@ -45,38 +43,10 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     const [docDataset, setDocDataset] = useState<string | null>(null)
     const [docError, setDocError] = useState<Record<string, string> | null>(null)
 
-    const parent = searchParams.get('parent')
     const parentData = useRef<any | null>(null)
     const [parentLoading, setParentLoading] = useState<boolean>(true)
     const [parentError, setParentError] = useState<Record<string, string> | null>(null)
     const [docAdm, setDocAdm] = useState<string | null>(null)
-
-
-    useEffect(() => {
-        if (parent) {
-            setParentLoading(true)
-            fetch(`/api/doc?uuid=${parent}`).then(res => res.json()).then(data => {
-                if (data.hits?.hits?.length) {
-                    parentData.current = data.hits.hits[0]
-                    setDocAdm(data.hits.hits[0]._source.adm2 + '__' + data.hits.hits[0]._source.adm1)
-                }
-            }).catch(err => {
-                setParentError(err)
-            }).finally(() => {
-                setParentLoading(false)
-            })
-        }
-        else {
-            parentData.current = null
-            setParentLoading(false)
-            setDocAdm(null)
-        }
-    }   
-    , [parent, dataset])
-
-
-
-
 
     useEffect(() => {
         if (doc) {
@@ -100,7 +70,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
             setDocAdm(null)
         }
     }   
-    , [doc, dataset, setDocData])
+    , [doc, setDocData])
 
     
 

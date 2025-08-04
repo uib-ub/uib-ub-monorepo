@@ -8,7 +8,7 @@ import { getSortArray } from '@/config/server-config';
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const {termFilters, reservedParams} = extractFacets(request)
-  const dataset = reservedParams.dataset || 'all'  // == 'search' ? '*' : reservedParams.dataset;
+  const perspective = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
   const { highlight, simple_query_string } = getQueryString(reservedParams)
 
   let sortArray: (string | object)[] = []
@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     // Existing sorting logic
 
   if (!sortArray.length) {
-    sortArray = getSortArray(dataset)
+    sortArray = getSortArray(perspective)
   }
 
 
@@ -69,7 +69,7 @@ export async function GET(request: Request) {
   }
 
   
-  const [data, status] = await postQuery(dataset, query, "dfs_query_then_fetch")
+  const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
   return Response.json(data, {status: status})
   
 }

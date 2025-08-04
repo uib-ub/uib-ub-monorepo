@@ -2,7 +2,7 @@
 import WithinLabel from "./within-label"
 import { fieldConfig } from "@/config/search-config"
 import { datasetTitles, typeNames } from "@/config/metadata-config"
-import { useDataset, useMode, useSearchQuery } from "@/lib/search-params"
+import { usePerspective, useMode, useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PiPushPinFill, PiTrash, PiX } from "react-icons/pi"
 import { parseAsString, useQueryState } from "nuqs"
@@ -17,7 +17,7 @@ export default function ActiveFilters() {
     const router = useRouter()
     const { searchQuery, facetFilters } = useSearchQuery()
     const searchParams = useSearchParams()
-    const dataset = useDataset()
+    const perspective = usePerspective()
     const mode = useMode()
     const [fulltext, setFulltext] = useQueryState('fulltext', parseAsString.withDefault('off'))
     const { parentData } = useContext(DocContext)
@@ -32,7 +32,7 @@ export default function ActiveFilters() {
 
     const getFieldLabel = (name: string, value: string) => {
         
-        const fieldSettings = fieldConfig[dataset][name]
+        const fieldSettings = fieldConfig[perspective][name]
         const label =  fieldSettings.label || name
         const omitLabel = fieldSettings?.omitLabel || name == 'adm'
   
@@ -108,7 +108,7 @@ export default function ActiveFilters() {
 
 
 
-    const gnr =  getGnr(parentData, dataset)
+    const gnr =  getGnr(parentData, perspective)
 
 
 

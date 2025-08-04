@@ -1,19 +1,16 @@
 'use client'
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
-import { useDataset } from '@/lib/search-params';
+import { usePerspective } from '@/lib/search-params';
 import { useRef, useEffect, useContext } from 'react';
-import { PiBookOpen, PiWall, PiWallFill } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
-import { datasetTitles } from '@/config/metadata-config';
-import { base64UrlToString, stringToBase64Url } from '@/lib/utils';
-import RootWords from './root-words';
+import { stringToBase64Url } from '@/lib/utils';
 
 
 
 export default function ResultItem({hit}: {hit: any}) {
-    const dataset = useDataset()
+    const perspective = usePerspective()
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
     const nav = searchParams.get('nav')
@@ -75,7 +72,7 @@ export default function ResultItem({hit}: {hit: any}) {
                     <p>{detailsRenderer(hit)}</p>
                 )}
             </div>
-            {dataset == "all" && hit.inner_hits?.group?.hits?.total?.value > 1 && (
+            {perspective == "all" && hit.inner_hits?.group?.hits?.total?.value > 1 && (
                 <div className={`ml-auto flex items-center rounded-full text-sm px-2.5 py-1 ${
                     isSelected ? 'bg-accent-800 text-white' : 'bg-neutral-100 text-neutral-950'
                 }`}>

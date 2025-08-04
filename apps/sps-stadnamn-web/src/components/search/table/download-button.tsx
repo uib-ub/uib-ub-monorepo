@@ -1,5 +1,5 @@
 import { facetConfig } from "@/config/search-config";
-import { useDataset, useSearchQuery } from "@/lib/search-params";
+import { usePerspective, useSearchQuery } from "@/lib/search-params";
 import { useRouter } from "next/navigation";
 import { PiDownload, PiX } from "react-icons/pi";
 import {
@@ -20,7 +20,7 @@ import { contentSettings } from "@/config/server-config";
 
 
 export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, formatCadastre}: {visibleColumns: string[], showCadastre: boolean, joinWithSlash: (adm: string|string[]) => string, formatCadastre: (cadastre: string) => string}) {
-    const dataset = useDataset()
+    const perspective = usePerspective()
     const { searchQueryString } = useSearchQuery()
     const router = useRouter()
 
@@ -34,7 +34,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
             fields.push('cadastre');
         }
         // Add fields from facet config
-        facetConfig[dataset]?.filter(item => item.key && visibleColumns.includes(item.key))
+        facetConfig[perspective]?.filter(item => item.key && visibleColumns.includes(item.key))
             ?.forEach(facet => {
                 if (facet.key.includes("__")) {
                     fields.push(facet.key.split("__")[0]);
@@ -50,7 +50,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
         const blob = new Blob([jsonContent], { type: 'application/json' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `${dataset}_export.json`;
+        link.download = `${perspective}_export.json`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -66,7 +66,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
             fields.push('cadastre');
         }
         // Add fields from facet config
-        facetConfig[dataset]?.filter(item => item.key && visibleColumns.includes(item.key))
+        facetConfig[perspective]?.filter(item => item.key && visibleColumns.includes(item.key))
             ?.forEach(facet => {
                 if (facet.key.includes("__")) {
                     fields.push(facet.key.split("__")[0]);
@@ -104,7 +104,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
                     }
 
                     // Add facet fields if visible
-                    facetConfig[dataset]?.filter(item => item.key && visibleColumns.includes(item.key))
+                    facetConfig[perspective]?.filter(item => item.key && visibleColumns.includes(item.key))
                         ?.forEach((facet: any) => {
                             if (facet.key.includes("__")) {
                                 const [baseKey, subKey] = facet.key.split("__");
@@ -131,7 +131,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
         const blob = new Blob([geoJsonContent], { type: 'application/geo+json' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `${dataset}_export.geojson`;
+        link.download = `${perspective}_export.geojson`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -147,7 +147,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
             fields.push('cadastre');
         }
         // Add fields from facet config
-        facetConfig[dataset]?.filter(item => item.key && visibleColumns.includes(item.key))
+        facetConfig[perspective]?.filter(item => item.key && visibleColumns.includes(item.key))
             ?.forEach(facet => {
                 if (facet.key.includes("__")) {
                     fields.push(facet.key.split("__")[0]);
@@ -167,7 +167,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
         const headers = ['Oppslagsord'];
         if (visibleColumns.includes('adm')) headers.push('Område');
         if (showCadastre && visibleColumns.includes('cadastre')) headers.push('Matrikkel');
-        facetConfig[dataset]?.filter(item => item.key && visibleColumns.includes(item.key))
+        facetConfig[perspective]?.filter(item => item.key && visibleColumns.includes(item.key))
             ?.forEach(facet => headers.push(facet?.label || ''));
 
         // Prepare CSV rows
@@ -182,7 +182,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
             if (showCadastre && visibleColumns.includes('cadastre')) {
                 row.push(hit.fields.cadastre ? formatCadastre(hit.fields.cadastre[0]) : '');
             }
-            facetConfig[dataset]?.filter(item => item.key && visibleColumns.includes(item.key))
+            facetConfig[perspective]?.filter(item => item.key && visibleColumns.includes(item.key))
                 ?.forEach((facet: any) => {
                     if (facet.key.includes("__")) {
                         const [baseKey, subKey] = facet.key.split("__");
@@ -211,7 +211,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `${dataset}_export.csv`;
+        link.download = `${perspective}_export.csv`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -252,7 +252,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
                     >
                         JSON
                     </AlertDialogAction>
-                    {contentSettings[dataset]?.display === 'map' && <AlertDialogAction 
+                    {contentSettings[perspective]?.display === 'map' && <AlertDialogAction 
                         className="btn btn-outline"
                         onClick={handleGeoJsonDownload}
                     >
@@ -262,7 +262,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
                    
                     <AlertDialogAction 
                         className="btn btn-outline"
-                        onClick={() => router.push(`https://git.app.uib.no/spraksamlingane/stadnamn/datasett/stadnamn-archive/-/raw/main/lfs-data/elastic/${dataset}_elastic.json?ref_type=heads&inline=false`)}
+                        onClick={() => router.push(`https://git.app.uib.no/spraksamlingane/stadnamn/datasett/stadnamn-archive/-/raw/main/lfs-data/elastic/${perspective}_elastic.json?ref_type=heads&inline=false`)}
                     >
                         JSON (heile datasettet)
                     </AlertDialogAction>

@@ -4,21 +4,18 @@ import { PiBookOpen, PiDatabase, PiFunnel, PiListBullets, PiTreeViewFill } from 
 import Results from "./nav/results/search-results";
 import MapExplorer from "./map-explorer";
 import { useQueryState } from "nuqs";
-import { useDataset, useSearchQuery, useMode } from "@/lib/search-params";
+import { usePerspective, useSearchQuery, useMode } from "@/lib/search-params";
 import StatusSection from "./status-section";
 import { SearchContext } from "@/app/search-provider";
-import CadastralSubdivisions from "../children/cadastral-subdivisions";
 import TreeResults from "./nav/results/tree-results";
 import DatasetDrawer from "./datasets/dataset-drawer";
 import TableExplorer from "./table/table-explorer";
 import { treeSettings } from "@/config/server-config";
 import { useSearchParams } from "next/navigation";
 import ListExplorer from "./list/list-explorer";
-import { ChildrenContext } from "@/app/children-provider";
 import { DocContext } from "@/app/doc-provider";
 import DocInfo from "./details/doc/doc-info";
 import DocSkeleton from "../doc/doc-skeleton";
-import ChildrenWindow from "../children/children-window";
 import FacetSection from "./nav/facets/facet-section";
 import ActiveFilters from "./form/active-filters";
 import { formatNumber } from "@/lib/utils";
@@ -41,10 +38,8 @@ export default function MobileLayout() {
     const { totalHits, isLoading } = useContext(SearchContext)
     const [facetIsLoading, setFacetIsLoading] = useState(false)
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
-    const dataset = useDataset()
+    const perspective = usePerspective()
     const mode = useMode()
-    const parent = searchParams.get('parent')
-    const { childrenData } = useContext(ChildrenContext)
     const { docLoading } = useContext(DocContext)
 
 
@@ -223,8 +218,7 @@ export default function MobileLayout() {
             <div className={`h-full bg-white flex flex-col mobile-padding rounded-lg shadow-inner border-4 border-neutral-900 shadow-inner max-h-[calc(100svh-12rem)] overscroll-contain pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             {drawerContent == 'info' && <>
-            {doc && doc != parent && mode != 'doc' && (docLoading ? <DocSkeleton/> : <DocInfo/>)}
-            {parent && doc == parent && <ChildrenWindow/>}
+            {doc && mode != 'doc' && (docLoading ? <DocSkeleton/> : <DocInfo/>)}
             </>}
             { drawerContent == 'results' && 
                 <section className="flex flex-col gap-2">
@@ -247,9 +241,9 @@ export default function MobileLayout() {
                 </>
                 
             }
-            { drawerContent == 'cadastre' && 
+            { /* drawerContent == 'cadastre' && 
                 <CadastralSubdivisions dataset={dataset} doc={doc} childrenData={childrenData} landingPage={false}/>
-            }
+             */}
             { drawerContent == 'tree' &&
                 <TreeResults/>
             }
@@ -267,7 +261,7 @@ export default function MobileLayout() {
                                 aria-current={drawerContent == 'results' ? 'page' : 'false'} 
                                 className="toolbar-button">
                                     <PiListBullets className="text-3xl"/><span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits && formatNumber(totalHits.value)}</span></button>}
-                    {treeSettings[dataset] && <button aria-label='Register' onClick={() => swtichTab('tree')} aria-current={drawerContent == 'tree' ? 'page' : 'false'} className="toolbar-button"><PiTreeViewFill className="text-3xl"/></button>}
+                    {treeSettings[perspective] && <button aria-label='Register' onClick={() => swtichTab('tree')} aria-current={drawerContent == 'tree' ? 'page' : 'false'} className="toolbar-button"><PiTreeViewFill className="text-3xl"/></button>}
 
                     {doc && <button aria-label="Oppslag" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiBookOpen className="text-3xl"/></button>}
                     { <button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'}  className="toolbar-button"><PiFunnel className="text-3xl"/>

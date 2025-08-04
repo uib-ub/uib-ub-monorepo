@@ -13,10 +13,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { parseAsArrayOf, parseAsFloat, parseAsInteger, useQueryState } from "nuqs";
-import { useDataset, useSearchQuery } from "@/lib/search-params";
+import { usePerspective, useSearchQuery } from "@/lib/search-params";
 import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 import { DocContext } from "@/app/doc-provider";
-import { ChildrenContext } from "@/app/children-provider";
 import { useSearchParams } from "next/navigation";
 import { xDistance, yDistance, getValidDegree } from "@/lib/map-utils";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
@@ -37,8 +36,7 @@ export default function MapExplorer() {
   const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
   const [viewResults, setViewResults] = useState<any>(null)
   const { searchQueryString } = useSearchQuery()
-  const dataset = useDataset()
-  const { childrenMarkers, childrenLoading, childrenBounds } = useContext(ChildrenContext)
+  const perspective = usePerspective()
   const programmaticChange = useRef(false)
   const searchParams = useSearchParams()
   const details = searchParams.get('details') || 'doc'
@@ -193,34 +191,22 @@ export default function MapExplorer() {
       }
       );
 
-  }, [ markerBounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, dataset, isLoading, autoMode, labelClusters, setCoordinatesError]);
+  }, [ markerBounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, perspective, isLoading, autoMode, labelClusters, setCoordinatesError]);
 
 
 // Fly to results, doc or children
 useEffect(() => {
-  if (!mapInstance.current || isLoading || parentLoading || childrenLoading) return
+  if (!mapInstance.current || isLoading ) return
   
-    if (doc && !parent && docData?._source?.location?.coordinates?.length && (docData?._source.uuid == doc || docData._source.children?.includes(doc))) {
+    if (doc && docData?._source?.location?.coordinates?.length && docData?._source.uuid == doc) {
       const currentBounds = mapInstance.current.getBounds();
       const center = [docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]
         if (currentBounds && !currentBounds.contains(center)) {
-          console.log("FLY 1")
           mapInstance.current.setView(center, mapInstance.current.getZoom());
         }
     }
-    else if (childrenBounds?.length) {
-      
-      console.log("FLY 2")
-      
-      const currentBounds = mapInstance.current.getBounds();
-      const [[lat1, lon1], [lat2, lon2]] = childrenBounds;
-      
-      if (!currentBounds.contains([[lat1, lon1], [lat2, lon2]])) {
-        mapInstance.current.flyToBounds(childrenBounds, { duration: 0.25, maxZoom: 18 });
-      }
-    }
 
-  }, [mapInstance, isLoading, setCenter, parentLoading, childrenLoading, childrenBounds, parent, doc, docData])
+  }, [mapInstance, isLoading, setCenter, doc, docData])
 
 
   // When resultBounds changes
@@ -240,10 +226,10 @@ useEffect(() => {
       const storedSettings = localStorage.getItem('mapSettings')
       const settings = storedSettings ? JSON.parse(storedSettings) : {}
       
-      if (settings[dataset]?.baseMap && baseMapKeys.includes(settings[dataset].baseMap)) {
-        setBasemap(settings[dataset].baseMap)
+      if (settings[perspective]?.baseMap && baseMapKeys.includes(settings[perspective].baseMap)) {
+        setBasemap(settings[perspective].baseMap)
       } else {
-        setBasemap(defaultBaseMap[dataset] || baseMaps[0].key)
+        setBasemap(defaultBaseMap[perspective] || baseMaps[0].key)
         // Remove old format if it exists
         localStorage.removeItem('baseMap')
       }
@@ -251,14 +237,14 @@ useEffect(() => {
       const storedSettings = localStorage.getItem('mapSettings')
       const settings = storedSettings ? JSON.parse(storedSettings) : {}
       
-      settings[dataset] = {
-        ...settings[dataset],
+      settings[perspective] = {
+        ...settings[perspective],
         baseMap: baseMap
       }
       
       localStorage.setItem('mapSettings', JSON.stringify(settings))
     }
-  }, [baseMap, dataset])
+  }, [baseMap, perspective])
 
   useEffect(() => { 
     if (markerMode === null) {
@@ -642,13 +628,7 @@ useEffect(() => {
 
                   return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }, currentIndex: number) => {
                     
-                    let icon
-                    if (dataset != 'search' || hit.fields?.children?.length && hit.fields.children.length > 1) {
-                      icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black', undefined, false, (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false))
-                    }
-                    else {
-                      icon = new leaflet.DivIcon(getUnlabeledMarker('black', false))
-                    }
+                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black', undefined, false, (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false))
                     
 
                   
@@ -702,22 +682,6 @@ useEffect(() => {
                 }
               }
               )}
-
-              {parent && childrenMarkers?.map((group: { label: string, uuid: string, lat: number; lon: number; children: any[]; }) => {
-                let icon
-                if (group.children.length > 1) {
-                  icon = new leaflet.DivIcon(getClusterMarker(group.children.length, 
-                    calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5 + (group.children.length > 99 ? group.children.length.toString().length / 4 : 0),
-                    calculateRadius(group.children.length, maxDocCount, minDocCount) * 2.5,
-                    calculateRadius(group.children.length, maxDocCount, minDocCount) * 1,
-                    'bg-primary-600 text-white border-2 border-white'))
-                }
-                else {
-                  icon = new leaflet.DivIcon(getUnlabeledMarker('primary', false))
-                }
-
-                return <Marker key={group.uuid} position={[group.lat, group.lon]} icon={icon} riseOnHover={true} eventHandlers={selectDocHandler(group.children[0], group.children)} />
-              })}
 
               {docData?._source?.area && (
                 <Fragment>

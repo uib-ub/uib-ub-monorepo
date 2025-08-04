@@ -3,22 +3,22 @@ import { PiBookOpen, PiBookOpenFill, PiBookOpenLight, PiBookOpenThin, PiMapTrifo
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { useContext } from "react";
 import { GlobalContext } from "@/app/global-provider";
-import { useDataset, useMode } from "@/lib/search-params";
+import { usePerspective, useMode } from "@/lib/search-params";
 import { contentSettings } from "@/config/server-config";
 import { DocContext } from "@/app/doc-provider";
 
 export default function ModeSelector() {
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
-    const dataset = useDataset()
+    const perspective = usePerspective()
     const mode = useMode()
     const { setPreferredTab, isMobile } = useContext(GlobalContext)
     const {docDataset} = useContext(DocContext)
 
     return <div className={`inline-flex ${mode == 'map' ? 'rounded-br-md lg:rounded-md shadow-lg bg-white' : ''} ${isMobile ? 'pl-2 pt-2 pr-1 pb-1' : ' p-2 gap-1'}`} role="tablist">
-            {contentSettings[dataset]?.display == 'map' && <ClickableIcon aria-selected={mode == 'map' ? true : false}
+            {contentSettings[perspective]?.display == 'map' && <ClickableIcon aria-selected={mode == 'map' ? true : false}
                       onClick={() => {
-                        setPreferredTab(dataset, 'map')
+                        setPreferredTab(perspective, 'map')
                       }}
                       role="tab"
                       label="Kart"
@@ -30,7 +30,7 @@ export default function ModeSelector() {
 
             <ClickableIcon add={{mode: 'table', nav: searchParams.get('nav') == 'results' ? 'filters' : searchParams.get('nav')}} 
                         onClick={() => {
-                            setPreferredTab(dataset, 'table')
+                            setPreferredTab(perspective, 'table')
                         }}
                         role="tab"
                         label="Tabell"
@@ -41,7 +41,7 @@ export default function ModeSelector() {
 
             <ClickableIcon add={{mode: 'list', nav: searchParams.get('nav') == 'results' ? 'filters' : searchParams.get('nav')}} 
                         onClick={() => {
-                            setPreferredTab(dataset, 'list')
+                            setPreferredTab(perspective, 'list')
                         }}
                         role="tab"
                         label="Liste"

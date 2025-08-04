@@ -1,6 +1,6 @@
 'use client'
 import { facetConfig } from '@/config/search-config';
-import { useDataset } from '@/lib/search-params';
+import { usePerspective } from '@/lib/search-params';
 import { createContext, useEffect, useState } from 'react'
 
 interface FacetOption {
@@ -25,7 +25,7 @@ export const GlobalContext = createContext({
 export default function GlobalProvider({ children, isMobile, sosiVocab, coordinateVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any>, coordinateVocab: Record<string, any> }) {
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
   const [facetOptions, setFacetOptions] = useState<Record<string, Record<string, Partial<FacetOption>>>>({});
-  const dataset = useDataset()
+  const perspective = usePerspective()
   const [allowFlyTo, setAllowFlyTo] = useState(false);
   const [preferredTabs, setPreferredTabs] = useState<Record<string, string>>({});
 
@@ -57,11 +57,11 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   const updateFacetOption = (facetName: string, options: Partial<FacetOption>) => {
     setFacetOptions(prev => ({
       ...prev,
-      [dataset]: {
-        ...prev[dataset] || {},
+      [perspective]: {
+        ...prev[perspective] || {},
         [facetName]: {
-          ...(prev[dataset]?.[facetName] || { 
-            sort: facetConfig[dataset].find(item => item.key == facetName)?.sort || 'doc_count', 
+          ...(prev[perspective]?.[facetName] || { 
+            sort: facetConfig[perspective].find(item => item.key == facetName)?.sort || 'doc_count', 
             pinningActive: false,
           }),
           ...options
@@ -70,10 +70,10 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
     }));
   };
 
-  const setPreferredTab = (dataset: string, tab: string) => {
+  const setPreferredTab = (perspective: string, tab: string) => {
     setPreferredTabs(prev => ({
       ...prev,
-      [dataset]: tab
+      [perspective]: tab
     }));
   };
 

@@ -1,7 +1,7 @@
 'use client'
 import { createContext, useContext } from 'react'
 import { useState, useEffect } from 'react';
-import { useDataset, useSearchQuery } from '@/lib/search-params';
+import { usePerspective, useSearchQuery } from '@/lib/search-params';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { GlobalContext } from './global-provider';
@@ -40,10 +40,10 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [coordinatesError, setCoordinatesError] = useState(false)
     
     const searchParams = useSearchParams()
-    const dataset = useDataset()
+    const perspective = usePerspective()
     const { setCurrentUrl, isMobile, preferredTabs } = useContext(GlobalContext)
     const mode = useMode()
-    const useTableData = mode != 'map' && preferredTabs[dataset] != 'map'
+    const useTableData = mode != 'map' && preferredTabs[perspective] != 'map'
     
 
     const [resultBounds, setResultBounds] = useState<[[number, number], [number, number]] | null>(null)

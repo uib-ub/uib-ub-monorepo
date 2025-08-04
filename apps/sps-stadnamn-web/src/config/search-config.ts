@@ -50,12 +50,13 @@ const image = {"image.manifest": {label: "Seddel", result}}
 const html = {"content.html": {label: "Tekstinnhald", fulltext}}
 const text = {"content.text": {label: "Tekstinnhald", fulltext}}
 const boost = {numeric}
+const indexDataset = {label: "Datasett"}
 
 const labelDefaults = {
   "altLabels": {label: "Andre namn", table, facet, result},
   "attestations": {label: "Kjeldeformer", table, result},
 }
-const required = {uuid, boost, label}
+const required = {uuid, boost, label, indexDataset}
 
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     search: {

@@ -5,7 +5,7 @@ import { postQuery } from '../_utils/post';
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
   const { termFilters, reservedParams } = extractFacets(request)
-  const dataset = params.dataset// == 'search' ? '*' : params.dataset;
+  const perspective = params.perspective || 'all'// == 'search' ? '*' : params.dataset;
   const facets = params.facets?.split(',')
   const { simple_query_string } = getQueryString(reservedParams)
 
@@ -69,7 +69,7 @@ export async function GET(request: Request) {
     }
   }
 
-  const [data, status] = await postQuery(dataset, query)
+  const [data, status] = await postQuery(perspective, query)
 
   return Response.json(data, { status: status })
 }

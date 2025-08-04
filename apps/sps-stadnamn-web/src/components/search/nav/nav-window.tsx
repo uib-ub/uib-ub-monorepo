@@ -1,25 +1,22 @@
 import { contentSettings, treeSettings } from "@/config/server-config";
-import { useDataset, useMode, useSearchQuery } from "@/lib/search-params";
-import { PiCaretLeft, PiCaretUp, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiFunnelFill, PiFunnelLight, PiInfo, PiInfoBold, PiInfoDuotone, PiInfoFill, PiInfoLight, PiListBullets, PiMapPinArea, PiMapPinAreaFill, PiMapPinAreaLight, PiTreeView, PiTreeViewFill, PiTreeViewLight, PiX, PiList } from "react-icons/pi";
+import { usePerspective, useMode, useSearchQuery } from "@/lib/search-params";
+import { PiDatabaseFill, PiDatabaseLight, PiFunnelFill, PiFunnelLight, PiMapPinAreaFill, PiMapPinAreaLight, PiTreeViewFill, PiTreeViewLight, PiX } from "react-icons/pi";
 import { SearchContext } from "@/app/search-provider";
-import { useContext, useState, useEffect, useTransition } from "react";
+import { useContext, useTransition } from "react";
 import TreeResults from "./results/tree-results";
 import FacetSection from "./facets/facet-section";
 import SearchResults from "./results/search-results";
 import { useSearchParams, useRouter } from "next/navigation";
 import ClientFacet from "./facets/client-facet";
-import IconButton from "../../ui/icon-button";
-import DatasetInfo from "../details/dataset-info";
 import Spinner from "../../svg/Spinner";
 import { formatNumber } from "@/lib/utils";
 import DatasetFacet from "./facets/dataset-facet";
 import ClickableIcon from "../../ui/clickable/clickable-icon";
-import Link from "next/link";
 import Clickable from "../../ui/clickable/clickable";
 import WikiAdmFacet from "./facets/wikiAdm-facet";
 
 export default function NavWindow() {
-    const dataset = useDataset()
+    const perspective = usePerspective()
     const { totalHits, isLoading } = useContext(SearchContext)
     const { searchFilterParamsString } = useSearchQuery()
     const searchParams = useSearchParams()
@@ -27,11 +24,10 @@ export default function NavWindow() {
     const nav = searchParams.get('nav')
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
-    const doc = searchParams.get('doc')
 
     return <><div className={`flex overflow-x-auto rounded-md ${(nav || mode == 'map') ? 'gap-1 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
 
-                {treeSettings[dataset] ? <ClickableIcon
+                {treeSettings[perspective] ? <ClickableIcon
                       label="Hierarki"
                       add={nav !== 'tree' ? {nav: 'tree'} : {}}
                       remove={nav === 'tree' ? ["nav"] : []}
@@ -51,7 +47,7 @@ export default function NavWindow() {
                         {nav == 'datasets' ? <PiDatabaseFill className="text-3xl text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
                 </ClickableIcon>
 
-                {contentSettings[dataset].adm ? <ClickableIcon
+                {contentSettings[perspective].adm ? <ClickableIcon
                       label="Områdeinndeling"
                       add={nav !== 'adm' ? {nav: 'adm'} : {}}
                       remove={nav === 'adm' ? ["nav"] : []}
@@ -111,7 +107,7 @@ export default function NavWindow() {
                 <FacetSection/>
         }
         {
-            (nav == 'adm' || nav == 'wikiAdm') && contentSettings[dataset].adm &&
+            (nav == 'adm' || nav == 'wikiAdm') && contentSettings[perspective].adm &&
             <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between pl-2 border-b border-neutral-200 pb-2">
                     <h2 className="text-xl">
@@ -150,9 +146,6 @@ export default function NavWindow() {
         }
         { searchFilterParamsString && nav == 'results' &&
             <SearchResults/>
-        }
-        { nav == 'datasetInfo' &&     
-            <DatasetInfo/>  
         }
         
         </div>

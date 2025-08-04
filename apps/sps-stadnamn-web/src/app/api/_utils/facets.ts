@@ -5,7 +5,7 @@ import { base64UrlToString } from "@/lib/utils";
 export const RESERVED_PARAMS = [
   'q',
   'display',
-  'dataset',
+  'perspective',
   'page',
   'asc',
   'desc',
