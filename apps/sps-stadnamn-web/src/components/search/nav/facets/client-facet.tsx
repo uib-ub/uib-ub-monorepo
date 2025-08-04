@@ -17,7 +17,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const searchParams = useSearchParams()
   const [facetIsLoading, setFacetIsLoading] = useState<boolean>(true);
-  const {facetOptions, updatePinnedFilters } = useContext(GlobalContext)
+  const {facetOptions } = useContext(GlobalContext)
   const currentFacet = searchParams.get('facet') || 'adm'
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
@@ -86,10 +86,6 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     else if (chosenPath.length > 1 && !hasSibling) { // add parent if no siblings checked
       newParams.push([paramName, chosenPath.slice(1).join('__')])
     }
-
-    // Update pinned filters
-    updatePinnedFilters(newParams.filter(item => facetOptions[dataset]?.[item[0]]?.pinningActive))
-
 
 
     router.push(`?${new URLSearchParams(newParams).toString()}`)

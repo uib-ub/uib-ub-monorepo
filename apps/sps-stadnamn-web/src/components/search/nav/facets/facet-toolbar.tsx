@@ -8,7 +8,7 @@ import { PiFunnelSimple, PiPushPin, PiPushPinSlash, PiSortDescending, PiSortAsce
 
 export default function FacetToolbar() {
     const dataset = useDataset()
-    const {facetOptions, updateFacetOption, updatePinnedFilters } = useContext(GlobalContext)
+    const {facetOptions, updateFacetOption } = useContext(GlobalContext)
     const searchParams = useSearchParams()
     const facet = searchParams.get('facet') || 'adm'
     const {facetFilters} = useSearchQuery()
@@ -33,13 +33,6 @@ export default function FacetToolbar() {
             }
 
 
-        <IconButton className="text-xl btn btn-outline btn-compact h-full px-2" label={pinned ? "Ikke behold filtrering" : "Behold til senere"} onClick={() => {
-            updateFacetOption(currentFacet, {pinningActive: !pinned})
-            updatePinnedFilters(facetFilters.filter(item => pinned ? item[0] != currentFacet : true))
-
-        }}>
-            {pinned ? <PiPushPinSlash/> : <PiPushPin/>}
-        </IconButton>
         <IconButton className="text-xl btn btn-outline btn-compact h-full px-2" label="Nullstill filter" onClick={() => {
 
             router.push(`?${new URLSearchParams(Array.from(searchParams.entries()).filter(([key, value]) => key != currentFacet))}`)

@@ -39,7 +39,6 @@ export default function DatasetFacet() {
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
   const [deepCollectionExpanded, setDeepCollectionExpanded] = useState(false);
-  const {facetOptions, pinnedFilters, updatePinnedFilters } = useContext(GlobalContext)
   const availableFacets = useMemo(() => facetConfig[dataset], [dataset]);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
   const paramsExceptFacet = removeFilterParams('indexDataset') || searchParams.toString()
@@ -94,12 +93,6 @@ export default function DatasetFacet() {
         params.append(facet, datasetId);
 
     }
-
-    if (facetOptions[dataset]?.[facet]?.pinningActive) {
-      updatePinnedFilters(beingChecked ? [...pinnedFilters[dataset], [facet, value]] 
-          : pinnedFilters[dataset]?.filter(([k, v]) => (k == facet && v == value) ? false : true))
-    }
-
     router.push(`?${params.toString()}`, { scroll: false });
   };
     

@@ -13,9 +13,7 @@ export const GlobalContext = createContext({
   setCurrentUrl: (url: string | null) => {},
   isMobile: false,
   facetOptions: {} as Record<string, Record<string, Partial<FacetOption>>>,
-  pinnedFilters: {} as Record<string, [string, string][]>,
   updateFacetOption: (facetName: string, options: Partial<FacetOption>) => {},
-  updatePinnedFilters: (filters: [string, string][]) => {},
   coordinateVocab: {} as Record<string, any>,
   sosiVocab: {} as Record<string, any>,
   allowFlyTo: false,
@@ -27,7 +25,6 @@ export const GlobalContext = createContext({
 export default function GlobalProvider({ children, isMobile, sosiVocab, coordinateVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any>, coordinateVocab: Record<string, any> }) {
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
   const [facetOptions, setFacetOptions] = useState<Record<string, Record<string, Partial<FacetOption>>>>({});
-  const [pinnedFilters, setPinnedFilters] = useState<Record<string, [string, string][]>>({});
   const dataset = useDataset()
   const [allowFlyTo, setAllowFlyTo] = useState(false);
   const [preferredTabs, setPreferredTabs] = useState<Record<string, string>>({});
@@ -38,12 +35,6 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
     if (storedOptions) {
         console.log("Loading facet options from localStorage")
       setFacetOptions(JSON.parse(storedOptions));
-    }
-
-    const storedPinnedFilters = localStorage.getItem('pinnedFilters');
-    if (storedPinnedFilters) {
-        console.log("Loading pinned filters from localStorage")
-        setPinnedFilters(JSON.parse(storedPinnedFilters));
     }
 
     const storedPreferredTabs = localStorage.getItem('preferredTabs');
@@ -58,9 +49,6 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
     localStorage.setItem('facetOptions', JSON.stringify(facetOptions));
   }, [facetOptions]);
 
-  useEffect(() => {
-    localStorage.setItem('pinnedFilters', JSON.stringify(pinnedFilters));
-  }, [pinnedFilters]);
 
   useEffect(() => {
     localStorage.setItem('preferredTabs', JSON.stringify(preferredTabs));
@@ -82,13 +70,6 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
     }));
   };
 
-  const updatePinnedFilters = (filters: [string, string][]) => {
-    setPinnedFilters(prev => ({
-      ...prev,
-      [dataset]: filters
-    }));
-  };
-
   const setPreferredTab = (dataset: string, tab: string) => {
     setPreferredTabs(prev => ({
       ...prev,
@@ -104,8 +85,6 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
         isMobile,
         facetOptions,
         updateFacetOption,
-        pinnedFilters,
-        updatePinnedFilters,
         sosiVocab,
         coordinateVocab,
         allowFlyTo,

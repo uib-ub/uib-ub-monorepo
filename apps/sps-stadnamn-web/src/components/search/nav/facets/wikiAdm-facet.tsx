@@ -16,7 +16,6 @@ export default function WikiAdmFacet() {
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const searchParams = useSearchParams()
   const [facetIsLoading, setFacetIsLoading] = useState<boolean>(true);
-  const { facetOptions, updatePinnedFilters, pinnedFilters } = useContext(GlobalContext)
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -94,17 +93,6 @@ export default function WikiAdmFacet() {
           .filter(value => value !== valueToToggle)
           .forEach(value => params.append('wikiAdm', value));
       }
-    }
-
-    if (facetOptions[dataset]?.wikiAdm?.pinningActive) {
-      updatePinnedFilters(beingChecked 
-        ? [...pinnedFilters[dataset], ['wikiAdm', adm1Value 
-            ? (adm2Value ? `${wikiId}_${adm1Value}_${adm2Value}` : `${wikiId}_${adm1Value}`)
-            : wikiId]]
-        : pinnedFilters[dataset]?.filter(([k, v]) => (k === 'wikiAdm' && v === (adm1Value 
-            ? (adm2Value ? `${wikiId}_${adm1Value}_${adm2Value}` : `${wikiId}_${adm1Value}`)
-            : wikiId)) ? false : true)
-      );
     }
 
     router.push(`?${params.toString()}`, { scroll: false });

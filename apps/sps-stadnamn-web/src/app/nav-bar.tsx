@@ -4,8 +4,6 @@ import { GlobalContext } from "./global-provider";
 import { useContext } from "react";
 import { useDataset } from "@/lib/search-params";
 export default function NavBar({ handleBlur, ...props }: any) {
-    const { pinnedFilters } = useContext(GlobalContext)
-    const dataset = useDataset()
     return (
         <nav id="top " {...props}>
             <Link onBlur={handleBlur} scroll={false} className="py-3 mx-3 lg:py-1 lg:px-2 lg:mx-0 xl:hidden" href="/">Til forsiden</Link>

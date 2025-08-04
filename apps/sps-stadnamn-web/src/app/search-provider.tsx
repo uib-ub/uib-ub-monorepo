@@ -41,7 +41,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     
     const searchParams = useSearchParams()
     const dataset = useDataset()
-    const { setCurrentUrl, isMobile, pinnedFilters, preferredTabs } = useContext(GlobalContext)
+    const { setCurrentUrl, isMobile, preferredTabs } = useContext(GlobalContext)
     const mode = useMode()
     const useTableData = mode != 'map' && preferredTabs[dataset] != 'map'
     
@@ -61,17 +61,6 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
 
     
     const searchParamsString = searchParams.toString()
-
-    useEffect(() => {
-        
-        if (pinnedFilters[dataset]?.length > 0 && !searchFilterParamsString) {
-            const newParams = new URLSearchParams(searchParams)
-            const pinnedParams = new URLSearchParams(pinnedFilters[dataset])
-            router.replace(`?${newParams.toString()}${newParams.toString() ? '&' : ''}${pinnedParams.toString()}`, { scroll: false })
-        }
-    }, [dataset, pinnedFilters, searchFilterParamsString, router, searchParams]);
-
-
     
     useEffect(() => {
         setCurrentUrl("/search?" + searchParamsString)
