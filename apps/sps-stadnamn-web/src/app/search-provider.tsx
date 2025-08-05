@@ -57,7 +57,6 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const desc = searchParams.get('desc')
     const page = useQueryState('page', parseAsInteger.withDefault(1))[0]
     const perPage = useQueryState('perPage', parseAsInteger.withDefault(10))[0]
-    const router = useRouter()
 
     
     const searchParamsString = searchParams.toString()
