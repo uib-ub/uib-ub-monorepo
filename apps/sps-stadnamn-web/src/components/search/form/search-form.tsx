@@ -62,8 +62,6 @@ export default function SearchForm() {
             <Form ref={form} action="/search" className="flex w-full h-full" onSubmit={() => setAllowFlyTo(true)}>
 
             <div className='flex w-full pr-1 bg-white focus-within:border-b-2 focus-within:border-primary-600 xl:border-none xl:outline xl:outline-1 xl:outline-neutral-300 xl:focus-within:border-neutral-200 xl:rounded-md xl:m-1 items-center relative group focus-within:xl:outline-2 focus-within:xl:outline-neutral-600'>
-            {isMobile && <Clickable only={{zoom: searchParams.get('zoom'), center: searchParams.get('center')}} aria-hidden="true" className="flex no-underline max-w-[50%] text-sm flex-nowrap items-center gap-1 bg-accent-700 text-white rounded-md px-2 py-1 whitespace-nowrap"><span className="truncate">{datasetTitles[perspective]}</span><PiX className="text-xs" aria-hidden="true"/></Clickable>
-            }
             <label htmlFor="search-input" className="sr-only">Søk</label>
             <input 
                 id="search-input"

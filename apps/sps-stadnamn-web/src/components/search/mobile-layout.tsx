@@ -19,6 +19,7 @@ import DocSkeleton from "../doc/doc-skeleton";
 import FacetSection from "./nav/facets/facet-section";
 import ActiveFilters from "./form/active-filters";
 import { formatNumber } from "@/lib/utils";
+import DatasetFacet from "./nav/facets/dataset-facet";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -227,7 +228,15 @@ export default function MobileLayout() {
                 </section>
             
              }
-            { (drawerContent == 'datasets' || drawerContent == 'datasetInfo') && <DatasetDrawer/> }
+            { (drawerContent == 'datasets' || drawerContent == 'datasetInfo') &&
+            <>
+            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide pb-2 flex items-center gap-1">Datasett</h2>
+            <DatasetFacet/> 
+
+            </>
+            
+            
+            }
             { (drawerContent == 'filters' || drawerContent == 'adm') && 
                 <>
                 <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">Filter {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
@@ -255,18 +264,27 @@ export default function MobileLayout() {
 </div>
             
             <div className="fixed bottom-0 left-0 bg-neutral-900 text-white w-full h-12 p-1 flex items-center justify-between">
+            <button aria-label="Datasett" onClick={() => swtichTab('datasets')} aria-current={(drawerContent &&["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'} className="toolbar-button"><PiDatabase className="text-3xl"/></button>
+                   
+                    {treeSettings[perspective] && <button aria-label='Register' onClick={() => swtichTab('tree')} aria-current={drawerContent == 'tree' ? 'page' : 'false'} className="toolbar-button"><PiTreeViewFill className="text-3xl"/></button>}
+
+                    
+                    { <button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'}  className="toolbar-button relative">
+                        <PiFunnel className="text-3xl"/>
+                        {facetFilters.length > 0 && <span className="results-badge bg-primary-500 absolute top-0 right-2 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}
+                    </button>}
+
                     {mode == 'map' && searchFilterParamsString &&  
                         <button aria-label='Søkeresultater' 
                                 onClick={() => swtichTab('results')} 
                                 aria-current={drawerContent == 'results' ? 'page' : 'false'} 
-                                className="toolbar-button">
-                                    <PiListBullets className="text-3xl"/><span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits && formatNumber(totalHits.value)}</span></button>}
-                    {treeSettings[perspective] && <button aria-label='Register' onClick={() => swtichTab('tree')} aria-current={drawerContent == 'tree' ? 'page' : 'false'} className="toolbar-button"><PiTreeViewFill className="text-3xl"/></button>}
+                                className="toolbar-button relative">
+                                    <PiListBullets className="text-3xl"/>
+                                    <span className="results-badge bg-primary-500 absolute top-0 right-2 rounded-full px-1 text-white text-xs whitespace-nowrap">{totalHits && formatNumber(totalHits.value)}</span>
+                        </button>}
 
-                    {doc && <button aria-label="Oppslag" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiBookOpen className="text-3xl"/></button>}
-                    { <button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'}  className="toolbar-button"><PiFunnel className="text-3xl"/>
-                    {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</button>}
-                    <button aria-label="Datasett" onClick={() => swtichTab('datasets')} aria-current={(drawerContent &&["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'} className="toolbar-button"><PiDatabase className="text-3xl"/></button>
+                                    {doc && <button aria-label="Oppslag" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button"><PiBookOpen className="text-3xl"/></button>}
+                    
 
             </div>
             
