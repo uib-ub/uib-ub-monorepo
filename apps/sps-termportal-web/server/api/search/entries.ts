@@ -12,7 +12,6 @@ export default defineEventHandler(async (event) => {
     body: query,
     headers: {
       "Content-type": "application/sparql-query",
-      Referer: "termportalen.no", // TODO Referer problem
       Accept: "application/json",
       Authorization: `Basic ${instance.authHeader}`,
     },
