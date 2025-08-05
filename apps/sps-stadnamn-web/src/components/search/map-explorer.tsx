@@ -37,7 +37,6 @@ export default function MapExplorer() {
   const [viewResults, setViewResults] = useState<any>(null)
   const { searchQueryString } = useSearchQuery()
   const perspective = usePerspective()
-  const programmaticChange = useRef(false)
   const searchParams = useSearchParams()
   const details = searchParams.get('details') || 'doc'
   
@@ -50,7 +49,7 @@ export default function MapExplorer() {
   if (searchParams.get('error') == 'true') {
     throw new Error('Simulated client side error');
   }
-  const { docData, parentData, setSameMarkerList, docLoading, parentLoading, docView } = useContext(DocContext)
+  const { docData, parentData, setSameMarkerList, docLoading, parentLoading } = useContext(DocContext)
   
   const mapInstance = useRef<any>(null);
   const autoMode = markerMode === 'auto' ? (searchParams.get('q')?.length && totalHits?.value < 100000 ? 'cluster' : 'sample') : null
@@ -144,14 +143,22 @@ export default function MapExplorer() {
           const resultBoundsZoom = mapInstance.current.getBoundsZoom(resultBounds);
           const currentZoom = mapInstance.current.getZoom();
           
+          
           // If current zoom is more than 2 levels out from the result bounds zoom
           if (currentZoom < resultBoundsZoom - 2) {
             mapInstance.current?.fitBounds(resultBounds, { maxZoom: 18, padding: [50, 50] });
           }
+          else {
+            setZoom(currentZoom)
+            const mapCenter = mapInstance.current?.getCenter()
+            if (mapCenter) {
+              setCenter([mapCenter.lat, mapCenter.lng])
+            }
+          }
         }
       }
     }
-  }, [resultBounds, isLoading])
+  }, [resultBounds, isLoading, setZoom, setCenter])
 
 
 
@@ -213,9 +220,10 @@ export default function MapExplorer() {
        
       .then(data => {
         if (!data.hits.hits.length && resultBounds?.length && !isLoading && !zoom) {
-          mapInstance.current?.flyToBounds(resultBounds, { maxZoom: 18, padding: [50, 50] });
+          mapInstance.current?.fitBounds(resultBounds, { maxZoom: 18, padding: [50, 50] });
         }
         else {
+          console.log(data.hits.hits.length, resultBounds?.length, isLoading, zoom)
           setViewResults((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(data) : data)
         }
 
@@ -311,7 +319,7 @@ useEffect(() => {
     if (mapInstance.current) {
       mapInstance.current.zoomIn();
     } else {
-      programmaticChange.current = true
+
       setZoom(prev => (prev || 5) + 1);
     }
   };
@@ -320,7 +328,6 @@ useEffect(() => {
     if (mapInstance.current) {
       mapInstance.current.zoomOut();
     } else {
-      programmaticChange.current = true
       setZoom(prev => Math.max((prev || 5) - 1, 1));
       
     }
@@ -488,6 +495,7 @@ useEffect(() => {
                 controllerRef.current = new AbortController();
                 const bounds = map.getBounds();
                 const boundsCenter = bounds.getCenter();
+                console.log("MOVE END")
                 setCenter([boundsCenter.lat, boundsCenter.lng]);
                 setZoom(map.getZoom());
                 setMarkerBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
