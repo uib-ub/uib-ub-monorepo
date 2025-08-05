@@ -8,11 +8,16 @@ export default function Options() {
     const toggleFulltext = () => {
         setFulltext(prev => prev == 'on' ? 'off' : 'on');
     };
-    return true ? 
-        <DropdownMenu>
+    return <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                <button aria-label="Søk i" className="p-1 px-2 rounded-sm items-center flex h-full border-neutral-200">
-                <PiFaders className="text-2xl" aria-hidden="true"/></button>
+                <button aria-label="Søkealternativ" className="p-1 px-2 rounded-sm items-center flex h-full border-neutral-200">
+                    <span className="relative">
+                        <PiFaders className="text-2xl" aria-hidden="true"/>
+                        {fulltext === 'on' && (
+                            <div className="absolute -top-1 -right-1 w-[6px] h-[6px] bg-red-500 rounded-full" aria-hidden="true" />
+                        )}
+                    </span>
+                </button>
                     </DropdownMenuTrigger>
                 <DropdownMenuContent className="z-[4000] bg-white p-2 rounded-md shadow-md">
                   <DropdownMenuLabel className="font-semibold px-4 py-2">Søk i:</DropdownMenuLabel>
@@ -30,11 +35,6 @@ export default function Options() {
                   
                 </DropdownMenuContent>
         </DropdownMenu>
-        : 
-        <label className="flex items-center gap-2">
-                    <input type="checkbox" name="fulltext" checked={fulltext == 'on'} onChange={toggleFulltext}
-                    className="h-4 w-4"/>
-                    <span>Fulltekst</span>
-                </label> 
+
     
 }

@@ -22,13 +22,15 @@ function modifyQuery(query: string) {
 
 export function getQueryString(params: { [key: string]: string | null }) {
   const fulltext = params.fulltext == 'on'
+  const perspective = params.perspective || 'all'
+  console.log(fulltextFields["all"])
 
   const simple_query_string: any = params.q ? {
       query_string: {
       query: modifyQuery(params.q),
       allow_leading_wildcard: true,
       default_operator: params.fulltext ? 'AND' : 'OR',
-      fields: ["label^4", "altLabels^3", "attestations.label^2", ...fulltext && params.dataset ? fulltextFields[params.dataset].map(item => item.key) : []]
+      fields: ["label^4", "altLabels^3", "attestations.label^2", ...fulltext ? fulltextFields[perspective]?.map(item => item.key) : []]
     }} : null
 
 
@@ -46,7 +48,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
         "altLabels": {}, 
         "attestations.label": {},
         //...test,
-        ...(fulltext && params.dataset) ? Object.fromEntries(fulltextFields[params.dataset].map(item => ([item.key, {}]))): {}
+        ...fulltext ? Object.fromEntries(fulltextFields[perspective].map(item => ([item.key, {}]))): {}
     }
     } : null
 

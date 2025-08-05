@@ -44,6 +44,7 @@ export default function MobileLayout() {
     const { docLoading } = useContext(DocContext)
     const datasetCount = searchParams.getAll('indexDataset')?.length || 0
     const deepCollections = searchParams.get('boost_gt') == '3'
+    const fulltext = searchParams.get('fulltext')
 
 
 
@@ -242,7 +243,7 @@ export default function MobileLayout() {
             { (drawerContent == 'filters' || drawerContent == 'adm') && 
                 <>
                 <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">Filter {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
-                {facetFilters.length > 0 && <div className="flex flex-col">
+                {(facetFilters.length > 0 || fulltext == 'on') && <div className="flex flex-col">
                 
                 <div className="flex flex-wrap gap-2 py-2 border-b border-neutral-200">
                 <ActiveFilters showDatasets={false}/>

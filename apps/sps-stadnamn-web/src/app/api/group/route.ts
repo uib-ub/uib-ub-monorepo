@@ -38,6 +38,6 @@ export async function GET(request: Request) {
   
 
   const [data, status] = await postQuery('all', query);
-  console.log(data)
+  
   return Response.json(data, { status });
 }

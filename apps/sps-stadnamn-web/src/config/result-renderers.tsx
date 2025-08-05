@@ -30,11 +30,42 @@ function createMarkup(htmlString: string) {
 }
 
 const formatHighlight = (highlight: string) => {
-  // Remove inomplete html tags
-  const processedHighlight = highlight.replace(/<[^>]*$/, '').replace(/^[^<]*>/, '')
-
-  return <div dangerouslySetInnerHTML={createMarkup(processedHighlight)}></div>;
-}
+  // Clean up incomplete tags and remove unsupported tags, then process HTML entities
+  const cleanHighlight = highlight
+    .replace(/<[^>]*$/, '')  // Remove incomplete tags at end
+    .replace(/^[^<]*>/, '') // Remove incomplete tags at start
+    .replace(/<(?!\/?(?:mark|em|span)\b|span\s+class="font-phonetic")[^>]*>/g, ''); // Remove all tags except mark, em, and span with font-phonetic class
+    
+  const parts = createMarkup(cleanHighlight).__html.split(/(<\/?(?:mark|em|span)>|<span\s+class="font-phonetic">)/);
+  
+  let markOpen = false;
+  let emOpen = false;
+  let spanOpen = false;
+  
+  return (
+    <span>
+      {parts.map((part, i) => {
+        if (part === '<mark>') { markOpen = true; return null; }
+        if (part === '</mark>') { markOpen = false; return null; }
+        if (part === '<em>') { emOpen = true; return null; }
+        if (part === '</em>') { emOpen = false; return null; }
+        if (part === '<span class="font-phonetic">') { spanOpen = true; return null; }
+        if (part === '</span>') { spanOpen = false; return null; }
+        
+        if (!part) return null;
+        
+        if (markOpen && emOpen && spanOpen) return <mark key={i}><em><span className="font-phonetic">{part}</span></em></mark>;
+        if (markOpen && emOpen) return <mark key={i}><em>{part}</em></mark>;
+        if (markOpen && spanOpen) return <mark key={i}><span className="font-phonetic">{part}</span></mark>;
+        if (emOpen && spanOpen) return <em key={i}><span className="font-phonetic">{part}</span></em>;
+        if (markOpen) return <mark key={i}>{part}</mark>;
+        if (emOpen) return <em key={i}>{part}</em>;
+        if (spanOpen) return <span key={i} className="font-phonetic">{part}</span>;
+        return part;
+      })}
+    </span>
+  );
+};
 
 const defaultTitle = (hit: any) => {
   return <strong className="font-semibold">{multivalue(getFieldValue(hit, 'label'))}</strong>
@@ -144,7 +175,7 @@ export const resultRenderers: ResultRenderers = {
       return <>{defaultTitle(hit)}{getFieldValue(hit, 'sosi') && <>&nbsp;{`(${getFieldValue(hit, 'sosi')?.join(', ').toLowerCase()})`}</>}</>
     },
     snippet: (hit: any) => {
-      return hit.highlight?.['content.html'][0] && formatHighlight(hit.highlight['content.html'][0])
+      return hit.highlight?.['content.html']?.[0] && formatHighlight(hit.highlight['content.html']?.[0])
     },
     details: (hit: any, display: string) => {
       return cadastreAdm(getFieldValue(hit, 'misc.KNR'), getFieldValue(hit, 'misc.Gnr'), getFieldValue(hit, 'misc.Bnr'), "/", hit, display)
@@ -165,7 +196,7 @@ export const resultRenderers: ResultRenderers = {
   leks_g: {
     title: defaultTitle,
     snippet: (hit: any) => {
-      return hit.highlight?.['content.text'][0] && formatHighlight(hit.highlight['content.text'][0])
+      return hit.highlight?.['content.text']?.[0] && formatHighlight(hit.highlight['content.text']?.[0])
     },
     details: (hit: any, display: string) => {
       return 

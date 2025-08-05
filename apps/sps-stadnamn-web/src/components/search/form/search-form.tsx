@@ -89,9 +89,8 @@ export default function SearchForm() {
                             label="Tøm søk"><PiX className="text-2xl lg:text-xl text-neutral-600 group-focus-within:text-neutral-800 m-1"/></ClickableIcon> }
             <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-2xl lg:text-xl shrink-0 text-neutral-600 group-focus-within:text-neutral-800" aria-hidden="true"/></button>
             </div>
-            {fulltextFields[perspective]?.length > 0 && 
-                <Options/>
-            }
+            <Options/>
+            
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''}/>}
             <input type="hidden" name="nav" value={ mode == 'map' ? 'results' : 'filters'}/>
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value}/>)}

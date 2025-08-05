@@ -59,23 +59,8 @@ const labelDefaults = {
 const required = {uuid, boost, label, indexDataset}
 
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
-    search: {
-      ...required, adm, adm1, adm2, link, ...image, 
-      "datasets": {label: "Grunnlagsdatasett", facet, omitLabel, result, featuredFacet},
-      sosi,
-      "datasetTag": {label: "Datasettstype", facet, omitLabel, child: "datasets"},
-      ...labelDefaults,
-      "adm3": {label: "Sogn, bydel eller tidlegare kommune", result},
-      //"description": {label: "Beskriving"}, // Removed untid short descriptions have been generated
-      
-      "children": {label: "Underelement", result},
-      snid,
-      "gnidu": {label: "GNIDu", facet},
-      //"midu": {label: "MIDu", facet}, Not present
-    },
     core_gnidu: {
       label
-
     },
     wikidata: {
       ...required, adm, adm1, adm2,
@@ -446,6 +431,9 @@ export const baseAllConfig: Record<string, FieldConfigItem> = {
   ...required, adm, adm1, adm2, sosi, ...identifiers, ...cadastre, wikiAdm,
   "indexDataset": {label: "Datasett", facet},
   "h3": {label: "H3", facet},
+  ...text,
+  ...html
+
 };
 
 fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
