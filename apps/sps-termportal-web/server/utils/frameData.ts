@@ -46,8 +46,8 @@ export default function (
       isOfAbbreviationType: "skosp:isOfAbbreviationType",
       isAbbreviationOf: "skosp:isAbbreviationOf",
       nonLingusticLabel: "skosp:nonLinguisticLabel",
-      icsCode: { "@id": "skosp:icsCode", "@container": "@set" },
-      wasDerivedFrom: { "@id": "skosp:source", "@container": "@set" },
+      wasClassifiedAs: { "@id": "skosp:wasClassifiedAs", "@container": "@set" },
+      wasDerivedFrom: { "@id": "prov:wasDerivedFrom", "@container": "@set" },
       isCollocatedWith: {
         "@id": "skosp:isCollocatedWith",
         "@container": "@set",

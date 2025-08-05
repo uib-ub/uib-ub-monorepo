@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
           },
         },
       ],
-      size: 36,
+      size: 36, // Only the last 36 months max
     },
   };
 

@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h1 class="mb-6 text-2xl">Termbase oversikt</h1>
+    <h1 class="mb-6 text-2xl">Termbaseoversikt</h1>
     <DataTable
       ref="datatable"
       v-model:filters="filters"

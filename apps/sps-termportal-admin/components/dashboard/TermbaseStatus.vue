@@ -1,6 +1,6 @@
 <template>
   <section class="">
-    <h2 class="text-lg font-semibold pb-5 text-gray-800">Termbase status</h2>
+    <h2 class="text-lg font-semibold pb-5 text-gray-800">Termbasestatus</h2>
     <div class="py-0.5 px-0.5 flex text-lg max-w-fit bg-tpblue-400">
       <div v-if="data?.ingen" class="arrow right flex">
         <span

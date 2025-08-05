@@ -1,6 +1,6 @@
 <template>
   <UtilsTableWrapper class="max-w-4xl">
-    <template #header>Språk dekning</template>
+    <template #header>Språkdekning</template>
     <UtilsTableLegend>
       <UtilsTableLegendEntry
         :legend-key="`${procData?.[0]?.concepts || 0}`"

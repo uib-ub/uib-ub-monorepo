@@ -35,6 +35,14 @@
               </div>
             </dd>
           </div>
+          <div v-if="termbase?.contact" class="flex space-x-5">
+            <dt class="font-semibold w-16">Lisens</dt>
+            <dd>
+              <div>
+                {{ termbase.license }}
+              </div>
+            </dd>
+          </div>
         </div>
         <div class="space-y-2">
           <div v-if="termbase?.id" class="flex space-x-5">

@@ -1,14 +1,13 @@
 import { genAutocompleteQuery } from "~/server/utils/genAutocompleteQuery";
 import { decodeSearchOptions } from "~/server/utils/genQueryUtils";
+import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
-  const url = runtimeConfig.endpointUrl;
-  const credentials = `termportalen_test_read:${runtimeConfig.endpointUrlPass}`;
-  const authHeader = Buffer.from(credentials).toString("base64");
   const queryParams = getQuery(event);
   const searchOptions = decodeSearchOptions(queryParams);
   const query = genAutocompleteQuery(searchOptions, runtimeConfig.public.base);
+  const instance = getFusekiInstanceInfo(runtimeConfig);
 
   const controller = new AbortController();
   const timer = setTimeout(() => {
@@ -16,7 +15,7 @@ export default defineEventHandler(async (event) => {
   }, 4000);
 
   try {
-    const data: any = await $fetch(url, {
+    const data: any = await $fetch(instance.url, {
       method: "post",
       body: query,
       signal: controller.signal,
@@ -24,7 +23,7 @@ export default defineEventHandler(async (event) => {
         "Content-type": "application/sparql-query",
         Referer: "termportalen.no", // TODO Referer problem
         Accept: "application/json",
-        Authorization: `Basic ${authHeader}`,
+        Authorization: `Basic ${instance.authHeader}`,
       }),
     }).then((value) => {
       clearTimeout(timer);
