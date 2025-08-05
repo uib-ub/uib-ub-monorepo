@@ -1,22 +1,22 @@
 <template>
   <TermpostTermProp
-    v-if="termbase === 'SN'"
+    v-if="termbase === 'SN' && concept.wasClassifiedAs"
     :flex="true"
     :label="$t('id.icsCode')"
   >
     <TermpostTermDescription
       :flex="true"
-      :data="[concept.icsCode?.join(', ')]"
+      :data="[concept.wasClassifiedAs?.join(', ')]"
     />
   </TermpostTermProp>
   <TermpostTermProp
-    v-if="termbase === 'SN'"
+    v-if="termbase === 'SN' && concept?.wasDerivedFrom"
     :flex="true"
     :label="$t('id.source')"
   >
     <TermpostTermDescription
       :flex="true"
-      :data=" concept?.wasDerivedFrom.map((standard: string) => {
+      :data="concept?.wasDerivedFrom.map((standard: string) => {
           return [standard, standardIdToUrl(standard)]; })"
     />
   </TermpostTermProp>

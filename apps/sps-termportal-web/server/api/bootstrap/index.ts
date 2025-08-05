@@ -1,43 +1,43 @@
+import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
+
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
-  const url = runtimeConfig.endpointUrl;
-  const credentials = `termportalen_test_read:${runtimeConfig.endpointUrlPass}`;
-  const authHeader = Buffer.from(credentials).toString("base64");
+  const instance = getFusekiInstanceInfo(runtimeConfig);
 
   try {
     const queryLalo = genLazyLocalesQuery(runtimeConfig.public.base);
-    const dataLaLo = await $fetch(url, {
+    const dataLaLo = await $fetch(instance.url, {
       method: "post",
       body: queryLalo,
       headers: {
         "Content-type": "application/sparql-query",
         Referer: "termportalen.no", // TODO Referer problem
         Accept: "application/json",
-        Authorization: `Basic ${authHeader}`,
+        Authorization: `Basic ${instance.authHeader}`,
       },
     });
 
     const queryTermbase = genTermbaseMetaQuery(runtimeConfig.public.base);
-    const dataTermbase = await $fetch(url, {
+    const dataTermbase = await $fetch(instance.url, {
       method: "post",
       body: queryTermbase,
       headers: {
         "Content-type": "application/sparql-query",
         Referer: "termportalen.no", // TODO Referer problem
         Accept: "application/json",
-        Authorization: `Basic ${authHeader}`,
+        Authorization: `Basic ${instance.authHeader}`,
       },
     });
 
     const queryDomain = genDomainQuery(runtimeConfig.public.base);
-    const dataDomain = await $fetch(url, {
+    const dataDomain = await $fetch(instance.url, {
       method: "post",
       body: queryDomain,
       headers: {
         "Content-type": "application/sparql-query",
         Referer: "termportalen.no", // TODO Referer problem
         Accept: "application/ld+json",
-        Authorization: `Basic ${authHeader}`,
+        Authorization: `Basic ${instance.authHeader}`,
       },
     })
       .then((data) => {
@@ -53,6 +53,5 @@ export default defineEventHandler(async (event) => {
       termbase: dataTermbase.results.bindings,
       domain: dataDomain,
     };
-  } catch (e) {
-  }
+  } catch (e) {}
 });
