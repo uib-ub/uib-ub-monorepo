@@ -140,7 +140,7 @@ export default function DatasetFacet() {
     <div className="flex flex-col gap-2 pb-4">
     <div className='flex flex-col gap-2'>
     {perspective == 'all' && 
-        <div className="px-3 py-2 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors">
+        <div className="px-3 py-2 border border-neutral-200 rounded-lg">
           <div className="flex items-start gap-3">
             <label className="flex items-start gap-3 flex-1">
               <input

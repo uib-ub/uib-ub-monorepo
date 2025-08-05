@@ -16,8 +16,6 @@ export const GlobalContext = createContext({
   updateFacetOption: (facetName: string, options: Partial<FacetOption>) => {},
   coordinateVocab: {} as Record<string, any>,
   sosiVocab: {} as Record<string, any>,
-  allowFlyTo: false,
-  setAllowFlyTo: (allowFlyTo: boolean) => {},
   preferredTabs: {} as Record<string, string>,
   setPreferredTab: (dataset: string, tab: string) => {},
 });
@@ -26,7 +24,6 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
   const [facetOptions, setFacetOptions] = useState<Record<string, Record<string, Partial<FacetOption>>>>({});
   const perspective = usePerspective()
-  const [allowFlyTo, setAllowFlyTo] = useState(false);
   const [preferredTabs, setPreferredTabs] = useState<Record<string, string>>({});
 
   // Load facet options from localStorage on mount
@@ -87,8 +84,6 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
         updateFacetOption,
         sosiVocab,
         coordinateVocab,
-        allowFlyTo,
-        setAllowFlyTo,
         preferredTabs,
         setPreferredTab
       }}

@@ -17,7 +17,7 @@ import Clickable from '@/components/ui/clickable/clickable';
 export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const { isMobile, currentUrl, setAllowFlyTo, preferredTabs } = useContext(GlobalContext)
+    const { isMobile, currentUrl, preferredTabs } = useContext(GlobalContext)
     const [nav, setNav] = useQueryState('nav')
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
     const input = useRef<HTMLInputElement | null>(null)
@@ -59,7 +59,11 @@ export default function SearchForm() {
             <h1 className="!text-lg text-neutral-800 px-3 truncate">{datasetTitles[perspective]}</h1></div>   
         <div className="h-full flex grow">
 
-            <Form ref={form} action="/search" className="flex w-full h-full" onSubmit={() => setAllowFlyTo(true)}>
+            <Form ref={form} action="/search" className="flex w-full h-full" onSubmit={() => {
+                if (isMobile && input.current) {
+                    input.current.blur();
+                }
+            }}>
 
             <div className='flex w-full pr-1 bg-white focus-within:border-b-2 focus-within:border-primary-600 xl:border-none xl:outline xl:outline-1 xl:outline-neutral-300 xl:focus-within:border-neutral-200 xl:rounded-md xl:m-1 items-center relative group focus-within:xl:outline-2 focus-within:xl:outline-neutral-600'>
             <label htmlFor="search-input" className="sr-only">Søk</label>
@@ -102,7 +106,7 @@ export default function SearchForm() {
      : <>
      <div className="flex gap-6">
      <Link href="/" scroll={false} className="text-md px-4 font-serif self-center uppercase no-underline">Stadnamnportalen</Link>
-     {currentUrl && !isMobile && <Link scroll={false} href={currentUrl} onClick={() => setAllowFlyTo(false)} className='text-lg flex !justify-self-start items-center gap-2 no-underline invisible lg:visible'><PiCaretLeft className="text-primary-600" aria-hidden="true"/>Tilbake til søket</Link>}
+     {currentUrl && !isMobile && <Link scroll={false} href={currentUrl} className='text-lg flex !justify-self-start items-center gap-2 no-underline invisible lg:visible'><PiCaretLeft className="text-primary-600" aria-hidden="true"/>Tilbake til søket</Link>}
      </div>
      </>
           

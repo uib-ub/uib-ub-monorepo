@@ -4,18 +4,25 @@ import { fieldConfig } from "@/config/search-config"
 import { datasetTitles, typeNames } from "@/config/metadata-config"
 import { usePerspective, useMode, useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
-import { PiPushPinFill, PiTrash, PiX } from "react-icons/pi"
+import { PiCaretDownBold, PiPushPinFill, PiTrash, PiX } from "react-icons/pi"
 import { parseAsString, useQueryState } from "nuqs"
 import { DocContext } from "@/app/doc-provider"
 import { useContext } from "react"
 import { getGnr } from "@/lib/utils"
 import { GlobalContext } from "@/app/global-provider"
 import Clickable from "@/components/ui/clickable/clickable"
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu"
 
 
-export default function ActiveFilters() {
+export default function ActiveFilters({showDatasets = true, showFacets = true}: {showDatasets?: boolean, showFacets?: boolean}) {
     const router = useRouter()
-    const { searchQuery, facetFilters } = useSearchQuery()
+    const { searchQuery, facetFilters, datasetFilters } = useSearchQuery()
     const searchParams = useSearchParams()
     const perspective = usePerspective()
     const mode = useMode()
@@ -98,10 +105,20 @@ export default function ActiveFilters() {
         router.push(`?${newSearchParams.toString()}`)
     }
 
+    const clearDatasetFilters = () => {
+      const newSearchParams = new URLSearchParams(searchParams)
+      datasetFilters.forEach(([key, value]) => {
+        newSearchParams.delete(key)
+      })
+      router.push(`?${newSearchParams.toString()}`)
+    }
+
     const clearFilters = () => {
       const newSearchParams = new URLSearchParams(searchParams)
       facetFilters.forEach(([key, value]) => {
-        newSearchParams.delete(key)
+        if (showFacets || key != 'indexDataset') {
+          newSearchParams.delete(key)
+        }
       })
       router.push(`?${newSearchParams.toString()}`)
     }
@@ -124,14 +141,54 @@ export default function ActiveFilters() {
         {boostGt === '3' && 
             <button 
                 onClick={() => removeFilter('boost_gt', '3')} 
-                className={`text-neutral-950 rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
+                className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
             >
                 Djupinnsamlingar
                 <PiX className="inline text-lg" aria-hidden="true"/>
             </button>
         }
-          {facetFilters.length > 1 && !parent && <button className={`text-neutral-950 text-white  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center bg-accent-700 ${mode == 'map' && !isMobile ? 'shadow-md' : 'border border-neutral-200 box-content'}`} onClick={clearFilters}>Tøm<PiTrash className="inline text-lg" aria-hidden="true"/></button>}
-            {!parentData && facetFilters.map(([key, value]) => (
+        {showDatasets && (datasetFilters.length == 1 || isMobile) && datasetFilters.map(([key, value]) => (
+          <button 
+              key={`${key}__${value}`} 
+              onClick={() => removeFilter(key, value)} 
+              className={`text-neutral-950  rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
+          >
+            {datasetTitles[value]} <PiX className="inline text-lg" aria-hidden="true"/>
+          </button>
+        ))}
+        { showDatasets && !isMobile && datasetFilters.length > 1 && 
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <button className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}>
+        {datasetFilters.length} datasett
+        <PiCaretDownBold className="inline text-lg" aria-hidden="true"/>
+      </button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent className="z-[4000] bg-white">
+      {datasetFilters.map(([key, value]) => (
+        <DropdownMenuItem
+          key={`${key}__${value}`}
+          onClick={() => removeFilter(key, value)}
+          className="flex items-center py-2 px-4 cursor-pointer"
+        >
+          {datasetTitles[value]}
+          <PiX className="ml-auto text-lg" aria-hidden="true"/>
+        </DropdownMenuItem>
+      ))}
+      <DropdownMenuSeparator />
+      <DropdownMenuItem
+        onClick={clearDatasetFilters}
+        className="flex items-center py-2 px-4 cursor-pointer text-accent-700"
+      >
+        Tøm
+        <PiTrash className="ml-auto text-lg" aria-hidden="true"/>
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+}
+
+          {facetFilters.length > 1 && <button className={`text-neutral-950 text-white  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center bg-accent-700 ${mode == 'map' && !isMobile ? 'shadow-md' : 'border border-neutral-200 box-content'}`} onClick={clearFilters}>Tøm<PiTrash className="inline text-lg" aria-hidden="true"/></button>}
+          {!parentData && showFacets && facetFilters.map(([key, value]) => (
               <button 
                   key={`${key}__${value}`} 
                   onClick={() => removeFilter(key, value)} 
@@ -145,12 +202,7 @@ export default function ActiveFilters() {
             {gnr ? gnr + ' ' +  parentData._source.label : parentData._source.label}
             <PiX className="inline text-lg" aria-hidden="true"/>
             </Clickable>
-            {sourceLabel && <button className="text-neutral-950 bg-white shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setSourceLabel(null)}>
-            {sourceLabel}
-            <PiX className="inline text-lg" aria-hidden="true"/></button>}
-          {sourceDataset && <button className="text-neutral-950 bg-white shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" onClick={() => setSourceDataset(null)}>
-            {datasetTitles[sourceDataset]}
-            <PiX className="inline text-lg" aria-hidden="true"/></button>}
+
           </>
             }
       </>

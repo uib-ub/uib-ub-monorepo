@@ -43,6 +43,7 @@ export function useSearchQuery() {
     const perspective = usePerspective()
     const validFields = ['q', ...Object.keys(fieldConfig[perspective])]
     const facetFilters: [string, string][] = []
+    const datasetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
     const nav = searchParams.get('nav')
     const size = useQueryState('size', parseAsInteger.withDefault(20))[0]
@@ -52,7 +53,10 @@ export function useSearchQuery() {
         const values = searchParams.getAll(field)
         values.forEach(value => {
             searchQuery.append(field, value)
-            if (field != 'q') {
+            if (field == 'indexDataset') {
+                datasetFilters.push([field, value])
+            }
+            else if (field != 'q') {
                 facetFilters.push([field, value])
             }
         })
@@ -116,5 +120,5 @@ export function useSearchQuery() {
     */
 
 
-    return {searchQueryString: searchQuery.toString(), searchQuery, searchFilterParamsString, facetFilters, removeFilterParams, size }
+    return {searchQueryString: searchQuery.toString(), searchQuery, searchFilterParamsString, facetFilters, removeFilterParams, size, datasetFilters }
 }

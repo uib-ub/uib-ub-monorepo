@@ -867,7 +867,7 @@ useEffect(() => {
       </IconButton>
       <IconButton className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom til søkeresultat" onClick={() => {
         if (resultBounds?.length) {
-          mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [200, 200] });
+          mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
         }
       }}>
         <PiCrop className="lg:text-xl" />
