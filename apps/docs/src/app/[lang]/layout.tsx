@@ -1,35 +1,22 @@
-import { Layout, Navbar, Footer, LocaleSwitch } from 'nextra-theme-docs'
+export const dynamic = 'force-static';
+export const dynamicParams = false;
+
+import { Layout, Navbar, Footer, LocaleSwitch, LastUpdated } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import { UibIcon, UibUbEn } from 'assets'
 import '@/app/globals.css'
 import { FC, ReactNode } from 'react'
+import { getDictionary, getDirection } from '../_dictionaries/get-dictionary'
 
-export const metadata = {
-  title: 'Dev @ UiB-UB',
-  description: 'Resources for developers using data and services from The university of Bergen Library.'
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params
+  const dictionary = await getDictionary(lang)
+  return {
+    title: dictionary.logo.title,
+    description: 'Resources for developers using data and services from The university of Bergen Library.'
+  }
 }
-
-const navbar = (
-  <Navbar
-    logo={
-      <div style={{ display: 'flex', gap: '.5em' }}>
-        <UibIcon className='fill-current' style={{ width: '1.5em', height: '1.5em' }} />
-        <span>Dev @ UiB-UB</span>
-      </div>
-    }
-  >
-    <LocaleSwitch lite />
-  </Navbar>
-)
-
-const footer = (
-  <Footer>
-    <div style={{ display: 'flex', gap: '.5em', alignItems: 'center' }}>
-      <UibUbEn className='fill-current' style={{ width: '25em', height: 'auto' }} />
-    </div>
-  </Footer>
-)
 
 type LayoutProps = Readonly<{
   children: ReactNode
@@ -40,16 +27,35 @@ type LayoutProps = Readonly<{
 
 const RootLayout: FC<LayoutProps> = async ({ children, params }) => {
   const { lang } = await params
+  const dictionary = await getDictionary(lang)
   let pageMap = await getPageMap(`/${lang}`)
 
+  const navbar = (
+    <Navbar
+      logo={
+        <div style={{ display: 'flex', gap: '.5em' }}>
+          <UibIcon className='fill-current' style={{ width: '1.5em', height: '1.5em' }} />
+          <span>{dictionary.logo.title}</span>
+        </div>
+      }
+    >
+      <LocaleSwitch lite />
+    </Navbar>
+  )
 
+  const footer = (
+    <Footer>
+      <div style={{ display: 'flex', gap: '.5em', alignItems: 'center' }}>
+        <UibUbEn className='fill-current' style={{ width: '25em', height: 'auto' }} />
+      </div>
+    </Footer>
+  )
   return (
-    <html lang={lang} dir="ltr" suppressHydrationWarning>
+    <html lang={lang} dir={getDirection(lang)} suppressHydrationWarning>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta property="og:title" content="Dev @ UiB-UB" />
+        <meta property="og:title" content={dictionary.logo.title} />
         <meta property="og:description" content="Resources for developers using data and services from The university of Bergen Library." />
-        <link rel="icon" href="/favicon.svg" />
       </Head>
       <body>
         <Layout
@@ -58,9 +64,24 @@ const RootLayout: FC<LayoutProps> = async ({ children, params }) => {
           docsRepositoryBase="https://github.com/uib-ub/uib-ub-monorepo/tree/main/apps/docs"
           footer={footer}
           i18n={[
-            { locale: 'nb', name: 'Norsk (Bokmål)' },
-            { locale: 'en', name: 'English' },
+            { locale: 'nb', name: dictionary.i18n.nb },
+            { locale: 'en', name: dictionary.i18n.en },
           ]}
+          toc={{
+            backToTop: dictionary.backToTop,
+          }}
+          editLink={dictionary.editPage}
+          nextThemes={{ defaultTheme: 'dark' }}
+          lastUpdated={<LastUpdated locale={lang}>{dictionary.lastUpdated}</LastUpdated>}
+          themeSwitch={{
+            dark: dictionary.dark,
+            light: dictionary.light,
+            system: dictionary.system
+          }}
+          feedback={{
+            content: dictionary.feedback,
+            link: 'https://github.com/uib-ub/uib-ub-monorepo/issues'
+          }}
         >
           {children}
         </Layout>

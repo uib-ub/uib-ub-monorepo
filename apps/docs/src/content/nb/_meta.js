@@ -22,7 +22,7 @@ const meta = {
   "spec": {
     "title": "APIer",
     "type": "page",
-    "href": "/nb/api/reference",
+    "href": "/nb/openapi/reference",
   }
 }
 
