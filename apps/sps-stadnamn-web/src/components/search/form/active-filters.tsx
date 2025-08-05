@@ -131,14 +131,14 @@ export default function ActiveFilters({showDatasets = true, showFacets = true}: 
 
     return (
       <>
-        { fulltext == 'on' && 
+        { fulltext == 'on' && (showFacets || !isMobile) &&
             <button className={`rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${(mode == 'map' && !isMobile) ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => setFulltext('off')}>
             Fulltekst 
             <PiX className="inline text-lg" aria-hidden="true"/>
             </button> }
         
         {/* Djupinnsamlingar chip */}
-        {boostGt === '3' && 
+        {boostGt === '3' && (showDatasets || !isMobile) &&
             <button 
                 onClick={() => removeFilter('boost_gt', '3')} 
                 className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
