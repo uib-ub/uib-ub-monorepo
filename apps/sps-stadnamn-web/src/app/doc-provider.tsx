@@ -14,7 +14,6 @@ interface DocContextData {
     parentLoading: boolean;
     parentError: Record<string, string> | null;
     docAdm: string | null;
-    docView: MutableRefObject<Record<string, string> | null> | null;
 }
 
 export const DocContext = createContext<DocContextData>({
@@ -28,14 +27,12 @@ export const DocContext = createContext<DocContextData>({
     parentLoading: true,
     parentError: null,
     docAdm: null,
-    docView: null,
 });
 
 export default function DocProvider({ children }: {  children: React.ReactNode }) {
     const searchParams = useSearchParams()
     const [ sameMarkerList, setSameMarkerList ] = useState<any[] | null>(null)
     const [docData, setDocData] = useState<any | null>(null)
-    const docView = useRef<Record<string, string> | null>(null)
     
     
     const doc = searchParams.get('doc')
@@ -91,7 +88,6 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
         parentLoading,
         parentError,
         docAdm,
-        docView,
   }}>{children}</DocContext.Provider>
 }
 
