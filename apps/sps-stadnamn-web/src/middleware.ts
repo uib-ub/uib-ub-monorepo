@@ -55,9 +55,9 @@ export async function middleware(request: NextRequest) {
         if (path.length == 5 && path[3] == 'iiif') {
             return handleApiRedirect(`${baseUrl}/api/iiif/${path[4]}`, () => "/iiif/" + path[4]);
         }
-        if (dataset != 'search') {
-            searchParams.set('dataset', dataset)
-        }
+        
+        searchParams.set('indexDataset', dataset)
+        
         return Response.redirect(baseUrl + "/search?" + searchParams.toString() , 302)
     }
     
