@@ -1,10 +1,10 @@
+import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
+
 export default defineEventHandler(async (event) => {
   const appConfig = useAppConfig();
 
   const runtimeConfig = useRuntimeConfig();
-  const url = runtimeConfig.endpointUrl;
-  const credentials = `termportalen_test_read:${runtimeConfig.endpointUrlPass}`;
-  const authHeader = Buffer.from(credentials).toString("base64");
+  const instance = getFusekiInstanceInfo(runtimeConfig);
 
   const idArray = decodeURI(event.context.params.id).split("/");
   const termbase = idArray[0];
@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
   }, 7000);
 
   try {
-    const data = await $fetch(url, {
+    const data = await $fetch(instance.url, {
       method: "post",
       body: query,
       signal: controller.signal,
@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
         "Content-type": "application/sparql-query",
         Referer: "termportalen.no", // TODO Referer problem
         Accept: "application/ld+json",
-        Authorization: `Basic ${authHeader}`,
+        Authorization: `Basic ${instance.authHeader}`,
       },
     }).then((value) => {
       clearTimeout(timer);
