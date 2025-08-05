@@ -3,7 +3,7 @@ import { createContext, useContext } from 'react'
 import { useState, useEffect } from 'react';
 import { usePerspective, useSearchQuery } from '@/lib/search-params';
 import { parseAsInteger, useQueryState } from 'nuqs';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from './global-provider';
 import { useMode } from '@/lib/search-params';
 
