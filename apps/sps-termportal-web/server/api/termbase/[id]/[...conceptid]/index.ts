@@ -2,13 +2,12 @@ import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
 
 export default defineEventHandler(async (event) => {
   const appConfig = useAppConfig();
-
   const runtimeConfig = useRuntimeConfig();
   const instance = getFusekiInstanceInfo(runtimeConfig);
 
-  const idArray = decodeURI(event.context.params.id).split("/");
-  const termbase = idArray[0];
-  const conceptIdArray = idArray.slice(1);
+  const termbaseId = event.context.params.id;
+  const conceptIdArray = decodeURI(event.context.params.conceptid).split("/");
+
   let base;
   let id: string;
   let uri: string;
@@ -16,10 +15,10 @@ export default defineEventHandler(async (event) => {
 
   if (
     (appConfig.tb.base.specialUriTbs as readonly TermbaseId[]).includes(
-      termbase
+      termbaseId
     )
   ) {
-    const tbId = termbase as SpecialUriTermbase & ConfiguredTermbase;
+    const tbId = termbaseId as SpecialUriTermbase & ConfiguredTermbase;
     type PatternKey = keyof (typeof appConfig.tb)[typeof tbId]["uriPatterns"];
 
     base = appConfig.tb[tbId].uriPatterns[conceptIdArray[0] as PatternKey];
@@ -27,11 +26,11 @@ export default defineEventHandler(async (event) => {
     uri = base + id;
   } else {
     base = runtimeConfig.public.base;
-    id = `${termbase}-3A${conceptIdArray.join("/")}`;
+    id = `${termbaseId}-3A${conceptIdArray.join("/")}`;
     uri = id;
   }
 
-  const query = genConceptQuery(base, termbase, id);
+  const query = genConceptQuery(base, termbaseId, id);
 
   const controller = new AbortController();
   const timer = setTimeout(() => {
