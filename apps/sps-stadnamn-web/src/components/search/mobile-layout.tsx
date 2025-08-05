@@ -43,6 +43,7 @@ export default function MobileLayout() {
     const mode = useMode()
     const { docLoading } = useContext(DocContext)
     const datasetCount = searchParams.getAll('indexDataset')?.length || 0
+    const deepCollections = searchParams.get('boost_gt') == '3'
 
 
 
@@ -229,7 +230,7 @@ export default function MobileLayout() {
             { (drawerContent == 'datasets' || drawerContent == 'datasetInfo') &&
             <>
             <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide pb-2 flex items-center gap-1">Datasett</h2>
-            { datasetFilters.length > 0 && <div className="flex flex-wrap gap-2 py-2 mb-2 border-y border-neutral-200">
+            { (datasetFilters.length > 0 || deepCollections)  && <div className="flex flex-wrap gap-2 py-2 mb-2 border-y border-neutral-200">
                 <ActiveFilters showFacets={false}/>
                 </div>}
             <DatasetFacet/> 
