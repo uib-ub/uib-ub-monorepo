@@ -78,7 +78,8 @@ export default function MapExplorer() {
           }
           if (yDist < 32 && xDist < (64 + (4 * firstHit.fields.label[0].length))) {
             added = true;
-            if (zoom && zoom == 18) {
+            const mapZoom = mapInstance.current?.getZoom()
+            if (mapZoom && mapZoom == 18) {
               group.grouped.push(hit);
             }
             else {
@@ -119,6 +120,41 @@ export default function MapExplorer() {
   const coordinatesSelected = (lat: number, lon: number) => {
     return docData?._source?.location?.coordinates[1] == lat && docData?._source?.location?.coordinates[0] == lon
   }
+
+  useEffect(() => {
+    if (!isLoading && resultBounds?.length) {
+
+      // Check if current view overlaps with result bounds
+      const [[northBound, westBound], [southBound, eastBound]] = resultBounds;
+      
+      // Get current view bounds based on center and zoom
+      const mapBounds = mapInstance.current?.getBounds();
+      if (mapBounds) {
+        const currentNorth = mapBounds.getNorth();
+        const currentSouth = mapBounds.getSouth();
+        const currentWest = mapBounds.getWest();
+        const currentEast = mapBounds.getEast();
+        
+        // Check if bounds overlap
+        const overlaps = !(currentEast < westBound || currentWest > eastBound || 
+                          currentNorth < southBound || currentSouth > northBound);
+        
+        if (overlaps) {
+          // Get zoom levels for both current view and result bounds
+          const resultBoundsZoom = mapInstance.current.getBoundsZoom(resultBounds);
+          const currentZoom = mapInstance.current.getZoom();
+          
+          // If current zoom is more than 2 levels out from the result bounds zoom
+          if (currentZoom < resultBoundsZoom - 2) {
+            mapInstance.current?.fitBounds(resultBounds, { maxZoom: 18, padding: [50, 50] });
+          }
+        }
+      }
+    }
+  }, [resultBounds, isLoading])
+
+
+
 
   
 
@@ -176,11 +212,11 @@ export default function MapExplorer() {
       })
        
       .then(data => {
-
-        setViewResults((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(data) : data)
         if (!data.hits.hits.length && resultBounds?.length && !isLoading && !zoom) {
-          mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-    
+          mapInstance.current?.flyToBounds(resultBounds, { maxZoom: 18, padding: [50, 50] });
+        }
+        else {
+          setViewResults((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(data) : data)
         }
 
       })
@@ -195,7 +231,7 @@ export default function MapExplorer() {
       }
       );
 
-  }, [ markerBounds, searchError, zoom, searchQueryString, totalHits, markerMode, parent, perspective, isLoading, autoMode, labelClusters, setCoordinatesError, resultBounds]);
+  }, [ markerBounds, searchError, searchQueryString, totalHits, markerMode, parent, perspective, isLoading, autoMode, labelClusters, setCoordinatesError, resultBounds, zoom]);
 
 
 // Fly to results, doc or children
@@ -430,9 +466,6 @@ useEffect(() => {
             if (!mapInstance.current) {
               mapInstance.current = e.target
             }
-            
-            programmaticChange.current = true
-            console.log("SET ZOOM 1")
             setZoom(e.target.getZoom())
             setCenter([currentBounds.getCenter().lat, currentBounds.getCenter().lng])
           
@@ -453,23 +486,13 @@ useEffect(() => {
               moveend: () => {
                 controllerRef.current.abort();
                 controllerRef.current = new AbortController();
-
-                
                 const bounds = map.getBounds();
                 const boundsCenter = bounds.getCenter();
-                const mapZoom = map.getZoom()
-                if (doc && docView && boundsCenter && mapZoom) {
-                  docView.current = {center: [boundsCenter.lat, boundsCenter.lng].join(','), zoom: mapZoom.toString()}
-                }
-                programmaticChange.current = true
                 setCenter([boundsCenter.lat, boundsCenter.lng]);
                 setZoom(map.getZoom());
-                console.log("SET ZOOM 2")
                 setMarkerBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
-                
               },
             })          
-
             return null
           }
 
