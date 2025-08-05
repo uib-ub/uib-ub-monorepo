@@ -202,7 +202,7 @@ export default function FuzzyExplorer() {
         <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-serif">{groupName}</h3>
             
-            <div className="flex bg-neutral-100 rounded-lg p-1">
+            {fuzzyResult && fuzzyResult.length > 0 && <div className="flex bg-neutral-100 rounded-lg p-1">
                 <Clickable
                     add={{ fuzzyNav: 'timeline' }}
                     aria-pressed={fuzzyNav === 'timeline'}
@@ -219,10 +219,13 @@ export default function FuzzyExplorer() {
                     <PiList className="text-base" />
                     Liste
                 </Clickable>
-            </div>
+            </div>}
         </div>
 
-        <ul className={`${fuzzyNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
+        {fuzzyResult && fuzzyResult.length == 0 && !fuzzyResultLoading ? (
+            <p className="text-neutral-800">Fann ingen liknande namn i nærleiken</p>
+        ) : (
+            <ul className={`${fuzzyNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
             {groups.map((group, index) => {
                 const groupId = `${fuzzyNav}-${group.key}`
                 const groupsWithYears = groups.filter(g => g.year)
@@ -308,6 +311,7 @@ export default function FuzzyExplorer() {
                 )
             })}
         </ul>
+        )}
     </div>
 }
 
