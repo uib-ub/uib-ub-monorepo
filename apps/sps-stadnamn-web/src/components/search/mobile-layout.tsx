@@ -100,7 +100,7 @@ export default function MobileLayout() {
         const endTouchTime = Date.now();
         const touchDuration = endTouchTime - startTouchTime;
         const swipeDistance = startTouchY - endTouchY;
-        const isQuickSwipe = touchDuration < 300 && Math.abs(swipeDistance) > 50;
+        const isQuickSwipe = touchDuration < 300 && Math.abs(swipeDistance) > 100;
         let newPosition = swipeDirection === 'up' ? Math.ceil(currentPosition / 25) * 25 : Math.floor(currentPosition / 25) * 25
         if (isQuickSwipe) {
             if (swipeDirection === 'up') {
