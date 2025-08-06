@@ -30,17 +30,34 @@ function createMarkup(htmlString: string) {
 }
 
 const formatHighlight = (highlight: string) => {
-  // Clean up incomplete tags and remove unsupported tags, then process HTML entities
-  const cleanHighlight = highlight
-    .replace(/<[^>]*$/, '')  // Remove incomplete tags at end
-    .replace(/^[^<]*>/, '') // Remove incomplete tags at start
-    .replace(/<(?!\/?(?:mark|em|span)\b|span\s+class="font-phonetic")[^>]*>/g, ''); // Remove all tags except mark, em, and span with font-phonetic class
+  // Clean up incomplete tags and auto-close unclosed tags
+  let cleanHighlight = createMarkup(highlight).__html
+    .replace(/<[^>]*$/, '')
+    .replace(/^[^<]*>/, '')
+    .replace(/<(?!\/?(?:mark|em|span)\b|span\s+class="font-phonetic")[^>]*>/g, '');
     
-  const parts = createMarkup(cleanHighlight).__html.split(/(<\/?(?:mark|em|span)>|<span\s+class="font-phonetic">)/);
+  // Auto-close unclosed tags
+  const openTags: string[] = [];
+  cleanHighlight = cleanHighlight.replace(/<(\/?)(\w+)([^>]*)>/g, (match, slash, tag, attrs) => {
+    if (slash) {
+      openTags.pop();
+    } else if (['mark', 'em', 'span'].includes(tag)) {
+      openTags.push(tag);
+    }
+    return match;
+  });
+  
+  // Close any remaining open tags
+  while (openTags.length > 0) {
+    cleanHighlight += `</${openTags.pop()}>`;
+  }
+    
+  // Modified regex to properly capture font-phonetic spans
+  const parts = cleanHighlight.split(/(<mark>|<\/mark>|<em>|<\/em>|<span class="font-phonetic">|<span class='font-phonetic'>|<\/span>)/);
   
   let markOpen = false;
   let emOpen = false;
-  let spanOpen = false;
+  let fontPhoneticOpen = false;
   
   return (
     <span>
@@ -49,18 +66,24 @@ const formatHighlight = (highlight: string) => {
         if (part === '</mark>') { markOpen = false; return null; }
         if (part === '<em>') { emOpen = true; return null; }
         if (part === '</em>') { emOpen = false; return null; }
-        if (part === '<span class="font-phonetic">') { spanOpen = true; return null; }
-        if (part === '</span>') { spanOpen = false; return null; }
+        if (part === "<span class='font-phonetic'>") { 
+          fontPhoneticOpen = true; 
+          return null; 
+        }
+        if (part === '</span>' && fontPhoneticOpen) { 
+          fontPhoneticOpen = false; 
+          return null; 
+        }
         
         if (!part) return null;
         
-        if (markOpen && emOpen && spanOpen) return <mark key={i}><em><span className="font-phonetic">{part}</span></em></mark>;
+        if (markOpen && emOpen && fontPhoneticOpen) return <mark key={i}><em><span className="font-phonetic">{part}</span></em></mark>;
         if (markOpen && emOpen) return <mark key={i}><em>{part}</em></mark>;
-        if (markOpen && spanOpen) return <mark key={i}><span className="font-phonetic">{part}</span></mark>;
-        if (emOpen && spanOpen) return <em key={i}><span className="font-phonetic">{part}</span></em>;
+        if (markOpen && fontPhoneticOpen) return <mark key={i}><span className="font-phonetic">{part}</span></mark>;
+        if (emOpen && fontPhoneticOpen) return <em key={i}><span className="font-phonetic">{part}</span></em>;
         if (markOpen) return <mark key={i}>{part}</mark>;
         if (emOpen) return <em key={i}>{part}</em>;
-        if (spanOpen) return <span key={i} className="font-phonetic">{part}</span>;
+        if (fontPhoneticOpen) return <span key={i} className="font-phonetic">{part}</span>;
         return part;
       })}
     </span>
