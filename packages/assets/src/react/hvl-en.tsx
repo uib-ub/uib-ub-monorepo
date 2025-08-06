@@ -1,11 +1,16 @@
 import * as React from "react";
 import type { SVGProps } from "react";
-import { Ref, forwardRef, memo } from "react";
-const SvgHvlEn = (props: SVGProps<SVGSVGElement>, ref: Ref<SVGSVGElement>) => (
+import { forwardRef, memo } from "react";
+
+const SvgHvlEn = forwardRef<SVGSVGElement, SVGProps<SVGSVGElement>>((props, ref) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 494 142"
+    viewBox="0 0 164 142"
+    fillRule="evenodd"
+    clipRule="evenodd"
+    strokeLinejoin="round"
+    strokeMiterlimit={2}
     ref={ref}
   >
     <style>
@@ -25,7 +30,7 @@ const SvgHvlEn = (props: SVGProps<SVGSVGElement>, ref: Ref<SVGSVGElement>) => (
       </g>
     </g>
   </svg>
-);
-const ForwardRef = forwardRef(SvgHvlEn);
-const Memo = memo(ForwardRef);
+));
+SvgHvlEn.displayName = "SvgHvlEn";
+const Memo = memo(SvgHvlEn);
 export default Memo;
