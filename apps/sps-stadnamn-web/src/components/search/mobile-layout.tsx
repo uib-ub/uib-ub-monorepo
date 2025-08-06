@@ -25,7 +25,8 @@ export default function MobileLayout() {
     const [snappedPosition, setSnappedPosition] = useState(25);
     const [snapped, setSnapped] = useState(false);
     const [startTouchY, setStartTouchY] = useState(0);
-    const [swipeDirection, setSwipeDirection] = useState<null | 'up' | 'down'>(null);
+    const [startTouchX, setStartTouchX] = useState(0);
+    const [swipeDirection, setSwipeDirection] = useState<null | 'up' | 'down' | 'left' | 'right'>(null);
     const scrollableContent = useRef<HTMLDivElement>(null);
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
     const searchParams = useSearchParams()
@@ -86,6 +87,7 @@ export default function MobileLayout() {
         }       
 
         setStartTouchY(e.touches[0].clientY);
+        setStartTouchX(e.touches[0].clientX);
         setStartTouchTime(Date.now());
         setSnapped(false);
     };
@@ -138,10 +140,22 @@ export default function MobileLayout() {
         if (e.target && isScrolling(e.target)) {
             return
         }
-        const newHeight = snappedPosition - pos2svh(startTouchY) + pos2svh(e.touches[0].clientY)
-        setSwipeDirection(newHeight > currentPosition ? 'up' : 'down');
-        setCurrentPosition(newHeight < 75 ? newHeight : 75);
-
+        const currentTouchX = e.touches[0].clientX;
+        const currentTouchY = e.touches[0].clientY;
+        
+        const deltaX = startTouchX - currentTouchX;
+        const deltaY = startTouchY - currentTouchY;
+        
+        // Determine if the swipe is more horizontal or vertical
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            // Horizontal swipe
+            setSwipeDirection(deltaX > 0 ? 'left' : 'right');
+        } else {
+            // Vertical swipe
+            const newHeight = snappedPosition - pos2svh(startTouchY) + pos2svh(currentTouchY)
+            setSwipeDirection(newHeight > currentPosition ? 'up' : 'down');
+            setCurrentPosition(newHeight < 75 ? newHeight : 75);
+        }
     }
 
     useEffect(() => {
