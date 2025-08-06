@@ -156,7 +156,7 @@ export default function MobileLayout() {
 
 
 
-    const swtichTab = (tab: string) => {
+    const switchTab = (tab: string) => {
 
         if (drawerContent == tab) {
             setDrawerContent(null)
@@ -267,7 +267,7 @@ export default function MobileLayout() {
 </div>
             
             <div className="fixed bottom-0 left-0 bg-neutral-800 text-white w-full h-12 p-1 flex items-center justify-between">
-                <button aria-label="Datasett" onClick={() => swtichTab('datasets')} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'} className="toolbar-button">
+                <button aria-label="Datasett" onClick={() => switchTab('datasets')} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'} className="toolbar-button">
                     <div className="relative">
                         <PiDatabase className="text-3xl" />
                         {datasetCount > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -276,11 +276,11 @@ export default function MobileLayout() {
                     </div>
                 </button>
 
-                {treeSettings[perspective] && <button aria-label='Register' onClick={() => swtichTab('tree')} aria-current={drawerContent == 'tree' ? 'page' : 'false'} className="toolbar-button">
+                {treeSettings[perspective] && <button aria-label='Register' onClick={() => switchTab('tree')} aria-current={drawerContent == 'tree' ? 'page' : 'false'} className="toolbar-button">
                     <PiTreeViewFill className="text-3xl" />
                 </button>}
 
-                {<button aria-label="Filtre" onClick={() => swtichTab('filters')} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'} className="toolbar-button">
+                {<button aria-label="Filtre" onClick={() => switchTab('filters')} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'} className="toolbar-button">
                     <div className="relative">
                         <PiFunnel className="text-3xl" />
                         {facetFilters.length > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${facetFilters.length < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -291,7 +291,7 @@ export default function MobileLayout() {
 
                 {mode == 'map' && searchFilterParamsString &&
                     <button aria-label='Søkeresultater'
-                        onClick={() => swtichTab('results')}
+                        onClick={() => switchTab('results')}
                         aria-current={drawerContent == 'results' ? 'page' : 'false'}
                         className="toolbar-button">
                         <div className="relative">
@@ -302,7 +302,7 @@ export default function MobileLayout() {
                         </div>
                     </button>}
 
-                {doc && <button aria-label="Oppslag" onClick={() => swtichTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button">
+                {doc && <button aria-label="Oppslag" onClick={() => switchTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button">
                     <PiBookOpen className="text-3xl" />
                 </button>}
 
