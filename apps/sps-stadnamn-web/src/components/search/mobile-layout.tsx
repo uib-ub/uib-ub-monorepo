@@ -170,11 +170,7 @@ export default function MobileLayout() {
 
     }, [drawerContent])
 
-    useEffect(() => {
-        if (doc) {
-            setDrawerContent('info')
-        }
-    }, [doc, setDrawerContent])
+    
 
 
 
