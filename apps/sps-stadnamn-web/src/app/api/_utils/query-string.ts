@@ -23,7 +23,6 @@ function modifyQuery(query: string) {
 export function getQueryString(params: { [key: string]: string | null }) {
   const fulltext = params.fulltext == 'on'
   const perspective = params.perspective || 'all'
-  console.log(fulltextFields["all"])
 
   const simple_query_string: any = params.q ? {
       query_string: {
