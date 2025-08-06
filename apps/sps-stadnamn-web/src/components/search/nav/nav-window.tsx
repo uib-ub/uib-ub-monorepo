@@ -120,7 +120,7 @@ export default function NavWindow() {
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline aria-pressed:bg-white aria-pressed:text-neutral-900 aria-pressed:shadow-sm aria-[pressed=false]:text-neutral-700 aria-[pressed=false]:hover:text-neutral-900`}
                         >
                             
-                            Dagens
+                            Noverande
                         </Clickable>
                         <Clickable
                             aria-pressed={nav == 'wikiAdm'}
