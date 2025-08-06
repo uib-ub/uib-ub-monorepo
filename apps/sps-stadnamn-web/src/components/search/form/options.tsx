@@ -1,12 +1,18 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
-import { parseAsString, useQueryState } from "nuqs";
+import { useRouter, useSearchParams } from "next/navigation";
+
 import { PiCheck, PiFaders } from "react-icons/pi";
 
 
 export default function Options() {
-    const [fulltext, setFulltext] = useQueryState('fulltext', parseAsString.withDefault('off'))
+    const searchParams = useSearchParams()
+    const fulltext = searchParams.get('fulltext') || 'off'
+    const router = useRouter()
+    
     const toggleFulltext = () => {
-        setFulltext(prev => prev == 'on' ? 'off' : 'on');
+        const params = new URLSearchParams(searchParams);
+        params.set('fulltext', fulltext == 'on' ? 'off' : 'on');
+        router.push(`?${params.toString()}`);
     };
     return <DropdownMenu>
                 <DropdownMenuTrigger asChild>

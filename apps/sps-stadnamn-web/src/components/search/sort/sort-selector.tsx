@@ -1,13 +1,16 @@
-import { useQueryState } from "nuqs"
-import { PiArrowCounterClockwise, PiCaretDown, PiCaretDownBold, PiSortAscending, PiSortDescending } from "react-icons/pi"
+import { PiArrowCounterClockwise, PiCaretDown, PiCaretDownBold, PiSortAscending, PiSortDescending, PiTrash } from "react-icons/pi"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { facetConfig } from "@/config/search-config"
 import { usePerspective } from "@/lib/search-params"
 import { contentSettings } from "@/config/server-config"
+import Clickable from "@/components/ui/clickable/clickable"
+import { useSearchParams } from "next/navigation"
+import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 
 export default function SortSelector() {
-    const [asc, setAsc] = useQueryState('asc')
-    const [desc, setDesc] = useQueryState('desc')
+    const searchParams = useSearchParams()
+    const asc = searchParams.get('asc')
+    const desc = searchParams.get('desc')
     const perspective = usePerspective()
 
     // Build sort options from facet config
@@ -34,24 +37,6 @@ export default function SortSelector() {
     const currentSort = asc || desc
     const currentLabel = sortOptions.find(opt => opt.field === currentSort)?.label
 
-    const toggleSortOrder = () => {
-        if (!currentSort) return
-        if (desc) {
-            setDesc(null)
-            setAsc(currentSort)
-        } else if (asc) {
-            setAsc(null)
-            setDesc(currentSort)
-        }
-    }
-
-    const handleSort = (field: string) => {
-        // Default to descending for new sort field
-        if (field !== currentSort) {
-            setDesc(field)
-            setAsc(null)
-        }
-    }
 
     return (
         <div className="flex gap-2">
@@ -69,12 +54,13 @@ export default function SortSelector() {
                     <DropdownMenuLabel className="font-semibold px-4 py-2">Sorter etter:</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {sortOptions.map((option) => (
-                        <DropdownMenuItem
-                            key={option.field}
+                        <DropdownMenuItem asChild key={option.field}>
+                        <Clickable
                             className={`cursor-pointer px-4 py-2 ${option.field === currentSort ? 'bg-neutral-50' : ''}`}
-                            onClick={() => handleSort(option.field)}
+                            add={option.field === currentSort ? {asc: null, desc: null} : {asc: option.field, desc: null}}
                         >
                             {option.label}
+                        </Clickable>
                         </DropdownMenuItem>
                     ))}
                 </DropdownMenuContent>
@@ -82,26 +68,21 @@ export default function SortSelector() {
 
             {currentSort && (
                 <>
-                    <button 
-                        type="button" 
+                    <ClickableIcon
                         className="btn btn-outline btn-compact" 
-                        onClick={toggleSortOrder}
-                        aria-label={desc ? "Sorter stigende" : "Sorter synkende"}
+                        add={desc ? {asc: currentSort, desc: null} : {asc: null, desc: currentSort}}
+                        label={desc ? "Sorter stigende" : "Sorter synkende"}
                     >
                         {desc ? <PiSortDescending className="text-xl"/> : <PiSortAscending className="text-xl"/>}
-                    </button>
+                    </ClickableIcon>
 
-                    <button 
-                        type="button" 
+                    <ClickableIcon 
                         className="btn btn-outline btn-compact" 
-                        onClick={() => {
-                            setAsc(null)
-                            setDesc(null)
-                        }}
-                        aria-label="Tilbakestill sortering"
+                        add={{asc: null, desc: null}}
+                        label="Tilbakestill sortering"
                     >
-                        <PiArrowCounterClockwise className="text-xl"/>
-                    </button>
+                        <PiTrash className="text-xl"/>
+                    </ClickableIcon>
                 </>
             )}
         </div>

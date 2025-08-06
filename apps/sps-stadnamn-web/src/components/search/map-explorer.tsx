@@ -12,7 +12,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { parseAsArrayOf, parseAsFloat, parseAsInteger, useQueryState } from "nuqs";
 import { usePerspective, useSearchQuery } from "@/lib/search-params";
 import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 import { DocContext } from "@/app/doc-provider";
@@ -32,18 +31,29 @@ export default function MapExplorer() {
   const [baseMap, setBasemap] = useState<null | string>(null)
   const [markerMode, setMarkerMode] = useState<null | string>(null)
   const [myLocation, setMyLocation] = useState<[number, number] | null>(null)
-  const [zoom, setZoom] = useQueryState('zoom', parseAsInteger);
-  const [center, setCenter] = useQueryState('center', parseAsArrayOf(parseAsFloat));
+  const searchParams = useSearchParams()
+  const zoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
+  const center = searchParams.get('center') ? searchParams.get('center')!.split(',').map(parseFloat) : null
   const [viewResults, setViewResults] = useState<any>(null)
   const { searchQueryString } = useSearchQuery()
   const perspective = usePerspective()
-  const searchParams = useSearchParams()
   const details = searchParams.get('details') || 'doc'
   
   const router = useRouter()
 
   const parent = searchParams.get('parent')
   const doc = searchParams.get('doc')
+
+  const setViewUrlParams = useCallback((zoom: number, center?: [number, number]) => {
+      const params = new URLSearchParams(searchParams)
+      params.set('zoom', zoom.toString())
+      if (center && center.length == 2) {
+        params.set('center', center.join(','))
+      }
+      router.replace(`?${params.toString()}`)
+    }, [router, searchParams])
+  
+  
   
 
   if (searchParams.get('error') == 'true') {
@@ -121,6 +131,7 @@ export default function MapExplorer() {
   }
 
   useEffect(() => {
+    
     if (!isLoading && resultBounds?.length) {
 
       // Check if current view overlaps with result bounds
@@ -149,16 +160,13 @@ export default function MapExplorer() {
             mapInstance.current?.fitBounds(resultBounds, { maxZoom: 18, padding: [50, 50] });
           }
           else {
-            setZoom(currentZoom)
-            const mapCenter = mapInstance.current?.getCenter()
-            if (mapCenter) {
-              setCenter([mapCenter.lat, mapCenter.lng])
-            }
+            setViewUrlParams(currentZoom, mapInstance.current?.getCenter() || undefined)
+            
           }
         }
       }
     }
-  }, [resultBounds, isLoading, setZoom, setCenter])
+  }, [resultBounds, isLoading, setViewUrlParams])
 
 
 
@@ -254,7 +262,7 @@ useEffect(() => {
         }
     }
 
-  }, [mapInstance, isLoading, setCenter, doc, docData])
+  }, [mapInstance, isLoading, doc, docData])
 
 
 
@@ -320,7 +328,7 @@ useEffect(() => {
       mapInstance.current.zoomIn();
     } else {
 
-      setZoom(prev => (prev || 5) + 1);
+      setViewUrlParams((zoom || 5) + 1);
     }
   };
   
@@ -328,7 +336,7 @@ useEffect(() => {
     if (mapInstance.current) {
       mapInstance.current.zoomOut();
     } else {
-      setZoom(prev => Math.max((prev || 5) - 1, 1));
+      setViewUrlParams(Math.max((zoom || 5) - 1, 1));
       
     }
   };
@@ -473,8 +481,7 @@ useEffect(() => {
             if (!mapInstance.current) {
               mapInstance.current = e.target
             }
-            setZoom(e.target.getZoom())
-            setCenter([currentBounds.getCenter().lat, currentBounds.getCenter().lng])
+            setViewUrlParams(e.target.getZoom(), [currentBounds.getCenter().lat, currentBounds.getCenter().lng])
           
           
         }}
@@ -496,8 +503,7 @@ useEffect(() => {
                 const bounds = map.getBounds();
                 const boundsCenter = bounds.getCenter();
                 console.log("MOVE END")
-                setCenter([boundsCenter.lat, boundsCenter.lng]);
-                setZoom(map.getZoom());
+                setViewUrlParams(map.getZoom(), [boundsCenter.lat, boundsCenter.lng])
                 setMarkerBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
               },
             })          

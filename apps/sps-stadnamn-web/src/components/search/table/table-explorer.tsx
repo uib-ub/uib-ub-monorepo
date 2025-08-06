@@ -2,7 +2,6 @@ import { facetConfig } from "@/config/search-config"
 import { contentSettings, treeSettings } from "@/config/server-config"
 import { usePerspective, useMode } from "@/lib/search-params"
 import { useSearchParams } from "next/navigation"
-import { useQueryState } from "nuqs"
 import { Fragment, useContext, useState } from "react"
 import { PiArrowCounterClockwise, PiBookOpen, PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiMapPinFill } from "react-icons/pi"
 import SortHeader from "./sort-header"
@@ -20,14 +19,11 @@ export default function TableExplorer() {
     const searchParams = useSearchParams()
     const { tableData, totalHits, isLoading } = useContext(SearchContext)
 
-    const setAsc = useQueryState('asc')[1]
-    const setDesc = useQueryState('desc')[1]
     const doc = searchParams.get('doc')
 
     const [columnSelectorOpen, setColumnSelectorOpen] = useState(false)
     const localStorageKey = `visibleColumns_${perspective}`;
 
-    const mode = useMode()
     const { isMobile } = useContext(GlobalContext)
 
     const [visibleColumns, setVisibleColumns] = useState<string[]>(['adm', ...facetConfig[perspective].filter(item => item.table).map(facet => facet.key)])
@@ -98,10 +94,10 @@ export default function TableExplorer() {
                     }
                     <DownloadButton visibleColumns={visibleColumns} showCadastre={showCadastre ?? false} joinWithSlash={joinWithSlash} formatCadastre={(cadastre: string) => formatCadastre([{cadastre}])}/>
                     { (searchParams.get('asc') || searchParams.get('desc')) &&
-                        <button type="button" className='btn btn-outline btn-compact pl-2' onClick={() => {setAsc(null); setDesc(null)}}>
+                        <Clickable type="button" className='btn btn-outline btn-compact pl-2' add={{asc: null, desc: null}}>
                         <PiArrowCounterClockwise className='text-xl mr-2' aria-hidden="true"/>
                         Tilbakestill sortering
-                    </button>
+                    </Clickable>
                     }
                     </div>
                     

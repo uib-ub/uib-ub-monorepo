@@ -4,8 +4,7 @@ import { fieldConfig } from "@/config/search-config"
 import { datasetTitles, typeNames } from "@/config/metadata-config"
 import { usePerspective, useMode, useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
-import { PiCaretDownBold, PiPushPinFill, PiTrash, PiX } from "react-icons/pi"
-import { parseAsString, useQueryState } from "nuqs"
+import { PiCaretDownBold, PiTrash, PiX } from "react-icons/pi"
 import { DocContext } from "@/app/doc-provider"
 import { useContext } from "react"
 import { getGnr } from "@/lib/utils"
@@ -26,12 +25,9 @@ export default function ActiveFilters({showDatasets = true, showFacets = true}: 
     const searchParams = useSearchParams()
     const perspective = usePerspective()
     const mode = useMode()
-    const [fulltext, setFulltext] = useQueryState('fulltext', parseAsString.withDefault('off'))
     const { parentData } = useContext(DocContext)
-    const [parent, setParent] = useQueryState('parent')
-    const [sourceLabel, setSourceLabel] = useQueryState('sourceLabel')
-    const [sourceDataset, setSourceDataset] = useQueryState('sourceDataset')
-    const {facetOptions, isMobile} = useContext(GlobalContext)
+
+    const {isMobile} = useContext(GlobalContext)
 
     // Get boost_gt parameter for djupinnsamlingar filter
     const boostGt = searchParams.get('boost_gt')

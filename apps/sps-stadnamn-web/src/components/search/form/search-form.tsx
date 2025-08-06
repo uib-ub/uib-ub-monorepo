@@ -1,24 +1,22 @@
 'use client'
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { PiCaretLeft, PiMagnifyingGlass, PiX } from 'react-icons/pi';
-import { useQueryState } from 'nuqs';
 import { datasetTitles } from '@/config/metadata-config';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { fulltextFields } from '@/config/search-config';
 import { usePerspective, useMode, useSearchQuery } from '@/lib/search-params';
 import Form from 'next/form'
 import Options from './options';
 import { GlobalContext } from '@/app/global-provider';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
-import Clickable from '@/components/ui/clickable/clickable';
 
 
 export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
+    const router = useRouter()
     const { isMobile, currentUrl, preferredTabs } = useContext(GlobalContext)
-    const [nav, setNav] = useQueryState('nav')
+    const nav = searchParams.get('nav')
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
@@ -33,25 +31,6 @@ export default function SearchForm() {
         input.current?.focus()
     }  
     
-
-
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                setNav(null);
-            }
-        };
-    
-        document.addEventListener('keydown', handleKeyDown);
-    
-        // Cleanup function to remove the event listener
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [setNav]);
-
-
-
 
     return pathname == '/search' ? <>   
         <div className="sr-only xl:not-sr-only flex !px-4 divide-x-2 divide-primary-400 gap-4 overflow-clip items-center content-center !w-[calc(25svw-0.5rem)]">

@@ -2,7 +2,6 @@
 import { createContext, useContext } from 'react'
 import { useState, useEffect } from 'react';
 import { usePerspective, useSearchQuery } from '@/lib/search-params';
-import { parseAsInteger, useQueryState } from 'nuqs';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from './global-provider';
 import { useMode } from '@/lib/search-params';
@@ -55,8 +54,8 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     
     const asc = searchParams.get('asc')
     const desc = searchParams.get('desc')
-    const page = useQueryState('page', parseAsInteger.withDefault(1))[0]
-    const perPage = useQueryState('perPage', parseAsInteger.withDefault(10))[0]
+    const page = searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1
+    const perPage = searchParams.get('perPage') ? parseInt(searchParams.get('perPage')!) : 10
 
     
     const searchParamsString = searchParams.toString()

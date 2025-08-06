@@ -1,6 +1,5 @@
 import { useSearchParams } from 'next/navigation'
 import { fieldConfig } from '@/config/search-config';
-import { parseAsInteger, useQueryState } from 'nuqs';
 import { contentSettings } from '@/config/server-config';
 
 export function useQueryWithout(omit : string[]) {
@@ -46,7 +45,7 @@ export function useSearchQuery() {
     const datasetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
     const nav = searchParams.get('nav')
-    const size = useQueryState('size', parseAsInteger.withDefault(20))[0]
+    const size = parseInt(searchParams.get('size') || "20")
     
 
     validFields.forEach(field => {

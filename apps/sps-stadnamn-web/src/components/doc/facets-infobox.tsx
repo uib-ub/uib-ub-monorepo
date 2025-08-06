@@ -3,10 +3,26 @@ import Link from "next/link";
 import { PiFunnel, PiMagnifyingGlass } from "react-icons/pi";
 import { facetConfig } from "@/config/search-config";
 import { getValueByPath } from "@/lib/utils";
-import { createSerializer, parseAsString } from "nuqs";
 import { usePerspective } from "@/lib/search-params";
 import Clickable from "../ui/clickable/clickable";
 import { datasetTitles } from "@/config/metadata-config";
+
+// Add custom serializer utilities
+const parseAsString = (value: string | null): string | null => value;
+
+const createSerializer = (config: Record<string, (value: string | null) => any>) => {
+  return (params: Record<string, any>) => {
+    const searchParams = new URLSearchParams();
+    
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        searchParams.set(key, String(value));
+      }
+    });
+
+    return `?${searchParams.toString()}`;
+  };
+};
 
 export default function FacetsInfobox({ source, docDataset, filteredFacets }: { source: Record<string,any>, docDataset: string | null, filteredFacets: any[] }) {
   const perspective = usePerspective()

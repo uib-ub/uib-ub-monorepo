@@ -3,12 +3,10 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { PiBookOpen, PiDatabase, PiFunnel, PiListBullets, PiTreeViewFill } from "react-icons/pi";
 import Results from "./nav/results/search-results";
 import MapExplorer from "./map-explorer";
-import { useQueryState } from "nuqs";
 import { usePerspective, useSearchQuery, useMode } from "@/lib/search-params";
 import StatusSection from "./status-section";
 import { SearchContext } from "@/app/search-provider";
 import TreeResults from "./nav/results/tree-results";
-import DatasetDrawer from "./datasets/dataset-drawer";
 import TableExplorer from "./table/table-explorer";
 import { treeSettings } from "@/config/server-config";
 import { useSearchParams } from "next/navigation";
@@ -20,6 +18,7 @@ import FacetSection from "./nav/facets/facet-section";
 import ActiveFilters from "./form/active-filters";
 import { formatNumber } from "@/lib/utils";
 import DatasetFacet from "./nav/facets/dataset-facet";
+import Clickable from "../ui/clickable/clickable";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -29,11 +28,12 @@ export default function MobileLayout() {
     const [swipeDirection, setSwipeDirection] = useState<null | 'up' | 'down'>(null);
     const scrollableContent = useRef<HTMLDivElement>(null);
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
+    const searchParams = useSearchParams()
+
 
     const [drawerContent, setDrawerContent] = useState<string | null>(null)
-    const [nav, setNav] = useQueryState('nav')
+    const nav = searchParams.get('nav')
     
-    const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
     const { searchFilterParamsString, facetFilters, datasetFilters } = useSearchQuery()
     const { totalHits, isLoading } = useContext(SearchContext)
@@ -156,28 +156,8 @@ export default function MobileLayout() {
 
 
 
-    const switchTab = (tab: string) => {
-
-        if (drawerContent == tab) {
-            setDrawerContent(null)
-        }
-        else {
-            if (tab == 'tree') {
-                setNav('tree')
-            }
-            if (tab == 'datasets') {
-                setNav('datasets')
-            }
-            if (tab == 'filters') {
-                setNav('filters')
-            }
-            if (tab == 'results') {
-                setNav('results')
-            }
-            setDrawerContent(tab)
-
-        }
-
+    const toggleDrawer = (tab: string) => {
+        setDrawerContent(prev => prev == tab ? null : tab)
     }
 
     useEffect(() => {
@@ -267,31 +247,30 @@ export default function MobileLayout() {
 </div>
             
             <div className="fixed bottom-0 left-0 bg-neutral-800 text-white w-full h-12 p-1 flex items-center justify-between">
-                <button aria-label="Datasett" onClick={() => switchTab('datasets')} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'} className="toolbar-button">
+                <Clickable replace={true} onClick={() => toggleDrawer('datasets')} aria-label="Datasett" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'} className="toolbar-button">
                     <div className="relative">
                         <PiDatabase className="text-3xl" />
                         {datasetCount > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
                             {formatNumber(datasetCount)}
                         </span>}
                     </div>
-                </button>
+                </Clickable>
 
-                {treeSettings[perspective] && <button aria-label='Register' onClick={() => switchTab('tree')} aria-current={drawerContent == 'tree' ? 'page' : 'false'} className="toolbar-button">
+                {treeSettings[perspective] && <Clickable aria-label='Register' onClick={() => toggleDrawer('tree')} add={nav == 'tree' ? {nav: null} : {nav: 'tree'}} aria-current={drawerContent == 'tree' ? 'page' : 'false'} className="toolbar-button">
                     <PiTreeViewFill className="text-3xl" />
-                </button>}
+                </Clickable>}
 
-                {<button aria-label="Filtre" onClick={() => switchTab('filters')} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'} className="toolbar-button">
+                {<Clickable aria-label="Filtre" onClick={() => toggleDrawer('filters')} add={nav == 'filters' ? {nav: null} : {nav: 'filters'}} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'} className="toolbar-button">
                     <div className="relative">
                         <PiFunnel className="text-3xl" />
                         {facetFilters.length > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${facetFilters.length < 10 ? 'px-1.5' : 'px-1'}`}>
                             {facetFilters.length}
                         </span>}
                     </div>
-                </button>}
+                </Clickable>}
 
                 {mode == 'map' && searchFilterParamsString &&
-                    <button aria-label='Søkeresultater'
-                        onClick={() => switchTab('results')}
+                    <Clickable aria-label='Søkeresultater' onClick={() => toggleDrawer('results')} add={nav == 'results' ? {nav: null} : {nav: 'results'}}
                         aria-current={drawerContent == 'results' ? 'page' : 'false'}
                         className="toolbar-button">
                         <div className="relative">
@@ -300,11 +279,11 @@ export default function MobileLayout() {
                                 {totalHits && formatNumber(totalHits.value)}
                             </span>
                         </div>
-                    </button>}
+                    </Clickable>}
 
-                {doc && <button aria-label="Oppslag" onClick={() => switchTab('info')} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button">
+                {doc && <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('info')} add={nav == 'info' ? {nav: null} : {nav: 'info'}} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button">
                     <PiBookOpen className="text-3xl" />
-                </button>}
+                </Clickable>}
 
 
             </div>

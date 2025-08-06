@@ -6,6 +6,7 @@ import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
 import { stringToBase64Url } from '@/lib/utils';
+import Link from 'next/link';
 
 
 
@@ -44,6 +45,13 @@ export default function ResultItem({hit}: {hit: any}) {
     
 
     return  <li className="flex flex-grow">
+
+        <Link replace={false} href={`?${new URLSearchParams({
+            doc: hit.fields.uuid,
+            details: details,
+            group: stringToBase64Url(hit.fields["group.id"][0]),
+            nav: 'results'
+        }).toString()}`}>LENKE</Link>
         
 
         <Clickable link ref={itemRef} className={`w-full h-full p-3 flex items-center group hover:bg-neutral-50 no-underline border-accent-700 aria-[current='page']:bg-accent-50 aria-[current='page']:border-l-4`} 

@@ -1,11 +1,9 @@
 'use client'
 import { SearchContext } from "@/app/search-provider"
-import { useContext, useEffect, useState, useCallback, useRef } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { createSerializer, parseAsArrayOf, parseAsFloat, parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import ResultItem from "./result-item";
-import { getSkeletonLength, stringToBase64Url } from "@/lib/utils";
+import { getSkeletonLength } from "@/lib/utils";
 import { useSearchQuery } from "@/lib/search-params";
 import { useRouter } from "next/navigation";
 
@@ -13,7 +11,7 @@ import { useRouter } from "next/navigation";
 const PER_PAGE = 30
 
 export default function SearchResults() {
-    const { resultData, totalHits, isLoading, searchError } = useContext(SearchContext)
+    const { totalHits, isLoading, searchError } = useContext(SearchContext)
 
     const [collapsedResults, setCollapsedResults] = useState<any[]>([])
     const [isLoadingResults, setIsLoadingResults] = useState(false)

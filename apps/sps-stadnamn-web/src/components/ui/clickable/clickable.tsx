@@ -4,7 +4,7 @@ import { useSearchParams, useRouter} from "next/navigation"
 import { ParamProps } from "./param-types"
 
 
-export default function Clickable({ children, remove, add, only, link, href, ...rest }: ParamProps) {
+export default function Clickable({ children, remove, add, only, link, href, replace, ...rest }: ParamProps) {
     const searchParams = useSearchParams()
     const router = useRouter()
     const newParams = new URLSearchParams(only ? undefined : searchParams)
@@ -21,7 +21,10 @@ export default function Clickable({ children, remove, add, only, link, href, ...
     }
     if (add) {
         Object.entries(add).forEach(([key, value]) => {
-            if (value != null && value !== '') {
+            if (value == null) {
+                newParams.delete(key)
+            }
+            else if (value !== '') {
                 newParams.set(key, value)
             }
         })
@@ -30,14 +33,19 @@ export default function Clickable({ children, remove, add, only, link, href, ...
     const stringParams = newParams.toString()
 
     if (link) {
-        return <Link href={`${href ? href : ''}${stringParams ? `?${stringParams}` : ''}`} {...rest}>{children}</Link>
+        return <Link replace={replace} href={`${href ? href : ''}${stringParams ? `?${stringParams}` : ''}`} {...rest}>{children}</Link>
     }
     else {
         const handleClick = (event: React.MouseEvent) => {
             if (rest.onClick) {
                 rest.onClick(event)
             }
-            router.push("?" + stringParams)
+            if (replace) {
+                router.replace("?" + stringParams)
+            }
+            else {
+                router.push("?" + stringParams)
+            }
         }
         return <button type="button" {...rest} onClick={handleClick} >{children}</button>
     }

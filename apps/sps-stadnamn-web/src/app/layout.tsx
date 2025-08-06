@@ -4,7 +4,6 @@ import Menu from "./menu";
 import NavBar from "./nav-bar";
 import { Source_Sans_3, Source_Serif_4 } from 'next/font/google'
 import { Suspense } from "react";
-import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import PlausibleProvider from 'next-plausible'
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
@@ -53,7 +52,6 @@ export default async function RootLayout({
       </head>
       <body className="flex flex-col w-full h-full relative">
         
-        <NuqsAdapter>
         <GlobalProvider isMobile={isMobile} sosiVocab={sosiVocab || {}} coordinateVocab={coordinateVocab || {}}>
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[5001] focus:top-1 focus:py-3 focus:px-6 bg-primary-700 text-white no-underline self-center">
         Gå til hovudinnhald
@@ -68,7 +66,6 @@ export default async function RootLayout({
         </header>
         {children}
         </GlobalProvider>
-        </NuqsAdapter>
         
       </body>
     </html>
