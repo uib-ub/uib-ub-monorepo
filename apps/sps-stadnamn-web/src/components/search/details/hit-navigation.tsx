@@ -21,8 +21,8 @@ export default function HitNavigation() {
     }, [groupData, docData, groupLoading])
 
 
-    const nextDoc = groupData?.[ownPosition !== undefined ? ownPosition - 1 : 0]?.fields?.uuid?.[0]
-    const prevDoc = groupData?.[ownPosition !== undefined ? ownPosition + 1 : 0]?.fields?.uuid?.[0]
+    const prevDoc = groupData?.[ownPosition !== undefined ? ownPosition - 1 : 0]?.fields?.uuid?.[0]
+    const nextDoc = groupData?.[ownPosition !== undefined ? ownPosition + 1 : 0]?.fields?.uuid?.[0]
 
 
     return <>
@@ -31,9 +31,7 @@ export default function HitNavigation() {
       <ClickableIcon 
         label="Forrige" 
         className="btn btn-outline btn-compact" 
-        add={{doc: nextDoc,
-        ...parent ? {parent: nextDoc} : {}
-        }}
+        add={{doc: prevDoc}}
         disabled={ownPosition === undefined || ownPosition <= 0}
       >
         <PiCaretLeft className="xl:text-xl" aria-hidden="true"/>
@@ -42,9 +40,7 @@ export default function HitNavigation() {
       <ClickableIcon 
         label="Neste" 
         className="btn btn-outline btn-compact" 
-        add={{doc: prevDoc,
-        ...parent ? {parent: prevDoc} : {}
-        }}
+        add={{doc: nextDoc}}
         disabled={ownPosition === undefined || ownPosition >= (groupData?.length || 0) - 1}
       >
         <PiCaretRight className="xl:text-xl" aria-hidden="true"/>
