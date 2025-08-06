@@ -79,7 +79,7 @@ export default function SearchForm() {
                 className={`bg-transparent pr-4 pl-4 focus:outline-none flex w-full shrink`}
             />
             
-            {false && searchParams.get('dataset') && <input type="hidden" name="dataset" value={searchParams.get('dataset') || ''}/>}
+            {searchParams.getAll('indexDataset')?.map((dataset, index) => <input type="hidden" key={index} name="indexDataset" value={dataset}/>)}
             
             { inputValue && 
             <ClickableIcon  onClick={() => { clearQuery() }} 
