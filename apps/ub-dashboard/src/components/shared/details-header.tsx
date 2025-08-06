@@ -29,7 +29,7 @@ export const DetailsHeader = ({ data }: { data: DetailsHeaderProps }) => {
           <div className="flex gap-3 pb-2 w-full">
             {data?.logo ? (
               <div className='w-[100px] h-[100px]'>
-                <ImageBox image={data.logo} width={200} height={200} alt="" classesWrapper='relative aspect-[1/1]' />
+                <ImageBox image={data.logo} width={200} height={200} alt="" classesWrapper='relative aspect-square' />
               </div>
             ) : null}
             <div>

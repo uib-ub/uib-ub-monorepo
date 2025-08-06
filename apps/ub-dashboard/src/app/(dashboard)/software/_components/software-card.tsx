@@ -21,7 +21,7 @@ export const ComputingCard = ({ data }: { data: any }) => {
         </CardDescription>
       </CardHeader>
 
-      <CardContent className='flex flex-col flex-grow gap-2 px-2'>
+      <CardContent className='flex flex-col grow gap-2 px-2'>
         {accessPoint ? (
           <div>
             {accessPoint?.map((t: { value: any; label: string; }, i: number) => (
@@ -52,7 +52,7 @@ export const ComputingCard = ({ data }: { data: any }) => {
       <CardFooter className='flex justify-start gap-2 border-t border-zinc-400 p-2'>
         {providedBy?.logo ? (
           <div className='w-[25px] h-[25px]'>
-            <ImageBox image={providedBy.logo} width={45} height={45} alt="" classesWrapper='relative aspect-[1/1]' />
+            <ImageBox image={providedBy.logo} width={45} height={45} alt="" classesWrapper='relative aspect-square' />
           </div>
         ) : null}
         {designatedAccessPoint?.value ? (
@@ -79,7 +79,7 @@ export const HostingSoftwareCard = ({ data }: { data: any }) => {
         </CardDescription>
       </CardHeader>
 
-      <CardContent className='px-2 pt-2 flex flex-col flex-grow gap-2'>
+      <CardContent className='px-2 pt-2 flex flex-col grow gap-2'>
         {runBy?.length > 0 ? (
           runBy.map((r: { id: any; label: any; designatedAccessPoint: { value: any; }; providedBy: { label: any; logo: SanityImageAssetDocument; }; type: any; }, i: number) => (
             <ComputingCard key={i} data={r} />
@@ -90,7 +90,7 @@ export const HostingSoftwareCard = ({ data }: { data: any }) => {
       <CardFooter className='flex justify-start gap-2 border-t border-zinc-300 p-2'>
         {componentOf?.logo ? (
           <div className='w-[25px] h-[25px]'>
-            <ImageBox image={componentOf.logo} width={45} height={45} alt="" classesWrapper='relative aspect-[1/1]' />
+            <ImageBox image={componentOf.logo} width={45} height={45} alt="" classesWrapper='relative aspect-square' />
           </div>
         ) : null}
         {designatedAccessPoint?.value ? (
@@ -116,7 +116,7 @@ export const SoftwareCard = ({ data }: { data: Partial<VolatileSoftware & Softwa
         </CardDescription>
       </CardHeader>
 
-      <CardContent className='px-2 pt-2 flex-grow grid grid-flow-dense gap-2'>
+      <CardContent className='px-2 pt-2 grow grid grid-flow-dense gap-2'>
         <dl className='w-full'>
           {data?.programmedWith && data?.programmedWith.length > 0 ? (
             <div>
@@ -142,7 +142,7 @@ export const SoftwareCard = ({ data }: { data: Partial<VolatileSoftware & Softwa
                   <div key={s.id} className='flex gap-2'>
                     {s.logo ? (
                       <div className='w-[25px] h-[25px]'>
-                        <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-[1/1]' />
+                        <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-square' />
                       </div>
                     ) : null}
                     <Link href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>

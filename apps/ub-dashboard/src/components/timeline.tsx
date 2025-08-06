@@ -49,8 +49,8 @@ const Timeline = ({ data }: { data: TimelineProps[] }) => {
           <div className="absolute w-3 h-3 bg-gray-200 rounded-full mt-3.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
           <time className="text-4xl font-extrabold leading-none text-muted-foreground">{key}</time>
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-3'>
-            {value.map((item: TimelineProps) => (
-              <Card key={item.id} className="flex flex-col p-0 rounded-sm">
+            {value.map((item: TimelineProps, index: number) => (
+              <Card key={`${item.id}-${index}`} className="flex flex-col p-0 rounded-sm">
                 <CardHeader className='p-3'>
                   <CardDescription className='flex gap-1 text-lg'>
                     {dateToString(item.timestamp)}
@@ -65,7 +65,7 @@ const Timeline = ({ data }: { data: TimelineProps[] }) => {
                   </CardTitle>
                 </CardHeader>
                 {item.connectedTo && item.connectedTo.length > 0 ? (
-                  <CardContent className='flex-grow px-3 py-0 pb-2'>
+                  <CardContent className='grow px-3 py-0 pb-2'>
                     <h3 className='text-sm font-normal'>Knyttet til:</h3>
                     <div className='flex flex-col gap-1'>
                       {item.connectedTo.map((item: any) => (

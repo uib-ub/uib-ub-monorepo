@@ -23,11 +23,11 @@ export function MainNav({
           <React.Fragment key={item.label}>
             {item.href ? (
               <NavigationMenuItem>
-                <Link href={`/${item.href}`} legacyBehavior passHref>
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), segmentRoot === item.href ? 'active' : '', menuButtonStyles)}>
+                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), segmentRoot === item.href ? 'active' : '', menuButtonStyles)} asChild>
+                  <Link href={`/${item.href}`} passHref>
                     {item.label}
-                  </NavigationMenuLink>
-                </Link>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
             ) : null
             }
@@ -40,11 +40,11 @@ export function MainNav({
                   <ul className="grid gap-2 p-2 md:grid-cols-1 w-52">
                     {item.items?.map(subItem => (
                       <NavigationMenuItem key={subItem.label}>
-                        <Link href={`/${subItem.href}`} legacyBehavior passHref>
-                          <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), segmentRoot === subItem.href ? 'active' : '', menuButtonStyles)}>
+                        <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), segmentRoot === subItem.href ? 'active' : '', menuButtonStyles)} asChild>
+                          <Link href={`/${subItem.href}`} passHref>
                             {subItem.label}
-                          </NavigationMenuLink>
-                        </Link>
+                          </Link>
+                        </NavigationMenuLink>
                       </NavigationMenuItem>
                     ))}
                   </ul>

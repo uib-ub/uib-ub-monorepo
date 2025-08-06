@@ -39,7 +39,7 @@ const Links = async () => {
             <p>Besøk: {link.views ?? 0}</p>
           </div>
 
-          <div className='ml-auto flex-shrink-0'>
+          <div className='ml-auto shrink-0'>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>

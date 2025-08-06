@@ -18,16 +18,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { SignOut } from '../../auth/logout-button'
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
-import { useTheme } from "next-themes"
+import { ModeToggle } from '../theme-toggle'
 
 export function UserNav({ user }: Readonly<{ user?: { name: string, email: string, picture?: string } }>) {
-  const { setTheme } = useTheme()
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-9 w-9 rounded-full bg-zinc-100 hover:bg-zinc-200 hover:dark:bg-zinc-800 dark:bg-zinc-700">
+        <Button variant="ghost" className="relative h-9 w-9 rounded-full bg-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-800 dark:bg-zinc-700">
           <Avatar className="h-9 w-9 rounded-none">
             <AvatarImage src={user?.picture} alt={user?.name} />
             <AvatarFallback className='rounded-sm bg-inherit'>{initials(user?.name ?? '?')}</AvatarFallback>
@@ -52,17 +50,7 @@ export function UserNav({ user }: Readonly<{ user?: { name: string, email: strin
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuGroup className='flex flex-col gap-1'>
-          <DropdownMenuItem onClick={() => setTheme("light")} className="bg-muted dark:bg-transparent dark:focus:bg-muted focus:bg-muted">
-            <SunIcon className="h-[1.2rem] w-[1.2rem] dark:white rotate-0 scale-100 transition-all mr-2" /> Light
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme("dark")} className="dark:bg-muted">
-            <MoonIcon className="h-[1.2rem] w-[1.2rem] dark:white rotate-0 scale-100 transition-all mr-2" /> Dark
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme("system")}>
-            System
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
+        <ModeToggle />
 
         <DropdownMenuSeparator />
 

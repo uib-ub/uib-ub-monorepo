@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
       return new Response('Missing environment variable SANITY_REVALIDATE_SECRET', { status: 500 })
     }
     const { isValidSignature, body } = await parseBody<WebhookPayload>(
-      /* @ts-ignore */
+      // @ts-expect-error - parseBody type definition issue
       req,
       process.env.SANITY_REVALIDATE_SECRET,
     )
@@ -26,8 +26,9 @@ export async function POST(req: NextRequest) {
     revalidatePath(body.path)
     const message = `Updated route: ${body.path}`
     return NextResponse.json({ body, message })
-  } catch (err: any) {
+  } catch (err) {
     console.error(err)
-    return new Response(err.message, { status: 500 })
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+    return new Response(errorMessage, { status: 500 })
   }
 }

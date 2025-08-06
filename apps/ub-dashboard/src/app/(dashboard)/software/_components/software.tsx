@@ -308,8 +308,8 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
 
       <Tabs orientation='horizontal' defaultValue="general">
         <TabsList className='flex justify-start items-start h-fit mt-2 p-0 bg-transparent border-b w-full'>
-          <TabsTrigger value="general" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">Generelt</TabsTrigger>
-          <TabsTrigger value="data" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">Data</TabsTrigger>
+          <TabsTrigger value="general" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">Generelt</TabsTrigger>
+          <TabsTrigger value="data" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">Data</TabsTrigger>
           <ItemContextMenu variant={'link'} id={data.id} className='p-0 m-0 pb-1 px-3 ml-auto text-muted-foreground text-sm font-medium' />
         </TabsList>
 
@@ -350,7 +350,7 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                           <div key={s.id} className='flex gap-2'>
                             {s.logo ? (
                               <div className='w-[25px] h-[25px]'>
-                                <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-[1/1]' />
+                                <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-square' />
                               </div>
                             ) : null}
                             <Link href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
@@ -371,7 +371,7 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                           <div key={result?.id} className='flex gap-2'>
                             {result?.logo ? (
                               <div className='w-[50px] h-[50px]'>
-                                <ImageBox image={result?.logo} width={50} height={50} alt="" classesWrapper='relative aspect-[1/1]' />
+                                <ImageBox image={result?.logo} width={50} height={50} alt="" classesWrapper='relative aspect-square' />
                               </div>
                             ) : null}
                             <Link href={`/${path[result?.type]}/${result?.id}`} className='underline underline-offset-2'>
@@ -402,7 +402,7 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                         <div key={s.id} className='flex gap-2'>
                           {s.logo ? (
                             <div className='w-[25px] h-[25px]'>
-                              <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-[1/1]' />
+                              <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-square' />
                             </div>
                           ) : null}
                           <Link href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
