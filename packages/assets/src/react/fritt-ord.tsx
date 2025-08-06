@@ -1,5 +1,4 @@
-import { SVGProps } from "react";
-import { Ref, forwardRef, memo } from "react";
+import React, { Ref, forwardRef, memo, SVGProps } from "react";
 
 const FrittOrdLogo = (
   props: SVGProps<SVGSVGElement>,
