@@ -65,12 +65,8 @@ export default function ResultItem({hit}: {hit: any}) {
                     {titleRenderer(hit, 'map')} {isGrunnord && hit.inner_hits?.group?.hits?.total?.value > 1 && "..."}
                     
                 </span>
-
-                {hit.highlight && snippetRenderer ? (
-                    <> | {detailsRenderer(hit)} {snippetRenderer(hit)}  </>
-                ) : (
-                    <p>{detailsRenderer(hit)}</p>
-                )}
+                {detailsRenderer(hit)}
+                {hit.highlight && snippetRenderer && <>{snippetRenderer(hit)}</>}
             </div>
             {perspective == "all" && hit.inner_hits?.group?.hits?.total?.value > 1 && (
                 <div className={`ml-auto flex items-center rounded-full text-sm px-2.5 py-1 ${
