@@ -74,14 +74,19 @@
             {{ $t("termbase.license", 1) }}
           </dt>
           <dd>
-            <AppLink
-              v-if="licenseLinks[data?.license['@id']]"
-              class="underline hover:decoration-2"
-              :to="licenseLinks[data?.license?.['@id']]"
-              >{{ licenseLabels[data?.license?.["@id"]] }}</AppLink
-            >
-            <span v-else class="">
-              {{ licenseLabels[data?.license?.["@id"]] }}
+            <template v-if="appConfig.license[data?.license?.['@id']]">
+              <AppLink
+                v-if="appConfig.license[data?.license?.['@id']].url"
+                class="underline hover:decoration-2"
+                :to="appConfig.license[data.license['@id']].url"
+                >{{ appConfig.license[data?.license?.["@id"]].label }}</AppLink
+              >
+              <span v-else>
+                {{ appConfig.license[data?.license?.["@id"]].label }}
+              </span>
+            </template>
+            <span v-else>
+              {{ appConfig.license[data?.license?.["@id"]] }}
             </span>
           </dd>
         </div>
@@ -113,11 +118,10 @@
 <script setup lang="ts">
 import { localizeSnomedVersionLabel } from "~/composables/locale";
 
+const appConfig = useAppConfig();
+
 const localeLangOrder = useLocaleLangOrder();
 const bootstrapData = useBootstrapData();
 
-const props = defineProps({
-  data: { type: Object, required: true },
-  termbaseId: { type: String, required: true },
-});
+const props = defineProps<{ data: Termbase; termbaseId: TermbaseId }>();
 </script>

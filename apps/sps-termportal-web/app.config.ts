@@ -85,4 +85,43 @@ export default defineAppConfig({
       maxAge: 60 * 60 * 24 * 100,
     },
   },
+  // TODO get url and labels from data
+  license: {
+    "LISENS-3AAll_rights_reserved": {
+      label: "All rights reserved",
+      url: null,
+    },
+    "LISENS-3ANo_Rights_Reserved_-28CC0-29": {
+      label: "CC0",
+      url: "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+    },
+    "LISENS-3AClarin_ID-2DEDU-2DBY-2DNC-2DNORED": {
+      label: "Clarin ID-EDU-BY-NC-NORED",
+      url: "https://urn.fi/urn:nbn:fi:lb-2019071724",
+    },
+    "LISENS-3ACC_BY_40": {
+      label: "CC BY 4.0",
+      url: "https://creativecommons.org/licenses/by/4.0/legalcode.no",
+    },
+    "LISENS-3ACC_BY-2DNC_40": {
+      label: "CC BY-NC 4.0",
+      url: "https://creativecommons.org/licenses/by-nc/4.0/legalcode.no",
+    },
+    "LISENS-3ACC_BY-2DNC-2DND_40": {
+      label: "CC BY-NC-ND 4.0",
+      url: "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.no",
+    },
+    "LISENS-3ACC_BY-2DSA_40": {
+      label: "CC BY-SA 4.0",
+      url: "https://creativecommons.org/licenses/by-sa/4.0/legalcode.no",
+    },
+    "LISENS-3ACC_BY-2DNC-2DSA_40": {
+      label: "CC BY-NC-SA 4.0",
+      url: "https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.no",
+    },
+    "LISENS-3ACC_BY-2DND_40": {
+      label: "CC BY-ND 4.0",
+      url: "https://creativecommons.org/licenses/by-nd/4.0/legalcode.no",
+    },
+  },
 });

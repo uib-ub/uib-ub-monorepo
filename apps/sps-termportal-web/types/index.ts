@@ -40,6 +40,28 @@ declare global {
     | "ti";
   type LocalLangCode = "en" | "nb" | "nn";
 
+  type LicensePageId = keyof typeof appConfig.license;
+
+  // termbase
+  interface Termbase {
+    "@id": string;
+    identifier: TermbaseId;
+    type: string[];
+    label: [{ "@language": LocalLangCode; "@value": string }];
+    description: Record<LocalLangCode, string>;
+    language: LangCode;
+    opprinneligSpraak: LangCode;
+    license: { "@id": LicensePageId };
+    modified: { type: string; "@value": string };
+    publisher: {
+      "@id": string;
+      type: string[];
+      identifier: string;
+      label: { "@language": string; "@value": string };
+    };
+    contactPoint: { hasEmail: string; hasTelephone: string };
+  }
+
   // concept data
   type SemanticRelation = keyof typeof appConfig.data.semanticRelations;
 

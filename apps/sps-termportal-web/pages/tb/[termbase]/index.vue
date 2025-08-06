@@ -103,18 +103,20 @@ const termbaseDescriptionHeight = computed(() => {
   }
 });
 
-const { data } = await useLazyFetch(`/api/termbase/${termbase}`, {
+const { data } = await useLazyFetch<Termbase>(`/api/termbase/${termbase}`, {
   key: `termbase_${termbase}`,
   headers: process.server
     ? { cookie: "session=" + useRuntimeConfig().apiKey }
     : undefined,
 });
+
 const description = computed(() => {
   let description = "";
   for (const lang of localeLangOrder.value) {
-    if (data.value?.description?.[lang]) {
+    const localLangcode = lang as LocalLangCode;
+    if (data.value?.description?.[localLangcode]) {
       try {
-        description = data.value?.description?.[lang];
+        description = data.value?.description?.[localLangcode];
       } catch (e) {}
       break;
     }
