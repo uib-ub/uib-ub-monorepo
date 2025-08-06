@@ -5,12 +5,11 @@ import Person, { query } from '../_components/person'
 import PreviewPerson from '../_components/preview-person'
 import { sanityFetch } from '@/sanity/lib/fetch'
 import { auth } from "@/auth"
-import { PersonProps } from '@/types'
 import FantasyPerson from '../_components/fantasy-person'
 
 export default async function PersonPage(
   props: {
-    params: Promise<any>
+    params: Promise<{ id: string }>
   }
 ) {
   const params = await props.params;

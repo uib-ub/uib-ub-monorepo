@@ -1,9 +1,7 @@
 'use client'
 
 import React, { useRef, useActionState } from 'react';
-// @ts-ignore
 import { useFormStatus } from 'react-dom';
-// @ts-ignore
 import { createShortLink } from '@/actions/link-action'
 
 import { Button } from '@/components/ui/button'

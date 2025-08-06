@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import '@/app/globals.css'
 import type { Metadata } from 'next'
 import { TailwindIndicator } from '@/components/shared/tailwind-indicator'

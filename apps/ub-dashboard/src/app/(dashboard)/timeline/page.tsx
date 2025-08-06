@@ -68,7 +68,7 @@ const query = groq`{
   ]
 }`
 
-type TimelinePageProps = {
+type _TimelinePageProps = {
   timeline: TimelineProps[]
 }
 

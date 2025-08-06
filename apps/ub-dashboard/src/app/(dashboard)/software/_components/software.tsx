@@ -225,6 +225,8 @@ export type VolatileSoftware = {
   uses: {
     id: string
     label: string
+    type: string
+    logo?: SanityImageAssetDocument
   }[],
   runBy: SoftwareComputingEService[]
   hostedBy: {
@@ -272,10 +274,13 @@ export type SoftwareProps = SanityDocument & {
   uses: {
     id: string
     label: string
+    type: string
+    logo?: SanityImageAssetDocument
   }[]
   programmedWith: {
     id: string
     label: string
+    type: string
   }[]
   currentOrFormerManager: {
     assignedActor: {
@@ -333,7 +338,7 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                     <div>
                       <dt className='text-muted-foreground'>Programmeringsspråk</dt>
                       <dd className='flex flex-wrap gap-3'>
-                        {data.programmedWith.map((s: any, i: number) => (
+                        {data.programmedWith.map((s: { id: string; label: string; type: string }) => (
                           <Link key={s.id} href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
                             {s.label}
                           </Link>
@@ -346,7 +351,7 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                     <div>
                       <dt className='text-muted-foreground'>Bruker programvare</dt>
                       <dd className='flex flex-wrap gap-3'>
-                        {data.uses.map((s: any, i: number) => (
+                        {data.uses.map((s: { id: string; label: string; type: string; logo?: SanityImageAssetDocument }) => (
                           <div key={s.id} className='flex gap-2'>
                             {s.logo ? (
                               <div className='w-[25px] h-[25px]'>
@@ -367,7 +372,7 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                     <div>
                       <dt className='text-muted-foreground'>Resultat av</dt>
                       <dd className='flex flex-wrap gap-3'>
-                        {data.resultOf.map((result: any, i: number) => (
+                        {data.resultOf.map((result: { id: string; label: string; type: string; logo?: SanityImageAssetDocument }) => (
                           <div key={result?.id} className='flex gap-2'>
                             {result?.logo ? (
                               <div className='w-[50px] h-[50px]'>
@@ -398,7 +403,7 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                   </CardHeader>
                   <CardContent>
                     <div className='flex flex-col gap-3'>
-                      {data.usedIn.map((s: any, i: number) => (
+                      {data.usedIn.map((s: { id: string; label: string; type: string; logo?: SanityImageAssetDocument }) => (
                         <div key={s.id} className='flex gap-2'>
                           {s.logo ? (
                             <div className='w-[25px] h-[25px]'>
@@ -416,9 +421,6 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
               </div>
             ) : null}
 
-
-
-            {/* @ts-ignore */}
             {data.referredToBy?.[0]?.body ? (
               <Card className=''>
                 <CardHeader>
@@ -426,7 +428,7 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                 </CardHeader>
                 <CardContent>
                   <ScrollArea className="h-[250px] max-w-prose rounded-md border p-4 mt-2 mb-5">
-                    {/* @ts-ignore */}
+                    {/* @ts-expect-error - CustomPortableText expects different value type */}
                     <CustomPortableText value={data.referredToBy[0].body} paragraphClasses='py-2 max-w-xl' />
                   </ScrollArea>
                 </CardContent>
@@ -453,8 +455,8 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                   </CardHeader>
                   <CardContent>
                     <div className='grid grid-cols-2 gap-4'>
-                      {data.runBy.map((s: SoftwareComputingEService, i: number) => (
-                        <ComputingCard data={s} key={i} />
+                      {data.runBy.map((s: SoftwareComputingEService) => (
+                        <ComputingCard data={s} key={s.id} />
                       ))}
                     </div>
                   </CardContent>
@@ -471,8 +473,8 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                   </CardHeader>
                   <CardContent>
                     <div className='grid auto-flow-dense grid-cols-1 md:grid-cols-2 gap-4'>
-                      {data?.hasSoftwarePart.map((s, i) => (
-                        <SoftwareCard data={s} key={i} />
+                      {data?.hasSoftwarePart.map((s) => (
+                        <SoftwareCard data={s} key={s.id || s.label} />
                       ))}
                     </div>
                   </CardContent>

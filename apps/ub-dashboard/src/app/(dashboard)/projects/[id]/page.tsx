@@ -1,13 +1,13 @@
 import { MainShell } from '@/components/shared/main-shell'
 import { LiveQuery } from 'next-sanity/preview/live-query'
 import { draftMode } from 'next/headers'
-import Project, { query, ProjectProps } from '../_components/project'
+import Project, { query } from '../_components/project'
 import PreviewGroup from '../_components/preview-project'
 import { sanityFetch } from '@/sanity/lib/fetch'
 
 export default async function ProjectPage(
   props: {
-    params: Promise<any>
+    params: Promise<{ id: string }>
   }
 ) {
   const params = await props.params;

@@ -27,7 +27,7 @@ export const ComputingCard = ({ data }: { data: any }) => {
             {accessPoint?.map((t: { value: any; label: string; }, i: number) => (
               <div className='text-muted-foreground text-sm flex items-center gap-1' key={i}>
                 <ExternalLinkIcon className='inline-block w-3 h-3' />
-                <a href={t.value} target='_blank' className='whitespace-nowrap overflow-x-scroll'>{t.value}</a>
+                <a href={t.value} target='_blank' rel="noreferrer" className='whitespace-nowrap overflow-x-scroll'>{t.value}</a>
               </div>
             ))}
           </div>
@@ -56,7 +56,7 @@ export const ComputingCard = ({ data }: { data: any }) => {
           </div>
         ) : null}
         {designatedAccessPoint?.value ? (
-          <Link href={designatedAccessPoint?.value} target='_blank'>
+          <Link href={designatedAccessPoint?.value} target='_blank' rel="noreferrer">
             {providedBy?.label}
             <ExternalLinkIcon className='inline-block w-4 h-4 ml-1' />
           </Link>
@@ -81,8 +81,8 @@ export const HostingSoftwareCard = ({ data }: { data: any }) => {
 
       <CardContent className='px-2 pt-2 flex flex-col grow gap-2'>
         {runBy?.length > 0 ? (
-          runBy.map((r: { id: any; label: any; designatedAccessPoint: { value: any; }; providedBy: { label: any; logo: SanityImageAssetDocument; }; type: any; }, i: number) => (
-            <ComputingCard key={i} data={r} />
+          runBy.map((r: { id: string; label: string; designatedAccessPoint?: { value: string }; providedBy?: { label: string; logo: SanityImageAssetDocument }; type: string }) => (
+            <ComputingCard key={r.id} data={r} />
           ))
         ) : null}
       </CardContent>
@@ -94,7 +94,7 @@ export const HostingSoftwareCard = ({ data }: { data: any }) => {
           </div>
         ) : null}
         {designatedAccessPoint?.value ? (
-          <Link href={designatedAccessPoint?.value} target='_blank'>
+          <Link href={designatedAccessPoint?.value} target='_blank' rel="noreferrer">
             {componentOf.label}
             <ExternalLinkIcon className='inline-block w-4 h-4 ml-1' />
           </Link>
@@ -122,7 +122,7 @@ export const SoftwareCard = ({ data }: { data: Partial<VolatileSoftware & Softwa
             <div>
               <dt className='text-muted-foreground'>Programmeringsspråk</dt>
               <dd className='flex flex-wrap gap-3'>
-                {data.programmedWith.map((s: any, i: number) => (
+                {data.programmedWith.map((s: { id: string; label: string }) => (
                   <span key={s.id}>
                     {s.label}
                     {/* <Link key={s.id} href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
@@ -138,7 +138,7 @@ export const SoftwareCard = ({ data }: { data: Partial<VolatileSoftware & Softwa
             <div>
               <dt className='text-muted-foreground'>Bruker programvare</dt>
               <dd className='flex flex-wrap gap-3'>
-                {data.uses.map((s: any, i: number) => (
+                {data.uses.map((s: { id: string; label: string; logo?: SanityImageAssetDocument; type: string }) => (
                   <div key={s.id} className='flex gap-2'>
                     {s.logo ? (
                       <div className='w-[25px] h-[25px]'>
@@ -155,13 +155,13 @@ export const SoftwareCard = ({ data }: { data: Partial<VolatileSoftware & Softwa
           ) : null}
         </dl>
 
-        {data.hostedBy?.map((t, i) => (
-          <HostingSoftwareCard key={i} data={t} />
+        {data.hostedBy?.map((t) => (
+          <HostingSoftwareCard key={t.id || t.label} data={t} />
         ))}
 
         {data.runBy && data.runBy.length > 0 ? (
-          data.runBy.map((r: { id: any; label: any; designatedAccessPoint: { value: any; }; providedBy: { label: any; logo: SanityImageAssetDocument; }; type: any; }, i: number) => (
-            <ComputingCard key={i} data={r} />
+          data.runBy.map((r: { id: string; label: string; designatedAccessPoint?: { value: string }; providedBy?: { label: string; logo: SanityImageAssetDocument }; type: string }) => (
+            <ComputingCard key={r.id} data={r} />
           ))
         ) : null}
       </CardContent>
@@ -169,8 +169,8 @@ export const SoftwareCard = ({ data }: { data: Partial<VolatileSoftware & Softwa
       <CardFooter className='flex justify-end border-t p-3'>
         {data.hasType && (
           <div className='flex flex-wrap items-center gap-2'>
-            {data.hasType.map((t, i) => (
-              <Badge variant="secondary" className='grow-0 text-xs' key={i}>
+            {data.hasType.map((t) => (
+              <Badge variant="secondary" className='grow-0 text-xs' key={t.id || t.label}>
                 {t.label ?? 'Mangler navn'}
               </Badge>
             ))}

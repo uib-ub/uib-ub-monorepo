@@ -1,13 +1,13 @@
 import { MainShell } from '@/components/shared/main-shell'
 import { LiveQuery } from 'next-sanity/preview/live-query'
 import { draftMode } from 'next/headers'
-import Group, { query, GroupProps } from '../_components/group'
+import Group, { query } from '../_components/group'
 import PreviewGroup from '../_components/preview-group'
 import { sanityFetch } from '@/sanity/lib/fetch'
 
 export default async function GroupPage(
   props: {
-    params: Promise<any>
+    params: Promise<{ id: string }>
   }
 ) {
   const params = await props.params;

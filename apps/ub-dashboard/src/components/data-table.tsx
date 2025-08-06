@@ -43,7 +43,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
-    /* @ts-ignore */
+    /* @ts-expect-error - array filter returns unknown type */
     [
       config.activeFilter ? { id: "active", value: "Aktiv" } : null,
       config.externalSoftwareFilter ? { id: "madeByUB", value: true } : null,
@@ -65,9 +65,13 @@ export function DataTable<TData, TValue>({
   })
 
   // Get flat array of all accessorKeys
-  const flatColumns = columns.flatMap((column: any) => {
-    return column.accessorKey
-  })
+  const flatColumns = columns.flatMap((column) => {
+    // Check if the column has an accessorKey property
+    if ('accessorKey' in column && typeof column.accessorKey === 'string') {
+      return column.accessorKey
+    }
+    return []
+  }).filter(Boolean)
 
   return (
     <div className='flex flex-col gap-4'>

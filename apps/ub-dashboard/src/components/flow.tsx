@@ -3,9 +3,11 @@ import React, { useCallback } from 'react';
 import ReactFlow, {
   addEdge,
   ConnectionLineType,
-  Panel,
   useNodesState,
   useEdgesState,
+  Node,
+  Edge,
+  Connection,
 } from 'reactflow';
 import dagre from 'dagre';
 
@@ -17,15 +19,15 @@ dagreGraph.setDefaultEdgeLabel(() => ({}));
 const nodeWidth = 172;
 const nodeHeight = 36;
 
-const getLayoutedElements = (nodes: any, edges: any, direction = 'TB') => {
+const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => {
   const isHorizontal = direction === 'LR';
   dagreGraph.setGraph({ rankdir: direction });
 
-  nodes.forEach((node: any) => {
+  nodes.forEach((node) => {
     dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
   });
 
-  edges.forEach((edge: any) => {
+  edges.forEach((edge) => {
     dagreGraph.setEdge(edge.source, edge.target);
   });
 
@@ -50,19 +52,27 @@ const getLayoutedElements = (nodes: any, edges: any, direction = 'TB') => {
 };
 
 
-const Flow = ({ nodes: initialNodes, edges: initialEdges }: { nodes: any, edges: any }) => {
+const Flow = ({ nodes: initialNodes, edges: initialEdges }: { nodes: Node[], edges: Edge[] }) => {
   const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
     initialNodes,
     initialEdges
   );
-  const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
+  const [nodes, , onNodesChange] = useNodesState(layoutedNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
 
   const onConnect = useCallback(
-    (params: any) =>
-      setEdges((eds) =>
-        addEdge({ ...params, type: ConnectionLineType.SmoothStep, animated: true }, eds)
-      ),
+    (connection: Connection) => {
+      if (connection.source && connection.target) {
+        setEdges((eds) =>
+          addEdge({ 
+            id: `${connection.source}-${connection.target}`,
+            ...connection, 
+            type: ConnectionLineType.SmoothStep, 
+            animated: true 
+          }, eds)
+        );
+      }
+    },
     [setEdges]
   );
 

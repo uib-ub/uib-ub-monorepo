@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import { UibIcon } from 'assets'
 import { auth } from '@/auth'
 import { SignIn } from '@/components/auth/login-button'

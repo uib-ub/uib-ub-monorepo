@@ -212,7 +212,7 @@ const Group = ({ data = {} }: { data: Partial<GroupProps> }) => {
             ) : null}
 
 
-            {/* @ts-ignore */}
+            {/* @ts-expect-error - PortableText body type mismatch */}
             {data.referredToBy?.[0]?.body ? (
               <Card>
                 <CardHeader>
@@ -220,7 +220,7 @@ const Group = ({ data = {} }: { data: Partial<GroupProps> }) => {
                 </CardHeader>
                 <CardContent>
                   <ScrollArea className="h-[250px] max-w-prose rounded-md border p-4 mt-2 mb-5">
-                    {/* @ts-ignore */}
+                    {/* @ts-expect-error - CustomPortableText expects different value type */}
                     <CustomPortableText value={data.referredToBy[0].body} paragraphClasses='py-2 max-w-xl' />
                   </ScrollArea>
                 </CardContent>
@@ -239,7 +239,7 @@ const Group = ({ data = {} }: { data: Partial<GroupProps> }) => {
                 <CardContent>
                   {data.subGroupOf?.length > 0 ? (
                     <ul className='mt-2'>
-                      {data.subGroupOf.map((group: any) => (
+                      {data.subGroupOf.map((group: { id: string; label: string }) => (
                         <li key={group.id}>
                           <Link className='underline underline-offset-2' href={`/groups/${group.id}`}>
                             {group.label}
@@ -253,7 +253,7 @@ const Group = ({ data = {} }: { data: Partial<GroupProps> }) => {
                         </li>
                         {data.hasSubGroup && (
                           <ul>
-                            {data.hasSubGroup.map((group: any) => (
+                            {data.hasSubGroup.map((group: { id: string; label: string }) => (
                               <li key={group.id} className='ml-3'>
                                 <Link className='underline underline-offset-2' href={`/groups/${group.id}`}>
                                   <BiSubdirectoryRight className="inline-block" />
@@ -293,7 +293,7 @@ const Group = ({ data = {} }: { data: Partial<GroupProps> }) => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {data?.hasFile.map((file: any) => (
+                      {data?.hasFile.map((file: { _key: string; url: string; label: string; extension: string }) => (
                         <TableRow key={file._key}>
                           <TableCell>
                             <Link href={file.url}>
