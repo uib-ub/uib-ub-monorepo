@@ -14,7 +14,6 @@
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
   },
   "devDependencies": {
-    "eslint": "^8.28.0",
     "eslint-config-custom": "*",
     "tsconfig": "*",
     "tsup": "^8",
