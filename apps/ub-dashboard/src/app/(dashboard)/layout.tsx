@@ -1,10 +1,10 @@
+import React, { Suspense } from 'react'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import '@/app/globals.css'
 import type { Metadata } from 'next'
 import SessionProvider from '@/components/providers/session-provider'
 import { TailwindIndicator } from '@/components/shared/tailwind-indicator'
 import { Header } from '@/components/shared/header/header'
-import { Suspense } from 'react'
 import { Footer } from '@/components/shared/footer'
 
 export const metadata: Metadata = {

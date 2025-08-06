@@ -1,23 +1,16 @@
 import Link from 'next/link'
 import { MainNav } from '@/components/shared/header/main-nav'
-import LoginButton from '@/components/auth/login-button'
+import { SignIn } from '@/components/auth/login-button'
 import { UserNav } from '@/components/shared/header/user-nav'
-import { getServerSession } from "next-auth";
+import { auth } from "@/auth";
 import { GlobalCommand } from './global-command';
 import { sanityFetch } from '@/sanity/lib/fetch';
 import { groq } from 'next-sanity';
 import { MobileNav } from './mobile-nav';
 
-interface Session {
-  user?: {
-    name: string;
-    email: string;
-  };
-}
-
 export const Header = async () => {
-  const session: Session = (await getServerSession()) ?? {};
-  console.log("🚀 ~ Header ~ session:", session)
+  const session = await auth();
+  if (!session?.user) return null;
 
   const query = groq`*[_type in ["Actor", "Project", "Group", "Software"]] | order(label, asc) {
     "id": _id,
@@ -41,9 +34,9 @@ export const Header = async () => {
           <GlobalCommand data={data} />
 
           {Object.keys(session).length === 0 ? (
-            <LoginButton />
+            <SignIn />
           ) : (
-            <UserNav user={session.user} />
+            <UserNav user={session.user as any} />
           )}
 
         </div>
@@ -51,15 +44,3 @@ export const Header = async () => {
     </header>
   )
 }
-/*     <header className="flex flex-col ali px-4 py-2 border-b">
-      <div className="flex items-center">
-        <div className='flex-grow-0 font-bold mr-5 dark:text-zinc-200'>
-          <Link href={`/`}>UB <span className='hidden md:inline'>dashboard</span></Link>
-        </div>
-
-        <MainNav className='hidden md:flex md:flex-grow' />
-
-        <div className="ml-auto pl-3 flex items-center space-x-2">
-      </div>
-      <MainNav className='md:hidden flex items-start md:flex-grow' />
-    </header> */

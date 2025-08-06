@@ -1,3 +1,4 @@
+import React from 'react'
 import { ItemContextMenu } from '@/components/edit-intent-button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'

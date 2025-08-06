@@ -1,3 +1,4 @@
+import React from 'react'
 import { groupBy, sortBy } from 'lodash'
 import { Alert, AlertTitle } from './ui/alert'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,6 +10,8 @@ import { path } from '@/lib/utils'
 import { GoMoveToEnd, GoMoveToStart, GoProject } from 'react-icons/go'
 import { GiStarFormation } from 'react-icons/gi'
 import { Badge } from './ui/badge'
+
+import type { JSX } from "react";
 
 const Timeline = ({ data }: { data: TimelineProps[] }) => {
   if (data.length === 0) return (

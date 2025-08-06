@@ -1,5 +1,5 @@
+import React, { Suspense } from 'react'
 import { UibIcon } from 'assets'
-import { Suspense } from 'react'
 
 export default async function Home() {
   return (

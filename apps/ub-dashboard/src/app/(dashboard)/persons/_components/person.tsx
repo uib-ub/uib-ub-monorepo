@@ -1,3 +1,4 @@
+import React from 'react'
 import ImageBox from '@/components/image-box'
 import { QuoteIcon } from '@radix-ui/react-icons'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"

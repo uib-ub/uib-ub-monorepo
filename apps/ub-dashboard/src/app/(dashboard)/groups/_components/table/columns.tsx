@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { CaretSortIcon, CheckCircledIcon, ClockIcon, CrossCircledIcon, QuestionMarkCircledIcon } from "@radix-ui/react-icons"
 import { ColumnDef } from "@tanstack/react-table"
 import { GroupProps } from '../groups'

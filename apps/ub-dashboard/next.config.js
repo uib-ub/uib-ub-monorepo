@@ -13,6 +13,7 @@ const nextConfig = {
       fullUrl: true,
     },
   },
+  transpilePackages: ['assets'],
   webpack: (config, { isServer }) => {
     // Handle native modules
     config.resolve.fallback = {
@@ -24,4 +25,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+export default nextConfig

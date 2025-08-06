@@ -1,4 +1,6 @@
 "use client"
+
+import React from "react"
 import { CaretSortIcon, CheckCircledIcon, CheckboxIcon, CrossCircledIcon } from "@radix-ui/react-icons"
 import { ColumnDef } from "@tanstack/react-table"
 import { SoftwareListProps } from '../software-list'

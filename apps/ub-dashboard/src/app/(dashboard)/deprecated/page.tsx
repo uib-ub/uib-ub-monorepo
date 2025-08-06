@@ -15,7 +15,7 @@ export default async function DeprecatedPage() {
       </div>
       {/* <pre className='text-xs'>{JSON.stringify(data, null, 2)}</pre> */}
       <LiveQuery
-        enabled={draftMode().isEnabled}
+        enabled={(await draftMode()).isEnabled}
         query={query}
         initialData={data}
         as={PreviewDeprecated}
@@ -23,5 +23,5 @@ export default async function DeprecatedPage() {
         <Deprecated data={data} />
       </LiveQuery>
     </MainShell>
-  )
+  );
 }

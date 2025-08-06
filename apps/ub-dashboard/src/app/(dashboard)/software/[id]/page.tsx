@@ -5,17 +5,18 @@ import Software, { query, SoftwareProps } from '../_components/software'
 import PreviewSoftware from '../_components/preview-software'
 import { sanityFetch } from '@/sanity/lib/fetch'
 
-export default async function ProjectPage({
-  params,
-}: {
-  params: any
-}) {
+export default async function ProjectPage(
+  props: {
+    params: Promise<any>
+  }
+) {
+  const params = await props.params;
   const data = await sanityFetch({ query, params: { id: params.id }, tags: [`Software:${params.id}`] })
 
   return (
     <MainShell>
       <LiveQuery
-        enabled={draftMode().isEnabled}
+        enabled={(await draftMode()).isEnabled}
         query={query}
         params={params}
         initialData={data}
@@ -24,5 +25,5 @@ export default async function ProjectPage({
         <Software data={data} />
       </LiveQuery>
     </MainShell>
-  )
+  );
 }

@@ -12,7 +12,7 @@ export default async function SoftwarePage() {
     <MainShell>
       <h1 className='mb-2'>Programvare</h1>
       <LiveQuery
-        enabled={draftMode().isEnabled}
+        enabled={(await draftMode()).isEnabled}
         query={query}
         initialData={data}
         as={PreviewSoftware}
@@ -20,5 +20,5 @@ export default async function SoftwarePage() {
         <Software data={data} />
       </LiveQuery>
     </MainShell>
-  )
+  );
 }

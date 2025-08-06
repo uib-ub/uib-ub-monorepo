@@ -1,4 +1,6 @@
 "use client"
+
+import React from "react"
 import { CaretSortIcon, ClockIcon, QuestionMarkCircledIcon } from "@radix-ui/react-icons"
 import { ColumnDef } from "@tanstack/react-table"
 import { PersonListProps } from '../persons'

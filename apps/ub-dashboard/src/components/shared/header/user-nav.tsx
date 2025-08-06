@@ -1,4 +1,4 @@
-"use client";
+import React from 'react'
 import initials from "initials"
 import Link from "next/link"
 import {
@@ -17,7 +17,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LogoutButton } from '../../auth/logout-button'
+import { SignOut } from '../../auth/logout-button'
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
 import { useTheme } from "next-themes"
 
@@ -67,7 +67,7 @@ export function UserNav({ user }: Readonly<{ user?: { name: string, email: strin
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
-          <LogoutButton className="w-full justify-start cursor-pointer" />
+          <SignOut />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

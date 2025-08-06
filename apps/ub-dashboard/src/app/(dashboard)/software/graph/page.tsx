@@ -11,7 +11,7 @@ export default async function GraphPage() {
   return (
     <MainShell>
       <LiveQuery
-        enabled={draftMode().isEnabled}
+        enabled={(await draftMode()).isEnabled}
         query={query}
         initialData={data}
         as={PreviewGraph}
@@ -19,5 +19,5 @@ export default async function GraphPage() {
         <Graph data={data} />
       </LiveQuery>
     </MainShell>
-  )
+  );
 }

@@ -79,7 +79,7 @@ export default async function TimelinePage() {
     <MainShell>
       <h1 className='mb-6'>Tidslinje</h1>
       <LiveQuery
-        enabled={draftMode().isEnabled}
+        enabled={(await draftMode()).isEnabled}
         query={query}
         initialData={data.timeline}
         as={PreviewTimeline}
@@ -87,5 +87,5 @@ export default async function TimelinePage() {
         <Timeline data={data.timeline} />
       </LiveQuery>
     </MainShell>
-  )
+  );
 }

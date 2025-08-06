@@ -1,12 +1,12 @@
 "use client"
 
+import React, { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { cn, path } from '@/lib/utils'
 import Link from 'next/link'
-import { useState } from 'react'
 
 const bgColors: Record<string, string> = {
   "Universitet": "bg-zinc-50",

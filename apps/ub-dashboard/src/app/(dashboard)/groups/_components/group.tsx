@@ -1,3 +1,4 @@
+import React from 'react'
 import { ItemContextMenu } from '@/components/edit-intent-button'
 import ImageBox from '@/components/image-box'
 import { Badge } from '@/components/ui/badge'

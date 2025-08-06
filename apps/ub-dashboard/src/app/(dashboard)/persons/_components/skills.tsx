@@ -1,3 +1,4 @@
+import React from 'react'
 import { Alert, AlertTitle } from '@/components/ui/alert'
 import { Slider } from '@/components/ui/slider'
 import { path } from '@/lib/utils'

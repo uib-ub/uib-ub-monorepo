@@ -47,7 +47,7 @@ export const pageStructure = (
     const singletonItems = typeDefArray.map((typeDef) => {
       return S.listItem()
         .title(typeDef.title!)
-        .icon(typeDef.icon)
+        .icon(typeDef.icon as any)
         .child(
           S.editor()
             .id(typeDef.name)

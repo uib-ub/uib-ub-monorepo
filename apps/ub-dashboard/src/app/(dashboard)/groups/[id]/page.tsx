@@ -5,17 +5,18 @@ import Group, { query, GroupProps } from '../_components/group'
 import PreviewGroup from '../_components/preview-group'
 import { sanityFetch } from '@/sanity/lib/fetch'
 
-export default async function GroupPage({
-  params,
-}: {
-  params: any
-}) {
+export default async function GroupPage(
+  props: {
+    params: Promise<any>
+  }
+) {
+  const params = await props.params;
   const data = await sanityFetch({ query, params: { id: params.id }, tags: [`Group:${params.id}`] })
 
   return (
     <MainShell>
       <LiveQuery
-        enabled={draftMode().isEnabled}
+        enabled={(await draftMode()).isEnabled}
         query={query}
         params={params}
         initialData={data}
@@ -24,5 +25,5 @@ export default async function GroupPage({
         <Group data={data} />
       </LiveQuery>
     </MainShell>
-  )
+  );
 }

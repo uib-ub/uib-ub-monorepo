@@ -6,6 +6,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       id: 'dataporten',
       name: 'DATAPORTEN',
       type: 'oauth',
+      issuer: 'https://auth.dataporten.no',
       wellKnown: 'https://auth.dataporten.no/.well-known/openid-configuration',
       token: true,
       clientId: process.env.DATAPORTEN_ID,

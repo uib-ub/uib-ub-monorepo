@@ -22,7 +22,7 @@ export default async function GroupsPage() {
         </span>
       </div>
       <LiveQuery
-        enabled={draftMode().isEnabled}
+        enabled={(await draftMode()).isEnabled}
         query={query}
         initialData={data}
         as={PreviewGroups}
@@ -30,5 +30,5 @@ export default async function GroupsPage() {
         <GroupsOverview data={data} />
       </LiveQuery>
     </MainShell>
-  )
+  );
 }
