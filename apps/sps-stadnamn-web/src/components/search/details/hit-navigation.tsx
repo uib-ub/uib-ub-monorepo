@@ -11,7 +11,6 @@ export default function HitNavigation() {
     const {docData} = useContext(DocContext)
     const [ownPosition, setOwnPosition] = useState<number | undefined>(undefined)
     const searchParams = useSearchParams()
-    const parent = searchParams.get('parent')
     
 
     useEffect(() => {

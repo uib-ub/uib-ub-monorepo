@@ -32,7 +32,6 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
 
   useEffect(() => {
     fetch(`/api/facet?perspective=${perspective}&facets=group.adm1,group.adm2,group.adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
-      console.log(es_data)
       setFacetAggregation(es_data.aggregations?.["group.adm1"])
       setFacetIsLoading(false);
     })

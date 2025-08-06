@@ -33,7 +33,6 @@ export default function Error({
         stack: error.stack,
         digest: error.digest
     }
-    console.log(props)
     plausible('error', {props})
     setIsReported(true)
   }

@@ -58,7 +58,6 @@ export async function fetchIIIFNeighbours(order: number, partOf: string) {
   
   const [neighboursData, neighboursStatus] = await postQuery('iiif_*', neighboursQuery)
 
-  console.log(neighboursData)
   
   return {
     data: {

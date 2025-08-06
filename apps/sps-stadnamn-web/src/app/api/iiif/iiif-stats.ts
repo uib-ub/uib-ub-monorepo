@@ -4,7 +4,6 @@ import { postQuery } from '../_utils/post';
 
 export async function fetchIIIFStats(manifestUuid?: string) {
   'use server'
-  console.log(manifestUuid)
   const [stats, status] = await postQuery('iiif_*', {
     size: 0,
     query: manifestUuid 

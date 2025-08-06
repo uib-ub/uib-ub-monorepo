@@ -119,7 +119,6 @@ export default function SearchResults() {
                   e.preventDefault();
                   const newUrl = new URLSearchParams(searchParams)
                   newUrl.set('page', (parseInt(page || '0') + 1).toString())
-                  console.log("newUrl", newUrl.toString())
                   router.push(`?${newUrl.toString()}`);
                 }} 
                 className="bg-neutral-100 p-4 rounded-full w-full block"

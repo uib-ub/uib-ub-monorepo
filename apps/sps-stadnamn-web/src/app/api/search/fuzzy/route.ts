@@ -103,7 +103,6 @@ export async function POST(request: Request) {
   if (boolQuery.bool.should.length > 0 || boolQuery.bool.must.length > 0) {
     query.query = boolQuery
   }
-  console.log("FINAL QUERY",query)
 
   const [data, status] = await postQuery('all', query)
   return Response.json(data, {status: status})
