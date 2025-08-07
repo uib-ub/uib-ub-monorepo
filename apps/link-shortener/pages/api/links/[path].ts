@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { XataClient } from '../../../utils/xata';
+import { XataClient, type LinksRecord } from '../../../utils/xata';
 
 const xata = new XataClient()
 
@@ -12,7 +12,7 @@ export default async function handler(
 
   if (req.method === 'GET') {
     try {
-      const response: any = await xata.db.links.filter("path", path as string).getFirst()
+      const response: LinksRecord | null = await xata.db.links.filter("path", path as string).getFirst()
 
       if (!response) {
         return res.status(404).json({
