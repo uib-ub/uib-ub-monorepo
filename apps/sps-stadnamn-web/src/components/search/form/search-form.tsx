@@ -9,6 +9,7 @@ import Form from 'next/form'
 import Options from './options';
 import { GlobalContext } from '@/app/global-provider';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
+import IconButton from '@/components/ui/icon-button';
 
 
 export default function SearchForm() {
@@ -61,11 +62,11 @@ export default function SearchForm() {
             {searchParams.getAll('indexDataset')?.map((dataset, index) => <input type="hidden" key={index} name="indexDataset" value={dataset}/>)}
             
             { inputValue && 
-            <ClickableIcon  onClick={() => { clearQuery() }} 
-                            remove={['q']}
+            <IconButton  onClick={() => { clearQuery() }} 
+
                             // Replace results with filters if no facetFilters
-                            add={{nav: (nav == 'results' && facetFilters.length == 0) ? 'filters' : 'results'}}
-                            label="Tøm søk"><PiX className="text-2xl lg:text-xl text-neutral-600 group-focus-within:text-neutral-800 m-1"/></ClickableIcon> }
+
+                            label="Tøm søkefelt"><PiX className="text-2xl lg:text-xl text-neutral-600 group-focus-within:text-neutral-800 m-1"/></IconButton> }
             <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-2xl lg:text-xl shrink-0 text-neutral-600 group-focus-within:text-neutral-800" aria-hidden="true"/></button>
             </div>
             <Options/>
