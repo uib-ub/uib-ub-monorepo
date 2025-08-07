@@ -7,7 +7,7 @@ import { PiCaretLeft, PiCaretRight } from "react-icons/pi";
 
 
 export default function HitNavigation() {
-    const {groupData, groupLoading, groupTotal, prevDoc, nextDoc, docIndex} = useContext(GroupContext)
+    const {groupData, groupLoading, groupTotal, prevDocUuid, nextDocUuid, docIndex} = useContext(GroupContext)
 
     
 
@@ -20,8 +20,8 @@ export default function HitNavigation() {
         label="Forrige" 
         link
         className="btn btn-outline btn-compact" 
-        add={{doc: prevDoc?._source.uuid}}
-        disabled={!prevDoc || docIndex === undefined || docIndex <= 0}
+        add={{doc: prevDocUuid}}
+        disabled={!prevDocUuid || docIndex === undefined || docIndex <= 0}
       >
         <PiCaretLeft className="xl:text-xl" aria-hidden="true"/>
       </ClickableIcon>
@@ -30,8 +30,8 @@ export default function HitNavigation() {
         link
         label="Neste" 
         className="btn btn-outline btn-compact" 
-        add={{doc: nextDoc?._source.uuid}}
-        disabled={!nextDoc || docIndex === undefined || docIndex >= (groupData?.length || 0) - 1}
+        add={{doc: nextDocUuid}}
+        disabled={!nextDocUuid || docIndex === undefined || docIndex >= (groupData?.length || 0) - 1}
       >
         <PiCaretRight className="xl:text-xl" aria-hidden="true"/>
       </ClickableIcon>

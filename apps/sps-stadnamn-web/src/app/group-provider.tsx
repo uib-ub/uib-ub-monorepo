@@ -11,8 +11,8 @@ interface GroupContextData {
     groupTotal: { value: number, relation: string } | null;
     setInitialUrl: (url: string | null) => void;
     initialUrl: string | null;
-    prevDoc: any | null;
-    nextDoc: any | null;
+    prevDocUuid: string | null;
+    nextDocUuid: string | null;
     docIndex: number | undefined;
 }
 
@@ -23,8 +23,8 @@ export const GroupContext = createContext<GroupContextData>({
     groupTotal: null,
     setInitialUrl: () => {},
     initialUrl: null,
-    prevDoc: null,
-    nextDoc: null,
+    prevDocUuid: null,
+    nextDocUuid: null,
     docIndex: undefined
 });
 
@@ -36,8 +36,8 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
     const [groupLoading, setGroupLoading] = useState<boolean>(true)
     const [groupError, setGroupError] = useState<Record<string, string> | null>(null)
     const [groupData, setGroupData] = useState<any[] | null>(null)
-    const [prevDoc, setPrevDoc] = useState<any | null>(null)
-    const [nextDoc, setNextDoc] = useState<any | null>(null)
+    const [prevDocUuid, setPrevDocUuid] = useState<string | null>(null)
+    const [nextDocUuid, setNextDocUuid] = useState<string | null>(null)
     const [groupTotal, setGroupTotal] = useState<{ value: number; relation: string } | null>(null)
     const [initialUrl, setInitialUrl] = useState<string | null>(null)
     const [initialMode, setInitialMode] = useState<string | null>(null)
@@ -75,26 +75,8 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
     // Prefetch prev and next doc
     useEffect(() => {
         if (groupData && !groupLoading) {
-            console.log("PREFETCHING", groupData)
-            const prevUuid = (docIndex !== undefined && docIndex > 0) ? groupData[docIndex - 1]?.fields?.uuid[0] : null
-            const nextUuid = (docIndex !== undefined && docIndex < groupData.length - 1) ? groupData[docIndex + 1]?.fields?.uuid[0] : null
-
-            console.log("PREV", prevUuid, "NEXT", nextUuid)
-            console.log("docIndex", docIndex)
-
-            if (prevUuid) {
-                setPrevDoc(null)
-                fetch(`/api/doc?uuid=${prevUuid}`).then(res => res.json()).then(data => {
-                    setPrevDoc(data.hits.hits[0])
-                })
-            }
-            if (nextUuid) {
-                setNextDoc(null)
-                fetch(`/api/doc?uuid=${nextUuid}`).then(res => res.json()).then(data => {
-                    setNextDoc(data.hits.hits[0])
-                })
-            }
-            
+            setPrevDocUuid((docIndex !== undefined && docIndex > 0) ? groupData[docIndex - 1]?.fields?.uuid[0] : null)
+            setNextDocUuid((docIndex !== undefined && docIndex < groupData.length - 1) ? groupData[docIndex + 1]?.fields?.uuid[0] : null)
         }
     }, [groupData, docIndex, groupLoading])
 
@@ -189,8 +171,8 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
         groupTotal,
         setInitialUrl,
         initialUrl,
-        prevDoc,
-        nextDoc,
+        prevDocUuid,
+        nextDocUuid,
         docIndex
     }}>{children}</GroupContext.Provider>
 }
