@@ -10,8 +10,7 @@ export async function POST(req: NextRequest) {
       return new Response('Missing environment variable SANITY_REVALIDATE_SECRET', { status: 500 })
     }
     const { isValidSignature, body } = await parseBody<WebhookPayload>(
-      // @ts-expect-error - Type compatibility issue between Next.js versions
-      req,
+      req as unknown as Parameters<typeof parseBody>[0],
       process.env.SANITY_REVALIDATE_SECRET,
     )
 
