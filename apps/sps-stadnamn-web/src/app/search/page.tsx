@@ -21,11 +21,11 @@ export default async function SearchPage() {
   const isMobile = device.type === 'mobile'
   
   return <SearchProvider>
-          <DocProvider>
-              <GroupProvider>
-                {isMobile  ? <MobileLayout/> : <DesktopLayout/>}
-              </GroupProvider>
-          </DocProvider>
+          <GroupProvider>
+            <DocProvider>
+                  {isMobile  ? <MobileLayout/> : <DesktopLayout/>}
+            </DocProvider>
+          </GroupProvider>
         </SearchProvider>
 }
 
