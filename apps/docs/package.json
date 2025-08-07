@@ -22,7 +22,7 @@
     "@scalar/api-reference-react": "^0.7.29",
     "assets": "*",
     "clsx": "^2.1.1",
-    "next": "^15.3.5",
+    "next": "15.3.5",
     "nextra": "^4.3.0",
     "nextra-theme-docs": "^4.3.0",
     "react": "^19.0.0",
