@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useRef } from 'react'
 import { useState, useEffect } from 'react';
 import { usePerspective, useSearchQuery } from '@/lib/search-params';
 import { useSearchParams } from 'next/navigation';
@@ -16,6 +16,8 @@ interface SearchContextData {
     setCoordinatesError: (value: boolean) => void;
     totalHits: Record<string, any> | null;
     resultBounds: [[number, number], [number, number]] | null;
+    allowFitBounds: boolean;
+    setAllowFitBounds: (value: boolean) => void;
   }
  
   export const SearchContext = createContext<SearchContextData>({
@@ -28,6 +30,8 @@ interface SearchContextData {
     setCoordinatesError: () => {},
     totalHits: null,
     resultBounds: null,
+    allowFitBounds: false,
+    setAllowFitBounds: () => {},
     });
 
 
@@ -37,6 +41,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [isLoading, setIsLoading] = useState(true)
     const [totalHits, setTotalHits] = useState<Record<string,any> | null>(null)
     const [coordinatesError, setCoordinatesError] = useState(false)
+    const [allowFitBounds, setAllowFitBounds] = useState(false)
     
     const searchParams = useSearchParams()
     const perspective = usePerspective()
@@ -112,6 +117,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                     }
                     
                     setResultBounds(limitedBounds)
+                    setAllowFitBounds(true)
                 }
                 else {
                     setResultBounds(null)
@@ -132,7 +138,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
       }, [searchQueryString, size, searchFilterParamsString, useTableData, asc, desc, page, perPage, isMobile])
 
 
-  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, tableData, coordinatesError, setCoordinatesError, setSearchError}}>{children}</SearchContext.Provider>
+  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, tableData, coordinatesError, allowFitBounds, setAllowFitBounds, setCoordinatesError, setSearchError}}>{children}</SearchContext.Provider>
 }
 
 

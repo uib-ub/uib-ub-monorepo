@@ -25,12 +25,13 @@ import { stringToBase64Url } from "@/lib/utils";
 
 
 export default function MapExplorer() {
-  const { resultBounds, totalHits, searchError, setCoordinatesError, isLoading } = useContext(SearchContext)
+  const { resultBounds, totalHits, searchError, setCoordinatesError, isLoading, allowFitBounds, setAllowFitBounds } = useContext(SearchContext)
   const [markerBounds, setMarkerBounds] = useState<[[number, number], [number, number]] | null>()
   const controllerRef = useRef(new AbortController());
   const [baseMap, setBasemap] = useState<null | string>(null)
   const [markerMode, setMarkerMode] = useState<null | string>(null)
   const [myLocation, setMyLocation] = useState<[number, number] | null>(null)
+  const [geoLoading, setGeoLoading] = useState(false)
   const searchParams = useSearchParams()
   const zoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
   const center = searchParams.get('center') ? searchParams.get('center')!.split(',').map(parseFloat) : null
@@ -38,11 +39,20 @@ export default function MapExplorer() {
   const { searchQueryString } = useSearchQuery()
   const perspective = usePerspective()
   const details = searchParams.get('details') || 'doc'
+
+
+
   
   const router = useRouter()
 
   const parent = searchParams.get('parent')
   const doc = searchParams.get('doc')
+
+  const tiles = viewResults?.aggregations?.sample?.tiles?.buckets || viewResults?.aggregations?.tiles?.buckets
+
+
+  const maxDocCount = tiles?.reduce((acc: number, cur: any) => Math.max(acc, cur.doc_count), 0);
+  const minDocCount = tiles?.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
 
   const setViewUrlParams = useCallback((zoom: number, center?: [number, number]) => {
       const params = new URLSearchParams(searchParams)
@@ -130,48 +140,60 @@ export default function MapExplorer() {
     return docData?._source?.location?.coordinates[1] == lat && docData?._source?.location?.coordinates[0] == lon
   }
 
+  // Fly to doc
   useEffect(() => {
+    if (!mapInstance.current || isLoading ) return
     
-    if (!isLoading && resultBounds?.length) {
-
-      // Check if current view overlaps with result bounds
-      const [[northBound, westBound], [southBound, eastBound]] = resultBounds;
-      
-      // Get current view bounds based on center and zoom
-      const mapBounds = mapInstance.current?.getBounds();
-      if (mapBounds) {
-        const currentNorth = mapBounds.getNorth();
-        const currentSouth = mapBounds.getSouth();
-        const currentWest = mapBounds.getWest();
-        const currentEast = mapBounds.getEast();
-        
-        // Check if bounds overlap
-        const overlaps = !(currentEast < westBound || currentWest > eastBound || 
-                          currentNorth < southBound || currentSouth > northBound);
-        
-        if (overlaps) {
-          // Get zoom levels for both current view and result bounds
-          const resultBoundsZoom = mapInstance.current.getBoundsZoom(resultBounds);
-          const currentZoom = mapInstance.current.getZoom();
-          
-          
-          // If current zoom is more than 2 levels out from the result bounds zoom
-          if (currentZoom < resultBoundsZoom - 2) {
-            mapInstance.current?.fitBounds(resultBounds, { maxZoom: 18, padding: [50, 50] });
+      if (doc && docData?._source?.location?.coordinates?.length && docData?._source.uuid == doc) {
+        const currentBounds = mapInstance.current.getBounds();
+        const center = [docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]
+          if (currentBounds && !currentBounds.contains(center)) {
+            mapInstance.current.setView(center, mapInstance.current.getZoom());
           }
-          else {
-            setViewUrlParams(currentZoom, mapInstance.current?.getCenter() || undefined)
-            
-          }
-        }
       }
+
+    }, [mapInstance, isLoading, doc, docData])
+
+  // Fly to results
+
+  useEffect(() => {
+    const mapBounds = mapInstance.current?.getBounds();
+    if (!mapBounds || isLoading || geoLoading || !resultBounds?.length || !allowFitBounds) return
+    
+
+    // Check if result bounds are contained in map bounds
+    const boundsContained = mapBounds.contains(resultBounds)
+
+    if (boundsContained) {
+        // Get zoom levels for both current view and result bounds
+        const resultBoundsZoom = mapInstance.current.getBoundsZoom(resultBounds);
+        const currentZoom = mapInstance.current.getZoom();
+        
+        // If current zoom is more than 2 levels out from the result bounds zoom
+        if (currentZoom < resultBoundsZoom - 2) {
+          setAllowFitBounds(false)
+          mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+          setViewUrlParams(resultBoundsZoom, [mapBounds.getCenter().lat, mapBounds.getCenter().lng])
+        }
     }
-  }, [resultBounds, isLoading, setViewUrlParams])
+
+    if (geoLoading) {
+      return
+    }
+    setAllowFitBounds(false)
+
+    if (!tiles && !viewResults?.hits?.markers?.length) {
+      console.log("Bounds not contained", JSON.stringify(resultBounds), JSON.stringify(mapBounds))
+      console.log("Tiles", tiles)
+      
+      mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+      setViewUrlParams(mapInstance.current.getZoom(), [mapBounds.getCenter().lat, mapBounds.getCenter().lng])
+    }
+    
+    
+  }, [resultBounds, allowFitBounds, setAllowFitBounds, isLoading, geoLoading, tiles, viewResults, setViewUrlParams])
 
 
-
-
-  
 
   useEffect(() => {
     // Check if the bounds are initialized
@@ -179,9 +201,9 @@ export default function MapExplorer() {
       return;
     }
 
+    setGeoLoading(true)
     setCoordinatesError(false)
-
-
+    
     //const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds
     const [[north, west], [south, east]] =  markerBounds
 
@@ -227,14 +249,7 @@ export default function MapExplorer() {
       })
        
       .then(data => {
-        if (!data.hits.hits.length && resultBounds?.length && !isLoading && !zoom) {
-          mapInstance.current?.fitBounds(resultBounds, { maxZoom: 18, padding: [50, 50] });
-        }
-        else {
-          console.log(data.hits.hits.length, resultBounds?.length, isLoading, zoom)
           setViewResults((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(data) : data)
-        }
-
       })
 
       .catch(error => {
@@ -242,27 +257,16 @@ export default function MapExplorer() {
           console.log("NAME", error.name)
           console.log("ERROR", error.stack)
           setCoordinatesError(true)
+          setGeoLoading(false)
         }
-
-      }
-      );
+        
+      })
+      .finally(() => {
+        setGeoLoading(false)
+      })
 
   }, [ markerBounds, searchError, searchQueryString, totalHits, markerMode, parent, perspective, isLoading, autoMode, labelClusters, setCoordinatesError, resultBounds, zoom]);
 
-
-// Fly to results, doc or children
-useEffect(() => {
-  if (!mapInstance.current || isLoading ) return
-  
-    if (doc && docData?._source?.location?.coordinates?.length && docData?._source.uuid == doc) {
-      const currentBounds = mapInstance.current.getBounds();
-      const center = [docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]
-        if (currentBounds && !currentBounds.contains(center)) {
-          mapInstance.current.setView(center, mapInstance.current.getZoom());
-        }
-    }
-
-  }, [mapInstance, isLoading, doc, docData])
 
 
 
@@ -396,11 +400,7 @@ useEffect(() => {
     return [newTopLeft, newBottomRight];
   }
 
-  const tiles = viewResults?.aggregations?.sample?.tiles?.buckets || viewResults?.aggregations?.tiles?.buckets
-
-
-  const maxDocCount = tiles?.reduce((acc: number, cur: any) => Math.max(acc, cur.doc_count), 0);
-  const minDocCount = tiles?.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
+ 
 
 
 
