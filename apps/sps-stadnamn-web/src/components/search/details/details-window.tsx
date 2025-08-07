@@ -1,10 +1,10 @@
 import ClickableIcon from "../../ui/clickable/clickable-icon"
-import { PiBookOpenLight, PiClockCounterClockwiseLight, PiX, PiCaretLeft, PiCaretRight, PiBinocularsLight, PiArrowsOut, PiBinoculars, PiArchiveLight, PiBinocularsFill, PiArrowElbowUpLeft, PiArrowElbowLeftUp, PiListBullets, PiListBulletsLight, PiCaretLeftBold, PiXBold, PiMapPinLight, PiArrowLeft, PiBinocularsBold, PiListLight, PiMapPin, PiMapPinFill, PiBookOpenFill } from "react-icons/pi"
+import { PiBookOpenLight, PiX, PiArrowsOut, PiListLight, PiBookOpenFill } from "react-icons/pi"
 import Link from "next/link"
 import DocInfo from "./doc/doc-info"
 import { useSearchParams } from "next/navigation"
 import DocSkeleton from "../../doc/doc-skeleton"
-import { useContext, useEffect, useState } from "react"
+import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
 import CopyLink from "../../doc/copy-link"
 import { useMode } from "@/lib/search-params"
@@ -12,13 +12,9 @@ import GroupDetails from "./group/group-details"
 import { GroupContext } from "@/app/group-provider"
 import IconLink from "@/components/ui/icon-link"
 import Clickable from "@/components/ui/clickable/clickable"
-import ResultItem from "../nav/results/result-item"
 import HitNavigation from "./hit-navigation"
-import FuzzyExplorer from "../fuzzy/fuzzy-explorer"
-import { GlobalContext } from "@/app/global-provider"
-import { base64UrlToString, stringToBase64Url } from "@/lib/utils"
-import CoordinateType from "./doc/coordinate-type"
-import CoordinateMenu from "./coordinate-menu"
+import DetailsFooter from "./details-footer"
+
 
 
 export default function DetailsWindow() {
@@ -29,11 +25,7 @@ export default function DetailsWindow() {
     const { docLoading, docData } = useContext(DocContext)
     const mode = useMode()
     const group = searchParams.get('group')
-
-    
-
-
-    const { groupData, groupLoading, groupTotal, setInitialUrl } = useContext(GroupContext)
+    const { groupData, groupLoading, groupTotal } = useContext(GroupContext)
     
 
     return <>
@@ -153,25 +145,9 @@ export default function DetailsWindow() {
     { docLoading && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
 
 
-  <div className="flex gap-2 justify-between p-2 items-center">
-    {doc && <CoordinateMenu/> }
-
-    {!fuzzyNav && docData?._source.group?.id &&
-      <Clickable
-        aria-current={(fuzzyNav && group == stringToBase64Url(docData?._source.group)) ? true : false}
-        className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10" 
-        remove={['details', 'doc']} 
-        onClick={() => setInitialUrl(`?${searchParams.toString()}`)}
-        add={{group: stringToBase64Url(docData?._source.group.id), fuzzyNav: fuzzyNav || 'timeline'}}>
-        <PiBinocularsFill className="text-lg text-white" aria-hidden="true"/> Namneformer
-      </Clickable>
-    }
-  </div>
+  <DetailsFooter/>
 
   
-
-  
-
 </>
 }
 

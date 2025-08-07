@@ -1,13 +1,15 @@
 import { DocContext } from "@/app/doc-provider";
 import { GlobalContext } from "@/app/global-provider";
+import DynamicClickable from "@/components/ui/clickable/dynamic-clickable";
 import { datasetTitles } from "@/config/metadata-config";
 import Link from "next/link";
 import { useContext } from "react";
 import { PiMapPinFill } from "react-icons/pi";
 
 export default function CoordinateMenu() {
-    const { coordinateVocab } = useContext(GlobalContext)
+    const { coordinateVocab, isMobile } = useContext(GlobalContext)
     const { docData, docLoading, docDataset } = useContext(DocContext)
+
 
     const coordinateType = docData?._source.coordinateType
     const coordinateMetadata = coordinateVocab[coordinateType]
@@ -15,14 +17,14 @@ export default function CoordinateMenu() {
 
 
     return docData?._source.location ? (
-            <Link href={`info/coordinate-types/${docData._source.coordinateType}`} className="btn btn-outline btn-compact flex items-center gap-2 h-10 pr-4 min-w-0 shrink">
+            <DynamicClickable href={`info/coordinate-types/${docData._source.coordinateType}`} className={`btn btn-outline btn-compact flex items-center gap-2 h-10 ${!isMobile ? 'pr-4' : ''} min-w-0 shrink`}>
               <div className="flex items-center gap-2 min-w-0">
                 <PiMapPinFill className="text-xl text-neutral-600 flex-shrink-0" aria-hidden="true"/>
-                <span className="text-sm truncate block min-w-0">{docData._source.coordinateType ? coordinateVocab[docData._source.coordinateType].creator : datasetTitles[docDataset as string]}{!isOriginal && <span className="text-neutral-700"> (berika)</span>}</span>
+                {!isMobile && <span className="text-sm truncate block min-w-0">{docData._source.coordinateType ? coordinateVocab[docData._source.coordinateType].creator : datasetTitles[docDataset as string]}{!isOriginal && <span className="text-neutral-700"> (berika)</span>}</span>}
               </div>
               
               
-            </Link>
+            </DynamicClickable>
           ) : docLoading ? <div className="h-10 w-20 bg-neutral-900/10 rounded animate-pulse"/> : 
           (
             <em className="text-sm text-neutral-500 flex items-center gap-2 p-2">

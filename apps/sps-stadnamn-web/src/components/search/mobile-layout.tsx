@@ -19,6 +19,9 @@ import ActiveFilters from "./form/active-filters";
 import { formatNumber } from "@/lib/utils";
 import DatasetFacet from "./nav/facets/dataset-facet";
 import Clickable from "../ui/clickable/clickable";
+import HitNavigation from "./details/hit-navigation";
+import { GroupContext } from "@/app/group-provider";
+import DetailsFooter from "./details/details-footer";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -30,6 +33,7 @@ export default function MobileLayout() {
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
     const searchParams = useSearchParams()
 
+    const { groupTotal } = useContext(GroupContext)
 
     const [drawerContent, setDrawerContent] = useState<string | null>(null)
     const nav = searchParams.get('nav')
@@ -45,6 +49,7 @@ export default function MobileLayout() {
     const datasetCount = searchParams.getAll('indexDataset')?.length || 0
     const deepCollections = searchParams.get('boost_gt') == '3'
     const fulltext = searchParams.get('fulltext')
+    const details = searchParams.get('details')
 
 
 
@@ -144,22 +149,19 @@ export default function MobileLayout() {
 
     }
 
+
     useEffect(() => {
-        if (doc) {
-            setDrawerContent('info')
+        if (nav) {
+            setDrawerContent(nav)
         }
-        else {
+        else if (details) {
+            setDrawerContent('details')
+        }
+        else if (!searchFilterParamsString) {
             setDrawerContent(null)
         }
     }
-    , [doc])
-
-    useEffect(() => {
-        if (nav && searchFilterParamsString) {
-            setDrawerContent(nav)
-        }
-    }
-    , [searchFilterParamsString, nav])
+    , [searchFilterParamsString, nav, details, doc])
 
 
 
@@ -182,6 +184,7 @@ export default function MobileLayout() {
 
 
     return <div className="scroll-container">
+       
 
         
         
@@ -197,8 +200,12 @@ export default function MobileLayout() {
 
             <div className={`h-full bg-white flex flex-col mobile-padding rounded-lg shadow-inner border-4 border-neutral-800 shadow-inner max-h-[calc(100svh-12rem)] overscroll-contain pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
-            {drawerContent == 'info' && <>
-            {doc && mode != 'doc' && (docLoading ? <DocSkeleton/> : <DocInfo/>)}
+            {drawerContent == 'details' && <>
+            {doc && mode != 'doc' && <> { (docLoading ? <DocSkeleton/> : <DocInfo/>)}
+            <HitNavigation/>
+
+            
+            </>}
             </>}
             { drawerContent == 'results' && 
                 <section className="flex flex-col gap-2">
@@ -207,6 +214,10 @@ export default function MobileLayout() {
                             {totalHits && formatNumber(totalHits.value)}
                         </span>
                     </h2>
+                    {(searchParams.get('q') || searchParams.get('fulltext') == 'on') && <div className="flex flex-wrap gap-2 pb-2 border-b border-neutral-200">
+                <ActiveFilters showQuery={true}/>
+                </div>}
+                    
                 <Results/>
                 </section>
             
@@ -215,7 +226,7 @@ export default function MobileLayout() {
             <>
             <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide pb-2 flex items-center gap-1">Datasett</h2>
             { (datasetFilters.length > 0 || deepCollections)  && <div className="flex flex-wrap gap-2 py-2 mb-2 border-y border-neutral-200">
-                <ActiveFilters showFacets={false}/>
+                <ActiveFilters showDatasets={true}/>
                 </div>}
             <DatasetFacet/> 
 
@@ -226,10 +237,10 @@ export default function MobileLayout() {
             { (drawerContent == 'filters' || drawerContent == 'adm') && 
                 <>
                 <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">Filter {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
-                {(facetFilters.length > 0 || fulltext == 'on') && <div className="flex flex-col">
+                {facetFilters.length > 0 && <div className="flex flex-col">
                 
                 <div className="flex flex-wrap gap-2 py-2 border-b border-neutral-200">
-                <ActiveFilters showDatasets={false}/>
+                <ActiveFilters showFacets={true}/>
                 </div>
                 </div>}
                 <FacetSection/> 
@@ -242,7 +253,12 @@ export default function MobileLayout() {
             { drawerContent == 'tree' &&
                 <TreeResults/>
             }
+            {drawerContent == 'details' && currentPosition > 25 && <div className="absolute bottom-0 left-0 right-0 bg-neutral-100  !pl-1 mx-1 border-t border-neutral-300 border-t-2 flex items-center justify-between">
+                <HitNavigation/>
+                <DetailsFooter/>
+                </div>}
             </div>
+            
             </>
             }
 
@@ -253,8 +269,8 @@ export default function MobileLayout() {
                 <Clickable replace={true} onClick={() => toggleDrawer('datasets')} aria-label="Datasett" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'} className="toolbar-button">
                     <div className="relative">
                         <PiDatabase className="text-3xl" />
-                        {datasetCount > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
-                            {formatNumber(datasetCount)}
+                        {(datasetCount + Number(Boolean(deepCollections))) > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
+                            {formatNumber(datasetCount + Number(Boolean(deepCollections)))}
                         </span>}
                     </div>
                 </Clickable>
@@ -284,7 +300,7 @@ export default function MobileLayout() {
                         </div>
                     </Clickable>}
 
-                {doc && <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('info')} add={nav == 'info' ? {nav: null} : {nav: 'info'}} aria-current={drawerContent == 'info' ? 'page' : 'false'} className="toolbar-button">
+                {doc && <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('details')} add={{details: details || 'doc', nav: null}} aria-current={drawerContent == 'details' ? 'page' : 'false'} className="toolbar-button">
                     <PiBookOpen className="text-3xl" />
                 </Clickable>}
 

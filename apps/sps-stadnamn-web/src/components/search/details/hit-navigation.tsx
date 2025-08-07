@@ -1,5 +1,7 @@
 import { DocContext } from "@/app/doc-provider";
+import { GlobalContext } from "@/app/global-provider";
 import { GroupContext } from "@/app/group-provider";
+import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -8,6 +10,7 @@ import { PiCaretLeft, PiCaretRight } from "react-icons/pi";
 
 export default function HitNavigation() {
     const {groupData, groupLoading, groupTotal, prevDocUuid, nextDocUuid, docIndex} = useContext(GroupContext)
+    const {isMobile} = useContext(GlobalContext)
 
     
 
@@ -25,7 +28,8 @@ export default function HitNavigation() {
       >
         <PiCaretLeft className="xl:text-xl" aria-hidden="true"/>
       </ClickableIcon>
-      <span className="text-neutral-900 self-center w-10 text-center">{docIndex ? docIndex + 1 : 1}/{groupTotal?.value}</span>
+      {!isMobile && <span className="text-neutral-900 self-center w-10 text-center">{docIndex ? docIndex + 1 : 1}/{groupTotal?.value}</span>}
+      {isMobile && <Clickable className="btn btn-outline btn-compact w-24 text-center" add={{details: 'group'}}>{docIndex ? docIndex + 1 : 1}/{groupTotal?.value}</Clickable>}
       <ClickableIcon 
         link
         label="Neste" 
