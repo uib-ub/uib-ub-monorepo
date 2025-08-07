@@ -7,21 +7,10 @@ import { PiCaretLeft, PiCaretRight } from "react-icons/pi";
 
 
 export default function HitNavigation() {
-    const {groupData, groupLoading, groupTotal} = useContext(GroupContext)
-    const {docData} = useContext(DocContext)
-    const [ownPosition, setOwnPosition] = useState<number | undefined>(undefined)
-    const searchParams = useSearchParams()
+    const {groupData, groupLoading, groupTotal, prevDoc, nextDoc, docIndex} = useContext(GroupContext)
+
     
 
-    useEffect(() => {
-      if (groupData?.find(doc => doc._id == docData?._id) !== undefined) {
-        setOwnPosition(groupData?.findIndex((doc) => doc._id == docData?._id))
-      }
-    }, [groupData, docData, groupLoading])
-
-
-    const prevDoc = groupData?.[ownPosition !== undefined ? ownPosition - 1 : 0]?.fields?.uuid?.[0]
-    const nextDoc = groupData?.[ownPosition !== undefined ? ownPosition + 1 : 0]?.fields?.uuid?.[0]
 
 
     return <>
@@ -29,18 +18,20 @@ export default function HitNavigation() {
       
       <ClickableIcon 
         label="Forrige" 
+        link
         className="btn btn-outline btn-compact" 
-        add={{doc: prevDoc}}
-        disabled={ownPosition === undefined || ownPosition <= 0}
+        add={{doc: prevDoc?._source.uuid}}
+        disabled={!prevDoc || docIndex === undefined || docIndex <= 0}
       >
         <PiCaretLeft className="xl:text-xl" aria-hidden="true"/>
       </ClickableIcon>
-      <span className="text-neutral-900 self-center w-10 text-center">{ownPosition ? ownPosition + 1 : 1}/{groupTotal?.value}</span>
+      <span className="text-neutral-900 self-center w-10 text-center">{docIndex ? docIndex + 1 : 1}/{groupTotal?.value}</span>
       <ClickableIcon 
+        link
         label="Neste" 
         className="btn btn-outline btn-compact" 
-        add={{doc: nextDoc}}
-        disabled={ownPosition === undefined || ownPosition >= (groupData?.length || 0) - 1}
+        add={{doc: nextDoc?._source.uuid}}
+        disabled={!nextDoc || docIndex === undefined || docIndex >= (groupData?.length || 0) - 1}
       >
         <PiCaretRight className="xl:text-xl" aria-hidden="true"/>
       </ClickableIcon>
