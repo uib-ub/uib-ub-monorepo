@@ -24,7 +24,7 @@ It includes the following packages/apps:
 - `tailwind-config`: shared tailwindcss config
 - `tailwind-ui`: React components with Tailwind CSS.
 - `termportal-ui`: Vue components with Tailwind CSS
-- `tsconfig`: shared tsconfig.jsons used throughout the monorepo
+- `typescript-config`: shared typescript-config.jsons used throughout the monorepo
 - `utils`: shared utility functions
 
 Each package/app is aims to react 100% [TypeScript](https://www.typescriptlang.org/).

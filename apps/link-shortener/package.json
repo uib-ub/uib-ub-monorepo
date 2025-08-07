@@ -23,7 +23,7 @@
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.32.0",
     "eslint-config": "*",
-    "tsconfig": "*",
-    "typescript": "^4.9.3"
+    "typescript": "^5.9.2",
+    "typescript-config": "*"
   }
 }

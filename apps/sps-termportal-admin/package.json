@@ -41,5 +41,8 @@
     "termportal-ui": "*",
     "vite": "5.2.8",
     "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "typescript": "^5.9.2"
   }
 }
