@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 
-export default function ActiveFilters({showDatasets = true, showFacets = true}: {showDatasets?: boolean, showFacets?: boolean}) {
+export default function ActiveFilters({showDatasets = false, showFacets = false, showQuery = false}: {showDatasets?: boolean, showFacets?: boolean, showQuery?: boolean}) {
     const router = useRouter()
     const { searchQuery, facetFilters, datasetFilters } = useSearchQuery()
     const searchParams = useSearchParams()
@@ -28,6 +28,8 @@ export default function ActiveFilters({showDatasets = true, showFacets = true}: 
     const { parentData } = useContext(DocContext)
 
     const {isMobile} = useContext(GlobalContext)
+    const nav = searchParams.get('nav')
+    const fulltext = searchParams.get('fulltext')
 
     // Get boost_gt parameter for djupinnsamlingar filter
     const boostGt = searchParams.get('boost_gt')
@@ -128,10 +130,16 @@ export default function ActiveFilters({showDatasets = true, showFacets = true}: 
     return (
       <>
       {/* Search chip */}
-      {searchParams.get('q') && <button className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => removeFilter('q', searchParams.get('q')!)}>
+      { searchParams.get('q') && showQuery && <Clickable remove={['q', ...(nav == 'results' && !facetFilters?.length && !datasetFilters?.length ? ['nav'] : [])]}
+      className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => removeFilter('q', searchParams.get('q')!)}>
         <span className="flex items-center"><PiMagnifyingGlass className="text-neutral-600 !mr-1" aria-hidden="true"/>{searchParams.get('q')}</span>
         <PiX className="inline text-lg" aria-hidden="true"/>
-      </button>}
+      </Clickable>}
+      {fulltext == 'on' && showQuery && <Clickable remove={['fulltext']}
+      className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => removeFilter('fulltext', 'on')}>
+        <span className="flex items-center">Fulltekst</span>
+        <PiX className="inline text-lg" aria-hidden="true"/>
+      </Clickable>}
         
         {/* Djupinnsamlingar chip */}
         {boostGt === '3' && (showDatasets || !isMobile) &&
