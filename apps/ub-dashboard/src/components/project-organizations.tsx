@@ -1,14 +1,11 @@
 "use client"
 
 import React from 'react';
-import { Button } from '@/components/ui/button'
-import { CaretSortIcon, ClockIcon, QuestionMarkCircledIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
-import { GiFinishLine } from 'react-icons/gi';
 import { Alert, AlertTitle } from './ui/alert';
 import { ContributionAssignmentProps } from '@/types';
 
-const columns = [
+/* const columns = [
   {
     accessorKey: "assignedActor",
     header: ({ column }: { column: any }) => {
@@ -64,7 +61,7 @@ const columns = [
       </div>
     )
   },
-];
+]; */
 
 export const ProjectOrganizations = ({ data }: { data: ContributionAssignmentProps[] }) => {
   return (

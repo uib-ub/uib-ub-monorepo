@@ -5,7 +5,6 @@ import PreviewTimeline from './_components/preview-timeline'
 import { sanityFetch } from '@/sanity/lib/fetch'
 import { MainShell } from '@/components/shared/main-shell'
 import { groq } from 'next-sanity'
-import { TimelineProps } from '@/types'
 
 const query = groq`{
   "timeline": [
@@ -67,10 +66,6 @@ const query = groq`{
     }
   ]
 }`
-
-type _TimelinePageProps = {
-  timeline: TimelineProps[]
-}
 
 export default async function TimelinePage() {
   const data = await sanityFetch({ query, revalidate: 7200 })

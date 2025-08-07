@@ -4,10 +4,9 @@
 
 import { type DocumentDefinition } from 'sanity'
 import { type StructureResolver } from 'sanity/structure'
-/* import { Iframe } from 'sanity-plugin-iframe-pane'
-
-import { iframeOptions } from '../../../sanity.config' */
-import { PREVIEWABLE_DOCUMENT_TYPES } from '@/sanity/schemas'
+/* import { Iframe } from 'sanity-plugin-iframe-pane' */
+/* import { iframeOptions } from '../../../sanity.config' */
+/* import { PREVIEWABLE_DOCUMENT_TYPES } from '@/sanity/schemas' */
 
 export const singletonPlugin = (types: string[]) => {
   return {

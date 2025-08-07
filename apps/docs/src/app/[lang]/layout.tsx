@@ -28,7 +28,7 @@ type LayoutProps = Readonly<{
 const RootLayout: FC<LayoutProps> = async ({ children, params }) => {
   const { lang } = await params
   const dictionary = await getDictionary(lang)
-  let pageMap = await getPageMap(`/${lang}`)
+  const pageMap = await getPageMap(`/${lang}`)
 
   const navbar = (
     <Navbar
