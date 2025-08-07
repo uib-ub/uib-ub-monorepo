@@ -8,16 +8,13 @@ import { usePerspective, useMode, useSearchQuery } from '@/lib/search-params';
 import Form from 'next/form'
 import Options from './options';
 import { GlobalContext } from '@/app/global-provider';
-import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import IconButton from '@/components/ui/icon-button';
 
 
 export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const router = useRouter()
     const { isMobile, currentUrl, preferredTabs } = useContext(GlobalContext)
-    const nav = searchParams.get('nav')
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
