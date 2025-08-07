@@ -127,6 +127,11 @@ export default function ActiveFilters({showDatasets = true, showFacets = true}: 
 
     return (
       <>
+      {/* Search chip */}
+      {searchParams.get('q') && <button className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => removeFilter('q', searchParams.get('q')!)}>
+        <span className="flex items-center"><PiMagnifyingGlass className="text-neutral-600 !mr-1" aria-hidden="true"/>{searchParams.get('q')}</span>
+        <PiX className="inline text-lg" aria-hidden="true"/>
+      </button>}
         
         {/* Djupinnsamlingar chip */}
         {boostGt === '3' && (showDatasets || !isMobile) &&
