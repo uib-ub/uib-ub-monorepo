@@ -24,7 +24,7 @@
     "@types/jsonld": "^1.5.8",
     "@vueuse/nuxt": "^10.5.0",
     "eslint": "^9.0.0",
-    "eslint-config-custom": "*",
+    "eslint-config": "*",
     "eslint-config-prettier": "^9.1.0",
     "eslint-flat-config-utils": "^2.1.1",
     "eslint-plugin-tsdoc": "^0.4.0",

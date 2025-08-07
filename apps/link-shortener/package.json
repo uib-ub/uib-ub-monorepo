@@ -22,7 +22,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.32.0",
-    "eslint-config-custom": "*",
+    "eslint-config": "*",
     "tsconfig": "*",
     "typescript": "^4.9.3"
   }

@@ -96,7 +96,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint": "^8",
-    "eslint-config-custom": "*",
+    "eslint-config": "*",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "lightningcss": "^1.30.1",
