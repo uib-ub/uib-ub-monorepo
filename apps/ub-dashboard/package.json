@@ -59,7 +59,7 @@
     "lodash": "^4.17.21",
     "millify": "^6.1.0",
     "nanoid": "^5.0.4",
-    "next": "^15.3.5",
+    "next": "15.3.5",
     "next-auth": "^5.0.0-beta.29",
     "next-sanity": "^9.0.0",
     "next-themes": "^0.4.6",
