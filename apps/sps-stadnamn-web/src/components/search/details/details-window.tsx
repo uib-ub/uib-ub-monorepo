@@ -156,7 +156,7 @@ export default function DetailsWindow() {
   <div className="flex gap-2 justify-between p-2 items-center">
     {doc && <CoordinateMenu/> }
 
-    {!fuzzyNav &&
+    {!fuzzyNav && docData?._source.group?.id &&
       <Clickable
         aria-current={(fuzzyNav && group == stringToBase64Url(docData?._source.group)) ? true : false}
         className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10" 
