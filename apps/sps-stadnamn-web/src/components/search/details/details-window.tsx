@@ -49,13 +49,13 @@ export default function DetailsWindow() {
         <span className="text-neutral-900 sr-only 2xl:not-sr-only whitespace-nowrap">Oppslag</span>
     </Clickable>
 
-    { groupTotal?.value && groupTotal.value > 1 && <Clickable label="Valde treff" 
+    { groupTotal?.value && groupTotal.value > 1 && <Clickable label="Oversikt" 
           remove={["details", "fuzzyNav"]} 
           add={{details: "group"}}
           aria-selected={details == "group"}
           className="flex whitespace-nowrap border border-neutral-200 rounded group relative items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 px-3 aria-selected:bg-neutral-100 aria-selected:text-neutral-900 aria-selected:shadow-inner">
       <PiListLight className="text-2xl text-neutral-900 xl:sr-only" aria-hidden="true"/>
-      <span className="text-neutral-900 hidden xl:flex flex-nowrap whitespace-nowrap">Valde treff</span>
+      <span className="text-neutral-900 hidden xl:flex flex-nowrap whitespace-nowrap">Oversikt</span>
       {groupTotal?.value && groupTotal.value > 0 && (
         <span className={`results-badge bg-primary-200 ${groupTotal.value > 9 ? 'px-1.5': 'px-2'} text-primary-700 font-bold group-aria-selected:bg-accent-800 group-aria-selected:text-white left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap`}>
           {groupTotal.value}
