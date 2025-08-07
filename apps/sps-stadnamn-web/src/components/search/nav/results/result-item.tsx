@@ -31,7 +31,7 @@ export default function ResultItem({hit}: {hit: any}) {
     const snippetRenderer = resultRenderers[docDataset]?.snippet || defaultResultRenderer.snippet
 
     const isGrunnord = docDataset?.includes('_g')
-    const isSelected = (doc == hit.fields.uuid || (hit.fields?.group && group == stringToBase64Url(hit.fields?.group?.[0])))
+    const isSelected = (doc == hit.fields.uuid || (hit.fields?.['group.id'] && group == stringToBase64Url(hit.fields?.['group.id']?.[0])))
 
 
     useEffect(() => {
