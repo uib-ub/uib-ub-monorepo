@@ -13,8 +13,10 @@
   "scripts": {
     "build": "next build",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next",
+    "check-types": "tsc --noEmit",
     "dev": "next dev --port 3010",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
     "start": "next start"
   },
   "dependencies": {

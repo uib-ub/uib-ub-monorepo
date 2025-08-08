@@ -7,7 +7,10 @@
     "nextjs.json",
     "react-library.json"
   ],
-  "dependencies": {
+  "scripts": {
+    "clean": "rm -rf .turbo && rm -rf node_modules"
+  },
+  "devDependencies": {
     "typescript": "^5.9.2"
   }
 }

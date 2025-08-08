@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "check-types": "tsc --noEmit",
+    "clean": "rm -rf .turbo && rm -rf node_modules",
     "dev": "bun --hot src/main.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "start": "bun run src/main.ts",
     "test": "bun test",
-    "lint": "eslint .",
     "test:watch": "bun test --watch"
   },
   "dependencies": {
@@ -35,7 +38,6 @@
     "rtl-detect-intl": "^0.1.2",
     "sparql-http-client": "^3.0.1",
     "types": "*",
-    "typescript": "^5.9.2",
     "zod": "3.24.2"
   },
   "devDependencies": {
@@ -44,6 +46,8 @@
     "@types/jsonld": "^1.5.14",
     "@types/lodash": "^4.17.6",
     "eslint": "^9.32.0",
-    "eslint-config": "*"
+    "eslint-config": "*",
+    "typescript": "^5.9.2",
+    "typescript-config": "*"
   }
 }

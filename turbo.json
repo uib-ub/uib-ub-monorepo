@@ -36,6 +36,21 @@
       "dependsOn": [
         "^build"
       ]
+    },
+    "transit": {
+      "dependsOn": [
+        "^transit"
+      ]
+    },
+    "check-types": {
+      "dependsOn": [
+        "transit"
+      ]
+    },
+    "clean": {
+      "dependsOn": [
+        "transit"
+      ]
     }
   }
 }

@@ -8,7 +8,9 @@
     "clean": "rm -rf node_modules"
   },
   "dependencies": {
-    "assets": "*",
+    "assets": "*"
+  },
+  "devDependencies": {
     "typescript": "^5.9.2"
   },
   "peerDependencies": {

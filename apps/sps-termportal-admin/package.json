@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
+    "check-types": "nuxi typecheck",
+    "clean": "rm -rf .turbo && rm -rf node_modules",
     "coverage": "vitest run --coverage",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "postinstall": "nuxt prepare",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "postinstall": "nuxt prepare",
     "preview": "nuxt preview",
     "test": "vitest --passWithNoTests"
   },
@@ -39,10 +42,8 @@
     "sanity-plugin-document-reference-by": "^1.0.1",
     "sass": "^1.64.1",
     "termportal-ui": "*",
+    "typescript": "^5.9.2",
     "vite": "5.2.8",
     "vitest": "^2.1.8"
-  },
-  "dependencies": {
-    "typescript": "^5.9.2"
   }
 }

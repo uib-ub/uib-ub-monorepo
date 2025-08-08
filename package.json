@@ -8,12 +8,13 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "check-types": "turbo run check-types",
+    "clean": "turbo run clean && rm -rf node_modules",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
     "test": "turbo run test",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "clean": "turbo run clean && rm -rf node_modules",
-    "release": "turbo run build --filter=docs^... && changeset publish"
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "lint-staged": {
     "*": "prettier --write --ignore-unknown"
