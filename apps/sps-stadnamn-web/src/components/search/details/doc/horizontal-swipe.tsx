@@ -1,11 +1,12 @@
 'use client'
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { GroupContext } from '@/app/group-provider'
+import DocSkeleton from '@/components/doc/doc-skeleton'
+import DocInfo from './doc-info'
+import { DocContext } from '@/app/doc-provider'
 
-type Props = { children: React.ReactNode }
-
-export default function HorizontalSwipe({ children }: Props) {
+export default function HorizontalSwipe() {
   const hostRef = useRef<HTMLDivElement | null>(null)
   const navigatedRef = useRef(false)
 
@@ -22,6 +23,7 @@ export default function HorizontalSwipe({ children }: Props) {
   const [currentOffset, setCurrentOffset] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const [committed, setCommitted] = useState<null | 'left' | 'right'>(null)
+  const { docLoading } = useContext(DocContext)
 
   const [debug, setDebug] = useState({
     touchDuration: 0,
@@ -29,6 +31,17 @@ export default function HorizontalSwipe({ children }: Props) {
     isQuickSwipe: false,
     isHorizontalSwipe: false
   })
+
+
+useEffect(() => {
+  if (!docLoading) {
+    // New doc has finished loading → clear any swipe visual state
+    setSwipeDirection(null)
+    setCommitted(null)
+    setCurrentOffset(0)
+    navigatedRef.current = false
+  }
+}, [docLoading])
 
   const measureWidth = () => hostRef.current?.offsetWidth || (typeof window !== 'undefined' ? window.innerWidth : 1)
 
@@ -126,25 +139,30 @@ export default function HorizontalSwipe({ children }: Props) {
       onTouchEnd={handleTouchEnd}
     >
       <div className="absolute inset-0 pointer-events-none z-0" />
-      <div
-        className="absolute inset-0 bg-neutral-600 pointer-events-none z-0"
+      {( swipeDirection || isAnimating || docLoading) && <div
+        className="absolute inset-0 bg-white border-r-2 border-neutral-200 pointer-events-none z-0 p-3"
         style={{
           transform: `translateX(${leftIncomingX}%)`,
           transition: isAnimating ? 'transform 250ms ease-out' : 'none',
           willChange: 'transform'
         }}
-      />
-      <div
-        className="absolute inset-0 bg-neutral-600 pointer-events-none z-0"
+      >
+        <DocSkeleton/>
+      </div>}
+
+      { (swipeDirection || isAnimating || docLoading) && <div
+        className="absolute inset-0 bg-white border-l-2 border-neutral-200 pointer-events-none z-0 p-3"
         style={{
           transform: `translateX(${rightIncomingX}%)`,
           transition: isAnimating ? 'transform 250ms ease-out' : 'none',
           willChange: 'transform'
         }}
-      />
+      >
+        <DocSkeleton/>
+        </div>}
 
       <div
-        className="relative z-0 pb-12"
+        className="relative z-0 pb-12 p-2"
         style={{
           transform: contentTranslate,
           transition: isAnimating ? 'transform 250ms ease-out' : 'none',
@@ -152,7 +170,7 @@ export default function HorizontalSwipe({ children }: Props) {
         }}
         onTransitionEnd={handleTransitionEnd}
       >
-        {children}
+        <DocInfo/>
       </div>
 
     </div>

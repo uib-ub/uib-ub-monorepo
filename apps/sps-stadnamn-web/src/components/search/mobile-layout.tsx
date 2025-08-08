@@ -229,7 +229,7 @@ export default function MobileLayout() {
             <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 border-neutral-800 shadow-inner max-h-[calc(100svh-12rem)] overscroll-contain`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             {drawerContent == 'details' && <>
-            {doc && details == 'doc' && <> { (docLoading ? <DocSkeleton/> : <HorizontalSwipe><DocInfo/></HorizontalSwipe>)} </>}
+            {doc && details == 'doc' && <> <HorizontalSwipe/> </>}
             {details == 'group' && <div className="pb-12">
                 <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 pb-2">Oversikt</h2>
                 
@@ -245,7 +245,7 @@ export default function MobileLayout() {
             
             </>}
             { drawerContent == 'results' && 
-                <section className="flex flex-col gap-2">
+                <section className="flex flex-col gap-2 p-2">
                     <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">
                         Treff <span className={`results-badge bg-primary-500 left-8 rounded-full text-white text-xs whitespace-nowrap ${totalHits && totalHits.value < 10 ? 'px-1.5' : 'px-1'}`}>
                             {totalHits && formatNumber(totalHits.value)}
@@ -260,19 +260,19 @@ export default function MobileLayout() {
             
              }
             { (drawerContent == 'datasets' || drawerContent == 'datasetInfo') &&
-            <>
+            <div className="p-2">
             <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide pb-2 flex items-center gap-1">Datasett</h2>
             { (datasetFilters.length > 0 || deepCollections)  && <div className="flex flex-wrap gap-2 py-2 mb-2 border-y border-neutral-200">
                 <ActiveFilters showDatasets={true}/>
                 </div>}
             <DatasetFacet/> 
 
-            </>
+            </div>
             
             
             }
             { (drawerContent == 'filters' || drawerContent == 'adm') && 
-                <>
+                <div className="p-2">
                 <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">Filter {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
                 {facetFilters.length > 0 && <div className="flex flex-col">
                 
@@ -281,7 +281,7 @@ export default function MobileLayout() {
                 </div>
                 </div>}
                 <FacetSection/> 
-                </>
+                </div>
                 
             }
             { /* drawerContent == 'cadastre' && 
