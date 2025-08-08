@@ -12,7 +12,7 @@ export default async function ProjectsPage() {
     <MainShell>
       <h1>Prosjekt</h1>
       <LiveQuery
-        enabled={draftMode().isEnabled}
+        enabled={(await draftMode()).isEnabled}
         query={query}
         initialData={data}
         as={PreviewProjects}
@@ -20,5 +20,5 @@ export default async function ProjectsPage() {
         <Projects data={data} />
       </LiveQuery>
     </MainShell>
-  )
+  );
 }

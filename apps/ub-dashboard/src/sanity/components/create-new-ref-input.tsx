@@ -1,14 +1,11 @@
-// @ts-nocheck 
 import { AddIcon } from '@sanity/icons'
-import { Button, Flex, Menu, MenuButton, MenuItem, Text } from '@sanity/ui'
-import { useFormValue, InputProps, WithReferringDocuments, useSchema, IntentButton, Preview, CompactPreview } from 'sanity'
+import { Button, Flex, Menu, MenuButton, MenuItem } from '@sanity/ui'
+import { useFormValue, InputProps, WithReferringDocuments, useSchema, IntentButton, Preview, SanityDocument } from 'sanity'
 import { IntentLink } from 'sanity/router'
 
-const CreateNewRefInput = (props: InputProps) => {
-
+const CreateNewRefInput = (props: InputProps & { schemaType: any }) => {
   const { schemaType } = props
-  /* @ts-ignore */
-  const types = schemaType.to.map((t) => t.name)
+  const types = schemaType.to.map((t: any) => t.name)
   const actorID = useFormValue(['_id']) as string
 
   const schema = useSchema()
@@ -16,13 +13,13 @@ const CreateNewRefInput = (props: InputProps) => {
   return (
     <div>
       <WithReferringDocuments id={actorID}>
-        {({ referringDocuments, isLoading }) => {
+        {({ referringDocuments, isLoading }: { referringDocuments: SanityDocument[]; isLoading: boolean }) => {
           if (isLoading) {
             return <div>Looking for referring documents...</div>
           }
           const activityDocuments = referringDocuments.filter((d) => types.includes(d._type))
 
-          if (!activityDocuments.length) return null
+          if (!activityDocuments.length) return <div></div> // Return empty div instead of null
 
           return (
             <div style={{ margin: '15px 0px' }}>
@@ -32,7 +29,11 @@ const CreateNewRefInput = (props: InputProps) => {
                 return (
                   <div key={document._id} style={{ margin: '5px 0px' }}>
                     {schemaType ? (
-                      <IntentButton intent="edit" params={{ id: document._id, type: document._type }}>
+                      <IntentButton
+                        intent="edit"
+                        params={{ id: document._id, type: document._type }}
+                        tooltipProps={{ content: 'Edit document' }}
+                      >
                         <Preview value={document} schemaType={schemaType} />
                       </IntentButton>
                     ) : (
@@ -66,15 +67,13 @@ const CreateNewRefInput = (props: InputProps) => {
                       icon={AddIcon}
                       text={`Add new ${type}`}
                       mode="bleed"
-                      width={'100%'}
                     />
                   </IntentLink>
                 </MenuItem>
               ))}
             </Menu>
           )}
-          placement="right"
-          popover={{ portal: true }}
+          popover={{ portal: true, placement: 'right' }}
         />
       </Flex>
     </div>

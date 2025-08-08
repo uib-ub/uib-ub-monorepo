@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt/content",
     "@nuxtjs/sanity",
+    "@nuxt/eslint",
     // "@nuxtjs/html-validator",
     // "@unlighthouse/nuxt",
   ],

@@ -1,3 +1,4 @@
+import React from 'react'
 import { Alert, AlertTitle } from '@/components/ui/alert'
 import { Slider } from '@/components/ui/slider'
 import { path } from '@/lib/utils'
@@ -20,12 +21,12 @@ export const Skills = ({ data = [] }: { data?: SkillListProps[] }) => {
 
           {data?.map((skill, index) => (
             <div key={index} className='grid grid-cols-2 gap-2 w-full'>
-              <div className='w-2/3 flex-grow'>
+              <div className='w-2/3 grow'>
                 {path[skill.type] !== undefined ? (
                   <Link className='underline underline-offset-2' href={`/${path[skill.type]}/${skill.id}`}>{skill.label}</Link>
                 ) : skill.label}
               </div>
-              <div className='flex gap-2 flex-grow'>
+              <div className='flex gap-2 grow'>
                 <Slider
                   defaultValue={[skill.level]}
                   max={10}

@@ -2,7 +2,7 @@ export const revalidate = 30;
 
 import { CreateShortLinkForm } from '@/components/forms/create-short-link-form';
 import { MainShell } from '@/components/shared/main-shell';
-import { Suspense } from 'react';
+import React, { Suspense } from 'react';
 import Links from './links';
 
 export default async function LinkShortenerPage() {

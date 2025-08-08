@@ -4,10 +4,9 @@
 
 import { type DocumentDefinition } from 'sanity'
 import { type StructureResolver } from 'sanity/structure'
-/* import { Iframe } from 'sanity-plugin-iframe-pane'
-
-import { iframeOptions } from '../../../sanity.config' */
-import { PREVIEWABLE_DOCUMENT_TYPES } from '@/sanity/schemas'
+/* import { Iframe } from 'sanity-plugin-iframe-pane' */
+/* import { iframeOptions } from '../../../sanity.config' */
+/* import { PREVIEWABLE_DOCUMENT_TYPES } from '@/sanity/schemas' */
 
 export const singletonPlugin = (types: string[]) => {
   return {
@@ -47,7 +46,7 @@ export const pageStructure = (
     const singletonItems = typeDefArray.map((typeDef) => {
       return S.listItem()
         .title(typeDef.title!)
-        .icon(typeDef.icon)
+        .icon(typeDef.icon as any)
         .child(
           S.editor()
             .id(typeDef.name)

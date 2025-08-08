@@ -1,9 +1,7 @@
 'use client'
 
-import { useRef } from 'react'
-// @ts-ignore
-import { useFormState, useFormStatus } from 'react-dom'
-// @ts-ignore
+import React, { useRef, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { createShortLink } from '@/actions/link-action'
 
 import { Button } from '@/components/ui/button'
@@ -32,7 +30,7 @@ function SubmitButton() {
 }
 
 export function CreateShortLinkForm() {
-  const [state, formAction] = useFormState(createShortLink, initialState)
+  const [state, formAction] = useActionState(createShortLink, initialState)
   const ref = useRef<HTMLFormElement>(null)
 
   return (

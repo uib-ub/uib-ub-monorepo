@@ -2,7 +2,7 @@ import type { QueryParams } from '@sanity/client'
 
 import { client } from './client'
 
-// eslint-disable-next-line no-process-env
+ 
 export const token = process.env.SANITY_API_READ_TOKEN!
 
 export async function sanityFetch<QueryString extends string>({

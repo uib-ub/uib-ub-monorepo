@@ -1,5 +1,6 @@
 "use client"
 
+import React from 'react'
 import { DataTable } from '@/components/data-table'
 import Link from 'next/link';
 import { path } from '@/lib/utils';

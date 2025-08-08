@@ -98,7 +98,7 @@ function MobileLink({
       className={cn(className)}
       {...props}
     >
-      {children}
+      {children as any}
     </Link>
   )
 }

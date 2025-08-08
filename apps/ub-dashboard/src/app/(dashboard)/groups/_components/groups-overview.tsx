@@ -65,7 +65,7 @@ const Groups = ({ data }: { data: GroupsOverviewProps[] }) => {
         <div className='sticky top-2'>
           <div className='font-bold'>Kategorier</div>
           <div className='flex flex-col gap-2 mt-0 '>
-            {groupedByType && Object.entries(groupedByType).map(([key, value]: [string, any]) => (
+            {groupedByType && Object.entries(groupedByType).map(([key]) => (
               <Link href={`#${key}`} key={key} className='text-zinc-500 dark:text-zinc-400'>{key}</Link>
             ))}
           </div>

@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   extends: ["termportal-ui"],
   devtools: { enabled: true },
-  modules: ["@sidebase/nuxt-auth", "@nuxt/content", "@nuxtjs/sanity"],
+  modules: ["@sidebase/nuxt-auth", "@nuxt/content", "@nuxtjs/sanity", "@nuxt/eslint"],
   app: {
     head: {
       title: "Termportalen admin",
