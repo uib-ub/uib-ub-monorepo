@@ -1,4 +1,5 @@
-import jsonld, { ContextDefinition, JsonLdDocument } from 'jsonld';
+import jsonld from 'jsonld';
+import { JsonLdObj, Context } from 'jsonld/jsonld-spec';
 
 /**
  * Compacts and frames the given data in NTriples format to JSON-LD format.
@@ -8,7 +9,7 @@ import jsonld, { ContextDefinition, JsonLdDocument } from 'jsonld';
  * @param id - The id to be used as root node when framing.
  * @returns A Promise that resolves to the framed JSON-LD data.
  */
-export async function useFrame({ data, context, type, id }: { data: any, context: ContextDefinition, type?: string, id?: string }): Promise<JsonLdDocument> {
+export async function useFrame({ data, context, type, id }: { data: JsonLdObj, context: Context, type?: string, id?: string }): Promise<JsonLdObj> {
   if (!type && !id) {
     return { error: true, message: 'No type or id provided' }
   }
