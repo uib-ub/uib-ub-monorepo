@@ -239,6 +239,14 @@ export default function (
     };
   };
 
+  if (type == "skos:Collection") {
+    return frame(data, {
+      "@context": [context()],
+      "@type": type,
+      "@embed": "@always",
+    });
+  }
+
   if (!domain) {
     return frame(data, {
       "@context": [context()],

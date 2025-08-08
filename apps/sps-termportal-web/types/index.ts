@@ -1,4 +1,12 @@
 import { FetchType } from "./enums";
+import * as z from "zod";
+import {
+  LangCode,
+  LocaleLangCode,
+  Termbase,
+  TermbaseId,
+  SpecialUriTermbase,
+} from "./zod";
 
 const appConfig = useAppConfig();
 
@@ -6,61 +14,20 @@ export {};
 
 declare global {
   // base
-  type SpecialUriTermbase = (typeof appConfig.tb.base.specialUriTbs)[number];
+  type SpecialUriTermbase = z.infer<typeof SpecialUriTermbase>;
   type SystemTermbase = (typeof appConfig.tb.base.systemTermbases)[number];
   type LegacyTermbase = (typeof appConfig.tb.base.legacyTermbases)[number];
   type ConfiguredTermbase = Exclude<keyof typeof appConfig.tb, "base">;
-  type TermbaseId =
-    | ConfiguredTermbase
-    | SystemTermbase
-    | LegacyTermbase
-    | SpecialUriTermbase
-    | string;
+  type TermbaseId = z.infer<typeof TermbaseId>;
 
   // language
-  type LangCode =
-    | "ar"
-    | "da"
-    | "de"
-    | "en"
-    | "en-gb"
-    | "en-us"
-    | "fa-af"
-    | "fi"
-    | "fr"
-    | "it"
-    | "la"
-    | "nb"
-    | "nn"
-    | "pl"
-    | "ru"
-    | "so"
-    | "es"
-    | "sv"
-    | "ti";
-  type LocalLangCode = "en" | "nb" | "nn";
+  type LocalLangCode = z.infer<typeof LocaleLangCode>;
+
+  type LangCode = z.infer<typeof LangCode>;
 
   type LicensePageId = keyof typeof appConfig.license;
 
-  // termbase
-  interface Termbase {
-    "@id": string;
-    identifier: TermbaseId;
-    type: string[];
-    label: [{ "@language": LocalLangCode; "@value": string }];
-    description: Record<LocalLangCode, string>;
-    language: LangCode;
-    opprinneligSpraak: LangCode;
-    license: { "@id": LicensePageId };
-    modified: { type: string; "@value": string };
-    publisher: {
-      "@id": string;
-      type: string[];
-      identifier: string;
-      label: { "@language": string; "@value": string };
-    };
-    contactPoint: { hasEmail: string; hasTelephone: string };
-  }
+  type Termbase = z.infer<typeof Termbase>;
 
   // concept data
   type SemanticRelation = keyof typeof appConfig.data.semanticRelations;

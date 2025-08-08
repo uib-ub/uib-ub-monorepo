@@ -36,11 +36,8 @@ export function countSearchEntries(matches: SearchDataEntry[]): number {
 }
 
 export function langRtoL(languageCode: LangCode) {
-  if (languageRtoL.has(languageCode)) {
-    return true;
-  } else {
-    return false;
-  }
+  const appConfig = useAppConfig();
+  return appConfig.language.rightToleft.includes(languageCode);
 }
 
 /**
@@ -48,12 +45,16 @@ export function langRtoL(languageCode: LangCode) {
  * Precedence:
  * - prefLabel in local language
  * - altLabel in local language
- * Loop through prefLabel, altLabel of languages in local languageOrder
+ * Loop through prefLabel, altLabel of languages in local langOrder
  *
- * @param data - concept data with labels
+ * @param concept - concept data with labels
+ * @param langOrder - localized language order
  * @returns localized title or null
  */
-export function getConceptDisplaytitle(concept, langOrder): string | null {
+export function getConceptDisplaytitle(
+  concept,
+  langOrder: LangCode[]
+): string | null {
   let title = null;
   for (const lang of langOrder) {
     for (const label of ["prefLabel", "altLabel"]) {
@@ -239,7 +240,8 @@ export function flattenOrderDomains(domains?) {
 }
 
 export const getLangOptions = () => {
-  const locales = useLocales();
+  const appConfig = useAppConfig();
+  const locales = appConfig.language.locale;
   const i18n = useI18n();
   return locales.map((loc) => ({
     label: loc,

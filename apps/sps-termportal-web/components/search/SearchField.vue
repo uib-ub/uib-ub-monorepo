@@ -34,6 +34,8 @@ const searchInterface = useSearchInterface();
 const searchterm = useSearchterm();
 const bootstrapData = useBootstrapData();
 const locale = useLocale();
+const localeLangOrder = useLocaleLangOrder();
+const { getLaLo } = useLazyLocale();
 
 const items = ref([]);
 
@@ -61,18 +63,11 @@ const placeholder = computed(() => {
     Object.keys(searchInterface.value.domain)
   );
 
-  const domains = topDomains.map(
-    (domain) => bootstrapData.value?.lalo?.[locale.value]?.[domain]
-  );
+  const domains = topDomains.map((domain) => getLaLo(domain));
 
-  const termbases = searchInterface.value.termbase.map((tb) => {
-    const key = `${tb}-3A${tb}`;
-    const label = languageOrder[locale.value]
-      .filter((lc) => Object.keys(languageOrder).includes(lc))
-      .map((lc) => bootstrapData.value?.lalo?.[lc]?.[key])
-      .find((value) => value !== undefined);
-    return label ?? key;
-  });
+  const termbases = searchInterface.value.termbase.map((tb) =>
+    getLaLo(`${tb}-3A${tb}`)
+  );
 
   const context = searchInterface.value.useDomain
     ? // domain

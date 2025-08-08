@@ -5,19 +5,23 @@ export const useLocale = () => {
   return i18n.locale as Ref<LocalLangCode>;
 };
 
-export const useLocales = () => {
-  return Object.keys(languageOrder) as LocalLangCode[];
-};
-
 export const useLocaleLangOrder = () => {
   const locale = useLocale();
-  const langOrder = toRef(() => languageOrder[locale.value]);
+  const appConfig = useAppConfig();
+  const langOrder = toRef(() => [
+    ...appConfig.language.order.update[locale.value],
+    ...appConfig.language.order.default.filter(
+      (lc: LangCode) =>
+        !appConfig.language.order.update[locale.value].includes(lc)
+    ),
+  ]);
   return langOrder as Readonly<Ref<LangCode[]>>;
 };
 
 export function useLazyLocale() {
   const bootstrapData = useBootstrapData();
-  const locale = useLocale();
+  const localeLangOrder = useLocaleLangOrder();
+  const appConfig = useAppConfig();
 
   /**
    * Lazy Localization function with fallback based on localized language order.
@@ -26,8 +30,8 @@ export function useLazyLocale() {
    * @returns Localized label or key if not label present
    */
   const getLaLo = (key: string): string => {
-    const label = languageOrder[locale.value]
-      .filter((lc) => Object.keys(languageOrder).includes(lc))
+    const label = localeLangOrder.value
+      .filter((lc) => appConfig.language.locale.includes(lc))
       .map((lc) => bootstrapData.value?.lalo?.[lc]?.[key])
       .find((value) => value !== undefined);
     return label ?? key;
@@ -37,71 +41,6 @@ export function useLazyLocale() {
     getLaLo,
   };
 }
-
-export const dataDisplayOnlyLanguages = ["en-gb", "en-us"];
-
-export const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
-  nb: [
-    "nb",
-    "nn",
-    "en",
-    "en-gb",
-    "en-us",
-    "ar",
-    "da",
-    "fi",
-    "fr",
-    "it",
-    "la",
-    "pl",
-    "ru",
-    "so",
-    "es",
-    "sv",
-    "ti",
-    "de",
-  ],
-  nn: [
-    "nn",
-    "nb",
-    "en",
-    "en-gb",
-    "en-us",
-    "ar",
-    "da",
-    "fi",
-    "fr",
-    "it",
-    "la",
-    "pl",
-    "ru",
-    "so",
-    "es",
-    "sv",
-    "ti",
-    "de",
-  ],
-  en: [
-    "en",
-    "en-gb",
-    "en-us",
-    "nb",
-    "nn",
-    "ar",
-    "da",
-    "fi",
-    "fr",
-    "de",
-    "it",
-    "la",
-    "pl",
-    "ru",
-    "so",
-    "es",
-    "sv",
-    "ti",
-  ],
-};
 
 export const useOrderedTermbases = () => {
   const appConfig = useAppConfig();
@@ -151,5 +90,3 @@ export function deriveLanguageInfo(languages: LangCode[]): {
     }))
   );
 }
-
-export const languageRtoL: Set<LangCode> = new Set(["ar"]);
