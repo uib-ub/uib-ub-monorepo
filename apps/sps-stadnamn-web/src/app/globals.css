@@ -358,9 +358,6 @@
   }
 
 
-  .mobile-interface .mobile-padding {
-    @apply p-2;
-  }
 
 
   .rectangular-external-link {

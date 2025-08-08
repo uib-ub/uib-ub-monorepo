@@ -140,7 +140,7 @@ useEffect(() => {
     >
       <div className="absolute inset-0 pointer-events-none z-0" />
       {( swipeDirection || isAnimating || docLoading) && <div
-        className="absolute inset-0 bg-white border-r-2 border-neutral-200 pointer-events-none z-0 p-3"
+        className="absolute inset-0 bg-white border-r-2 border-neutral-200 pointer-events-none z-0 p-2"
         style={{
           transform: `translateX(${leftIncomingX}%)`,
           transition: isAnimating ? 'transform 250ms ease-out' : 'none',
@@ -151,7 +151,7 @@ useEffect(() => {
       </div>}
 
       { (swipeDirection || isAnimating || docLoading) && <div
-        className="absolute inset-0 bg-white border-l-2 border-neutral-200 pointer-events-none z-0 p-3"
+        className="absolute inset-0 bg-white border-l-2 border-neutral-200 pointer-events-none z-0 p-2"
         style={{
           transform: `translateX(${rightIncomingX}%)`,
           transition: isAnimating ? 'transform 250ms ease-out' : 'none',
