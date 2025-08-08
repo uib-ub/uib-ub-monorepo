@@ -1,18 +1,19 @@
 import client from '@shared/clients/es-client'
 import { env } from '@env'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
-import { FailureSchema, TODO } from '@shared/models'
+import { FailureSchema } from '@shared/models'
 import { normalizeJsonLdToArray, reorderDocument, sqb, useFrame } from 'utils'
 import { endpointUrl } from '@shared/clients/sparql-chc-client'
 import { groupQuery } from './group-query'
 import ubbontContext from 'jsonld-contexts/src/ubbontContext'
 import { ContextDefinition } from 'jsonld'
+import { JsonLdObj } from 'jsonld/jsonld-spec'
 
 const route = new OpenAPIHono()
 
 const desiredOrder: string[] = ['@context', 'id', 'type', '_label', '_available', '_modified', 'identified_by']
 
-const GroupSchema = z.record(z.string()).openapi('Group')
+const GroupSchema = z.any().openapi('Group')
 
 export const GroupParamsSchema = z.object({
   as: z
@@ -80,14 +81,12 @@ route.openapi(getGroup, async (c) => {
       }
       const data = await response.json();
 
-      // Check if data is empty by checking if it's falsy, has no keys, or is an empty object
       if (!data || Object.keys(data).length === 0) {
         return c.json({ error: true, message: 'Not found' }, 404)
       }
 
       const normalizedData = normalizeJsonLdToArray(data)
-      // Find the matching item in the graph
-      const matchingItem = normalizedData.find((item: any) => item['dct:identifier'] === id);
+      const matchingItem = normalizedData.find((item) => item['dct:identifier'] === id);
 
       if (!matchingItem) {
         return c.json({ error: true, message: 'Group not found in graph' }, 404);
@@ -95,16 +94,16 @@ route.openapi(getGroup, async (c) => {
 
       const url = matchingItem['@id'].replace('j.0:', 'http://data.ub.uib.no/');
 
-      let framed = await useFrame({ data, context: ubbontContext as ContextDefinition, type: 'Group', id: url });
-      framed['@context'] = ["https://api.ub.uib.no/ns/ubbont/context.json"];
-      return c.json(reorderDocument(framed, desiredOrder));
+      const framed = await useFrame({ data, context: ubbontContext as ContextDefinition, type: 'Group', id: url });
+      (framed as JsonLdObj)['@context'] = ["https://api.ub.uib.no/ns/ubbont/context.json"];
+      return c.json(reorderDocument(framed as Document, desiredOrder) as z.infer<typeof GroupSchema>);
     } catch (error) {
-      throw new Error(`Error fetching item ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      return c.json({ error: true, message: `Error fetching item ${id}: ${error instanceof Error ? error.message : 'Unknown error'}` }, 404)
     }
   }
 
   try {
-    const data: TODO = await client.search<any>({
+    const data = await client.search({
       index: `search-chc`,
       query: {
         match_phrase: {
@@ -113,30 +112,22 @@ route.openapi(getGroup, async (c) => {
       }
     })
 
-    if (data?.hits?.total?.value === 0) {
+    if (data?.hits?.total === 0 || (typeof data?.hits?.total === 'object' && data?.hits?.total?.value === 0)) {
       return c.json({ error: true, message: 'Not found' }, 404)
     }
 
-    /* const item = data.hits.hits.find((hit: any) => hit._index.startsWith('search-chc-items'))._source
- 
-    if (item > 1) {
-      return c.json({ error: true, message: 'Ops, found duplicates!' }, 404)
-    } */
+    const item = data.hits.hits[0]._source as JsonLdObj
 
-    const item = data.hits.hits[0]._source
-
-    // Rewrite _id to use the id from the URL parameter
     const itemWithNewId = {
       ...item,
       id: `${env.PROD_URL}/items/${item.id}`
     }
 
-    return c.json(reorderDocument(itemWithNewId as Document, desiredOrder))
+    return c.json(reorderDocument(itemWithNewId, desiredOrder));
   } catch (error) {
     console.error(error)
     return c.json({ error: true, message: "Ups, something went wrong!" }, 404)
   }
 })
-
 
 export default route

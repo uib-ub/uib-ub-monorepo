@@ -174,5 +174,5 @@ export const AsParamsSchema = z.object({
     }),
 })
 
-export type TODO = any
+export type TODO = unknown
 

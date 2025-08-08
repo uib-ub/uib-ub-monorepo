@@ -11,20 +11,20 @@ It includes the following packages/apps:
 ### Apps
 
 - `api`: the API for the Special collection at the University of Bergen Library, a [Next.js](https://nextjs.org) app
-- `chc-web`: the WIP Marcus website, a [Next.js](https://nextjs.org) app and a [Sanity](https://sanity.io) Studio.
 - `docs`: the documentation site, a [Nextra](https://nextra.site) app
 - `link-shortener`: WIP, a url redirect service with QR, a [Next.js](https://nextjs.org) app
+- `sps-stadnamn-web`: Stadnamnspor.no, a [Next.js](https://nextjs.org) app
 - `sps-termportal-web`: Termportalen.no, a [Nuxt.js](https://nuxtjs.org) app
 - `sps-termportal-admin`: termportalen-admin.vercel.app, a [Nuxt.js](https://nuxtjs.org) app
 
 
 ### Packages
 
-- `eslint-preset-custom`: ESLint preset
+- `eslint-config`: ESLint preset
 - `tailwind-config`: shared tailwindcss config
 - `tailwind-ui`: React components with Tailwind CSS.
 - `termportal-ui`: Vue components with Tailwind CSS
-- `tsconfig`: shared tsconfig.jsons used throughout the monorepo
+- `typescript-config`: shared typescript-config.jsons used throughout the monorepo
 - `utils`: shared utility functions
 
 Each package/app is aims to react 100% [TypeScript](https://www.typescriptlang.org/).

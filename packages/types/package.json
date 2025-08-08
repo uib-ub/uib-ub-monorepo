@@ -15,7 +15,7 @@
     "build": "tsup src/index.ts --format esm --dts",
     "dev": "tsup src/index.ts --format esm --dts --watch",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
-    "type-check": "tsc",
+    "check-types": "tsc --noEmit",
     "la-download": "node ./scripts/la-sync.js",
     "la-to-types": "cd ./src/la/schemas && json2ts -i linked_art.json -o ../types",
     "la-sync": "npm run la-download && npm run la-to-types",
@@ -29,7 +29,7 @@
     "tiged": "^2.12.5",
     "ts-to-zod": "^3.8.5",
     "tsup": "^8",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "@hono/zod-openapi": "^0.19.5"
