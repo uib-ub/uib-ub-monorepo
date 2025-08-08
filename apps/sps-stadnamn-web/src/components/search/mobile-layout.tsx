@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
-import { PiBookOpen, PiDatabase, PiFunnel, PiListBullets, PiTreeViewFill } from "react-icons/pi";
+import { PiArrowsOut, PiBinocularsFill, PiBookOpen, PiClock, PiDatabase, PiFunnel, PiList, PiListBullets, PiListLight, PiSignpost, PiTreeViewFill } from "react-icons/pi";
 import Results from "./nav/results/search-results";
 import MapExplorer from "./map-explorer";
 import { usePerspective, useSearchQuery, useMode } from "@/lib/search-params";
@@ -16,12 +16,19 @@ import DocInfo from "./details/doc/doc-info";
 import DocSkeleton from "../doc/doc-skeleton";
 import FacetSection from "./nav/facets/facet-section";
 import ActiveFilters from "./form/active-filters";
-import { formatNumber } from "@/lib/utils";
+import { formatNumber, stringToBase64Url } from "@/lib/utils";
 import DatasetFacet from "./nav/facets/dataset-facet";
 import Clickable from "../ui/clickable/clickable";
 import HitNavigation from "./details/hit-navigation";
 import { GroupContext } from "@/app/group-provider";
 import DetailsFooter from "./details/details-footer";
+import CopyLink from "../doc/copy-link";
+import Link from "next/link";
+import IconButton from "../ui/icon-button";
+import FuzzyWindow from "./fuzzy/fuzzy-window";
+import GroupDetails from "./details/group/group-details";
+import FuzzyExplorer from "./fuzzy/fuzzy-explorer";
+import ClickableIcon from "../ui/clickable/clickable-icon";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -33,8 +40,6 @@ export default function MobileLayout() {
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
     const searchParams = useSearchParams()
 
-    const { groupTotal } = useContext(GroupContext)
-
     const [drawerContent, setDrawerContent] = useState<string | null>(null)
     const nav = searchParams.get('nav')
     
@@ -45,11 +50,15 @@ export default function MobileLayout() {
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
     const perspective = usePerspective()
     const mode = useMode()
-    const { docLoading } = useContext(DocContext)
+    const { docLoading, docData } = useContext(DocContext)
     const datasetCount = searchParams.getAll('indexDataset')?.length || 0
     const deepCollections = searchParams.get('boost_gt') == '3'
     const fulltext = searchParams.get('fulltext')
     const details = searchParams.get('details')
+    const { groupTotal } = useContext(GroupContext)
+    const fuzzyNav = searchParams.get('fuzzyNav')
+    const group = searchParams.get('group')
+    const { setInitialUrl } = useContext(GroupContext)
 
 
 
@@ -201,11 +210,20 @@ export default function MobileLayout() {
             <div className={`h-full bg-white flex flex-col mobile-padding rounded-lg shadow-inner border-4 border-neutral-800 shadow-inner max-h-[calc(100svh-12rem)] overscroll-contain pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             {drawerContent == 'details' && <>
-            {doc && mode != 'doc' && <> { (docLoading ? <DocSkeleton/> : <DocInfo/>)}
-            <HitNavigation/>
+            {doc && details == 'doc' && <> { (docLoading ? <DocSkeleton/> : <DocInfo/>)} </>}
+            {details == 'group' && <div className="pb-12">
+                <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 pb-2">Oversikt</h2>
+                
+                <GroupDetails/>
+            </div>}
+            {fuzzyNav &&
+            <>
+            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 pb-2">{fuzzyNav == 'list' ? 'Namneformer' : 'Tidslinje'}</h2>
+            <FuzzyExplorer/>
+            </>
+            }
 
             
-            </>}
             </>}
             { drawerContent == 'results' && 
                 <section className="flex flex-col gap-2">
@@ -253,10 +271,40 @@ export default function MobileLayout() {
             { drawerContent == 'tree' &&
                 <TreeResults/>
             }
-            {drawerContent == 'details' && currentPosition > 25 && <div className="absolute bottom-0 left-0 right-0 bg-neutral-100  !pl-1 mx-1 border-t border-neutral-300 border-t-2 flex items-center justify-between">
-                <HitNavigation/>
-                <DetailsFooter/>
-                </div>}
+            {drawerContent == 'details' && currentPosition > 25 && <div className="absolute bottom-0 left-1 right-1 bg-neutral-200 border-t border-neutral-300 text-neutral-900 h-12 p-1 flex items-center gap-2 details-toolbar justify-between">
+                <ClickableIcon label="Oppslag" remove={['details', 'fuzzyNav']} add={{details: 'doc'}} aria-current={details == 'doc' ? 'page' : 'false'}>
+                    <PiBookOpen className="text-3xl" />
+                </ClickableIcon>
+
+                {groupTotal?.value && groupTotal.value > 1 && <ClickableIcon label="Oversikt"  add={{details: 'group'}} remove={['fuzzyNav']} aria-current={details == 'group' ? 'page' : 'false'}>
+                    <div className="relative">
+                    <PiList className="text-3xl" />
+                        <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${groupTotal?.value < 10 ? 'px-1.5' : 'px-1'}`}>
+                            {formatNumber(groupTotal?.value)}
+                        </span>
+                    </div>
+                </ClickableIcon>}
+                
+                <ClickableIcon
+                    label="Tidslinje"
+                    aria-current={fuzzyNav == 'timeline' ? 'page' : 'false'}
+                    remove={['details']} 
+                    onClick={() => setInitialUrl(`?${searchParams.toString()}`)}
+                    add={{group: stringToBase64Url(docData?._source.group.id), fuzzyNav: 'timeline'}}>
+                    <PiClock className="text-3xl" aria-hidden="true"/>
+                </ClickableIcon>
+                <ClickableIcon
+                    label="Namneformer"
+                    aria-current={fuzzyNav == 'list' ? 'page' : 'false'}
+                    remove={['details']} 
+                    onClick={() => setInitialUrl(`?${searchParams.toString()}`)}
+                    add={{group: stringToBase64Url(docData?._source.group.id), fuzzyNav: 'list'}}>
+                    <PiSignpost className="text-3xl" aria-hidden="true"/>
+                </ClickableIcon>
+    
+                
+ 
+            </div>}
             </div>
             
             </>
@@ -265,8 +313,8 @@ export default function MobileLayout() {
 <div className="absolute left-1 z-[2000] right-0 flex flex-col gap-2">
 </div>
             
-            <div className="fixed bottom-0 left-0 bg-neutral-800 text-white w-full h-12 p-1 flex items-center justify-between">
-                <Clickable replace={true} onClick={() => toggleDrawer('datasets')} aria-label="Datasett" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'} className="toolbar-button">
+            <div className="fixed bottom-0 left-0 bg-neutral-800 text-white w-full h-12 p-1 flex items-center justify-between nav-toolbar">
+                <Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
                     <div className="relative">
                         <PiDatabase className="text-3xl" />
                         {(datasetCount + Number(Boolean(deepCollections))) > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -275,11 +323,11 @@ export default function MobileLayout() {
                     </div>
                 </Clickable>
 
-                {treeSettings[perspective] && <Clickable aria-label='Register' onClick={() => toggleDrawer('tree')} add={nav == 'tree' ? {nav: null} : {nav: 'tree'}} aria-current={drawerContent == 'tree' ? 'page' : 'false'} className="toolbar-button">
+                {treeSettings[perspective] && <Clickable aria-label='Register' onClick={() => toggleDrawer('tree')} add={nav == 'tree' ? {nav: null} : {nav: 'tree'}} aria-current={drawerContent == 'tree' ? 'page' : 'false'}>
                     <PiTreeViewFill className="text-3xl" />
                 </Clickable>}
 
-                {<Clickable aria-label="Filtre" onClick={() => toggleDrawer('filters')} add={nav == 'filters' ? {nav: null} : {nav: 'filters'}} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'} className="toolbar-button">
+                {<Clickable aria-label="Filtre" onClick={() => toggleDrawer('filters')} add={nav == 'filters' ? {nav: null} : {nav: 'filters'}} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'}>
                     <div className="relative">
                         <PiFunnel className="text-3xl" />
                         {facetFilters.length > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${facetFilters.length < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -290,8 +338,7 @@ export default function MobileLayout() {
 
                 {mode == 'map' && searchFilterParamsString &&
                     <Clickable aria-label='Søkeresultater' onClick={() => toggleDrawer('results')} add={nav == 'results' ? {nav: null} : {nav: 'results'}}
-                        aria-current={drawerContent == 'results' ? 'page' : 'false'}
-                        className="toolbar-button">
+                        aria-current={drawerContent == 'results' ? 'page' : 'false'}>
                         <div className="relative">
                             <PiListBullets className="text-3xl" />
                             <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${totalHits && totalHits.value < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -300,7 +347,7 @@ export default function MobileLayout() {
                         </div>
                     </Clickable>}
 
-                {doc && <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('details')} add={{details: details || 'doc', nav: null}} aria-current={drawerContent == 'details' ? 'page' : 'false'} className="toolbar-button">
+                {doc && <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('details')} add={{details: details || 'doc', nav: null}} aria-current={drawerContent == 'details' ? 'page' : 'false'}>
                     <PiBookOpen className="text-3xl" />
                 </Clickable>}
 

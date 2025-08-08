@@ -7,8 +7,6 @@ import { stringToBase64Url } from "@/lib/utils"
 
 import CoordinateMenu from "./coordinate-menu"
 import { PiBinocularsFill } from "react-icons/pi"
-import ClickableIcon from "@/components/ui/clickable/clickable-icon"
-import DynamicClickable from "@/components/ui/clickable/dynamic-clickable"
 import { GlobalContext } from "@/app/global-provider"
 
 
@@ -27,15 +25,14 @@ export default function DetailsFooter() {
     {doc && <CoordinateMenu/> }
 
     {!fuzzyNav && docData?._source.group?.id &&
-      <DynamicClickable
-        label="Namneformer"
+      <Clickable
         aria-current={(fuzzyNav && group == stringToBase64Url(docData?._source.group)) ? true : false}
         className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10" 
         remove={['details', 'doc']} 
         onClick={() => setInitialUrl(`?${searchParams.toString()}`)}
         add={{group: stringToBase64Url(docData?._source.group.id), fuzzyNav: fuzzyNav || 'timeline'}}>
-        <PiBinocularsFill className="text-lg text-white" aria-hidden="true"/>{!isMobile && 'Namneformer'}
-      </DynamicClickable>
+        <PiBinocularsFill className="text-lg text-white" aria-hidden="true"/>Namneformer
+      </Clickable>
     }
   </div>
 

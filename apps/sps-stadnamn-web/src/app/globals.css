@@ -201,15 +201,28 @@
     @apply text-accent-800;
   }
 
-  button.toolbar-button {
+  .nav-toolbar button {
     @apply flex h-full items-center px-3 flex-grow justify-center;
   }
 
-  button.toolbar-button[aria-current='page'] {
-    @apply text-accent-800 bg-neutral-100 rounded-md border-neutral-800;
+  .nav-toolbar button[aria-current='page'] {
+    @apply text-accent-800 bg-neutral-100 rounded-md;
   }
 
-  button.toolbar-button[aria-current='page'] .results-badge {
+  .nav-toolbar button[aria-current='page'] .results-badge {
+    @apply bg-accent-800;
+  }
+
+
+  .details-toolbar button {
+    @apply flex h-full items-center px-3 flex-grow justify-center;
+  }
+
+  .details-toolbar button[aria-current='page'] {
+    @apply text-white bg-accent-800 rounded-md;
+  }
+
+  .details-toolbar button[aria-current='page'] .results-badge {
     @apply bg-accent-800;
   }
 

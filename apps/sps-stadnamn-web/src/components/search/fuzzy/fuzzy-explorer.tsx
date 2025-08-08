@@ -23,6 +23,7 @@ export default function FuzzyExplorer() {
     const [fuzzyResultLoading, setFuzzyResultLoading] = useState<boolean>(false)
     const [fuzzyResultError, setFuzzyResultError] = useState<any | null>(null)
     const [groups, setGroups] = useState<any[]>([])
+    const { isMobile } = useContext(GlobalContext)
 
     const { groupData } = useContext(GroupContext)
     const group = searchParams.get('group')
@@ -202,7 +203,7 @@ export default function FuzzyExplorer() {
         <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-serif">{groupName}</h3>
             
-            {fuzzyResult && fuzzyResult.length > 0 && <div className="flex bg-neutral-100 rounded-lg p-1">
+            {!isMobile && fuzzyResult && fuzzyResult.length > 0 && <div className="flex bg-neutral-100 rounded-lg p-1">
                 <Clickable
                     add={{ fuzzyNav: 'timeline' }}
                     aria-pressed={fuzzyNav === 'timeline'}

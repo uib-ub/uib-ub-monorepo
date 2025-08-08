@@ -29,7 +29,7 @@ export default function HitNavigation() {
         <PiCaretLeft className="xl:text-xl" aria-hidden="true"/>
       </ClickableIcon>
       {!isMobile && <span className="text-neutral-900 self-center w-10 text-center">{docIndex ? docIndex + 1 : 1}/{groupTotal?.value}</span>}
-      {isMobile && <Clickable className="btn btn-outline btn-compact w-24 text-center" add={{details: 'group'}}>{docIndex ? docIndex + 1 : 1}/{groupTotal?.value}</Clickable>}
+      {isMobile && <Clickable className="btn btn-outline btn-compact text-center" add={{details: 'group'}}>{docIndex ? docIndex + 1 : 1}/{groupTotal?.value}</Clickable>}
       <ClickableIcon 
         link
         label="Neste" 
