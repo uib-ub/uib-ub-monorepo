@@ -170,7 +170,7 @@ useEffect(() => {
         }}
         onTransitionEnd={handleTransitionEnd}
       >
-        <DocInfo/>
+        { docLoading ? <DocSkeleton/> : <DocInfo/>}
       </div>
 
     </div>
