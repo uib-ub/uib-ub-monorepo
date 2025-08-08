@@ -53,7 +53,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         });
     }, [docDataset, docSource]);
 
-    return <><article className={`instance-info flex flex-col gap-4 p-4 ${isMobile ? 'mb-12' : 'pb-8'} ${parent && isMobile ? 'relative' : ''}`}>
+    return <><article className={`instance-info flex flex-col gap-4 ${isMobile ? 'mb-12' : 'p-4 pb-8 '} ${parent && isMobile ? 'relative' : ''}`}>
 
       {(((docDataset && perspective != docDataset) || docData?._source?.within) || !isMobile) && <div className="!mt-0">
 
