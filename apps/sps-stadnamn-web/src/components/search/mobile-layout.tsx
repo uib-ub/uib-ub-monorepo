@@ -230,16 +230,16 @@ export default function MobileLayout() {
 
             {drawerContent == 'details' && <>
             {doc && details == 'doc' && <> <HorizontalSwipe/> </>}
-            {details == 'group' && <div className="pb-12">
+            {details == 'group' && <div className="pb-12 pt-2 px-2">
                 <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 pb-2">Oversikt</h2>
                 
                 <GroupDetails/>
             </div>}
             {fuzzyNav &&
-            <>
+            <div className="pb-12 pt-2 px-2">
             <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 pb-2">{fuzzyNav == 'list' ? 'Namneformer' : 'Tidslinje'}</h2>
             <FuzzyExplorer/>
-            </>
+            </div>
             }
 
             
