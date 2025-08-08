@@ -6,8 +6,7 @@ import { reorderDocument, sqb, useFrame } from 'utils'
 import { endpointUrl } from '@shared/clients/sparql-chc-client'
 import { personQuery } from './person-query'
 import ubbontContext from 'jsonld-contexts/src/ubbontContext'
-import { ContextDefinition } from 'jsonld'
-import { JsonLdObj } from 'jsonld/jsonld-spec'
+import { type JsonLdObj, type Context } from 'jsonld/jsonld-spec'
 
 const route = new OpenAPIHono()
 
@@ -93,7 +92,7 @@ route.openapi(getPerson, async (c) => {
 
       const url = matchingItem['@id'].replace('j.0:', 'http://data.ub.uib.no/');
 
-      const framed = await useFrame({ data, context: ubbontContext as ContextDefinition, type: 'Person', id: url });
+      const framed = await useFrame({ data, context: ubbontContext as Context, type: 'Person', id: url });
       // Cast to JsonLdObj which allows @context property
       (framed as JsonLdObj)['@context'] = ["https://api.ub.uib.no/ns/ubbont/context.json"];
       return c.json(reorderDocument(framed, desiredOrder) as z.infer<typeof PersonSchema>);
