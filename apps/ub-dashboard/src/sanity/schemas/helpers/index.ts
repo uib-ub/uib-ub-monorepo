@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import _ from 'lodash'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(localizedFormat)
-require('dayjs/locale/nb')
+import 'dayjs/locale/nb'
 
 export const coalesceLabel = (label: any, lang: string = 'no') => {
   let langs = [lang]
@@ -24,7 +24,7 @@ export const coalesceLabel = (label: any, lang: string = 'no') => {
     return label[lang]
   }
 
-  let result = getLabelByLangs(label, langs)
+  const result = getLabelByLangs(label, langs)
   return result?.[0] ?? 'Untitled'
 }
 
@@ -50,7 +50,7 @@ export const timespanAsString = (bb: any, eb: any, date: any, be: any, ee: any, 
     {},
     ...Object.keys(dates).map((date) => ({ [date]: dayjs(dates[date]).locale(lang).format('LL') })),
   )
-  let prettyTimespan =
+  const prettyTimespan =
     `${dates.date || ''}${dates.bb || ''}${dates.bb && dates.eb ? '~' : ''}${dates.eb || ''}` +
     `${(dates.bb || dates.eb) && (dates.be || dates.ee) ? ' / ' : ''}` +
     `${dates.be || ''}${dates.be && dates.ee ? '~' : ''}${dates.ee || ''}`

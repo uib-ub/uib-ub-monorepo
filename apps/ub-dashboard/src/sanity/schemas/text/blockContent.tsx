@@ -7,7 +7,7 @@ const highlightIcon = () => <span style={{ fontWeight: 'bold' }}>H</span>
 const highlightRender = (props: any) => <span style={{ backgroundColor: 'yellow' }}>{props.children}</span>
 const footnoteIcon = () => <span style={{ fontWeight: 'bold' }}>F</span>
 
-export const blockContent = {
+export const blockContent: any = {
   name: 'blockContent',
   title: 'Excerpt',
   type: 'array',

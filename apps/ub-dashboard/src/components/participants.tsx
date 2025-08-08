@@ -1,5 +1,6 @@
 "use client"
 
+import React from 'react';
 import { DataTable } from '@/components/data-table'
 import { Button } from '@/components/ui/button'
 import { CaretSortIcon, ClockIcon, QuestionMarkCircledIcon } from '@radix-ui/react-icons';

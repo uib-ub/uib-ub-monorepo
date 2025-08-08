@@ -1,3 +1,4 @@
+import React from 'react'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { VolatileSoftware, SoftwareComputingEService } from './software'
 import { Badge } from '@/components/ui/badge'
@@ -20,13 +21,13 @@ export const ComputingCard = ({ data }: { data: any }) => {
         </CardDescription>
       </CardHeader>
 
-      <CardContent className='flex flex-col flex-grow gap-2 px-2'>
+      <CardContent className='flex flex-col grow gap-2 px-2'>
         {accessPoint ? (
           <div>
             {accessPoint?.map((t: { value: any; label: string; }, i: number) => (
               <div className='text-muted-foreground text-sm flex items-center gap-1' key={i}>
                 <ExternalLinkIcon className='inline-block w-3 h-3' />
-                <a href={t.value} target='_blank' className='whitespace-nowrap overflow-x-scroll'>{t.value}</a>
+                <a href={t.value} target='_blank' rel="noreferrer" className='whitespace-nowrap overflow-x-scroll'>{t.value}</a>
               </div>
             ))}
           </div>
@@ -51,11 +52,11 @@ export const ComputingCard = ({ data }: { data: any }) => {
       <CardFooter className='flex justify-start gap-2 border-t border-zinc-400 p-2'>
         {providedBy?.logo ? (
           <div className='w-[25px] h-[25px]'>
-            <ImageBox image={providedBy.logo} width={45} height={45} alt="" classesWrapper='relative aspect-[1/1]' />
+            <ImageBox image={providedBy.logo} width={45} height={45} alt="" classesWrapper='relative aspect-square' />
           </div>
         ) : null}
         {designatedAccessPoint?.value ? (
-          <Link href={designatedAccessPoint?.value} target='_blank'>
+          <Link href={designatedAccessPoint?.value} target='_blank' rel="noreferrer">
             {providedBy?.label}
             <ExternalLinkIcon className='inline-block w-4 h-4 ml-1' />
           </Link>
@@ -78,10 +79,10 @@ export const HostingSoftwareCard = ({ data }: { data: any }) => {
         </CardDescription>
       </CardHeader>
 
-      <CardContent className='px-2 pt-2 flex flex-col flex-grow gap-2'>
+      <CardContent className='px-2 pt-2 flex flex-col grow gap-2'>
         {runBy?.length > 0 ? (
-          runBy.map((r: { id: any; label: any; designatedAccessPoint: { value: any; }; providedBy: { label: any; logo: SanityImageAssetDocument; }; type: any; }, i: number) => (
-            <ComputingCard key={i} data={r} />
+          runBy.map((r: { id: string; label: string; designatedAccessPoint?: { value: string }; providedBy?: { label: string; logo: SanityImageAssetDocument }; type: string }) => (
+            <ComputingCard key={r.id} data={r} />
           ))
         ) : null}
       </CardContent>
@@ -89,11 +90,11 @@ export const HostingSoftwareCard = ({ data }: { data: any }) => {
       <CardFooter className='flex justify-start gap-2 border-t border-zinc-300 p-2'>
         {componentOf?.logo ? (
           <div className='w-[25px] h-[25px]'>
-            <ImageBox image={componentOf.logo} width={45} height={45} alt="" classesWrapper='relative aspect-[1/1]' />
+            <ImageBox image={componentOf.logo} width={45} height={45} alt="" classesWrapper='relative aspect-square' />
           </div>
         ) : null}
         {designatedAccessPoint?.value ? (
-          <Link href={designatedAccessPoint?.value} target='_blank'>
+          <Link href={designatedAccessPoint?.value} target='_blank' rel="noreferrer">
             {componentOf.label}
             <ExternalLinkIcon className='inline-block w-4 h-4 ml-1' />
           </Link>
@@ -115,13 +116,13 @@ export const SoftwareCard = ({ data }: { data: Partial<VolatileSoftware & Softwa
         </CardDescription>
       </CardHeader>
 
-      <CardContent className='px-2 pt-2 flex-grow grid grid-flow-dense gap-2'>
+      <CardContent className='px-2 pt-2 grow grid grid-flow-dense gap-2'>
         <dl className='w-full'>
           {data?.programmedWith && data?.programmedWith.length > 0 ? (
             <div>
               <dt className='text-muted-foreground'>Programmeringsspråk</dt>
               <dd className='flex flex-wrap gap-3'>
-                {data.programmedWith.map((s: any, i: number) => (
+                {data.programmedWith.map((s: { id: string; label: string }) => (
                   <span key={s.id}>
                     {s.label}
                     {/* <Link key={s.id} href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
@@ -137,11 +138,11 @@ export const SoftwareCard = ({ data }: { data: Partial<VolatileSoftware & Softwa
             <div>
               <dt className='text-muted-foreground'>Bruker programvare</dt>
               <dd className='flex flex-wrap gap-3'>
-                {data.uses.map((s: any, i: number) => (
+                {data.uses.map((s: { id: string; label: string; logo?: SanityImageAssetDocument; type: string }) => (
                   <div key={s.id} className='flex gap-2'>
                     {s.logo ? (
                       <div className='w-[25px] h-[25px]'>
-                        <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-[1/1]' />
+                        <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-square' />
                       </div>
                     ) : null}
                     <Link href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
@@ -154,13 +155,13 @@ export const SoftwareCard = ({ data }: { data: Partial<VolatileSoftware & Softwa
           ) : null}
         </dl>
 
-        {data.hostedBy?.map((t, i) => (
-          <HostingSoftwareCard key={i} data={t} />
+        {data.hostedBy?.map((t) => (
+          <HostingSoftwareCard key={t.id || t.label} data={t} />
         ))}
 
         {data.runBy && data.runBy.length > 0 ? (
-          data.runBy.map((r: { id: any; label: any; designatedAccessPoint: { value: any; }; providedBy: { label: any; logo: SanityImageAssetDocument; }; type: any; }, i: number) => (
-            <ComputingCard key={i} data={r} />
+          data.runBy.map((r: { id: string; label: string; designatedAccessPoint?: { value: string }; providedBy?: { label: string; logo: SanityImageAssetDocument }; type: string }) => (
+            <ComputingCard key={r.id} data={r} />
           ))
         ) : null}
       </CardContent>
@@ -168,8 +169,8 @@ export const SoftwareCard = ({ data }: { data: Partial<VolatileSoftware & Softwa
       <CardFooter className='flex justify-end border-t p-3'>
         {data.hasType && (
           <div className='flex flex-wrap items-center gap-2'>
-            {data.hasType.map((t, i) => (
-              <Badge variant="secondary" className='grow-0 text-xs' key={i}>
+            {data.hasType.map((t) => (
+              <Badge variant="secondary" className='grow-0 text-xs' key={t.id || t.label}>
                 {t.label ?? 'Mangler navn'}
               </Badge>
             ))}

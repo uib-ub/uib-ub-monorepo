@@ -1,6 +1,6 @@
+import React, { Suspense } from 'react'
 import Flow from '@/components/flow'
 import { SanityImageAssetDocument, groq } from 'next-sanity'
-import { Suspense } from 'react'
 
 export interface GraphProps {
   id: string

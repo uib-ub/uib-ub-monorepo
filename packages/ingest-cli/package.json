@@ -29,7 +29,7 @@
     "@types/node": "^20.10.6",
     "@types/pretty-time": "^1.1.5",
     "@types/sparql-http-client": "^3.0.5",
-    "eslint-config-custom": "*",
+    "eslint-config": "*",
     "tsconfig": "*",
     "tsup": "^8.0.1",
     "type-fest": "^4.10.1",

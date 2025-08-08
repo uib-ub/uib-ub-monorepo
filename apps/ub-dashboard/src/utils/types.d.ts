@@ -3,6 +3,7 @@ import type {
   SchemaInference,
   XataRecord,
 } from "@xata.io/client";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 declare const tables: readonly [
   {
     readonly name: "links";
@@ -101,4 +102,4 @@ export declare class XataClient extends DatabaseClient<DatabaseSchema> {
   constructor(options?: BaseClientOptions);
 }
 export declare const getXataClient: () => XataClient;
-export {};
+export { };

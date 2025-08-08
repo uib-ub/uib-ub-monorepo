@@ -12,7 +12,9 @@
       "dependsOn": [
         "^build"
       ],
-      "env": []
+      "env": [
+        "NODE_ENV"
+      ]
     }
   }
 }

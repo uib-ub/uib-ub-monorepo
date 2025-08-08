@@ -30,12 +30,7 @@
       ],
       "dependsOn": []
     },
-    "lint": {
-      "outputs": [
-        "dist/**",
-        "build/**"
-      ]
-    },
+    "lint": {},
     "dev": {
       "cache": false,
       "dependsOn": [

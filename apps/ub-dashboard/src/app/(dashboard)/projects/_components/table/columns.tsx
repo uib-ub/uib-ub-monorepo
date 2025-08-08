@@ -1,4 +1,6 @@
 "use client"
+
+import React from "react"
 import { CaretSortIcon } from "@radix-ui/react-icons"
 import { ColumnDef } from "@tanstack/react-table"
 import { ProjectProps } from '../projects'
@@ -27,7 +29,7 @@ export const columns: ColumnDef<ProjectProps>[] = [
       <div className=' flex gap-2 w-[200px]'>
         {row.original.logo ? (
           <div className='w-[20px] h-[20px]'>
-            <ImageBox image={row.original.logo} width={20} height={20} alt="" classesWrapper='relative aspect-[1/1] rounded-full' />
+            <ImageBox image={row.original.logo} width={20} height={20} alt="" classesWrapper='relative aspect-square rounded-full' />
           </div>
         ) : null}
         <Link href={`/projects/${row.getValue('id')}`} className='font-bold'>
