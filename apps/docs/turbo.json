@@ -15,6 +15,13 @@
       "env": [
         "NODE_ENV"
       ]
+    },
+    "dev": {
+      "with": [
+        "api#dev"
+      ],
+      "persistent": true,
+      "cache": false
     }
   }
 }
