@@ -1,7 +1,7 @@
 <template>
   <div class="flex">
     <Head>
-      <Title>{{ lalof(termbase + "-3A" + termbase) }} | Termportalen</Title>
+      <Title>{{ getLaLo(termbase + "-3A" + termbase) }} | Termportalen</Title>
     </Head>
     <div class="flex grow">
       <SideBar />
@@ -13,7 +13,7 @@
           >
             <h1 id="main" class="pb-3 pt-5 text-2xl">
               <AppLink to="#main">
-                {{ lalof(termbase + "-3A" + termbase) }}
+                {{ getLaLo(termbase + "-3A" + termbase) }}
               </AppLink>
             </h1>
             <!-- Only apply termbaseDescriptionHeight on larger screens-->
@@ -83,6 +83,7 @@ const termbase = getTermbaseFromParam();
 const localeLangOrder = useLocaleLangOrder();
 const bootstrapData = useBootstrapData();
 const breakpoint = useBreakpoint();
+const { getLaLo } = useLazyLocale();
 
 const termbaseInfoBoxRef = ref<HTMLElement | null>(null);
 const termbaseTextRef = ref<HTMLElement | null>(null);
@@ -102,18 +103,20 @@ const termbaseDescriptionHeight = computed(() => {
   }
 });
 
-const { data } = await useLazyFetch(`/api/termbase/${termbase}`, {
+const { data } = await useLazyFetch<Termbase>(`/api/termbase/${termbase}`, {
   key: `termbase_${termbase}`,
   headers: process.server
     ? { cookie: "session=" + useRuntimeConfig().apiKey }
     : undefined,
 });
+
 const description = computed(() => {
   let description = "";
   for (const lang of localeLangOrder.value) {
-    if (data.value?.description?.[lang]) {
+    const localLangcode = lang as LocalLangCode;
+    if (data.value?.description?.[localLangcode]) {
       try {
-        description = data.value?.description?.[lang];
+        description = data.value?.description?.[localLangcode];
       } catch (e) {}
       break;
     }

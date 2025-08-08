@@ -21,10 +21,10 @@
         >
           <client-only>
             <AppLink
-              v-if="mainConcept.memberOf !== lalof(mainConcept.memberOf)"
+              v-if="mainConcept.memberOf !== getLaLo(mainConcept.memberOf)"
               :to="'/tb/' + mainConcept?.memberOf.split('-3A')[1]"
             >
-              {{ lalof(mainConcept.memberOf) }}
+              {{ getLaLo(mainConcept.memberOf) }}
             </AppLink>
           </client-only>
         </div>
@@ -69,19 +69,49 @@
 </template>
 
 <script setup lang="ts">
+const appConfig = useAppConfig();
+
 const dataDisplayLanguages = useDataDisplayLanguages();
 const localeLangOrder = useLocaleLangOrder();
+const { getLaLo } = useLazyLocale();
 
 const termpostRef = ref(null);
 
 const props = defineProps({
-  // used to fetch data
-  conceptUrl: { type: String, required: true },
-  // used to identify main concept in fetched data
-  mainConceptId: { type: String, required: true },
-  // toggle if concept should be used to set head title and skiplink target
+  termbaseId: { type: String, required: true },
+  conceptIdArray: { type: Array<string>, required: true },
   mainp: { type: Boolean, default: false },
 });
+
+function getConceptId(termbase: TermbaseId, idArray: string[]): string {
+  const patternKey = idArray[0];
+  let id: string;
+  let mainConceptId: string;
+  if (
+    (appConfig.tb.base.specialUriTbs as readonly TermbaseId[]).includes(
+      termbase
+    ) &&
+    Object.keys(appConfig.tb).includes(termbase)
+  ) {
+    const tbId = termbase as SpecialUriTermbase & ConfiguredTermbase;
+
+    if (Object.keys(appConfig.tb[tbId].uriPatterns).includes(patternKey)) {
+      type PatternKey = keyof (typeof appConfig.tb)[typeof tbId]["uriPatterns"];
+
+      const base = appConfig.tb[tbId].uriPatterns[patternKey as PatternKey];
+      id = idArray.slice(1).join("/");
+      mainConceptId = base + id;
+    } else {
+      id = `${termbase}-3A${idArray[0]}`;
+      mainConceptId = id;
+    }
+  } else {
+    id = `${termbase}-3A${idArray[0]}`;
+    mainConceptId = id;
+  }
+  return mainConceptId;
+}
+const mainConceptId = getConceptId(props.termbaseId, props.conceptIdArray);
 
 watch(
   termpostRef,
@@ -98,24 +128,27 @@ const timer = setTimeout(() => {
   controller.abort();
 }, 6000);
 
-const { data, error } = await useLazyAsyncData(
-  "concept" + props.conceptUrl,
-  () =>
-    $fetch(`/api/concept/${props.conceptUrl}`, {
+const { data, error } = await useLazyAsyncData("concept" + mainConceptId, () =>
+  $fetch(
+    `/api/termbase/${props.termbaseId}/${encodeURI(
+      props.conceptIdArray.join("/")
+    )}`,
+    {
       method: "GET",
       headers: process.server
         ? { cookie: "session=" + useRuntimeConfig().apiKey }
         : undefined,
       retry: 1,
       signal: controller.signal,
-    }).then((value) => {
-      clearTimeout(timer);
-      return value;
-    })
+    }
+  ).then((value) => {
+    clearTimeout(timer);
+    return value;
+  })
 );
 
 const mainConcept = computed(() => {
-  return data.value?.concept[props.mainConceptId];
+  return data.value?.concept?.[mainConceptId];
 });
 
 const pagetitle = computed(() => {
@@ -142,7 +175,9 @@ const displayInfo = computed(() => {
       hiddenLabelLength: data.value.meta?.maxLen.hiddenLabel,
     };
     // semantic relations
-    for (const relationType of Object.keys(semanticRelationTypes)) {
+    for (const relationType of Object.keys(
+      appConfig.data.semanticRelations
+    ) as SemanticRelation[]) {
       const relData = getRelationData(
         data.value?.concept,
         props.mainConceptId,

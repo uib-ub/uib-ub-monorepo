@@ -18,6 +18,8 @@
 </template>
 
 <script setup lang="ts">
+const appConfig = useAppConfig();
+
 const searchInterface = useSearchInterface();
 const searchData = useSearchData();
 const searchDataStats = useSearchDataStats();
@@ -67,7 +69,7 @@ const fetchFurtherSearchData = () => {
         let oldOffsetCalc = countFetchedMatches.value;
         let fetchNextMatching = false;
 
-        for (const match of searchOptionsInfo.matching.default.flat()) {
+        for (const match of appConfig.search.options.matching.default.flat()) {
           if (
             Object.keys(searchDataStats.value.matching || []).includes(match)
           ) {
@@ -86,7 +88,7 @@ const fetchFurtherSearchData = () => {
             const nextfetchCalc = matchCount - oldOffsetCalc;
             if (
               nextfetchCalc > 0 &&
-              nextfetchCalc < searchOptionsInfo.limit.default
+              nextfetchCalc < appConfig.search.options.limit.default
             ) {
               fetchNextMatching = true;
             }

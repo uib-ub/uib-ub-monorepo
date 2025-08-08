@@ -21,7 +21,7 @@
           )
         "
       >
-        <span>{{ lalof(`${tb}-3A${tb}`) }}</span>
+        <span>{{ getLaLo(`${tb}-3A${tb}`) }}</span>
         <Icon
           name="material-symbols:close"
           size="1.2rem"
@@ -107,7 +107,7 @@
               />
             </div>
             <div class="flex-wrap pl-1.5">
-              {{ lalof(`${tb}-3A${tb}`) }}
+              {{ getLaLo(`${tb}-3A${tb}`) }}
             </div>
           </label>
         </div>
@@ -118,6 +118,8 @@
 <script setup lang="ts">
 const searchInterface = useSearchInterface();
 const orderedTermbases = useOrderedTermbases();
+const { getLaLo } = useLazyLocale();
+
 const panel = ref();
 const wrapper = ref(null);
 

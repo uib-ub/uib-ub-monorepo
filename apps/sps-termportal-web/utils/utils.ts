@@ -1,8 +1,4 @@
 import { useI18n } from "vue-i18n";
-import type { SemanticRelation } from "./vars";
-import { termbaseUriPatterns } from "./vars-termbase";
-import type { LangCode } from "~/composables/locale";
-import type { SearchDataEntry } from "~/composables/states";
 
 /**
  * Return unique intersection of two Arrays, sorted by order of first.
@@ -11,7 +7,7 @@ import type { SearchDataEntry } from "~/composables/states";
  * @param a - Array a
  * @param b - Array b
  */
-export function intersectUnique(a: any[], b: any[]): any[] {
+export function intersectUnique(a: readonly any[], b: readonly any[]): any[] {
   const setA = new Set(a);
   const setB = new Set(b);
   const intersection = new Set([...setA].filter((x) => setB.has(x)));
@@ -40,11 +36,8 @@ export function countSearchEntries(matches: SearchDataEntry[]): number {
 }
 
 export function langRtoL(languageCode: LangCode) {
-  if (languageRtoL.has(languageCode)) {
-    return true;
-  } else {
-    return false;
-  }
+  const appConfig = useAppConfig();
+  return appConfig.language.rightToleft.includes(languageCode);
 }
 
 /**
@@ -52,12 +45,16 @@ export function langRtoL(languageCode: LangCode) {
  * Precedence:
  * - prefLabel in local language
  * - altLabel in local language
- * Loop through prefLabel, altLabel of languages in local languageOrder
+ * Loop through prefLabel, altLabel of languages in local langOrder
  *
- * @param data - concept data with labels
+ * @param concept - concept data with labels
+ * @param langOrder - localized language order
  * @returns localized title or null
  */
-export function getConceptDisplaytitle(concept, langOrder): string | null {
+export function getConceptDisplaytitle(
+  concept,
+  langOrder: LangCode[]
+): string | null {
   let title = null;
   for (const lang of langOrder) {
     for (const label of ["prefLabel", "altLabel"]) {
@@ -90,6 +87,9 @@ export function getRelationData(
   relationType: SemanticRelation,
   langOrder: Array<LangCode>
 ): Array<Array<string>> | null {
+  const appConfig = useAppConfig();
+  const semanticRelationTypes = appConfig.data.semanticRelations;
+
   let relationData = null;
   // Check if concept with id has relation of relationtype
   if (data[mainConceptId]?.[relationType]) {
@@ -197,22 +197,6 @@ export function getAllKeys(obj: Object): string[] {
   }, []);
 }
 
-/**
- * Lazy Localization function with fallback based on localized language order.
- *
- * @param key - key to localize
- * @returns Localized label or key if not label present
- */
-export function lalof(key: string): string {
-  const bootstrapData = useBootstrapData();
-  const locale = useLocale();
-  const label = languageOrder[locale.value]
-    .filter((lc) => Object.keys(languageOrder).includes(lc))
-    .map((lc) => bootstrapData.value?.lalo?.[lc]?.[key])
-    .find((value) => value !== undefined);
-  return label ?? key;
-}
-
 export function htmlify(data: string): string {
   try {
     const pars = data
@@ -256,7 +240,8 @@ export function flattenOrderDomains(domains?) {
 }
 
 export const getLangOptions = () => {
-  const locales = useLocales();
+  const appConfig = useAppConfig();
+  const locales = appConfig.language.locale;
   const i18n = useI18n();
   return locales.map((loc) => ({
     label: loc,
@@ -267,10 +252,25 @@ export const getLangOptions = () => {
 };
 
 export function idOrUriToRoute(
-  termbaseId: string,
+  termbaseId: TermbaseId,
   idOrUri: string
 ): String | null {
-  if (!Object.keys(termbaseUriPatterns).includes(termbaseId)) {
+  const appConfig = useAppConfig();
+
+  if (
+    (appConfig.tb.base.specialUriTbs as readonly TermbaseId[]).includes(
+      termbaseId
+    )
+  ) {
+    const tbId = termbaseId as SpecialUriTermbase & ConfiguredTermbase;
+    const patterns = appConfig.tb[tbId].uriPatterns;
+    for (const [key, uri] of Object.entries(patterns)) {
+      if (idOrUri.startsWith(uri)) {
+        const id = idOrUri.replace(uri, "");
+        return `/${termbaseId}/${key}/${id}`;
+      }
+    }
+  } else {
     const runtimeConfig = useRuntimeConfig();
     return (
       "/" +
@@ -280,15 +280,6 @@ export function idOrUriToRoute(
         .replaceAll("/", "%2F") // Slashes are allowed in wiki pagenames, but cause problems with routing
         .replace("-3A", "/")
     );
-  } else {
-    const patterns =
-      termbaseUriPatterns[termbaseId as keyof typeof termbaseUriPatterns];
-    for (const pattern in patterns) {
-      if (idOrUri.startsWith(patterns[pattern])) {
-        const id = idOrUri.replace(patterns[pattern], "");
-        return `/${termbaseId}/${pattern}/${id}`;
-      }
-    }
   }
   return null;
 }

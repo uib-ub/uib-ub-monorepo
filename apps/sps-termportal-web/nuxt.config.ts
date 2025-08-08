@@ -70,7 +70,6 @@ export default defineNuxtConfig({
     "/UDEUT": { redirect: "/tb/UDEUT" },
     "/UHR": { redirect: "/tb/UHR" },
   },
-  appConfig: {},
   runtimeConfig: {
     apiKey: uuidv4(),
     fuseki: {

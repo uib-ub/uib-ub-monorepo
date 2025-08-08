@@ -24,6 +24,9 @@
 </template>
 
 <script setup lang="ts">
+const appConfig = useAppConfig();
+const termpostViewOnlyLangs = appConfig.language.dataDisplayOnly;
+
 const localeLangOrder = useLocaleLangOrder();
 
 const props = defineProps({
@@ -39,7 +42,7 @@ const caption = computed(() => {
   }, {});
 
   for (const lang of localeLangOrder.value
-    .filter((lc) => !dataDisplayOnlyLanguages.includes(lc))
+    .filter((lc) => !termpostViewOnlyLangs.includes(lc))
     .slice(0, 3)) {
     if (Object.keys(captions).includes(lang)) {
       caption = captions[lang];

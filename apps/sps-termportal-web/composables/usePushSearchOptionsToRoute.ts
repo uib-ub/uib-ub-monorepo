@@ -1,13 +1,16 @@
 export default function () {
+  const appConfig = useAppConfig();
+  const searchOptionsConfig = appConfig.search.options;
+
   const route = useRoute();
   const router = useRouter();
   const searchInterface = useSearchInterface();
   const myparams = route.query;
 
-  for (const [key, value] of Object.entries(searchOptionsInfo)) {
+  for (const [key, value] of Object.entries(searchOptionsConfig)) {
     let currentVal = searchInterface.value[key];
     let defaultVal: string | null | Array<string>;
-    if (searchOptionsInfo[key].q && currentVal !== null) {
+    if (searchOptionsConfig[key].q && currentVal !== null) {
       if (value.default === null) {
         defaultVal = value.default;
       } else if (
@@ -19,8 +22,7 @@ export default function () {
       } else if (Array.isArray(value.default)) {
         currentVal = currentVal.toString();
         defaultVal = value.default.join(",");
-      }
-      else {
+      } else {
         currentVal = JSON.stringify(currentVal);
         defaultVal = JSON.stringify(value.default);
       }

@@ -1,5 +1,3 @@
-import type { SearchOptions } from "~/utils/vars";
-
 export function genSearchQueryAll(
   searchOptions: SearchOptions,
   language,

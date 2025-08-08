@@ -1,4 +1,3 @@
-import type { SearchOptions } from "../../utils/vars";
 import { sanitizeTerm, getContextFilter } from "./genSearchEntryQuery";
 
 export function genAutocompleteQuery(

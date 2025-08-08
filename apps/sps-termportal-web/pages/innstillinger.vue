@@ -143,9 +143,11 @@
 import { useI18n } from "vue-i18n";
 import { pushDataLangDispEvent } from "~/utils/analyticsEvents";
 
+const appConfig = useAppConfig();
+const locales = appConfig.language.locale;
+
 const i18n = useI18n();
 const dataDisplayLanguages = useDataDisplayLanguages();
-const locales = useLocales();
 const localeLangOrder = useLocaleLangOrder();
 
 function setLocale(language) {

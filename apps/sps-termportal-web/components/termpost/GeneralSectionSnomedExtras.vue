@@ -30,7 +30,7 @@
       :data="[
         [
           `${$t('misc.snomedBrowser')}: ${displayInfo.pagetitle.value}`,
-          termbaseConfig.SNOMEDCT.browserUrl(
+          appConfig.tb.SNOMEDCT.browserUrl(
             bootstrapData.termbase.SNOMEDCT.versionEdition,
             conceptId
           ),
@@ -42,8 +42,8 @@
 
 <script setup lang="ts">
 import { localizeSnomedVersionLabel } from "~/composables/locale";
-import { termbaseConfig } from "~/utils/vars-termbase";
 
+const appConfig = useAppConfig();
 const route = useRoute();
 const bootstrapData = useBootstrapData();
 const termbase = route.params.termbase as string;

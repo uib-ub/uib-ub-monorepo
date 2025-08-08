@@ -1,5 +1,3 @@
-import type { TermbaseId } from "~/utils/vars-termbase";
-
 export function genTQLangArgument(languages: string[]) {
   if (languages[0] === "all") {
     return [""];

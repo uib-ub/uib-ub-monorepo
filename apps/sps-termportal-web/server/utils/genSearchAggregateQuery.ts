@@ -1,8 +1,3 @@
-import type {
-  Matching,
-  SearchOptions,
-  SearchQueryType,
-} from "../../utils/vars";
 
 import {
   getPredicateValues,

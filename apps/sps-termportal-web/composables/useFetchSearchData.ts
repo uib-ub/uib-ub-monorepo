@@ -1,6 +1,3 @@
-import { SearchDataStats } from "./states";
-import { Matching, SearchOptions } from "~~/utils/vars";
-
 export async function fetchSearchDataMatching(
   searchOptions: SearchOptions,
   append: boolean,
@@ -34,7 +31,6 @@ export function resetSearchFilterSelection() {
   };
 }
 
-export type FetchType = "initial" | "options" | "filter" | "further";
 async function fetchSearchDataAggregate(
   searchOptions: SearchOptions,
   currentFetch: number

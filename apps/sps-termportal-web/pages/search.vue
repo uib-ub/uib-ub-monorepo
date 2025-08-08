@@ -50,9 +50,9 @@
 </template>
 
 <script setup lang="ts">
-import { uiConfig } from "../utils/vars";
-import type { FetchType } from "../composables/useFetchSearchData";
-import type { TermbaseId } from "~/utils/vars-termbase";
+import { FetchType } from "~/types/enums";
+
+const appConfig = useAppConfig();
 
 const route = useRoute();
 const searchData = useSearchData();
@@ -104,7 +104,7 @@ watch(
       term: searchInterface.value.term as string,
     });
     */
-    considerSearchFetching("initial");
+    considerSearchFetching(FetchType.Inital);
   }
 );
 
@@ -122,14 +122,14 @@ watch(
       allowSearchFetch.value = true;
     }
     // umTrackEvent("Search: Option change");
-    considerSearchFetching("options");
+    considerSearchFetching(FetchType.Options);
     usePushSearchOptionsToRoute();
   },
   { deep: true }
 );
 
 onMounted(() => {
-  considerSearchFetching("initial");
+  considerSearchFetching(FetchType.Inital);
 
   /*
   Set searchOptions state based on route query values.
@@ -139,11 +139,11 @@ onMounted(() => {
   */
   if (searchInterface.value.term === null) {
     // display filter if screen size larger than lg
-    if (uiConfig.wideUiBreakpoints.includes(breakpoint.value)) {
+    if (appConfig.ui.wideBreakpoints.includes(breakpoint.value)) {
       showSearchFilter.value = true;
     }
 
-    for (const [key, value] of Object.entries(searchOptionsInfo)) {
+    for (const [key, value] of Object.entries(appConfig.search.options)) {
       // Only set state if present in route
       // term can be empty string so the undefined check is neccessary
       if (route.query[value.q] !== undefined) {

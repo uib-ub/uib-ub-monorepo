@@ -1,6 +1,5 @@
-import type { SearchDataEntry } from "~~/composables/states";
-import type { TermbaseId } from "~~/utils/vars-termbase";
 import { idOrUriToRoute } from "~~/utils/utils";
+
 /* Search data preprocessing
  */
 

@@ -24,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import { LangCode } from "~/composables/locale";
 
 const props = defineProps({
   data: { type: String, default: "" },

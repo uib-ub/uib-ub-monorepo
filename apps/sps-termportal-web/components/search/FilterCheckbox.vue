@@ -40,12 +40,12 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import type { SearchDataStats } from "~~/composables/states";
 
 const i18n = useI18n();
 const searchFilterSelection = useSearchFilterSelection();
 const searchDataStats = useSearchDataStats();
 const searchDataPending = useSearchDataPending();
+const { getLaLo } = useLazyLocale();
 
 const props = defineProps({
   ftype: { type: String, required: true },
@@ -55,7 +55,7 @@ const props = defineProps({
 
 const label = () => {
   if (props.ftype === "context") {
-    return lalof(props.fvalue);
+    return getLaLo(props.fvalue);
   } else {
     return i18n.t(`global.${props.ftype}.${props.fvalue}`);
   }

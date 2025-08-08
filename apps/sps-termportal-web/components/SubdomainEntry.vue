@@ -22,24 +22,25 @@
           "
           name="mdi:checkbox-marked-outline"
           size="1.2em"
-          class="text-tpblue-400 mb-0.5"
+          class="mb-0.5 text-tpblue-400"
           aria-hidden="true"
         />
         <Icon
           v-else
           name="mdi:checkbox-blank-outline"
           size="1.2em"
-          class="text-tpblue-400 mb-0.5"
+          class="mb-0.5 text-tpblue-400"
           aria-hidden="true"
         />
       </div>
-      <div class="pl-1.5">{{ lalof(label) }}</div>
+      <div class="pl-1.5">{{ getLaLo(label) }}</div>
     </label>
   </div>
 </template>
 
 <script setup lang="ts">
 const bootstrapData = useBootstrapData();
+const { getLaLo } = useLazyLocale();
 
 const props = defineProps({
   modelValue: { type: Object, required: true },

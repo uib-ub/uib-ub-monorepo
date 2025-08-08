@@ -1,5 +1,3 @@
-import type { Matching, LabelPredicate, SearchOptions } from "../../utils/vars";
-
 export function sanitizeTerm(term: string) {
   return term
     .replace(/-|\(|\)|<|>|\[|\]|\/|,\s*$|\*|~|'|"|_/g, " ")

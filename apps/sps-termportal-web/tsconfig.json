@@ -4,6 +4,7 @@
   "compilerOptions": {
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-  //  "types": ["@unlighthouse/nuxt"]
-  }
+    "types": ["@nuxt/types", "@types/node"]
+  },
+  "include": [".nuxt/nuxt.d.ts", "**/*", "types"]
 }

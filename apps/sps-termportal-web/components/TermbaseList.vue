@@ -9,11 +9,11 @@
     </h1>
     <ul class="grid grid-cols-1 gap-2 md:grid-cols-2">
       <li v-for="tb in orderedTermbases" :key="locale + tb">
-        <AppLink :to="`/${tb}`"
+        <AppLink :to="`/tb/${tb}`"
           ><div
             class="tp-focus-hover rounded-[7px] border border-gray-300 px-2.5 py-1.5"
           >
-            {{ lalof(`${tb}-3A${tb}`) }}
+            {{ getLaLo(`${tb}-3A${tb}`) }}
           </div>
         </AppLink>
       </li>
@@ -24,4 +24,5 @@
 <script setup lang="ts">
 const locale = useLocale();
 const orderedTermbases = useOrderedTermbases();
+const { getLaLo } = useLazyLocale();
 </script>

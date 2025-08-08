@@ -11,7 +11,6 @@ export default defineEventHandler(async (event) => {
       body: queryLalo,
       headers: {
         "Content-type": "application/sparql-query",
-        Referer: "termportalen.no", // TODO Referer problem
         Accept: "application/json",
         Authorization: `Basic ${instance.authHeader}`,
       },
@@ -23,7 +22,6 @@ export default defineEventHandler(async (event) => {
       body: queryTermbase,
       headers: {
         "Content-type": "application/sparql-query",
-        Referer: "termportalen.no", // TODO Referer problem
         Accept: "application/json",
         Authorization: `Basic ${instance.authHeader}`,
       },
@@ -35,7 +33,6 @@ export default defineEventHandler(async (event) => {
       body: queryDomain,
       headers: {
         "Content-type": "application/sparql-query",
-        Referer: "termportalen.no", // TODO Referer problem
         Accept: "application/ld+json",
         Authorization: `Basic ${instance.authHeader}`,
       },

@@ -37,21 +37,22 @@
 
 <script setup>
 import { useI18n } from "vue-i18n";
+
+const appConfig = useAppConfig();
+const termpostViewOnlyLangs = appConfig.language.dataDisplayOnly;
+
 const i18n = useI18n();
 const searchInterface = useSearchInterface();
 const localeLangOrder = useLocaleLangOrder();
 const orderedTermbases = useOrderedTermbases();
 const bootstrapData = useBootstrapData();
 
-// Order of language is not relevant
-const languageInfo = deriveLanguageInfo(languageOrder.nb);
+const languageInfo = deriveLanguageInfo(localeLangOrder.value);
 
 const optionsLanguage = computed(() => {
   const filteredLangs = deriveSearchOptions("language", "all");
   const intersection = intersectUnique(
-    localeLangOrder.value.filter(
-      (lc) => !dataDisplayOnlyLanguages.includes(lc)
-    ),
+    localeLangOrder.value.filter((lc) => !termpostViewOnlyLangs.includes(lc)),
     filteredLangs
   );
   const options = [
@@ -70,9 +71,7 @@ const optionsLanguage = computed(() => {
 const optionsTranslate = computed(() => {
   const filteredTranslate = deriveSearchOptions("translate", "none");
   const intersection = intersectUnique(
-    localeLangOrder.value.filter(
-      (lc) => !dataDisplayOnlyLanguages.includes(lc)
-    ),
+    localeLangOrder.value.filter((lc) => !termpostViewOnlyLangs.includes(lc)),
     filteredTranslate
   );
   const options = [
