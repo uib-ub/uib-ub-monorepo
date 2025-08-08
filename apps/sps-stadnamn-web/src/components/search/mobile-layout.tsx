@@ -29,13 +29,16 @@ import FuzzyWindow from "./fuzzy/fuzzy-window";
 import GroupDetails from "./details/group/group-details";
 import FuzzyExplorer from "./fuzzy/fuzzy-explorer";
 import ClickableIcon from "../ui/clickable/clickable-icon";
+import HorizontalSwipe from "./details/doc/horizontal-swipe";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
     const [snappedPosition, setSnappedPosition] = useState(25);
     const [snapped, setSnapped] = useState(false);
     const [startTouchY, setStartTouchY] = useState(0);
-    const [swipeDirection, setSwipeDirection] = useState<null | 'up' | 'down'>(null);
+    const [startTouchX, setStartTouchX] = useState(0);
+    const [swipeInProgress, setSwipeInProgress] = useState(false);
+    const [drawerSwipeDirection, setDrawerSwipeDirection] = useState<null | 'up' | 'down'>(null);
     const scrollableContent = useRef<HTMLDivElement>(null);
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
     const searchParams = useSearchParams()
@@ -100,6 +103,7 @@ export default function MobileLayout() {
         }       
 
         setStartTouchY(e.touches[0].clientY);
+        setStartTouchX(e.touches[0].clientX);
         setStartTouchTime(Date.now());
         setSnapped(false);
     };
@@ -109,16 +113,24 @@ export default function MobileLayout() {
 
         // Detect quick swipe up or down, resulting in 25% or 100% height
         const endTouchY = e.changedTouches[0].clientY;
+        const endTouchX = e.changedTouches[0].clientX;
         const endTouchTime = Date.now();
         const touchDuration = endTouchTime - startTouchTime;
         const swipeDistance = startTouchY - endTouchY;
         const isQuickSwipe = touchDuration < 400 //&& Math.abs(swipeDistance) > 100;
-        let newPosition = swipeDirection === 'up' ? Math.ceil(currentPosition / 25) * 25 : Math.floor(currentPosition / 25) * 25
+
+        const isHorizontalSwipe = Math.abs(startTouchX - endTouchX) > Math.abs(startTouchY - endTouchY)
+        if (isHorizontalSwipe) {
+            return
+        }
+
+
+        let newPosition = drawerSwipeDirection === 'up' ? Math.ceil(currentPosition / 25) * 25 : Math.floor(currentPosition / 25) * 25
         if (isQuickSwipe) {
-            if (swipeDirection === 'up') {
+            if (drawerSwipeDirection === 'up') {
                 newPosition = 75
             }
-            if (swipeDirection === 'down') {
+            if (drawerSwipeDirection === 'down') {
                 if (currentPosition > 25) {
                     newPosition = 25
                 }
@@ -143,7 +155,7 @@ export default function MobileLayout() {
 
         setCurrentPosition(newPosition);
         setSnappedPosition(newPosition);
-        setSwipeDirection(null);
+        setDrawerSwipeDirection(null);
 
 
     };
@@ -152,8 +164,15 @@ export default function MobileLayout() {
         if (e.target && isScrolling(e.target)) {
             return
         }
+
+        const isHorizontalSwipe = Math.abs(startTouchX - e.touches[0].clientX) > Math.abs(startTouchY - e.touches[0].clientY)
+        if (isHorizontalSwipe) {
+            return
+        }
+
+
         const newHeight = snappedPosition - pos2svh(startTouchY) + pos2svh(e.touches[0].clientY)
-        setSwipeDirection(newHeight > currentPosition ? 'up' : 'down');
+        setDrawerSwipeDirection(newHeight > currentPosition ? 'up' : 'down');
         setCurrentPosition(newHeight < 75 ? newHeight : 75);
 
     }
@@ -182,7 +201,7 @@ export default function MobileLayout() {
   
             setCurrentPosition(25)
             setSnappedPosition(25)
-            setSwipeDirection(null);
+            setDrawerSwipeDirection(null);
             setSnapped(true);
             scrollableContent.current?.scrollTo(0, 0)
 
@@ -207,10 +226,10 @@ export default function MobileLayout() {
             <div className="w-full flex  items-center h-4 pt-2 rounded-t-md bg-neutral-800 relative px-2" style={{touchAction: 'none'}}>
                 <div className="absolute -translate-x-1/2 left-1/2 h-1.5 top-1.5 w-16 bg-neutral-300 rounded-full"></div></div>
 
-            <div className={`h-full bg-white flex flex-col mobile-padding rounded-lg shadow-inner border-4 border-neutral-800 shadow-inner max-h-[calc(100svh-12rem)] overscroll-contain pt-2`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
+            <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 border-neutral-800 shadow-inner max-h-[calc(100svh-12rem)] overscroll-contain`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             {drawerContent == 'details' && <>
-            {doc && details == 'doc' && <> { (docLoading ? <DocSkeleton/> : <DocInfo/>)} </>}
+            {doc && details == 'doc' && <> { (docLoading ? <DocSkeleton/> : <HorizontalSwipe><DocInfo/></HorizontalSwipe>)} </>}
             {details == 'group' && <div className="pb-12">
                 <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 pb-2">Oversikt</h2>
                 
