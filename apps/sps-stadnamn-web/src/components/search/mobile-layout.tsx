@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
-import { PiArrowsOut, PiBinocularsFill, PiBookOpen, PiClock, PiDatabase, PiFunnel, PiList, PiListBullets, PiListLight, PiSignpost, PiTreeViewFill } from "react-icons/pi";
+import { PiBookOpen, PiClock, PiDatabase, PiFunnel, PiList, PiListBullets, PiSignpost, PiTreeViewFill } from "react-icons/pi";
 import Results from "./nav/results/search-results";
 import MapExplorer from "./map-explorer";
 import { usePerspective, useSearchQuery, useMode } from "@/lib/search-params";
@@ -19,13 +19,7 @@ import ActiveFilters from "./form/active-filters";
 import { formatNumber, stringToBase64Url } from "@/lib/utils";
 import DatasetFacet from "./nav/facets/dataset-facet";
 import Clickable from "../ui/clickable/clickable";
-import HitNavigation from "./details/hit-navigation";
 import { GroupContext } from "@/app/group-provider";
-import DetailsFooter from "./details/details-footer";
-import CopyLink from "../doc/copy-link";
-import Link from "next/link";
-import IconButton from "../ui/icon-button";
-import FuzzyWindow from "./fuzzy/fuzzy-window";
 import GroupDetails from "./details/group/group-details";
 import FuzzyExplorer from "./fuzzy/fuzzy-explorer";
 import ClickableIcon from "../ui/clickable/clickable-icon";
