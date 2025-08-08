@@ -1,19 +1,20 @@
 import client from '@shared/clients/es-client'
 import { env } from '@env'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
-import { FailureSchema, IdParamsSchema, ItemParamsSchema, TODO } from '@shared/models'
+import { FailureSchema, IdParamsSchema, ItemParamsSchema } from '@shared/models'
 import { constructIIIFStructure } from '@shared/mappers/iiif/constructIIIFStructure'
 import { reorderDocument, sqb, useFrame } from 'utils'
 import { endpointUrl } from '@shared/clients/sparql-chc-client'
 import { itemQuery } from './item-query'
 import ubbontContext from 'jsonld-contexts/src/ubbontContext'
 import { ContextDefinition } from 'jsonld'
+import { JsonLdObj } from 'jsonld/jsonld-spec'
 
 const route = new OpenAPIHono()
 
 const desiredOrder: string[] = ['@context', 'id', 'type', '_label', '_available', '_modified', 'identified_by']
 
-const ItemSchema = z.record(z.string()).openapi('Item')
+const ItemSchema = z.any().openapi('Item')
 
 export const getItem = createRoute({
   method: 'get',
@@ -59,9 +60,10 @@ route.openapi(getItem, async (c) => {
         return c.json({ error: true, message: 'Not found' }, 404)
       }
 
-      let framed = await useFrame({ data, context: ubbontContext as ContextDefinition, type: 'HumanMadeObject' });
-      framed['@context'] = ["https://api.ub.uib.no/ns/ubbont/context.json"]
-      return c.json(framed);
+      const framed = await useFrame({ data, context: ubbontContext as ContextDefinition, type: 'HumanMadeObject' });
+      // Cast to JsonLdObj which allows @context property
+      (framed as JsonLdObj)['@context'] = ["https://api.ub.uib.no/ns/ubbont/context.json"]
+      return c.json(framed as z.infer<typeof ItemSchema>);
     } catch (error) {
       throw new Error(`Error fetching item ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -69,7 +71,7 @@ route.openapi(getItem, async (c) => {
 
   if (as === 'iiif') {
     try {
-      const data: TODO = await client.search({
+      const data = await client.search({
         index: [`search-chc`],
         query: {
           match_phrase: {
@@ -79,17 +81,17 @@ route.openapi(getItem, async (c) => {
       })
 
 
-      if (data.hits?.total.value === 0) {
+      if (data.hits?.total === 0 || (typeof data?.hits?.total === 'object' && data?.hits?.total?.value === 0)) {
         return c.json({ error: true, message: 'Not found' }, 404)
       }
 
-      const fileset = data?.hits?.hits?.find((hit: any) => hit._index.startsWith('search-chc-fileset'))?._source?.data
+      const fileset = data?.hits?.hits?.find((hit) => hit._index?.startsWith('search-chc-fileset'))?._source as { data?: unknown }
 
       if (!fileset) {
         return c.json({ error: true, message: 'Item has not been digitized' }, 404)
       }
 
-      const item = data?.hits?.hits?.find((hit: any) => hit._index.startsWith('search-chc-items'))?._source
+      const item = data?.hits?.hits?.find((hit) => hit._index?.startsWith('search-chc-items'))?._source
 
       if (!item) {
         return c.json({ error: true, message: 'Item has not been catalogued' }, 404)
@@ -104,7 +106,7 @@ route.openapi(getItem, async (c) => {
   }
 
   try {
-    const data: TODO = await client.search<any>({
+    const data = await client.search({
       index: `search-chc`,
       query: {
         match_phrase: {
@@ -113,27 +115,27 @@ route.openapi(getItem, async (c) => {
       }
     })
 
-    if (data?.hits?.total?.value === 0) {
+    if (data?.hits?.total === 0 || (typeof data?.hits?.total === 'object' && data?.hits?.total?.value === 0)) {
       return c.json({ error: true, message: 'Not found' }, 404)
     }
 
-    const item = data?.hits?.hits?.find((hit: any) => hit._index.startsWith('search-chc-items'))?._source
+    const item = data?.hits?.hits?.find((hit) => hit._index?.startsWith('search-chc-items'))?._source as JsonLdObj
 
     if (!item) {
       return c.json({ error: true, message: 'Item has not been catalogued' }, 404)
     }
 
-    if (item > 1) {
+    if (Array.isArray(item) && item.length > 1) {
       return c.json({ error: true, message: 'Ops, found duplicates!' }, 404)
     }
 
     // Rewrite _id to use the id from the URL parameter
     const itemWithNewId = {
       ...item,
-      id: `${env.PROD_URL}/items/${item.id}`
+      id: `${env.PROD_URL}/items/${String(item.id)}`
     }
 
-    return c.json(reorderDocument(itemWithNewId as Document, desiredOrder))
+    return c.json(reorderDocument(itemWithNewId, desiredOrder))
   } catch (error) {
     console.error(error)
     return c.json({ error: true, message: "Ups, something went wrong!" }, 404)

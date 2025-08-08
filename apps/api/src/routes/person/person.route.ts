@@ -1,18 +1,19 @@
 import client from '@shared/clients/es-client'
 import { env } from '@env'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
-import { FailureSchema, TODO } from '@shared/models'
+import { FailureSchema } from '@shared/models'
 import { reorderDocument, sqb, useFrame } from 'utils'
 import { endpointUrl } from '@shared/clients/sparql-chc-client'
 import { personQuery } from './person-query'
 import ubbontContext from 'jsonld-contexts/src/ubbontContext'
 import { ContextDefinition } from 'jsonld'
+import { JsonLdObj } from 'jsonld/jsonld-spec'
 
 const route = new OpenAPIHono()
 
 const desiredOrder: string[] = ['@context', 'id', 'type', '_label', '_available', '_modified', 'identified_by']
 
-const PersonSchema = z.record(z.string()).openapi('Person')
+const PersonSchema = z.any().openapi('Person')
 
 export const PersonParamsSchema = z.object({
   as: z
@@ -85,23 +86,24 @@ route.openapi(getPerson, async (c) => {
       }
 
       // Find the matching item in the graph
-      const matchingItem = data['@graph']?.find((item: any) => item['dct:identifier'] === id);
+      const matchingItem = data['@graph']?.find((item: JsonLdObj) => item['dct:identifier'] === id);
       if (!matchingItem) {
         return c.json({ error: true, message: 'Person not found in graph' }, 404);
       }
 
       const url = matchingItem['@id'].replace('j.0:', 'http://data.ub.uib.no/');
 
-      let framed = await useFrame({ data, context: ubbontContext as ContextDefinition, type: 'Person', id: url });
-      framed['@context'] = ["https://api.ub.uib.no/ns/ubbont/context.json"];
-      return c.json(reorderDocument(framed, desiredOrder));
+      const framed = await useFrame({ data, context: ubbontContext as ContextDefinition, type: 'Person', id: url });
+      // Cast to JsonLdObj which allows @context property
+      (framed as JsonLdObj)['@context'] = ["https://api.ub.uib.no/ns/ubbont/context.json"];
+      return c.json(reorderDocument(framed, desiredOrder) as z.infer<typeof PersonSchema>);
     } catch (error) {
       throw new Error(`Error fetching item ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
   try {
-    const data: TODO = await client.search<any>({
+    const data = await client.search({
       index: `search-chc`,
       query: {
         match_phrase: {
@@ -110,7 +112,7 @@ route.openapi(getPerson, async (c) => {
       }
     })
 
-    if (data?.hits?.total?.value === 0) {
+    if (data?.hits?.total === 0 || (typeof data?.hits?.total === 'object' && data?.hits?.total?.value === 0)) {
       return c.json({ error: true, message: 'Not found' }, 404)
     }
 
@@ -120,15 +122,15 @@ route.openapi(getPerson, async (c) => {
       return c.json({ error: true, message: 'Ops, found duplicates!' }, 404)
     } */
 
-    const item = data.hits.hits[0]._source
+    const item = data.hits.hits[0]._source as JsonLdObj
 
     // Rewrite _id to use the id from the URL parameter
     const itemWithNewId = {
       ...item,
-      id: `${env.PROD_URL}/items/${item.id}`
+      id: `${env.PROD_URL}/items/${String(item.id)}`
     }
 
-    return c.json(reorderDocument(itemWithNewId as Document, desiredOrder))
+    return c.json(reorderDocument(itemWithNewId, desiredOrder) as z.infer<typeof PersonSchema>);
   } catch (error) {
     console.error(error)
     return c.json({ error: true, message: "Ups, something went wrong!" }, 404)
