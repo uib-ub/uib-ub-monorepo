@@ -1,10 +1,18 @@
 <template>
   <div>
-    <h2 id="news" class="pb-3 text-2xl">
-      <AppLink to="#news">{{ $t("news.heading") }}</AppLink>
+    <h2
+      id="news"
+      class="pb-3 text-2xl"
+    >
+      <AppLink to="#news">
+        {{ $t("news.heading") }}
+      </AppLink>
     </h2>
     <div class="flex flex-col space-y-3">
-      <div v-if="false" class="border border-gray-300" />
+      <div
+        v-if="false"
+        class="border border-gray-300"
+      />
       <dl v-if="false">
         <NewsItem
           title="Seminar 6. desember: norskkompetanse i akademia"
@@ -75,8 +83,7 @@
               class="underline hover:decoration-2"
               to="https://www.uib.no/aktuelt/164397/fr%C3%A5-ord-til-handling-tid-terminologiarbeid-i-akademia"
             >
-              Frå ord til handling: Tid for terminologiarbeid i akademia </AppLink
-            >. Her kan du se opptaket av seminaret.
+              Frå ord til handling: Tid for terminologiarbeid i akademia </AppLink>. Her kan du se opptaket av seminaret.
           </span>
         </div>
       </template>
@@ -128,8 +135,7 @@
               class="underline hover:decoration-2"
               to="https://www.uib.no/aktuelt/164397/fr%C3%A5-ord-til-handling-tid-terminologiarbeid-i-akademia"
             >
-              Frå ord til handling: Tid for terminologiarbeid i akademia </AppLink
-            >. Her kan du sjå opptaket av seminaret.
+              Frå ord til handling: Tid for terminologiarbeid i akademia </AppLink>. Her kan du sjå opptaket av seminaret.
           </span>
         </div>
       </template>
@@ -142,11 +148,10 @@
             class="underline hover:decoration-2"
             to="https://www.uib.no/aktuelt/164397/fr%C3%A5-ord-til-handling-tid-terminologiarbeid-i-akademia"
           >
-            Frå ord til handling: Tid for terminologiarbeid i akademia </AppLink
-          >. The recording of the seminar may be viewed here [in Norwegian].
+            Frå ord til handling: Tid for terminologiarbeid i akademia </AppLink>. The recording of the seminar may be viewed here [in Norwegian].
         </span>
       </template>
-      <div class="border border-gray-300"></div>
+      <div class="border border-gray-300" />
     </div>
   </div>
 </template>

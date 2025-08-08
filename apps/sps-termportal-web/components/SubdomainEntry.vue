@@ -7,7 +7,7 @@
       type="checkbox"
       :value="label"
       @change="onChange"
-    />
+    >
     <label
       :for="label"
       class="tp-transition-shadow flex cursor-pointer rounded-[7px] border border-transparent px-2 py-1 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
@@ -15,10 +15,10 @@
       <div class="-mt-[1px]">
         <Icon
           v-if="
-            modelValue[label] === true ||
-            (modelValue[label] === undefined &&
-              (parents[0] === true ||
-                (parents[0] === undefined && parents[1] === true)))
+            modelValue[label] === true
+              || (modelValue[label] === undefined
+                && (parents[0] === true
+                  || (parents[0] === undefined && parents[1] === true)))
           "
           name="mdi:checkbox-marked-outline"
           size="1.2em"
@@ -58,8 +58,8 @@ function onChange(event) {
   // applies to second level domains
   if (props.topdomain) {
     const subdomains = getAllKeys(
-      bootstrapData.value.domain[props.topdomain].subdomains[domain]
-    ).filter((key) => key.startsWith("DOMENE"));
+      bootstrapData.value.domain[props.topdomain].subdomains[domain],
+    ).filter(key => key.startsWith("DOMENE"));
     subdomains.forEach((subdomain) => {
       delete newObject[subdomain];
     });
@@ -68,7 +68,8 @@ function onChange(event) {
     // the only necessary setting is thus the deactivation of second level domains
     if (props.modelValue[domain] === false) {
       delete newObject[domain];
-    } else {
+    }
+    else {
       newObject[domain] = false;
     }
   }
@@ -76,21 +77,24 @@ function onChange(event) {
   // they don't have subdomains
   // when parent is undefined, it domain inherits 'true' from topdomain
   else if (
-    props.parents[0] ||
-    props.parents[0] === undefined ||
-    props.parents[0] === null
+    props.parents[0]
+    || props.parents[0] === undefined
+    || props.parents[0] === null
   ) {
     if (props.modelValue[domain] === false) {
       delete newObject[domain];
-    } else {
+    }
+    else {
       newObject[domain] = false;
     }
     // inherits false from parent
     // delete key if current value is true
-  } else if (props.modelValue[domain]) {
+  }
+  else if (props.modelValue[domain]) {
     delete newObject[domain];
     // current value is false or undefined, set to true
-  } else {
+  }
+  else {
     newObject[domain] = true;
   }
 

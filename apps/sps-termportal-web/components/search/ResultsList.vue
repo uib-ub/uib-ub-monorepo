@@ -32,13 +32,14 @@ const props = defineProps({
 const resultslist = ref(null);
 
 const pending = computed(() => {
-  return !Object.values(searchDataPending.value).every((el) => !el);
+  return !Object.values(searchDataPending.value).every(el => !el);
 });
 
 const count = computed(() => {
   try {
     return sum(Object.values(searchDataStats.value?.context || [])) || 0;
-  } catch (e) {
+  }
+  catch (e) {
     return 0;
   }
 });
@@ -73,8 +74,8 @@ const fetchFurtherSearchData = () => {
           if (
             Object.keys(searchDataStats.value.matching || []).includes(match)
           ) {
-            const matchCount =
-              searchDataStats.value.matching?.[match as Matching] || 0;
+            const matchCount
+              = searchDataStats.value.matching?.[match as Matching] || 0;
             if (fetchNextMatching) {
               offset[match as Matching] = 0;
             }
@@ -87,15 +88,16 @@ const fetchFurtherSearchData = () => {
             }
             const nextfetchCalc = matchCount - oldOffsetCalc;
             if (
-              nextfetchCalc > 0 &&
-              nextfetchCalc < appConfig.search.options.limit.default
+              nextfetchCalc > 0
+              && nextfetchCalc < appConfig.search.options.limit.default
             ) {
               fetchNextMatching = true;
             }
             oldOffsetCalc = newOffsetCalc;
           }
         }
-      } else {
+      }
+      else {
         offset.all = countFetchedMatches.value;
       }
 
@@ -103,7 +105,7 @@ const fetchFurtherSearchData = () => {
         useGenSearchOptions("further", {
           offset,
           matching: [Object.keys(offset)],
-        })
+        }),
       );
     }
   }

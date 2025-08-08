@@ -7,7 +7,7 @@
       type="checkbox"
       :value="fvalue"
       @change="useFetchSearchData(useGenSearchOptions('filter'))"
-    />
+    >
     <label
       class="tp-transition-shadow flex cursor-pointer gap-x-2 rounded-[7px] border border-transparent px-1.5 py-0.5 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
       :for="`filter-${placement}-${ftype}-${fvalue}`"
@@ -56,7 +56,8 @@ const props = defineProps({
 const label = () => {
   if (props.ftype === "context") {
     return getLaLo(props.fvalue);
-  } else {
+  }
+  else {
     return i18n.t(`global.${props.ftype}.${props.fvalue}`);
   }
 };

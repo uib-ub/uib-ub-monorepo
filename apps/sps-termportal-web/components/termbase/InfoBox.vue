@@ -3,11 +3,20 @@
     class="flex h-fit w-fit min-w-fit max-w-[25rem] flex-col space-y-4 rounded-[7px] border border-transparent lg:border-gray-300 lg:px-3 lg:pb-2 lg:pt-1.5"
   >
     <div>
-      <h2 id="tbcontact" class="text-lg">
+      <h2
+        id="tbcontact"
+        class="text-lg"
+      >
         {{ $t("termbase.contactHeading") }}
       </h2>
-      <dl aria-labelledby="tbcontact" class="space-y-0.5">
-        <div v-if="data?.publisher?.label?.['@value']" class="flex">
+      <dl
+        aria-labelledby="tbcontact"
+        class="space-y-0.5"
+      >
+        <div
+          v-if="data?.publisher?.label?.['@value']"
+          class="flex"
+        >
           <dt class="w-32 shrink-0 font-semibold">
             {{ $t("termbase.organisation") }}
           </dt>
@@ -15,13 +24,21 @@
             {{ data?.publisher?.label["@value"] }}
           </dd>
         </div>
-        <div v-if="data?.publisher?.identifier" class="flex">
+        <div
+          v-if="data?.publisher?.identifier"
+          class="flex"
+        >
           <dt class="w-32 shrink-0 font-semibold">
             {{ $t("termbase.orgnr") }}
           </dt>
-          <dd class="">{{ data?.publisher?.identifier }}</dd>
+          <dd class="">
+            {{ data?.publisher?.identifier }}
+          </dd>
         </div>
-        <div v-if="data?.contactPoint?.hasEmail" class="flex">
+        <div
+          v-if="data?.contactPoint?.hasEmail"
+          class="flex"
+        >
           <dt class="w-32 shrink-0 font-semibold">
             {{ $t("termbase.email") }}
           </dt>
@@ -29,24 +46,39 @@
             <AppLink
               class="underline hover:decoration-2"
               :to="data?.contactPoint?.hasEmail"
-              >{{ data?.contactPoint?.hasEmail.split(":")[1] }}</AppLink
             >
+              {{ data?.contactPoint?.hasEmail.split(":")[1] }}
+            </AppLink>
           </dd>
         </div>
-        <div v-if="data?.contactPoint?.hasTelephone" class="flex">
+        <div
+          v-if="data?.contactPoint?.hasTelephone"
+          class="flex"
+        >
           <dt class="w-32 font-semibold">
             {{ $t("termbase.telephone") }}
           </dt>
-          <dd class="">{{ data?.contactPoint?.hasTelephone }}</dd>
+          <dd class="">
+            {{ data?.contactPoint?.hasTelephone }}
+          </dd>
         </div>
       </dl>
     </div>
     <div>
-      <h2 id="tbtermbaseinfo" class="text-lg">
+      <h2
+        id="tbtermbaseinfo"
+        class="text-lg"
+      >
         {{ $t("global.termbase", 0) }}
       </h2>
-      <dl aria-labelledby="tbtermbaseinfo" class="space-y-0.5">
-        <div v-if="termbaseId === 'SNOMEDCT'" class="flex">
+      <dl
+        aria-labelledby="tbtermbaseinfo"
+        class="space-y-0.5"
+      >
+        <div
+          v-if="termbaseId === 'SNOMEDCT'"
+          class="flex"
+        >
           <dt class="w-32 shrink-0 font-semibold">
             {{ $t("id.version") }}
           </dt>
@@ -54,7 +86,8 @@
             <AppLink
               class="underline hover:decoration-2"
               :to="bootstrapData.termbase.SNOMEDCT.versionNotesLink"
-              >{{ localizeSnomedVersionLabel() }}
+            >
+              {{ localizeSnomedVersionLabel() }}
             </AppLink>
           </dd>
         </div>
@@ -69,7 +102,10 @@
             {{ bootstrapData?.termbase?.[termbaseId]?.concepts }}
           </dd>
         </div>
-        <div v-if="data?.license" class="flex">
+        <div
+          v-if="data?.license"
+          class="flex"
+        >
           <dt class="w-32 shrink-0 font-semibold">
             {{ $t("termbase.license", 1) }}
           </dt>
@@ -79,8 +115,9 @@
                 v-if="appConfig.license[data?.license?.['@id']].url"
                 class="underline hover:decoration-2"
                 :to="appConfig.license[data.license['@id']].url"
-                >{{ appConfig.license[data?.license?.["@id"]].label }}</AppLink
               >
+                {{ appConfig.license[data?.license?.["@id"]].label }}
+              </AppLink>
               <span v-else>
                 {{ appConfig.license[data?.license?.["@id"]].label }}
               </span>
@@ -90,7 +127,10 @@
             </span>
           </dd>
         </div>
-        <div v-if="data?.language" class="flex">
+        <div
+          v-if="data?.language"
+          class="flex"
+        >
           <dt class="w-32 shrink-0 font-semibold">
             {{ $t("global.language", 1) }}
           </dt>
@@ -102,7 +142,10 @@
             }}
           </dd>
         </div>
-        <div v-if="data?.opprinneligSpraak" class="flex">
+        <div
+          v-if="data?.opprinneligSpraak"
+          class="flex"
+        >
           <dt class="w-32 font-semibold">
             {{ $t("termbase.startLang") }}
           </dt>

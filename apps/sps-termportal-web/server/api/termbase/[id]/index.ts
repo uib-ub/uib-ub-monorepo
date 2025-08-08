@@ -15,8 +15,8 @@ export default defineEventHandler(async (event) => {
       body: query,
       headers: {
         "Content-type": "application/sparql-query",
-        Accept: "application/ld+json",
-        Authorization: `Basic ${instance.authHeader}`,
+        "Accept": "application/ld+json",
+        "Authorization": `Basic ${instance.authHeader}`,
       },
     });
 

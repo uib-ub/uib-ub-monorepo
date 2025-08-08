@@ -39,6 +39,6 @@ export default defineEventHandler(async (event) => {
     const esQuery = genEsQuery(query);
     const data = await $fetch(esQuery.url, esQuery.params);
 
-    return data?.hits?.hits.map((hit) => hit?._source);
+    return data?.hits?.hits.map(hit => hit?._source);
   }
 });

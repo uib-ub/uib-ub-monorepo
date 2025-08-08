@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare",
     "lighthouse": "unlighthouse",
     "lint": "eslint .",
+    "lint-fix": "eslint --fix .",
     "pa11y": "pa11y-ci",
     "test": "vitest --run --passWithNoTests",
     "coverage": "vitest run --coverage --passWithNoTests"

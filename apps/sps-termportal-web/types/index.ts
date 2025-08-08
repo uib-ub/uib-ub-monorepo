@@ -1,6 +1,6 @@
-import { FetchType } from "./enums";
-import * as z from "zod";
-import {
+import type { FetchType } from "./enums";
+import type * as z from "zod";
+import type {
   LangCode,
   LocaleLangCode,
   Termbase,
@@ -34,12 +34,12 @@ declare global {
 
   type LabelPredicate = (typeof appConfig.data.predicates)[number];
 
-  type Domains =
-    | "DOMENE-3AHumaniora"
-    | "DOMENE-3ANaturvitenskapTeknologi"
-    | "DOMENE-3ASamfunnsfag"
-    | "DOMENE-3AHelse_og_sosial"
-    | "DOMENE-3AOkonomiAdministrasjon";
+  type Domains
+    = | "DOMENE-3AHumaniora"
+      | "DOMENE-3ANaturvitenskapTeknologi"
+      | "DOMENE-3ASamfunnsfag"
+      | "DOMENE-3AHelse_og_sosial"
+      | "DOMENE-3AOkonomiAdministrasjon";
 
   // search
   type QueryType = "search" | "concept" | "termbase";
@@ -74,7 +74,7 @@ declare global {
     term: string | null;
     language: LangCode | "all";
     translate: LangCode | "none";
-    domain: Object;
+    domain: object;
     termbase: TermbaseId[];
     useDomain: boolean;
   }

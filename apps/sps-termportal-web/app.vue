@@ -2,7 +2,11 @@
   <div>
     <ul class="skip-links">
       <li>
-        <AppLink ref="skipLink" to="#main" class="skip-link">
+        <AppLink
+          ref="skipLink"
+          to="#main"
+          class="skip-link"
+        >
           {{ $t("global.skipLink") }}
         </AppLink>
       </li>
@@ -15,6 +19,7 @@
 
 <script setup>
 import { useI18n } from "vue-i18n";
+
 const i18n = useI18n();
 
 useHead({
@@ -58,7 +63,7 @@ watch(
   () => {
     searchBarWasFocused.value = false;
     // skipLink.value.focus();
-  }
+  },
 );
 </script>
 

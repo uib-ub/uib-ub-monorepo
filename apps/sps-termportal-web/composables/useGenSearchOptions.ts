@@ -58,7 +58,7 @@ export default function (situation: FetchType, options?: SearchOptions) {
   if (newOptions.useDomain) {
     const domainLst = getActivationStatus(
       searchInterface.value.domain,
-      bootstrapData.value.domain
+      bootstrapData.value.domain,
     );
     newOptions.domain = domainLst;
   }
@@ -74,7 +74,7 @@ export default function (situation: FetchType, options?: SearchOptions) {
       newOptions.predicate = searchFilterSelection.value.predicate;
     }
     if (searchFilterSelection.value.matching.length > 0) {
-      newOptions.matching = searchFilterSelection.value.matching.map((e) => [
+      newOptions.matching = searchFilterSelection.value.matching.map(e => [
         e,
       ]);
     }
@@ -82,7 +82,8 @@ export default function (situation: FetchType, options?: SearchOptions) {
       if (searchFilterSelection.value.context.length > 0) {
         newOptions.domain = searchFilterSelection.value.context;
       }
-    } else if (searchFilterSelection.value.context.length > 0) {
+    }
+    else if (searchFilterSelection.value.context.length > 0) {
       newOptions.termbase = searchFilterSelection.value.context.map((tb) => {
         return tb.split("-3A")[0];
       });
@@ -104,11 +105,13 @@ export default function (situation: FetchType, options?: SearchOptions) {
     };
     if (merged.useDomain) {
       reduced.domain = merged.domain;
-    } else {
+    }
+    else {
       reduced.termbase = merged.termbase;
     }
     return reduced;
-  } else {
+  }
+  else {
     return merged;
   }
 }

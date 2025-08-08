@@ -13,23 +13,27 @@ export default function () {
     if (searchOptionsConfig[key].q && currentVal !== null) {
       if (value.default === null) {
         defaultVal = value.default;
-      } else if (
-        typeof value.default === "string" ||
-        typeof value.default === "boolean"
+      }
+      else if (
+        typeof value.default === "string"
+        || typeof value.default === "boolean"
       ) {
         currentVal = currentVal.toString();
         defaultVal = value.default.toString();
-      } else if (Array.isArray(value.default)) {
+      }
+      else if (Array.isArray(value.default)) {
         currentVal = currentVal.toString();
         defaultVal = value.default.join(",");
-      } else {
+      }
+      else {
         currentVal = JSON.stringify(currentVal);
         defaultVal = JSON.stringify(value.default);
       }
 
       if (currentVal !== defaultVal) {
         myparams[value.q] = currentVal;
-      } else {
+      }
+      else {
         myparams[value.q] = undefined;
       }
     }

@@ -12,7 +12,7 @@ export const useLocaleLangOrder = () => {
     ...appConfig.language.order.update[locale.value],
     ...appConfig.language.order.default.filter(
       (lc: LangCode) =>
-        !appConfig.language.order.update[locale.value].includes(lc)
+        !appConfig.language.order.update[locale.value].includes(lc),
     ),
   ]);
   return langOrder as Readonly<Ref<LangCode[]>>;
@@ -31,9 +31,9 @@ export function useLazyLocale() {
    */
   const getLaLo = (key: string): string => {
     const label = localeLangOrder.value
-      .filter((lc) => appConfig.language.locale.includes(lc))
-      .map((lc) => bootstrapData.value?.lalo?.[lc]?.[key])
-      .find((value) => value !== undefined);
+      .filter(lc => appConfig.language.locale.includes(lc))
+      .map(lc => bootstrapData.value?.lalo?.[lc]?.[key])
+      .find(value => value !== undefined);
     return label ?? key;
   };
 
@@ -48,7 +48,7 @@ export const useOrderedTermbases = () => {
   const { getLaLo } = useLazyLocale();
 
   const termbases = Object.keys(bootstrapData.value.termbase).filter(
-    (tb) => !appConfig.tb.base.systemTermbases.includes(tb)
+    tb => !appConfig.tb.base.systemTermbases.includes(tb),
   );
 
   const sortedTermbases = termbases.sort((a, b) => {
@@ -81,12 +81,12 @@ export function deriveLanguageInfo(languages: LangCode[]): {
   const orderedTermbases = useOrderedTermbases();
   return Object.assign(
     {},
-    ...languages.map((lang) => ({
-      [lang]: orderedTermbases.value.filter((termbase) =>
+    ...languages.map(lang => ({
+      [lang]: orderedTermbases.value.filter(termbase =>
         bootstrapData.value.termbase[termbase].language.includes(
-          lang as LangCode
-        )
+          lang as LangCode,
+        ),
       ),
-    }))
+    })),
   );
 }

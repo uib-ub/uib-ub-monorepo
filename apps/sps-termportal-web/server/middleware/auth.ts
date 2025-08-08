@@ -1,4 +1,4 @@
-import { H3Event } from "h3";
+import type { H3Event } from "h3";
 
 /**
  * Set session cookie when not present or not up to date.
@@ -10,14 +10,14 @@ function ensureToken(event: H3Event) {
   const runtimeConfig = useRuntimeConfig();
 
   if (
-    !getCookie(event, "session") ||
-    getCookie(event, "session") !== runtimeConfig.apiKey
+    !getCookie(event, "session")
+    || getCookie(event, "session") !== runtimeConfig.apiKey
   ) {
     setCookie(
       event,
       "session",
       runtimeConfig.apiKey,
-      appConfig.cookie.defaultOptions
+      appConfig.cookie.defaultOptions,
     );
   }
 }

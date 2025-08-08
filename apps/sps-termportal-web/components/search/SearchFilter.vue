@@ -20,7 +20,7 @@
         class="rounded-sm border border-transparent px-1 text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
         @click="
           resetSearchFilterSelection(),
-            useFetchSearchData(useGenSearchOptions('filter'))
+          useFetchSearchData(useGenSearchOptions('filter'))
         "
       >
         <IconReset size="1em" />
@@ -30,7 +30,10 @@
     <div
       class="grid grid-cols-1 gap-4 rounded border-gray-300 xs:grid-cols-2 md:grid-cols-4 xl:grid-cols-1"
     >
-      <template v-for="{ title, key, data } in filterSections()" :key="title">
+      <template
+        v-for="{ title, key, data } in filterSections()"
+        :key="title"
+      >
         <SearchFilterFieldset
           v-if="displaySection(key, data)"
           :title="title"
@@ -51,6 +54,7 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
+
 const appConfig = useAppConfig();
 
 const showSearchFilter = useShowSearchFilter();
@@ -83,7 +87,7 @@ const filterSections = () => {
       key: "lang",
       data: intersectUnique(
         localeLangOrder.value,
-        Object.keys(searchDataStats.value.lang || {})
+        Object.keys(searchDataStats.value.lang || {}),
       ),
     },
     {
@@ -99,7 +103,7 @@ const filterSections = () => {
       key: "predicate",
       data: intersectUnique(
         appConfig.data.predicates,
-        Object.keys(searchDataStats.value.predicate || {})
+        Object.keys(searchDataStats.value.predicate || {}),
       ),
     },
     {
@@ -107,7 +111,7 @@ const filterSections = () => {
       key: "matching",
       data: intersectUnique(
         appConfig.data.matching,
-        Object.keys(searchDataStats.value.matching || {})
+        Object.keys(searchDataStats.value.matching || {}),
       ),
     },
   ];
@@ -118,15 +122,16 @@ const displaySection = (key, data) => {
   // or english and lang range included
   if (key === "lang") {
     return (
-      searchInterface.value.language === "all" ||
-      (searchInterface.value.language === "en" &&
-        (data.includes("en-gb") || data.includes("en-us")))
+      searchInterface.value.language === "all"
+      || (searchInterface.value.language === "en"
+        && (data.includes("en-gb") || data.includes("en-us")))
     );
   }
   // Don't display matching filter if no matching data, e.g. no search term/all query
   else if (key === "matching") {
     return data.length !== 0;
-  } else {
+  }
+  else {
     return true;
   }
 };

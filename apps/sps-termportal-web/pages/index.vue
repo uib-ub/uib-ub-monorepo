@@ -19,7 +19,7 @@
           <HeaderSearchScope />
         </div>
       </div>
-      <div class="mt-1 border-b-2"></div>
+      <div class="mt-1 border-b-2" />
       <div
         class="flex flex-col justify-between gap-x-8 gap-y-6 pt-6 lg:flex-row"
       >
@@ -31,12 +31,16 @@
             class="content-wrapper"
           />
         </div>
-        <NewsWrapper :key="`news${locale}`" class="basis-5/12"></NewsWrapper>
+        <NewsWrapper
+          :key="`news${locale}`"
+          class="basis-5/12"
+        />
       </div>
       <CollaboratorsTP class="mt-8 xl:mt-12" />
     </main>
   </div>
 </template>
+
 <script setup lang="ts">
 const locale = useLocale();
 </script>

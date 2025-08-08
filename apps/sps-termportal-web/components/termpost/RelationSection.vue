@@ -1,7 +1,12 @@
 <template>
   <div>
-    <h3 id="relasjon" class="pb-1 text-xl">
-      <AppLink to="#relasjon"> {{ $t("id.relasjon") }}</AppLink>
+    <h3
+      id="relasjon"
+      class="pb-1 text-xl"
+    >
+      <AppLink to="#relasjon">
+        {{ $t("id.relasjon") }}
+      </AppLink>
     </h3>
     <TermpostTermSection>
       <template

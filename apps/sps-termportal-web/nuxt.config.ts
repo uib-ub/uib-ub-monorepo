@@ -13,13 +13,41 @@ export default defineNuxtConfig({
     // "@nuxtjs/html-validator",
     // "@unlighthouse/nuxt",
   ],
+  ssr: false,
   app: {
     head: {
       title: "Termportalen",
       link: [{ rel: "icon", type: "image/svg", href: "/favicon.svg" }],
     },
   },
-  ssr: false,
+  content: {
+    sources: {
+      content: {
+        driver: "fs",
+        prefix: "/docs", // All contents inside this source will be prefixed with `/docs`
+        base: resolve(__dirname, "content"),
+      },
+      github: {
+        driver: "github",
+        repo: "uib-ub/terminologi-content",
+        branch: "main",
+        dir: "web",
+      },
+    },
+  },
+  runtimeConfig: {
+    apiKey: uuidv4(),
+    fuseki: {
+      url: process.env.NUXT_ENDPOINT_URL,
+      user: process.env.NUXT_ENDPOINT_USER,
+      pass: process.env.NUXT_ENDPOINT_URL_PASS,
+    },
+    elasticsearchUrl: process.env.NUXT_ELASTICSEARCH_URL,
+    elasticsearchApiKey: process.env.NUXT_ELASTICSEARCH_API_KEY,
+    public: {
+      base: "http://test.wiki.terminologi.no/index.php/Special:URIResolver/",
+    },
+  },
   routeRules: {
     // "/": { ssr: false },
     // "/search": { ssr: false },
@@ -70,19 +98,6 @@ export default defineNuxtConfig({
     "/UDEUT": { redirect: "/tb/UDEUT" },
     "/UHR": { redirect: "/tb/UHR" },
   },
-  runtimeConfig: {
-    apiKey: uuidv4(),
-    fuseki: {
-      url: process.env.NUXT_ENDPOINT_URL,
-      user: process.env.NUXT_ENDPOINT_USER,
-      pass: process.env.NUXT_ENDPOINT_URL_PASS,
-    },
-    elasticsearchUrl: process.env.NUXT_ELASTICSEARCH_URL,
-    elasticsearchApiKey: process.env.NUXT_ELASTICSEARCH_API_KEY,
-    public: {
-      base: "http://test.wiki.terminologi.no/index.php/Special:URIResolver/",
-    },
-  },
   nitro: {
     preset: "vercel",
   },
@@ -98,21 +113,6 @@ export default defineNuxtConfig({
     // define: {
     //   __NUXT_ASYNC_CONTEXT__: false,
     // },
-  },
-  content: {
-    sources: {
-      content: {
-        driver: "fs",
-        prefix: "/docs", // All contents inside this source will be prefixed with `/docs`
-        base: resolve(__dirname, "content"),
-      },
-      github: {
-        driver: "github",
-        repo: "uib-ub/terminologi-content",
-        branch: "main",
-        dir: "web",
-      },
-    },
   },
   sanity: {
     projectId: process.env.SANITY_PROJECT_ID,

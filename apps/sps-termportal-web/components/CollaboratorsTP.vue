@@ -7,7 +7,10 @@
       class="mt-2 flex flex-col items-center justify-center gap-x-12 gap-y-6 sm:flex-row sm:items-start"
     >
       <LogoSprakradet img-style="width: 225px" />
-      <LogoClarino class="mt-[-12px]" img-style="width: 220px" />
+      <LogoClarino
+        class="mt-[-12px]"
+        img-style="width: 220px"
+      />
     </div>
   </div>
 </template>

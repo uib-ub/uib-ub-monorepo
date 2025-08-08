@@ -57,7 +57,7 @@
       class="w-full pt-0"
       :class="{ 'pt-1': headerDisplayScope === headerSize.Full }"
     >
-      <div class="border-x border-b border-gray-300 border-x-white"></div>
+      <div class="border-x border-b border-gray-300 border-x-white" />
     </div>
   </header>
 </template>
@@ -77,13 +77,15 @@ watch(
   () => {
     if (route.name === "index") {
       headerDisplayScope.value = HeaderSize.Minimal;
-    } else if (route.name === "search") {
+    }
+    else if (route.name === "search") {
       headerDisplayScope.value = HeaderSize.Full;
-    } else {
+    }
+    else {
       headerDisplayScope.value = HeaderSize.Default;
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const navBarRef = ref(null);
@@ -95,18 +97,19 @@ function toggleNavBar(prevScrollpos: number) {
     // scrolling down
     if (prevScrollpos < currentScrollPos) {
       if (
-        currentScrollPos > 54 &&
-        navBarRef.value?.navBar?.style?.top === "0px"
+        currentScrollPos > 54
+        && navBarRef.value?.navBar?.style?.top === "0px"
       ) {
         navBarRef.value.navBar.style.top = "-54px";
       }
       // scroll up
-    } else {
+    }
+    else {
       // reset fixed display
       if (
-        currentScrollPos === 0 ||
-        (currentScrollPos < 200 &&
-          navBarRef.value?.navBar?.style?.top === "-54px")
+        currentScrollPos === 0
+        || (currentScrollPos < 200
+          && navBarRef.value?.navBar?.style?.top === "-54px")
       ) {
         fixPosition.value = false;
         navBarRef.value.navBar.style.top = "0px";

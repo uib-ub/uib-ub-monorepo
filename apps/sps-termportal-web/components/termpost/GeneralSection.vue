@@ -1,7 +1,12 @@
 <template>
   <div>
-    <h3 id="felles" class="pb-1 text-xl">
-      <AppLink to="#felles"> {{ $t("id.general") }}</AppLink>
+    <h3
+      id="felles"
+      class="pb-1 text-xl"
+    >
+      <AppLink to="#felles">
+        {{ $t("id.general") }}
+      </AppLink>
     </h3>
     <TermpostTermSection :flex="true">
       <client-only>
@@ -37,7 +42,7 @@
             :flex="true"
             :data="[
               `${timeDisplay(concept?.startDate)}-${timeDisplay(
-                concept.endDate
+                concept.endDate,
               )}`,
             ]"
           />
@@ -48,12 +53,15 @@
         :flex="true"
         :label="$t('id.subject')"
       >
-        <TermpostTermDescription :flex="true" :data="[displayInfo?.subject]" />
+        <TermpostTermDescription
+          :flex="true"
+          :data="[displayInfo?.subject]"
+        />
       </TermpostTermProp>
       <TermpostTermProp
         v-if="
-          concept?.modified &&
-          !appConfig.tb.base.legacyTermbases.includes(termbase)
+          concept?.modified
+            && !appConfig.tb.base.legacyTermbases.includes(termbase)
         "
         :flex="true"
         :label="$t('id.modified')"
@@ -130,10 +138,12 @@ const timeDisplay = (data: any) => {
     const dispTime = time !== "Invalid Date" && time !== "00:00:00" ? time : "";
     if (dispTime) {
       return dispDate + ", " + dispTime;
-    } else {
+    }
+    else {
       return dispDate;
     }
-  } catch (e) {
+  }
+  catch (e) {
     return null;
   }
 };

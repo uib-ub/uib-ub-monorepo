@@ -21,8 +21,8 @@ export default defineEventHandler(async (event) => {
       signal: controller.signal,
       headers: new Headers({
         "Content-type": "application/sparql-query",
-        Accept: "application/json",
-        Authorization: `Basic ${instance.authHeader}`,
+        "Accept": "application/json",
+        "Authorization": `Basic ${instance.authHeader}`,
       }),
     }).then((value) => {
       clearTimeout(timer);
@@ -30,5 +30,6 @@ export default defineEventHandler(async (event) => {
     });
 
     return data.results.bindings.map((binding: any) => binding.litstr.value);
-  } catch (e) {}
+  }
+  catch (e) {}
 });

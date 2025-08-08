@@ -8,6 +8,7 @@
     {{ searchInterface.domain[0] }}
   </div>
 </template>
+
 <script setup>
 const searchInterface = useSearchInterface();
 

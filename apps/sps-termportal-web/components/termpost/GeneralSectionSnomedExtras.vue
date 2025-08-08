@@ -1,8 +1,8 @@
 <template>
   <TermpostTermProp
     v-if="
-      termbase === 'SNOMEDCT' &&
-      bootstrapData.termbase.SNOMEDCT?.versionNotesLink
+      termbase === 'SNOMEDCT'
+        && bootstrapData.termbase.SNOMEDCT?.versionNotesLink
     "
     :flex="true"
     :label="$t('id.version')"
@@ -19,8 +19,8 @@
   </TermpostTermProp>
   <TermpostTermProp
     v-if="
-      termbase === 'SNOMEDCT' &&
-      bootstrapData.termbase.SNOMEDCT?.versionNotesLink
+      termbase === 'SNOMEDCT'
+        && bootstrapData.termbase.SNOMEDCT?.versionNotesLink
     "
     :flex="true"
     :label="$t('id.browser')"
@@ -32,7 +32,7 @@
           `${$t('misc.snomedBrowser')}: ${displayInfo.pagetitle.value}`,
           appConfig.tb.SNOMEDCT.browserUrl(
             bootstrapData.termbase.SNOMEDCT.versionEdition,
-            conceptId
+            conceptId,
           ),
         ],
       ]"

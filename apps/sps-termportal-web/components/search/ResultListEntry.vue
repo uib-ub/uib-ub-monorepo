@@ -13,7 +13,7 @@
             :class="{
               'sm:justify-start': searchInterface.translate !== 'none',
               'text-right': langRtoL(entryData.lang[0] as LangCode),
-              'sm:grow-0': searchInterface.translate !== 'none'
+              'sm:grow-0': searchInterface.translate !== 'none',
             }"
           >
             <SearchResultLabel
@@ -21,17 +21,17 @@
               :label-data="entryData.label"
               :label-lang="entryData.lang"
             />
-            <!-- Language information smaller screens-->
+            <!-- Language information smaller screens -->
             <div
               class="pl-3 font-light lg:hidden"
               :class="{
-                hidden:
-                  searchInterface.translate === 'none' &&
-                  searchInterface.language !== 'all',
+                'hidden':
+                  searchInterface.translate === 'none'
+                  && searchInterface.language !== 'all',
                 'md:hidden': searchInterface.translate === 'none',
                 'sm:hidden':
-                  searchInterface.language !== 'all' &&
-                  searchInterface.language !== 'en',
+                  searchInterface.language !== 'all'
+                  && searchInterface.language !== 'en',
               }"
             >
               <span class="hidden sm:inline">
@@ -53,9 +53,9 @@
           <!-- Language information larger screens -->
           <div
             v-if="
-              ['all', 'en'].includes(searchInterface.language) ||
-              entryData.lang.includes('en-gb') ||
-              entryData.lang.includes('en-us')
+              ['all', 'en'].includes(searchInterface.language)
+                || entryData.lang.includes('en-gb')
+                || entryData.lang.includes('en-us')
             "
             class="hidden px-2 sm:w-2/5 lg:block lg:max-w-[10rem]"
             :class="{ 'md:block': searchInterface.translate === 'none' }"
@@ -75,7 +75,7 @@
               'lg:w-5/12': searchInterface.language === 'all',
             }"
           >
-            <span v-html="entryData.translate"></span>
+            <span v-html="entryData.translate" />
             <div class="text-right font-light sm:hidden">
               {{ $t("global.lang." + searchInterface.translate) }}
             </div>

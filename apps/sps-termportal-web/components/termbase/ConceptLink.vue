@@ -1,12 +1,15 @@
 <template>
-  <AppLink :to="concept.link" @click="triggerConceptVisitEvent(concept.link)"
-    ><span
+  <AppLink
+    :to="concept.link"
+    @click="triggerConceptVisitEvent(concept.link)"
+  >
+    <span
       :lang="concept.language"
       class="hover:underline underline-offset-2"
       :class="{ 'text-gray-400': pending }"
       v-html="concept.label"
-    ></span
-  ></AppLink>
+    />
+  </AppLink>
 </template>
 
 <script setup lang="ts">

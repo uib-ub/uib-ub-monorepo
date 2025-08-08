@@ -10,7 +10,7 @@ import { useI18n } from "vue-i18n";
 export function intersectUnique(a: readonly any[], b: readonly any[]): any[] {
   const setA = new Set(a);
   const setB = new Set(b);
-  const intersection = new Set([...setA].filter((x) => setB.has(x)));
+  const intersection = new Set([...setA].filter(x => setB.has(x)));
   return Array.from(intersection);
 }
 
@@ -28,10 +28,11 @@ export function countSearchEntries(matches: SearchDataEntry[]): number {
     matches.map((entry) => {
       try {
         return entry.lang.length;
-      } catch (e) {
+      }
+      catch (e) {
         return 1;
       }
-    })
+    }),
   );
 }
 
@@ -53,7 +54,7 @@ export function langRtoL(languageCode: LangCode) {
  */
 export function getConceptDisplaytitle(
   concept,
-  langOrder: LangCode[]
+  langOrder: LangCode[],
 ): string | null {
   let title = null;
   for (const lang of langOrder) {
@@ -85,7 +86,7 @@ export function getRelationData(
   data: any,
   mainConceptId: string,
   relationType: SemanticRelation,
-  langOrder: Array<LangCode>
+  langOrder: Array<LangCode>,
 ): Array<Array<string>> | null {
   const appConfig = useAppConfig();
   const semanticRelationTypes = appConfig.data.semanticRelations;
@@ -101,8 +102,8 @@ export function getRelationData(
           // Slashes are allowed on Pagenames, should be escaped
           // TODO might break links between concepts of external tbs
           // Termbase is part of URI (seperated by '-3A')
-          const link =
-            "/tb/" + target.replaceAll("/", "%2F").replaceAll("-3A", "/");
+          const link
+            = "/tb/" + target.replaceAll("/", "%2F").replaceAll("-3A", "/");
           // Don't return links with no label -> linked concept doesn't exist
           if (label) {
             let relation = { target: [label, link] };
@@ -114,9 +115,9 @@ export function getRelationData(
               const reifiedRelation = data[mainConceptId]?.[
                 toReifiedProp
               ].filter(
-                (relation) =>
-                  fromReifiedProp in relation &&
-                  relation[fromReifiedProp].includes(mainConceptId)
+                relation =>
+                  fromReifiedProp in relation
+                  && relation[fromReifiedProp].includes(mainConceptId),
               );
               if (reifiedRelation) {
                 relation = { ...relation, ...reifiedRelation[0] };
@@ -124,17 +125,19 @@ export function getRelationData(
             }
 
             return relation;
-          } else {
+          }
+          else {
             return null;
           }
-        } catch (error) {
+        }
+        catch (error) {
           return null;
         }
-      }
+      },
     );
     // remove null entries
     const cleanedUp = tmpRelData.filter(
-      (entry: null | Array<Array<string>>) => entry
+      (entry: null | Array<Array<string>>) => entry,
     );
     if (cleanedUp.length > 0) {
       relationData = tmpRelData;
@@ -152,10 +155,10 @@ export function getRelationData(
  * @param newKey - Key to nest related entries under
  */
 export function parseRelationsRecursively(
-  data: Object,
+  data: object,
   startId: string,
   relation: string,
-  newKey: string
+  newKey: string,
 ) {
   if (data?.[startId]?.[relation] && data[startId][relation].length > 0) {
     const relations = data[startId][relation].slice().reverse();
@@ -166,16 +169,17 @@ export function parseRelationsRecursively(
         [startId]: {
           [newKey]: parseRelationsRecursively(data, startId, relation, newKey),
         },
-      }))
+      })),
     );
-  } else {
+  }
+  else {
     return null;
   }
 }
 
 export function deleteValueFromList(
   arr: Array<string | number>,
-  value: string | number
+  value: string | number,
 ): boolean {
   const index = arr.indexOf(value);
   if (index > -1) {
@@ -184,7 +188,7 @@ export function deleteValueFromList(
   return index > -1;
 }
 
-export function getAllKeys(obj: Object): string[] {
+export function getAllKeys(obj: object): string[] {
   if (obj === null || typeof obj !== "object") {
     return [];
   }
@@ -201,22 +205,23 @@ export function htmlify(data: string): string {
   try {
     const pars = data
       .split("\n\n")
-      .filter((p) => p)
-      .map((p) => `<p>${p}</p>`)
+      .filter(p => p)
+      .map(p => `<p>${p}</p>`)
       .join("");
     return pars;
-  } catch (e) {
+  }
+  catch (e) {
     return data;
   }
 }
 
-function flattenDict(dict: Object, nestingKey: string, level = 0): string[] {
+function flattenDict(dict: object, nestingKey: string, level = 0): string[] {
   let items: string[] = [];
   for (const key in dict) {
     items.push([key, level]);
     if (typeof dict[key][nestingKey] === "object") {
       items = items.concat(
-        flattenDict(dict[key][nestingKey], nestingKey, level + 1)
+        flattenDict(dict[key][nestingKey], nestingKey, level + 1),
       );
     }
   }
@@ -229,12 +234,14 @@ export function flattenOrderDomains(domains?) {
     const flatDomains = flattenDict(bootstrapData.value.domain, "subdomains");
     if (!domains) {
       return flatDomains;
-    } else {
-      return flatDomains
-        .filter((entry) => domains.includes(entry[0]))
-        .map((entry) => entry[0]); // TODO should be removed and handled down the line
     }
-  } else {
+    else {
+      return flatDomains
+        .filter(entry => domains.includes(entry[0]))
+        .map(entry => entry[0]); // TODO should be removed and handled down the line
+    }
+  }
+  else {
     return [];
   }
 }
@@ -243,7 +250,7 @@ export const getLangOptions = () => {
   const appConfig = useAppConfig();
   const locales = appConfig.language.locale;
   const i18n = useI18n();
-  return locales.map((loc) => ({
+  return locales.map(loc => ({
     label: loc,
     command: () => {
       i18n.locale.value = loc;
@@ -253,13 +260,13 @@ export const getLangOptions = () => {
 
 export function idOrUriToRoute(
   termbaseId: TermbaseId,
-  idOrUri: string
-): String | null {
+  idOrUri: string,
+): string | null {
   const appConfig = useAppConfig();
 
   if (
     (appConfig.tb.base.specialUriTbs as readonly TermbaseId[]).includes(
-      termbaseId
+      termbaseId,
     )
   ) {
     const tbId = termbaseId as SpecialUriTermbase & ConfiguredTermbase;
@@ -270,11 +277,12 @@ export function idOrUriToRoute(
         return `/${termbaseId}/${key}/${id}`;
       }
     }
-  } else {
+  }
+  else {
     const runtimeConfig = useRuntimeConfig();
     return (
-      "/" +
-      idOrUri
+      "/"
+      + idOrUri
         .replace(runtimeConfig.public.base, "")
         .replace("wiki:", "")
         .replaceAll("/", "%2F") // Slashes are allowed in wiki pagenames, but cause problems with routing

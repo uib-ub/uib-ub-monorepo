@@ -1,6 +1,9 @@
 <template>
   <div class="max-w-prose lg:mx-2">
-    <h3 id="vis" class="sr-only pb-1 text-xl">
+    <h3
+      id="vis"
+      class="sr-only pb-1 text-xl"
+    >
       {{ $t("id.visualization") }}
     </h3>
     <figure class="space-y-2 rounded-sm">
@@ -14,8 +17,11 @@
           :img-alt="`${$t('id.imageAltLabel')} '${pagetitle}'`"
           class="max-h-[17em] justify-center border border-solid p-1 lg:max-h-[22em] lg:min-w-[22em] lg:max-w-[30em] lg:p-2"
           img-style="width: 100%; object-fit: contain"
-        ></ImgBase>
-        <figcaption v-if="caption" class="pt-2">
+        />
+        <figcaption
+          v-if="caption"
+          class="pt-2"
+        >
           {{ caption }}
         </figcaption>
       </AppLink>
@@ -42,7 +48,7 @@ const caption = computed(() => {
   }, {});
 
   for (const lang of localeLangOrder.value
-    .filter((lc) => !termpostViewOnlyLangs.includes(lc))
+    .filter(lc => !termpostViewOnlyLangs.includes(lc))
     .slice(0, 3)) {
     if (Object.keys(captions).includes(lang)) {
       caption = captions[lang];

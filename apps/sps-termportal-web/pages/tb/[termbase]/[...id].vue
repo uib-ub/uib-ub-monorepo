@@ -1,6 +1,8 @@
 <template>
   <div class="flex h-full">
-    <h1 class="sr-only">{{ $t("id.topheading") }}</h1>
+    <h1 class="sr-only">
+      {{ $t("id.topheading") }}
+    </h1>
     <div class="flex">
       <SideBar />
       <div class="flex">
@@ -11,17 +13,27 @@
         >
           <BackToSearch />
           <nav aria-labelledby="sidebarresults">
-            <h2 id="sidebarresults" class="pb-2 pt-3 text-2xl">
+            <h2
+              id="sidebarresults"
+              class="pb-2 pt-3 text-2xl"
+            >
               {{ $t("searchFilter.results-heading") }}
             </h2>
-            <div ref="sidebar" class="overflow-y-auto" style="height: 0px">
+            <div
+              ref="sidebar"
+              class="overflow-y-auto"
+              style="height: 0px"
+            >
               <SearchResultsList context="sidebar" />
             </div>
           </nav>
         </div>
         <!-- Termpost -->
         <div class="flex grow flex-col">
-          <main ref="main" class="h-full">
+          <main
+            ref="main"
+            class="h-full"
+          >
             <UtilsTransitionOpacitySection>
               <TermpostBase
                 v-if="termbase"
@@ -62,11 +74,12 @@ onMounted(async () => {
   }
   // Check if navigated from termbase page
   if (
-    router?.options?.history?.state?.back?.split("/").length <= 3 &&
-    router?.options?.history?.state?.back?.startsWith("/tb/")
+    router?.options?.history?.state?.back?.split("/").length <= 3
+    && router?.options?.history?.state?.back?.startsWith("/tb/")
   ) {
     termpostContext.value = false;
-  } else {
+  }
+  else {
     termpostContext.value = true;
   }
 });

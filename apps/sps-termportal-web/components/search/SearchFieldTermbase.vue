@@ -20,7 +20,11 @@
       :aria-label="$t('searchBar.searchButtonLabel')"
       @click="execSearch"
     >
-      <Icon name="ic:outline-search" size="2em" aria-hidden="true" />
+      <Icon
+        name="ic:outline-search"
+        size="2em"
+        aria-hidden="true"
+      />
     </button>
   </div>
 </template>
@@ -49,7 +53,7 @@ const search = async (event) => {
     props.termbaseId,
     searchLanguageTermbase.value !== "all"
       ? searchLanguageTermbase.value
-      : undefined
+      : undefined,
   );
   // items.value = [...Array(10).keys()].map((item) => event.query + "-" + item);
 };
@@ -57,15 +61,15 @@ const search = async (event) => {
 const termbaselabel = getLaLo(`${props.termbaseId}-3A${props.termbaseId}`);
 const placeholder = computed(() => {
   return (
-    i18n.t("searchBar.search") +
-    (searchLanguageTermbase.value !== "all"
+    i18n.t("searchBar.search")
+    + (searchLanguageTermbase.value !== "all"
       ? ` ${i18n.t("searchBar.inLanguage")} ${i18n.t(
-          `global.lang.${searchLanguageTermbase.value}`,
-          2
-        )}`
-      : "") +
-    ` ${i18n.t("searchBar.in")} ` +
-    termbaselabel
+        `global.lang.${searchLanguageTermbase.value}`,
+        2,
+      )}`
+      : "")
+    + ` ${i18n.t("searchBar.in")} `
+    + termbaselabel
   );
 });
 

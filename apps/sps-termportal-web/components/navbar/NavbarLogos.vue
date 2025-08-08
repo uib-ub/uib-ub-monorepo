@@ -20,7 +20,10 @@
       />
     </AppLink>
 
-    <SideBar v-else class="w-16">
+    <SideBar
+      v-else
+      class="w-16"
+    >
       <AppLink
         id="anchor"
         to="/"

@@ -13,8 +13,8 @@
           class="text-3xl"
           :to="mainp ? '#main' : `#${encodeURI(pagetitle)}`"
         >
-          <span v-html="pagetitle"></span
-        ></AppLink>
+          <span v-html="pagetitle" />
+        </AppLink>
         <div
           v-if="mainConcept?.memberOf"
           class="h-8 text-lg text-gray-600 underline hover:text-black"
@@ -64,7 +64,9 @@
         </div>
       </div>
     </div>
-    <div v-if="error">Error</div>
+    <div v-if="error">
+      Error
+    </div>
   </div>
 </template>
 
@@ -89,9 +91,9 @@ function getConceptId(termbase: TermbaseId, idArray: string[]): string {
   let mainConceptId: string;
   if (
     (appConfig.tb.base.specialUriTbs as readonly TermbaseId[]).includes(
-      termbase
-    ) &&
-    Object.keys(appConfig.tb).includes(termbase)
+      termbase,
+    )
+    && Object.keys(appConfig.tb).includes(termbase)
   ) {
     const tbId = termbase as SpecialUriTermbase & ConfiguredTermbase;
 
@@ -101,11 +103,13 @@ function getConceptId(termbase: TermbaseId, idArray: string[]): string {
       const base = appConfig.tb[tbId].uriPatterns[patternKey as PatternKey];
       id = idArray.slice(1).join("/");
       mainConceptId = base + id;
-    } else {
+    }
+    else {
       id = `${termbase}-3A${idArray[0]}`;
       mainConceptId = id;
     }
-  } else {
+  }
+  else {
     id = `${termbase}-3A${idArray[0]}`;
     mainConceptId = id;
   }
@@ -120,7 +124,7 @@ watch(
       window.MathJax.typesetPromise();
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const controller = new AbortController();
@@ -131,20 +135,20 @@ const timer = setTimeout(() => {
 const { data, error } = await useLazyAsyncData("concept" + mainConceptId, () =>
   $fetch(
     `/api/termbase/${props.termbaseId}/${encodeURI(
-      props.conceptIdArray.join("/")
+      props.conceptIdArray.join("/"),
     )}`,
     {
       method: "GET",
-      headers: process.server
+      headers: import.meta.server
         ? { cookie: "session=" + useRuntimeConfig().apiKey }
         : undefined,
       retry: 1,
       signal: controller.signal,
-    }
+    },
   ).then((value) => {
     clearTimeout(timer);
     return value;
-  })
+  }),
 );
 
 const mainConcept = computed(() => {
@@ -155,9 +159,10 @@ const pagetitle = computed(() => {
   if (mainConcept.value) {
     return getConceptDisplaytitle(
       mainConcept.value,
-      localeLangOrder.value.slice(0, 3)
+      localeLangOrder.value.slice(0, 3),
     );
-  } else {
+  }
+  else {
     return "";
   }
 });
@@ -165,8 +170,8 @@ const pagetitle = computed(() => {
 const displayInfo = computed(() => {
   if (data.value?.meta) {
     const conceptLanguages = data.value.meta?.language;
-    const displayLanguages = dataDisplayLanguages.value.filter((language) =>
-      Array.from(conceptLanguages).includes(language)
+    const displayLanguages = dataDisplayLanguages.value.filter(language =>
+      Array.from(conceptLanguages).includes(language),
     );
     const info = {
       conceptLanguages,
@@ -176,18 +181,19 @@ const displayInfo = computed(() => {
     };
     // semantic relations
     for (const relationType of Object.keys(
-      appConfig.data.semanticRelations
+      appConfig.data.semanticRelations,
     ) as SemanticRelation[]) {
       const relData = getRelationData(
         data.value?.concept,
         props.mainConceptId,
         relationType,
-        localeLangOrder.value.slice(0, 3)
+        localeLangOrder.value.slice(0, 3),
       );
       if (relData) {
         if (info.semanticRelations) {
           info.semanticRelations[relationType] = relData;
-        } else {
+        }
+        else {
           info.semanticRelations = {};
           info.semanticRelations[relationType] = relData;
         }
@@ -199,7 +205,8 @@ const displayInfo = computed(() => {
       let subjectlist;
       if (typeof subj[0] === "string") {
         subjectlist = subj;
-      } else {
+      }
+      else {
         subjectlist = subj.map((subj) => {
           return subj["@value"];
         });
@@ -210,19 +217,20 @@ const displayInfo = computed(() => {
     // notation: symbols and images
     if (mainConcept.value?.notation) {
       const notation = mainConcept.value?.notation;
-      info.symbol = notation.filter((notation) =>
-        notation?.type.includes("skosxl:Label")
+      info.symbol = notation.filter(notation =>
+        notation?.type.includes("skosxl:Label"),
       );
-      info.image = notation.filter((notation) =>
+      info.image = notation.filter(notation =>
         notation?.type.includes(
-          "http://wiki.terminologi.no/index.php/Special:URIResolver/Category-3ADct-3AImage"
-        )
+          "http://wiki.terminologi.no/index.php/Special:URIResolver/Category-3ADct-3AImage",
+        ),
       );
     }
     info.pagetitle = pagetitle;
 
     return info;
-  } else {
+  }
+  else {
     return null;
   }
 });

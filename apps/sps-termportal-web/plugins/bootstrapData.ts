@@ -7,7 +7,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const bootstrapData = useBootstrapData();
   const data = useAsyncData("appConceptualDomains", () =>
     $fetch("/api/bootstrap", {
-      headers: process.server
+      headers: import.meta.server
         ? { cookie: "session=" + useRuntimeConfig().apiKey }
         : undefined,
       retry: 1,
@@ -20,20 +20,22 @@ export default defineNuxtPlugin((nuxtApp) => {
           const page = pagelst[pagelst.length - 1];
           bootstrapData.value.lalo[lang][page] = entry.label.value;
         });
-      } catch (error) {}
+      }
+      catch (error) {}
 
       // domain
       try {
         for (const domain in bootstrapData.value.domain) {
-          bootstrapData.value.domain[domain].subdomains =
-            parseRelationsRecursively(
+          bootstrapData.value.domain[domain].subdomains
+            = parseRelationsRecursively(
               data.domain,
               domain,
               "narrower",
-              "subdomains"
+              "subdomains",
             );
         }
-      } catch (error) {}
+      }
+      catch (error) {}
 
       // termbase meta
       try {
@@ -43,8 +45,8 @@ export default defineNuxtPlugin((nuxtApp) => {
           if (!bootstrapData.value.termbase[tbLabel]) {
             bootstrapData.value.termbase[tbLabel] = {};
           }
-          bootstrapData.value.termbase[tbLabel].language =
-            entry.languages.value.split(",");
+          bootstrapData.value.termbase[tbLabel].language
+            = entry.languages.value.split(",");
 
           if (entry?.versionInfo) {
             const viSplit = entry?.versionInfo.value.split(";;;");
@@ -52,9 +54,10 @@ export default defineNuxtPlugin((nuxtApp) => {
             bootstrapData.value.termbase[tbLabel].versionNotesLink = viSplit[1];
           }
         });
-      } catch (error) {}
+      }
+      catch (error) {}
 
       bootstrapData.value.loaded = true;
-    })
+    }),
   );
 });

@@ -17,7 +17,8 @@
     <TermpostTermDescription
       :flex="true"
       :data="concept?.wasDerivedFrom.map((standard: string) => {
-          return [standard, standardIdToUrl(standard)]; })"
+        return [standard, standardIdToUrl(standard)];
+      })"
     />
   </TermpostTermProp>
   <TermpostTermProp
@@ -54,8 +55,8 @@ const props = defineProps({
 
 function standardIdToUrl(standardId: string) {
   return (
-    appConfig.tb.SN.standardOnlineBaseUrl +
-    standardId
+    appConfig.tb.SN.standardOnlineBaseUrl
+    + standardId
       .toLowerCase()
       .replaceAll(" ", "-")
       .replaceAll(":", "-")

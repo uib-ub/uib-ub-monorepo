@@ -1,5 +1,8 @@
 <template>
-  <div role="status" class="flex items-center">
+  <div
+    role="status"
+    class="flex items-center"
+  >
     <Icon
       class="tp-spin"
       name="material-symbols:close"

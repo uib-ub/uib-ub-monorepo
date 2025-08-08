@@ -1,7 +1,7 @@
 export function resetStats(stats: SearchDataStats, deleteStats: boolean) {
   const newStats: SearchDataStats = Object.keys(stats).reduce(
     (o, category) => ({ ...o, [category]: {} }),
-    {}
+    {},
   );
   if (!deleteStats) {
     Object.keys(stats).forEach((key) => {

@@ -21,7 +21,8 @@ export function pushSearchEvents(options: SearchOptions): void {
         termbase: options.termbase,
       }),
     ]);
-  } else if (situation === "options") {
+  }
+  else if (situation === "options") {
     window._paq.push([
       "trackEvent",
       "search",
@@ -35,7 +36,8 @@ export function pushSearchEvents(options: SearchOptions): void {
         termbase: options.termbase,
       }),
     ]);
-  } else if (situation === "filter") {
+  }
+  else if (situation === "filter") {
     window._paq.push([
       "trackEvent",
       "search",
@@ -81,13 +83,14 @@ export function pushAutocompleteEvents(options: SearchOptions): void {
  */
 export function pushDataLangDispEvent(
   dataDisplayLanguages: Array<LangCode>,
-  language: LangCode
+  language: LangCode,
 ): void {
   const langIndex = dataDisplayLanguages.indexOf(language);
   let change;
   if (langIndex !== -1) {
     change = [language, "rm"];
-  } else {
+  }
+  else {
     change = [language, "add"];
   }
   window._paq.push([
@@ -125,7 +128,7 @@ export function pushDataLangDispEvent(
 export function pushTermbaseConceptListNavigationEvent(
   termbase: string,
   type: "char" | "page",
-  value: Record<string, any>
+  value: Record<string, any>,
 ): void {
   window._paq.push([
     "trackEvent",
@@ -147,7 +150,7 @@ export function pushTermbaseConceptListNavigationEvent(
  */
 export function pushTermbaseConceptListVisitEvent(
   termbase: string,
-  termpost: string
+  termpost: string,
 ): void {
   window._paq.push([
     "trackEvent",

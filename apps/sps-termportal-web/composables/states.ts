@@ -42,7 +42,7 @@ export const useSearchDataStats = () =>
 
 export const useShowSearchFilter = () =>
   useState<boolean>("showSearchFilter", () =>
-    useAppConfig().ui.wideBreakpoints.includes(useBreakpoint().value)
+    useAppConfig().ui.wideBreakpoints.includes(useBreakpoint().value),
   );
 
 export const useSearchFilterSelection = () =>
@@ -85,7 +85,7 @@ export const useNavMenuExpanded = () =>
 export const useTermpostContext = () => useState("termpostContext", () => true);
 
 export const useBootstrapData = () =>
-  useState<Object>("lazyLocales", () => ({
+  useState<object>("lazyLocales", () => ({
     lalo: { nb: {}, nn: {}, en: {} },
     termbase: {},
     domain: {

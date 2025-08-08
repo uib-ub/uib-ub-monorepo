@@ -1,6 +1,8 @@
 <template>
   <section v-if="displayData && displayAggData">
-    <h2 class="text-xl">{{ $t("global.concept", 2) }}</h2>
+    <h2 class="text-xl">
+      {{ $t("global.concept", 2) }}
+    </h2>
     <div>
       <!-- Character list for navigation -->
       <ol class="flex flex-wrap justify-center px-2 pb-2 pt-1.5">
@@ -13,7 +15,10 @@
             {{ $t("global.all") }}
           </button>
         </li>
-        <li v-for="charEntry in displayAggData?.firstChar" :key="charEntry[0]">
+        <li
+          v-for="charEntry in displayAggData?.firstChar"
+          :key="charEntry[0]"
+        >
           <button
             class="px-[4px] py-0.5 text-lg underline-offset-2 hover:underline"
             :class="{
@@ -40,7 +45,7 @@
           <TermbaseConceptLink
             :concept="concept"
             :pending="pending"
-          ></TermbaseConceptLink>
+          />
         </li>
       </ol>
     </div>
@@ -52,7 +57,7 @@
           query.char[0] === null ? displayAggData.totalCount : query.char[1]
         "
         template="FirstPageLink PrevPageLink PageLinks NextPageLink"
-      ></Paginator>
+      />
     </div>
   </section>
 </template>
@@ -75,9 +80,9 @@ const query = ref<{ char: [string | null, number]; page: number }>({
 // Set correct query props when navigating to tb page
 // Needs to be before the watcher picks up changes
 if (
-  route.query.page &&
-  typeof route.query.page === "string" &&
-  parseInt(route.query.page) < 9000
+  route.query.page
+  && typeof route.query.page === "string"
+  && parseInt(route.query.page) < 9000
 ) {
   query.value.page = parseInt(route.query.page);
 }
@@ -105,13 +110,14 @@ watch(
         char,
       });
       // Don't trigger event when going back or when reset is triggered automatically
-    } else if (query.value.page !== 0) {
+    }
+    else if (query.value.page !== 0) {
       pushTermbaseConceptListNavigationEvent(props.termbaseId, "page", {
         page: query.value.page,
         char,
       });
     }
-  }
+  },
 );
 
 const generalConfig = {
@@ -121,7 +127,7 @@ const generalConfig = {
 
 const breakpointDisplayConfig = computed(() => {
   let configKey = "max";
-  if (process.client) {
+  if (import.meta.client) {
     configKey = ["min", "xs"].includes(breakpoint.value) ? "min" : "max";
   }
 
@@ -139,16 +145,16 @@ const breakpointDisplayConfig = computed(() => {
   }
 
   // update how many concepts are displayed in one page
-  breakpointConfig.displayConcepts =
-    generalConfig[configKey].columnCount *
-    generalConfig[configKey].columnLength;
+  breakpointConfig.displayConcepts
+    = generalConfig[configKey].columnCount
+      * generalConfig[configKey].columnLength;
 
   return breakpointConfig;
 });
 
 const breakpointFetchConfig = computed(() => {
   let configKey = "max";
-  if (process.client) {
+  if (import.meta.client) {
     configKey = ["min", "xs"].includes(breakpoint.value) ? "min" : "max";
   }
 
@@ -167,9 +173,9 @@ const breakpointFetchConfig = computed(() => {
   };
 
   // calculate number of concepts to fetch
-  breakpointConfig.fetchConcepts =
-    generalConfig[configKey].columnCount *
-    generalConfig[configKey].columnLength;
+  breakpointConfig.fetchConcepts
+    = generalConfig[configKey].columnCount
+      * generalConfig[configKey].columnLength;
 
   return breakpointConfig;
 });
@@ -179,17 +185,17 @@ const { data: conceptsAggData } = await useLazyFetch(
   {
     method: "POST",
     body: { language: locale },
-    headers: process.server
+    headers: import.meta.server
       ? { cookie: "session=" + useRuntimeConfig().apiKey }
       : undefined,
     retry: 1,
-  }
+  },
 );
 
 const displayAggData = computed(() => {
   const tmp = {
     totalCount: conceptsAggData.value?.total_count.value,
-    firstChar: conceptsAggData.value?.unique_values.buckets.map((bucket) => [
+    firstChar: conceptsAggData.value?.unique_values.buckets.map(bucket => [
       bucket.key,
       bucket.doc_count,
     ]),
@@ -202,11 +208,11 @@ const { data, pending } = await useLazyFetch(
   {
     method: "POST",
     body: breakpointFetchConfig,
-    headers: process.server
+    headers: import.meta.server
       ? { cookie: "session=" + useRuntimeConfig().apiKey }
       : undefined,
     retry: 1,
-  }
+  },
 );
 
 const displayData = computed(() => {

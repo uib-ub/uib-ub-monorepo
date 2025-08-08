@@ -1,6 +1,8 @@
 <template>
   <div class="">
-    <h2 class="mb-3 text-xl">{{ $t("searchBar.search") }}</h2>
+    <h2 class="mb-3 text-xl">
+      {{ $t("searchBar.search") }}
+    </h2>
     <div class="space-y-1.5">
       <SearchFieldTermbase
         class="max-w-[51em] grow"
@@ -45,8 +47,8 @@ const props = defineProps({ termbaseId: { type: String, required: true } });
 
 const optionsLanguage = computed(() => {
   const intersection = intersectUnique(
-    localeLangOrder.value.filter((lc) => !termpostViewOnlyLangs.includes(lc)),
-    bootstrapData.value?.termbase?.[props.termbaseId]?.language
+    localeLangOrder.value.filter(lc => !termpostViewOnlyLangs.includes(lc)),
+    bootstrapData.value?.termbase?.[props.termbaseId]?.language,
   );
   const options = [
     {
@@ -56,15 +58,15 @@ const optionsLanguage = computed(() => {
   ].concat(
     intersection.map((lang) => {
       return { label: i18n.t("global.lang." + lang), value: lang };
-    })
+    }),
   );
   return options;
 });
 
 const optionsTranslate = computed(() => {
   const intersection = intersectUnique(
-    localeLangOrder.value.filter((lc) => !termpostViewOnlyLangs.includes(lc)),
-    bootstrapData.value?.termbase?.[props.termbaseId]?.language
+    localeLangOrder.value.filter(lc => !termpostViewOnlyLangs.includes(lc)),
+    bootstrapData.value?.termbase?.[props.termbaseId]?.language,
   );
   const options = [
     {
@@ -74,7 +76,7 @@ const optionsTranslate = computed(() => {
   ].concat(
     intersection.map((lang) => {
       return { label: i18n.t("global.lang." + lang), value: lang };
-    })
+    }),
   );
   return options;
 });

@@ -20,13 +20,18 @@
       :aria-label="$t('searchBar.searchButtonLabel')"
       @click="execSearch"
     >
-      <Icon name="ic:outline-search" size="2em" aria-hidden="true" />
+      <Icon
+        name="ic:outline-search"
+        size="2em"
+        aria-hidden="true"
+      />
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
+
 const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
@@ -50,41 +55,41 @@ const search = async (event) => {
 };
 
 const placeholder = computed(() => {
-  const language =
-    searchInterface.value.language !== "all"
+  const language
+    = searchInterface.value.language !== "all"
       ? ` ${i18n.t("searchBar.inLanguage")} ${i18n.t(
-          `global.lang.${searchInterface.value.language}`,
-          2
-        )}`
+        `global.lang.${searchInterface.value.language}`,
+        2,
+      )}`
       : "";
 
   const topDomains = intersectUnique(
     Object.keys(bootstrapData.value.domain),
-    Object.keys(searchInterface.value.domain)
+    Object.keys(searchInterface.value.domain),
   );
 
-  const domains = topDomains.map((domain) => getLaLo(domain));
+  const domains = topDomains.map(domain => getLaLo(domain));
 
-  const termbases = searchInterface.value.termbase.map((tb) =>
-    getLaLo(`${tb}-3A${tb}`)
+  const termbases = searchInterface.value.termbase.map(tb =>
+    getLaLo(`${tb}-3A${tb}`),
   );
 
   const context = searchInterface.value.useDomain
     ? // domain
-      Object.keys(searchInterface.value.domain).length > 0
+    Object.keys(searchInterface.value.domain).length > 0
       ? // selected domains
-        topDomains.length === 1
+      topDomains.length === 1
         ? // one domain selected
-          ` ${i18n.t("searchBar.inOneDomain")} ${domains.join(", ")}`
+        ` ${i18n.t("searchBar.inOneDomain")} ${domains.join(", ")}`
         : // more than one domain
-          ` ${i18n.t("searchBar.inDomains")} ${domains.join(", ")}`
+        ` ${i18n.t("searchBar.inDomains")} ${domains.join(", ")}`
       : // all domains
-        ` ${i18n.t("searchBar.inAllDomains")}`
+      ` ${i18n.t("searchBar.inAllDomains")}`
     : // termbase
     searchInterface.value.termbase.length !== 0
-    ? // specified termbase(s)
+      ? // specified termbase(s)
       ` ${i18n.t("searchBar.in")} ${termbases.join(", ")}`
-    : // all termbases
+      : // all termbases
       ` ${i18n.t("searchBar.inAllTermbases")} `;
   return i18n.t("searchBar.search") + language + context;
 });

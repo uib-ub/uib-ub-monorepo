@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
 
   if (
     (appConfig.tb.base.specialUriTbs as readonly TermbaseId[]).includes(
-      termbaseId
+      termbaseId,
     )
   ) {
     const tbId = termbaseId as SpecialUriTermbase & ConfiguredTermbase;
@@ -24,7 +24,8 @@ export default defineEventHandler(async (event) => {
     base = appConfig.tb[tbId].uriPatterns[conceptIdArray[0] as PatternKey];
     id = conceptIdArray.slice(1).join("/");
     uri = base + id;
-  } else {
+  }
+  else {
     base = runtimeConfig.public.base;
     id = `${termbaseId}-3A${conceptIdArray.join("/")}`;
     uri = id;
@@ -44,8 +45,8 @@ export default defineEventHandler(async (event) => {
       signal: controller.signal,
       headers: {
         "Content-type": "application/sparql-query",
-        Accept: "application/ld+json",
-        Authorization: `Basic ${instance.authHeader}`,
+        "Accept": "application/ld+json",
+        "Authorization": `Basic ${instance.authHeader}`,
       },
     }).then((value) => {
       clearTimeout(timer);
@@ -56,5 +57,6 @@ export default defineEventHandler(async (event) => {
       delete result["@context"];
       return parseConceptData(result, uri);
     });
-  } catch (e) {}
+  }
+  catch (e) {}
 });

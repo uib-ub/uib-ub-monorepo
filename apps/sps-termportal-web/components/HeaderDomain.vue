@@ -1,5 +1,8 @@
 <template>
-  <li class="shrink-0 hover:bg-gray-200 rounded" role="presentation">
+  <li
+    class="shrink-0 hover:bg-gray-200 rounded"
+    role="presentation"
+  >
     <button
       :id="`${tabId}Domains-tab`"
       class="px-2 pt-1"
@@ -20,4 +23,5 @@ const props = defineProps({
   tabId: { type: String, required: true },
 });
 </script>
+
 <style scoped></style>
