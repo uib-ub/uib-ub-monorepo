@@ -119,7 +119,7 @@ export default function HorizontalSwipe({ children }: Props) {
   return (
     <div
       ref={hostRef}
-      className="relative w-full h-full overflow-x-hidden"
+      className="relative w-full h-full "
       style={{ touchAction: 'inherit' }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -127,7 +127,7 @@ export default function HorizontalSwipe({ children }: Props) {
     >
       <div className="absolute inset-0 pointer-events-none z-0" />
       <div
-        className="absolute inset-0 bg-neutral-300 pointer-events-none z-0"
+        className="absolute inset-0 bg-neutral-600 pointer-events-none z-0"
         style={{
           transform: `translateX(${leftIncomingX}%)`,
           transition: isAnimating ? 'transform 250ms ease-out' : 'none',
@@ -135,7 +135,7 @@ export default function HorizontalSwipe({ children }: Props) {
         }}
       />
       <div
-        className="absolute inset-0 bg-neutral-300 pointer-events-none z-0"
+        className="absolute inset-0 bg-neutral-600 pointer-events-none z-0"
         style={{
           transform: `translateX(${rightIncomingX}%)`,
           transition: isAnimating ? 'transform 250ms ease-out' : 'none',
