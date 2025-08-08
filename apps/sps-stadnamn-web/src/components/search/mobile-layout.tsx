@@ -271,7 +271,13 @@ export default function MobileLayout() {
             { drawerContent == 'tree' &&
                 <TreeResults/>
             }
-            {drawerContent == 'details' && currentPosition > 25 && <div className="absolute bottom-0 left-1 right-1 bg-neutral-200 border-t border-neutral-300 text-neutral-900 h-12 p-1 flex items-center gap-2 details-toolbar justify-between">
+            {drawerContent == 'details' && <div 
+    className={`absolute bottom-0 left-1 right-1 bg-neutral-200 border-t border-neutral-300 text-neutral-900 h-12 p-1 flex items-center gap-2 details-toolbar justify-between transition-all duration-300 ease-in-out`}
+    style={{
+        transform: currentPosition > 25 ? 'translateY(0)' : 'translateY(100%)',
+        opacity: currentPosition > 25 ? 1 : 0,
+        pointerEvents: currentPosition > 25 ? 'auto' : 'none'
+    }}>
                 <ClickableIcon label="Oppslag" remove={['details', 'fuzzyNav']} add={{details: 'doc'}} aria-current={details == 'doc' ? 'page' : 'false'}>
                     <PiBookOpen className="text-3xl" />
                 </ClickableIcon>
