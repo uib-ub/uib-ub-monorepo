@@ -47,18 +47,23 @@ export const useOrderedTermbases = () => {
   const bootstrapData = useBootstrapData();
   const { getLaLo } = useLazyLocale();
 
-  const termbases = Object.keys(bootstrapData.value.termbase).filter(
-    tb => !appConfig.tb.base.systemTermbases.includes(tb),
-  );
+  if (bootstrapData.value) {
+    const termbases = Object.keys(bootstrapData.value.termbase).filter(
+      tb => !appConfig.tb.base.systemTermbases.includes(tb),
+    );
 
-  const sortedTermbases = termbases.sort((a, b) => {
-    const labelA = getLaLo(`${a}-3A${a}`);
-    const labelB = getLaLo(`${b}-3A${b}`);
+    const sortedTermbases = termbases.sort((a, b) => {
+      const labelA = getLaLo(`${a}-3A${a}`);
+      const labelB = getLaLo(`${b}-3A${b}`);
 
-    return labelA.localeCompare(labelB);
-  });
+      return labelA.localeCompare(labelB);
+    });
 
-  return toRef(() => sortedTermbases);
+    return toRef(() => sortedTermbases);
+  }
+  else {
+    return toRef(() => []);
+  }
 };
 
 export function localizeSnomedVersionLabel() {

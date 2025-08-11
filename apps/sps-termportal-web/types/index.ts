@@ -6,6 +6,10 @@ import type {
   Termbase,
   TermbaseId,
   SpecialUriTermbase,
+  SystemTermbase,
+  LegacyTermbase,
+  LicensePageId,
+  BootstrapData,
 } from "./zod";
 
 const appConfig = useAppConfig();
@@ -15,9 +19,9 @@ export {};
 declare global {
   // base
   type SpecialUriTermbase = z.infer<typeof SpecialUriTermbase>;
-  type SystemTermbase = (typeof appConfig.tb.base.systemTermbases)[number];
-  type LegacyTermbase = (typeof appConfig.tb.base.legacyTermbases)[number];
-  type ConfiguredTermbase = Exclude<keyof typeof appConfig.tb, "base">;
+  type SystemTermbase = z.infer<typeof SystemTermbase>;
+  type LegacyTermbase = z.infer<typeof LegacyTermbase>;
+  type ConfiguredTermbase = z.infer<typeof LegacyTermbase>;
   type TermbaseId = z.infer<typeof TermbaseId>;
 
   // language
@@ -25,9 +29,11 @@ declare global {
 
   type LangCode = z.infer<typeof LangCode>;
 
-  type LicensePageId = keyof typeof appConfig.license;
+  type LicensePageId = z.infer<typeof LicensePageId>;
 
   type Termbase = z.infer<typeof Termbase>;
+
+  type BootstrapData = z.infer<typeof BootstrapData>;
 
   // concept data
   type SemanticRelation = keyof typeof appConfig.data.semanticRelations;

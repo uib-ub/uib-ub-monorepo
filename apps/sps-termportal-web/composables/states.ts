@@ -85,15 +85,4 @@ export const useNavMenuExpanded = () =>
 export const useTermpostContext = () => useState("termpostContext", () => true);
 
 export const useBootstrapData = () =>
-  useState<object>("lazyLocales", () => ({
-    lalo: { nb: {}, nn: {}, en: {} },
-    termbase: {},
-    domain: {
-      "DOMENE-3ANaturvitenskapTeknologi": {},
-      "DOMENE-3AHumaniora": {},
-      "DOMENE-3ASamfunnsfag": {},
-      "DOMENE-3AHelse_og_sosial": {},
-      "DOMENE-3AOkonomiAdministrasjon": {},
-    },
-    loaded: false,
-  }));
+  useState<BootstrapData | null>("bootstrapData", () => (null));

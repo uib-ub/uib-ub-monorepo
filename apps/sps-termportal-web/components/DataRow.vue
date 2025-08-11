@@ -32,7 +32,9 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
+import { langRtoL } from "#imports";
+
+defineProps({
   data: { type: String, default: "" },
   thClass: { type: String, default: "" },
   label: { type: String, required: true },

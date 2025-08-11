@@ -8,7 +8,7 @@
       <div class="max-w-4xl grow space-y-6">
         <UtilsTransitionOpacitySection>
           <main
-            v-if="data && bootstrapData.loaded"
+            v-if="bootstrapData && data"
             class="md:max-w-3xl lg:max-w-4xl"
           >
             <h1
@@ -102,17 +102,19 @@ const expandTermbaseText = ref(false);
 
 // Only picked up in larger screens. See check in template.
 const termbaseDescriptionHeight = computed(() => {
+  const baseHeight = 8;
   if (
     termbaseInfoBoxRef.value?.clientHeight
     && termbaseTextRef.value?.clientHeight
   ) {
     if (expandTermbaseText.value) {
-      return termbaseTextRef.value.clientHeight + 8;
+      return termbaseTextRef.value.clientHeight + baseHeight;
     }
     else {
-      return termbaseInfoBoxRef.value.clientHeight + 8;
+      return termbaseInfoBoxRef.value.clientHeight + baseHeight;
     }
   }
+  return baseHeight;
 });
 
 const { data } = await useLazyFetch<Termbase>(`/api/termbase/${termbase}`, {

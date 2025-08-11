@@ -7,7 +7,7 @@ import { useI18n } from "vue-i18n";
  * @param a - Array a
  * @param b - Array b
  */
-export function intersectUnique(a: readonly any[], b: readonly any[]): any[] {
+export function intersectUnique<T>(a: readonly T[], b: readonly T[]): T[] {
   const setA = new Set(a);
   const setB = new Set(b);
   const intersection = new Set([...setA].filter(x => setB.has(x)));
@@ -29,7 +29,7 @@ export function countSearchEntries(matches: SearchDataEntry[]): number {
       try {
         return entry.lang.length;
       }
-      catch (e) {
+      catch {
         return 1;
       }
     }),
@@ -130,7 +130,7 @@ export function getRelationData(
             return null;
           }
         }
-        catch (error) {
+        catch {
           return null;
         }
       },
@@ -144,37 +144,6 @@ export function getRelationData(
     }
   }
   return relationData;
-}
-
-/**
- * Create nested dictionary with related ressources of starting entry.
- *
- * @param data - Nested dictionaries with concept data
- * @param startId - key for starting point in dict
- * @param relation - relation to follow
- * @param newKey - Key to nest related entries under
- */
-export function parseRelationsRecursively(
-  data: object,
-  startId: string,
-  relation: string,
-  newKey: string,
-) {
-  if (data?.[startId]?.[relation] && data[startId][relation].length > 0) {
-    const relations = data[startId][relation].slice().reverse();
-
-    return Object.assign(
-      {},
-      ...relations.map((startId: string) => ({
-        [startId]: {
-          [newKey]: parseRelationsRecursively(data, startId, relation, newKey),
-        },
-      })),
-    );
-  }
-  else {
-    return null;
-  }
 }
 
 export function deleteValueFromList(
@@ -210,7 +179,7 @@ export function htmlify(data: string): string {
       .join("");
     return pars;
   }
-  catch (e) {
+  catch {
     return data;
   }
 }

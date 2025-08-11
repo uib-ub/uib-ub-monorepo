@@ -64,7 +64,7 @@ const placeholder = computed(() => {
       : "";
 
   const topDomains = intersectUnique(
-    Object.keys(bootstrapData.value.domain),
+    bootstrapData.value ? Object.keys(bootstrapData.value.domain) : [],
     Object.keys(searchInterface.value.domain),
   );
 

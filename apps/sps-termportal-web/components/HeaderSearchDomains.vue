@@ -6,7 +6,7 @@
     <div ref="topWrapper">
       <div class="flex flex-wrap gap-x-1 gap-y-1 lg:flex-nowrap">
         <div
-          v-for="topdomain in Object.keys(bootstrapData.domain)"
+          v-for="topdomain in appConfig.domain.topdomains"
           :key="topdomain"
           class="group flex min-h-[2.3em]"
         >
@@ -144,6 +144,8 @@
 </template>
 
 <script setup lang="ts">
+const appConfig = useAppConfig();
+
 const panel = ref();
 const wrapper = ref(null);
 const topWrapper = ref();

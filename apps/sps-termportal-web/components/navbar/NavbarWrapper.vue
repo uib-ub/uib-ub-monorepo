@@ -18,7 +18,7 @@
         >
           <NavbarLanguage />
           <NavbarTermbases
-            :key="'termbaseslst_' + Object.keys(bootstrapData?.termbase).length"
+            :key="'termbaseslst_' + (bootstrapData ? Object.keys(bootstrapData) : 'not_loaded')"
           />
           <NavBarLink to="/om">
             {{ $t("navBar.om") }}
