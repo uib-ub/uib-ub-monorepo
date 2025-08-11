@@ -258,6 +258,9 @@ export default function MobileLayout() {
             { (drawerContent == 'datasets' || drawerContent == 'datasetInfo') &&
             <div className="p-2">
             <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide pb-2 flex items-center gap-1">{(cadastralIndex && 'Hierarki') || (boost_gt == '3' && 'Djupinnsamlingar') || 'Datasett'}</h2>
+            { (datasetFilters.length > 0 && !cadastralIndex)  && <div className="flex flex-wrap gap-2 py-2 mb-2 border-y border-neutral-200">
+                <ActiveFilters showDatasets={true}/>
+                </div>}
             <DatasetFacet/> 
 
             <div 
@@ -278,7 +281,7 @@ export default function MobileLayout() {
 
                 <ClickableIcon 
                     label="Djupinnsamlingar" 
-                    remove={["cadastralIndex"]}
+                    remove={["cadastralIndex", "indexDataset"]}
                     add={{ boost_gt: '3'}}
                     aria-current={boost_gt == '3' ? 'page' : 'false'}>
                     {boost_gt == '3' ? 

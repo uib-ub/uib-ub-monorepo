@@ -138,7 +138,7 @@ export default function DatasetFacet() {
 
   return (
     <>
-    <div className="flex flex-col gap-2 pb-4">
+    <div className="flex flex-col gap-2 pb-12">
     {!isMobile && <div className="border p-1 rounded-lg border-neutral-200 tabs gap-1 text-sm flex flex-col 2xl:flex-row" role="tablist">
   <Clickable
     remove={["boost_gt", "cadastralIndex"]}
@@ -183,7 +183,7 @@ export default function DatasetFacet() {
     
     <div id="dataset-facet-content" className='flex flex-col gap-2'>
     { boost_gt == '3' && <span className="px-1">Datasett som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>}
-    {nav == 'tree' && <span className="px-1">Datasett som vi har ordna i eit hierarki, fortrinsvis etter matrikkelinndelinga.</span>}
+    {cadastralIndex && <span className="px-1">Datasett ordna i eit hierarki, fortrinsvis etter matrikkelinndelinga.</span>}
 
     <div className='flex gap-2'>
     <div className='relative grow'>
