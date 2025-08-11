@@ -7,8 +7,17 @@ import { PiMagnifyingGlass } from 'react-icons/pi';
 import { datasetTitles } from '@/config/metadata-config';
 
 import FacetToolbar from './facet-toolbar';
-import { getSkeletonLength } from '@/lib/utils';
+import { formatNumber, getSkeletonLength } from '@/lib/utils';
+import Clickable from '@/components/ui/clickable/clickable';
+import PercentageCircle from './percentage-circle';
 
+const Badge = ({ count }: { count: number }) => {
+  return (
+    <span className="inline-flex items-center justify-center min-w-[1.75rem] bg-white group-aria-pressed:bg-accent-800 group-aria-pressed:text-white text-neutral-700 border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">
+    {formatNumber(count)}
+  </span>
+  );
+};
 
 export default function ServerFacet() {
   const router = useRouter()
@@ -23,6 +32,19 @@ export default function ServerFacet() {
   const facet = searchParams.get('facet') || searchParams.get('nav')
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
   const paramsExceptFacet = facet ? removeFilterParams(facet) : searchParams.toString()
+  const currentValue = facet && searchParams.get(facet)
+
+  const getAllCount = () => 
+    facetAggregation?.buckets ? facetAggregation.buckets.reduce((sum: number, item: { doc_count: number }) => sum + item.doc_count, 0) : 0;
+
+  const getYesCount = () => 
+    facetAggregation?.buckets ? facetAggregation.buckets.reduce((sum: number, item: { doc_count: number, key: string }) => item.key !== '_false' ? sum + item.doc_count : sum, 0) : 0;
+
+  const getNoCount = () => {
+    if (!facetAggregation?.buckets) return 0;
+    const falseBucket = facetAggregation.buckets.find((item: { key: string }) => item.key === '_false');
+    return falseBucket ? falseBucket.doc_count : 0;
+  };
 
   useEffect(() => {
     // Return if no facet or invalid facet
@@ -111,22 +133,95 @@ export default function ServerFacet() {
 
   return (
     <>
-    <div className="flex flex-col gap-2 pb-4">
-    <div className='flex flex-col gap-2'>
-    <div className='flex gap-2'>
-    <div className='relative grow'>
-      <input aria-label="Søk i fasett" onChange={(e) => facet == 'datasets' ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
-          className="pl-8 w-full border rounded-md border-neutral-300 p-1"/>
-      <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-        <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl'/>
-      </span>
-    </div>
+    <div className="flex flex-col gap-2 pb-2">
+  <div className="flex bg-white border border-neutral-200 p-1 rounded-lg tabs">
+    {!facetLoading && (
+      <>
+               <Clickable
+          remove={[facet]}
+          add={{ [facet]: '_true'}}
+          aria-pressed={currentValue == '_true'}
+          className={`flex flex-1 items-center group gap-1 py-1.5`}
+        >
+          Ja <Badge count={getYesCount()} />
+          {facetAggregation?.buckets && (
+            <div className="flex items-center gap-1">
+              <PercentageCircle 
+                count={getYesCount()} 
+                total={getAllCount()} 
+              />
+              <span className="tabular-nums">
+                {getYesCount() === 0 ? '0' : getYesCount() === getAllCount() ? '100' : 
+                  ((getYesCount()/getAllCount()) * 100) > 99 || ((getYesCount()/getAllCount()) * 100) < 1 
+                    ? ((getYesCount()/getAllCount()) * 100).toFixed(1)
+                    : Math.round((getYesCount()/getAllCount()) * 100)}%
+              </span>
+            </div>
+          )}
+        </Clickable>
 
+        <Clickable
+          remove={[facet]}
+          add={{ [facet]: '_false'}}
+          aria-pressed={currentValue == '_false'}
+          className={`flex flex-1 items-center group gap-1 py-1.5`}
+        >
+          Nei <Badge count={getNoCount()} />
+          {facetAggregation?.buckets && (
+            <div className="flex items-center gap-1">
+              <PercentageCircle 
+                count={getNoCount()} 
+                total={getAllCount()} 
+              />
+              <span className="tabular-nums">
+                {getNoCount() === 0 ? '0' : getNoCount() === getAllCount() ? '100' : 
+                  ((getNoCount()/getAllCount()) * 100) > 99 || ((getNoCount()/getAllCount()) * 100) < 1 
+                    ? ((getNoCount()/getAllCount()) * 100).toFixed(1)
+                    : Math.round((getNoCount()/getAllCount()) * 100)}%
+              </span>
+            </div>
+          )}
+        </Clickable>
+        <button
+          onClick={() => {
+            router.push(`?${new URLSearchParams(Array.from(searchParams.entries()).filter(([key, value]) => key != facet || (value != '_true' && value != '_false')))}`)
+          }}
+          aria-pressed={currentValue != '_true' && currentValue != '_false'}
+          className={`flex flex-1 items-center group gap-1 py-1.5`}
+        >
+          Alle <Badge count={getAllCount()} />
+        </button>
+      </>
+    )}
+  </div>
+</div>
+  <div className='flex gap-2'>
+    
+      
+   
+  
+
+    {currentValue != '_true' && currentValue != '_false' && 
+    <div className='flex gap-2 flex-col w-full'>
+      <div className='flex gap-2'>
+      <div className='relative flex-1 min-w-0'> {/* flex-1 to take remaining space, min-w-0 allows shrinking below content size */}
+    <input 
+      aria-label="Søk i fasett" 
+      onChange={(e) => facet == 'datasets' ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
+      className="pl-8 w-full h-full border rounded-md border-neutral-300"
+    />
+    <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
+      <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl'/>
+    </span>
+  </div>
+
+
+  <div className="flex-shrink-0"> {/* Keep toolbar buttons from shrinking */}
     <FacetToolbar/>
-    </div>
-    </div>
-
-    { (facetLoading || facetAggregation?.buckets.length) ?
+  </div>
+  </div>
+    
+    {  (facetLoading || facetAggregation?.buckets.length) ?
     <fieldset>
       <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[perspective][facet].label}`}</legend>
       <ul role="status" aria-live="polite" className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
@@ -143,7 +238,7 @@ export default function ServerFacet() {
                     value={item.key} 
                     onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
                   />
-                  {renderLabel(facet, item.key)} <span className="bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">{item.doc_count.toLocaleString('nb-NO', { useGrouping: true })}</span>
+                  {renderLabel(facet, item.key)} <Badge count={item.doc_count} />
                 </label>
               </li>
           ))
@@ -161,6 +256,7 @@ export default function ServerFacet() {
     </fieldset>
     : <div role="status" aria-live="polite" className='px-2 p-2 rounded-sm bg-neutral-50 border border-neutral-300'>Ingen treff</div>
     }
+    </div>}
     </div>
    </>)
 

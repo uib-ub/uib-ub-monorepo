@@ -25,15 +25,15 @@ export default function FacetToolbar() {
         <div className="flex items-center text-neutral-950 gap-2">
 
         {sortMode == 'doc_count' ?
-            <IconButton className="text-xl btn btn-outline btn-compact h-full px-2" label="Sorter stigende" onClick={() => updateFacetOption(currentFacet, {sort: 'asc'})}><PiSortAscending/></IconButton>
+            <IconButton className="text-xl aspect-square btn btn-outline btn-compact h-full px-2" label="Sorter stigende" onClick={() => updateFacetOption(currentFacet, {sort: 'asc'})}><PiSortAscending/></IconButton>
             : sortMode == 'asc' ?
-            <IconButton className="text-xl btn btn-outline btn-compact h-full px-2" label="Sorter synkende" onClick={() => updateFacetOption(currentFacet, {sort: 'desc'})}><PiSortDescending/></IconButton>
+            <IconButton className="text-xl aspect-square btn btn-outline btn-compact h-full px-2" label="Sorter synkende" onClick={() => updateFacetOption(currentFacet, {sort: 'desc'})}><PiSortDescending/></IconButton>
             :
-            <IconButton className="text-xl btn btn-outline btn-compact h-full px-2" label="Sorter etter antall treff" onClick={() => updateFacetOption(currentFacet, {sort: 'doc_count'})}><PiFunnelSimple/></IconButton>
+            <IconButton className="text-xl aspect-square btn btn-outline btn-compact h-full px-2" label="Sorter etter antall treff" onClick={() => updateFacetOption(currentFacet, {sort: 'doc_count'})}><PiFunnelSimple/></IconButton>
             }
 
 
-        <IconButton className="text-xl btn btn-outline btn-compact h-full px-2" label="Nullstill filter" onClick={() => {
+        <IconButton className="text-xl aspect-square btn btn-outline btn-compact h-full px-2" label="Nullstill filter" onClick={() => {
 
             router.push(`?${new URLSearchParams(Array.from(searchParams.entries()).filter(([key, value]) => key != currentFacet))}`)
         }}>

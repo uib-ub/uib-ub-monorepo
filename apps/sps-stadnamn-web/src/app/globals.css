@@ -88,6 +88,19 @@
 }
 
 @layer components {
+  .tabs {
+    @apply flex gap-1;
+  }
+
+  .tabs > button,
+  .tabs > a {
+    @apply flex items-center justify-center rounded-md;
+    @apply border border-transparent;
+    @apply aria-pressed:bg-neutral-100 aria-pressed:border-neutral-200;
+    @apply aria-[pressed=false]:text-neutral-800 aria-[pressed=false]:hover:bg-neutral-50;
+    @apply aria-selected:bg-neutral-100 aria-selected:border-neutral-200 aria-selected:shadow-inner;
+    @apply aria-expanded:bg-neutral-100 aria-expanded:border-neutral-200 aria-expanded:shadow-inner;
+  }
 
   .inner-slate {
     @apply bg-neutral-50 border border-neutral-200 rounded-md shadow-inner;
@@ -375,6 +388,7 @@
   }
 
 }
+
 
 
 @layer utilities {

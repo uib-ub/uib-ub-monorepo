@@ -35,7 +35,7 @@ const cadastre = {"within": {label: "Gard", result},
                 }
 const uuid = {label: "UUID", result}
 const label = {label: "Namn", result}
-const adm = {label: "Områdeinndeling"}
+const adm = {label: "Områdeinndeling", facet}
 const adm1 = {label: "Fylke", result} // Necessary for it to be included in fields
 const adm2 = {label: "Kommune", result} // Necessary for it to be included in fields
 const adm3 = {label: "Sogn, bydel eller tidlegare kommune", result}
@@ -43,8 +43,8 @@ const snid = {label: "Stadnamn ID", facet, omitLabel}
 const gnidu = {label: "GNIDu", facet, result}
 const midu = {label: "MIDu", facet}
 const h3 = {label: "H3", result}
-const wikiAdm = {label: "Historisk kommune", result, keyword}
-const identifiers = {snid, gnidu, midu, h3, wikiAdm}
+const wikiAdm = {label: "Historisk områdeinndeling", result, keyword, facet}
+const identifiers = {snid, gnidu, midu, h3}
 const link = {label: "Lenke", result}
 const image = {"image.manifest": {label: "Seddel", result}}
 const html = {"content.html": {label: "Tekstinnhald", fulltext}}
@@ -428,11 +428,12 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 // First, store the original _index configuration
 // TODO: refactor so that required is not needed in the individual configs
 export const baseAllConfig: Record<string, FieldConfigItem> = {
-  ...required, adm, adm1, adm2, sosi, ...identifiers, ...cadastre, wikiAdm,
+  ...required, adm, wikiAdm, adm1, adm2, sosi, ...cadastre,
   "indexDataset": {label: "Datasett", facet},
-  "h3": {label: "H3", facet},
+  "cadastralIndex": {label: "Hierarki"},
   ...text,
-  ...html
+  ...html,
+  ...identifiers,
 
 };
 

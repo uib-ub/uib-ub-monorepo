@@ -53,7 +53,20 @@ export function extractFacets(request: Request) {
           rangeFilters[fieldName] = {};
         }
         rangeFilters[fieldName][operator] = value;
-      } else {
+      } 
+      else if (value == '_true') {
+        termFilters.push({
+          "exists": { "field": key }
+        });
+      }
+      else if (value == '_false') {
+        termFilters.push({
+          "bool": {
+            "must_not": { "exists": { "field": key } }
+          }
+        });
+      }
+      else {
         const facets = key == 'adm' ? clientFacets : serverFacets;
         if (!facets[key]) {
           facets[key] = [];

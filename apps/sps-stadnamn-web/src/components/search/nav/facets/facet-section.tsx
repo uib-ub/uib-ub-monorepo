@@ -9,12 +9,12 @@ import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi"
 import { GlobalContext } from "@/app/global-provider"
 import { useContext } from "react"
 import { datasetTitles } from "@/config/metadata-config"
+import WikiAdmFacet from "./wikiAdm-facet"
 
 export default function FacetSection() {
     const perspective = usePerspective()
     const searchParams = useSearchParams()
-    const { isMobile } = useContext(GlobalContext)
-    const facet = searchParams.get('facet') || 'adm'
+    const facet = searchParams.get('facet')
     const indexDatasets = searchParams.getAll('indexDataset')
     const filterDataset = perspective == 'all' ? indexDatasets.length == 1 ? indexDatasets[0] : 'all' : perspective
     
@@ -23,25 +23,20 @@ export default function FacetSection() {
         : facetConfig[filterDataset];
     const nav = searchParams.get('nav')
 
+
+
     return (
         <>
         <div className="flex flex-col divide-y divide-neutral-200">
-          {availableFacets.filter(f => !f.child && (f.key != 'adm' || isMobile) && f.key != 'indexDataset').map(f => {
-            const isExpanded = f.key == 'adm' ? nav == 'adm' : facet == f.key
+          {availableFacets.filter(f => !f.child && f.key != 'indexDataset').map(f => {
+            const isExpanded = facet == f.key
             return (
             <div key={f.key}>
             <Clickable type="button" 
                        aria-expanded={isExpanded} 
                        className="w-full flex justify-between p-3 aria-expanded:border-b aria-expanded:border-neutral-200"
                        aria-controls={f.key + '-collapsible'} 
-                       remove={['facet', 'nav']}
-                       add={f.key === 'adm' 
-                         ? nav === 'adm' 
-                           ? {nav: 'filters'} 
-                           : {nav: 'adm', facet: 'adm'}
-                         : facet === f.key 
-                           ? {nav: 'filters'} 
-                           : {nav: 'filters', facet: f.key}}>
+                       add={{facet: isExpanded ? null : f.key}}>
               <div className="flex flex-wrap gap-4">
               <span className="text-xl">{f.label}</span>
               {filterDataset == 'all' && (f.datasets?.length || 0) > 1 && <em className="text-neutral-700 text-sm self-center">{f.datasets?.length} datasett</em>}
@@ -52,7 +47,7 @@ export default function FacetSection() {
               
             </Clickable>
             <div id={f.key + '-collapsible'} className={`${isExpanded ? 'block mt-2' : 'hidden'}`}>
-              {isExpanded && (f.key == 'adm' ? <ClientFacet facetName={f.key} /> : <ServerFacet/>)}
+              {isExpanded && (f.key == 'adm' ? <ClientFacet facetName={f.key} /> : f.key == 'wikiAdm' ? <WikiAdmFacet /> : <ServerFacet/>)}
             </div>
             </div>
           )

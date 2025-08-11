@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, ChangeEvent, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { usePerspective, useSearchQuery } from '@/lib/search-params';
 import { facetConfig, fieldConfig } from '@/config/search-config';
-import { PiMagnifyingGlass, PiInfo, PiInfoFill, PiCaretDown, PiCaretRight, PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
+import { PiMagnifyingGlass, PiInfo, PiInfoFill, PiCaretDown, PiCaretRight, PiCaretDownBold, PiCaretUpBold, PiTreeView, PiTreeFill, PiTreeLight, PiTreeViewFill, PiTreeViewLight, PiDatabaseLight, PiDatabaseFill, PiMicroscopeFill, PiMicroscopeLight, PiCircleFill, PiCircleLight, PiListFill, PiListLight, PiStack, PiStackLight, PiStackFill } from 'react-icons/pi';
 
 import { datasetTitles, typeNames, datasetTypes, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config';
 
@@ -12,6 +12,7 @@ import { formatNumber, getSkeletonLength } from '@/lib/utils';
 import { SearchContext } from '@/app/search-provider';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
+import Clickable from '@/components/ui/clickable/clickable';
 
 // Memoized RegExp factory to prevent memory leaks
 const createSearchRegex = (() => {
@@ -39,9 +40,12 @@ export default function DatasetFacet() {
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
   const [deepCollectionExpanded, setDeepCollectionExpanded] = useState(false);
+  const [hierarchicalDatasetsExpanded, setHierarchicalDatasetsExpanded] = useState(false);
   const availableFacets = useMemo(() => facetConfig[perspective], [perspective]);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
   const paramsExceptFacet = removeFilterParams('indexDataset')
+  const nav = searchParams.get('nav')
+  const boost_gt = searchParams.get('boost_gt')
 
   useEffect(() => {
 
@@ -134,54 +138,66 @@ export default function DatasetFacet() {
     setDeepCollectionExpanded(prev => !prev);
   };
 
+  const toggleHierarchicalDatasetsDescription = () => {
+    setHierarchicalDatasetsExpanded(prev => !prev);
+  };
+
 
   return (
     <>
     <div className="flex flex-col gap-2 pb-4">
-    <div className='flex flex-col gap-2'>
-    {perspective == 'all' && 
-        <div className="px-3 py-2 border border-neutral-200 rounded-lg">
-          <div className="flex items-start gap-3">
-            <label className="flex items-start gap-3 flex-1">
-              <input
-                type="checkbox"
-                checked={searchParams.get('boost_gt') === '3'}
-                onChange={(e) => {
-                  setClientSearch('');
-                  const params = new URLSearchParams(searchParams.toString());
-                  if (e.target.checked) {
-                    params.set('boost_gt', '3');
-                  } else {
-                    params.delete('boost_gt');
-                  }
-                  router.push(`?${params.toString()}`, { scroll: false });
-                }}
-                className="mt-1 h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-600"
-              />
-              <div className="flex flex-col gap-0.5">
-                <span className="font-medium text-neutral-900">Vis berre djupinnsamlingar</span>
-              </div>
-            </label>
-            <IconButton
-              label={`${deepCollectionExpanded ? 'Skjul' : 'Vis'} beskriving`}
-              onClick={toggleDeepCollectionDescription}
-              className="rounded-full btn btn-outline btn-compact p-1"
-              aria-label={`${deepCollectionExpanded ? 'Skjul' : 'Vis'} beskriving`}
-            >
-              {deepCollectionExpanded ? <PiCaretUpBold className="w-4 h-4" /> : <PiCaretDownBold className="w-4 h-4" />}
-            </IconButton>
-          </div>
-          {deepCollectionExpanded && (
-            <div className="mt-2 ml-6 mb-2">
-              <span>Vis berre kjelder som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>
+      <div>
+    <div className="border p-1 rounded-lg border-neutral-200 tabs gap-1 text-sm flex" role="tablist">
+  <Clickable
+    remove={["boost_gt"]}
+    add={{ nav: 'datasets' }}
+    role="tab"
+    aria-controls="dataset-facet-content"
+    aria-selected={nav === 'datasets' && boost_gt != '3'}
+    className={`flex items-center gap-2 p-1 px-2 flex-1`}
+  >
+    <span className="flex-shrink-0">
+      {nav == 'datasets' && boost_gt != '3' ? <PiStackFill className="text-base text-accent-800" aria-hidden="true"/> : <PiStackLight className="text-base text-neutral-900" aria-hidden="true"/>}
+    </span>
+    Alle
+  </Clickable>
+  <Clickable
+    role="tab"
+    aria-controls="dataset-facet-content"
+    add={{ boost_gt: '3' , nav: 'datasets'}}
+    aria-selected={boost_gt == '3'}
+    className={`flex items-center gap-2 p-1 px-2 flex-1`}
+  >
+    <span className="flex-shrink-0">
+      {boost_gt == '3' ? <PiMicroscopeFill className="text-base text-accent-800" aria-hidden="true"/> : <PiMicroscopeLight className="text-base text-neutral-900" aria-hidden="true"/>}
+    </span>
+    Djupinnsamlingar
+  </Clickable>
+  <Clickable
+    role="tab"
+    aria-controls="dataset-facet-content"
+    remove={["boost_gt"]}
+    add={{ nav: 'tree' }}
+    aria-selected={nav !== 'datasets'}
+    className={`flex items-center gap-2 p-1 px-2 flex-1`}
+  >
+    <span className="flex-shrink-0">
+      {nav == 'tree' ? <PiTreeViewFill className="text-base text-accent-800" aria-hidden="true"/> : <PiTreeViewLight className="text-base text-neutral-900" aria-hidden="true"/>}
+    </span>
+    Hierarki
+  </Clickable>
+</div>
             </div>
-          )}
-        </div>
-    }
+            
+    
+    <div id="dataset-facet-content" className='flex flex-col gap-2'>
+    { boost_gt == '3' && <span className="px-1">Datasett som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>}
+    {nav == 'tree' && <span className="px-1">Datasett som vi har ordna i eit hierarki, fortrinsvis etter matrikkelinndelinga.</span>}
+
     <div className='flex gap-2'>
     <div className='relative grow'>
       <input aria-label="Søk i fasett" onChange={(e) => setClientSearch(e.target.value)}
-          className="pl-8 w-full border rounded-md border-neutral-300 p-1"/>
+          className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"/>
       <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
         <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl'/>
       </span>
@@ -219,7 +235,7 @@ export default function DatasetFacet() {
                 return  (
               <li key={index} className='py-2'>
                 <div className='flex items-start gap-2 lg:gap-1 xl:gap-2'>
-                  <label className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1">
+                  <label className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0">
                     <input 
                       type="checkbox" 
                       checked={isChecked(item.key)} 
@@ -236,7 +252,7 @@ export default function DatasetFacet() {
                       const firstPart = words.join(' ');
 
                       return (
-                        <span className="text-neutral-950 break-words lg:text-sm xl:text-base">
+                        <span className="text-neutral-950 break-words lg:text-sm xl:text-base min-w-0">
                           {firstPart ? (
                             <>
                               {firstPart + ' '}
@@ -262,7 +278,7 @@ export default function DatasetFacet() {
                   <IconButton
                     label={`${isExpanded ? 'Skjul' : 'Vis'} beskrivelse`}
                     onClick={() => toggleDescription(item.key)}
-                    className="rounded-full btn btn-outline btn-compact p-1"
+                    className="rounded-full btn btn-outline btn-compact p-1 flex-shrink-0"
                     aria-label={`${isExpanded ? 'Skjul' : 'Vis'} beskrivelse`}
                   >
                     <PiCaretDownBold className="w-4 h-4" />
