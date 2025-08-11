@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
-import { PiBookOpen, PiClock, PiDatabase, PiFunnel, PiList, PiListBullets, PiSignpost, PiTreeViewFill } from "react-icons/pi";
+import { PiBookOpen, PiClock, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiList, PiListBullets, PiSignpost, PiTreeViewFill } from "react-icons/pi";
 import Results from "./nav/results/search-results";
 import MapExplorer from "./map-explorer";
 import { usePerspective, useSearchQuery, useMode } from "@/lib/search-params";
@@ -24,6 +24,7 @@ import GroupDetails from "./details/group/group-details";
 import FuzzyExplorer from "./fuzzy/fuzzy-explorer";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import HorizontalSwipe from "./details/doc/horizontal-swipe";
+import { PiStackFill, PiStackLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeViewLight } from 'react-icons/pi';
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -49,7 +50,6 @@ export default function MobileLayout() {
     const mode = useMode()
     const { docLoading, docData } = useContext(DocContext)
     const datasetCount = searchParams.getAll('indexDataset')?.length || 0
-    const deepCollections = searchParams.get('boost_gt') == '3'
     const fulltext = searchParams.get('fulltext')
     const details = searchParams.get('details')
     const { groupTotal } = useContext(GroupContext)
@@ -57,6 +57,8 @@ export default function MobileLayout() {
     const group = searchParams.get('group')
     const { setInitialUrl } = useContext(GroupContext)
 
+    const boost_gt = searchParams.get('boost_gt')
+    const cadastralIndex = searchParams.get('cadastralIndex')
 
 
     useEffect(() => {
@@ -255,13 +257,46 @@ export default function MobileLayout() {
              }
             { (drawerContent == 'datasets' || drawerContent == 'datasetInfo') &&
             <div className="p-2">
-            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide pb-2 flex items-center gap-1">Datasett</h2>
-            { (datasetFilters.length > 0 || deepCollections)  && <div className="flex flex-wrap gap-2 py-2 mb-2 border-y border-neutral-200">
-                <ActiveFilters showDatasets={true}/>
-                </div>}
+            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide pb-2 flex items-center gap-1">{(cadastralIndex && 'Hierarki') || (boost_gt == '3' && 'Djupinnsamlingar') || 'Datasett'}</h2>
             <DatasetFacet/> 
 
+            <div 
+                className={`absolute bottom-0 left-1 right-1 bg-neutral-200 border-t border-neutral-300 text-neutral-900 h-12 p-1 flex items-center gap-2 details-toolbar justify-between transition-all duration-300 ease-in-out`}
+                style={{
+                    transform: currentPosition > 25 ? 'translateY(0)' : 'translateY(100%)',
+                    opacity: currentPosition > 25 ? 1 : 0,
+                    pointerEvents: currentPosition > 25 ? 'auto' : 'none'
+                }}>
+                <ClickableIcon 
+                    label="Alle" 
+                    remove={["boost_gt", "cadastralIndex"]} 
+                    aria-current={boost_gt != '3' && !cadastralIndex ? 'page' : 'false'}>
+                    {boost_gt != '3' && !cadastralIndex ? 
+                        <PiDatabaseFill className="text-3xl text-white" /> : 
+                        <PiDatabaseLight className="text-3xl" />}
+                </ClickableIcon>
+
+                <ClickableIcon 
+                    label="Djupinnsamlingar" 
+                    remove={["cadastralIndex"]}
+                    add={{ boost_gt: '3'}}
+                    aria-current={boost_gt == '3' ? 'page' : 'false'}>
+                    {boost_gt == '3' ? 
+                        <PiMicroscopeFill className="text-3xl text-white" /> : 
+                        <PiMicroscopeLight className="text-3xl" />}
+                </ClickableIcon>
+
+                <ClickableIcon 
+                    label="Hierarki" 
+                    remove={["boost_gt"]}
+                    add={{ cadastralIndex: cadastralIndex ? null : '_true' }}
+                    aria-current={Boolean(cadastralIndex) ? 'page' : 'false'}>
+                    {cadastralIndex ? 
+                        <PiTreeViewFill className="text-3xl text-white" /> : 
+                        <PiTreeViewLight className="text-3xl" />}
+                </ClickableIcon>
             </div>
+</div>
             
             
             }
@@ -333,14 +368,26 @@ export default function MobileLayout() {
 </div>
             
             <div className="fixed bottom-0 left-0 bg-neutral-800 text-white w-full h-12 p-1 flex items-center justify-between nav-toolbar">
-                <Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
+                {!cadastralIndex && boost_gt != '3' && <Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
                     <div className="relative">
                         <PiDatabase className="text-3xl" />
-                        {(datasetCount + Number(Boolean(deepCollections))) > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
-                            {formatNumber(datasetCount + Number(Boolean(deepCollections)))}
+                        {datasetCount > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
+                            {formatNumber(datasetCount)}
                         </span>}
                     </div>
-                </Clickable>
+                </Clickable>}
+                {boost_gt == '3' && <Clickable onClick={() => toggleDrawer('datasets')} label="Djupinnsamlingar" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
+                    <div className="relative">
+                        <PiMicroscopeFill className="text-3xl" />
+                        {datasetCount > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
+                            {formatNumber(datasetCount)}
+                        </span>}
+                    </div>
+                </Clickable>}
+                {cadastralIndex && <Clickable onClick={() => toggleDrawer('datasets')} label="Hierarki" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
+                    <PiTreeViewFill className="text-3xl" />
+                </Clickable>}
+                
 
                 {treeSettings[perspective] && <Clickable aria-label='Register' onClick={() => toggleDrawer('tree')} add={nav == 'tree' ? {nav: null} : {nav: 'tree'}} aria-current={drawerContent == 'tree' ? 'page' : 'false'}>
                     <PiTreeViewFill className="text-3xl" />

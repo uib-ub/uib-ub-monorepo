@@ -33,6 +33,7 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
 
     // Get boost_gt parameter for djupinnsamlingar filter
     const boostGt = searchParams.get('boost_gt')
+    const cadastralIndex = searchParams.get('cadastralIndex')
 
 
     const getFieldLabel = (name: string, value: string) => {
@@ -148,6 +149,16 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
                 className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
             >
                 Djupinnsamlingar
+                <PiX className="inline text-lg" aria-hidden="true"/>
+            </button>
+        }
+        
+        {cadastralIndex && (showDatasets || !isMobile) &&
+            <button 
+                onClick={() => removeFilter('cadastralIndex', '_true')} 
+                className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
+            >
+                Hierarki
                 <PiX className="inline text-lg" aria-hidden="true"/>
             </button>
         }

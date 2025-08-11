@@ -34,18 +34,18 @@ export default function DatasetFacet() {
   const perspective = usePerspective()
   const searchParams = useSearchParams()
   const { removeFilterParams } = useSearchQuery()
+  const { isMobile } = useContext(GlobalContext)
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [facetLoading, setFacetLoading] = useState(true);
   const [facetSearch, setFacetSearch] = useState('');
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
-  const [deepCollectionExpanded, setDeepCollectionExpanded] = useState(false);
-  const [hierarchicalDatasetsExpanded, setHierarchicalDatasetsExpanded] = useState(false);
   const availableFacets = useMemo(() => facetConfig[perspective], [perspective]);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
   const paramsExceptFacet = removeFilterParams('indexDataset')
   const nav = searchParams.get('nav')
   const boost_gt = searchParams.get('boost_gt')
+  const cadastralIndex = searchParams.get('cadastralIndex')
 
   useEffect(() => {
 
@@ -134,37 +134,29 @@ export default function DatasetFacet() {
     });
   };
 
-  const toggleDeepCollectionDescription = () => {
-    setDeepCollectionExpanded(prev => !prev);
-  };
-
-  const toggleHierarchicalDatasetsDescription = () => {
-    setHierarchicalDatasetsExpanded(prev => !prev);
-  };
 
 
   return (
     <>
     <div className="flex flex-col gap-2 pb-4">
-      <div>
-    <div className="border p-1 rounded-lg border-neutral-200 tabs gap-1 text-sm flex" role="tablist">
+    {!isMobile && <div className="border p-1 rounded-lg border-neutral-200 tabs gap-1 text-sm flex flex-col 2xl:flex-row" role="tablist">
   <Clickable
-    remove={["boost_gt"]}
-    add={{ nav: 'datasets' }}
+    remove={["boost_gt", "cadastralIndex"]}
     role="tab"
     aria-controls="dataset-facet-content"
-    aria-selected={nav === 'datasets' && boost_gt != '3'}
+    aria-selected={boost_gt != '3' && !cadastralIndex}
     className={`flex items-center gap-2 p-1 px-2 flex-1`}
   >
     <span className="flex-shrink-0">
-      {nav == 'datasets' && boost_gt != '3' ? <PiStackFill className="text-base text-accent-800" aria-hidden="true"/> : <PiStackLight className="text-base text-neutral-900" aria-hidden="true"/>}
+      {boost_gt != '3' && !cadastralIndex ? <PiStackFill className="text-base text-accent-800" aria-hidden="true"/> : <PiStackLight className="text-base text-neutral-900" aria-hidden="true"/>}
     </span>
     Alle
   </Clickable>
   <Clickable
     role="tab"
     aria-controls="dataset-facet-content"
-    add={{ boost_gt: '3' , nav: 'datasets'}}
+    remove={["cadastralIndex"]}
+    add={{ boost_gt: '3'}}
     aria-selected={boost_gt == '3'}
     className={`flex items-center gap-2 p-1 px-2 flex-1`}
   >
@@ -177,17 +169,16 @@ export default function DatasetFacet() {
     role="tab"
     aria-controls="dataset-facet-content"
     remove={["boost_gt"]}
-    add={{ nav: 'tree' }}
-    aria-selected={nav !== 'datasets'}
+    add={{ cadastralIndex: cadastralIndex ? null : '_true' }}
+    aria-selected={Boolean(cadastralIndex)}
     className={`flex items-center gap-2 p-1 px-2 flex-1`}
   >
     <span className="flex-shrink-0">
-      {nav == 'tree' ? <PiTreeViewFill className="text-base text-accent-800" aria-hidden="true"/> : <PiTreeViewLight className="text-base text-neutral-900" aria-hidden="true"/>}
+      {cadastralIndex ? <PiTreeViewFill className="text-base text-accent-800" aria-hidden="true"/> : <PiTreeViewLight className="text-base text-neutral-900" aria-hidden="true"/>}
     </span>
     Hierarki
   </Clickable>
-</div>
-            </div>
+</div>}
             
     
     <div id="dataset-facet-content" className='flex flex-col gap-2'>

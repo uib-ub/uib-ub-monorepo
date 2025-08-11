@@ -7,7 +7,7 @@ import { datasetTitles } from "@/config/metadata-config"
 import { base64UrlToString } from "@/lib/utils"
 import { useSearchParams } from "next/navigation"
 import { useContext, useState, useEffect, useCallback } from "react"
-import { PiBookOpen, PiBookOpenFill, PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiClock, PiTextAa, PiList } from "react-icons/pi"
+import { PiBookOpen, PiBookOpenFill, PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiClock, PiTextAa, PiList, PiClockLight, PiClockFill, PiListFill, PiListLight } from "react-icons/pi"
 import * as h3 from 'h3-js';
 import SourceItem from "@/components/children/source-item"
 
@@ -199,25 +199,25 @@ export default function FuzzyExplorer() {
     const groupName = group && base64UrlToString(group).split('_').slice(2).join('_')
     
 
-    return <div className={`${fuzzyResultLoading ? 'opacity-50' : ''}`}>        
+    return <>        
         <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-serif">{groupName}</h3>
             
-            {!isMobile && fuzzyResult && fuzzyResult.length > 0 && <div className="flex bg-neutral-100 rounded-lg p-1">
+            {!isMobile && fuzzyResult && fuzzyResult.length > 0 && <div className="flex border border-neutral-200 rounded-lg p-1 tabs">
                 <Clickable
                     add={{ fuzzyNav: 'timeline' }}
                     aria-pressed={fuzzyNav === 'timeline'}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline aria-pressed:bg-white aria-pressed:text-neutral-900 aria-pressed:shadow-sm aria-[pressed=false]:text-neutral-700 aria-[pressed=false]:hover:text-neutral-900`}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline`}
                 >
-                    
+                    {fuzzyNav === 'timeline' ? <PiClockFill className="text-accent-800" aria-hidden="true"/> : <PiClockLight className="text-accent-900" aria-hidden="true"/>}
                     Tidslinje
                 </Clickable>
                 <Clickable
                     add={{ fuzzyNav: 'list' }}
                     aria-pressed={fuzzyNav === 'list'}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline aria-pressed:bg-white aria-pressed:text-neutral-900 aria-pressed:shadow-sm aria-[pressed=false]:text-neutral-700 aria-[pressed=false]:hover:text-neutral-900`}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline`}
                 >
-                    
+                    {fuzzyNav === 'list' ? <PiListFill className="text-accent-800" aria-hidden="true"/> : <PiListLight className="text-accent-900" aria-hidden="true"/>}
                     Liste
                 </Clickable>
             </div>}
@@ -226,7 +226,7 @@ export default function FuzzyExplorer() {
         {fuzzyResult && fuzzyResult.length == 0 && !fuzzyResultLoading ? (
             <p className="text-neutral-800">Fann ingen liknande namn i nærleiken</p>
         ) : (
-            <ul className={`${fuzzyNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
+            <ul className={`${fuzzyNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full ${fuzzyResultLoading ? 'opacity-50' : ''}`}>
             {groups.map((group, index) => {
                 const groupId = `${fuzzyNav}-${group.key}`
                 const groupsWithYears = groups.filter(g => g.year)
@@ -313,6 +313,6 @@ export default function FuzzyExplorer() {
             })}
         </ul>
         )}
-    </div>
+    </>
 }
 
