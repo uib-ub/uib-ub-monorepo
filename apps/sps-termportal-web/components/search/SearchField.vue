@@ -38,13 +38,11 @@ const router = useRouter();
 const searchInterface = useSearchInterface();
 const searchterm = useSearchterm();
 const bootstrapData = useBootstrapData();
-const locale = useLocale();
-const localeLangOrder = useLocaleLangOrder();
 const { getLaLo } = useLazyLocale();
 
 const items = ref([]);
 
-const props = defineProps({
+defineProps({
   termbaseSearch: { type: Boolean, default: false },
 });
 
@@ -75,22 +73,22 @@ const placeholder = computed(() => {
   );
 
   const context = searchInterface.value.useDomain
-    ? // domain
-    Object.keys(searchInterface.value.domain).length > 0
-      ? // selected domains
-      topDomains.length === 1
-        ? // one domain selected
-        ` ${i18n.t("searchBar.inOneDomain")} ${domains.join(", ")}`
-        : // more than one domain
-        ` ${i18n.t("searchBar.inDomains")} ${domains.join(", ")}`
-      : // all domains
-      ` ${i18n.t("searchBar.inAllDomains")}`
-    : // termbase
-    searchInterface.value.termbase.length !== 0
-      ? // specified termbase(s)
-      ` ${i18n.t("searchBar.in")} ${termbases.join(", ")}`
-      : // all termbases
-      ` ${i18n.t("searchBar.inAllTermbases")} `;
+  // domain
+    ? Object.keys(searchInterface.value.domain).length > 0
+    // selected domains
+      ? topDomains.length === 1
+      // one domain selected
+        ? ` ${i18n.t("searchBar.inOneDomain")} ${domains.join(", ")}`
+        // more than one domain
+        : ` ${i18n.t("searchBar.inDomains")} ${domains.join(", ")}`
+      // all domains
+      : ` ${i18n.t("searchBar.inAllDomains")}`
+    // termbase
+    : searchInterface.value.termbase.length !== 0
+    // specified termbase(s)
+      ? ` ${i18n.t("searchBar.in")} ${termbases.join(", ")}`
+      // all termbases
+      : ` ${i18n.t("searchBar.inAllTermbases")} `;
   return i18n.t("searchBar.search") + language + context;
 });
 

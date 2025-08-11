@@ -49,7 +49,7 @@ const bootstrapData = useBootstrapData();
 const termbase = route.params.termbase as string;
 const conceptId = route.params.id as string;
 
-const props = defineProps({
+defineProps({
   concept: { type: Object, required: true },
   displayInfo: { type: Object, required: true },
 });

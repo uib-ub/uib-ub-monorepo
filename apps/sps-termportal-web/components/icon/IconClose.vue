@@ -14,5 +14,5 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({ size: { type: String, default: "1.5em" } });
+defineProps({ size: { type: String, default: "1.5em" } });
 </script>

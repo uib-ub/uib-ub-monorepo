@@ -30,5 +30,5 @@
 <script setup lang="ts">
 const appConfig = useAppConfig();
 
-const props = defineProps({ displayInfo: { type: Object, required: true } });
+defineProps({ displayInfo: { type: Object, required: true } });
 </script>

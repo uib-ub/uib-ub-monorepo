@@ -83,12 +83,17 @@
             {{ $t("id.version") }}
           </dt>
           <dd>
-            <AppLink
-              class="underline hover:decoration-2"
-              :to="bootstrapData.termbase.SNOMEDCT.versionNotesLink"
-            >
-              {{ localizeSnomedVersionLabel() }}
-            </AppLink>
+            <template v-if="bootstrapData && bootstrapData.termbase.SNOMEDCT.versionNotesLink">
+              <AppLink
+                class="underline hover:decoration-2"
+                :to="bootstrapData.termbase.SNOMEDCT.versionNotesLink"
+              >
+                {{ localizeSnomedVersionLabel() }}
+              </AppLink>
+            </template>
+            <template v-else>
+              <span>{{ localizeSnomedVersionLabel() }}</span>
+            </template>
           </dd>
         </div>
         <div
@@ -166,5 +171,5 @@ const appConfig = useAppConfig();
 const localeLangOrder = useLocaleLangOrder();
 const bootstrapData = useBootstrapData();
 
-const props = defineProps<{ data: Termbase; termbaseId: TermbaseId }>();
+defineProps<{ data: Termbase; termbaseId: TermbaseId }>();
 </script>

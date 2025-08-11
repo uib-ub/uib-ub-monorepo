@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
+defineProps({
   concept: { type: Object, required: true },
   pending: { type: Boolean, default: false },
 });

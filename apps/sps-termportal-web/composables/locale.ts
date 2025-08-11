@@ -32,7 +32,7 @@ export function useLazyLocale() {
   const getLaLo = (key: string): string => {
     const label = localeLangOrder.value
       .filter(lc => appConfig.language.locale.includes(lc))
-      .map(lc => bootstrapData.value?.lalo?.[lc]?.[key])
+      .map(lc => (bootstrapData ? bootstrapData.value?.lalo?.[lc]?.[key] : key))
       .find(value => value !== undefined);
     return label ?? key;
   };

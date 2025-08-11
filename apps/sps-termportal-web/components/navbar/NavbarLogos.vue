@@ -50,7 +50,7 @@ import { HeaderSize } from "~/types/enums";
 const locale = useLocale();
 
 const headerSize = HeaderSize;
-const props = defineProps<{
+defineProps<{
   headersize: HeaderSize;
 }>();
 </script>

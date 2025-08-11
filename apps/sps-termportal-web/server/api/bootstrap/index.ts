@@ -2,7 +2,7 @@ import { parseRelationsRecursively } from "~/server/utils/parseBootstrapData";
 import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
 import { BootstrapData } from "~/types/zod";
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (_) => {
   const appConfig = useAppConfig();
   const runtimeConfig = useRuntimeConfig();
   const instance = getFusekiInstanceInfo(runtimeConfig);

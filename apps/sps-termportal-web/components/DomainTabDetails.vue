@@ -12,7 +12,7 @@
 <script setup>
 const searchInterface = useSearchInterface();
 
-const props = defineProps({
+defineProps({
   tabId: { type: String, required: true },
 });
 </script>

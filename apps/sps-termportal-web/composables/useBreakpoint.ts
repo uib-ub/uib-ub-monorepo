@@ -13,7 +13,7 @@ export const useBreakpoint = (): Ref<string> => {
 
     const activeBreakpoint = computed(() => {
       const bpMatch = sortedBreakpoints.find(
-        ([bp, size]) => width.value >= parseInt(size.replace(/\D/g, "")),
+        ([_, size]) => width.value >= parseInt(size.replace(/\D/g, "")),
       ) || ["min", 0];
 
       return bpMatch[0];

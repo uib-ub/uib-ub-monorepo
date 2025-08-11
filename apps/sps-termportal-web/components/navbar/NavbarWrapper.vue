@@ -45,7 +45,7 @@ const i18n = useI18n();
 const bootstrapData = useBootstrapData();
 
 const headerSize = HeaderSize;
-const props = defineProps<{
+defineProps<{
   headersize: HeaderSize;
 }>();
 

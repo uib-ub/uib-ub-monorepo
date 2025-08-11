@@ -17,5 +17,5 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({ displayInfo: { type: Object, required: true } });
+defineProps({ displayInfo: { type: Object, required: true } });
 </script>

@@ -39,7 +39,7 @@ export function parseConceptData(data: any, mainConceptId: string) {
     try {
       language = Object.entries(
         identified[mainConceptId]?.hasEquivalenceData,
-      ).filter(([k, v]) => {
+      ).filter(([_, v]) => {
         const key = v[0]?.value["@id"].split("/").slice(-1)[0];
         return key === "startingLanguage";
       })[0][0];
@@ -69,12 +69,13 @@ export function parseConceptData(data: any, mainConceptId: string) {
  * @param graph - List of objects to identity
  * @returns identified `graph`
  */
-export function identifyData(graph: Array<any>) {
+export function identifyData(graph: Array<object>) {
   try {
     return Object.assign({}, ...graph.map(x => ({ [x["@id"]]: x })));
   }
-  catch (e) {}
-  return {};
+  catch {
+    return {};
+  }
 }
 
 function idSubobjectsWithLang(
@@ -157,23 +158,6 @@ function addLabel(
   }
 }
 
-/**
- * Check if minimun data (term, language) on label object is present.
- *
- * @param label - Label object
- * @returns Boolean
- */
-function validateLabel(label: any): boolean {
-  const term = label.literalForm["@value"];
-  const lang = label.literalForm["@language"];
-  if (term || term !== "" || lang || lang !== "") {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
 function getConceptLanguages(concept: any, languageProps: string[]) {
   const lang = languageProps.flatMap((prop) => {
     // only equivalence shouldn't be displayed
@@ -200,7 +184,7 @@ export function getMaxNumberOfInstances(data: {
     // const lengths = values.map((lang) => lang.length);
     return Math.max(...lengths);
   }
-  catch (e) {
+  catch {
     return 0;
   }
 }

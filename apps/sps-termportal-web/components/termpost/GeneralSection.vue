@@ -125,12 +125,12 @@ const { getLaLo } = useLazyLocale();
 const termbase = route.params.termbase as string;
 const appConfig = useAppConfig();
 
-const props = defineProps({
+defineProps({
   concept: { type: Object, required: true },
   displayInfo: { type: Object, required: true },
 });
 
-const timeDisplay = (data: any) => {
+const timeDisplay = (data) => {
   try {
     const date = new Date(data).toLocaleDateString(locale.value);
     const dispDate = date !== "Invalid Date" ? date : "";
@@ -143,7 +143,7 @@ const timeDisplay = (data: any) => {
       return dispDate;
     }
   }
-  catch (e) {
+  catch {
     return null;
   }
 };

@@ -65,7 +65,7 @@ const searchDataPending = useSearchDataPending();
 const searchFilterSelection = useSearchFilterSelection();
 const i18n = useI18n();
 
-const props = defineProps({
+defineProps({
   placement: { type: String, default: "default" },
 });
 
