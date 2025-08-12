@@ -60,7 +60,7 @@ export default function FacetsInfobox({ source, docDataset, filteredFacets }: { 
     
 
     const subitemRenderer = (item: any) => {
-      if (perspective == docDataset || perspective == 'all') {
+      
         return (
           <Link className="no-underline flex items-center gap-1" 
                 href={item.hrefParams ? buildHref(item.hrefParams) : item.href || serialize({[item.key]: item.value, nav: 'results'})}>
@@ -68,11 +68,8 @@ export default function FacetsInfobox({ source, docDataset, filteredFacets }: { 
                       <PiMagnifyingGlass aria-hidden={true} className="inline text-primary-600"/>
           </Link>
         )
-      }
-      else {
-        // No link if not same dataset
-        return item.value
-      }
+      
+      
     }
 
 
