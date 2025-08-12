@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
-import { PiBookOpen, PiClock, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiList, PiListBullets, PiSignpost, PiTreeViewFill } from "react-icons/pi";
+import { PiBookOpen, PiClock, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiList, PiListBullets, PiSignpost, PiTreeViewFill, PiWallFill, PiWallLight } from "react-icons/pi";
 import Results from "./nav/results/search-results";
 import MapExplorer from "./map-explorer";
 import { usePerspective, useSearchQuery, useMode } from "@/lib/search-params";
@@ -59,6 +59,7 @@ export default function MobileLayout() {
 
     const boost_gt = searchParams.get('boost_gt')
     const cadastralIndex = searchParams.get('cadastralIndex')
+    const indexDataset = searchParams.get('indexDataset')
 
 
     useEffect(() => {
@@ -272,16 +273,16 @@ export default function MobileLayout() {
                 }}>
                 <ClickableIcon 
                     label="Alle" 
-                    remove={["boost_gt", "cadastralIndex"]} 
-                    aria-current={boost_gt != '3' && !cadastralIndex ? 'page' : 'false'}>
-                    {boost_gt != '3' && !cadastralIndex ? 
+                    remove={["boost_gt", "indexDataset"]} 
+                    aria-current={boost_gt != '3' && indexDataset != 'grunnord' && indexDataset != 'tree' ? 'page' : 'false'}>
+                    {boost_gt != '3' && indexDataset != 'grunnord' && indexDataset != 'tree' ? 
                         <PiDatabaseFill className="text-3xl text-white" /> : 
                         <PiDatabaseLight className="text-3xl" />}
                 </ClickableIcon>
 
                 <ClickableIcon 
                     label="Djupinnsamlingar" 
-                    remove={["cadastralIndex", "indexDataset"]}
+                    remove={["indexDataset"]}
                     add={{ boost_gt: '3'}}
                     aria-current={boost_gt == '3' ? 'page' : 'false'}>
                     {boost_gt == '3' ? 
@@ -292,11 +293,20 @@ export default function MobileLayout() {
                 <ClickableIcon 
                     label="Hierarki" 
                     remove={["boost_gt"]}
-                    add={{ cadastralIndex: cadastralIndex ? null : '_true' }}
-                    aria-current={Boolean(cadastralIndex) ? 'page' : 'false'}>
-                    {cadastralIndex ? 
+                    add={{ indexDataset: 'tree'}}
+                    aria-current={indexDataset == 'tree' ? 'page' : 'false'}>
+                    {indexDataset == 'tree' ? 
                         <PiTreeViewFill className="text-3xl text-white" /> : 
                         <PiTreeViewLight className="text-3xl" />}
+                </ClickableIcon>
+                <ClickableIcon 
+                    label="Grunnord" 
+                    remove={["boost_gt", "indexDataset"]}
+                    add={{ indexDataset: 'grunnord'}}
+                    aria-current={indexDataset == 'grunnord' ? 'page' : 'false'}>
+                    {indexDataset == 'grunnord' ? 
+                        <PiWallFill className="text-3xl text-white" /> : 
+                        <PiWallLight className="text-3xl" />}
                 </ClickableIcon>
             </div>
 </div>
