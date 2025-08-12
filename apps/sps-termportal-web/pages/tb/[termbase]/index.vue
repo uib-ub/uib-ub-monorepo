@@ -1,6 +1,6 @@
 <template>
   <div
-    :key="`termbase_${termbase}_${(bootstrapData ? Object.keys(bootstrapData.termbase).length : '')}`"
+    :key="`termbase_${termbase}_${(bootstrapData ? Object.keys(bootstrapData.termbase).length : '')}_${data ? data.identifier : ''}`"
     class="flex"
   >
     <Head>
