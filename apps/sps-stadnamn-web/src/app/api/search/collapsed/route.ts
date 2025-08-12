@@ -6,7 +6,6 @@ import { postQuery } from '../../_utils/post';
 import { getSortArray } from '@/config/server-config';
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
   const {termFilters, reservedParams} = extractFacets(request)
   const perspective = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
   const { highlight, simple_query_string } = getQueryString(reservedParams)
@@ -22,7 +21,7 @@ export async function GET(request: Request) {
 
     
   const query: Record<string,any> = {
-    "size":  termFilters.length == 0 && !simple_query_string ? 0 : reservedParams.size  || 10,
+    "size":  reservedParams.size  || 10,
     ...reservedParams.from ? {from: reservedParams.from} : {},
     ...highlight ? {highlight} : {},
     "track_scores": true,
@@ -65,6 +64,11 @@ export async function GET(request: Request) {
     query.query = {"bool": {
         "filter": termFilters
       }
+    }
+  }
+  else {
+    query.query = {
+      "match_all": {}
     }
   }
 

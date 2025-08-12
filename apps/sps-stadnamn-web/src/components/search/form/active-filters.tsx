@@ -94,9 +94,6 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
             .forEach(v => newSearchParams.append(key, v))
 
 
-          if (searchParams.get('nav') == 'results' && facetFilters.length <= 1 && !searchParams.get('q')) {
-            newSearchParams.set('nav', 'filters')
-          }
 
 
 
@@ -131,7 +128,7 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
     return (
       <>
       {/* Search chip */}
-      { searchParams.get('q') && showQuery && <Clickable remove={['q', ...(nav == 'results' && !facetFilters?.length && !datasetFilters?.length ? ['nav'] : [])]}
+      { searchParams.get('q') && showQuery && <Clickable remove={['q']}
       className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => removeFilter('q', searchParams.get('q')!)}>
         <span className="flex items-center"><PiMagnifyingGlass className="text-neutral-600 !mr-1" aria-hidden="true"/>{searchParams.get('q')}</span>
         <PiX className="inline text-lg" aria-hidden="true"/>

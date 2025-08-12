@@ -25,6 +25,7 @@ export default function NavWindow() {
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
 
+
     return <><div className={`flex overflow-x-auto tabs rounded-md ${(nav || mode == 'map') ? 'gap-1 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
 
                 <Clickable
@@ -46,7 +47,7 @@ export default function NavWindow() {
                        <span className="text-neutral-900 sr-only 2xl:not-sr-only whitespace-nowrap">Filter</span>
                 </Clickable>
 
-                {mode == 'map' && searchFilterParamsString && <Clickable
+                {mode == 'map' && <Clickable
 
                       add={nav !== 'results' ? {nav: 'results'} : {}}
                       remove={nav === 'results' ? ["nav"] : []}
@@ -90,7 +91,7 @@ export default function NavWindow() {
             <DatasetFacet/>
             </div>
         }
-        { searchFilterParamsString && nav == 'results' &&
+        { nav == 'results' &&
             <SearchResults/>
         }
         

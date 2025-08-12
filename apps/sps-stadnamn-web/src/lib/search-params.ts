@@ -43,26 +43,28 @@ export function useSearchQuery() {
     const validFields = ['q', ...Object.keys(fieldConfig[perspective])]
     const facetFilters: [string, string][] = []
     const datasetFilters: [string, string][] = []
+    const secondaryDatasetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
     const nav = searchParams.get('nav')
     const size = parseInt(searchParams.get('size') || "20")
     
 
-    validFields.forEach(field => {
-        const values = searchParams.getAll(field)
-        values.forEach(value => {
-            searchQuery.append(field, value)
-            if (field == 'indexDataset') {
-                datasetFilters.push([field, value])
-            }
-            else if (field != 'q') {
-                facetFilters.push([field, value])
-            }
-        })
-    })
+
 
     searchParams.forEach((value, key) => {
-        if (!validFields.includes(key) && (key.startsWith('rawData') || key.startsWith('misc'))) {
+        if (validFields.includes(key)) {
+            if (key == 'indexDataset') {
+                datasetFilters.push([key, value])
+            }
+            else if (key == 'cadastralIndex' || key == 'boost_gt') {
+                secondaryDatasetFilters.push([key, value])
+            }
+            else if (key != 'q') {
+                searchQuery.append(key, value)
+                facetFilters.push([key, value])
+            }
+        }
+        else if (!validFields.includes(key) && (key.startsWith('rawData') || key.startsWith('misc'))) {
             searchQuery.append(key, value)
             facetFilters.push([key, value])
         } else {
@@ -70,7 +72,7 @@ export function useSearchQuery() {
             const comparisonMatch = key.match(/^(.+)_(gt|gte|lt|lte)$/);
             if (comparisonMatch) {
                 const [, fieldName] = comparisonMatch;
-                if (validFields.includes(fieldName)) {
+                if (fieldName != 'boost' && validFields.includes(fieldName)) {
                     searchQuery.append(key, value)
                     //facetFilters.push([key, value])
                 }
@@ -80,13 +82,16 @@ export function useSearchQuery() {
 
 
 
-
-    
-
     const searchFilterParamsString = searchQuery.toString()
     
     // Params that don't require the results section to be shown
-    //searchQuery.set('dataset', dataset)
+    datasetFilters.forEach(filter => {
+        searchQuery.append(filter[0], filter[1])
+    })
+
+    secondaryDatasetFilters.forEach(filter => {
+        searchQuery.append(filter[0], filter[1])
+    })
     
     const fulltext = searchParams.get('fulltext')
     if (fulltext && nav != 'tree') {

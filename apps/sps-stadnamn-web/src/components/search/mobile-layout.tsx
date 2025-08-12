@@ -405,7 +405,7 @@ export default function MobileLayout() {
                     </div>
                 </Clickable>}
 
-                {mode == 'map' && searchFilterParamsString &&
+                {mode == 'map' &&
                     <Clickable aria-label='Søkeresultater' onClick={() => toggleDrawer('results')} add={nav == 'results' ? {nav: null} : {nav: 'results'}}
                         aria-current={drawerContent == 'results' ? 'page' : 'false'}>
                         <div className="relative">

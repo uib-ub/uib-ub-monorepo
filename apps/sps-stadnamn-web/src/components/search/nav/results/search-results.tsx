@@ -50,47 +50,6 @@ export default function SearchResults() {
         .finally(() => setIsLoadingResults(false))
     }, [searchQueryString, page])
 
-    // Add keyboard navigation - new effect
-    /*
-
-
-
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (!collapsedResults.length || !searchParams) return;
-            if (!e.shiftKey) return;
-            
-            const currentDoc = searchParams.get('doc');
-            const currentIndex = collapsedResults.findIndex(item => item.fields.uuid[0] === currentDoc);
-            
-            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                e.preventDefault();
-                let newIndex: number;
-                
-                if (currentIndex === -1) {
-                    newIndex = e.key === 'ArrowDown' ? 0 : collapsedResults.length - 1;
-                } else {
-                    newIndex = e.key === 'ArrowDown' 
-                        ? Math.min(collapsedResults.length - 1, currentIndex + 1)
-                        : Math.max(0, currentIndex - 1);
-                }
-
-                if (newIndex !== currentIndex && collapsedResults[newIndex].fields.uuid[0]) {
-                    const params = new URLSearchParams(searchParams);
-                    params.set('doc', collapsedResults[newIndex].fields.uuid[0]);
-                    if (collapsedResults[newIndex].fields.group[0]) {
-                        params.set('group', stringToBase64Url(collapsedResults[newIndex].fields.group[0]))
-                    }
-                    router.push(`?${params.toString()}`);
-                }
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [collapsedResults, searchParams, router]);
-
-    */
 
     return (
       <>
@@ -123,7 +82,7 @@ export default function SearchResults() {
                 }} 
                 className="bg-neutral-100 p-4 rounded-full w-full block"
               >
-                Last fleire resultat {page}
+                Last fleire resultat
               </button>
             </li>
           )}
