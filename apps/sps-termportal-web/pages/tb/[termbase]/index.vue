@@ -1,5 +1,8 @@
 <template>
-  <div class="flex">
+  <div
+    :key="`termbase_${termbase}_${(bootstrapData ? Object.keys(bootstrapData.termbase).length : '')}`"
+    class="flex"
+  >
     <Head>
       <Title>{{ getLaLo(termbase + "-3A" + termbase) }} | Termportalen</Title>
     </Head>
