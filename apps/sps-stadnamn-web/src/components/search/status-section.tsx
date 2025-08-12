@@ -35,7 +35,7 @@ export default function StatusSection() {
         <button onClick={() => setSearchError(null)}><PiXBold aria-hidden="true" className="inline text-xl"/></button>
       </div>
     }
-    { !searchError && coordinatesError && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">
+    { !searchError && coordinatesError && mode == 'map' && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">
       <PiWarningFill className="inline text-xl"/> 
       <span>Kunne ikkje hente koordinatar</span>
     </div>}
