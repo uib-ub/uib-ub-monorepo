@@ -94,16 +94,6 @@ export default function FacetsInfobox({ source, docDataset, filteredFacets }: { 
                 </div>
             ))}
           </div>
-          {perspective !== docDataset && perspective !== 'all' && (
-            <Clickable
-              link 
-              only={{dataset: docDataset, doc: source.uuid}}
-              className="no-underline flex items-center gap-2"
-            >
-              <PiFunnel aria-hidden={true} className="inline text-primary-600"/>
-              Filtrer i søkevisning for {datasetTitles[docDataset]}
-            </Clickable>
-          )}
         </div>
   
   
