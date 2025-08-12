@@ -44,9 +44,9 @@ export async function GET(request: Request) {
 
     
   const query: Record<string,any> = {
-    "track_total_hits": 5000000,
-    "size":  reservedParams.size || 10,
-    "from": reservedParams.from || 0,
+    "track_total_hits": 10000000,
+    "size":  parseInt(reservedParams.size || "10"),
+    "from": parseInt(reservedParams.from || "0"),
     ...highlight ? {highlight} : {},
     "sort": [...sortArray, {uuid: {order: 'asc'}}],
     "_source": true
