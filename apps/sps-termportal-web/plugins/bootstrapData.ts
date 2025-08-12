@@ -6,13 +6,15 @@ export default defineNuxtPlugin(async (_) => {
   */
   const bootstrapData = useBootstrapData();
 
-  await useAsyncData("fetchBoostrapData", () =>
+  const { data } = await useAsyncData("fetchBoostrapData", () =>
     $fetch<BootstrapData>("/api/bootstrap", {
       headers: import.meta.server
         ? { cookie: "session=" + useRuntimeConfig().apiKey }
         : undefined,
       retry: 1,
-    }).then((data) => {
-      bootstrapData.value = data;
     }));
+
+  if (data.value) {
+    bootstrapData.value = data.value;
+  }
 });
