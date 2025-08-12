@@ -8,7 +8,7 @@ import { getSortArray } from '@/config/server-config';
 
 export async function GET(request: Request) {
   const {termFilters, reservedParams} = extractFacets(request)
-  const dataset = reservedParams.dataset || 'search'  // == 'search' ? '*' : reservedParams.dataset;
+  const dataset = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
   const { highlight, simple_query_string } = getQueryString(reservedParams)
 
   let sortArray: (string | object)[] = []
