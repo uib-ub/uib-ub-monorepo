@@ -50,10 +50,6 @@ export default function DatasetFacet() {
   useEffect(() => {
 
     // Fetch data only if we have a valid facet
-
-
-      console.log(paramsExceptFacet)
-
     fetch(`/api/facet?perspective=all&facets=indexDataset${
       facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${
         paramsExceptFacet ? '&' + paramsExceptFacet : ''}${
