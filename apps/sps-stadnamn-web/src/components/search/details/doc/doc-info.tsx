@@ -150,7 +150,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
       })()}
 
       { filteredFacets?.length > 0 && 
-        <CollapsibleHeading title="Detaljar" alwaysOpen={true}>
+        <CollapsibleHeading title="Detaljar" alwaysOpen={perspective != 'grunnord' && !perspective.endsWith("_g")}>
             <FacetsInfobox source={docSource} docDataset={docDataset} filteredFacets={filteredFacets}/>
         </CollapsibleHeading>
         
