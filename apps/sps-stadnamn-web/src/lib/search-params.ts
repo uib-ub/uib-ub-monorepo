@@ -63,6 +63,9 @@ export function useSearchQuery() {
                 searchQuery.append(key, value)
                 facetFilters.push([key, value])
             }
+            else {
+                searchQuery.append(key, value)
+            }
         }
         else if (!validFields.includes(key) && (key.startsWith('rawData') || key.startsWith('misc'))) {
             searchQuery.append(key, value)
