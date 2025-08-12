@@ -185,22 +185,19 @@ const displayInfo = computed(() => {
     ) as SemanticRelation[]) {
       const relData = getRelationData(
         data.value?.concept,
-        props.mainConceptId,
+        mainConceptId,
         relationType,
         localeLangOrder.value.slice(0, 3),
       );
       if (relData) {
-        if (info.semanticRelations) {
-          info.semanticRelations[relationType] = relData;
-        }
-        else {
+        if (!info.semanticRelations) {
           info.semanticRelations = {};
-          info.semanticRelations[relationType] = relData;
         }
+        info.semanticRelations[relationType] = relData;
       }
     }
     // subjects
-    if (data.value.concept?.[props.mainConceptId]?.subject) {
+    if (data.value.concept?.[mainConceptId]?.subject) {
       const subj = mainConcept.value.subject;
       let subjectlist;
       if (typeof subj[0] === "string") {

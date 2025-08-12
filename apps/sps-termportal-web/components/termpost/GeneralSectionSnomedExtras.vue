@@ -1,8 +1,8 @@
 <template>
   <TermpostTermProp
-    v-if="
-      termbase === 'SNOMEDCT'
-        && bootstrapData.termbase.SNOMEDCT?.versionNotesLink
+    v-if=" bootstrapData
+      && termbase === 'SNOMEDCT'
+      && bootstrapData.termbase.SNOMEDCT?.versionNotesLink
     "
     :flex="true"
     :label="$t('id.version')"
@@ -18,9 +18,9 @@
     />
   </TermpostTermProp>
   <TermpostTermProp
-    v-if="
-      termbase === 'SNOMEDCT'
-        && bootstrapData.termbase.SNOMEDCT?.versionNotesLink
+    v-if=" bootstrapData
+      && termbase === 'SNOMEDCT'
+      && bootstrapData.termbase.SNOMEDCT.versionEdition
     "
     :flex="true"
     :label="$t('id.browser')"

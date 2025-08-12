@@ -1,6 +1,6 @@
 import { useBootstrapData } from "~/composables/states";
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin((_) => {
   /*
   Get labels, data and relations that are maintained in the CMS.
   */
