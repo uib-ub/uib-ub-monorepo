@@ -8,8 +8,8 @@
       <div class="max-w-4xl grow space-y-6">
         <UtilsTransitionOpacitySection>
           <main
-            v-if="data"
-            :key="`termbase_${termbase}_${data ? data.identifier : ''}`"
+            v-if="data && !pending"
+            :key="`termbase_${termbase}_${data ? data.identifier : 'none'}`"
             class="md:max-w-3xl lg:max-w-4xl"
           >
             <h1
@@ -91,7 +91,7 @@
 
 <script setup lang="ts">
 const route = useRoute();
-const termbase = getTermbaseFromParam();
+const termbase = computed(() => getTermbaseFromParam());
 const localeLangOrder = useLocaleLangOrder();
 const breakpoint = useBreakpoint();
 const { getLaLo } = useLazyLocale();
@@ -117,8 +117,8 @@ const termbaseDescriptionHeight = computed(() => {
   return baseHeight;
 });
 
-const { data } = await useLazyFetch<Termbase>(`/api/termbase/${termbase}`, {
-  key: `termbase_${termbase}`,
+const { data, pending } = await useLazyFetch<Termbase>(`/api/termbase/${termbase.value}`, {
+  key: `termbase_${termbase.value}`,
   headers: import.meta.server
     ? { cookie: "session=" + useRuntimeConfig().apiKey }
     : undefined,
