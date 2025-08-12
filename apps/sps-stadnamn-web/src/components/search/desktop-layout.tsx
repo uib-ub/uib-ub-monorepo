@@ -30,13 +30,13 @@ export default function DesktopLayout() {
         <div className="flex lg:gap-4 flex-col h-full w-[40svw] lg:w-full max-h-[calc(100svh-4rem)] ">
         
 
-        {  (!doc || mode == 'map') && !fuzzyNav && <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-2 flex-col ${(nav || mode == 'map' )? 'lg:w-[calc(25svw-1rem)] max-w-[40svw]' : ''} !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
+        {  (!doc || mode == 'map') && !fuzzyNav && <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
         { <NavWindow/>}       
         </section> }
 
         
 
-        { mode != 'map' && doc && <section className={`lg:absolute left-2 top-2 flex-col  ${details? 'lg:w-[calc(25svw-1rem)] max-w-[40svw]' : ''} !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'flex' : 'flex'}`}>
+        { mode != 'map' && doc && <section className={`lg:absolute left-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'flex' : 'flex'}`}>
 
             <DetailsWindow/>
 
@@ -46,8 +46,7 @@ export default function DesktopLayout() {
         }
 
         <div className={`absolute 
-                ${(mode == 'map' || nav || details) ? 'left-[40svw] lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(75svw-0.5rem)] max-h-[calc(100svh-4rem)] max-h-[calc(100svh-20rem)]'
-                                            : 'left-20'}
+                left-[40svw] lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(75svw-0.5rem)] max-h-[calc(100svh-4rem)] max-h-[calc(100svh-20rem)]
                                         
                 ${mode == 'map' ? 'top-0   lg:max-w-[calc(50svw-0.5rem)] z-[2000]'
                                 : 'top-2 bg-white rounded-md shadow-lg max-h-[calc(100svh-4rem)] overflow-y-auto stable-scrollbar' } 
@@ -69,7 +68,7 @@ export default function DesktopLayout() {
         </div>
         }
 
-{  (!doc || mode == 'map') && fuzzyNav && <div className={`xl:absolute left-2 top-2 flex-col ${(nav || mode == 'map' )? 'lg:w-[calc(25svw-1rem)] max-w-[40svw]' : ''} !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
+{  (!doc || mode == 'map') && fuzzyNav && <div className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
         <FuzzyWindow/>       
         </div> }
 
