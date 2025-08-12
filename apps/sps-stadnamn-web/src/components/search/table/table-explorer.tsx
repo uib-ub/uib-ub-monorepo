@@ -190,7 +190,7 @@ export default function TableExplorer() {
                                             link
                                             add={{
                                                 doc: hit._source?.uuid,
-                                                mode: 'map',
+                                                mode: null,
                                                 center: hit._source.location.coordinates,
                                                 zoom: "8"
                                             }}
