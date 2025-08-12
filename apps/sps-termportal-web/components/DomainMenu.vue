@@ -5,8 +5,7 @@
         class="h-9 min-w-full rounded-t px-2 text-left hover:bg-gray-100"
         @click="displayDomainMenu = !displayDomainMenu"
       >
-        <span v-if="searchInterface.domain[0] !== 'all'"
-          >{{ $t("global.domain.domain") }}:
+        <span v-if="searchInterface.domain[0] !== 'all'">{{ $t("global.domain.domain") }}:
         </span>
         <span class="pr-2">{{
           $t("global.domain." + searchInterface.domain[0])
@@ -16,7 +15,11 @@
           name="mdi:chevron-down"
           aria-hidden="true"
         />
-        <Icon v-else name="mdi:chevron-up" aria-hidden="true" />
+        <Icon
+          v-else
+          name="mdi:chevron-up"
+          aria-hidden="true"
+        />
       </button>
       <ul
         v-if="displayDomainMenu"

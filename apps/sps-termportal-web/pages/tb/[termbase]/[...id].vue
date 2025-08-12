@@ -1,6 +1,8 @@
 <template>
   <div class="flex h-full">
-    <h1 class="sr-only">{{ $t("id.topheading") }}</h1>
+    <h1 class="sr-only">
+      {{ $t("id.topheading") }}
+    </h1>
     <div class="flex">
       <SideBar />
       <div class="flex">
@@ -11,22 +13,32 @@
         >
           <BackToSearch />
           <nav aria-labelledby="sidebarresults">
-            <h2 id="sidebarresults" class="pb-2 pt-3 text-2xl">
+            <h2
+              id="sidebarresults"
+              class="pb-2 pt-3 text-2xl"
+            >
               {{ $t("searchFilter.results-heading") }}
             </h2>
-            <div ref="sidebar" class="overflow-y-auto" style="height: 0px">
+            <div
+              ref="sidebar"
+              class="overflow-y-auto"
+              style="height: 0px"
+            >
               <SearchResultsList context="sidebar" />
             </div>
           </nav>
         </div>
         <!-- Termpost -->
         <div class="flex grow flex-col">
-          <main ref="main" class="h-full">
+          <main
+            ref="main"
+            class="h-full"
+          >
             <UtilsTransitionOpacitySection>
               <TermpostBase
-                v-if="conceptUrl && mainConceptId"
-                :concept-url="conceptUrl"
-                :main-concept-id="mainConceptId"
+                v-if="termbase"
+                :termbase-id="termbase"
+                :concept-id-array="conceptIdArray"
                 :mainp="true"
               />
             </UtilsTransitionOpacitySection>
@@ -38,8 +50,6 @@
 </template>
 
 <script setup lang="ts">
-import type { TermbaseId } from "~~/utils/vars-termbase";
-
 const route = useRoute();
 const router = useRouter();
 const termpostContext = useTermpostContext();
@@ -49,24 +59,7 @@ const searchData = useSearchData();
 const sidebar = ref(null);
 const main = ref(null);
 const termbase = route.params.termbase as TermbaseId;
-const idArray = route.params.id as Array<string>;
-
-function getConceptId(termbase, idArray) {
-  let id: string;
-  let mainConceptId: string;
-  if (!Object.keys(termbaseUriPatterns).includes(termbase)) {
-    id = `${termbase}-3A${idArray[0]}`;
-    mainConceptId = id;
-  } else {
-    const base = termbaseUriPatterns[termbase][idArray[0]];
-    id = idArray.slice(1).join("/");
-    mainConceptId = base + id;
-  }
-  return mainConceptId;
-}
-
-const conceptUrl = `${termbase}/${encodeURI(idArray.join("/"))}`;
-const mainConceptId = getConceptId(termbase, idArray);
+const conceptIdArray = route.params.id as Array<string>;
 
 useResizeObserver(main, (e) => {
   if (sidebar.value) {
@@ -81,11 +74,12 @@ onMounted(async () => {
   }
   // Check if navigated from termbase page
   if (
-    router?.options?.history?.state?.back?.split("/").length <= 3 &&
-    router?.options?.history?.state?.back?.startsWith("/tb/")
+    router?.options?.history?.state?.back?.split("/").length <= 3
+    && router?.options?.history?.state?.back?.startsWith("/tb/")
   ) {
     termpostContext.value = false;
-  } else {
+  }
+  else {
     termpostContext.value = true;
   }
 });

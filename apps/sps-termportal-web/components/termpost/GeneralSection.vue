@@ -1,7 +1,12 @@
 <template>
   <div>
-    <h3 id="felles" class="pb-1 text-xl">
-      <AppLink to="#felles"> {{ $t("id.general") }}</AppLink>
+    <h3
+      id="felles"
+      class="pb-1 text-xl"
+    >
+      <AppLink to="#felles">
+        {{ $t("id.general") }}
+      </AppLink>
     </h3>
     <TermpostTermSection :flex="true">
       <client-only>
@@ -13,7 +18,7 @@
           <TermpostTermDescription
             prop="link"
             :flex="true"
-            :data="[{ target: [lalof(concept.memberOf), '/tb/' + termbase] }]"
+            :data="[{ target: [getLaLo(concept.memberOf), '/tb/' + termbase] }]"
           />
         </TermpostTermProp>
         <TermpostTermProp
@@ -23,7 +28,7 @@
         >
           <TermpostTermDescription
             :flex="true"
-            :data="[lalof(concept.domene)]"
+            :data="[getLaLo(concept.domene)]"
           />
         </TermpostTermProp>
         <TermpostTermProp
@@ -37,7 +42,7 @@
             :flex="true"
             :data="[
               `${timeDisplay(concept?.startDate)}-${timeDisplay(
-                concept.endDate
+                concept.endDate,
               )}`,
             ]"
           />
@@ -48,12 +53,15 @@
         :flex="true"
         :label="$t('id.subject')"
       >
-        <TermpostTermDescription :flex="true" :data="[displayInfo?.subject]" />
+        <TermpostTermDescription
+          :flex="true"
+          :data="[displayInfo?.subject]"
+        />
       </TermpostTermProp>
       <TermpostTermProp
         v-if="
-          concept?.modified &&
-          !termbaseConfig.base.legacyTermbases.includes(termbase)
+          concept?.modified
+            && !appConfig.tb.base.legacyTermbases.includes(termbase)
         "
         :flex="true"
         :label="$t('id.modified')"
@@ -89,7 +97,7 @@
         </TermpostTermProp>
       </template>
       <TermpostTermProp
-        v-if="termbaseConfig.base.legacyTermbases.includes(termbase) && concept"
+        v-if="appConfig.tb.base.legacyTermbases.includes(termbase) && concept"
         :flex="true"
         :label="$t('id.note')"
       >
@@ -111,13 +119,13 @@
 </template>
 
 <script setup lang="ts">
-import { termbaseConfig } from "~/utils/vars-termbase";
-
 const route = useRoute();
 const locale = useLocale();
+const { getLaLo } = useLazyLocale();
 const termbase = route.params.termbase as string;
+const appConfig = useAppConfig();
 
-const props = defineProps({
+defineProps({
   concept: { type: Object, required: true },
   displayInfo: { type: Object, required: true },
 });
@@ -130,10 +138,12 @@ const timeDisplay = (data) => {
     const dispTime = time !== "Invalid Date" && time !== "00:00:00" ? time : "";
     if (dispTime) {
       return dispDate + ", " + dispTime;
-    } else {
+    }
+    else {
       return dispDate;
     }
-  } catch (e) {
+  }
+  catch {
     return null;
   }
 };

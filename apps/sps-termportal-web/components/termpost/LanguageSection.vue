@@ -1,20 +1,24 @@
 <template>
   <div class="">
-    <h3 :id="lang" class="pb-1 text-xl">
-      <AppLink :to="`#${lang}`"
-        >{{ $t("global.lang." + lang) }}
-        <span v-if="lang === meta.startingLanguage" class="font-light"
-          >({{ $t("global.equivalence.startingLanguage") }})</span
-        ></AppLink
-      >
+    <h3
+      :id="lang"
+      class="pb-1 text-xl"
+    >
+      <AppLink :to="`#${lang}`">
+        {{ $t("global.lang." + lang) }}
+        <span
+          v-if="lang === meta.startingLanguage"
+          class="font-light"
+        >({{ $t("global.equivalence.startingLanguage") }})</span>
+      </AppLink>
     </h3>
     <TermpostTermSection>
-      <!--Equivalence -->
+      <!-- Equivalence -->
       <TermpostTermProp
         v-if="
-          meta.startingLanguage &&
-          meta.startingLanguage !== lang &&
-          concept?.hasEquivalenceData?.[lang]
+          meta.startingLanguage
+            && meta.startingLanguage !== lang
+            && concept?.hasEquivalenceData?.[lang]
         "
         :flex="true"
         :label="$t('global.equivalence.equivalence')"
@@ -24,17 +28,17 @@
           :data="concept?.hasEquivalenceData?.[lang]"
           :meta="meta"
           prop="equivalence"
-        ></TermpostTermDescription>
+        />
       </TermpostTermProp>
-      <!--Equivalencemerknad -->
+      <!-- Equivalencemerknad -->
       <!-- TODO: Fix RTT edge case -->
       <TermpostTermProp
         v-if="
-          concept?.hasEquivalenceData?.[lang] &&
-          concept?.hasEquivalenceData?.[lang][0]?.note &&
-          !concept?.hasEquivalenceData?.[lang][0]?.note['@value'].includes(
-            'RTT'
-          )
+          concept?.hasEquivalenceData?.[lang]
+            && concept?.hasEquivalenceData?.[lang][0]?.note
+            && !concept?.hasEquivalenceData?.[lang][0]?.note['@value'].includes(
+              'RTT',
+            )
         "
         :flex="true"
         :label="$t('global.equivalence.equivalencenote')"
@@ -44,10 +48,10 @@
           :data="concept?.hasEquivalenceData?.[lang]"
           :meta="meta"
           prop="equivalencenote"
-        ></TermpostTermDescription>
+        />
       </TermpostTermProp>
 
-      <!--Definition-->
+      <!-- Definition -->
       <TermpostTermProp
         v-if="
           concept?.definisjon?.[lang] || concept?.betydningsbeskrivelse?.[lang]
@@ -60,11 +64,10 @@
           "
           prop="definition"
           :data-lang="lang"
-        >
-        </TermpostTermDescription>
+        />
       </TermpostTermProp>
 
-      <!--Anbefalt term-->
+      <!-- Anbefalt term -->
       <TermpostTermProp
         v-if="concept?.prefLabel?.[lang]"
         :label="$t('id.prefLabel')"
@@ -73,11 +76,10 @@
           prop="prefLabel"
           :data="concept?.prefLabel[lang]"
           :data-lang="lang"
-        >
-        </TermpostTermDescription>
+        />
       </TermpostTermProp>
 
-      <!--Tillatt term-->
+      <!-- Tillatt term -->
       <TermpostTermProp
         v-if="concept?.altLabel?.[lang]"
         :label="$t('id.altLabel')"
@@ -87,10 +89,9 @@
           prop="altLabel"
           :data="[...concept?.altLabel[lang]].reverse()"
           :data-lang="lang"
-        >
-        </TermpostTermDescription>
+        />
       </TermpostTermProp>
-      <!--Frarådet term-->
+      <!-- Frarådet term -->
       <TermpostTermProp
         v-if="concept?.hiddenLabel?.[lang]"
         :label="$t('id.hiddenLabel')"
@@ -100,10 +101,9 @@
           prop="altLabel"
           :data="[...concept?.hiddenLabel[lang]].reverse()"
           :data-lang="lang"
-        >
-        </TermpostTermDescription>
+        />
       </TermpostTermProp>
-      <!--Kontekst-->
+      <!-- Kontekst -->
       <TermpostTermProp
         v-if="concept?.hasUsage?.[lang]"
         :label="$t('id.kontekst')"
@@ -119,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
+defineProps({
   meta: { type: Object, required: true },
   concept: { type: Object, required: true },
   lang: { type: String, required: true },

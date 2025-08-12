@@ -3,7 +3,7 @@ import { pushAutocompleteEvents } from "~/utils/analyticsEvents";
 export default async function (
   searchterm: string,
   termbaseId?: string,
-  language?: LangCode
+  language?: LangCode,
 ) {
   const data = ref([]);
   if (typeof searchterm === "string") {
@@ -26,7 +26,8 @@ export default async function (
         retry: 1,
       });
       data.value.unshift(searchterm);
-    } else {
+    }
+    else {
       const searchinterface = useSearchInterface();
       const searchhistory = useSearchHistory(searchinterface);
       data.value = [""].concat(searchhistory.value);

@@ -18,8 +18,6 @@
 </template>
 
 <script setup lang="ts">
-import type { LangCode } from "~/composables/locale";
-
 const route = useRoute();
 
 interface Props {
@@ -38,7 +36,8 @@ const props = defineProps<Props>();
 const isCurrentEntry = computed(() => {
   if ("/" + props.entryData.link === route.path) {
     return true;
-  } else {
+  }
+  else {
     return false;
   }
 });

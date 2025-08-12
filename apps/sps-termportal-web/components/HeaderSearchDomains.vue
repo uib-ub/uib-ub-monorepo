@@ -1,9 +1,12 @@
 <template>
-  <div ref="wrapper" class="w-full">
+  <div
+    ref="wrapper"
+    class="w-full"
+  >
     <div ref="topWrapper">
       <div class="flex flex-wrap gap-x-1 gap-y-1 lg:flex-nowrap">
         <div
-          v-for="topdomain in Object.keys(bootstrapData.domain)"
+          v-for="topdomain in appConfig.domain.topdomains"
           :key="topdomain"
           class="group flex min-h-[2.3em]"
         >
@@ -14,13 +17,13 @@
             class="peer outline-none"
             @update="updateTopdomain(topdomain)"
             @keydown.space="updateTopdomain(topdomain)"
-          />
+          >
           <label
             :for="topdomain"
             class="tp-transition-shadow flex w-fit cursor-pointer items-center rounded-[7px] border border-gray-300 py-1 pl-1.5 pr-2 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
             :class="{
               'bg-tpblue-400 text-white': Object.keys(
-                searchInterface.domain
+                searchInterface.domain,
               ).includes(topdomain),
             }"
             @click="updateTopdomain(topdomain)"
@@ -28,8 +31,8 @@
             <div class="flex w-5 justify-center">
               <Icon
                 v-if="
-                  Object.keys(searchInterface.domain).includes(topdomain) ||
-                  !domainSelected
+                  Object.keys(searchInterface.domain).includes(topdomain)
+                    || !domainSelected
                 "
                 name="mdi:checkbox-marked-outline"
                 size="1.2em"
@@ -78,7 +81,10 @@
             class="rounded-sm border border-transparent p-0.5 text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
             @click="resetSubdomainOptions()"
           >
-            <IconReset class="text-lg" size="1.35em" />
+            <IconReset
+              class="text-lg"
+              size="1.35em"
+            />
             <span class="sr-only">{{
               $t("searchBar.resetDomainOptions")
             }}</span>
@@ -138,6 +144,8 @@
 </template>
 
 <script setup lang="ts">
+const appConfig = useAppConfig();
+
 const panel = ref();
 const wrapper = ref(null);
 const topWrapper = ref();
@@ -145,15 +153,15 @@ const searchInterface = useSearchInterface();
 const bootstrapData = useBootstrapData();
 
 const specifiedDomains = computed(() =>
-  Object.keys(searchInterface.value.domain)
+  Object.keys(searchInterface.value.domain),
 );
 const activeDomains = computed(() =>
   specifiedDomains.value.filter(
-    (domain) => searchInterface.value.domain[domain]
-  )
+    domain => searchInterface.value.domain[domain],
+  ),
 );
 const panelTopdomains = computed(() =>
-  intersectUnique(Object.keys(bootstrapData.value.domain), activeDomains.value)
+  intersectUnique(Object.keys(bootstrapData.value.domain), activeDomains.value),
 );
 
 const domainSelected = computed(() => {
@@ -163,14 +171,14 @@ const domainSelected = computed(() => {
 const subdomainSpecified = computed(() => {
   const topDomains = Object.keys(bootstrapData.value.domain);
   return (
-    specifiedDomains.value.filter((domain) => !topDomains.includes(domain))
+    specifiedDomains.value.filter(domain => !topDomains.includes(domain))
       .length > 0
   );
 });
 
 const deactivatedDomains = computed(() => {
   specifiedDomains.value.filter(
-    (domain) => !searchInterface.value.domain[domain]
+    domain => !searchInterface.value.domain[domain],
   );
 });
 
@@ -178,8 +186,8 @@ function resetSubdomainOptions() {
   const searchInterface = useSearchInterface();
   const topDomains = Object.keys(bootstrapData.value.domain);
   const flatSubDomains = flattenOrderDomains()
-    .map((d) => d[0])
-    .filter((domain) => !topDomains.includes(domain));
+    .map(d => d[0])
+    .filter(domain => !topDomains.includes(domain));
 
   Object.keys(searchInterface.value.domain).forEach((domain) => {
     if (flatSubDomains.includes(domain)) {
@@ -200,10 +208,11 @@ function updateTopdomain(pdomain: string) {
       delete searchInterface.value.domain[subdomain];
     });
     // hide panel if no topdomain selected
-    if (panel && Object.keys(searchInterface.value.domain).length === 0) {
+    if (panel.value && Object.keys(searchInterface.value.domain).length === 0) {
       panel.value = false;
     }
-  } else {
+  }
+  else {
     searchInterface.value.domain[pdomain] = true;
   }
 }

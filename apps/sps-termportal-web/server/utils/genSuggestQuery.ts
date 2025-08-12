@@ -1,10 +1,9 @@
-import type { SearchOptions } from "../../utils/vars";
 import { sanitizeTerm } from "./genSearchEntryQuery";
 import { genTQLangArgument, genTQGraphValue } from "./genQueryUtils";
 
 export function genSuggestQuery(
   searchOptions: SearchOptions,
-  base: string
+  base: string,
 ): string {
   const term = searchOptions.term;
   const sanitizedIndex = sanitizeTerm(term);
@@ -14,8 +13,8 @@ export function genSuggestQuery(
   const multiIndex = sanitizedFuzzy.join(" AND ");
   const lang = genTQLangArgument(searchOptions.language)[0];
   const graph = genTQGraphValue(searchOptions.termbase)[0];
-  const domain =
-    searchOptions.termbase[0] !== "all"
+  const domain
+    = searchOptions.termbase[0] !== "all"
       ? genDomainTriple(searchOptions.domain)
       : "";
 

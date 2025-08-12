@@ -1,5 +1,8 @@
 <template>
-  <div ref="wrapper" class="w-full">
+  <div
+    ref="wrapper"
+    class="w-full"
+  >
     <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
       <!-- All termbases + expand -->
       <button
@@ -17,11 +20,11 @@
         class="group flex min-h-[2.3em] items-center justify-center space-x-1.5 rounded-md border border-gray-300 py-1 pl-3 pr-2"
         @click="
           searchInterface.termbase = searchInterface.termbase.filter(
-            (item) => item !== tb
+            (item) => item !== tb,
           )
         "
       >
-        <span>{{ lalof(`${tb}-3A${tb}`) }}</span>
+        <span>{{ getLaLo(`${tb}-3A${tb}`) }}</span>
         <Icon
           name="material-symbols:close"
           size="1.2rem"
@@ -54,7 +57,10 @@
           class="rounded-sm border border-transparent p-0.5 text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
           @click="searchInterface.termbase = []"
         >
-          <IconReset class="text-lg" size="1.35em" />
+          <IconReset
+            class="text-lg"
+            size="1.35em"
+          />
           <span class="sr-only">{{
             $t("searchBar.resetTermbaseOptions")
           }}</span>
@@ -73,20 +79,24 @@
       <div
         class="grid grid-flow-row grid-cols-1 grid-rows-14 gap-x-2 gap-y-0 lg:grid-flow-col"
       >
-        <div v-for="tb of orderedTermbases" :key="tb" class="flex max-w-md">
+        <div
+          v-for="tb of orderedTermbases"
+          :key="tb"
+          class="flex max-w-md"
+        >
           <input
             :id="tb"
             v-model="searchInterface.termbase"
             :value="tb"
             type="checkbox"
             class="peer outline-none"
-          />
+          >
           <label
             :for="tb"
             class="tp-transition-shadow flex w-fit cursor-pointer rounded-[7px] border border-transparent px-2 py-1 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
             :class="{
               'bg-tpblue-400 text-white': Object.keys(
-                searchInterface.termbase
+                searchInterface.termbase,
               ).includes(tb),
             }"
           >
@@ -107,7 +117,7 @@
               />
             </div>
             <div class="flex-wrap pl-1.5">
-              {{ lalof(`${tb}-3A${tb}`) }}
+              {{ getLaLo(`${tb}-3A${tb}`) }}
             </div>
           </label>
         </div>
@@ -115,9 +125,12 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 const searchInterface = useSearchInterface();
 const orderedTermbases = useOrderedTermbases();
+const { getLaLo } = useLazyLocale();
+
 const panel = ref();
 const wrapper = ref(null);
 

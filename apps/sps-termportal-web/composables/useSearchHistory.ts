@@ -1,5 +1,4 @@
 import { StorageSerializers } from "@vueuse/core";
-import { SearchInterface } from "./states";
 
 /**
  * Store and load search history in/from local storage.
@@ -18,7 +17,8 @@ export default function (searchinterface: Ref<SearchInterface>) {
     if (term && term.trim().length) {
       if (!searchHistory.value) {
         searchHistory.value = [term];
-      } else {
+      }
+      else {
         if (searchHistory.value.includes(term)) {
           const index = searchHistory.value.indexOf(term);
           searchHistory.value.splice(index, 1);

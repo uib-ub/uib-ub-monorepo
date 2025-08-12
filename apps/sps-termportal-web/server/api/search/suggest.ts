@@ -19,9 +19,8 @@ export default defineEventHandler(async (event) => {
       signal: controller.signal,
       headers: {
         "Content-type": "application/sparql-query",
-        Referer: "termportalen.no", // TODO Referer problem
-        Accept: "application/json",
-        Authorization: `Basic ${instance.authHeader}`,
+        "Accept": "application/json",
+        "Authorization": `Basic ${instance.authHeader}`,
       },
     }).then((value) => {
       clearTimeout(timer);
@@ -29,5 +28,6 @@ export default defineEventHandler(async (event) => {
     });
 
     return data.results.bindings.map((binding: any) => binding.lit.value);
-  } catch (e) {}
+  }
+  catch (e) {}
 });

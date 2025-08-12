@@ -1,124 +1,69 @@
 import { useI18n } from "vue-i18n";
-import type { TermbaseId } from "~/utils/vars-termbase";
-import { termbaseConfig } from "~/utils/vars-termbase";
-
-export type LocalLangCode = "en" | "nb" | "nn";
-
-export type LangCode =
-  | "ar"
-  | "da"
-  | "de"
-  | "en"
-  | "en-gb"
-  | "en-us"
-  | "fa-af"
-  | "fi"
-  | "fr"
-  | "it"
-  | "la"
-  | "nb"
-  | "nn"
-  | "pl"
-  | "ru"
-  | "so"
-  | "es"
-  | "sv"
-  | "ti";
 
 export const useLocale = () => {
   const i18n = useI18n();
   return i18n.locale as Ref<LocalLangCode>;
 };
 
-export const useLocales = () => {
-  return Object.keys(languageOrder) as LocalLangCode[];
-};
-
 export const useLocaleLangOrder = () => {
   const locale = useLocale();
-  const langOrder = toRef(() => languageOrder[locale.value]);
+  const appConfig = useAppConfig();
+  const langOrder = toRef(() => [
+    ...appConfig.language.order.update[locale.value],
+    ...appConfig.language.order.default.filter(
+      (lc: LangCode) =>
+        !appConfig.language.order.update[locale.value].includes(lc),
+    ),
+  ]);
   return langOrder as Readonly<Ref<LangCode[]>>;
 };
 
-export const dataDisplayOnlyLanguages = ["en-gb", "en-us"];
+export function useLazyLocale() {
+  const bootstrapData = useBootstrapData();
+  const localeLangOrder = useLocaleLangOrder();
+  const appConfig = useAppConfig();
 
-export const languageOrder: { [key in LocalLangCode]: LangCode[] } = {
-  nb: [
-    "nb",
-    "nn",
-    "en",
-    "en-gb",
-    "en-us",
-    "ar",
-    "da",
-    "fi",
-    "fr",
-    "it",
-    "la",
-    "pl",
-    "ru",
-    "so",
-    "es",
-    "sv",
-    "ti",
-    "de",
-  ],
-  nn: [
-    "nn",
-    "nb",
-    "en",
-    "en-gb",
-    "en-us",
-    "ar",
-    "da",
-    "fi",
-    "fr",
-    "it",
-    "la",
-    "pl",
-    "ru",
-    "so",
-    "es",
-    "sv",
-    "ti",
-    "de",
-  ],
-  en: [
-    "en",
-    "en-gb",
-    "en-us",
-    "nb",
-    "nn",
-    "ar",
-    "da",
-    "fi",
-    "fr",
-    "de",
-    "it",
-    "la",
-    "pl",
-    "ru",
-    "so",
-    "es",
-    "sv",
-    "ti",
-  ],
-};
+  /**
+   * Lazy Localization function with fallback based on localized language order.
+   *
+   * @param key - key to localize
+   * @returns Localized label or key if not label present
+   */
+  const getLaLo = (key: string): string => {
+    const label = localeLangOrder.value
+      .filter(lc => appConfig.language.locale.includes(lc))
+      .map(lc => (bootstrapData ? bootstrapData.value?.lalo?.[lc]?.[key] : key))
+      .find(value => value !== undefined);
+    return label ?? key;
+  };
+
+  return {
+    getLaLo,
+  };
+}
 
 export const useOrderedTermbases = () => {
+  const appConfig = useAppConfig();
   const bootstrapData = useBootstrapData();
-  const termbases = Object.keys(bootstrapData.value.termbase).filter(
-    (tb) => !termbaseConfig.base.systemTermbases.includes(tb)
-  );
+  const { getLaLo } = useLazyLocale();
 
-  const sortedTermbases = termbases.sort((a, b) => {
-    const labelA = lalof(`${a}-3A${a}`);
-    const labelB = lalof(`${b}-3A${b}`);
+  if (bootstrapData.value) {
+    const termbases = Object.keys(bootstrapData.value.termbase).filter(
+      tb => !appConfig.tb.base.systemTermbases.includes(tb),
+    );
 
-    return labelA.localeCompare(labelB);
-  });
+    const sortedTermbases = termbases.sort((a, b) => {
+      const labelA = getLaLo(`${a}-3A${a}`);
+      const labelB = getLaLo(`${b}-3A${b}`);
 
-  return toRef(() => sortedTermbases);
+      return labelA.localeCompare(labelB);
+    });
+
+    return toRef(() => sortedTermbases);
+  }
+  else {
+    return toRef(() => []);
+  }
 };
 
 export function localizeSnomedVersionLabel() {
@@ -141,14 +86,12 @@ export function deriveLanguageInfo(languages: LangCode[]): {
   const orderedTermbases = useOrderedTermbases();
   return Object.assign(
     {},
-    ...languages.map((lang) => ({
-      [lang]: orderedTermbases.value.filter((termbase) =>
+    ...languages.map(lang => ({
+      [lang]: orderedTermbases.value.filter(termbase =>
         bootstrapData.value.termbase[termbase].language.includes(
-          lang as LangCode
-        )
+          lang as LangCode,
+        ),
       ),
-    }))
+    })),
   );
 }
-
-export const languageRtoL: Set<LangCode> = new Set(["ar"]);

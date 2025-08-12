@@ -4,23 +4,34 @@
       <Title> {{ $t("search.title") }} | {{ $t("index.title") }} </Title>
     </Head>
     <div class="flex">
-      <h1 class="hidden">{{ $t("search.title") }}</h1>
+      <h1 class="hidden">
+        {{ $t("search.title") }}
+      </h1>
       <SideBar>
-        <SearchFilter class="hidden xl:block" placement="sidebar" />
+        <SearchFilter
+          class="hidden xl:block"
+          placement="sidebar"
+        />
       </SideBar>
       <div class="max-w-6xl flex-1">
         <section>
           <SearchStatusBar />
         </section>
         <div class="xl:flex">
-          <SearchFilter class="block xl:hidden" placement="main" />
+          <SearchFilter
+            class="block xl:hidden"
+            placement="main"
+          />
           <main class="grow">
             <div class="mb-2 mt-3 flex justify-between">
               <div class="flex space-x-6 text-2xl">
-                <h2 id="main" class="ml-0.5">
+                <h2
+                  id="main"
+                  class="ml-0.5"
+                >
                   <AppLink to="#main">
-                    {{ $t("searchFilter.results-heading") }}</AppLink
-                  >
+                    {{ $t("searchFilter.results-heading") }}
+                  </AppLink>
                 </h2>
                 <UtilsTransitionOpacity>
                   <IconSpinner
@@ -31,7 +42,9 @@
                 </UtilsTransitionOpacity>
               </div>
               <div class="flex items-end text-lg">
-                <div class="w-16 pr-1 text-right">{{ count }}</div>
+                <div class="w-16 pr-1 text-right">
+                  {{ count }}
+                </div>
                 <div>{{ $t("searchFilter.results") }}</div>
               </div>
             </div>
@@ -50,9 +63,9 @@
 </template>
 
 <script setup lang="ts">
-import { uiConfig } from "../utils/vars";
-import type { FetchType } from "../composables/useFetchSearchData";
-import type { TermbaseId } from "~/utils/vars-termbase";
+import { FetchType } from "~/types/enums";
+
+const appConfig = useAppConfig();
 
 const route = useRoute();
 const searchData = useSearchData();
@@ -68,7 +81,7 @@ const searchInterface = useSearchInterface();
 
 const searchDataPending = useSearchDataPending();
 const pending = computed(() => {
-  return !Object.values(searchDataPending.value).every((el) => !el);
+  return !Object.values(searchDataPending.value).every(el => !el);
 });
 
 const count = computed(() => {
@@ -77,7 +90,8 @@ const count = computed(() => {
   }
   try {
     return sum(Object.values(searchDataStats.value?.lang || []));
-  } catch (e) {
+  }
+  catch (e) {
     return 0;
   }
 });
@@ -104,8 +118,8 @@ watch(
       term: searchInterface.value.term as string,
     });
     */
-    considerSearchFetching("initial");
-  }
+    considerSearchFetching(FetchType.Inital);
+  },
 );
 
 watch(
@@ -122,14 +136,14 @@ watch(
       allowSearchFetch.value = true;
     }
     // umTrackEvent("Search: Option change");
-    considerSearchFetching("options");
+    considerSearchFetching(FetchType.Options);
     usePushSearchOptionsToRoute();
   },
-  { deep: true }
+  { deep: true },
 );
 
 onMounted(() => {
-  considerSearchFetching("initial");
+  considerSearchFetching(FetchType.Inital);
 
   /*
   Set searchOptions state based on route query values.
@@ -139,11 +153,11 @@ onMounted(() => {
   */
   if (searchInterface.value.term === null) {
     // display filter if screen size larger than lg
-    if (uiConfig.wideUiBreakpoints.includes(breakpoint.value)) {
+    if (appConfig.ui.wideBreakpoints.includes(breakpoint.value)) {
       showSearchFilter.value = true;
     }
 
-    for (const [key, value] of Object.entries(searchOptionsInfo)) {
+    for (const [key, value] of Object.entries(appConfig.search.options)) {
       // Only set state if present in route
       // term can be empty string so the undefined check is neccessary
       if (route.query[value.q] !== undefined) {
@@ -172,7 +186,8 @@ onMounted(() => {
         }
       }
     }
-  } else {
+  }
+  else {
     // Push search options to route when navigating back
     usePushSearchOptionsToRoute();
   }

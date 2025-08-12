@@ -1,4 +1,4 @@
-import { SearchOptions } from "~~/utils/vars";
+import { FetchType } from "~/types/enums";
 
 function getActivationStatus(data, hierarchy) {
   const result = [];
@@ -22,7 +22,10 @@ function getActivationStatus(data, hierarchy) {
   return result;
 }
 
-export default function (situation: string, options?: SearchOptions) {
+export default function (situation: FetchType, options?: SearchOptions) {
+  const appConfig = useAppConfig();
+  const searchOptionsConfig = appConfig.search.options;
+
   const searchInterface = useSearchInterface();
   const searchFilterSelection = useSearchFilterSelection();
   const bootstrapData = useBootstrapData();
@@ -42,10 +45,10 @@ export default function (situation: string, options?: SearchOptions) {
     domain: [Object.keys(searchInterface.value.domain)[0]], // TODO domain
     useDomain: searchInterface.value.useDomain,
     // default data
-    predicate: searchOptionsInfo.predicate.default,
-    matching: searchOptionsInfo.matching.default,
-    limit: searchOptionsInfo.limit.default,
-    offset: searchOptionsInfo.offset.default,
+    predicate: searchOptionsConfig.predicate.default,
+    matching: searchOptionsConfig.matching.default,
+    limit: searchOptionsConfig.limit.default,
+    offset: searchOptionsConfig.offset.default,
   };
 
   if (newOptions.term.length === 0) {
@@ -55,12 +58,12 @@ export default function (situation: string, options?: SearchOptions) {
   if (newOptions.useDomain) {
     const domainLst = getActivationStatus(
       searchInterface.value.domain,
-      bootstrapData.value.domain
+      bootstrapData.value.domain,
     );
     newOptions.domain = domainLst;
   }
 
-  if (situation === "filter" || situation === "further") {
+  if (situation === FetchType.Filter || situation === FetchType.Further) {
     if (searchFilterSelection.value.samling.length > 0) {
       newOptions.termbase = searchFilterSelection.value.samling;
     }
@@ -71,7 +74,7 @@ export default function (situation: string, options?: SearchOptions) {
       newOptions.predicate = searchFilterSelection.value.predicate;
     }
     if (searchFilterSelection.value.matching.length > 0) {
-      newOptions.matching = searchFilterSelection.value.matching.map((e) => [
+      newOptions.matching = searchFilterSelection.value.matching.map(e => [
         e,
       ]);
     }
@@ -79,7 +82,8 @@ export default function (situation: string, options?: SearchOptions) {
       if (searchFilterSelection.value.context.length > 0) {
         newOptions.domain = searchFilterSelection.value.context;
       }
-    } else if (searchFilterSelection.value.context.length > 0) {
+    }
+    else if (searchFilterSelection.value.context.length > 0) {
       newOptions.termbase = searchFilterSelection.value.context.map((tb) => {
         return tb.split("-3A")[0];
       });
@@ -93,7 +97,7 @@ export default function (situation: string, options?: SearchOptions) {
   }
   const merged = options ? { ...newOptions, ...options } : newOptions;
 
-  if (situation === "autocomplete") {
+  if (situation === FetchType.Autocomplete) {
     const reduced = {
       term: merged.term,
       language: merged.language,
@@ -101,11 +105,13 @@ export default function (situation: string, options?: SearchOptions) {
     };
     if (merged.useDomain) {
       reduced.domain = merged.domain;
-    } else {
+    }
+    else {
       reduced.termbase = merged.termbase;
     }
     return reduced;
-  } else {
+  }
+  else {
     return merged;
   }
 }

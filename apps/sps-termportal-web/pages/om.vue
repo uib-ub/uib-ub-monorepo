@@ -12,11 +12,16 @@
           :path="`/${locale}/om/about`"
           class="content-wrapper"
         />
-        <Accordion multiple class="mt-6">
-          <!-- About us-->
+        <Accordion
+          multiple
+          class="mt-6"
+        >
+          <!-- About us -->
           <AccordionTab>
             <template #header>
-              <h2 class="font-semibold">{{ $t("om.aboutUs") }}</h2>
+              <h2 class="font-semibold">
+                {{ $t("om.aboutUs") }}
+              </h2>
             </template>
             <ContentDoc
               :key="`aboutus${locale}`"
@@ -28,7 +33,9 @@
           <!-- Fagrådet -->
           <AccordionTab>
             <template #header>
-              <h2 class="font-semibold">{{ $t("om.fagrad") }}</h2>
+              <h2 class="font-semibold">
+                {{ $t("om.fagrad") }}
+              </h2>
             </template>
             <ContentDoc
               :key="`fagrad${locale}`"
@@ -36,7 +43,7 @@
               :path="`/${locale}/om/fagrad`"
               class="content-wrapper"
             />
-            <div></div>
+            <div />
             <ContentDoc
               :key="`mandat${locale}`"
               :head="false"
@@ -47,7 +54,9 @@
           <!-- History -->
           <AccordionTab>
             <template #header>
-              <h2 class="font-semibold">{{ $t("om.history") }}</h2>
+              <h2 class="font-semibold">
+                {{ $t("om.history") }}
+              </h2>
             </template>
             <ContentDoc
               :key="`history${locale}`"
@@ -55,7 +64,7 @@
               :path="`/${locale}/om/history`"
               class="content-wrapper"
             />
-            <div></div>
+            <div />
             <ContentDoc
               :key="`publications${locale}`"
               :path="`/${locale}/om/publications`"
@@ -66,7 +75,10 @@
           <!-- Get started -->
           <AccordionTab>
             <template #header>
-              <h2 id="kommeiGang" class="font-semibold">
+              <h2
+                id="kommeiGang"
+                class="font-semibold"
+              >
                 {{ $t("om.kommeiGang") }}
               </h2>
             </template>
@@ -79,7 +91,9 @@
           </AccordionTab>
           <AccordionTab>
             <template #header>
-              <h2 class="font-semibold">{{ $t("om.links") }}</h2>
+              <h2 class="font-semibold">
+                {{ $t("om.links") }}
+              </h2>
             </template>
             <ContentDoc
               :key="`links${locale}`"

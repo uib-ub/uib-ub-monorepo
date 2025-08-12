@@ -8,10 +8,11 @@
     {{ searchInterface.domain[0] }}
   </div>
 </template>
+
 <script setup>
 const searchInterface = useSearchInterface();
 
-const props = defineProps({
+defineProps({
   tabId: { type: String, required: true },
 });
 </script>

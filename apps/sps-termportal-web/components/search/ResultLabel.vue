@@ -1,33 +1,36 @@
 <template>
-  <h3 v-if="predicate == 'prefLabel'" class="grow">
+  <h3
+    v-if="predicate == 'prefLabel'"
+    class="grow"
+  >
     <b
       :lang="(intersectUnique(
-                localeLangOrder,
-                labelLang as LangCode[])[0]
-              )"
+        localeLangOrder,
+        labelLang as LangCode[])[0]
+      )"
       :class="{
-                'text-right': langRtoL(labelLang[0] as LangCode)
-              }"
+        'text-right': langRtoL(labelLang[0] as LangCode),
+      }"
       v-html="labelData"
-    ></b>
+    />
   </h3>
   <h3
     v-else
     class="grow"
     :lang="(intersectUnique(
-                localeLangOrder,
-                labelLang as LangCode[])[0]
-              )"
+      localeLangOrder,
+      labelLang as LangCode[])[0]
+    )"
     v-html="labelData"
-  ></h3>
+  />
 </template>
 
 <script setup lang="ts">
-import type { LangCode } from "~/composables/locale";
+import { langRtoL, intersectUnique } from "#imports";
 
 const localeLangOrder = useLocaleLangOrder();
 
-const props = defineProps({
+defineProps({
   predicate: { type: String, required: true },
   labelData: { type: String, required: true },
   labelLang: { type: Array, required: true },

@@ -28,7 +28,10 @@
           aria-labelledby="domainSwitchLabel"
           @click.stop="false"
         />
-        <span id="domainSwitchLabel" class="sr-only">Use domain search.</span>
+        <span
+          id="domainSwitchLabel"
+          class="sr-only"
+        >Use domain search.</span>
       </div>
       <div>{{ $t("global.termbase", 0) }}</div>
     </button>
@@ -37,22 +40,23 @@
 
 <script setup>
 import { useI18n } from "vue-i18n";
+
+const appConfig = useAppConfig();
+const termpostViewOnlyLangs = appConfig.language.dataDisplayOnly;
+
 const i18n = useI18n();
 const searchInterface = useSearchInterface();
 const localeLangOrder = useLocaleLangOrder();
 const orderedTermbases = useOrderedTermbases();
 const bootstrapData = useBootstrapData();
 
-// Order of language is not relevant
-const languageInfo = deriveLanguageInfo(languageOrder.nb);
+const languageInfo = deriveLanguageInfo(localeLangOrder.value);
 
 const optionsLanguage = computed(() => {
   const filteredLangs = deriveSearchOptions("language", "all");
   const intersection = intersectUnique(
-    localeLangOrder.value.filter(
-      (lc) => !dataDisplayOnlyLanguages.includes(lc)
-    ),
-    filteredLangs
+    localeLangOrder.value.filter(lc => !termpostViewOnlyLangs.includes(lc)),
+    filteredLangs,
   );
   const options = [
     {
@@ -62,7 +66,7 @@ const optionsLanguage = computed(() => {
   ].concat(
     intersection.map((lang) => {
       return { label: i18n.t("global.lang." + lang), value: lang };
-    })
+    }),
   );
   return options;
 });
@@ -70,10 +74,8 @@ const optionsLanguage = computed(() => {
 const optionsTranslate = computed(() => {
   const filteredTranslate = deriveSearchOptions("translate", "none");
   const intersection = intersectUnique(
-    localeLangOrder.value.filter(
-      (lc) => !dataDisplayOnlyLanguages.includes(lc)
-    ),
-    filteredTranslate
+    localeLangOrder.value.filter(lc => !termpostViewOnlyLangs.includes(lc)),
+    filteredTranslate,
   );
   const options = [
     {
@@ -83,7 +85,7 @@ const optionsTranslate = computed(() => {
   ].concat(
     intersection.map((lang) => {
       return { label: i18n.t("global.lang." + lang), value: lang };
-    })
+    }),
   );
   return options;
 });
@@ -98,7 +100,7 @@ const optionsTermbase = computed(() => {
   ].concat(
     filteredTermbases.map((tb) => {
       return { label: i18n.t("global.samling." + tb), value: tb };
-    })
+    }),
   );
   return options;
 });
@@ -123,7 +125,7 @@ function deriveSearchOptions(searchOption, defaultValue) {
       termbases,
       languageInfo[searchInterface.value.language],
       "language",
-      "all"
+      "all",
     );
   }
 
@@ -132,7 +134,7 @@ function deriveSearchOptions(searchOption, defaultValue) {
       termbases,
       languageInfo[searchInterface.value.translate],
       "translate",
-      "none"
+      "none",
     );
   }
 
@@ -150,15 +152,17 @@ function deriveSearchOptions(searchOption, defaultValue) {
       const languages = [
         ...new Set(
           termbases
-            .map((tb) => bootstrapData.value.termbase[tb].language)
-            .flat()
+            .map(tb => bootstrapData.value.termbase[tb].language)
+            .flat(),
         ),
       ];
       options = intersectUnique(localeLangOrder.value, languages);
-    } else {
+    }
+    else {
       options = localeLangOrder.value;
     }
-  } else {
+  }
+  else {
     options = termbases;
   }
 

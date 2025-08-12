@@ -1,5 +1,8 @@
 <template>
-  <div role="status" class="flex items-center">
+  <div
+    role="status"
+    class="flex items-center"
+  >
     <Icon
       class="tp-spin"
       name="icomoon-free:spinner8"
@@ -11,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({ size: { type: String, default: "1.5em" } });
+defineProps({ size: { type: String, default: "1.5em" } });
 </script>
 
 <style scoped>

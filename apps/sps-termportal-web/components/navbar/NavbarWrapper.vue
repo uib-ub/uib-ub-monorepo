@@ -2,12 +2,15 @@
   <nav
     ref="navBar"
     class="box-content h-[50px] w-full bg-white"
-    :class="{ '': context != 'minimal' }"
+    :class="{ '': headersize != headerSize.Minimal }"
   >
     <div class="mx-auto flex h-full grow items-center justify-between">
       <div class="flex grow">
-        <NavbarLogos :context="context" />
-        <SearchField v-if="context !== 'minimal'" class="grow max-w-[51em]" />
+        <NavbarLogos :headersize="headersize" />
+        <SearchField
+          v-if="headersize !== headerSize.Minimal"
+          class="max-w-[51em] grow"
+        />
       </div>
       <div class="hidden lg:flex">
         <ul
@@ -15,7 +18,7 @@
         >
           <NavbarLanguage />
           <NavbarTermbases
-            :key="'termbaseslst_' + Object.keys(bootstrapData?.termbase).length"
+            :key="'termbaseslst_' + (bootstrapData ? Object.keys(bootstrapData) : 'not_loaded')"
           />
           <NavBarLink to="/om">
             {{ $t("navBar.om") }}
@@ -34,20 +37,24 @@
 
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
+import { HeaderSize } from "~/types/enums";
+
+const appConfig = useAppConfig();
 
 const i18n = useI18n();
 const bootstrapData = useBootstrapData();
 
-const defProps = defineProps({
-  context: { type: String, required: true },
-});
+const headerSize = HeaderSize;
+defineProps<{
+  headersize: HeaderSize;
+}>();
 
 const navBar = ref<HTMLElement | null>(null);
 
 defineExpose({ navBar });
 
 watch(i18n.locale, () => {
-  const locale = useCookie("locale", cookieLocaleOptions);
+  const locale = useCookie("locale", appConfig.cookie.localeOptions);
   locale.value = i18n.locale.value;
 });
 </script>

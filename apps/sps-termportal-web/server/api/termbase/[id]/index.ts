@@ -1,6 +1,7 @@
 import genTermbaseQuery from "../../../utils/genTermbaseQuery";
 import frameData from "../../../utils/frameData";
 import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
+import { Termbase } from "~/types/zod";
 
 export default defineEventHandler(async (event) => {
   if (event.context.params) {
@@ -14,15 +15,19 @@ export default defineEventHandler(async (event) => {
       body: query,
       headers: {
         "Content-type": "application/sparql-query",
-        Referer: "termportalen.no", // TODO Referer problem
-        Accept: "application/ld+json",
-        Authorization: `Basic ${instance.authHeader}`,
+        "Accept": "application/ld+json",
+        "Authorization": `Basic ${instance.authHeader}`,
       },
     });
 
     return frameData(data, "skos:Collection").then((value) => {
       delete value["@context"];
-      return value;
+      const parsed = Termbase.safeParse(value);
+      if (!parsed.success) {
+        console.error("Validation failed:", parsed.error);
+        return value;
+      }
+      return parsed.data;
     });
   }
 });

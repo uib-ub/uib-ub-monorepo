@@ -1,6 +1,6 @@
 <template>
   <Transition>
-    <slot></slot>
+    <slot />
   </Transition>
 </template>
 

@@ -7,13 +7,15 @@
       aria-controls="langMenu"
       @click="langMenu.toggle"
     >
-      <div class="relative" aria-hidden="true">
+      <div
+        class="relative"
+        aria-hidden="true"
+      >
         <div class="absolute -bottom-[8px] -left-[9px]">
           <span class="rounded-[4px] bg-white text-[0.62em]">
             <span
               class="px-[3px] uppercase group-hover:text-gray-700 group-focus:text-gray-700"
-              >{{ locale }}</span
-            >
+            >{{ locale }}</span>
           </span>
         </div>
         <Icon
@@ -23,7 +25,12 @@
         />
       </div>
     </button>
-    <Menu id="langMenu" ref="langMenu" :model="langOptions" :popup="true">
+    <Menu
+      id="langMenu"
+      ref="langMenu"
+      :model="langOptions"
+      :popup="true"
+    >
       <template #start>
         <div class="px-3 pb-3 pt-1 font-semibold">
           {{ $t("navBar.language") }}

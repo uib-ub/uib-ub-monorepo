@@ -147,8 +147,8 @@ const classes = {
     {
       "p-highlight": instance.isSelected(option),
       "p-focus":
-        instance.focusedOptionIndex ===
-        instance.getOptionIndex(i, getItemOptions),
+        instance.focusedOptionIndex
+        === instance.getOptionIndex(i, getItemOptions),
       "p-disabled": instance.isOptionDisabled(option),
     },
   ],

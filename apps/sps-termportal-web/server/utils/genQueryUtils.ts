@@ -1,9 +1,8 @@
-import type { TermbaseId } from "~/utils/vars-termbase";
-
 export function genTQLangArgument(languages: string[]) {
   if (languages[0] === "all") {
     return [""];
-  } else {
+  }
+  else {
     return languages.map((lang) => {
       return `'lang:${lang}'`;
     });
@@ -13,8 +12,9 @@ export function genTQLangArgument(languages: string[]) {
 export function genTQGraphValue(termbases: (TermbaseId | "all")[]) {
   if (termbases[0] === "all") {
     return ["<urn:x-arq:UnionGraph>"];
-  } else {
-    return termbases.map((tb) => `ns:${tb}`);
+  }
+  else {
+    return termbases.map(tb => `ns:${tb}`);
   }
 }
 
@@ -27,7 +27,8 @@ export function genDomainTriple(domains: string[]) {
       .join("|");
     return `?c skosxl:prefLabel|skosxl:altLabel|skosxl:hiddenLabel ?l .
 # ?c skosp:domene|skosp:domeneTransitive ${domainsVal} .`;
-  } else {
+  }
+  else {
     return "";
   }
 }

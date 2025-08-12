@@ -1,6 +1,5 @@
-import type { SearchDataEntry } from "~~/composables/states";
-import type { TermbaseId } from "~~/utils/vars-termbase";
 import { idOrUriToRoute } from "~~/utils/utils";
+
 /* Search data preprocessing
  */
 
@@ -11,9 +10,9 @@ import { idOrUriToRoute } from "~~/utils/utils";
  */
 export default function (binding: { [key: string]: any }): SearchDataEntry {
   const samling = binding.samling.value.split("-3A")[0] as TermbaseId;
-  const predicate =
-    binding.predicate.value.replace("http://www.w3.org/2008/05/skos-xl#", "") ||
-    "";
+  const predicate
+    = binding.predicate.value.replace("http://www.w3.org/2008/05/skos-xl#", "")
+      || "";
   return {
     predicate,
     label: binding.literal.value,

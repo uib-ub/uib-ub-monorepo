@@ -1,6 +1,14 @@
 export default function (namespace: string): string {
   const runtimeConfig = useRuntimeConfig();
 
+  const pFilter = [
+    "rdfs:label",
+    "skos:member",
+    "skosp:domeneinformasjon",
+    "skosp:skilleForkortelsestyper",
+    "skosp:skilleGeneriskPartitiv",
+  ];
+
   const query = `
 PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -17,7 +25,7 @@ WHERE {
     {
       base:${namespace}-3A${namespace} ?p ?o.
       OPTIONAL {?o ?p2 ?o2.}
-      FILTER (?p NOT IN (skos:member) )
+      FILTER (?p NOT IN (${pFilter.join(", ")}) )
       FILTER NOT EXISTS {
         ?o a skos:Concept
       }

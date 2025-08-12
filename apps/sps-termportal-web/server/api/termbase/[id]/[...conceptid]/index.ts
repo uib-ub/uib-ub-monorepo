@@ -1,28 +1,37 @@
-import { termbaseUriPatterns } from "../../../utils/vars-termbase";
 import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
 
 export default defineEventHandler(async (event) => {
+  const appConfig = useAppConfig();
   const runtimeConfig = useRuntimeConfig();
   const instance = getFusekiInstanceInfo(runtimeConfig);
 
-  const idArray = decodeURI(event.context.params.id).split("/");
-  const termbase = idArray[0];
-  const conceptIdArray = idArray.slice(1);
+  const termbaseId = event.context.params.id;
+  const conceptIdArray = decodeURI(event.context.params.conceptid).split("/");
+
   let base;
   let id: string;
   let uri: string;
   // FBK has subcollections that are part of the uri.
-  if (!Object.keys(termbaseUriPatterns).includes(termbase)) {
-    base = runtimeConfig.public.base;
-    id = `${termbase}-3A${conceptIdArray.join("/")}`;
-    uri = id;
-  } else {
-    base = termbaseUriPatterns[termbase][conceptIdArray[0]];
+
+  if (
+    (appConfig.tb.base.specialUriTbs as readonly TermbaseId[]).includes(
+      termbaseId,
+    )
+  ) {
+    const tbId = termbaseId as SpecialUriTermbase & ConfiguredTermbase;
+    type PatternKey = keyof (typeof appConfig.tb)[typeof tbId]["uriPatterns"];
+
+    base = appConfig.tb[tbId].uriPatterns[conceptIdArray[0] as PatternKey];
     id = conceptIdArray.slice(1).join("/");
     uri = base + id;
   }
+  else {
+    base = runtimeConfig.public.base;
+    id = `${termbaseId}-3A${conceptIdArray.join("/")}`;
+    uri = id;
+  }
 
-  const query = genConceptQuery(base, termbase, id);
+  const query = genConceptQuery(base, termbaseId, id);
 
   const controller = new AbortController();
   const timer = setTimeout(() => {
@@ -36,9 +45,8 @@ export default defineEventHandler(async (event) => {
       signal: controller.signal,
       headers: {
         "Content-type": "application/sparql-query",
-        Referer: "termportalen.no", // TODO Referer problem
-        Accept: "application/ld+json",
-        Authorization: `Basic ${instance.authHeader}`,
+        "Accept": "application/ld+json",
+        "Authorization": `Basic ${instance.authHeader}`,
       },
     }).then((value) => {
       clearTimeout(timer);
@@ -49,5 +57,6 @@ export default defineEventHandler(async (event) => {
       delete result["@context"];
       return parseConceptData(result, uri);
     });
-  } catch (e) {}
+  }
+  catch (e) {}
 });

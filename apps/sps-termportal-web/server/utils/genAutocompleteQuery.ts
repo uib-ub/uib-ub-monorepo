@@ -1,12 +1,11 @@
-import type { SearchOptions } from "../../utils/vars";
 import { sanitizeTerm, getContextFilter } from "./genSearchEntryQuery";
 
 export function genAutocompleteQuery(
   searchOptions: SearchOptions,
-  base: string
+  base: string,
 ): string {
   const term = searchOptions.term;
-  const sanitizedLit = term.replaceAll('"', '\\"');
+  const sanitizedLit = term.replaceAll("\"", "\\\"");
   const sanitizedIndex = sanitizeTerm(term);
   const multiIndex = sanitizedIndex.split(" ").join(" AND ");
   const languageCode = searchOptions.language[0];
@@ -18,16 +17,19 @@ export function genAutocompleteQuery(
           ?c ${context[1]} ?con .
           ${context[0]}`;
       return data;
-    } else {
+    }
+    else {
       return "";
     }
   };
   function languageFilter(languageCode: string) {
     if (languageCode === "all") {
       return "";
-    } else if (languageCode === "en") {
+    }
+    else if (languageCode === "en") {
       return `FILTER ( lang(?lit) = "en" || lang(?lit) = "en-GB" || lang(?lit) = "en-US" )`;
-    } else {
+    }
+    else {
       return `FILTER ( lang(?lit) = "${languageCode}")`;
     }
   }

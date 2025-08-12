@@ -20,23 +20,24 @@
         v-else
         class="max-w-prose underline hover:decoration-2"
         :to="mainValue(d)[1]"
-        >{{ mainValue(d)[0] }}</AppLink
       >
+        {{ mainValue(d)[0] }}
+      </AppLink>
     </div>
     <dl
       v-if="
-        (d?.audience ||
-          d?.note ||
-          d?.scopeNote ||
-          d?.isOfAbbreviationType ||
-          d?.isAbbreviationOf ||
-          d?.isCollocatedWith ||
-          d?.subject ||
-          d?.description ||
-          d?.source ||
-          d?.['skosp:dctSource']) &&
-        prop !== 'equivalence' &&
-        prop !== 'equivalencenote'
+        (d?.audience
+          || d?.note
+          || d?.scopeNote
+          || d?.isOfAbbreviationType
+          || d?.isAbbreviationOf
+          || d?.isCollocatedWith
+          || d?.subject
+          || d?.description
+          || d?.source
+          || d?.['skosp:dctSource'])
+          && prop !== 'equivalence'
+          && prop !== 'equivalencenote'
       "
       class="grid-col-3 ml-0 flex max-w-prose flex-wrap gap-x-8 gap-y-1 md:ml-2 lg:ml-3"
       :class="{ 'mt-1.5': mainValue(d) }"
@@ -45,15 +46,24 @@
         v-if="d.isOfAbbreviationType"
         :label="$t('id.forkortelseType')"
       >
-        <dd class="max-w-prose" v-html="d.isOfAbbreviationType" />
+        <dd
+          class="max-w-prose"
+          v-html="d.isOfAbbreviationType"
+        />
       </TermpostTermProp>
       <TermpostTermProp
         v-if="d.isAbbreviationOf"
         :label="$t('id.forkortelseAv')"
       >
-        <dd class="max-w-prose" v-html="d.isAbbreviationOf" />
+        <dd
+          class="max-w-prose"
+          v-html="d.isAbbreviationOf"
+        />
       </TermpostTermProp>
-      <TermpostTermProp v-if="d.isCollocatedWith" :label="$t('id.kollokasjon')">
+      <TermpostTermProp
+        v-if="d.isCollocatedWith"
+        :label="$t('id.kollokasjon')"
+      >
         <dd
           class="max-w-prose"
           v-html="d.isCollocatedWith.map((el) => el['@value']).join(', ')"
@@ -64,10 +74,19 @@
         v-if="d.description"
         :label="$t('id.inndelingskriterium')"
       >
-        <dd class="max-w-prose" v-html="d.description.und" />
+        <dd
+          class="max-w-prose"
+          v-html="d.description.und"
+        />
       </TermpostTermProp>
-      <TermpostTermProp v-if="d.subject" :label="$t('id.kontekstAv')">
-        <dd class="max-w-prose" v-html="d.subject[0]" />
+      <TermpostTermProp
+        v-if="d.subject"
+        :label="$t('id.kontekstAv')"
+      >
+        <dd
+          class="max-w-prose"
+          v-html="d.subject[0]"
+        />
       </TermpostTermProp>
       <TermpostTermProp
         v-if="d?.['skosp:dctSource'] || d.source"
@@ -75,9 +94,9 @@
       >
         <dd
           v-if="
-            typeof d?.['skosp:dctSource']?.['skosp:rdfsLabel'] === 'string' ||
-            typeof d?.source?.label?.['@value'] === 'string' ||
-            typeof d?.source === 'string'
+            typeof d?.['skosp:dctSource']?.['skosp:rdfsLabel'] === 'string'
+              || typeof d?.source?.label?.['@value'] === 'string'
+              || typeof d?.source === 'string'
           "
           class="max-w-prose"
           v-html="
@@ -102,29 +121,44 @@
         />
       </TermpostTermProp>
       <!-- audience -->
-      <TermpostTermProp v-if="d?.audience" :label="$t('id.audience')">
+      <TermpostTermProp
+        v-if="d?.audience"
+        :label="$t('id.audience')"
+      >
         <dd class="max-w-prose">
           {{ $t("global.audience." + d?.audience) }}
         </dd>
       </TermpostTermProp>
 
       <!-- note -->
-      <TermpostTermProp v-if="d.note" :label="$t('id.note')">
+      <TermpostTermProp
+        v-if="d.note"
+        :label="$t('id.note')"
+      >
         <dd
           class="max-w-prose"
           :lang="d.note?.['@language']"
           v-html="htmlify(d.note?.['@value'])"
         />
-        <dd v-if="d.note?.source" v-html="`(${d.note?.source})`" />
+        <dd
+          v-if="d.note?.source"
+          v-html="`(${d.note?.source})`"
+        />
       </TermpostTermProp>
       <!-- scopeNote -->
-      <TermpostTermProp v-if="d.scopeNote" :label="$t('id.note')">
+      <TermpostTermProp
+        v-if="d.scopeNote"
+        :label="$t('id.note')"
+      >
         <dd
           class="max-w-prose"
           :lang="d.scopeNote?.['@language']"
           v-html="htmlify(d.scopeNote?.['@value'])"
         />
-        <dd v-if="d.scopeNote?.source" v-html="`(${d.scopeNote?.source})`" />
+        <dd
+          v-if="d.scopeNote?.source"
+          v-html="`(${d.scopeNote?.source})`"
+        />
       </TermpostTermProp>
     </dl>
   </dd>
@@ -156,14 +190,16 @@ const mainValue = (data) => {
         const key = value.split("/").slice(-1)[0];
         if (key !== "startingLanguage") {
           return (
-            i18n.t(`global.equivalence.${key}`) +
-            " " +
-            i18n.t(`global.lang.${props.meta.startingLanguage}`, 0)
+            i18n.t(`global.equivalence.${key}`)
+            + " "
+            + i18n.t(`global.lang.${props.meta.startingLanguage}`, 0)
           );
-        } else {
+        }
+        else {
           return false;
         }
-      } else {
+      }
+      else {
         return false;
       }
     }

@@ -1,5 +1,8 @@
 <template>
-  <div role="status" class="flex items-center">
+  <div
+    role="status"
+    class="flex items-center"
+  >
     <Icon
       class="tp-spin"
       name="material-symbols:close"
@@ -11,5 +14,5 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({ size: { type: String, default: "1.5em" } });
+defineProps({ size: { type: String, default: "1.5em" } });
 </script>

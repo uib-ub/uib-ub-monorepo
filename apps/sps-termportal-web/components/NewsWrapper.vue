@@ -1,11 +1,22 @@
 <template>
   <div>
-    <h2 id="news" class="pb-3 text-2xl">
-      <AppLink to="#news">{{ $t("news.heading") }}</AppLink>
+    <h2
+      id="news"
+      class="pb-3 text-2xl"
+    >
+      <AppLink to="#news">
+        {{ $t("news.heading") }}
+      </AppLink>
     </h2>
     <UtilsTransitionOpacitySection>
-      <dl v-if="data" class="news-wrapper space-y-4">
-        <template v-for="entry in data" :key="entry.date + entry.title">
+      <dl
+        v-if="data"
+        class="news-wrapper space-y-4"
+      >
+        <template
+          v-for="entry in data"
+          :key="entry.date + entry.title"
+        >
           <NewsEntry
             :title="entry.title"
             :title-lang="entry.titleLang"
@@ -19,12 +30,15 @@
     </UtilsTransitionOpacitySection>
   </div>
 </template>
+
 <script setup lang="ts">
-// behaviour needs to be documented:
+const appConfig = useAppConfig();
+
+// TODO behaviour needs to be documented:
 // https://git.app.uib.no/spraksamlingane/terminologi/terminologi-content/-/blob/main/admin/system-behaviour.md
 const langOrder = computed(() => {
-  return useLocaleLangOrder().value.filter(
-    (lc) => !dataDisplayOnlyLanguages.includes(lc)
+  return useLocaleLangOrder().value.filter(lc =>
+    appConfig.language.locale.includes(lc),
   );
 });
 
