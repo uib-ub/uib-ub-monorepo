@@ -45,8 +45,6 @@ export default function ResultItem({hit}: {hit: any}) {
     
 
     return  <li className="flex flex-grow">
-       
-
         <Clickable link ref={itemRef} className={`w-full h-full p-3 flex items-center group hover:bg-neutral-50 no-underline border-accent-700 aria-[current='page']:bg-accent-50 aria-[current='page']:border-l-4`} 
                     aria-current={isSelected ? 'page' : undefined}
                     remove={['group', 'parent', ...(isMobile ? ['nav', 'fuzzyNav'] : [])]}
@@ -79,6 +77,7 @@ export default function ResultItem({hit}: {hit: any}) {
 
             
             </Clickable>
+        
             
             </li>
 }

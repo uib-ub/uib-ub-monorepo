@@ -1,9 +1,11 @@
+
 export async function postQuery(dataset: string, query: any, search_type?: string) {
     
     // TODO: use the same variable name in prod and test
     const endpoint = process.env.STADNAMN_ES_ENDPOINT
     const token = process.env.STADNAMN_ES_TOKEN
     let res
+
 
 
 

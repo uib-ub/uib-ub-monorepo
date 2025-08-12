@@ -1,5 +1,6 @@
-import { datasetTypes } from "@/config/metadata-config";
+import { datasetTitles, datasetTypes } from "@/config/metadata-config";
 import { baseAllConfig } from "@/config/search-config";
+import { treeSettings } from "@/config/server-config";
 import { base64UrlToString } from "@/lib/utils";
 
 export const RESERVED_PARAMS = [
@@ -27,7 +28,6 @@ export const RESERVED_PARAMS = [
   'zoom',
   'point',
   'fuzzyNav',
-  'datasetTag',
   'facetQuery'
 ] as const;
 
@@ -91,35 +91,6 @@ export function extractFacets(request: Request) {
     });
   }
 
-  // Handle dataset tag (non-categorical dataset type) filter for datasets
-  if (reservedParams.datasetTag) {
-    const datasetTag = reservedParams.datasetTag;
-    const matchingDatasets = Object.entries(datasetTypes)
-      .filter(([_, types]) => types.includes(datasetTag))
-      .map(([dataset]) => dataset);
-    
-    if (matchingDatasets.length > 0) {
-      if (reservedParams.dataset == 'all') {
-        termFilters.push({
-          "bool": {
-            "should": [{
-              "terms": { "_index": matchingDatasets.map(dataset => `search-stadnamn-${process.env.SN_ENV}-${dataset}`) }
-            }],
-            "minimum_should_match": 1
-          }
-        });
-      } else {
-        termFilters.push({
-            "bool": {
-              "should": [{
-                "terms": { "datasets.keyword": matchingDatasets }
-              }],
-              "minimum_should_match": 1
-            }
-          });
-      }
-    }
-  }
 
   // Hierarchical facets
   if (Object.keys(clientFacets).length) {
@@ -236,11 +207,18 @@ export function extractFacets(request: Request) {
         });
 
       } else if (key == 'indexDataset') {
+        let datasetTags = values.filter(value => value != 'grunnord' && value != 'tree')
+        if (values.includes('grunnord')) {
+          datasetTags = [...datasetTags, ...Object.keys(datasetTitles).filter(key => key.endsWith('_g'))]
+        }
+        else if (values.includes('tree')) {
+          datasetTags = [...datasetTags, ...Object.keys(treeSettings)]
+        }
         termFilters.push({
           "bool": {
-            "should": values.map(value => ({
+            "should": datasetTags.map(datasetTag => ({
               "term": {
-                "_index": `search-stadnamn-${process.env.SN_ENV}-${value}`
+                "_index": `search-stadnamn-${process.env.SN_ENV}-${datasetTag}`
               }
             })),
             "minimum_should_match": 1

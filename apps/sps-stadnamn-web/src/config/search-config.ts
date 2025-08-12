@@ -486,6 +486,57 @@ fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) =>
 //console.log(fieldConfig.all)
 
 
+fieldConfig.grunnord = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
+  // Only include datasets ending with _g
+  if (dataset.endsWith('_g')) {
+    Object.entries(fields).forEach(([key, config]) => {
+      if (!config.label) return; // Skip fields without labels
+      
+      // Create a simplified config object with label, facet and result
+      const simplifiedConfig = { 
+        label: config.label, 
+        facet: config.facet,
+        result: !config.fulltext, 
+        datasets: [dataset]
+      };
+      
+      // Check if we already have a field with this exact key
+      if (key in acc) {
+        // Check if the existing field has the same label
+        if (acc[key].label === config.label) {
+          // Same key and label - just update datasets
+          acc[key].datasets = [...(acc[key].datasets || []), dataset];
+        } else {
+          // Same key but different label - create new entry with a unique key
+          const uniqueKey = `${key}_${dataset}`;
+          acc[uniqueKey] = simplifiedConfig;
+        }
+      } else {
+        // First time seeing this key, create new entry
+        acc[key] = simplifiedConfig;
+      }
+    });
+  }
+  return acc;
+}, { ...required } as Record<string, FieldConfigItem>)
+
+
+fieldConfig.tree = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
+  if (dataset.endsWith('_g')) {
+    Object.entries(fields).forEach(([key, config]) => {
+      if (!config.label) return; // Skip fields without labels
+    });
+  }
+  return acc;
+}, { ...required } as Record<string, FieldConfigItem>)
+
+
+
+//console.log(fieldConfig.all)
+
+
+
+
 export const facetConfig: Record<string, FacetConfigItem[]> = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
   acc[dataset] = Object.entries(fields)
     .filter(([_, config]) => config.facet)

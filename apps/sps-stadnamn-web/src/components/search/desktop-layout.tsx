@@ -22,6 +22,7 @@ export default function DesktopLayout() {
     const details = searchParams.get('details')
     const nav = searchParams.get('nav')
     const group = searchParams.get('group')
+    const perspective = usePerspective()
 
     return <main id="main" className="flex scroll-container relative w-[100svw] h-[calc(100svh-3rem)]">   
 
@@ -73,7 +74,7 @@ export default function DesktopLayout() {
         </div> }
 
 
-        {  fuzzyNav &&mode == 'map' && (doc || group) && searchParams.get('details') &&
+        {  fuzzyNav && mode == 'map' && (doc || group) && searchParams.get('details') &&
         <div className="lg:absolute lg:right-2 lg:top-2 flex-col max-w-[40svw] xl:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg xl:rounded-md xl:flex">
         
         <DetailsWindow/> 
@@ -84,7 +85,7 @@ export default function DesktopLayout() {
 
         </div>
     
-        { mode == 'map' &&
+        { mode == 'map' && perspective != 'grunnord' &&
             <div className="absolute top-0 right-0 h-full w-full">
             
                 <MapExplorer/>

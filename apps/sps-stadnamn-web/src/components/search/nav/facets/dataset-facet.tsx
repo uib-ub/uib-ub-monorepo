@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, ChangeEvent, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { usePerspective, useSearchQuery } from '@/lib/search-params';
 import { facetConfig, fieldConfig } from '@/config/search-config';
-import { PiMagnifyingGlass, PiInfo, PiInfoFill, PiCaretDown, PiCaretRight, PiCaretDownBold, PiCaretUpBold, PiTreeView, PiTreeFill, PiTreeLight, PiTreeViewFill, PiTreeViewLight, PiDatabaseLight, PiDatabaseFill, PiMicroscopeFill, PiMicroscopeLight, PiCircleFill, PiCircleLight, PiListFill, PiListLight, PiStack, PiStackLight, PiStackFill } from 'react-icons/pi';
+import { PiMagnifyingGlass, PiInfo, PiInfoFill, PiCaretDown, PiCaretRight, PiCaretDownBold, PiCaretUpBold, PiTreeView, PiTreeFill, PiTreeLight, PiTreeViewFill, PiTreeViewLight, PiDatabaseLight, PiDatabaseFill, PiMicroscopeFill, PiMicroscopeLight, PiCircleFill, PiCircleLight, PiListFill, PiListLight, PiStack, PiStackLight, PiStackFill, PiWallFill, PiWallLight } from 'react-icons/pi';
 
 import { datasetTitles, typeNames, datasetTypes, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config';
 
@@ -42,10 +42,10 @@ export default function DatasetFacet() {
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
   const availableFacets = useMemo(() => facetConfig[perspective], [perspective]);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
-  const paramsExceptFacet = removeFilterParams('indexDataset')
-  const nav = searchParams.get('nav')
+  const paramsExceptFacet = removeFilterParams('indexDataset', ['grunnord', 'tree'])
   const boost_gt = searchParams.get('boost_gt')
   const cadastralIndex = searchParams.get('cadastralIndex')
+  const indexDataset = searchParams.get('indexDataset')
 
   useEffect(() => {
 
@@ -139,23 +139,23 @@ export default function DatasetFacet() {
   return (
     <>
     <div className="flex flex-col gap-2 pb-12">
-    {!isMobile && <div className="border p-1 rounded-lg border-neutral-200 tabs gap-1 text-sm flex flex-col 2xl:flex-row" role="tablist">
+    {!isMobile && <div className="border p-1 rounded-lg border-neutral-200 tabs gap-1 text-sm flex flex-col 2xl:flex-wrap 2xl:flex-row" role="tablist">
   <Clickable
-    remove={["boost_gt", "cadastralIndex"]}
+    remove={["boost_gt", "cadastralIndex", "indexDataset"]}
     role="tab"
     aria-controls="dataset-facet-content"
-    aria-selected={boost_gt != '3' && !cadastralIndex}
+    aria-selected={boost_gt != '3' && indexDataset != 'tree' && indexDataset != 'grunnord'}
     className={`flex items-center gap-2 p-1 px-2 flex-1`}
   >
     <span className="flex-shrink-0">
-      {boost_gt != '3' && !cadastralIndex ? <PiStackFill className="text-base text-accent-800" aria-hidden="true"/> : <PiStackLight className="text-base text-neutral-900" aria-hidden="true"/>}
+      {boost_gt != '3' && indexDataset != 'tree' && indexDataset != 'grunnord' ? <PiDatabaseFill className="text-base text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-base text-neutral-900" aria-hidden="true"/>}
     </span>
     Alle
   </Clickable>
   <Clickable
     role="tab"
     aria-controls="dataset-facet-content"
-    remove={["cadastralIndex"]}
+    remove={["cadastralIndex", "indexDataset"]}
     add={{ boost_gt: '3'}}
     aria-selected={boost_gt == '3'}
     className={`flex items-center gap-2 p-1 px-2 flex-1`}
@@ -168,15 +168,28 @@ export default function DatasetFacet() {
   <Clickable
     role="tab"
     aria-controls="dataset-facet-content"
-    remove={["boost_gt"]}
-    add={{ cadastralIndex: cadastralIndex ? null : '_true' }}
-    aria-selected={Boolean(cadastralIndex)}
+    remove={["boost_gt", "indexDataset"]}
+    add={{ indexDataset: 'tree'}}
+    aria-selected={indexDataset == 'tree'}
     className={`flex items-center gap-2 p-1 px-2 flex-1`}
   >
     <span className="flex-shrink-0">
       {cadastralIndex ? <PiTreeViewFill className="text-base text-accent-800" aria-hidden="true"/> : <PiTreeViewLight className="text-base text-neutral-900" aria-hidden="true"/>}
     </span>
     Hierarki
+  </Clickable>
+  <Clickable
+    role="tab"
+    aria-controls="dataset-facet-content"
+    remove={["boost_gt", "cadastralIndex", "indexDataset"]}
+    add={{ indexDataset: 'grunnord'}}
+    aria-selected={indexDataset == 'grunnord'}
+    className={`flex items-center gap-2 p-1 px-2 flex-1`}
+  >
+    <span className="flex-shrink-0">
+      {indexDataset == 'grunnord' ? <PiWallFill className="text-base text-accent-800" aria-hidden="true"/> : <PiWallLight className="text-base text-neutral-900" aria-hidden="true"/>}
+    </span>
+    Grunnord
   </Clickable>
 </div>}
             

@@ -32,6 +32,8 @@ export const datasetTitles: DatasetTitles = {
     search: "Stadnamnsøk",
     core_gnidu: "GNIDu",
     all: "Stadnamnsøk",
+    tree: "Hierarki",
+    grunnord: "Grunnord",
     bsn: "Bustadnavnregisteret",
     hord: "Hordanamn",
     rygh: "Norske Gaardnavne",
@@ -62,7 +64,6 @@ export const datasetTitles: DatasetTitles = {
     seta: "Seternamnarkivet",
     osm: "OpenStreetMap 2019",
     wikidata: "Wikidata"
-
 }
 
 export const datasetDescriptions: Record<string, string> = {
