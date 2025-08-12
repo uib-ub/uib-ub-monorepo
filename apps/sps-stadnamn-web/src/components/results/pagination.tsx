@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import ClickableIcon from '../ui/clickable/clickable-icon';
 
-export default function Pagination({ totalPages }: { totalPages: number}) {
+export default function Pagination() {
   const router = useRouter()
   const searchParams = useSearchParams()
   
@@ -13,6 +13,8 @@ export default function Pagination({ totalPages }: { totalPages: number}) {
   const perPage = Number(searchParams.get('perPage')) || 10
   const page = Number(searchParams.get('page')) || 1
   const { totalHits } = useContext(SearchContext)
+  const totalPages = Math.ceil(totalHits?.value / perPage)
+  const cappedTotalPages = Math.min(totalPages, Math.ceil(10000 / perPage))
 
   const setPerPage = (newPerPage: number) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -46,7 +48,7 @@ export default function Pagination({ totalPages }: { totalPages: number}) {
         </span>
         
         <ClickableIcon 
-          disabled={page == totalPages} 
+          disabled={page == cappedTotalPages} 
           add={{page: (page + 1).toString()}}
           label="Neste side" 
           className='btn btn-outline btn-compact grow md:grow-0 aspect-square'>
@@ -54,9 +56,9 @@ export default function Pagination({ totalPages }: { totalPages: number}) {
         </ClickableIcon>
 
         {totalPages > 2 && <ClickableIcon 
-          disabled={page == totalPages} 
-          add={{page: totalPages.toString()}}
-          label="Siste side" 
+          disabled={page == cappedTotalPages} 
+          add={{page: cappedTotalPages.toString()}}
+          label="Siste side (Inntil 10 000 treff)" 
           className='btn btn-outline btn-compact grow md:grow-0 aspect-square'>
             <PiCaretDoubleRight/>
         </ClickableIcon>}
