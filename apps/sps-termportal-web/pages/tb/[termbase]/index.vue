@@ -8,8 +8,8 @@
       <div class="max-w-4xl grow space-y-6">
         <UtilsTransitionOpacitySection>
           <main
-            v-if="bootstrapData && data"
-            :key="`termbase_${termbase}_${(bootstrapData ? Object.keys(bootstrapData.termbase).length : '')}_${data ? data.identifier : ''}`"
+            v-if="data"
+            :key="`termbase_${termbase}_${data ? data.identifier : ''}`"
             class="md:max-w-3xl lg:max-w-4xl"
           >
             <h1
@@ -93,7 +93,6 @@
 const route = useRoute();
 const termbase = getTermbaseFromParam();
 const localeLangOrder = useLocaleLangOrder();
-const bootstrapData = useBootstrapData();
 const breakpoint = useBreakpoint();
 const { getLaLo } = useLazyLocale();
 
