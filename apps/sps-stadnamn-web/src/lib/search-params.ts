@@ -26,6 +26,12 @@ export function usePerspective() {
 export function useMode() {
     const searchParams = useSearchParams()
     const perspective = usePerspective()
+
+    if (perspective == 'grunnord') {
+        return 'list'
+    }
+
+
     return searchParams?.get('mode') || contentSettings[perspective]?.display || 'map'
 }
 
