@@ -4,12 +4,11 @@ import { extractFacets } from '../../_utils/facets'
 import { getQueryString } from '../../_utils/query-string';
 import { postQuery } from '../../_utils/post';
 import { getSortArray } from '@/config/server-config';
-import { fieldConfig, resultConfig } from '@/config/search-config';
 
 export async function GET(request: Request) {
   const {termFilters, reservedParams} = extractFacets(request)
   const perspective = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
-  const { highlight, simple_query_string } = getQueryString(reservedParams)
+  const { simple_query_string } = getQueryString(reservedParams)
 
   let sortArray: (string | object)[] = []
     
@@ -51,7 +50,6 @@ export async function GET(request: Request) {
     }
   }
 
-  
   const [data, status] = await postQuery(perspective, query)
   return Response.json(data, {status: status})
   
