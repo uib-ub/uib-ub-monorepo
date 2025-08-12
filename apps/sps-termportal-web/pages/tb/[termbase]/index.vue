@@ -1,8 +1,5 @@
 <template>
-  <div
-    :key="`termbase_${termbase}_${(bootstrapData ? Object.keys(bootstrapData.termbase).length : '')}_${data ? data.identifier : ''}`"
-    class="flex"
-  >
+  <div class="flex">
     <Head>
       <Title>{{ getLaLo(termbase + "-3A" + termbase) }} | Termportalen</Title>
     </Head>
@@ -12,6 +9,7 @@
         <UtilsTransitionOpacitySection>
           <main
             v-if="bootstrapData && data"
+            :key="`termbase_${termbase}_${(bootstrapData ? Object.keys(bootstrapData.termbase).length : '')}_${data ? data.identifier : ''}`"
             class="md:max-w-3xl lg:max-w-4xl"
           >
             <h1
