@@ -6,74 +6,73 @@
     <div class="flex grow">
       <SideBar />
       <div class="max-w-4xl grow space-y-6">
-        <UtilsTransitionOpacitySection>
-          <main
-            v-if="bootstrapData && data"
-            class="md:max-w-3xl lg:max-w-4xl"
+        <main
+          v-if="bootstrapData && data"
+          :key="`termbase_${termbase}_${(bootstrapData ? Object.keys(bootstrapData.termbase).length : 'none')}_${data ? data.identifier : 'none'}`"
+          class="md:max-w-3xl lg:max-w-4xl"
+        >
+          <h1
+            id="main"
+            class="pb-3 pt-5 text-2xl"
           >
-            <h1
-              id="main"
-              class="pb-3 pt-5 text-2xl"
-            >
-              <AppLink to="#main">
-                {{ getLaLo(termbase + "-3A" + termbase) }}
-              </AppLink>
-            </h1>
-            <!-- Only apply termbaseDescriptionHeight on larger screens -->
+            <AppLink to="#main">
+              {{ getLaLo(termbase + "-3A" + termbase) }}
+            </AppLink>
+          </h1>
+          <!-- Only apply termbaseDescriptionHeight on larger screens -->
+          <div
+            class="flex overflow-hidden lg:block"
+            :style="
+              termbaseDescriptionHeight
+                && ['lg', 'xl', '2xl'].includes(breakpoint)
+                ? `max-height: ${termbaseDescriptionHeight}px`
+                : ''
+            "
+          >
             <div
-              class="flex overflow-hidden lg:block"
-              :style="
-                termbaseDescriptionHeight
-                  && ['lg', 'xl', '2xl'].includes(breakpoint)
-                  ? `max-height: ${termbaseDescriptionHeight}px`
-                  : ''
-              "
+              ref="termbaseTextRef"
+              class="flex flex-col-reverse space-y-2 lg:block lg:flex-col"
             >
               <div
-                ref="termbaseTextRef"
-                class="flex flex-col-reverse space-y-2 lg:block lg:flex-col"
+                ref="termbaseInfoBoxRef"
+                class="relative z-10 mt-6 bg-white lg:float-right lg:mb-2 lg:ml-3 lg:mt-0"
               >
-                <div
-                  ref="termbaseInfoBoxRef"
-                  class="relative z-10 mt-6 bg-white lg:float-right lg:mb-2 lg:ml-3 lg:mt-0"
-                >
-                  <TermbaseInfoBox
-                    :data="data"
-                    :termbase-id="termbase"
-                  />
-                </div>
-                <p
-                  v-for="p in description"
-                  :key="p"
-                  v-html="p"
+                <TermbaseInfoBox
+                  :data="data"
+                  :termbase-id="termbase"
                 />
               </div>
+              <p
+                v-for="p in description"
+                :key="p"
+                v-html="p"
+              />
             </div>
-            <button
-              v-if="
-                ['lg', 'xl', '2xl'].includes(breakpoint)
-                  && termbaseTextRef
-                  && termbaseInfoBoxRef
-                  && termbaseTextRef.clientHeight > termbaseInfoBoxRef.clientHeight
-              "
-              class="mt-1 w-full"
-              :class="{
-                'shadow-[0_-10px_7px_rgba(255,255,255,1)]': !expandTermbaseText,
-              }"
-              @click="expandTermbaseText = !expandTermbaseText"
+          </div>
+          <button
+            v-if="
+              ['lg', 'xl', '2xl'].includes(breakpoint)
+                && termbaseTextRef
+                && termbaseInfoBoxRef
+                && termbaseTextRef.clientHeight > termbaseInfoBoxRef.clientHeight
+            "
+            class="mt-1 w-full"
+            :class="{
+              'shadow-[0_-10px_7px_rgba(255,255,255,1)]': !expandTermbaseText,
+            }"
+            @click="expandTermbaseText = !expandTermbaseText"
+          >
+            <span
+              v-if="expandTermbaseText"
+              class="underline underline-offset-2 hover:decoration-2"
+            >{{ $t("global.readLess") }}</span>
+            <span
+              v-else
+              class="underline underline-offset-2 hover:decoration-2"
             >
-              <span
-                v-if="expandTermbaseText"
-                class="underline underline-offset-2 hover:decoration-2"
-              >{{ $t("global.readLess") }}</span>
-              <span
-                v-else
-                class="underline underline-offset-2 hover:decoration-2"
-              >
-                {{ $t("global.readMore") }}</span>
-            </button>
-          </main>
-        </UtilsTransitionOpacitySection>
+              {{ $t("global.readMore") }}</span>
+          </button>
+        </main>
         <TermbaseSearch
           v-if="data"
           :termbase-id="termbase"
@@ -89,10 +88,11 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute();
-const termbase = getTermbaseFromParam();
-const localeLangOrder = useLocaleLangOrder();
 const bootstrapData = useBootstrapData();
+
+const route = useRoute();
+const termbase = computed(() => getTermbaseFromParam());
+const localeLangOrder = useLocaleLangOrder();
 const breakpoint = useBreakpoint();
 const { getLaLo } = useLazyLocale();
 
@@ -114,11 +114,11 @@ const termbaseDescriptionHeight = computed(() => {
       return termbaseInfoBoxRef.value.clientHeight + baseHeight;
     }
   }
-  return baseHeight;
+  return 750;
 });
 
-const { data } = await useLazyFetch<Termbase>(`/api/termbase/${termbase}`, {
-  key: `termbase_${termbase}`,
+const { data } = await useLazyFetch<Termbase>(`/api/termbase/${termbase.value}`, {
+  key: `termbase_${termbase.value}`,
   headers: import.meta.server
     ? { cookie: "session=" + useRuntimeConfig().apiKey }
     : undefined,
