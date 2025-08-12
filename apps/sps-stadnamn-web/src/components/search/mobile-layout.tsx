@@ -16,7 +16,7 @@ import DocInfo from "./details/doc/doc-info";
 import DocSkeleton from "../doc/doc-skeleton";
 import FacetSection from "./nav/facets/facet-section";
 import ActiveFilters from "./form/active-filters";
-import { formatNumber, stringToBase64Url } from "@/lib/utils";
+import { base64UrlToString, formatNumber, stringToBase64Url } from "@/lib/utils";
 import DatasetFacet from "./nav/facets/dataset-facet";
 import Clickable from "../ui/clickable/clickable";
 import { GroupContext } from "@/app/group-provider";
@@ -341,7 +341,7 @@ export default function MobileLayout() {
                         </span>
                     </div>
                 </ClickableIcon>}
-                
+                {!group || base64UrlToString(group) != 'grunnord' && <>
                 <ClickableIcon
                     label="Tidslinje"
                     aria-current={fuzzyNav == 'timeline' ? 'page' : 'false'}
@@ -358,6 +358,7 @@ export default function MobileLayout() {
                     add={{group: stringToBase64Url(docData?._source.group.id), fuzzyNav: 'list'}}>
                     <PiSignpost className="text-3xl" aria-hidden="true"/>
                 </ClickableIcon>
+                </>}
     
                 
  
