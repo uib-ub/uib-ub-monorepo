@@ -1,4 +1,3 @@
-import { useSearchParams } from "next/navigation"
 import { useContext } from "react"
 import { SearchContext } from "@/app/search-provider"
 import Pagination from "@/components/results/pagination"
@@ -7,7 +6,6 @@ import DocInfo from "../details/doc/doc-info"
 import { GlobalContext } from "@/app/global-provider"
 
 export default function ListExplorer() {
-    const searchParams = useSearchParams()
     const { tableData, totalHits } = useContext(SearchContext)
     const { isMobile } = useContext(GlobalContext)
 
