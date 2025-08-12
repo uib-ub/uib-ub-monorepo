@@ -185,7 +185,7 @@ export default function DatasetFacet() {
     { boost_gt == '3' && <span className="px-1">Datasett som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>}
     {cadastralIndex && <span className="px-1">Datasett ordna i eit hierarki, fortrinsvis etter matrikkelinndelinga.</span>}
 
-    <div className='flex gap-2'>
+    <div className='flex gap-2 px-1'>
     <div className='relative grow'>
       <input aria-label="Søk i fasett" onChange={(e) => setClientSearch(e.target.value)}
           className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"/>
