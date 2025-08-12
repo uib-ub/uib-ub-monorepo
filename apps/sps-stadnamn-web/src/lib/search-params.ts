@@ -101,13 +101,14 @@ export function useSearchQuery() {
         searchQuery.set('fulltext', 'on')
     }
 
-    const removeFilterParams = (key: string | string[]) => {
+    const removeFilterParams = (key: string | string[], keep?: string[]) => {
         const outputUrl = new URLSearchParams(searchQuery)
-        if (Array.isArray(key)) {
-            key.forEach(k => outputUrl.delete(k))
-        } else {
-            outputUrl.delete(key)
-        }
+        const keys = Array.isArray(key) ? key : [key]
+        keys.forEach(k => {
+            const values = keep ? outputUrl.getAll(k).filter(v => keep.includes(v)) : []
+            outputUrl.delete(k)
+            values.forEach(v => outputUrl.append(k, v))
+        })
         return outputUrl.toString()
     }
 
