@@ -6,7 +6,7 @@ import { PiInfoFill, PiMagnifyingGlass, PiWarningFill, PiX, PiXBold } from 'reac
 import ModeSelector from '../tabs/mode-selector';
 import { GlobalContext } from '@/app/global-provider';
 import SortSelector from './sort/sort-selector'
-import { useMode, useSearchQuery } from '@/lib/search-params';
+import { useMode, usePerspective, useSearchQuery } from '@/lib/search-params';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Clickable from '../ui/clickable/clickable';
 
@@ -17,10 +17,11 @@ export default function StatusSection() {
     const searchParams = useSearchParams()
     const nav = searchParams.get('nav')
     const { facetFilters, datasetFilters } = useSearchQuery()
+    const perspective = usePerspective()
 
     return <div className="flex flex-col gap-2"> 
     <div className={`flex gap-1 flex-wrap w-fit ${mode != 'map' ? 'items-center' : ''} ${(mode == 'map' && !isMobile) ? 'lg:mt-2' : ''}`}>
-    <ModeSelector/>
+    {perspective != 'grunnord' && <ModeSelector/>}
     
     { (mode != 'doc' && !isMobile) && <div className="flex flex-wrap xl:flex-row h-full p-1 xl:py-0 gap-2"><ActiveFilters showQuery={true} showFacets={true} showDatasets={true}/> </div> }
     </div>
