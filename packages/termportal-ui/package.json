@@ -10,6 +10,9 @@
   "dependencies": {
     "assets": "*"
   },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  },
   "peerDependencies": {
     "@nuxtjs/tailwindcss": "6.x",
     "@vueuse/nuxt": "10.x",

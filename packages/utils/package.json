@@ -9,15 +9,15 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts",
-    "dev": "tsup src/index.ts --format esm --dts --watch",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "check-types": "tsc --noEmit"
   },
   "devDependencies": {
     "eslint-config": "*",
-    "tsconfig": "*",
-    "tsup": "^8",
-    "typescript": "^4.9.3"
+    "typescript": "^5.9.2",
+    "typescript-config": "*"
   },
   "publishConfig": {
     "access": "public"

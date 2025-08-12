@@ -4,11 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --port 3003",
     "build": "next build",
-    "start": "next start",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next",
+    "check-types": "tsc --noEmit",
+    "dev": "next dev --port 3003",
     "lint": "next lint",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next"
+    "lint:fix": "next lint --fix",
+    "start": "next start"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.16",
@@ -23,7 +25,7 @@
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.32.0",
     "eslint-config": "*",
-    "tsconfig": "*",
-    "typescript": "^4.9.3"
+    "typescript": "^5.9.2",
+    "typescript-config": "*"
   }
 }
