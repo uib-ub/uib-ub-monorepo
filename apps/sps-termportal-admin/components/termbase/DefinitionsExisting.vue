@@ -11,14 +11,14 @@
       <UtilsTableLegendEntry
         :legend-key="`${definitions?.length}`"
         legend-value="definisjoner hentet"
-        legend-width="16"
+        legend-width="24"
       />
       <UtilsTableLegendEntry
         v-for="stat in stats"
         :key="stat[1] + stat[2] + stat[0]"
         :legend-key="`${stat[1]}/${stat[2]}`"
         :legend-value="`${stat[0]}`"
-        legend-width="16"
+        legend-width="24"
       />
     </UtilsTableLegend>
     <div class="">
