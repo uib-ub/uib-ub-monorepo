@@ -16,7 +16,8 @@ export function prettyPrintDate(date: string) {
       dateStyle: "short",
       timeStyle: undefined,
     });
-  } else {
+  }
+  else {
     return "";
   }
 }
@@ -24,11 +25,12 @@ export function prettyPrintDate(date: string) {
 export function cleanId(uri: string, rmNs = false) {
   const replaced = uri.replace(
     "http://wiki.terminologi.no/index.php/Special:URIResolver/",
-    ""
+    "",
   );
   if (rmNs) {
     return replaced.split("-3A")[1];
-  } else {
+  }
+  else {
     return replaced;
   }
 }
@@ -60,7 +62,7 @@ export function isInFuture(timestamp: string): boolean {
 export function flattenList(list: Array<any>) {
   return list?.reduce(
     (a, b) => a.concat(Array.isArray(b) ? flattenList(b) : b),
-    []
+    [],
   );
 }
 

@@ -4,14 +4,23 @@
       Termbase Status Blocker and Notifications
     </h2>
     <div class="space-y-5">
-      <template v-for="tb in termbases" :key="tb.id">
+      <template
+        v-for="tb in termbases"
+        :key="tb.id"
+      >
         <section v-if="tb.blocker.status !== 'ok'">
-          <h3 v-if="!inline" class="text-lg mb-1">
+          <h3
+            v-if="!inline"
+            class="text-lg mb-1"
+          >
             {{ tb.label }}: {{ tb.status }}
           </h3>
           <div class="space-y-2">
             <div v-if="Object.keys(tb.blocker.hard).length > 0">
-              <h4 v-if="tb.status === '5. publisert'" class="font-semibold">
+              <h4
+                v-if="tb.status === '5. publisert'"
+                class="font-semibold"
+              >
                 Error
                 <Icon
                   name="fa6-solid:triangle-exclamation"
@@ -20,7 +29,10 @@
                   :class="colorMappingStatus.error.color"
                 />
               </h4>
-              <h4 v-else class="font-semibold">
+              <h4
+                v-else
+                class="font-semibold"
+              >
                 Hard blocker
                 <Icon
                   name="mdi:stop"
@@ -34,14 +46,19 @@
                   :key="key"
                 >
                   <div class="flex">
-                    <div class="w-[8em]">{{ key }}</div>
+                    <div class="w-[8em]">
+                      {{ key }}
+                    </div>
                     {{ value }}
                   </div>
                 </li>
               </ul>
             </div>
             <div v-if="Object.keys(tb.blocker.soft).length > 0">
-              <h4 v-if="tb.status === '5. publisert'" class="font-semibold">
+              <h4
+                v-if="tb.status === '5. publisert'"
+                class="font-semibold"
+              >
                 Warning
                 <Icon
                   name="fa6-solid:triangle-exclamation"
@@ -50,7 +67,10 @@
                   :class="colorMappingStatus.warning.color"
                 />
               </h4>
-              <h4 v-else class="font-semibold">
+              <h4
+                v-else
+                class="font-semibold"
+              >
                 Soft blocker
                 <Icon
                   name="mdi:pause"
@@ -64,7 +84,9 @@
                   :key="key"
                 >
                   <div class="flex">
-                    <div class="w-[8em]">{{ key }}</div>
+                    <div class="w-[8em]">
+                      {{ key }}
+                    </div>
                     {{ value }}
                   </div>
                 </li>

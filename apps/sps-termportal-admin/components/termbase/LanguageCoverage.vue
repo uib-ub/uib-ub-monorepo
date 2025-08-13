@@ -1,6 +1,8 @@
 <template>
   <UtilsTableWrapper class="max-w-4xl">
-    <template #header>Språkdekning</template>
+    <template #header>
+      Språkdekning
+    </template>
     <UtilsTableLegend>
       <UtilsTableLegendEntry
         :legend-key="`${procData?.[0]?.concepts || 0}`"
@@ -18,11 +20,31 @@
         :sort-order="-1"
         table-style="min-width: 1rem"
       >
-        <Column field="label" header="Språk" sortable></Column>
-        <Column field="term" header="med term" sortable></Column>
-        <Column field="termperc" header="med term i %" sortable></Column>
-        <Column field="definition" header="med definisjon" sortable></Column>
-        <Column field="defperc" header="med definisjon i %" sortable></Column>
+        <Column
+          field="label"
+          header="Språk"
+          sortable
+        />
+        <Column
+          field="term"
+          header="med term"
+          sortable
+        />
+        <Column
+          field="termperc"
+          header="med term i %"
+          sortable
+        />
+        <Column
+          field="definition"
+          header="med definisjon"
+          sortable
+        />
+        <Column
+          field="defperc"
+          header="med definisjon i %"
+          sortable
+        />
       </DataTable>
     </div>
     <template #legend>
@@ -46,7 +68,7 @@ function calcCoveragePerc(concepts, count) {
 
 const procData = computed(() => {
   const tb = data.value?.filter(
-    (tb) => tb.tbid.value === props.termbaseId
+    tb => tb.tbid.value === props.termbaseId,
   )?.[0];
 
   if (tb) {
@@ -76,7 +98,8 @@ const procData = computed(() => {
         defperc: calcCoveragePerc(tb.concepts.value, tb.defnn.value),
       },
     ];
-  } else {
+  }
+  else {
     return [];
   }
 });

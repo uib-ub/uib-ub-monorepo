@@ -1,6 +1,8 @@
 <template>
   <UtilsTableWrapper>
-    <template #header> Institutions responsible for termbases </template>
+    <template #header>
+      Institutions responsible for termbases
+    </template>
     <template #description>
       <p>
         List of institutions registered as responsible for one or more
@@ -21,12 +23,27 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData()" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData()"
+            />
           </div>
         </template>
-        <Column field="label" header="Navn" sortable></Column>
-        <Column field="count" header="Termbaser" sortable></Column>
+        <Column
+          field="label"
+          header="Navn"
+          sortable
+        />
+        <Column
+          field="count"
+          header="Termbaser"
+          sortable
+        />
       </DataTable>
     </div>
   </UtilsTableWrapper>
@@ -54,13 +71,13 @@ const procdata = computed(() => {
       const map = {
         label: orga.label,
         count: orga.termbases.filter(
-          (tb) =>
-            tb?.qualifiedAttribution && tb?.qualifiedAttribution?.length > 0
+          tb =>
+            tb?.qualifiedAttribution && tb?.qualifiedAttribution?.length > 0,
         ).length,
       };
       return map;
     })
-    .filter((orga) => orga.count > 0);
+    .filter(orga => orga.count > 0);
   return mapped;
 });
 

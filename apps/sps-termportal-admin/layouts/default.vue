@@ -1,7 +1,10 @@
 <template>
   <div class="flex min-h-screen flex-col bg-white">
     <NavBar />
-    <div class="flex grow" :class="{ '': route.path === '/' }">
+    <div
+      class="flex grow"
+      :class="{ '': route.path === '/' }"
+    >
       <div
         class="flex-1"
         :class="{

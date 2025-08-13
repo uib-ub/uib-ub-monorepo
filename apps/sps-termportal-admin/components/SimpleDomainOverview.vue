@@ -18,16 +18,30 @@
       :global-filter-fields="['hierarchy', 'nb']"
       paginator
       :rows="15"
-      :rowsPerPageOptions="[15, 25, 50, 100]"
+      :rows-per-page-options="[15, 25, 50, 100]"
     >
       <template #header>
         <div class="flex justify-between">
-          <InputText v-model="filters['global'].value" placeholder="Søk" />
-          <Button class="h-10" label="Eksport" @click="exportData()" />
+          <InputText
+            v-model="filters['global'].value"
+            placeholder="Søk"
+          />
+          <Button
+            class="h-10"
+            label="Eksport"
+            @click="exportData()"
+          />
         </div>
       </template>
-      <Column selection-mode="single" header-style="width: 3rem"></Column>
-      <Column sortable field="order" header="Kode">
+      <Column
+        selection-mode="single"
+        header-style="width: 3rem"
+      />
+      <Column
+        sortable
+        field="order"
+        header="Kode"
+      >
         <template #body="{ data }">
           <div :style="{ 'padding-left': `${(data.level - 1) * 12}px` }">
             <span>{{
@@ -36,8 +50,16 @@
           </div>
         </template>
       </Column>
-      <Column sortable field="nb" header="Bokmål navn" />
-      <Column sortable field="labelsLen" header="Navner">
+      <Column
+        sortable
+        field="nb"
+        header="Bokmål navn"
+      />
+      <Column
+        sortable
+        field="labelsLen"
+        header="Navner"
+      >
         <template #body="{ data }">
           <Icon
             v-if="data?.labelsLen < 3"
@@ -50,12 +72,24 @@
                 : colorMappingStatus.warning.color
             "
           />
-          <div class=""></div>
+          <div class="" />
         </template>
       </Column>
-      <Column sortable field="concepts" header="Begreper" />
-      <Column sortable field="conceptSum" header="Totalt antall begreper" />
-      <Column field="published" header="publisert" data-type="boolean">
+      <Column
+        sortable
+        field="concepts"
+        header="Begreper"
+      />
+      <Column
+        sortable
+        field="conceptSum"
+        header="Totalt antall begreper"
+      />
+      <Column
+        field="published"
+        header="publisert"
+        data-type="boolean"
+      >
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
             <span>{{ data.published ? "Ja" : "Nei" }}</span>
@@ -93,10 +127,18 @@
         legend-value="Begreper som er direkte definert i domenet eller i underdomener"
       />
     </UtilsTableLegend>
-    <h3 class="text-2xl">Domain info</h3>
+    <h3 class="text-2xl">
+      Domain info
+    </h3>
     <dl>
-      <div v-for="lc in ['nb', 'nn', 'en']" :key="lc" class="flex">
-        <dt class="w-8">{{ lc }}:</dt>
+      <div
+        v-for="lc in ['nb', 'nn', 'en']"
+        :key="lc"
+        class="flex"
+      >
+        <dt class="w-8">
+          {{ lc }}:
+        </dt>
         <dd>{{ selectedDomain?.[lc] }}</dd>
       </div>
     </dl>
@@ -140,7 +182,7 @@ const preProc = computed(() => {
         published: d.published.value === "true",
         level: d.level.value,
         children: d?.children
-          ? d?.children.value.split(", ").map((id) => cleanId(id, true))
+          ? d?.children.value.split(", ").map(id => cleanId(id, true))
           : [],
         concepts: d.concepts.value,
       };
@@ -153,7 +195,7 @@ function processDomain(
   output: [Record<string, string | number | Array<number>>],
   domainInstance: {},
   orderCounter: number,
-  hierarchy: Array<number>
+  hierarchy: Array<number>,
 ) {
   let updatedCounter = orderCounter + 1;
   let hierarchyCounter = 0;
@@ -167,14 +209,14 @@ function processDomain(
     const sortedChildren = domainInstance?.children.sort();
     sortedChildren.forEach((child) => {
       hierarchyCounter++;
-      const childDomain = data.filter((d) => d.id === child)[0];
+      const childDomain = data.filter(d => d.id === child)[0];
       if (childDomain) {
         updatedCounter = processDomain(
           data,
           output,
           childDomain,
           updatedCounter,
-          [...hierarchy, ...[hierarchyCounter]]
+          [...hierarchy, ...[hierarchyCounter]],
         );
       }
     });
@@ -189,11 +231,11 @@ const displayData = computed(() => {
     const collected = [];
     let domainCounter = 0;
     const topdomains = preProc.value
-      .filter((d) => d.level === "1")
+      .filter(d => d.level === "1")
       .sort(
         (a, b) =>
-          (order.includes(a.id) ? order.indexOf(a.id) : Infinity) -
-          (order.includes(b.id) ? order.indexOf(b.id) : Infinity)
+          (order.includes(a.id) ? order.indexOf(a.id) : Infinity)
+          - (order.includes(b.id) ? order.indexOf(b.id) : Infinity),
       );
     let hierarchyCounter = 0;
     topdomains.forEach((domain) => {
@@ -203,15 +245,15 @@ const displayData = computed(() => {
         collected,
         domain,
         domainCounter,
-        [hierarchyCounter]
+        [hierarchyCounter],
       );
     });
     const sumAdded = collected.map((outer) => {
       const conceptSum = collected
-        .map((inner) =>
+        .map(inner =>
           inner.hierarchy.startsWith(outer.hierarchy.slice(0, -1))
             ? parseInt(inner.concepts)
-            : 0
+            : 0,
         )
         .reduce((a, b) => a + b, 0);
       return { ...outer, ...{ conceptSum } };

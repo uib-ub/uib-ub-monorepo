@@ -1,6 +1,8 @@
 <template>
   <UtilsTableWrapper class="max-w-6xl">
-    <template #header>Definisjoner</template>
+    <template #header>
+      Definisjoner
+    </template>
     <UtilsTableLegend>
       <p v-if="definitions?.length == 5000">
         Fetch limit set to 5000, e.g. if 5000 definitions have been fetched it
@@ -31,19 +33,36 @@
       >
         <template #header>
           <div style="text-align: right">
-            <Button class="h-10" label="Eksport" @click="exportCSV()" />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportCSV()"
+            />
           </div>
         </template>
-        <Column field="concept" header="Begrep" sortable>
+        <Column
+          field="concept"
+          header="Begrep"
+          sortable
+        >
           <template #body="slotProps">
             <AppLink
               :to="`https://termportalen.no/tb/${slotProps.data.link}`"
-              >{{ slotProps.data.concept }}</AppLink
             >
+              {{ slotProps.data.concept }}
+            </AppLink>
           </template>
         </Column>
-        <Column field="def" header="Definisjon" sortable></Column>
-        <Column field="lang" header="Språk" sortable></Column>
+        <Column
+          field="def"
+          header="Definisjon"
+          sortable
+        />
+        <Column
+          field="lang"
+          header="Språk"
+          sortable
+        />
       </DataTable>
     </div>
   </UtilsTableWrapper>
@@ -83,7 +102,7 @@ const stats = computed(() => {
     const conceptWithDef = new Set(
       data?.value.map((e) => {
         return e.concept.value;
-      })
+      }),
     );
     statEntries.push([
       "begreper har en definisjon",

@@ -1,7 +1,12 @@
 <template>
-  <aside v-if="groupedHeadings.length" class="">
-    <h2 class="font-semibold text-xl mb-3">Innhold</h2>
-    <ToCList :items="groupedHeadings"></ToCList>
+  <aside
+    v-if="groupedHeadings.length"
+    class=""
+  >
+    <h2 class="font-semibold text-xl mb-3">
+      Innhold
+    </h2>
+    <ToCList :items="groupedHeadings" />
   </aside>
 </template>
 
@@ -17,7 +22,7 @@ const groupedHeadings = computed(() => {
   for (let i = items.length - 1; i >= 0; i--) {
     const currentItem = items[i];
 
-    let parentItem = items.findLast((item, index) => {
+    const parentItem = items.findLast((item, index) => {
       return item.level < currentItem.level && index < i;
     });
 

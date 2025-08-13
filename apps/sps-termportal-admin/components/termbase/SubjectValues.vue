@@ -1,6 +1,8 @@
 <template>
   <UtilsTableWrapper>
-    <template #header>Bruksområder</template>
+    <template #header>
+      Bruksområder
+    </template>
     <template #description>
       <p>
         The list contains grouped bruksområde values of the termbase. One
@@ -14,7 +16,7 @@
       <UtilsTableLegendEntry
         :legend-key="`${data?.length}`"
         legend-value="distinct bruksområde values"
-      ></UtilsTableLegendEntry>
+      />
     </template>
     <div class="max-w-xl">
       <DataTable
@@ -32,12 +34,27 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData($event)"
+            />
           </div>
         </template>
-        <Column field="subject" header="Bruksområde" sortable />
-        <Column field="count" header="Antall" sortable />
+        <Column
+          field="subject"
+          header="Bruksområde"
+          sortable
+        />
+        <Column
+          field="count"
+          header="Antall"
+          sortable
+        />
       </DataTable>
     </div>
   </UtilsTableWrapper>

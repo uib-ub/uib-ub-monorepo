@@ -4,7 +4,10 @@
       <h2 class="text-lg font-semibold pb-2 text-gray-800">
         Forestående aktiviteter
       </h2>
-      <AddButton :to="studioLinks.newActivity" target="_blank" />
+      <AddButton
+        :to="studioLinks.newActivity"
+        target="_blank"
+      />
     </div>
     <ol class="space-y-0.5 text-lg ml-1">
       <li
@@ -47,12 +50,13 @@ const procdata = computed(() =>
         const end = prettyPrintDate(a.end?.substring(0, 10));
         if (start === end) {
           return end;
-        } else {
+        }
+        else {
           return `${start}–${end}`;
         }
       },
     };
     return tmp;
-  })
+  }),
 );
 </script>

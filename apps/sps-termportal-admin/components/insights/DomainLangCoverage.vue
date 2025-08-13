@@ -1,6 +1,8 @@
 <template>
   <UtilsTableWrapper>
-    <template #header>Domains: Language coverage</template>
+    <template #header>
+      Domains: Language coverage
+    </template>
     <template #description>
       <p>
         Only includes published domains and counts published concepts from
@@ -25,15 +27,42 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData($event)"
+            />
           </div>
         </template>
-        <Column field="label" header="Navn" sortable />
-        <Column field="concepts" header="Begreper" sortable />
-        <Column field="nb" header="med bokmål term" sortable />
-        <Column field="nn" header="med nynorsk term" sortable />
-        <Column field="en" header="med engelsk term" sortable />
+        <Column
+          field="label"
+          header="Navn"
+          sortable
+        />
+        <Column
+          field="concepts"
+          header="Begreper"
+          sortable
+        />
+        <Column
+          field="nb"
+          header="med bokmål term"
+          sortable
+        />
+        <Column
+          field="nn"
+          header="med nynorsk term"
+          sortable
+        />
+        <Column
+          field="en"
+          header="med engelsk term"
+          sortable
+        />
       </DataTable>
     </div>
     <template #legend>

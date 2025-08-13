@@ -1,6 +1,8 @@
 <template>
   <UtilsTableWrapper>
-    <template #header>Basic Analytics</template>
+    <template #header>
+      Basic Analytics
+    </template>
     <div class="max-w-3xl">
       <DataTable
         ref="datatable"
@@ -14,13 +16,33 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <Button class="h-10" label="Eksport" @click="exportData()" />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData()"
+            />
           </div>
         </template>
-        <Column field="date" header="Date" sortable></Column>
-        <Column field="visits" header="Visits" sortable></Column>
-        <Column field="pageviews" header="Pageviews" sortable></Column>
-        <Column field="searches" header="Searches" sortable></Column>
+        <Column
+          field="date"
+          header="Date"
+          sortable
+        />
+        <Column
+          field="visits"
+          header="Visits"
+          sortable
+        />
+        <Column
+          field="pageviews"
+          header="Pageviews"
+          sortable
+        />
+        <Column
+          field="searches"
+          header="Searches"
+          sortable
+        />
       </DataTable>
     </div>
     <template #legend>

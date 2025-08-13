@@ -1,6 +1,8 @@
 <template>
   <section class="space-y-3">
-    <h2 class="text-2xl">Termbases in domain: {{ domain.nb }}</h2>
+    <h2 class="text-2xl">
+      Termbases in domain: {{ domain.nb }}
+    </h2>
     <div class="space-y-4">
       <div>
         <p>
@@ -9,7 +11,9 @@
         </p>
       </div>
       <div class="space-y-2">
-        <h3 class="text-xl">Directly defined in domain</h3>
+        <h3 class="text-xl">
+          Directly defined in domain
+        </h3>
         <DataTable
           :value="displayData"
           removable-sort
@@ -17,13 +21,23 @@
           :sort-order="-1"
           table-style="min-width: 1rem"
         >
-          <Column sortable field="label" header="Bokmål" />
-          <Column sortable field="concepts" header="Begreper" />
+          <Column
+            sortable
+            field="label"
+            header="Bokmål"
+          />
+          <Column
+            sortable
+            field="concepts"
+            header="Begreper"
+          />
         </DataTable>
       </div>
 
       <div class="space-y-2">
-        <h3 class="text-xl">Defined in subdomains</h3>
+        <h3 class="text-xl">
+          Defined in subdomains
+        </h3>
         <DataTable
           :value="displayDataRec"
           removable-sort
@@ -31,8 +45,16 @@
           :sort-order="-1"
           table-style="min-width: 1rem"
         >
-          <Column sortable field="label" header="Bokmål" />
-          <Column sortable field="concepts" header="Begreper" />
+          <Column
+            sortable
+            field="label"
+            header="Bokmål"
+          />
+          <Column
+            sortable
+            field="concepts"
+            header="Begreper"
+          />
         </DataTable>
       </div>
     </div>
@@ -46,7 +68,7 @@ const { data } = await useLazyFetch(
   `/api/domain/${props.domain.id}/domain_termbases_direct`,
   {
     query: { internal: true },
-  }
+  },
 );
 
 const displayData = computed(() => {
@@ -59,7 +81,7 @@ const { data: dataRec } = await useLazyFetch(
   `/api/domain/${props.domain.id}/exploreDomainTermbasesRec`,
   {
     query: { internal: true },
-  }
+  },
 );
 
 const displayDataRec = computed(() => {

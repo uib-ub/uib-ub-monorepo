@@ -1,7 +1,12 @@
 <template>
   <section>
     <AppLink to="#tbmembers">
-      <h2 id="tbmembers" class="my-6 text-2xl">Termgruppe</h2>
+      <h2
+        id="tbmembers"
+        class="my-6 text-2xl"
+      >
+        Termgruppe
+      </h2>
     </AppLink>
     <DataTable
       ref="datatable"
@@ -15,22 +20,47 @@
     >
       <template #header>
         <div class="flex justify-between">
-          <InputText v-model="filters['global'].value" placeholder="Søk" />
-          <Button class="h-10" label="Eksport" @click="exportData()" />
+          <InputText
+            v-model="filters['global'].value"
+            placeholder="Søk"
+          />
+          <Button
+            class="h-10"
+            label="Eksport"
+            @click="exportData()"
+          />
         </div>
       </template>
-      <Column header="Navn" field="label" sortable />
-      <Column header="E-post" field="email" sortable>
+      <Column
+        header="Navn"
+        field="label"
+        sortable
+      />
+      <Column
+        header="E-post"
+        field="email"
+        sortable
+      >
         <template #body="{ data }">
           <AppLink
             class="underline hover:decoration-2"
             :to="`mailto:${data.email}`"
-            >{{ data?.email }}</AppLink
           >
+            {{ data?.email }}
+          </AppLink>
         </template>
       </Column>
-      <Column header="Termgruppe" field="group" sortable />
-      <Column header="Aktiv" field="active" sortable data-type="boolean">
+      <Column
+        header="Termgruppe"
+        field="group"
+        sortable
+      />
+      <Column
+        header="Aktiv"
+        field="active"
+        sortable
+        data-type="boolean"
+      >
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
             <span>{{ data.active ? "Ja" : "Nei" }}</span>
@@ -43,9 +73,17 @@
           />
         </template>
       </Column>
-      <Column header="Rolle" field="role" sortable />
+      <Column
+        header="Rolle"
+        field="role"
+        sortable
+      />
 
-      <Column header="Organisasjon" field="institution" sortable />
+      <Column
+        header="Organisasjon"
+        field="institution"
+        sortable
+      />
       <Column>
         <template #body="slotProps">
           <div class="flex">
@@ -78,7 +116,7 @@ const filters = ref({
   active: { value: null, matchMode: FilterMatchMode.EQUALS },
 });
 
-const tbString = props.termbases.map((tb) => `'${tb}'`);
+const tbString = props.termbases.map(tb => `'${tb}'`);
 const query = `
 *[_type == "person"]{
   _id,
@@ -111,12 +149,12 @@ const procdata = computed(() => {
         email: person?.email,
         institution: person?.institution,
         termgroups: person?.termgroup.filter(
-          (group) => group.termbase.length > 0
+          group => group.termbase.length > 0,
         ),
       };
       return data;
     })
-    .filter((person) => person.termgroups.length > 0)
+    .filter(person => person.termgroups.length > 0)
     .map((person) => {
       return {
         _id: person._id,
@@ -124,48 +162,48 @@ const procdata = computed(() => {
         email: person.email,
         institution: person.institution
           ?.map(
-            (delegation) =>
-              `${delegation.organization} (${delegation?.timespan?.edtf})`
+            delegation =>
+              `${delegation.organization} (${delegation?.timespan?.edtf})`,
           )
           .join(", "),
         group: person.termgroups
           .map(
-            (group) =>
-              `${group.label} (${group?.qualifiedMembership[0]?.timespan?.edtf})`
+            group =>
+              `${group.label} (${group?.qualifiedMembership[0]?.timespan?.edtf})`,
           )
           .join(", "),
         role: person.termgroups
-          .map((group) =>
-            group.qualifiedMembership.map((membership) => membership.role)
+          .map(group =>
+            group.qualifiedMembership.map(membership => membership.role),
           )
           .join(", "),
         start: person.termgroups
-          .map((group) =>
+          .map(group =>
             group.qualifiedMembership.map(
-              (membership) =>
-                membership?.timespan?.beginOfTheBegin?.substring(0, 10) ||
-                undefined
-            )
+              membership =>
+                membership?.timespan?.beginOfTheBegin?.substring(0, 10)
+                || undefined,
+            ),
           )
           .flat()
           .join(", "),
         end: person.termgroups
-          .map((group) =>
-            group.qualifiedMembership.map((membership) =>
-              membership?.timespan?.endOfTheEnd?.substring(0, 10)
-            )
+          .map(group =>
+            group.qualifiedMembership.map(membership =>
+              membership?.timespan?.endOfTheEnd?.substring(0, 10),
+            ),
           )
           .flat()
-          .filter((end) => end)
+          .filter(end => end)
           .join(", "),
 
         get active() {
           return !(
-            this.end &&
             this.end
+            && this.end
               .split(", ")
-              .map((end) => !isInFuture(end))
-              .filter((end) => end).length > 0
+              .map(end => !isInFuture(end))
+              .filter(end => end).length > 0
           );
         },
       };

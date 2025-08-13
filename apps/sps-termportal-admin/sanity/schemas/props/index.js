@@ -33,8 +33,8 @@ export const blockContent = {
                   href: props.value.href,
                   target: "_blank",
                 },
-                props.renderDefault(props)
-              )
+                props.renderDefault(props),
+              ),
             );
           },
         },
@@ -52,7 +52,7 @@ export const note = {
 
 export const label = { name: "label", type: "string", title: "Tittel" };
 
-export const email = { name: "email", type: "string", title: "E-post"};
+export const email = { name: "email", type: "string", title: "E-post" };
 
 export const tbstatus = {
   name: "status",
@@ -60,7 +60,7 @@ export const tbstatus = {
   title: "Termbasestatus",
   options: {
     list: [
-      { title: "Uaktuell", value: "uaktuell"},
+      { title: "Uaktuell", value: "uaktuell" },
       { title: "Kjent", value: "kjent" },
       { title: "Planlagt", value: "planlagt" },
       { title: "Initialisert", value: "initialisert" },

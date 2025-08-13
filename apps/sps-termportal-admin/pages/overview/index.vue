@@ -2,7 +2,7 @@
   <div class="flex">
     <!-- <SideBar/> -->
     <main class="pt-8">
-      <TermbaseOverview v-model:modelValue="selectedTermbase" />
+      <TermbaseOverview v-model:model-value="selectedTermbase" />
       <TermbaseBlocker
         v-if="selectedTermbase.length > 0"
         :key="'blocker' + selectedTermbase.map((tb) => tb._id).join('')"

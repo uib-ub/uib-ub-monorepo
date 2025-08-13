@@ -1,12 +1,26 @@
 <template>
   <div class="flex">
     <!-- <SideBar /> -->
-    <main ref="mainRef" class="space-y-6 pt-8">
-      <h1 class="text-2xl">{{ merged?.label }}</h1>
-      <div id="content" ref="contentRef" class="space-y-8">
-        <TermbaseInfoBox v-if="merged" :termbase="merged" />
+    <main
+      ref="mainRef"
+      class="space-y-6 pt-8"
+    >
+      <h1 class="text-2xl">
+        {{ merged?.label }}
+      </h1>
+      <div
+        id="content"
+        ref="contentRef"
+        class="space-y-8"
+      >
+        <TermbaseInfoBox
+          v-if="merged"
+          :termbase="merged"
+        />
         <div class="space-y-4">
-          <h2 class="text-2xl">Terminologi</h2>
+          <h2 class="text-2xl">
+            Terminologi
+          </h2>
           <div class="space-y-8">
             <TermbaseSubjectValues
               v-if="merged?.id && merged.conceptCount > 0"
@@ -92,25 +106,26 @@ const query = `*[_type == "termbase" && id == "${route.params.id}"]{
 const { data: cmsdata } = useLazySanityQuery(query);
 
 function matchid(data, entry, key) {
-  return data.value?.find((d) => d.id === entry.id.value)?.[key];
+  return data.value?.find(d => d.id === entry.id.value)?.[key];
 }
 
-const getLicense = (value) =>
+const getLicense = value =>
   value
-    ? (licenseLabels[value.replace(runtimeConfig.public.base, "")] ??
-      value.replace(runtimeConfig.public.base, ""))
+    ? (licenseLabels[value.replace(runtimeConfig.public.base, "")]
+      ?? value.replace(runtimeConfig.public.base, ""))
     : "";
 
-function calcLastActivity(timespan: Object) {
+function calcLastActivity(timespan: object) {
   if (timespan?.endOfTheEnd) {
     return getDaysDiff(timespan.endOfTheEnd?.substring(0, 10));
-  } else {
+  }
+  else {
     return -1;
   }
 }
 
 const merged = computed(() => {
-  const dbdatatb = dbdata.value?.filter((tb) => tb.id.value == route.params.id);
+  const dbdatatb = dbdata.value?.filter(tb => tb.id.value == route.params.id);
 
   const enriched = dbdatatb?.map((e) => {
     const tmp = {
@@ -139,7 +154,8 @@ const merged = computed(() => {
       get reminderCalc() {
         if (tmp.reminderInterval && tmp.lastActivityDays !== null) {
           return -(tmp.reminderInterval - tmp.lastActivityDays);
-        } else {
+        }
+        else {
           return null;
         }
       },
@@ -150,7 +166,7 @@ const merged = computed(() => {
 
   // get termbases that are not present in the wiki
   if (enriched && cmsdata.value) {
-    const ids = dbdata.value.map((e) => e.id.value);
+    const ids = dbdata.value.map(e => e.id.value);
     for (const entry of cmsdata.value) {
       if (!ids.includes(entry.id)) {
         const data = {
@@ -177,7 +193,8 @@ const merged = computed(() => {
             if (data.reminderInterval && data.lastActivityDays !== null) {
               const diff = -(data.reminderInterval - data.lastActivityDays);
               return -(data.reminderInterval - data.lastActivityDays);
-            } else {
+            }
+            else {
               return null;
             }
           },

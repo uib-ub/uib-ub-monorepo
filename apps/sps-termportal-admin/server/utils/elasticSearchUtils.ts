@@ -33,7 +33,7 @@ export function genEsQuery(query: Record<string, any>) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `ApiKey ${apiKey}`,
+        "Authorization": `ApiKey ${apiKey}`,
       },
       body: query.body,
     },

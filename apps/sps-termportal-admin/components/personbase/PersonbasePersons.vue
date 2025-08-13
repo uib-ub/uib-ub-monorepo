@@ -1,6 +1,8 @@
 <template>
   <div class="mt-8 space-y-3">
-    <h2 class="mb-3 text-xl">Personer</h2>
+    <h2 class="mb-3 text-xl">
+      Personer
+    </h2>
     <DataTable
       ref="datatable"
       v-model:filters="filters"
@@ -14,23 +16,52 @@
     >
       <template #header>
         <div class="flex flex-wrap justify-between gap-2">
-          <InputText v-model="filters['global'].value" placeholder="Søk" />
-          <Button class="h-10" label="Eksport" @click="exportData()" />
+          <InputText
+            v-model="filters['global'].value"
+            placeholder="Søk"
+          />
+          <Button
+            class="h-10"
+            label="Eksport"
+            @click="exportData()"
+          />
         </div>
       </template>
-      <Column field="label" header="Navn" sortable />
-      <Column header="E-post" field="email" sortable>
+      <Column
+        field="label"
+        header="Navn"
+        sortable
+      />
+      <Column
+        header="E-post"
+        field="email"
+        sortable
+      >
         <template #body="{ data }">
           <AppLink
             class="underline hover:decoration-2"
             :to="`mailto:${data.email}`"
-            >{{ data?.email }}</AppLink
           >
+            {{ data?.email }}
+          </AppLink>
         </template>
       </Column>
-      <Column field="organization" header="Organisasjon" sortable></Column>
-      <Column field="groupDisplay" header="Gruppe" sortable></Column>
-      <Column field="active" header="Aktiv" sortable data-type="boolean">
+      <Column
+        field="organization"
+        header="Organisasjon"
+        sortable
+      />
+      <Column
+        field="groupDisplay"
+        header="Gruppe"
+        sortable
+      />
+      <Column
+        field="active"
+        header="Aktiv"
+        sortable
+        data-type="boolean"
+      >
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
             <span>{{ data.active ? "Ja" : "Nei" }}</span>
@@ -60,7 +91,9 @@
     <div class="">
       <dl>
         <div class="flex gap-x-4">
-          <dt class="font-semibold">Aktiv</dt>
+          <dt class="font-semibold">
+            Aktiv
+          </dt>
           <dd>
             Personen er for øyeblikket medlem av en Gruppe eller er
             kontaktperson for en termbase.
@@ -109,25 +142,25 @@ const procdata = computed(() => {
       label: person.label,
       email: person.email,
       group: person.group.filter(
-        (gr) =>
-          !gr?.qualifiedMembership[0]?.timespan?.endOfTheEnd ||
-          isInFuture(gr?.qualifiedMembership[0]?.timespan?.endOfTheEnd)
+        gr =>
+          !gr?.qualifiedMembership[0]?.timespan?.endOfTheEnd
+          || isInFuture(gr?.qualifiedMembership[0]?.timespan?.endOfTheEnd),
       ),
       get groupDisplay() {
         return this.group
           .map(
-            (group) =>
-              `${group.label} (${group?.qualifiedMembership[0].timespan?.edtf})`
+            group =>
+              `${group.label} (${group?.qualifiedMembership[0].timespan?.edtf})`,
           )
           .join(", ");
       },
       organization: person?.organization
         ?.filter(
-          (org) =>
-            !org?.timespan?.endOfTheEnd ||
-            isInFuture(org?.timespan?.endOfTheEnd)
+          org =>
+            !org?.timespan?.endOfTheEnd
+            || isInFuture(org?.timespan?.endOfTheEnd),
         )
-        .map((org) => `${org?.organization?.label} (${org?.timespan?.edtf})`)
+        .map(org => `${org?.organization?.label} (${org?.timespan?.edtf})`)
         .join(", "),
       contact: person.contact,
       get active() {

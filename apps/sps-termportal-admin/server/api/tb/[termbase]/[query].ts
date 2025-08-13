@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   const queryParams = getQuery(event);
   const instance = getFusekiInstanceInfo(
     runtimeConfig,
-    queryParams?.internal ? "internal" : "default"
+    queryParams?.internal ? "internal" : "default",
   );
 
   const termbase = event.context.params?.termbase;
@@ -48,8 +48,8 @@ export default defineEventHandler(async (event) => {
     body: query(),
     headers: {
       "Content-type": "application/sparql-query",
-      Accept: "application/json",
-      Authorization: `Basic ${instance.authHeader}`,
+      "Accept": "application/json",
+      "Authorization": `Basic ${instance.authHeader}`,
     },
   });
 

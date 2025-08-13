@@ -1,6 +1,8 @@
 <template>
   <UtilsTableWrapper>
-    <template #header>Upubliserte termbaser</template>
+    <template #header>
+      Upubliserte termbaser
+    </template>
     <div class="max-w-5xl">
       <DataTable
         ref="datatable"
@@ -17,11 +19,22 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData()" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData()"
+            />
           </div>
         </template>
-        <Column field="label" header="Navn" sortable></Column>
+        <Column
+          field="label"
+          header="Navn"
+          sortable
+        />
         <Column
           sortable
           header="Status"
@@ -53,8 +66,16 @@
             </MultiSelect>
           </template>
         </Column>
-        <Column field="topdomain" header="Topdomene" sortable></Column>
-        <Column field="domain" header="Domene" sortable></Column>
+        <Column
+          field="topdomain"
+          header="Topdomene"
+          sortable
+        />
+        <Column
+          field="domain"
+          header="Domene"
+          sortable
+        />
       </DataTable>
     </div>
   </UtilsTableWrapper>

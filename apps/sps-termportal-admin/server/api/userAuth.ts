@@ -7,13 +7,14 @@ export default defineEventHandler(async (event) => {
   // use auth js function to get session
   const session = await getServerSession(event);
   if (
-    session &&
-    session?.user?.email &&
-    authorizedUsers &&
-    authorizedUsers.includes(session?.user?.email)
+    session
+    && session?.user?.email
+    && authorizedUsers
+    && authorizedUsers.includes(session?.user?.email)
   ) {
     return true;
-  } else {
+  }
+  else {
     return false;
   }
 });

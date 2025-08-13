@@ -1,6 +1,8 @@
 <template>
   <UtilsTableWrapper>
-    <template #header>Analytics: Monthly views per termbase</template>
+    <template #header>
+      Analytics: Monthly views per termbase
+    </template>
     <template #description>
       <p>Views of termbase page or concept pages in one termbase per month.</p>
       <p>
@@ -22,19 +24,29 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData()" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData()"
+            />
           </div>
         </template>
-        <Column field="label" header="Navn" sortable />
+        <Column
+          field="label"
+          header="Navn"
+          sortable
+        />
         <Column
           v-for="column in columnDefinitions"
           :key="column.field"
           :field="column.field"
           :header="column.header"
           sortable
-        >
-        </Column>
+        />
       </DataTable>
     </div>
   </UtilsTableWrapper>
@@ -48,7 +60,7 @@ const query = `*[_type == "termbase" && status == "publisert"]{ id }`;
 const { data: cmsdata } = useLazySanityQuery(query);
 const { data: visits } = useFetch("/api/analytics/termbasevisits");
 const { data: tboverview } = await useLazyFetch(
-  "/api/tb/all/termbase_overview"
+  "/api/tb/all/termbase_overview",
 );
 
 const displayData = computed(() => {
@@ -64,7 +76,8 @@ const displayData = computed(() => {
       const source = partition["_source"];
       if (tb.id in source) {
         tb[source.date] = source[tb.id];
-      } else {
+      }
+      else {
         tb[source.date] = null;
       }
       return { ...tb, ...{ x: "xx" } };

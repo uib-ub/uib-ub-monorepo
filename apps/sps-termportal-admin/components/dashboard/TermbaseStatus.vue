@@ -1,42 +1,32 @@
 <template>
   <section class="">
-    <h2 class="text-lg font-semibold pb-5 text-gray-800">Termbasestatus</h2>
+    <h2 class="text-lg font-semibold pb-5 text-gray-800">
+      Termbasestatus
+    </h2>
     <div class="py-0.5 px-0.5 flex text-lg max-w-fit bg-tpblue-400">
-      <div v-if="data?.ingen" class="arrow right flex">
-        <span
-          ><span class="font-semibold pr-2">{{ data?.ingen }}</span
-          >ingen</span
-        >
+      <div
+        v-if="data?.ingen"
+        class="arrow right flex"
+      >
+        <span><span class="font-semibold pr-2">{{ data?.ingen }}</span>ingen</span>
       </div>
-      <div class="arrow right flex" :class="{ left: data?.ingen }">
-        <span
-          ><span class="font-semibold pr-2">{{ data?.kjent }}</span
-          >kjent</span
-        >
-      </div>
-      <div class="arrow left right flex">
-        <span
-          ><span class="font-semibold pr-2">{{ data?.planlagt }}</span
-          >planlagt</span
-        >
+      <div
+        class="arrow right flex"
+        :class="{ left: data?.ingen }"
+      >
+        <span><span class="font-semibold pr-2">{{ data?.kjent }}</span>kjent</span>
       </div>
       <div class="arrow left right flex">
-        <span
-          ><span class="font-semibold pr-2">{{ data?.initialisert }}</span
-          >initialisert</span
-        >
+        <span><span class="font-semibold pr-2">{{ data?.planlagt }}</span>planlagt</span>
       </div>
       <div class="arrow left right flex">
-        <span
-          ><span class="font-semibold pr-2">{{ data?.opprettet }}</span
-          >opprettet</span
-        >
+        <span><span class="font-semibold pr-2">{{ data?.initialisert }}</span>initialisert</span>
+      </div>
+      <div class="arrow left right flex">
+        <span><span class="font-semibold pr-2">{{ data?.opprettet }}</span>opprettet</span>
       </div>
       <div class="arrow left flex">
-        <span style="padding-right: 30px"
-          ><span class="font-semibold pr-2">{{ data?.publisert }}</span
-          >publisert</span
-        >
+        <span style="padding-right: 30px"><span class="font-semibold pr-2">{{ data?.publisert }}</span>publisert</span>
       </div>
     </div>
   </section>

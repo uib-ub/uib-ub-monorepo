@@ -1,6 +1,9 @@
 <template>
   <div class="flex space-x-2">
-    <dt class="font-semibold" :class="`w-${legendWidth}`">
+    <dt
+      class="font-semibold"
+      :class="`w-${legendWidth}`"
+    >
       {{ legendKey }}
     </dt>
     <dd>{{ legendValue }}</dd>

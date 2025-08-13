@@ -1,17 +1,21 @@
 <template>
   <section class="space-y-3">
     <AppLink :to="'#' + id">
-      <component :is="headingLevel" :id="id" class="mb-3 text-xl"
-        ><slot name="header"></slot
-      ></component>
+      <component
+        :is="headingLevel"
+        :id="id"
+        class="mb-3 text-xl"
+      >
+        <slot name="header" />
+      </component>
     </AppLink>
     <div class="space-y-3">
       <div class="space-y-1.5 max-w-3xl">
-        <slot name="description"></slot>
+        <slot name="description" />
       </div>
-      <slot></slot>
+      <slot />
       <div class="space-y-3 max-w-3xl">
-        <slot name="legend"></slot>
+        <slot name="legend" />
       </div>
     </div>
   </section>

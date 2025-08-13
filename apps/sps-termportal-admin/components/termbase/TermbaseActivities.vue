@@ -1,12 +1,17 @@
 <template>
   <div class="">
     <AppLink to="#tbActivities">
-      <h2 id="tbActivities" class="my-6 text-2xl">Aktiviteter</h2>
+      <h2
+        id="tbActivities"
+        class="my-6 text-2xl"
+      >
+        Aktiviteter
+      </h2>
     </AppLink>
     <DataTable
       ref="datatable"
       v-model:filters="filters"
-      v-model:expandedRows="expandedRows"
+      v-model:expanded-rows="expandedRows"
       :value="procdata"
       removable-sort
       paginator
@@ -17,21 +22,40 @@
     >
       <template #header>
         <div class="flex justify-between">
-          <InputText v-model="filters['global'].value" placeholder="Søk" />
+          <InputText
+            v-model="filters['global'].value"
+            placeholder="Søk"
+          />
           <div class="space-x-4">
-            <Button class="h-10" text label="Expand All" @click="expandAll" />
+            <Button
+              class="h-10"
+              text
+              label="Expand All"
+              @click="expandAll"
+            />
             <Button
               class="h-10"
               text
               label="Collapse All"
               @click="collapseAll"
             />
-            <Button class="h-10" label="Eksport" @click="exportData()" />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData()"
+            />
           </div>
         </div>
       </template>
-      <Column expander style="width: 3rem" />
-      <Column field="label" header="Label" sortable />
+      <Column
+        expander
+        style="width: 3rem"
+      />
+      <Column
+        field="label"
+        header="Label"
+        sortable
+      />
       <Column
         sortable
         header="Type"
@@ -62,17 +86,29 @@
           </MultiSelect>
         </template>
       </Column>
-      <Column field="start" header="Start" sortable>
+      <Column
+        field="start"
+        header="Start"
+        sortable
+      >
         <template #body="slotProps">
           {{ prettyPrintDate(slotProps.data.start) }}
         </template>
       </Column>
-      <Column field="end" header="Slutt" sortable>
+      <Column
+        field="end"
+        header="Slutt"
+        sortable
+      >
         <template #body="slotProps">
           {{ prettyPrintDate(slotProps.data.end) }}
         </template>
       </Column>
-      <Column field="termbase" header="Termbase" sortable />
+      <Column
+        field="termbase"
+        header="Termbase"
+        sortable
+      />
       <Column header="">
         <template #body="slotProps">
           <div class="flex">
@@ -88,8 +124,13 @@
       </Column>
       <template #expansion="slotProps">
         <div class="p-4 space-y-3 max-w-3xl">
-          <div v-if="slotProps.data.note" class="content-page">
-            <h2 class="text-lg py-1 font-semibold">Merknad</h2>
+          <div
+            v-if="slotProps.data.note"
+            class="content-page"
+          >
+            <h2 class="text-lg py-1 font-semibold">
+              Merknad
+            </h2>
             <TpSanityContent :blocks="slotProps.data.note" />
           </div>
         </div>
@@ -111,7 +152,7 @@ const filters = ref({
   type: { value: null, matchMode: FilterMatchMode.IN },
 });
 
-const tbString = Object.keys(props.termbases).map((tb) => `'${tb}'`);
+const tbString = Object.keys(props.termbases).map(tb => `'${tb}'`);
 const query = `
 *[_type == "activity"]{
   _id,
@@ -131,8 +172,8 @@ const { data } = useLazySanityQuery(query);
 const procdata = computed(() => {
   const tmp = data.value
     ?.filter(
-      (activity) =>
-        activity.qualifiedUsage && activity.qualifiedUsage.length > 0
+      activity =>
+        activity.qualifiedUsage && activity.qualifiedUsage.length > 0,
     )
     .map((activity) => {
       return {
@@ -143,7 +184,7 @@ const procdata = computed(() => {
         start: activity.timespan?.beginOfTheBegin?.substring(0, 10),
         end: activity.timespan?.endOfTheEnd?.substring(0, 10),
         termbase: activity?.qualifiedUsage
-          ?.map((usage) => props.termbases[usage.termbase._ref])
+          ?.map(usage => props.termbases[usage.termbase._ref])
           .join(", "),
       };
     });

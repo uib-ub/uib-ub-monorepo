@@ -1,9 +1,11 @@
 <template>
   <div class="mt-8">
-    <h2 class="mb-6 text-xl">Termgruppekandidater</h2>
+    <h2 class="mb-6 text-xl">
+      Termgruppekandidater
+    </h2>
     <DataTable
       v-model:filters="filters"
-      v-model:expandedRows="expandedRows"
+      v-model:expanded-rows="expandedRows"
       :value="procdata"
       removable-sort
       paginator
@@ -15,10 +17,18 @@
       <template #header>
         <div class="flex flex-wrap justify-between gap-2">
           <div class="flex">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
           </div>
           <div>
-            <Button class="h-10" text label="Expand All" @click="expandAll" />
+            <Button
+              class="h-10"
+              text
+              label="Expand All"
+              @click="expandAll"
+            />
             <Button
               class="h-10"
               text
@@ -28,9 +38,20 @@
           </div>
         </div>
       </template>
-      <Column expander style="width: 5rem" />
-      <Column field="name" header="Navn" sortable />
-      <Column field="organization" header="Organisasjon" sortable></Column>
+      <Column
+        expander
+        style="width: 5rem"
+      />
+      <Column
+        field="name"
+        header="Navn"
+        sortable
+      />
+      <Column
+        field="organization"
+        header="Organisasjon"
+        sortable
+      />
       <Column
         field="domain"
         header="Domene"
@@ -119,7 +140,11 @@
           />
         </template>
       </Column>
-      <Column field="lastUpdated" header="Sist oppdatert" sortable />
+      <Column
+        field="lastUpdated"
+        header="Sist oppdatert"
+        sortable
+      />
       <Column header="">
         <template #body="slotProps">
           <NuxtLink
@@ -136,12 +161,19 @@
       <!-- Expanded -->
       <template #expansion="slotProps">
         <div class="p-4 space-y-3 max-w-3xl">
-          <div v-if="slotProps.data.note" class="content-page">
-            <h2 class="text-lg py-1 font-semibold">Merknad</h2>
+          <div
+            v-if="slotProps.data.note"
+            class="content-page"
+          >
+            <h2 class="text-lg py-1 font-semibold">
+              Merknad
+            </h2>
             <TpSanityContent :blocks="slotProps.data.note" />
           </div>
           <div v-if="slotProps.data.membership">
-            <h2 class="text-lg py-1 font-semibold">Grupper</h2>
+            <h2 class="text-lg py-1 font-semibold">
+              Grupper
+            </h2>
             <ul class="list-disc ml-5">
               <li
                 v-for="membership in slotProps.data.membership"
@@ -195,14 +227,14 @@ const procdata = computed(() => {
         _id: person._id,
         name: person?.label,
         note: person?.note,
-        membership: person?.membership?.map((membership) => membership.label),
+        membership: person?.membership?.map(membership => membership.label),
         organization: person?.organization
           ?.filter(
-            (org) =>
-              !org?.timespan?.endOfTheEnd ||
-              isInFuture(org?.timespan?.endOfTheEnd)
+            org =>
+              !org?.timespan?.endOfTheEnd
+              || isInFuture(org?.timespan?.endOfTheEnd),
           )
-          .map((org) => `${org?.organization?.label} (${org?.timespan?.edtf})`)
+          .map(org => `${org?.organization?.label} (${org?.timespan?.edtf})`)
           .join(", "),
         lastUpdated: person?.lastUpdated,
         domain: topDomains[cand?.domain],
