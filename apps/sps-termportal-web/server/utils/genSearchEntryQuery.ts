@@ -188,7 +188,7 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
                 ${context[0]}
                 ${translateOptional}
               }
-              ORDER BY DESC(?score) lcase(?literal)
+              ORDER BY lcase(str(?lit)) DESC(?score)
               LIMIT ${searchOptions.limit}
               OFFSET ${searchOptions.offset?.[match as Matching] || 0}
             }
