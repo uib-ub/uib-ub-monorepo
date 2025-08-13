@@ -6,6 +6,7 @@ import genTermbaseDefinitionsMissing from "~/server/utils/genTermbaseDefinitions
 import genQualitySemanticRelationsQuery from "~/server/utils/genQualitySemanticRelationsQuery";
 import genTermbaseSubjectValues from "~/server/utils/genTermbaseSubjectValues";
 import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
+import genTermbaseDomains from "~/server/utils/genTermbaseDomains";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
@@ -15,8 +16,8 @@ export default defineEventHandler(async (event) => {
     queryParams?.internal ? "internal" : "default",
   );
 
-  const termbase = event.context.params?.termbase;
   const queryType = event.context.params?.query;
+  const termbase = event.context.params?.termbase;
 
   // Check escache for certain keys
   const cachedData = await checkEsCache(queryType);
@@ -38,10 +39,16 @@ export default defineEventHandler(async (event) => {
         return genInsightTermbaseQuery();
       case "subjectValues":
         return genTermbaseSubjectValues(termbase);
+      case "domains":
+        return genTermbaseDomains(termbase);
       default:
         break;
     }
   };
+
+  if (queryType == "domains") {
+    console.log(query());
+  }
 
   const data = await $fetch(instance.url, {
     method: "post",

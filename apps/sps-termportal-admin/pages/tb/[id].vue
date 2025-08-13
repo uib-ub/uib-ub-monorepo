@@ -22,6 +22,11 @@
             Terminologi
           </h2>
           <div class="space-y-8">
+            <TermbaseDomains
+              v-if="merged?.id && merged.conceptCount > 0"
+              heading-level="h3"
+              :termbase="merged"
+            />
             <TermbaseSubjectValues
               v-if="merged?.id && merged.conceptCount > 0"
               :key="`subjects${merged?.id}`"
@@ -76,8 +81,6 @@
 </template>
 
 <script setup lang="ts">
-import { TermbaseLanguageCoverage } from "#components";
-
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig();
 const contentRef = ref();

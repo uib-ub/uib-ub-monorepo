@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { v4 as uuid } from "uuid";
 
-const props = defineProps({ headingLevel: { type: String, default: "h2" } });
+defineProps({ headingLevel: { type: String, default: "h2" } });
 
 const id = uuid();
 </script>
