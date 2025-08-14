@@ -34,7 +34,7 @@ export default function FacetSection() {
             <div key={f.key}>
             <Clickable type="button" 
                        aria-expanded={isExpanded} 
-                       className="w-full flex justify-between p-3 aria-expanded:border-b aria-expanded:border-neutral-200"
+                       className="w-full flex justify-between p-3"
                        aria-controls={f.key + '-collapsible'} 
                        add={{facet: isExpanded ? null : f.key}}>
               <div className="flex flex-wrap gap-4">
