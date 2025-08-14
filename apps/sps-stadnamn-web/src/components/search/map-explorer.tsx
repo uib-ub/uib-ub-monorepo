@@ -48,7 +48,10 @@ export default function MapExplorer() {
   const parent = searchParams.get('parent')
   const doc = searchParams.get('doc')
 
-  const tiles = viewResults?.aggregations?.sample?.tiles?.buckets || viewResults?.aggregations?.tiles?.buckets
+  
+  // NB: cluster mode has sampling within each cluster if many results, and sample mode has clustering of results with the same coordinates.
+  // Tiles are only used in cluster mode
+  const tiles = viewResults?.aggregations?.clusterSample?.tiles?.buckets || viewResults?.aggregations?.tiles?.buckets
 
 
   const maxDocCount = tiles?.reduce((acc: number, cur: any) => Math.max(acc, cur.doc_count), 0);
@@ -69,13 +72,13 @@ export default function MapExplorer() {
   if (searchParams.get('error') == 'true') {
     throw new Error('Simulated client side error');
   }
-  const { docData, parentData, setSameMarkerList, docLoading, parentLoading } = useContext(DocContext)
+  const { docData, parentData, setSameMarkerList, docLoading } = useContext(DocContext)
   
   const mapInstance = useRef<any>(null);
   const autoMode = markerMode === 'auto' ? (searchParams.get('q')?.length && totalHits?.value < 100000 ? 'cluster' : 'sample') : null
 
-  const labelClusters = useCallback((data: any) => {
-    console.log("CLUSTERING")
+  // NB: sample mode, but clustering of results with the same coordinates
+  const sampleClusters = useCallback((data: any) => {
     const markers: {topHit: any, grouped: any[], unlabeled: any[]}[] = []
 
     data.hits.hits.forEach((hit: any) => {
@@ -249,7 +252,7 @@ export default function MapExplorer() {
       })
        
       .then(data => {
-          setViewResults((autoMode == 'sample' || markerMode == 'sample') ? labelClusters(data) : data)
+          setViewResults((autoMode == 'sample' || markerMode == 'sample') ? sampleClusters(data) : data)
       })
 
       .catch(error => {
@@ -265,7 +268,7 @@ export default function MapExplorer() {
         setGeoLoading(false)
       })
 
-  }, [ markerBounds, searchError, searchQueryString, totalHits, markerMode, parent, perspective, isLoading, autoMode, labelClusters, setCoordinatesError, resultBounds, zoom]);
+  }, [ markerBounds, searchError, searchQueryString, totalHits, markerMode, parent, perspective, isLoading, autoMode, sampleClusters, setCoordinatesError, resultBounds, zoom]);
 
 
 
