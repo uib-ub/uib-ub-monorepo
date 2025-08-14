@@ -161,7 +161,7 @@ export default function ServerFacet() {
           aria-pressed={currentValue == '_false'}
           className={`flex flex-1 items-center group gap-1 py-1.5`}
         >
-          Uten <Badge count={noCount} />
+          Utan <Badge count={noCount} />
           {facetAggregation?.buckets && (
             <div className="flex items-center gap-1">
               <PercentageCircle 
