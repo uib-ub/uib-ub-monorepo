@@ -108,7 +108,7 @@ const query = `*[_type == "termbase" && id == "${route.params.id}"]{
 
 const { data: cmsdata } = useLazySanityQuery(query);
 
-function matchid(data, entry, key) {
+function matchid(data, entry, key: string) {
   return data.value?.find(d => d.id === entry.id.value)?.[key];
 }
 

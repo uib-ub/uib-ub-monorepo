@@ -74,3 +74,97 @@ export function getReminderColorClass(data) {
     return colorMappingStatus.warning.color;
   return colorMappingStatus.error.color;
 }
+
+// domain processing
+export function cleanDomainData(data) {
+  return data.map((d) => {
+    const labels = JSON.parse(d.labels.value);
+
+    return {
+      id: cleanId(d.concept.value, true),
+      nb: labels?.nb,
+      labelsLen: Object.keys(labels).length,
+      nn: labels?.nn,
+      en: labels?.en,
+      published: d.published.value === "true",
+      level: d.level.value,
+      children: d?.children
+        ? d?.children.value.split(", ").map(id => cleanId(id, true))
+        : [],
+      concepts: d.concepts.value,
+    };
+  });
+};
+
+export function processDomainHierarchyRecursively(
+  data: [],
+  output: [Record<string, string | number | Array<number>>],
+  domainInstance: object = {},
+  orderCounter: number,
+  hierarchy: Array<number>,
+) {
+  let updatedCounter = orderCounter + 1;
+  let hierarchyCounter = 0;
+  output.push({
+    ...domainInstance,
+    order: updatedCounter,
+    hierarchy: "^" + hierarchy.join(".") + "$",
+  });
+
+  if (domainInstance.children) {
+    const sortedChildren = domainInstance?.children.sort();
+    sortedChildren.forEach((child) => {
+      hierarchyCounter++;
+      const childDomain = data.filter(d => d.id === child)[0];
+      if (childDomain) {
+        updatedCounter = processDomainHierarchyRecursively(
+          data,
+          output,
+          childDomain,
+          updatedCounter,
+          [...hierarchy, ...[hierarchyCounter]],
+        );
+      }
+    });
+  }
+
+  return updatedCounter;
+}
+
+export function processTopdomains(topdomains: string[], data) {
+  const topdomainOrder = topdomains;
+  if (data) {
+    const collected = [];
+    let domainCounter = 0;
+    const topdomainsFiltered = data
+      .filter(d => d.level === "1")
+      .sort(
+        (a, b) =>
+          (topdomainOrder.includes(a.id) ? topdomainOrder.indexOf(a.id) : Infinity)
+          - (topdomainOrder.includes(b.id) ? topdomainOrder.indexOf(b.id) : Infinity),
+      );
+    let hierarchyCounter = 0;
+    topdomainsFiltered.forEach((domain) => {
+      hierarchyCounter++;
+      domainCounter = processDomainHierarchyRecursively(
+        data,
+        collected,
+        domain,
+        domainCounter,
+        [hierarchyCounter],
+      );
+    });
+    const sumAdded = collected.map((outer) => {
+      const conceptSum = collected
+        .map(inner =>
+          inner.hierarchy.startsWith(outer.hierarchy.slice(0, -1))
+            ? parseInt(inner.concepts)
+            : 0,
+        )
+        .reduce((a, b) => a + b, 0);
+      return { ...outer, ...{ conceptSum } };
+    });
+    return sumAdded;
+  }
+  return [];
+}

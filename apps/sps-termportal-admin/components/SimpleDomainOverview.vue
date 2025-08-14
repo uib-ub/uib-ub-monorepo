@@ -127,21 +127,23 @@
         legend-value="Begreper som er direkte definert i domenet eller i underdomener"
       />
     </UtilsTableLegend>
-    <h3 class="text-2xl">
-      Domain info
-    </h3>
-    <dl>
-      <div
-        v-for="lc in ['nb', 'nn', 'en']"
-        :key="lc"
-        class="flex"
-      >
-        <dt class="w-8">
-          {{ lc }}:
-        </dt>
-        <dd>{{ selectedDomain?.[lc] }}</dd>
-      </div>
-    </dl>
+    <section v-if="selectedDomain">
+      <h3 class="text-2xl">
+        Domain info
+      </h3>
+      <dl>
+        <div
+          v-for="lc in ['nb', 'nn', 'en']"
+          :key="lc"
+          class="flex"
+        >
+          <dt class="w-8">
+            {{ lc }}:
+          </dt>
+          <dd>{{ selectedDomain?.[lc] }}</dd>
+        </div>
+      </dl>
+    </section>
   </div>
 </template>
 
@@ -149,13 +151,15 @@
 import { FilterMatchMode } from "primevue/api";
 import { orderTopDomain } from "~/utils/constants";
 
+const appConfig = useAppConfig();
+
 const datatable = ref();
 const exportData = () => {
   datatable.value.exportCSV();
 };
 
 const selectedDomain = ref();
-const props = defineProps({
+defineProps({
   modelValue: { type: Object, required: true },
 });
 const emits = defineEmits(["update:modelValue"]);
@@ -168,98 +172,11 @@ const { data } = await useLazyFetch("/api/domain/all/domain_overview", {
   query: { internal: true },
 });
 
-const preProc = computed(() => {
-  if (data.value) {
-    return data.value.map((d) => {
-      const labels = JSON.parse(d.labels.value);
-
-      return {
-        id: cleanId(d.concept.value, true),
-        nb: labels?.nb,
-        labelsLen: Object.keys(labels).length,
-        nn: labels?.nn,
-        en: labels?.en,
-        published: d.published.value === "true",
-        level: d.level.value,
-        children: d?.children
-          ? d?.children.value.split(", ").map(id => cleanId(id, true))
-          : [],
-        concepts: d.concepts.value,
-      };
-    });
-  }
-});
-
-function processDomain(
-  data: [],
-  output: [Record<string, string | number | Array<number>>],
-  domainInstance: {},
-  orderCounter: number,
-  hierarchy: Array<number>,
-) {
-  let updatedCounter = orderCounter + 1;
-  let hierarchyCounter = 0;
-  output.push({
-    ...domainInstance,
-    order: updatedCounter,
-    hierarchy: "^" + hierarchy.join(".") + "$",
-  });
-
-  if (domainInstance.children) {
-    const sortedChildren = domainInstance?.children.sort();
-    sortedChildren.forEach((child) => {
-      hierarchyCounter++;
-      const childDomain = data.filter(d => d.id === child)[0];
-      if (childDomain) {
-        updatedCounter = processDomain(
-          data,
-          output,
-          childDomain,
-          updatedCounter,
-          [...hierarchy, ...[hierarchyCounter]],
-        );
-      }
-    });
-  }
-
-  return updatedCounter;
-}
-
 const displayData = computed(() => {
-  const order = orderTopDomain;
-  if (preProc.value) {
-    const collected = [];
-    let domainCounter = 0;
-    const topdomains = preProc.value
-      .filter(d => d.level === "1")
-      .sort(
-        (a, b) =>
-          (order.includes(a.id) ? order.indexOf(a.id) : Infinity)
-          - (order.includes(b.id) ? order.indexOf(b.id) : Infinity),
-      );
-    let hierarchyCounter = 0;
-    topdomains.forEach((domain) => {
-      hierarchyCounter++;
-      domainCounter = processDomain(
-        preProc.value,
-        collected,
-        domain,
-        domainCounter,
-        [hierarchyCounter],
-      );
-    });
-    const sumAdded = collected.map((outer) => {
-      const conceptSum = collected
-        .map(inner =>
-          inner.hierarchy.startsWith(outer.hierarchy.slice(0, -1))
-            ? parseInt(inner.concepts)
-            : 0,
-        )
-        .reduce((a, b) => a + b, 0);
-      return { ...outer, ...{ conceptSum } };
-    });
-    return sumAdded;
+  if (data.value) {
+    return processTopdomains(appConfig.domains.topdomainOrder, cleanDomainData(data.value));
   }
+  return [];
 });
 
 const rowClass = (data) => {
