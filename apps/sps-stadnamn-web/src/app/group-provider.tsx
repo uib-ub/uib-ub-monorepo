@@ -51,9 +51,12 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
 
     useEffect(() => {
         if (doc) {
-            setDocIndex(groupData?.findIndex(item => item.fields.uuid[0] === doc))
+            const currentIndex = groupData?.findIndex(item => item.fields?.uuid[0] === doc || item._source?.uuid === doc)
+            if (currentIndex !== undefined && currentIndex > -1) {
+                setDocIndex(currentIndex)
+            }
         }
-    }, [doc, groupData])
+    }, [doc, groupData, groupLoading])
 
     useEffect(() => {
         if (group) {
