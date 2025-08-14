@@ -34,17 +34,11 @@ export default function ServerFacet() {
   const paramsExceptFacet = facet ? removeFilterParams(facet) : searchParams.toString()
   const currentValue = facet && searchParams.get(facet)
 
-  const getAllCount = () => 
-    facetAggregation?.buckets ? facetAggregation.buckets.reduce((sum: number, item: { doc_count: number }) => sum + item.doc_count, 0) : 0;
+  const allCount = facetAggregation?.buckets ? facetAggregation.buckets.reduce((sum: number, item: { doc_count: number }) => sum + item.doc_count, 0) : 0;
 
-  const getYesCount = () => 
-    facetAggregation?.buckets ? facetAggregation.buckets.reduce((sum: number, item: { doc_count: number, key: string }) => item.key !== '_false' ? sum + item.doc_count : sum, 0) : 0;
+  const yesCount = facetAggregation?.buckets ? facetAggregation.buckets.reduce((sum: number, item: { doc_count: number, key: string }) => item.key !== '_false' ? sum + item.doc_count : sum, 0) : 0;
 
-  const getNoCount = () => {
-    if (!facetAggregation?.buckets) return 0;
-    const falseBucket = facetAggregation.buckets.find((item: { key: string }) => item.key === '_false');
-    return falseBucket ? falseBucket.doc_count : 0;
-  };
+  const noCount = facetAggregation?.buckets ? facetAggregation.buckets.reduce((sum: number, item: { doc_count: number, key: string }) => item.key === '_false' ? sum + item.doc_count : sum, 0) : 0;
 
   useEffect(() => {
     // Return if no facet or invalid facet
@@ -133,9 +127,10 @@ export default function ServerFacet() {
 
   return (
     <>
-    <div className="flex flex-col gap-2 pb-2">
-  <div className="flex bg-white border border-neutral-200 p-1 rounded-lg tabs">
-    {!facetLoading && (
+    <div className="flex flex-col gap-2">
+    { yesCount < allCount && (
+  <div className="flex bg-white rounded-lg tabs pb-2">
+    {!facetLoading &&  (
       <>
                <Clickable
           remove={[facet]}
@@ -143,18 +138,18 @@ export default function ServerFacet() {
           aria-pressed={currentValue == '_true'}
           className={`flex flex-1 items-center group gap-1 py-1.5`}
         >
-          Ja <Badge count={getYesCount()} />
+          Med <Badge count={yesCount} />
           {facetAggregation?.buckets && (
             <div className="flex items-center gap-1">
               <PercentageCircle 
-                count={getYesCount()} 
-                total={getAllCount()} 
+                count={yesCount} 
+                total={allCount} 
               />
               <span className="tabular-nums">
-                {getYesCount() === 0 ? '0' : getYesCount() === getAllCount() ? '100' : 
-                  ((getYesCount()/getAllCount()) * 100) > 99 || ((getYesCount()/getAllCount()) * 100) < 1 
-                    ? ((getYesCount()/getAllCount()) * 100).toFixed(1)
-                    : Math.round((getYesCount()/getAllCount()) * 100)}%
+                {yesCount === 0 ? '0' : yesCount === allCount ? '100' : 
+                  ((yesCount/allCount) * 100) > 99 || ((yesCount/allCount) * 100) < 1 
+                    ? ((yesCount/allCount) * 100).toFixed(1)
+                    : Math.round((yesCount/allCount) * 100)}%
               </span>
             </div>
           )}
@@ -166,18 +161,18 @@ export default function ServerFacet() {
           aria-pressed={currentValue == '_false'}
           className={`flex flex-1 items-center group gap-1 py-1.5`}
         >
-          Nei <Badge count={getNoCount()} />
+          Uten <Badge count={noCount} />
           {facetAggregation?.buckets && (
             <div className="flex items-center gap-1">
               <PercentageCircle 
-                count={getNoCount()} 
-                total={getAllCount()} 
+                count={noCount} 
+                total={allCount} 
               />
               <span className="tabular-nums">
-                {getNoCount() === 0 ? '0' : getNoCount() === getAllCount() ? '100' : 
-                  ((getNoCount()/getAllCount()) * 100) > 99 || ((getNoCount()/getAllCount()) * 100) < 1 
-                    ? ((getNoCount()/getAllCount()) * 100).toFixed(1)
-                    : Math.round((getNoCount()/getAllCount()) * 100)}%
+                {noCount === 0 ? '0' : noCount === allCount ? '100' : 
+                  ((noCount/allCount) * 100) > 99 || ((noCount/allCount) * 100) < 1 
+                    ? ((noCount/allCount) * 100).toFixed(1)
+                    : Math.round((noCount/allCount) * 100)}%
               </span>
             </div>
           )}
@@ -189,11 +184,12 @@ export default function ServerFacet() {
           aria-pressed={currentValue != '_true' && currentValue != '_false'}
           className={`flex flex-1 items-center group gap-1 py-1.5`}
         >
-          Alle <Badge count={getAllCount()} />
+          Alle <Badge count={allCount} />
         </button>
       </>
     )}
   </div>
+)}
 </div>
   <div className='flex gap-2'>
     
