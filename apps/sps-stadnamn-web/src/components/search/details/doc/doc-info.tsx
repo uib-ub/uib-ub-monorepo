@@ -1,7 +1,7 @@
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiInfoFill, PiCaretLeft } from "react-icons/pi"
+import { PiInfoFill } from "react-icons/pi"
 import ClientThumbnail from "../../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import Clickable from "@/components/ui/clickable/clickable"
