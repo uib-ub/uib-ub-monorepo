@@ -42,12 +42,18 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
     const [initialUrl, setInitialUrl] = useState<string | null>(null)
     const [initialMode, setInitialMode] = useState<string | null>(null)
     const doc = searchParams.get('doc')
-    const docIndex = groupData?.findIndex(item => item.fields.uuid[0] === doc)
+    const [docIndex, setDocIndex] = useState<number | undefined>(undefined)
 
     const {searchQueryString } = useSearchQuery()
     const details = searchParams.get('details') || 'doc'
     const fuzzyNav = searchParams.get('fuzzyNav')
     const mode = useMode()
+
+    useEffect(() => {
+        if (doc) {
+            setDocIndex(groupData?.findIndex(item => item.fields.uuid[0] === doc))
+        }
+    }, [doc, groupData])
 
     useEffect(() => {
         if (group) {
