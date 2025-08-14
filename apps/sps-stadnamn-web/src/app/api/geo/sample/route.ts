@@ -22,17 +22,15 @@ export async function GET(request: Request) {
     collapse: {
       field: "group.id"
     },
-    sort: treeSettings[perspective]?.geoSort ? [
+    sort: [
       {
-        [treeSettings[perspective].geoSort]: {
-          "missing": "_first",
-          "order": "asc"
-        },
-        "uuid": "asc"
-      }
-    ] : [{
-      "uuid": "asc"
-    }],
+        boost: {
+          order: "desc",
+          missing: "_last"
+        }
+      },
+      {uuid: "asc"},
+    ],
     
 
     _source: false,

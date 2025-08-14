@@ -415,8 +415,11 @@ export default function MapExplorer() {
           newQueryParams.set('doc', selected?.fields?.uuid[0])
           newQueryParams.set('details', details)
 
-          if (selected.fields?.group) {
-            newQueryParams.set('group', stringToBase64Url(selected.fields.group[0]))
+          if (selected.fields?.["group.id"]) {
+            newQueryParams.set('group', stringToBase64Url(selected.fields["group.id"][0]))
+          }
+          else {
+            newQueryParams.delete('group')
           }
 
         router.push(`?${newQueryParams.toString()}`)
