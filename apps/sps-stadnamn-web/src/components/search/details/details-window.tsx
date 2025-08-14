@@ -1,5 +1,5 @@
 import ClickableIcon from "../../ui/clickable/clickable-icon"
-import { PiBookOpenLight, PiX, PiArrowsOut, PiListLight, PiBookOpenFill } from "react-icons/pi"
+import { PiX } from "react-icons/pi"
 import Link from "next/link"
 import DocInfo from "./doc/doc-info"
 import { useSearchParams } from "next/navigation"
@@ -80,10 +80,7 @@ export default function DetailsWindow() {
 
   {(details == "doc" || (details == "group" &&  !groupData)) && doc && docData?._source && <div className={`overflow-y-auto border-y border-neutral-200 stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docLoading ? 'opacity-50' : 'opacity-100'}`}>
 
- 
       <DocInfo/>
-
-
   </div>
 }
 
