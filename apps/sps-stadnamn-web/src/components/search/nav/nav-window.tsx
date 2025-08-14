@@ -17,13 +17,10 @@ import WikiAdmFacet from "./facets/wikiAdm-facet";
 import TableOptions from "../table/table-options";
 
 export default function NavWindow() {
-    const perspective = usePerspective()
     const { totalHits, isLoading } = useContext(SearchContext)
-    const { searchFilterParamsString } = useSearchQuery()
     const searchParams = useSearchParams()
     const mode = useMode()
     const nav = searchParams.get('nav')
-    const router = useRouter()
     const [isPending, startTransition] = useTransition()
 
 
@@ -92,6 +89,7 @@ export default function NavWindow() {
 
         { nav == 'results' && mode == 'table' && <>
         <h2 className="text-xl px-1">Tabellvisning</h2>
+        <p className="px-1">Tabellvisning viser søkeresultat utan gruppering</p>
         <TableOptions/>
 
         </>
