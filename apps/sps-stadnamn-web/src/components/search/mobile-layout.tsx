@@ -25,6 +25,7 @@ import FuzzyExplorer from "./fuzzy/fuzzy-explorer";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import HorizontalSwipe from "./details/doc/horizontal-swipe";
 import { PiStackFill, PiStackLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeViewLight } from 'react-icons/pi';
+import HitNavigation from "./details/hit-navigation";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -378,6 +379,19 @@ export default function MobileLayout() {
                 
  
             </div>}
+
+
+            {details == 'doc' && drawerContent == 'details' && groupTotal?.value && groupTotal.value > 1 && <div className="absolute bottom-12 right-2 mb-2"
+            style={{
+                transform: currentPosition > 25 ? 'translateY(0)' : 'translateY(100%)',
+                opacity: currentPosition > 25 ? 1 : 0,
+                pointerEvents: currentPosition > 25 ? 'auto' : 'none'
+            }}>
+        <HitNavigation/>
+            </div>}
+            
+
+
             </div>
             
             </>
