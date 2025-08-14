@@ -14,6 +14,8 @@ import IconLink from "@/components/ui/icon-link"
 import Clickable from "@/components/ui/clickable/clickable"
 import HitNavigation from "./hit-navigation"
 import DetailsFooter from "./details-footer"
+import DetailsTabs from "./details-tabs"
+import DocToolbar from "./doc/doc-toolbar"
 
 
 
@@ -24,7 +26,6 @@ export default function DetailsWindow() {
     const fuzzyNav = searchParams.get('fuzzyNav')
     const { docLoading, docData } = useContext(DocContext)
     const mode = useMode()
-    const group = searchParams.get('group')
     const { groupData, groupLoading, groupTotal } = useContext(GroupContext)
     
 
@@ -32,34 +33,14 @@ export default function DetailsWindow() {
     <div className={`flex tabs p-2 ${(details || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
    
 
-    <Clickable
-        label="Oppslag"
-        add={{details: "doc"}} 
-        aria-selected={details == "doc" || (details == "group" &&  !groupData)}
-        className="flex h-10 whitespace-nowrap items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pr-4 pl-3 text-neutral-900 aria-selected:bg-neutral-100 aria-selected:shadow-inner">
-        {details == "doc" ? <PiBookOpenFill className="text-accent-800" aria-hidden="true"/> : <PiBookOpenLight className="text-accent-900" aria-hidden="true"/>}
-        <span className="text-neutral-900 sr-only 2xl:not-sr-only whitespace-nowrap">Oppslag</span>
-    </Clickable>
-
-    { groupTotal?.value && groupTotal.value > 1 && <Clickable label="Oversikt" 
-          remove={["details", "fuzzyNav"]} 
-          add={{details: "group"}}
-          aria-selected={details == "group"}
-          className="flex whitespace-nowrap group relative items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 px-3 aria-selected:bg-neutral-100 aria-selected:text-neutral-900 aria-selected:shadow-inner">
-      <PiListLight className="text-neutral-900 xl:sr-only" aria-hidden="true"/>
-      <span className="text-neutral-900 hidden xl:flex flex-nowrap whitespace-nowrap">Oversikt</span>
-      {groupTotal?.value && groupTotal.value > 0 && (
-        <span className={`results-badge bg-primary-200 ${groupTotal.value > 9 ? 'px-1.5': 'px-2'} text-primary-700 font-bold group-aria-selected:bg-accent-800 group-aria-selected:text-white left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap`}>
-          {groupTotal.value}
-        </span>
-      )}
-    </Clickable>}
+    {mode != 'table' ? <DetailsTabs/> : <DocToolbar/>}
     <div className="flex gap-2 ml-auto">
     
              
     <ClickableIcon
             label="Lukk"
-            remove={["doc", "details", ...(fuzzyNav ? [] : ['group'])]}
+            remove={[...mode == "map" && !fuzzyNav ? ["group"] : [], "doc", "details"]}
+
             className="h-10 flex items-center p-1 pl-2" >
             <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
     </ClickableIcon>
@@ -68,7 +49,7 @@ export default function DetailsWindow() {
 
   
 
-  {details == "doc" && <>
+  {details == "doc" && mode != 'table' && <>
 
     
 
@@ -78,35 +59,9 @@ export default function DetailsWindow() {
     <div className={`flex flex-wrap gap-2 p-2 transition-opacity duration-200 ${groupLoading ? 'opacity-50' : 'opacity-100'}`}>
     {!fuzzyNav && <HitNavigation/>}
 
+   {mode != 'table' && <DocToolbar/>}
 
-    
-
-  <div className="flex gap-2 h-10">
-    
-
-    
-
-    {(!fuzzyNav && groupData && groupData?.length > 1)  ?
-    <>
- 
-      <CopyLink uuid={docData?._source?.uuid} isIconButton={true} className="btn btn-outline btn-compact"/> 
-      <IconLink label="Åpne" href={`${process.env.NODE_ENV == 'development' ? '': 'https://purl.org/stadnamn'}/uuid/${docData?._source?.uuid}`} className="btn btn-outline btn-compact flex items-center gap-2">
-        <PiArrowsOut className="xl:text-xl" aria-hidden="true"/>
-      </IconLink>
       
-      </>
-      :
-      <>
-      <CopyLink uuid={docData?._source?.uuid} isIconButton={false} className="btn btn-outline btn-compact"/> 
-      <Link href={`${process.env.NODE_ENV == 'development' ? '': 'https://purl.org/stadnamn'}/uuid/${docData?._source?.uuid}`} className="btn btn-outline btn-compact flex items-center gap-2">
-        <PiArrowsOut className="text-xl" aria-hidden="true"/> Åpne
-      </Link>
-      </>
-  }
-  
-      
-
-  </div>
   </div>
   : <div className="flex flex-wrap gap-2 justify-between p-2 border-b border-neutral-200">
   {/* Navigation buttons skeleton */}

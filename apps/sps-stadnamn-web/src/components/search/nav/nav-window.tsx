@@ -14,6 +14,7 @@ import DatasetFacet from "./facets/dataset-facet";
 import ClickableIcon from "../../ui/clickable/clickable-icon";
 import Clickable from "../../ui/clickable/clickable";
 import WikiAdmFacet from "./facets/wikiAdm-facet";
+import TableOptions from "../table/table-options";
 
 export default function NavWindow() {
     const perspective = usePerspective()
@@ -85,8 +86,16 @@ export default function NavWindow() {
             <DatasetFacet/>
             </div>
         }
-        { nav == 'results' &&
+        { nav == 'results' && mode != 'table' &&
             <SearchResults/>
+        }
+
+        { nav == 'results' && mode == 'table' && <>
+        <h2 className="text-xl px-1">Tabellvisning</h2>
+        <TableOptions/>
+
+        </>
+          
         }
         
         </div>

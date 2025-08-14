@@ -20,8 +20,6 @@ export const RESERVED_PARAMS = [
   'bottomRightLat',
   'bottomRightLng',
   'doc',
-  'sourceLabel',
-  'sourceDataset',
   'facetSearch',
   'totalHits',
   'facets',

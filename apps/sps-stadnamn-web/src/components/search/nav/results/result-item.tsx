@@ -1,6 +1,6 @@
 'use client'
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
-import { usePerspective } from '@/lib/search-params';
+import { useMode, usePerspective } from '@/lib/search-params';
 import { useRef, useEffect, useContext } from 'react';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
@@ -19,7 +19,8 @@ export default function ResultItem({hit}: {hit: any}) {
     const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit._index.split('-')[2]
     const { isMobile } = useContext(GlobalContext)
-    const details = searchParams.get('details') || 'doc'
+    const details = searchParams.get('details')
+    const mode = useMode()
 
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
     const detailsRenderer = (hit: any) => {
@@ -50,7 +51,7 @@ export default function ResultItem({hit}: {hit: any}) {
                     remove={['group', 'parent', ...(isMobile ? ['nav', 'fuzzyNav'] : [])]}
                     add={{
                         doc: hit.fields.uuid,
-                        details: details, 
+                        details: mode == 'list' ? 'group' : details || 'doc', 
 
                         ...(hit.fields["group.id"] ? {group: stringToBase64Url(hit.fields["group.id"][0])} : {}),
 

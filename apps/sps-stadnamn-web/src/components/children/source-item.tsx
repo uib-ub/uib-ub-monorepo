@@ -1,11 +1,12 @@
 'use client'
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
 import { useRef } from 'react';
-import { PiBookOpen, PiMapPin, PiMapPinDuotone, PiMapPinFill, PiMapPinLight } from 'react-icons/pi';
+import { PiBookOpen, PiBookOpenFill, PiBookOpenLight, PiMapPin, PiMapPinDuotone, PiMapPinFill, PiMapPinLight } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { getFieldValue } from '@/lib/utils';
 import ClickableIcon from '../ui/clickable/clickable-icon';
+import { useMode } from '@/lib/search-params';
 
 
 
@@ -15,6 +16,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
     const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit._index.split('-')[2]
     const details = searchParams.get('details')
+    const mode = useMode()
 
 
 
@@ -34,16 +36,18 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
             </ClickableIcon>}
             <Clickable 
                 link
-                
+                aria-current={doc == getFieldValue(hit, 'uuid') ? 'page' : undefined}
                 ref={itemRef}
                 className="group no-underline flex gap-1 items-center rounded-full"
                 add={{
-                    doc: getFieldValue(hit, 'children')?.length === 1 ? getFieldValue(hit, 'children')[0] : getFieldValue(hit, 'uuid'),
-                    details: 'doc',
+                    doc: getFieldValue(hit, 'uuid'),
+                    //group: getFieldValue(hit, 'group'),
+                    details: mode == 'map' ? 'doc' : details
                 }}
+                
             >
                 <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current='page']:border-accent-800 border-2 border-transparent">
-                    <PiBookOpen className="text-primary-600 text-xl group-aria-[current='page']:text-accent-800" />
+                    {doc == getFieldValue(hit, 'uuid') ? <PiBookOpenFill className="text-primary-600 text-xl group-aria-[current='page']:text-accent-800" /> : <PiBookOpenLight className="text-primary-600 text-xl group-aria-[current='page']:text-accent-800" />}
                 </div>
                 {sourceTitle(hit)}
             </Clickable>

@@ -10,13 +10,14 @@ import { PiBinocularsFill } from "react-icons/pi"
 import { GlobalContext } from "@/app/global-provider"
 
 
-export default function DetailsFooter() {
+export default function DetailsFooter( {source}: {source?: any}) {
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
     const fuzzyNav = searchParams.get('fuzzyNav')
     const { docData } = useContext(DocContext)
 
     const group = searchParams.get('group')
+    const docSource = source || docData?._source
     const { setInitialUrl } = useContext(GroupContext)
     const {isMobile} = useContext(GlobalContext)
 
@@ -24,13 +25,13 @@ export default function DetailsFooter() {
     return <div className={`flex gap-2 ${isMobile ? 'justify-end' : 'justify-between'} p-2 items-center`}>
     {doc && <CoordinateMenu/> }
 
-    {!fuzzyNav && docData?._source.group?.id &&
+    {!fuzzyNav && docSource?.group?.id &&
       <Clickable
-        aria-current={(fuzzyNav && group == stringToBase64Url(docData?._source.group)) ? true : false}
+        aria-current={(fuzzyNav && group == stringToBase64Url(docSource.group)) ? true : false}
         className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10" 
-        remove={['details', 'doc']} 
+        remove={['details']} 
         onClick={() => setInitialUrl(`?${searchParams.toString()}`)}
-        add={{group: stringToBase64Url(docData?._source.group.id), fuzzyNav: fuzzyNav || 'timeline'}}>
+        add={{group: stringToBase64Url(docSource.group.id), fuzzyNav: fuzzyNav || 'timeline'}}>
         <PiBinocularsFill className="text-lg text-white" aria-hidden="true"/>Namneformer
       </Clickable>
     }

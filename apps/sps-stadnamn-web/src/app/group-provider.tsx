@@ -1,7 +1,7 @@
 'use client'
 import { createContext } from 'react'
 import { useState, useEffect } from 'react';
-import { useSearchQuery } from '@/lib/search-params';
+import { useMode, useSearchQuery } from '@/lib/search-params';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 interface GroupContextData {
@@ -47,11 +47,12 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
     const {searchQueryString } = useSearchQuery()
     const details = searchParams.get('details') || 'doc'
     const fuzzyNav = searchParams.get('fuzzyNav')
+    const mode = useMode()
 
     useEffect(() => {
         if (group) {
             setGroupLoading(true)
-            const url = `/api/search/group?${searchQueryString}&group=${group}`
+            const url = `/api/search/group?${searchQueryString}&group=${group}&mode=${mode}`
 
             fetch(url).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
@@ -70,7 +71,7 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
             setGroupLoading(false)
             setGroupTotal(null)
         }
-    }, [group, searchQueryString, details])
+    }, [group, searchQueryString, details, mode])
 
     // Prefetch prev and next doc
     useEffect(() => {

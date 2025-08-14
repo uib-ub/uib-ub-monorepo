@@ -47,7 +47,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const perspective = usePerspective()
     const { setCurrentUrl, isMobile, preferredTabs } = useContext(GlobalContext)
     const mode = useMode()
-    const useTableData = mode != 'map' && preferredTabs[perspective] != 'map'
+    const useTableData = mode == 'table' || preferredTabs[perspective] == 'table'
     
 
     const [resultBounds, setResultBounds] = useState<[[number, number], [number, number]] | null>(null)

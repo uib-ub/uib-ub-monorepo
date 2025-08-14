@@ -37,7 +37,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
     const parent = searchParams.get('parent')
     const mode = useMode()
     const doc = searchParams.get('doc')
-    const { isMobile, sosiVocab, preferredTabs } = useContext(GlobalContext)
+    const { isMobile, sosiVocab } = useContext(GlobalContext)
 
     const multivalue = (value: string|string[]) => {
       return Array.isArray(value) ? value.join("/") : value
@@ -73,27 +73,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         
 
 
-        { perspective != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
-        <div className={`absolute top-0 lg:top-2 right-0 flex gap-2`}>
-          
-
-          {!isMobile && mode == 'doc' &&
-                  <Clickable 
-                    remove={["mode", "sourceDataset", "sourceLabel", "parent"]} 
-                    add={preferredTabs[perspective] ? {mode: preferredTabs[perspective]} : {}}
-                    className=" flex items-center gap-1 text-lg btn btn-outline" 
-                    aria-label="Tilbake">
-                    <PiCaretLeft className="text-primary-600" aria-hidden="true"/>
-                    {preferredTabs[perspective] == 'table' && 'Tilbake til tabellen'}
-                    {preferredTabs[perspective] == 'list' && 'Tilbake til listen'}
-
-                  </Clickable>
-          }
-         
-
-
-        </div>
-        
+        { perspective != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}        
  
         </div>}
 

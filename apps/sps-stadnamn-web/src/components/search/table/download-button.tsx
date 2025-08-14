@@ -220,7 +220,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <button className="btn btn-outline btn-compact pl-2">
+                <button className="btn btn-outline btn-compact pl-2 mt-2">
                     <PiDownload className="text-xl mr-2" aria-hidden="true"/>
                     Last ned
                 </button>

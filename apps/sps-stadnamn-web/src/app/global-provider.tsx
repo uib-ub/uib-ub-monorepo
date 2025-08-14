@@ -18,6 +18,8 @@ export const GlobalContext = createContext({
   sosiVocab: {} as Record<string, any>,
   preferredTabs: {} as Record<string, string>,
   setPreferredTab: (dataset: string, tab: string) => {},
+  visibleColumns: {} as Record<string, string[]>,
+  setVisibleColumns: (dataset: string, columns: string[]) => {},
 });
 
 export default function GlobalProvider({ children, isMobile, sosiVocab, coordinateVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any>, coordinateVocab: Record<string, any> }) {
@@ -25,6 +27,9 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   const [facetOptions, setFacetOptions] = useState<Record<string, Record<string, Partial<FacetOption>>>>({});
   const perspective = usePerspective()
   const [preferredTabs, setPreferredTabs] = useState<Record<string, string>>({});
+  const [visibleColumns, setVisibleColumns] = useState<Record<string, string[]>>({
+    [perspective]: ['adm', ...facetConfig[perspective].filter(item => item.table).map(facet => facet.key)]
+  });
 
   // Load facet options from localStorage on mount
   useEffect(() => {
@@ -51,6 +56,10 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
     localStorage.setItem('preferredTabs', JSON.stringify(preferredTabs));
   }, [preferredTabs]);
 
+  useEffect(() => {
+    localStorage.setItem(`visibleColumns_${perspective}`, JSON.stringify(visibleColumns));
+  }, [visibleColumns]);
+
   const updateFacetOption = (facetName: string, options: Partial<FacetOption>) => {
     setFacetOptions(prev => ({
       ...prev,
@@ -74,6 +83,13 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
     }));
   };
 
+  const setVisibleColumnsHandler = (perspective: string, columns: string[]) => {
+    setVisibleColumns(prev => ({
+      ...prev,
+      [perspective]: columns
+    }));
+  };
+
   return (
     <GlobalContext.Provider 
       value={{
@@ -85,7 +101,9 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
         sosiVocab,
         coordinateVocab,
         preferredTabs,
-        setPreferredTab
+        setPreferredTab,
+        visibleColumns,
+        setVisibleColumns: setVisibleColumnsHandler
       }}
     >
       {children}

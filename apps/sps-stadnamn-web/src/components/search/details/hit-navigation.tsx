@@ -21,7 +21,6 @@ export default function HitNavigation() {
       
       <ClickableIcon 
         label="Forrige" 
-        link
         className="btn btn-outline btn-compact" 
         add={{doc: prevDocUuid}}
         disabled={!prevDocUuid || docIndex === undefined || docIndex <= 0}
@@ -31,7 +30,6 @@ export default function HitNavigation() {
       {!isMobile && <span className="text-neutral-900 self-center w-10 text-center">{docIndex ? docIndex + 1 : 1}/{groupTotal?.value}</span>}
       {isMobile && <Clickable className="btn btn-outline btn-compact text-center" add={{details: 'group'}}>{docIndex ? docIndex + 1 : 1}/{groupTotal?.value}</Clickable>}
       <ClickableIcon 
-        link
         label="Neste" 
         className="btn btn-outline btn-compact" 
         add={{doc: nextDocUuid}}

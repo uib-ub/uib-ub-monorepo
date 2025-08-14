@@ -30,13 +30,14 @@ export default function DesktopLayout() {
         <div className="flex lg:gap-4 flex-col h-full w-[40svw] lg:w-full max-h-[calc(100svh-4rem)] ">
         
 
-        {  (!doc || mode == 'map') && !fuzzyNav && <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
-        { <NavWindow/>}       
-        </section> }
+        {  (mode == 'map' || (mode == 'table' ? details != 'doc' : true)) && !fuzzyNav && <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
+            <NavWindow/>  
+        </section> 
+        }
 
         
 
-        { mode != 'map' && doc && <section className={`lg:absolute left-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'flex' : 'flex'}`}>
+        { mode != 'map' && details && (details != 'doc' || mode == 'table') && details != 'group' && <section className={`lg:absolute left-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'flex' : 'flex'}`}>
 
             <DetailsWindow/>
 
@@ -55,9 +56,7 @@ export default function DesktopLayout() {
 
             {mode == 'table' && <TableExplorer/> }
             {mode == 'list' && <ListExplorer/> }
-            {mode == 'doc' && <div className="px-6 pb-6 pt-3">
-                {docLoading ? <DocSkeleton/> : <DocInfo/>}
-            </div>}
+            
         </div>
 
 
@@ -68,7 +67,7 @@ export default function DesktopLayout() {
         </div>
         }
 
-{  (!doc || mode == 'map') && fuzzyNav && <div className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
+{  fuzzyNav && <div className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
         <FuzzyWindow/>       
         </div> }
 

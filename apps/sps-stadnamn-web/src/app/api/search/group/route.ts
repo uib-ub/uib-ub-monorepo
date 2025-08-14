@@ -36,7 +36,7 @@ export async function GET(request: Request) {
         }
       },
     ],
-    "_source": false
+    "_source": reservedParams.mode == 'map' ? false : true
   }
 
   
