@@ -186,7 +186,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
       { facetAggregation?.buckets ?
       <fieldset>
         <legend className="sr-only">{`Filtreringsalternativer for områdeinndeling`}</legend>
-        <ul className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate'>
+        <ul className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate mb-2'>
           {sortBuckets(facetAggregation?.buckets).filter(item => facetSearch(item, facetName, 1)).map((item, index) => (
             listItem(item, index, facetName, [item.key], false)
           ))}
