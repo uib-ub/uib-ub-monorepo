@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
   const query: Record<string,any> = {
     size: zoomSize[zoom] || 200,
-    fields: ["label", "location", "uuid", "sosi", "children", "placeScore", "within"],
+    fields: ["label", "location", "uuid", "sosi", "placeScore", "group.id"],
     track_total_hits: false,
     collapse: {
       field: "group.id"
