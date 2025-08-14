@@ -35,6 +35,7 @@ export function extractFacets(request: Request) {
 
   const termFilters = []
   const reservedParams: { [key: string]: string } = {};
+  const datasets = []
 
   const clientFacets: { [key: string]: string[] } = {};
   const serverFacets: { [key: string]: string[] } = {};
@@ -213,6 +214,7 @@ export function extractFacets(request: Request) {
         else if (values.includes('tree')) {
           datasetTags = [...datasetTags, ...Object.keys(treeSettings)]
         }
+        datasets.push(...datasetTags)
         termFilters.push({
           "bool": {
             "should": datasetTags.map(datasetTag => ({
@@ -239,7 +241,7 @@ export function extractFacets(request: Request) {
     }
   }
 
-  return {termFilters, reservedParams, rangeFilters}
+  return {termFilters, reservedParams, rangeFilters, datasets}
 
 
 }
