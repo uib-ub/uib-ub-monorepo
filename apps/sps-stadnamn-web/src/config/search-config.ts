@@ -433,6 +433,7 @@ export const baseAllConfig: Record<string, FieldConfigItem> = {
   "cadastralIndex": {label: "Hierarki"},
   ...text,
   ...html,
+  ...labelDefaults,
   ...identifiers,
 
 };
