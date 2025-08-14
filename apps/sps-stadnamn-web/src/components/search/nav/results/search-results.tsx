@@ -3,9 +3,10 @@ import { SearchContext } from "@/app/search-provider"
 import { useContext, useEffect, useState } from "react"
 import { useSearchParams } from 'next/navigation';
 import ResultItem from "./result-item";
-import { getSkeletonLength } from "@/lib/utils";
-import { useSearchQuery } from "@/lib/search-params";
+import { getSkeletonLength, stringToBase64Url } from "@/lib/utils";
+import { useMode, useSearchQuery } from "@/lib/search-params";
 import { useRouter } from "next/navigation";
+import { group } from "console";
 
 
 const PER_PAGE = 30
@@ -19,6 +20,10 @@ export default function SearchResults() {
     const page = searchParams.get('page')
     const router = useRouter()
     const {searchQueryString } = useSearchQuery()
+    const doc = searchParams.get('doc')
+    const group = searchParams.get('group')
+    const details = searchParams.get('details')
+    const mode = useMode()
 
 
 
@@ -49,6 +54,18 @@ export default function SearchResults() {
         })
         .finally(() => setIsLoadingResults(false))
     }, [searchQueryString, page])
+
+    useEffect(() => {
+
+      if (mode == 'list' && !doc && !group && collapsedResults?.[0]?.fields?.['group.id'][0]) {
+          const newParams = new URLSearchParams(searchParams)
+          newParams.set('doc', collapsedResults[0].fields.uuid[0])
+          newParams.set('group', stringToBase64Url(collapsedResults[0].fields['group.id'][0]))
+          newParams.set('details', details || 'doc')
+          console.log(newParams.toString())
+          router.replace("/search?" + newParams.toString())
+      }
+      }, [searchParams, router, collapsedResults, doc, group, mode, details])
 
 
     return (
