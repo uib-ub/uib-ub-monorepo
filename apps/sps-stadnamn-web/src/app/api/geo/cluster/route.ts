@@ -111,8 +111,21 @@ export async function GET(request: Request) {
 
   const query: Record<string,any> = {
     size: 0,
-    fields: ["label", "location", "uuid", "sosi", "children"],
+    fields: ["label", "location", "uuid", "sosi", "group.id", "boost"],
     _source: false,
+    track_total_hits: false,
+    collapse: {
+      field: "group.id"
+    },
+    sort: [
+      {
+        boost: {
+          order: "desc",
+          missing: "_last"
+        }
+      },
+      {uuid: "asc"},
+    ],
     query: {
       bool: {
         filter: [
