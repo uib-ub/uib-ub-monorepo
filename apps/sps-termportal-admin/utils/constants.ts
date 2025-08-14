@@ -43,16 +43,6 @@ export const topDomains = {
   Lærerutdanning: "Lærerutdanning",
 };
 
-export const orderTopDomain = [
-  "NaturvitenskapTeknologi",
-  "Humaniora",
-  "Samfunnsfag",
-  "OkonomiAdministrasjon",
-  "Helse_og_sosial",
-  "Kunst_design_arkitektur",
-  "Lærerutdanning",
-];
-
 export const studioLinks = {
   newActivity: "/studio/intent/create/template=activity;type=activity/",
 };

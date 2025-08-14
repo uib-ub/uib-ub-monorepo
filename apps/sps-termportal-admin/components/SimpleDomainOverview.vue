@@ -149,7 +149,6 @@
 
 <script setup lang="ts">
 import { FilterMatchMode } from "primevue/api";
-import { orderTopDomain } from "~/utils/constants";
 
 const appConfig = useAppConfig();
 
