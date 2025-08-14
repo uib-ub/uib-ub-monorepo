@@ -10,7 +10,6 @@ import { DocContext } from "@/app/doc-provider"
 import { useSearchParams } from "next/navigation"
 
 export default function ListExplorer() {
-    const { tableData, totalHits } = useContext(SearchContext)
     const { isMobile } = useContext(GlobalContext)
     const {groupData} = useContext(GroupContext)
     const { docData } = useContext(DocContext)

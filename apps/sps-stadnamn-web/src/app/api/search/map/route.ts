@@ -3,20 +3,11 @@ export const runtime = 'edge'
 import { extractFacets } from '../../_utils/facets'
 import { getQueryString } from '../../_utils/query-string';
 import { postQuery } from '../../_utils/post';
-import { getSortArray } from '@/config/server-config';
 
 export async function GET(request: Request) {
   const {termFilters, reservedParams} = extractFacets(request)
   const perspective = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
   const { simple_query_string } = getQueryString(reservedParams)
-
-  let sortArray: (string | object)[] = []
-    
-    // Existing sorting logic
-
-  if (!sortArray.length) {
-    sortArray = getSortArray(perspective)
-  }
     
   const query: Record<string,any> = {
     "track_total_hits": 10000000,
@@ -28,10 +19,11 @@ export async function GET(request: Request) {
             "field": "location",
             "wrap_longitude": true
           },
-        },
+        }
       },
     "_source": false
   }
+
 
   if (simple_query_string && termFilters.length) {
     query.query = {

@@ -1,9 +1,9 @@
 import { facetConfig } from "@/config/search-config"
 import { contentSettings, treeSettings } from "@/config/server-config"
-import { usePerspective, useMode } from "@/lib/search-params"
+import { usePerspective, useMode, useSearchQuery } from "@/lib/search-params"
 import { useSearchParams } from "next/navigation"
-import { Fragment, useContext, useState } from "react"
-import { PiArrowCounterClockwise, PiBookOpen, PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiMapPinFill } from "react-icons/pi"
+import { Fragment, useContext, useEffect, useState } from "react"
+import { PiBookOpen, PiMapPinFill } from "react-icons/pi"
 import SortHeader from "./sort-header"
 import { SearchContext } from "@/app/search-provider"
 import Pagination from "@/components/results/pagination"
@@ -11,18 +11,41 @@ import { formatCadastre } from "@/config/result-renderers"
 import { getSkeletonLength, stringToBase64Url } from "@/lib/utils"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import Clickable from "@/components/ui/clickable/clickable"
-import { GroupContext } from "@/app/group-provider"
 import { GlobalContext } from "@/app/global-provider"
 
 export default function TableExplorer() {
     const perspective = usePerspective()
     const searchParams = useSearchParams()
-    const { tableData, totalHits, isLoading } = useContext(SearchContext)
+    const { totalHits, isLoading } = useContext(SearchContext)
+    const [ tableData, setTableData ] = useState<any[] | null>(null)
+    const [ isLoadingResults, setIsLoadingResults ] = useState(false)
+    const {searchQueryString } = useSearchQuery()
+    const page = searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1
+    const perPage = searchParams.get('perPage') ? parseInt(searchParams.get('perPage')!) : 10
+    const desc = searchParams.get('desc')
+    const asc = searchParams.get('asc')
     
 
     const doc = searchParams.get('doc')
     const group = searchParams.get('group')
-    const details = searchParams.get('details')
+
+
+    useEffect(() => {
+        setIsLoadingResults(true)
+        const url = `/api/search/table?size=${perPage}${searchQueryString ? `&${searchQueryString}`: ''}${desc ? `&desc=${desc}`: ''}${asc ? `&asc=${asc}` : ''}${page > 1 ? `&from=${(page-1)*perPage}`: ''}`
+        fetch(url)
+          .then(response => {
+            if (!response.ok) {
+              setIsLoadingResults(false)
+              throw response
+            }
+            return response.json()
+          })
+          .then(es_data => {
+            setTableData(es_data.hits.hits)
+          })
+          .finally(() => setIsLoadingResults(false))
+      }, [searchQueryString, page, perPage, desc, asc])
 
 
 
@@ -60,7 +83,7 @@ export default function TableExplorer() {
                     <div className="border border-neutral-300 rounded-md">
                      <table className='result-table'>
                         <thead>
-                            {!isLoading ? <tr>
+                            {!isLoading ? <tr className={`${isLoadingResults ? 'opacity-50' : ''}`}>
                                 <th>
                                     <SortHeader field="label.keyword" label="Oppslagsord" description='Oppslagsord'/>
                                 </th>
@@ -92,7 +115,7 @@ export default function TableExplorer() {
                             
                         { !isLoading ? tableData?.map((hit: any) => (
                             <Fragment key={hit._id}>
-                            <tr>
+                            <tr className={`${isLoadingResults ? 'opacity-50' : ''}`}>
                                 {/* TODO: investigate whether rowgroup is still needed */}
                                 <th id={"rowHeader_" + hit._id} scope={searchParams.get('expanded') == hit._source?.uuid ? 'rowgroup' : 'row'} className="!p-0">
                                     <div className="flex gap-1 items-center">
@@ -147,7 +170,7 @@ export default function TableExplorer() {
                             </tr>
 
                             </Fragment>
-                        )) : Array.from({length: 5}, (_, index_a) => (
+                        )) : Array.from({length: totalHits?.value ? Math.min(totalHits.value, 10) : 10}, (_, index_a) => (
                             <tr key={index_a}>
                             {Array.from({ length: visibleColumnsArray.length + 1 }, (_, index_b) => (
                                 <td key={index_b} className="!h-12">

@@ -8,7 +8,6 @@ import { useMode } from '@/lib/search-params';
 
 interface SearchContextData {
     resultData: any;
-    tableData: any;
     isLoading: boolean;
     searchError: Record<string, string> | null;
     setSearchError: (value: Record<string, string> | null) => void;
@@ -22,7 +21,6 @@ interface SearchContextData {
  
   export const SearchContext = createContext<SearchContextData>({
     resultData: null,
-    tableData: null,
     isLoading: true,
     searchError: null,
     setSearchError: () => {},
@@ -37,31 +35,17 @@ interface SearchContextData {
 
 export default function SearchProvider({ children }: {  children: React.ReactNode }) {
     const [resultData, setResultData] = useState<any[] | null>(null)
-    const [tableData, setTableData] = useState<any[] | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [totalHits, setTotalHits] = useState<Record<string,any> | null>(null)
     const [coordinatesError, setCoordinatesError] = useState(false)
     const [allowFitBounds, setAllowFitBounds] = useState(false)
     
     const searchParams = useSearchParams()
-    const perspective = usePerspective()
-    const { setCurrentUrl, isMobile, preferredTabs } = useContext(GlobalContext)
-    const mode = useMode()
-    const useTableData = mode == 'table' || preferredTabs[perspective] == 'table'
-    
-
+    const { setCurrentUrl, isMobile,  } = useContext(GlobalContext)
     const [resultBounds, setResultBounds] = useState<[[number, number], [number, number]] | null>(null)
 
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
-    const { searchQueryString, searchFilterParamsString, size } = useSearchQuery()
-
-    
-    
-    const asc = searchParams.get('asc')
-    const desc = searchParams.get('desc')
-    const page = searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1
-    const perPage = searchParams.get('perPage') ? parseInt(searchParams.get('perPage')!) : 10
-
+    const { searchQueryString } = useSearchQuery()
     
     const searchParamsString = searchParams.toString()
     
@@ -73,57 +57,44 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
 
 
     useEffect(() => {
-        setIsLoading(true)
-        let url
-        if (useTableData) {
-            url = `/api/search/table?size=${perPage}${searchQueryString ? `&${searchQueryString}`: ''}${desc ? `&desc=${desc}`: ''}${asc ? `&asc=${asc}` : ''}${page > 1 ? `&from=${(page-1)*perPage}`: ''}`
-        }
-        else {
-            url = `/api/search/map?${searchQueryString}&size=0`
-        }
-        
-        fetch(url)
+        setIsLoading(true)        
+        fetch(`/api/search/map?${searchQueryString}`)
         .then(response => {
             if (!response.ok) {
                 throw response
             }
             return response.json()})
         .then(es_data => {
-
             setTotalHits(es_data.hits.total)
+            const newBounds = es_data.aggregations?.viewport.bounds
+            setResultData(es_data.hits.hits)
+
             
-            if (useTableData) {
-                setTableData(es_data.hits.hits)
+            if (newBounds?.top_left && newBounds?.bottom_right) {
+                // Temporary fix for null island and similar errors
+                let limitedBounds = [
+                    [newBounds.top_left.lat, Math.min(newBounds.top_left.lon, 33)], // East of Murmansk ~33°E
+                    [Math.max(newBounds.bottom_right.lat, 55.6), newBounds.bottom_right.lon] // South of Copenhagen ~55.6°N
+                ] as [[number, number], [number, number]]
+
+                // Calculate bounds based on zoom level if bounds are a single point
+                if (limitedBounds[0][0] === limitedBounds[1][0] && limitedBounds[0][1] === limitedBounds[1][1]) {
+                    // At zoom level 11, each degree is approximately 0.1 degrees
+                    const offset = 0.1;
+                    limitedBounds = [
+                    [limitedBounds[0][0] + offset, limitedBounds[0][1] - offset],
+                    [limitedBounds[1][0] - offset, limitedBounds[1][1] + offset]
+                    ]
+                }
+                
+                setResultBounds(limitedBounds)
+                setAllowFitBounds(true)
             }
             else {
-                const newBounds = es_data.aggregations?.viewport.bounds
-                setResultData(es_data.hits.hits)
-                
-                if (newBounds?.top_left && newBounds?.bottom_right) {
-                    // Temporary fix for null island and similar errors
-                    let limitedBounds = [
-                      [newBounds.top_left.lat, Math.min(newBounds.top_left.lon, 33)], // East of Murmansk ~33°E
-                      [Math.max(newBounds.bottom_right.lat, 55.6), newBounds.bottom_right.lon] // South of Copenhagen ~55.6°N
-                    ] as [[number, number], [number, number]]
-
-                    // Calculate bounds based on zoom level if bounds are a single point
-                    if (limitedBounds[0][0] === limitedBounds[1][0] && limitedBounds[0][1] === limitedBounds[1][1]) {
-                      // At zoom level 11, each degree is approximately 0.1 degrees
-                      const offset = 0.1;
-                      limitedBounds = [
-                        [limitedBounds[0][0] + offset, limitedBounds[0][1] - offset],
-                        [limitedBounds[1][0] - offset, limitedBounds[1][1] + offset]
-                      ]
-                    }
-                    
-                    setResultBounds(limitedBounds)
-                    setAllowFitBounds(true)
-                }
-                else {
-                    setResultBounds(null)
-                }
-
+                setResultBounds(null)
             }
+
+            
             
                     
         }).catch(error => {
@@ -135,10 +106,10 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
         })
         
         
-      }, [searchQueryString, size, searchFilterParamsString, useTableData, asc, desc, page, perPage, isMobile])
+      }, [searchQueryString, isMobile])
 
 
-  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, tableData, coordinatesError, allowFitBounds, setAllowFitBounds, setCoordinatesError, setSearchError}}>{children}</SearchContext.Provider>
+  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, coordinatesError, allowFitBounds, setAllowFitBounds, setCoordinatesError, setSearchError}}>{children}</SearchContext.Provider>
 }
 
 
