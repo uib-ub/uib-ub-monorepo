@@ -147,7 +147,7 @@ export async function GET(request: Request) {
       }
     },
     aggs: probability == 1 ? aggs : { // reservedParams.markerSample == 'false' || zoom < 7
-      sample: {
+      clusterSample: {
         random_sampler: {
           probability,
           seed: 42
