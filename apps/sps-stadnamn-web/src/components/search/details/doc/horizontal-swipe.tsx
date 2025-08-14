@@ -64,8 +64,14 @@ useEffect(() => {
     if (!isHorizontal) return
 
     const newOffset = startTouchX - x // >0 left, <0 right
+    const swipeDir = newOffset > 0 ? 'left' : 'right'
+    
+    // Prevent swiping if there's no target document in that direction
+    if (swipeDir === 'left' && !nextDocUuid) return
+    if (swipeDir === 'right' && !prevDocUuid) return
+
     setCurrentOffset(newOffset)
-    setSwipeDirection(newOffset > 0 ? 'left' : 'right')
+    setSwipeDirection(swipeDir)
 
     setDebug(prev => ({ ...prev, isHorizontalSwipe: true, swipeDistance: Math.abs(startTouchX - x) }))
   }
@@ -91,8 +97,24 @@ useEffect(() => {
       return
     }
 
+    const swipeDir = dx > 0 ? 'right' : 'left'
+    
+    // Additional check: don't commit if there's no target document
+    if (swipeDir === 'left' && !nextDocUuid) {
+      setCommitted(null)
+      setSwipeDirection(null)
+      setCurrentOffset(0)
+      return
+    }
+    if (swipeDir === 'right' && !prevDocUuid) {
+      setCommitted(null)
+      setSwipeDirection(null)
+      setCurrentOffset(0)
+      return
+    }
+
     // Commit visual state; navigation fires on transition end
-    setCommitted(dx > 0 ? 'right' : 'left')
+    setCommitted(swipeDir)
   }
 
   const width = measureWidth()
@@ -171,8 +193,8 @@ useEffect(() => {
         onTransitionEnd={handleTransitionEnd}
       >
         { docLoading ? <DocSkeleton/> : <DocInfo/>}
+        
       </div>
-
     </div>
   )
 }
