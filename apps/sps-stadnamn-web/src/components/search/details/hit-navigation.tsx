@@ -14,21 +14,21 @@ export default function HitNavigation() {
 
 
     return <>
-    {groupTotal?.value && groupTotal.value > 1 && <div className="flex h-8 xl:h-10 w-full xl:w-auto">    
+    {groupTotal?.value && groupTotal.value > 1 && <div className="flex h-8 xl:h-10 w-full xl:w-auto bg-white rounded-md">    
       
       <ClickableIcon 
         label="Forrige (shift + venstre piltast)" 
-        className={`btn btn-outline btn-compact rounded-r-none ${isMobile ? 'rounded-full bg-white' : ''}`} 
+        className={`btn btn-outline btn-compact rounded-r-none ${isMobile ? 'rounded-full' : ''}`} 
         add={{doc: prevDocUuid}}
         disabled={!prevDocUuid || docIndex === undefined || docIndex <= 0}
       >
         {isMobile ? <PiCaretDoubleLeft className="text-xl" aria-hidden="true"/> : <PiCaretLeftBold className="xl:text-xl text-primary-600" aria-hidden="true"/>}
       </ClickableIcon>
-      <span className="text-neutral-800 border-y border-neutral-200 bg-white shadow-sm h-8 xl:h-10 flex items-center self-center xl:min-w-12 text-center px-4">       
+      <span className="text-neutral-800 border-y border-neutral-200 shadow-sm h-8 xl:h-10 flex items-center self-center xl:min-w-12 text-center px-4">       
         {docIndex ? docIndex + 1 : 1}/{groupTotal?.value}</span>
       <ClickableIcon 
         label="Neste (shift + høgre piltast)" 
-        className={`btn btn-outline btn-compact rounded-l-none ${isMobile ? 'rounded-full bg-white' : ''}`} 
+        className={`btn btn-outline btn-compact rounded-l-none ${isMobile ? 'rounded-full' : ''}`} 
         add={{doc: nextDocUuid}}
         disabled={!nextDocUuid || docIndex === undefined || docIndex >= (groupData?.length || 0) - 1}
       >
