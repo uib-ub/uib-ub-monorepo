@@ -34,7 +34,7 @@ function LazyDocItem({ item, index, group, isMobile }: any) {
         return () => observer.disconnect()
     }, [])
 
-    if (!isVisible) {
+    if (false &&!isVisible) {
         return (
             <li ref={ref} className={`flex${isMobile ? 'flex-col' : 'justify-between gap-4 p-2'} min-h-[120px]`}>
                 <DocSkeleton />
