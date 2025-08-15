@@ -8,6 +8,7 @@ export const RESERVED_PARAMS = [
   'display',
   'perspective',
   'page',
+  'groupPage',
   'asc',
   'desc',
   'fulltext',
