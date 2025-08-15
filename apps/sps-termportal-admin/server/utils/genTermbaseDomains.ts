@@ -6,18 +6,21 @@ export default function (termbase: string) {
   ${prefix}
   PREFIX wiki: <${runtimeConfig.public.base}>
 
-  SELECT ?domain ?domainLiteral (COUNT(?concept) as ?count) WHERE {
+  SELECT ?id
+         (COUNT(?concept) as ?count)
+         (GROUP_CONCAT(DISTINCT ?parentId; SEPARATOR=", ") AS ?parents)
+  WHERE {
     {
       GRAPH <urn:x-arq:UnionGraph> {
         ?concept skosp:memberOf wiki:${termbase}-3A${termbase} .
         ?concept skosp:domene ?domain .
-        ?domain skosxl:prefLabel ?domainLabel .
-        ?domainLabel skosxl:literalForm ?domainLiteral .
-        FILTER ( lang(?domainLiteral) = "nb" ) .
+        ?domain skos:broader+ ?parent .
+        BIND ( REPLACE(STR(?parent), "${runtimeConfig.public.base}DOMENE-3A", "") as ?parentId )
+        BIND ( REPLACE(STR(?domain), "${runtimeConfig.public.base}DOMENE-3A", "") as ?id ) .
       }
     }
   }
-  GROUP BY ?domain ?domainLiteral
+  GROUP BY ?id
   `;
   return query;
 }

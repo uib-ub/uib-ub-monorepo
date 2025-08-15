@@ -46,10 +46,6 @@ export default defineEventHandler(async (event) => {
     }
   };
 
-  if (queryType == "domains") {
-    console.log(query());
-  }
-
   const data = await $fetch(instance.url, {
     method: "post",
     body: query(),
