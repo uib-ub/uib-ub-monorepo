@@ -26,6 +26,7 @@ import ClickableIcon from "../ui/clickable/clickable-icon";
 import HorizontalSwipe from "./details/doc/horizontal-swipe";
 import { PiStackFill, PiStackLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeViewLight } from 'react-icons/pi';
 import HitNavigation from "./details/hit-navigation";
+import { useRouter } from "next/navigation";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -33,7 +34,6 @@ export default function MobileLayout() {
     const [snapped, setSnapped] = useState(false);
     const [startTouchY, setStartTouchY] = useState(0);
     const [startTouchX, setStartTouchX] = useState(0);
-    const [swipeInProgress, setSwipeInProgress] = useState(false);
     const [drawerSwipeDirection, setDrawerSwipeDirection] = useState<null | 'up' | 'down'>(null);
     const scrollableContent = useRef<HTMLDivElement>(null);
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
@@ -47,7 +47,6 @@ export default function MobileLayout() {
     const { totalHits, isLoading } = useContext(SearchContext)
     const [facetIsLoading, setFacetIsLoading] = useState(false)
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
-    const perspective = usePerspective()
     const mode = useMode()
     const { docLoading, docData } = useContext(DocContext)
     const datasetCount = searchParams.getAll('indexDataset')?.length || 0
@@ -227,7 +226,7 @@ export default function MobileLayout() {
             <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 border-neutral-800 shadow-inner max-h-[calc(100svh-12rem)] overscroll-contain`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             {drawerContent == 'details' && <>
-            {doc && details == 'doc' && <> <HorizontalSwipe/> </>}
+            {doc && details == 'doc' && !fuzzyNav && <div className="pb-24"><HorizontalSwipe><ListExplorer/> </HorizontalSwipe></div>}
             {details == 'group' && <div className="pb-12 pt-2 px-2">
                 <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 pb-2">Oversikt</h2>
                 
@@ -377,14 +376,7 @@ export default function MobileLayout() {
             </div>}
 
 
-            {details == 'doc' && drawerContent == 'details' && groupTotal?.value && groupTotal.value > 1 && <div className="absolute bottom-12 right-2 mb-2"
-            style={{
-                transform: currentPosition > 25 ? 'translateY(0)' : 'translateY(100%)',
-                opacity: currentPosition > 25 ? 1 : 0,
-                pointerEvents: currentPosition > 25 ? 'auto' : 'none'
-            }}>
-        <HitNavigation/>
-            </div>}
+           
             
 
 
@@ -435,7 +427,7 @@ export default function MobileLayout() {
                     </div>
                 </Clickable>}
 
-                {mode == 'map' &&
+                {mode != 'table' &&
                     <Clickable aria-label='Søkeresultater' onClick={() => toggleDrawer('results')} add={nav == 'results' ? {nav: null} : {nav: 'results'}}
                         aria-current={drawerContent == 'results' ? 'page' : 'false'}>
                         <div className="relative">
