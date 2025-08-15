@@ -1,8 +1,11 @@
 'use client'
-import { createContext } from 'react'
+import { createContext, useContext } from 'react'
 import { useState, useEffect } from 'react';
 import { useMode, useSearchQuery } from '@/lib/search-params';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { GlobalContext } from './global-provider';
+import { CollapsedContext } from './collapsed-provider';
+import { base64UrlToString } from '@/lib/utils';
 
 interface GroupContextData {
     groupData: any[] | null;
@@ -14,6 +17,7 @@ interface GroupContextData {
     prevDocUuid: string | null;
     nextDocUuid: string | null;
     docIndex: number | undefined;
+    groupIndex: number | null;
 }
 
 export const GroupContext = createContext<GroupContextData>({
@@ -25,7 +29,8 @@ export const GroupContext = createContext<GroupContextData>({
     initialUrl: null,
     prevDocUuid: null,
     nextDocUuid: null,
-    docIndex: undefined
+    docIndex: undefined,
+    groupIndex: null
 });
 
 
@@ -40,28 +45,46 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
     const [nextDocUuid, setNextDocUuid] = useState<string | null>(null)
     const [groupTotal, setGroupTotal] = useState<{ value: number; relation: string } | null>(null)
     const [initialUrl, setInitialUrl] = useState<string | null>(null)
-    const [initialMode, setInitialMode] = useState<string | null>(null)
     const doc = searchParams.get('doc')
     const [docIndex, setDocIndex] = useState<number | undefined>(undefined)
+    const [groupIndex, setGroupIndex] = useState<number | null>(null)
+    const { collapsedResults } = useContext(CollapsedContext)
 
     const {searchQueryString } = useSearchQuery()
     const details = searchParams.get('details') || 'doc'
     const fuzzyNav = searchParams.get('fuzzyNav')
     const mode = useMode()
+    const { isMobile } = useContext(GlobalContext)
+    const groupPage = searchParams.get('groupPage') || '0'
+
 
     useEffect(() => {
-        if (doc) {
-            const currentIndex = groupData?.findIndex(item => item.fields?.uuid[0] === doc || item._source?.uuid === doc)
-            if (currentIndex !== undefined && currentIndex > -1) {
-                setDocIndex(currentIndex)
-            }
+        if (!doc || isMobile) return
+        const currentIndex = groupData?.findIndex(item => item.fields?.uuid[0] === doc || item._source?.uuid === doc)
+        if (currentIndex !== undefined && currentIndex > -1) {
+            setDocIndex(currentIndex)
         }
-    }, [doc, groupData, groupLoading])
+        
+    }, [doc, groupData, groupLoading, isMobile])
+
+    useEffect(() => {
+        if (!group) {
+            setGroupIndex(null)
+            return
+        }
+        const foundGroupIndex = collapsedResults?.findIndex((result: any) => result.fields?.['group.id']?.[0] == base64UrlToString(group))
+        if (foundGroupIndex !== undefined && foundGroupIndex > -1) {
+            setGroupIndex(foundGroupIndex)
+        }
+        else {
+            setGroupIndex(null)
+        }
+      }, [group, collapsedResults])
 
     useEffect(() => {
         if (group) {
             setGroupLoading(true)
-            const url = `/api/search/group?${searchQueryString}&group=${group}&mode=${mode}`
+            const url = `/api/search/group?${searchQueryString}&group=${group}&mode=${isMobile ? 'list' : mode}&groupPage=${groupPage}`
 
             fetch(url).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
@@ -80,7 +103,7 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
             setGroupLoading(false)
             setGroupTotal(null)
         }
-    }, [group, searchQueryString, details, mode])
+    }, [group, searchQueryString, details, mode, isMobile, groupPage])
 
     // Prefetch prev and next doc
     useEffect(() => {
@@ -183,7 +206,8 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
         initialUrl,
         prevDocUuid,
         nextDocUuid,
-        docIndex
+        docIndex,
+        groupIndex
     }}>{children}</GroupContext.Provider>
 }
 

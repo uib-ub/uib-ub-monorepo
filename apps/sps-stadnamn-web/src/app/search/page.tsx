@@ -6,6 +6,7 @@ import DesktopLayout from "@/components/search/desktop-layout";
 import DocProvider from "@/app/doc-provider";
 import { datasetTitles, datasetShortDescriptions } from "@/config/metadata-config";
 import GroupProvider from "../group-provider";
+import CollapsedProvider from "../collapsed-provider";
 
 export async function generateMetadata({searchParams}: {searchParams: Promise<{dataset: string}>}) {
   const { dataset } = await searchParams
@@ -21,11 +22,13 @@ export default async function SearchPage() {
   const isMobile = device.type === 'mobile'
   
   return <SearchProvider>
+          <CollapsedProvider>
           <GroupProvider>
             <DocProvider>
                   {isMobile  ? <MobileLayout/> : <DesktopLayout/>}
             </DocProvider>
-          </GroupProvider>
+            </GroupProvider>
+          </CollapsedProvider>
         </SearchProvider>
 }
 

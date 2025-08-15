@@ -5,15 +5,17 @@ import { GroupContext } from '@/app/group-provider'
 import DocSkeleton from '@/components/doc/doc-skeleton'
 import DocInfo from './doc-info'
 import { DocContext } from '@/app/doc-provider'
+import { CollapsedContext } from '@/app/collapsed-provider'
+import { stringToBase64Url } from '@/lib/utils'
 
-export default function HorizontalSwipe() {
+export default function HorizontalSwipe({children}: {children: React.ReactNode}) {
   const hostRef = useRef<HTMLDivElement | null>(null)
   const navigatedRef = useRef(false)
 
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const { nextDocUuid, prevDocUuid } = useContext(GroupContext)
+  const { groupIndex, collapsedResults } = useContext(CollapsedContext)
 
   const [startTouchX, setStartTouchX] = useState(0)
   const [startTouchY, setStartTouchY] = useState(0)
@@ -24,6 +26,9 @@ export default function HorizontalSwipe() {
   const [isAnimating, setIsAnimating] = useState(false)
   const [committed, setCommitted] = useState<null | 'left' | 'right'>(null)
   const { docLoading } = useContext(DocContext)
+
+  const prevDoc = groupIndex ? collapsedResults?.[groupIndex - 1] : null
+  const nextDoc = groupIndex ? collapsedResults?.[groupIndex + 1] : null
 
   const [debug, setDebug] = useState({
     touchDuration: 0,
@@ -67,8 +72,8 @@ useEffect(() => {
     const swipeDir = newOffset > 0 ? 'left' : 'right'
     
     // Prevent swiping if there's no target document in that direction
-    if (swipeDir === 'left' && !nextDocUuid) return
-    if (swipeDir === 'right' && !prevDocUuid) return
+    if (swipeDir === 'left' && !nextDoc) return
+    if (swipeDir === 'right' && !prevDoc) return
 
     setCurrentOffset(newOffset)
     setSwipeDirection(swipeDir)
@@ -100,13 +105,13 @@ useEffect(() => {
     const swipeDir = dx > 0 ? 'right' : 'left'
     
     // Additional check: don't commit if there's no target document
-    if (swipeDir === 'left' && !nextDocUuid) {
+    if (swipeDir === 'left' && !nextDoc) {
       setCommitted(null)
       setSwipeDirection(null)
       setCurrentOffset(0)
       return
     }
-    if (swipeDir === 'right' && !prevDocUuid) {
+    if (swipeDir === 'right' && !prevDoc) {
       setCommitted(null)
       setSwipeDirection(null)
       setCurrentOffset(0)
@@ -137,7 +142,8 @@ useEffect(() => {
     setIsAnimating(false)
     if (!committed || navigatedRef.current) return
 
-    const targetUuid = committed === 'left' ? nextDocUuid : prevDocUuid
+    const targetUuid = committed === 'left' ? nextDoc?.fields?.uuid?.[0] : prevDoc?.fields?.uuid?.[0]
+    const targetGroup = committed === 'left' ? nextDoc?.fields?.['group.id']?.[0] : prevDoc?.fields?.['group.id']?.[0]
     if (!targetUuid) {
       // Nothing to navigate to; reset
       setCommitted(null)
@@ -147,8 +153,9 @@ useEffect(() => {
 
     const params = new URLSearchParams(searchParams.toString())
     params.set('doc', targetUuid)
+    params.set('group', stringToBase64Url(targetGroup))
     navigatedRef.current = true
-    router.push(`${pathname}?${params.toString()}`)
+    router.replace(`${pathname}?${params.toString()}`)
   }
 
   return (
@@ -192,7 +199,7 @@ useEffect(() => {
         }}
         onTransitionEnd={handleTransitionEnd}
       >
-        { docLoading ? <DocSkeleton/> : <DocInfo/>}
+        {children}
         
       </div>
     </div>

@@ -6,7 +6,6 @@ import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
 import { stringToBase64Url } from '@/lib/utils';
-import Link from 'next/link';
 
 
 
@@ -19,8 +18,8 @@ export default function ResultItem({hit}: {hit: any}) {
     const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit._index.split('-')[2]
     const { isMobile } = useContext(GlobalContext)
-    const details = searchParams.get('details')
     const mode = useMode()
+    const details = searchParams.get('details')
 
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
     const detailsRenderer = (hit: any) => {
@@ -32,7 +31,7 @@ export default function ResultItem({hit}: {hit: any}) {
     const snippetRenderer = resultRenderers[docDataset]?.snippet || defaultResultRenderer.snippet
 
     const isGrunnord = docDataset?.includes('_g')
-    const isSelected = (doc == hit.fields.uuid || (hit.fields?.['group.id'] && group == stringToBase64Url(hit.fields?.['group.id']?.[0])))
+    const isSelected = group == stringToBase64Url(hit.fields?.['group.id']?.[0])
 
 
     useEffect(() => {
@@ -45,6 +44,7 @@ export default function ResultItem({hit}: {hit: any}) {
 
     
 
+    
     return  <li className="flex flex-grow">
         <Clickable link ref={itemRef} className={`w-full h-full p-3 flex items-center group hover:bg-neutral-50 no-underline border-accent-700 aria-[current='page']:bg-accent-50 aria-[current='page']:border-l-4`} 
                     aria-current={isSelected ? 'page' : undefined}

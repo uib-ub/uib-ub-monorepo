@@ -338,25 +338,21 @@ export default function MobileLayout() {
             { drawerContent == 'tree' &&
                 <TreeResults/>
             }
-            {drawerContent == 'details' && <div 
+            {drawerContent == 'details' &&  <div 
     className={`absolute bottom-0 left-1 right-1 bg-neutral-200 border-t border-neutral-300 text-neutral-900 h-12 p-1 flex items-center gap-2 details-toolbar justify-between transition-all duration-300 ease-in-out`}
     style={{
         transform: currentPosition > 25 ? 'translateY(0)' : 'translateY(100%)',
         opacity: currentPosition > 25 ? 1 : 0,
         pointerEvents: currentPosition > 25 ? 'auto' : 'none'
     }}>
-                <ClickableIcon label="Oppslag" remove={['details', 'fuzzyNav']} add={{details: 'doc'}} aria-current={details == 'doc' ? 'page' : 'false'}>
-                    <PiBookOpen className="text-3xl" />
-                </ClickableIcon>
-
-                {groupTotal?.value && groupTotal.value > 1 && <ClickableIcon label="Oversikt"  add={{details: 'group'}} remove={['fuzzyNav']} aria-current={details == 'group' ? 'page' : 'false'}>
+                <ClickableIcon label="Oppslag" remove={['details', 'fuzzyNav']} add={{details: 'doc'}} aria-current={!fuzzyNav && details == 'doc' ? 'page' : 'false'} className="group">
                     <div className="relative">
-                    <PiList className="text-3xl" />
-                        <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${groupTotal?.value < 10 ? 'px-1.5' : 'px-1'}`}>
+                    <PiBookOpen className="text-3xl" />
+                    {groupTotal?.value && Number(groupTotal.value) > 1 && <span className={`results-badge bg-primary-500 absolute group-aria-[current=page]:!bg-white group-aria-[current=page]:!text-accent-700 -top-1 left-full -ml-2 rounded-full text-white text-xs ${Number(groupTotal.value) < 10 ? 'px-1.5' : 'px-1'}`}>
                             {formatNumber(groupTotal?.value)}
-                        </span>
+                        </span>}
                     </div>
-                </ClickableIcon>}
+                </ClickableIcon>
                 {!group || base64UrlToString(group) != 'grunnord' && <>
                 <ClickableIcon
                     label="Tidslinje"
