@@ -14,6 +14,7 @@ const schema = z.object({
   API_ES_WRITE_TOKEN: z.string(),
   OBSERVE_ES_HOST: z.string().url(),
   OBSERVE_ES_APIKEY: z.string(),
+  SPARQL_CHC_ENDPOINT: z.string().url(),
 });
 
 const parsed = schema.safeParse(process.env);
