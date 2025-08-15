@@ -20,12 +20,6 @@ export const activityTypes = {
 export const studioBaseRoute = "/studio/structure";
 export const wikiPageLink = "https://wiki.terminologi.no/index.php?title=";
 
-export const colorMappingStatus = {
-  error: { color: "text-red-500" },
-  warning: { color: "text-amber-400" },
-  ok: { color: "text-green-600" },
-};
-
 export const colorMappingFreshness = {
   2: { color: "text-green-400", description: "i dag eller i går" },
   7: { color: "text-teal-300", description: "mindre enn syv dager siden" },

@@ -65,19 +65,19 @@
                 v-if="data.blocker.status === 'ok'"
                 name="mdi:play"
                 size="1.6em"
-                :class="colorMappingStatus.ok.color"
+                :class="appConfig.ui.color.status.ok.class"
               />
               <Icon
                 v-else-if="data.blocker.status === 'soft'"
                 name="mdi:pause"
                 size="1.6em"
-                :class="colorMappingStatus.warning.color"
+                :class="appConfig.ui.color.status.warning.class"
               />
               <Icon
                 v-else-if="data.blocker.status === 'hard'"
                 name="mdi:stop"
                 size="1.6em"
-                :class="colorMappingStatus.error.color"
+                :class="appConfig.ui.color.status.error.class"
               />
             </div>
 
@@ -90,8 +90,8 @@
               class="ml-[6px] mt-[3px]"
               :class="
                 data.blocker.status === 'hard'
-                  ? colorMappingStatus.error.color
-                  : colorMappingStatus.warning.color
+                  ? appConfig.ui.color.status.error.class
+                  : appConfig.ui.color.status.warning.class
               "
             />
           </div>
@@ -405,14 +405,15 @@
 <script setup lang="ts">
 import type { DataTableRowClickEvent } from "primevue/datatable";
 import { FilterMatchMode } from "primevue/api";
-import { colorMappingStatus, hiddenCollections } from "~/utils/constants";
+import { hiddenCollections } from "~/utils/constants";
 import { getDaysDiff } from "~/utils/utils";
 
+const appConfig = useAppConfig();
 const runtimeConfig = useRuntimeConfig();
 
 const expandedRows = ref([]);
 const selectedTermbase = ref([]);
-const props = defineProps({
+defineProps({
   modelValue: { type: Array, required: true },
 });
 const emits = defineEmits(["update:modelValue"]);
@@ -575,14 +576,6 @@ const merged = computed(() => {
     return blocker;
   }
 });
-
-// {
-//                 'text-green-600': data.reminderCalc <= 0,
-//                 'text-yellow-400':
-//                   data.reminderCalc < reportReminder.interval.error &&
-//                   data.reminderCalc >= 0,
-//                 colorMappingStatus.error.color : data.reminderCalc > reportReminder.interval.error,
-//               }
 
 function checkBlocker(tb) {
   const blocker = { hard: {}, soft: {}, status: "ok" };

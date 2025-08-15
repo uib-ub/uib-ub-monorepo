@@ -26,7 +26,7 @@
                   name="fa6-solid:triangle-exclamation"
                   size="1.1em"
                   class="ml-[6px] mt-[-4px]"
-                  :class="colorMappingStatus.error.color"
+                  :class="appConfig.ui.color.status.error.class"
                 />
               </h4>
               <h4
@@ -37,7 +37,7 @@
                 <Icon
                   name="mdi:stop"
                   size="1.6em"
-                  :class="colorMappingStatus.error.color"
+                  :class="appConfig.ui.color.status.error.class"
                 />
               </h4>
               <ul class="list-disc ml-4">
@@ -64,7 +64,7 @@
                   name="fa6-solid:triangle-exclamation"
                   size="1.1em"
                   class="ml-[6px] mt-[-4px]"
-                  :class="colorMappingStatus.warning.color"
+                  :class="appConfig.ui.color.status.warning.class"
                 />
               </h4>
               <h4
@@ -75,7 +75,7 @@
                 <Icon
                   name="mdi:pause"
                   size="1.6em"
-                  :class="colorMappingStatus.warning.color"
+                  :class="appConfig.ui.color.status.warning.class"
                 />
               </h4>
               <ul class="list-disc ml-4">
@@ -100,7 +100,9 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
+const appConfig = useAppConfig();
+
+defineProps({
   termbases: { type: Object, required: true },
   inline: { type: Boolean, default: false },
 });

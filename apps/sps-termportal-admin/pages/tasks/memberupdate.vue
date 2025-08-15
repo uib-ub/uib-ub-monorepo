@@ -90,8 +90,8 @@
               class=""
               :class="
                 slotProps.data.status
-                  ? colorMappingStatus.ok.color
-                  : colorMappingStatus.error.color
+                  ? appConfigColorStatus.ok.class
+                  : appConfigColorStatus.error.class
               "
             />
           </template>
@@ -158,7 +158,7 @@
             name="material-symbols:circle"
             size="1.9em"
             class=""
-            :class="colorMappingStatus.ok.color"
+            :class="appConfigColorStatus.ok.class"
           />
           <p>
             Termgroup has been registered in the activity - signifying its
@@ -170,7 +170,7 @@
             name="material-symbols:circle"
             size="1.9em"
             class=""
-            :class="colorMappingStatus.error.color"
+            :class="appConfigColorStatus.error.class"
           />
           <p>Termgroup has not been registered in the activity.</p>
         </div>
@@ -188,6 +188,8 @@
 </template>
 
 <script setup lang="ts">
+const appConfigColorStatus = useAppConfig().ui.color.status;
+
 const datatable = ref();
 const expandedRows = ref();
 const selectedTermgroup = ref();

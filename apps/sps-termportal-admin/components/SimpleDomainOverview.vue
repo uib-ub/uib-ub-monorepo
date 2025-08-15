@@ -68,8 +68,8 @@
             class="ml-[6px] mt-[3px]"
             :class="
               data.published
-                ? colorMappingStatus.error.color
-                : colorMappingStatus.warning.color
+                ? appConfig.ui.color.status.error.class
+                : appConfig.ui.color.status.warning.class
             "
           />
           <div class="" />

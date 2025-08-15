@@ -68,11 +68,12 @@ export function flattenList(list: Array<any>) {
 
 export function getReminderColorClass(data) {
   const { error } = reportReminder.interval;
+  const appConfigColorStatus = useAppConfig().ui.color.status;
 
-  if (data.reminderCalc <= 0) return colorMappingStatus.ok.color;
+  if (data.reminderCalc <= 0) return appConfigColorStatus.ok.class;
   if (data.reminderCalc < error && data.reminderCalc >= 0)
-    return colorMappingStatus.warning.color;
-  return colorMappingStatus.error.color;
+    return appConfigColorStatus.warning.class;
+  return appConfigColorStatus.error.class;
 }
 
 // domain processing
