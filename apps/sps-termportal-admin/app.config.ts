@@ -4,8 +4,8 @@ export default defineAppConfig({
       "NaturvitenskapTeknologi",
       "Humaniora",
       "Samfunnsfag",
-      "OkonomiAdministrasjon",
       "Helse_og_sosial",
+      "OkonomiAdministrasjon",
       "Kunst_design_arkitektur",
       "Lærerutdanning",
     ] } });
