@@ -1,4 +1,6 @@
-import { useContext, useEffect, useRef, useState } from "react"
+import { useContext } from "react"
+import dynamic from 'next/dynamic'
+import { useInView } from 'react-intersection-observer'
 import ClientThumbnail from "@/components/doc/client-thumbnail"
 import DocInfo from "../details/doc/doc-info"
 import { GlobalContext } from "@/app/global-provider"
@@ -15,33 +17,8 @@ import SearchResults from "../nav/results/search-results"
 import DocToolbar from "../details/doc/doc-toolbar"
 import CoordinateMenu from "../details/coordinate-menu"
 
-function LazyDocItem({ item, index, group, isMobile }: any) {
-    const [isVisible, setIsVisible] = useState(false)
-    const ref = useRef<HTMLLIElement>(null)
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setIsVisible(true)
-                    observer.disconnect()
-                }
-            },
-            { rootMargin: '200px' }
-        )
-
-        if (ref.current) observer.observe(ref.current)
-        return () => observer.disconnect()
-    }, [])
-
-    if (false &&!isVisible) {
-        return (
-            <li ref={ref} className={`flex${isMobile ? 'flex-col' : 'justify-between gap-4 p-2'} min-h-[120px]`}>
-                <DocSkeleton />
-            </li>
-        )
-    }
-
+// Dynamic import for the actual doc item content
+const DocItemContent = dynamic(() => Promise.resolve(({ item, index, group, isMobile }: any) => {
     const docDataset = item._index.split('-')[2]
     const images = item._source.image?.manifest ? {manifest: item._source.image?.manifest, dataset: docDataset} : item._source.images
     
@@ -57,6 +34,32 @@ function LazyDocItem({ item, index, group, isMobile }: any) {
             </div>
             {!isMobile && images?.length && <div className="lg:min-w-[20svw] lg:max-w-[20svw]"><ClientThumbnail iiif={images}/></div>}
         </li>
+    )
+}), {
+    ssr: false,
+    loading: () => (
+        <li className="flex justify-between gap-4 p-2 min-h-[120px]">
+            <DocSkeleton />
+        </li>
+    )
+})
+
+function LazyDocItem({ item, index, group, isMobile }: any) {
+    const { ref, inView } = useInView({
+        rootMargin: '200px',
+        triggerOnce: true
+    })
+
+    return (
+        <div ref={ref}>
+            {inView ? (
+                <DocItemContent item={item} index={index} group={group} isMobile={isMobile} />
+            ) : (
+                <li className={`flex${isMobile ? 'flex-col' : 'justify-between gap-4 p-2'} min-h-[120px]`}>
+                    <DocSkeleton />
+                </li>
+            )}
+        </div>
     )
 }
 
