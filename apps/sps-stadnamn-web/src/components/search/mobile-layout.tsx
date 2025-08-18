@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
-import { PiBookOpen, PiClock, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiList, PiListBullets, PiSignpost, PiTreeViewFill, PiWallFill, PiWallLight } from "react-icons/pi";
+import { PiBinoculars, PiBookOpen, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiListBullets, PiTreeViewFill, PiWallFill, PiWallLight } from "react-icons/pi";
 import Results from "./nav/results/search-results";
 import MapExplorer from "./map-explorer";
 import { usePerspective, useSearchQuery, useMode } from "@/lib/search-params";
@@ -27,6 +27,7 @@ import HorizontalSwipe from "./details/doc/horizontal-swipe";
 import { PiStackFill, PiStackLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeViewLight } from 'react-icons/pi';
 import HitNavigation from "./details/hit-navigation";
 import { useRouter } from "next/navigation";
+import InfoPopover from "../ui/info-popover";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -234,7 +235,10 @@ export default function MobileLayout() {
             </div>}
             {fuzzyNav &&
             <div className="pb-12 pt-2 px-2">
-            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 pb-2">{fuzzyNav == 'list' ? 'Namneformer' : 'Tidslinje'}</h2>
+            <span className="flex items-center pb-2 text-xl"><h2 className="text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 ">{fuzzyNav == 'list' ? <>Namneformer</> : 'Tidslinje'}</h2>
+            <InfoPopover>
+        Få oversikt over liknande oppslag i nærområdet. Treffa er ikkje nødvendigvis former av namnet du har valt, og det kan vere namnformer som ikkje kjem med.
+        </InfoPopover></span>
             <FuzzyExplorer/>
             </div>
             }
@@ -354,20 +358,12 @@ export default function MobileLayout() {
                 </ClickableIcon>
                 {!group || base64UrlToString(group) != 'grunnord' && <>
                 <ClickableIcon
-                    label="Tidslinje"
-                    aria-current={fuzzyNav == 'timeline' ? 'page' : 'false'}
-                    remove={['details']} 
-                    onClick={() => setInitialUrl(`?${searchParams.toString()}`)}
-                    add={{group: stringToBase64Url(docData?._source.group.id), fuzzyNav: 'timeline'}}>
-                    <PiClock className="text-3xl" aria-hidden="true"/>
-                </ClickableIcon>
-                <ClickableIcon
-                    label="Namneformer"
+                    label="Finn namneformer"
                     aria-current={fuzzyNav == 'list' ? 'page' : 'false'}
                     remove={['details']} 
                     onClick={() => setInitialUrl(`?${searchParams.toString()}`)}
                     add={{group: stringToBase64Url(docData?._source.group.id), fuzzyNav: 'list'}}>
-                    <PiSignpost className="text-3xl" aria-hidden="true"/>
+                    <PiBinoculars className="text-3xl" aria-hidden="true"/>
                 </ClickableIcon>
                 </>}
     
