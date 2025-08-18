@@ -6,6 +6,7 @@ import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
 import { stringToBase64Url } from '@/lib/utils';
+import { GroupContext } from '@/app/group-provider';
 
 
 
@@ -19,6 +20,7 @@ export default function ResultItem({hit}: {hit: any}) {
     const docDataset = hit._index.split('-')[2]
     const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
+    const { highlightedGroup } = useContext(GroupContext)
     const details = searchParams.get('details')
 
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
@@ -31,7 +33,7 @@ export default function ResultItem({hit}: {hit: any}) {
     const snippetRenderer = resultRenderers[docDataset]?.snippet || defaultResultRenderer.snippet
 
     const isGrunnord = docDataset?.includes('_g')
-    const isSelected = group == stringToBase64Url(hit.fields?.['group.id']?.[0])
+    const isSelected = highlightedGroup == stringToBase64Url(hit.fields?.['group.id']?.[0])
 
 
     useEffect(() => {

@@ -18,6 +18,8 @@ interface GroupContextData {
     nextDocUuid: string | null;
     docIndex: number | undefined;
     groupIndex: number | null;
+    highlightedGroup: string | null;
+    setHighlightedGroup: (group: string | null) => void;
 }
 
 export const GroupContext = createContext<GroupContextData>({
@@ -30,7 +32,9 @@ export const GroupContext = createContext<GroupContextData>({
     prevDocUuid: null,
     nextDocUuid: null,
     docIndex: undefined,
-    groupIndex: null
+    groupIndex: null,
+    highlightedGroup: null,
+    setHighlightedGroup: () => {},
 });
 
 
@@ -49,6 +53,7 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
     const [docIndex, setDocIndex] = useState<number | undefined>(undefined)
     const [groupIndex, setGroupIndex] = useState<number | null>(null)
     const { collapsedResults } = useContext(CollapsedContext)
+    const [highlightedGroup, setHighlightedGroup] = useState<string | null>(null) // Allows highlighting even when navigating back to url without group param
 
     const {searchQueryString } = useSearchQuery()
     const details = searchParams.get('details') || 'doc'
@@ -56,6 +61,8 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
     const mode = useMode()
     const { isMobile } = useContext(GlobalContext)
     const groupPage = searchParams.get('groupPage') || '0'
+
+
 
 
     useEffect(() => {
@@ -84,6 +91,7 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
     useEffect(() => {
         if (group) {
             setGroupLoading(true)
+            setHighlightedGroup(group)
             const url = `/api/search/group?${searchQueryString}&group=${group}&mode=${isMobile ? 'list' : mode}&groupPage=${groupPage}`
 
             fetch(url).then(res => res.json()).then(data => {
@@ -207,7 +215,9 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
         prevDocUuid,
         nextDocUuid,
         docIndex,
-        groupIndex
+        groupIndex,
+        highlightedGroup,
+        setHighlightedGroup
     }}>{children}</GroupContext.Provider>
 }
 
