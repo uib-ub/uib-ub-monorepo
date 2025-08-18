@@ -28,6 +28,7 @@ import { PiStackFill, PiStackLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeV
 import HitNavigation from "./details/hit-navigation";
 import { useRouter } from "next/navigation";
 import InfoPopover from "../ui/info-popover";
+import BasewordResults from "./nav/results/baseword-results";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -235,9 +236,9 @@ export default function MobileLayout() {
             </div>}
             {fuzzyNav &&
             <div className="pb-12 pt-2 px-2">
-            <span className="flex items-center pb-2 text-xl"><h2 className="text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 ">{fuzzyNav == 'list' ? <>Namneformer</> : 'Tidslinje'}</h2>
+            <span className="flex items-center pb-2 text-xl"><h2 className="text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 ">Namneformer</h2>
             <InfoPopover>
-        Få oversikt over liknande oppslag i nærområdet. Treffa er ikkje nødvendigvis former av namnet du har valt, og det kan vere namnformer som ikkje kjem med.
+        Utvida oversikt over liknande oppslag i nærområdet. Treffa er ikkje nødvendigvis former av namnet du har valt, og det kan vere namnformer som ikkje kjem med.
         </InfoPopover></span>
             <FuzzyExplorer/>
             </div>
@@ -253,10 +254,10 @@ export default function MobileLayout() {
                         </span>
                     </h2>
                     {(searchParams.get('q') || searchParams.get('fulltext') == 'on') && <div className="flex flex-wrap gap-2 pb-2 border-b border-neutral-200">
-                <ActiveFilters showQuery={true}/>
+                <ActiveFilters showQuery={true} showFacets={true} showDatasets={true} />
                 </div>}
                     
-                <Results/>
+                {datasetTag == 'base' ? <BasewordResults/> : <Results/>}
                 </section>
             
              }
@@ -357,7 +358,7 @@ export default function MobileLayout() {
                 {!group || !base64UrlToString(group).startsWith('grunnord') && <>
                 <ClickableIcon
                     label="Finn namneformer"
-                    aria-current={fuzzyNav == 'list' ? 'page' : 'false'}
+                    aria-current={fuzzyNav ? 'page' : 'false'}
                     remove={['details']} 
                     onClick={() => setInitialUrl(`?${searchParams.toString()}`)}
                     add={{group: stringToBase64Url(docData?._source.group.id), fuzzyNav: 'list'}}>
@@ -383,29 +384,16 @@ export default function MobileLayout() {
 </div>
             
             <div className="fixed bottom-0 left-0 bg-neutral-800 text-white w-full h-12 p-1 flex items-center justify-between nav-toolbar">
-                {!datasetTag && <Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
+                {<Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
                     <div className="relative">
                         <PiDatabase className="text-3xl" />
                         {datasetCount > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
                             {formatNumber(datasetCount)}
                         </span>}
+                        {!datasetCount && <span className="results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full h-2 w-2">    </span>}
                     </div>
-                </Clickable>}
-                {boost_gt == '3' && <Clickable onClick={() => toggleDrawer('datasets')} label="Djupinnsamlingar" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
-                    <div className="relative">
-                        <PiMicroscopeFill className="text-3xl" />
-                        {datasetCount > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
-                            {formatNumber(datasetCount)}
-                        </span>}
-                    </div>
-                </Clickable>}
-                {cadastralIndex && <Clickable onClick={() => toggleDrawer('datasets')} label="Hierarki" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
-                    <PiTreeViewFill className="text-3xl" />
                 </Clickable>}
 
-                {datasetTag == 'base' && <Clickable onClick={() => toggleDrawer('datasets')} label="Grunnord" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
-                    <PiWallFill className="text-3xl" />
-                </Clickable>}
                 
 
                 {datasetTag == 'tree' && <Clickable aria-label='Register' onClick={() => toggleDrawer('tree')} add={nav == 'tree' ? {nav: null} : {nav: 'tree'}} aria-current={drawerContent == 'tree' ? 'page' : 'false'}>

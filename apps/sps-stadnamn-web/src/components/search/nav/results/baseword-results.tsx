@@ -28,7 +28,7 @@ export default function BasewordResults() {
 
     return (
       <>
-        <ul id="result_list" className='flex flex-wrap mb-2'>
+        <ul id="result_list" className='flex flex-wrap mb-2 gap-2'>
           {/* Render existing results */}
           {collapsedResults.sort((a, b) => a.fields.label[0][0].localeCompare(b.fields.label[0][0], 'no')).map((hit, index) => {
             const isSelected = highlightedGroup == stringToBase64Url(hit.fields?.['group.id']?.[0])
@@ -39,7 +39,7 @@ export default function BasewordResults() {
              link 
              aria-current={isSelected ? 'page' : undefined}
              onClick={() => setHighlightedGroup(stringToBase64Url(hit.fields?.['group.id']?.[0]))}
-             className={`inline-flex items-center gap-2 px-4 py-2 m-1 rounded-md text-sm font-medium transition-all duration-200 no-underline
+             className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 no-underline
                ${isSelected 
                  ? 'bg-accent-50 text-accent-900 border border-accent-800 shadow-sm' 
                  : 'bg-neutral-50 text-neutral-800 border border-neutral-200 hover:bg-neutral-100 hover:border-neutral-300 hover:shadow-sm'
@@ -63,11 +63,13 @@ export default function BasewordResults() {
           })}
           
           {/* Render loading skeletons */}
-          {isLoadingResults && Array.from({length: PER_PAGE}).map((_, i) => (
-            <li className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1" key={`skeleton-${collapsedResults.length + i}`}>
-              <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 4, 10)}rem`}}></div>
-              <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 10, 16)}rem`}}></div>
-            </li>
+          {(isLoading || isLoadingResults) && Array.from({length: PER_PAGE}).map((_, i) => (
+            <div className="flex flex-wrap mb-2 gap-2" key={`skeleton-${collapsedResults.length + i}`}>
+              <div 
+                className="rounded-md bg-neutral-900/10 animate-pulse h-12"
+                style={{width: `${getSkeletonLength(i, 4, 8)}rem`}}
+              ></div>
+            </div>
           ))}
           
 

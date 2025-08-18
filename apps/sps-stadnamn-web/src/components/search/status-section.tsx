@@ -29,7 +29,7 @@ export default function StatusSection() {
     {datasetTag != 'base' && <ModeSelector/>}
     
     
-    { ((datasetTag == 'base' || mode == 'map' || !details) && !isMobile) && <div className="flex flex-wrap xl:flex-row h-full p-1 xl:py-0 gap-2"><ActiveFilters showQuery={true} showFacets={true} showDatasets={true}/> </div> }
+    { ((datasetTag == 'base' || mode == 'map' || !details) && !isMobile) && <div className={`flex flex-wrap ${datasetTag == 'base' ? 'm-2': 'p-1'} xl:flex-row h-full xl:py-0 gap-2`}><ActiveFilters showQuery={true} showFacets={true} showDatasets={true}/> </div> }
 
 
 
