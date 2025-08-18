@@ -203,7 +203,7 @@ export default function FuzzyExplorer() {
         <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-serif">{groupName}</h3>
             
-            {!isMobile && fuzzyResult && fuzzyResult.length > 0 && <div className="flex border border-neutral-200 rounded-lg p-1 tabs">
+            { fuzzyResult && fuzzyResult.length > 0 && <div className="flex border border-neutral-200 rounded-lg p-1 tabs">
                 <Clickable
                     add={{ fuzzyNav: 'timeline' }}
                     aria-pressed={fuzzyNav === 'timeline'}
