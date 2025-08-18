@@ -16,6 +16,7 @@ export default function HorizontalSwipe({children}: {children: React.ReactNode})
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const { groupIndex, collapsedResults } = useContext(CollapsedContext)
+  const { setHighlightedGroup } = useContext(GroupContext)
 
   const [startTouchX, setStartTouchX] = useState(0)
   const [startTouchY, setStartTouchY] = useState(0)
@@ -154,6 +155,7 @@ useEffect(() => {
     const params = new URLSearchParams(searchParams.toString())
     params.set('doc', targetUuid)
     params.set('group', stringToBase64Url(targetGroup))
+    setHighlightedGroup(stringToBase64Url(targetGroup))
     navigatedRef.current = true
     router.replace(`${pathname}?${params.toString()}`)
   }
