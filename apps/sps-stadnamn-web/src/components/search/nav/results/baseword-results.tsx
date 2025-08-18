@@ -1,0 +1,91 @@
+'use client'
+import { SearchContext } from "@/app/search-provider"
+import { useCallback, useContext, useEffect, useState } from "react"
+import { useSearchParams } from 'next/navigation';
+import ResultItem from "./result-item";
+import { getSkeletonLength, stringToBase64Url } from "@/lib/utils";
+import { useMode, usePerspective, useSearchQuery } from "@/lib/search-params";
+import { useRouter } from "next/navigation";
+import { CollapsedContext } from "@/app/collapsed-provider";
+import Clickable from "@/components/ui/clickable/clickable";
+import { GroupContext } from "@/app/group-provider";
+
+
+const PER_PAGE = 30
+
+export default function BasewordResults() {
+  const { collapsedResults, isLoadingResults} = useContext(CollapsedContext)
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const page = searchParams.get('page')
+  const { totalHits, isLoading, searchError } = useContext(SearchContext)
+  const group = searchParams.get('group')
+  const doc = searchParams.get('doc')
+  const datasetTag = searchParams.get('datasetTag')
+  const { highlightedGroup, setHighlightedGroup } = useContext(GroupContext)
+  const perspective = usePerspective()
+
+
+    return (
+      <>
+        <ul id="result_list" className='flex flex-wrap mb-2'>
+          {/* Render existing results */}
+          {collapsedResults.sort((a, b) => a.fields.label[0][0].localeCompare(b.fields.label[0][0], 'no')).map((hit, index) => {
+            const isSelected = highlightedGroup == stringToBase64Url(hit.fields?.['group.id']?.[0])
+            return (
+           
+           <li key={hit._id}>
+           <Clickable
+             link 
+             aria-current={isSelected ? 'page' : undefined}
+             onClick={() => setHighlightedGroup(stringToBase64Url(hit.fields?.['group.id']?.[0]))}
+             className={`inline-flex items-center gap-2 px-4 py-2 m-1 rounded-md text-sm font-medium transition-all duration-200 no-underline
+               ${isSelected 
+                 ? 'bg-accent-50 text-accent-900 border border-accent-800 shadow-sm' 
+                 : 'bg-neutral-50 text-neutral-800 border border-neutral-200 hover:bg-neutral-100 hover:border-neutral-300 hover:shadow-sm'
+               }`}
+             add={{
+               group: stringToBase64Url(hit.fields?.['group.id']?.[0])
+             }}>
+             <span className="font-bold text-lg">{hit.fields.label[0][0].toUpperCase()}</span>
+             
+               <span className={`text-xs px-2 py-0.5 rounded-full font-medium
+                 ${isSelected 
+                   ? 'bg-accent-800 text-white' 
+                   : 'bg-neutral-200'
+                 }`}>
+                 {hit.inner_hits?.group?.hits?.total?.value}
+               </span>
+             
+           </Clickable>
+         </li>
+            )
+          })}
+          
+          {/* Render loading skeletons */}
+          {isLoadingResults && Array.from({length: PER_PAGE}).map((_, i) => (
+            <li className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1" key={`skeleton-${collapsedResults.length + i}`}>
+              <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 4, 10)}rem`}}></div>
+              <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 10, 16)}rem`}}></div>
+            </li>
+          ))}
+          
+
+        </ul>
+        
+        {searchError ? (
+          <div className="flex justify-center">
+            <div role="status" aria-live="polite" className="text-primary-600 pb-4">
+              <strong>{searchError.status}</strong> Det har oppstått ein feil
+            </div>
+          </div>
+        ) : !isLoading && !totalHits?.value && (
+          <div className="flex justify-center">
+            <div role="status" aria-live="polite" className="text-neutral-950 pb-4">
+              Ingen søkeresultater
+            </div>
+          </div>
+        )}
+      </>
+    )
+}

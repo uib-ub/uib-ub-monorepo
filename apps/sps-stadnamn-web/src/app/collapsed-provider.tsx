@@ -42,6 +42,7 @@ export default function CollapsedProvider({ children }: {  children: React.React
     const [groupIndex, setGroupIndex] = useState<number | null>(null)
     const group = searchParams.get('group')
     const router = useRouter()
+    const datasetTag = searchParams.get('datasetTag')
 
     // Reset when search query changes
     
@@ -57,7 +58,7 @@ export default function CollapsedProvider({ children }: {  children: React.React
 
 
       useEffect(() => {
-        if (!group) return
+        if (!group || datasetTag == 'base') return
         
         const foundGroupIndex = collapsedResults?.findIndex((result: any) => result.fields?.["group.id"]?.[0] == base64UrlToString(group))
         if (foundGroupIndex && foundGroupIndex > -1) {
@@ -69,7 +70,7 @@ export default function CollapsedProvider({ children }: {  children: React.React
         else {
             setGroupIndex(null)
         }
-      }, [group, collapsedResults, nextPageNavigation])
+      }, [group, collapsedResults, nextPageNavigation, datasetTag])
 
 
     
@@ -79,7 +80,8 @@ export default function CollapsedProvider({ children }: {  children: React.React
         setIsLoadingResults(true)
 
         if ((nav != 'results' && !isMobile) || mode == 'table') return
-        const url = `/api/search/collapsed?${searchQueryString}&size=${(page ? PER_PAGE * (parseInt(page) + 1) : PER_PAGE)}&from=${(page ? parseInt(page) : 0) * PER_PAGE || 0}`
+        const size = datasetTag == 'base' ? 100 : (page ? PER_PAGE * (parseInt(page) + 1) : PER_PAGE)
+        const url = `/api/search/collapsed?${searchQueryString}&size=${size}&from=${(page ? parseInt(page) : 0) * PER_PAGE || 0}`
         fetch(url)
           .then(response => {
             if (!response.ok) {
@@ -93,7 +95,7 @@ export default function CollapsedProvider({ children }: {  children: React.React
             setCollapsedResults(prev => [...prev, ...es_data.hits.hits.filter((hit: any) => !prev.find((prevHit: any) => prevHit._id === hit._id))])
           })
           .finally(() => setIsLoadingResults(false))
-      }, [searchQueryString, page, isMobile, nav, mode])
+      }, [searchQueryString, page, isMobile, nav, mode, datasetTag])
 
 
     

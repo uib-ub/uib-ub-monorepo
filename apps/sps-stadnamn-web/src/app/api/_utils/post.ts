@@ -6,7 +6,7 @@ export async function postQuery(dataset: string, query: any, search_type?: strin
     const token = process.env.STADNAMN_ES_TOKEN
     let res
 
-
+    
 
 
     try {

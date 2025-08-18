@@ -42,10 +42,8 @@ export default function DatasetFacet() {
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
   const availableFacets = useMemo(() => facetConfig[perspective], [perspective]);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
-  const paramsExceptFacet = removeFilterParams('indexDataset', ['grunnord', 'tree'])
-  const boost_gt = searchParams.get('boost_gt')
-  const cadastralIndex = searchParams.get('cadastralIndex')
-  const indexDataset = searchParams.get('indexDataset')
+  const paramsExceptFacet = removeFilterParams('indexDataset')
+  const datasetTag = searchParams.get('datasetTag')
 
   useEffect(() => {
 
@@ -101,15 +99,7 @@ export default function DatasetFacet() {
   };
     
 
-  const filterDatasetsByTags = (item: any) => {
-    if (searchParams.getAll('datasetTag').length > 0) {
-      // Check if the dataset (item.key) has all the required dataset tags
-      return searchParams.getAll('datasetTag').some(tag => 
-        datasetTypes[item.key.split('-')[2]]?.includes(tag)
-      );
-    }
-    return true;
-  };
+
 
   const isChecked = (itemKey: string) => {
     const existingValues = searchParams.getAll('indexDataset');
@@ -137,53 +127,51 @@ export default function DatasetFacet() {
     <div className="flex flex-col gap-2 pb-12">
     {!isMobile && <div className="border p-1 rounded-lg border-neutral-200 tabs gap-1 text-sm flex flex-col 2xl:flex-wrap 2xl:flex-row" role="tablist">
   <Clickable
-    remove={["boost_gt", "cadastralIndex", "indexDataset"]}
+    remove={["datasetTag"]}
     role="tab"
     aria-controls="dataset-facet-content"
-    aria-selected={boost_gt != '3' && indexDataset != 'tree' && indexDataset != 'grunnord'}
+    aria-selected={!datasetTag}
     className={`flex items-center gap-2 p-1 px-2 flex-1`}
   >
     <span className="flex-shrink-0">
-      {boost_gt != '3' && indexDataset != 'tree' && indexDataset != 'grunnord' ? <PiDatabaseFill className="text-base text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-base text-neutral-900" aria-hidden="true"/>}
+      {!datasetTag ? <PiDatabaseFill className="text-base text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-base text-neutral-900" aria-hidden="true"/>}
     </span>
     Alle
   </Clickable>
   <Clickable
     role="tab"
     aria-controls="dataset-facet-content"
-    remove={["cadastralIndex", "indexDataset"]}
-    add={{ boost_gt: '3'}}
-    aria-selected={boost_gt == '3'}
+    add={{ datasetTag: 'deep'}}
+    aria-selected={datasetTag == 'deep'}
     className={`flex items-center gap-2 p-1 px-2 flex-1`}
   >
     <span className="flex-shrink-0">
-      {boost_gt == '3' ? <PiMicroscopeFill className="text-base text-accent-800" aria-hidden="true"/> : <PiMicroscopeLight className="text-base text-neutral-900" aria-hidden="true"/>}
+      {datasetTag == 'deep' ? <PiMicroscopeFill className="text-base text-accent-800" aria-hidden="true"/> : <PiMicroscopeLight className="text-base text-neutral-900" aria-hidden="true"/>}
     </span>
     Djupinnsamlingar
   </Clickable>
   <Clickable
     role="tab"
     aria-controls="dataset-facet-content"
-    remove={["boost_gt", "indexDataset"]}
-    add={{ indexDataset: 'tree'}}
-    aria-selected={indexDataset == 'tree'}
+    add={{ datasetTag: 'tree'}}
+    aria-selected={datasetTag == 'tree'}
     className={`flex items-center gap-2 p-1 px-2 flex-1`}
   >
     <span className="flex-shrink-0">
-      {cadastralIndex ? <PiTreeViewFill className="text-base text-accent-800" aria-hidden="true"/> : <PiTreeViewLight className="text-base text-neutral-900" aria-hidden="true"/>}
+      {datasetTag == 'tree' ? <PiTreeViewFill className="text-base text-accent-800" aria-hidden="true"/> : <PiTreeViewLight className="text-base text-neutral-900" aria-hidden="true"/>}
     </span>
     Hierarki
   </Clickable>
   <Clickable
     role="tab"
     aria-controls="dataset-facet-content"
-    remove={["boost_gt", "cadastralIndex", "indexDataset"]}
-    add={{ indexDataset: 'grunnord'}}
-    aria-selected={indexDataset == 'grunnord'}
+    remove={["datasetTag"]}
+    add={{ datasetTag: 'base'}}
+    aria-selected={datasetTag == 'base'}
     className={`flex items-center gap-2 p-1 px-2 flex-1`}
   >
     <span className="flex-shrink-0">
-      {indexDataset == 'grunnord' ? <PiWallFill className="text-base text-accent-800" aria-hidden="true"/> : <PiWallLight className="text-base text-neutral-900" aria-hidden="true"/>}
+      {datasetTag == 'base' ? <PiWallFill className="text-base text-accent-800" aria-hidden="true"/> : <PiWallLight className="text-base text-neutral-900" aria-hidden="true"/>}
     </span>
     Grunnord
   </Clickable>
@@ -191,8 +179,8 @@ export default function DatasetFacet() {
             
     
     <div id="dataset-facet-content" className='flex flex-col gap-2'>
-    { boost_gt == '3' && <span className="px-1">Datasett som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>}
-    {cadastralIndex && <span className="px-1">Datasett ordna i eit hierarki, fortrinsvis etter matrikkelinndelinga.</span>}
+    { datasetTag == 'deep' && <span className="px-1">Datasett som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>}
+    {datasetTag == 'tree' && <span className="px-1">Datasett ordna i eit hierarki, fortrinsvis etter matrikkelinndelinga.</span>}
 
     <div className='flex gap-2 px-1'>
     <div className='relative grow'>
@@ -206,13 +194,13 @@ export default function DatasetFacet() {
     <FacetToolbar/>
     </div>
     </div>
+    
 
     { (facetLoading || facetAggregation?.buckets.length) ?
     <fieldset>
       <legend className="sr-only">Filtreringsalternativer for datasett</legend>
       <ul role="status" aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200'>
         {facetAggregation?.buckets.length ? facetAggregation?.buckets
-          .filter(filterDatasetsByTags)
           .map((item: any) => {
             const label = renderLabel(item.key)
             const regex = createSearchRegex(clientSearch);

@@ -7,6 +7,7 @@ export const RESERVED_PARAMS = [
   'q',
   'display',
   'perspective',
+  'datasetTag',
   'page',
   'groupPage',
   'asc',
@@ -36,15 +37,29 @@ export function extractFacets(request: Request) {
 
   const termFilters = []
   const reservedParams: { [key: string]: string } = {};
-  const datasets = []
+  const datasets: string[] = []
 
   const clientFacets: { [key: string]: string[] } = {};
   const serverFacets: { [key: string]: string[] } = {};
   const rangeFilters: { [key: string]: { [operator: string]: string } } = {};
+  
+  if (urlParams.get('datasetTag') == 'deep') {
+    // add boost_gt: '3'
+    urlParams.set('boost_gt', '3')
+  }
+
 
   for (const [key, value] of urlParams.entries()) {
     if (RESERVED_PARAMS.includes(key as any)) {
       reservedParams[key] = urlParams.get(key)!;
+      if (key == 'datasetTag') {
+        if (value == 'tree') {
+          datasets.push(...Object.keys(treeSettings))
+        }
+        else if (value == 'base') {
+          datasets.push(...Object.keys(datasetTitles).filter(key => key.endsWith('_g')))
+        }
+      }
     } else {
       // Check for comparison operators (_gt, _gte, _lt, _lte)
       const comparisonMatch = key.match(/^(.+)_(gt|gte|lt|lte)$/);
@@ -208,24 +223,12 @@ export function extractFacets(request: Request) {
         });
 
       } else if (key == 'indexDataset') {
-        let datasetTags = values.filter(value => value != 'grunnord' && value != 'tree')
-        if (values.includes('grunnord')) {
-          datasetTags = [...datasetTags, ...Object.keys(datasetTitles).filter(key => key.endsWith('_g'))]
-        }
-        else if (values.includes('tree')) {
-          datasetTags = [...datasetTags, ...Object.keys(treeSettings)]
-        }
-        datasets.push(...datasetTags)
-        termFilters.push({
-          "bool": {
-            "should": datasetTags.map(datasetTag => ({
-              "term": {
-                "_index": `search-stadnamn-${process.env.SN_ENV}-${datasetTag}`
-              }
-            })),
-            "minimum_should_match": 1
+        values.forEach(value => {
+          if (!datasets.includes(value)) {
+            datasets.push(value);
           }
         });
+        
 
       } else {
           termFilters.push({
@@ -239,7 +242,24 @@ export function extractFacets(request: Request) {
             }
           });
       }
+
+      
+
+
     }
+  }
+  if (datasets.length) {
+    termFilters.push({
+      "bool": {
+        "should": datasets.map(datasetTag => ({
+          "term": {
+            "_index": `search-stadnamn-${process.env.SN_ENV}-${datasetTag}`
+          }
+        })),
+        "minimum_should_match": 1
+      }
+    });
+    
   }
 
   return {termFilters, reservedParams, rangeFilters, datasets}

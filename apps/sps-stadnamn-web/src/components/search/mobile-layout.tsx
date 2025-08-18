@@ -60,7 +60,7 @@ export default function MobileLayout() {
 
     const boost_gt = searchParams.get('boost_gt')
     const cadastralIndex = searchParams.get('cadastralIndex')
-    const indexDataset = searchParams.get('indexDataset')
+    const datasetTag = searchParams.get('datasetTag')
 
 
     useEffect(() => {
@@ -263,10 +263,10 @@ export default function MobileLayout() {
             { (drawerContent == 'datasets' || drawerContent == 'datasetInfo') &&
             <div className="p-2">
             <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide pb-2 flex items-center gap-1 px-1">
-                {indexDataset == 'tree' && 'Hierarki'}
-                {indexDataset == 'grunnord' && 'Grunnord'}
-                {boost_gt == '3' && 'Djupinnsamlingar'}
-                {indexDataset != 'tree' && indexDataset != 'grunnord' && boost_gt != '3' && 'Datasett'}
+                {datasetTag == 'tree' && 'Hierarki'}
+                {datasetTag == 'base' && 'Grunnord'}
+                {datasetTag == 'deep' && 'Djupinnsamlingar'}
+                {!datasetTag && 'Datasett'}
             </h2>
             { (datasetFilters.length > 0 && !cadastralIndex)  && <div className="flex flex-wrap gap-2 py-2 mb-2 border-y border-neutral-200">
                 <ActiveFilters showDatasets={true}/>
@@ -282,19 +282,18 @@ export default function MobileLayout() {
                 }}>
                 <ClickableIcon 
                     label="Alle" 
-                    remove={["boost_gt", "indexDataset"]} 
-                    aria-current={boost_gt != '3' && indexDataset != 'grunnord' && indexDataset != 'tree' ? 'page' : 'false'}>
-                    {boost_gt != '3' && indexDataset != 'grunnord' && indexDataset != 'tree' ? 
+                    remove={["datasetTag"]} 
+                    aria-current={!datasetTag ? 'page' : 'false'}>
+                    {!datasetTag ? 
                         <PiDatabaseFill className="text-3xl text-white" /> : 
                         <PiDatabaseLight className="text-3xl" />}
                 </ClickableIcon>
 
                 <ClickableIcon 
                     label="Djupinnsamlingar" 
-                    remove={["indexDataset"]}
-                    add={{ boost_gt: '3'}}
-                    aria-current={boost_gt == '3' ? 'page' : 'false'}>
-                    {boost_gt == '3' ? 
+                    add={{ datasetTag: 'deep'}}
+                    aria-current={datasetTag == 'deep' ? 'page' : 'false'}>
+                    {datasetTag == 'deep' ? 
                         <PiMicroscopeFill className="text-3xl text-white" /> : 
                         <PiMicroscopeLight className="text-3xl" />}
                 </ClickableIcon>
@@ -302,18 +301,17 @@ export default function MobileLayout() {
                 <ClickableIcon 
                     label="Hierarki" 
                     remove={["boost_gt"]}
-                    add={{ indexDataset: 'tree'}}
-                    aria-current={indexDataset == 'tree' ? 'page' : 'false'}>
-                    {indexDataset == 'tree' ? 
+                    add={{ datasetTag: 'tree'}}
+                    aria-current={datasetTag == 'tree' ? 'page' : 'false'}>
+                    {datasetTag == 'tree' ? 
                         <PiTreeViewFill className="text-3xl text-white" /> : 
                         <PiTreeViewLight className="text-3xl" />}
                 </ClickableIcon>
                 <ClickableIcon 
                     label="Grunnord" 
-                    remove={["boost_gt", "indexDataset"]}
-                    add={{ indexDataset: 'grunnord'}}
-                    aria-current={indexDataset == 'grunnord' ? 'page' : 'false'}>
-                    {indexDataset == 'grunnord' ? 
+                    add={{ datasetTag: 'base'}}
+                    aria-current={datasetTag == 'base' ? 'page' : 'false'}>
+                    {datasetTag == 'base' ? 
                         <PiWallFill className="text-3xl text-white" /> : 
                         <PiWallLight className="text-3xl" />}
                 </ClickableIcon>
@@ -356,7 +354,7 @@ export default function MobileLayout() {
                         </span>}
                     </div>
                 </ClickableIcon>
-                {!group || base64UrlToString(group) != 'grunnord' && <>
+                {!group || !base64UrlToString(group).startsWith('grunnord') && <>
                 <ClickableIcon
                     label="Finn namneformer"
                     aria-current={fuzzyNav == 'list' ? 'page' : 'false'}
@@ -385,7 +383,7 @@ export default function MobileLayout() {
 </div>
             
             <div className="fixed bottom-0 left-0 bg-neutral-800 text-white w-full h-12 p-1 flex items-center justify-between nav-toolbar">
-                {indexDataset != 'grunnord' && indexDataset != 'tree' && boost_gt != '3' && <Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
+                {!datasetTag && <Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
                     <div className="relative">
                         <PiDatabase className="text-3xl" />
                         {datasetCount > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -405,12 +403,12 @@ export default function MobileLayout() {
                     <PiTreeViewFill className="text-3xl" />
                 </Clickable>}
 
-                {indexDataset == 'grunnord' && <Clickable onClick={() => toggleDrawer('datasets')} label="Grunnord" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
+                {datasetTag == 'base' && <Clickable onClick={() => toggleDrawer('datasets')} label="Grunnord" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
                     <PiWallFill className="text-3xl" />
                 </Clickable>}
                 
 
-                {indexDataset == 'tree' && <Clickable aria-label='Register' onClick={() => toggleDrawer('tree')} add={nav == 'tree' ? {nav: null} : {nav: 'tree'}} aria-current={drawerContent == 'tree' ? 'page' : 'false'}>
+                {datasetTag == 'tree' && <Clickable aria-label='Register' onClick={() => toggleDrawer('tree')} add={nav == 'tree' ? {nav: null} : {nav: 'tree'}} aria-current={drawerContent == 'tree' ? 'page' : 'false'}>
                     <PiTreeViewFill className="text-3xl" />
                 </Clickable>}
 

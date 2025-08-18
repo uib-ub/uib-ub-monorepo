@@ -17,6 +17,8 @@ interface SearchContextData {
     resultBounds: [[number, number], [number, number]] | null;
     allowFitBounds: boolean;
     setAllowFitBounds: (value: boolean) => void;
+    inputValue: string;
+    setInputValue: (value: string) => void;
   }
  
   export const SearchContext = createContext<SearchContextData>({
@@ -30,6 +32,8 @@ interface SearchContextData {
     resultBounds: null,
     allowFitBounds: false,
     setAllowFitBounds: () => {},
+    inputValue: '',
+    setInputValue: () => {},
     });
 
 
@@ -41,6 +45,8 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
     const [allowFitBounds, setAllowFitBounds] = useState(false)
     
     const searchParams = useSearchParams()
+    const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
+    
     const { setCurrentUrl, isMobile,  } = useContext(GlobalContext)
     const [resultBounds, setResultBounds] = useState<[[number, number], [number, number]] | null>(null)
 
@@ -109,7 +115,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
       }, [searchQueryString, isMobile])
 
 
-  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, coordinatesError, allowFitBounds, setAllowFitBounds, setCoordinatesError, setSearchError}}>{children}</SearchContext.Provider>
+  return <SearchContext.Provider value={{resultData, resultBounds, totalHits, isLoading, searchError, coordinatesError, allowFitBounds, setAllowFitBounds, setCoordinatesError, setSearchError, inputValue, setInputValue}}>{children}</SearchContext.Provider>
 }
 
 

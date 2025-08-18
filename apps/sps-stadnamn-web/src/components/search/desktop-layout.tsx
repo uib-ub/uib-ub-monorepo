@@ -20,9 +20,8 @@ export default function DesktopLayout() {
     const mode = useMode()
     const doc = searchParams.get('doc')
     const details = searchParams.get('details')
-    const nav = searchParams.get('nav')
     const group = searchParams.get('group')
-    const perspective = usePerspective()
+    const datasetTag = searchParams.get('datasetTag')
 
     return <main id="main" className="flex scroll-container relative w-[100svw] h-[calc(100svh-3rem)]">   
 
@@ -83,7 +82,7 @@ export default function DesktopLayout() {
 
         </div>
     
-        { mode == 'map' && perspective != 'grunnord' &&
+        { mode == 'map' && datasetTag != 'base' &&
             <div className="absolute top-0 right-0 h-full w-full">
             
                 <MapExplorer/>

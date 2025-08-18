@@ -25,9 +25,10 @@ export function usePerspective() {
 
 export function useMode() {
     const searchParams = useSearchParams()
+    const datasetTag = searchParams.get('datasetTag')
     const perspective = usePerspective()
 
-    if (perspective == 'grunnord') {
+    if (datasetTag == 'base') {
         return 'list'
     }
 
@@ -64,6 +65,9 @@ export function useSearchQuery() {
             }
             else if (key == 'cadastralIndex' || key == 'boost_gt') {
                 secondaryDatasetFilters.push([key, value])
+            }
+            else if (key == 'datasetTag') {
+                datasetFilters.push([key, value])
             }
             else if (key != 'q') {
                 searchQuery.append(key, value)

@@ -9,13 +9,14 @@ import Form from 'next/form'
 import Options from './options';
 import { GlobalContext } from '@/app/global-provider';
 import IconButton from '@/components/ui/icon-button';
+import { SearchContext } from '@/app/search-provider';
 
 
 export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const { isMobile, currentUrl, preferredTabs } = useContext(GlobalContext)
-    const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
+    const { isMobile, currentUrl, preferredTabs, inputValue, setInputValue } = useContext(GlobalContext)
+    
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
     const perspective = usePerspective()
@@ -57,6 +58,7 @@ export default function SearchForm() {
             />
             
             {searchParams.getAll('indexDataset')?.map((dataset, index) => <input type="hidden" key={index} name="indexDataset" value={dataset}/>)}
+            {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''}/>}
             
             { inputValue && 
             <IconButton  onClick={() => { clearQuery() }} 
@@ -69,7 +71,7 @@ export default function SearchForm() {
             <Options/>
             
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''}/>}
-            <input type="hidden" name="nav" value={ mode == 'map' ? 'results' : 'filters'}/>
+            <input type="hidden" name="nav" value={ 'results'}/>
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value}/>)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''}/>}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''}/>}

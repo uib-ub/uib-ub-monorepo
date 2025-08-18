@@ -33,7 +33,7 @@ export default function DetailsWindow() {
     <div className={`flex tabs p-2 ${(details || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
    
 
-    {mode != 'table' ? <DetailsTabs/> : <DocToolbar/>}
+    {mode != 'table' ? <DetailsTabs/> : <DocToolbar docData={docData}/>}
     <div className="flex gap-2 ml-auto">
     
              
@@ -59,7 +59,7 @@ export default function DetailsWindow() {
     <div className={`flex flex-wrap gap-2 p-2 transition-opacity duration-200 ${groupLoading ? 'opacity-50' : 'opacity-100'}`}>
     {!fuzzyNav && <HitNavigation/>}
 
-   {mode != 'table' && <DocToolbar/>}
+   {mode != 'table' && <DocToolbar docData={docData}/>}
 
       
   </div>

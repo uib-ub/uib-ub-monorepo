@@ -28,7 +28,7 @@ const DocItemContent = dynamic(() => Promise.resolve(({ item, index, group, isMo
             <div className="flex flex-col p-2 w-full">
                 <DocInfo docParams={{docDataset, docData: item, sameMarkerList: []}}/>
                 <div className="flex 2xl:justify-between gap-2 2xl:px-4">
-                    <DocToolbar/>
+                    <DocToolbar docData={item}/>
                     {!docDataset.endsWith('_g') && <CoordinateMenu/>}
                 </div>
             </div>
@@ -77,10 +77,8 @@ export default function ListExplorer() {
 
     const items = details == 'doc' ? [docData] : groupData
 
-    return <>{false && JSON.stringify(items?.[0])}
-    
-        {!doc && !group && <SearchResults/>}
-        {!items?.length && (doc || group) ? <div className="flex flex-col divide-y divide-neutral-200 instance-info !pt-0">
+    return <>
+        {!items?.length  ? <div className="flex flex-col divide-y divide-neutral-200 instance-info !pt-0">
             <DocSkeleton/>
         </div> :
         <ul className={`flex flex-col divide-y divide-neutral-200 instance-info ${isMobile ? 'gap-4' : 'gap-8'} ${groupLoading ? 'opacity-50' : ''}`}>
@@ -95,7 +93,7 @@ export default function ListExplorer() {
                             <div className="flex flex-col p-2 w-full">
                                 <DocInfo docParams={{docDataset, docData: item, sameMarkerList: []}}/>
                                 <div className="flex 2xl:justify-between gap-2 2xl:px-4">
-                                    <DocToolbar/>
+                                    <DocToolbar docData={item}/>
                                     {!docDataset.endsWith('_g') && <CoordinateMenu/>}
                                 </div>
                             </div>

@@ -37,6 +37,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
     const parent = searchParams.get('parent')
     const mode = useMode()
     const doc = searchParams.get('doc')
+    const datasetTag = searchParams.get('datasetTag')
     const { isMobile, sosiVocab } = useContext(GlobalContext)
 
     const multivalue = (value: string|string[]) => {
@@ -130,7 +131,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
       })()}
 
       { filteredFacets?.length > 0 && 
-        <CollapsibleHeading title="Detaljar" alwaysOpen={perspective != 'grunnord' && !perspective.endsWith("_g")}>
+        <CollapsibleHeading title="Detaljar" alwaysOpen={datasetTag != 'base' && !perspective.endsWith("_g")}>
             <FacetsInfobox source={docSource} docDataset={docDataset} filteredFacets={filteredFacets}/>
         </CollapsibleHeading>
         

@@ -65,7 +65,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
       {title: 'N50 Kartid', value: source.rawData.N50_kartid}
     ]}/>
 
-    */
+    */ 
     return <>
     {source.content?.html && <div className="inline-flex flex-col gap-4 inner-slate">
       <div className='border-b border-neutral-200 p-4'><Link href="https://urn.nb.no/URN:NBN:no-nb_digibok_2008121704022" className='whitespace-nowrap inline'>Norsk stadnamnleksikon 1997</Link></div>
@@ -77,6 +77,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
   },
   leks_g: (source: any) => {
     return <>
+    {source["note"] && <span className='flex items-center gap-1'><PiWarningFill className='inline mr-1 text-primary-600' />{source["note"]}</span>}
     {source.content?.html && <div className='space-y-2'>{parse(source.content?.html)}</div>}
     </>
   },

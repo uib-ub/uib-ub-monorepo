@@ -51,12 +51,13 @@ const html = {"content.html": {label: "Tekstinnhald", fulltext}}
 const text = {"content.text": {label: "Tekstinnhald", fulltext}}
 const boost = {numeric}
 const indexDataset = {label: "Datasett"}
+const datasetTag = {label: "Datasettgruppe"}
 
 const labelDefaults = {
   "altLabels": {label: "Andre namn", table, facet, result},
   "attestations": {label: "Kjeldeformer", table, result},
 }
-const required = {uuid, boost, label, indexDataset}
+const required = {uuid, boost, label, indexDataset, datasetTag}
 
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     core_gnidu: {
@@ -110,6 +111,8 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     rygh_g: {
       ...required, ...text,
+      "rawData.språk": {label: "Språk", facet},
+      "rawData.kjelde": {label: "Kjelde", facet},
     },
     leks: {
       ...required, adm, adm1, adm2,...html,

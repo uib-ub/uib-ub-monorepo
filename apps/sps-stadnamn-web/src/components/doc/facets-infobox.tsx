@@ -1,100 +1,121 @@
 'use client'
 import Link from "next/link";
-import { PiFunnel, PiMagnifyingGlass } from "react-icons/pi";
+import { PiMagnifyingGlass } from "react-icons/pi";
 import { facetConfig } from "@/config/search-config";
 import { getValueByPath } from "@/lib/utils";
-import { usePerspective } from "@/lib/search-params";
-import Clickable from "../ui/clickable/clickable";
-import { datasetTitles } from "@/config/metadata-config";
+import { useSearchParams } from "next/navigation";
 
-// Add custom serializer utilities
-const parseAsString = (value: string | null): string | null => value;
+interface FacetItem {
+  value: string;
+  searchParams: Record<string, string>;
+}
 
-const createSerializer = (config: Record<string, (value: string | null) => any>) => {
-  return (params: Record<string, any>) => {
-    const searchParams = new URLSearchParams();
+interface ProcessedFacet {
+  title: string;
+  items: FacetItem[];
+}
+
+export default function FacetsInfobox({ 
+  source, 
+  docDataset, 
+  filteredFacets 
+}: { 
+  source: Record<string, any>; 
+  docDataset: string | null; 
+  filteredFacets: any[]; 
+}) {
+  const searchParams = useSearchParams();
+  
+  if (!docDataset) return null;
+
+  const buildSearchUrl = (params: Record<string, string>) => {
+    const urlParams = new URLSearchParams();
     
+    // Always include nav=results
+    urlParams.set('nav', 'results');
+    
+    // Preserve datasetTag if it exists in current URL
+    const currentDatasetTag = searchParams.get('datasetTag');
+    if (currentDatasetTag) {
+      urlParams.set('datasetTag', currentDatasetTag);
+    }
+    
+    // Add other parameters
     Object.entries(params).forEach(([key, value]) => {
-      if (value !== null && value !== undefined && value !== '') {
-        searchParams.set(key, String(value));
+      if (value && value.trim()) {
+        urlParams.set(key, value);
       }
     });
 
-    return `?${searchParams.toString()}`;
+    return `?${urlParams.toString()}`;
   };
-};
 
-export default function FacetsInfobox({ source, docDataset, filteredFacets }: { source: Record<string,any>, docDataset: string | null, filteredFacets: any[] }) {
-  const perspective = usePerspective()
-  if (!docDataset) return null;
-
-  const serialize = createSerializer({
-    dataset: parseAsString,
-    nav: parseAsString,
-    ...Object.fromEntries(facetConfig[docDataset].map((facet) => [facet.key, parseAsString]))
-  })
-  
-
-    const items = filteredFacets.map((facet) => {
-        const value = getValueByPath(source, facet.key);
-        return {
-          title: facet.label,
-          items: Array.isArray(value) ? value.map((item: any) => ({value: item, 
-                                                                  key: facet.key,
-                                                                  ...facet.additionalParams ?  {hrefParams: facet.additionalParams.map((param: string) => ({[param]: getValueByPath(source, param)}))} : {}
-
-          })) : [{value: value,
-            key: facet.key,
-            
-            //hrefParams: {adm1: "test", adm2: "hello"}
-            ...facet.additionalParams?.length ? {hrefParams: [facet.key, ...facet.additionalParams || []].reduce((acc, param) => ({
-              ...acc,
-              [param as string]: getValueByPath(source, param)
-            }), {})
-          } :  {}
-                
-          }]
-        }
-      }
-    )
+  const processFacet = (facet: any): ProcessedFacet => {
+    const value = getValueByPath(source, facet.key);
+    const values = Array.isArray(value) ? value : [value].filter(Boolean);
     
-
-    const subitemRenderer = (item: any) => {
+    const items: FacetItem[] = values.map((val: any) => {
+      const searchParams: Record<string, string> = { [facet.key]: val };
       
-        return (
-          <Link className="no-underline flex items-center gap-1" 
-                href={item.hrefParams ? buildHref(item.hrefParams) : item.href || serialize({[item.key]: item.value, nav: 'results'})}>
-                      {item.value}
-                      <PiMagnifyingGlass aria-hidden={true} className="inline text-primary-600"/>
-          </Link>
-        )
-      
-      
-    }
+      // Add additional parameters if configured
+      if (facet.additionalParams) {
+        facet.additionalParams.forEach((param: string) => {
+          const paramValue = getValueByPath(source, param);
+          if (paramValue) {
+            searchParams[param] = paramValue;
+          }
+        });
+      }
 
+      return {
+        value: val,
+        searchParams
+      };
+    });
 
-    const buildHref = (params: Record<string, string>) => {
-      // Add parameter if value isn't null or empty string
-      const newParams = Object.fromEntries(Object.entries(params).filter(([key, value]) => value !== null && value !== ''));
-      return serialize({nav: 'results', ...newParams})
-    }
-    return <div className="flex flex-col gap-2 py-3">
-            <div className="flex flex-col sm:flex-row flex-wrap gap-6">
-            {items.map((item: Record<string,any> , index: number) => (
-                <div key={index} className="flex flex-col">
-                    <strong className="text-neutral-700">{item.title}</strong>
-                    {item.items?.length == 1 && <p>{subitemRenderer(item.items[0])}</p>}                
-                    {item.items?.length > 1 && <ul className="!list-none flex flex-wrap gap-x-4 !mx-0 !px-0"> 
-                      {item.items.map((subItem: any, subIndex: number) => (
-                        <li key={subIndex}> {subitemRenderer(subItem)} </li>
-                      ))}
-                    </ul> }
-                    
-                    {!item.items &&  <p>{subitemRenderer(item)}</p>}
-                </div>
-            ))}
+    return {
+      title: facet.label,
+      items
+    };
+  };
+
+  const processedFacets = filteredFacets.map(processFacet);
+
+  return (
+    <div className="flex flex-col gap-2 py-3">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-6">
+        {processedFacets.map((facet, index) => (
+          <div key={index} className="flex flex-col">
+            <strong className="text-neutral-700">{facet.title}</strong>
+            
+            {facet.items.length === 1 ? (
+              <p>
+                <FacetLink item={facet.items[0]} />
+              </p>
+            ) : (
+              <ul className="!list-none flex flex-wrap gap-x-4 !mx-0 !px-0">
+                {facet.items.map((item, itemIndex) => (
+                  <li key={itemIndex}>
+                    <FacetLink item={item} />
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-        </div>
-  
-  
+        ))}
+      </div>
+    </div>
+  );
+
+  function FacetLink({ item }: { item: FacetItem }) {
+    return (
+      <Link 
+        className="no-underline flex items-center gap-1" 
+        href={buildSearchUrl(item.searchParams)}
+      >
+        {item.value}
+        <PiMagnifyingGlass aria-hidden className="inline text-primary-600" />
+      </Link>
+    );
   }
+}

@@ -1,6 +1,7 @@
 'use client'
 import { facetConfig } from '@/config/search-config';
 import { usePerspective } from '@/lib/search-params';
+import { useSearchParams } from 'next/navigation';
 import { createContext, useEffect, useState } from 'react'
 
 interface FacetOption {
@@ -20,6 +21,8 @@ export const GlobalContext = createContext({
   setPreferredTab: (dataset: string, tab: string) => {},
   visibleColumns: {} as Record<string, string[]>,
   setVisibleColumns: (dataset: string, columns: string[]) => {},
+  inputValue: '',
+  setInputValue: (value: string) => {},
 });
 
 export default function GlobalProvider({ children, isMobile, sosiVocab, coordinateVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any>, coordinateVocab: Record<string, any> }) {
@@ -30,6 +33,8 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   const [visibleColumns, setVisibleColumns] = useState<Record<string, string[]>>({
     [perspective]: ['adm', ...facetConfig[perspective].filter(item => item.table).map(facet => facet.key)]
   });
+  const searchParams = useSearchParams()
+  const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
 
   // Load facet options from localStorage on mount
   useEffect(() => {
@@ -103,7 +108,9 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
         preferredTabs,
         setPreferredTab,
         visibleColumns,
-        setVisibleColumns: setVisibleColumnsHandler
+        setVisibleColumns: setVisibleColumnsHandler,
+        inputValue,
+        setInputValue,
       }}
     >
       {children}

@@ -15,13 +15,13 @@ export default function ResultItem({hit}: {hit: any}) {
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
     const nav = searchParams.get('nav')
-    const group = searchParams.get('group')
     const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit._index.split('-')[2]
     const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
     const { highlightedGroup } = useContext(GroupContext)
     const details = searchParams.get('details')
+    const datasetTag = searchParams.get('datasetTag')
 
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
     const detailsRenderer = (hit: any) => {
@@ -32,8 +32,8 @@ export default function ResultItem({hit}: {hit: any}) {
     }
     const snippetRenderer = resultRenderers[docDataset]?.snippet || defaultResultRenderer.snippet
 
-    const isGrunnord = docDataset?.includes('_g')
-    const isSelected = highlightedGroup == stringToBase64Url(hit.fields?.['group.id']?.[0])
+    const highlightAsGrunnord = docDataset?.includes('_g') && datasetTag != 'base'
+    const isSelected = highlightedGroup && highlightedGroup == stringToBase64Url(hit.fields?.['group.id']?.[0])
 
 
     useEffect(() => {
@@ -54,19 +54,19 @@ export default function ResultItem({hit}: {hit: any}) {
                     add={{
                         doc: hit.fields.uuid,
                         details: mode == 'list' ? 'group' : details || 'doc', 
-
                         ...(hit.fields["group.id"] ? {group: stringToBase64Url(hit.fields["group.id"][0])} : {}),
 
                         //...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>
                         
             <div className="flex flex-col w-full">
-            {isGrunnord && <strong className="uppercase font-semibold text-neutral-800 text-sm">Grunnord</strong>}
+            {highlightAsGrunnord && <strong className="uppercase font-semibold text-neutral-800 text-sm">Grunnord</strong>}
 
                 <span className="text-neutral-950 flex items-center">
-                    {titleRenderer(hit, 'map')} {isGrunnord && hit.inner_hits?.group?.hits?.total?.value > 1 && "..."}
+                     {titleRenderer(hit, 'map')} {highlightAsGrunnord && hit.inner_hits?.group?.hits?.total?.value > 1 && "..."}
                     
                 </span>
+                
                 {detailsRenderer(hit)}
                 {hit.highlight && snippetRenderer && <>{snippetRenderer(hit)}</>}
             </div>

@@ -8,8 +8,7 @@ import { GroupContext } from "@/app/group-provider"
 import IconLink from "@/components/ui/icon-link"
 
 
-export default function DocToolbar() {
-    const { docData } = useContext(DocContext)
+export default function DocToolbar( {docData}: {docData: any} ) {
 
     return <div className="flex gap-2 h-10">
   

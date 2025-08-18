@@ -5,7 +5,7 @@ import { useMode, useSearchQuery } from '@/lib/search-params';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { GlobalContext } from './global-provider';
 import { CollapsedContext } from './collapsed-provider';
-import { base64UrlToString } from '@/lib/utils';
+import { base64UrlToString, stringToBase64Url } from '@/lib/utils';
 
 interface GroupContextData {
     groupData: any[] | null;
@@ -41,7 +41,7 @@ export const GroupContext = createContext<GroupContextData>({
 export default function GroupProvider({ children }: {  children: React.ReactNode }) {
     const searchParams = useSearchParams()
     const router = useRouter()
-    const group = searchParams.get('group')
+    
     const [groupLoading, setGroupLoading] = useState<boolean>(true)
     const [groupError, setGroupError] = useState<Record<string, string> | null>(null)
     const [groupData, setGroupData] = useState<any[] | null>(null)
@@ -54,6 +54,9 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
     const [groupIndex, setGroupIndex] = useState<number | null>(null)
     const { collapsedResults } = useContext(CollapsedContext)
     const [highlightedGroup, setHighlightedGroup] = useState<string | null>(null) // Allows highlighting even when navigating back to url without group param
+    
+
+
 
     const {searchQueryString } = useSearchQuery()
     const details = searchParams.get('details') || 'doc'
@@ -61,6 +64,9 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
     const mode = useMode()
     const { isMobile } = useContext(GlobalContext)
     const groupPage = searchParams.get('groupPage') || '0'
+
+    const topGroup = collapsedResults?.[0]?.fields?.['group.id']?.[0]
+    const group = searchParams.get('group') || (topGroup ? stringToBase64Url(topGroup) : null)
 
 
 

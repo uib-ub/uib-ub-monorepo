@@ -18,7 +18,6 @@ export async function GET(request: Request) {
     sortArray = getSortArray(perspective)
   }
 
-
     
   const query: Record<string,any> = {
     "size":  reservedParams.size  || 10,
@@ -35,7 +34,9 @@ export async function GET(request: Request) {
     "fields": [ "boost",
       "group.id", "label", "group.adm1", "group.adm2", "uuid", "sosi", "description", "altLabels", "attestations.label", // Todo: adapt to whether it's used in the search or in the show more
     ],
-    "sort": [
+    "sort": reservedParams.datasetTag == 'base' ?
+    [{'group.id': "asc"}, {'label.keyword': "asc"}]
+    : [
       {
         _score: "desc"
       },

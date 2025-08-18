@@ -22,19 +22,20 @@ export default function StatusSection() {
     const group = searchParams.get('group')
     const perspective = usePerspective()
     const details = searchParams.get('details')
+    const datasetTag = searchParams.get('datasetTag')
 
     return <div className="flex flex-col gap-2"> 
     <div className={`flex gap-1 flex-wrap w-fit ${mode != 'map' ? 'items-center' : ''} ${(mode == 'map' && !isMobile) ? 'lg:mt-2' : ''}`}>
-    {perspective != 'grunnord' && <ModeSelector/>}
+    {datasetTag != 'base' && <ModeSelector/>}
     
     
-    { ((perspective == 'grunnord' || mode == 'map' || !details) && !isMobile) && <div className="flex flex-wrap xl:flex-row h-full p-1 xl:py-0 gap-2"><ActiveFilters showQuery={true} showFacets={true} showDatasets={true}/> </div> }
+    { ((datasetTag == 'base' || mode == 'map' || !details) && !isMobile) && <div className="flex flex-wrap xl:flex-row h-full p-1 xl:py-0 gap-2"><ActiveFilters showQuery={true} showFacets={true} showDatasets={true}/> </div> }
 
 
 
 
     </div>
-    {mode == 'list' && (!doc && !group) && <div className="flex flex-wrap xl:flex-row h-full p-2 px-6 gap-1"><SortSelector/></div>}
+    {mode == 'list' && (!doc && !group) && datasetTag != 'base' && <div className="flex flex-wrap xl:flex-row h-full p-2 px-6 gap-1"><SortSelector/></div>}
     
     
 

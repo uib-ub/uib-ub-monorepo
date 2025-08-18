@@ -15,6 +15,7 @@ import ClickableIcon from "../../ui/clickable/clickable-icon";
 import Clickable from "../../ui/clickable/clickable";
 import WikiAdmFacet from "./facets/wikiAdm-facet";
 import TableOptions from "../table/table-options";
+import BasewordResults from "./results/baseword-results";
 
 export default function NavWindow() {
     const { totalHits, isLoading } = useContext(SearchContext)
@@ -22,6 +23,7 @@ export default function NavWindow() {
     const mode = useMode()
     const nav = searchParams.get('nav')
     const [isPending, startTransition] = useTransition()
+    const datasetTag = searchParams.get('datasetTag')
 
 
     return <><div className={`flex overflow-x-auto tabs rounded-md gap-1 p-2`}>
@@ -83,8 +85,12 @@ export default function NavWindow() {
             <DatasetFacet/>
             </div>
         }
-        { nav == 'results' && mode != 'table' &&
+        { nav == 'results' && mode != 'table' && (datasetTag != 'base' || (searchParams.get('fulltext') == 'on' && searchParams.get('q'))) &&
             <SearchResults/>
+        }
+
+        { nav == 'results' && mode != 'table' && datasetTag == 'base' && (searchParams.get('fulltext') != 'on' || !searchParams.get('q')) &&
+            <BasewordResults/>
         }
 
         { nav == 'results' && mode == 'table' && <>
