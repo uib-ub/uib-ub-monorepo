@@ -52,6 +52,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
 
     const [searchError, setSearchError] = useState<Record<string, any> | null>(null)
     const { searchQueryString } = useSearchQuery()
+    const initialLoad = useRef(true)
     
     const searchParamsString = searchParams.toString()
     
@@ -94,7 +95,10 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
                 }
                 
                 setResultBounds(limitedBounds)
-                setAllowFitBounds(true)
+                if (!initialLoad.current) {
+                    setAllowFitBounds(true)
+                }
+                initialLoad.current = false
             }
             else {
                 setResultBounds(null)
