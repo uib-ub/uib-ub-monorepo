@@ -27,6 +27,7 @@ export async function GET(request: Request) {
             }
         });
 
+
         // Get stats information
         const statsResponse = await fetch(`${endpoint}search-stadnamn-*/_stats`, {
             cache: 'force-cache',
@@ -51,16 +52,15 @@ export async function GET(request: Request) {
 
         const aliasResult = await aliasResponse.json();
         const statsResult = await statsResponse.json();
+
+        console.log("ALIAS RESULT", aliasResult)
         
         // Get individual counts for each index
         const indices = await Promise.all(
             Object.entries(aliasResult).map(async ([indexName, indexInfo]: [string, any]) => {
                 // Get count for this specific index
                 const indexCountResponse = await fetch(`${endpoint}${indexName}/_count`, {
-                    cache: 'force-cache',
-                    next: {
-                        tags: ["all"]
-                    },
+                    cache: 'no-store',
                     headers: {
                         'Authorization': `ApiKey ${token}`,
                         'Content-Type': 'application/json'
