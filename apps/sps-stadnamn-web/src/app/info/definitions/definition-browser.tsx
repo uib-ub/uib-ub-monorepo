@@ -28,7 +28,7 @@ export default function DefinitionBrowser() {
 
     useEffect(() => {
         setIsLoading(true)
-        fetch(`/api/definitions?q=${searchTerm}&vocab=${vocab}&size=${size}`)
+        fetch(`/api/definitions?q=${searchTerm}&vocab=${vocab}&size=${size}`, {cache: 'force-cache'})
         .then(response => {
             if (!response.ok) {
                 throw response

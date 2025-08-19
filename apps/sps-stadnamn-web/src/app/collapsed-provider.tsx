@@ -82,7 +82,7 @@ export default function CollapsedProvider({ children }: {  children: React.React
         if ((nav != 'results' && !isMobile) || mode == 'table') return
         const size = datasetTag == 'base' ? 100 : (page ? PER_PAGE * (parseInt(page) + 1) : PER_PAGE)
         const url = `/api/search/collapsed?${searchQueryString}&size=${size}&from=${(page ? parseInt(page) : 0) * PER_PAGE || 0}`
-        fetch(url)
+        fetch(url, {cache: 'force-cache'})
           .then(response => {
             if (!response.ok) {
               setIsLoadingResults(false)

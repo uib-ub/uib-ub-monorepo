@@ -48,7 +48,7 @@ export default function DocProvider({ children }: {  children: React.ReactNode }
     useEffect(() => {
         if (doc) {
             setDocLoading(true)
-            fetch(`/api/doc?uuid=${doc}`).then(res => res.json()).then(data => {
+            fetch(`/api/doc?uuid=${doc}`, {cache: 'force-cache'}).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
                     setDocData(data.hits.hits[0])
                     setDocDataset(data.hits.hits[0]._index.split('-')[2])

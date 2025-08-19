@@ -44,7 +44,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
             });
 
         const url = `/api/download?${searchQueryString}&size=10000&fields=${fields.join(',')}`;
-        const response = await fetch(url);
+        const response = await fetch(url, {cache: 'force-cache'});
         const data = await response.json();
         const jsonContent = JSON.stringify(data, null, 2);
         const blob = new Blob([jsonContent], { type: 'application/json' });
@@ -76,7 +76,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
             });
 
         const url = `/api/download?${searchQueryString}&size=10000&fields=${fields.join(',')}`;
-        const response = await fetch(url);
+        const response = await fetch(url, {cache: 'force-cache'});
         const data = await response.json();
 
         // Convert to GeoJSON format
@@ -160,7 +160,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
         const url = `/api/download?${searchQueryString}&size=10000&fields=${fields.join(',')}`;
         
         // Fetch the data
-        const response = await fetch(url);
+        const response = await fetch(url, {cache: 'force-cache'});
         const data = await response.json();
         
         // Prepare CSV headers based on visible columns

@@ -170,6 +170,7 @@ export default function FuzzyExplorer() {
 
 
             fetch('/api/search/fuzzy', {
+                cache: 'force-cache',
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

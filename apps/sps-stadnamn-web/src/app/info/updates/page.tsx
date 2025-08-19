@@ -28,7 +28,7 @@ export default async function Updates({searchParams}: {searchParams: Promise<{da
         return date.toLocaleDateString()
     }
 
-  const updates = await fetch(`https://git.app.uib.no/api/v4/projects/26634/repository/commits?ref_name=main${dataset ? `&path=lfs-data/elastic/${dataset}_elastic.json` : ''}`)
+  const updates = await fetch(`https://git.app.uib.no/api/v4/projects/26634/repository/commits?ref_name=main${dataset ? `&path=lfs-data/elastic/${dataset}_elastic.json` : ''}`, {cache: 'force-cache'})
 
     if (!updates.ok) {
         return (

@@ -51,7 +51,7 @@ export default function DatasetFacet() {
     fetch(`/api/facet?perspective=all&facets=indexDataset${
       facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${
         paramsExceptFacet ? '&' + paramsExceptFacet : ''}${
-          sortMode != 'doc_count' ? '&facetSort=' + sortMode : ''}`).then(response => response.json()).then(es_data => {
+          sortMode != 'doc_count' ? '&facetSort=' + sortMode : ''}`, {cache: 'force-cache'}).then(response => response.json()).then(es_data => {
       
       setFacetAggregation(es_data.aggregations?.indexDataset)
 
