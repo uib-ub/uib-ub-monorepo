@@ -4,7 +4,7 @@ import { GroupContext } from "@/app/group-provider"
 import Clickable from "@/components/ui/clickable/clickable"
 import IconButton from "@/components/ui/icon-button"
 import { datasetTitles } from "@/config/metadata-config"
-import { base64UrlToString } from "@/lib/utils"
+import { base64UrlToString, getSkeletonLength } from "@/lib/utils"
 import { useSearchParams } from "next/navigation"
 import { useContext, useState, useEffect, useCallback } from "react"
 import { PiBookOpen, PiBookOpenFill, PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiClock, PiTextAa, PiList, PiClockLight, PiClockFill, PiListFill, PiListLight } from "react-icons/pi"
@@ -226,6 +226,38 @@ export default function FuzzyExplorer() {
 
         {fuzzyResult && fuzzyResult.length == 0 && !fuzzyResultLoading ? (
             <p className="text-neutral-800">Fann ingen liknande namn i nærleiken</p>
+        ) : !fuzzyResult ? (
+            // Loading skeleton - only show when no results exist yet
+            <ul className={`${fuzzyNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
+                {Array.from({length: 3}).map((_, index) => (
+                    <li key={`skeleton-${index}`} className={fuzzyNav === 'timeline' ? 'flex items-center !pb-4 !pt-0 relative w-full' : 'flex flex-col gap-2 py-2 w-full'}>
+                        {fuzzyNav === 'timeline' && (
+                            <>
+                                <div className="bg-neutral-900/10 absolute w-1 left-0 top-1 h-full"></div>
+                                <div className="w-4 h-4 rounded-full bg-neutral-900/10 absolute -left-1.5 top-2"></div>
+                            </>
+                        )}
+                        
+                        <div className={fuzzyNav === 'timeline' ? 'ml-6 flex flex-col w-full' : 'flex flex-col gap-2 w-full'}>
+                            {fuzzyNav === 'timeline' && (
+                                <div className="h-5 bg-neutral-900/10 rounded-full animate-pulse mr-2 my-1 mt-1" style={{width: `${getSkeletonLength(index, 3, 6)}rem`}}></div>
+                            )}
+                            
+                            <ul className="flex flex-col gap-1">
+                                {Array.from({length: 2}).map((_, nameIndex) => (
+                                    <li key={`skeleton-name-${nameIndex}`} className="flex flex-col w-full">
+                                        <div className="flex items-center gap-2 py-1">
+                                            <div className="w-3 h-3 bg-neutral-900/10 rounded-sm animate-pulse flex-shrink-0"></div>
+                                            <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{width: `${getSkeletonLength(index + nameIndex, 6, 12)}rem`}}></div>
+                                            <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse w-8"></div>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </li>
+                ))}
+            </ul>
         ) : (
             <ul className={`${fuzzyNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full ${fuzzyResultLoading ? 'opacity-50' : ''}`}>
             {groups.map((group, index) => {
