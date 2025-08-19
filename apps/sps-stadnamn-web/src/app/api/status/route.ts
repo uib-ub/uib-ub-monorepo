@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     try {
         // Get alias information
         const aliasResponse = await fetch(`${endpoint}search-stadnamn-*/_alias`, {
-            cache: 'force-cache',
+            cache: 'no-store',
             headers: {
                 'Authorization': `ApiKey ${token}`,
                 'Content-Type': 'application/json'
@@ -26,7 +26,7 @@ export async function GET(request: Request) {
 
         // Get stats information
         const statsResponse = await fetch(`${endpoint}search-stadnamn-*/_stats`, {
-            cache: 'force-cache',
+            cache: 'no-store',
             headers: {
                 'Authorization': `ApiKey ${token}`,
                 'Content-Type': 'application/json'
@@ -51,7 +51,7 @@ export async function GET(request: Request) {
             Object.entries(aliasResult).map(async ([indexName, indexInfo]: [string, any]) => {
                 // Get count for this specific index
                 const indexCountResponse = await fetch(`${endpoint}${indexName}/_count`, {
-                    cache: 'force-cache',
+                    cache: 'no-store',
                     headers: {
                         'Authorization': `ApiKey ${token}`,
                         'Content-Type': 'application/json'

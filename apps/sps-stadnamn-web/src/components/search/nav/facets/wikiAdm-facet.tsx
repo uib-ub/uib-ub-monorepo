@@ -20,7 +20,7 @@ export default function WikiAdmFacet() {
 
   useEffect(() => {
     fetch(`/api/wikiAdm${facetSearchQuery ? `?facetQuery=${facetSearchQuery}` : ''}${
-      paramsExceptFacet ? `${facetSearchQuery ? '&' : '?'}${paramsExceptFacet}` : ''}`, {cache: 'force-cache'}
+      paramsExceptFacet ? `${facetSearchQuery ? '&' : '?'}${paramsExceptFacet}` : ''}`, {cache: 'no-store'}
     ).then(response => response.json()).then(es_data => {
       setFacetAggregation(es_data.aggregations?.by_wiki)
       setFacetIsLoading(false);

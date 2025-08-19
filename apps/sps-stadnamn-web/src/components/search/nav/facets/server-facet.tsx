@@ -50,7 +50,7 @@ export default function ServerFacet() {
     fetch(`/api/facet?perspective=${perspective}&facets=${facet}${
       facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${
         paramsExceptFacet ? '&' + paramsExceptFacet : ''}${
-          sortMode != 'doc_count' ? '&facetSort=' + sortMode : ''}`, {cache: 'force-cache'}).then(response => response.json()).then(es_data => {
+          sortMode != 'doc_count' ? '&facetSort=' + sortMode : ''}`, {cache: 'no-store'}).then(response => response.json()).then(es_data => {
       
       if (facet.includes('__')) {
         const [parent, child] = facet.split('__')

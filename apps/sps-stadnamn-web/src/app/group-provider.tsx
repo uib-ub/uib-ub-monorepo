@@ -100,7 +100,7 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
             setHighlightedGroup(group)
             const url = `/api/search/group?${searchQueryString}&group=${group}&mode=${isMobile ? 'list' : mode}&groupPage=${groupPage}`
 
-            fetch(url, {cache: 'force-cache'}).then(res => res.json()).then(data => {
+            fetch(url, {cache: 'no-store'}).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
                     setGroupData(data.hits.hits)
                     setGroupTotal(data.hits.total)

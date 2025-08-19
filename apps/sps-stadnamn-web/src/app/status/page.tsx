@@ -76,7 +76,7 @@ export default function StatusPage() {
       }
       setError(null);
       
-      const response = await fetch('/api/status', {cache: 'force-cache'});
+      const response = await fetch('/api/status', {cache: 'no-store'});
       const data = await response.json();
       
       if (!response.ok) {
