@@ -9,7 +9,7 @@ async function handleApiRedirect(apiUrl: string, redirectPathFn?: (data: any) =>
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
     
     try {
-        const response = await fetch(apiUrl, { signal: controller.signal, cache: 'force-cache' });
+        const response = await fetch(apiUrl, { signal: controller.signal, cache: 'force-cache', next: { tags: ["all"] } });
         clearTimeout(timeoutId);
         
         if (!response.ok) {

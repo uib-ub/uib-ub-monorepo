@@ -12,6 +12,9 @@ export async function postQuery(dataset: string, query: any, search_type?: strin
     try {
         res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${dataset}/_search${search_type ? `?search_type=${search_type}` : ''}`, {
             cache: 'force-cache',
+            next: {
+                tags: ['all']
+            },
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
