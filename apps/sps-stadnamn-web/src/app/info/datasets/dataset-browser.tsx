@@ -235,7 +235,7 @@ const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((ac
             <h2 className='!text-neutral-800 font-semibold !text-base !mt-0 !p-0 xl:!h-8 !mb-2 items-center flex !font-sans sr-only xl:not-sr-only'>Treff: {filteredDatasets.length} / {totalValidDatasets}</h2>
           
           <ul className="flex flex-col w-full divide-y !p-0 gap-2">
-            {filteredDatasets.map((itemDataset) => (
+            {filteredDatasets.filter(datasset => datasetPresentation[datasset]).map((itemDataset) => (
           <li key={itemDataset} className={`h-full sm:my-0 !py-0 w-full grid grid-cols-6 relative ${searchParams.get('dataset') == itemDataset ? 'bg-accent-50' : ''}`}>
               <div className={`flex flex-col col-span-2 xl:col-span-1 w-full pt-4 ${datasetPresentation[itemDataset].img.endsWith('.svg') ? 'bg-neutral-100 p-4' : ''}`}>
                 <Image 

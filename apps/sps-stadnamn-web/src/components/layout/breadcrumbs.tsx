@@ -9,7 +9,7 @@ export default function Breadcrumbs({ parentUrl, parentName, currentName, homeUr
     // If parentUrl is an array, use it directly, otherwise build the paths
     const urls = Array.isArray(parentUrl) 
         ? parentUrl.map(url => `/iiif/${url}`)
-        : parents.map((_, index) => {
+        : parents?.map((_, index) => {
             const segments = parentUrl.split('/').filter(segment => segment !== '')
             const hasLeadingSlash = parentUrl.startsWith('/')
             return (hasLeadingSlash ? '/' : '') + segments.slice(0, index + 1).join('/')
