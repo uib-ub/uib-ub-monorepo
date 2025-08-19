@@ -146,7 +146,6 @@ export default function FuzzyExplorer() {
             // Use the processed names
             if (allNames.length > 0) {
                 requestBody.searchTerms = [...new Set(allNames.filter(Boolean))];
-                console.log("Search terms", requestBody.searchTerms);
             } else {
                 console.log("No search terms found");
                 return;
