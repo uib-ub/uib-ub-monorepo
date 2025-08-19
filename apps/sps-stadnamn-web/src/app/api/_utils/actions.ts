@@ -22,7 +22,7 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
     }
 
     const res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${dataset ? dataset : '*'}/_search`, {
-        cache: 'no-store',
+        cache: 'force-cache',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

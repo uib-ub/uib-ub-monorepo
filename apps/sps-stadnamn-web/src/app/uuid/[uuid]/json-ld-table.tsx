@@ -9,7 +9,7 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
 
   const getContext = async () => {
     'use server'
-    const data = await fetch("https://linked.art/ns/v1/linked-art.json", {cache: 'no-store'}).then(res => res.json()).catch(err => console.log(err))
+    const data = await fetch("https://linked.art/ns/v1/linked-art.json", {cache: 'force-cache'}).then(res => res.json()).catch(err => console.log(err))
     //console.log("CONTEXT", data)
     return data?.["@context"] || {}
   }

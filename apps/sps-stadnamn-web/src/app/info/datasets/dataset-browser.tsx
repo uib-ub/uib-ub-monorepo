@@ -91,7 +91,7 @@ const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((ac
 
 
   useEffect(() => {
-    fetch('/api/stats', {cache: 'no-store'}).then(response => response.json()).then(data => {
+    fetch('/api/stats', {cache: 'force-cache'}).then(response => response.json()).then(data => {
       setStats(data)
     }).catch(() =>
       setStats(null))}

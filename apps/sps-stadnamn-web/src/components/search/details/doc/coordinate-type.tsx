@@ -10,7 +10,7 @@ export default function CoordinateType({source}: {source: Record<string, any>}) 
     useEffect(() => {
         const fetchData = async () => {
          if (source.coordinateType) {
-            const res = await fetch(`/api/vocab/${source.coordinateType}`, {cache: 'no-store'});
+            const res = await fetch(`/api/vocab/${source.coordinateType}`, {cache: 'force-cache'});
           const data = await res.json();
           setCoordinateData(data);
          }

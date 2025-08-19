@@ -31,7 +31,7 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
         params.set('size', size.toString());
 
         // Single fetch call that returns all results
-        fetch(`/api/iiif/search?${params.toString()}`, {cache: 'no-store'})
+        fetch(`/api/iiif/search?${params.toString()}`, {cache: 'force-cache'})
             .then((response) => {
                 if (!response.ok) throw new Error('Failed to fetch results');
                 return response.json();
