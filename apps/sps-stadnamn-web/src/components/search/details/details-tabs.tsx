@@ -40,7 +40,7 @@ export default function DetailsTabs() {
     </>
     :
     <Clickable className="flex h-10 whitespace-nowrap items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pr-4 pl-3 text-neutral-900 aria-selected:bg-neutral-100 aria-selected:shadow-inner"  
-               add={{doc: groupData?.[0]?.fields?.uuid[0]}}>
+               add={{doc: groupData?.[0]?._source?.uuid}}>
       <PiCaretLeftBold className="text-primary-600" aria-hidden="true"/> Tilbake til gruppe
     </Clickable>
     }

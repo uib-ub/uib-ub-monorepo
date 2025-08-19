@@ -21,13 +21,11 @@ export async function GET(request: Request) {
     sortArray = getSortArray(perspective)
   }
 
+
     
   const query: Record<string,any> = {
-    "size":  500,
+    "size": reservedParams.size || 20,
     "track_scores": true,
-    "fields": [
-      "group.id", "label", "adm1", "adm2", "uuid", "sosi", "description", "altLabels", "attestations.label", "gnidu", "snid", "location" // Todo: adapt to whether it's used in the search or in the show more
-    ],
     "sort": [
       {
         _score: "desc"

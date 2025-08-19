@@ -15,7 +15,6 @@ interface GroupContextData {
     prevDocUuid: string | null;
     nextDocUuid: string | null;
     docIndex: number | undefined;
-    groupIndex: number | null;
     highlightedGroup: string | null;
     setHighlightedGroup: (group: string | null) => void;
 }
@@ -28,7 +27,6 @@ export const GroupContext = createContext<GroupContextData>({
     prevDocUuid: null,
     nextDocUuid: null,
     docIndex: undefined,
-    groupIndex: null,
     highlightedGroup: null,
     setHighlightedGroup: () => {},
 });
@@ -47,7 +45,6 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
     const [initialUrl, setInitialUrl] = useState<string | null>(null)
     const doc = searchParams.get('doc')
     const [docIndex, setDocIndex] = useState<number | undefined>(undefined)
-    const [groupIndex, setGroupIndex] = useState<number | null>(null)
     const { collapsedResults } = useContext(CollapsedContext)
     const [highlightedGroup, setHighlightedGroup] = useState<string | null>(null) // Allows highlighting even when navigating back to url without group param
     
@@ -69,34 +66,21 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
 
     useEffect(() => {
         if (!doc || isMobile) return
-        const currentIndex = groupData?.findIndex(item => item.fields?.uuid[0] === doc || item._source?.uuid === doc)
+        const currentIndex = groupData?.findIndex(item => item._source?.uuid === doc || item._source?.uuid === doc)
         if (currentIndex !== undefined && currentIndex > -1) {
             setDocIndex(currentIndex)
         }
         
     }, [doc, groupData, groupLoading, isMobile])
 
-    useEffect(() => {
-        if (!group) {
-            setGroupIndex(null)
-            return
-        }
-        const foundGroupIndex = collapsedResults?.findIndex((result: any) => result.fields?.['group.id']?.[0] == base64UrlToString(group))
-        if (foundGroupIndex !== undefined && foundGroupIndex > -1) {
-            setGroupIndex(foundGroupIndex)
-        }
-        else {
-            setGroupIndex(null)
-        }
-      }, [group, collapsedResults])
 
     useEffect(() => {
         if (group) {
             setGroupLoading(true)
             setHighlightedGroup(group)
-            const url = `/api/search/group?${searchQueryString}&group=${group}&mode=${isMobile ? 'list' : mode}&groupPage=${groupPage}`
+            const url = `/api/search/group?${searchQueryString}&group=${group}`
 
-            fetch(url, {cache: 'force-cache', next: {tags: ['all']}}).then(res => res.json()).then(data => {
+            fetch(url, {cache: 'no-store', next: {tags: ['all']}}).then(res => res.json()).then(data => {
                 if (data.hits?.hits?.length) {
                     setGroupData(data.hits.hits)
                     setGroupTotal(data.hits.total)
@@ -118,8 +102,8 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
     // Prefetch prev and next doc
     useEffect(() => {
         if (groupData && !groupLoading) {
-            setPrevDocUuid((docIndex !== undefined && docIndex > 0) ? groupData[docIndex - 1]?.fields?.uuid[0] : null)
-            setNextDocUuid((docIndex !== undefined && docIndex < groupData.length - 1) ? groupData[docIndex + 1]?.fields?.uuid[0] : null)
+            setPrevDocUuid((docIndex !== undefined && docIndex > 0) ? groupData[docIndex - 1]?._source?.uuid : null)
+            setNextDocUuid((docIndex !== undefined && docIndex < groupData.length - 1) ? groupData[docIndex + 1]?._source?.uuid : null)
         }
     }, [groupData, docIndex, groupLoading])
 
@@ -143,7 +127,7 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
                 const prevIndex = Math.max(0, docIndex - 1);
                 if (prevIndex !== docIndex) {
                     const params = new URLSearchParams(searchParams);
-                    params.set('doc', groupData[prevIndex].fields.uuid[0]);
+                    params.set('doc', groupData[prevIndex]._source.uuid);
                     router.push(`?${params.toString()}`);
                 }
             }
@@ -154,7 +138,7 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
                 const nextIndex = Math.min(groupData.length - 1, docIndex + 1);
                 if (nextIndex !== docIndex) {
                     const params = new URLSearchParams(searchParams);
-                    params.set('doc', groupData[nextIndex].fields.uuid[0]);
+                    params.set('doc', groupData[nextIndex]._source.uuid);
                     router.push(`?${params.toString()}`);
                 }
             }
@@ -215,7 +199,6 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
         prevDocUuid,
         nextDocUuid,
         docIndex,
-        groupIndex,
         highlightedGroup,
         setHighlightedGroup
     }}>{children}</GroupContext.Provider>
