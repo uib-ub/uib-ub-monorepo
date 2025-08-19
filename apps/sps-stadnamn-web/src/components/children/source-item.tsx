@@ -55,7 +55,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
             </Clickable>
 
             {sourceDetails(hit)}
-            {groupData?.[0]?.fields?.['group.id'][0] != hit._source.group?.id && <em className="ml-auto px-4">Utanfor gruppe</em>}
+            {groupData?.[0]?._source?.group.id != getFieldValue(hit, 'group.id') && <em className="ml-auto px-4">Anna gruppe</em>}
             
         </div>
 }

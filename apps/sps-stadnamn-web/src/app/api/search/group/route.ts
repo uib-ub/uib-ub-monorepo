@@ -39,7 +39,7 @@ export async function GET(request: Request) {
         }
       },
     ],
-    "_source": reservedParams.mode == 'map' ? false : true
+    "_source": true
   }
 
   

@@ -6,17 +6,14 @@ import TableExplorer from "./table/table-explorer"
 import { useContext } from "react"
 import { DocContext } from "@/app/doc-provider"
 import { useSearchParams } from "next/navigation"
-import DocSkeleton from "../doc/doc-skeleton"
-import DocInfo from "./details/doc/doc-info"
 import ListExplorer from "./list/list-explorer"
 import NavWindow from "./nav/nav-window"
 import DetailsWindow from "./details/details-window"
-import FuzzyWindow from "./fuzzy/fuzzy-window"
+import FuzzyWindow from "./names/names-window"
 
 export default function DesktopLayout() {    
-    const { docLoading } = useContext(DocContext)
     const searchParams = useSearchParams()
-    const fuzzyNav = searchParams.get('fuzzyNav')
+    const namesNav = searchParams.get('namesNav')
     const mode = useMode()
     const doc = searchParams.get('doc')
     const details = searchParams.get('details')
@@ -29,7 +26,7 @@ export default function DesktopLayout() {
         <div className="flex lg:gap-4 flex-col h-full w-[40svw] lg:w-full max-h-[calc(100svh-4rem)] ">
         
 
-        {  (mode == 'map' || (mode == 'table' ? details != 'doc' : true)) && !fuzzyNav && <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
+        {  (mode == 'map' || (mode == 'table' ? details != 'doc' : true)) && !namesNav && <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
             <NavWindow/>  
         </section> 
         }
@@ -66,12 +63,12 @@ export default function DesktopLayout() {
         </div>
         }
 
-{  fuzzyNav && <div className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
+{  namesNav && <div className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
         <FuzzyWindow/>       
         </div> }
 
 
-        {  fuzzyNav && mode == 'map' && (doc || group) && searchParams.get('details') &&
+        {  namesNav && mode == 'map' && (doc || group) && searchParams.get('details') &&
         <div className="lg:absolute lg:right-2 lg:top-2 flex-col max-w-[40svw] xl:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg xl:rounded-md xl:flex">
         
         <DetailsWindow/> 

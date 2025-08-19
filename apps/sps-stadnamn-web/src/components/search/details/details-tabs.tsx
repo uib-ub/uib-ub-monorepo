@@ -4,7 +4,7 @@ import Clickable from "@/components/ui/clickable/clickable";
 import { stringToBase64Url } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { useContext } from "react";
-import { PiArrowLeft, PiBookOpenFill, PiBookOpenLight, PiListLight } from "react-icons/pi";
+import { PiArrowLeft, PiBookOpenFill, PiBookOpenLight, PiCaretLeftBold, PiListLight } from "react-icons/pi";
 
 
 export default function DetailsTabs() {
@@ -13,7 +13,7 @@ export default function DetailsTabs() {
     const { groupData, groupTotal } = useContext(GroupContext)
     const { docData } = useContext(DocContext)
     return <>
-    { groupTotal?.value == 1 || groupData?.[0]?.fields?.['group.id'] == docData?._source.group?.id ? <>
+    { groupTotal?.value == 1 || groupData?.[0]?._source?.group.id == docData?._source?.group?.id ? <>
     
       
       <Clickable
@@ -25,12 +25,12 @@ export default function DetailsTabs() {
     </Clickable>
 
     { groupTotal?.value && groupTotal.value > 1 && <Clickable
-          remove={["details", "fuzzyNav"]} 
+          remove={["details", "namesNav"]} 
           add={{details: "group"}}
           aria-selected={details == "group"}
           className="flex whitespace-nowrap group relative items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 px-3 aria-selected:bg-neutral-100 aria-selected:text-neutral-900 aria-selected:shadow-inner">
       <PiListLight className="text-neutral-900 xl:sr-only" aria-hidden="true"/>
-      <span className="text-neutral-900 hidden xl:flex flex-nowrap whitespace-nowrap">Oversikt</span>
+      <span className="text-neutral-900 hidden xl:flex flex-nowrap whitespace-nowrap">Gruppe</span>
       {groupTotal?.value && groupTotal.value > 0 && (
         <span className={`results-badge bg-primary-200 ${groupTotal.value > 9 ? 'px-1.5': 'px-2'} text-primary-700 font-bold group-aria-selected:bg-accent-800 group-aria-selected:text-white left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap`}>
           {groupTotal.value}
@@ -41,7 +41,7 @@ export default function DetailsTabs() {
     :
     <Clickable className="flex h-10 whitespace-nowrap items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pr-4 pl-3 text-neutral-900 aria-selected:bg-neutral-100 aria-selected:shadow-inner"  
                add={{doc: groupData?.[0]?.fields?.uuid[0]}}>
-      <PiArrowLeft className="text-primary-600" aria-hidden="true"/> Tilbake til gruppe
+      <PiCaretLeftBold className="text-primary-600" aria-hidden="true"/> Tilbake til gruppe
     </Clickable>
     }
     </>

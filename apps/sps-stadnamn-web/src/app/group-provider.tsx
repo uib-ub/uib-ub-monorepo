@@ -56,7 +56,7 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
 
     const {searchQueryString } = useSearchQuery()
     const details = searchParams.get('details') || 'doc'
-    const fuzzyNav = searchParams.get('fuzzyNav')
+    const namesNav = searchParams.get('namesNav')
     const mode = useMode()
     const { isMobile } = useContext(GlobalContext)
     const groupPage = searchParams.get('groupPage') || '0'
@@ -161,17 +161,17 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
             if (e.key === 'ArrowUp') {
                 e.preventDefault();
                 const params = new URLSearchParams(searchParams);
-                if (fuzzyNav === 'list') {
-                    params.set('fuzzyNav', 'timeline');
+                if (namesNav === 'list') {
+                    params.set('namesNav', 'timeline');
                     router.push(`?${params.toString()}`);
                 }
-                else if (fuzzyNav === 'timeline') {
+                else if (namesNav === 'timeline') {
                     if (initialUrl) {
                         router.push(initialUrl)
                         setInitialUrl(null)
                     }
                     else {
-                        params.delete('fuzzyNav');
+                        params.delete('namesNav');
                         params.set('details', 'doc');
                         router.push(`?${params.toString()}`);
                     }
@@ -185,18 +185,18 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
                 e.preventDefault();
                 const params = new URLSearchParams(searchParams);
                 
-                if (!fuzzyNav && details === 'doc' && groupTotal?.value && groupTotal.value > 1) {
+                if (!namesNav && details === 'doc' && groupTotal?.value && groupTotal.value > 1) {
                     params.set('details', 'group');
                 }
-                else if (!fuzzyNav) {
-                    params.set('fuzzyNav', 'timeline');
+                else if (!namesNav) {
+                    params.set('namesNav', 'timeline');
                     params.delete('details')
                     params.delete('doc')
                     setInitialUrl(`?${searchParams.toString()}`)
 
                 }
-                else if (fuzzyNav === 'timeline') {
-                    params.set("fuzzyNav", "list")
+                else if (namesNav === 'timeline') {
+                    params.set("namesNav", "list")
                     
                 }
                 router.push(`?${params.toString()}`);
@@ -205,7 +205,7 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [groupData, docIndex, searchParams, router, details, fuzzyNav, groupTotal, initialUrl]);
+    }, [groupData, docIndex, searchParams, router, details, namesNav, groupTotal, initialUrl]);
 
     return <GroupContext.Provider value={{
         groupData,

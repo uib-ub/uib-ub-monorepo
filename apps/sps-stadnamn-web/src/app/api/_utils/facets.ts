@@ -27,7 +27,7 @@ export const RESERVED_PARAMS = [
   'facets',
   'zoom',
   'point',
-  'fuzzyNav',
+  'namesNav',
   'facetQuery',
   'mode'
 ] as const;

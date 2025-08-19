@@ -23,7 +23,7 @@ export default function DetailsWindow() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
     const doc = searchParams.get('doc')
-    const fuzzyNav = searchParams.get('fuzzyNav')
+    const namesNav = searchParams.get('namesNav')
     const { docLoading, docData } = useContext(DocContext)
     const mode = useMode()
     const { groupData, groupLoading, groupTotal } = useContext(GroupContext)
@@ -39,7 +39,7 @@ export default function DetailsWindow() {
              
     <ClickableIcon
             label="Lukk"
-            remove={[...mode == "map" && !fuzzyNav ? ["group"] : [], "doc", "details"]}
+            remove={[...mode == "map" && !namesNav ? ["group"] : [], "doc", "details"]}
 
             className="h-10 flex items-center p-1 pl-2" >
             <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
@@ -54,10 +54,10 @@ export default function DetailsWindow() {
     
 
 
-    {(groupTotal?.value || (!fuzzyNav && docData)) ?
+    {(groupTotal?.value || (!namesNav && docData)) ?
     
     <div className={`flex flex-wrap gap-2 p-2 transition-opacity duration-200 ${groupLoading ? 'opacity-50' : 'opacity-100'}`}>
-    {!fuzzyNav && <HitNavigation/>}
+    {!namesNav && <HitNavigation/>}
 
    {mode != 'table' && <DocToolbar docData={docData}/>}
 
@@ -78,7 +78,7 @@ export default function DetailsWindow() {
 
 
 
-  {(details == "doc" || (details == "group" &&  !groupData)) && doc && docData?._source && <div className={`overflow-y-auto border-y border-neutral-200 stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docLoading ? 'opacity-50' : 'opacity-100'}`}>
+  {(details == "doc" || (details == "group" &&  !groupData)) && docData?._source && <div className={`overflow-y-auto border-y border-neutral-200 stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docLoading ? 'opacity-50' : 'opacity-100'}`}>
 
       <DocInfo/>
   </div>

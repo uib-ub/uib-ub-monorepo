@@ -3,12 +3,11 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { PiBinoculars, PiBookOpen, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiListBullets, PiTreeViewFill, PiWallFill, PiWallLight } from "react-icons/pi";
 import Results from "./nav/results/search-results";
 import MapExplorer from "./map-explorer";
-import { usePerspective, useSearchQuery, useMode } from "@/lib/search-params";
+import { useSearchQuery, useMode } from "@/lib/search-params";
 import StatusSection from "./status-section";
 import { SearchContext } from "@/app/search-provider";
 import TreeResults from "./nav/results/tree-results";
 import TableExplorer from "./table/table-explorer";
-import { treeSettings } from "@/config/server-config";
 import { useSearchParams } from "next/navigation";
 import ListExplorer from "./list/list-explorer";
 import { DocContext } from "@/app/doc-provider";
@@ -21,12 +20,10 @@ import DatasetFacet from "./nav/facets/dataset-facet";
 import Clickable from "../ui/clickable/clickable";
 import { GroupContext } from "@/app/group-provider";
 import GroupDetails from "./details/group/group-details";
-import FuzzyExplorer from "./fuzzy/fuzzy-explorer";
+import NamesExplorer from "./names/names-explorer";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import HorizontalSwipe from "./details/doc/horizontal-swipe";
-import { PiStackFill, PiStackLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeViewLight } from 'react-icons/pi';
-import HitNavigation from "./details/hit-navigation";
-import { useRouter } from "next/navigation";
+import { PiMicroscopeFill, PiMicroscopeLight, PiTreeViewLight } from 'react-icons/pi';
 import InfoPopover from "../ui/info-popover";
 import BasewordResults from "./nav/results/baseword-results";
 
@@ -55,7 +52,7 @@ export default function MobileLayout() {
     const fulltext = searchParams.get('fulltext')
     const details = searchParams.get('details')
     const { groupTotal } = useContext(GroupContext)
-    const fuzzyNav = searchParams.get('fuzzyNav')
+    const namesNav = searchParams.get('namesNav')
     const group = searchParams.get('group')
 
     const boost_gt = searchParams.get('boost_gt')
@@ -227,19 +224,19 @@ export default function MobileLayout() {
             <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 border-neutral-800 shadow-inner max-h-[calc(100svh-12rem)] overscroll-contain`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             {drawerContent == 'details' && <>
-            {doc && details == 'doc' && !fuzzyNav && <div className="pb-24"><HorizontalSwipe scrollRef={scrollableContent}><ListExplorer/> </HorizontalSwipe></div>}
+            {doc && details == 'doc' && !namesNav && <div className="pb-24"><HorizontalSwipe scrollRef={scrollableContent}><ListExplorer/> </HorizontalSwipe></div>}
             {details == 'group' && <div className="pb-12 pt-2 px-2">
-                <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 pb-2">Oversikt</h2>
+                <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 pb-2">Gruppe</h2>
                 
                 <GroupDetails/>
             </div>}
-            {fuzzyNav &&
+            {namesNav &&
             <div className="pb-12 pt-2 px-2">
             <span className="flex items-center pb-2 text-xl"><h2 className="text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 ">Namneformer</h2>
             <InfoPopover>
         Utvida oversikt over liknande oppslag i nærområdet. Treffa er ikkje nødvendigvis former av namnet du har valt, og det kan vere namnformer som ikkje kjem med.
         </InfoPopover></span>
-            <FuzzyExplorer/>
+            <NamesExplorer/>
             </div>
             }
 
@@ -346,7 +343,7 @@ export default function MobileLayout() {
         opacity: currentPosition > 25 ? 1 : 0,
         pointerEvents: currentPosition > 25 ? 'auto' : 'none'
     }}>
-                <ClickableIcon label="Oppslag" remove={['details', 'fuzzyNav']} add={{details: 'doc'}} aria-current={!fuzzyNav && details == 'doc' ? 'page' : 'false'} className="group">
+                <ClickableIcon label="Oppslag" remove={['details', 'namesNav']} add={{details: 'doc'}} aria-current={!namesNav && details == 'doc' ? 'page' : 'false'} className="group">
                     <div className="relative">
                     <PiBookOpen className="text-3xl" />
                     {groupTotal?.value && Number(groupTotal.value) > 1 && <span className={`results-badge bg-primary-500 absolute group-aria-[current=page]:!bg-white group-aria-[current=page]:!text-accent-700 -top-1 left-full -ml-2 rounded-full text-white text-xs ${Number(groupTotal.value) < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -357,8 +354,8 @@ export default function MobileLayout() {
                 {!group || !base64UrlToString(group).startsWith('grunnord') && <>
                 <ClickableIcon
                     label="Finn namneformer"
-                    aria-current={fuzzyNav ? 'page' : 'false'}
-                    add={{group: stringToBase64Url(docData?._source.group.id), fuzzyNav: 'list'}}>
+                    aria-current={namesNav ? 'page' : 'false'}
+                    add={{group: stringToBase64Url(docData?._source.group.id), namesNav: 'list'}}>
                     <PiBinoculars className="text-3xl" aria-hidden="true"/>
                 </ClickableIcon>
                 </>}

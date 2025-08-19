@@ -13,17 +13,18 @@ import SourceItem from "@/components/children/source-item"
 
 type FilterMode = 'both' | 'h3' | 'gnidu'
 
-export default function FuzzyExplorer() {
+export default function NamesExplorer() {
 
     const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({})
     const searchParams = useSearchParams()
-    const fuzzyNav = searchParams.get('fuzzyNav') || 'timeline'
+    const namesNav = searchParams.get('namesNav') || 'timeline'
 
     const [fuzzyResult, setFuzzyResult] = useState<any[] | null>(null)
     const [fuzzyResultLoading, setFuzzyResultLoading] = useState<boolean>(false)
     const [fuzzyResultError, setFuzzyResultError] = useState<any | null>(null)
     const [groups, setGroups] = useState<any[]>([])
     const { isMobile } = useContext(GlobalContext)
+    const namesScope = searchParams.get('namesScope') || 'group'
 
     const { groupData } = useContext(GroupContext)
     const group = searchParams.get('group')
@@ -52,7 +53,7 @@ export default function FuzzyExplorer() {
                 const nameStr = name as string
                 let groupKey
                 
-                if (fuzzyNav === 'timeline') {
+                if (namesNav === 'timeline') {
 
                     const year = source.attestations?.find((att: any) => att.label === nameStr)?.year || source.year || null
                     groupKey = year || 'no-year'
@@ -77,7 +78,7 @@ export default function FuzzyExplorer() {
         
         const groups = Array.from(groupMap.values())
         
-        if (fuzzyNav === 'timeline') {
+        if (namesNav === 'timeline') {
             return groups.sort((a, b) => {
                 if (a.year === null && b.year === null) return 0
                 if (a.year === null) return 1
@@ -87,7 +88,7 @@ export default function FuzzyExplorer() {
         } else {
             return groups
         }
-    }, [fuzzyNav])
+    }, [namesNav])
 
     useEffect(() => {
         
@@ -202,45 +203,65 @@ export default function FuzzyExplorer() {
     
 
     return <>        
-        <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-serif">{groupName}</h3>
+        <div className="flex flex-col gap-4">
             
-            { fuzzyResult && fuzzyResult.length > 0 && <div className="flex border border-neutral-200 rounded-lg p-1 tabs">
+            <div className="flex gap-2">
+            <div className="flex border border-neutral-200 rounded-lg p-1 tabs text-tabs">
                 <Clickable
-                    add={{ fuzzyNav: 'timeline' }}
-                    aria-pressed={fuzzyNav === 'timeline'}
+                    add={{ namesNav: 'timeline' }}
+                    aria-pressed={namesNav === 'timeline'}
                     className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline`}
                 >
-                    {fuzzyNav === 'timeline' ? <PiClockFill className="text-accent-800" aria-hidden="true"/> : <PiClockLight className="text-accent-900" aria-hidden="true"/>}
+
                     Tidslinje
                 </Clickable>
                 <Clickable
-                    add={{ fuzzyNav: 'list' }}
-                    aria-pressed={fuzzyNav === 'list'}
+                    add={{ namesNav: 'list' }}
+                    aria-pressed={namesNav === 'list'}
                     className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline`}
                 >
-                    {fuzzyNav === 'list' ? <PiListFill className="text-accent-800" aria-hidden="true"/> : <PiListLight className="text-accent-900" aria-hidden="true"/>}
+
                     Liste
                 </Clickable>
-            </div>}
+            </div>
+            <div className="flex border border-neutral-200 rounded-lg p-1 tabs text-tabs">
+                <Clickable
+                    add={{ namesNav: 'timeline' }}
+                    aria-pressed={namesNav === 'timeline'}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline`}
+                >
+
+                    Gruppe
+                </Clickable>
+                <Clickable
+                    add={{ namesNav: 'list' }}
+                    aria-pressed={namesNav === 'list'}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline`}
+                >
+
+                    Utvida søk
+                </Clickable>
+            </div>
+            </div>
+            <h3 className="text-lg font-serif">{groupName}</h3>
         </div>
 
         {fuzzyResult && fuzzyResult.length == 0 && !fuzzyResultLoading ? (
             <p className="text-neutral-800">Fann ingen liknande namn i nærleiken</p>
         ) : !fuzzyResult ? (
             // Loading skeleton - only show when no results exist yet
-            <ul className={`${fuzzyNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
+            <ul className={`${namesNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
                 {Array.from({length: 3}).map((_, index) => (
-                    <li key={`skeleton-${index}`} className={fuzzyNav === 'timeline' ? 'flex items-center !pb-4 !pt-0 relative w-full' : 'flex flex-col gap-2 py-2 w-full'}>
-                        {fuzzyNav === 'timeline' && (
+                    <li key={`skeleton-${index}`} className={namesNav === 'timeline' ? 'flex items-center !pb-4 !pt-0 relative w-full' : 'flex flex-col gap-2 py-2 w-full'}>
+                        {namesNav === 'timeline' && (
                             <>
                                 <div className="bg-neutral-900/10 absolute w-1 left-0 top-1 h-full"></div>
                                 <div className="w-4 h-4 rounded-full bg-neutral-900/10 absolute -left-1.5 top-2"></div>
                             </>
                         )}
                         
-                        <div className={fuzzyNav === 'timeline' ? 'ml-6 flex flex-col w-full' : 'flex flex-col gap-2 w-full'}>
-                            {fuzzyNav === 'timeline' && (
+                        <div className={namesNav === 'timeline' ? 'ml-6 flex flex-col w-full' : 'flex flex-col gap-2 w-full'}>
+                            {namesNav === 'timeline' && (
                                 <div className="h-5 bg-neutral-900/10 rounded-full animate-pulse mr-2 my-1 mt-1" style={{width: `${getSkeletonLength(index, 3, 6)}rem`}}></div>
                             )}
                             
@@ -260,24 +281,24 @@ export default function FuzzyExplorer() {
                 ))}
             </ul>
         ) : (
-            <ul className={`${fuzzyNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full ${fuzzyResultLoading ? 'opacity-50' : ''}`}>
+            <ul className={`${namesNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full ${fuzzyResultLoading ? 'opacity-50' : ''}`}>
             {groups.map((group, index) => {
-                const groupId = `${fuzzyNav}-${group.key}`
+                const groupId = `${namesNav}-${group.key}`
                 const groupsWithYears = groups.filter(g => g.year)
                 const indexInYearGroups = groupsWithYears.findIndex(g => g.key === group.key)
                 const isLastYearGroup = indexInYearGroups === groupsWithYears.length - 1
                 
                 return (
-                    <li key={groupId} className={fuzzyNav === 'timeline' ? 'flex items-center !pb-4 !pt-0 relative w-full' : 'flex flex-col gap-2 py-2 w-full'}>
-                        {fuzzyNav === 'timeline' && group.year && (
+                    <li key={groupId} className={namesNav === 'timeline' ? 'flex items-center !pb-4 !pt-0 relative w-full' : 'flex flex-col gap-2 py-2 w-full'}>
+                        {namesNav === 'timeline' && group.year && (
                             <>
                                 <div className={`bg-primary-300 absolute w-1 left-0 top-1 ${isLastYearGroup ? 'h-4' : 'h-full'} ${indexInYearGroups === 0 ? 'mt-2' : ''}`}></div>
                                 <div className={`w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-2`}></div>
                             </>
                         )}
                         
-                        <div className={fuzzyNav === 'timeline' ? (group.year ? 'ml-6 flex flex-col w-full' : 'flex flex-col w-full') : 'flex flex-col gap-2 w-full'}>
-                            {fuzzyNav === 'timeline' && (
+                        <div className={namesNav === 'timeline' ? (group.year ? 'ml-6 flex flex-col w-full' : 'flex flex-col w-full') : 'flex flex-col gap-2 w-full'}>
+                            {namesNav === 'timeline' && (
                                 <span className="mr-2 my-1 mt-1 font-medium text-neutral-700">
                                     {group.year || 'Utan årstal'}
                                 </span>

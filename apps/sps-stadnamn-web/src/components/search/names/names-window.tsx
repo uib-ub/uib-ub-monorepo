@@ -8,7 +8,7 @@ import { GroupContext } from "@/app/group-provider"
 
 import { GlobalContext } from "@/app/global-provider"
 import DocInfo from "../details/doc/doc-info"
-import FuzzyExplorer from "./fuzzy-explorer"
+import NamesExplorer from "./names-explorer"
 import Clickable from "@/components/ui/clickable/clickable"
 import InfoPopover from "@/components/ui/info-popover"
 
@@ -27,7 +27,7 @@ export default function FuzzyWindow() {
 
     <ClickableIcon
             label="Lukk"
-            remove={["fuzzyNav"]} 
+            remove={["namesNav"]} 
             className="ml-auto" >
             <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
     </ClickableIcon>
@@ -39,7 +39,7 @@ export default function FuzzyWindow() {
 
 
     <div className="overflow-y-auto stable-scrollbar max-h-[calc(100svh-7rem)] 2xl:max-h-[calc(100svh-8.5rem)] p-4 pb-8 border-neutral-200 ">
-    <FuzzyExplorer/>
+    <NamesExplorer/>
     </div>
 
 

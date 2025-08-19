@@ -97,9 +97,17 @@
     @apply flex items-center justify-center rounded-md;
     @apply border border-transparent;
     @apply aria-pressed:bg-neutral-100 aria-pressed:border-neutral-200;
-    @apply aria-[pressed=false]:text-neutral-800 aria-[pressed=false]:hover:bg-neutral-50;
+    @apply aria-[pressed=false]:text-neutral-900 aria-[pressed=false]:hover:bg-neutral-50;
     @apply aria-selected:bg-neutral-100 aria-selected:border-neutral-200 aria-selected:shadow-inner;
     @apply aria-expanded:bg-neutral-100 aria-expanded:border-neutral-200 aria-expanded:shadow-inner;
+  }
+
+  .text-tabs > button,
+  .text-tabs > a {
+    @apply border-none;
+    @apply aria-pressed:bg-accent-700 aria-pressed:text-white;
+    @apply aria-selected:bg-accent-700 aria-selected:text-white;
+    @apply aria-expanded:bg-accent-700 aria-expanded:text-white;
   }
 
   .inner-slate {
