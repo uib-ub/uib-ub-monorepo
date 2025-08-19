@@ -1,12 +1,13 @@
 'use client'
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
 import { PiBookOpen, PiBookOpenFill, PiBookOpenLight, PiMapPin, PiMapPinDuotone, PiMapPinFill, PiMapPinLight } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { getFieldValue } from '@/lib/utils';
 import ClickableIcon from '../ui/clickable/clickable-icon';
 import { useMode } from '@/lib/search-params';
+import { GroupContext } from '@/app/group-provider';
 
 
 
@@ -17,6 +18,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
     const docDataset = hit._index.split('-')[2]
     const details = searchParams.get('details')
     const mode = useMode()
+    const { groupData } = useContext(GroupContext)
 
 
 
@@ -53,6 +55,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
             </Clickable>
 
             {sourceDetails(hit)}
+            {groupData?.[0]?.fields?.['group.id'][0] != hit._source.group?.id && <em className="ml-auto px-4">Utanfor gruppe</em>}
             
         </div>
 }
