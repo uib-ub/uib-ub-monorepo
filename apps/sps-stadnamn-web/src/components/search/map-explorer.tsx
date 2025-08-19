@@ -177,15 +177,17 @@ export default function MapExplorer() {
           setAllowFitBounds(false)
           mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
           setViewUrlParams(resultBoundsZoom, [mapBounds.getCenter().lat, mapBounds.getCenter().lng])
+          return
         }
     }
 
     if (geoLoading) {
       return
     }
-    setAllowFitBounds(false)
+    
 
     if (!tiles && !viewResults?.hits?.markers?.length) {
+      setAllowFitBounds(false)
       
       mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
       setViewUrlParams(mapInstance.current.getZoom(), [mapBounds.getCenter().lat, mapBounds.getCenter().lng])
