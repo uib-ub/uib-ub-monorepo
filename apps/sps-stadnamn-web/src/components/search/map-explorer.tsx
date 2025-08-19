@@ -186,8 +186,6 @@ export default function MapExplorer() {
     setAllowFitBounds(false)
 
     if (!tiles && !viewResults?.hits?.markers?.length) {
-      console.log("Bounds not contained", JSON.stringify(resultBounds), JSON.stringify(mapBounds))
-      console.log("Tiles", tiles)
       
       mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
       setViewUrlParams(mapInstance.current.getZoom(), [mapBounds.getCenter().lat, mapBounds.getCenter().lng])
