@@ -8,7 +8,13 @@ import { DocContext } from '@/app/doc-provider'
 import { CollapsedContext } from '@/app/collapsed-provider'
 import { stringToBase64Url } from '@/lib/utils'
 
-export default function HorizontalSwipe({children}: {children: React.ReactNode}) {
+export default function HorizontalSwipe({
+  children,
+  scrollRef
+}: {
+  children: React.ReactNode
+  scrollRef?: React.RefObject<HTMLDivElement>
+}) {
   const hostRef = useRef<HTMLDivElement | null>(null)
   const navigatedRef = useRef(false)
 
@@ -157,6 +163,16 @@ useEffect(() => {
     params.set('group', stringToBase64Url(targetGroup))
     setHighlightedGroup(stringToBase64Url(targetGroup))
     navigatedRef.current = true
+    
+    // Scroll to top of the drawer content when navigating via swipe
+    if (scrollRef?.current) {
+      if (committed == 'left') {
+        scrollRef.current.scrollTo({ top: 0, behavior: 'instant' })
+      } else {
+        scrollRef.current.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'instant' })
+      }
+    }
+    
     router.replace(`${pathname}?${params.toString()}`)
   }
 

@@ -228,7 +228,7 @@ export default function MobileLayout() {
             <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 border-neutral-800 shadow-inner max-h-[calc(100svh-12rem)] overscroll-contain`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             {drawerContent == 'details' && <>
-            {doc && details == 'doc' && !fuzzyNav && <div className="pb-24"><HorizontalSwipe><ListExplorer/> </HorizontalSwipe></div>}
+            {doc && details == 'doc' && !fuzzyNav && <div className="pb-24"><HorizontalSwipe scrollRef={scrollableContent}><ListExplorer/> </HorizontalSwipe></div>}
             {details == 'group' && <div className="pb-12 pt-2 px-2">
                 <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 pb-2">Oversikt</h2>
                 
