@@ -18,7 +18,6 @@ export default function DetailsFooter( {source}: {source?: any}) {
 
     const group = searchParams.get('group')
     const docSource = source || docData?._source
-    const { setInitialUrl } = useContext(GroupContext)
     const {isMobile} = useContext(GlobalContext)
 
 
@@ -29,8 +28,6 @@ export default function DetailsFooter( {source}: {source?: any}) {
       <Clickable
         aria-current={(fuzzyNav && group == stringToBase64Url(docSource.group)) ? true : false}
         className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10" 
-        remove={['details']} 
-        onClick={() => setInitialUrl(`?${searchParams.toString()}`)}
         add={{group: stringToBase64Url(docSource.group.id), fuzzyNav: fuzzyNav || 'timeline'}}>
         <PiBinocularsFill className="text-lg text-white" aria-hidden="true"/>Namneformer
       </Clickable>

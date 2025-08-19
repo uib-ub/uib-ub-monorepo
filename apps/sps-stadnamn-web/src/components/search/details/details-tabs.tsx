@@ -1,17 +1,22 @@
+import { DocContext } from "@/app/doc-provider";
 import { GroupContext } from "@/app/group-provider";
 import Clickable from "@/components/ui/clickable/clickable";
+import { stringToBase64Url } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { useContext } from "react";
-import { PiBookOpenFill, PiBookOpenLight, PiListLight } from "react-icons/pi";
+import { PiArrowLeft, PiBookOpenFill, PiBookOpenLight, PiListLight } from "react-icons/pi";
 
 
 export default function DetailsTabs() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
     const { groupData, groupTotal } = useContext(GroupContext)
+    const { docData } = useContext(DocContext)
     return <>
-    <Clickable
-        label="Oppslag"
+    { groupTotal?.value == 1 || groupData?.[0]?.fields?.['group.id'] == docData?._source.group?.id ? <>
+    
+      
+      <Clickable
         add={{details: "doc"}} 
         aria-selected={details == "doc" || (details == "group" &&  !groupData)}
         className="flex h-10 whitespace-nowrap items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pr-4 pl-3 text-neutral-900 aria-selected:bg-neutral-100 aria-selected:shadow-inner">
@@ -19,7 +24,7 @@ export default function DetailsTabs() {
         <span className="text-neutral-900 sr-only 2xl:not-sr-only whitespace-nowrap">Oppslag</span>
     </Clickable>
 
-    { groupTotal?.value && groupTotal.value > 1 && <Clickable label="Oversikt" 
+    { groupTotal?.value && groupTotal.value > 1 && <Clickable
           remove={["details", "fuzzyNav"]} 
           add={{details: "group"}}
           aria-selected={details == "group"}
@@ -33,4 +38,12 @@ export default function DetailsTabs() {
       )}
     </Clickable>}
     </>
+    :
+    <Clickable className="flex h-10 whitespace-nowrap items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pr-4 pl-3 text-neutral-900 aria-selected:bg-neutral-100 aria-selected:shadow-inner"  
+               add={{doc: groupData?.[0]?.fields?.uuid[0]}}>
+      <PiArrowLeft className="text-primary-600" aria-hidden="true"/> Tilbake til gruppe
+    </Clickable>
+    }
+    </>
+   
 }

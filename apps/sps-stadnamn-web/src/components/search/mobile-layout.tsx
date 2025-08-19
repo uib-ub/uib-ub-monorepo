@@ -57,7 +57,6 @@ export default function MobileLayout() {
     const { groupTotal } = useContext(GroupContext)
     const fuzzyNav = searchParams.get('fuzzyNav')
     const group = searchParams.get('group')
-    const { setInitialUrl } = useContext(GroupContext)
 
     const boost_gt = searchParams.get('boost_gt')
     const cadastralIndex = searchParams.get('cadastralIndex')
@@ -359,8 +358,6 @@ export default function MobileLayout() {
                 <ClickableIcon
                     label="Finn namneformer"
                     aria-current={fuzzyNav ? 'page' : 'false'}
-                    remove={['details']} 
-                    onClick={() => setInitialUrl(`?${searchParams.toString()}`)}
                     add={{group: stringToBase64Url(docData?._source.group.id), fuzzyNav: 'list'}}>
                     <PiBinoculars className="text-3xl" aria-hidden="true"/>
                 </ClickableIcon>

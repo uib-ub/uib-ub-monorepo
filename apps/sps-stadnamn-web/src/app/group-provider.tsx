@@ -12,8 +12,6 @@ interface GroupContextData {
     groupLoading: boolean;
     groupError: Record<string, string> | null;
     groupTotal: { value: number, relation: string } | null;
-    setInitialUrl: (url: string | null) => void;
-    initialUrl: string | null;
     prevDocUuid: string | null;
     nextDocUuid: string | null;
     docIndex: number | undefined;
@@ -27,8 +25,6 @@ export const GroupContext = createContext<GroupContextData>({
     groupLoading: true,
     groupError: null,
     groupTotal: null,
-    setInitialUrl: () => {},
-    initialUrl: null,
     prevDocUuid: null,
     nextDocUuid: null,
     docIndex: undefined,
@@ -216,8 +212,6 @@ export default function GroupProvider({ children }: {  children: React.ReactNode
         groupLoading,
         groupError,
         groupTotal,
-        setInitialUrl,
-        initialUrl,
         prevDocUuid,
         nextDocUuid,
         docIndex,

@@ -28,7 +28,6 @@ export default function FuzzyExplorer() {
     const { groupData } = useContext(GroupContext)
     const group = searchParams.get('group')
 
-
     const toggleGroupExpansion = (groupId: string) => {
         setExpandedGroups(prev => ({
             ...prev,
