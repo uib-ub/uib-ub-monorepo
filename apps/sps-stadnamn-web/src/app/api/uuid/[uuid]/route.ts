@@ -1,7 +1,7 @@
 import { fetchDoc } from '@/app/api/_utils/actions';
 import { defaultDoc2jsonld, doc2jsonld } from '@/config/rdf-config';
 
-export const runtime = 'edge';
+//export const runtime = 'edge';
 
 export async function GET(
     request: Request,

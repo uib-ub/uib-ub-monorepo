@@ -1,4 +1,4 @@
-export const runtime = 'edge'
+//export const runtime = 'edge'
 
 import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';

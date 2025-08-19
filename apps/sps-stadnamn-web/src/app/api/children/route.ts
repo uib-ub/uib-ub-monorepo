@@ -1,4 +1,4 @@
-export const runtime = 'edge'
+//export const runtime = 'edge'
 import { fetchChildren } from "../_utils/actions"
 
 export async function POST(request: Request) {

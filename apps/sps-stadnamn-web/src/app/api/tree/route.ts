@@ -1,4 +1,4 @@
-export const runtime = 'edge'
+//export const runtime = 'edge'
 import { treeSettings } from "@/config/server-config";
 import { postQuery } from "../_utils/post";
 

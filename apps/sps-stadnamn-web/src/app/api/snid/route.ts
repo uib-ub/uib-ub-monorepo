@@ -1,4 +1,4 @@
-export const runtime = 'edge'
+//export const runtime = 'edge'
 import { postQuery } from "../_utils/post";
 export async function GET(request: Request) {
     const searchParams = new URLSearchParams(new URL(request.url).search);

@@ -1,4 +1,4 @@
-export const runtime = 'edge'
+//export const runtime = 'edge'
 import { fetchIIIFNeighbours } from '../neighbours';
 
 export async function GET(request: Request) {
