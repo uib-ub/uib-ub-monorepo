@@ -1,11 +1,10 @@
 import { useSearchParams } from "next/navigation";
-import { PiBookOpen, PiBookOpenFill, PiBookOpenLight, PiBookOpenTextFill, PiBookOpenTextLight, PiBookOpenThin, PiMapTrifold, PiMapTrifoldFill, PiMapTrifoldLight, PiMapTrifoldThin, PiRows, PiRowsFill, PiRowsLight, PiRowsThin, PiTable, PiTableFill, PiTableLight, PiTableThin } from "react-icons/pi";
+import { PiBookOpenFill, PiBookOpenLight, PiMapTrifold, PiMapTrifoldFill, PiMapTrifoldLight, PiTableFill, PiTableLight } from "react-icons/pi";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { useContext } from "react";
 import { GlobalContext } from "@/app/global-provider";
 import { usePerspective, useMode } from "@/lib/search-params";
 import { contentSettings } from "@/config/server-config";
-import { DocContext } from "@/app/doc-provider";
 import useDocData from "@/state/hooks/doc-data";
 
 export default function ModeSelector() {
