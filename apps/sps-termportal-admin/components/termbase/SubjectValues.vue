@@ -1,7 +1,7 @@
 <template>
-  <UtilsTableWrapper>
+  <UtilsTableWrapper :heading-level="headingLevel">
     <template #header>
-      Bruksområder
+      Bruksområder aggregert
     </template>
     <template #description>
       <p>
@@ -63,7 +63,10 @@
 <script setup lang="ts">
 import { FilterMatchMode } from "primevue/api";
 
-const props = defineProps({ termbase: { type: Object, required: true } });
+const props = defineProps<{
+  termbase: object;
+  headingLevel: HeadingLevelWithDefaultOptions;
+}>();
 
 const datatable = ref();
 
