@@ -4,15 +4,16 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { useSearchQuery } from '@/lib/search-params';
 import useDocData from './doc-data';
 import { useEffect, useCallback } from 'react';
+import { base64UrlToString } from '@/lib/utils';
 
 export default function useGroupData() {
     const searchParams = useSearchParams()
     const { searchQueryString } = useSearchQuery()
     const group = searchParams.get('group')
     
-    const { docData } = useDocData()
+    const { docData, docGroup } = useDocData()
     const docUuid = docData?._source?.uuid
-    const docGroup = docData?._source?.group
+    const sameGroup = group && docGroup == base64UrlToString(group)
 
     // Use select to transform data and control when re-renders happen
     const {
@@ -47,6 +48,31 @@ export default function useGroupData() {
             }
             
             const totalFetched = allPages.reduce((sum, page) => sum + (page?.hits?.length || 0), 0)
+            const allHits = allPages.flatMap(page => page?.hits || [])
+            const totalData = allPages[0]?.total
+            const allDataFetched = totalFetched >= (totalData?.value || 0)
+            
+            // Stop if all data is fetched
+            if (allDataFetched) {
+                return undefined
+            }
+            
+            const docFound = docUuid && allHits.some((hit: any) => hit._source?.uuid === docUuid)
+            const docIndex = docUuid ? allHits.findIndex((hit: any) => hit._source?.uuid === docUuid) : -1
+            const isDocLast = docIndex === allHits.length - 1 && docIndex >= 0
+            
+            // Continue fetching if:
+            // 1. Document should be in results but isn't found yet
+            // 2. sameGroup is true (continue until total)
+            // 3. Document is the last one (fetch one more for next button)
+            const shouldContinue = (docUuid && docGroup === group && !docFound) ||
+                                  sameGroup ||
+                                  isDocLast
+            
+            if (!shouldContinue) {
+                return undefined
+            }
+            
             const nextSize = Math.min(lastPage.size * 2, 100)
             const nextFrom = totalFetched
             
@@ -81,19 +107,6 @@ export default function useGroupData() {
     const stableFetchNextPage = useCallback(() => {
         fetchNextPage()
     }, [fetchNextPage])
-
-    // Auto-fetch more if doc should be in results but isn't found
-    useEffect(() => {
-        const shouldFetchMore = docUuid && 
-                               docGroup === group && 
-                               !processedData?.docFound && 
-                               hasNextPage && 
-                               !isFetchingNextPage
-
-        if (shouldFetchMore) {
-            stableFetchNextPage()
-        }
-    }, [docUuid, docGroup, group, processedData?.docFound, hasNextPage, isFetchingNextPage, stableFetchNextPage])
 
     return { 
         groupData: processedData?.allHits || [],

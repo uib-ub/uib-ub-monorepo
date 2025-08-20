@@ -14,7 +14,8 @@ export default function useDocData(docParams?: {docData: Record<string, any>, do
                 return {
                     docData: docParams.docData,
                     docAdm: docParams.docData.adm2 + '__' + docParams.docData.adm1,
-                    docDataset: docParams.docDataset
+                    docDataset: docParams.docDataset,
+                    docGroup: docParams.docData._source.group?.id
                 }
             }
 
@@ -27,15 +28,16 @@ export default function useDocData(docParams?: {docData: Record<string, any>, do
                 return {
                     docData: data.hits.hits[0],
                     docAdm: data.hits.hits[0]._source.adm2 + '__' + data.hits.hits[0]._source.adm1,
-                    docDataset: data.hits.hits[0]._index.split('-')[2]
+                    docDataset: data.hits.hits[0]._index.split('-')[2],
+                    docGroup: data.hits.hits[0]._source.group?.id
                 }
             }
             throw new Error('Doc not found')
         },
     })
 
-    const { docData, docAdm, docDataset } = data || {}
-    return { docData, docAdm, docDataset, docError, docLoading }
+    const { docData, docAdm, docDataset, docGroup } = data || {}
+    return { docData, docAdm, docDataset, docGroup, docError, docLoading }
 
 }
 
