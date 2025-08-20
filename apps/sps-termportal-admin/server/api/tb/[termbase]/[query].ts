@@ -7,6 +7,7 @@ import genQualitySemanticRelationsQuery from "~/server/utils/genQualitySemanticR
 import genTermbaseSubjectValues from "~/server/utils/genTermbaseSubjectValues";
 import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
 import genTermbaseDomains from "~/server/utils/genTermbaseDomains";
+import genTermbaseSubjectTermposts from "~/server/utils/genTermbaseSubjectTermposts";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
@@ -39,6 +40,8 @@ export default defineEventHandler(async (event) => {
         return genInsightTermbaseQuery();
       case "subjectValues":
         return genTermbaseSubjectValues(termbase);
+      case "subjectsTermposts":
+        return genTermbaseSubjectTermposts(termbase);
       case "domains":
         return genTermbaseDomains(termbase);
       default:

@@ -18,7 +18,7 @@
           :termbase="merged"
         />
         <div class="space-y-4">
-          <h2 class="text-2xl">
+          <h2 class="text-2xl font-semibold">
             Terminologi
           </h2>
           <div class="space-y-8">
@@ -27,12 +27,28 @@
               heading-level="h3"
               :termbase="merged"
             />
-            <TermbaseSubjectValues
-              v-if="merged?.id && merged.conceptCount > 0"
-              :key="`subjects${merged?.id}`"
-              heading-level="h3"
-              :termbase="merged"
-            />
+            <div>
+              <AppLink to="#tb-brk">
+                <h3
+                  id="tb-brk"
+                  class="text-2xl mb-2"
+                >
+                  Bruksområder
+                </h3>
+              </AppLink>
+              <TermbaseSubjectValues
+                v-if="merged?.id && merged.conceptCount > 0"
+                :key="`subjects${merged?.id}`"
+                heading-level="h4"
+                :termbase="merged"
+              />
+              <TermbaseSubjectConceptList
+                v-if="merged?.id && merged.conceptCount > 0"
+                :key="`subjects_concepts${merged?.id}`"
+                heading-level="h4"
+                :termbase="merged"
+              />
+            </div>
             <TermbaseLanguageCoverage
               v-if="merged?.id && merged.conceptCount > 0"
               :key="`languageCoverage${merged?.id}`"
@@ -135,6 +151,7 @@ const merged = computed(() => {
       label: e.label.value,
       id: e.id.value,
       conceptCount: e.concepts.value,
+      conceptCountPublished: e.conceptsPublished.value,
       status: numberStatus(matchid(cmsdata, e, "status")),
       labels: matchid(cmsdata, e, "labelsOk"),
       descriptions: matchid(cmsdata, e, "descriptionsOk"),
@@ -179,6 +196,8 @@ const merged = computed(() => {
           labels: entry.labelsOk,
           descriptions: entry.descriptionsOk,
           license: "",
+          conceptCount: 0,
+          conceptCountPublished: 0,
           agreement: entry.licenseAgreementStatus,
           staff: entry.responsibleStaff,
           domain: entry.domain,
