@@ -25,9 +25,8 @@ import useDocData from "@/state/hooks/doc-data"
 export default function DocInfo({docParams}: {docParams?: {docData: Record<string, any>, docDataset: string}}) {
     const searchParams = useSearchParams()
     const perspective = usePerspective()
-    const { docDataset, docData } = useDocData(docParams)
+    const { docDataset, docData, docLoading } = useDocData(docParams)
     const docSource = docData?._source
-
     const mode = useMode()
     const datasetTag = searchParams.get('datasetTag')
     const { isMobile, sosiVocab } = useContext(GlobalContext)
@@ -46,6 +45,11 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
             return value && value.length > 0;
         });
     }, [docDataset, docSource]);
+
+    // Don't render if docData is not available yet
+    if (docLoading || !docData || !docSource) {
+      return null
+    }
 
     return <><article className={`instance-info flex flex-col gap-4 ${isMobile ? 'mb-12' : 'p-4 pb-8 '}`}>
 
