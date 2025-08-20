@@ -31,7 +31,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   }
 
   useEffect(() => {
-    fetch(`/api/facet?perspective=${perspective}&facets=group.adm1,group.adm2,group.adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`, {cache: 'force-cache', next: {tags: ['all']}}).then(response => response.json()).then(es_data => {
+    fetch(`/api/facet?perspective=${perspective}&facets=group.adm1,group.adm2,group.adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
       setFacetAggregation(es_data.aggregations?.["group.adm1"])
       setFacetIsLoading(false);
     })

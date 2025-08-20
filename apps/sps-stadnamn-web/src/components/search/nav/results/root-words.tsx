@@ -14,7 +14,7 @@ export default function RootWords({hit}: {hit: any}) {
         if (hit.inner_hits?.group?.hits?.total?.value > 1) {
         setIsLoadingRootWords(true)
         const url = `/api/search/collapsed?${searchQueryString}&group=${stringToBase64Url('grunnord')}&dataset=*_g`
-        fetch(url, {cache: 'force-cache', next: {tags: ['all']}})
+        fetch(url)
           .then(response => {
             if (!response.ok) {
                 setIsLoadingRootWords(false)

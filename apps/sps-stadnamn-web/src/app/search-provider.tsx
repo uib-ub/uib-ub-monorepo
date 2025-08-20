@@ -65,7 +65,7 @@ export default function SearchProvider({ children }: {  children: React.ReactNod
 
     useEffect(() => {
         setIsLoading(true)        
-        fetch(`/api/search/map?${searchQueryString}`, {cache: 'force-cache', next: {tags: ['all']}})
+        fetch(`/api/search/map?${searchQueryString}`)
         .then(response => {
             if (!response.ok) {
                 throw response

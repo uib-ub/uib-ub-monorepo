@@ -237,10 +237,6 @@ export default function MapExplorer() {
     const query = `/api/geo/${autoMode || markerMode}?${queryParams.toString()}&totalHits=${totalHits?.value}`;
 
     fetch(query, {
-      cache: 'force-cache',
-      next: {
-        tags: ["all"]
-      },
       signal: controllerRef.current.signal,
       method: 'GET',
       headers: {

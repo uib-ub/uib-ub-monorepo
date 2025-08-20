@@ -39,7 +39,7 @@ export default function FacetSection() {
 
     useEffect(() => {
         setFacetsLoading(true)
-        fetch(`/api/fieldsPresent?${searchQueryString}`, {cache: 'force-cache', next: {tags: ['all']}}).then(response => response.json()).then(es_data => {
+        fetch(`/api/fieldsPresent?${searchQueryString}`).then(response => response.json()).then(es_data => {
             setFacetFieldCounts(es_data.aggregations?.fields_present?.buckets)
         })
         .catch(error => { 

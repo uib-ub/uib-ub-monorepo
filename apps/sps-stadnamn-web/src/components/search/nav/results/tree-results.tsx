@@ -55,7 +55,7 @@ export default function TreeResults() {
     if (groupBy) url.set('groupBy', groupBy)
     if (treeAdm) url.set('adm', treeAdm)
     setIsLoading(true)
-    fetch(`/api/tree?${url.toString()}`, {cache: 'force-cache', next: {tags: ['all']}}).then(res => res.json()).then(data => {
+    fetch(`/api/tree?${url.toString()}`).then(res => res.json()).then(data => {
       setCadastralData(data)
       setIsLoading(false)
     }).catch(err => {

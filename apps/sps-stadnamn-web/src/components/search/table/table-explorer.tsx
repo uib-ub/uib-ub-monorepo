@@ -33,7 +33,7 @@ export default function TableExplorer() {
     useEffect(() => {
         setIsLoadingResults(true)
         const url = `/api/search/table?size=${perPage}${searchQueryString ? `&${searchQueryString}`: ''}${desc ? `&desc=${desc}`: ''}${asc ? `&asc=${asc}` : ''}${page > 1 ? `&from=${(page-1)*perPage}`: ''}`
-        fetch(url, {cache: 'force-cache', next: {tags: ['all']}})
+        fetch(url)
           .then(response => {
             if (!response.ok) {
               setIsLoadingResults(false)
