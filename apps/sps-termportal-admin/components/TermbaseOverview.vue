@@ -48,7 +48,7 @@
       <Column
         sortable
         field="conceptCountPublished"
-        header="Begreper"
+        header="Publiserte begreper"
       />
       <Column
         sortable
@@ -577,7 +577,7 @@ const merged = computed(() => {
     return blocker;
   }
   else {
-    return {};
+    return null;
   }
 });
 
