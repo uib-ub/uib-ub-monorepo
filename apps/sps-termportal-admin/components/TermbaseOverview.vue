@@ -47,7 +47,7 @@
       <!-- <Column sortable field="id" header="ID" /> -->
       <Column
         sortable
-        field="conceptCount"
+        field="conceptCountPublished"
         header="Begreper"
       />
       <Column
@@ -496,6 +496,7 @@ const merged = computed(() => {
         label: e.label.value,
         id: e.id.value,
         conceptCount: e.concepts.value,
+        conceptCountPublished: e.conceptsPublished.value,
         status: numberStatus(matchid(cmsdata, e, "status")),
         labels: matchid(cmsdata, e, "labelsOk"),
         descriptions: matchid(cmsdata, e, "descriptionsOk"),
@@ -574,6 +575,9 @@ const merged = computed(() => {
       ...{ blocker: checkBlocker(tb) },
     }));
     return blocker;
+  }
+  else {
+    return {};
   }
 });
 
