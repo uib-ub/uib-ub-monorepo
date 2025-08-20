@@ -63,7 +63,7 @@ const { data } = await useLazyFetch("/api/tb/all/termbase_language_coverage");
 
 function calcCoveragePerc(concepts, count) {
   if (concepts === 0) return 0;
-  return Math.floor((count / concepts) * 100);
+  return ((count / concepts) * 100).toFixed(2);
 }
 
 const procData = computed(() => {
