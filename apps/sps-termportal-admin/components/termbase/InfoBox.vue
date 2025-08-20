@@ -28,7 +28,39 @@
             <dt class="font-semibold w-16">
               Begreper
             </dt>
-            <dd>{{ termbase.conceptCount || 0 }}</dd>
+            <dd
+              class="cursor-help relative"
+              @mouseover="conceptCountHover = true"
+              @mouseleave="conceptCountHover = false"
+            >
+              {{ termbase.conceptCountPublished }} / {{ termbase.conceptCount }}
+              <Icon
+                name="material-symbols:info-i"
+                size="1em"
+                class="text-blue-700"
+              />
+              <div
+                v-if="conceptCountHover"
+                class="absolute border rounded-md border-solid bg-white p-2 top-0 -right-44 shadow-md"
+              >
+                <dl class="grid grid-cols-2 gap-y-0.5">
+                  <dt>Publisert</dt><dd class="text-right">
+                    {{ termbase.conceptCountPublished }}
+                  </dd>
+                  <dt>
+                    Upublisert
+                    <hr class="mt-1">
+                  </dt>
+                  <dd class="text-right">
+                    {{ termbase.conceptCount - termbase.conceptCountPublished }}
+                    <hr class="mt-1">
+                  </dd>
+                  <dt>Total</dt><dd class="text-right">
+                    {{ termbase.conceptCount }}
+                  </dd>
+                </dl>
+              </div>
+            </dd>
           </div>
           <div
             v-if="termbase?.type"
@@ -194,5 +226,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({ termbase: { type: Object, required: true } });
+const conceptCountHover = ref(false);
+
+defineProps({ termbase: { type: Object, required: true } });
 </script>
