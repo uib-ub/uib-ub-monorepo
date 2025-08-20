@@ -96,7 +96,6 @@
       </DataTable>
     </div>
   </UtilsTableWrapper>
-  {{ subjectValues }}
 </template>
 
 <script setup lang="ts">
