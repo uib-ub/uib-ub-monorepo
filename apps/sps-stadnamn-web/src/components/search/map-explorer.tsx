@@ -468,12 +468,33 @@ export default function MapExplorer() {
     }
   }
 
-  // Add this state for toggling the grid
-  const [showH3Grid, setShowH3Grid] = useState(false);
-  const [showGeotileGrid, setShowGeotileGrid] = useState(false);
+    // Add this state for toggling the grid
+    const [showH3Grid, setShowH3Grid] = useState(false);
+    const [showGeotileGrid, setShowGeotileGrid] = useState(false);
+    
+    // State to store debug viewport bounds for real-time updates
+    const [debugViewportBounds, setDebugViewportBounds] = useState<[[number, number], [number, number]] | null>(null);
+  
+    // Function to check if a polygon intersects with a rectangle
+    const checkPolygonIntersection = useCallback((polygon: number[][], bounds: [[number, number], [number, number]]) => {
+      if (!polygon || !bounds || polygon.length < 4) return false;
+      
+      const [[rectNorth, rectWest], [rectSouth, rectEast]] = bounds;
+      
+      // Get polygon bounds
+      const polygonLats = polygon.map(p => p[0]);
+      const polygonLngs = polygon.map(p => p[1]);
+      const polyNorth = Math.max(...polygonLats);
+      const polySouth = Math.min(...polygonLats);
+      const polyEast = Math.max(...polygonLngs);
+      const polyWest = Math.min(...polygonLngs);
+      
+      // Check if rectangles overlap (simple bounding box intersection)
+      return !(rectEast < polyWest || rectWest > polyEast || rectNorth < polySouth || rectSouth > polyNorth);
+    }, []);
 
-  // Add state for H3 resolution
-  const [h3Resolution, setH3Resolution] = useState(8);
+    // Add state for H3 resolution
+    const [h3Resolution, setH3Resolution] = useState(8);
 
   // Calculate viewport bounds when zoomed in 2 levels
   const getZoomedInViewport = useCallback(() => {
@@ -688,6 +709,26 @@ export default function MapExplorer() {
             const map = useMap();
 
             useMapEvents({
+              move: () => {
+                // Update debug viewport bounds during move for real-time updates
+                const bounds = map.getBounds();
+                const center = bounds.getCenter();
+                const currentZoom = map.getZoom();
+                
+                // Calculate the bounds that would be visible if zoomed in 2 levels
+                const zoomRatio = Math.pow(2, 2); // 2^2 for 2 zoom levels
+                const latSpan = bounds.getNorth() - bounds.getSouth();
+                const lngSpan = bounds.getEast() - bounds.getWest();
+                const zoomedLatSpan = latSpan / zoomRatio;
+                const zoomedLngSpan = lngSpan / zoomRatio;
+                
+                const north = center.lat + zoomedLatSpan / 2;
+                const south = center.lat - zoomedLatSpan / 2;
+                const east = center.lng + zoomedLngSpan / 2;
+                const west = center.lng - zoomedLngSpan / 2;
+                
+                setDebugViewportBounds([[north, west], [south, east]]);
+              },
               moveend: () => {
                 controllerRef.current.abort();
                 controllerRef.current = new AbortController();
@@ -697,7 +738,7 @@ export default function MapExplorer() {
                 setViewUrlParams(map.getZoom(), [boundsCenter.lat, boundsCenter.lng])
                 setMarkerBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
               },
-            })          
+            })         
             return null
           }
 
@@ -723,19 +764,24 @@ export default function MapExplorer() {
               ))}
 
               {/* Add Geotile grid overlay */}
-              {showGeotileGrid && mapInstance.current && getGeotileCells(mapInstance.current.getBounds()).map((polygon, index) => (
-                <Polygon
-                  key={`geotile-${index}`}
-                  positions={polygon}
-                  pathOptions={{
-                    color: '#ff6600',
-                    weight: 2,
-                    opacity: 0.8,
-                    fillOpacity: 0.05,
-                    dashArray: '10, 5'
-                  }}
-                />
-              ))}
+              {showGeotileGrid && mapInstance.current && getGeotileCells(mapInstance.current.getBounds()).map((polygon, index) => {
+                // Check if this cell intersects with the debug viewport
+                const intersectsViewport = debugViewportBounds && polygon && checkPolygonIntersection(polygon, debugViewportBounds);
+                
+                return (
+                  <Polygon
+                    key={`geotile-${index}`}
+                    positions={polygon}
+                    pathOptions={{
+                      color: intersectsViewport ? '#00ff00' : '#ff6600',
+                      weight: intersectsViewport ? 3 : 2,
+                      opacity: intersectsViewport ? 1 : 0.8,
+                      fillOpacity: intersectsViewport ? 0.2 : 0.05,
+                      dashArray: intersectsViewport ? '5, 5' : '10, 5'
+                    }}
+                  />
+                );
+              })}
 
               {/* Visualize tiles from fetched results - only when geotile debugging is enabled */}
               {showGeotileGrid && (() => {
@@ -787,10 +833,10 @@ export default function MapExplorer() {
                 });
               })()}
 
-              {/* Add debug viewport rectangle (zoomed in 2 levels) */}
-              {showGeotileGrid && mapInstance.current && getZoomedInViewport() && (
+                {/* Add debug viewport rectangle (zoomed in 2 levels) */}
+              {showGeotileGrid && mapInstance.current && debugViewportBounds && (
                 <Rectangle 
-                  bounds={getZoomedInViewport()!}
+                  bounds={debugViewportBounds}
                   pathOptions={{ 
                     color: '#ff0066', 
                     weight: 3,
