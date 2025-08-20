@@ -110,7 +110,6 @@
       </DataTable>
     </div>
   </UtilsTableWrapper>
-  <pre>{{ displayData }}</pre>
 </template>
 
 <script setup lang="ts">
