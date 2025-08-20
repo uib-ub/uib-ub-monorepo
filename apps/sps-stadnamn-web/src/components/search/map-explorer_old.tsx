@@ -440,130 +440,9 @@ export default function MapExplorer() {
 
   // Add this state for toggling the grid
   const [showH3Grid, setShowH3Grid] = useState(false);
-  const [showGeotileGrid, setShowGeotileGrid] = useState(false);
 
   // Add state for H3 resolution
   const [h3Resolution, setH3Resolution] = useState(8);
-
-  // Calculate viewport bounds when zoomed in 2 levels
-  const getZoomedInViewport = useCallback(() => {
-    if (!mapInstance.current) return null;
-    
-    const currentZoom = mapInstance.current.getZoom();
-    const currentCenter = mapInstance.current.getCenter();
-    const currentBounds = mapInstance.current.getBounds();
-    
-    // Calculate the bounds that would be visible if zoomed in 2 levels
-    const zoomedInZoom = currentZoom + 2;
-    const zoomRatio = Math.pow(2, 2); // 2^2 for 2 zoom levels
-    
-    const latSpan = currentBounds.getNorth() - currentBounds.getSouth();
-    const lngSpan = currentBounds.getEast() - currentBounds.getWest();
-    
-    const zoomedLatSpan = latSpan / zoomRatio;
-    const zoomedLngSpan = lngSpan / zoomRatio;
-    
-    const north = currentCenter.lat + zoomedLatSpan / 2;
-    const south = currentCenter.lat - zoomedLatSpan / 2;
-    const east = currentCenter.lng + zoomedLngSpan / 2;
-    const west = currentCenter.lng - zoomedLngSpan / 2;
-    
-    return [[north, west], [south, east]] as [[number, number], [number, number]];
-  }, []);
-
-  // Calculate geotile precision based on viewport size
-  const calculateGeotilePrecision = useCallback(() => {
-    if (!mapInstance.current) return 8;
-    
-    const zoomedViewport = getZoomedInViewport();
-    if (!zoomedViewport) return 8;
-    
-    const [[north, west], [south, east]] = zoomedViewport;
-    const latSpan = Math.abs(north - south);
-    const lngSpan = Math.abs(east - west);
-    
-    // Geotile precision levels and their approximate degree coverage
-    // These are rough approximations for grid cell sizes
-    const precisionToDegrees = [
-      { precision: 0, degrees: 360 },
-      { precision: 1, degrees: 180 },
-      { precision: 2, degrees: 90 },
-      { precision: 3, degrees: 45 },
-      { precision: 4, degrees: 22.5 },
-      { precision: 5, degrees: 11.25 },
-      { precision: 6, degrees: 5.625 },
-      { precision: 7, degrees: 2.8125 },
-      { precision: 8, degrees: 1.40625 },
-      { precision: 9, degrees: 0.703125 },
-      { precision: 10, degrees: 0.3515625 },
-      { precision: 11, degrees: 0.17578125 },
-      { precision: 12, degrees: 0.087890625 },
-      { precision: 13, degrees: 0.0439453125 },
-      { precision: 14, degrees: 0.02197265625 },
-      { precision: 15, degrees: 0.010986328125 }
-    ];
-    
-    // Find precision where grid cell is larger than or equal to viewport
-    const maxSpan = Math.max(latSpan, lngSpan);
-    
-    for (let i = precisionToDegrees.length - 1; i >= 0; i--) {
-      if (precisionToDegrees[i].degrees >= maxSpan) {
-        return Math.min(15, precisionToDegrees[i].precision); // Use the exact precision level for smaller cells
-      }
-    }
-    
-    return 8; // Default fallback
-  }, [getZoomedInViewport]);
-
-  // Generate geotile grid cells
-  const getGeotileCells = useCallback((bounds: any) => {
-    if (!bounds) return [];
-    
-    const precision = calculateGeotilePrecision();
-    
-    const north = bounds.getNorth();
-    const south = bounds.getSouth();
-    const west = bounds.getWest();
-    const east = bounds.getEast();
-    
-    const n = Math.pow(2, precision);
-    
-    // Convert lat/lng bounds to tile coordinates
-    const xMin = Math.floor(((west + 180) / 360) * n);
-    const xMax = Math.floor(((east + 180) / 360) * n);
-    
-    // Convert latitude to Web Mercator Y tile coordinates
-    const yMin = Math.floor((1 - Math.log(Math.tan((north * Math.PI) / 180) + 1 / Math.cos((north * Math.PI) / 180)) / Math.PI) / 2 * n);
-    const yMax = Math.floor((1 - Math.log(Math.tan((south * Math.PI) / 180) + 1 / Math.cos((south * Math.PI) / 180)) / Math.PI) / 2 * n);
-    
-    const cells = [];
-    
-    // Generate grid cells using proper tile coordinates
-    for (let x = xMin; x <= xMax; x++) {
-      for (let y = yMin; y <= yMax; y++) {
-        // Convert tile coordinates back to lat/lng bounds
-        const tileWest = (x / n) * 360 - 180;
-        const tileEast = ((x + 1) / n) * 360 - 180;
-        
-        const latRad1 = Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n)));
-        const latRad2 = Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / n)));
-        
-        const tileNorth = (latRad1 * 180) / Math.PI;
-        const tileSouth = (latRad2 * 180) / Math.PI;
-        
-        // Create rectangle bounds
-        cells.push([
-          [tileNorth, tileWest],
-          [tileNorth, tileEast],
-          [tileSouth, tileEast],
-          [tileSouth, tileWest],
-          [tileNorth, tileWest]
-        ]);
-      }
-    }
-    
-    return cells;
-  }, [calculateGeotilePrecision]);
 
   // Modify getH3Cells to use the resolution state
   const getH3Cells = useCallback((bounds: any) => {
@@ -598,40 +477,6 @@ export default function MapExplorer() {
       return boundary;
     });
   }, [h3Resolution]);
-
-  // Function to convert geotile key to bounds
-  const geotileKeyToBounds = useCallback((key: string) => {
-    console.log('Converting geotile key:', key);
-    const parts = key.split('/');
-    if (parts.length !== 3) {
-      console.log('Invalid key format:', key, 'parts:', parts);
-      return null;
-    }
-    
-    const zoom = parseInt(parts[0]);
-    const x = parseInt(parts[1]);
-    const y = parseInt(parts[2]);
-    
-    console.log('Tile coordinates:', { zoom, x, y });
-    
-    // Web Mercator tile bounds calculation (same as used by most web mapping services)
-    const n = Math.pow(2, zoom);
-    
-    // Longitude bounds
-    const west = (x / n) * 360 - 180;
-    const east = ((x + 1) / n) * 360 - 180;
-    
-    // Latitude bounds using Web Mercator inverse
-    const latRad1 = Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n)));
-    const latRad2 = Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / n)));
-    
-    const north = (latRad1 * 180) / Math.PI;
-    const south = (latRad2 * 180) / Math.PI;
-    
-    const bounds = [[north, west], [south, east]] as [[number, number], [number, number]];
-    console.log('Calculated bounds:', bounds);
-    return bounds;
-  }, []);
 
   return <>
     {(!isLoading || markerBounds || (center && zoom) || searchError) ? <>
@@ -681,7 +526,7 @@ export default function MapExplorer() {
               {/* Add H3 grid overlay */}
               {showH3Grid && mapInstance.current && getH3Cells(mapInstance.current.getBounds()).map((polygon, index) => (
                 <Polygon
-                  key={`h3-${index}`}
+                  key={index}
                   positions={polygon}
                   pathOptions={{
                     color: '#666',
@@ -692,83 +537,6 @@ export default function MapExplorer() {
                 />
               ))}
 
-              {/* Add Geotile grid overlay */}
-              {showGeotileGrid && mapInstance.current && getGeotileCells(mapInstance.current.getBounds()).map((polygon, index) => (
-                <Polygon
-                  key={`geotile-${index}`}
-                  positions={polygon}
-                  pathOptions={{
-                    color: '#ff6600',
-                    weight: 2,
-                    opacity: 0.8,
-                    fillOpacity: 0.05,
-                    dashArray: '10, 5'
-                  }}
-                />
-              ))}
-
-              {/* Visualize tiles from fetched results - only when geotile debugging is enabled */}
-              {showGeotileGrid && (() => {
-                console.log('Tiles data:', tiles);
-                if (!tiles) {
-                  console.log('No tiles data available');
-                  return null;
-                }
-                console.log('Number of tiles:', tiles.length);
-                
-                return tiles.map((bucket: any, index: number) => {
-                  console.log('Processing bucket:', bucket);
-                  
-                  // Fallback to viewport bounds if geotile key conversion fails
-                  let tileBounds = null;
-                  
-                  if (bucket.key) {
-                    tileBounds = geotileKeyToBounds(bucket.key);
-                  }
-                  
-                  if (!tileBounds && bucket.viewport?.bounds) {
-                    console.log('Using viewport bounds as fallback for bucket:', bucket.key);
-                    tileBounds = [
-                      [bucket.viewport.bounds.top_left.lat, bucket.viewport.bounds.top_left.lon],
-                      [bucket.viewport.bounds.bottom_right.lat, bucket.viewport.bounds.bottom_right.lon]
-                    ];
-                  }
-                  
-                  if (!tileBounds) {
-                    console.log('No bounds available for bucket:', bucket.key);
-                    return null;
-                  }
-                  
-                  console.log('Rendering tile with bounds:', tileBounds);
-                  
-                  return (
-                    <Rectangle
-                      key={`result-tile-${bucket.key || index}`}
-                      bounds={tileBounds}
-                      pathOptions={{
-                        color: '#00aa44',
-                        weight: 3,
-                        opacity: 0.9,
-                        fillOpacity: 0.2,
-                        dashArray: '5, 5'
-                      }}
-                    />
-                  );
-                });
-              })()}
-
-              {/* Add debug viewport rectangle (zoomed in 2 levels) */}
-              {showGeotileGrid && mapInstance.current && getZoomedInViewport() && (
-                <Rectangle 
-                  bounds={getZoomedInViewport()!}
-                  pathOptions={{ 
-                    color: '#ff0066', 
-                    weight: 3,
-                    fillOpacity: 0.1,
-                    dashArray: '15, 10'
-                  }}
-                />
-              )}
 
 
               {true ? null : markerBounds && markerBounds?.length === 2 && (
@@ -1008,7 +776,7 @@ export default function MapExplorer() {
             onClick={() => setShowH3Grid(!showH3Grid)}
             className={`flex items-center py-2 px-4 cursor-pointer justify-between ${showH3Grid ? "bg-neutral-100" : ""}`}
           >
-            H3 Rutenett
+            Rutenett
             {showH3Grid && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
           </DropdownMenuItem>
           {showH3Grid && (
@@ -1028,23 +796,6 @@ export default function MapExplorer() {
               >
                 +
               </button>
-            </div>
-          )}
-          <DropdownMenuItem
-            onClick={() => setShowGeotileGrid(!showGeotileGrid)}
-            className={`flex items-center py-2 px-4 cursor-pointer justify-between ${showGeotileGrid ? "bg-neutral-100" : ""}`}
-          >
-            Geotile Rutenett
-            {showGeotileGrid && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
-          </DropdownMenuItem>
-          {showGeotileGrid && (
-            <div className="px-4 py-2">
-              <div className="text-xs text-neutral-600 mb-1">
-                Auto-precision: {calculateGeotilePrecision()}
-              </div>
-              <div className="text-xs text-neutral-500">
-                Rødt rektangel viser zoom +2 nivå
-              </div>
             </div>
           )}
         </DropdownMenuContent>
