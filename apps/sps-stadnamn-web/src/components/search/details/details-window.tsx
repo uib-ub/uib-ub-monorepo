@@ -45,8 +45,8 @@ export default function DetailsWindow() {
             const prevIndex = docIndex - 1;
             const nextIndex = docIndex + 1;
             
-            setPrevDocUuid(prevIndex >= 0 ? groupData[prevIndex]._source.uuid : undefined);
-            setNextDocUuid(nextIndex < groupData.length ? groupData[nextIndex]._source.uuid : undefined);
+            setPrevDocUuid(prevIndex >= 0 ? groupData[prevIndex]?._source?.uuid : undefined);
+            setNextDocUuid(nextIndex < groupData.length ? groupData[nextIndex]?._source?.uuid : undefined);
         }
     }, [groupData, docIndex]);
 

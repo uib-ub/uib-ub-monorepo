@@ -58,7 +58,8 @@ export default function useGroupData() {
         // Transform data and control when to expose it
         select: useCallback((data: any) => {
             const allHits = data?.pages?.flatMap((page: any) => page?.hits || []) || []
-            const totalData = data?.pages?.[data.pages.length - 1]?.total
+            // Get total from first page since it's the same across all pages
+            const totalData = data?.pages?.[0]?.total
             const docFound = docUuid && allHits.some((hit: any) => hit._source?.uuid === docUuid)
             const allDataFetched = !data?.pageParams || allHits.length >= (totalData?.value || 0)
             

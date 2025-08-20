@@ -22,7 +22,7 @@ import useDocData from "@/state/hooks/doc-data"
 
 
 
-export default function DocInfo({docParams}: {docParams?: any}) {
+export default function DocInfo({docParams}: {docParams?: {docData: Record<string, any>, docDataset: string}}) {
     const searchParams = useSearchParams()
     const perspective = usePerspective()
     const { docDataset, docData } = useDocData(docParams)
