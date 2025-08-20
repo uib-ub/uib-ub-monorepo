@@ -169,3 +169,7 @@ export function processTopdomains(topdomains: string[], data) {
   }
   return [];
 }
+
+export function createWikiLink(url: string): string {
+  return url;
+}

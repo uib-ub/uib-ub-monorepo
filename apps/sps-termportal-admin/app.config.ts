@@ -18,5 +18,10 @@ export default defineAppConfig({
         ok: { class: "text-green-600" },
       },
     },
+    headingTextClassOptions: {
+      h2: "text-2xl font-semibold",
+      h3: "text-2xl",
+      h4: "text-xl",
+    } as const,
   },
 });

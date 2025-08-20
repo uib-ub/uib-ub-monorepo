@@ -4,7 +4,7 @@
       <component
         :is="headingLevel"
         :id="id"
-        class="mb-3 text-xl"
+        :class="`mb-3 ${headingTextClass}`"
       >
         <slot name="header" />
       </component>
@@ -24,7 +24,20 @@
 <script setup lang="ts">
 import { v4 as uuid } from "uuid";
 
-defineProps({ headingLevel: { type: String, default: "h2" } });
+const appConfig = useAppConfig();
+const headingTextClassOptions = appConfig.ui.headingTextClassOptions;
+
+const props = defineProps<{
+  headingLevel: HeadingLevelWithDefaultOptions;
+  headingClass?: string;
+}>();
 
 const id = uuid();
+
+const headingTextClass = computed(() => {
+  if (!props.headingClass) {
+    return headingTextClassOptions[props.headingLevel];
+  }
+  return props.headingClass;
+});
 </script>
