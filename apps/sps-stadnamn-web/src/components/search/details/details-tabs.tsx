@@ -1,17 +1,16 @@
-import { DocContext } from "@/app/doc-provider";
-import { GroupContext } from "@/app/group-provider";
 import Clickable from "@/components/ui/clickable/clickable";
-import { stringToBase64Url } from "@/lib/utils";
+import useDocData from "@/state/hooks/doc-data";
+import useGroupData from "@/state/hooks/group-data";
 import { useSearchParams } from "next/navigation";
 import { useContext } from "react";
-import { PiArrowLeft, PiBookOpenFill, PiBookOpenLight, PiCaretLeftBold, PiListLight } from "react-icons/pi";
+import { PiBookOpenFill, PiBookOpenLight, PiCaretLeftBold, PiListLight } from "react-icons/pi";
 
 
 export default function DetailsTabs() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
-    const { groupData, groupTotal } = useContext(GroupContext)
-    const { docData } = useContext(DocContext)
+    const { groupData, groupTotal } = useGroupData()
+    const { docData } = useDocData()
     return <>
     { groupTotal?.value == 1 || groupData?.[0]?._source?.group.id == docData?._source?.group?.id ? <>
     

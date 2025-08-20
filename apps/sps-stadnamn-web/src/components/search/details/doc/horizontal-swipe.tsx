@@ -1,12 +1,11 @@
 'use client'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { GroupContext } from '@/app/group-provider'
 import DocSkeleton from '@/components/doc/doc-skeleton'
-import DocInfo from './doc-info'
-import { DocContext } from '@/app/doc-provider'
 import { CollapsedContext } from '@/app/collapsed-provider'
 import { stringToBase64Url } from '@/lib/utils'
+import useDocData from '@/state/hooks/doc-data'
+import { GlobalContext } from '@/app/global-provider'
 
 export default function HorizontalSwipe({
   children,
@@ -22,7 +21,7 @@ export default function HorizontalSwipe({
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const { groupIndex, collapsedResults } = useContext(CollapsedContext)
-  const { setHighlightedGroup } = useContext(GroupContext)
+  const { setHighlightedGroup } = useContext(GlobalContext)
 
   const [startTouchX, setStartTouchX] = useState(0)
   const [startTouchY, setStartTouchY] = useState(0)
@@ -32,7 +31,7 @@ export default function HorizontalSwipe({
   const [currentOffset, setCurrentOffset] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const [committed, setCommitted] = useState<null | 'left' | 'right'>(null)
-  const { docLoading } = useContext(DocContext)
+  const { docLoading } = useDocData()
 
   const prevDoc = groupIndex ? collapsedResults?.[groupIndex - 1] : null
   const nextDoc = groupIndex ? collapsedResults?.[groupIndex + 1] : null

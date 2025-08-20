@@ -1,13 +1,10 @@
 'use client'
-import WithinLabel from "./within-label"
 import { fieldConfig } from "@/config/search-config"
 import { datasetTitles } from "@/config/metadata-config"
 import { usePerspective, useMode, useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PiCaretDownBold, PiMagnifyingGlass, PiTrash, PiX } from "react-icons/pi"
-import { DocContext } from "@/app/doc-provider"
 import { useContext } from "react"
-import { getGnr } from "@/lib/utils"
 import { GlobalContext } from "@/app/global-provider"
 import Clickable from "@/components/ui/clickable/clickable"
 import { 
@@ -25,12 +22,9 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
     const searchParams = useSearchParams()
     const perspective = usePerspective()
     const mode = useMode()
-    const { parentData } = useContext(DocContext)
 
     const {isMobile, setInputValue} = useContext(GlobalContext)
-    const nav = searchParams.get('nav')
     const fulltext = searchParams.get('fulltext')
-    const datasetTag = searchParams.get('datasetTag')
 
     // Get boost_gt parameter for djupinnsamlingar filter
     const boostGt = searchParams.get('boost_gt')
@@ -61,9 +55,6 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
           return datasetTitles[value] || value
         }
   
-        if (name == 'within') {
-          return <WithinLabel/>
-        }
           
           
         if (values[0] == "_false") return "Utan: " + (label || name)
@@ -123,7 +114,7 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
 
 
 
-    const gnr =  getGnr(parentData, perspective)
+    //const gnr =  getGnr(parentData, perspective)
 
 
 
@@ -205,7 +196,7 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
         
 
           {facetFilters.length > 1 && <button className={`text-neutral-950 text-white  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center bg-accent-700 ${mode == 'map' && !isMobile ? 'shadow-md' : 'border border-neutral-200 box-content'}`} onClick={clearFilters}>Tøm<PiTrash className="inline text-lg" aria-hidden="true"/></button>}
-          {!parentData && showFacets && facetFilters.map(([key, value]) => (
+          {showFacets && facetFilters.map(([key, value]) => (
               <button 
                   key={`${key}__${value}`} 
                   onClick={() => removeFilter(key, value)} 
@@ -215,13 +206,7 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
               </button>
           ))}
           
-          {mode == 'map' && parentData?._source && <><Clickable className="text-white bg-accent-800 shadow-md rounded-md gap-2 pl-3 pr-2 py-1 flex items-center" remove={['parent', 'details']}>
-            {gnr ? gnr + ' ' +  parentData._source.label : parentData._source.label}
-            <PiX className="inline text-lg" aria-hidden="true"/>
-            </Clickable>
 
-          </>
-            }
       </>
   )
 

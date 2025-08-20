@@ -1,15 +1,12 @@
-import { DocContext } from "@/app/doc-provider";
 import { GlobalContext } from "@/app/global-provider";
-import { GroupContext } from "@/app/group-provider";
-import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
-import { useRouter, useSearchParams } from "next/navigation";
+import useGroupData from "@/state/hooks/group-data";
 import { useContext, useEffect, useState } from "react";
-import { PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeft, PiCaretLeftBold, PiCaretRight, PiCaretRightBold, PiHandSwipeLeft, PiHandSwipeLeftBold, PiHandSwipeRight, PiHandSwipeRightBold } from "react-icons/pi";
+import { PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeftBold, PiCaretRightBold } from "react-icons/pi";
 
 
-export default function HitNavigation() {
-    const {groupData, groupLoading, groupTotal, prevDocUuid, nextDocUuid, docIndex} = useContext(GroupContext)
+export default function HitNavigation({docIndex, prevDocUuid, nextDocUuid}: {docIndex: number, prevDocUuid: string | undefined, nextDocUuid: string | undefined}) {
+    const {groupData, groupLoading, groupTotal } = useGroupData()
     const {isMobile} = useContext(GlobalContext)
 
 
@@ -19,18 +16,18 @@ export default function HitNavigation() {
       <ClickableIcon 
         label="Forrige (shift + venstre piltast)" 
         className={`btn btn-outline btn-compact rounded-r-none ${isMobile ? 'rounded-full' : ''}`} 
-        add={{doc: prevDocUuid}}
-        disabled={!prevDocUuid || docIndex === undefined || docIndex <= 0}
+        add={{doc: prevDocUuid || null}}
+        disabled={!prevDocUuid}
       >
         {isMobile ? <PiCaretDoubleLeft className="text-xl" aria-hidden="true"/> : <PiCaretLeftBold className="xl:text-xl text-primary-600" aria-hidden="true"/>}
       </ClickableIcon>
       <span className="text-neutral-800 border-y border-neutral-200 shadow-sm h-8 xl:h-10 flex items-center self-center xl:min-w-12 text-center px-4">       
-        {docIndex ? docIndex + 1 : 1}/{groupTotal?.value}</span>
+        {docIndex !== undefined ? docIndex + 1 : 1}/{groupTotal?.value}</span>
       <ClickableIcon 
         label="Neste (shift + høgre piltast)" 
         className={`btn btn-outline btn-compact rounded-l-none ${isMobile ? 'rounded-full' : ''}`} 
-        add={{doc: nextDocUuid}}
-        disabled={!nextDocUuid || docIndex === undefined || docIndex >= (groupData?.length || 0) - 1}
+        add={{doc: nextDocUuid || null}}
+        disabled={!nextDocUuid}
       >
         {isMobile ? <PiCaretDoubleRight className="text-xl" aria-hidden="true"/> : <PiCaretRightBold className="xl:text-xl text-primary-600" aria-hidden="true"/>}
       </ClickableIcon>

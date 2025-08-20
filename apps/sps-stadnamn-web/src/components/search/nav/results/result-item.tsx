@@ -6,7 +6,6 @@ import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
 import { stringToBase64Url } from '@/lib/utils';
-import { GroupContext } from '@/app/group-provider';
 
 
 
@@ -19,7 +18,7 @@ export default function ResultItem({hit}: {hit: any}) {
     const docDataset = hit._index.split('-')[2]
     const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
-    const { highlightedGroup } = useContext(GroupContext)
+    const { highlightedGroup } = useContext(GlobalContext)
     const details = searchParams.get('details')
     const datasetTag = searchParams.get('datasetTag')
 

@@ -23,6 +23,10 @@ export const GlobalContext = createContext({
   setVisibleColumns: (dataset: string, columns: string[]) => {},
   inputValue: '',
   setInputValue: (value: string) => {},
+  initialUrl: null as string | null,
+  setInitialUrl: (url: string | null) => {},
+  highlightedGroup: null as string | null,
+  setHighlightedGroup: (group: string) => {},
 });
 
 export default function GlobalProvider({ children, isMobile, sosiVocab, coordinateVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any>, coordinateVocab: Record<string, any> }) {
@@ -35,6 +39,8 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   });
   const searchParams = useSearchParams()
   const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
+  const [initialUrl, setInitialUrl] = useState<string | null>(null)
+  const [highlightedGroup, setHighlightedGroup] = useState<string | null>(null)
 
   // Load facet options from localStorage on mount
   useEffect(() => {
@@ -111,6 +117,10 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
         setVisibleColumns: setVisibleColumnsHandler,
         inputValue,
         setInputValue,
+        initialUrl,
+        setInitialUrl,
+        highlightedGroup,
+        setHighlightedGroup,
       }}
     >
       {children}

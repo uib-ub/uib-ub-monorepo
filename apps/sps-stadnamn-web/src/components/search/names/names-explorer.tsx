@@ -1,17 +1,13 @@
-import { DocContext } from "@/app/doc-provider"
 import { GlobalContext } from "@/app/global-provider"
-import { GroupContext } from "@/app/group-provider"
 import Clickable from "@/components/ui/clickable/clickable"
-import IconButton from "@/components/ui/icon-button"
 import { datasetTitles } from "@/config/metadata-config"
 import { base64UrlToString, getSkeletonLength } from "@/lib/utils"
 import { useSearchParams } from "next/navigation"
 import { useContext, useState, useEffect, useCallback } from "react"
-import { PiBookOpen, PiBookOpenFill, PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiClock, PiTextAa, PiList, PiClockLight, PiClockFill, PiListFill, PiListLight } from "react-icons/pi"
+import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi"
 import * as h3 from 'h3-js';
 import SourceItem from "@/components/children/source-item"
-
-type FilterMode = 'both' | 'h3' | 'gnidu'
+import useGroupData from "@/state/hooks/group-data"
 
 export default function NamesExplorer() {
 
@@ -26,7 +22,7 @@ export default function NamesExplorer() {
     const { isMobile } = useContext(GlobalContext)
     const namesScope = searchParams.get('namesScope') || 'group'
 
-    const { groupData } = useContext(GroupContext)
+    const { groupData } = useGroupData()
     const group = searchParams.get('group')
 
     const toggleGroupExpansion = (groupId: string) => {

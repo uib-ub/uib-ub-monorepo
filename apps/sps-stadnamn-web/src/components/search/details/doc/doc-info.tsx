@@ -4,10 +4,8 @@ import { useSearchParams } from "next/navigation"
 import { PiInfoFill } from "react-icons/pi"
 import ClientThumbnail from "../../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
-import Clickable from "@/components/ui/clickable/clickable"
 import { usePerspective, useMode } from "@/lib/search-params"
 import { useContext, useMemo } from "react"
-import { DocContext } from "@/app/doc-provider"
 import { treeSettings } from "@/config/server-config"
 import CadastreBreadcrumb from "./cadastre-breadcrumb"
 import { GlobalContext } from "@/app/global-provider"
@@ -20,26 +18,21 @@ import { facetConfig } from "@/config/search-config"
 import { getFieldValue } from "@/lib/utils"
 import ErrorMessage from "@/components/error-message"
 import Timeline from "@/components/doc/timeline"
+import useDocData from "@/state/hooks/doc-data"
 
 
 
 export default function DocInfo({docParams}: {docParams?: any}) {
     const searchParams = useSearchParams()
     const perspective = usePerspective()
-    let { docDataset, docData, sameMarkerList } = useContext(DocContext)
-    if (docParams) {
-        docDataset = docParams.docDataset
-        docData = docParams.docData
-        sameMarkerList = docParams.sameMarkerList
-    }
+    const { docDataset, docData } = useDocData(docParams)
+    const docSource = docData?._source
 
-    const docSource = docData._source
-    const parent = searchParams.get('parent')
     const mode = useMode()
-    const doc = searchParams.get('doc')
     const datasetTag = searchParams.get('datasetTag')
     const { isMobile, sosiVocab } = useContext(GlobalContext)
 
+    
     const multivalue = (value: string|string[]) => {
       return Array.isArray(value) ? value.join("/") : value
     }
@@ -54,7 +47,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         });
     }, [docDataset, docSource]);
 
-    return <><article className={`instance-info flex flex-col gap-4 ${isMobile ? 'mb-12' : 'p-4 pb-8 '} ${parent && isMobile ? 'relative' : ''}`}>
+    return <><article className={`instance-info flex flex-col gap-4 ${isMobile ? 'mb-12' : 'p-4 pb-8 '}`}>
 
       {(((docDataset && perspective != docDataset) || docData?._source?.within) || !isMobile) && <div className="!mt-0">
 
@@ -149,31 +142,7 @@ export default function DocInfo({docParams}: {docParams?: any}) {
         
         </article>
 
-        {(false && mode == 'map' && sameMarkerList?.length && doc != parent) ?
-        
-    
-        <div className="instance-info !pt-4 mt-4 pb-4 border-t border-t-neutral-200">
-    
-        
-            <h2 className="!text-base font-semibold uppercase !font-sans px-1">Same koordinat</h2>
-            
-            <nav className="flex flex-wrap w-full gap-2 mt-2">
-            { sameMarkerList?.reverse().map((hit: any, index: number) => {
-              const uuid = hit.fields?.uuid[0] || hit._source.uuid
-              const children = hit.fields?.children?.[0] || hit._source?.children
-              const label = hit.fields?.label || hit._source?.label
 
-            return <Clickable link key={hit._id} role="tab" aria-selected={[uuid, children].includes(doc)} className="rounded-tabs" add={{doc: children ? children : uuid}}>
-                {label}
-            </Clickable>
-            }
-            )}
-            </nav>
-    
-            </div>
-            : null
-    
-        }
 
         </>
 

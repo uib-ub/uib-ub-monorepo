@@ -3,10 +3,10 @@ import { headers } from "next/headers";
 import { userAgent } from "next/server";
 import MobileLayout from "@/components/search/mobile-layout";
 import DesktopLayout from "@/components/search/desktop-layout";
-import DocProvider from "@/app/doc-provider";
 import { datasetTitles, datasetShortDescriptions } from "@/config/metadata-config";
-import GroupProvider from "../group-provider";
 import CollapsedProvider from "../collapsed-provider";
+import React from "react";
+import QueryProvider from "@/state/providers/query-provider";
 
 export async function generateMetadata({searchParams}: {searchParams: Promise<{dataset: string}>}) {
   const { dataset } = await searchParams
@@ -20,15 +20,18 @@ export default async function SearchPage() {
   const headersList = await headers()
   const device = userAgent({headers: headersList}).device
   const isMobile = device.type === 'mobile'
+
   
   return <SearchProvider>
+    
           <CollapsedProvider>
-          <GroupProvider>
-            <DocProvider>
+            <QueryProvider>
+
                   {isMobile  ? <MobileLayout/> : <DesktopLayout/>}
-            </DocProvider>
-            </GroupProvider>
+            </QueryProvider>
+
           </CollapsedProvider>
+          
         </SearchProvider>
 }
 

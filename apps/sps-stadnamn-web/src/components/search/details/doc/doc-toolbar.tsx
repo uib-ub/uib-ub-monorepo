@@ -1,10 +1,5 @@
 import CopyLink from "@/components/doc/copy-link"
-import { PiArrowsOut, PiDoorOpen } from "react-icons/pi"
-import Link from "next/link"
-import { useSearchParams } from "next/navigation"
-import { useContext } from "react"
-import { DocContext } from "@/app/doc-provider"
-import { GroupContext } from "@/app/group-provider"
+import { PiDoorOpen } from "react-icons/pi"
 import IconLink from "@/components/ui/icon-link"
 
 

@@ -3,9 +3,9 @@ import { useRef, useEffect, useContext } from 'react';
 import Clickable from '@/components/ui/clickable/clickable';
 import { treeSettings } from '@/config/server-config';
 import { useSearchParams } from 'next/navigation';
-import { DocContext } from '@/app/doc-provider';
 import { GlobalContext } from '@/app/global-provider';
 import { useMode } from '@/lib/search-params';
+import useDocData from '@/state/hooks/doc-data';
 export default function TreeItem({hit}: {hit: any}) {
     const searchParams = useSearchParams()
     const { isMobile } = useContext(GlobalContext)
@@ -15,7 +15,7 @@ export default function TreeItem({hit}: {hit: any}) {
     const itemRef = useRef<HTMLAnchorElement>(null)
     const mode = useMode()
     
-    const { docData } = useContext(DocContext)
+    const { docData } = useDocData()
 
     const docDataset = hit?._index.split('-')[2]
     const subunit = docDataset ? treeSettings[docDataset]?.subunit : undefined;

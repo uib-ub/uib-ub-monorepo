@@ -10,15 +10,12 @@ import TreeResults from "./nav/results/tree-results";
 import TableExplorer from "./table/table-explorer";
 import { useSearchParams } from "next/navigation";
 import ListExplorer from "./list/list-explorer";
-import { DocContext } from "@/app/doc-provider";
 import DocInfo from "./details/doc/doc-info";
-import DocSkeleton from "../doc/doc-skeleton";
 import FacetSection from "./nav/facets/facet-section";
 import ActiveFilters from "./form/active-filters";
 import { base64UrlToString, formatNumber, stringToBase64Url } from "@/lib/utils";
 import DatasetFacet from "./nav/facets/dataset-facet";
 import Clickable from "../ui/clickable/clickable";
-import { GroupContext } from "@/app/group-provider";
 import GroupDetails from "./details/group/group-details";
 import NamesExplorer from "./names/names-explorer";
 import ClickableIcon from "../ui/clickable/clickable-icon";
@@ -26,6 +23,8 @@ import HorizontalSwipe from "./details/doc/horizontal-swipe";
 import { PiMicroscopeFill, PiMicroscopeLight, PiTreeViewLight } from 'react-icons/pi';
 import InfoPopover from "../ui/info-popover";
 import BasewordResults from "./nav/results/baseword-results";
+import useDocData from "@/state/hooks/doc-data";
+import useGroupData from "@/state/hooks/group-data";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -47,11 +46,11 @@ export default function MobileLayout() {
     const [facetIsLoading, setFacetIsLoading] = useState(false)
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
     const mode = useMode()
-    const { docLoading, docData } = useContext(DocContext)
+    const { docLoading, docData } = useDocData()
     const datasetCount = searchParams.getAll('indexDataset')?.length || 0
     const fulltext = searchParams.get('fulltext')
     const details = searchParams.get('details')
-    const { groupTotal } = useContext(GroupContext)
+    const { groupTotal } = useGroupData()
     const namesNav = searchParams.get('namesNav')
     const group = searchParams.get('group')
 
@@ -427,7 +426,7 @@ export default function MobileLayout() {
         <StatusSection/>
         { mode == 'table' && <TableExplorer/>}
         { mode == 'list'  && <ListExplorer/>}
-        {doc && mode == 'doc' && (docLoading ? <DocSkeleton/> : <DocInfo/>)}
+        {doc && mode == 'doc' && <DocInfo/>}
         </div>
 
         <div className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">

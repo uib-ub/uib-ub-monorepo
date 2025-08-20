@@ -4,18 +4,12 @@ import { useInView } from 'react-intersection-observer'
 import ClientThumbnail from "@/components/doc/client-thumbnail"
 import DocInfo from "../details/doc/doc-info"
 import { GlobalContext } from "@/app/global-provider"
-import { GroupContext } from "@/app/group-provider"
-import DetailsFooter from "../details/details-footer"
-import { DocContext } from "@/app/doc-provider"
 import { useSearchParams } from "next/navigation"
 import DocSkeleton from "@/components/doc/doc-skeleton"
-import { useSearchQuery } from "@/lib/search-params"
-import { useRouter } from "next/navigation"
-import { stringToBase64Url } from "@/lib/utils"
-import { SearchContext } from "@/app/search-provider"
-import SearchResults from "../nav/results/search-results"
 import DocToolbar from "../details/doc/doc-toolbar"
 import CoordinateMenu from "../details/coordinate-menu"
+import useDocData from "@/state/hooks/doc-data"
+import useGroupNavigation from "@/state/hooks/group-navigation"
 
 // Dynamic import for the actual doc item content
 const DocItemContent = dynamic(() => Promise.resolve(({ item, index, group, isMobile }: any) => {
@@ -26,7 +20,7 @@ const DocItemContent = dynamic(() => Promise.resolve(({ item, index, group, isMo
         <li key={index + (group || '')} className={`flex${isMobile ? 'flex-col' : 'justify-between gap-4 p-2'}`}>
             {isMobile && images?.length && <div className="lg:min-w-[20svw] lg:max-w-[20svw]"><ClientThumbnail iiif={images}/></div>}
             <div className="flex flex-col p-2 w-full">
-                <DocInfo docParams={{docDataset, docData: item, sameMarkerList: []}}/>
+                <DocInfo docParams={{docDataset, docSource: item._source}}/>
                 <div className="flex 2xl:justify-between gap-2 2xl:px-4">
                     <DocToolbar docData={item}/>
                     {!docDataset.endsWith('_g') && <CoordinateMenu/>}
@@ -65,15 +59,11 @@ function LazyDocItem({ item, index, group, isMobile }: any) {
 
 export default function ListExplorer() {
     const { isMobile } = useContext(GlobalContext)
-    const {groupData, groupLoading} = useContext(GroupContext)
-    const { resultData } = useContext(SearchContext)
-    const { docData } = useContext(DocContext)
+    const {groupData, groupLoading} = useGroupNavigation()
+    const { docData } = useDocData()
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || groupData ? 'group' : 'doc'
     const group = searchParams.get('group')
-    const doc = searchParams.get('doc')
-    const { searchQueryString } = useSearchQuery()
-    const router = useRouter()
 
     const items = details == 'doc' ? [docData] : groupData
 
@@ -91,7 +81,7 @@ export default function ListExplorer() {
                         <li key={index + (group || '')} className={`flex${isMobile ? 'flex-col' : 'justify-between gap-4 p-2'}`}>
                             {isMobile && images?.length && <div className="lg:min-w-[20svw] lg:max-w-[20svw]"><ClientThumbnail iiif={images}/></div>}
                             <div className="flex flex-col p-2 w-full">
-                                <DocInfo docParams={{docDataset, docData: item, sameMarkerList: []}}/>
+                                <DocInfo docParams={{docDataset, docSource: item._source}}/>
                                 <div className="flex 2xl:justify-between gap-2 2xl:px-4">
                                     <DocToolbar docData={item}/>
                                     {!docDataset.endsWith('_g') && <CoordinateMenu/>}

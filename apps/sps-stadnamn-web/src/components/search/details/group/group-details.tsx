@@ -1,18 +1,12 @@
-import { GlobalContext } from "@/app/global-provider"
-import { GroupContext } from "@/app/group-provider"
-import Clickable from "@/components/ui/clickable/clickable"
-import IconButton from "@/components/ui/icon-button"
 import { datasetTitles } from "@/config/metadata-config"
-import { useSearchParams } from "next/navigation"
-import { useContext } from "react"
 import SourceItem from "@/components/children/source-item"
+import useGroupData from "@/state/hooks/group-data"
 
 export default function GroupDetails() {
-    const searchParams = useSearchParams()
-    const { groupData, groupLoading } = useContext(GroupContext)
+    const { groupData, groupLoading } = useGroupData()
 
     // Group the data by dataset
-    const groupedByDataset = groupData?.reduce((acc, group) => {
+    const groupedByDataset = groupData?.reduce((acc: Record<string, any[]>, group: any) => {
         const datasetId = group._index.split('-')[2]
         if (!acc[datasetId]) {
             acc[datasetId] = []
@@ -29,7 +23,7 @@ export default function GroupDetails() {
                     {datasetTitles[datasetId]}
                 </div>
                 <ul className="flex flex-col divide-y divide-neutral-200 border-y border-neutral-200">
-                    {(groups as typeof groupData)?.map((group) => (
+                    {(groups as typeof groupData)?.map((group: any) => (
                         <SourceItem key={group._id} hit={group} isMobile={false}/>
                     ))}
                 </ul>

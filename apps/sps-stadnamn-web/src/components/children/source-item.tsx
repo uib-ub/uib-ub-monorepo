@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { getFieldValue } from '@/lib/utils';
 import ClickableIcon from '../ui/clickable/clickable-icon';
 import { useMode } from '@/lib/search-params';
-import { GroupContext } from '@/app/group-provider';
+import useGroupData from '@/state/hooks/group-data';
 
 
 
@@ -18,7 +18,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
     const docDataset = hit._index.split('-')[2]
     const details = searchParams.get('details')
     const mode = useMode()
-    const { groupData } = useContext(GroupContext)
+    const { groupData } = useGroupData()
 
 
 

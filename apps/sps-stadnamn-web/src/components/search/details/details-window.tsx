@@ -1,35 +1,136 @@
 import ClickableIcon from "../../ui/clickable/clickable-icon"
 import { PiX } from "react-icons/pi"
-import Link from "next/link"
 import DocInfo from "./doc/doc-info"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import DocSkeleton from "../../doc/doc-skeleton"
-import { useContext } from "react"
-import { DocContext } from "@/app/doc-provider"
-import CopyLink from "../../doc/copy-link"
-import { useMode } from "@/lib/search-params"
+import { useContext, useEffect, useState } from "react"
+import { useMode, useSearchQuery } from "@/lib/search-params"
 import GroupDetails from "./group/group-details"
-import { GroupContext } from "@/app/group-provider"
-import IconLink from "@/components/ui/icon-link"
-import Clickable from "@/components/ui/clickable/clickable"
 import HitNavigation from "./hit-navigation"
 import DetailsFooter from "./details-footer"
 import DetailsTabs from "./details-tabs"
 import DocToolbar from "./doc/doc-toolbar"
+import useDocData from "@/state/hooks/doc-data"
+import { GlobalContext } from "@/app/global-provider"
+import useGroupNavigation from "@/state/hooks/group-navigation"
 
 
 
 export default function DetailsWindow() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
-    const doc = searchParams.get('doc')
     const namesNav = searchParams.get('namesNav')
-    const { docLoading, docData } = useContext(DocContext)
+    const { docLoading, docData } = useDocData()
     const mode = useMode()
-    const { groupData, groupLoading, groupTotal } = useContext(GroupContext)
+    const { groupData, groupLoading, groupTotal } = useGroupNavigation()
+    const router = useRouter()
+    const { initialUrl, setInitialUrl } = useContext(GlobalContext)
+
+    const docUuid = docData?._source?.uuid
+    const [docIndex, setDocIndex] = useState(0)
+    const [prevDocUuid, setPrevDocUuid] = useState()
+    const [nextDocUuid, setNextDocUuid] = useState()
+    const { searchQueryString } = useSearchQuery()
+
+
+    useEffect(() => {
+        if (groupData) {
+            setDocIndex(groupData.findIndex((hit: any) => hit._source?.uuid === docUuid))
+        }
+    }, [groupData, docUuid])
+
+    // Calculate prev and next doc UUIDs
+    useEffect(() => {
+        if (groupData && docIndex !== -1) {
+            const prevIndex = docIndex - 1;
+            const nextIndex = docIndex + 1;
+            
+            setPrevDocUuid(prevIndex >= 0 ? groupData[prevIndex]._source.uuid : undefined);
+            setNextDocUuid(nextIndex < groupData.length ? groupData[nextIndex]._source.uuid : undefined);
+        }
+    }, [groupData, docIndex]);
+
+    useEffect(() => {
+      const handleKeyDown = (e: KeyboardEvent) => {
+          // Check if the active element is a text input or textarea
+          const activeElement = document.activeElement;
+          if (activeElement?.tagName === 'INPUT' || 
+              activeElement?.tagName === 'TEXTAREA' || 
+              activeElement?.getAttribute('contenteditable') === 'true') {
+              return;
+          }
+
+          
+          
+          if (!e.shiftKey) return;
+          
+          if (e.key === 'ArrowLeft') {
+              if (!prevDocUuid || docIndex <= 0) return;
+              e.preventDefault();
+              const params = new URLSearchParams(searchParams);
+              params.set('doc', prevDocUuid);
+              router.push(`?${params.toString()}`);
+          }
+          
+          if (e.key === 'ArrowRight') {
+              e.preventDefault();
+              if (!nextDocUuid || docIndex >= (groupData?.length || 0) - 1) return;
+              const params = new URLSearchParams(searchParams);
+              params.set('doc', nextDocUuid);
+              router.push(`?${params.toString()}`);
+          }
+          if (e.key === 'ArrowUp') {
+              e.preventDefault();
+              const params = new URLSearchParams(searchParams);
+              if (namesNav === 'list') {
+                  params.set('namesNav', 'timeline');
+                  router.push(`?${params.toString()}`);
+              }
+              else if (namesNav === 'timeline') {
+                  if (initialUrl) {
+                      router.push(initialUrl)
+                      setInitialUrl(null)
+                  }
+                  else {
+                      params.delete('namesNav');
+                      params.set('details', 'doc');
+                      router.push(`?${params.toString()}`);
+                  }
+              }
+              else if (details === 'group') {
+                  params.set('details', 'doc');
+                  router.push(`?${params.toString()}`);
+              }
+          }
+          if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              const params = new URLSearchParams(searchParams);
+              
+              if (!namesNav && details === 'doc' && groupTotal?.value && groupTotal.value > 1) {
+                  params.set('details', 'group');
+              }
+              else if (!namesNav) {
+                  params.set('namesNav', 'timeline');
+                  params.delete('details')
+                  params.delete('doc')
+                  setInitialUrl(`?${searchParams.toString()}`)
+
+              }
+              else if (namesNav === 'timeline') {
+                  params.set("namesNav", "list")
+                  
+              }
+              router.push(`?${params.toString()}`);
+          }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [groupData, docIndex, searchParams, router, details, namesNav, groupTotal, initialUrl, setInitialUrl, prevDocUuid, nextDocUuid]);
     
 
     return <>
+    {groupData?.length} {searchQueryString}
     <div className={`flex tabs p-2 ${(details || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
    
 
@@ -57,7 +158,11 @@ export default function DetailsWindow() {
     {(groupTotal?.value || (!namesNav && docData)) ?
     
     <div className={`flex flex-wrap gap-2 p-2 transition-opacity duration-200 ${groupLoading ? 'opacity-50' : 'opacity-100'}`}>
-    {!namesNav && <HitNavigation/>}
+    {!namesNav && <HitNavigation
+        docIndex={docIndex}
+        prevDocUuid={prevDocUuid}
+        nextDocUuid={nextDocUuid}
+    />}
 
    {mode != 'table' && <DocToolbar docData={docData}/>}
 
@@ -79,10 +184,10 @@ export default function DetailsWindow() {
 
 
   {(details == "doc" || (details == "group" &&  !groupData)) && docData?._source && <div className={`overflow-y-auto border-y border-neutral-200 stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docLoading ? 'opacity-50' : 'opacity-100'}`}>
-
       <DocInfo/>
   </div>
 }
+{ docLoading && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
 
 
   
@@ -94,7 +199,7 @@ export default function DetailsWindow() {
 
 
 
-    { docLoading && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
+    
 
 
   <DetailsFooter/>

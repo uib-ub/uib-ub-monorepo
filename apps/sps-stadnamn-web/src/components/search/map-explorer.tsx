@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { usePerspective, useSearchQuery } from "@/lib/search-params";
 import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
-import { DocContext } from "@/app/doc-provider";
 import { useSearchParams } from "next/navigation";
 import { xDistance, yDistance, getValidDegree } from "@/lib/map-utils";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
@@ -22,6 +21,7 @@ import * as h3 from "h3-js";
 import { useRouter } from "next/navigation";
 import wkt from 'wellknown';
 import { stringToBase64Url } from "@/lib/utils";
+import useDocData from "@/state/hooks/doc-data";
 
 
 export default function MapExplorer() {
@@ -72,7 +72,7 @@ export default function MapExplorer() {
   if (searchParams.get('error') == 'true') {
     throw new Error('Simulated client side error');
   }
-  const { docData, parentData, setSameMarkerList, docLoading } = useContext(DocContext)
+  const { docData, docLoading } = useDocData()
   
   const mapInstance = useRef<any>(null);
   const autoMode = markerMode === 'auto' ? (searchParams.get('q')?.length && totalHits?.value < 100000 ? 'cluster' : 'sample') : null
@@ -432,11 +432,11 @@ export default function MapExplorer() {
         router.push(`?${newQueryParams.toString()}`)
 
         if (hits && hits.length > 1) {
-          setSameMarkerList([...hits].sort((a, b) => a.fields.label[0].localeCompare(b.fields.label[0], 'nb')))
+          //setSameMarkerList([...hits].sort((a, b) => a.fields.label[0].localeCompare(b.fields.label[0], 'nb')))
         }
         else {
           
-          setSameMarkerList([])
+          //setSameMarkerList([])
         }
       }
     }
@@ -541,36 +541,7 @@ export default function MapExplorer() {
                 />
               ))}
 
-              {/* Add blue hexagon for parent h3 cell */}
-              {showH3Grid && parentData?._source?.h3 && (
-                <>
-                  <Polygon
-                    positions={h3.cellToBoundary(parentData._source.h3)}
-                    pathOptions={{
-                      color: '#0066ff',
-                      weight: 2,
-                      opacity: 1,
-                      fillOpacity: 0.5
-                    }}
-                  />
-                  {/* Add surrounding hexagons with lighter color */}
-                  {h3.gridDisk(parentData._source.h3, 1)
-                    .filter(hexId => hexId !== parentData._source.h3)
-                    .map(hexId => (
-                      <Polygon
-                        key={hexId}
-                        positions={h3.cellToBoundary(hexId)}
-                        pathOptions={{
-                          color: '#0066ff',
-                          weight: 1,
-                          opacity: 0.5,
-                          fillOpacity: 0.2
-                        }}
-                      />
-                    ))
-                  }
-                </>
-              )}
+
 
               {true ? null : markerBounds && markerBounds?.length === 2 && (
                 <Rectangle 

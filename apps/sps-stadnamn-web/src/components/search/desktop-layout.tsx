@@ -1,10 +1,8 @@
 'use client'
 import MapExplorer from "./map-explorer"
-import { usePerspective, useMode } from "@/lib/search-params"
+import { useMode } from "@/lib/search-params"
 import StatusSection from "./status-section"
 import TableExplorer from "./table/table-explorer"
-import { useContext } from "react"
-import { DocContext } from "@/app/doc-provider"
 import { useSearchParams } from "next/navigation"
 import ListExplorer from "./list/list-explorer"
 import NavWindow from "./nav/nav-window"

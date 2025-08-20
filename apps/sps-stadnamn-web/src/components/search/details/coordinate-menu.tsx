@@ -1,14 +1,13 @@
-import { DocContext } from "@/app/doc-provider";
 import { GlobalContext } from "@/app/global-provider";
 import DynamicClickable from "@/components/ui/clickable/dynamic-clickable";
 import { datasetTitles } from "@/config/metadata-config";
-import Link from "next/link";
+import useDocData from "@/state/hooks/doc-data";
 import { useContext } from "react";
 import { PiMapPinFill } from "react-icons/pi";
 
 export default function CoordinateMenu() {
     const { coordinateVocab, isMobile } = useContext(GlobalContext)
-    const { docData, docLoading, docDataset } = useContext(DocContext)
+    const { docData, docLoading, docDataset } = useDocData()
 
 
     const coordinateType = docData?._source.coordinateType

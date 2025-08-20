@@ -7,16 +7,17 @@ import TreeItem from "./tree-item";
 import { treeSettings } from "@/config/server-config";
 import Clickable from "@/components/ui/clickable/clickable";
 import { PiHouseFill } from "react-icons/pi";
-import { DocContext } from "@/app/doc-provider";
 import { GlobalContext } from "@/app/global-provider";
+import useDocData from "@/state/hooks/doc-data";
 
 export default function TreeResults() {
   const [cadastralData, setCadastralData] = useState<any>(null)
   const [fetchError, setFetchError] = useState<any>(null)
 
   const perspective = usePerspective()
-  const { docAdm, docLoading, parentLoading } = useContext(DocContext)
+  const { docAdm, docLoading } = useDocData()
   const { preferredTabs } = useContext(GlobalContext)
+
 
   const searchParams = useSearchParams()
   
@@ -47,7 +48,7 @@ export default function TreeResults() {
 
 
   useEffect(() => {
-    if (docLoading || parentLoading) return
+    if (docLoading) return
     if (groupBy == 'adm1' && treeAdm) return // Workaround for invalid state
 
     const url = new URLSearchParams({perspective})
@@ -63,7 +64,7 @@ export default function TreeResults() {
     })
 
     
-  }, [groupBy, treeAdm, perspective, docLoading, parentLoading, docAdm])
+  }, [groupBy, treeAdm, perspective, docLoading, docAdm])
 
 
 

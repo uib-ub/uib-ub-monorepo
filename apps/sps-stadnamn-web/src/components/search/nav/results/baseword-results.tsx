@@ -1,29 +1,18 @@
 'use client'
 import { SearchContext } from "@/app/search-provider"
-import { useCallback, useContext, useEffect, useState } from "react"
-import { useSearchParams } from 'next/navigation';
-import ResultItem from "./result-item";
+import { useContext } from "react"
 import { getSkeletonLength, stringToBase64Url } from "@/lib/utils";
-import { useMode, usePerspective, useSearchQuery } from "@/lib/search-params";
-import { useRouter } from "next/navigation";
 import { CollapsedContext } from "@/app/collapsed-provider";
 import Clickable from "@/components/ui/clickable/clickable";
-import { GroupContext } from "@/app/group-provider";
+import { GlobalContext } from "@/app/global-provider";
 
 
 const PER_PAGE = 30
 
 export default function BasewordResults() {
   const { collapsedResults, isLoadingResults} = useContext(CollapsedContext)
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const page = searchParams.get('page')
   const { totalHits, isLoading, searchError } = useContext(SearchContext)
-  const group = searchParams.get('group')
-  const doc = searchParams.get('doc')
-  const datasetTag = searchParams.get('datasetTag')
-  const { highlightedGroup, setHighlightedGroup } = useContext(GroupContext)
-  const perspective = usePerspective()
+  const { highlightedGroup, setHighlightedGroup } = useContext(GlobalContext)
 
 
     return (

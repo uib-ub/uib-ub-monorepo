@@ -1,6 +1,6 @@
-import { DocContext } from "@/app/doc-provider"
+import useDocData from "@/state/hooks/doc-data"
 import Link from "next/link"
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { PiCaretLeft, PiCaretRight } from "react-icons/pi"
 
 export default function ClientThumbnail({ iiif }: { iiif: string | string[]  }) {
@@ -8,7 +8,6 @@ export default function ClientThumbnail({ iiif }: { iiif: string | string[]  }) 
     const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null)
     const width = 320
     const aspectRatio = 9 / 16
-    const { docDataset } = useContext(DocContext)
 
     const [manifest, setManifest] = useState<string | null>(null)
     const [manifestUuid, setManifestUuid] = useState<string | null>(null)

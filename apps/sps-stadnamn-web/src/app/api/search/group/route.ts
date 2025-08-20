@@ -25,6 +25,7 @@ export async function GET(request: Request) {
     
   const query: Record<string,any> = {
     "size": reservedParams.size || 20,
+    "from": reservedParams.from || 0,
     "track_scores": true,
     "sort": [
       {

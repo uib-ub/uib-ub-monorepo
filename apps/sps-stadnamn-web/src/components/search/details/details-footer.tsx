@@ -1,20 +1,19 @@
 import { useSearchParams } from "next/navigation"
 import { useContext } from "react"
-import { DocContext } from "@/app/doc-provider"
-import { GroupContext } from "@/app/group-provider"
 import Clickable from "@/components/ui/clickable/clickable"
 import { base64UrlToString, stringToBase64Url } from "@/lib/utils"
 
 import CoordinateMenu from "./coordinate-menu"
 import { PiBinocularsFill, PiCaretRightBold } from "react-icons/pi"
 import { GlobalContext } from "@/app/global-provider"
+import useDocData from "@/state/hooks/doc-data"
 
 
 export default function DetailsFooter( {source}: {source?: any}) {
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
     const namesNav = searchParams.get('namesNav')
-    const { docData } = useContext(DocContext)
+    const { docData } = useDocData()
 
     const group = searchParams.get('group')
     const docSource = source || docData?._source
