@@ -198,6 +198,27 @@ export default function MapExplorer() {
 
 
 
+  // Function to get tile bounds containing a specific point
+  const getTileBoundsForPoint = useCallback((lat: number, lng: number, precision: number) => {
+    const n = Math.pow(2, precision);
+    
+    // Convert lat/lng to tile coordinates
+    const x = Math.floor(((lng + 180) / 360) * n);
+    const y = Math.floor((1 - Math.log(Math.tan((lat * Math.PI) / 180) + 1 / Math.cos((lat * Math.PI) / 180)) / Math.PI) / 2 * n);
+    
+    // Convert tile coordinates back to lat/lng bounds
+    const west = (x / n) * 360 - 180;
+    const east = ((x + 1) / n) * 360 - 180;
+    
+    const latRad1 = Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n)));
+    const latRad2 = Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / n)));
+    
+    const north = (latRad1 * 180) / Math.PI;
+    const south = (latRad2 * 180) / Math.PI;
+    
+    return [[north, west], [south, east]] as [[number, number], [number, number]];
+  }, []);
+
   useEffect(() => {
     // Check if the bounds are initialized
     if (!markerBounds?.length || !totalHits || isLoading) {
@@ -207,19 +228,32 @@ export default function MapExplorer() {
     setGeoLoading(true)
     setCoordinatesError(false)
     
-    //const [[topLeftLat, topLeftLng], [bottomRightLat, bottomRightLng]] = bounds
-    const [[north, west], [south, east]] =  markerBounds
-
+    // Get the center of the current viewport
+    const [[north, west], [south, east]] = markerBounds;
+    const centerLat = (north + south) / 2;
+    const centerLng = (east + west) / 2;
     
-    // Fetch data based on the new bounds
+    // Calculate precision for the current zoom level or use a default
+    let precision = 8; // Default fallback
+    try {
+      precision = calculateGeotilePrecision();
+    } catch (e) {
+      console.log('Using default precision due to calculation error:', e);
+    }
+    
+    // Get tile bounds containing the center point
+    const tileBounds = getTileBoundsForPoint(centerLat, centerLng, precision);
+    const [[tileNorth, tileWest], [tileSouth, tileEast]] = tileBounds;
+    
+    console.log('Using tile bounds for geo query:', tileBounds, 'precision:', precision);
+    
+    // Fetch data based on the tile bounds instead of viewport bounds
     const queryParams = new URLSearchParams(searchQueryString);
-    // Calculate padding based on height of bounds
-    //const yPadding = 0//Math.abs(north - south) /4 ;
-    //const xPadding = 0//Math.abs(east - west) /4 ;
-    const paddedTopLeftLat = getValidDegree(north, 90);
-    const paddedBottomRightLat = getValidDegree(south, -90);
-    const paddedTopLeftLng = getValidDegree(west, -180);
-    const paddedBottomRightLng = getValidDegree(east, 180);
+    
+    const paddedTopLeftLat = getValidDegree(tileNorth, 90);
+    const paddedBottomRightLat = getValidDegree(tileSouth, -90);
+    const paddedTopLeftLng = getValidDegree(tileWest, -180);
+    const paddedBottomRightLng = getValidDegree(tileEast, 180);
 
     queryParams.set('topLeftLat', paddedTopLeftLat);
     queryParams.set('topLeftLng', paddedTopLeftLng); 
@@ -228,10 +262,6 @@ export default function MapExplorer() {
     if (zoom) {
       queryParams.set('zoom', zoom.toString());
     }
-
-    
-    //prevPaddedBounds.current = [[north + yPadding/2, west - xPadding/2], [south - yPadding/2, east + xPadding/2]]
-    //prevZoom.current = zoom
 
     // Both cluster map and sample map use cluster data above zoom 10
     const query = `/api/geo/${autoMode || markerMode}?${queryParams.toString()}&totalHits=${totalHits?.value}`;
