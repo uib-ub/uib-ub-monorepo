@@ -37,7 +37,7 @@
               <Icon
                 name="material-symbols:info-i"
                 size="1em"
-                class="text-blue-700"
+                class="text-blue-700 -ml-1 mb-1.5"
               />
               <div
                 v-if="conceptCountHover"
