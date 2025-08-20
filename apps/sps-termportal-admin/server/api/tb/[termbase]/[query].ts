@@ -8,6 +8,7 @@ import genTermbaseSubjectValues from "~/server/utils/genTermbaseSubjectValues";
 import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
 import genTermbaseDomains from "~/server/utils/genTermbaseDomains";
 import genTermbaseSubjectTermposts from "~/server/utils/genTermbaseSubjectTermposts";
+import genTermbaseTerms from "~/server/utils/genTermbaseTerms";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
@@ -44,6 +45,8 @@ export default defineEventHandler(async (event) => {
         return genTermbaseSubjectTermposts(termbase);
       case "domains":
         return genTermbaseDomains(termbase);
+      case "terms":
+        return genTermbaseTerms(termbase);
       default:
         break;
     }

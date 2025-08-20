@@ -55,6 +55,11 @@
               heading-level="h3"
               :termbase-id="merged?.id"
             />
+            <TermbaseTerms
+              v-if="merged?.id && merged.conceptCount > 0"
+              heading-level="h3"
+              :termbase="merged"
+            />
             <TermbaseDefinitionsExisting
               v-if="merged?.id && merged.conceptCount > 0"
               :key="`defs${merged?.id}`"
