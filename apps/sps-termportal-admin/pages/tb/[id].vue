@@ -72,12 +72,28 @@
               heading-level="h3"
               :termbase="merged"
             />
-            <TermbaseSemanticRelations
-              v-if="merged?.id && merged.conceptCount > 0"
-              :key="`semanticrelations${merged?.id}`"
-              heading-level="h3"
-              :termbase="merged"
-            />
+            <div>
+              <AppLink to="#tb-relasjoner">
+                <h3
+                  id="tb-relasjoner"
+                  class="text-2xl mb-2"
+                >
+                  Relasjoner
+                </h3>
+              </AppLink>
+              <TermbaseRelations
+                v-if="merged?.id && merged.conceptCount > 0"
+                :key="`relations${merged?.id}`"
+                heading-level="h4"
+                :termbase="merged"
+              />
+              <TermbaseSemanticRelations
+                v-if="merged?.id && merged.conceptCount > 0"
+                :key="`semanticrelations${merged?.id}`"
+                heading-level="h4"
+                :termbase="merged"
+              />
+            </div>
           </div>
         </div>
         <TermgroupMembers
