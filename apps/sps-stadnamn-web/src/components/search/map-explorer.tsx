@@ -496,6 +496,10 @@ export default function MapExplorer() {
     // Add state for H3 resolution
     const [h3Resolution, setH3Resolution] = useState(8);
 
+    // Add state for geotile cells and intersecting cells
+    const [geotileCells, setGeotileCells] = useState<number[][][]>([]);
+    const [intersectingCells, setIntersectingCells] = useState<number[][][]>([]);
+
   // Calculate viewport bounds when zoomed in 2 levels
   const getZoomedInViewport = useCallback(() => {
     if (!mapInstance.current) return null;
@@ -615,6 +619,39 @@ export default function MapExplorer() {
     
     return cells;
   }, [calculateGeotilePrecision]);
+
+  // Function to update geotile cells state based on debug viewport
+  const updateGeotileCells = useCallback(() => {
+    if (!mapInstance.current) {
+      setGeotileCells([]);
+      setIntersectingCells([]);
+      return;
+    }
+    
+    const bounds = mapInstance.current.getBounds();
+    const cells = getGeotileCells(bounds);
+    setGeotileCells(cells);
+    
+    // Calculate intersecting cells with debug viewport bounds
+    if (debugViewportBounds) {
+      const intersecting = cells.filter(polygon => 
+        checkPolygonIntersection(polygon, debugViewportBounds)
+      );
+      setIntersectingCells(intersecting);
+    } else {
+      setIntersectingCells([]);
+    }
+  }, [getGeotileCells, debugViewportBounds, checkPolygonIntersection]);
+
+  // Update geotile cells when debug viewport or grid visibility changes
+  useEffect(() => {
+    if (showGeotileGrid) {
+      updateGeotileCells();
+    } else {
+      setGeotileCells([]);
+      setIntersectingCells([]);
+    }
+  }, [debugViewportBounds, showGeotileGrid, updateGeotileCells]);
 
   // Modify getH3Cells to use the resolution state
   const getH3Cells = useCallback((bounds: any) => {
@@ -764,9 +801,11 @@ export default function MapExplorer() {
               ))}
 
               {/* Add Geotile grid overlay */}
-              {showGeotileGrid && mapInstance.current && getGeotileCells(mapInstance.current.getBounds()).map((polygon, index) => {
-                // Check if this cell intersects with the debug viewport
-                const intersectsViewport = debugViewportBounds && polygon && checkPolygonIntersection(polygon, debugViewportBounds);
+              {showGeotileGrid && geotileCells.map((polygon, index) => {
+                // Check if this cell intersects with the debug viewport using stored state
+                const intersectsViewport = intersectingCells.some(intersectingPolygon => 
+                  JSON.stringify(intersectingPolygon) === JSON.stringify(polygon)
+                );
                 
                 // Calculate the lower-right corner position for text label
                 const polygonLats = polygon.map(p => p[0]);
