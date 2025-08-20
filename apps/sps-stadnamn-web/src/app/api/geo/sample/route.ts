@@ -10,13 +10,14 @@ export async function GET(request: Request) {
   const { simple_query_string } = getQueryString(reservedParams)
   const perspective = reservedParams.perspective || 'all' // == 'search' ? '*' : reservedParams.dataset;
 
-  const zoom: number = parseInt(reservedParams.zoom)
+
+  const zoom = reservedParams.zoom && parseInt(reservedParams.zoom)
 
   const zoomSize: Record<number, number> = { 16: 300, 17: 600, 18: 2000}
 
 
   const query: Record<string,any> = {
-    size: zoomSize[zoom] || 200,
+    size: (zoom && zoomSize[zoom]) || (reservedParams.size && parseInt(reservedParams.size)) || 200,
     fields: ["label", "location", "uuid", "sosi", "placeScore", "group.id"],
     track_total_hits: false,
     collapse: {

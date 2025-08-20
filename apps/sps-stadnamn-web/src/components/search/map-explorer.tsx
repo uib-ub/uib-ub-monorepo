@@ -768,18 +768,49 @@ export default function MapExplorer() {
                 // Check if this cell intersects with the debug viewport
                 const intersectsViewport = debugViewportBounds && polygon && checkPolygonIntersection(polygon, debugViewportBounds);
                 
+                // Calculate the lower-right corner position for text label
+                const polygonLats = polygon.map(p => p[0]);
+                const polygonLngs = polygon.map(p => p[1]);
+                const polyNorth = Math.max(...polygonLats);
+                const polySouth = Math.min(...polygonLats);
+                const polyEast = Math.max(...polygonLngs);
+                const polyWest = Math.min(...polygonLngs);
+                
+                // Position text slightly inside the lower-right corner
+                const textLat = polySouth + (polyNorth - polySouth) * 0.1;
+                const textLng = polyEast - (polyEast - polyWest) * 0.1;
+                
                 return (
-                  <Polygon
-                    key={`geotile-${index}`}
-                    positions={polygon}
-                    pathOptions={{
-                      color: intersectsViewport ? '#00ff00' : '#ff6600',
-                      weight: intersectsViewport ? 3 : 2,
-                      opacity: intersectsViewport ? 1 : 0.8,
-                      fillOpacity: intersectsViewport ? 0.2 : 0.05,
-                      dashArray: intersectsViewport ? '5, 5' : '10, 5'
-                    }}
-                  />
+                  <Fragment key={`geotile-cell-${index}`}>
+                    <Polygon
+                      key={`geotile-${index}`}
+                      positions={polygon}
+                      pathOptions={{
+                        color: intersectsViewport ? '#00ff00' : '#ff6600',
+                        weight: intersectsViewport ? 3 : 2,
+                        opacity: intersectsViewport ? 1 : 0.8,
+                        fillOpacity: intersectsViewport ? 0.2 : 0.05,
+                        dashArray: intersectsViewport ? '5, 5' : '10, 5'
+                      }}
+                    />
+                    {intersectsViewport && (
+                      <Marker
+                        key={`geotile-text-${index}`}
+                        position={[textLat, textLng]}
+                        icon={leaflet.divIcon({
+                          html: `<div style="font-size: 8px; font-family: monospace; color: #333; background: rgba(255,255,255,0.8); padding: 1px 2px; border-radius: 2px; white-space: nowrap;">
+                            N:${polyNorth.toFixed(4)}<br/>
+                            S:${polySouth.toFixed(4)}<br/>
+                            E:${polyEast.toFixed(4)}<br/>
+                            W:${polyWest.toFixed(4)}
+                          </div>`,
+                          className: 'geotile-bounds-label',
+                          iconSize: [60, 32],
+                          iconAnchor: [0, 0]
+                        })}
+                      />
+                    )}
+                  </Fragment>
                 );
               })}
 
