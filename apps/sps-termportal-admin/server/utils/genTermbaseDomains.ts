@@ -7,7 +7,7 @@ export default function (termbase: string) {
   PREFIX wiki: <${runtimeConfig.public.base}>
 
   SELECT ?id
-         (COUNT(?concept) as ?count)
+         (COUNT(DISTINCT ?concept) as ?count)
          (GROUP_CONCAT(DISTINCT ?parentId; SEPARATOR=", ") AS ?parents)
   WHERE {
     {
