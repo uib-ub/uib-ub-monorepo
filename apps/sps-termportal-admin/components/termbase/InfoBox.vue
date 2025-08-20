@@ -36,8 +36,8 @@
               {{ termbase.conceptCountPublished }} / {{ termbase.conceptCount }}
               <Icon
                 name="material-symbols:info-i"
-                size="1em"
-                class="text-blue-700 -ml-1 mb-1.5"
+                size="0.8em"
+                class="text-blue-700 -ml-1 mb-2"
               />
               <div
                 v-if="conceptCountHover"
