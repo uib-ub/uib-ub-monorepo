@@ -421,19 +421,27 @@ export default function MapExplorer() {
   };
 
   function adjustBounds(bounds: [[number, number], [number, number]], adjustmentFactor: number): [[number, number], [number, number]] {
-    // Calculate the center of the bounds
-    const centerLat = (bounds[0][0] + bounds[1][0]) / 2;
-    const centerLon = (bounds[0][1] + bounds[1][1]) / 2;
-
-    // Calculate the distance from the center to each corner and apply the adjustment factor
-    const latDiff = (bounds[1][0] - bounds[0][0]) * (1 + adjustmentFactor) / 2;
-    const lonDiff = (bounds[1][1] - bounds[0][1]) * (1 + adjustmentFactor) / 2;
-
-    // Calculate and return the new bounds
-    const newTopLeft: [number, number] = [centerLat - latDiff, centerLon - lonDiff];
-    const newBottomRight: [number, number] = [centerLat + latDiff, centerLon + lonDiff];
-
-    return [newTopLeft, newBottomRight];
+    // bounds format: [[north, west], [south, east]]
+    const north = bounds[0][0];
+    const west = bounds[0][1];
+    const south = bounds[1][0];
+    const east = bounds[1][1];
+    
+    // Calculate the center
+    const centerLat = (north + south) / 2;
+    const centerLon = (east + west) / 2;
+    
+    // Calculate half-spans and apply adjustment factor
+    const latHalfSpan = Math.abs(north - south) * (1 + adjustmentFactor) / 2;
+    const lonHalfSpan = Math.abs(east - west) * (1 + adjustmentFactor) / 2;
+    
+    // Calculate new bounds
+    const newNorth = centerLat + latHalfSpan;
+    const newSouth = centerLat - latHalfSpan;
+    const newEast = centerLon + lonHalfSpan;
+    const newWest = centerLon - lonHalfSpan;
+    
+    return [[newNorth, newWest], [newSouth, newEast]];
   }
 
  
@@ -512,7 +520,7 @@ export default function MapExplorer() {
       queryKey: ['geotileCells', cell],
       queryFn: async () => {
         console.log("FETCHING GEOTILE CELL", cell)
-        const res = await fetch(`/api/geo/sample?topLeftLat=${cell[0][0]}&topLeftLng=${cell[0][1]}&bottomRightLat=${cell[2][0]}&bottomRightLng=${cell[2][1]}&size=30`)
+        const res = await fetch(`/api/geo/sample?topLeftLat=${cell[0][0]}&topLeftLng=${cell[0][1]}&bottomRightLat=${cell[2][0]}&bottomRightLng=${cell[2][1]}&size=100`)
         if (!res.ok) {
           throw new Error('Failed to fetch geotile cells')
         }
@@ -527,30 +535,20 @@ export default function MapExplorer() {
   
 
 
-  // Calculate viewport bounds when zoomed in 2 levels
+  // Calculate viewport bounds 10% smaller than current view
   const getZoomedInViewport = useCallback(() => {
     if (!mapInstance.current) return null;
     
-    const currentZoom = mapInstance.current.getZoom();
-    const currentCenter = mapInstance.current.getCenter();
     const currentBounds = mapInstance.current.getBounds();
     
-    // Calculate the bounds that would be visible if zoomed in 2 levels
-    const zoomedInZoom = currentZoom + 2;
-    const zoomRatio = Math.pow(2, 2); // 2^2 for 2 zoom levels
+    // Convert current bounds to the format expected by adjustBounds
+    const boundsArray: [[number, number], [number, number]] = [
+      [currentBounds.getNorth(), currentBounds.getWest()],
+      [currentBounds.getSouth(), currentBounds.getEast()]
+    ];
     
-    const latSpan = currentBounds.getNorth() - currentBounds.getSouth();
-    const lngSpan = currentBounds.getEast() - currentBounds.getWest();
-    
-    const zoomedLatSpan = latSpan / zoomRatio;
-    const zoomedLngSpan = lngSpan / zoomRatio;
-    
-    const north = currentCenter.lat + zoomedLatSpan / 2;
-    const south = currentCenter.lat - zoomedLatSpan / 2;
-    const east = currentCenter.lng + zoomedLngSpan / 2;
-    const west = currentCenter.lng - zoomedLngSpan / 2;
-    
-    return [[north, west], [south, east]] as [[number, number], [number, number]];
+    // Make bounds 10% smaller than current view
+    return adjustBounds(boundsArray, -0.1);
   }, []);
 
   // Calculate geotile precision based on viewport size
@@ -838,19 +836,16 @@ export default function MapExplorer() {
               const initialPrecision = calculateGeotilePrecision();
               setCurrentPrecision(initialPrecision);
 
-              // Calculate initial debug viewport bounds (zoomed in 2 levels)
-              const zoomRatio = Math.pow(2, 2); // 2^2 for 2 zoom levels
-              const latSpan = currentBounds.getNorth() - currentBounds.getSouth();
-              const lngSpan = currentBounds.getEast() - currentBounds.getWest();
-              const zoomedLatSpan = latSpan / zoomRatio;
-              const zoomedLngSpan = lngSpan / zoomRatio;
+              // Calculate initial debug viewport bounds 10% smaller than current view
+              const boundsArray: [[number, number], [number, number]] = [
+                [currentBounds.getNorth(), currentBounds.getWest()],
+                [currentBounds.getSouth(), currentBounds.getEast()]
+              ];
               
-              const north = center.lat + zoomedLatSpan / 2;
-              const south = center.lat - zoomedLatSpan / 2;
-              const east = center.lng + zoomedLngSpan / 2;
-              const west = center.lng - zoomedLngSpan / 2;
+              // Make bounds 10% smaller than current view
+              const reducedBounds = adjustBounds(boundsArray, -0.1);
               
-              setDebugViewportBounds([[north, west], [south, east]]);
+              setDebugViewportBounds(reducedBounds);
             }
             
             setViewUrlParams(currentZoom, [center.lat, center.lng]);
@@ -870,22 +865,17 @@ export default function MapExplorer() {
               move: () => {
                 // Update debug viewport bounds during move for real-time updates
                 const bounds = map.getBounds();
-                const center = bounds.getCenter();
-                const currentZoom = map.getZoom();
                 
-                // Calculate the bounds that would be visible if zoomed in 2 levels
-                const zoomRatio = Math.pow(2, 2); // 2^2 for 2 zoom levels
-                const latSpan = bounds.getNorth() - bounds.getSouth();
-                const lngSpan = bounds.getEast() - bounds.getWest();
-                const zoomedLatSpan = latSpan / zoomRatio;
-                const zoomedLngSpan = lngSpan / zoomRatio;
+                // Convert current bounds to the format expected by adjustBounds
+                const boundsArray: [[number, number], [number, number]] = [
+                  [bounds.getNorth(), bounds.getWest()],
+                  [bounds.getSouth(), bounds.getEast()]
+                ];
                 
-                const north = center.lat + zoomedLatSpan / 2;
-                const south = center.lat - zoomedLatSpan / 2;
-                const east = center.lng + zoomedLngSpan / 2;
-                const west = center.lng - zoomedLngSpan / 2;
+                // Make bounds 10% smaller than current view
+                const reducedBounds = adjustBounds(boundsArray, -0.1);
                 
-                updateDebugViewportBounds([[north, west], [south, east]]);
+                updateDebugViewportBounds(reducedBounds);
               },
               zoomend: () => {
                 // Update precision when zoom level changes
@@ -932,12 +922,7 @@ export default function MapExplorer() {
 
               {/* Draw geotile query results */}
               {showGeotileGrid && geoTileResults.filter(result => result.isSuccess).map(result => result.data).map((dataArray, index) => {
-                if (dataArray?.length > 0) {
-                  // Calculate center point for the cell
-                  const cell = geotileCells[index];
-                  const lats = cell.map(p => p[0]);
-                  const lngs = cell.map(p => p[1]);
-                  
+                if (dataArray?.length > 0) {                  
                   // Function to check if a point is within the debug viewport bounds
                   const isPointInDebugViewport = (lat: number, lng: number) => {
                     if (!debugViewportBounds) return false;
@@ -1050,7 +1035,7 @@ export default function MapExplorer() {
                 });
               })()}
 
-                {/* Add debug viewport rectangle (zoomed in 2 levels) */}
+                {/* Add debug viewport rectangle (current view minus 10%) */}
               {showGeotileGrid && mapInstance.current && debugViewportBounds && (
                 <Rectangle 
                   bounds={debugViewportBounds}
