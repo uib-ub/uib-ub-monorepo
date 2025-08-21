@@ -503,6 +503,7 @@ export default function MapExplorer() {
   const [geotileCells, setGeotileCells] = useState<number[][][]>([]);
   const [intersectingCellIndices, setIntersectingCellIndices] = useState<Set<number>>(new Set());
   const [currentPrecision, setCurrentPrecision] = useState<number>(8); // Store current precision
+  const [intersectingCellsBounds, setIntersectingCellsBounds] = useState<[[number, number], [number, number]] | null>(null);
 
 
   const geoTileResults = useQueries({
@@ -596,6 +597,29 @@ export default function MapExplorer() {
     return 8; // Default fallback
   }, [getZoomedInViewport]);
 
+  // Function to calculate combined bounds of intersecting cells
+  const calculateIntersectingCellsBounds = useCallback((cells: number[][][], intersectingIndices: Set<number>): [[number, number], [number, number]] | null => {
+    if (intersectingIndices.size === 0) return null;
+    
+    let minLat = Infinity, maxLat = -Infinity;
+    let minLng = Infinity, maxLng = -Infinity;
+    
+    intersectingIndices.forEach(index => {
+      const cell = cells[index];
+      if (cell) {
+        cell.forEach(([lat, lng]) => {
+          minLat = Math.min(minLat, lat);
+          maxLat = Math.max(maxLat, lat);
+          minLng = Math.min(minLng, lng);
+          maxLng = Math.max(maxLng, lng);
+        });
+      }
+    });
+    
+    if (minLat === Infinity) return null;
+    return [[maxLat, minLng], [minLat, maxLng]];
+  }, []);
+
   // Generate only the intersecting geotile cells
   const getGeotileCells = useCallback((bounds: any) => {
     if (!bounds || !debugViewportBounds) return [];
@@ -651,14 +675,33 @@ export default function MapExplorer() {
     // Update the intersecting indices state
     setIntersectingCellIndices(intersectingIndices);
     
+    // Calculate and store the combined bounds of intersecting cells
+    const combinedBounds = calculateIntersectingCellsBounds(cells, intersectingIndices);
+    setIntersectingCellsBounds(combinedBounds);
+    
     return cells;
-  }, [currentPrecision, debugViewportBounds, checkPolygonIntersection]);
+  }, [currentPrecision, debugViewportBounds, checkPolygonIntersection, calculateIntersectingCellsBounds]);
+
+  // Function to check if debug viewport is still within current intersecting cells bounds
+  const isDebugViewportWithinIntersectingCells = useCallback((debugBounds: [[number, number], [number, number]]) => {
+    if (!intersectingCellsBounds) return false;
+    
+    const [[debugNorth, debugWest], [debugSouth, debugEast]] = debugBounds;
+    const [[boundsNorth, boundsWest], [boundsSouth, boundsEast]] = intersectingCellsBounds;
+    
+    // Check if debug viewport is completely contained within intersecting cells bounds
+    return debugNorth <= boundsNorth && 
+           debugSouth >= boundsSouth && 
+           debugWest >= boundsWest && 
+           debugEast <= boundsEast;
+  }, [intersectingCellsBounds]);
 
   // Function to update geotile cells state based on debug viewport
   const updateGeotileCells = useCallback(() => {
     if (!mapInstance.current) {
       setGeotileCells([]);
       setIntersectingCellIndices(new Set());
+      setIntersectingCellsBounds(null);
       return;
     }
     
@@ -668,59 +711,30 @@ export default function MapExplorer() {
     console.log("GEOTILE CELLS", cells)
   }, [getGeotileCells]);
 
-  // Throttled version of updateGeotileCells
-  const throttledUpdateGeotileCells = useRef<{
-    lastCall: number;
-    timeoutId: ReturnType<typeof setTimeout> | null;
-  }>({ lastCall: 0, timeoutId: null });
-  
-  // Throttled version of setDebugViewportBounds for move events
-  const throttledSetDebugViewportBounds = useRef<{
-    lastCall: number;
-    timeoutId: ReturnType<typeof setTimeout> | null;
-  }>({ lastCall: 0, timeoutId: null });
-  
-  const updateGeotileCellsThrottled = useCallback(() => {
-    
-    const now = Date.now();
-    const timeSinceLastCall = now - throttledUpdateGeotileCells.current.lastCall;
-    const delay = 200; // Execute at most every 200ms
-    
-    if (timeSinceLastCall >= delay) {
-      throttledUpdateGeotileCells.current.lastCall = now;
+  // Smart update that only recalculates when debug viewport leaves intersecting cells bounds
+  const updateGeotileCellsIfNeeded = useCallback((newDebugBounds: [[number, number], [number, number]]) => {
+    // Always update if we don't have current intersecting cells bounds yet
+    if (!intersectingCellsBounds) {
       updateGeotileCells();
-    } else {
-      // Schedule execution for the remaining time
-      if (throttledUpdateGeotileCells.current.timeoutId) {
-        clearTimeout(throttledUpdateGeotileCells.current.timeoutId);
-      }
-      throttledUpdateGeotileCells.current.timeoutId = setTimeout(() => {
-        throttledUpdateGeotileCells.current.lastCall = Date.now();
-        updateGeotileCells();
-      }, delay - timeSinceLastCall);
+      return;
     }
-  }, [updateGeotileCells]);
+    
+    // Check if debug viewport is still within current intersecting cells bounds
+    if (!isDebugViewportWithinIntersectingCells(newDebugBounds)) {
+      // Debug viewport has left the current intersecting cells bounds - update immediately
+      updateGeotileCells();
+    }
+    // If still within bounds, no update needed - performance optimization!
+  }, [intersectingCellsBounds, isDebugViewportWithinIntersectingCells, updateGeotileCells]);
 
-  const updateDebugViewportBoundsThrottled = useCallback((bounds: [[number, number], [number, number]]) => {
+  // Smart viewport bounds update with instant geotile cell updates when needed
+  const updateDebugViewportBounds = useCallback((bounds: [[number, number], [number, number]]) => {
+    // Always update debug viewport bounds instantly (no throttling)
+    setDebugViewportBounds(bounds);
     
-    const now = Date.now();
-    const timeSinceLastCall = now - throttledSetDebugViewportBounds.current.lastCall;
-    const delay = 16; // Execute at most every 16ms (~60fps for smooth visual updates)
-    
-    if (timeSinceLastCall >= delay) {
-      throttledSetDebugViewportBounds.current.lastCall = now;
-      setDebugViewportBounds(bounds);
-    } else {
-      // Schedule execution for the remaining time
-      if (throttledSetDebugViewportBounds.current.timeoutId) {
-        clearTimeout(throttledSetDebugViewportBounds.current.timeoutId);
-      }
-      throttledSetDebugViewportBounds.current.timeoutId = setTimeout(() => {
-        throttledSetDebugViewportBounds.current.lastCall = Date.now();
-        setDebugViewportBounds(bounds);
-      }, delay - timeSinceLastCall);
-    }
-  }, []);
+    // Smart update: only recalculate cells if viewport has left current intersecting cells bounds
+    updateGeotileCellsIfNeeded(bounds);
+  }, [updateGeotileCellsIfNeeded]);
 
   // Update geotile cells immediately when grid visibility changes
   useEffect(() => {
@@ -734,21 +748,12 @@ export default function MapExplorer() {
     } else {
       setGeotileCells([]);
       setIntersectingCellIndices(new Set());
+      setIntersectingCellsBounds(null);
     }
   }, [showGeotileGrid, updateGeotileCells, calculateGeotilePrecision, currentPrecision]);
 
 
-  // Cleanup timeouts on unmount
-  useEffect(() => {
-    return () => {
-      if (throttledUpdateGeotileCells.current.timeoutId) {
-        clearTimeout(throttledUpdateGeotileCells.current.timeoutId);
-      }
-      if (throttledSetDebugViewportBounds.current.timeoutId) {
-        clearTimeout(throttledSetDebugViewportBounds.current.timeoutId);
-      }
-    };
-  }, []);
+  // No cleanup needed for the new smart update system
 
   // Modify getH3Cells to use the resolution state
   const getH3Cells = useCallback((bounds: any) => {
@@ -881,13 +886,15 @@ export default function MapExplorer() {
                 const east = center.lng + zoomedLngSpan / 2;
                 const west = center.lng - zoomedLngSpan / 2;
                 
-                updateDebugViewportBoundsThrottled([[north, west], [south, east]]);
+                updateDebugViewportBounds([[north, west], [south, east]]);
               },
               zoomend: () => {
                 // Update precision when zoom level changes
                 const newPrecision = calculateGeotilePrecision();
                 if (newPrecision !== currentPrecision) {
                   setCurrentPrecision(newPrecision);
+                  // Force update geotile cells when precision changes
+                  setIntersectingCellsBounds(null); // Reset bounds to force recalculation
                 }
               },
               moveend: () => {
