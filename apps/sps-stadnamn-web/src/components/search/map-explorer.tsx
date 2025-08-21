@@ -504,6 +504,7 @@ export default function MapExplorer() {
   const [intersectingCellIndices, setIntersectingCellIndices] = useState<Set<number>>(new Set());
   const [currentPrecision, setCurrentPrecision] = useState<number>(8); // Store current precision
   const [intersectingCellsBounds, setIntersectingCellsBounds] = useState<[[number, number], [number, number]] | null>(null);
+  const lastCalculatedDebugBounds = useRef<[[number, number], [number, number]] | null>(null);
 
 
   const geoTileResults = useQueries({
@@ -597,34 +598,11 @@ export default function MapExplorer() {
     return 8; // Default fallback
   }, [getZoomedInViewport]);
 
-  // Function to calculate combined bounds of intersecting cells
-  const calculateIntersectingCellsBounds = useCallback((cells: number[][][], intersectingIndices: Set<number>): [[number, number], [number, number]] | null => {
-    if (intersectingIndices.size === 0) return null;
-    
-    let minLat = Infinity, maxLat = -Infinity;
-    let minLng = Infinity, maxLng = -Infinity;
-    
-    intersectingIndices.forEach(index => {
-      const cell = cells[index];
-      if (cell) {
-        cell.forEach(([lat, lng]) => {
-          minLat = Math.min(minLat, lat);
-          maxLat = Math.max(maxLat, lat);
-          minLng = Math.min(minLng, lng);
-          maxLng = Math.max(maxLng, lng);
-        });
-      }
-    });
-    
-    if (minLat === Infinity) return null;
-    return [[maxLat, minLng], [minLat, maxLng]];
-  }, []);
-
   // Generate only the intersecting geotile cells
-  const getGeotileCells = useCallback((bounds: any) => {
-    if (!bounds || !debugViewportBounds) return [];
+  const getGeotileCells = useCallback((bounds: any, debugBounds: [[number, number], [number, number]]) => {
+    if (!bounds || !debugBounds) return [];
     
-    const [[debugNorth, debugWest], [debugSouth, debugEast]] = debugViewportBounds;
+    const [[debugNorth, debugWest], [debugSouth, debugEast]] = debugBounds;
     
     // Use the debug viewport bounds instead of full map bounds
     const n = Math.pow(2, currentPrecision);
@@ -637,7 +615,7 @@ export default function MapExplorer() {
     const yMin = Math.floor((1 - Math.log(Math.tan((debugNorth * Math.PI) / 180) + 1 / Math.cos((debugNorth * Math.PI) / 180)) / Math.PI) / 2 * n);
     const yMax = Math.floor((1 - Math.log(Math.tan((debugSouth * Math.PI) / 180) + 1 / Math.cos((debugSouth * Math.PI) / 180)) / Math.PI) / 2 * n);
     
-    const cells = [];
+    const cells: number[][][] = [];
     const intersectingIndices = new Set<number>();
     let index = 0;
     
@@ -665,7 +643,7 @@ export default function MapExplorer() {
         
         // Add to cells array and track intersecting cells
         cells.push(cell);
-        if (checkPolygonIntersection(cell, debugViewportBounds)) {
+        if (checkPolygonIntersection(cell, debugBounds)) {
           intersectingIndices.add(index);
         }
         index++;
@@ -675,29 +653,35 @@ export default function MapExplorer() {
     // Update the intersecting indices state
     setIntersectingCellIndices(intersectingIndices);
     
-    // Calculate and store the combined bounds of intersecting cells
-    const combinedBounds = calculateIntersectingCellsBounds(cells, intersectingIndices);
+    // Calculate and store the combined bounds of intersecting cells inline to avoid dependency issues
+    let combinedBounds: [[number, number], [number, number]] | null = null;
+    if (intersectingIndices.size > 0) {
+      let minLat = Infinity, maxLat = -Infinity;
+      let minLng = Infinity, maxLng = -Infinity;
+      
+      intersectingIndices.forEach(index => {
+        const cell = cells[index];
+        if (cell) {
+          cell.forEach(([lat, lng]) => {
+            minLat = Math.min(minLat, lat);
+            maxLat = Math.max(maxLat, lat);
+            minLng = Math.min(minLng, lng);
+            maxLng = Math.max(maxLng, lng);
+          });
+        }
+      });
+      
+      if (minLat !== Infinity) {
+        combinedBounds = [[maxLat, minLng], [minLat, maxLng]];
+      }
+    }
     setIntersectingCellsBounds(combinedBounds);
     
     return cells;
-  }, [currentPrecision, debugViewportBounds, checkPolygonIntersection, calculateIntersectingCellsBounds]);
-
-  // Function to check if debug viewport is still within current intersecting cells bounds
-  const isDebugViewportWithinIntersectingCells = useCallback((debugBounds: [[number, number], [number, number]]) => {
-    if (!intersectingCellsBounds) return false;
-    
-    const [[debugNorth, debugWest], [debugSouth, debugEast]] = debugBounds;
-    const [[boundsNorth, boundsWest], [boundsSouth, boundsEast]] = intersectingCellsBounds;
-    
-    // Check if debug viewport is completely contained within intersecting cells bounds
-    return debugNorth <= boundsNorth && 
-           debugSouth >= boundsSouth && 
-           debugWest >= boundsWest && 
-           debugEast <= boundsEast;
-  }, [intersectingCellsBounds]);
+  }, [currentPrecision, checkPolygonIntersection]);
 
   // Function to update geotile cells state based on debug viewport
-  const updateGeotileCells = useCallback(() => {
+  const updateGeotileCells = useCallback((forcedDebugBounds?: [[number, number], [number, number]]) => {
     if (!mapInstance.current) {
       setGeotileCells([]);
       setIntersectingCellIndices(new Set());
@@ -705,36 +689,46 @@ export default function MapExplorer() {
       return;
     }
     
-    const bounds = mapInstance.current.getBounds();
-    const cells = getGeotileCells(bounds);
-    setGeotileCells(cells);
-    console.log("GEOTILE CELLS", cells)
-  }, [getGeotileCells]);
-
-  // Smart update that only recalculates when debug viewport leaves intersecting cells bounds
-  const updateGeotileCellsIfNeeded = useCallback((newDebugBounds: [[number, number], [number, number]]) => {
-    // Always update if we don't have current intersecting cells bounds yet
-    if (!intersectingCellsBounds) {
-      updateGeotileCells();
-      return;
-    }
+    const debugBounds = forcedDebugBounds || debugViewportBounds;
+    if (!debugBounds) return;
     
-    // Check if debug viewport is still within current intersecting cells bounds
-    if (!isDebugViewportWithinIntersectingCells(newDebugBounds)) {
-      // Debug viewport has left the current intersecting cells bounds - update immediately
-      updateGeotileCells();
-    }
-    // If still within bounds, no update needed - performance optimization!
-  }, [intersectingCellsBounds, isDebugViewportWithinIntersectingCells, updateGeotileCells]);
+    const bounds = mapInstance.current.getBounds();
+    const cells: number[][][] = getGeotileCells(bounds, debugBounds);
+    setGeotileCells(cells);
+    console.log("GEOTILE CELLS", cells);
+    
+    // Update the last calculated bounds
+    lastCalculatedDebugBounds.current = debugBounds;
+  }, [getGeotileCells, debugViewportBounds]);
 
   // Smart viewport bounds update with instant geotile cell updates when needed
   const updateDebugViewportBounds = useCallback((bounds: [[number, number], [number, number]]) => {
     // Always update debug viewport bounds instantly (no throttling)
     setDebugViewportBounds(bounds);
     
-    // Smart update: only recalculate cells if viewport has left current intersecting cells bounds
-    updateGeotileCellsIfNeeded(bounds);
-  }, [updateGeotileCellsIfNeeded]);
+    // Smart bounds checking: only update cells if viewport has left current intersecting cells bounds
+    if (!intersectingCellsBounds) {
+      // No bounds yet, update needed
+      updateGeotileCells(bounds);
+      return;
+    }
+    
+    // Check if debug viewport is still within current intersecting cells bounds
+    const [[debugNorth, debugWest], [debugSouth, debugEast]] = bounds;
+    const [[boundsNorth, boundsWest], [boundsSouth, boundsEast]] = intersectingCellsBounds;
+    
+    // Check if debug viewport is completely contained within intersecting cells bounds
+    const isWithinBounds = debugNorth <= boundsNorth && 
+           debugSouth >= boundsSouth && 
+           debugWest >= boundsWest && 
+           debugEast <= boundsEast;
+    
+    if (!isWithinBounds) {
+      // Debug viewport has left the current intersecting cells bounds - update immediately
+      updateGeotileCells(bounds);
+    }
+    // If still within bounds, no update needed - performance optimization!
+  }, [intersectingCellsBounds, updateGeotileCells]);
 
   // Update geotile cells immediately when grid visibility changes
   useEffect(() => {
