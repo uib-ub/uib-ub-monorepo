@@ -94,7 +94,7 @@ export async function GET(request: Request) {
             docs: {
                 top_hits: {
                     _source: ["label", "uuid"],
-                    size: zoom < 6 ? 20 : zoom == 18 ? 100 : 10,//topHitsSize[reservedParams.zoom as keyof typeof topHitsSize] ?? 20,
+                    size: zoom == 18 ? 100 : 3,//topHitsSize[reservedParams.zoom as keyof typeof topHitsSize] ?? 20,
                     sort: {"uuid": "asc"} 
                     
                     }
