@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import wkt from 'wellknown';
 import { stringToBase64Url } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
+import { useQueries } from "@tanstack/react-query";
 
 
 export default function MapExplorer() {
@@ -499,9 +500,29 @@ export default function MapExplorer() {
 
       // Add state for geotile cells and intersecting cells
   const [geotileCells, setGeotileCells] = useState<number[][][]>([]);
-  const [intersectingCells, setIntersectingCells] = useState<number[][][]>([]);
   const [intersectingCellIndices, setIntersectingCellIndices] = useState<Set<number>>(new Set());
   const [currentPrecision, setCurrentPrecision] = useState<number>(8); // Store current precision
+
+
+  const geoTileResults = useQueries({
+    queries: geotileCells.map((cell, index) => ({
+      queryKey: ['geotileCells', cell],
+      queryFn: async () => {
+        console.log("FETCHING GEOTILE CELL", cell)
+        const res = await fetch(`/api/geo/sample?topLeftLat=${cell[0][0]}&topLeftLng=${cell[0][1]}&bottomRightLat=${cell[2][0]}&bottomRightLng=${cell[2][1]}&size=30`)
+        if (!res.ok) {
+          throw new Error('Failed to fetch geotile cells')
+        }
+        const data = await res.json()
+        return data.hits.hits.map((hit: any) => hit.fields)
+      }
+    }))
+  })
+
+  console.log("RESULTS", geoTileResults.filter(result => result.isSuccess).map(result => result.data))
+
+  
+
 
   // Calculate viewport bounds when zoomed in 2 levels
   const getZoomedInViewport = useCallback(() => {
@@ -592,7 +613,6 @@ export default function MapExplorer() {
     const yMax = Math.floor((1 - Math.log(Math.tan((debugSouth * Math.PI) / 180) + 1 / Math.cos((debugSouth * Math.PI) / 180)) / Math.PI) / 2 * n);
     
     const cells = [];
-    const intersectingCells = [];
     const intersectingIndices = new Set<number>();
     let index = 0;
     
@@ -618,21 +638,16 @@ export default function MapExplorer() {
           [tileNorth, tileWest]
         ];
         
-        // Add to cells array
+        // Add to cells array and track intersecting cells
         cells.push(cell);
-        
-        // Since we're using the debug viewport bounds to generate cells,
-        // all cells should intersect, but we'll verify to be safe
         if (checkPolygonIntersection(cell, debugViewportBounds)) {
-          intersectingCells.push(cell);
           intersectingIndices.add(index);
         }
         index++;
       }
     }
     
-    // Update the intersecting cells state
-    setIntersectingCells(intersectingCells);
+    // Update the intersecting indices state
     setIntersectingCellIndices(intersectingIndices);
     
     return cells;
@@ -642,7 +657,6 @@ export default function MapExplorer() {
   const updateGeotileCells = useCallback(() => {
     if (!mapInstance.current) {
       setGeotileCells([]);
-      setIntersectingCells([]);
       setIntersectingCellIndices(new Set());
       return;
     }
@@ -690,7 +704,6 @@ export default function MapExplorer() {
       updateGeotileCells();
     } else {
       setGeotileCells([]);
-      setIntersectingCells([]);
       setIntersectingCellIndices(new Set());
     }
   }, [showGeotileGrid, updateGeotileCells, calculateGeotilePrecision, currentPrecision]);
@@ -893,6 +906,34 @@ export default function MapExplorer() {
                   }}
                 />
               ))}
+
+              {/* Draw geotile query results */}
+              {showGeotileGrid && geoTileResults.filter(result => result.isSuccess).map(result => result.data).map((dataArray, index) => {
+                if (dataArray?.length > 0) {
+                  // Calculate center point for the cell
+                  const cell = geotileCells[index];
+                  const lats = cell.map(p => p[0]);
+                  const lngs = cell.map(p => p[1]);
+                  const centerLat = (Math.max(...lats) + Math.min(...lats)) / 2;
+                  const centerLng = (Math.max(...lngs) + Math.min(...lngs)) / 2;
+
+                  return (
+                    <Fragment key={`result-group-${index}`}>
+                      {/* Individual result markers with labels */}
+                      {dataArray.map((item: any) => (
+                        <Marker
+                          key={`result-${item.uuid?.[0] || Math.random()}`}
+                          position={[item.location?.[0]?.coordinates?.[1], item.location?.[0]?.coordinates?.[0]]}
+                          icon={new leaflet.DivIcon(getLabelMarkerIcon(item.label?.[0] || 'Unknown', 'black', undefined, true))}
+                          riseOnHover={true}
+                          eventHandlers={selectDocHandler(item)}
+                        />
+                      ))}
+                    </Fragment>
+                  );
+                }
+                return null;
+              })}
 
               {/* Add Geotile grid overlay */}
               {showGeotileGrid && geotileCells.map((polygon, index) => {
