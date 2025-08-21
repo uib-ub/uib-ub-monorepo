@@ -937,13 +937,22 @@ export default function MapExplorer() {
                   const cell = geotileCells[index];
                   const lats = cell.map(p => p[0]);
                   const lngs = cell.map(p => p[1]);
-                  const centerLat = (Math.max(...lats) + Math.min(...lats)) / 2;
-                  const centerLng = (Math.max(...lngs) + Math.min(...lngs)) / 2;
+                  
+                  // Function to check if a point is within the debug viewport bounds
+                  const isPointInDebugViewport = (lat: number, lng: number) => {
+                    if (!debugViewportBounds) return false;
+                    const [[north, west], [south, east]] = debugViewportBounds;
+                    return lat <= north && lat >= south && lng >= west && lng <= east;
+                  };
 
                   return (
                     <Fragment key={`result-group-${index}`}>
-                      {/* Individual result markers with labels */}
-                      {dataArray.map((item: any) => (
+                      {/* Individual result markers with labels - only render if within debug viewport */}
+                      {dataArray.filter((item: any) => {
+                        const lat = item.location?.[0]?.coordinates?.[1];
+                        const lng = item.location?.[0]?.coordinates?.[0];
+                        return lat && lng && isPointInDebugViewport(lat, lng);
+                      }).map((item: any) => (
                         <Marker
                           key={`result-${item.uuid?.[0] || Math.random()}`}
                           position={[item.location?.[0]?.coordinates?.[1], item.location?.[0]?.coordinates?.[0]]}
