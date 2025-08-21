@@ -221,6 +221,7 @@ export default function MapExplorer() {
 
   useEffect(() => {
     // Check if the bounds are initialized
+    return
     if (!markerBounds?.length || !totalHits || isLoading) {
       return;
     }
@@ -470,7 +471,7 @@ export default function MapExplorer() {
 
     // Add this state for toggling the grid
     const [showH3Grid, setShowH3Grid] = useState(false);
-    const [showGeotileGrid, setShowGeotileGrid] = useState(false);
+    const [showGeotileGrid, setShowGeotileGrid] = useState(true);
     
     // State to store debug viewport bounds for real-time updates
     const [debugViewportBounds, setDebugViewportBounds] = useState<[[number, number], [number, number]] | null>(null);
@@ -496,9 +497,11 @@ export default function MapExplorer() {
     // Add state for H3 resolution
     const [h3Resolution, setH3Resolution] = useState(8);
 
-    // Add state for geotile cells and intersecting cells
-    const [geotileCells, setGeotileCells] = useState<number[][][]>([]);
-    const [intersectingCells, setIntersectingCells] = useState<number[][][]>([]);
+      // Add state for geotile cells and intersecting cells
+  const [geotileCells, setGeotileCells] = useState<number[][][]>([]);
+  const [intersectingCells, setIntersectingCells] = useState<number[][][]>([]);
+  const [intersectingCellIndices, setIntersectingCellIndices] = useState<Set<number>>(new Set());
+  const [currentPrecision, setCurrentPrecision] = useState<number>(8); // Store current precision
 
   // Calculate viewport bounds when zoomed in 2 levels
   const getZoomedInViewport = useCallback(() => {
@@ -537,6 +540,7 @@ export default function MapExplorer() {
     const latSpan = Math.abs(north - south);
     const lngSpan = Math.abs(east - west);
     
+    console.log("CALCULATING GEOTILE PRECISION", latSpan, lngSpan)
     // Geotile precision levels and their approximate degree coverage
     // These are rough approximations for grid cell sizes
     const precisionToDegrees = [
@@ -570,30 +574,29 @@ export default function MapExplorer() {
     return 8; // Default fallback
   }, [getZoomedInViewport]);
 
-  // Generate geotile grid cells
+  // Generate only the intersecting geotile cells
   const getGeotileCells = useCallback((bounds: any) => {
-    if (!bounds) return [];
+    if (!bounds || !debugViewportBounds) return [];
     
-    const precision = calculateGeotilePrecision();
+    const [[debugNorth, debugWest], [debugSouth, debugEast]] = debugViewportBounds;
     
-    const north = bounds.getNorth();
-    const south = bounds.getSouth();
-    const west = bounds.getWest();
-    const east = bounds.getEast();
+    // Use the debug viewport bounds instead of full map bounds
+    const n = Math.pow(2, currentPrecision);
     
-    const n = Math.pow(2, precision);
+    // Convert debug viewport bounds to tile coordinates
+    const xMin = Math.floor(((debugWest + 180) / 360) * n);
+    const xMax = Math.floor(((debugEast + 180) / 360) * n);
     
-    // Convert lat/lng bounds to tile coordinates
-    const xMin = Math.floor(((west + 180) / 360) * n);
-    const xMax = Math.floor(((east + 180) / 360) * n);
-    
-    // Convert latitude to Web Mercator Y tile coordinates
-    const yMin = Math.floor((1 - Math.log(Math.tan((north * Math.PI) / 180) + 1 / Math.cos((north * Math.PI) / 180)) / Math.PI) / 2 * n);
-    const yMax = Math.floor((1 - Math.log(Math.tan((south * Math.PI) / 180) + 1 / Math.cos((south * Math.PI) / 180)) / Math.PI) / 2 * n);
+    // Convert latitude to Web Mercator Y tile coordinates for debug viewport
+    const yMin = Math.floor((1 - Math.log(Math.tan((debugNorth * Math.PI) / 180) + 1 / Math.cos((debugNorth * Math.PI) / 180)) / Math.PI) / 2 * n);
+    const yMax = Math.floor((1 - Math.log(Math.tan((debugSouth * Math.PI) / 180) + 1 / Math.cos((debugSouth * Math.PI) / 180)) / Math.PI) / 2 * n);
     
     const cells = [];
+    const intersectingCells = [];
+    const intersectingIndices = new Set<number>();
+    let index = 0;
     
-    // Generate grid cells using proper tile coordinates
+    // Generate only the cells that intersect with debug viewport
     for (let x = xMin; x <= xMax; x++) {
       for (let y = yMin; y <= yMax; y++) {
         // Convert tile coordinates back to lat/lng bounds
@@ -606,52 +609,116 @@ export default function MapExplorer() {
         const tileNorth = (latRad1 * 180) / Math.PI;
         const tileSouth = (latRad2 * 180) / Math.PI;
         
-        // Create rectangle bounds
-        cells.push([
+        // Create cell polygon
+        const cell = [
           [tileNorth, tileWest],
           [tileNorth, tileEast],
           [tileSouth, tileEast],
           [tileSouth, tileWest],
           [tileNorth, tileWest]
-        ]);
+        ];
+        
+        // Add to cells array
+        cells.push(cell);
+        
+        // Since we're using the debug viewport bounds to generate cells,
+        // all cells should intersect, but we'll verify to be safe
+        if (checkPolygonIntersection(cell, debugViewportBounds)) {
+          intersectingCells.push(cell);
+          intersectingIndices.add(index);
+        }
+        index++;
       }
     }
     
+    // Update the intersecting cells state
+    setIntersectingCells(intersectingCells);
+    setIntersectingCellIndices(intersectingIndices);
+    
     return cells;
-  }, [calculateGeotilePrecision]);
+  }, [currentPrecision, debugViewportBounds, checkPolygonIntersection]);
 
   // Function to update geotile cells state based on debug viewport
   const updateGeotileCells = useCallback(() => {
     if (!mapInstance.current) {
       setGeotileCells([]);
       setIntersectingCells([]);
+      setIntersectingCellIndices(new Set());
       return;
     }
     
     const bounds = mapInstance.current.getBounds();
     const cells = getGeotileCells(bounds);
     setGeotileCells(cells);
-    
-    // Calculate intersecting cells with debug viewport bounds
-    if (debugViewportBounds) {
-      const intersecting = cells.filter(polygon => 
-        checkPolygonIntersection(polygon, debugViewportBounds)
-      );
-      setIntersectingCells(intersecting);
-    } else {
-      setIntersectingCells([]);
-    }
-  }, [getGeotileCells, debugViewportBounds, checkPolygonIntersection]);
+    console.log("GEOTILE CELLS", cells)
+  }, [getGeotileCells]);
 
-  // Update geotile cells when debug viewport or grid visibility changes
+  // Debounced version of updateGeotileCells
+  const debouncedUpdateGeotileCells = useRef<ReturnType<typeof setTimeout> | null>(null);
+  
+  // Debounced version of setDebugViewportBounds for move events
+  const debouncedSetDebugViewportBounds = useRef<ReturnType<typeof setTimeout> | null>(null);
+  
+  const updateGeotileCellsDebounced = useCallback(() => {
+    if (debouncedUpdateGeotileCells.current) {
+      clearTimeout(debouncedUpdateGeotileCells.current);
+    }
+    
+    debouncedUpdateGeotileCells.current = setTimeout(() => {
+      updateGeotileCells();
+    }, 300); // 300ms debounce delay
+  }, [updateGeotileCells]);
+
+  const updateDebugViewportBoundsDebounced = useCallback((bounds: [[number, number], [number, number]]) => {
+    if (debouncedSetDebugViewportBounds.current) {
+      clearTimeout(debouncedSetDebugViewportBounds.current);
+    }
+    
+    debouncedSetDebugViewportBounds.current = setTimeout(() => {
+      setDebugViewportBounds(bounds);
+    }, 100); // Shorter debounce for more responsive visual feedback
+  }, []);
+
+  // Update geotile cells immediately when grid visibility changes
   useEffect(() => {
     if (showGeotileGrid) {
+      // Ensure we have a valid precision before showing the grid
+      if (mapInstance.current && currentPrecision === 8) {
+        const initialPrecision = calculateGeotilePrecision();
+        setCurrentPrecision(initialPrecision);
+      }
       updateGeotileCells();
     } else {
       setGeotileCells([]);
       setIntersectingCells([]);
+      setIntersectingCellIndices(new Set());
     }
-  }, [debugViewportBounds, showGeotileGrid, updateGeotileCells]);
+  }, [showGeotileGrid, updateGeotileCells, calculateGeotilePrecision, currentPrecision]);
+
+  // Update when debug viewport bounds change
+  useEffect(() => {
+    if (showGeotileGrid && debugViewportBounds) {
+      // If this is the initial load (or grid just turned on), update immediately
+      if (geotileCells.length === 0) {
+        updateGeotileCells();
+      } else {
+        // Otherwise use the debounced update for subsequent changes
+        updateGeotileCellsDebounced();
+      }
+    }
+  }, [debugViewportBounds, showGeotileGrid, updateGeotileCellsDebounced, updateGeotileCells, geotileCells.length]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (debouncedUpdateGeotileCells.current) {
+        clearTimeout(debouncedUpdateGeotileCells.current);
+      }
+      if (debouncedSetDebugViewportBounds.current) {
+        clearTimeout(debouncedSetDebugViewportBounds.current);
+      }
+    };
+  }, []);
 
   // Modify getH3Cells to use the resolution state
   const getH3Cells = useCallback((bounds: any) => {
@@ -726,13 +793,33 @@ export default function MapExplorer() {
       <Map        
         whenReady={(e: any) => {
             const currentBounds = e.target.getBounds();
+            const center = currentBounds.getCenter();
+            const currentZoom = e.target.getZoom();
+            
             setMarkerBounds([[currentBounds.getNorth(), currentBounds.getWest()], [currentBounds.getSouth(), currentBounds.getEast()]]);
+            
             if (!mapInstance.current) {
-              mapInstance.current = e.target
+              mapInstance.current = e.target;
+              // Calculate and set initial precision when map is first ready
+              const initialPrecision = calculateGeotilePrecision();
+              setCurrentPrecision(initialPrecision);
+
+              // Calculate initial debug viewport bounds (zoomed in 2 levels)
+              const zoomRatio = Math.pow(2, 2); // 2^2 for 2 zoom levels
+              const latSpan = currentBounds.getNorth() - currentBounds.getSouth();
+              const lngSpan = currentBounds.getEast() - currentBounds.getWest();
+              const zoomedLatSpan = latSpan / zoomRatio;
+              const zoomedLngSpan = lngSpan / zoomRatio;
+              
+              const north = center.lat + zoomedLatSpan / 2;
+              const south = center.lat - zoomedLatSpan / 2;
+              const east = center.lng + zoomedLngSpan / 2;
+              const west = center.lng - zoomedLngSpan / 2;
+              
+              setDebugViewportBounds([[north, west], [south, east]]);
             }
-            setViewUrlParams(e.target.getZoom(), [currentBounds.getCenter().lat, currentBounds.getCenter().lng])
-          
-          
+            
+            setViewUrlParams(currentZoom, [center.lat, center.lng]);
         }}
         zoomControl={false}
         {...center && zoom ?
@@ -764,7 +851,14 @@ export default function MapExplorer() {
                 const east = center.lng + zoomedLngSpan / 2;
                 const west = center.lng - zoomedLngSpan / 2;
                 
-                setDebugViewportBounds([[north, west], [south, east]]);
+                updateDebugViewportBoundsDebounced([[north, west], [south, east]]);
+              },
+              zoomend: () => {
+                // Update precision when zoom level changes
+                const newPrecision = calculateGeotilePrecision();
+                if (newPrecision !== currentPrecision) {
+                  setCurrentPrecision(newPrecision);
+                }
               },
               moveend: () => {
                 controllerRef.current.abort();
@@ -802,10 +896,8 @@ export default function MapExplorer() {
 
               {/* Add Geotile grid overlay */}
               {showGeotileGrid && geotileCells.map((polygon, index) => {
-                // Check if this cell intersects with the debug viewport using stored state
-                const intersectsViewport = intersectingCells.some(intersectingPolygon => 
-                  JSON.stringify(intersectingPolygon) === JSON.stringify(polygon)
-                );
+                // Check if this cell intersects with the debug viewport using efficient index lookup
+                const intersectsViewport = intersectingCellIndices.has(index);
                 
                 // Calculate the lower-right corner position for text label
                 const polygonLats = polygon.map(p => p[0]);
@@ -854,7 +946,7 @@ export default function MapExplorer() {
               })}
 
               {/* Visualize tiles from fetched results - only when geotile debugging is enabled */}
-              {showGeotileGrid && (() => {
+              {false && showGeotileGrid && (() => {
                 console.log('Tiles data:', tiles);
                 if (!tiles) {
                   console.log('No tiles data available');
@@ -1186,7 +1278,7 @@ export default function MapExplorer() {
           {showGeotileGrid && (
             <div className="px-4 py-2">
               <div className="text-xs text-neutral-600 mb-1">
-                Auto-precision: {calculateGeotilePrecision()}
+                Auto-precision: {currentPrecision}
               </div>
               <div className="text-xs text-neutral-500">
                 Rødt rektangel viser zoom +2 nivå
