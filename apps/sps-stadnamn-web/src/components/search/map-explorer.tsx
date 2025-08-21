@@ -219,10 +219,10 @@ export default function MapExplorer() {
     
     return [[north, west], [south, east]] as [[number, number], [number, number]];
   }, []);
-
+/*
   useEffect(() => {
     // Check if the bounds are initialized
-    return
+    
     if (!markerBounds?.length || !totalHits || isLoading) {
       return;
     }
@@ -301,6 +301,7 @@ export default function MapExplorer() {
       })
 
   }, [ markerBounds, searchError, searchQueryString, totalHits, markerMode, parent, perspective, isLoading, autoMode, sampleClusters, setCoordinatesError, resultBounds, zoom]);
+*/
 
 
 
