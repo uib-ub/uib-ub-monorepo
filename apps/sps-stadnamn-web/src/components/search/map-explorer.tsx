@@ -513,6 +513,7 @@ export default function MapExplorer() {
   const [currentPrecision, setCurrentPrecision] = useState<number>(8); // Store current precision
   const [intersectingCellsBounds, setIntersectingCellsBounds] = useState<[[number, number], [number, number]] | null>(null);
   const lastCalculatedDebugBounds = useRef<[[number, number], [number, number]] | null>(null);
+  const lastZoomLevel = useRef<number>(8); // Track previous zoom level
 
 
   const geoTileResults = useQueries({
@@ -605,6 +606,11 @@ export default function MapExplorer() {
   const getGeotileCells = useCallback((bounds: any, debugBounds: [[number, number], [number, number]]) => {
     if (!bounds || !debugBounds) return [];
     
+    // Check if we should use world cell (zoom < 8)
+    if (mapInstance.current && mapInstance.current.getZoom() < 8) {
+      return [];
+    }
+    
     const [[debugNorth, debugWest], [debugSouth, debugEast]] = debugBounds;
     
     // Use the debug viewport bounds instead of full map bounds
@@ -670,7 +676,7 @@ export default function MapExplorer() {
             maxLat = Math.max(maxLat, lat);
             minLng = Math.min(minLng, lng);
             maxLng = Math.max(maxLng, lng);
-          });
+      });
         }
       });
       
@@ -692,6 +698,24 @@ export default function MapExplorer() {
       return;
     }
     
+    const currentZoom = mapInstance.current.getZoom();
+    
+    // If zoom level is below 8, use a single cell covering the whole world
+    if (currentZoom < 9) {
+      const worldCell = [
+        [90, -180],
+        [90, 180],
+        [-90, 180],
+        [-90, -180],
+        [90, -180]
+      ];
+      setGeotileCells([worldCell]);
+      setIntersectingCellIndices(new Set([0]));
+      setIntersectingCellsBounds([[90, -180], [-90, 180]]);
+      console.log("ZOOM < 8: Using single world cell");
+      return;
+    }
+    
     const debugBounds = forcedDebugBounds || debugViewportBounds;
     if (!debugBounds) return;
     
@@ -708,6 +732,11 @@ export default function MapExplorer() {
   const updateDebugViewportBounds = useCallback((bounds: [[number, number], [number, number]]) => {
     // Always update debug viewport bounds instantly (no throttling)
     setDebugViewportBounds(bounds);
+    
+    // If zoom level is below 8, no need to update cells (using world cell)
+    if (mapInstance.current && mapInstance.current.getZoom() < 9) {
+      return;
+    }
     
     // Smart bounds checking: only update cells if viewport has left current intersecting cells bounds
     if (!intersectingCellsBounds) {
@@ -846,6 +875,14 @@ export default function MapExplorer() {
               const reducedBounds = adjustBounds(boundsArray, -0.1);
               
               setDebugViewportBounds(reducedBounds);
+              
+              // Initialize last zoom level
+              lastZoomLevel.current = currentZoom;
+              
+              // Initialize geotile cells based on initial zoom level
+              if (showGeotileGrid) {
+                updateGeotileCells();
+              }
             }
             
             setViewUrlParams(currentZoom, [center.lat, center.lng]);
@@ -885,6 +922,17 @@ export default function MapExplorer() {
                   // Force update geotile cells when precision changes
                   setIntersectingCellsBounds(null); // Reset bounds to force recalculation
                 }
+                
+                // Force update geotile cells when crossing zoom threshold 8
+                const currentZoom = map.getZoom();
+                const wasBelow8 = lastZoomLevel.current < 8;
+                const isNowAbove8 = currentZoom >= 8;
+                if (wasBelow8 && isNowAbove8) {
+                  // Zoomed from below 8 to 8 or above, force recalculation
+                  setIntersectingCellsBounds(null);
+                  updateGeotileCells();
+                }
+                lastZoomLevel.current = currentZoom;
               },
               moveend: () => {
                 controllerRef.current.abort();
