@@ -1,5 +1,9 @@
 <template>
-  <UtilsTableWrapper class="max-w-4xl">
+  <UtilsTableWrapper
+    :heading-level="h3"
+    class="max-w-4xl"
+    :pending="pending"
+  >
     <template #header>
       Språkdekning
     </template>
@@ -59,7 +63,7 @@
 <script setup>
 const props = defineProps({ termbaseId: { type: String, required: true } });
 
-const { data } = await useLazyFetch("/api/tb/all/termbase_language_coverage");
+const { data, pending } = await useLazyFetch("/api/tb/all/termbase_language_coverage");
 
 function calcCoveragePerc(concepts, count) {
   if (concepts === 0) return 0;

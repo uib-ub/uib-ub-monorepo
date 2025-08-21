@@ -1,5 +1,9 @@
 <template>
-  <UtilsTableWrapper class="max-w-2xl">
+  <UtilsTableWrapper
+    class="max-w-2xl"
+    heading-level="h3"
+    :pending="pending"
+  >
     <template #header>
       Manglende definisjoner
     </template>
@@ -79,7 +83,7 @@ const props = defineProps({ termbase: { type: Object, required: true } });
 
 const datatable = ref();
 
-const { data } = useLazyFetch(
+const { data, pending } = useLazyFetch(
   `/api/tb/${props.termbase.id}/definitionsMissing`,
   { query: { internal: true } },
 );

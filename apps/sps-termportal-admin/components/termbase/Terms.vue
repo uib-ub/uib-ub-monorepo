@@ -1,5 +1,8 @@
 <template>
-  <UtilsTableWrapper :heading-level="headingLevel">
+  <UtilsTableWrapper
+    :heading-level="headingLevel"
+    :pending="pending"
+  >
     <template #header>
       Termer
     </template>
@@ -127,7 +130,7 @@ const filters = ref({
 
 const datatable = ref();
 
-const { data } = useLazyFetch(`/api/tb/${props.termbase.id}/terms`, {
+const { data, pending } = useLazyFetch(`/api/tb/${props.termbase.id}/terms`, {
   query: { internal: true },
 });
 
@@ -139,7 +142,7 @@ const displayData = computed(() => {
           .split("/").slice(-1)[0]
           .replace(`${props.termbase.id}-3A`, ""),
         link: createWikiLink(concept.concept.value),
-        published: concept.published.value == "true",
+        published: concept.published ? concept.published.value == "true" : true,
         prefLabels: concept.prefLabels ? concept.prefLabels.value.split("||") : [],
         altLabels: concept.altLabels ? concept.altLabels.value.split("||") : [],
         hiddenLabels: concept.hiddenLabels ? concept.hiddenLabels.value.split("||") : [],

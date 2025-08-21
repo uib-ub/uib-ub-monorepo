@@ -1,5 +1,8 @@
 <template>
-  <UtilsTableWrapper>
+  <UtilsTableWrapper
+    heading-level="h3"
+    :pending="pending"
+  >
     <template #header>
       Domener
     </template>
@@ -95,7 +98,7 @@ const props = defineProps({ termbase: { type: Object, required: true } });
 const { data: domainData } = await useLazyFetch("/api/domain/all/domain_overview", {
   query: { internal: true },
 });
-const { data: tbDomainData } = useLazyFetch(`/api/tb/${props.termbase.id}/domains`);
+const { data: tbDomainData, pending } = useLazyFetch(`/api/tb/${props.termbase.id}/domains`);
 
 const displayData = computed(() => {
   if (domainData.value && tbDomainData.value) {

@@ -2,6 +2,8 @@
   <UtilsTableWrapper
     v-if="termbase?.conceptCount > 0"
     class="max-w-4xl"
+    heading-level="h3"
+    :pending="pending"
   >
     <template #header>
       Uspesifiserte begrepsrelasjoner
@@ -62,7 +64,7 @@ const props = defineProps({ termbase: { type: Object, required: true } });
 
 const datatable = ref();
 
-const { data } = useLazyFetch(
+const { data, pending } = useLazyFetch(
   `/api/tb/${props.termbase.id}/qualitySemanticRelations`,
   { query: { internal: true } },
 );

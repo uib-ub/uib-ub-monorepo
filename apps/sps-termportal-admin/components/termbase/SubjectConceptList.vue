@@ -1,5 +1,8 @@
 <template>
-  <UtilsTableWrapper :heading-level="headingLevel">
+  <UtilsTableWrapper
+    :heading-level="headingLevel"
+    :pending="pending"
+  >
     <template #header>
       Bruksområder i termpost
     </template>
@@ -119,7 +122,7 @@ type ConceptListData = Array<{
   subjects: SparqlBindingKey;
   published: SparqlBindingKeyDt; }>;
 
-const { data } = useLazyFetch<ConceptListData>(`/api/tb/${props.termbase.id}/subjectsTermposts`, {
+const { data, pending } = useLazyFetch<ConceptListData>(`/api/tb/${props.termbase.id}/subjectsTermposts`, {
   query: { internal: true },
 });
 

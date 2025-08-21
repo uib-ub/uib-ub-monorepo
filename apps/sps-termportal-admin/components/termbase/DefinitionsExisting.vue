@@ -1,5 +1,9 @@
 <template>
-  <UtilsTableWrapper class="max-w-6xl">
+  <UtilsTableWrapper
+    class="max-w-6xl"
+    heading-level="h3"
+    :pending="pending"
+  >
     <template #header>
       Definisjoner
     </template>
@@ -73,7 +77,7 @@ const props = defineProps({ termbase: { type: Object, required: true } });
 
 const datatable = ref();
 
-const { data } = useLazyFetch(`/api/tb/${props.termbase.id}/definitions`, {
+const { data, pending } = useLazyFetch(`/api/tb/${props.termbase.id}/definitions`, {
   query: { internal: true },
 });
 

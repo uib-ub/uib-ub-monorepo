@@ -1,5 +1,8 @@
 <template>
-  <UtilsTableWrapper :heading-level="headingLevel">
+  <UtilsTableWrapper
+    :heading-level="headingLevel"
+    :pending="pending"
+  >
     <template #header>
       Bruksområder aggregert
     </template>
@@ -74,7 +77,7 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-const { data } = useLazyFetch(`/api/tb/${props.termbase.id}/subjectValues`, {
+const { data, pending } = useLazyFetch(`/api/tb/${props.termbase.id}/subjectValues`, {
   query: { internal: true },
 });
 
