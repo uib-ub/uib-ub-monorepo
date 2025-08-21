@@ -977,8 +977,7 @@ export default function MapExplorer() {
                       pathOptions={{
                         color: intersectsViewport ? '#00ff00' : '#ff6600',
                         weight: intersectsViewport ? 3 : 2,
-                        opacity: intersectsViewport ? 1 : 0.8,
-                        fillOpacity: intersectsViewport ? 0.2 : 0.05,
+                        fill: false,
                         dashArray: intersectsViewport ? '5, 5' : '10, 5'
                       }}
                     />
@@ -1042,7 +1041,7 @@ export default function MapExplorer() {
                   pathOptions={{ 
                     color: '#ff0066', 
                     weight: 3,
-                    fillOpacity: 0.1,
+                    fill: false,
                     dashArray: '15, 10'
                   }}
                 />
@@ -1055,7 +1054,7 @@ export default function MapExplorer() {
                   pathOptions={{ 
                     color: '#ff0000', 
                     weight: 2,
-                    fillOpacity: 0.1,
+                    fill: false,
                     dashArray: '5, 5'
                   }}
                 />
@@ -1067,7 +1066,7 @@ export default function MapExplorer() {
                   pathOptions={{ 
                     color: '#ff0000', 
                     weight: 2,
-                    fillOpacity: 0.1,
+                    fill: false,
                     dashArray: '5, 5'
                   }}
                 />
