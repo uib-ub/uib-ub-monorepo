@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useRef, useState, useCallback } from "react";
+import { Fragment, useContext, useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Map from "../map/map";
 import { baseMaps, baseMapKeys, baseMapProps, defaultBaseMap } from "@/config/basemap-config";
 import { PiCheckCircleFill, PiCornersOut, PiCrop, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill,  PiStackSimpleFill } from "react-icons/pi";
@@ -25,9 +25,86 @@ import useDocData from "@/state/hooks/doc-data";
 import { useQueries } from "@tanstack/react-query";
 
 
+// Helper function to calculate bounds from zoom level and center point
+const calculateBoundsFromZoomAndCenter = (center: [number, number], zoom: number): [[number, number], [number, number]] => {
+  // Earth's circumference in meters
+  const EARTH_CIRCUMFERENCE = 40075016.686;
+  
+  // Calculate the distance represented by one pixel at the given zoom level
+  // At zoom level 0, one pixel represents the entire world
+  const metersPerPixel = EARTH_CIRCUMFERENCE / (256 * Math.pow(2, zoom));
+  
+  // Assuming a typical map container size (you can adjust these values)
+  const containerWidth = 800; // pixels
+  const containerHeight = 600; // pixels
+  
+  // Calculate the geographic span in meters
+  const spanWidthMeters = metersPerPixel * containerWidth;
+  const spanHeightMeters = metersPerPixel * containerHeight;
+  
+  // Convert meters to degrees (approximate)
+  // 1 degree of latitude ≈ 111,111 meters
+  // 1 degree of longitude ≈ 111,111 * cos(latitude) meters
+  const latSpan = spanHeightMeters / 111111;
+  const lonSpan = spanWidthMeters / (111111 * Math.cos(center[0] * Math.PI / 180));
+  
+  // Calculate bounds
+  const north = center[0] + latSpan / 2;
+  const south = center[0] - latSpan / 2;
+  const east = center[1] + lonSpan / 2;
+  const west = center[1] - lonSpan / 2;
+  
+  return [[north, west], [south, east]];
+};
+
+
+
+const calculateRadius = (docCount: number, maxDocCount: number, minDocCount: number) => {
+  const minRadius = .75; // Minimum radius for a marker
+  const maxRadius = 1; // Maximum radius for a marker
+
+  // Ensure docCount is within the range
+  docCount = Math.max(minDocCount, Math.min(maxDocCount, docCount));
+
+  if (maxDocCount === minDocCount) return minRadius;
+
+  // Use a logarithmic scale for a wider distribution
+  const logMax = Math.log(maxDocCount - minDocCount + 1);
+  const logValue = Math.log(docCount - minDocCount + 1);
+  const scaledRadius = (logValue / logMax) * (maxRadius - minRadius) + minRadius;
+
+  return scaledRadius;
+};
+
+function adjustBounds(bounds: [[number, number], [number, number]], adjustmentFactor: number): [[number, number], [number, number]] {
+  // bounds format: [[north, west], [south, east]]
+  const north = bounds[0][0];
+  const west = bounds[0][1];
+  const south = bounds[1][0];
+  const east = bounds[1][1];
+  
+  // Calculate the center
+  const centerLat = (north + south) / 2;
+  const centerLon = (east + west) / 2;
+  
+  // Calculate half-spans and apply adjustment factor
+  const latHalfSpan = Math.abs(north - south) * (1 + adjustmentFactor) / 2;
+  const lonHalfSpan = Math.abs(east - west) * (1 + adjustmentFactor) / 2;
+  
+  // Calculate new bounds
+  const newNorth = centerLat + latHalfSpan;
+  const newSouth = centerLat - latHalfSpan;
+  const newEast = centerLon + lonHalfSpan;
+  const newWest = centerLon - lonHalfSpan;
+  
+  return [[newNorth, newWest], [newSouth, newEast]];
+}
+
+
 export default function MapExplorer() {
   const { resultBounds, totalHits, searchError, setCoordinatesError, isLoading, allowFitBounds, setAllowFitBounds } = useContext(SearchContext)
   const [markerBounds, setMarkerBounds] = useState<[[number, number], [number, number]] | null>()
+    
   const controllerRef = useRef(new AbortController());
   const [baseMap, setBasemap] = useState<null | string>(null)
   const [markerMode, setMarkerMode] = useState<null | string>(null)
@@ -41,13 +118,53 @@ export default function MapExplorer() {
   const perspective = usePerspective()
   const details = searchParams.get('details') || 'doc'
 
-
+  // Calculate initial bounds based on zoom level and center before map renders
+  const [currentMapBounds, setCurrentMapBounds] = useState<[[number, number], [number, number]]>(() => {
+    if (center && center.length === 2 && zoom !== null) {
+      // Calculate bounds based on zoom level and center point
+      return calculateBoundsFromZoomAndCenter(center as [number, number], zoom);
+    }
+    if (resultBounds?.length) {
+      return resultBounds
+    }
+    // Fallback to default bounds
+    return [[72, -5], [54, 25]];
+  });
 
   
   const router = useRouter()
-
   const parent = searchParams.get('parent')
   const doc = searchParams.get('doc')
+
+  // Add state for H3 resolution
+  const [h3Resolution, setH3Resolution] = useState(8);
+
+      // Add state for geotile cells and intersecting cells
+  const [geotileCells, setGeotileCells] = useState<number[][][]>([]);
+  const [intersectingCellIndices, setIntersectingCellIndices] = useState<Set<number>>(new Set());
+  const [currentPrecision, setCurrentPrecision] = useState<number>(8); // Store current precision
+  const [intersectingCellsBounds, setIntersectingCellsBounds] = useState<[[number, number], [number, number]] | null>(null);
+  const lastCalculatedDebugBounds = useRef<[[number, number], [number, number]] | null>(null);
+  const lastZoomLevel = useRef<number>(8); // Track previous zoom level
+
+ 
+
+
+  const geoTileResults = useQueries({
+    queries: geotileCells.map((cell, index) => ({
+      queryKey: ['geotileCells', cell],
+      queryFn: async () => {
+        console.log("FETCHING GEOTILE CELL", cell)
+        const res = await fetch(`/api/geo/${queryEndpoint}?topLeftLat=${cell[0][0]}&topLeftLng=${cell[0][1]}&bottomRightLat=${cell[2][0]}&bottomRightLng=${cell[2][1]}&${queryEndpoint == 'sample' ? 'size=100' : 'totalHits=' + totalHits?.value}`)
+        if (!res.ok) {
+          throw new Error('Failed to fetch geotile cells')
+        }
+        const data = await res.json()
+        return data.hits.hits.map((hit: any) => hit.fields)
+      }
+    }))
+  })
+
 
   
   // NB: cluster mode has sampling within each cluster if many results, and sample mode has clustering of results with the same coordinates.
@@ -76,7 +193,13 @@ export default function MapExplorer() {
   const { docData, docLoading } = useDocData()
   
   const mapInstance = useRef<any>(null);
-  const autoMode = markerMode === 'auto' ? (searchParams.get('q')?.length && totalHits?.value < 100000 ? 'cluster' : 'sample') : null
+  
+   // Cluster if:
+  // Cluster mode
+  // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
+  // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
+  const autoMode = markerMode === 'auto' ? (searchParams.get('q')?.length || totalHits?.value < 100000 ? 'cluster' : 'sample') : null
+  const queryEndpoint = (markerMode == 'cluster' || mapInstance.current?.getZoom() < 8 || autoMode == 'cluster') ? 'cluster' : 'sample'
 
   // NB: sample mode, but clustering of results with the same coordinates
   const sampleClusters = useCallback((data: any) => {
@@ -140,6 +263,7 @@ export default function MapExplorer() {
 
   
 
+
   const coordinatesSelected = (lat: number, lon: number) => {
     return docData?._source?.location?.coordinates[1] == lat && docData?._source?.location?.coordinates[0] == lon
   }
@@ -199,26 +323,6 @@ export default function MapExplorer() {
 
 
 
-  // Function to get tile bounds containing a specific point
-  const getTileBoundsForPoint = useCallback((lat: number, lng: number, precision: number) => {
-    const n = Math.pow(2, precision);
-    
-    // Convert lat/lng to tile coordinates
-    const x = Math.floor(((lng + 180) / 360) * n);
-    const y = Math.floor((1 - Math.log(Math.tan((lat * Math.PI) / 180) + 1 / Math.cos((lat * Math.PI) / 180)) / Math.PI) / 2 * n);
-    
-    // Convert tile coordinates back to lat/lng bounds
-    const west = (x / n) * 360 - 180;
-    const east = ((x + 1) / n) * 360 - 180;
-    
-    const latRad1 = Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n)));
-    const latRad2 = Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / n)));
-    
-    const north = (latRad1 * 180) / Math.PI;
-    const south = (latRad2 * 180) / Math.PI;
-    
-    return [[north, west], [south, east]] as [[number, number], [number, number]];
-  }, []);
 /*
   useEffect(() => {
     // Check if the bounds are initialized
@@ -403,47 +507,6 @@ export default function MapExplorer() {
     }
   }
 
-  const calculateRadius = (docCount: number, maxDocCount: number, minDocCount: number) => {
-    const minRadius = .75; // Minimum radius for a marker
-    const maxRadius = 1; // Maximum radius for a marker
-
-    // Ensure docCount is within the range
-    docCount = Math.max(minDocCount, Math.min(maxDocCount, docCount));
-
-    if (maxDocCount === minDocCount) return minRadius;
-
-    // Use a logarithmic scale for a wider distribution
-    const logMax = Math.log(maxDocCount - minDocCount + 1);
-    const logValue = Math.log(docCount - minDocCount + 1);
-    const scaledRadius = (logValue / logMax) * (maxRadius - minRadius) + minRadius;
-
-    return scaledRadius;
-  };
-
-  function adjustBounds(bounds: [[number, number], [number, number]], adjustmentFactor: number): [[number, number], [number, number]] {
-    // bounds format: [[north, west], [south, east]]
-    const north = bounds[0][0];
-    const west = bounds[0][1];
-    const south = bounds[1][0];
-    const east = bounds[1][1];
-    
-    // Calculate the center
-    const centerLat = (north + south) / 2;
-    const centerLon = (east + west) / 2;
-    
-    // Calculate half-spans and apply adjustment factor
-    const latHalfSpan = Math.abs(north - south) * (1 + adjustmentFactor) / 2;
-    const lonHalfSpan = Math.abs(east - west) * (1 + adjustmentFactor) / 2;
-    
-    // Calculate new bounds
-    const newNorth = centerLat + latHalfSpan;
-    const newSouth = centerLat - latHalfSpan;
-    const newEast = centerLon + lonHalfSpan;
-    const newWest = centerLon - lonHalfSpan;
-    
-    return [[newNorth, newWest], [newSouth, newEast]];
-  }
-
  
 
 
@@ -504,32 +567,7 @@ export default function MapExplorer() {
       return !(rectEast < polyWest || rectWest > polyEast || rectNorth < polySouth || rectSouth > polyNorth);
     }, []);
 
-    // Add state for H3 resolution
-    const [h3Resolution, setH3Resolution] = useState(8);
 
-      // Add state for geotile cells and intersecting cells
-  const [geotileCells, setGeotileCells] = useState<number[][][]>([]);
-  const [intersectingCellIndices, setIntersectingCellIndices] = useState<Set<number>>(new Set());
-  const [currentPrecision, setCurrentPrecision] = useState<number>(8); // Store current precision
-  const [intersectingCellsBounds, setIntersectingCellsBounds] = useState<[[number, number], [number, number]] | null>(null);
-  const lastCalculatedDebugBounds = useRef<[[number, number], [number, number]] | null>(null);
-  const lastZoomLevel = useRef<number>(8); // Track previous zoom level
-
-
-  const geoTileResults = useQueries({
-    queries: geotileCells.map((cell, index) => ({
-      queryKey: ['geotileCells', cell],
-      queryFn: async () => {
-        console.log("FETCHING GEOTILE CELL", cell)
-        const res = await fetch(`/api/geo/sample?topLeftLat=${cell[0][0]}&topLeftLng=${cell[0][1]}&bottomRightLat=${cell[2][0]}&bottomRightLng=${cell[2][1]}&size=100`)
-        if (!res.ok) {
-          throw new Error('Failed to fetch geotile cells')
-        }
-        const data = await res.json()
-        return data.hits.hits.map((hit: any) => hit.fields)
-      }
-    }))
-  })
 
   //console.log("RESULTS", geoTileResults.filter(result => result.isSuccess).map(result => result.data))
 
@@ -888,10 +926,7 @@ export default function MapExplorer() {
             setViewUrlParams(currentZoom, [center.lat, center.lng]);
         }}
         zoomControl={false}
-        {...center && zoom ?
-          { center, zoom }
-          : { bounds: resultBounds || [[72, -5], [54, 25]] }
-        }
+        bounds={ currentMapBounds }
         className='w-full h-full'>
         {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon }: any, leaflet: any) => {
 
