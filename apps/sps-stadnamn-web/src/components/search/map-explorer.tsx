@@ -520,7 +520,7 @@ export default function MapExplorer() {
     }))
   })
 
-  console.log("RESULTS", geoTileResults.filter(result => result.isSuccess).map(result => result.data))
+  //console.log("RESULTS", geoTileResults.filter(result => result.isSuccess).map(result => result.data))
 
   
 
@@ -668,30 +668,58 @@ export default function MapExplorer() {
     console.log("GEOTILE CELLS", cells)
   }, [getGeotileCells]);
 
-  // Debounced version of updateGeotileCells
-  const debouncedUpdateGeotileCells = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Throttled version of updateGeotileCells
+  const throttledUpdateGeotileCells = useRef<{
+    lastCall: number;
+    timeoutId: ReturnType<typeof setTimeout> | null;
+  }>({ lastCall: 0, timeoutId: null });
   
-  // Debounced version of setDebugViewportBounds for move events
-  const debouncedSetDebugViewportBounds = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Throttled version of setDebugViewportBounds for move events
+  const throttledSetDebugViewportBounds = useRef<{
+    lastCall: number;
+    timeoutId: ReturnType<typeof setTimeout> | null;
+  }>({ lastCall: 0, timeoutId: null });
   
-  const updateGeotileCellsDebounced = useCallback(() => {
-    if (debouncedUpdateGeotileCells.current) {
-      clearTimeout(debouncedUpdateGeotileCells.current);
-    }
+  const updateGeotileCellsThrottled = useCallback(() => {
     
-    debouncedUpdateGeotileCells.current = setTimeout(() => {
+    const now = Date.now();
+    const timeSinceLastCall = now - throttledUpdateGeotileCells.current.lastCall;
+    const delay = 200; // Execute at most every 200ms
+    
+    if (timeSinceLastCall >= delay) {
+      throttledUpdateGeotileCells.current.lastCall = now;
       updateGeotileCells();
-    }, 300); // 300ms debounce delay
+    } else {
+      // Schedule execution for the remaining time
+      if (throttledUpdateGeotileCells.current.timeoutId) {
+        clearTimeout(throttledUpdateGeotileCells.current.timeoutId);
+      }
+      throttledUpdateGeotileCells.current.timeoutId = setTimeout(() => {
+        throttledUpdateGeotileCells.current.lastCall = Date.now();
+        updateGeotileCells();
+      }, delay - timeSinceLastCall);
+    }
   }, [updateGeotileCells]);
 
-  const updateDebugViewportBoundsDebounced = useCallback((bounds: [[number, number], [number, number]]) => {
-    if (debouncedSetDebugViewportBounds.current) {
-      clearTimeout(debouncedSetDebugViewportBounds.current);
-    }
+  const updateDebugViewportBoundsThrottled = useCallback((bounds: [[number, number], [number, number]]) => {
     
-    debouncedSetDebugViewportBounds.current = setTimeout(() => {
+    const now = Date.now();
+    const timeSinceLastCall = now - throttledSetDebugViewportBounds.current.lastCall;
+    const delay = 16; // Execute at most every 16ms (~60fps for smooth visual updates)
+    
+    if (timeSinceLastCall >= delay) {
+      throttledSetDebugViewportBounds.current.lastCall = now;
       setDebugViewportBounds(bounds);
-    }, 100); // Shorter debounce for more responsive visual feedback
+    } else {
+      // Schedule execution for the remaining time
+      if (throttledSetDebugViewportBounds.current.timeoutId) {
+        clearTimeout(throttledSetDebugViewportBounds.current.timeoutId);
+      }
+      throttledSetDebugViewportBounds.current.timeoutId = setTimeout(() => {
+        throttledSetDebugViewportBounds.current.lastCall = Date.now();
+        setDebugViewportBounds(bounds);
+      }, delay - timeSinceLastCall);
+    }
   }, []);
 
   // Update geotile cells immediately when grid visibility changes
@@ -709,27 +737,15 @@ export default function MapExplorer() {
     }
   }, [showGeotileGrid, updateGeotileCells, calculateGeotilePrecision, currentPrecision]);
 
-  // Update when debug viewport bounds change
-  useEffect(() => {
-    if (showGeotileGrid && debugViewportBounds) {
-      // If this is the initial load (or grid just turned on), update immediately
-      if (geotileCells.length === 0) {
-        updateGeotileCells();
-      } else {
-        // Otherwise use the debounced update for subsequent changes
-        updateGeotileCellsDebounced();
-      }
-    }
-  }, [debugViewportBounds, showGeotileGrid, updateGeotileCellsDebounced, updateGeotileCells, geotileCells.length]);
 
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
-      if (debouncedUpdateGeotileCells.current) {
-        clearTimeout(debouncedUpdateGeotileCells.current);
+      if (throttledUpdateGeotileCells.current.timeoutId) {
+        clearTimeout(throttledUpdateGeotileCells.current.timeoutId);
       }
-      if (debouncedSetDebugViewportBounds.current) {
-        clearTimeout(debouncedSetDebugViewportBounds.current);
+      if (throttledSetDebugViewportBounds.current.timeoutId) {
+        clearTimeout(throttledSetDebugViewportBounds.current.timeoutId);
       }
     };
   }, []);
@@ -865,7 +881,7 @@ export default function MapExplorer() {
                 const east = center.lng + zoomedLngSpan / 2;
                 const west = center.lng - zoomedLngSpan / 2;
                 
-                updateDebugViewportBoundsDebounced([[north, west], [south, east]]);
+                updateDebugViewportBoundsThrottled([[north, west], [south, east]]);
               },
               zoomend: () => {
                 // Update precision when zoom level changes
@@ -881,7 +897,7 @@ export default function MapExplorer() {
                 const boundsCenter = bounds.getCenter();
                 console.log("MOVE END")
                 setViewUrlParams(map.getZoom(), [boundsCenter.lat, boundsCenter.lng])
-                setMarkerBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
+                //setMarkerBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
               },
             })         
             return null
