@@ -6,6 +6,21 @@ import useDocData from './doc-data';
 import { useEffect, useCallback } from 'react';
 import { base64UrlToString } from '@/lib/utils';
 
+const groupDataQuery = async (group: string, searchQueryString: string, pageParam: { size: number, from: number }) => {
+        const res = await fetch(`/api/search/group?${searchQueryString}&group=${group}&size=${pageParam.size}&from=${pageParam.from}`)
+        if (!res.ok) {
+            throw new Error('Failed to fetch group')
+        }
+        const data = await res.json()
+        
+        return {
+            hits: data.hits?.hits || [],
+            total: data.hits?.total,
+            size: pageParam.size,
+            from: pageParam.from
+        }
+}
+
 export default function useGroupData() {
     const searchParams = useSearchParams()
     const { searchQueryString } = useSearchQuery()
@@ -25,22 +40,7 @@ export default function useGroupData() {
         isFetchingNextPage
     } = useInfiniteQuery({
         queryKey: ['group', group],
-        queryFn: async ({ pageParam }) => {
-            if (!group) return null
-            
-            const res = await fetch(`/api/search/group?${searchQueryString}&group=${group}&size=${pageParam.size}&from=${pageParam.from}`)
-            if (!res.ok) {
-                throw new Error('Failed to fetch group')
-            }
-            const data = await res.json()
-            
-            return {
-                hits: data.hits?.hits || [],
-                total: data.hits?.total,
-                size: pageParam.size,
-                from: pageParam.from
-            }
-        },
+        queryFn: async ({ pageParam, }) => group ? groupDataQuery(group, searchQueryString, pageParam) : null,
         initialPageParam: { size: 5, from: 0 },
         getNextPageParam: (lastPage, allPages) => {
             if (!lastPage || !lastPage.hits.length) {
