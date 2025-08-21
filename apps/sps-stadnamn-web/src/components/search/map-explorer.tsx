@@ -977,7 +977,7 @@ export default function MapExplorer() {
                 const textLng = polyEast - (polyEast - polyWest) * 0.1;
                 
                 return (
-                  <Fragment key={`geotile-cell-${index}`}>
+
                     <Polygon
                       key={`geotile-${index}`}
                       positions={polygon}
@@ -989,24 +989,6 @@ export default function MapExplorer() {
                         dashArray: intersectsViewport ? '5, 5' : '10, 5'
                       }}
                     />
-                    {intersectsViewport && (
-                      <Marker
-                        key={`geotile-text-${index}`}
-                        position={[textLat, textLng]}
-                        icon={leaflet.divIcon({
-                          html: `<div style="font-size: 8px; font-family: monospace; color: #333; background: rgba(255,255,255,0.8); padding: 1px 2px; border-radius: 2px; white-space: nowrap;">
-                            N:${polyNorth.toFixed(4)}<br/>
-                            S:${polySouth.toFixed(4)}<br/>
-                            E:${polyEast.toFixed(4)}<br/>
-                            W:${polyWest.toFixed(4)}
-                          </div>`,
-                          className: 'geotile-bounds-label',
-                          iconSize: [60, 32],
-                          iconAnchor: [0, 0]
-                        })}
-                      />
-                    )}
-                  </Fragment>
                 );
               })}
 
