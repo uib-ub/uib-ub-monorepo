@@ -38,7 +38,7 @@ export default function useDocData(docParams?: {docData: Record<string, any>, do
 
     const { data, error: docError, isLoading: docLoading } = useQuery({
         queryKey: ['doc', docUuid],
-        queryFn: async () => docDataQuery(docUuid, docParams)
+        queryFn: async () => docUuid ? docDataQuery(docUuid, docParams) : null
     })
 
     const { docData, docAdm, docDataset, docGroup } = data || {}
