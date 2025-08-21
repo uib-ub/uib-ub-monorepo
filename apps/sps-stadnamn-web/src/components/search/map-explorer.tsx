@@ -583,7 +583,12 @@ export default function MapExplorer() {
       { precision: 12, degrees: 0.087890625 },
       { precision: 13, degrees: 0.0439453125 },
       { precision: 14, degrees: 0.02197265625 },
-      { precision: 15, degrees: 0.010986328125 }
+      { precision: 15, degrees: 0.010986328125 },
+      { precision: 16, degrees: 0.0054931640625 },
+      { precision: 17, degrees: 0.00274658203125 },
+      { precision: 18, degrees: 0.001373291015625 },
+      { precision: 19, degrees: 0.0006866455078125 },
+      { precision: 20, degrees: 0.00034332275390625 }
     ];
     
     // Find precision where grid cell is larger than or equal to viewport
@@ -591,7 +596,7 @@ export default function MapExplorer() {
     
     for (let i = precisionToDegrees.length - 1; i >= 0; i--) {
       if (precisionToDegrees[i].degrees >= maxSpan) {
-        return Math.min(15, precisionToDegrees[i].precision); // Use the exact precision level for smaller cells
+        return precisionToDegrees[i].precision; // Removed artificial cap - let it scale to all zoom levels
       }
     }
     
