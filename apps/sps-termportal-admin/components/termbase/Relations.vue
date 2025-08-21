@@ -1,8 +1,29 @@
 <template>
-  <UtilsTableWrapper :heading-level="headingLevel">
+  <UtilsTableWrapper
+    :heading-level="headingLevel"
+    :pending="pending"
+  >
     <template #header>
       Relasjoner
     </template>
+    <UtilsTableLegend>
+      <UtilsTableLegendEntry
+        v-if="publishedRelations"
+        :legend-key="publishedRelations.length"
+        legend-value="rettede relasjoner mellom publiserte begreper"
+      />
+      <UtilsTableLegendEntry
+        v-if="publishedRelations"
+        :legend-key="displayData.length - publishedRelations.length"
+        legend-value="rettede relasjoner hvor minst ett av begrepene ikke er publisert"
+      />
+      <UtilsTableLegendEntry
+        v-if="publishedRelations"
+        :legend-key="((publishedRelations.length
+          / (termbase.conceptCountPublished * (termbase.conceptCountPublished - 1))) * 100).toFixed(5)"
+        legend-value="nettverkstetthet for publiserte begreper"
+      />
+    </UtilsTableLegend>
     <div class="">
       <DataTable
         v-if="data && data.length > 0"
@@ -122,8 +143,6 @@
       </DataTable>
     </div>
   </UtilsTableWrapper>
-  <pre>{{ data }}</pre>
-  <pre>{{ displayData }}</pre>
 </template>
 
 <script setup lang="ts">
@@ -143,7 +162,7 @@ const filters = ref({
   relation: { value: null, matchMode: FilterMatchMode.EQUALS },
 });
 
-const { data } = useLazyFetch(`/api/tb/${props.termbase.id}/relations`, {
+const { data, pending } = useLazyFetch(`/api/tb/${props.termbase.id}/relations`, {
   query: { internal: true },
 });
 
@@ -155,13 +174,13 @@ const displayData = computed(() => {
           .split("/").slice(-1)[0]
           .replace(`${props.termbase.id}-3A`, ""),
         link1: createWikiLink(pair.concept1.value),
-        published1: pair.published1.value == "true",
+        published1: pair.published1 ? pair.published1.value == "true" : true,
         relation: pair.p.value.split("/").slice(-1)[0],
         label2: pair.concept2.value
           .split("/").slice(-1)[0]
           .replace(`${props.termbase.id}-3A`, ""),
         link2: createWikiLink(pair.concept2.value),
-        published2: pair.published2.value == "true",
+        published2: pair.published2 ? pair.published2.value == "true" : true,
       };
     });
     return tmp;
@@ -169,6 +188,15 @@ const displayData = computed(() => {
   else {
     return null;
   }
+});
+
+const publishedRelations = computed(() => {
+  if (displayData.value) {
+    const tmp = displayData.value.filter(relation =>
+      relation.published1 && relation.published2);
+    return tmp;
+  }
+  else { return null; }
 });
 
 const relationTypes = computed (() => {
