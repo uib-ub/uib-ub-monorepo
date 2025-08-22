@@ -813,7 +813,7 @@ export default function MapExplorer() {
   }, []);
 
   return <>
-    {(!isLoading || markerBounds || (center && zoom) || searchError) ? <>
+     <>
       <Map        
         whenReady={(e: any) => {
             const currentBounds = e.target.getBounds();
@@ -1259,12 +1259,7 @@ export default function MapExplorer() {
         
 
       </Map>
-    </> : <div className="flex h-full items-center justify-center">
-      <div>
-        <Spinner status="Lastar inn kartet" className="w-20 h-20" />
-      </div>
-    </div>
-    }
+    </>
 
     <div className={`absolute top-12 lg:top-auto right-0 flex-col lg:flex-row p-2 gap-2 lg:bottom-0 lg:left-1/2 lg:transform lg:-translate-x-1/2 flex justify-center p-2 gap-2 text-white z-[3001]`}>
       <DropdownMenu>
