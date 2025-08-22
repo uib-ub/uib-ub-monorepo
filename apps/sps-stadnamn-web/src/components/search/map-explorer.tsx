@@ -23,12 +23,11 @@ import wkt from 'wellknown';
 import { stringToBase64Url } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
 import { useQueries } from "@tanstack/react-query";
-import { calculateBoundsFromZoomAndCenter, adjustBounds, calculateRadius } from "./map-utils";
+import { adjustBounds, calculateRadius, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateCenterFromBounds } from "./map-utils";
 
 
 export default function MapExplorer() {
   const { resultBounds, totalHits, searchError, setCoordinatesError, isLoading, allowFitBounds, setAllowFitBounds } = useContext(SearchContext)
-  const [markerBounds, setMarkerBounds] = useState<[[number, number], [number, number]] | null>()
     
   const controllerRef = useRef(new AbortController());
   const [baseMap, setBasemap] = useState<null | string>(null)
@@ -36,18 +35,18 @@ export default function MapExplorer() {
   const [myLocation, setMyLocation] = useState<[number, number] | null>(null)
   const [geoLoading, setGeoLoading] = useState(false)
   const searchParams = useSearchParams()
-  const zoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
-  const center = searchParams.get('center') ? searchParams.get('center')!.split(',').map(parseFloat) : null
   const [viewResults, setViewResults] = useState<any>(null)
   const { searchQueryString } = useSearchQuery()
   const perspective = usePerspective()
   const details = searchParams.get('details') || 'doc'
-
+  const urlZoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
+  const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
+  
   // Calculate initial bounds based on zoom level and center before map renders
-  const [currentMapBounds, setCurrentMapBounds] = useState<[[number, number], [number, number]]>(() => {
-    if (center && center.length === 2 && zoom !== null) {
+  const [snappedBounds, setSnappedBounds] = useState<[[number, number], [number, number]]>(() => {
+    if (urlCenter && urlCenter.length === 2 && urlZoom !== null) {
       // Calculate bounds based on zoom level and center point
-      return calculateBoundsFromZoomAndCenter(center as [number, number], zoom);
+      return boundsFromZoomAndCenter(urlCenter as [number, number], urlZoom);
     }
     if (resultBounds?.length) {
       return resultBounds
@@ -55,6 +54,13 @@ export default function MapExplorer() {
     // Fallback to default bounds
     return [[72, -5], [54, 25]];
   });
+
+  const [currentZoom, setCurrentZoom] = useState<number>(urlZoom || calculateZoomFromBounds(snappedBounds))
+  const [currentCenter, setCurrentCenter] = useState<[number, number]>(urlCenter ? urlCenter : calculateCenterFromBounds(snappedBounds))
+
+
+  const gridSize = useRef<number>(getGridSize(snappedBounds))
+
 
   
   const router = useRouter()
@@ -65,19 +71,15 @@ export default function MapExplorer() {
   const [h3Resolution, setH3Resolution] = useState(8);
 
       // Add state for geotile cells and intersecting cells
-  const [geotileCells, setGeotileCells] = useState<number[][][]>([]);
-  const [intersectingCellIndices, setIntersectingCellIndices] = useState<Set<number>>(new Set());
+  const [markerCells, setMarkerCells] = useState<number[][][]>([]);
   const [currentPrecision, setCurrentPrecision] = useState<number>(8); // Store current precision
-  const [intersectingCellsBounds, setIntersectingCellsBounds] = useState<[[number, number], [number, number]] | null>(null);
-  const lastCalculatedDebugBounds = useRef<[[number, number], [number, number]] | null>(null);
-  const lastZoomLevel = useRef<number>(8); // Track previous zoom level
 
  
 
 
-  const geoTileResults = useQueries({
-    queries: geotileCells.map((cell, index) => ({
-      queryKey: ['geotileCells', cell],
+  const markerResults = useQueries({
+    queries: markerCells.map((cell, index) => ({
+      queryKey: ['markerResults', cell],
       queryFn: async () => {
         console.log("FETCHING GEOTILE CELL", cell)
         const res = await fetch(`/api/geo/${queryEndpoint}?topLeftLat=${cell[0][0]}&topLeftLng=${cell[0][1]}&bottomRightLat=${cell[2][0]}&bottomRightLng=${cell[2][1]}&${queryEndpoint == 'sample' ? 'size=100' : 'totalHits=' + totalHits?.value}`)
@@ -91,26 +93,6 @@ export default function MapExplorer() {
   })
 
 
-  
-  // NB: cluster mode has sampling within each cluster if many results, and sample mode has clustering of results with the same coordinates.
-  // Tiles are only used in cluster mode
-  const tiles = viewResults?.aggregations?.clusterSample?.tiles?.buckets || viewResults?.aggregations?.tiles?.buckets
-
-
-  const maxDocCount = tiles?.reduce((acc: number, cur: any) => Math.max(acc, cur.doc_count), 0);
-  const minDocCount = tiles?.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
-
-  const setViewUrlParams = useCallback((zoom: number, center?: [number, number]) => {
-      const params = new URLSearchParams(searchParams)
-      params.set('zoom', zoom.toString())
-      if (center && center.length == 2) {
-        params.set('center', center.join(','))
-      }
-      router.replace(`?${params.toString()}`)
-    }, [router, searchParams])
-  
-  
-  
 
   if (searchParams.get('error') == 'true') {
     throw new Error('Simulated client side error');
@@ -193,6 +175,7 @@ export default function MapExplorer() {
     return docData?._source?.location?.coordinates[1] == lat && docData?._source?.location?.coordinates[0] == lon
   }
 
+
   // Fly to doc
   useEffect(() => {
     if (!mapInstance.current || isLoading ) return
@@ -220,13 +203,11 @@ export default function MapExplorer() {
     if (boundsContained) {
         // Get zoom levels for both current view and result bounds
         const resultBoundsZoom = mapInstance.current.getBoundsZoom(resultBounds);
-        const currentZoom = mapInstance.current.getZoom();
         
         // If current zoom is more than 2 levels out from the result bounds zoom
         if (currentZoom < resultBoundsZoom - 2) {
           setAllowFitBounds(false)
           mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-          setViewUrlParams(resultBoundsZoom, [mapBounds.getCenter().lat, mapBounds.getCenter().lng])
           return
         }
     }
@@ -235,102 +216,15 @@ export default function MapExplorer() {
       return
     }
     
-
+    /*
     if (!tiles && !viewResults?.hits?.markers?.length) {
       setAllowFitBounds(false)
-      
       mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-      setViewUrlParams(mapInstance.current.getZoom(), [mapBounds.getCenter().lat, mapBounds.getCenter().lng])
     }
+      */
     
     
-  }, [resultBounds, allowFitBounds, setAllowFitBounds, isLoading, geoLoading, tiles, viewResults, setViewUrlParams])
-
-
-
-/*
-  useEffect(() => {
-    // Check if the bounds are initialized
-    
-    if (!markerBounds?.length || !totalHits || isLoading) {
-      return;
-    }
-
-    setGeoLoading(true)
-    setCoordinatesError(false)
-    
-    // Get the center of the current viewport
-    const [[north, west], [south, east]] = markerBounds;
-    const centerLat = (north + south) / 2;
-    const centerLng = (east + west) / 2;
-    
-    // Calculate precision for the current zoom level or use a default
-    let precision = 8; // Default fallback
-    try {
-      precision = calculateGeotilePrecision();
-    } catch (e) {
-      console.log('Using default precision due to calculation error:', e);
-    }
-    
-    // Get tile bounds containing the center point
-    const tileBounds = getTileBoundsForPoint(centerLat, centerLng, precision);
-    const [[tileNorth, tileWest], [tileSouth, tileEast]] = tileBounds;
-    
-    console.log('Using tile bounds for geo query:', tileBounds, 'precision:', precision);
-    
-    // Fetch data based on the tile bounds instead of viewport bounds
-    const queryParams = new URLSearchParams(searchQueryString);
-    
-    const paddedTopLeftLat = getValidDegree(tileNorth, 90);
-    const paddedBottomRightLat = getValidDegree(tileSouth, -90);
-    const paddedTopLeftLng = getValidDegree(tileWest, -180);
-    const paddedBottomRightLng = getValidDegree(tileEast, 180);
-
-    queryParams.set('topLeftLat', paddedTopLeftLat);
-    queryParams.set('topLeftLng', paddedTopLeftLng); 
-    queryParams.set('bottomRightLat', paddedBottomRightLat);
-    queryParams.set('bottomRightLng', paddedBottomRightLng);
-    if (zoom) {
-      queryParams.set('zoom', zoom.toString());
-    }
-
-    // Both cluster map and sample map use cluster data above zoom 10
-    const query = `/api/geo/${autoMode || markerMode}?${queryParams.toString()}&totalHits=${totalHits?.value}`;
-
-    fetch(query, {
-      signal: controllerRef.current.signal,
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Request failed: ' + response.statusText);
-        }
-        return response.json(); 
-      })
-       
-      .then(data => {
-          setViewResults((autoMode == 'sample' || markerMode == 'sample') ? sampleClusters(data) : data)
-      })
-
-      .catch(error => {
-        if (error.name != 'AbortError') {
-          console.log("NAME", error.name)
-          console.log("ERROR", error.stack)
-          setCoordinatesError(true)
-          setGeoLoading(false)
-        }
-        
-      })
-      .finally(() => {
-        setGeoLoading(false)
-      })
-
-  }, [ markerBounds, searchError, searchQueryString, totalHits, markerMode, parent, perspective, isLoading, autoMode, sampleClusters, setCoordinatesError, resultBounds, zoom]);
-*/
+  }, [resultBounds, allowFitBounds, setAllowFitBounds, isLoading, geoLoading, viewResults])
 
 
 
@@ -377,38 +271,6 @@ export default function MapExplorer() {
       localStorage.setItem('markerMode', markerMode)
     }
   }, [markerMode])
-
-  /*
-  useEffect(() => {
-    return
-    //console.log("ZOOM", programmaticChange.current)
-    if (!programmaticChange.current && center && zoom) {
-      mapInstance.current?.setView([center[0], center[1]], zoom)
-    }
-    programmaticChange.current = false
-
-  }, [zoom, center])
-  */
-
-
-
-  const zoomIn = () => {
-    if (mapInstance.current) {
-      mapInstance.current.zoomIn();
-    } else {
-
-      setViewUrlParams((zoom || 5) + 1);
-    }
-  };
-  
-  const zoomOut = () => {
-    if (mapInstance.current) {
-      mapInstance.current.zoomOut();
-    } else {
-      setViewUrlParams(Math.max((zoom || 5) - 1, 1));
-      
-    }
-  };
 
 
 
@@ -494,253 +356,6 @@ export default function MapExplorer() {
 
 
 
-  //console.log("RESULTS", geoTileResults.filter(result => result.isSuccess).map(result => result.data))
-
-  
-
-
-  // Calculate viewport bounds 10% smaller than current view
-  const getZoomedInViewport = useCallback(() => {
-    if (!mapInstance.current) return null;
-    
-    const currentBounds = mapInstance.current.getBounds();
-    
-    // Convert current bounds to the format expected by adjustBounds
-    const boundsArray: [[number, number], [number, number]] = [
-      [currentBounds.getNorth(), currentBounds.getWest()],
-      [currentBounds.getSouth(), currentBounds.getEast()]
-    ];
-    
-    // Make bounds 10% smaller than current view
-    return adjustBounds(boundsArray, -0.1);
-  }, []);
-
-  // Calculate geotile precision based on viewport size
-  const calculateGeotilePrecision = useCallback(() => {
-    if (!mapInstance.current) return 8;
-    
-    const zoomedViewport = getZoomedInViewport();
-    if (!zoomedViewport) return 8;
-    
-    const [[north, west], [south, east]] = zoomedViewport;
-    const latSpan = Math.abs(north - south);
-    const lngSpan = Math.abs(east - west);
-    
-    console.log("CALCULATING GEOTILE PRECISION", latSpan, lngSpan)
-    // Geotile precision levels and their approximate degree coverage
-    // These are rough approximations for grid cell sizes
-    const precisionToDegrees = [
-      { precision: 0, degrees: 360 },
-      { precision: 1, degrees: 180 },
-      { precision: 2, degrees: 90 },
-      { precision: 3, degrees: 45 },
-      { precision: 4, degrees: 22.5 },
-      { precision: 5, degrees: 11.25 },
-      { precision: 6, degrees: 5.625 },
-      { precision: 7, degrees: 2.8125 },
-      { precision: 8, degrees: 1.40625 },
-      { precision: 9, degrees: 0.703125 },
-      { precision: 10, degrees: 0.3515625 },
-      { precision: 11, degrees: 0.17578125 },
-      { precision: 12, degrees: 0.087890625 },
-      { precision: 13, degrees: 0.0439453125 },
-      { precision: 14, degrees: 0.02197265625 },
-      { precision: 15, degrees: 0.010986328125 },
-      { precision: 16, degrees: 0.0054931640625 },
-      { precision: 17, degrees: 0.00274658203125 },
-      { precision: 18, degrees: 0.001373291015625 },
-      { precision: 19, degrees: 0.0006866455078125 },
-      { precision: 20, degrees: 0.00034332275390625 }
-    ];
-    
-    // Find precision where grid cell is larger than or equal to viewport
-    const maxSpan = Math.max(latSpan, lngSpan);
-    
-    for (let i = precisionToDegrees.length - 1; i >= 0; i--) {
-      if (precisionToDegrees[i].degrees >= maxSpan) {
-        return precisionToDegrees[i].precision; // Removed artificial cap - let it scale to all zoom levels
-      }
-    }
-    
-    return 8; // Default fallback
-  }, [getZoomedInViewport]);
-
-  // Generate only the intersecting geotile cells
-  const getGeotileCells = useCallback((bounds: any, debugBounds: [[number, number], [number, number]]) => {
-    if (!bounds || !debugBounds) return [];
-    
-    // Check if we should use world cell (zoom < 8)
-    if (mapInstance.current && mapInstance.current.getZoom() < 8) {
-      return [];
-    }
-    
-    const [[debugNorth, debugWest], [debugSouth, debugEast]] = debugBounds;
-    
-    // Use the debug viewport bounds instead of full map bounds
-    const n = Math.pow(2, currentPrecision);
-    
-    // Convert debug viewport bounds to tile coordinates
-    const xMin = Math.floor(((debugWest + 180) / 360) * n);
-    const xMax = Math.floor(((debugEast + 180) / 360) * n);
-    
-    // Convert latitude to Web Mercator Y tile coordinates for debug viewport
-    const yMin = Math.floor((1 - Math.log(Math.tan((debugNorth * Math.PI) / 180) + 1 / Math.cos((debugNorth * Math.PI) / 180)) / Math.PI) / 2 * n);
-    const yMax = Math.floor((1 - Math.log(Math.tan((debugSouth * Math.PI) / 180) + 1 / Math.cos((debugSouth * Math.PI) / 180)) / Math.PI) / 2 * n);
-    
-    const cells: number[][][] = [];
-    const intersectingIndices = new Set<number>();
-    let index = 0;
-    
-    // Generate only the cells that intersect with debug viewport
-    for (let x = xMin; x <= xMax; x++) {
-      for (let y = yMin; y <= yMax; y++) {
-        // Convert tile coordinates back to lat/lng bounds
-        const tileWest = (x / n) * 360 - 180;
-        const tileEast = ((x + 1) / n) * 360 - 180;
-        
-        const latRad1 = Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n)));
-        const latRad2 = Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / n)));
-        
-        const tileNorth = (latRad1 * 180) / Math.PI;
-        const tileSouth = (latRad2 * 180) / Math.PI;
-        
-        // Create cell polygon
-        const cell = [
-          [tileNorth, tileWest],
-          [tileNorth, tileEast],
-          [tileSouth, tileEast],
-          [tileSouth, tileWest],
-          [tileNorth, tileWest]
-        ];
-        
-        // Add to cells array and track intersecting cells
-        cells.push(cell);
-        if (checkPolygonIntersection(cell, debugBounds)) {
-          intersectingIndices.add(index);
-        }
-        index++;
-      }
-    }
-    
-    // Update the intersecting indices state
-    setIntersectingCellIndices(intersectingIndices);
-    
-    // Calculate and store the combined bounds of intersecting cells inline to avoid dependency issues
-    let combinedBounds: [[number, number], [number, number]] | null = null;
-    if (intersectingIndices.size > 0) {
-      let minLat = Infinity, maxLat = -Infinity;
-      let minLng = Infinity, maxLng = -Infinity;
-      
-      intersectingIndices.forEach(index => {
-        const cell = cells[index];
-        if (cell) {
-          cell.forEach(([lat, lng]) => {
-            minLat = Math.min(minLat, lat);
-            maxLat = Math.max(maxLat, lat);
-            minLng = Math.min(minLng, lng);
-            maxLng = Math.max(maxLng, lng);
-      });
-        }
-      });
-      
-      if (minLat !== Infinity) {
-        combinedBounds = [[maxLat, minLng], [minLat, maxLng]];
-      }
-    }
-    setIntersectingCellsBounds(combinedBounds);
-    
-    return cells;
-  }, [currentPrecision, checkPolygonIntersection]);
-
-  // Function to update geotile cells state based on debug viewport
-  const updateGeotileCells = useCallback((forcedDebugBounds?: [[number, number], [number, number]]) => {
-    if (!mapInstance.current) {
-      setGeotileCells([]);
-      setIntersectingCellIndices(new Set());
-      setIntersectingCellsBounds(null);
-      return;
-    }
-    
-    const currentZoom = mapInstance.current.getZoom();
-    
-    // If zoom level is below 8, use a single cell covering the whole world
-    if (currentZoom < 9) {
-      const worldCell = [
-        [90, -180],
-        [90, 180],
-        [-90, 180],
-        [-90, -180],
-        [90, -180]
-      ];
-      setGeotileCells([worldCell]);
-      setIntersectingCellIndices(new Set([0]));
-      setIntersectingCellsBounds([[90, -180], [-90, 180]]);
-      console.log("ZOOM < 8: Using single world cell");
-      return;
-    }
-    
-    const debugBounds = forcedDebugBounds || debugViewportBounds;
-    if (!debugBounds) return;
-    
-    const bounds = mapInstance.current.getBounds();
-    const cells: number[][][] = getGeotileCells(bounds, debugBounds);
-    setGeotileCells(cells);
-    console.log("GEOTILE CELLS", cells);
-    
-    // Update the last calculated bounds
-    lastCalculatedDebugBounds.current = debugBounds;
-  }, [getGeotileCells, debugViewportBounds]);
-
-  // Smart viewport bounds update with instant geotile cell updates when needed
-  const updateDebugViewportBounds = useCallback((bounds: [[number, number], [number, number]]) => {
-    // Always update debug viewport bounds instantly (no throttling)
-    setDebugViewportBounds(bounds);
-    
-    // If zoom level is below 8, no need to update cells (using world cell)
-    if (mapInstance.current && mapInstance.current.getZoom() < 9) {
-      return;
-    }
-    
-    // Smart bounds checking: only update cells if viewport has left current intersecting cells bounds
-    if (!intersectingCellsBounds) {
-      // No bounds yet, update needed
-      updateGeotileCells(bounds);
-      return;
-    }
-    
-    // Check if debug viewport is still within current intersecting cells bounds
-    const [[debugNorth, debugWest], [debugSouth, debugEast]] = bounds;
-    const [[boundsNorth, boundsWest], [boundsSouth, boundsEast]] = intersectingCellsBounds;
-    
-    // Check if debug viewport is completely contained within intersecting cells bounds
-    const isWithinBounds = debugNorth <= boundsNorth && 
-           debugSouth >= boundsSouth && 
-           debugWest >= boundsWest && 
-           debugEast <= boundsEast;
-    
-    if (!isWithinBounds) {
-      // Debug viewport has left the current intersecting cells bounds - update immediately
-      updateGeotileCells(bounds);
-    }
-    // If still within bounds, no update needed - performance optimization!
-  }, [intersectingCellsBounds, updateGeotileCells]);
-
-  // Update geotile cells immediately when grid visibility changes
-  useEffect(() => {
-    if (showGeotileGrid) {
-      // Ensure we have a valid precision before showing the grid
-      if (mapInstance.current && currentPrecision === 8) {
-        const initialPrecision = calculateGeotilePrecision();
-        setCurrentPrecision(initialPrecision);
-      }
-      updateGeotileCells();
-    } else {
-      setGeotileCells([]);
-      setIntersectingCellIndices(new Set());
-      setIntersectingCellsBounds(null);
-    }
-  }, [showGeotileGrid, updateGeotileCells, calculateGeotilePrecision, currentPrecision]);
-
 
   // No cleanup needed for the new smart update system
 
@@ -816,92 +431,113 @@ export default function MapExplorer() {
      <>
       <Map        
         whenReady={(e: any) => {
-            const currentBounds = e.target.getBounds();
-            const center = currentBounds.getCenter();
-            const currentZoom = e.target.getZoom();
-            
-            setMarkerBounds([[currentBounds.getNorth(), currentBounds.getWest()], [currentBounds.getSouth(), currentBounds.getEast()]]);
-            
             if (!mapInstance.current) {
               mapInstance.current = e.target;
-              // Calculate and set initial precision when map is first ready
-              const initialPrecision = calculateGeotilePrecision();
-              setCurrentPrecision(initialPrecision);
-
-              // Calculate initial debug viewport bounds 10% smaller than current view
-              const boundsArray: [[number, number], [number, number]] = [
-                [currentBounds.getNorth(), currentBounds.getWest()],
-                [currentBounds.getSouth(), currentBounds.getEast()]
-              ];
-              
-              // Make bounds 10% smaller than current view
-              const reducedBounds = adjustBounds(boundsArray, -0.1);
-              
-              setDebugViewportBounds(reducedBounds);
-              
-              // Initialize last zoom level
-              lastZoomLevel.current = currentZoom;
-              
-              // Initialize geotile cells based on initial zoom level
-              if (showGeotileGrid) {
-                updateGeotileCells();
-              }
             }
-            
-            setViewUrlParams(currentZoom, [center.lat, center.lng]);
         }}
         zoomControl={false}
-        bounds={ currentMapBounds }
+        bounds={ snappedBounds }
         className='w-full h-full'>
         {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon }: any, leaflet: any) => {
 
           function EventHandlers() {
             const map = useMap();
-
             useMapEvents({
               move: () => {
-                // Update debug viewport bounds during move for real-time updates
-                const bounds = map.getBounds();
+                const liveBounds = map.getBounds();
+                const [[north, west], [south, east]] = [[liveBounds.getNorth(), liveBounds.getWest()], [liveBounds.getSouth(), liveBounds.getEast()]]
+                const liveZoom = map.getZoom();
+                if (liveZoom < 10) {
+                  return
+                  
+                  // Set marker cells to whole world if it isn't already one cell covering the world
+                  if (!markerCells[0] || markerCells[0][0][0] !== 72 || markerCells[0][0][1] !== -180) {
+                    setMarkerCells([[[72, -180], [72, 180], [-72, 180], [-72, -180]]])
+                  }
+
+                  
+                }
                 
-                // Convert current bounds to the format expected by adjustBounds
-                const boundsArray: [[number, number], [number, number]] = [
-                  [bounds.getNorth(), bounds.getWest()],
-                  [bounds.getSouth(), bounds.getEast()]
-                ];
-                
-                // Make bounds 10% smaller than current view
-                const reducedBounds = adjustBounds(boundsArray, -0.1);
-                
-                updateDebugViewportBounds(reducedBounds);
-              },
-              zoomend: () => {
-                // Update precision when zoom level changes
-                const newPrecision = calculateGeotilePrecision();
-                if (newPrecision !== currentPrecision) {
+                if (liveZoom != currentZoom) {
+                  console.log("ZOOM", liveZoom, currentZoom)
+                  const newPrecision = getGridSize([[north, west], [south, east]]);
                   setCurrentPrecision(newPrecision);
-                  // Force update geotile cells when precision changes
-                  setIntersectingCellsBounds(null); // Reset bounds to force recalculation
+                  console.log("NEW PRECISION", newPrecision)
+                }
+
+                // Calculate grid resolution based on current precision
+                
+                // Calculate tile coordinates for the viewport bounds
+                const xMin = Math.floor(((west + 180) / 360) * currentPrecision);
+                const xMax = Math.floor(((east + 180) / 360) * currentPrecision);
+                
+                // Convert latitude to tile Y coordinates (Web Mercator projection)
+                const yMin = Math.floor(((1 - Math.log(Math.tan(north * Math.PI / 180) + 1 / Math.cos(north * Math.PI / 180)) / Math.PI) / 2) * currentPrecision);
+                const yMax = Math.floor(((1 - Math.log(Math.tan(south * Math.PI / 180) + 1 / Math.cos(south * Math.PI / 180)) / Math.PI) / 2) * currentPrecision);
+                
+                // Ensure bounds are within valid range
+                const clampedXMin = Math.max(0, xMin);
+                const clampedXMax = Math.min(currentPrecision - 1, xMax);
+                const clampedYMin = Math.max(0, yMin);
+                const clampedYMax = Math.min(currentPrecision - 1, yMax);
+                
+                const newCells: number[][][] = [];
+                
+                // Generate only the cells that intersect with the viewport
+                for (let x = clampedXMin; x <= clampedXMax; x++) {
+                  for (let y = clampedYMin; y <= clampedYMax; y++) {
+                    // Convert tile coordinates back to lat/lng bounds
+                    const tileWest = (x / currentPrecision) * 360 - 180;
+                    const tileEast = ((x + 1) / currentPrecision) * 360 - 180;
+                    
+                    const tileNorth = (Math.atan(Math.sinh(Math.PI * (1 - 2 * y / currentPrecision))) * 180 / Math.PI);
+                    const tileSouth = (Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / currentPrecision))) * 180 / Math.PI);
+                    
+                    // Create cell polygon (clockwise order)
+                    const cell = [
+                      [tileNorth, tileWest],
+                      [tileNorth, tileEast],
+                      [tileSouth, tileEast],
+                      [tileSouth, tileWest],
+                      [tileNorth, tileWest] // Close the polygon
+                    ];
+                    
+                    newCells.push(cell);
+                  }
                 }
                 
-                // Force update geotile cells when crossing zoom threshold 8
-                const currentZoom = map.getZoom();
-                const wasBelow8 = lastZoomLevel.current < 8;
-                const isNowAbove8 = currentZoom >= 8;
-                if (wasBelow8 && isNowAbove8) {
-                  // Zoomed from below 8 to 8 or above, force recalculation
-                  setIntersectingCellsBounds(null);
-                  updateGeotileCells();
+                console.log("NEW CELLS", newCells);
+                
+                // Only update state if the cells have actually changed
+                if (markerCells.length !== newCells.length || 
+                    !markerCells.every((cell, index) => 
+                      cell.length === newCells[index].length &&
+                      cell.every((coord, coordIndex) => 
+                        coord[0] === newCells[index][coordIndex][0] && 
+                        coord[1] === newCells[index][coordIndex][1]
+                      )
+                    )) {
+                      console.log("NEW CELLS", newCells)
+                  setMarkerCells(newCells);
                 }
-                lastZoomLevel.current = currentZoom;
+                
+
               },
               moveend: () => {
-                controllerRef.current.abort();
-                controllerRef.current = new AbortController();
-                const bounds = map.getBounds();
-                const boundsCenter = bounds.getCenter();
-                console.log("MOVE END")
-                setViewUrlParams(map.getZoom(), [boundsCenter.lat, boundsCenter.lng])
-                //setMarkerBounds([[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]]);
+                const mapBounds = map.getBounds();
+                const mapCenter = mapBounds.getCenter();
+                const mapZoom = map.getZoom();
+                const newBounds: [[number, number], [number, number]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
+                setSnappedBounds(newBounds)
+                setCurrentZoom(mapZoom)
+                setCurrentCenter([mapCenter.lat, mapCenter.lng])
+                const newParams = new URLSearchParams(searchParams)
+                newParams.set('zoom', map.getZoom().toString())
+                newParams.set('center', `${mapCenter.lat},${mapCenter.lng}`)
+                
+                // Update URL without triggering router events
+                const newUrl = `${window.location.pathname}?${newParams.toString()}`;
+                window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
               },
             })         
             return null
@@ -929,7 +565,7 @@ export default function MapExplorer() {
               ))}
 
               {/* Draw geotile query results */}
-              {showGeotileGrid && geoTileResults.filter(result => result.isSuccess).map(result => result.data).map((dataArray, index) => {
+              {showGeotileGrid && markerResults.filter(result => result.isSuccess).map(result => result.data).map((dataArray, index) => {
                 if (dataArray?.length > 0) {                  
                   // Function to check if a point is within the debug viewport bounds
                   const isPointInDebugViewport = (lat: number, lng: number) => {
@@ -961,87 +597,24 @@ export default function MapExplorer() {
               })}
 
               {/* Add Geotile grid overlay */}
-              {showGeotileGrid && geotileCells.map((polygon, index) => {
+              {markerCells?.map((cell, index) => {
                 // Check if this cell intersects with the debug viewport using efficient index lookup
-                const intersectsViewport = intersectingCellIndices.has(index);
-                
-                // Calculate the lower-right corner position for text label
-                const polygonLats = polygon.map(p => p[0]);
-                const polygonLngs = polygon.map(p => p[1]);
-                const polyNorth = Math.max(...polygonLats);
-                const polySouth = Math.min(...polygonLats);
-                const polyEast = Math.max(...polygonLngs);
-                const polyWest = Math.min(...polygonLngs);
-                
-                // Position text slightly inside the lower-right corner
-                const textLat = polySouth + (polyNorth - polySouth) * 0.1;
-                const textLng = polyEast - (polyEast - polyWest) * 0.1;
+
                 
                 return (
 
-                    <Polygon
+                    <Rectangle
                       key={`geotile-${index}`}
-                      positions={polygon}
+                      bounds={[[cell[0][0], cell[0][1]], [cell[2][0], cell[2][1]]]}
                       pathOptions={{
-                        color: intersectsViewport ? '#00ff00' : '#ff6600',
-                        weight: intersectsViewport ? 3 : 2,
+                        color: '#00ff00',
+                        weight: 3,
                         fill: false,
-                        dashArray: intersectsViewport ? '5, 5' : '10, 5'
+                        dashArray: '5, 5'
                       }}
                     />
                 );
               })}
-
-              {/* Visualize tiles from fetched results - only when geotile debugging is enabled */}
-              {false && showGeotileGrid && (() => {
-                console.log('Tiles data:', tiles);
-                if (!tiles) {
-                  console.log('No tiles data available');
-                  return null;
-                }
-                console.log('Number of tiles:', tiles.length);
-                
-                return tiles.map((bucket: any, index: number) => {
-                  console.log('Processing bucket:', bucket);
-                  
-                  // Fallback to viewport bounds if geotile key conversion fails
-                  let tileBounds = null;
-                  
-                  if (bucket.key) {
-                    tileBounds = geotileKeyToBounds(bucket.key);
-                  }
-                  
-                  if (!tileBounds && bucket.viewport?.bounds) {
-                    console.log('Using viewport bounds as fallback for bucket:', bucket.key);
-                    tileBounds = [
-                      [bucket.viewport.bounds.top_left.lat, bucket.viewport.bounds.top_left.lon],
-                      [bucket.viewport.bounds.bottom_right.lat, bucket.viewport.bounds.bottom_right.lon]
-                    ];
-                  }
-                  
-                  if (!tileBounds) {
-                    console.log('No bounds available for bucket:', bucket.key);
-                    return null;
-                  }
-                  
-                  console.log('Rendering tile with bounds:', tileBounds);
-                  
-                  return (
-                    <Rectangle
-                      key={`result-tile-${bucket.key || index}`}
-                      bounds={tileBounds}
-                      pathOptions={{
-                        color: '#00aa44',
-                        weight: 3,
-                        opacity: 0.9,
-                        fillOpacity: 0.2,
-                        dashArray: '5, 5'
-                      }}
-                    />
-                  );
-                });
-              })()}
-
                 {/* Add debug viewport rectangle (current view minus 10%) */}
               {showGeotileGrid && mapInstance.current && debugViewportBounds && (
                 <Rectangle 
@@ -1056,157 +629,6 @@ export default function MapExplorer() {
               )}
 
 
-              {true ? null : markerBounds && markerBounds?.length === 2 && (
-                <Rectangle 
-                  bounds={markerBounds}
-                  pathOptions={{ 
-                    color: '#ff0000', 
-                    weight: 2,
-                    fill: false,
-                    dashArray: '5, 5'
-                  }}
-                />
-              )}
-
-              {true ? null : resultBounds?.length === 2 && (
-                <Rectangle 
-                  bounds={resultBounds}
-                  pathOptions={{ 
-                    color: '#ff0000', 
-                    weight: 2,
-                    fill: false,
-                    dashArray: '5, 5'
-                  }}
-                />
-              )}
-
-              {!parent && (markerMode == 'sample' || autoMode == 'sample') && viewResults?.hits?.markers?.map((marker: any) => {
-                return <Fragment key={marker.topHit._id}>
-                 {![marker.topHit, ...marker.grouped].some((item: any) => coordinatesSelected(item.fields.location[0].coordinates[1], item.fields.location[0].coordinates[0])) ? <Marker key={marker.topHit._id} 
-                          position={[marker.topHit.fields.location[0].coordinates[1], marker.topHit.fields.location[0].coordinates[0]]} 
-                          icon={new leaflet.DivIcon(getLabelMarkerIcon(marker.topHit.fields.label, 'black', marker.grouped.length ? marker.grouped.length +1 : undefined, true))} 
-                          riseOnHover={true} 
-                          eventHandlers={selectDocHandler(marker.topHit, [marker.topHit, ...marker.grouped])} />
-                          : null}
-                  
-                  {marker.unlabeled.map((hit: any) => <CircleMarker key={hit._id} center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} radius={5} pathOptions={{ color: 'white', weight: 2, fillColor: 'black', fillOpacity: 0.8 }} eventHandlers={selectDocHandler(hit)} />)}
-                </Fragment>
-              })}
-
-              {!parent && (markerMode == 'cluster' || autoMode == 'cluster' ) && tiles?.map((bucket: any) => {
-
-                // Sort bucket by children length if dataset is search
-
-                const latitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[1]);
-                const longitudes = bucket.docs.hits.hits.map((hit: { fields: { location: { coordinates: any[]; }[]; }; }) => hit.fields.location[0].coordinates[0]);
-
-                const latSum = latitudes.reduce((acc: any, cur: any) => acc + cur, 0);
-                const lonSum = longitudes.reduce((acc: any, cur: any) => acc + cur, 0);
-
-                const hitCount = bucket.docs.hits.hits.length;
-                const lat = latSum / hitCount;
-                const lon = lonSum / hitCount;
-
-
-                // Check if any of the points are within 32 pixels of each other on the y axis. Use "some" to return the first hit
-                const tooClose = isTooClose(bucket.docs.hits.hits, mapInstance.current);
-
-                const labels = bucket.docs.hits.hits.map((hit: { fields: { label: any; }; }) => hit.fields.label[0]);
-                const allLabelsSame = labels.every((label: any, index: number, array: any[]) => label === array[0]);
-
-                
-
-                if (bucket.docs?.hits?.hits?.length > 1 && tooClose && bucket.doc_count == bucket.docs?.hits?.hits?.length && (allLabelsSame || (zoom && zoom > 10)) || (zoom && zoom == 18 && bucket.doc_count != bucket.docs?.hits?.hits?.length)) { //} &&bucket.docs?.hits?.hits?.length > 1 && bucket.doc_count == bucket.docs?.hits?.hits?.length && (zoom && zoom > 8) && ((zoom && zoom < 18 && adjustedDeviation > 0 && adjustedDeviation < 0.1) || (!latitudes.some((lat: any) => lat !== latitudes[0]) && !longitudes.some((lon: any) => lon !== longitudes[0])))) {
-                  
-                  if (bucket.docs?.hits?.hits?.some((hit: any) => coordinatesSelected(hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]))) {
-                    // Return blue marker for other hits than doc
-                    return <Fragment key={bucket.key}>
-                      
-                      {bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }) => {
-                      
-                      const primary = hit.fields.children?.length && hit.fields.children.length > 1
-                      
-                      return <CircleMarker key={hit._id} 
-                                           center={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]} 
-                                           radius={primary ? 6 : 4}
-                                           fillColor="white"
-                                           fillOpacity={1}
-                                           color="black"
-                                           weight={primary ? 3 : 2}
-                                           eventHandlers={selectDocHandler(hit, bucket.docs.hits.hits)}/>
-                    })}</Fragment>
-                  }
-                  else {
-                    // Label: add dots if different labels
-                  const label = labels[0] + (allLabelsSame ? '' : '...');
-
-                  const icon = new leaflet.DivIcon(getLabelMarkerIcon(label, 'white', bucket.doc_count > 1 ? bucket.doc_count : undefined))
-
-                  return <Marker key={bucket.key} className="drop-shadow-xl" icon={icon} position={[lat, lon]} riseOnHover={true} eventHandlers={selectDocHandler(bucket.docs.hits.hits[0], bucket.docs.hits.hits)} />
-
-                  }
-
-
-                }
-                else if (bucket.doc_count == bucket.docs.hits.hits.length &&  bucket.doc_count < 5 && !tooClose) {  //(false && zoom && zoom > 10) || (bucket.doc_count == 1 || (zoom && (bucket.doc_count == bucket.docs.hits.hits.length || markerMode === 'sample' || (markerMode === 'auto' && searchFilterParamsString?.length)) && adjustedDeviation > 60))) {
-
-
-                  return <Fragment key={bucket.key}>{bucket.docs?.hits?.hits?.map((hit: { _id: string, fields: { label: any; uuid: string, children?: string[], location: { coordinates: any[]; }[]; }; key: string; }, currentIndex: number) => {
-                    
-                    const icon = new leaflet.DivIcon(getLabelMarkerIcon(hit.fields.label, 'black', undefined, false, (bucket.doc_count > 2 && (zoom && zoom < 18)) ? true : false))
-                    
-
-                  
-                    return (docLoading || hit.fields.uuid[0] != doc) && <Marker key={hit._id}
-                      position={[hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]]}
-                      icon={icon}
-                      riseOnHover={true}
-                      eventHandlers={selectDocHandler(hit)}
-                    />
-
-                  }
-                  )}</Fragment>
-                }
-
-                else {
-                  // Calculate center of bounds
-                  const centerLat = (bucket.viewport.bounds.top_left.lat + bucket.viewport.bounds.bottom_right.lat) / 2;
-                  const centerLon = (bucket.viewport.bounds.top_left.lon + bucket.viewport.bounds.bottom_right.lon) / 2;
-
-
-                  // getClusterMarker(docCount: number, width: number, height: number, fontSize: number) {
-                  const clusterIcon = new leaflet.DivIcon(getClusterMarker(bucket.doc_count, //bucket.doc_count, 
-                                                                            calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2 + (bucket.doc_count > 99 ? bucket.doc_count.toString().length / 4 : 0),
-                                                                            calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 2,
-                                                                            calculateRadius(bucket.doc_count, maxDocCount, minDocCount) * 0.8))
-
-                  return <Marker key={bucket.key} position={[(centerLat + lat) / 2, (centerLon + lon) / 2]} icon={clusterIcon}
-                    eventHandlers={{
-                      click: () => {
-                        // If doc count is same as
-                        
-                        if (bucket.doc_count == bucket.docs.hits.hits.length || (zoom && zoom > 12)) {
-                          const newBounds: [[number, number], [number, number]] = [[bucket.viewport.bounds.top_left.lat, bucket.viewport.bounds.top_left.lon], [bucket.viewport.bounds.bottom_right.lat, bucket.viewport.bounds.bottom_right.lon]];
-                          // Get zoom level for bounds
-                          const boundsZoom = mapInstance.current.getBoundsZoom(newBounds);
-                          // Fly to bounds if zoom level is different, otherwise zoom in one level
-                          if (boundsZoom != mapInstance.current.getZoom()) {
-                            mapInstance.current.flyToBounds(newBounds, { duration: 0.1, maxZoom: 18 });
-                          }
-                          else {
-                            mapInstance.current.setView([(centerLat + lat) / 2, (centerLon + lon) / 2], zoom ? zoom + 1 : 18);
-                          }
-                        }
-                        else {
-                          // Go to center of cluster and zoom in two levels
-                          mapInstance.current.setView([(centerLat + lat) / 2, (centerLon + lon) / 2], zoom ? zoom + 2 : 18);
-                        }
-                      }
-                    }} />
-
-                }
-              }
-              )}
 
               {docData?._source?.area && (
                 <Fragment>
@@ -1368,10 +790,10 @@ export default function MapExplorer() {
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-      <IconButton onClick={zoomIn} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn">
+      <IconButton onClick={() => mapInstance.current?.zoomIn()} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn">
         <PiMagnifyingGlassPlusFill className="lg:text-xl" />
       </IconButton>
-      <IconButton onClick={zoomOut} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut">
+      <IconButton onClick={() => mapInstance.current?.zoomOut()} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut">
         <PiMagnifyingGlassMinusFill className="lg:text-xl" />
       </IconButton>
       <IconButton onClick={getMyLocation} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon">
