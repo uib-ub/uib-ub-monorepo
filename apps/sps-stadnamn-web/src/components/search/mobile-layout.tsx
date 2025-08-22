@@ -25,6 +25,7 @@ import InfoPopover from "../ui/info-popover";
 import BasewordResults from "./nav/results/baseword-results";
 import useDocData from "@/state/hooks/doc-data";
 import useGroupData from "@/state/hooks/group-data";
+import MapWrapper from "./map-wrapper";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -57,6 +58,7 @@ export default function MobileLayout() {
     const boost_gt = searchParams.get('boost_gt')
     const cadastralIndex = searchParams.get('cadastralIndex')
     const datasetTag = searchParams.get('datasetTag')
+    const mapContainerRef = useRef<HTMLDivElement>(null)
 
 
     useEffect(() => {
@@ -429,8 +431,8 @@ export default function MobileLayout() {
         {doc && mode == 'doc' && <DocInfo/>}
         </div>
 
-        <div className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">
-        { mode == 'map' && <MapExplorer/>}
+        <div ref={mapContainerRef} className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">
+        { mode == 'map' && <MapWrapper/>}
         
         </div>
 

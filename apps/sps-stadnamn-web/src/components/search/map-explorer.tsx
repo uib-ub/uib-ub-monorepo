@@ -26,7 +26,7 @@ import { useQueries } from "@tanstack/react-query";
 import { adjustBounds, calculateRadius, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateCenterFromBounds } from "./map-utils";
 
 
-export default function MapExplorer() {
+export default function MapExplorer({containerDimensions}: {containerDimensions: {width: number, height: number}}) {
   const { resultBounds, totalHits, searchError, setCoordinatesError, isLoading, allowFitBounds, setAllowFitBounds } = useContext(SearchContext)
     
   const controllerRef = useRef(new AbortController());
@@ -41,12 +41,14 @@ export default function MapExplorer() {
   const details = searchParams.get('details') || 'doc'
   const urlZoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
   const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
+
   
   // Calculate initial bounds based on zoom level and center before map renders
   const [snappedBounds, setSnappedBounds] = useState<[[number, number], [number, number]]>(() => {
     if (urlCenter && urlCenter.length === 2 && urlZoom !== null) {
       // Calculate bounds based on zoom level and center point
-      return boundsFromZoomAndCenter(urlCenter as [number, number], urlZoom);
+      
+      return boundsFromZoomAndCenter(containerDimensions, urlCenter as [number, number], urlZoom);
     }
     if (resultBounds?.length) {
       return resultBounds
@@ -59,13 +61,14 @@ export default function MapExplorer() {
   const [currentCenter, setCurrentCenter] = useState<[number, number]>(urlCenter ? urlCenter : calculateCenterFromBounds(snappedBounds))
 
 
-  const gridSize = useRef<number>(getGridSize(snappedBounds))
+  const gridSize = useRef<number|null>(getGridSize(snappedBounds, currentZoom));
 
 
   
   const router = useRouter()
   const parent = searchParams.get('parent')
   const doc = searchParams.get('doc')
+  const mapInstance = useRef<any>(null);
 
   // Add state for H3 resolution
   const [h3Resolution, setH3Resolution] = useState(8);
@@ -73,34 +76,7 @@ export default function MapExplorer() {
       // Add state for geotile cells and intersecting cells
   const [markerCells, setMarkerCells] = useState<number[][][]>([]);
 
- 
-
-
-  const markerResults = useQueries({
-    queries: markerCells.map((cell, index) => ({
-      queryKey: ['markerResults', cell],
-      queryFn: async () => {
-        console.log("FETCHING GEOTILE CELL", cell)
-        const res = await fetch(`/api/geo/${queryEndpoint}?topLeftLat=${cell[0][0]}&topLeftLng=${cell[0][1]}&bottomRightLat=${cell[2][0]}&bottomRightLng=${cell[2][1]}&${queryEndpoint == 'sample' ? 'size=100' : 'totalHits=' + totalHits?.value}`)
-        if (!res.ok) {
-          throw new Error('Failed to fetch geotile cells')
-        }
-        const data = await res.json()
-        return data.hits.hits.map((hit: any) => hit.fields)
-      }
-    }))
-  })
-
-
-
-  if (searchParams.get('error') == 'true') {
-    throw new Error('Simulated client side error');
-  }
-  const { docData, docLoading } = useDocData()
-  
-  const mapInstance = useRef<any>(null);
-  
-   // Cluster if:
+    // Cluster if:
   // Cluster mode
   // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
@@ -108,32 +84,62 @@ export default function MapExplorer() {
   const queryEndpoint = (markerMode == 'cluster' || mapInstance.current?.getZoom() < 8 || autoMode == 'cluster') ? 'cluster' : 'sample'
 
 
-  const updateMarkerGrid = useCallback((liveBounds: [[number, number], [number, number]], liveZoom: number) => {
+  const markerResults = useQueries({
+    queries: markerCells.map((cell, index) => {
+      return ({
+      queryKey: ['markerResults', cell],
+      queryFn: async () => {
+        console.log("FETCHING GEOTILE CELL", index, JSON.stringify(cell))
+        const res = await fetch(`/api/geo/${queryEndpoint}?topLeftLat=${cell[0][0]}&topLeftLng=${cell[0][1]}&bottomRightLat=${cell[2][0]}&bottomRightLng=${cell[2][1]}&${queryEndpoint == 'sample' ? 'size=100' : 'totalHits=' + totalHits?.value}`)
+        if (!res.ok) {
+          throw new Error('Failed to fetch geotile cells')
+        }
+        const data = await res.json()
+        return data.hits.hits.map((hit: any) => hit.fields)
+      }
+    })
+  })
+    })
+
+
+
+
+  if (searchParams.get('error') == 'true') {
+    throw new Error('Simulated client side error');
+  }
+  const { docData } = useDocData()
+  
+  
+  
+
+
+
+  const updateMarkerGrid = useCallback((liveBounds: [[number, number], [number, number]], liveZoom: number, gridSize: number|null, currentCells: number[][][]) => {
     const [[north, west], [south, east]] = liveBounds
-      if (liveZoom < 6) {
-        return
+      if (liveZoom <= 4 || gridSize === null) {
         
         // Set marker cells to whole world if it isn't already one cell covering the world
-        if (!markerCells[0] || markerCells[0][0][0] !== 72 || markerCells[0][0][1] !== -180) {
+        if (gridSize === null || !currentCells[0] || currentCells[0][0][0] !== 72 || currentCells[0][0][1] !== -180) {
           setMarkerCells([[[72, -180], [72, 180], [-72, 180], [-72, -180]]])
+          
         }
 
-        
+        return
       }
       
       // Calculate tile coordinates for the viewport bounds
-      const xMin = Math.floor(((west + 180) / 360) * gridSize.current);
-      const xMax = Math.floor(((east + 180) / 360) * gridSize.current);
+      const xMin = Math.floor(((west + 180) / 360) * gridSize);
+      const xMax = Math.floor(((east + 180) / 360) * gridSize);
       
       // Convert latitude to tile Y coordinates (Web Mercator projection)
-      const yMin = Math.floor(((1 - Math.log(Math.tan(north * Math.PI / 180) + 1 / Math.cos(north * Math.PI / 180)) / Math.PI) / 2) * gridSize.current);
-      const yMax = Math.floor(((1 - Math.log(Math.tan(south * Math.PI / 180) + 1 / Math.cos(south * Math.PI / 180)) / Math.PI) / 2) * gridSize.current);
+      const yMin = Math.floor(((1 - Math.log(Math.tan(north * Math.PI / 180) + 1 / Math.cos(north * Math.PI / 180)) / Math.PI) / 2) * gridSize);
+      const yMax = Math.floor(((1 - Math.log(Math.tan(south * Math.PI / 180) + 1 / Math.cos(south * Math.PI / 180)) / Math.PI) / 2) * gridSize);
       
       // Ensure bounds are within valid range
       const clampedXMin = Math.max(0, xMin);
-      const clampedXMax = Math.min(gridSize.current - 1, xMax);
+      const clampedXMax = Math.min(gridSize - 1, xMax);
       const clampedYMin = Math.max(0, yMin);
-      const clampedYMax = Math.min(gridSize.current - 1, yMax);
+      const clampedYMax = Math.min(gridSize - 1, yMax);
       
       const newCells: number[][][] = [];
       
@@ -141,11 +147,11 @@ export default function MapExplorer() {
       for (let x = clampedXMin; x <= clampedXMax; x++) {
         for (let y = clampedYMin; y <= clampedYMax; y++) {
           // Convert tile coordinates back to lat/lng bounds
-          const tileWest = (x / gridSize.current) * 360 - 180;
-          const tileEast = ((x + 1) / gridSize.current) * 360 - 180;
+          const tileWest = (x / gridSize) * 360 - 180;
+          const tileEast = ((x + 1) / gridSize) * 360 - 180;
           
-          const tileNorth = (Math.atan(Math.sinh(Math.PI * (1 - 2 * y / gridSize.current))) * 180 / Math.PI);
-          const tileSouth = (Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / gridSize.current))) * 180 / Math.PI);
+          const tileNorth = (Math.atan(Math.sinh(Math.PI * (1 - 2 * y / gridSize))) * 180 / Math.PI);
+          const tileSouth = (Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / gridSize))) * 180 / Math.PI);
           
           // Create cell bounds for Rectangle component
           const cell = [
@@ -157,30 +163,14 @@ export default function MapExplorer() {
         }
       }
 
-      // sort by distance from center
-      newCells.sort((a, b) => {
-        const aDist = yDistance(mapInstance.current, a[0][0], a[0][1]) + xDistance(mapInstance.current, a[0][0], a[0][1])
-        const bDist = yDistance(mapInstance.current, b[0][0], b[0][1]) + xDistance(mapInstance.current, b[0][0], b[0][1])
-        return aDist - bDist
-      })  
-      
-      
-      // Only update state if the cells have actually changed
-      if (markerCells.length !== newCells.length || 
-          markerCells.some((cell, index) => 
-            cell[0][0] !== newCells[index][0][0] || 
-            cell[0][1] !== newCells[index][0][1] || 
-            cell[1][0] !== newCells[index][1][0] || 
-            cell[1][1] !== newCells[index][1][1]
-          )) {
-        console.log("NEW CELLS", newCells)
-        setMarkerCells(newCells);
-      }
-    }, [gridSize])
+      setMarkerCells(newCells);
+    }, [setMarkerCells]);
+
 
 
     useEffect(() => {
-      updateMarkerGrid(snappedBounds, currentZoom)
+      console.log("INITIALIZE")
+      updateMarkerGrid(snappedBounds, currentZoom, gridSize.current, markerCells)
     }, [])
 
 
@@ -301,7 +291,7 @@ export default function MapExplorer() {
       */
     
     
-  }, [resultBounds, allowFitBounds, setAllowFitBounds, isLoading, geoLoading, viewResults])
+  }, [resultBounds, allowFitBounds, setAllowFitBounds, isLoading, geoLoading, viewResults, currentZoom])
 
 
 
@@ -488,12 +478,14 @@ export default function MapExplorer() {
   }, []);
 
   return <>
-     <>
       <Map        
         whenReady={(e: any) => {
             if (!mapInstance.current) {
               mapInstance.current = e.target;
             }
+            console.log("MAP READY")
+            console.log("SNAP BOUNDS", snappedBounds)
+            console.log("RESULT BOUNDS", mapInstance.current.getBounds())
         }}
         zoomControl={false}
         bounds={ snappedBounds }
@@ -509,24 +501,50 @@ export default function MapExplorer() {
                 const mapZoom = map.getZoom();
                 if (mapZoom != currentZoom) {
                   const mapBounds = map.getBounds();
-                  const [[north, west], [south, east]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
-                  const newPrecision = getGridSize([[north, west], [south, east]]);
-                  gridSize.current = newPrecision;
-                  setCurrentZoom(mapZoom)
+                  if (currentZoom >= 4) {
+                    const [[north, west], [south, east]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
+                    const newPrecision = getGridSize([[north, west], [south, east]], mapZoom);
+                    gridSize.current = newPrecision;
+                  }
+                  setCurrentZoom(mapZoom);
+                  // Always update marker grid after zoom
+                  console.log("ZOOM UPDATE")
+                  updateMarkerGrid([[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]], mapZoom, gridSize.current, markerCells);
                 }
               },
               move: () => {
-                console.log("MOVE")
+                //console.log("MOVE")
                 const mapBounds = map.getBounds();
+                const mapZoom = map.getZoom();
+                //console.log("ZOOM values:", mapZoom, currentZoom)
+                if (currentZoom != mapZoom) {
+                  return
+                }
                 const [[north, west], [south, east]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
-                updateMarkerGrid([[north, west], [south, east]], map.getZoom())
+
+                const mapBoundsPoints = [
+                  [north, west],
+                  [north, east],
+                  [south, east],
+                  [south, west],
+                  [north, west]
+                ]
+
+                if (!mapBoundsPoints.every((point) => {
+                  return markerCells.some((cell) => {
+                    return point[0] >= cell[0][0] && point[0] <= cell[1][0] && point[1] >= cell[0][1] && point[1] <= cell[1][1]
+                  })
+                  
+                })) {
+                  console.log("MOVE UPDATE")
+                  updateMarkerGrid([[north, west], [south, east]], map.getZoom(), gridSize.current, markerCells);
+                }
                 
 
               },
               moveend: () => {
                 const mapBounds = map.getBounds();
                 const mapCenter = mapBounds.getCenter();
-                const mapZoom = map.getZoom();
                 const newBounds: [[number, number], [number, number]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
                 setSnappedBounds(newBounds)
                 setCurrentCenter([mapCenter.lat, mapCenter.lng])
@@ -680,7 +698,6 @@ export default function MapExplorer() {
         
 
       </Map>
-    </>
 
     <div className={`absolute top-12 lg:top-auto right-0 flex-col lg:flex-row p-2 gap-2 lg:bottom-0 lg:left-1/2 lg:transform lg:-translate-x-1/2 flex justify-center p-2 gap-2 text-white z-[3001]`}>
       <DropdownMenu>
@@ -741,7 +758,7 @@ export default function MapExplorer() {
           {showGeotileGrid && (
             <div className="px-4 py-2">
               <div className="text-xs text-neutral-600 mb-1">
-                Auto-precision: {gridSize}
+                Auto-precision: {gridSize.current}
               </div>
               <div className="text-xs text-neutral-500">
                 Rødt rektangel viser zoom +2 nivå

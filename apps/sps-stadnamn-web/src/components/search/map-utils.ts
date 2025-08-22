@@ -1,36 +1,58 @@
 // Helper function to calculate bounds from zoom level and center point
 export const EARTH_CIRCUMFERENCE = 40075016.686;
 
-export const boundsFromZoomAndCenter = (center: [number, number], zoom: number): [[number, number], [number, number]] => {
-    // Earth's circumference in meters
-    
-    // Calculate the distance represented by one pixel at the given zoom level
-    // At zoom level 0, one pixel represents the entire world
-    const metersPerPixel = EARTH_CIRCUMFERENCE / (256 * Math.pow(2, zoom));
-    
-    // Assuming a typical map container size (you can adjust these values)
-    const containerWidth = 800; // pixels
-    const containerHeight = 600; // pixels
-    
-    // Calculate the geographic span in meters
-    const spanWidthMeters = metersPerPixel * containerWidth;
-    const spanHeightMeters = metersPerPixel * containerHeight;
-    
-    // Convert meters to degrees (approximate)
-    // 1 degree of latitude ≈ 111,111 meters
-    // 1 degree of longitude ≈ 111,111 * cos(latitude) meters
-    const latSpan = spanHeightMeters / 111111;
-    const lonSpan = spanWidthMeters / (111111 * Math.cos(center[0] * Math.PI / 180));
-    
-    // Calculate bounds
-    const north = center[0] + latSpan / 2;
-    const south = center[0] - latSpan / 2;
-    const east = center[1] + lonSpan / 2;
-    const west = center[1] - lonSpan / 2;
-    
-    return [[north, west], [south, east]];
-  };
-  
+// Web-Mercator helpers (Leaflet's default CRS: EPSG:3857)
+const R = 6378137; // Earth radius used by Spherical Mercator (meters)
+const D2R = Math.PI / 180;
+const R2D = 180 / Math.PI;
+const ORIGIN_SHIFT = Math.PI * R;            // ≈ 20037508.342789244
+const WORLD_METERS = ORIGIN_SHIFT * 2;       // full world width in meters
+
+function project([lat, lng]: [number, number]): [number, number] {
+  // clamp to Mercator's valid latitude
+  const MAX_LAT = 85.05112878;
+  const φ = Math.max(Math.min(lat, MAX_LAT), -MAX_LAT) * D2R;
+  const λ = lng * D2R;
+  const x = R * λ;
+  const y = R * Math.log(Math.tan(Math.PI / 4 + φ / 2));
+  return [x, y];
+}
+
+function unproject([x, y]: [number, number]): [number, number] {
+  const lng = (x / R) * R2D;
+  const lat = (2 * Math.atan(Math.exp(y / R)) - Math.PI / 2) * R2D;
+  return [lat, lng];
+}
+
+/**
+ * Calculate geographic bounds for a given container size, center and zoom,
+ * using Leaflet's default CRS (EPSG:3857).
+ * Returns [[north, west], [south, east]]
+ */
+export function boundsFromZoomAndCenter(
+  containerDimensions: { width: number; height: number },
+  center: [number, number],
+  zoom: number,
+  tileSize = 256 // keep in sync with your map's tileSize; 256 is Leaflet default
+): [[number, number], [number, number]] {
+  const scale = tileSize * Math.pow(2, zoom);             // L.CRS.EPSG3857.scale(zoom)
+  const metersPerPixel = WORLD_METERS / scale;             // no +1 here
+
+  const halfSpanX = (containerDimensions.width * metersPerPixel) / 2;
+  const halfSpanY = (containerDimensions.height * metersPerPixel) / 2;
+
+  const [cx, cy] = project(center);
+
+  const minX = cx - halfSpanX;
+  const maxX = cx + halfSpanX;
+  const minY = cy - halfSpanY;
+  const maxY = cy + halfSpanY;
+
+  const [south, west] = unproject([minX, minY]);
+  const [north, east] = unproject([maxX, maxY]);
+
+  return [[north, west], [south, east]];
+}
   
   
   export const calculateRadius = (docCount: number, maxDocCount: number, minDocCount: number) => {
@@ -151,7 +173,9 @@ export const PRECISION_TO_DEGREES = [
     { precision: 20, degrees: 0.00034332275390625 }
   ];
 
-export const getGridSize = (bounds: [[number, number], [number, number]]): number => {
+export const getGridSize = (bounds: [[number, number], [number, number]], currentZoom: number): number | null => {
+
+  if (currentZoom < 4) return null;;
 
     const [[north, west], [south, east]] = bounds;
     const latSpan = Math.abs(north - south);
@@ -166,5 +190,6 @@ export const getGridSize = (bounds: [[number, number], [number, number]]): numbe
     }
     
     // Return highest precision if bounds are too small
+    throw new Error("Bounds are too small")
     return Math.pow(2, PRECISION_TO_DEGREES[0].precision);
 }
