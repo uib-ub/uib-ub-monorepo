@@ -173,9 +173,9 @@ export const PRECISION_TO_DEGREES = [
     { precision: 20, degrees: 0.00034332275390625 }
   ];
 
-export const getGridSize = (bounds: [[number, number], [number, number]], currentZoom: number): number | null => {
+export const getGridSize = (bounds: [[number, number], [number, number]], currentZoom: number): { precision: number, gridSize: number} => {
 
-  if (currentZoom < 4) return null;;
+  if (currentZoom < 4) return { precision: 0, gridSize: 1 }; // Default to the largest grid size for low zoom levels
 
     const [[north, west], [south, east]] = bounds;
     const latSpan = Math.abs(north - south);
@@ -185,11 +185,12 @@ export const getGridSize = (bounds: [[number, number], [number, number]], curren
 
     for (let i = PRECISION_TO_DEGREES.length - 1; i >= 0; i--) {
         if (PRECISION_TO_DEGREES[i].degrees >= maxSpan) {
-          return Math.pow(2, PRECISION_TO_DEGREES[i].precision);
+          return {
+            precision: PRECISION_TO_DEGREES[i].precision, 
+            gridSize: Math.pow(2, PRECISION_TO_DEGREES[i].precision)
         }
+      }
     }
     
-    // Return highest precision if bounds are too small
-    throw new Error("Bounds are too small")
-    return Math.pow(2, PRECISION_TO_DEGREES[0].precision);
+    return { precision: 0, gridSize: 1 }; // Default to the largest grid size if no match found
 }
