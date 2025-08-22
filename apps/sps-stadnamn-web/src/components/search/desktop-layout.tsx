@@ -8,6 +8,9 @@ import ListExplorer from "./list/list-explorer"
 import NavWindow from "./nav/nav-window"
 import DetailsWindow from "./details/details-window"
 import FuzzyWindow from "./names/names-window"
+import { SearchContext } from "@/app/search-provider"
+import { useContext } from "react"
+import Spinner from "../svg/Spinner"
 
 export default function DesktopLayout() {    
     const searchParams = useSearchParams()
@@ -17,6 +20,7 @@ export default function DesktopLayout() {
     const details = searchParams.get('details')
     const group = searchParams.get('group')
     const datasetTag = searchParams.get('datasetTag')
+    const { resultData, isLoading, searchError } = useContext(SearchContext)
 
     return <main id="main" className="flex scroll-container relative w-[100svw] h-[calc(100svh-3rem)]">   
 
@@ -77,10 +81,16 @@ export default function DesktopLayout() {
 
         </div>
     
-        { mode == 'map' && datasetTag != 'base' &&
+        { resultData && mode == 'map' && datasetTag != 'base' &&
             <div className="absolute top-0 right-0 h-full w-full">
             
-                <MapExplorer/>
+               {(resultData || searchError) && <MapExplorer/>}
+               {!resultData && isLoading && <div className="flex h-full items-center justify-center">
+                <div>
+                    <Spinner status="Lastar inn kartet" className="w-20 h-20" />
+                </div>
+                </div>}
+                
             </div>
         }
 
