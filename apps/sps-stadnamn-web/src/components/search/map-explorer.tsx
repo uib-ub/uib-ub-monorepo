@@ -72,7 +72,6 @@ export default function MapExplorer() {
 
       // Add state for geotile cells and intersecting cells
   const [markerCells, setMarkerCells] = useState<number[][][]>([]);
-  const [currentPrecision, setCurrentPrecision] = useState<number>(8); // Store current precision
 
  
 
@@ -107,6 +106,84 @@ export default function MapExplorer() {
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
   const autoMode = markerMode === 'auto' ? (searchParams.get('q')?.length || totalHits?.value < 100000 ? 'cluster' : 'sample') : null
   const queryEndpoint = (markerMode == 'cluster' || mapInstance.current?.getZoom() < 8 || autoMode == 'cluster') ? 'cluster' : 'sample'
+
+
+  const updateMarkerGrid = useCallback((liveBounds: [[number, number], [number, number]], liveZoom: number) => {
+    const [[north, west], [south, east]] = liveBounds
+      if (liveZoom < 6) {
+        return
+        
+        // Set marker cells to whole world if it isn't already one cell covering the world
+        if (!markerCells[0] || markerCells[0][0][0] !== 72 || markerCells[0][0][1] !== -180) {
+          setMarkerCells([[[72, -180], [72, 180], [-72, 180], [-72, -180]]])
+        }
+
+        
+      }
+      
+      // Calculate tile coordinates for the viewport bounds
+      const xMin = Math.floor(((west + 180) / 360) * gridSize.current);
+      const xMax = Math.floor(((east + 180) / 360) * gridSize.current);
+      
+      // Convert latitude to tile Y coordinates (Web Mercator projection)
+      const yMin = Math.floor(((1 - Math.log(Math.tan(north * Math.PI / 180) + 1 / Math.cos(north * Math.PI / 180)) / Math.PI) / 2) * gridSize.current);
+      const yMax = Math.floor(((1 - Math.log(Math.tan(south * Math.PI / 180) + 1 / Math.cos(south * Math.PI / 180)) / Math.PI) / 2) * gridSize.current);
+      
+      // Ensure bounds are within valid range
+      const clampedXMin = Math.max(0, xMin);
+      const clampedXMax = Math.min(gridSize.current - 1, xMax);
+      const clampedYMin = Math.max(0, yMin);
+      const clampedYMax = Math.min(gridSize.current - 1, yMax);
+      
+      const newCells: number[][][] = [];
+      
+      // Generate only the cells that intersect with the viewport
+      for (let x = clampedXMin; x <= clampedXMax; x++) {
+        for (let y = clampedYMin; y <= clampedYMax; y++) {
+          // Convert tile coordinates back to lat/lng bounds
+          const tileWest = (x / gridSize.current) * 360 - 180;
+          const tileEast = ((x + 1) / gridSize.current) * 360 - 180;
+          
+          const tileNorth = (Math.atan(Math.sinh(Math.PI * (1 - 2 * y / gridSize.current))) * 180 / Math.PI);
+          const tileSouth = (Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / gridSize.current))) * 180 / Math.PI);
+          
+          // Create cell bounds for Rectangle component
+          const cell = [
+            [tileSouth, tileWest], // southwest corner
+            [tileNorth, tileEast]  // northeast corner
+          ];
+          
+          newCells.push(cell);
+        }
+      }
+
+      // sort by distance from center
+      newCells.sort((a, b) => {
+        const aDist = yDistance(mapInstance.current, a[0][0], a[0][1]) + xDistance(mapInstance.current, a[0][0], a[0][1])
+        const bDist = yDistance(mapInstance.current, b[0][0], b[0][1]) + xDistance(mapInstance.current, b[0][0], b[0][1])
+        return aDist - bDist
+      })  
+      
+      
+      // Only update state if the cells have actually changed
+      if (markerCells.length !== newCells.length || 
+          markerCells.some((cell, index) => 
+            cell[0][0] !== newCells[index][0][0] || 
+            cell[0][1] !== newCells[index][0][1] || 
+            cell[1][0] !== newCells[index][1][0] || 
+            cell[1][1] !== newCells[index][1][1]
+          )) {
+        console.log("NEW CELLS", newCells)
+        setMarkerCells(newCells);
+      }
+    }, [gridSize])
+
+
+    useEffect(() => {
+      updateMarkerGrid(snappedBounds, currentZoom)
+    }, [])
+
+
 
   // NB: sample mode, but clustering of results with the same coordinates
   const sampleClusters = useCallback((data: any) => {
@@ -336,23 +413,6 @@ export default function MapExplorer() {
     // State to store debug viewport bounds for real-time updates
     const [debugViewportBounds, setDebugViewportBounds] = useState<[[number, number], [number, number]] | null>(null);
   
-    // Function to check if a polygon intersects with a rectangle
-    const checkPolygonIntersection = useCallback((polygon: number[][], bounds: [[number, number], [number, number]]) => {
-      if (!polygon || !bounds || polygon.length < 4) return false;
-      
-      const [[rectNorth, rectWest], [rectSouth, rectEast]] = bounds;
-      
-      // Get polygon bounds
-      const polygonLats = polygon.map(p => p[0]);
-      const polygonLngs = polygon.map(p => p[1]);
-      const polyNorth = Math.max(...polygonLats);
-      const polySouth = Math.min(...polygonLats);
-      const polyEast = Math.max(...polygonLngs);
-      const polyWest = Math.min(...polygonLngs);
-      
-      // Check if rectangles overlap (simple bounding box intersection)
-      return !(rectEast < polyWest || rectWest > polyEast || rectNorth < polySouth || rectSouth > polyNorth);
-    }, []);
 
 
 
@@ -443,83 +503,23 @@ export default function MapExplorer() {
           function EventHandlers() {
             const map = useMap();
             useMapEvents({
-              move: () => {
-                const liveBounds = map.getBounds();
-                const [[north, west], [south, east]] = [[liveBounds.getNorth(), liveBounds.getWest()], [liveBounds.getSouth(), liveBounds.getEast()]]
-                const liveZoom = map.getZoom();
-                if (liveZoom < 10) {
-                  return
-                  
-                  // Set marker cells to whole world if it isn't already one cell covering the world
-                  if (!markerCells[0] || markerCells[0][0][0] !== 72 || markerCells[0][0][1] !== -180) {
-                    setMarkerCells([[[72, -180], [72, 180], [-72, 180], [-72, -180]]])
-                  }
-
-                  
-                }
-                
-                if (liveZoom != currentZoom) {
-                  console.log("ZOOM", liveZoom, currentZoom)
+              zoomend: () => {
+                console.log("ZOOMEND")
+                // Update precision if zoom level changes
+                const mapZoom = map.getZoom();
+                if (mapZoom != currentZoom) {
+                  const mapBounds = map.getBounds();
+                  const [[north, west], [south, east]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
                   const newPrecision = getGridSize([[north, west], [south, east]]);
-                  setCurrentPrecision(newPrecision);
-                  console.log("NEW PRECISION", newPrecision)
+                  gridSize.current = newPrecision;
+                  setCurrentZoom(mapZoom)
                 }
-
-                // Calculate grid resolution based on current precision
-                
-                // Calculate tile coordinates for the viewport bounds
-                const xMin = Math.floor(((west + 180) / 360) * currentPrecision);
-                const xMax = Math.floor(((east + 180) / 360) * currentPrecision);
-                
-                // Convert latitude to tile Y coordinates (Web Mercator projection)
-                const yMin = Math.floor(((1 - Math.log(Math.tan(north * Math.PI / 180) + 1 / Math.cos(north * Math.PI / 180)) / Math.PI) / 2) * currentPrecision);
-                const yMax = Math.floor(((1 - Math.log(Math.tan(south * Math.PI / 180) + 1 / Math.cos(south * Math.PI / 180)) / Math.PI) / 2) * currentPrecision);
-                
-                // Ensure bounds are within valid range
-                const clampedXMin = Math.max(0, xMin);
-                const clampedXMax = Math.min(currentPrecision - 1, xMax);
-                const clampedYMin = Math.max(0, yMin);
-                const clampedYMax = Math.min(currentPrecision - 1, yMax);
-                
-                const newCells: number[][][] = [];
-                
-                // Generate only the cells that intersect with the viewport
-                for (let x = clampedXMin; x <= clampedXMax; x++) {
-                  for (let y = clampedYMin; y <= clampedYMax; y++) {
-                    // Convert tile coordinates back to lat/lng bounds
-                    const tileWest = (x / currentPrecision) * 360 - 180;
-                    const tileEast = ((x + 1) / currentPrecision) * 360 - 180;
-                    
-                    const tileNorth = (Math.atan(Math.sinh(Math.PI * (1 - 2 * y / currentPrecision))) * 180 / Math.PI);
-                    const tileSouth = (Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / currentPrecision))) * 180 / Math.PI);
-                    
-                    // Create cell polygon (clockwise order)
-                    const cell = [
-                      [tileNorth, tileWest],
-                      [tileNorth, tileEast],
-                      [tileSouth, tileEast],
-                      [tileSouth, tileWest],
-                      [tileNorth, tileWest] // Close the polygon
-                    ];
-                    
-                    newCells.push(cell);
-                  }
-                }
-                
-                console.log("NEW CELLS", newCells);
-                
-                // Only update state if the cells have actually changed
-                if (markerCells.length !== newCells.length || 
-                    !markerCells.every((cell, index) => 
-                      cell.length === newCells[index].length &&
-                      cell.every((coord, coordIndex) => 
-                        coord[0] === newCells[index][coordIndex][0] && 
-                        coord[1] === newCells[index][coordIndex][1]
-                      )
-                    )) {
-                      console.log("NEW CELLS", newCells)
-                  setMarkerCells(newCells);
-                }
+              },
+              move: () => {
+                console.log("MOVE")
+                const mapBounds = map.getBounds();
+                const [[north, west], [south, east]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
+                updateMarkerGrid([[north, west], [south, east]], map.getZoom())
                 
 
               },
@@ -529,7 +529,6 @@ export default function MapExplorer() {
                 const mapZoom = map.getZoom();
                 const newBounds: [[number, number], [number, number]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
                 setSnappedBounds(newBounds)
-                setCurrentZoom(mapZoom)
                 setCurrentCenter([mapCenter.lat, mapCenter.lng])
                 const newParams = new URLSearchParams(searchParams)
                 newParams.set('zoom', map.getZoom().toString())
@@ -605,7 +604,7 @@ export default function MapExplorer() {
 
                     <Rectangle
                       key={`geotile-${index}`}
-                      bounds={[[cell[0][0], cell[0][1]], [cell[2][0], cell[2][1]]]}
+                      bounds={cell}
                       pathOptions={{
                         color: '#00ff00',
                         weight: 3,
@@ -742,7 +741,7 @@ export default function MapExplorer() {
           {showGeotileGrid && (
             <div className="px-4 py-2">
               <div className="text-xs text-neutral-600 mb-1">
-                Auto-precision: {currentPrecision}
+                Auto-precision: {gridSize}
               </div>
               <div className="text-xs text-neutral-500">
                 Rødt rektangel viser zoom +2 nivå
