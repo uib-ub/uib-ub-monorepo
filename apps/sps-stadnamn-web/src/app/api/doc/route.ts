@@ -34,7 +34,7 @@ export async function GET(request: Request) {
             }
         };
 
-        const [redirectData, redirectStatus] = await postQuery(dataset, redirectQuery);
+        const [redirectData, redirectStatus] = await postQuery(dataset, redirectQuery, undefined, true);
         return Response.json(redirectData, { status: redirectStatus });
     }
     else {
