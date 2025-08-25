@@ -34,17 +34,23 @@ const groupedHeadings = computed(() => {
   return items;
 });
 
-onMounted(() => {
-  window.document
-    .querySelector(props.contentSelector)
-    ?.querySelectorAll("h2, h3, h4, h5, h6")
-    .forEach((el) => {
-      headings.value.push({
-        level: parseInt(el.tagName.charAt(1)),
-        id: el.id,
-        content: el.innerText,
-        subheadings: [],
+function updateHeadings() {
+  if (import.meta.client) {
+    headings.value = [];
+    window.document
+      .querySelector(props.contentSelector)
+      ?.querySelectorAll("h2, h3, h4, h5")
+      .forEach((el) => {
+        headings.value.push({
+          level: parseInt(el.tagName.charAt(1)),
+          id: el.id,
+          content: el.innerText,
+          subheadings: [],
+        });
       });
-    });
-});
+  }
+}
+
+onMounted(updateHeadings);
+onBeforeUpdate(updateHeadings);
 </script>
