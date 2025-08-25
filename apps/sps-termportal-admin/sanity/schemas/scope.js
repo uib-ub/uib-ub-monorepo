@@ -1,4 +1,5 @@
 import { label, note, responsibleStaff } from "./props";
+
 export default {
   name: "scope",
   title: "Omfang",

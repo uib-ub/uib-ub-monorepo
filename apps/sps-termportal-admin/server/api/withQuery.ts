@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
 
   const instance = getFusekiInstanceInfo(
     runtimeConfig,
-    queryParams?.internal ? "internal" : "default"
+    queryParams?.internal ? "internal" : "default",
   );
 
   const data = await $fetch(instance.url, {
@@ -15,9 +15,9 @@ export default defineEventHandler(async (event) => {
     body: body.query,
     headers: {
       "Content-type": "application/sparql-query",
-      Referer: "termportalen.no", // TODO Referer problem
-      Accept: "application/json",
-      Authorization: `Basic ${instance.authHeader}`,
+      "Referer": "termportalen.no", // TODO Referer problem
+      "Accept": "application/json",
+      "Authorization": `Basic ${instance.authHeader}`,
     },
   });
 

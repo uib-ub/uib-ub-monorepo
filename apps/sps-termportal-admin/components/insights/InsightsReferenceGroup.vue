@@ -1,6 +1,8 @@
 <template>
   <UtilsTableWrapper>
-    <template #header>Referansegrupper</template>
+    <template #header>
+      Referansegrupper
+    </template>
     <div class="max-w-6xl">
       <DataTable
         v-model:filters="filters"
@@ -11,14 +13,37 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData()" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData()"
+            />
           </div>
         </template>
-        <Column field="label" header="Navn referansegruppe" sortable />
-        <Column field="count" header="Medlemmer" sortable />
-        <Column field="timespan" header="Tidsrom" sortable />
-        <Column field="termgroup" header="Termgruppe" sortable />
+        <Column
+          field="label"
+          header="Navn referansegruppe"
+          sortable
+        />
+        <Column
+          field="count"
+          header="Medlemmer"
+          sortable
+        />
+        <Column
+          field="timespan"
+          header="Tidsrom"
+          sortable
+        />
+        <Column
+          field="termgroup"
+          header="Termgruppe"
+          sortable
+        />
       </DataTable>
     </div>
   </UtilsTableWrapper>
@@ -46,7 +71,7 @@ const { data } = useLazySanityQuery(query);
 // TODO handle situation where one group consults multiple termgroups
 const procdata = computed(() => {
   const mapped = data.value
-    ?.filter((group) => group.termgroups.length > 0)
+    ?.filter(group => group.termgroups.length > 0)
     .map((group) => {
       const map = {
         label: group.label,

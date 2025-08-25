@@ -1,17 +1,29 @@
 <template>
   <section class="space-y-3">
-    <AppLink :to="'#' + id">
-      <component :is="headingLevel" :id="id" class="mb-3 text-xl"
-        ><slot name="header"></slot
-      ></component>
-    </AppLink>
+    <div class="flex">
+      <AppLink :to="'#' + id">
+        <component
+          :is="headingLevel"
+          :id="id"
+          :class="`mb-3 ${headingTextClass}`"
+        >
+          <slot name="header" />
+        </component>
+      </AppLink>
+      <IconSpinner
+        v-if="pending"
+        class="ml-2 mb-1.5"
+        size="1.1em"
+      />
+    </div>
+
     <div class="space-y-3">
       <div class="space-y-1.5 max-w-3xl">
-        <slot name="description"></slot>
+        <slot name="description" />
       </div>
-      <slot></slot>
+      <slot />
       <div class="space-y-3 max-w-3xl">
-        <slot name="legend"></slot>
+        <slot name="legend" />
       </div>
     </div>
   </section>
@@ -20,7 +32,21 @@
 <script setup lang="ts">
 import { v4 as uuid } from "uuid";
 
-const props = defineProps({ headingLevel: { type: String, default: "h2" } });
+const appConfig = useAppConfig();
+const headingTextClassOptions = appConfig.ui.headingTextClassOptions;
+
+const props = defineProps<{
+  headingLevel: HeadingLevelWithDefaultOptions;
+  headingClass?: string;
+  pending?: boolean;
+}>();
 
 const id = uuid();
+
+const headingTextClass = computed(() => {
+  if (!props.headingClass) {
+    return headingTextClassOptions[props.headingLevel];
+  }
+  return props.headingClass;
+});
 </script>

@@ -1,6 +1,12 @@
 <template>
-  <UtilsTableWrapper class="max-w-2xl">
-    <template #header>Manglende definisjoner</template>
+  <UtilsTableWrapper
+    class="max-w-2xl"
+    heading-level="h3"
+    :pending="pending"
+  >
+    <template #header>
+      Manglende definisjoner
+    </template>
     <template #description>
       <UtilsTableLegend>
         <UtilsTableLegendEntry
@@ -46,14 +52,24 @@
       >
         <template #header>
           <div style="text-align: right">
-            <Button class="h-10" label="Eksport" @click="exportCSV()" />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportCSV()"
+            />
           </div>
         </template>
-        <Column field="link" header="Begrep" sortable>
+        <Column
+          field="link"
+          header="Begrep"
+          sortable
+        >
           <template #body="slotProps">
-            <AppLink :to="slotProps.data.link">{{
-              slotProps.data.concept
-            }}</AppLink>
+            <AppLink :to="slotProps.data.link">
+              {{
+                slotProps.data.concept
+              }}
+            </AppLink>
           </template>
         </Column>
       </DataTable>
@@ -67,9 +83,9 @@ const props = defineProps({ termbase: { type: Object, required: true } });
 
 const datatable = ref();
 
-const { data } = useLazyFetch(
+const { data, pending } = useLazyFetch(
   `/api/tb/${props.termbase.id}/definitionsMissing`,
-  { query: { internal: true } }
+  { query: { internal: true } },
 );
 
 const concepts = computed(() => {

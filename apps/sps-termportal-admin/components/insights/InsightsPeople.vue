@@ -1,6 +1,8 @@
 <template>
   <UtilsTableWrapper>
-    <template #header>People participating in Termgroups</template>
+    <template #header>
+      People participating in Termgroups
+    </template>
     <div class="max-w-7xl">
       <DataTable
         ref="datatable"
@@ -16,13 +18,32 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData($event)"
+            />
           </div>
         </template>
-        <Column field="label" header="Navn" sortable></Column>
-        <Column field="termgroup" header="Termgruppe" sortable></Column>
-        <Column field="organization" header="Organisasjon" sortable></Column>
+        <Column
+          field="label"
+          header="Navn"
+          sortable
+        />
+        <Column
+          field="termgroup"
+          header="Termgruppe"
+          sortable
+        />
+        <Column
+          field="organization"
+          header="Organisasjon"
+          sortable
+        />
       </DataTable>
     </div>
   </UtilsTableWrapper>
@@ -60,7 +81,7 @@ const query = `
 const { data } = useLazySanityQuery(query);
 
 const procdata = computed(() => {
-  const filtered = data.value?.filter((person) => person.termgroups.length > 0);
+  const filtered = data.value?.filter(person => person.termgroups.length > 0);
 
   // TODO handle situation where a person leaves and rejoins a group etc.
   // currently defaults to first membership
@@ -69,13 +90,13 @@ const procdata = computed(() => {
       label: person.label,
       termgroup: person.termgroups
         ?.map(
-          (group) =>
-            group.label +
-            ` (${group.qualifiedMembership[0].timespan?.edtf}, ${group.qualifiedMembership[0].role})`
+          group =>
+            group.label
+            + ` (${group.qualifiedMembership[0].timespan?.edtf}, ${group.qualifiedMembership[0].role})`,
         )
         .join(", "),
       organization: person.qualifiedDelegation
-        ?.map((delegation) => delegation.organization.label)
+        ?.map(delegation => delegation.organization.label)
         .join(", "),
     };
     return map;

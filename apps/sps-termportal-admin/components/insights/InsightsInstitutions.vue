@@ -1,6 +1,8 @@
 <template>
   <UtilsTableWrapper>
-    <template #header>Institutions participating in termgroups</template>
+    <template #header>
+      Institutions participating in termgroups
+    </template>
     <template #description>
       <p>
         List of insitutions with a count of associated people in termgroups that
@@ -23,17 +25,32 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData($event)"
+            />
           </div>
         </template>
-        <Column field="label" header="Navn" sortable></Column>
-        <Column field="count" header="Personer" sortable></Column>
+        <Column
+          field="label"
+          header="Navn"
+          sortable
+        />
+        <Column
+          field="count"
+          header="Personer"
+          sortable
+        />
       </DataTable>
     </div>
   </UtilsTableWrapper>
 
-  <section></section>
+  <section />
 </template>
 
 <script setup lang="ts">
@@ -66,38 +83,38 @@ const { data } = useLazySanityQuery(query);
 const procdata = computed(() => {
   const mapped = data.value
     ?.filter(
-      (orga) =>
+      orga =>
         !(
           (
-            orga.members.length <= 0 || // filter out organizations without members
-            orga._id === "00cde024-d1d6-4631-92b1-b497429a92d0"
+            orga.members.length <= 0 // filter out organizations without members
+            || orga._id === "00cde024-d1d6-4631-92b1-b497429a92d0"
           ) // filter out termportalen
-        )
+        ),
     )
     .map((orga) => {
       const map = {
         label: orga.label,
         count: orga.members
           .filter(
-            (member) =>
-              member.termgroups.map((tg) => tg.termbase).flat().length > 0
+            member =>
+              member.termgroups.map(tg => tg.termbase).flat().length > 0,
           )
           .filter(
-            (member) =>
+            member =>
               member.termgroups
-                .map((tg) =>
+                .map(tg =>
                   tg.qualifiedMembership.filter(
-                    (mbs) =>
-                      !mbs?.timespan?.endOfTheEnd ||
-                      isInFuture(mbs?.timespan?.endOfTheEnd)
-                  )
+                    mbs =>
+                      !mbs?.timespan?.endOfTheEnd
+                      || isInFuture(mbs?.timespan?.endOfTheEnd),
+                  ),
                 )
-                .flat().length > 0
+                .flat().length > 0,
           ).length,
       };
       return map;
     })
-    .filter((orga) => orga.count > 0);
+    .filter(orga => orga.count > 0);
 
   return mapped;
 });

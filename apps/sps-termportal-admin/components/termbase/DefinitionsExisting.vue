@@ -1,6 +1,12 @@
 <template>
-  <UtilsTableWrapper class="max-w-6xl">
-    <template #header>Definisjoner</template>
+  <UtilsTableWrapper
+    class="max-w-6xl"
+    heading-level="h3"
+    :pending="pending"
+  >
+    <template #header>
+      Definisjoner
+    </template>
     <UtilsTableLegend>
       <p v-if="definitions?.length == 5000">
         Fetch limit set to 5000, e.g. if 5000 definitions have been fetched it
@@ -9,14 +15,14 @@
       <UtilsTableLegendEntry
         :legend-key="`${definitions?.length}`"
         legend-value="definisjoner hentet"
-        legend-width="16"
+        legend-width="24"
       />
       <UtilsTableLegendEntry
         v-for="stat in stats"
         :key="stat[1] + stat[2] + stat[0]"
         :legend-key="`${stat[1]}/${stat[2]}`"
         :legend-value="`${stat[0]}`"
-        legend-width="16"
+        legend-width="24"
       />
     </UtilsTableLegend>
     <div class="">
@@ -31,19 +37,36 @@
       >
         <template #header>
           <div style="text-align: right">
-            <Button class="h-10" label="Eksport" @click="exportCSV()" />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportCSV()"
+            />
           </div>
         </template>
-        <Column field="concept" header="Begrep" sortable>
+        <Column
+          field="concept"
+          header="Begrep"
+          sortable
+        >
           <template #body="slotProps">
             <AppLink
               :to="`https://termportalen.no/tb/${slotProps.data.link}`"
-              >{{ slotProps.data.concept }}</AppLink
             >
+              {{ slotProps.data.concept }}
+            </AppLink>
           </template>
         </Column>
-        <Column field="def" header="Definisjon" sortable></Column>
-        <Column field="lang" header="Språk" sortable></Column>
+        <Column
+          field="def"
+          header="Definisjon"
+          sortable
+        />
+        <Column
+          field="lang"
+          header="Språk"
+          sortable
+        />
       </DataTable>
     </div>
   </UtilsTableWrapper>
@@ -54,7 +77,7 @@ const props = defineProps({ termbase: { type: Object, required: true } });
 
 const datatable = ref();
 
-const { data } = useLazyFetch(`/api/tb/${props.termbase.id}/definitions`, {
+const { data, pending } = useLazyFetch(`/api/tb/${props.termbase.id}/definitions`, {
   query: { internal: true },
 });
 
@@ -83,7 +106,7 @@ const stats = computed(() => {
     const conceptWithDef = new Set(
       data?.value.map((e) => {
         return e.concept.value;
-      })
+      }),
     );
     statEntries.push([
       "begreper har en definisjon",

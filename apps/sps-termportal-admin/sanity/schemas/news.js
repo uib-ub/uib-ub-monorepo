@@ -36,7 +36,7 @@ export default {
     },
   ].concat(
     languages
-      .map((lang) => [
+      .map(lang => [
         {
           name: "title" + lang.value,
           type: "string",
@@ -51,7 +51,7 @@ export default {
           fieldset: lang.value,
         },
       ])
-      .flat()
+      .flat(),
   ),
   preview: {
     select: {

@@ -1,6 +1,13 @@
 <template>
-  <UtilsTableWrapper v-if="termbase?.conceptCount > 0" class="max-w-4xl">
-    <template #header>Uspesifiserte begrepsrelasjoner</template>
+  <UtilsTableWrapper
+    v-if="termbase?.conceptCount > 0"
+    class="max-w-4xl"
+    heading-level="h3"
+    :pending="pending"
+  >
+    <template #header>
+      Uspesifiserte begrepsrelasjoner
+    </template>
     <template #description>
       <p>
         <span class="font-semibold">{{ relations?.length }}</span> concepts have
@@ -23,17 +30,31 @@
     >
       <template #header>
         <div style="text-align: right">
-          <Button class="h-10" label="Eksport" @click="exportCSV()" />
+          <Button
+            class="h-10"
+            label="Eksport"
+            @click="exportCSV()"
+          />
         </div>
       </template>
-      <Column field="link" header="Link" sortable>
+      <Column
+        field="link"
+        header="Link"
+        sortable
+      >
         <template #body="slotProps">
-          <AppLink :to="slotProps.data.link">{{
-            slotProps.data.concept
-          }}</AppLink>
+          <AppLink :to="slotProps.data.link">
+            {{
+              slotProps.data.concept
+            }}
+          </AppLink>
         </template>
       </Column>
-      <Column field="relations" header="Semantic Relations" sortable></Column>
+      <Column
+        field="relations"
+        header="Semantic Relations"
+        sortable
+      />
     </DataTable>
   </UtilsTableWrapper>
 </template>
@@ -43,9 +64,9 @@ const props = defineProps({ termbase: { type: Object, required: true } });
 
 const datatable = ref();
 
-const { data } = useLazyFetch(
+const { data, pending } = useLazyFetch(
   `/api/tb/${props.termbase.id}/qualitySemanticRelations`,
-  { query: { internal: true } }
+  { query: { internal: true } },
 );
 
 const relations = computed(() => {
@@ -58,11 +79,11 @@ const relations = computed(() => {
           .split("-3A")
           .slice(-1)[0],
         link:
-          "https://wiki.terminologi.no/index.php?title=" +
-          e.concept.value.split("/").slice(-1)[0].split("-3A").join(":"),
+          "https://wiki.terminologi.no/index.php?title="
+          + e.concept.value.split("/").slice(-1)[0].split("-3A").join(":"),
         relations: e.relations.value
           .split(";")
-          .map((rel) => rel.split("/").slice(-1)[0].split("-3A").slice(-1)[0])
+          .map(rel => rel.split("/").slice(-1)[0].split("-3A").slice(-1)[0])
           .join(", "),
       };
     });

@@ -13,13 +13,27 @@
   >
     <template #header>
       <div class="flex">
-        <InputText v-model="filters['global'].value" placeholder="Søk" />
+        <InputText
+          v-model="filters['global'].value"
+          placeholder="Søk"
+        />
       </div>
     </template>
-    <Column selection-mode="single" header-style="width: 3rem"></Column>
-    <Column sortable field="label" header="Navn" />
+    <Column
+      selection-mode="single"
+      header-style="width: 3rem"
+    />
+    <Column
+      sortable
+      field="label"
+      header="Navn"
+    />
     <!-- <Column sortable field="id" header="ID" /> -->
-    <Column sortable field="conceptCount" header="Begreper" />
+    <Column
+      sortable
+      field="conceptCount"
+      header="Begreper"
+    />
     <Column
       sortable
       header="Status"
@@ -51,7 +65,12 @@
         </MultiSelect>
       </template>
     </Column>
-    <Column sortable field="staff" header="Ansatt" :show-filter-menu="false">
+    <Column
+      sortable
+      field="staff"
+      header="Ansatt"
+      :show-filter-menu="false"
+    >
       <template #body="{ data }">
         <div class="flex align-items-center gap-2">
           <span>{{ data.staff }}</span>
@@ -84,7 +103,7 @@
           "
           :to="`${wikiPageLink}${slotProps.data.id.replace(
             '*',
-            ''
+            '',
           )}:${slotProps.data.id.replace('*', '')}`"
           target="_blank"
         >
@@ -137,13 +156,13 @@ const query = `
 const { data: cmsdata } = useLazySanityQuery(query);
 
 function matchid(data, entry, key) {
-  return data.value?.find((d) => d.id === entry.id.value)?.[key];
+  return data.value?.find(d => d.id === entry.id.value)?.[key];
 }
 
 const merged = computed(() => {
   if (dbdata.value) {
     const enriched = dbdata.value
-      .map((e) => ({
+      .map(e => ({
         label: e.label.value,
         id: e.id.value,
         conceptCount: e.concepts.value,
@@ -151,10 +170,10 @@ const merged = computed(() => {
         staff: matchid(cmsdata, e, "responsibleStaff"),
         _id: matchid(cmsdata, e, "_id"),
       }))
-      .filter((termbase) => termbase.id !== "DOMENE");
+      .filter(termbase => termbase.id !== "DOMENE");
 
     if (enriched && cmsdata.value) {
-      const ids = dbdata.value.map((e) => e.id.value);
+      const ids = dbdata.value.map(e => e.id.value);
       for (const entry of cmsdata.value) {
         if (!ids.includes(entry.id)) {
           const data = {

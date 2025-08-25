@@ -2,7 +2,9 @@
   <div class="flex">
     <!-- <SideBar></SideBar> -->
     <main class="space-y-6 py-8">
-      <h1 class="text-2xl">Insights</h1>
+      <h1 class="text-2xl">
+        Insights
+      </h1>
       <div class="space-y-12">
         <InsightsInstitutionsTbs />
         <InsightsInstitutions />

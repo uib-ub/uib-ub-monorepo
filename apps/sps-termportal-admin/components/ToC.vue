@@ -1,7 +1,12 @@
 <template>
-  <aside v-if="groupedHeadings.length" class="">
-    <h2 class="font-semibold text-xl mb-3">Innhold</h2>
-    <ToCList :items="groupedHeadings"></ToCList>
+  <aside
+    v-if="groupedHeadings.length"
+    class=""
+  >
+    <h2 class="font-semibold text-xl mb-3">
+      Innhold
+    </h2>
+    <ToCList :items="groupedHeadings" />
   </aside>
 </template>
 
@@ -17,7 +22,7 @@ const groupedHeadings = computed(() => {
   for (let i = items.length - 1; i >= 0; i--) {
     const currentItem = items[i];
 
-    let parentItem = items.findLast((item, index) => {
+    const parentItem = items.findLast((item, index) => {
       return item.level < currentItem.level && index < i;
     });
 
@@ -29,17 +34,23 @@ const groupedHeadings = computed(() => {
   return items;
 });
 
-onMounted(() => {
-  window.document
-    .querySelector(props.contentSelector)
-    ?.querySelectorAll("h2, h3, h4, h5, h6")
-    .forEach((el) => {
-      headings.value.push({
-        level: parseInt(el.tagName.charAt(1)),
-        id: el.id,
-        content: el.innerText,
-        subheadings: [],
+function updateHeadings() {
+  if (import.meta.client) {
+    headings.value = [];
+    window.document
+      .querySelector(props.contentSelector)
+      ?.querySelectorAll("h2, h3, h4, h5")
+      .forEach((el) => {
+        headings.value.push({
+          level: parseInt(el.tagName.charAt(1)),
+          id: el.id,
+          content: el.innerText,
+          subheadings: [],
+        });
       });
-    });
-});
+  }
+}
+
+onMounted(updateHeadings);
+onBeforeUpdate(updateHeadings);
 </script>

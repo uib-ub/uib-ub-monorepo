@@ -30,7 +30,7 @@ export default {
     {
       name: "subscope",
       type: "reference",
-      title: "Underomfang", 
+      title: "Underomfang",
       to: [{ type: "scope" }],
       options: {
         filter: ({ parent, value }) => {
@@ -39,15 +39,16 @@ export default {
               filter: "isPartOf._ref == $scope",
               params: { scope: parent.scope._ref },
             };
-          } else {
+          }
+          else {
             return {};
           }
         },
       },
       hidden: ({ parent }) =>
         !(
-          parent?.scope?._ref !== "c1f42563-f4e1-4152-8cb8-558362faaf4f" &&
-          parent?.scope?._ref !== "eb281dfd-073c-4a9e-b2a0-95a6e25f3516"
+          parent?.scope?._ref !== "c1f42563-f4e1-4152-8cb8-558362faaf4f"
+          && parent?.scope?._ref !== "eb281dfd-073c-4a9e-b2a0-95a6e25f3516"
         ),
     },
   ],
@@ -62,9 +63,11 @@ export default {
       let title = selection?.title;
       if (selection?.termbase) {
         title += ">" + selection?.termbase;
-      } else if (selection.group) {
+      }
+      else if (selection.group) {
         title += " > " + selection?.group;
-      } else if (selection.subscope) {
+      }
+      else if (selection.subscope) {
         title += " > " + selection?.subscope;
       }
       return { title };

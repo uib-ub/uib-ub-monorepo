@@ -32,13 +32,27 @@ import { listenQuery } from 'sanity';
           <ul
             class="flex items-center space-x-2 xl:space-x-4 2xl:space-x-7 text-lg font-semibold text-gray-500"
           >
-            <NavBarLink to="/overview">Termbaser</NavBarLink>
-            <NavBarLink to="/domain">Domener</NavBarLink>
-            <NavBarLink to="/activities">Aktiviteter</NavBarLink>
-            <NavBarLink to="/personbase">Personbank</NavBarLink>
-            <NavBarLink to="/insights">Statistikk</NavBarLink>
-            <NavBarLink to="/docs">Dokumentasjon</NavBarLink>
-            <NavBarLink to="/studio">Studio</NavBarLink>
+            <NavBarLink to="/overview">
+              Termbaser
+            </NavBarLink>
+            <NavBarLink to="/domain">
+              Domener
+            </NavBarLink>
+            <NavBarLink to="/activities">
+              Aktiviteter
+            </NavBarLink>
+            <NavBarLink to="/personbase">
+              Personbank
+            </NavBarLink>
+            <NavBarLink to="/insights">
+              Statistikk
+            </NavBarLink>
+            <NavBarLink to="/docs">
+              Dokumentasjon
+            </NavBarLink>
+            <NavBarLink to="/studio">
+              Studio
+            </NavBarLink>
           </ul>
         </div>
         <div class="">
@@ -46,8 +60,14 @@ import { listenQuery } from 'sanity';
             class="flex items-center space-x-2 px-9 text-lg font-semibold text-gray-500 hover:text-gray-700 focus:text-gray-700"
             @click="signOut()"
           >
-            <div class="">Sign Out</div>
-            <Icon name="mdi:sign-out" size="1.1em" class=""></Icon>
+            <div class="">
+              Sign Out
+            </div>
+            <Icon
+              name="mdi:sign-out"
+              size="1.1em"
+              class=""
+            />
           </button>
         </div>
       </div>
@@ -66,7 +86,8 @@ const route = useRoute();
 const context = computed(() => {
   if (route.path === "/") {
     return "minimal";
-  } else {
+  }
+  else {
     return "default";
   }
 });

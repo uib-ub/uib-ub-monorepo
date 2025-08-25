@@ -1,12 +1,29 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   extends: ["termportal-ui"],
-  devtools: { enabled: true },
   modules: ["@sidebase/nuxt-auth", "@nuxt/content", "@nuxtjs/sanity", "@nuxt/eslint"],
+  ssr: false,
+  devtools: { enabled: true },
   app: {
     head: {
       title: "Termportalen admin",
       link: [{ rel: "icon", type: "image/svg", href: "/favicon.svg" }],
+    },
+  },
+  content: {
+    sources: {
+      //   content: {
+      //     driver: "fs",
+      //     prefix: "/docs", // All contents inside this source will be prefixed with `/docs`
+      //     base: resolve(__dirname, "content"),
+      //   },
+      github: {
+        // prefix: "/remote",
+        driver: "github",
+        repo: "uib-ub/terminologi-content",
+        branch: "main",
+        dir: "admin",
+      },
     },
   },
   runtimeConfig: {
@@ -34,35 +51,6 @@ export default defineNuxtConfig({
       base: "http://test.wiki.terminologi.no/index.php/Special:URIResolver/",
     },
   },
-  auth: {
-    globalAppMiddleware: true,
-  },
-  nitro: {
-    preset: "vercel",
-  },
-  content: {
-    sources: {
-      //   content: {
-      //     driver: "fs",
-      //     prefix: "/docs", // All contents inside this source will be prefixed with `/docs`
-      //     base: resolve(__dirname, "content"),
-      //   },
-      github: {
-        // prefix: "/remote",
-        driver: "github",
-        repo: "uib-ub/terminologi-content",
-        branch: "main",
-        dir: "admin",
-      },
-    },
-  },
-  sanity: {
-    projectId: process.env.SANITY_PROJECT_ID,
-    dataset: "production",
-    apiVersion: "2023-10-09",
-    token: process.env.SANITY_API_TOKEN,
-    useCdn: true,
-  },
   routeRules: {
     "/studio/**": { ssr: false },
     "/api/**": {
@@ -84,10 +72,22 @@ export default defineNuxtConfig({
       },
     },
   },
-  ssr: false,
+  nitro: {
+    preset: "vercel",
+  },
   vite: {
     define: {
       __NUXT_ASYNC_CONTEXT__: false,
     },
+  },
+  auth: {
+    globalAppMiddleware: true,
+  },
+  sanity: {
+    projectId: process.env.SANITY_PROJECT_ID,
+    dataset: "production",
+    apiVersion: "2023-10-09",
+    token: process.env.SANITY_API_TOKEN,
+    useCdn: true,
   },
 });

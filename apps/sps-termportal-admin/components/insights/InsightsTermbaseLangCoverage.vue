@@ -1,6 +1,8 @@
 <template>
   <UtilsTableWrapper>
-    <template #header>Termbases: Language coverage</template>
+    <template #header>
+      Termbases: Language coverage
+    </template>
     <template #description>
       <p>Only includes published termbases and counts published concepts.</p>
     </template>
@@ -17,18 +19,57 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData()" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData()"
+            />
           </div>
         </template>
-        <Column field="label" header="Navn" sortable />
-        <Column field="count" header="Begreper" sortable />
-        <Column field="tnb" header="med bokmål term" sortable />
-        <Column field="tnn" header="med nynorsk term" sortable />
-        <Column field="ten" header="med engelsk term" sortable />
-        <Column field="publishYear" header="Publisert" sortable />
-        <Column field="type" header="type" sortable />
-        <Column field="topdomain" header="Domene" sortable />
+        <Column
+          field="label"
+          header="Navn"
+          sortable
+        />
+        <Column
+          field="count"
+          header="Begreper"
+          sortable
+        />
+        <Column
+          field="tnb"
+          header="med bokmål term"
+          sortable
+        />
+        <Column
+          field="tnn"
+          header="med nynorsk term"
+          sortable
+        />
+        <Column
+          field="ten"
+          header="med engelsk term"
+          sortable
+        />
+        <Column
+          field="publishYear"
+          header="Publisert"
+          sortable
+        />
+        <Column
+          field="type"
+          header="type"
+          sortable
+        />
+        <Column
+          field="topdomain"
+          header="Domene"
+          sortable
+        />
         <!-- <Column field="dnb" header="med bokmål definisjon" sortable /> -->
         <!-- <Column field="dnn" header="med nynorsk definisjon" sortable /> -->
         <!-- <Column field="den" header="med engelsk definisjon" sortable /> -->
@@ -67,13 +108,13 @@ const query = `
 const { data: cmsdata } = useLazySanityQuery(query);
 
 function matchid(data, entry, key) {
-  return data.value?.find((d) => d.id === entry.tbid.value)?.[key];
+  return data.value?.find(d => d.id === entry.tbid.value)?.[key];
 }
 
 const displayData = computed(() => {
   if (data.value) {
     const mapped = data.value
-      .filter((tb) => tb.tbid.value !== "DOMENE")
+      .filter(tb => tb.tbid.value !== "DOMENE")
       .map((tb) => {
         const map = {
           id: tb.tbid.value,
@@ -89,7 +130,7 @@ const displayData = computed(() => {
           topdomain: topDomains[matchid(cmsdata, tb, "topdomain")] || "",
           publishYear: matchid(cmsdata, tb, "publishDate")?.[0]?.date.substring(
             0,
-            4
+            4,
           ),
         };
         return map;

@@ -1,20 +1,23 @@
 <template>
   <UtilsTableWrapper>
-    <template #header>Topdomains SSB: Language coverage</template>
+    <template #header>
+      Topdomains SSB: Language coverage
+    </template>
     <template #description>
       <p>
         Includes all SSB topdomains (from:
-        <AppLinkText to="https://www.ssb.no/klass/klassifikasjoner/36"
-          >6. Universitets- og høgskoleutdanning, lavere nivå</AppLinkText
-        >
+        <AppLinkText to="https://www.ssb.no/klass/klassifikasjoner/36">
+          6. Universitets- og høgskoleutdanning, lavere nivå
+        </AppLinkText>
         ) and only counts published concepts from published termbases.
       </p>
       <p>
         See
         <AppLinkText
           to="https://wiki.terminologi.no/index.php?title=DOMENE:SSB_Toppdomene"
-          >SSB-Topdomain wiki page</AppLinkText
         >
+          SSB-Topdomain wiki page
+        </AppLinkText>
         for mapping details.
       </p>
     </template>
@@ -31,15 +34,42 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData()" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData()"
+            />
           </div>
         </template>
-        <Column field="label" header="Navn" sortable />
-        <Column field="concepts" header="Begreper" sortable />
-        <Column field="nb" header="med bokmål term" sortable />
-        <Column field="nn" header="med nynorsk term" sortable />
-        <Column field="en" header="med engelsk term" sortable />
+        <Column
+          field="label"
+          header="Navn"
+          sortable
+        />
+        <Column
+          field="concepts"
+          header="Begreper"
+          sortable
+        />
+        <Column
+          field="nb"
+          header="med bokmål term"
+          sortable
+        />
+        <Column
+          field="nn"
+          header="med nynorsk term"
+          sortable
+        />
+        <Column
+          field="en"
+          header="med engelsk term"
+          sortable
+        />
       </DataTable>
     </div>
     <template #legend>
@@ -65,7 +95,7 @@ const filters = ref({
 });
 
 const { data } = await useLazyFetch(
-  "/api/domain/all/topdomain_ssb_language_coverage"
+  "/api/domain/all/topdomain_ssb_language_coverage",
 );
 
 const displayData = computed(() => {

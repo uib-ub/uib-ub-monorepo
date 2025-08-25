@@ -1,6 +1,6 @@
 import { ReferencedBy } from "sanity-plugin-document-reference-by";
 
-export const deskStructure = (S) =>
+export const deskStructure = S =>
   S.list()
     .title("Project")
     .items([
@@ -16,7 +16,7 @@ export const deskStructure = (S) =>
       S.documentTypeListItem("scope"),
     ]);
 
-export const defaultDocumentNodeResolver = (S) =>
+export const defaultDocumentNodeResolver = S =>
   S.document().views([
     S.view.form(),
     S.view.component(ReferencedBy).title("Referenced by"),

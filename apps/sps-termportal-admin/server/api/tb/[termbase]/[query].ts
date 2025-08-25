@@ -6,17 +6,22 @@ import genTermbaseDefinitionsMissing from "~/server/utils/genTermbaseDefinitions
 import genQualitySemanticRelationsQuery from "~/server/utils/genQualitySemanticRelationsQuery";
 import genTermbaseSubjectValues from "~/server/utils/genTermbaseSubjectValues";
 import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
+import genTermbaseDomains from "~/server/utils/genTermbaseDomains";
+import genTermbaseSubjectTermposts from "~/server/utils/genTermbaseSubjectTermposts";
+import genTermbaseTerms from "~/server/utils/genTermbaseTerms";
+import genTermbaseRelations from "~/server/utils/genTermbaseRelations";
+import genTermbaseNotes from "~/server/utils/genTermbaseNotes";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
   const queryParams = getQuery(event);
   const instance = getFusekiInstanceInfo(
     runtimeConfig,
-    queryParams?.internal ? "internal" : "default"
+    queryParams?.internal ? "internal" : "default",
   );
 
-  const termbase = event.context.params?.termbase;
   const queryType = event.context.params?.query;
+  const termbase = event.context.params?.termbase;
 
   // Check escache for certain keys
   const cachedData = await checkEsCache(queryType);
@@ -38,6 +43,16 @@ export default defineEventHandler(async (event) => {
         return genInsightTermbaseQuery();
       case "subjectValues":
         return genTermbaseSubjectValues(termbase);
+      case "subjectsTermposts":
+        return genTermbaseSubjectTermposts(termbase);
+      case "domains":
+        return genTermbaseDomains(termbase);
+      case "terms":
+        return genTermbaseTerms(termbase);
+      case "relations":
+        return genTermbaseRelations(termbase);
+      case "notes":
+        return genTermbaseNotes(termbase);
       default:
         break;
     }
@@ -48,8 +63,8 @@ export default defineEventHandler(async (event) => {
     body: query(),
     headers: {
       "Content-type": "application/sparql-query",
-      Accept: "application/json",
-      Authorization: `Basic ${instance.authHeader}`,
+      "Accept": "application/json",
+      "Authorization": `Basic ${instance.authHeader}`,
     },
   });
 

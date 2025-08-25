@@ -1,6 +1,8 @@
 <template>
   <UtilsTableWrapper>
-    <template #header>Published Termbases by Year</template>
+    <template #header>
+      Published Termbases by Year
+    </template>
     <div class="max-w-xl">
       <DataTable
         ref="datatable"
@@ -16,12 +18,27 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData()" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData()"
+            />
           </div>
         </template>
-        <Column field="year" header="År" sortable></Column>
-        <Column field="count" header="Antall" sortable></Column>
+        <Column
+          field="year"
+          header="År"
+          sortable
+        />
+        <Column
+          field="count"
+          header="Antall"
+          sortable
+        />
       </DataTable>
     </div>
   </UtilsTableWrapper>
@@ -39,13 +56,13 @@ const query = `
 const { data } = useLazySanityQuery(query);
 
 const procdata = computed(() => {
-  const mapped = data.value?.map((entry) => entry.date.substring(0, 4));
+  const mapped = data.value?.map(entry => entry.date.substring(0, 4));
   if (mapped) {
     const counts = Object.entries(
       mapped?.reduce((acc, year) => {
         acc[year] = (acc[year] || 0) + 1;
         return acc;
-      }, {})
+      }, {}),
     ).map(([year, count]) => ({ year: parseInt(year), count }));
     return counts;
   }

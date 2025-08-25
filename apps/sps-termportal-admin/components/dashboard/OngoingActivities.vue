@@ -4,7 +4,10 @@
       <h2 class="text-lg font-semibold pb-2 text-gray-800">
         Pågående aktiviteter
       </h2>
-      <AddButton :to="studioLinks.newActivity" target="_blank" />
+      <AddButton
+        :to="studioLinks.newActivity"
+        target="_blank"
+      />
     </div>
     <ol class="space-y-0.5 text-lg ml-1">
       <li
@@ -59,6 +62,6 @@ const procdata = computed(() =>
       begin: prettyPrintDate(a.begin?.substring(0, 10)),
     };
     return tmp;
-  })
+  }),
 );
 </script>

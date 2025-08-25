@@ -4,28 +4,40 @@
       Termbase Status Blocker and Notifications
     </h2>
     <div class="space-y-5">
-      <template v-for="tb in termbases" :key="tb.id">
+      <template
+        v-for="tb in termbases"
+        :key="tb.id"
+      >
         <section v-if="tb.blocker.status !== 'ok'">
-          <h3 v-if="!inline" class="text-lg mb-1">
+          <h3
+            v-if="!inline"
+            class="text-lg mb-1"
+          >
             {{ tb.label }}: {{ tb.status }}
           </h3>
           <div class="space-y-2">
             <div v-if="Object.keys(tb.blocker.hard).length > 0">
-              <h4 v-if="tb.status === '5. publisert'" class="font-semibold">
+              <h4
+                v-if="tb.status === '5. publisert'"
+                class="font-semibold"
+              >
                 Error
                 <Icon
                   name="fa6-solid:triangle-exclamation"
                   size="1.1em"
                   class="ml-[6px] mt-[-4px]"
-                  :class="colorMappingStatus.error.color"
+                  :class="appConfig.ui.color.status.error.class"
                 />
               </h4>
-              <h4 v-else class="font-semibold">
+              <h4
+                v-else
+                class="font-semibold"
+              >
                 Hard blocker
                 <Icon
                   name="mdi:stop"
                   size="1.6em"
-                  :class="colorMappingStatus.error.color"
+                  :class="appConfig.ui.color.status.error.class"
                 />
               </h4>
               <ul class="list-disc ml-4">
@@ -34,28 +46,36 @@
                   :key="key"
                 >
                   <div class="flex">
-                    <div class="w-[8em]">{{ key }}</div>
+                    <div class="w-[8em]">
+                      {{ key }}
+                    </div>
                     {{ value }}
                   </div>
                 </li>
               </ul>
             </div>
             <div v-if="Object.keys(tb.blocker.soft).length > 0">
-              <h4 v-if="tb.status === '5. publisert'" class="font-semibold">
+              <h4
+                v-if="tb.status === '5. publisert'"
+                class="font-semibold"
+              >
                 Warning
                 <Icon
                   name="fa6-solid:triangle-exclamation"
                   size="1.1em"
                   class="ml-[6px] mt-[-4px]"
-                  :class="colorMappingStatus.warning.color"
+                  :class="appConfig.ui.color.status.warning.class"
                 />
               </h4>
-              <h4 v-else class="font-semibold">
+              <h4
+                v-else
+                class="font-semibold"
+              >
                 Soft blocker
                 <Icon
                   name="mdi:pause"
                   size="1.6em"
-                  :class="colorMappingStatus.warning.color"
+                  :class="appConfig.ui.color.status.warning.class"
                 />
               </h4>
               <ul class="list-disc ml-4">
@@ -64,7 +84,9 @@
                   :key="key"
                 >
                   <div class="flex">
-                    <div class="w-[8em]">{{ key }}</div>
+                    <div class="w-[8em]">
+                      {{ key }}
+                    </div>
                     {{ value }}
                   </div>
                 </li>
@@ -78,7 +100,9 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
+const appConfig = useAppConfig();
+
+defineProps({
   termbases: { type: Object, required: true },
   inline: { type: Boolean, default: false },
 });

@@ -1,6 +1,11 @@
 <template>
-  <UtilsTableWrapper>
-    <template #header>Bruksområder</template>
+  <UtilsTableWrapper
+    :heading-level="headingLevel"
+    :pending="pending"
+  >
+    <template #header>
+      Bruksområder aggregert
+    </template>
     <template #description>
       <p>
         The list contains grouped bruksområde values of the termbase. One
@@ -14,7 +19,7 @@
       <UtilsTableLegendEntry
         :legend-key="`${data?.length}`"
         legend-value="distinct bruksområde values"
-      ></UtilsTableLegendEntry>
+      />
     </template>
     <div class="max-w-xl">
       <DataTable
@@ -32,12 +37,27 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData($event)"
+            />
           </div>
         </template>
-        <Column field="subject" header="Bruksområde" sortable />
-        <Column field="count" header="Antall" sortable />
+        <Column
+          field="subject"
+          header="Bruksområde"
+          sortable
+        />
+        <Column
+          field="count"
+          header="Antall"
+          sortable
+        />
       </DataTable>
     </div>
   </UtilsTableWrapper>
@@ -46,7 +66,10 @@
 <script setup lang="ts">
 import { FilterMatchMode } from "primevue/api";
 
-const props = defineProps({ termbase: { type: Object, required: true } });
+const props = defineProps<{
+  termbase: object;
+  headingLevel: HeadingLevelWithDefaultOptions;
+}>();
 
 const datatable = ref();
 
@@ -54,7 +77,7 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-const { data } = useLazyFetch(`/api/tb/${props.termbase.id}/subjectValues`, {
+const { data, pending } = useLazyFetch(`/api/tb/${props.termbase.id}/subjectValues`, {
   query: { internal: true },
 });
 
