@@ -84,7 +84,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   }
 
   const [markerCells, setMarkerCells] = useState<GeotileCell[]>([])
-  console.log("MARKER CELLS", markerCells)
+  //console.log("MARKER CELLS", markerCells)
 
     // Cluster if:
   // Cluster mode
@@ -106,7 +106,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
           setCoordinatesError(true);
         },
         queryFn: async () => {
-          console.log("FETCHING GEOTILE CELL", index, JSON.stringify(cell))
+          //console.log("FETCHING GEOTILE CELL", index, JSON.stringify(cell))
           const queryParams = new URLSearchParams(searchQueryString);
           if (activeMarkerMode === 'counts') {
             queryParams.append('totalHits', totalHits?.value ? totalHits.value.toString() : '1000000');
@@ -116,7 +116,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
             throw new Error('Failed to fetch geotile cells')
           }
           const data = await res.json()
-          console.log("GOT DATA FOR CELL", key, data)
+          //console.log("GOT DATA FOR CELL", key, data)
           
           // Handle the new structure with aggregations and grid buckets
             // For cluster mode, extract data from aggregations
@@ -138,7 +138,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   })
 
 
-    console.log("MARKER RESULTS", markerResults)
+    //console.log("MARKER RESULTS", markerResults)
 
 
 
@@ -224,7 +224,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
 
     useEffect(() => {
-      console.log("INITIALIZE")
+      //console.log("INITIALIZE")
       updateMarkerGrid(snappedBounds, currentZoom, gridSizeRef.current, markerCells)
     }, [])
 
@@ -547,7 +547,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
             const map = useMap();
             useMapEvents({
               zoomend: () => {
-                console.log("ZOOMEND")
+                //console.log("ZOOMEND")
                 // Update precision if zoom level changes
                 const mapZoom = map.getZoom();
                 if (mapZoom != currentZoom) {
@@ -558,7 +558,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                   }
                   
                   // Always update marker grid after zoom
-                  console.log("ZOOM UPDATE")
+                  //console.log("ZOOM UPDATE")
                   updateMarkerGrid([[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]], mapZoom, gridSizeRef.current, markerCells);
                   setCurrentZoom(mapZoom);
                 }
@@ -598,7 +598,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                         point[1] >= cellWest && point[1] <= cellEast;
                 });
               })) {
-                console.log("MOVE UPDATE - map bounds not fully covered by current cells")
+                //console.log("MOVE UPDATE - map bounds not fully covered by current cells")
                 updateMarkerGrid([[north, west], [south, east]], map.getZoom(), gridSizeRef.current, markerCells);
               }
               },
@@ -672,7 +672,6 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                     </Fragment>
                   );
                 }
-                console.warn("No data for geotile cell");
                 return null;
               })}
 

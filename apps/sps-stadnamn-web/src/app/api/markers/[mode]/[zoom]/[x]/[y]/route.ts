@@ -7,9 +7,9 @@ import type { NextRequest } from 'next/server'
  
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ zoom: string, x: string, y: string }> }
+  { params }: { params: Promise<{ mode:string, zoom: string, x: string, y: string }> }
 ) {
-  const { zoom, x, y} = await params
+  const { mode, zoom, x, y} = await params
 
 
   const { termFilters, reservedParams } =  extractFacets(request)
@@ -48,7 +48,7 @@ export async function GET(
         aggs: {
           top: {
             top_hits: {
-              size: 4,
+              size: mode == 'labels' ? 10 : 1,
               _source: false,
               fields: ["label", "location", "uuid", "sosi", "placeScore", "group.id"]
             }
