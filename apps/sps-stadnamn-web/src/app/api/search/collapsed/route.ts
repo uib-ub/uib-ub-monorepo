@@ -24,6 +24,7 @@ export async function GET(request: Request) {
     ...reservedParams.from ? {from: reservedParams.from} : {},
     ...highlight ? {highlight} : {},
     "track_scores": true,
+    "track_total_hits": false,
     "collapse": {
       "field": "group.id",
       "inner_hits": {
