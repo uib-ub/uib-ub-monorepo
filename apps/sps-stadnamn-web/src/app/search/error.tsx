@@ -39,7 +39,7 @@ export default function Error({
  
   return (
     <main className="flex-1 flex lg:items-center justify-center p-4 bg-white lg:bg-transparent" >
-      <div role="alert" aria-live="assertive" className="w-full max-w-xl lg:bg-white lg:rounded-lg lg:shadow-lg p-8 space-y-6">
+      <div role="alert" aria-live="assertive" className="w-full max-w-xl lg:rounded-lg p-8 space-y-6">
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-serif">Det har oppstått ein feil</h2>
         </div>
@@ -53,24 +53,17 @@ export default function Error({
             <button
               onClick={handleReset}
               disabled={isResetting}
-              className="btn btn-outline flex-1 flex items-center justify-center gap-2"
+              className="btn flex-1 flex items-center justify-center gap-2"
             >
               {isResetting ? (
                 <Spinner status="Laster" className="animate-spin" aria-hidden="true" />
               ) : (
                 <PiArrowClockwise aria-hidden="true" />
               )}
-                Last på nytt
+                Last sida på nytt
 
             </button>
-            <button 
-              onClick={handleReport}
-              disabled={isReported}
-              className="btn btn-primary flex-1 flex items-center justify-center gap-2"
-            >
-              {isReported && <PiCheck aria-hidden="true" />}
-              Send feilrapport
-            </button>
+
           </div>
         </div>
       </div>
