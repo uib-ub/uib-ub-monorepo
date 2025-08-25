@@ -76,26 +76,30 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
       // Add state for geotile cells and intersecting cells
   interface GeotileCell {
-    key: string; // e.g., "0/0/0"
-    bounds: number[][] | null; // [[north, west], [south, east]]
+    key: string; // Add this property
+    zoom: number;
+    x: number;
+    y: number;
+    bounds?: [[number, number], [number, number]]; // Add optional bounds property
   }
 
   const [markerCells, setMarkerCells] = useState<GeotileCell[]>([])
+  console.log("MARKER CELLS", markerCells)
 
     // Cluster if:
   // Cluster mode
   // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
-  const autoMode = markerMode === 'auto' ? (searchParams.get('q')?.length || totalHits?.value < 100000 ? 'cluster' : 'sample') : null
-  const queryEndpoint = 'sample' //(markerMode == 'cluster' || mapInstance.current?.getZoom() < 8 || autoMode == 'cluster') ? 'cluster' : 'sample'
+  const autoMode = markerMode === 'auto' ? (searchParams.get('q')?.length || totalHits?.value < 100000 ? 'counts' : 'labels') : null
+  const activeMarkerMode = (markerMode == 'counts' || mapInstance.current?.getZoom() < 8 || autoMode == 'counts') ? 'counts' : 'labels'
 
 
   const markerResults = useQueries({
     queries: markerCells.map((cell, index) => {
-      const { key, bounds } = cell;
+      const key = `${cell.zoom}/${cell.x}/${cell.y}`
       
       return ({
-        queryKey: ['markerResults', key, searchQueryString, queryEndpoint],
+        queryKey: ['markerResults', key, searchQueryString, activeMarkerMode],
         onError: (error: any) => {
           console.error("Error fetching geotile cell data:", error);
           setGeoLoading(false);
@@ -103,19 +107,31 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
         },
         queryFn: async () => {
           console.log("FETCHING GEOTILE CELL", index, JSON.stringify(cell))
-          const res = await fetch(`/api/geo/${queryEndpoint}?${searchQueryString ? searchQueryString + '&' : ''}` + 
-            `${bounds ? 
-              `topLeftLat=${bounds[1][0]}&` +     
-              `topLeftLng=${bounds[1][1]}&` +     
-              `bottomRightLat=${bounds[0][0]}&` + 
-              `bottomRightLng=${bounds[0][1]}&` : ''}` + 
-            `${queryEndpoint == 'sample' ? 'size=100' : 'totalHits=' + totalHits?.value}`)
+          const queryParams = new URLSearchParams(searchQueryString);
+          if (activeMarkerMode === 'counts') {
+            queryParams.append('totalHits', totalHits?.value ? totalHits.value.toString() : '1000000');
+          }
+          const res = await fetch(`/api/markers/${activeMarkerMode}/${cell.zoom}/${cell.x}/${cell.y}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`)
           if (!res.ok) {
             throw new Error('Failed to fetch geotile cells')
           }
           const data = await res.json()
           console.log("GOT DATA FOR CELL", key, data)
-          return data.hits.hits.map((hit: any) => hit.fields)
+          
+          // Handle the new structure with aggregations and grid buckets
+            // For cluster mode, extract data from aggregations
+            return data.aggregations.grid.buckets.map((bucket: any) => {
+              // Each bucket represents a cluster with a top hit
+              if (bucket.top?.hits?.hits?.[0]?.fields) {
+                return {
+                  ...bucket.top.hits.hits[0].fields,
+                  doc_count: bucket.doc_count,
+                  key: bucket.key
+                }
+              }
+              return null
+            }).filter(Boolean)
+
         }
       })
     }).filter(Boolean) // Remove null queries
@@ -140,54 +156,70 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   const updateMarkerGrid = useCallback((liveBounds: [[number, number], [number, number]], liveZoom: number, gridSizeData: {gridSize: number, precision: number}, currentCells: GeotileCell[]) => {
     const { gridSize, precision } = gridSizeData
     const [[north, west], [south, east]] = liveBounds
-      if (liveZoom <= 4 || gridSize === 1) {
-        // Set marker cells to whole world if it isn't already one cell covering the world
-        if (currentCells[0]?.key != '0/0/0') {
-          setMarkerCells([{key: '0/0/0', bounds: null}])
-        }
-        return
+    
+    if (liveZoom <= 4 || gridSize === 1) {
+      // Set marker cells to whole world if it isn't already one cell covering the world
+      if (currentCells.length === 0 || currentCells[0]?.key != '0/0/0') {
+        setMarkerCells([{
+          key: '0/0/0',
+          zoom: 0,
+          x: 0,
+          y: 0,
+          bounds: [[90, -180], [-90, 180]] // Add world bounds
+        }])
       }
+      return
+    }
       
-      // Calculate tile coordinates for the viewport bounds
-      const xMin = Math.floor(((west + 180) / 360) * gridSize);
-      const xMax = Math.floor(((east + 180) / 360) * gridSize);
-      
-      // Convert latitude to tile Y coordinates (Web Mercator projection)
-      const yMin = Math.floor(((1 - Math.log(Math.tan(north * Math.PI / 180) + 1 / Math.cos(north * Math.PI / 180)) / Math.PI) / 2) * gridSize);
-      const yMax = Math.floor(((1 - Math.log(Math.tan(south * Math.PI / 180) + 1 / Math.cos(south * Math.PI / 180)) / Math.PI) / 2) * gridSize);
-      
-      // Ensure bounds are within valid range
-      const clampedXMin = Math.max(0, xMin);
-      const clampedXMax = Math.min(gridSize - 1, xMax);
-      const clampedYMin = Math.max(0, yMin);
-      const clampedYMax = Math.min(gridSize - 1, yMax);
-      
-      const newCells: GeotileCell[] = [];
-      
-      // Generate only the cells that intersect with the viewport
-      for (let x = clampedXMin; x <= clampedXMax; x++) {
-        for (let y = clampedYMin; y <= clampedYMax; y++) {
-          // Convert tile coordinates back to lat/lng bounds
-          const tileWest = (x / gridSize) * 360 - 180;
-          const tileEast = ((x + 1) / gridSize) * 360 - 180;
-          
-          const tileNorth = (Math.atan(Math.sinh(Math.PI * (1 - 2 * y / gridSize))) * 180 / Math.PI);
-          const tileSouth = (Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / gridSize))) * 180 / Math.PI);
-
-          const key = `${precision}/${x}/${y}`;
-          
-          // Create cell bounds for Rectangle component
-          const cell = {key, bounds: [
-            [tileSouth, tileWest], // southwest corner
-            [tileNorth, tileEast]  // northeast corner
-          ]}  
-          
-          newCells.push(cell);
+    // Calculate tile coordinates for the viewport bounds
+    const xMin = Math.floor(((west + 180) / 360) * gridSize);
+    const xMax = Math.floor(((east + 180) / 360) * gridSize);
+    
+    // Convert latitude to tile Y coordinates (Web Mercator projection)
+    const yMin = Math.floor(((1 - Math.log(Math.tan(north * Math.PI / 180) + 1 / Math.cos(north * Math.PI / 180)) / Math.PI) / 2) * gridSize);
+    const yMax = Math.floor(((1 - Math.log(Math.tan(south * Math.PI / 180) + 1 / Math.cos(south * Math.PI / 180)) / Math.PI) / 2) * gridSize);
+    
+    // Ensure bounds are within valid range
+    const clampedXMin = Math.max(0, xMin);
+    const clampedXMax = Math.min(gridSize - 1, xMax);
+    const clampedYMin = Math.max(0, yMin);
+    const clampedYMax = Math.min(gridSize - 1, yMax); // Fixed: should use gridSize-1, not 0
+    
+    const newCells: GeotileCell[] = [];
+    
+    // Generate only the cells that intersect with the viewport
+    for (let x = clampedXMin; x <= clampedXMax; x++) {
+      for (let y = clampedYMin; y <= clampedYMax; y++) {
+        // Calculate bounds for the cell
+        const n = Math.pow(2, precision);
+        
+        // Longitude bounds
+        const tileWest = (x / n) * 360 - 180;
+        const tileEast = ((x + 1) / n) * 360 - 180;
+        
+        // Latitude bounds using Web Mercator inverse
+        const latRad1 = Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n)));
+        const latRad2 = Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / n)));
+        
+        const tileNorth = (latRad1 * 180) / Math.PI;
+        const tileSouth = (latRad2 * 180) / Math.PI;
+        
+        // Create cell with zoom, x, y coordinates and bounds
+        const key = `${precision}/${x}/${y}`;
+        const cell: GeotileCell = {
+          key,
+          zoom: precision,
+          x,
+          y,
+          bounds: [[tileNorth, tileWest], [tileSouth, tileEast]]
         }
+        
+        newCells.push(cell);
       }
+    }
 
-      setMarkerCells(newCells);
-    }, [setMarkerCells]);
+    setMarkerCells(newCells);
+  }, [setMarkerCells]);
 
 
 
@@ -348,7 +380,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   useEffect(() => { 
     if (markerMode === null) {
       const storedMarkerMode = localStorage.getItem('markerMode')
-      if (storedMarkerMode && ['auto', 'cluster', 'sample'].includes(storedMarkerMode)) {
+      if (storedMarkerMode && ['auto', 'counts', 'labels'].includes(storedMarkerMode)) {
         setMarkerMode(storedMarkerMode)
       }
 
@@ -531,44 +563,43 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                 }
               },
               move: () => {
-                //console.log("MOVE")
                 const mapBounds = map.getBounds();
                 const mapZoom = map.getZoom();
-                //console.log("ZOOM values:", mapZoom, currentZoom)
                 if (currentZoom != mapZoom) {
                   return
                 }
-
-                if (markerCells?.[0]?.bounds == null) {
-                  console.log("MARKER CELLS", markerCells)
+              
+                // Check if we have any cells
+                if (markerCells.length === 0) {
                   return
-                  
                 }
                 
-
+                // For the world tile case, no need to update
+                if (markerCells.length === 1 && markerCells[0].zoom === 0) {
+                  return
+                }
+              
                 const [[north, west], [south, east]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
-
+              
                 const mapBoundsPoints = [
                   [north, west],
                   [north, east],
                   [south, east],
-                  [south, west],
-                  [north, west]
+                  [south, west]
                 ]
-
-                if (!mapBoundsPoints.every((point) => {
-                  return markerCells.some((cell) => {
-                    if (!cell.bounds) return false
-                    const [[cellNorth, cellWest], [cellSouth, cellEast]] = cell.bounds
-                    return point[0] >= cellNorth && point[0] <= cellSouth && point[1] >= cellWest && point[1] <= cellEast
-                  })
-                  
-                })) {
-                  console.log("MOVE UPDATE")
-                  updateMarkerGrid([[north, west], [south, east]], map.getZoom(), gridSizeRef.current, markerCells);
-                }
-                
-
+              
+                // Check if all map bounds corners are contained within our current cell collection
+              if (!mapBoundsPoints.every((point) => {
+                return markerCells.some((cell) => {
+                  if (!cell.bounds) return false;
+                  const [[cellNorth, cellWest], [cellSouth, cellEast]] = cell.bounds;
+                  return point[0] <= cellNorth && point[0] >= cellSouth && 
+                        point[1] >= cellWest && point[1] <= cellEast;
+                });
+              })) {
+                console.log("MOVE UPDATE - map bounds not fully covered by current cells")
+                updateMarkerGrid([[north, west], [south, east]], map.getZoom(), gridSizeRef.current, markerCells);
+              }
               },
               moveend: () => {
                 const mapBounds = map.getBounds();
@@ -620,8 +651,6 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                     return lat <= north && lat >= south && lng >= west && lng <= east;
                   };
 
-                  console.log("DATA ARRAY", dataArray, "INDEX", index, "IS SUCCESS", markerResults[index].isSuccess)
-
 
                   return (
                     <Fragment key={`result-group-${index}`}>
@@ -647,24 +676,18 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
               })}
 
               {/* Add Geotile grid overlay */}
-              {markerCells?.map((cell, index) => {
-                // Check if this cell intersects with the debug viewport using efficient index lookup
-
-                
-                return (
-
-                    <Rectangle
-                      key={`geotile-${cell.key}-${index}`}
-                      bounds={cell.bounds || [[90, -180], [-90, 180]]}
-                      pathOptions={{
-                        color: '#00ff00',
-                        weight: 3,
-                        fill: false,
-                        dashArray: '5, 5'
-                      }}
-                    />
-                );
-              })}
+              {showGeotileGrid && markerCells?.map((cell, index) => (
+                <Rectangle
+                  key={`geotile-${cell.key}-${index}`}
+                  bounds={cell.bounds}
+                  pathOptions={{
+                    color: '#00ff00',
+                    weight: 3,
+                    fill: false,
+                    dashArray: '5, 5'
+                  }}
+                />
+              ))}
 
 
 
@@ -808,20 +831,20 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                 {markerMode === 'auto' && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setMarkerMode('cluster')}
-                className={`flex items-center py-2 px-4 cursor-pointer justify-between ${markerMode === 'cluster' ? "bg-neutral-100" : ""}`}
-                aria-selected={markerMode === 'cluster'}
+                onClick={() => setMarkerMode('counts')}
+                className={`flex items-center py-2 px-4 cursor-pointer justify-between ${markerMode === 'counts' ? "bg-neutral-100" : ""}`}
+                aria-selected={markerMode === 'counts'}
               >
                 Klynger
-                {markerMode === 'cluster' && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
+                {markerMode === 'counts' && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setMarkerMode('sample')}
-                className={`flex items-center py-2 px-4 cursor-pointer justify-between ${markerMode === 'sample' ? "bg-neutral-100" : ""}`}
-                aria-selected={markerMode === 'sample'}
+                onClick={() => setMarkerMode('labels')}
+                className={`flex items-center py-2 px-4 cursor-pointer justify-between ${markerMode === 'labels' ? "bg-neutral-100" : ""}`}
+                aria-selected={markerMode === 'labels'}
               >
                 Punkter
-                {markerMode === 'sample' && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
+                {markerMode === 'labels' && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
               </DropdownMenuItem>
             </>
           )}

@@ -1,6 +1,7 @@
 'use client' // Error boundaries must be Client Components
 import Spinner from '@/components/svg/Spinner'
 import { usePlausible } from 'next-plausible'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { PiArrowClockwise, PiCheck } from 'react-icons/pi'
  
@@ -63,6 +64,11 @@ export default function Error({
                 Last sida på nytt
 
             </button>
+            <Link href="https://skjemaker.app.uib.no/view.php?id=16665712" target="_blank" rel="noopener" className="btn text-white flex-1 flex items-center justify-center gap-2"
+              onClick={handleReport}
+            >  
+            Rapporter
+            </Link>
 
           </div>
         </div>
