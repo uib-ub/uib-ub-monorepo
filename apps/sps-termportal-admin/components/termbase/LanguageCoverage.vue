@@ -1,7 +1,7 @@
 <template>
   <UtilsTableWrapper
-    :heading-level="h3"
     class="max-w-4xl"
+    :heading-level="headingLevel"
     :pending="pending"
   >
     <template #header>
@@ -60,8 +60,11 @@
   </UtilsTableWrapper>
 </template>
 
-<script setup>
-const props = defineProps({ termbaseId: { type: String, required: true } });
+<script setup lang="ts">
+const props = defineProps<{
+  termbaseId: string;
+  headingLevel: HeadingLevelWithDefaultOptions;
+}>();
 
 const { data, pending } = await useLazyFetch("/api/tb/all/termbase_language_coverage");
 

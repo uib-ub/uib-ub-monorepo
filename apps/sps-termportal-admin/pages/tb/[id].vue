@@ -49,29 +49,39 @@
                 :termbase="merged"
               />
             </div>
-            <TermbaseLanguageCoverage
-              v-if="merged?.id && merged.conceptCount > 0"
-              :key="`languageCoverage${merged?.id}`"
-              heading-level="h3"
-              :termbase-id="merged?.id"
-            />
-            <TermbaseTerms
-              v-if="merged?.id && merged.conceptCount > 0"
-              heading-level="h3"
-              :termbase="merged"
-            />
-            <TermbaseDefinitionsExisting
-              v-if="merged?.id && merged.conceptCount > 0"
-              :key="`defs${merged?.id}`"
-              heading-level="h3"
-              :termbase="merged"
-            />
-            <TermbaseDefinitionsMissing
-              v-if="merged?.id && merged.conceptCount > 0"
-              :key="`qualityMissingDefs${merged?.id}`"
-              heading-level="h3"
-              :termbase="merged"
-            />
+            <div class="">
+              <AppLink to="#tb-spraak">
+                <h3
+                  id="tb-spraak"
+                  class="text-2xl mb-2"
+                >
+                  Termer og definisjoner
+                </h3>
+              </AppLink>
+              <TermbaseLanguageCoverage
+                v-if="merged?.id && merged.conceptCount > 0"
+                :key="`languageCoverage${merged?.id}`"
+                heading-level="h4"
+                :termbase-id="merged?.id"
+              />
+              <TermbaseTerms
+                v-if="merged?.id && merged.conceptCount > 0"
+                heading-level="h4"
+                :termbase="merged"
+              />
+              <TermbaseDefinitionsExisting
+                v-if="merged?.id && merged.conceptCount > 0"
+                :key="`defs${merged?.id}`"
+                heading-level="h4"
+                :termbase="merged"
+              />
+              <TermbaseDefinitionsMissing
+                v-if="merged?.id && merged.conceptCount > 0"
+                :key="`qualityMissingDefs${merged?.id}`"
+                heading-level="h4"
+                :termbase="merged"
+              />
+            </div>
             <div>
               <AppLink to="#tb-relasjoner">
                 <h3
@@ -94,6 +104,11 @@
                 :termbase="merged"
               />
             </div>
+            <TermbaseNotes
+              v-if="merged?.id && merged.conceptCount > 0"
+              heading-level="h3"
+              :termbase="merged"
+            />
           </div>
         </div>
         <TermgroupMembers
