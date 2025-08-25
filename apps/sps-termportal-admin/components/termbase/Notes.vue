@@ -98,9 +98,6 @@
         />
       </DataTable>
     </div>
-    <div class="">
-      {{ noteTypeValues }}
-    </div>
   </UtilsTableWrapper>
 </template>
 
