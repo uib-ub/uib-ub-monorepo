@@ -37,6 +37,7 @@ export default function useGroupData() {
         isLoading: groupLoading,
         fetchNextPage,
         hasNextPage,
+        status,
         isFetchingNextPage
     } = useInfiniteQuery({
         queryKey: ['group', group],
@@ -89,14 +90,12 @@ export default function useGroupData() {
             const docFound = docUuid && allHits.some((hit: any) => hit._source?.uuid === docUuid)
             const allDataFetched = !data?.pageParams || allHits.length >= (totalData?.value || 0)
             
-            // Only expose data when document is found OR all data is fetched
-            const shouldExposeData = !docUuid || docFound || allDataFetched
-            
+            // Always expose data, but track whether document was found
             return {
-                allHits: shouldExposeData ? allHits : [],
-                totalData: shouldExposeData ? totalData : null,
+                allHits: allHits,
+                totalData: totalData,
                 docFound,
-                shouldExposeData
+                shouldExposeData: !docUuid || docFound || allDataFetched
             }
         }, [docUuid]),
         // Only re-render when data actually changes (not on intermediate fetches)
@@ -114,7 +113,8 @@ export default function useGroupData() {
         groupError, 
         groupLoading: groupLoading || (isFetchingNextPage && !processedData?.shouldExposeData),
         fetchMore: fetchNextPage,
-        canFetchMore: hasNextPage
+        canFetchMore: hasNextPage,
+        groupStatus: status
     }
 }
 

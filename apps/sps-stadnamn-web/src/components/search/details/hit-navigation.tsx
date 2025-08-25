@@ -6,7 +6,7 @@ import { PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeftBold, PiCaretRightBol
 
 
 export default function HitNavigation({docIndex, prevDocUuid, nextDocUuid}: {docIndex: number, prevDocUuid: string | undefined, nextDocUuid: string | undefined}) {
-    const {groupData, groupLoading, groupTotal } = useGroupData()
+    const {groupTotal } = useGroupData()
     const {isMobile} = useContext(GlobalContext)
 
 
@@ -22,7 +22,7 @@ export default function HitNavigation({docIndex, prevDocUuid, nextDocUuid}: {doc
         {isMobile ? <PiCaretDoubleLeft className="text-xl" aria-hidden="true"/> : <PiCaretLeftBold className="xl:text-xl text-primary-600" aria-hidden="true"/>}
       </ClickableIcon>
       <span className="text-neutral-800 border-y border-neutral-200 shadow-sm h-8 xl:h-10 flex items-center self-center xl:min-w-12 text-center px-4">       
-        {docIndex !== undefined ? docIndex + 1 : 1}/{groupTotal?.value}</span>
+        {docIndex}/{groupTotal?.value}</span>
       <ClickableIcon 
         label="Neste (shift + høgre piltast)" 
         className={`btn btn-outline btn-compact rounded-l-none ${isMobile ? 'rounded-full' : ''}`} 

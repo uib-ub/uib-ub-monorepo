@@ -22,22 +22,16 @@ export default function DetailsWindow() {
     const namesNav = searchParams.get('namesNav')
     const { docLoading, docData } = useDocData()
     const mode = useMode()
-    const { groupData, groupLoading, groupTotal } = useGroupNavigation()
+    const { groupData, groupLoading, groupTotal, docIndex } = useGroupNavigation()
     const router = useRouter()
     const { initialUrl, setInitialUrl } = useContext(GlobalContext)
 
     const docUuid = docData?._source?.uuid
-    const [docIndex, setDocIndex] = useState(0)
     const [prevDocUuid, setPrevDocUuid] = useState()
     const [nextDocUuid, setNextDocUuid] = useState()
     const { searchQueryString } = useSearchQuery()
 
 
-    useEffect(() => {
-        if (groupData) {
-            setDocIndex(groupData.findIndex((hit: any) => hit._source?.uuid === docUuid))
-        }
-    }, [groupData, docUuid])
 
     // Calculate prev and next doc UUIDs
     useEffect(() => {

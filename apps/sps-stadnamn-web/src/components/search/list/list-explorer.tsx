@@ -66,7 +66,8 @@ export default function ListExplorer() {
 
     return (
         <ul className={`flex flex-col divide-y divide-neutral-200 instance-info ${isMobile ? 'gap-4' : 'gap-8'} ${groupLoading ? 'opacity-50' : ''}`}>
-            TOTAL: {groupTotal?.value} LOADED: {groupData?.length}
+            TOTAL: {groupTotal?.value} LOADED: {groupData?.length} STATUS: {status}
+
             
             {/* Render all loaded items directly - no lazy loading */}
             {groupData?.map((item: any, index: number) => (

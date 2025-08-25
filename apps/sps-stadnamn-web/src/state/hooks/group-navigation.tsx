@@ -1,5 +1,5 @@
 'use client'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useGroupData from './group-data';
 import useDocData from './doc-data';
 
@@ -10,14 +10,21 @@ export default function useGroupNavigation() {
         groupError, 
         groupLoading, 
         fetchMore, 
-        canFetchMore 
+        canFetchMore,
+        groupStatus
     } = useGroupData();
     
     const { docData } = useDocData();
     const docUuid = docData?._source?.uuid;
 
     // Find current document index in the results
-    const docIndex = docUuid ? groupData.findIndex((hit: any) => hit._source?.uuid === docUuid) : -1;
+    const [docIndex, setDocIndex] = useState(docUuid ? groupData.findIndex((hit: any) => hit._source?.uuid === docUuid) : -1);
+
+    useEffect(() => {
+        if (docUuid && groupData) { 
+            setDocIndex(groupData.findIndex((hit: any) => hit._source?.uuid === docUuid));
+        }
+    }, [docUuid, groupData, setDocIndex]);
 
     // Auto-fetch more results for navigation purposes
     useEffect(() => {
@@ -48,6 +55,8 @@ export default function useGroupNavigation() {
         groupError, 
         groupLoading,
         fetchMore,
-        canFetchMore
+        canFetchMore,
+        groupStatus,
+        docIndex
     };
 }
