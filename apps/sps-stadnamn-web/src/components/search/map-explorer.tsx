@@ -77,7 +77,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
       // Add state for geotile cells and intersecting cells
   interface GeotileCell {
     key: string; // e.g., "0/0/0"
-    bounds: number[][]; // [[north, west], [south, east]]
+    bounds: number[][] | null; // [[north, west], [south, east]]
   }
 
   const [markerCells, setMarkerCells] = useState<GeotileCell[]>([])
@@ -93,27 +93,33 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   const markerResults = useQueries({
     queries: markerCells.map((cell, index) => {
       const { key, bounds } = cell;
+      
       return ({
-      queryKey: ['markerResults', key],
-      onError: (error: any) => {
-        console.error("Error fetching geotile cell data:", error);
-        setGeoLoading(false);
-        setCoordinatesError(true);
-      },
-      queryFn: async () => {
-        console.log("FETCHING GEOTILE CELL", index, JSON.stringify(cell))
-        // Use bounds[1] for topLeft (north, east), bounds[0] for bottomRight (south, west)
-        const res = await fetch(`/api/geo/${queryEndpoint}?topLeftLat=${bounds[1][0]}&topLeftLng=${bounds[1][1]}&bottomRightLat=${bounds[0][0]}&bottomRightLng=${bounds[0][1]}&${queryEndpoint == 'sample' ? 'size=100' : 'totalHits=' + totalHits?.value}`)
-        if (!res.ok) {
-          throw new Error('Failed to fetch geotile cells')
+        queryKey: ['markerResults', key, searchQueryString, queryEndpoint],
+        onError: (error: any) => {
+          console.error("Error fetching geotile cell data:", error);
+          setGeoLoading(false);
+          setCoordinatesError(true);
+        },
+        queryFn: async () => {
+          console.log("FETCHING GEOTILE CELL", index, JSON.stringify(cell))
+          const res = await fetch(`/api/geo/${queryEndpoint}?${searchQueryString ? searchQueryString + '&' : ''}` + 
+            `${bounds ? 
+              `topLeftLat=${bounds[1][0]}&` +     
+              `topLeftLng=${bounds[1][1]}&` +     
+              `bottomRightLat=${bounds[0][0]}&` + 
+              `bottomRightLng=${bounds[0][1]}&` : ''}` + 
+            `${queryEndpoint == 'sample' ? 'size=100' : 'totalHits=' + totalHits?.value}`)
+          if (!res.ok) {
+            throw new Error('Failed to fetch geotile cells')
+          }
+          const data = await res.json()
+          console.log("GOT DATA FOR CELL", key, data)
+          return data.hits.hits.map((hit: any) => hit.fields)
         }
-        const data = await res.json()
-        console.log("GOT DATA FOR CELL", key, data)
-        return data.hits.hits.map((hit: any) => hit.fields)
-      }
-    })
+      })
+    }).filter(Boolean) // Remove null queries
   })
-    })
 
 
     console.log("MARKER RESULTS", markerResults)
@@ -135,13 +141,10 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
     const { gridSize, precision } = gridSizeData
     const [[north, west], [south, east]] = liveBounds
       if (liveZoom <= 4 || gridSize === 1) {
-        
         // Set marker cells to whole world if it isn't already one cell covering the world
         if (currentCells[0]?.key != '0/0/0') {
-          setMarkerCells([{ key: `0/0/0`, bounds: [[72, -180], [72, 180], [-72, 180], [-72, -180]]}])
-          
+          setMarkerCells([{key: '0/0/0', bounds: null}])
         }
-
         return
       }
       
@@ -520,10 +523,11 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                     const [[north, west], [south, east]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]] 
                     gridSizeRef.current = getGridSize([[north, west], [south, east]], mapZoom);;
                   }
-                  setCurrentZoom(mapZoom);
+                  
                   // Always update marker grid after zoom
                   console.log("ZOOM UPDATE")
                   updateMarkerGrid([[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]], mapZoom, gridSizeRef.current, markerCells);
+                  setCurrentZoom(mapZoom);
                 }
               },
               move: () => {
@@ -534,6 +538,14 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                 if (currentZoom != mapZoom) {
                   return
                 }
+
+                if (markerCells?.[0]?.bounds == null) {
+                  console.log("MARKER CELLS", markerCells)
+                  return
+                  
+                }
+                
+
                 const [[north, west], [south, east]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
 
                 const mapBoundsPoints = [
@@ -546,6 +558,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
                 if (!mapBoundsPoints.every((point) => {
                   return markerCells.some((cell) => {
+                    if (!cell.bounds) return false
                     const [[cellNorth, cellWest], [cellSouth, cellEast]] = cell.bounds
                     return point[0] >= cellNorth && point[0] <= cellSouth && point[1] >= cellWest && point[1] <= cellEast
                   })
@@ -607,6 +620,8 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                     return lat <= north && lat >= south && lng >= west && lng <= east;
                   };
 
+                  console.log("DATA ARRAY", dataArray, "INDEX", index, "IS SUCCESS", markerResults[index].isSuccess)
+
 
                   return (
                     <Fragment key={`result-group-${index}`}>
@@ -617,7 +632,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                         return lat && lng && isPointInViewport(lat, lng);
                       }).map((item: any) => (
                         <Marker
-                          key={`result-${item.uuid?.[0] || Math.random()}`}
+                          key={`result-${item.uuid[0]}`}
                           position={[item.location?.[0]?.coordinates?.[1], item.location?.[0]?.coordinates?.[0]]}
                           icon={new leaflet.DivIcon(getLabelMarkerIcon(item.label?.[0] || 'Unknown', 'black', undefined, true))}
                           riseOnHover={true}
@@ -640,7 +655,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
                     <Rectangle
                       key={`geotile-${cell.key}-${index}`}
-                      bounds={cell.bounds}
+                      bounds={cell.bounds || [[90, -180], [-90, 180]]}
                       pathOptions={{
                         color: '#00ff00',
                         weight: 3,

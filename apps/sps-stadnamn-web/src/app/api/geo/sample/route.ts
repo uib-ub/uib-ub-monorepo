@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
 
   const query: Record<string,any> = {
-    size: (zoom && zoomSize[zoom]) || (reservedParams.size && parseInt(reservedParams.size)) || 200,
+    size: 20,//(zoom && zoomSize[zoom]) || (reservedParams.size && parseInt(reservedParams.size)) || 10,
     fields: ["label", "location", "uuid", "sosi", "placeScore", "group.id"],
     track_total_hits: false,
     collapse: {
@@ -37,7 +37,7 @@ export async function GET(request: Request) {
     _source: false,
     query: {
       bool: {
-        filter: [
+        filter: reservedParams.topLeftLat ? [
           {
             geo_bounding_box: {
               location: {
@@ -51,8 +51,13 @@ export async function GET(request: Request) {
                 }
               }
             }
-          },
-
+          }
+        ] : [
+          {
+            exists: {
+              field: "location"
+            }
+          }
         ]
       }
     },
