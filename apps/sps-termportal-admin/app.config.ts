@@ -21,7 +21,7 @@ export default defineAppConfig({
     headingTextClassOptions: {
       h2: "text-2xl font-semibold",
       h3: "text-2xl",
-      h4: "text-xl",
+      h4: "text-xl mt-3",
     } as const,
   },
 });
