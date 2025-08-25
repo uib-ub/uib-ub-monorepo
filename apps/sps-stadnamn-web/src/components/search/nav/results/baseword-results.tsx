@@ -33,7 +33,7 @@ export default function BasewordResults() {
 
   return (
     <>
-      <ul id="result_list" className='flex flex-wrap mb-2 gap-2'>
+      <ul id="result_list" className='grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 mb-2 gap-2'>
         {/* Render existing results */}
         {sortedResults.map((hit, index) => {
           const isSelected = highlightedGroup === stringToBase64Url(hit.fields?.['group.id']?.[0]);
