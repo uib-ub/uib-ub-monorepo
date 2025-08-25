@@ -10,6 +10,7 @@ import genTermbaseDomains from "~/server/utils/genTermbaseDomains";
 import genTermbaseSubjectTermposts from "~/server/utils/genTermbaseSubjectTermposts";
 import genTermbaseTerms from "~/server/utils/genTermbaseTerms";
 import genTermbaseRelations from "~/server/utils/genTermbaseRelations";
+import genTermbaseNotes from "~/server/utils/genTermbaseNotes";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
@@ -50,6 +51,8 @@ export default defineEventHandler(async (event) => {
         return genTermbaseTerms(termbase);
       case "relations":
         return genTermbaseRelations(termbase);
+      case "notes":
+        return genTermbaseNotes(termbase);
       default:
         break;
     }
