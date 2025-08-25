@@ -424,15 +424,16 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   const selectDocHandler = (selected: Record<string, any>, hits?: Record<string, any>[]) => {
     return {
       click: () => {
+        console.log("SELECT", selected)
 
         const newQueryParams = new URLSearchParams(searchParams)
         
 
-          newQueryParams.set('doc', selected?.fields?.uuid[0])
+          newQueryParams.set('doc', selected?.uuid[0])
           newQueryParams.set('details', details)
 
-          if (selected.fields?.["group.id"]) {
-            newQueryParams.set('group', stringToBase64Url(selected.fields["group.id"][0]))
+          if (selected?.["group.id"]) {
+            newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
           }
           else {
             newQueryParams.delete('group')
@@ -843,7 +844,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                 className={`flex items-center py-2 px-4 cursor-pointer justify-between ${markerMode === 'labels' ? "bg-neutral-100" : ""}`}
                 aria-selected={markerMode === 'labels'}
               >
-                Punkter
+                Namn
                 {markerMode === 'labels' && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
               </DropdownMenuItem>
             </>
