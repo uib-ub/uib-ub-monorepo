@@ -8,9 +8,38 @@ export const defaultBaseMap: Record<string, string> = {
     search: 'word_map',
     ssr2016: 'world_map'
 }
-        
+   
+interface BaseMap {
+    key: string;
+    name: string;
+    markers?: 'dark' | 'light';
+    props: {
+        url: string;
+        attribution: string;
+    }
+}
 
-export const baseMaps: Record<string, any>[] = [
+export const baseMaps: BaseMap[] = [
+    /*
+     {
+        key: 'terrain-no-labels',
+        name: 'Terrengkart',
+        props: {
+            url: `https://api.maptiler.com/tiles/hybrid/{z}/{x}/{y}.jpg?key=BJ80wMAUZQPIzaslOspR${process.env.MAPTILER_KEY}`,
+            attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
+        }
+    },
+    {
+        key: 'satellite',
+        name: 'Satellittbilete',
+        markers: 'light',
+        props: {
+            url: `https://api.maptiler.com/tiles/satellite-v2/{z}/{x}/{y}.jpg?key=${process.env.MAPTILER_KEY}`,
+            attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
+        }
+
+    },
+    */
     {
         key: 'topo', 
         name: 'Noregskart', 
@@ -50,9 +79,10 @@ export const baseMaps: Record<string, any>[] = [
 
 export const baseMapNames = baseMaps.map(baseMap => baseMap.name);
 export const baseMapKeys = baseMaps.map(baseMap => baseMap.key);
-// Object where key is the baseMap key and value is the props object
-export const baseMapProps = baseMaps.reduce((acc, baseMap) => {
-    acc[baseMap.key] = baseMap.props;
+
+
+export const baseMapLookup = baseMaps.reduce<Record<string, BaseMap>>((acc, baseMap) => {
+    acc[baseMap.key] = baseMap;
     return acc;
 }, {});
 
