@@ -36,13 +36,14 @@ export default function useDocData(docParams?: {docData: Record<string, any>, do
     const searchParams = useSearchParams()
     const docUuid = docParams?.docData?._source?.uuid || searchParams.get('doc')
 
-    const { data, error: docError, isLoading: docLoading } = useQuery({
+    const { data, error: docError, isLoading: docLoading, isRefetching: docRefetching, isFetchedAfterMount: docFetchedAfterMount } = useQuery({
         queryKey: ['doc', docUuid],
+        placeholderData : (prevData) => prevData,
         queryFn: async () => docUuid ? docDataQuery(docUuid, docParams) : null
     })
 
     const { docData, docAdm, docDataset, docGroup } = data || {}
-    return { docData, docAdm, docDataset, docGroup, docError, docLoading }
+    return { docData, docAdm, docDataset, docGroup, docError, docLoading, docRefetching, docFetchedAfterMount }
 
 }
 

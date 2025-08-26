@@ -9,10 +9,11 @@ import { PiBookOpenFill, PiBookOpenLight, PiCaretLeftBold, PiListLight } from "r
 export default function DetailsTabs() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
-    const { groupData, groupTotal } = useGroupData()
+    const { groupData, groupTotal, groupStatus, groupLoading } = useGroupData()
     const { docData } = useDocData()
     return <>
-    { groupTotal?.value == 1 || groupData?.[0]?._source?.group.id == docData?._source?.group?.id ? <>
+
+    { (groupTotal?.value == 1 || groupLoading || groupData?.[0]?._source?.group.id == docData?._source?.group?.id) ? <>
     
       
       <Clickable
@@ -23,7 +24,7 @@ export default function DetailsTabs() {
         <span className="text-neutral-900 sr-only 2xl:not-sr-only whitespace-nowrap">Oppslag</span>
     </Clickable>
 
-    { groupTotal?.value && groupTotal.value > 1 && <Clickable
+    { (groupTotal?.value && groupTotal.value > 1 || groupStatus != 'success' || true) && <Clickable
           remove={["details", "namesNav"]} 
           add={{details: "group"}}
           aria-selected={details == "group"}

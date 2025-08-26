@@ -20,7 +20,7 @@ export default function DetailsWindow() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
     const namesNav = searchParams.get('namesNav')
-    const { docLoading, docData } = useDocData()
+    const { docLoading, docData, docRefetching } = useDocData()
     const mode = useMode()
     const { groupData, groupLoading, groupTotal, docIndex } = useGroupNavigation()
     const router = useRouter()
@@ -176,7 +176,7 @@ export default function DetailsWindow() {
 
 
 
-  {(details == "doc" || (details == "group" &&  !groupData)) && docData?._source && <div className={`overflow-y-auto border-y border-neutral-200 stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docLoading ? 'opacity-50' : 'opacity-100'}`}>
+  {(details == "doc" || (details == "group" &&  !groupData)) && <div className={`overflow-y-auto border-y stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docRefetching ? 'opacity-50' : 'opacity-100'}`}>
       <DocInfo/>
   </div>
 }

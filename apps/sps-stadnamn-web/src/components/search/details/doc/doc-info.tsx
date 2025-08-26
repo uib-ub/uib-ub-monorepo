@@ -25,7 +25,7 @@ import useDocData from "@/state/hooks/doc-data"
 export default function DocInfo({docParams}: {docParams?: {docData: Record<string, any>, docDataset: string}}) {
     const searchParams = useSearchParams()
     const perspective = usePerspective()
-    const { docDataset, docData, docLoading } = useDocData(docParams)
+    const { docDataset, docData } = useDocData(docParams)
     const docSource = docData?._source
     const mode = useMode()
     const datasetTag = searchParams.get('datasetTag')
@@ -46,14 +46,15 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
         });
     }, [docDataset, docSource]);
 
+
     // Don't render if docData is not available yet
-    if (docLoading || !docData || !docSource) {
+    if (!docSource) {
       return null
     }
 
     return <><article className={`instance-info flex flex-col gap-4 ${isMobile ? 'mb-12' : 'p-4 pb-8 '}`}>
 
-      {(((docDataset && perspective != docDataset) || docData?._source?.within) || !isMobile) && <div className="!mt-0">
+      <div className="!mt-0">
 
        <div className="flex gap-1  items-center">
           
@@ -67,13 +68,10 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
         
         </div>
       
-        
-        
-
 
         { perspective != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}        
  
-        </div>}
+        </div>
 
         <div className="flex gap-2"><h2>{docSource.label}</h2>
         </div>
