@@ -8,6 +8,9 @@
       "components/*": [
         "./components/*"
       ],
+      "utils": [
+        "../../packages/utils/src"
+      ]
     },
   },
   "exclude": [
