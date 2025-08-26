@@ -23,7 +23,7 @@ export default function SearchResults() {
   } = useCollapsedData()
 
   // Set up intersection observer for infinite scroll
-  const observerTarget = useRef(null)
+  const observerTarget = useRef<HTMLDivElement | null>(null)
 
   // Load more when scrolling to the bottom
   const handleObserver = useCallback((entries: any) => {
@@ -77,10 +77,10 @@ export default function SearchResults() {
             </Fragment>
         ))}
         
-        {/* Loading more indicator */}
-        {isFetchingNextPage && (
-          <div className="py-4 divide-y divide-neutral-200">
-            {Array.from({ length: 40 }).map((_, i) => (
+        {/* Loading more indicator — attach observer to the skeleton block */}
+        {hasNextPage && (
+          <div ref={observerTarget} className="py-4 divide-y divide-neutral-200">
+            {Array.from({ length:4 }).map((_, i) => (
               <div key={`loading-more-${i}`} className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1">
                 <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 4, 10)}rem`}}></div>
                 <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 10, 16)}rem`}}></div>
@@ -89,8 +89,7 @@ export default function SearchResults() {
           </div>
         )}
         
-        {/* Intersection observer target */}
-        <div ref={observerTarget} className="h-4" />
+        {/* observer target removed — skeleton blocks act as the observer */}
       </ul>
       
       {/* Error and empty states */}
