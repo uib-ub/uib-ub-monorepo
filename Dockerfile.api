@@ -17,7 +17,7 @@ FROM base AS builder
 COPY . .
 
 # Prune and prepare the application
-RUN npm install && \
+RUN bun install --filter='./packages/utils' && \
   turbo prune api --docker
 
 # Installer stage to set up environment
