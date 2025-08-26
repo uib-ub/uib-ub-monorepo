@@ -76,7 +76,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
       // Add state for geotile cells and intersecting cells
   interface GeotileCell {
     key: string; // Add this property
-    zoom: number;
+    precision: number;
     x: number;
     y: number;
     bounds?: [[number, number], [number, number]]; // Add optional bounds property
@@ -93,9 +93,10 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   const activeMarkerMode = (markerMode == 'counts' || mapInstance.current?.getZoom() < 8 || autoMode == 'counts') ? 'counts' : 'labels'
 
 
+
   const markerResults = useQueries({
     queries: markerCells.map(cell => {
-      const key = `${cell.zoom}/${cell.x}/${cell.y}`
+      const key = `${cell.precision}/${cell.x}/${cell.y}`
       
       return ({
         queryKey: ['markerResults', key, searchQueryString],
@@ -104,16 +105,17 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
           setGeoLoading(false);
           setCoordinatesError(true);
         },
-        placeHolder: (prevData: any) => prevData,
+        //placeHolder: (prevData: any) => prevData,
         queryFn: async () => {
           const queryParams = new URLSearchParams(searchQueryString);
+          console.log("FETCH MARKERS", cell, searchQueryString)
 
-          const res = await fetch(`/api/markers/labels/${cell.zoom}/${cell.x}/${cell.y}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`)
+          const res = await fetch(`/api/markers/labels/${cell.precision}/${cell.x}/${cell.y}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`)
           if (!res.ok) {
             throw new Error('Failed to fetch geotile cells')
           }
           const data = await res.json()
-            console.log("BUCKETS", data.aggregations.grid.buckets)
+            //console.log("BUCKETS", data.aggregations.grid.buckets)
             return data.aggregations.grid.buckets
             
 
@@ -125,14 +127,14 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
 
   const markerResultsRef = useRef<any[]>([]) // Prevents empty array while loading new cells
+
+
+
   const processedMarkerResults = useMemo(() => {
     if (markerResults.some(result => result.isLoading)) {
       return markerResultsRef?.current
     }
-
-
-    
- 
+    console.log("PROCESS MARKERS", markerResults)
 
     const buckets = markerResults.flatMap((result) => result.isSuccess && result.data ? result.data : [])
     
@@ -160,7 +162,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
       return {markerIndex, tile: bucket.key, ...hit}
     })
     })
-    //.sort((a: any, b: any) => a.markerIndex - b.markerIndex) // process the first hit in all buckets first, then the second hit etc.
+    .sort((a: any, b: any) => a.markerIndex - b.markerIndex) // process the first hit in all buckets first, then the second hit etc.
     .map((hit: Record<string, any>) => {
 
       const tileArea = [hit.tile, ...bucketNeighbourMap[hit.tile]]
@@ -186,25 +188,10 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
     })
 
 
-
-      
-
-      
-
       markerResultsRef.current = markers
-
-      console.log("MARKERS", markers, labeledMarkersLookup)
 
     return markers
   }, [markerResults, markerMode]);
-
-
-
-
-
-
-
-    //console.log("MARKER RESULTS", markerResults)
 
 
 
@@ -228,7 +215,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
       if (currentCells.length === 0 || currentCells[0]?.key != '0/0/0') {
         setMarkerCells([{
           key: '0/0/0',
-          zoom: 0,
+          precision: 0,
           x: 0,
           y: 0,
           bounds: [[90, -180], [-90, 180]] // Add world bounds
@@ -274,7 +261,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
         const key = `${precision}/${x}/${y}`;
         const cell: GeotileCell = {
           key,
-          zoom: precision,
+          precision,
           x,
           y,
           bounds: [[tileNorth, tileWest], [tileSouth, tileEast]]
@@ -290,52 +277,10 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
 
     useEffect(() => {
-      //console.log("INITIALIZE")
       updateMarkerGrid(snappedBounds, currentZoom, gridSizeRef.current, markerCells)
     }, [])
 
 
-
-  // NB: sample mode, but clustering of results with the same coordinates
-  const sampleClusters = useCallback((data: any) => {
-    const markers: {topHit: any, grouped: any[], unlabeled: any[]}[] = []
-
-    data.hits.hits.forEach((hit: any) => {
-      let added = false;
-      const cadastralParent = hit.fields.within?.[0]
-      if (cadastralParent?.length && data.hits.hits.some((hit: any) => hit.fields.uuid[0] == cadastralParent)) {
-        return
-      }
-
-      for (const group of markers) {
-        const firstHit = group.topHit
-        if (firstHit) {
-          const yDist = yDistance(mapInstance.current, firstHit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[1]);
-          const xDist = xDistance(mapInstance.current, firstHit.fields.location[0].coordinates[0], hit.fields.location[0].coordinates[0]);
-          if (yDist < 2 && xDist < 2) {
-            group.grouped.push(hit);
-            added = true;
-            break;
-          }
-          if (yDist < 32 && xDist < (64 + (4 * firstHit.fields.label[0].length))) {
-            added = true;
-            const mapZoom = mapInstance.current?.getZoom()
-            if (mapZoom && mapZoom == 18) {
-              group.grouped.push(hit);
-            }
-            else {
-              group.unlabeled.push(hit);
-            }
-          }
-        }
-      }
-      if (!added) {
-        markers.push({topHit: hit, grouped: [], unlabeled: []});
-      }
-    })
-
-    return {...data, hits: {markers}}
-  }, [])
 
   const isTooClose = (hits: any[], map: any) => {
     if (hits.length <= 1) return false;
@@ -490,8 +435,6 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   const selectDocHandler = (selected: Record<string, any>, hits?: Record<string, any>[]) => {
     return {
       click: () => {
-        console.log("SELECT", selected)
-
         const newQueryParams = new URLSearchParams(searchParams)
         
 
@@ -562,21 +505,18 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
   // Function to convert geotile key to bounds
   const geotileKeyToBounds = useCallback((key: string) => {
-    console.log('Converting geotile key:', key);
     const parts = key.split('/');
     if (parts.length !== 3) {
-      console.log('Invalid key format:', key, 'parts:', parts);
       return null;
     }
     
-    const zoom = parseInt(parts[0]);
+    const precision = parseInt(parts[0]);
     const x = parseInt(parts[1]);
     const y = parseInt(parts[2]);
     
-    console.log('Tile coordinates:', { zoom, x, y });
     
     // Web Mercator tile bounds calculation (same as used by most web mapping services)
-    const n = Math.pow(2, zoom);
+    const n = Math.pow(2, precision);
     
     // Longitude bounds
     const west = (x / n) * 360 - 180;
@@ -590,7 +530,6 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
     const south = (latRad2 * 180) / Math.PI;
     
     const bounds = [[north, west], [south, east]] as [[number, number], [number, number]];
-    console.log('Calculated bounds:', bounds);
     return bounds;
   }, []);
 
@@ -609,9 +548,9 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
             if (!mapInstance.current) {
               mapInstance.current = e.target;
             }
-            console.log("MAP READY")
-            console.log("SNAP BOUNDS", snappedBounds)
-            console.log("RESULT BOUNDS", mapInstance.current.getBounds())
+            //console.log("MAP READY")
+            //console.log("SNAP BOUNDS", snappedBounds)
+            //console.log("RESULT BOUNDS", mapInstance.current.getBounds())
         }}
         zoomControl={false}
         bounds={ snappedBounds }
@@ -639,6 +578,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                 }
               },
               move: () => {
+                
                 const mapBounds = map.getBounds();
                 const mapZoom = map.getZoom();
                 if (currentZoom != mapZoom) {
@@ -651,7 +591,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                 }
                 
                 // For the world tile case, no need to update
-                if (markerCells.length === 1 && markerCells[0].zoom === 0) {
+                if (markerCells.length === 1 && markerCells[0].precision === 0) {
                   return
                 }
               
@@ -690,6 +630,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                 // Update URL without triggering router events
                 const newUrl = `${window.location.pathname}?${newParams.toString()}`;
                 window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
+                
               },
             })         
             return null
@@ -755,38 +696,18 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
               )}
 
               {/* Debug: draw rectangle for each backend bucket/tile */}
-              {showGeotileGrid && processedMarkerResults && (() => {
-                const tiles = processedMarkerResults.map((it: any) => it.tile).map((tileKey: string) => {
-                  const bounds = geotileKeyToBounds(tileKey);
-                  if (!bounds) return null;
-                  return (
-                    <Rectangle
-                      key={`bucket-rect-${tileKey}`}
-                      bounds={bounds}
-                      pathOptions={{
-                        color: '#ff0000',
-                        weight: 2,
-                        fill: false,
-                        dashArray: '4,4'
-                      }}
-                    />
-                  );
-                });
-              })()}
-
-              {/* Add Geotile grid overlay */}
-              {showGeotileGrid && markerCells?.map((cell, index) => (
-                <Rectangle
-                  key={`geotile-${cell.key}-${index}`}
-                  bounds={cell.bounds}
+              {showGeotileGrid && processedMarkerResults && markerResults.map((result) => result.data?.map((bucket: any) => {
+                return <Rectangle
+                  key={`bucket-${bucket.key}`}
+                  bounds={geotileKeyToBounds(bucket.key)!}
                   pathOptions={{
-                    color: '#00ff00',
-                    weight: 3,
-                    fill: false,
-                    dashArray: '5, 5'
+                    color: '#ff7800',
+                    weight: 1,
+                    opacity: 0.8,
+                    fillOpacity: 0
                   }}
                 />
-              ))}
+              }))}
 
 
 

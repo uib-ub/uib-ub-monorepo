@@ -9,7 +9,7 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ mode:string, zoom: string, x: string, y: string }> }
 ) {
-  const { mode, zoom, x, y} = await params
+  const { mode, zoom: precision, x, y} = await params
 
 
   const { termFilters, reservedParams } =  extractFacets(request)
@@ -33,9 +33,9 @@ export async function GET(
         filter: [
           {
             geo_grid: {
-                location: { geotile: `${zoom}/${x}/${y}` }
+                location: { geotile: `${precision}/${x}/${y}` }
             }
-          }
+          },
         ]
       }
     },
@@ -43,13 +43,13 @@ export async function GET(
       grid: {
         geotile_grid: {
           field: "location",
-          size: 40,
-          precision: zoom == "0" ? 6 : parseInt(zoom) + 3
+          size: 1000,
+          precision: precision == "0" ? 6 : parseInt(precision) + 4
         },
         aggs: {
           top: {
             top_hits: {
-              size: Number(zoom) > 17 ? 1000 : 10,
+              size: Number(precision) > 17 ? 1000 : 2,
               sort: [ { "uuid": "asc" } ],
               _source: false,
               fields: ["label", "location", "group.id", "uuid"],
