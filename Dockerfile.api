@@ -17,8 +17,7 @@ FROM base AS builder
 COPY . .
 
 # Prune and prepare the application
-RUN npm install && \
-  turbo prune api --docker
+RUN turbo prune api --docker
 
 # Installer stage to set up environment
 FROM base AS installer
