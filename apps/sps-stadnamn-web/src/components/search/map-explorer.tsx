@@ -1,6 +1,6 @@
 import { Fragment, useContext, useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Map from "../map/map";
-import { baseMaps, baseMapKeys, baseMapProps, defaultBaseMap } from "@/config/basemap-config";
+import { baseMaps, baseMapKeys, defaultBaseMap, baseMapLookup } from "@/config/basemap-config";
 import { PiCheckCircleFill, PiCornersOut, PiCrop, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill,  PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 import { SearchContext } from "@/app/search-provider";
@@ -105,6 +105,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
           setGeoLoading(false);
           setCoordinatesError(true);
         },
+        placeHolder: (prevData: any) => prevData,
         queryFn: async () => {
           //console.log("FETCHING GEOTILE CELL", index, JSON.stringify(cell))
           const queryParams = new URLSearchParams(searchQueryString);
@@ -625,7 +626,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
             <>
               <EventHandlers />
-              {baseMap && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapProps[baseMap]} />}
+              {baseMap && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapLookup[baseMap].props} />}
 
               {/* Add H3 grid overlay */}
               {showH3Grid && mapInstance.current && getH3Cells(mapInstance.current.getBounds()).map((polygon, index) => (
@@ -664,7 +665,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                         <Marker
                           key={`result-${item.uuid[0]}`}
                           position={[item.location?.[0]?.coordinates?.[1], item.location?.[0]?.coordinates?.[0]]}
-                          icon={new leaflet.DivIcon(getLabelMarkerIcon(item.label?.[0] || 'Unknown', 'black', undefined, true))}
+                          icon={new leaflet.DivIcon(getLabelMarkerIcon(item.label?.[0] || 'Unknown', baseMap && baseMapLookup[baseMap]?.markers ? 'white' : 'black', undefined, true))}
                           riseOnHover={true}
                           eventHandlers={selectDocHandler(item)}
                         />
