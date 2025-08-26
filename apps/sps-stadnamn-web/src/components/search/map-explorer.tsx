@@ -83,7 +83,6 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   }
 
   const [markerCells, setMarkerCells] = useState<GeotileCell[]>([])
-  //console.log("MARKER CELLS", markerCells)
 
     // Cluster if:
   // Cluster mode
@@ -108,7 +107,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
         //placeHolder: (prevData: any) => prevData,
         queryFn: async () => {
           const queryParams = new URLSearchParams(searchQueryString);
-          console.log("FETCH MARKERS", cell, searchQueryString)
+          //console.log("FETCH MARKERS", cell, searchQueryString)
 
           const res = await fetch(`/api/markers/labels/${cell.precision}/${cell.x}/${cell.y}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`)
           if (!res.ok) {
@@ -127,6 +126,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
 
   const markerResultsRef = useRef<any[]>([]) // Prevents empty array while loading new cells
+  //console.log("MARKER RESULTS", markerResults, markerResultsRef.current)
 
 
 
@@ -134,7 +134,6 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
     if (markerResults.some(result => result.isLoading)) {
       return markerResultsRef?.current
     }
-    console.log("PROCESS MARKERS", markerResults)
 
     const buckets = markerResults.flatMap((result) => result.isSuccess && result.data ? result.data : [])
     
@@ -185,6 +184,9 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
         return {...hit, showLabel: true}
       }
       return hit
+    }).sort((a: any, b: any) => {
+      // Sort so that labels further north are first
+      return b.fields.location[0].coordinates[1] - a.fields.location[0].coordinates[1]
     })
 
 
@@ -560,12 +562,25 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
           function EventHandlers() {
             const map = useMap();
             useMapEvents({
-              zoomend: () => {
-                //console.log("ZOOMEND")
-                // Update precision if zoom level changes
+              moveend: () => {
+                
+                const mapBounds = map.getBounds();
+                const mapCenter = mapBounds.getCenter();
                 const mapZoom = map.getZoom();
+                const newBounds: [[number, number], [number, number]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
+                setSnappedBounds(newBounds)
+                setCurrentCenter([mapCenter.lat, mapCenter.lng])
+                
+                const [[north, west], [south, east]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
+              
+                const mapBoundsPoints = [
+                  [north, west],
+                  [north, east],
+                  [south, east],
+                  [south, west]
+                ]
+
                 if (mapZoom != currentZoom) {
-                  const mapBounds = map.getBounds();
                   if (currentZoom >= 4) {
                     const [[north, west], [south, east]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]] 
                     gridSizeRef.current = getGridSize([[north, west], [south, east]], mapZoom);;
@@ -576,36 +591,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                   updateMarkerGrid([[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]], mapZoom, gridSizeRef.current, markerCells);
                   setCurrentZoom(mapZoom);
                 }
-              },
-              move: () => {
-                
-                const mapBounds = map.getBounds();
-                const mapZoom = map.getZoom();
-                if (currentZoom != mapZoom) {
-                  return
-                }
-              
-                // Check if we have any cells
-                if (markerCells.length === 0) {
-                  return
-                }
-                
-                // For the world tile case, no need to update
-                if (markerCells.length === 1 && markerCells[0].precision === 0) {
-                  return
-                }
-              
-                const [[north, west], [south, east]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
-              
-                const mapBoundsPoints = [
-                  [north, west],
-                  [north, east],
-                  [south, east],
-                  [south, west]
-                ]
-              
-                // Check if all map bounds corners are contained within our current cell collection
-              if (!mapBoundsPoints.every((point) => {
+                else if (!mapBoundsPoints.every((point) => {
                 return markerCells.some((cell) => {
                   if (!cell.bounds) return false;
                   const [[cellNorth, cellWest], [cellSouth, cellEast]] = cell.bounds;
@@ -616,15 +602,13 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                 //console.log("MOVE UPDATE - map bounds not fully covered by current cells")
                 updateMarkerGrid([[north, west], [south, east]], map.getZoom(), gridSizeRef.current, markerCells);
               }
-              },
-              moveend: () => {
-                const mapBounds = map.getBounds();
-                const mapCenter = mapBounds.getCenter();
-                const newBounds: [[number, number], [number, number]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
-                setSnappedBounds(newBounds)
-                setCurrentCenter([mapCenter.lat, mapCenter.lng])
+              setCurrentZoom(mapZoom)
+
+
+
+
                 const newParams = new URLSearchParams(searchParams)
-                newParams.set('zoom', map.getZoom().toString())
+                newParams.set('zoom', mapZoom)
                 newParams.set('center', `${mapCenter.lat},${mapCenter.lng}`)
                 
                 // Update URL without triggering router events
@@ -708,6 +692,21 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                   }}
                 />
               }))}
+
+              {showGeotileGrid && markerCells.map((cell) => {
+                const bounds = geotileKeyToBounds(cell.key)
+                if (!bounds) return null;
+                return <Rectangle
+                  key={`cell-${cell.key}`}
+                  bounds={bounds}
+                  pathOptions={{
+                    color: '#0078ff',
+                    weight: 2,
+                    opacity: 0.8,
+                    fillOpacity: 0
+                  }}
+                />
+              })}
 
 
 
