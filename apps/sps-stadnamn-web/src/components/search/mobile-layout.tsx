@@ -1,8 +1,7 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
 import { PiBinoculars, PiBookOpen, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiListBullets, PiTreeViewFill, PiWallFill, PiWallLight } from "react-icons/pi";
-import Results from "./nav/results/search-results";
-import MapExplorer from "./map-explorer";
+import SearchResults from "./nav/results/search-results";
 import { useSearchQuery, useMode } from "@/lib/search-params";
 import StatusSection from "./status-section";
 import { SearchContext } from "@/app/search-provider";
@@ -222,7 +221,7 @@ export default function MobileLayout() {
             <div className="w-full flex  items-center h-4 pt-2 rounded-t-md bg-neutral-800 relative px-2" style={{touchAction: 'none'}}>
                 <div className="absolute -translate-x-1/2 left-1/2 h-1.5 top-1.5 w-16 bg-neutral-300 rounded-full"></div></div>
 
-            <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 border-neutral-800 shadow-inner max-h-[calc(100svh-12rem)] overscroll-contain`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
+            <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 border-neutral-800 max-h-[calc(100svh-12rem)] overscroll-contain`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
             {drawerContent == 'details' && <>
             {doc && details == 'doc' && !namesNav && <div className="pb-24"><HorizontalSwipe scrollRef={scrollableContent}><ListExplorer/> </HorizontalSwipe></div>}
@@ -254,7 +253,7 @@ export default function MobileLayout() {
                 <ActiveFilters showQuery={true} showFacets={true} showDatasets={true} />
                 </div>}
                     
-                {datasetTag == 'base' ? <BasewordResults/> : <Results/>}
+                {datasetTag == 'base' ? <BasewordResults/> : <SearchResults/>}
                 </section>
             
              }
