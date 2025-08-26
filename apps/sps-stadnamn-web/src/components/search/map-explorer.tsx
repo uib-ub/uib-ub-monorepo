@@ -734,7 +734,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                           position={[lat, lng]}
                           icon={new leaflet.DivIcon(getLabelMarkerIcon(item.fields.label?.[0] || 'Unknown', baseMap && baseMapLookup[baseMap]?.markers ? 'white' : 'black', undefined, true))}
                           riseOnHover={true}
-                          eventHandlers={selectDocHandler(item)}
+                          eventHandlers={selectDocHandler(item.fields)}
                         />
                       ) : <CircleMarker 
                           // render the circle in the same pane as HTML markers so it is on top
@@ -746,7 +746,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                           color={baseMap && baseMapLookup[baseMap]?.markers ? '#fff' : '#000'} 
                           fillColor={baseMap && baseMapLookup[baseMap]?.markers ? '#000' : '#fff'} 
                           fillOpacity={1}
-                          eventHandlers={selectDocHandler(item)}
+                          eventHandlers={selectDocHandler(item.fields)}
                         />
                     }
                       </Fragment>
@@ -754,6 +754,25 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
               }
               )}
 
+              {/* Debug: draw rectangle for each backend bucket/tile */}
+              {showGeotileGrid && processedMarkerResults && (() => {
+                const tiles = processedMarkerResults.map((it: any) => it.tile).map((tileKey: string) => {
+                  const bounds = geotileKeyToBounds(tileKey);
+                  if (!bounds) return null;
+                  return (
+                    <Rectangle
+                      key={`bucket-rect-${tileKey}`}
+                      bounds={bounds}
+                      pathOptions={{
+                        color: '#ff0000',
+                        weight: 2,
+                        fill: false,
+                        dashArray: '4,4'
+                      }}
+                    />
+                  );
+                });
+              })()}
 
               {/* Add Geotile grid overlay */}
               {showGeotileGrid && markerCells?.map((cell, index) => (

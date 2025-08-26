@@ -27,7 +27,7 @@ export async function GET(
     _source: false,
     track_total_hits: false,
     track_scores: false,
-    sort: [ { "uuid": "asc" } ],
+    
     query: {
       bool: {
         filter: [
@@ -44,12 +44,13 @@ export async function GET(
         geotile_grid: {
           field: "location",
           size: 40,
-          precision: zoom == "0" ? 6 : parseInt(zoom) + 1
+          precision: zoom == "0" ? 6 : parseInt(zoom) + 3
         },
         aggs: {
           top: {
             top_hits: {
-              size: Number(zoom) > 17 ? 1000 : 100,
+              size: Number(zoom) > 17 ? 1000 : 10,
+              sort: [ { "uuid": "asc" } ],
               _source: false,
               fields: ["label", "location", "group.id", "uuid"],
             }
