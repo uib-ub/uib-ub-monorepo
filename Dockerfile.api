@@ -17,7 +17,8 @@ FROM base AS builder
 COPY . .
 
 # Prune and prepare the application
-RUN turbo prune api --docker
+RUN bun install && \
+  turbo prune api --docker
 
 # Installer stage to set up environment
 FROM base AS installer
