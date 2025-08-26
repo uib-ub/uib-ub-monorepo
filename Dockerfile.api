@@ -30,7 +30,7 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
 
 # Install dependencies without audit to speed up the process
-RUN bun install 
+RUN bun install
 
 # Copy build artifacts
 COPY --from=builder /app/out/full/ .
@@ -41,11 +41,11 @@ COPY --from=builder /app/turbo.json ./turbo.json
 
 # Install bash and curl (if required)
 RUN apk update && \
-    apk add --no-cache bash curl && \
-    rm -rf /var/cache/apk/*
+  apk add --no-cache bash curl && \
+  rm -rf /var/cache/apk/*
 
 # Set working directory
-# WORKDIR /app
+WORKDIR /app/apps/api
 
 # Set up non-root user
 RUN addgroup --system honojs && \
@@ -58,4 +58,4 @@ USER honojs
 # COPY --from=installer /app/apps ./apps
 # COPY --from=installer /app/packages ./packages
 
-CMD ["bun", "run", "./apps/api/src/main.ts"]
+CMD ["bun", "run", "src/main.ts"]
