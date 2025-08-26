@@ -1,6 +1,6 @@
 # Set bun image version
-#ARG BUN_VERSION=1.1.21
-ARG BUN_VERSION=1.1.8
+ARG BUN_VERSION=1.1.21
+#ARG BUN_VERSION=1.1.8
 FROM oven/bun:${BUN_VERSION}-alpine AS base
 
 # Install bash, curl, and turbo for base, then clean up
