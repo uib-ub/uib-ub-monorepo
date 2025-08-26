@@ -5,7 +5,7 @@ FROM oven/bun:${BUN_VERSION}-alpine AS base
 
 # Install bash, curl, and turbo for base, then clean up
 RUN apk update && \
-  apk add --no-cache bash curl nodejs && \
+  apk add --no-cache bash curl nodejs npm && \
   bun install -g turbo@latest && \
   rm -rf /var/cache/apk/*
 
@@ -17,7 +17,7 @@ FROM base AS builder
 COPY . .
 
 # Prune and prepare the application
-RUN bun install --filter='!sps-termportal-admin' && \
+RUN npm install && \
   turbo prune api --docker
 
 # Installer stage to set up environment
