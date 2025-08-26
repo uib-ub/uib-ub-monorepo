@@ -58,7 +58,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   });
 
   const [zoomState, setZoomState] = useState<number>(urlZoom || calculateZoomFromBounds(snappedBounds))
-  const [currentCenter, setCurrentCenter] = useState<[number, number]>(urlCenter ? urlCenter : calculateCenterFromBounds(snappedBounds))
+  const suspendMarkerDiscoveryRef = useRef(false)
 
 
   const gridSizeRef = useRef<{ gridSize: number, precision: number}>(getGridSize(snappedBounds, zoomState));
@@ -107,15 +107,15 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
         //placeHolder: (prevData: any) => prevData,
         queryFn: async () => {
           const queryParams = new URLSearchParams(searchQueryString);
-          //console.log("FETCH MARKERS", cell, searchQueryString)
+          console.log("FETCH MARKERS", cell, searchQueryString)
 
           const res = await fetch(`/api/markers/labels/${cell.precision}/${cell.x}/${cell.y}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`)
           if (!res.ok) {
             throw new Error('Failed to fetch geotile cells')
           }
           const data = await res.json()
-            //console.log("BUCKETS", data.aggregations.grid.buckets)
-            return data.aggregations.grid.buckets
+          //console.log("BUCKETS", data.aggregations.grid.buckets)
+          return data.aggregations.grid.buckets
             
 
 
@@ -209,6 +209,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
 
   const updateMarkerGrid = useCallback((liveBounds: [[number, number], [number, number]], liveZoom: number, gridSizeData: {gridSize: number, precision: number}, currentCells: GeotileCell[]) => {
+    console.log("UPDATE MARKER GRID", liveBounds, liveZoom, gridSizeData, currentCells)
     const { gridSize, precision } = gridSizeData
     const [[north, west], [south, east]] = liveBounds
     
@@ -273,6 +274,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
       }
     }
 
+    suspendMarkerDiscoveryRef.current = false
     setMarkerCells(newCells);
   }, [setMarkerCells]);
 
@@ -280,6 +282,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
     useEffect(() => {
       updateMarkerGrid(snappedBounds, zoomState, gridSizeRef.current, markerCells)
+      console.log("INITIALIZE MARKER GRID")
     }, [])
 
 
@@ -535,12 +538,13 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
     return bounds;
   }, []);
 
-  const isPointInViewport = useCallback((lat: number, lng: number) => {
-                    const bounds = mapInstance?.current?.getBounds();
+  const isPointInViewport = (lat: number, lng: number) => {
+                    const mapBounds = mapInstance?.current?.getBounds();
+                    const bounds = suspendMarkerDiscoveryRef.current ? snappedBounds : [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]];
                     if (!bounds) return false;
-                    const [[north, west], [south, east]] = [[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]];
+                    const [[north, west], [south, east]] = bounds;
                     return lat <= north && lat >= south && lng >= west && lng <= east;
-                  }, [mapInstance]);
+                  }
 
 
 
@@ -562,7 +566,11 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
           function EventHandlers() {
             const map = useMap();
             useMapEvents({
-              moveend: () => {
+              zoomstart: () => {
+                
+                suspendMarkerDiscoveryRef.current = true
+              },
+              moveend: () => {  
                 console.log("MAP MOVEEND")
                 
                 const mapBounds = map.getBounds();
@@ -570,7 +578,6 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                 const mapZoom = map.getZoom();
                 const newBounds: [[number, number], [number, number]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
                 setSnappedBounds(newBounds)
-                setCurrentCenter([mapCenter.lat, mapCenter.lng])
                 
                 const [[north, west], [south, east]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
               
@@ -652,35 +659,21 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                       const lng = item.fields.location?.[0]?.coordinates?.[0];
 
                       // Ensure lat/lng exist (0 is a valid value) and are finite
-                      if (lat == undefined || lng == undefined || !isPointInViewport(lat, lng)) {
+                      if (!item.showLabel || lat == undefined || lng == undefined || !isPointInViewport(lat, lng)) {
                         return null;
                       }
-                      return (
-                      <Fragment key={`result-${item.fields.group?.id || item.fields.uuid[0]}`}>
-                      { item.showLabel ?   (
+                      else return (
                         <Marker
+                          key={`result-${item.fields.group?.id || item.fields.uuid[0]}`}
                           position={[lat, lng]}
                           icon={new leaflet.DivIcon(getLabelMarkerIcon(item.fields.label?.[0] || 'Unknown', baseMap && baseMapLookup[baseMap]?.markers ? 'white' : 'black', undefined, true))}
                           riseOnHover={true}
                           eventHandlers={selectDocHandler(item.fields)}
                         />
-                      ) : <CircleMarker 
-                          // render the circle in the same pane as HTML markers so it is on top
-                          pane="markerPane"
-                          center={[lat, lng]} 
-                          radius={6} 
-                          stroke={true}
-                          weight={1}
-                          color={baseMap && baseMapLookup[baseMap]?.markers ? '#fff' : '#000'} 
-                          fillColor={baseMap && baseMapLookup[baseMap]?.markers ? '#000' : '#fff'} 
-                          fillOpacity={1}
-                          eventHandlers={selectDocHandler(item.fields)}
-                        />
-                    }
-                      </Fragment>
-                )
-              }
-              )}
+                      )
+                
+              
+              })}
 
               {/* Debug: draw rectangle for each backend bucket/tile */}
               {showGeotileGrid && processedMarkerResults && markerResults.map((result) => result.data?.map((bucket: any) => {
