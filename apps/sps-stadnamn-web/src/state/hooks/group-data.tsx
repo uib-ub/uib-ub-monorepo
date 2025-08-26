@@ -42,6 +42,7 @@ export default function useGroupData() {
     } = useInfiniteQuery({
         queryKey: ['group', group],
         queryFn: async ({ pageParam, }) => group ? groupDataQuery(group, searchQueryString, pageParam) : null,
+
         initialPageParam: { size: 5, from: 0 },
         getNextPageParam: (lastPage, allPages) => {
             if (!lastPage || !lastPage.hits.length) {
