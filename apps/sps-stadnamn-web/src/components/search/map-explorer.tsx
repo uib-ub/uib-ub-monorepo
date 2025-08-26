@@ -15,15 +15,14 @@ import {
 import { usePerspective, useSearchQuery } from "@/lib/search-params";
 import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 import { useSearchParams } from "next/navigation";
-import { xDistance, yDistance, getValidDegree } from "@/lib/map-utils";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import * as h3 from "h3-js";
 import { useRouter } from "next/navigation";
 import wkt from 'wellknown';
 import { stringToBase64Url } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
-import { useQueries } from "@tanstack/react-query";
-import { adjustBounds, calculateRadius, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateCenterFromBounds } from "./map-utils";
+import { useInfiniteQuery, useQueries } from "@tanstack/react-query";
+import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateCenterFromBounds } from "@/lib/map-utils";
 
 
 export default function MapExplorer({containerDimensions}: {containerDimensions: {width: number, height: number}}) {
@@ -95,11 +94,11 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
 
   const markerResults = useQueries({
-    queries: markerCells.map((cell, index) => {
+    queries: markerCells.map(cell => {
       const key = `${cell.zoom}/${cell.x}/${cell.y}`
       
       return ({
-        queryKey: ['markerResults', key, searchQueryString, activeMarkerMode],
+        queryKey: ['markerResults', key, searchQueryString],
         onError: (error: any) => {
           console.error("Error fetching geotile cell data:", error);
           setGeoLoading(false);
@@ -107,36 +106,100 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
         },
         placeHolder: (prevData: any) => prevData,
         queryFn: async () => {
-          //console.log("FETCHING GEOTILE CELL", index, JSON.stringify(cell))
           const queryParams = new URLSearchParams(searchQueryString);
-          if (activeMarkerMode === 'counts') {
-            queryParams.append('totalHits', totalHits?.value ? totalHits.value.toString() : '1000000');
-          }
-          const res = await fetch(`/api/markers/${activeMarkerMode}/${cell.zoom}/${cell.x}/${cell.y}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`)
+
+          const res = await fetch(`/api/markers/labels/${cell.zoom}/${cell.x}/${cell.y}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`)
           if (!res.ok) {
             throw new Error('Failed to fetch geotile cells')
           }
           const data = await res.json()
-          //console.log("GOT DATA FOR CELL", key, data)
-          
-          // Handle the new structure with aggregations and grid buckets
-            // For cluster mode, extract data from aggregations
-            return data.aggregations.grid.buckets.map((bucket: any) => {
-              // Each bucket represents a cluster with a top hit
-              if (bucket.top?.hits?.hits?.[0]?.fields) {
-                return {
-                  ...bucket.top.hits.hits[0].fields,
-                  doc_count: bucket.doc_count,
-                  key: bucket.key
-                }
-              }
-              return null
-            }).filter(Boolean)
+            console.log("BUCKETS", data.aggregations.grid.buckets)
+            return data.aggregations.grid.buckets
+            
+
 
         }
       })
-    }).filter(Boolean) // Remove null queries
+    })
   })
+
+
+  const markerResultsRef = useRef<any[]>([]) // Prevents empty array while loading new cells
+  const processedMarkerResults = useMemo(() => {
+    if (markerResults.some(result => result.isLoading)) {
+      return markerResultsRef?.current
+    }
+
+
+    
+ 
+
+    const buckets = markerResults.flatMap((result) => result.isSuccess && result.data ? result.data : [])
+    
+    const labeledMarkersLookup: Record<string, Record<string, any>[]> = {}
+    const bucketNeighbourMap: Record<string, any[]> = buckets.reduce<Record<string, any[]>>((acc, bucket) => {
+      const [z, x, y] = bucket.key.split('/').map(Number);
+      const neighbors = [
+        `${z}/${x-1}/${y}`,     // West
+        `${z}/${x+1}/${y}`,     // East
+        `${z}/${x}/${y-1}`,     // North
+        `${z}/${x}/${y+1}`,     // South
+        `${z}/${x-1}/${y-1}`,   // North-West
+        `${z}/${x+1}/${y-1}`,   // North-East
+        `${z}/${x-1}/${y+1}`,   // South-West
+        `${z}/${x+1}/${y+1}`    // South-East
+      ];
+      acc[bucket.key] = neighbors;
+      return acc;
+    }, {})
+
+
+
+    const markers: Record<string, any>[] = buckets.flatMap((bucket: any) => {
+      return bucket.top.hits.hits.map((hit: Record<string, any>, markerIndex: number) => {
+      return {markerIndex, tile: bucket.key, ...hit}
+    })
+    })
+    //.sort((a: any, b: any) => a.markerIndex - b.markerIndex) // process the first hit in all buckets first, then the second hit etc.
+    .map((hit: Record<string, any>) => {
+
+      const tileArea = [hit.tile, ...bucketNeighbourMap[hit.tile]]
+      
+
+      const hasOverlappingLabel = tileArea.some(tileKey => {
+        return labeledMarkersLookup[tileKey]?.some((otherHit: Record<string, any>) => {
+
+          const yDist = yDistance(mapInstance.current, otherHit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[1]);
+          const xDist = xDistance(mapInstance.current, otherHit.fields.location[0].coordinates[0], hit.fields.location[0].coordinates[0]);
+          return yDist < 32 && xDist < (64 + (4 * otherHit.fields.label[0].length));
+        })
+      })
+
+      if (!hasOverlappingLabel) {
+        if (!labeledMarkersLookup[hit.tile]) {
+          labeledMarkersLookup[hit.tile] = []
+        }
+        labeledMarkersLookup[hit.tile].push(hit)
+        return {...hit, showLabel: true}
+      }
+      return hit
+    })
+
+
+
+      
+
+      
+
+      markerResultsRef.current = markers
+
+    return markers
+  }, [markerResults, markerMode]);
+
+
+
+
+
 
 
     //console.log("MARKER RESULTS", markerResults)
@@ -455,7 +518,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
     // Add this state for toggling the grid
     const [showH3Grid, setShowH3Grid] = useState(false);
-    const [showGeotileGrid, setShowGeotileGrid] = useState(true);
+    const [showGeotileGrid, setShowGeotileGrid] = useState(false);
     
 
 
@@ -528,6 +591,15 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
     console.log('Calculated bounds:', bounds);
     return bounds;
   }, []);
+
+  const isPointInViewport = useCallback((lat: number, lng: number) => {
+                    const bounds = mapInstance?.current?.getBounds();
+                    if (!bounds) return false;
+                    const [[north, west], [south, east]] = [[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]];
+                    return lat <= north && lat >= south && lng >= west && lng <= east;
+                  }, [mapInstance]);
+
+
 
   return <>
       <Map        
@@ -643,38 +715,30 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
               ))}
 
               {/* Draw geotile query results */}
-              { markerResults.filter(result => result.isSuccess).map(result => result.data).map((dataArray, index) => {
-                if (dataArray?.length > 0) {                  
-                  // Function to check if a point is within the debug viewport bounds
-                  const isPointInViewport = (lat: number, lng: number) => {
-                    const bounds = mapInstance?.current?.getBounds();
-                    if (!bounds) return false;
-                    const [[north, west], [south, east]] = [[bounds.getNorth(), bounds.getWest()], [bounds.getSouth(), bounds.getEast()]];
-                    return lat <= north && lat >= south && lng >= west && lng <= east;
-                  };
+              { processedMarkerResults?.map((item: any) => {
 
+     
+                     const lat = item.fields.location?.[0]?.coordinates?.[1];
+                      const lng = item.fields.location?.[0]?.coordinates?.[0];
 
-                  return (
-                    <Fragment key={`result-group-${index}`}>
-                      {/* Individual result markers with labels - only render if within debug viewport */}
-                      {dataArray.filter((item: any) => {
-                        const lat = item.location?.[0]?.coordinates?.[1];
-                        const lng = item.location?.[0]?.coordinates?.[0];
-                        return lat && lng && isPointInViewport(lat, lng);
-                      }).map((item: any) => (
+                      if (!lat || !lng || !isPointInViewport(lat, lng)) {
+                        return null;
+                      }
+                      return (
+                      <Fragment key={`result-${item.fields.group?.id || item.fields.uuid[0]}`}>
+                      { item.showLabel &&   (
                         <Marker
-                          key={`result-${item.uuid[0]}`}
-                          position={[item.location?.[0]?.coordinates?.[1], item.location?.[0]?.coordinates?.[0]]}
-                          icon={new leaflet.DivIcon(getLabelMarkerIcon(item.label?.[0] || 'Unknown', baseMap && baseMapLookup[baseMap]?.markers ? 'white' : 'black', undefined, true))}
+                          position={[lat, lng]}
+                          icon={new leaflet.DivIcon(getLabelMarkerIcon(item.fields.label?.[0] || 'Unknown', baseMap && baseMapLookup[baseMap]?.markers ? 'white' : 'black', undefined, true))}
                           riseOnHover={true}
                           eventHandlers={selectDocHandler(item)}
                         />
-                      ))}
-                    </Fragment>
-                  );
-                }
-                return null;
-              })}
+                      )}
+                      </Fragment>
+                )
+              }
+              )}
+
 
               {/* Add Geotile grid overlay */}
               {showGeotileGrid && markerCells?.map((cell, index) => (
@@ -844,7 +908,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                 className={`flex items-center py-2 px-4 cursor-pointer justify-between ${markerMode === 'labels' ? "bg-neutral-100" : ""}`}
                 aria-selected={markerMode === 'labels'}
               >
-                Namn
+                Etiketter
                 {markerMode === 'labels' && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
               </DropdownMenuItem>
             </>

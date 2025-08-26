@@ -21,12 +21,12 @@ export async function GET(
 
   const query: Record<string, any> = {
     size: 0,
-    fields: ["label", "location", "uuid", "sosi", "placeScore", "group.id"],
     collapse: {
       field: "group.id"
     },
     _source: false,
     track_total_hits: false,
+    track_scores: false,
     query: {
       bool: {
         filter: [
@@ -42,15 +42,15 @@ export async function GET(
       grid: {
         geotile_grid: {
           field: "location",
-          size: 500,
-          precision: zoom == "0" ? 6 : parseInt(zoom) + 4
+          size: 30,
+          precision: zoom == "0" ? 6 : parseInt(zoom) + 3
         },
         aggs: {
           top: {
             top_hits: {
-              size: mode == 'labels' ? 10 : 1,
+              size: Number(zoom) > 17 ? 1000 : 10,
               _source: false,
-              fields: ["label", "location", "uuid", "sosi", "placeScore", "group.id"]
+              fields: ["label", "location", "group.id", "uuid"],
             }
           }
         }
