@@ -193,6 +193,8 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
       markerResultsRef.current = markers
 
+      console.log("MARKERS", markers, labeledMarkersLookup)
+
     return markers
   }, [markerResults, markerMode]);
 
@@ -721,19 +723,32 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                      const lat = item.fields.location?.[0]?.coordinates?.[1];
                       const lng = item.fields.location?.[0]?.coordinates?.[0];
 
-                      if (!lat || !lng || !isPointInViewport(lat, lng)) {
+                      // Ensure lat/lng exist (0 is a valid value) and are finite
+                      if (lat == undefined || lng == undefined || !isPointInViewport(lat, lng)) {
                         return null;
                       }
                       return (
                       <Fragment key={`result-${item.fields.group?.id || item.fields.uuid[0]}`}>
-                      { item.showLabel &&   (
+                      { item.showLabel ?   (
                         <Marker
                           position={[lat, lng]}
                           icon={new leaflet.DivIcon(getLabelMarkerIcon(item.fields.label?.[0] || 'Unknown', baseMap && baseMapLookup[baseMap]?.markers ? 'white' : 'black', undefined, true))}
                           riseOnHover={true}
                           eventHandlers={selectDocHandler(item)}
                         />
-                      )}
+                      ) : <CircleMarker 
+                          // render the circle in the same pane as HTML markers so it is on top
+                          pane="markerPane"
+                          center={[lat, lng]} 
+                          radius={6} 
+                          stroke={true}
+                          weight={1}
+                          color={baseMap && baseMapLookup[baseMap]?.markers ? '#fff' : '#000'} 
+                          fillColor={baseMap && baseMapLookup[baseMap]?.markers ? '#000' : '#fff'} 
+                          fillOpacity={1}
+                          eventHandlers={selectDocHandler(item)}
+                        />
+                    }
                       </Fragment>
                 )
               }
