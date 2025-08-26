@@ -57,11 +57,11 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
     return [[72, -5], [54, 25]];
   });
 
-  const [currentZoom, setCurrentZoom] = useState<number>(urlZoom || calculateZoomFromBounds(snappedBounds))
+  const [zoomState, setZoomState] = useState<number>(urlZoom || calculateZoomFromBounds(snappedBounds))
   const [currentCenter, setCurrentCenter] = useState<[number, number]>(urlCenter ? urlCenter : calculateCenterFromBounds(snappedBounds))
 
 
-  const gridSizeRef = useRef<{ gridSize: number, precision: number}>(getGridSize(snappedBounds, currentZoom));
+  const gridSizeRef = useRef<{ gridSize: number, precision: number}>(getGridSize(snappedBounds, zoomState));
 
 
   
@@ -279,7 +279,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
 
     useEffect(() => {
-      updateMarkerGrid(snappedBounds, currentZoom, gridSizeRef.current, markerCells)
+      updateMarkerGrid(snappedBounds, zoomState, gridSizeRef.current, markerCells)
     }, [])
 
 
@@ -340,7 +340,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
         const resultBoundsZoom = mapInstance.current.getBoundsZoom(resultBounds);
         
         // If current zoom is more than 2 levels out from the result bounds zoom
-        if (currentZoom < resultBoundsZoom - 2) {
+        if (zoomState < resultBoundsZoom - 2) {
           setAllowFitBounds(false)
           mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
           return
@@ -359,7 +359,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
       */
     
     
-  }, [resultBounds, allowFitBounds, setAllowFitBounds, isLoading, geoLoading, viewResults, currentZoom])
+  }, [resultBounds, allowFitBounds, setAllowFitBounds, isLoading, geoLoading, viewResults, zoomState])
 
 
 
@@ -563,6 +563,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
             const map = useMap();
             useMapEvents({
               moveend: () => {
+                console.log("MAP MOVEEND")
                 
                 const mapBounds = map.getBounds();
                 const mapCenter = mapBounds.getCenter();
@@ -580,16 +581,19 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                   [south, west]
                 ]
 
-                if (mapZoom != currentZoom) {
-                  if (currentZoom >= 4) {
+                if (mapZoom != zoomState) {
+                  if (zoomState >= 4) {
                     const [[north, west], [south, east]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]] 
                     gridSizeRef.current = getGridSize([[north, west], [south, east]], mapZoom);;
+                  }
+                  else {
+                    gridSizeRef.current = {gridSize: 1, precision: 0}
                   }
                   
                   // Always update marker grid after zoom
                   //console.log("ZOOM UPDATE")
                   updateMarkerGrid([[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]], mapZoom, gridSizeRef.current, markerCells);
-                  setCurrentZoom(mapZoom);
+                  setZoomState(mapZoom);
                 }
                 else if (!mapBoundsPoints.every((point) => {
                 return markerCells.some((cell) => {
@@ -602,7 +606,6 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                 //console.log("MOVE UPDATE - map bounds not fully covered by current cells")
                 updateMarkerGrid([[north, west], [south, east]], map.getZoom(), gridSizeRef.current, markerCells);
               }
-              setCurrentZoom(mapZoom)
 
 
 
