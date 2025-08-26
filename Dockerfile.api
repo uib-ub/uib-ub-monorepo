@@ -17,7 +17,7 @@ FROM base AS builder
 COPY . .
 
 # Prune and prepare the application
-RUN bun install --filter='./packages/utils' && \
+RUN bun install --filter='!sps-termportal-admin' && \
   turbo prune api --docker
 
 # Installer stage to set up environment
