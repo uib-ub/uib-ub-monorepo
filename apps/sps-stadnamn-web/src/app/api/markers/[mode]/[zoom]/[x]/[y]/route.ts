@@ -44,12 +44,12 @@ export async function GET(
         geotile_grid: {
           field: "location",
           size: 1000,
-          precision: precision == "0" ? 6 : parseInt(precision) + 4
+          precision: precision == "0" ? 6 : parseInt(precision) + 3
         },
         aggs: {
           top: {
             top_hits: {
-              size: Number(precision) > 17 ? 1000 : 2,
+              size: Number(precision) > 17 ? 1000 : 3,
               sort: [ { "uuid": "asc" } ],
               _source: false,
               fields: ["label", "location", "group.id", "uuid"],
