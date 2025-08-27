@@ -1,0 +1,33 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "src/*": [
+        "src/*"
+      ]
+    },
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "declarationMap": true,
+    "outDir": "dist",
+    "module": "ESNext",
+    "target": "ES2019",
+    "moduleResolution": "Node",
+    "rootDir": "src",
+    "stripInternal": true,
+    "sourceMap": true,
+    "composite": false,
+    "incremental": true
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "dist",
+    "build",
+    "node_modules",
+    "tests"
+  ]
+}
