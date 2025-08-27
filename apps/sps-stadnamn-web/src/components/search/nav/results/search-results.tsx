@@ -5,22 +5,26 @@ import { useSearchParams } from 'next/navigation';
 import ResultItem from "./result-item";
 import { getSkeletonLength } from "@/lib/utils";
 import useCollapsedData from "@/state/hooks/collapsed-data";
+import { useRouter } from "next/navigation";
+import { useMode } from "@/lib/search-params";
 
 export default function SearchResults() {
-  const searchParams = useSearchParams()
   const { searchError } = useContext(SearchContext)
   const resultsContainerRef = useRef<HTMLDivElement>(null)
   
   // Use the enhanced infinite query hook
   const {
-    data,
+    collapsedData,
     collapsedError,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
     status,
-    initialPage
+    initialPage,
+    isLoading,
   } = useCollapsedData()
+
+
 
   // Set up intersection observer for infinite scroll
   const observerTarget = useRef<HTMLDivElement | null>(null)
@@ -61,12 +65,12 @@ export default function SearchResults() {
 
   // Check if there are no results
   const hasNoResults = status === 'success' && 
-    (!data?.pages || data.pages.length === 0 || data.pages[0].data?.length === 0);
+    (!collapsedData?.pages || collapsedData.pages.length === 0 || collapsedData.pages[0].data?.length === 0);
 
   return (
     <div ref={resultsContainerRef}>
       <ul id="result_list" className='flex flex-col mb-2'>
-        {data?.pages.map((page, pageIndex) => (
+        {collapsedData?.pages.map((page, pageIndex) => (
             <Fragment key={`page-${pageIndex}`}>
             {page.data?.map((item: any, itemIndex: number) => (
               <ResultItem 

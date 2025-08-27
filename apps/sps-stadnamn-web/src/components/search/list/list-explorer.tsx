@@ -1,14 +1,17 @@
-import { useContext, useMemo, useCallback } from "react"
+import { useContext, useMemo, useCallback, useEffect } from "react"
 import ClientThumbnail from "@/components/doc/client-thumbnail"
 import DocInfo from "../details/doc/doc-info"
 import { GlobalContext } from "@/app/global-provider"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 import DocSkeleton from "@/components/doc/doc-skeleton"
 import DocToolbar from "../details/doc/doc-toolbar"
 import CoordinateMenu from "../details/coordinate-menu"
 import useGroupNavigation from "@/state/hooks/group-navigation"
 import React from "react"
 import { useInView } from 'react-intersection-observer'
+import { SearchContext } from "@/app/search-provider"
+import { useMode } from "@/lib/search-params"
+import useCollapsedData from "@/state/hooks/collapsed-data"
 
 function DocItem({ item, index, group, isMobile }: any) {
     const docDataset = item._index.split('-')[2]
@@ -50,6 +53,11 @@ export default function ListExplorer() {
     const {groupData, groupLoading, groupTotal, fetchMore, canFetchMore} = useGroupNavigation()
     const searchParams = useSearchParams()
     const group = searchParams.get('group')
+    const mode = useMode()
+    const datasetTag = searchParams.get('datasetTag')
+    const { isLoading } = useContext(SearchContext)
+    const { collapsedData } = useCollapsedData()
+    const router = useRouter()
 
     // Handle infinite scroll
     const handleLoadMore = useCallback(() => {
@@ -63,6 +71,28 @@ export default function ListExplorer() {
         if (!canFetchMore) return 0
         return Math.min(5, (groupTotal?.value || 0) - (groupData?.length || 0))
     }, [canFetchMore, groupTotal?.value, groupData?.length])
+
+      // Handle URL update in the component, not the hook
+      useEffect(() => {
+        console.log(!isLoading, !group, (mode !== 'map' || datasetTag == 'base'))
+        if (!isLoading && !group  && (mode !== 'map' || datasetTag == 'base')) {
+          console.log("YES")
+            const firstItem = collapsedData?.pages?.[0]?.data?.[0];
+            if (!firstItem) return;
+          
+            const firstItemGroupId = firstItem.fields?.['group.id']?.[0];
+            const firstItemUuid = firstItem.fields?.uuid[0];
+            
+            if (firstItemGroupId && firstItemUuid) {
+                const currentParams = new URLSearchParams(searchParams.toString());
+                currentParams.set('doc', firstItemUuid);
+                currentParams.set('group', btoa(firstItemGroupId));
+                //currentParams.set('detail', 'results');
+                
+                router.replace(`?${currentParams.toString()}`);
+            }
+        }
+      }, [router, searchParams, mode, isLoading, group, datasetTag, collapsedData, groupData]);
 
     return (
         <ul className={`flex flex-col divide-y divide-neutral-200 instance-info ${isMobile ? 'gap-4' : 'gap-8'} ${groupLoading ? 'opacity-50' : ''}`}>

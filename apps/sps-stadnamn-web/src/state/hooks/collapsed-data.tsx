@@ -2,7 +2,9 @@
 import { useSearchParams } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useSearchQuery } from '@/lib/search-params';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { stringToBase64Url } from '@/lib/utils';
 
 const PER_PAGE = 40;
 
@@ -27,9 +29,9 @@ export default function useCollapsedData() {
     const initialPage = parseInt(searchParams.get('page') || '1')
     const initialPageRef = useRef(initialPage)
     const { searchQueryString } = useSearchQuery()
-
+    
     const {
-        data,
+        data: collapsedData,
         error: collapsedError,
         fetchNextPage,
         hasNextPage,
@@ -50,7 +52,7 @@ export default function useCollapsedData() {
     })
 
     return {
-        data,
+        collapsedData,
         collapsedError,
         fetchNextPage,
         hasNextPage,
@@ -58,7 +60,8 @@ export default function useCollapsedData() {
         isFetching,
         isLoading,
         status,
-        initialPage: initialPageRef.current
+        initialPage: initialPageRef.current,
+
     }
 }
 

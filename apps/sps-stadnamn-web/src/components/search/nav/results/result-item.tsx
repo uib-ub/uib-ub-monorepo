@@ -39,7 +39,7 @@ export default function ResultItem({hit}: {hit: any}) {
     const { highlightedGroup } = useContext(GlobalContext)
     const details = searchParams.get('details')
     const datasetTag = searchParams.get('datasetTag')
-    const { searchQueryString } = useSearchQuery()
+    const { searchFilterParamsString } = useSearchQuery()
 
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
     const detailsRenderer = (hit: any) => {
@@ -85,7 +85,7 @@ export default function ResultItem({hit}: {hit: any}) {
     <span className="uppercase font-semibold text-lg text-neutral-700 group-aria-[current='page']:text-accent-800">
       Grunnord
     </span>
-    {!searchQueryString && isGrunnord && 
+    {!searchFilterParamsString && isGrunnord && 
       <span className="bg-neutral-700 font-semibold text-white w-6 h-6 group-aria-[current='page']:bg-accent-800 rounded-full flex items-center justify-center ml-1.5">
         {hit.inner_hits.group.hits.hits[0].fields.label[0][0].toUpperCase()}
       </span>
