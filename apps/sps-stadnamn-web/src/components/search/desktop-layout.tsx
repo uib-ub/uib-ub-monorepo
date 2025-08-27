@@ -1,5 +1,4 @@
 'use client'
-import MapExplorer from "./map-explorer"
 import { useMode } from "@/lib/search-params"
 import StatusSection from "./status-section"
 import TableExplorer from "./table/table-explorer"
@@ -88,14 +87,7 @@ export default function DesktopLayout() {
     
         { resultData && mode == 'map' && datasetTag != 'base' &&
             <div className="absolute top-0 right-0 h-full w-full">
-            
-               {(resultData || searchError)  && <MapWrapper/>}
-               {!resultData && isLoading && <div className="flex h-full items-center justify-center">
-                <div>
-                    <Spinner status="Lastar inn kartet" className="w-20 h-20" />
-                </div>
-                </div>}
-                
+               <MapWrapper/>   
             </div>
         }
 

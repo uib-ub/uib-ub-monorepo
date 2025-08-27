@@ -538,13 +538,24 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
     return bounds;
   }, []);
 
-  const isPointInViewport = (lat: number, lng: number) => {
-                    const mapBounds = mapInstance?.current?.getBounds();
-                    const bounds = suspendMarkerDiscoveryRef.current ? snappedBounds : [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]];
-                    if (!bounds) return false;
-                    const [[north, west], [south, east]] = bounds;
-                    return lat <= north && lat >= south && lng >= west && lng <= east;
-                  }
+
+  const isPointInViewport = useCallback(
+    (lat: number, lng: number) => {
+      const mapBounds = mapInstance?.current?.getBounds();
+      if (!mapBounds) return false;
+      const bounds = suspendMarkerDiscoveryRef.current
+        ? snappedBounds
+        : [
+            [mapBounds.getNorth(), mapBounds.getWest()],
+            [mapBounds.getSouth(), mapBounds.getEast()],
+          ];
+      if (!bounds) return false;
+      const [[north, west], [south, east]] = bounds;
+      return lat <= north && lat >= south && lng >= west && lng <= east;
+    },
+    [snappedBounds]
+  );
+
 
 
 

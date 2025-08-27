@@ -1,9 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import MapExplorer from "./map-explorer";
+import { SearchContext } from "@/app/search-provider";
+import Spinner from "../svg/Spinner";
+import ErrorMessage from "../error-message";
+import Error from "@/app/search/error";
 
 export default function MapWrapper() {
 
     const [containerDimensions, setContainerDimensions] = useState<{width: number, height: number}>()
+    const { resultData, isLoading, searchError } = useContext(SearchContext)
 
     useEffect(() => {
         const updateDimensions = () => {
@@ -31,7 +36,9 @@ export default function MapWrapper() {
         return <div>Loading...</div>
     }
 
-    return <MapExplorer containerDimensions={containerDimensions}/>
+    if (resultData) return <MapExplorer containerDimensions={containerDimensions}/>
+    else if (searchError) return <div className="p-4"><ErrorMessage error={resultData} message="Kunne ikkje laste kartet"/></div>
+    else return <div className="flex items-center h-full justify-center bg-neutral-100"><Spinner className="h-32 w-32" status="Lastar kart"/></div>
 
 
 }

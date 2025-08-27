@@ -40,8 +40,8 @@ export default function MobileLayout() {
     const nav = searchParams.get('nav')
     
     const doc = searchParams.get('doc')
-    const { searchFilterParamsString, facetFilters, datasetFilters } = useSearchQuery()
-    const { totalHits, isLoading } = useContext(SearchContext)
+    const { searchFilterParamsString, facetFilters } = useSearchQuery()
+    const { resultData , totalHits, isLoading, searchError } = useContext(SearchContext)
     const [facetIsLoading, setFacetIsLoading] = useState(false)
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
     const mode = useMode()
@@ -440,7 +440,7 @@ export default function MobileLayout() {
         </div>
 
         <div ref={mapContainerRef} className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">
-        { mode == 'map' && <MapWrapper/>}
+        <MapWrapper/>
         
         </div>
 
