@@ -238,7 +238,7 @@ export default function MobileLayout() {
             {showScrollToTop && (
                 <button 
                     onClick={scrollToTop}
-                    className={`fixed z-[2001] right-4 ${(currentPosition > 25 && drawerContent == 'details' || drawerContent == 'datassets')  ? "bottom-28" : "bottom-20"} bg-primary-500 text-white p-3 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center`}
+                    className={`fixed z-[2001] right-4 ${(currentPosition > 25 && (drawerContent == 'details' || nav == 'datasets'))  ? "bottom-28" : "bottom-20"} bg-primary-500 text-white p-3 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center`}
                     aria-label="Scroll to top"
                 >
                     <PiCaretUpBold className="text-xl" />
