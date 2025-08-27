@@ -51,8 +51,11 @@ export async function GET(request: Request) {
     "_source": false
   }
 
+  // Construct the query part
+  let baseQuery: any;
+  
   if (simple_query_string && termFilters.length) {
-    query.query = {
+    baseQuery = {
       "bool": {
         "must": simple_query_string,              
         "filter": termFilters
@@ -60,20 +63,41 @@ export async function GET(request: Request) {
     }
   }
   else if (simple_query_string) {
-    query.query = simple_query_string
+    baseQuery = simple_query_string
   }
   else if (termFilters.length) {
-    query.query = {"bool": {
+    baseQuery = {"bool": {
         "filter": termFilters
       }
     }
   }
   else {
-    query.query = {
+    baseQuery = {
       "match_all": {}
     }
   }
-
+  
+  // Apply function score to properly balance text relevance with boost field
+  if (simple_query_string) {
+    query.query = {
+      "function_score": {
+        "query": baseQuery,
+        "functions": [
+          {
+            "field_value_factor": {
+              "field": "boost",
+              "factor": 1,
+              "missing": 1
+            }
+          }
+        ],
+        "boost_mode": "multiply",
+        "score_mode": "avg"
+      }
+    }
+  } else {
+    query.query = baseQuery;
+  }
 
   // Only cache if no search string an no filters
   const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch", !simple_query_string)
