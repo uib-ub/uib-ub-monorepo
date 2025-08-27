@@ -33,14 +33,12 @@ COPY --from=builder /app/out/full/ .
 
 RUN npx turbo run build
 
-# FROM bun image AS runner stage to run the application
-
 # Install bash and curl (if required)
 RUN apk update && \
   apk add --no-cache bash curl && \
   rm -rf /var/cache/apk/*
 
-# Set bun image version
+# Change and copy to to bun image
 FROM oven/bun:${BUN_VERSION}-alpine AS runner
 
 RUN apk add --no-cache bash curl && \
