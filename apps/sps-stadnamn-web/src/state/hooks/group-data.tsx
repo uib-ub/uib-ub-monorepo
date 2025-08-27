@@ -25,6 +25,11 @@ export default function useGroupData() {
     const searchParams = useSearchParams()
     const { searchQueryString } = useSearchQuery()
     const group = searchParams.get('group')
+    const namesNav = searchParams.get('namesNav')
+    const namesScope = searchParams.get('namesScope')
+    
+    // Check if names navigator is open
+    const isNamesNavOpen = !!namesNav
     
     const { docData, docGroup } = useDocData()
     const docUuid = docData?._source?.uuid
@@ -40,10 +45,11 @@ export default function useGroupData() {
         status,
         isFetchingNextPage
     } = useInfiniteQuery({
-        queryKey: ['group', group],
-        queryFn: async ({ pageParam, }) => group ? groupDataQuery(group, searchQueryString, pageParam) : null,
+        queryKey: ['group', group, isNamesNavOpen],
+        queryFn: async ({ pageParam }) => group ? groupDataQuery(group, searchQueryString, pageParam) : null,
 
-        initialPageParam: { size: 5, from: 0 },
+        // Use larger initial size when names navigator is open
+        initialPageParam: isNamesNavOpen ? { size: 1000, from: 0 } : { size: 5, from: 0 },
         getNextPageParam: (lastPage, allPages) => {
             if (!lastPage || !lastPage.hits.length) {
                 return undefined
@@ -59,6 +65,18 @@ export default function useGroupData() {
                 return undefined
             }
             
+            // For names navigation, always fetch all data
+            if (isNamesNavOpen) {
+                const remainingItems = (totalData?.value || 0) - totalFetched
+                if (remainingItems <= 0) {
+                    return undefined
+                }
+                const nextSize = Math.min(remainingItems, 1000)
+                const nextFrom = totalFetched
+                return { size: nextSize, from: nextFrom }
+            }
+            
+            // Regular pagination logic for document view
             const docFound = docUuid && allHits.some((hit: any) => hit._source?.uuid === docUuid)
             const docIndex = docUuid ? allHits.findIndex((hit: any) => hit._source?.uuid === docUuid) : -1
             const isDocLast = docIndex === allHits.length - 1 && docIndex >= 0
@@ -91,22 +109,24 @@ export default function useGroupData() {
             const docFound = docUuid && allHits.some((hit: any) => hit._source?.uuid === docUuid)
             const allDataFetched = !data?.pageParams || allHits.length >= (totalData?.value || 0)
             
-            // Always expose data, but track whether document was found
+            // Always expose data if names navigation is open
             return {
                 allHits: allHits,
                 totalData: totalData,
                 docFound,
-                shouldExposeData: !docUuid || docFound || allDataFetched
+                shouldExposeData: isNamesNavOpen || !docUuid || docFound || allDataFetched
             }
-        }, [docUuid]),
+        }, [docUuid, isNamesNavOpen]),
         // Only re-render when data actually changes (not on intermediate fetches)
         notifyOnChangeProps: ['data', 'error'],
     })
 
-    // Stable callback for fetchNextPage to prevent useEffect re-runs
-    const stableFetchNextPage = useCallback(() => {
-        fetchNextPage()
-    }, [fetchNextPage])
+    // Automatically fetch all pages when names navigation is open
+    useEffect(() => {
+        if (isNamesNavOpen && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage()
+        }
+    }, [isNamesNavOpen, hasNextPage, isFetchingNextPage, fetchNextPage])
 
     return { 
         groupData: processedData?.allHits || [],
