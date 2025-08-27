@@ -35,8 +35,6 @@ COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
 
-COPY --from=builder /app/packages/utils ./packages/utils
-
 # Install dependencies
 RUN npm install
 
