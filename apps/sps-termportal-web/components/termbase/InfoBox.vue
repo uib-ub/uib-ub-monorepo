@@ -4,6 +4,102 @@
   >
     <div>
       <h2
+        id="tbtermbaseinfo"
+        class="text-lg"
+      >
+        {{ $t("global.termbase", 0) }}
+      </h2>
+      <dl
+        aria-labelledby="tbtermbaseinfo"
+        class="space-y-0.5"
+      >
+        <div
+          v-if="bootstrapData?.termbase?.[termbaseId]?.concepts"
+          class="flex"
+        >
+          <dt class="w-32 shrink-0 font-semibold">
+            {{ $t("global.concept", 2) }}
+          </dt>
+          <dd>
+            {{ bootstrapData?.termbase?.[termbaseId]?.concepts }}
+          </dd>
+        </div>
+        <div
+          v-if="data?.language"
+          class="flex"
+        >
+          <dt class="w-32 shrink-0 font-semibold">
+            {{ $t("global.language", 1) }}
+          </dt>
+          <dd class="max-w-xs">
+            {{
+              intersectUnique(localeLangOrder, data.language)
+                .map((lang: LangCode) => $t(`global.lang.${lang}`, 2))
+                .join(", ")
+            }}
+          </dd>
+        </div>
+        <div
+          v-if="data?.opprinneligSpraak"
+          class="flex"
+        >
+          <dt class="w-32 font-semibold">
+            {{ $t("termbase.startLang") }}
+          </dt>
+          <dd class="">
+            {{ $t("global.lang." + data.opprinneligSpraak, 2) }}
+          </dd>
+        </div>
+        <div
+          v-if="data?.license"
+          class="flex"
+        >
+          <dt class="w-32 shrink-0 font-semibold">
+            {{ $t("termbase.license", 1) }}
+          </dt>
+          <dd>
+            <template v-if="appConfig.license[data?.license?.['@id']]">
+              <AppLink
+                v-if="appConfig.license[data?.license?.['@id']].url"
+                class="underline hover:decoration-2"
+                :to="appConfig.license[data.license['@id']].url"
+              >
+                {{ appConfig.license[data?.license?.["@id"]].label }}
+              </AppLink>
+              <span v-else>
+                {{ appConfig.license[data?.license?.["@id"]].label }}
+              </span>
+            </template>
+            <span v-else>
+              {{ appConfig.license[data?.license?.["@id"]] }}
+            </span>
+          </dd>
+        </div>
+        <div
+          v-if="termbaseId === 'SNOMEDCT'"
+          class="flex"
+        >
+          <dt class="w-32 shrink-0 font-semibold">
+            {{ $t("id.version") }}
+          </dt>
+          <dd>
+            <template v-if="bootstrapData && bootstrapData.termbase.SNOMEDCT.versionNotesLink">
+              <AppLink
+                class="underline hover:decoration-2"
+                :to="bootstrapData.termbase.SNOMEDCT.versionNotesLink"
+              >
+                {{ localizeSnomedVersionLabel() }}
+              </AppLink>
+            </template>
+            <template v-else>
+              <span>{{ localizeSnomedVersionLabel() }}</span>
+            </template>
+          </dd>
+        </div>
+      </dl>
+    </div>
+    <div>
+      <h2
         id="tbcontact"
         class="text-lg"
       >
@@ -60,102 +156,6 @@
           </dt>
           <dd class="">
             {{ data?.contactPoint?.hasTelephone }}
-          </dd>
-        </div>
-      </dl>
-    </div>
-    <div>
-      <h2
-        id="tbtermbaseinfo"
-        class="text-lg"
-      >
-        {{ $t("global.termbase", 0) }}
-      </h2>
-      <dl
-        aria-labelledby="tbtermbaseinfo"
-        class="space-y-0.5"
-      >
-        <div
-          v-if="termbaseId === 'SNOMEDCT'"
-          class="flex"
-        >
-          <dt class="w-32 shrink-0 font-semibold">
-            {{ $t("id.version") }}
-          </dt>
-          <dd>
-            <template v-if="bootstrapData && bootstrapData.termbase.SNOMEDCT.versionNotesLink">
-              <AppLink
-                class="underline hover:decoration-2"
-                :to="bootstrapData.termbase.SNOMEDCT.versionNotesLink"
-              >
-                {{ localizeSnomedVersionLabel() }}
-              </AppLink>
-            </template>
-            <template v-else>
-              <span>{{ localizeSnomedVersionLabel() }}</span>
-            </template>
-          </dd>
-        </div>
-        <div
-          v-if="bootstrapData?.termbase?.[termbaseId]?.concepts"
-          class="flex"
-        >
-          <dt class="w-32 shrink-0 font-semibold">
-            {{ $t("global.concept", 2) }}
-          </dt>
-          <dd>
-            {{ bootstrapData?.termbase?.[termbaseId]?.concepts }}
-          </dd>
-        </div>
-        <div
-          v-if="data?.license"
-          class="flex"
-        >
-          <dt class="w-32 shrink-0 font-semibold">
-            {{ $t("termbase.license", 1) }}
-          </dt>
-          <dd>
-            <template v-if="appConfig.license[data?.license?.['@id']]">
-              <AppLink
-                v-if="appConfig.license[data?.license?.['@id']].url"
-                class="underline hover:decoration-2"
-                :to="appConfig.license[data.license['@id']].url"
-              >
-                {{ appConfig.license[data?.license?.["@id"]].label }}
-              </AppLink>
-              <span v-else>
-                {{ appConfig.license[data?.license?.["@id"]].label }}
-              </span>
-            </template>
-            <span v-else>
-              {{ appConfig.license[data?.license?.["@id"]] }}
-            </span>
-          </dd>
-        </div>
-        <div
-          v-if="data?.language"
-          class="flex"
-        >
-          <dt class="w-32 shrink-0 font-semibold">
-            {{ $t("global.language", 1) }}
-          </dt>
-          <dd class="max-w-xs">
-            {{
-              intersectUnique(localeLangOrder, data.language)
-                .map((lang: LangCode) => $t(`global.lang.${lang}`, 2))
-                .join(", ")
-            }}
-          </dd>
-        </div>
-        <div
-          v-if="data?.opprinneligSpraak"
-          class="flex"
-        >
-          <dt class="w-32 font-semibold">
-            {{ $t("termbase.startLang") }}
-          </dt>
-          <dd class="">
-            {{ $t("global.lang." + data.opprinneligSpraak, 2) }}
           </dd>
         </div>
       </dl>
