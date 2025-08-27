@@ -20,16 +20,14 @@ export default function DetailsWindow() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
     const namesNav = searchParams.get('namesNav')
-    const { docLoading, docData, docRefetching } = useDocData()
+    const { docLoading, docData, docRefetching, docDataset } = useDocData()
     const mode = useMode()
     const { groupData, groupLoading, groupTotal, docIndex } = useGroupNavigation()
     const router = useRouter()
     const { initialUrl, setInitialUrl } = useContext(GlobalContext)
-
-    const docUuid = docData?._source?.uuid
     const [prevDocUuid, setPrevDocUuid] = useState()
     const [nextDocUuid, setNextDocUuid] = useState()
-    const { searchQueryString } = useSearchQuery()
+
 
 
 
@@ -195,7 +193,7 @@ export default function DetailsWindow() {
     
 
 
-  <DetailsFooter/>
+  {!docDataset.endsWith("_g") && <DetailsFooter/>}
 
   
 </>

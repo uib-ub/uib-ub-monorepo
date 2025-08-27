@@ -24,7 +24,7 @@ export default function StatusSection() {
     const details = searchParams.get('details')
     const datasetTag = searchParams.get('datasetTag')
 
-    return <div className="flex flex-col gap-2"> 
+    return <div className={`flex flex-col gap-2 ${mode != 'map' ? 'bg-white shadow-lg rounded-md' : ''}`}> 
     <div className={`flex gap-1 flex-wrap w-fit ${mode != 'map' ? 'items-center' : ''} ${(mode == 'map' && !isMobile) ? 'lg:mt-2' : ''}`}>
     {datasetTag != 'base' && <ModeSelector/>}
     
