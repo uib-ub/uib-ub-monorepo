@@ -5,7 +5,7 @@ FROM node:22-alpine AS base
 # Install bash, curl, and turbo for base, then clean up
 RUN apk update && \
   apk add --no-cache bash curl npm && \
-  npm install -g turbo@latest tsc tsup typescript && \
+  npm install -g turbo@latest && \
   rm -rf /var/cache/apk/*
 
 # Set working directory for base
@@ -31,7 +31,7 @@ RUN npm install
 
 COPY --from=builder /app/out/full/ .
 
-RUN npx turbo run build --continue
+RUN npx turbo run build
 
 # Copy build artifacts
 # COPY --from=builder /app/turbo.json ./turbo.json
