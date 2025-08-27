@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React, { Fragment } from 'react';
 import parse from 'html-react-parser';
-import { PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi';
+import { PiInfoFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import InfoPopover from '@/components/ui/info-popover';
 
@@ -77,7 +77,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
   },
   leks_g: (source: any) => {
     return <>
-    {source["note"] && <span className='flex items-center gap-1'><PiWarningFill className='inline mr-1 text-primary-600' />{source["note"]}</span>}
+    {source["note"] && <span className='flex items-center gap-1'><PiInfoFill className='inline mr-1 text-neutral-600' />{source["note"]}</span>}
     {source.content?.html && <div className='space-y-2'>{parse(source.content?.html)}</div>}
     </>
   },
