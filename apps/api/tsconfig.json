@@ -1,6 +1,7 @@
 {
   "extends": "typescript-config/base.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
       "@*": [
         "./src/*"
@@ -8,9 +9,6 @@
       "components/*": [
         "./components/*"
       ],
-      "utils": [
-        "../../packages/utils/src"
-      ]
     },
   },
   "exclude": [
