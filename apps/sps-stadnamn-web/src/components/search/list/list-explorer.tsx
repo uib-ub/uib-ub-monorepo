@@ -24,7 +24,7 @@ function DocItem({ item, index, group, isMobile }: any) {
                 <DocInfo docParams={{docDataset, docData: item}}/>
                 <div className="flex 2xl:justify-between gap-2 2xl:px-4">
                     <DocToolbar docData={item}/>
-                    {!docDataset.endsWith('_g') && <CoordinateMenu/>}
+                    {!docDataset?.endsWith('_g') && <CoordinateMenu/>}
                 </div>
             </div>
             {!isMobile && images?.length && <div className="lg:min-w-[20svw] lg:max-w-[20svw]"><ClientThumbnail iiif={images}/></div>}

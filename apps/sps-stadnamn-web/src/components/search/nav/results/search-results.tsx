@@ -1,12 +1,9 @@
 'use client'
 import { SearchContext } from "@/app/search-provider"
 import { Fragment, useCallback, useContext, useEffect, useRef } from "react"
-import { useSearchParams } from 'next/navigation';
 import ResultItem from "./result-item";
 import { getSkeletonLength } from "@/lib/utils";
 import useCollapsedData from "@/state/hooks/collapsed-data";
-import { useRouter } from "next/navigation";
-import { useMode } from "@/lib/search-params";
 
 export default function SearchResults() {
   const { searchError } = useContext(SearchContext)
@@ -20,8 +17,7 @@ export default function SearchResults() {
     hasNextPage,
     isFetchingNextPage,
     status,
-    initialPage,
-    isLoading,
+    initialPage
   } = useCollapsedData()
 
 

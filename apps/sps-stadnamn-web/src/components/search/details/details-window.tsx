@@ -193,7 +193,7 @@ export default function DetailsWindow() {
     
 
 
-  {!docDataset.endsWith("_g") && <DetailsFooter/>}
+  {!docDataset?.endsWith("_g") && <DetailsFooter/>}
 
   
 </>

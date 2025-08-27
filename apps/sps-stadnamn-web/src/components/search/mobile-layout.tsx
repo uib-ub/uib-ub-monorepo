@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useRef, useState } from "react"
-import { PiBinoculars, PiBookOpen, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiListBullets, PiTreeViewFill, PiWallFill, PiWallLight } from "react-icons/pi";
+import { PiBinoculars, PiBookOpen, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiListBullets, PiTreeViewFill, PiWallFill, PiWallLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeViewLight, PiArrowUp, PiCaretUpBold } from "react-icons/pi";
 import SearchResults from "./nav/results/search-results";
 import { useSearchQuery, useMode } from "@/lib/search-params";
 import StatusSection from "./status-section";
@@ -19,7 +19,6 @@ import GroupDetails from "./details/group/group-details";
 import NamesExplorer from "./names/names-explorer";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import HorizontalSwipe from "./details/doc/horizontal-swipe";
-import { PiMicroscopeFill, PiMicroscopeLight, PiTreeViewLight } from 'react-icons/pi';
 import InfoPopover from "../ui/info-popover";
 import BasewordResults from "./nav/results/baseword-results";
 import useDocData from "@/state/hooks/doc-data";
@@ -59,6 +58,7 @@ export default function MobileLayout() {
     const datasetTag = searchParams.get('datasetTag')
     const mapContainerRef = useRef<HTMLDivElement>(null)
 
+    const [showScrollToTop, setShowScrollToTop] = useState(false);
 
     useEffect(() => {
         if (!isLoading && !facetIsLoading) {
@@ -85,12 +85,10 @@ export default function MobileLayout() {
         return false;
     }
 
-
     const pos2svh = (yPos: number) => {
         const windowHeight = window.visualViewport?.height || window.innerHeight;
         return (windowHeight - yPos) / windowHeight * 75
     }
-
 
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
         if (e.target && isScrolling(e.target)) {
@@ -106,19 +104,17 @@ export default function MobileLayout() {
     const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
         setSnapped(true);
 
-        // Detect quick swipe up or down, resulting in 25% or 100% height
         const endTouchY = e.changedTouches[0].clientY;
         const endTouchX = e.changedTouches[0].clientX;
         const endTouchTime = Date.now();
         const touchDuration = endTouchTime - startTouchTime;
         const swipeDistance = startTouchY - endTouchY;
-        const isQuickSwipe = touchDuration < 400 //&& Math.abs(swipeDistance) > 100;
+        const isQuickSwipe = touchDuration < 400;
 
         const isHorizontalSwipe = Math.abs(startTouchX - endTouchX) > Math.abs(startTouchY - endTouchY)
         if (isHorizontalSwipe) {
             return
         }
-
 
         let newPosition = drawerSwipeDirection === 'up' ? Math.ceil(currentPosition / 25) * 25 : Math.floor(currentPosition / 25) * 25
         if (isQuickSwipe) {
@@ -151,8 +147,6 @@ export default function MobileLayout() {
         setCurrentPosition(newPosition);
         setSnappedPosition(newPosition);
         setDrawerSwipeDirection(null);
-
-
     };
 
     const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -165,13 +159,10 @@ export default function MobileLayout() {
             return
         }
 
-
         const newHeight = snappedPosition - pos2svh(startTouchY) + pos2svh(e.touches[0].clientY)
         setDrawerSwipeDirection(newHeight > currentPosition ? 'up' : 'down');
         setCurrentPosition(newHeight < 75 ? newHeight : 75);
-
     }
-
 
     useEffect(() => {
         if (nav) {
@@ -186,32 +177,55 @@ export default function MobileLayout() {
     }
     , [searchFilterParamsString, nav, details, doc])
 
-
-
     const toggleDrawer = (tab: string) => {
         setDrawerContent(prev => prev == tab ? null : tab)
     }
 
     useEffect(() => {
-  
-            setCurrentPosition(25)
-            setSnappedPosition(25)
-            setDrawerSwipeDirection(null);
-            setSnapped(true);
-            scrollableContent.current?.scrollTo(0, 0)
-
+        setCurrentPosition(25)
+        setSnappedPosition(25)
+        setDrawerSwipeDirection(null);
+        setSnapped(true);
+        scrollableContent.current?.scrollTo(0, 0)
     }, [drawerContent])
 
-    
+    useEffect(() => {
+        const handleScroll = () => {
+            if (!scrollableContent.current) return;
+            
+            if (scrollableContent.current.scrollTop > 300) {
+                setShowScrollToTop(true);
+            } else {
+                setShowScrollToTop(false);
+            }
+        };
+        
+        const currentRef = scrollableContent.current;
+        if (currentRef && currentPosition === 75) {
+            currentRef.addEventListener('scroll', handleScroll, { passive: true });
+        }
+        
+        return () => {
+            if (currentRef) {
+                currentRef.removeEventListener('scroll', handleScroll);
+            }
+        };
+    }, [currentPosition]);
 
+    const scrollToTop = () => {
+        if (scrollableContent.current) {
+            scrollableContent.current.scrollTo({
+                top: 0,
+                behavior: 'auto'
+            });
+        }
+    };
 
+    useEffect(() => {
+        setShowScrollToTop(false);
+    }, [drawerContent]);
 
     return <div className="scroll-container">
-       
-
-        
-        
-
         <div className={`mobile-interface fixed bottom-12 w-full rounded-t-xl bg-neutral-800  ${snapped ? 'transition-all duration-300 ease-in-out ' : ''}`}
              style={{height: `${drawerContent ? currentPosition : 0}svh`}}
              onTouchStart={handleTouchStart} 
@@ -220,6 +234,16 @@ export default function MobileLayout() {
         { drawerContent && <>
             <div className="w-full flex  items-center h-4 pt-2 rounded-t-md bg-neutral-800 relative px-2" style={{touchAction: 'none'}}>
                 <div className="absolute -translate-x-1/2 left-1/2 h-1.5 top-1.5 w-16 bg-neutral-300 rounded-full"></div></div>
+
+            {showScrollToTop && (
+                <button 
+                    onClick={scrollToTop}
+                    className={`fixed z-[2001] right-4 ${(currentPosition > 25 && drawerContent == 'details' || drawerContent == 'datassets')  ? "bottom-28" : "bottom-20"} bg-primary-500 text-white p-3 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center`}
+                    aria-label="Scroll to top"
+                >
+                    <PiCaretUpBold className="text-xl" />
+                </button>
+            )}
 
             <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 border-neutral-800 max-h-[calc(100svh-12rem)] overscroll-contain`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
 
@@ -250,7 +274,7 @@ export default function MobileLayout() {
                         </span>
                     </h2>
                     {(searchParams.get('q') || searchParams.get('fulltext') == 'on') && <div className="flex flex-wrap gap-2 pb-2 border-b border-neutral-200">
-                <ActiveFilters showQuery={true} showFacets={true} showDatasets={true} />
+                <ActiveFilters/>
                 </div>}
                     
                 <SearchResults/>
@@ -265,9 +289,7 @@ export default function MobileLayout() {
                 {datasetTag == 'deep' && 'Djupinnsamlingar'}
                 {!datasetTag && 'Datasett'}
             </h2>
-            { (datasetFilters.length > 0 && !cadastralIndex)  && <div className="flex flex-wrap gap-2 py-2 mb-2 border-y border-neutral-200">
-                <ActiveFilters showDatasets={true}/>
-                </div>}
+
             <DatasetFacet/> 
 
             <div 
@@ -320,19 +342,10 @@ export default function MobileLayout() {
             { (drawerContent == 'filters' || drawerContent == 'adm') && 
                 <div className="p-2">
                 <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">Filter {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
-                {facetFilters.length > 0 && <div className="flex flex-col">
-                
-                <div className="flex flex-wrap gap-2 py-2 border-b border-neutral-200">
-                <ActiveFilters showFacets={true}/>
-                </div>
-                </div>}
                 <FacetSection/> 
                 </div>
                 
             }
-            { /* drawerContent == 'cadastre' && 
-                <CadastralSubdivisions dataset={dataset} doc={doc} childrenData={childrenData} landingPage={false}/>
-             */}
             { drawerContent == 'tree' &&
                 <TreeResults/>
             }
@@ -363,10 +376,6 @@ export default function MobileLayout() {
                 
  
             </div>}
-
-
-           
-            
 
 
             </div>

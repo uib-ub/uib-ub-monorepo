@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 
-export default function ActiveFilters({showDatasets = false, showFacets = false, showQuery = false}: {showDatasets?: boolean, showFacets?: boolean, showQuery?: boolean}) {
+export default function ActiveFilters() {
     const router = useRouter()
     const { searchQuery, facetFilters, datasetFilters } = useSearchQuery()
     const searchParams = useSearchParams()
@@ -55,8 +55,6 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
           return datasetTitles[value] || value
         }
   
-          
-          
         if (values[0] == "_false") return "Utan: " + (label || name)
         if (value == "_true") return "Med: " + (label || name)
         if (name == "datasets") {
@@ -81,15 +79,9 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
           if (value) newSearchParams.set(param, value)
         })
 
-        
         // Add back all values except the one we want to remove
         values.filter(v => v !== value)
             .forEach(v => newSearchParams.append(key, v))
-
-
-
-
-
       
         router.push(`?${newSearchParams.toString()}`)
     }
@@ -105,9 +97,9 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
     const clearFilters = () => {
       const newSearchParams = new URLSearchParams(searchParams)
       facetFilters.forEach(([key, value]) => {
-        if (showFacets || key != 'indexDataset') {
+
           newSearchParams.delete(key)
-        }
+        
       })
       router.push(`?${newSearchParams.toString()}`)
     }
@@ -121,7 +113,7 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
     return (
       <>
 
-      {showDatasets && (datasetFilters.length == 1 || isMobile) && datasetFilters.map(([key, value]) => (
+      {datasetFilters.length == 1 && datasetFilters.map(([key, value]) => (
           <button 
               key={`${key}__${value}`} 
               onClick={() => removeFilter(key, value)} 
@@ -130,11 +122,11 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
             {datasetTitles[value]} <PiX className="inline text-lg" aria-hidden="true"/>
           </button>
         ))}
-        { showDatasets && !isMobile && datasetFilters.length > 1 && 
+        { datasetFilters.length > 1 && 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}>
-                {datasetFilters.length} datasettfilter
+                {datasetFilters.length} datasett
                 <PiCaretDownBold className="inline text-lg" aria-hidden="true"/>
               </button>
             </DropdownMenuTrigger>
@@ -160,13 +152,13 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
             </DropdownMenuContent>
           </DropdownMenu>
         }
-        {fulltext == 'on' && showQuery && <Clickable remove={['fulltext']}
+        {fulltext == 'on' && <Clickable remove={['fulltext']}
       className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => removeFilter('fulltext', 'on')}>
         <span className="flex items-center">Fulltekstsøk</span>
         <PiX className="inline text-lg" aria-hidden="true"/>
       </Clickable>}
       {/* Search chip */}
-      { searchParams.get('q') && showQuery && <Clickable remove={['q']}
+      { searchParams.get('q') && <Clickable remove={['q']}
       className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => {setInputValue(''); removeFilter('q', searchParams.get('q')!)}}>
         <span className="flex items-center"><PiMagnifyingGlass className="text-neutral-600 !mr-1" aria-hidden="true"/>{searchParams.get('q')}</span>
         <PiX className="inline text-lg" aria-hidden="true"/>
@@ -184,7 +176,7 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
             </button>
         }
         
-        {cadastralIndex && (showDatasets || !isMobile) &&
+        {cadastralIndex &&
             <button 
                 onClick={() => removeFilter('cadastralIndex', '_true')} 
                 className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
@@ -195,26 +187,49 @@ export default function ActiveFilters({showDatasets = false, showFacets = false,
         }
         
 
-          {facetFilters.length > 1 && <button className={`text-neutral-950 text-white  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center bg-accent-700 ${mode == 'map' && !isMobile ? 'shadow-md' : 'border border-neutral-200 box-content'}`} onClick={clearFilters}>Tøm<PiTrash className="inline text-lg" aria-hidden="true"/></button>}
-          {showFacets && facetFilters.map(([key, value]) => (
-              <button 
-                  key={`${key}__${value}`} 
-                  onClick={() => removeFilter(key, value)} 
-                  className={`text-neutral-950  rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
-              >
-                {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
+        {facetFilters.length > 0 && facetFilters.length < 2 && facetFilters.map(([key, value]) => (
+            <button 
+                key={`${key}__${value}`} 
+                onClick={() => removeFilter(key, value)} 
+                className={`text-neutral-950 rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
+            >
+              {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
+            </button>
+        ))}
+
+        {facetFilters.length >= 2 && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className={`text-neutral-950 rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}>
+                {facetFilters.length} filter
+                <PiCaretDownBold className="inline text-lg" aria-hidden="true"/>
               </button>
-          ))}
-          
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="z-[4000] bg-white">
+              {facetFilters.map(([key, value]) => (
+                <DropdownMenuItem
+                  key={`${key}__${value}`}
+                  onClick={() => removeFilter(key, value)}
+                  className="flex items-center py-2 px-4 cursor-pointer"
+                >
+                  {getFieldLabel(key, value)}
+                  <PiX className="ml-auto text-lg" aria-hidden="true"/>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={clearFilters}
+                className="flex items-center py-2 px-4 cursor-pointer text-accent-700"
+              >
+                Tøm alle
+                <PiTrash className="ml-auto text-lg" aria-hidden="true"/>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+
 
       </>
   )
-
-
-
-
-
-
-
 
 }
