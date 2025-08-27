@@ -38,8 +38,7 @@
     "rtl-detect-intl": "^0.1.2",
     "sparql-http-client": "^3.0.1",
     "types": "*",
-    "zod": "^4.0.15",
-    "utils": "*"
+    "zod": "^4.0.15"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

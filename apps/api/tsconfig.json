@@ -9,12 +9,6 @@
       "components/*": [
         "./components/*"
       ],
-      "utils": [
-        "../../packages/utils/src/index.ts"
-      ],
-      "utils/*": [
-        "../../packages/utils/src/*"
-      ]
     },
   },
   "exclude": [
