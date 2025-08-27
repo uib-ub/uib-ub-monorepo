@@ -33,9 +33,6 @@ COPY --from=builder /app/out/full/ .
 
 RUN npx turbo run build
 
-# Copy build artifacts
-# COPY --from=builder /app/turbo.json ./turbo.json
-
 # FROM bun image AS runner stage to run the application
 
 # Install bash and curl (if required)
