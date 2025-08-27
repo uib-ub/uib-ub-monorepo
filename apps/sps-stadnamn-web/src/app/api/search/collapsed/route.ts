@@ -1,4 +1,4 @@
-//export const runtime = 'edge'
+//export the runtime = 'edge'
 
 import { extractFacets } from '../../_utils/facets'
 import { getQueryString } from '../../_utils/query-string';
@@ -7,17 +7,14 @@ import { getSortArray } from '@/config/server-config';
 
 export async function GET(request: Request) {
   const {termFilters, reservedParams} = extractFacets(request)
-  const perspective = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
+  const perspective = reservedParams.perspective || 'all'  
   const { highlight, simple_query_string } = getQueryString(reservedParams)
 
   let sortArray: (string | object)[] = []
     
-    // Existing sorting logic
-
   if (!sortArray.length) {
     sortArray = getSortArray(perspective)
   }
-
     
   const query: Record<string,any> = {
     "size":  reservedParams.size  || 10,
@@ -25,16 +22,17 @@ export async function GET(request: Request) {
     ...highlight ? {highlight} : {},
     "track_scores": true,
     "track_total_hits": false,
+    "fields": ["group.adm1", "group.adm2", "uuid", "boost"],
     "collapse": {
       "field": "group.id",
       "inner_hits": {
         "name": "group",
-        "size": 0,
+        "size": 3,
+        "_source": false,
+        "fields": [ "label", "altLabels", "attestations.label"],
       }
     },
-    "fields": [ "boost",
-      "group.id", "label", "group.adm1", "group.adm2", "uuid", "sosi", "description", "altLabels", "attestations.label", // Todo: adapt to whether it's used in the search or in the show more
-    ],
+    
     "sort": reservedParams.datasetTag == 'base' ?
     [{'group.id': "asc"}, {'label.keyword': "asc"}]
     : [

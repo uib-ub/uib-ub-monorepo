@@ -47,7 +47,7 @@ export default function DesktopLayout() {
         }
 
         <div className={`absolute 
-                left-[40svw] lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(75svw-0.5rem)] max-h-[calc(100svh-4rem)] max-h-[calc(100svh-20rem)]
+                left-[40svw] lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(75svw-0.5rem)] max-h-[calc(100svh-20rem)]
                                         
                 ${mode == 'map' ? 'top-0   lg:max-w-[calc(50svw-0.5rem)] z-[2000]'
                                 : 'top-2 bg-white rounded-md shadow-lg max-h-[calc(100svh-4rem)] overflow-y-auto stable-scrollbar' } 

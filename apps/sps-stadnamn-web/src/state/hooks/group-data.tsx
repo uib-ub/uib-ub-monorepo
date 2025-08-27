@@ -45,7 +45,7 @@ export default function useGroupData() {
         status,
         isFetchingNextPage
     } = useInfiniteQuery({
-        queryKey: ['group', group, isNamesNavOpen],
+        queryKey: ['group', group, isNamesNavOpen, searchQueryString],
         queryFn: async ({ pageParam }) => group ? groupDataQuery(group, searchQueryString, pageParam) : null,
 
         // Use larger initial size when names navigator is open

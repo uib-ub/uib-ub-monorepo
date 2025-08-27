@@ -253,7 +253,7 @@ export default function MobileLayout() {
                 <ActiveFilters showQuery={true} showFacets={true} showDatasets={true} />
                 </div>}
                     
-                {datasetTag == 'base' ? <BasewordResults/> : <SearchResults/>}
+                <SearchResults/>
                 </section>
             
              }

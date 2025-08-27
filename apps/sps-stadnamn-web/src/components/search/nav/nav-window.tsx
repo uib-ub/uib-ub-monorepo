@@ -85,13 +85,11 @@ export default function NavWindow() {
             <DatasetFacet/>
             </div>
         }
-        { nav == 'results' && mode != 'table' && (datasetTag != 'base' || (searchParams.get('fulltext') == 'on' && searchParams.get('q'))) &&
+        { nav == 'results' && mode != 'table' &&
             <SearchResults/>
         }
 
-        { nav == 'results' && mode != 'table' && datasetTag == 'base' && (searchParams.get('fulltext') != 'on' || !searchParams.get('q')) &&
-            <BasewordResults/>
-        }
+
 
         { nav == 'results' && mode == 'table' && <>
         <h2 className="text-xl px-1">Tabellvisning</h2>

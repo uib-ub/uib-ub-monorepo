@@ -1,13 +1,31 @@
 'use client'
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
-import { useMode, usePerspective } from '@/lib/search-params';
+import { useMode, usePerspective, useSearchQuery } from '@/lib/search-params';
 import { useRef, useEffect, useContext } from 'react';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
 import { stringToBase64Url } from '@/lib/utils';
 
-
+const uniqueLabels = (hit: any) => {
+    const labels = new Set<string>();
+    const hits = hit.inner_hits?.group?.hits?.hits || [];
+    for (const innerHit of hits) {
+        for (const label of innerHit.fields?.label || []) {
+            if (labels.size < 3) labels.add(label);
+            if (labels.size === 3) break;
+        }
+        if (labels.size === 3) break;
+        for (const label of innerHit.fields?.altLabels || []) {
+            if (labels.size < 3) labels.add(label);
+            if (labels.size === 3) break;
+        }
+        if (labels.size === 3) break;
+    }
+    return Array.from(labels).map((label, idx) => (
+        <span key={label + idx} className="mr-2">{label}</span>
+    ));
+}
 
 export default function ResultItem({hit}: {hit: any}) {
     const perspective = usePerspective()
@@ -21,6 +39,7 @@ export default function ResultItem({hit}: {hit: any}) {
     const { highlightedGroup } = useContext(GlobalContext)
     const details = searchParams.get('details')
     const datasetTag = searchParams.get('datasetTag')
+    const { searchQueryString } = useSearchQuery()
 
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
     const detailsRenderer = (hit: any) => {
@@ -31,8 +50,9 @@ export default function ResultItem({hit}: {hit: any}) {
     }
     const snippetRenderer = resultRenderers[docDataset]?.snippet || defaultResultRenderer.snippet
 
-    const highlightAsGrunnord = docDataset?.includes('_g') && datasetTag != 'base'
-    const isSelected = highlightedGroup && highlightedGroup == stringToBase64Url(hit.fields?.['group.id']?.[0])
+    const isGrunnord = docDataset?.includes('_g')
+    const group = searchParams.get('group')
+    const isSelected = highlightedGroup ? highlightedGroup == stringToBase64Url(hit.fields?.['group.id']?.[0]) : group == stringToBase64Url(hit.fields?.['group.id']?.[0])
 
 
     useEffect(() => {
@@ -46,7 +66,9 @@ export default function ResultItem({hit}: {hit: any}) {
     
 
     
-    return  <Clickable link ref={itemRef} className={`w-full h-full p-3 flex items-center group hover:bg-neutral-50 no-underline border-accent-700 aria-[current='page']:bg-accent-50 aria-[current='page']:border-l-4`} 
+    return  <Clickable link ref={itemRef} className={`w-full h-full p-3 aria-[current='page']:bg-accent-50 ${isGrunnord ? 
+                        "border-neutral-200 bg-neutral-50 border rounded-md my-1 hover:bg-neutral-100 hover:shadow-sm aria-[current='page']:border-accent-200"
+                        : "border-l-accent-700 border-b border-b-neutral-200  aria-[current='page']:border-l-4"} flex items-center group hover:bg-neutral-50 no-underline `} 
                     aria-current={isSelected ? 'page' : undefined}
                     remove={['group', 'parent', ...(isMobile ? ['nav', 'namesNav'] : [])]}
                     add={{
@@ -57,11 +79,25 @@ export default function ResultItem({hit}: {hit: any}) {
                         //...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>
                         
-            <div className="flex flex-col w-full">
-            {highlightAsGrunnord && <strong className="uppercase font-semibold text-neutral-800 text-sm">Grunnord</strong>}
+            <div className="flex flex-col w-full">             
+             {isGrunnord && <>
+  <div className="flex items-center mb-1">
+    <span className="uppercase font-semibold text-lg text-neutral-700 group-aria-[current='page']:text-accent-800">
+      Grunnord
+    </span>
+    {!searchQueryString && isGrunnord && 
+      <span className="bg-neutral-700 font-semibold text-white w-6 h-6 group-aria-[current='page']:bg-accent-800 rounded-full flex items-center justify-center ml-1.5">
+        {hit.inner_hits.group.hits.hits[0].fields.label[0][0].toUpperCase()}
+      </span>
+    }
+  </div>
+</>}
 
                 <span className="text-neutral-950 flex items-center">
-                     {titleRenderer(hit, 'map')} {highlightAsGrunnord && hit.inner_hits?.group?.hits?.total?.value > 1 && "..."}
+                    
+                    
+                    {uniqueLabels(hit)}
+                     {false && titleRenderer(hit, 'map')}{hit.inner_hits?.group?.hits?.total?.value > 3 && "..."}
                     
                 </span>
                 
@@ -69,8 +105,8 @@ export default function ResultItem({hit}: {hit: any}) {
                 {hit.highlight && snippetRenderer && <>{snippetRenderer(hit)}</>}
             </div>
             {perspective == "all" && hit.inner_hits?.group?.hits?.total?.value > 1 && (
-                <div className={`ml-auto flex items-center rounded-full text-sm px-2.5 py-1 ${
-                    isSelected ? 'bg-accent-800 text-white' : 'bg-neutral-100 text-neutral-950'
+                <div className={`ml-auto flex items-center rounded-full text-sm px-2.5 py-1 bg-neutral-100 text-neutral-950 group-aria-[current='page']:bg-accent-800 group-aria-[current='page']:text-white ${
+                    isGrunnord ? "bg-neutral-200 text-black" : ""
                 }`}>
                     {hit.inner_hits?.group?.hits?.total?.value}
                 </div>

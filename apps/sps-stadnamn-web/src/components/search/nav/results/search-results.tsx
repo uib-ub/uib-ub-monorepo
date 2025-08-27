@@ -50,7 +50,7 @@ export default function SearchResults() {
     return (
       <div className="flex flex-col gap-2">
         {Array.from({ length: 30 }).map((_, i) => (
-          <div key={`skeleton-${i}`} className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1">
+          <div key={`skeleton-${i}`} className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-200">
             <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 4, 10)}rem`}}></div>
             <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 10, 16)}rem`}}></div>
           </div>
@@ -65,7 +65,7 @@ export default function SearchResults() {
 
   return (
     <div ref={resultsContainerRef}>
-      <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-200'>
+      <ul id="result_list" className='flex flex-col mb-2'>
         {data?.pages.map((page, pageIndex) => (
             <Fragment key={`page-${pageIndex}`}>
             {page.data?.map((item: any, itemIndex: number) => (
