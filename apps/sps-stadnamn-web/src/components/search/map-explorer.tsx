@@ -104,7 +104,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
           setGeoLoading(false);
           setCoordinatesError(true);
         },
-        //placeHolder: (prevData: any) => prevData,
+        placeHolder: (prevData: any) => prevData,
         queryFn: async () => {
           const queryParams = new URLSearchParams(searchQueryString);
           console.log("FETCH MARKERS", cell, searchQueryString)
