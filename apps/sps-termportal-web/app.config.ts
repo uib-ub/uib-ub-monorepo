@@ -163,4 +163,5 @@ export default defineAppConfig({
     "DOMENE-3AHelse_og_sosial",
     "DOMENE-3AOkonomiAdministrasjon",
   ] },
+  db: { esCacheKeys: ["bootstrap_data"] },
 });
