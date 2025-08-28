@@ -9,16 +9,13 @@ import type { AppConfig } from "nuxt/schema";
  * @param data - concept data
  */
 export function parseConceptData(data: any, mainConceptId: string) {
+  const appConfig = useAppConfig();
   const languageProps = {
     proper: [
-      "prefLabel",
-      "altLabel",
-      "hiddenLabel",
       "definisjon",
       "betydningsbeskrivelse",
       "hasUsage",
-      "xlDefinition",
-    ],
+    ].concat(Object.keys(appConfig.data.languageProps)),
     ephemeral: ["hasEquivalenceData"],
   };
   let identified: any;
@@ -115,7 +112,7 @@ function updateLabel(
   const appConfig = useAppConfig();
   const newLabels: { [key: string]: Array<object> } = {};
   for (const label of labels) {
-    // TODO:
+    // TODO: refactor for other language props
     if (Object.keys(appConfig.data.languageProps).includes(labelType)) {
       const subObject = label;
       const mainProperty = labelType as keyof AppConfig["data"]["languageProps"];

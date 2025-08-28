@@ -51,8 +51,12 @@ export default defineAppConfig({
       replacedBy: ["qualifiedReplacedBy", "concept"],
     } as const,
     languageProps: {
+      prefLabel: { labelPath: ["literalForm"], lcPath: ["@language"] },
+      altLabel: { labelPath: ["literalForm"], lcPath: ["@language"] },
+      hiddenLabel: { labelPath: ["literalForm"], lcPath: ["@language"] },
       xlDefinition: { labelPath: ["rdf:value"], lcPath: ["@language"] },
-      prefLabel: { labelPath: ["literalForm"], lcPath: ["@language"] } } as const,
+      xlScopeNote: { labelPath: ["label"], lcPath: ["@language"] },
+    } as const,
   },
   search: {
     options: {
