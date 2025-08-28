@@ -12,6 +12,7 @@ import { useInView } from 'react-intersection-observer'
 import { SearchContext } from "@/app/search-provider"
 import { useMode } from "@/lib/search-params"
 import useCollapsedData from "@/state/hooks/collapsed-data"
+import useSearchData from "@/state/hooks/search-data"
 
 function DocItem({ item, index, group, isMobile }: any) {
     const docDataset = item._index.split('-')[2]
@@ -55,7 +56,7 @@ export default function ListExplorer() {
     const group = searchParams.get('group')
     const mode = useMode()
     const datasetTag = searchParams.get('datasetTag')
-    const { isLoading } = useContext(SearchContext)
+    const { searchLoading } = useSearchData()
     const { collapsedData } = useCollapsedData()
     const router = useRouter()
 
@@ -74,8 +75,8 @@ export default function ListExplorer() {
 
       // Handle URL update in the component, not the hook
       useEffect(() => {
-        console.log(!isLoading, !group, (mode !== 'map' || datasetTag == 'base'))
-        if (!isLoading && !group  && (mode !== 'map' || datasetTag == 'base')) {
+        console.log(!searchLoading, !group, (mode !== 'map' || datasetTag == 'base'))
+        if (!searchLoading && !group  && (mode !== 'map' || datasetTag == 'base')) {
           console.log("YES")
             const firstItem = collapsedData?.pages?.[0]?.data?.[0];
             if (!firstItem) return;
@@ -92,7 +93,7 @@ export default function ListExplorer() {
                 router.replace(`?${currentParams.toString()}`);
             }
         }
-      }, [router, searchParams, mode, isLoading, group, datasetTag, collapsedData, groupData]);
+      }, [router, searchParams, mode, searchLoading, group, datasetTag, collapsedData, groupData]);
 
     return (
         <ul className={`flex flex-col divide-y divide-neutral-200 instance-info ${isMobile ? 'gap-4' : 'gap-8'} ${groupLoading ? 'opacity-50' : ''}`}>

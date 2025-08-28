@@ -1,12 +1,12 @@
 'use client'
-import { SearchContext } from "@/app/search-provider"
-import { Fragment, useCallback, useContext, useEffect, useRef } from "react"
+import { Fragment, useCallback, useEffect, useRef } from "react"
 import ResultItem from "./result-item";
 import { getSkeletonLength } from "@/lib/utils";
 import useCollapsedData from "@/state/hooks/collapsed-data";
+import useSearchData from "@/state/hooks/search-data";
 
 export default function SearchResults() {
-  const { searchError } = useContext(SearchContext)
+  const { searchError } = useSearchData()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
   
   // Use the enhanced infinite query hook

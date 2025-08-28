@@ -12,11 +12,12 @@ import { getSkeletonLength, stringToBase64Url } from "@/lib/utils"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import Clickable from "@/components/ui/clickable/clickable"
 import { GlobalContext } from "@/app/global-provider"
+import useSearchData from "@/state/hooks/search-data"
 
 export default function TableExplorer() {
     const perspective = usePerspective()
     const searchParams = useSearchParams()
-    const { totalHits, isLoading } = useContext(SearchContext)
+    const { totalHits, searchLoading } = useSearchData()
     const [ tableData, setTableData ] = useState<any[] | null>(null)
     const [ isLoadingResults, setIsLoadingResults ] = useState(false)
     const {searchQueryString } = useSearchQuery()
@@ -83,7 +84,7 @@ export default function TableExplorer() {
                     <div className="border border-neutral-300 rounded-md">
                      <table className='result-table'>
                         <thead>
-                            {!isLoading ? <tr className={`${isLoadingResults ? 'opacity-50' : ''}`}>
+                            {!searchLoading ? <tr className={`${isLoadingResults ? 'opacity-50' : ''}`}>
                                 <th>
                                     <SortHeader field="label.keyword" label="Oppslagsord" description='Oppslagsord'/>
                                 </th>
@@ -113,7 +114,7 @@ export default function TableExplorer() {
                         </thead>
                         <tbody>
                             
-                        { !isLoading ? tableData?.map((hit: any) => (
+                        { !searchLoading ? tableData?.map((hit: any) => (
                             <Fragment key={hit._id}>
                             <tr className={`${isLoadingResults ? 'opacity-50' : ''}`}>
                                 {/* TODO: investigate whether rowgroup is still needed */}

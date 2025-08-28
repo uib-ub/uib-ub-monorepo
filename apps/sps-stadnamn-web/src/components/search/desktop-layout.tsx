@@ -11,6 +11,7 @@ import { SearchContext } from "@/app/search-provider"
 import { useContext, useEffect, useRef, useState } from "react"
 import Spinner from "../svg/Spinner"
 import MapWrapper from "./map-wrapper"
+import useSearchData from "@/state/hooks/search-data"
 
 export default function DesktopLayout() {    
     const searchParams = useSearchParams()
@@ -20,7 +21,7 @@ export default function DesktopLayout() {
     const details = searchParams.get('details')
     const group = searchParams.get('group')
     const datasetTag = searchParams.get('datasetTag')
-    const { resultData, isLoading, searchError } = useContext(SearchContext)
+    const { searchData } = useSearchData()
     
 
     return <main id="main" className="flex scroll-container relative w-[100svw] h-[calc(100svh-3rem)]">   
@@ -85,11 +86,11 @@ export default function DesktopLayout() {
 
         </div>
     
-        { resultData && mode == 'map' && datasetTag != 'base' &&
-            <div className="absolute top-0 right-0 h-full w-full">
-               <MapWrapper/>   
-            </div>
-        }
+
+        <div className="absolute top-0 right-0 h-full w-full">
+            <MapWrapper/>   
+        </div>
+        
 
 
     </main>

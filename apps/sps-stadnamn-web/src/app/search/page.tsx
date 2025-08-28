@@ -1,10 +1,8 @@
-import SearchProvider from "@/app/search-provider";
 import { headers } from "next/headers";
 import { userAgent } from "next/server";
 import MobileLayout from "@/components/search/mobile-layout";
 import DesktopLayout from "@/components/search/desktop-layout";
 import { datasetTitles, datasetShortDescriptions } from "@/config/metadata-config";
-import CollapsedProvider from "../collapsed-provider";
 import React from "react";
 import QueryProvider from "@/state/providers/query-provider";
 
@@ -22,16 +20,8 @@ export default async function SearchPage() {
   const isMobile = device.type === 'mobile'
 
   
-  return <SearchProvider>
-    
-          <CollapsedProvider>
-            <QueryProvider>
-
+  return    <QueryProvider>
                   {isMobile  ? <MobileLayout/> : <DesktopLayout/>}
             </QueryProvider>
-
-          </CollapsedProvider>
-          
-        </SearchProvider>
 }
 

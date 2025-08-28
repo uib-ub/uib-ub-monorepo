@@ -1,7 +1,7 @@
 'use client'
 import { facetConfig } from '@/config/search-config';
 import { usePerspective } from '@/lib/search-params';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { createContext, useEffect, useState } from 'react'
 
 interface FacetOption {
@@ -41,6 +41,9 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
   const [initialUrl, setInitialUrl] = useState<string | null>(null)
   const [highlightedGroup, setHighlightedGroup] = useState<string | null>(null)
+  const searchParamsString = searchParams.toString()
+  const pathname = usePathname()
+
 
   // Load facet options from localStorage on mount
   useEffect(() => {
@@ -55,6 +58,13 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
       setPreferredTabs(JSON.parse(storedPreferredTabs));
     }
   }, []);
+
+
+    // Set url for navigation back to search
+    useEffect(() => {
+      if (searchParamsString && pathname == '/search') {
+        setCurrentUrl("/search?" + searchParamsString)
+      }}, [searchParamsString, setCurrentUrl, pathname])
 
 
   // Update localStorage when facet options change

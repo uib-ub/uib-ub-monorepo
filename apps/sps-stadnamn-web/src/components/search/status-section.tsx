@@ -12,9 +12,10 @@ import Clickable from '../ui/clickable/clickable';
 import DetailsTabs from './details/details-tabs';
 import DocToolbar from './details/doc/doc-toolbar';
 import HitNavigation from './details/hit-navigation';
+import useSearchData from '@/state/hooks/search-data';
 
 export default function StatusSection() {
-    const { resultBounds, isLoading, coordinatesError, searchError, setSearchError, totalHits } = useContext(SearchContext)
+    const { searchBounds, searchLoading, searchError, coordinatesError, totalHits } = useSearchData()
     const mode = useMode()
     const { isMobile } = useContext(GlobalContext)
     const searchParams = useSearchParams()
@@ -41,13 +42,12 @@ export default function StatusSection() {
 
 
     {mode == 'map' && <div className="flex flex-wrap gap-2 mx-1.5 xl:mx-0">
-    { (!isLoading && !resultBounds?.length && !searchError && totalHits?.value > 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinatar</div> : null}
-    { ( !isLoading && !searchError && totalHits?.value == 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff</div> : null}
+    { (!searchLoading && !searchBounds?.length && !searchError && totalHits?.value > 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinatar</div> : null}
+    { ( !searchLoading && !searchError && totalHits?.value == 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff</div> : null}
     </div>}
     { searchError && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">
         <PiWarningFill className="inline text-xl"/> 
         <span>Kunne ikkje hente søkeresultat</span>
-        <button onClick={() => setSearchError(null)}><PiXBold aria-hidden="true" className="inline text-xl"/></button>
       </div>
     }
     { !searchError && coordinatesError && mode == 'map' && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">

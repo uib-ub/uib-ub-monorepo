@@ -24,6 +24,7 @@ import BasewordResults from "./nav/results/baseword-results";
 import useDocData from "@/state/hooks/doc-data";
 import useGroupData from "@/state/hooks/group-data";
 import MapWrapper from "./map-wrapper";
+import useSearchData from "@/state/hooks/search-data";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -41,7 +42,7 @@ export default function MobileLayout() {
     
     const doc = searchParams.get('doc')
     const { searchFilterParamsString, facetFilters } = useSearchQuery()
-    const { resultData , totalHits, isLoading, searchError } = useContext(SearchContext)
+    const { totalHits, searchLoading } = useSearchData()
     const [facetIsLoading, setFacetIsLoading] = useState(false)
     const [ showLoading, setShowLoading ] = useState<boolean>(false)
     const mode = useMode()
@@ -61,7 +62,7 @@ export default function MobileLayout() {
     const [showScrollToTop, setShowScrollToTop] = useState(false);
 
     useEffect(() => {
-        if (!isLoading && !facetIsLoading) {
+        if (!searchLoading && !facetIsLoading) {
           setTimeout(() => {
             setShowLoading(false)
           }, 100);
@@ -70,7 +71,7 @@ export default function MobileLayout() {
           setShowLoading(true)
         }
       }
-      , [isLoading, facetIsLoading])
+      , [searchLoading, facetIsLoading])
 
     const isScrolling = (target: EventTarget) => {
         if (snappedPosition == 75 && target instanceof Node && scrollableContent.current?.contains(target)) {

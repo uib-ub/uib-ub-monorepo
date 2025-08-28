@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { Fragment, useContext, useEffect, useRef, useState, useCallback, useMemo, use } from "react";
 import Map from "../map/map";
 import { baseMaps, baseMapKeys, defaultBaseMap, baseMapLookup } from "@/config/basemap-config";
 import { PiCheckCircleFill, PiCornersOut, PiCrop, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill,  PiStackSimpleFill } from "react-icons/pi";
@@ -23,23 +23,23 @@ import { stringToBase64Url } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
 import { useInfiniteQuery, useQueries } from "@tanstack/react-query";
 import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateCenterFromBounds } from "@/lib/map-utils";
+import useSearchData from "@/state/hooks/search-data";
 
 
 export default function MapExplorer({containerDimensions}: {containerDimensions: {width: number, height: number}}) {
-  const { resultBounds, totalHits, searchError, setCoordinatesError, isLoading, allowFitBounds, setAllowFitBounds } = useContext(SearchContext)
+  const { totalHits, searchBounds, searchLoading, searchUpdatedAt } = useSearchData()
     
   const controllerRef = useRef(new AbortController());
   const [baseMap, setBasemap] = useState<null | string>(null)
   const [markerMode, setMarkerMode] = useState<null | string>(null)
   const [myLocation, setMyLocation] = useState<[number, number] | null>(null)
-  const [geoLoading, setGeoLoading] = useState(false)
   const searchParams = useSearchParams()
-  const [viewResults, setViewResults] = useState<any>(null)
-  const { searchQueryString } = useSearchQuery()
+  const { searchQueryString, searchFilterParamsString } = useSearchQuery()
   const perspective = usePerspective()
   const details = searchParams.get('details') || 'doc'
   const urlZoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
   const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
+  const allowFitBounds = useRef(false)
 
 
   
@@ -50,8 +50,8 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
       
       return boundsFromZoomAndCenter(containerDimensions, urlCenter as [number, number], urlZoom);
     }
-    if (resultBounds?.length) {
-      return resultBounds
+    if (searchBounds?.length) {
+      return searchBounds
     }
     // Fallback to default bounds
     return [[72, -5], [54, 25]];
@@ -99,26 +99,12 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
       
       return ({
         queryKey: ['markerResults', key, searchQueryString],
-        onError: (error: any) => {
-          console.error("Error fetching geotile cell data:", error);
-          setGeoLoading(false);
-          setCoordinatesError(true);
-        },
         placeHolder: (prevData: any) => prevData,
         queryFn: async () => {
           const queryParams = new URLSearchParams(searchQueryString);
-          console.log("FETCH MARKERS", cell, searchQueryString)
-
           const res = await fetch(`/api/markers/labels/${cell.precision}/${cell.x}/${cell.y}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`)
-          if (!res.ok) {
-            throw new Error('Failed to fetch geotile cells')
-          }
           const data = await res.json()
-          //console.log("BUCKETS", data.aggregations.grid.buckets)
           return data.aggregations.grid.buckets
-            
-
-
         }
       })
     })
@@ -193,7 +179,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
       markerResultsRef.current = markers
 
     return markers
-  }, [markerResults, markerMode]);
+  }, [markerResults])
 
 
 
@@ -285,38 +271,12 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
       console.log("INITIALIZE MARKER GRID")
     }, [])
 
-
-
-  const isTooClose = (hits: any[], map: any) => {
-    if (hits.length <= 1) return false;
-
-    return hits.some((hit) => {
-      const point = map.latLngToContainerPoint([
-        hit.fields.location[0].coordinates[1],
-        hit.fields.location[0].coordinates[0]
-      ]);
-
-      return hits.some((other) => {
-        const otherPoint = map.latLngToContainerPoint([
-          other.fields.location[0].coordinates[1],
-          other.fields.location[0].coordinates[0]
-        ]);
-        return Math.abs(point.y - otherPoint.y) < 32;
-      });
-    });
-  };
-
   
-
-
-  const coordinatesSelected = (lat: number, lon: number) => {
-    return docData?._source?.location?.coordinates[1] == lat && docData?._source?.location?.coordinates[0] == lon
-  }
 
 
   // Fly to doc
   useEffect(() => {
-    if (!mapInstance.current || isLoading ) return
+    if (!mapInstance.current || searchLoading ) return
     
       if (doc && docData?._source?.location?.coordinates?.length && docData?._source.uuid == doc) {
         const currentBounds = mapInstance.current.getBounds();
@@ -326,44 +286,25 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
           }
       }
 
-    }, [mapInstance, isLoading, doc, docData])
+    }, [mapInstance, searchLoading, doc, docData])
 
   // Fly to results
+  useEffect(() => {
+     allowFitBounds.current = true
+     console.log("SEARCH UPDATED AT", searchUpdatedAt)
+  }, [searchUpdatedAt])
 
   useEffect(() => {
-    const mapBounds = mapInstance.current?.getBounds();
-    if (!mapBounds || isLoading || geoLoading || !resultBounds?.length || !allowFitBounds) return
-    
-
-    // Check if result bounds are contained in map bounds
-    const boundsContained = mapBounds.contains(resultBounds)
-
-    if (boundsContained) {
-        // Get zoom levels for both current view and result bounds
-        const resultBoundsZoom = mapInstance.current.getBoundsZoom(resultBounds);
-        
-        // If current zoom is more than 2 levels out from the result bounds zoom
-        if (zoomState < resultBoundsZoom - 2) {
-          setAllowFitBounds(false)
-          mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-          return
-        }
-    }
-
-    if (geoLoading) {
+     if (!allowFitBounds.current || markerResults.some(result => result.data?.some((bucket: any) => bucket.top.hits.hits.length > 0))) {
       return
     }
-    
-    /*
-    if (!tiles && !viewResults?.hits?.markers?.length) {
-      setAllowFitBounds(false)
-      mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+    else if (markerResults.every(result => result.isSuccess)) {
+      allowFitBounds.current = false
+      mapInstance.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
     }
-      */
-    
-    
-  }, [resultBounds, allowFitBounds, setAllowFitBounds, isLoading, geoLoading, viewResults, zoomState])
 
+    
+  }, [markerResults, searchBounds])
 
 
 
@@ -886,8 +827,8 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
         <PiNavigationArrowFill className="lg:text-xl" />
       </IconButton>
       <IconButton className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom til søkeresultat" onClick={() => {
-        if (resultBounds?.length) {
-          mapInstance.current?.flyToBounds(resultBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+        if (searchBounds?.length) {
+          mapInstance.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
         }
       }}>
         <PiCrop className="lg:text-xl" />

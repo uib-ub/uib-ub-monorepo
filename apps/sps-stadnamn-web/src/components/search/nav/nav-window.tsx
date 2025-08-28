@@ -1,29 +1,22 @@
-import { contentSettings, treeSettings } from "@/config/server-config";
-import { usePerspective, useMode, useSearchQuery } from "@/lib/search-params";
-import { PiArchiveFill, PiArchiveLight, PiDatabaseFill, PiDatabaseLight, PiFunnelFill, PiFunnelLight, PiMapPinAreaFill, PiMapPinAreaLight, PiTreeViewFill, PiTreeViewLight, PiX } from "react-icons/pi";
-import { SearchContext } from "@/app/search-provider";
-import { useContext, useTransition } from "react";
-import TreeResults from "./results/tree-results";
+import { useMode } from "@/lib/search-params";
+import { PiArchiveFill, PiArchiveLight, PiDatabaseFill, PiDatabaseLight, PiFunnelFill, PiFunnelLight } from "react-icons/pi";
+import { useTransition } from "react";
 import FacetSection from "./facets/facet-section";
 import SearchResults from "./results/search-results";
-import { useSearchParams, useRouter } from "next/navigation";
-import ClientFacet from "./facets/client-facet";
+import { useSearchParams } from "next/navigation";
 import Spinner from "../../svg/Spinner";
 import { formatNumber } from "@/lib/utils";
 import DatasetFacet from "./facets/dataset-facet";
-import ClickableIcon from "../../ui/clickable/clickable-icon";
 import Clickable from "../../ui/clickable/clickable";
-import WikiAdmFacet from "./facets/wikiAdm-facet";
 import TableOptions from "../table/table-options";
-import BasewordResults from "./results/baseword-results";
+import useSearchData from "@/state/hooks/search-data";
 
 export default function NavWindow() {
-    const { totalHits, isLoading } = useContext(SearchContext)
+    const { totalHits, searchLoading } = useSearchData()
     const searchParams = useSearchParams()
     const mode = useMode()
     const nav = searchParams.get('nav')
     const [isPending, startTransition] = useTransition()
-    const datasetTag = searchParams.get('datasetTag')
 
 
     return <><div className={`flex overflow-x-auto tabs rounded-md gap-1 p-2`}>
@@ -55,7 +48,7 @@ export default function NavWindow() {
                       aria-controls="nav-window-content"
                       className="flex whitespace-nowrap  items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pl-4 pr-3 ml-auto">
                         <span className="text-neutral-900">Treff</span>
-                        { isLoading ? <span className=""><Spinner className="text-neutral-900" status="Laster søkeresultat..." /></span> : <>
+                        { searchLoading ? <span className=""><Spinner className="text-neutral-900" status="Laster søkeresultat..." /></span> : <>
                         {nav == 'results' ? <span className={`results-badge bg-accent-800 font-bold text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>
                             {totalHits && formatNumber(totalHits.value)}</span>
                         : <span className={`results-badge text-primary-700 bg-primary-200 font-bold left-8 rounded-full py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>{totalHits && formatNumber(totalHits.value)}</span>}

@@ -1,8 +1,8 @@
 //export const runtime = 'edge'
 
-import { extractFacets } from '../../_utils/facets'
-import { getQueryString } from '../../_utils/query-string';
-import { postQuery } from '../../_utils/post';
+import { extractFacets } from '../_utils/facets'
+import { getQueryString } from '../_utils/query-string';
+import { postQuery } from '../_utils/post';
 
 export async function GET(request: Request) {
   const {termFilters, reservedParams} = extractFacets(request)

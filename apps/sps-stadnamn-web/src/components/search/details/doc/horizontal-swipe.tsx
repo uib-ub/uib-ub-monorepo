@@ -2,7 +2,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import DocSkeleton from '@/components/doc/doc-skeleton'
-import { CollapsedContext } from '@/app/collapsed-provider'
 import { stringToBase64Url } from '@/lib/utils'
 import useDocData from '@/state/hooks/doc-data'
 import { GlobalContext } from '@/app/global-provider'

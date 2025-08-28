@@ -1,9 +1,8 @@
 'use client'
 import { PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeft, PiCaretRight } from 'react-icons/pi';
-import { SearchContext } from '@/app/search-provider';
-import { useContext } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import ClickableIcon from '../ui/clickable/clickable-icon';
+import useSearchData from '@/state/hooks/search-data';
 
 export default function Pagination() {
   const router = useRouter()
@@ -12,7 +11,7 @@ export default function Pagination() {
   // Get current values from URL or use defaults
   const perPage = Number(searchParams.get('perPage')) || 10
   const page = Number(searchParams.get('page')) || 1
-  const { totalHits } = useContext(SearchContext)
+  const { totalHits } = useSearchData()
   const totalPages = Math.ceil(totalHits?.value / perPage)
   const cappedTotalPages = Math.min(totalPages, Math.ceil(10000 / perPage))
 
