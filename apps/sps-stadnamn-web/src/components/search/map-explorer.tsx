@@ -638,23 +638,13 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
 
                   const boundsWidth = clusterBounds[1][1] - clusterBounds[0][1]; // east - west
                   const boundsHeight = clusterBounds[0][0] - clusterBounds[1][0]; // north - south
-                  const boundsCenter = [(clusterBounds[0][0] + clusterBounds[1][0]) / 2, (clusterBounds[0][1] + clusterBounds[1][1]) / 2];
 
-                  // Calculate distance in coordinate units (degrees), not pixels
-                  const distanceInDegrees = Math.sqrt(
-                    Math.pow(avgLocation[0] - boundsCenter[0], 2) + 
-                    Math.pow(avgLocation[1] - boundsCenter[1], 2)
-                  );
-
-                  const threshold = Math.min(boundsWidth, boundsHeight) / 4; // Use a more generous threshold
 
                   // Zoom target must be centered around the average location if it's too far from the cell center
-                  const zoomTarget = distanceInDegrees > threshold ? 
-                    [
-                      [avgLocation[0] + boundsHeight / 2, avgLocation[1] - boundsWidth / 2],
-                      [avgLocation[0] - boundsHeight / 2, avgLocation[1] + boundsWidth / 2]
-                    ] : 
-                    clusterBounds;
+                  const zoomTarget = [[avgLocation[0] + boundsHeight / 2, avgLocation[1] - boundsWidth / 2], 
+                                      [avgLocation[0] - boundsHeight / 2, avgLocation[1] + boundsWidth / 2]]
+
+
                   
                   
                   const clusterIcon = new leaflet.DivIcon(getClusterMarker(item.doc_count,    calculateRadius(item.doc_count, maxDocCount.current, minDocCount.current) * 2 + (item.doc_count > 99 ? item.doc_count.toString().length / 4 : 0),
@@ -663,41 +653,24 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
                   
                   return (
                     <Fragment key={`cluster-fragment-${item.key}`}>
-                    {false && <><Rectangle
+                    {false && <>{false && <Rectangle
                       key={`cluster-rect-${item.key}`}
                       bounds={clusterBounds!}
                       pathOptions={{
                         color: '#00aa00',
-                        weight: 1,
+                        weight: 2,
                         opacity: 0.5,
                         fillOpacity: 0.1
                       }}
-                    />
-                    <CircleMarker
-                      key={`cluster-circle-${item.key}`}
-                      center={boundsCenter}
-                      radius={5}
-                      color="green"
-                      fillColor="green"
-                      fillOpacity={0.5}
-                    />
-                    <Marker 
-                      icon={new leaflet.DivIcon({
-                        html: `<div class="distance-label">${distanceInDegrees.toFixed(2)} ${boundsWidth / 2}</div>`,
-                        className: 'distance-marker',
-                        iconSize: [80, 20],
-                        iconAnchor: [40, 10]
-                      })}
-                      position={boundsCenter}
-                    />
+                    />}
                     <Rectangle
                       key={`cluster-rect-inner-${item.key}`}
                       bounds={zoomTarget}
                       pathOptions={{
                         color: 'blue',
                         weight: 2,
-                        opacity: 0.7,
-                        fillOpacity: 0
+                        opacity: 0.5,
+                        fillOpacity: 0.05
                       }}
                     />
                     </>}
