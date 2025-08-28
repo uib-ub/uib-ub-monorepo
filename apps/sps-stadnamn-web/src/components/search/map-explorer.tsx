@@ -1,10 +1,8 @@
-import { Fragment, useContext, useEffect, useRef, useState, useCallback, useMemo, use } from "react";
+import { Fragment, useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Map from "../map/map";
 import { baseMaps, baseMapKeys, defaultBaseMap, baseMapLookup } from "@/config/basemap-config";
 import { PiCheckCircleFill, PiCornersOut, PiCrop, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill,  PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
-import { SearchContext } from "@/app/search-provider";
-import Spinner from "../svg/Spinner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { usePerspective, useSearchQuery } from "@/lib/search-params";
-import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
+import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker, getUnTruncated } from "./markers";
 import { useSearchParams } from "next/navigation";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import * as h3 from "h3-js";
@@ -22,7 +20,7 @@ import wkt from 'wellknown';
 import { stringToBase64Url } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
 import { useInfiniteQuery, useQueries } from "@tanstack/react-query";
-import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateCenterFromBounds } from "@/lib/map-utils";
+import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius } from "@/lib/map-utils";
 import useSearchData from "@/state/hooks/search-data";
 
 
@@ -40,6 +38,8 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   const urlZoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
   const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
   const allowFitBounds = useRef(false)
+  const maxDocCount = useRef(0)
+  const minDocCount = useRef(0)
 
 
   
@@ -88,8 +88,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   // Cluster mode
   // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
-  const autoMode = markerMode === 'auto' ? (searchParams.get('q')?.length || totalHits?.value < 100000 ? 'counts' : 'labels') : null
-  const activeMarkerMode = (markerMode == 'counts' || mapInstance.current?.getZoom() < 8 || autoMode == 'counts') ? 'counts' : 'labels'
+  const activeMarkerMode = markerMode === 'auto' ? (searchParams.get('q')?.length || totalHits?.value < 100000 ? 'labels' : 'counts') : markerMode
 
 
 
@@ -102,7 +101,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
         placeHolder: (prevData: any) => prevData,
         queryFn: async () => {
           const queryParams = new URLSearchParams(searchQueryString);
-          const res = await fetch(`/api/markers/labels/${cell.precision}/${cell.x}/${cell.y}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`)
+          const res = await fetch(`/api/markers/${cell.precision}/${cell.x}/${cell.y}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`)
           const data = await res.json()
           return data.aggregations.grid.buckets
         }
@@ -122,9 +121,23 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
     }
 
     const buckets = markerResults.flatMap((result) => result.isSuccess && result.data ? result.data : [])
+
+
+    const [labelBuckets, countBuckets] = buckets.reduce<[any[], any[]]>((acc, bucket) => {
+      if (activeMarkerMode == 'labels' || bucket.top.hits.total.value == bucket.top.hits.hits.length) {
+        acc[0].push(bucket)
+      } else {
+        acc[1].push(bucket)
+      }
+      return acc
+    }, [[], []])
+
+    maxDocCount.current = countBuckets?.reduce((acc: number, cur: any) => Math.max(acc, cur.doc_count), 0)
+    minDocCount.current = countBuckets?.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
+
     
     const labeledMarkersLookup: Record<string, Record<string, any>[]> = {}
-    const bucketNeighbourMap: Record<string, any[]> = buckets.reduce<Record<string, any[]>>((acc, bucket) => {
+    const bucketNeighbourMap: Record<string, any[]> = labelBuckets?.reduce<Record<string, any[]>>((acc, bucket) => {
       const [z, x, y] = bucket.key.split('/').map(Number);
       const neighbors = [
         `${z}/${x-1}/${y}`,     // West
@@ -140,9 +153,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
       return acc;
     }, {})
 
-
-
-    const markers: Record<string, any>[] = buckets.flatMap((bucket: any) => {
+    const markers: Record<string, any>[] = labelBuckets?.flatMap((bucket: any) => {
       return bucket.top.hits.hits.map((hit: Record<string, any>, markerIndex: number) => {
       return {markerIndex, tile: bucket.key, ...hit}
     })
@@ -173,13 +184,16 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
     }).sort((a: any, b: any) => {
       // Sort so that labels further north are first
       return b.fields.location[0].coordinates[1] - a.fields.location[0].coordinates[1]
-    })
+    }) || []
+
+    const allMarkers = [...markers, ...countBuckets]
 
 
-      markerResultsRef.current = markers
+      markerResultsRef.current = allMarkers
 
-    return markers
-  }, [markerResults])
+    return allMarkers
+  }, [markerResults, activeMarkerMode])
+
 
 
 
@@ -291,7 +305,6 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   // Fly to results
   useEffect(() => {
      allowFitBounds.current = true
-     console.log("SEARCH UPDATED AT", searchUpdatedAt)
   }, [searchUpdatedAt])
 
   useEffect(() => {
@@ -453,7 +466,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   const geotileKeyToBounds = useCallback((key: string) => {
     const parts = key.split('/');
     if (parts.length !== 3) {
-      return null;
+      throw new Error('Invalid geotile key format');
     }
     
     const precision = parseInt(parts[0]);
@@ -511,9 +524,11 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
             //console.log("RESULT BOUNDS", mapInstance.current.getBounds())
         }}
         zoomControl={false}
+        zoomSnap={0.5}
+        zoomDelta={0.5}
         bounds={ snappedBounds }
         className='w-full h-full'>
-        {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon }: any, leaflet: any) => {
+        {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon, Popup }: any, leaflet: any) => {
 
           function EventHandlers() {
             const map = useMap();
@@ -606,24 +621,119 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
               {/* Draw geotile query results */}
               { processedMarkerResults?.map((item: any) => {
 
-     
-                     const lat = item.fields.location?.[0]?.coordinates?.[1];
-                      const lng = item.fields.location?.[0]?.coordinates?.[0];
+                if (item.doc_count) {
 
-                      // Ensure lat/lng exist (0 is a valid value) and are finite
-                      if (!item.showLabel || lat == undefined || lng == undefined || !isPointInViewport(lat, lng)) {
-                        return null;
-                      }
-                      else return (
-                        <Marker
-                          key={`result-${item.fields.group?.id || item.fields.uuid[0]}`}
-                          position={[lat, lng]}
-                          icon={new leaflet.DivIcon(getLabelMarkerIcon(item.fields.label?.[0] || 'Unknown', baseMap && baseMapLookup[baseMap]?.markers ? 'white' : 'black', undefined, true))}
-                          riseOnHover={true}
-                          eventHandlers={selectDocHandler(item.fields)}
-                        />
-                      )
-                
+                  const clusterBounds = geotileKeyToBounds(item.key)
+
+                  let latSum = 0, lngSum = 0;
+                  item.top.hits.hits.forEach((hit: any) => {
+                    latSum += hit.fields.location[0].coordinates?.[1] ?? 0;
+                    lngSum += hit.fields.location[0].coordinates?.[0] ?? 0;
+                  });
+                  const avgLocation: [number, number] = [
+                    latSum / item.top.hits.hits.length,
+                    lngSum / item.top.hits.hits.length
+                  ];
+
+
+                  const boundsWidth = clusterBounds[1][1] - clusterBounds[0][1]; // east - west
+                  const boundsHeight = clusterBounds[0][0] - clusterBounds[1][0]; // north - south
+                  const boundsCenter = [(clusterBounds[0][0] + clusterBounds[1][0]) / 2, (clusterBounds[0][1] + clusterBounds[1][1]) / 2];
+
+                  // Calculate distance in coordinate units (degrees), not pixels
+                  const distanceInDegrees = Math.sqrt(
+                    Math.pow(avgLocation[0] - boundsCenter[0], 2) + 
+                    Math.pow(avgLocation[1] - boundsCenter[1], 2)
+                  );
+
+                  const threshold = Math.min(boundsWidth, boundsHeight) / 4; // Use a more generous threshold
+
+                  // Zoom target must be centered around the average location if it's too far from the cell center
+                  const zoomTarget = distanceInDegrees > threshold ? 
+                    [
+                      [avgLocation[0] + boundsHeight / 2, avgLocation[1] - boundsWidth / 2],
+                      [avgLocation[0] - boundsHeight / 2, avgLocation[1] + boundsWidth / 2]
+                    ] : 
+                    clusterBounds;
+                  
+                  
+                  const clusterIcon = new leaflet.DivIcon(getClusterMarker(item.doc_count,    calculateRadius(item.doc_count, maxDocCount.current, minDocCount.current) * 2 + (item.doc_count > 99 ? item.doc_count.toString().length / 4 : 0),
+                                                                                              calculateRadius(item.doc_count, maxDocCount.current, minDocCount.current) * 2,
+                                                                                              calculateRadius(item.doc_count, maxDocCount.current, minDocCount.current) * 0.8))
+                  
+                  return (
+                    <Fragment key={`cluster-fragment-${item.key}`}>
+                    {false && <><Rectangle
+                      key={`cluster-rect-${item.key}`}
+                      bounds={clusterBounds!}
+                      pathOptions={{
+                        color: '#00aa00',
+                        weight: 1,
+                        opacity: 0.5,
+                        fillOpacity: 0.1
+                      }}
+                    />
+                    <CircleMarker
+                      key={`cluster-circle-${item.key}`}
+                      center={boundsCenter}
+                      radius={5}
+                      color="green"
+                      fillColor="green"
+                      fillOpacity={0.5}
+                    />
+                    <Marker 
+                      icon={new leaflet.DivIcon({
+                        html: `<div class="distance-label">${distanceInDegrees.toFixed(2)} ${boundsWidth / 2}</div>`,
+                        className: 'distance-marker',
+                        iconSize: [80, 20],
+                        iconAnchor: [40, 10]
+                      })}
+                      position={boundsCenter}
+                    />
+                    <Rectangle
+                      key={`cluster-rect-inner-${item.key}`}
+                      bounds={zoomTarget}
+                      pathOptions={{
+                        color: 'blue',
+                        weight: 2,
+                        opacity: 0.7,
+                        fillOpacity: 0
+                      }}
+                    />
+                    </>}
+                    <Marker
+                      key={`cluster-${item.key}`}
+                      position={avgLocation}
+                      icon={clusterIcon}
+                      eventHandlers={{
+                        click: () => {
+                          // Zoom in to the cell bounds when cluster is clicked
+                          if (mapInstance.current) {
+                            mapInstance.current.fitBounds(zoomTarget, { maxZoom: 18 });
+                          }
+                        }
+                      }}
+                    />
+                    </Fragment>
+                  );
+                }     
+
+                const lat = item.fields.location?.[0]?.coordinates?.[1];
+                const lng = item.fields.location?.[0]?.coordinates?.[0];
+                // Ensure lat/lng exist (0 is a valid value) and are finite
+                if (!item.showLabel || lat == undefined || lng == undefined || !isPointInViewport(lat, lng)) {
+                  return null;
+                }
+                else return (
+                  <Marker
+                    key={`result-${item.fields.group?.id || item.fields.uuid[0]}`}
+                    position={[lat, lng]}
+                    icon={new leaflet.DivIcon(getLabelMarkerIcon(item.fields.label?.[0] || 'Unknown', baseMap && baseMapLookup[baseMap]?.markers ? 'white' : 'black', undefined, true))}
+                    riseOnHover={true}
+                    eventHandlers={selectDocHandler(item.fields)}
+                  />
+                )
+          
               
               })}
 

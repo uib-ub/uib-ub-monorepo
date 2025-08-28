@@ -33,11 +33,8 @@ export default function MapWrapper() {
         return () => window.removeEventListener('resize', updateDimensions);
     }, []);
 
-    if (!containerDimensions) {
-        return <div>Loading...</div>
-    }
 
-    if (searchData) return <MapExplorer containerDimensions={containerDimensions}/>
+    if (searchData && containerDimensions) return <MapExplorer containerDimensions={containerDimensions}/>
     else if (searchError) return <div className="p-4"><ErrorMessage error={searchData} message="Kunne ikkje laste kartet"/></div>
     else return <div className="flex items-center h-full justify-center bg-neutral-100"><Spinner className="h-32 w-32" status="Lastar kart"/></div>
 
