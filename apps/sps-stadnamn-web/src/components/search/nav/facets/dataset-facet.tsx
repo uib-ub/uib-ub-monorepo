@@ -123,7 +123,7 @@ export default function DatasetFacet() {
 
   return (
     <>
-    <div className="flex flex-col gap-2 pb-12">
+    <div className="flex flex-col gap-2">
     {!isMobile && <div className="border p-1 rounded-lg border-neutral-200 tabs gap-1 text-sm flex flex-col 2xl:flex-wrap 2xl:flex-row" role="tablist">
   <Clickable
     remove={["datasetTag"]}

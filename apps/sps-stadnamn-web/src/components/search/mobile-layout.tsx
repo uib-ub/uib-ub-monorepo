@@ -248,7 +248,7 @@ export default function MobileLayout() {
             {drawerContent && <>
                 <div className="w-full flex  items-center h-4 pt-2 rounded-t-md bg-neutral-800 relative px-2" style={{ touchAction: 'none' }}>
                     <div className="absolute -translate-x-1/2 left-1/2 h-1.5 top-1.5 w-16 bg-neutral-300 rounded-full"></div></div>
-                <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 border-neutral-800 max-h-[calc(100svh-12rem)] overscroll-contain`} ref={scrollableContent} style={{ overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none' }}>
+                <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 pb-20 border-neutral-800 max-h-[calc(100svh-12rem)] overscroll-contain`} ref={scrollableContent} style={{ overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none' }}>
 
                     {drawerContent == 'details' && <>
                         {group && details == 'doc' && !namesNav && <div className="pb-24"><ListExplorer /></div>}
@@ -294,16 +294,6 @@ export default function MobileLayout() {
                             </h2>
 
                             <DatasetFacet />
-
-                            {false && <div
-                                className={`absolute bottom-0 left-1 right-1 bg-neutral-200 border-t border-neutral-300 text-neutral-900 h-12 p-1 flex items-center gap-2 details-toolbar justify-between transition-all duration-300 ease-in-out`}
-                                style={{
-                                    transform: currentPosition > 25 ? 'translateY(0)' : 'translateY(100%)',
-                                    opacity: currentPosition > 25 ? 1 : 0,
-                                    pointerEvents: currentPosition > 25 ? 'auto' : 'none'
-                                }}>
-                               
-                            </div>}
                         </div>
 
 

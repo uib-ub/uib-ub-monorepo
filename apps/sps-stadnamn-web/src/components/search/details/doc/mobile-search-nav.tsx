@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { stringToBase64Url } from '@/lib/utils'
 import useCollapsedData from '@/state/hooks/collapsed-data'
-import { PiBinocularsBold, PiCaretLeftBold, PiCaretRightBold, PiCaretUpBold, PiDatabaseFill, PiDatabaseLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight } from 'react-icons/pi'
+import { PiBinocularsBold, PiBinocularsLight, PiBookOpen, PiBookOpenFill, PiBookOpenLight, PiCaretLeftBold, PiCaretRightBold, PiCaretUpBold, PiDatabaseFill, PiDatabaseLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight } from 'react-icons/pi'
 import ClickableIcon from '@/components/ui/clickable/clickable-icon'
 
 export default function MobileSearchNav({ currentPosition, drawerContent, showScrollToTop, scrollableContent }: { currentPosition: number, drawerContent: string, showScrollToTop: boolean, scrollableContent: React.RefObject<HTMLDivElement> }) {
@@ -17,6 +17,7 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
   const nav = searchParams.get('nav')
   const details = searchParams.get('details')
   const datasetTag = searchParams.get('datasetTag')
+  const namesNav = searchParams.get('namesNav')
 
   const { flattenedPages, groupPosition } = useMemo((): { flattenedPages: any[]; groupPosition: number } => {
     const flattenedPages = collapsedData?.pages.flatMap(page => page.data ?? []) ?? [];
@@ -65,7 +66,7 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
 
   return (
 
-    <div className={`py-2 w-full flex justify-between gap-4 px-4 z-[5000] transition-all duration-300 ease-in-out`}
+    <div className={`py-4 w-full flex justify-between gap-4 px-4 z-[5000] transition-all duration-300 ease-in-out`}
       style={{
         transform: currentPosition == 75 ? 'translateY(0)' : 'translateY(100%)',
         opacity: currentPosition == 75 ? 1 : 0,
@@ -85,8 +86,17 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
         }} className="bg-neutral-700 text-white btn rounded-full shadow-lg h-12 w-12">
           <PiCaretRightBold className='text-xl' aria-hidden="true" />
         </ClickableIcon>
+        
         {/* Show "Finn namneformer" if group is not grunnord */}
-        {!group || !groupDecoded?.startsWith('grunnord') ? (
+        {group && !groupDecoded?.startsWith('grunnord') ? <>
+        <ClickableIcon label="Oppslag"
+            remove={['namesNav']}
+            add={{ details: 'doc' }}
+            aria-current={!namesNav ? 'page' : 'false'}
+            className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"  
+          >
+            {details == 'doc' ? <PiBookOpenFill className="text-xl" aria-hidden="true" /> : <PiBookOpenLight className="text-xl" aria-hidden="true" />}
+          </ClickableIcon>
           <ClickableIcon
             label="Finn namneformer"
             add={{
@@ -96,9 +106,9 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
             aria-current={searchParams.get('namesNav') ? 'page' : 'false'}
             className="bg-primary-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
           >
-            <PiBinocularsBold className="text-xl" aria-hidden="true" />
+            {namesNav ? <PiBinocularsBold className="text-xl" aria-hidden="true" /> : <PiBinocularsLight className="text-xl" aria-hidden="true" />}
           </ClickableIcon>
-        ) : null}
+        </> : null}
         {/* End "Finn namneformer" */}
       </div>}
 
