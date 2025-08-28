@@ -51,6 +51,7 @@ export default defineAppConfig({
       replacedBy: ["qualifiedReplacedBy", "concept"],
     } as const,
     languageProps: {
+      example: { labelPath: [], lcPath: ["@language"] },
       prefLabel: { labelPath: ["literalForm"], lcPath: ["@language"] },
       altLabel: { labelPath: ["literalForm"], lcPath: ["@language"] },
       hiddenLabel: { labelPath: ["literalForm"], lcPath: ["@language"] },

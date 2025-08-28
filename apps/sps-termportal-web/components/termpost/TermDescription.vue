@@ -180,21 +180,21 @@ const mainValue = (data) => {
     case "equivalencenote":
       return data?.note?.["@value"];
     case "definition":
+    case "context":
+    case "xlScopeNote":
       return data?.label["@value"];
     case "xlDefinition":
       return data?.["rdf:value"]?.["@value"];
     case "prefLabel":
-      return data?.literalForm["@value"];
     case "altLabel":
-      return data?.literalForm["@value"];
     case "hiddenLabel":
       return data?.literalForm["@value"];
-    case "context":
-      return data?.label["@value"];
     case "nonLingusticLabel":
       return data?.nonLingusticLabel;
     case "link":
       return data?.target;
+    case "example":
+      return data["@value"];
     default:
       return data;
   }

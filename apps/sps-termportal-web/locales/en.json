@@ -213,7 +213,8 @@
     "browser": "External browser",
     "audience": "Audience note",
     "icsCode": "ICS code",
-    "source": "Source"
+    "source": "Source",
+    "example": "Example"
   },
   "index": { "title": "Termportalen" },
   "search": {

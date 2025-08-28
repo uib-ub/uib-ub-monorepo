@@ -41,6 +41,7 @@ export default function (
       "language": "dct:language",
       "source": "dct:source",
       "scopeNote": "skos:scopeNote",
+      "example": { "@id": "skos:example", "@container": "@set" },
       "note": "skos:note",
       "license": "dct:license",
       "value": "prov:value",

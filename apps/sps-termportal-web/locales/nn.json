@@ -214,7 +214,8 @@
     "browser": "Ekstern nettlesar",
     "audience": "Målgruppemerknad",
     "icsCode": "ICS-kode",
-    "source": "Kjelde"
+    "source": "Kjelde",
+    "example": "Eksempel"
   },
   "index": { "title": "Termportalen" },
   "search": {
