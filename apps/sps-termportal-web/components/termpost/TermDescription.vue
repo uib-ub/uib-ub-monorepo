@@ -88,38 +88,12 @@
           v-html="d.subject[0]"
         />
       </TermpostTermProp>
-      <TermpostTermProp
+
+      <!-- Sources -->
+      <TermpostTermPropSource
         v-if="d?.['skosp:dctSource'] || d.source"
-        :label="$t('id.referanse')"
-      >
-        <dd
-          v-if="
-            typeof d?.['skosp:dctSource']?.['skosp:rdfsLabel'] === 'string'
-              || typeof d?.source?.label?.['@value'] === 'string'
-              || typeof d?.source === 'string'
-          "
-          class="max-w-prose"
-          v-html="
-            `
-        ${d?.['skosp:dctSource']?.['skosp:rdfsLabel'] || ''}
-        ${d?.source?.label?.['@value'] || d?.source || ''}
-        `
-          "
-        />
-        <template v-else-if="Array.isArray(d?.source)">
-          <dd
-            v-for="source of d?.source"
-            :key="source"
-            :lang="source?.['@language']"
-            v-html="source?.['@value']"
-          />
-        </template>
-        <dd
-          v-else
-          :lang="d?.source?.['@language']"
-          v-html="d.source?.['@value']"
-        />
-      </TermpostTermProp>
+        :data="d"
+      />
       <!-- audience -->
       <TermpostTermProp
         v-if="d?.audience"
@@ -207,6 +181,8 @@ const mainValue = (data) => {
       return data?.note?.["@value"];
     case "definition":
       return data?.label["@value"];
+    case "xlDefinition":
+      return data?.["rdf:value"]?.["@value"];
     case "prefLabel":
       return data?.literalForm["@value"];
     case "altLabel":

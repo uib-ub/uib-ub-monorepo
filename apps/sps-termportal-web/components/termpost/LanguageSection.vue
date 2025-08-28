@@ -66,6 +66,16 @@
           :data-lang="lang"
         />
       </TermpostTermProp>
+      <TermpostTermProp
+        v-if="concept.xlDefinition?.[lang]"
+        :label="$t('id.definisjon')"
+      >
+        <TermpostTermDescription
+          :data="concept?.xlDefinition?.[lang]"
+          prop="xlDefinition"
+          :data-lang="lang"
+        />
+      </TermpostTermProp>
 
       <!-- Anbefalt term -->
       <TermpostTermProp
