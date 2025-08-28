@@ -56,6 +56,7 @@ export default function MobileLayout() {
     const datasetTag = searchParams.get('datasetTag')
     const mapContainerRef = useRef<HTMLDivElement>(null)
     const drawerRef = useRef<HTMLDivElement>(null)
+    const mobileNav = useRef<HTMLDivElement>(null)
 
     const [showScrollToTop, setShowScrollToTop] = useState(false);
 
@@ -180,13 +181,6 @@ export default function MobileLayout() {
         setDrawerContent(prev => prev == tab ? null : tab)
     }
 
-    useEffect(() => {
-        setCurrentPosition(25)
-        setSnappedPosition(25)
-        setDrawerSwipeDirection(null);
-        setSnapped(true);
-        scrollableContent.current?.scrollTo(0, 0)
-    }, [drawerContent])
 
     useEffect(() => {
         const handleScroll = () => {
@@ -219,15 +213,18 @@ export default function MobileLayout() {
         if (!drawerContent) return;
 
         function handleClickOutside(event: MouseEvent) {
-            if (drawerRef.current && !drawerRef.current.contains(event.target as Node)) {
+            if (drawerRef.current && !drawerRef.current.contains(event.target as Node)
+                && mobileNav.current && !mobileNav.current.contains(event.target as Node)) {
                 if (!group && !doc) {
                     setCurrentPosition(0)
                     setSnappedPosition(0)
                     setDrawerContent(null)
+                    setSnapped(true)
                 }
                 else {
                     setCurrentPosition(25)
                     setSnappedPosition(25)
+                    setSnapped(true)
                 }
 
 
@@ -321,30 +318,13 @@ export default function MobileLayout() {
                     {drawerContent == 'tree' &&
                         <TreeResults />
                     }
-                    {drawerContent == 'details' && false && <div
-                        className={`absolute bottom-0 left-1 right-1 bg-neutral-800/50 border-t border-neutral-300 text-neutral-900 h-16 p-1 flex items-center gap-2 details-toolbar justify-between transition-all duration-300 ease-in-out`}
-                        style={{
-                            transform: currentPosition > 25 ? 'translateY(0)' : 'translateY(100%)',
-                            opacity: currentPosition > 25 ? 1 : 0,
-                            pointerEvents: currentPosition > 25 ? 'auto' : 'none'
-                        }}>
-
-                        {!group || !base64UrlToString(group).startsWith('grunnord') && <>
-                            <ClickableIcon
-                                label="Finn namneformer"
-                                aria-current={namesNav ? 'page' : 'false'}
-                                add={{ group: stringToBase64Url(docData?._source.group.id), namesNav: 'list' }}>
-                                <PiBinoculars className="text-3xl" aria-hidden="true" />
-                            </ClickableIcon>
-                        </>}
-                    </div>}
                 </div>
             </>
             }
+            <div ref={mobileNav} className="fixed bottom-0 left-0 w-full">
+                <MobileSearchNav showScrollToTop={showScrollToTop} currentPosition={currentPosition} drawerContent={drawerContent || ''} scrollableContent={scrollableContent} />
 
-            <div className="absolute left-1 z-[2000] right-0 flex flex-col gap-2">
-            </div>
-            <div className="fixed bottom-0 left-0 bg-neutral-800 text-white w-full h-12 p-1 flex items-center justify-between nav-toolbar">
+            <div className=" bg-neutral-800 text-white w-full h-14 p-1 flex items-center justify-between nav-toolbar">
                 {<Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" add={nav == 'datasets' ? { nav: null } : { nav: 'datasets' }} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
                     <div className="relative">
                         <PiDatabase className="text-3xl" />
@@ -390,9 +370,10 @@ export default function MobileLayout() {
                         </div>
                 </Clickable>}
 
-
+                
             </div>
-
+            
+        </div>
         </div>
 
         <div className={`absolute top-12 right-0 w-full bg-transparent rounded-md z-[1000] ${mode == 'map' ? '' : 'max-h-[calc(100svh-6rem)] h-full overflow-y-auto stable-scrollbar'}`}>
@@ -402,12 +383,12 @@ export default function MobileLayout() {
             {doc && mode == 'doc' && <DocInfo />}
         </div>
 
-        {mode == 'map' && <div ref={mapContainerRef} className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">
+        {mode == 'map' && <div ref={mapContainerRef} className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6.5rem)] w-full bg-white rounded-md">
             <MapWrapper />
 
         </div>}
 
-        <MobileSearchNav showScrollToTop={showScrollToTop} currentPosition={currentPosition} drawerContent={drawerContent || ''} scrollableContent={scrollableContent} />
+        
 
 
     </div>

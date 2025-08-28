@@ -65,7 +65,7 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
 
   return (
 
-    <div className={`fixed bottom-12 py-2 w-full flex justify-between gap-4 px-4 z-[5000] bg-neutral-700/10 transition-all duration-300 ease-in-out`}
+    <div className={`py-2 w-full flex justify-between gap-4 px-4 z-[5000] transition-all duration-300 ease-in-out`}
       style={{
         transform: currentPosition == 75 ? 'translateY(0)' : 'translateY(100%)',
         opacity: currentPosition == 75 ? 1 : 0,
