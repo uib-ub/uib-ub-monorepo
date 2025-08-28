@@ -17,12 +17,12 @@ import Clickable from "../ui/clickable/clickable";
 import GroupDetails from "./details/group/group-details";
 import NamesExplorer from "./names/names-explorer";
 import ClickableIcon from "../ui/clickable/clickable-icon";
-import HorizontalSwipe from "./details/doc/horizontal-swipe";
 import InfoPopover from "../ui/info-popover";
 import useDocData from "@/state/hooks/doc-data";
 import useGroupData from "@/state/hooks/group-data";
 import MapWrapper from "./map-wrapper";
 import useSearchData from "@/state/hooks/search-data";
+import MobileSearchNav from "./details/doc/mobile-search-nav";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -37,16 +37,15 @@ export default function MobileLayout() {
 
     const [drawerContent, setDrawerContent] = useState<string | null>(null)
     const nav = searchParams.get('nav')
-    
+
     const doc = searchParams.get('doc')
     const { searchFilterParamsString, facetFilters } = useSearchQuery()
     const { totalHits, searchLoading } = useSearchData()
     const [facetIsLoading, setFacetIsLoading] = useState(false)
-    const [ showLoading, setShowLoading ] = useState<boolean>(false)
+    const [showLoading, setShowLoading] = useState<boolean>(false)
     const mode = useMode()
-    const { docLoading, docData } = useDocData()
+    const { docData } = useDocData()
     const datasetCount = searchParams.getAll('indexDataset')?.length || 0
-    const fulltext = searchParams.get('fulltext')
     const details = searchParams.get('details')
     const { groupTotal } = useGroupData()
     const namesNav = searchParams.get('namesNav')
@@ -56,20 +55,21 @@ export default function MobileLayout() {
     const cadastralIndex = searchParams.get('cadastralIndex')
     const datasetTag = searchParams.get('datasetTag')
     const mapContainerRef = useRef<HTMLDivElement>(null)
+    const drawerRef = useRef<HTMLDivElement>(null)
 
     const [showScrollToTop, setShowScrollToTop] = useState(false);
 
     useEffect(() => {
         if (!searchLoading && !facetIsLoading) {
-          setTimeout(() => {
-            setShowLoading(false)
-          }, 100);
+            setTimeout(() => {
+                setShowLoading(false)
+            }, 100);
         }
         else {
-          setShowLoading(true)
+            setShowLoading(true)
         }
-      }
-      , [searchLoading, facetIsLoading])
+    }
+        , [searchLoading, facetIsLoading])
 
     const isScrolling = (target: EventTarget) => {
         if (snappedPosition == 75 && target instanceof Node && scrollableContent.current?.contains(target)) {
@@ -92,7 +92,7 @@ export default function MobileLayout() {
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
         if (e.target && isScrolling(e.target)) {
             return
-        }       
+        }
 
         setStartTouchY(e.touches[0].clientY);
         setStartTouchX(e.touches[0].clientX);
@@ -136,7 +136,7 @@ export default function MobileLayout() {
                 setDrawerContent(null)
                 newPosition = snappedPosition
             }
-            
+
             else if (newPosition > 75) {
                 newPosition = 75
             }
@@ -174,7 +174,7 @@ export default function MobileLayout() {
             setDrawerContent(null)
         }
     }
-    , [searchFilterParamsString, nav, details, doc])
+        , [searchFilterParamsString, nav, details, doc])
 
     const toggleDrawer = (tab: string) => {
         setDrawerContent(prev => prev == tab ? null : tab)
@@ -191,19 +191,19 @@ export default function MobileLayout() {
     useEffect(() => {
         const handleScroll = () => {
             if (!scrollableContent.current) return;
-            
+
             if (scrollableContent.current.scrollTop > 300) {
                 setShowScrollToTop(true);
             } else {
                 setShowScrollToTop(false);
             }
         };
-        
+
         const currentRef = scrollableContent.current;
         if (currentRef && currentPosition === 75) {
             currentRef.addEventListener('scroll', handleScroll, { passive: true });
         }
-        
+
         return () => {
             if (currentRef) {
                 currentRef.removeEventListener('scroll', handleScroll);
@@ -211,182 +211,141 @@ export default function MobileLayout() {
         };
     }, [currentPosition]);
 
-    const scrollToTop = () => {
-        if (scrollableContent.current) {
-            scrollableContent.current.scrollTo({
-                top: 0,
-                behavior: 'auto'
-            });
-        }
-    };
-
     useEffect(() => {
         setShowScrollToTop(false);
     }, [drawerContent]);
 
+    useEffect(() => {
+        if (!drawerContent) return;
+
+        function handleClickOutside(event: MouseEvent) {
+            if (drawerRef.current && !drawerRef.current.contains(event.target as Node)) {
+                if (!group && !doc) {
+                    setCurrentPosition(0)
+                    setSnappedPosition(0)
+                    setDrawerContent(null)
+                }
+                else {
+                    setCurrentPosition(25)
+                    setSnappedPosition(25)
+                }
+
+
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [drawerContent, doc, group]);
+
     return <div className="scroll-container">
-        <div className={`mobile-interface fixed bottom-12 w-full rounded-t-xl bg-neutral-800  ${snapped ? 'transition-all duration-300 ease-in-out ' : ''}`}
-             style={{height: `${drawerContent ? currentPosition : 0}svh`}}
-             onTouchStart={handleTouchStart} 
-             onTouchMove={handleTouchMove}
-             onTouchEnd={handleTouchEnd}>
-        { drawerContent && <>
-            <div className="w-full flex  items-center h-4 pt-2 rounded-t-md bg-neutral-800 relative px-2" style={{touchAction: 'none'}}>
-                <div className="absolute -translate-x-1/2 left-1/2 h-1.5 top-1.5 w-16 bg-neutral-300 rounded-full"></div></div>
+        <div
+            ref={drawerRef}
+            className={`mobile-interface fixed bottom-8 w-full h-full rounded-t-xl bg-neutral-800 ${snapped ? 'transition-all duration-300 ease-in-out ' : ''}`}
+            style={{ height: `${drawerContent ? currentPosition : 0}svh` }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}>
+            {drawerContent && <>
+                <div className="w-full flex  items-center h-4 pt-2 rounded-t-md bg-neutral-800 relative px-2" style={{ touchAction: 'none' }}>
+                    <div className="absolute -translate-x-1/2 left-1/2 h-1.5 top-1.5 w-16 bg-neutral-300 rounded-full"></div></div>
+                <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 border-neutral-800 max-h-[calc(100svh-12rem)] overscroll-contain`} ref={scrollableContent} style={{ overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none' }}>
 
-            {showScrollToTop && (
-                <button 
-                    onClick={scrollToTop}
-                    className={`fixed z-[2001] right-4 ${(currentPosition > 25 && (drawerContent == 'details' || nav == 'datasets'))  ? "bottom-28" : "bottom-20"} bg-neutral-500 text-white p-3 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center`}
-                    aria-label="Scroll to top"
-                >
-                    <PiCaretUpBold className="text-xl" />
-                </button>
-            )}
+                    {drawerContent == 'details' && <>
+                        {group && details == 'doc' && !namesNav && <div className="pb-24"><ListExplorer /></div>}
+                        {details == 'group' && <div className="pb-12 pt-2 px-2">
+                            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 pb-2">Gruppe</h2>
 
-            <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 border-neutral-800 max-h-[calc(100svh-12rem)] overscroll-contain`} ref={scrollableContent} style={{overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none'}}>
+                            <GroupDetails />
+                        </div>}
+                        {namesNav &&
+                            <div className="pb-12 pt-2 px-2">
+                                <span className="flex items-center pb-2 text-xl"><h2 className="text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 ">Namneformer</h2>
+                                    <InfoPopover>
+                                        Utvida oversikt over liknande oppslag i nærområdet. Treffa er ikkje nødvendigvis former av namnet du har valt, og det kan vere namnformer som ikkje kjem med.
+                                    </InfoPopover></span>
+                                <NamesExplorer />
+                            </div>
+                        }
 
-            {drawerContent == 'details' && <>
-            {doc && details == 'doc' && !namesNav && <div className="pb-24"><HorizontalSwipe scrollRef={scrollableContent}><ListExplorer/> </HorizontalSwipe></div>}
-            {details == 'group' && <div className="pb-12 pt-2 px-2">
-                <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 pb-2">Gruppe</h2>
-                
-                <GroupDetails/>
-            </div>}
-            {namesNav &&
-            <div className="pb-12 pt-2 px-2">
-            <span className="flex items-center pb-2 text-xl"><h2 className="text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 ">Namneformer</h2>
-            <InfoPopover>
-        Utvida oversikt over liknande oppslag i nærområdet. Treffa er ikkje nødvendigvis former av namnet du har valt, og det kan vere namnformer som ikkje kjem med.
-        </InfoPopover></span>
-            <NamesExplorer/>
-            </div>
-            }
 
-            
-            </>}
-            { drawerContent == 'results' && 
-                <section className="flex flex-col gap-2 p-2">
-                    <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">
-                        Treff <span className={`results-badge bg-primary-500 left-8 rounded-full text-white text-xs whitespace-nowrap ${totalHits && totalHits.value < 10 ? 'px-1.5' : 'px-1'}`}>
-                            {totalHits && formatNumber(totalHits.value)}
-                        </span>
-                    </h2>
-                    {(searchParams.get('q') || searchParams.get('fulltext') == 'on') && <div className="flex flex-wrap gap-2 pb-2 border-b border-neutral-200">
-                <ActiveFilters/>
-                </div>}
-                    
-                <SearchResults/>
-                </section>
-            
-             }
-            { (drawerContent == 'datasets' || drawerContent == 'datasetInfo') &&
-            <div className="p-2">
-            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide pb-2 flex items-center gap-1 px-1">
-                {datasetTag == 'tree' && 'Hierarki'}
-                {datasetTag == 'base' && 'Grunnord'}
-                {datasetTag == 'deep' && 'Djupinnsamlingar'}
-                {!datasetTag && 'Datasett'}
-            </h2>
+                    </>}
+                    {drawerContent == 'results' &&
+                        <section className="flex flex-col gap-2 p-2">
+                            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">
+                                Treff <span className={`results-badge bg-primary-500 left-8 rounded-full text-white text-xs whitespace-nowrap ${totalHits && totalHits.value < 10 ? 'px-1.5' : 'px-1'}`}>
+                                    {totalHits && formatNumber(totalHits.value)}
+                                </span>
+                            </h2>
+                            {(searchParams.get('q') || searchParams.get('fulltext') == 'on') && <div className="flex flex-wrap gap-2 pb-2 border-b border-neutral-200">
+                                <ActiveFilters />
+                            </div>}
 
-            <DatasetFacet/> 
+                            <SearchResults />
+                        </section>
 
-            <div 
-                className={`absolute bottom-0 left-1 right-1 bg-neutral-200 border-t border-neutral-300 text-neutral-900 h-12 p-1 flex items-center gap-2 details-toolbar justify-between transition-all duration-300 ease-in-out`}
-                style={{
-                    transform: currentPosition > 25 ? 'translateY(0)' : 'translateY(100%)',
-                    opacity: currentPosition > 25 ? 1 : 0,
-                    pointerEvents: currentPosition > 25 ? 'auto' : 'none'
-                }}>
-                <ClickableIcon 
-                    label="Alle" 
-                    remove={["datasetTag"]} 
-                    aria-current={!datasetTag ? 'page' : 'false'}>
-                    {!datasetTag ? 
-                        <PiDatabaseFill className="text-3xl text-white" /> : 
-                        <PiDatabaseLight className="text-3xl" />}
-                </ClickableIcon>
+                    }
+                    {(drawerContent == 'datasets' || drawerContent == 'datasetInfo') &&
+                        <div className="p-2">
+                            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide pb-2 flex items-center gap-1 px-1">
+                                {datasetTag == 'tree' && 'Hierarki'}
+                                {datasetTag == 'base' && 'Grunnord'}
+                                {datasetTag == 'deep' && 'Djupinnsamlingar'}
+                                {!datasetTag && 'Datasett'}
+                            </h2>
 
-                <ClickableIcon 
-                    label="Djupinnsamlingar" 
-                    add={{ datasetTag: 'deep'}}
-                    aria-current={datasetTag == 'deep' ? 'page' : 'false'}>
-                    {datasetTag == 'deep' ? 
-                        <PiMicroscopeFill className="text-3xl text-white" /> : 
-                        <PiMicroscopeLight className="text-3xl" />}
-                </ClickableIcon>
+                            <DatasetFacet />
 
-                <ClickableIcon 
-                    label="Hierarki" 
-                    remove={["boost_gt"]}
-                    add={{ datasetTag: 'tree'}}
-                    aria-current={datasetTag == 'tree' ? 'page' : 'false'}>
-                    {datasetTag == 'tree' ? 
-                        <PiTreeViewFill className="text-3xl text-white" /> : 
-                        <PiTreeViewLight className="text-3xl" />}
-                </ClickableIcon>
-                <ClickableIcon 
-                    label="Grunnord" 
-                    add={{ datasetTag: 'base'}}
-                    aria-current={datasetTag == 'base' ? 'page' : 'false'}>
-                    {datasetTag == 'base' ? 
-                        <PiWallFill className="text-3xl text-white" /> : 
-                        <PiWallLight className="text-3xl" />}
-                </ClickableIcon>
-            </div>
-</div>
-            
-            
-            }
-            { (drawerContent == 'filters' || drawerContent == 'adm') && 
-                <div className="p-2">
-                <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">Filter {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
-                <FacetSection/> 
+                            {false && <div
+                                className={`absolute bottom-0 left-1 right-1 bg-neutral-200 border-t border-neutral-300 text-neutral-900 h-12 p-1 flex items-center gap-2 details-toolbar justify-between transition-all duration-300 ease-in-out`}
+                                style={{
+                                    transform: currentPosition > 25 ? 'translateY(0)' : 'translateY(100%)',
+                                    opacity: currentPosition > 25 ? 1 : 0,
+                                    pointerEvents: currentPosition > 25 ? 'auto' : 'none'
+                                }}>
+                               
+                            </div>}
+                        </div>
+
+
+                    }
+                    {(drawerContent == 'filters' || drawerContent == 'adm') &&
+                        <div className="p-2">
+                            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">Filter {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
+                            <FacetSection />
+                        </div>
+
+                    }
+                    {drawerContent == 'tree' &&
+                        <TreeResults />
+                    }
+                    {drawerContent == 'details' && false && <div
+                        className={`absolute bottom-0 left-1 right-1 bg-neutral-800/50 border-t border-neutral-300 text-neutral-900 h-16 p-1 flex items-center gap-2 details-toolbar justify-between transition-all duration-300 ease-in-out`}
+                        style={{
+                            transform: currentPosition > 25 ? 'translateY(0)' : 'translateY(100%)',
+                            opacity: currentPosition > 25 ? 1 : 0,
+                            pointerEvents: currentPosition > 25 ? 'auto' : 'none'
+                        }}>
+
+                        {!group || !base64UrlToString(group).startsWith('grunnord') && <>
+                            <ClickableIcon
+                                label="Finn namneformer"
+                                aria-current={namesNav ? 'page' : 'false'}
+                                add={{ group: stringToBase64Url(docData?._source.group.id), namesNav: 'list' }}>
+                                <PiBinoculars className="text-3xl" aria-hidden="true" />
+                            </ClickableIcon>
+                        </>}
+                    </div>}
                 </div>
-                
-            }
-            { drawerContent == 'tree' &&
-                <TreeResults/>
-            }
-            {drawerContent == 'details' &&  <div 
-    className={`absolute bottom-0 left-1 right-1 bg-neutral-200 border-t border-neutral-300 text-neutral-900 h-12 p-1 flex items-center gap-2 details-toolbar justify-between transition-all duration-300 ease-in-out`}
-    style={{
-        transform: currentPosition > 25 ? 'translateY(0)' : 'translateY(100%)',
-        opacity: currentPosition > 25 ? 1 : 0,
-        pointerEvents: currentPosition > 25 ? 'auto' : 'none'
-    }}>
-                <ClickableIcon label="Oppslag" remove={['details', 'namesNav']} add={{details: 'doc'}} aria-current={!namesNav && details == 'doc' ? 'page' : 'false'} className="group">
-                    <div className="relative">
-                    <PiBookOpen className="text-3xl" />
-                    {groupTotal?.value && Number(groupTotal.value) > 1 && <span className={`results-badge bg-primary-500 absolute group-aria-[current=page]:!bg-white group-aria-[current=page]:!text-accent-700 -top-1 left-full -ml-2 rounded-full text-white text-xs ${Number(groupTotal.value) < 10 ? 'px-1.5' : 'px-1'}`}>
-                            {formatNumber(groupTotal?.value)}
-                        </span>}
-                    </div>
-                </ClickableIcon>
-                {!group || !base64UrlToString(group).startsWith('grunnord') && <>
-                <ClickableIcon
-                    label="Finn namneformer"
-                    aria-current={namesNav ? 'page' : 'false'}
-                    add={{group: stringToBase64Url(docData?._source.group.id), namesNav: 'list'}}>
-                    <PiBinoculars className="text-3xl" aria-hidden="true"/>
-                </ClickableIcon>
-                </>}
-    
-                
- 
-            </div>}
-
-
-            </div>
-            
             </>
             }
 
-<div className="absolute left-1 z-[2000] right-0 flex flex-col gap-2">
-</div>
-            
+            <div className="absolute left-1 z-[2000] right-0 flex flex-col gap-2">
+            </div>
             <div className="fixed bottom-0 left-0 bg-neutral-800 text-white w-full h-12 p-1 flex items-center justify-between nav-toolbar">
-                {<Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" add={nav == 'datasets' ? {nav: null} : {nav: 'datasets'}} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
+                {<Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" add={nav == 'datasets' ? { nav: null } : { nav: 'datasets' }} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
                     <div className="relative">
                         <PiDatabase className="text-3xl" />
                         {datasetCount > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -396,13 +355,13 @@ export default function MobileLayout() {
                     </div>
                 </Clickable>}
 
-                
 
-                {datasetTag == 'tree' && <Clickable aria-label='Register' onClick={() => toggleDrawer('tree')} add={nav == 'tree' ? {nav: null} : {nav: 'tree'}} aria-current={drawerContent == 'tree' ? 'page' : 'false'}>
+
+                {datasetTag == 'tree' && <Clickable aria-label='Register' onClick={() => toggleDrawer('tree')} add={nav == 'tree' ? { nav: null } : { nav: 'tree' }} aria-current={drawerContent == 'tree' ? 'page' : 'false'}>
                     <PiTreeViewFill className="text-3xl" />
                 </Clickable>}
 
-                {<Clickable aria-label="Filtre" onClick={() => toggleDrawer('filters')} add={nav == 'filters' ? {nav: null} : {nav: 'filters'}} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'}>
+                {<Clickable aria-label="Filtre" onClick={() => toggleDrawer('filters')} add={nav == 'filters' ? { nav: null } : { nav: 'filters' }} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'}>
                     <div className="relative">
                         <PiFunnel className="text-3xl" />
                         {facetFilters.length > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${facetFilters.length < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -412,7 +371,7 @@ export default function MobileLayout() {
                 </Clickable>}
 
                 {mode != 'table' &&
-                    <Clickable aria-label='Søkeresultater' onClick={() => toggleDrawer('results')} add={nav == 'results' ? {nav: null} : {nav: 'results'}}
+                    <Clickable aria-label='Søkeresultater' onClick={() => toggleDrawer('results')} add={nav == 'results' ? { nav: null } : { nav: 'results' }}
                         aria-current={drawerContent == 'results' ? 'page' : 'false'}>
                         <div className="relative">
                             <PiListBullets className="text-3xl" />
@@ -422,26 +381,33 @@ export default function MobileLayout() {
                         </div>
                     </Clickable>}
 
-                {doc && <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('details')} add={{details: details || 'doc', nav: null}} aria-current={drawerContent == 'details' ? 'page' : 'false'}>
-                    <PiBookOpen className="text-3xl" />
+                {group && <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('details')} add={{ details: details || 'doc', nav: null }} aria-current={drawerContent == 'details' ? 'page' : 'false'}>
+                     <div className="relative">
+                        <PiBookOpen className="text-3xl" />
+                            <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${groupTotal && groupTotal.value < 10 ? 'px-1.5' : 'px-1'}`}>
+                                { groupTotal && formatNumber(groupTotal.value)}
+                            </span>
+                        </div>
                 </Clickable>}
 
 
             </div>
-            
+
         </div>
 
         <div className={`absolute top-12 right-0 w-full bg-transparent rounded-md z-[1000] ${mode == 'map' ? '' : 'max-h-[calc(100svh-6rem)] h-full overflow-y-auto stable-scrollbar'}`}>
-        <StatusSection/>
-        { mode == 'table' && <TableExplorer/>}
-        { mode == 'list'  && <ListExplorer/>}
-        {doc && mode == 'doc' && <DocInfo/>}
+            <StatusSection />
+            {mode == 'table' && <TableExplorer />}
+            {mode == 'list' && <ListExplorer />}
+            {doc && mode == 'doc' && <DocInfo />}
         </div>
 
         {mode == 'map' && <div ref={mapContainerRef} className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">
-        <MapWrapper/>
-        
+            <MapWrapper />
+
         </div>}
+
+        <MobileSearchNav showScrollToTop={showScrollToTop} currentPosition={currentPosition} drawerContent={drawerContent || ''} scrollableContent={scrollableContent} />
 
 
     </div>

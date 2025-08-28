@@ -72,7 +72,7 @@ export default function ResultItem({hit}: {hit: any}) {
                     aria-current={isSelected ? 'page' : undefined}
                     remove={['group', 'parent', ...(isMobile ? ['nav', 'namesNav'] : [])]}
                     add={{
-                        doc: hit.fields.uuid,
+                        //doc: hit.fields.uuid,
                         details: mode == 'list' ? 'group' : details || 'doc', 
                         ...(hit.fields["group.id"] ? {group: stringToBase64Url(hit.fields["group.id"][0])} : {}),
 
