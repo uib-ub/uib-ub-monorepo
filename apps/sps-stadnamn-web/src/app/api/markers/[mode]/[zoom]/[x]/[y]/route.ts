@@ -1,8 +1,6 @@
 import { extractFacets } from '@/app/api/_utils/facets'
 import { getQueryString } from '@/app/api/_utils/query-string'
 import { postQuery } from '@/app/api/_utils/post'
-import type { NextRequest } from 'next/server'
-
 
  
 export async function GET(
@@ -16,9 +14,6 @@ export async function GET(
   const { simple_query_string } = getQueryString(reservedParams)
   const perspective = reservedParams.perspective || 'all'
   
-
-
-
   const query: Record<string, any> = {
     size: 0,
     collapse: {
@@ -68,6 +63,7 @@ export async function GET(
       query.query.bool.filter.push(...termFilters)
     }
   }
+
 
   const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch", true)
   return Response.json(data, { status: status })
