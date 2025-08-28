@@ -24,7 +24,7 @@ export default function TableExplorer() {
     const doc = searchParams.get('doc')
     const group = searchParams.get('group')
 
-    const { tableData, tableLoading, tableError } = useTableData()
+    const { tableData, tableLoading } = useTableData()
 
 
 

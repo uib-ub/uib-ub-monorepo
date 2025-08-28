@@ -52,6 +52,7 @@ export default function useTableData() {
     const { data, error, isLoading, isFetching, refetch, dataUpdatedAt } = useQuery({
         queryKey: ['tableData', page, perPage, searchQueryString, desc, asc],
         queryFn: () => tableQuery({ page, perPage, searchQueryString, desc, asc }),
+        placeholderData : (prevData) => prevData,
         refetchOnWindowFocus: false,
         staleTime: 1000 * 60 * 5, // 5 minutes
     })
