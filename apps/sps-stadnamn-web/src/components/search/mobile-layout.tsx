@@ -1,10 +1,9 @@
 'use client'
-import { useContext, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { PiBinoculars, PiBookOpen, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiListBullets, PiTreeViewFill, PiWallFill, PiWallLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeViewLight, PiArrowUp, PiCaretUpBold } from "react-icons/pi";
 import SearchResults from "./nav/results/search-results";
 import { useSearchQuery, useMode } from "@/lib/search-params";
 import StatusSection from "./status-section";
-import { SearchContext } from "@/app/search-provider";
 import TreeResults from "./nav/results/tree-results";
 import TableExplorer from "./table/table-explorer";
 import { useSearchParams } from "next/navigation";

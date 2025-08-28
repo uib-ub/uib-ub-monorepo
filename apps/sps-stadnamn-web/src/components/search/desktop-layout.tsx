@@ -7,11 +7,7 @@ import ListExplorer from "./list/list-explorer"
 import NavWindow from "./nav/nav-window"
 import DetailsWindow from "./details/details-window"
 import FuzzyWindow from "./names/names-window"
-import { SearchContext } from "@/app/search-provider"
-import { useContext, useEffect, useRef, useState } from "react"
-import Spinner from "../svg/Spinner"
 import MapWrapper from "./map-wrapper"
-import useSearchData from "@/state/hooks/search-data"
 
 export default function DesktopLayout() {    
     const searchParams = useSearchParams()
@@ -20,8 +16,6 @@ export default function DesktopLayout() {
     const doc = searchParams.get('doc')
     const details = searchParams.get('details')
     const group = searchParams.get('group')
-    const datasetTag = searchParams.get('datasetTag')
-    const { searchData } = useSearchData()
     
 
     return <main id="main" className="flex scroll-container relative w-[100svw] h-[calc(100svh-3rem)]">   

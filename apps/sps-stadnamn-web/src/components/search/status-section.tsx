@@ -1,28 +1,21 @@
 'use client'
 import { useContext } from 'react';
-import { SearchContext } from '@/app/search-provider';
 import ActiveFilters from './form/active-filters';
-import { PiCaretLeft, PiInfoFill, PiMagnifyingGlass, PiWarningFill, PiX, PiXBold } from 'react-icons/pi';
+import { PiInfoFill, PiWarningFill } from 'react-icons/pi';
 import ModeSelector from '../tabs/mode-selector';
 import { GlobalContext } from '@/app/global-provider';
 import SortSelector from './sort/sort-selector'
-import { useMode, usePerspective, useSearchQuery } from '@/lib/search-params';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Clickable from '../ui/clickable/clickable';
-import DetailsTabs from './details/details-tabs';
-import DocToolbar from './details/doc/doc-toolbar';
-import HitNavigation from './details/hit-navigation';
+import { useMode } from '@/lib/search-params';
+import { useSearchParams } from 'next/navigation';
 import useSearchData from '@/state/hooks/search-data';
 
 export default function StatusSection() {
-    const { searchBounds, searchLoading, searchError, coordinatesError, totalHits } = useSearchData()
+    const { searchBounds, searchLoading, searchError, totalHits } = useSearchData()
     const mode = useMode()
     const { isMobile } = useContext(GlobalContext)
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
     const group = searchParams.get('group')
-    const perspective = usePerspective()
-    const details = searchParams.get('details')
     const datasetTag = searchParams.get('datasetTag')
 
     return <div className={`flex flex-col gap-2 ${mode != 'map' ? 'bg-white shadow-lg rounded-md' : ''}`}> 
@@ -50,7 +43,7 @@ export default function StatusSection() {
         <span>Kunne ikkje hente søkeresultat</span>
       </div>
     }
-    { !searchError && coordinatesError && mode == 'map' && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">
+    { !searchBounds && !searchError && !searchLoading && totalHits > 0 && mode == 'map' && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">
       <PiWarningFill className="inline text-xl"/> 
       <span>Kunne ikkje hente koordinatar</span>
     </div>}

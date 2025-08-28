@@ -1,15 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MapExplorer from "./map-explorer";
-import { SearchContext } from "@/app/search-provider";
 import Spinner from "../svg/Spinner";
 import ErrorMessage from "../error-message";
-import Error from "@/app/search/error";
 import useSearchData from "@/state/hooks/search-data";
 
 export default function MapWrapper() {
 
     const [containerDimensions, setContainerDimensions] = useState<{width: number, height: number}>()
-    const { searchData, searchLoading, searchError } = useSearchData()
+    const { searchData, searchError } = useSearchData()
 
     useEffect(() => {
         const updateDimensions = () => {
