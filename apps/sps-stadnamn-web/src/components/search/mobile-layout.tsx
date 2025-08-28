@@ -438,10 +438,10 @@ export default function MobileLayout() {
         {doc && mode == 'doc' && <DocInfo/>}
         </div>
 
-        <div ref={mapContainerRef} className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">
+        {mode == 'map' && <div ref={mapContainerRef} className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6rem)] w-full bg-white rounded-md">
         <MapWrapper/>
         
-        </div>
+        </div>}
 
 
     </div>

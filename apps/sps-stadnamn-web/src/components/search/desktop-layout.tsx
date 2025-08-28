@@ -81,9 +81,9 @@ export default function DesktopLayout() {
         </div>
     
 
-        <div className="absolute top-0 right-0 h-full w-full">
+        {mode == 'map' && <div className="absolute top-0 right-0 h-full w-full">
             <MapWrapper/>   
-        </div>
+        </div>}
         
 
 
