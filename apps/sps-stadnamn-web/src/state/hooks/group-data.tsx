@@ -26,7 +26,6 @@ export default function useGroupData() {
     const { searchQueryString } = useSearchQuery()
     const group = searchParams.get('group')
     const namesNav = searchParams.get('namesNav')
-    const namesScope = searchParams.get('namesScope')
     
     // Check if names navigator is open
     const isNamesNavOpen = !!namesNav

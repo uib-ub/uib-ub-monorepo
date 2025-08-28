@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Map from "../map/map";
 import { baseMaps, baseMapKeys, defaultBaseMap, baseMapLookup } from "@/config/basemap-config";
-import { PiCheckCircleFill, PiCornersOut, PiCrop, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill,  PiStackSimpleFill } from "react-icons/pi";
+import { PiCheckCircleFill, PiCrop, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill,  PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 import {
   DropdownMenu,
@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { usePerspective, useSearchQuery } from "@/lib/search-params";
-import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker, getUnTruncated } from "./markers";
+import { getClusterMarker, getLabelMarkerIcon } from "./markers";
 import { useSearchParams } from "next/navigation";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import * as h3 from "h3-js";
@@ -19,9 +19,10 @@ import { useRouter } from "next/navigation";
 import wkt from 'wellknown';
 import { stringToBase64Url } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
-import { useInfiniteQuery, useQueries } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius } from "@/lib/map-utils";
 import useSearchData from "@/state/hooks/search-data";
+
 
 
 export default function MapExplorer({containerDimensions}: {containerDimensions: {width: number, height: number}}) {
@@ -88,7 +89,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
   // Cluster mode
   // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
-  const activeMarkerMode = markerMode === 'auto' ? (searchParams.get('q')?.length || totalHits?.value < 100000 ? 'labels' : 'counts') : markerMode
+  const activeMarkerMode = markerMode === 'auto' ? ((!searchParams.get('q')?.length || totalHits?.value > 10000 )? 'labels' : 'counts') : markerMode
 
 
 
@@ -101,7 +102,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
         placeHolder: (prevData: any) => prevData,
         queryFn: async () => {
           const queryParams = new URLSearchParams(searchQueryString);
-          const res = await fetch(`/api/markers/${cell.precision}/${cell.x}/${cell.y}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`)
+          const res = await fetch(`/api/markers/${cell.precision}/${cell.x}/${cell.y}${queryParams.toString() ? `?${queryParams.toString()}` : ''}${searchFilterParamsString ? `&totalHits=${totalHits.value}` : ''}`, { signal: controllerRef.current.signal })
           const data = await res.json()
           return data.aggregations.grid.buckets
         }
@@ -519,9 +520,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
             if (!mapInstance.current) {
               mapInstance.current = e.target;
             }
-            //console.log("MAP READY")
-            //console.log("SNAP BOUNDS", snappedBounds)
-            //console.log("RESULT BOUNDS", mapInstance.current.getBounds())
+
         }}
         zoomControl={false}
         zoomSnap={0.5}
@@ -792,7 +791,7 @@ export default function MapExplorer({containerDimensions}: {containerDimensions:
         
 
       </Map>
-
+    {/* Canvas overlay for label mode */}
     <div className={`absolute top-12 lg:top-auto right-0 flex-col lg:flex-row p-2 gap-2 lg:bottom-0 lg:left-1/2 lg:transform lg:-translate-x-1/2 flex justify-center p-2 gap-2 text-white z-[3001]`}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

@@ -1,10 +1,13 @@
 'use client'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { use, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import DocSkeleton from '@/components/doc/doc-skeleton'
 import { stringToBase64Url } from '@/lib/utils'
 import useDocData from '@/state/hooks/doc-data'
 import { GlobalContext } from '@/app/global-provider'
+import useCollapsedData from '@/state/hooks/collapsed-data'
+import Clickable from '@/components/ui/clickable/clickable'
+import { PiCaretLeftBold, PiCaretRightBold } from 'react-icons/pi'
 
 export default function HorizontalSwipe({
   children,
@@ -19,7 +22,8 @@ export default function HorizontalSwipe({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const { groupIndex, collapsedResults } = useContext(CollapsedContext)
+  const { collapsedData, collapsedLoading, collapsedHasNextPage, collapsedFetchNextPage } = useCollapsedData()
+
   const { setHighlightedGroup } = useContext(GlobalContext)
 
   const [startTouchX, setStartTouchX] = useState(0)
@@ -32,8 +36,15 @@ export default function HorizontalSwipe({
   const [committed, setCommitted] = useState<null | 'left' | 'right'>(null)
   const { docLoading } = useDocData()
 
-  const prevDoc = groupIndex ? collapsedResults?.[groupIndex - 1] : null
-  const nextDoc = groupIndex ? collapsedResults?.[groupIndex + 1] : null
+  const group = searchParams.get('group')
+  const groupDecoded = group ? atob(decodeURIComponent(group)) : null
+  const [nextGroup, setNextGroup] = useState<Record<string, any> | null>(null)
+  const [prevGroup, setPrevGroup] = useState<Record<string, any> | null>(null)
+
+  
+
+
+  
 
   const [debug, setDebug] = useState({
     touchDuration: 0,
@@ -41,6 +52,39 @@ export default function HorizontalSwipe({
     isQuickSwipe: false,
     isHorizontalSwipe: false
   })
+
+
+
+  const { flattenedPages, groupPosition } = useMemo((): { flattenedPages: any[]; groupPosition: number } => {
+      const flattenedPages = collapsedData?.pages.flatMap(page => page.data ?? []) ?? [];
+      const groupPosition = flattenedPages.findIndex(doc => doc.fields['group.id']?.[0] === groupDecoded);
+      console.log('Group Position:', groupPosition, 'for group:', groupDecoded);
+      return { flattenedPages, groupPosition };
+  }, [collapsedData, groupDecoded]);
+
+
+  useEffect(() => {
+    if (groupPosition === undefined || groupPosition === -1 || groupPosition == flattenedPages?.length - 1 && !collapsedHasNextPage) {
+      setNextGroup(null)
+      setPrevGroup(null)
+      return
+    }
+    else if (groupPosition == flattenedPages?.length - 1 && collapsedHasNextPage ) {
+      collapsedFetchNextPage()
+      return
+    }
+    else {
+      setNextGroup(flattenedPages?.[groupPosition + 1])
+      setPrevGroup(groupPosition > 0 ? flattenedPages?.[groupPosition - 1] : null)
+    }
+    
+  }, [collapsedData, groupPosition, flattenedPages, collapsedHasNextPage, collapsedFetchNextPage])
+
+  
+
+
+
+
 
 
 useEffect(() => {
@@ -77,8 +121,8 @@ useEffect(() => {
     const swipeDir = newOffset > 0 ? 'left' : 'right'
     
     // Prevent swiping if there's no target document in that direction
-    if (swipeDir === 'left' && !nextDoc) return
-    if (swipeDir === 'right' && !prevDoc) return
+    if (swipeDir === 'left' && !nextGroup) return
+    if (swipeDir === 'right' && !prevGroup) return
 
     setCurrentOffset(newOffset)
     setSwipeDirection(swipeDir)
@@ -110,13 +154,13 @@ useEffect(() => {
     const swipeDir = dx > 0 ? 'right' : 'left'
     
     // Additional check: don't commit if there's no target document
-    if (swipeDir === 'left' && !nextDoc) {
+    if (swipeDir === 'left' && !nextGroup) {
       setCommitted(null)
       setSwipeDirection(null)
       setCurrentOffset(0)
       return
     }
-    if (swipeDir === 'right' && !prevDoc) {
+    if (swipeDir === 'right' && !prevGroup) { 
       setCommitted(null)
       setSwipeDirection(null)
       setCurrentOffset(0)
@@ -147,8 +191,8 @@ useEffect(() => {
     setIsAnimating(false)
     if (!committed || navigatedRef.current) return
 
-    const targetUuid = committed === 'left' ? nextDoc?.fields?.uuid?.[0] : prevDoc?.fields?.uuid?.[0]
-    const targetGroup = committed === 'left' ? nextDoc?.fields?.['group.id']?.[0] : prevDoc?.fields?.['group.id']?.[0]
+    const targetUuid = committed === 'left' ? nextGroup?.fields?.uuid?.[0] : prevGroup?.fields?.uuid?.[0]
+    const targetGroup = committed === 'left' ? nextGroup?.fields?.['group.id']?.[0] : prevGroup?.fields?.['group.id']?.[0]
     if (!targetUuid) {
       // Nothing to navigate to; reset
       setCommitted(null)
@@ -171,7 +215,7 @@ useEffect(() => {
       }
     }
     
-    router.replace(`${pathname}?${params.toString()}`)
+    router.push(`${pathname}?${params.toString()}`)
   }
 
   return (
@@ -218,6 +262,15 @@ useEffect(() => {
         {children}
         
       </div>
+      <div className="flex pb-12 gap-3 px-4">
+      <Clickable add={{group: stringToBase64Url(prevGroup?.fields?.['group.id']?.[0] || ''), doc: prevGroup?.fields?.uuid[0]}} className="flex items-center gap-2 pr-4 btn text-xl">
+        <PiCaretLeftBold aria-hidden="true"/>
+        Forrige
+      </Clickable>
+      <Clickable add={{group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''), doc: nextGroup?.fields?.uuid[0]}} className="flex items-center gap-2 pl-4 btn text-xl">
+        Neste <PiCaretRightBold aria-hidden="true" />
+        </Clickable>
+        </div>
     </div>
   )
 }

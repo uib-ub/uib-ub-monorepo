@@ -14,7 +14,7 @@ const collapsedDataQuery = async ({
 }: { pageParam?: number; searchQueryString: string }) => {       
     const res = await fetch(`/api/search/collapsed?${searchQueryString}&size=${PER_PAGE}&from=${pageParam * PER_PAGE}`)
     if (!res.ok) {
-        throw new Error('Failed to fetch page')
+        throw new Error(res.status.toString())
     }
     const data = await res.json()
     
@@ -31,8 +31,8 @@ export default function useCollapsedData() {
     const { searchQueryString } = useSearchQuery()
     
     const {
-        data: collapsedData,
-        error: collapsedError,
+        data,
+        error,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
@@ -52,15 +52,15 @@ export default function useCollapsedData() {
     })
 
     return {
-        collapsedData,
-        collapsedError,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-        isFetching,
-        isLoading,
-        status,
-        initialPage: initialPageRef.current,
+        collapsedData: data,
+        collapsedError: error,
+        collapsedFetchNextPage: fetchNextPage,
+        collapsedHasNextPage: hasNextPage,
+        isFetchingNextPage: isFetchingNextPage,
+        collapsedFetching: isFetching,
+        collapsedLoading: isLoading,
+        collapsedStatus: status,
+        collapsedInitialPage: initialPageRef.current,
 
     }
 }

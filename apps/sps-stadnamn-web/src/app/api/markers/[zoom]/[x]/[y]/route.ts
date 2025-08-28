@@ -13,6 +13,7 @@ export async function GET(
   const { termFilters, reservedParams } =  extractFacets(request)
   const { simple_query_string } = getQueryString(reservedParams)
   const perspective = reservedParams.perspective || 'all'
+  const totalHits = reservedParams.totalHits ? parseInt(reservedParams.totalHits) : undefined
   
   const query: Record<string, any> = {
     size: 0,
@@ -44,7 +45,7 @@ export async function GET(
         aggs: {
           top: {
             top_hits: {
-              size: Number(precision) > 17 ? 1000 : 3,
+              size: (Number(precision) > 17 || (totalHits && totalHits < 1000)) ? 100 : 3,
               sort: [ { "uuid": "asc" } ],
               _source: false,
               fields: ["label", "location", "group.id", "uuid"],

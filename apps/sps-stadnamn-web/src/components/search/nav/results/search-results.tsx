@@ -13,11 +13,11 @@ export default function SearchResults() {
   const {
     collapsedData,
     collapsedError,
-    fetchNextPage,
-    hasNextPage,
+    collapsedFetchNextPage,
+    collapsedHasNextPage,
     isFetchingNextPage,
-    status,
-    initialPage
+    collapsedStatus,
+    collapsedInitialPage
   } = useCollapsedData()
 
 
@@ -28,10 +28,10 @@ export default function SearchResults() {
   // Load more when scrolling to the bottom
   const handleObserver = useCallback((entries: any) => {
     const [entry] = entries
-    if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
+    if (entry.isIntersecting && collapsedHasNextPage && !isFetchingNextPage) {
+      collapsedFetchNextPage()
     }
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
+  }, [collapsedFetchNextPage, collapsedHasNextPage, isFetchingNextPage])
 
   useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, {
@@ -46,7 +46,7 @@ export default function SearchResults() {
   }, [handleObserver])
 
   // Render loading state
-  if (status === 'pending' && initialPage === 1) {
+  if (collapsedStatus === 'pending' && collapsedInitialPage === 1) {
     return (
       <div className="flex flex-col gap-2">
         {Array.from({ length: 30 }).map((_, i) => (
@@ -60,7 +60,7 @@ export default function SearchResults() {
   }
 
   // Check if there are no results
-  const hasNoResults = status === 'success' && 
+  const hasNoResults = collapsedStatus === 'success' && 
     (!collapsedData?.pages || collapsedData.pages.length === 0 || collapsedData.pages[0].data?.length === 0);
 
   return (
@@ -78,7 +78,7 @@ export default function SearchResults() {
         ))}
         
         {/* Loading more indicator — attach observer to the skeleton block */}
-        {hasNextPage && (
+        {collapsedHasNextPage && (
           <div ref={observerTarget} className="py-4 divide-y divide-neutral-200">
             {Array.from({ length:4 }).map((_, i) => (
               <div key={`loading-more-${i}`} className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1">
@@ -96,7 +96,7 @@ export default function SearchResults() {
       {searchError || collapsedError ? (
         <div className="flex justify-center">
           <div role="status" aria-live="polite" className="text-primary-600 pb-4">
-            <strong>{searchError?.status || collapsedError?.name}</strong> Det har oppstått ein feil
+            <strong>{searchError?.name || collapsedError?.name}</strong> Det har oppstått ein feil
           </div>
         </div>
       ) : hasNoResults && (
