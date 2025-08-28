@@ -9,7 +9,6 @@ import CoordinateMenu from "../details/coordinate-menu"
 import useGroupNavigation from "@/state/hooks/group-navigation"
 import React from "react"
 import { useInView } from 'react-intersection-observer'
-import { SearchContext } from "@/app/search-provider"
 import { useMode } from "@/lib/search-params"
 import useCollapsedData from "@/state/hooks/collapsed-data"
 import useSearchData from "@/state/hooks/search-data"
