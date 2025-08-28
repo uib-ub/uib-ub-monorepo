@@ -50,6 +50,9 @@ export default defineAppConfig({
       replaces: ["qualifiedReplaces", "concept"],
       replacedBy: ["qualifiedReplacedBy", "concept"],
     } as const,
+    languageProps: {
+      xlDefinition: { labelPath: ["rdf:value"], lcPath: ["@language"] },
+      prefLabel: { labelPath: ["literalForm"], lcPath: ["@language"] } } as const,
   },
   search: {
     options: {
