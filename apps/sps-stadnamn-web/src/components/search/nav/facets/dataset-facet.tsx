@@ -9,7 +9,6 @@ import { datasetTitles, typeNames, datasetTypes, datasetDescriptions, datasetSho
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/app/global-provider';
 import { formatNumber, getSkeletonLength } from '@/lib/utils';
-import { SearchContext } from '@/app/search-provider';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
 import Clickable from '@/components/ui/clickable/clickable';

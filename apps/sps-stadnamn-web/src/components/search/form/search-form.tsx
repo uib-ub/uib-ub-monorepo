@@ -9,7 +9,6 @@ import Form from 'next/form'
 import Options from './options';
 import { GlobalContext } from '@/app/global-provider';
 import IconButton from '@/components/ui/icon-button';
-import { SearchContext } from '@/app/search-provider';
 
 
 export default function SearchForm() {
