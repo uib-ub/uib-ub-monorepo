@@ -52,7 +52,7 @@ export default function ResultItem({hit}: {hit: any}) {
 
     const isGrunnord = docDataset?.includes('_g')
     const {groupCode, groupValue } = useGroup()
-    const isSelected = highlightedGroup ? highlightedGroup == stringToBase64Url(hit.fields?.['group.id']?.[0]) : groupValue == hit.fields?.['group.id']?.[0]
+    const isSelected = highlightedGroup?.current ? highlightedGroup.current == stringToBase64Url(hit.fields?.['group.id']?.[0]) : groupValue == hit.fields?.['group.id']?.[0]
 
 
     useEffect(() => {
