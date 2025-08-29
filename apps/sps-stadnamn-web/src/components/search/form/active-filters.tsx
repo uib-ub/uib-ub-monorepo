@@ -24,7 +24,7 @@ export default function ActiveFilters() {
     const perspective = usePerspective()
     const mode = useMode()
 
-    const {isMobile, setInputValue} = useContext(GlobalContext)
+    const {isMobile, inputValue} = useContext(GlobalContext)
     const fulltext = searchParams.get('fulltext')
 
     // Get boost_gt parameter for djupinnsamlingar filter
@@ -160,7 +160,7 @@ export default function ActiveFilters() {
       </Clickable>}
       {/* Search chip */}
       { searchParams.get('q') && <Clickable remove={['q']}
-      className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => {setInputValue(''); removeFilter('q', searchParams.get('q')!)}}>
+      className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => {inputValue.current = ""; removeFilter('q', searchParams.get('q')!)}}>
         <span className="flex items-center"><PiMagnifyingGlass className="text-neutral-600 !mr-1" aria-hidden="true"/>{searchParams.get('q')}</span>
         <PiX className="inline text-lg" aria-hidden="true"/>
       </Clickable>}

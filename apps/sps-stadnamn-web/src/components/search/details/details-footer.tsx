@@ -11,7 +11,6 @@ import useDocData from "@/state/hooks/doc-data"
 
 export default function DetailsFooter( {source}: {source?: any}) {
     const searchParams = useSearchParams()
-    const doc = searchParams.get('doc')
     const namesNav = searchParams.get('namesNav')
     const { docData } = useDocData()
 
@@ -21,7 +20,8 @@ export default function DetailsFooter( {source}: {source?: any}) {
 
 
     return <div className={`flex gap-2 ${isMobile ? 'justify-end' : 'justify-between'} p-2 items-center`}>
-    {doc && <CoordinateMenu/> }
+    <CoordinateMenu/>
+    {JSON.stringify(docSource?.group)}
 
     {!namesNav && docSource?.group?.id &&
       <Clickable
@@ -31,7 +31,7 @@ export default function DetailsFooter( {source}: {source?: any}) {
         <PiBinocularsFill className="text-lg text-white" aria-hidden="true"/>Namneformer
       </Clickable>
     }
-    {namesNav && group && docSource?.group?.id && docSource?.group?.id != base64UrlToString(group) && <Clickable
+    {namesNav && group && source?.group?.id && docSource?.group?.id != base64UrlToString(group) && <Clickable
         className="btn btn-outline btn-compact flex items-center gap-2 flex-shrink-0 pl-6 whitespace-nowrap h-10" 
         remove={["namesNav"]} 
         add={{group: stringToBase64Url(docSource.group.id)}}>

@@ -2,121 +2,114 @@
 import { useSearchParams } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useSearchQuery } from '@/lib/search-params';
-import useDocData from './doc-data';
 import { useEffect, useCallback } from 'react';
-import { useGroup } from '@/lib/param-hooks';
+import { useDocIndex, useGroup } from '@/lib/param-hooks';
 
-const groupDataQuery = async (group: string, searchQueryString: string, pageParam: { size: number, from: number }) => {
-        const res = await fetch(`/api/search/group?${searchQueryString}&group=${group}&size=${pageParam.size}&from=${pageParam.from}`)
-        if (!res.ok) {
-            throw new Error('Failed to fetch group')
-        }
-        const data = await res.json()
-        
-        return {
-            hits: data.hits?.hits || [],
-            total: data.hits?.total,
-            size: pageParam.size,
-            from: pageParam.from
-        }
+const groupDataQuery = async (
+    group: string,
+    searchQueryString: string,
+    pageParam: { size: number; from: number }
+) => {
+    const res = await fetch(
+        `/api/search/group?${searchQueryString}&group=${group}&size=${pageParam.size}&from=${pageParam.from}`
+    )
+    if (!res.ok) {
+        throw new Error('Failed to fetch group')
+    }
+    const data = await res.json()
+
+    return {
+        hits: data.hits?.hits || [],
+        total: data.hits?.total,
+        size: pageParam.size,
+        from: pageParam.from,
+    }
 }
 
 export default function useGroupData() {
     const searchParams = useSearchParams()
     const { searchQueryString } = useSearchQuery()
-    const { groupCode, groupValue} = useGroup()
+    const { groupCode } = useGroup()
     const namesNav = searchParams.get('namesNav')
-    
+
     // Check if names navigator is open
     const isNamesNavOpen = !!namesNav
-    
-    const { docData, docGroup } = useDocData()
-    const docUuid = docData?._source?.uuid
-    const sameGroup = groupCode && docGroup == groupValue
 
-    // Use select to transform data and control when re-renders happen
+    // docIndex is now the driver (instead of docUuid)
+    const docIndex = useDocIndex()
+
     const {
         data: processedData,
         error: groupError,
         isLoading: groupLoading,
+        isRefetching: groupRefetching,
+        isFetching: groupFetching,
         fetchNextPage,
         hasNextPage,
         status,
-        isFetchingNextPage
+        isFetchingNextPage,
     } = useInfiniteQuery({
-        queryKey: ['group', groupCode, isNamesNavOpen, searchQueryString],
-        queryFn: async ({ pageParam }) => groupCode ? groupDataQuery(groupCode, searchQueryString, pageParam) : null,
+        queryKey: ['group', groupCode, isNamesNavOpen, searchQueryString, docIndex],
+        queryFn: async ({ pageParam }) =>
+            groupCode ? groupDataQuery(groupCode, searchQueryString, pageParam) : null,
 
-        // Use larger initial size when names navigator is open
-        initialPageParam: isNamesNavOpen ? { size: 1000, from: 0 } : { size: 5, from: 0 },
+        // Use larger initial size when names navigation is open
+        initialPageParam: isNamesNavOpen
+            ? { size: 1000, from: 0 }
+            : { size: docIndex + 2, from: 0 },
+
         getNextPageParam: (lastPage, allPages) => {
-            if (!lastPage || !lastPage.hits.length) {
-                return undefined
-            }
-            
-            const totalFetched = allPages.reduce((sum, page) => sum + (page?.hits?.length || 0), 0)
-            const allHits = allPages.flatMap(page => page?.hits || [])
+            if (!lastPage || !lastPage.hits.length) return undefined
+
+            const totalFetched = allPages.reduce(
+                (sum, page) => sum + (page?.hits?.length || 0),
+                0
+            )
             const totalData = allPages[0]?.total
             const allDataFetched = totalFetched >= (totalData?.value || 0)
-            
-            // Stop if all data is fetched
-            if (allDataFetched) {
-                return undefined
-            }
-            
-            // For names navigation, always fetch all data
+
+            if (allDataFetched) return undefined
+
+            // ✅ Names navigation: fetch everything
             if (isNamesNavOpen) {
                 const remainingItems = (totalData?.value || 0) - totalFetched
-                if (remainingItems <= 0) {
-                    return undefined
-                }
+                if (remainingItems <= 0) return undefined
                 const nextSize = Math.min(remainingItems, 1000)
-                const nextFrom = totalFetched
-                return { size: nextSize, from: nextFrom }
+                return { size: nextSize, from: totalFetched }
             }
-            
-            // Regular pagination logic for document view
-            const docFound = docUuid && allHits.some((hit: any) => hit._source?.uuid === docUuid)
-            const docIndex = docUuid ? allHits.findIndex((hit: any) => hit._source?.uuid === docUuid) : -1
-            const isDocLast = docIndex === allHits.length - 1 && docIndex >= 0
-            
-            // Continue fetching if:
-            // 1. Document should be in results but isn't found yet
-            // 2. sameGroup is true (continue until total)
-            // 3. Document is the last one (fetch one more for next button)
-            const shouldContinue = (docUuid && docGroup === groupValue && !docFound) ||
-                                  sameGroup ||
-                                  isDocLast
-            
-            if (!shouldContinue) {
-                return undefined
+
+            // ✅ Regular doc view: fetch until we reach docIndex
+            if (docIndex != null && totalFetched <= docIndex) {
+                const nextSize = Math.min(lastPage.size * 2, 100)
+                return { size: nextSize, from: totalFetched }
             }
-            
-            const nextSize = Math.min(lastPage.size * 2, 100)
-            const nextFrom = totalFetched
-            
-            return nextSize <= 100 ? { size: nextSize, from: nextFrom } : undefined
+
+            return undefined
         },
+
         enabled: !!groupCode,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
-        // Transform data and control when to expose it
-        select: useCallback((data: any) => {
-            const allHits = data?.pages?.flatMap((page: any) => page?.hits || []) || []
-            // Get total from first page since it's the same across all pages
-            const totalData = data?.pages?.[0]?.total
-            const docFound = docUuid && allHits.some((hit: any) => hit._source?.uuid === docUuid)
-            const allDataFetched = !data?.pageParams || allHits.length >= (totalData?.value || 0)
-            
-            // Always expose data if names navigation is open
-            return {
-                allHits: allHits,
-                totalData: totalData,
-                docFound,
-                shouldExposeData: isNamesNavOpen || !docUuid || docFound || allDataFetched
-            }
-        }, [docUuid, isNamesNavOpen]),
-        // Only re-render when data actually changes (not on intermediate fetches)
+        placeholderData: (prevData) => prevData,
+        // Transform data and expose only when ready
+        select: useCallback(
+            (data: any) => {
+                const allHits =
+                    data?.pages?.flatMap((page: any) => page?.hits || []) || []
+                const totalData = data?.pages?.[0]?.total
+                const allDataFetched =
+                    !data?.pageParams || allHits.length >= (totalData?.value || 0)
+
+                return {
+                    allHits,
+                    totalData,
+                    shouldExposeData:
+                        isNamesNavOpen || allHits.length > docIndex || allDataFetched,
+                }
+            },
+            [docIndex, isNamesNavOpen]
+        ),
+
         notifyOnChangeProps: ['data', 'error'],
     })
 
@@ -127,14 +120,15 @@ export default function useGroupData() {
         }
     }, [isNamesNavOpen, hasNextPage, isFetchingNextPage, fetchNextPage])
 
-    return { 
+    return {
         groupData: processedData?.allHits || [],
         groupTotal: processedData?.totalData || null,
-        groupError, 
-        groupLoading: groupLoading || (isFetchingNextPage && !processedData?.shouldExposeData),
+        groupError,
+        groupLoading, //|| (isFetchingNextPage && !processedData?.shouldExposeData),
+        groupRefetching,
+        groupFetching,
         fetchMore: fetchNextPage,
         canFetchMore: hasNextPage,
-        groupStatus: status
+        groupStatus: status,
     }
 }
-

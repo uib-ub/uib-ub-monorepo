@@ -1,6 +1,7 @@
 import { getSortArray, treeSettings } from '@/config/server-config'
 import { postQuery } from './post'
 import { fieldConfig } from '@/config/search-config'
+import { datasetTitles } from '@/config/metadata-config'
 
 export async function fetchDoc(params: {uuid: string | string[], dataset?: string}) {
     'use server'
@@ -102,100 +103,6 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
 
 
 
-  export async function fetchStats(dataset?: string) {
-    'use server'
-    const query = {
-    "size": 0,
-    "aggs": {
-        "snid": {
-            "filter": {
-                "bool": {
-                    "must": [
-                        {
-                            "term": {
-                                "_index": `search-stadnamn-${process.env.SN_ENV}-search`
-                            }
-                        },
-                    ]
-                }
-            },
-            "aggs": {
-                "indices": {
-                    "terms": {
-                        "field": "_index"
-                    }
-                }
-            }
-        },
-        "datasets": {
-            "filter": {
-                "bool": {
-                    "must_not": [
-                        {
-                            "term": {
-                                "_index": `search-stadnamn-${process.env.SN_ENV}-search`
-                            }
-                        },           
-                    ],
-                    ...(dataset ? {
-                        "must": [
-                            {
-                                "term": {
-                                    "_index": `search-stadnamn-${process.env.SN_ENV}-${dataset}`
-                                }
-                            }
-                        ]
-                    } : {})
-                }
-            },
-            "aggs": {
-                "indices": {
-                    "terms": {
-                        "field": "_index",
-                        "size": 100
-                    }
-                }
-            }
-        }
-    }
-}
-
-    const [res, status] = await postQuery(`search,search-stadnamn-${process.env.SN_ENV}-all`, query)
-    if (status != 200) {
-        return {error: "Failed to fetch stats", status: status}
-    }
-
-
-
-    //  Split the datasets into datasets amd subdatasets (the latter contain underscores)
-    const datasets = res.aggregations.datasets.indices.buckets.reduce((acc: any, bucket: any) => {
-        if (!bucket.key.includes('_')) {
-            const [ code, timestamp] = bucket.key.split('-').slice(2)
-            acc[code] = {doc_count: bucket.doc_count, timestamp: timestamp}
-        }
-        return acc
-    }, {})
-
-    const subdatasets = res.aggregations.datasets.indices.buckets.reduce((acc: any, bucket: any) => {
-        if (bucket.key.includes('_')) {
-            acc[bucket.key] = bucket.doc_count
-        }
-        return acc
-    }, {})
-    
-       
-    const snidCount = res.aggregations.snid.doc_count
-
-    // Sum of documents in datasets
-    const datasetDocs = Object.values(datasets).reduce((acc: number, dataset: any) => acc + dataset.doc_count, 0)
-    const datasetCount = Object.keys(datasets).length
-
-
-
-    return {datasetDocs, datasetCount, snidCount, datasets, subdatasets}
-}
-
-
 export async function fetchSNID(snid: string) {
     'use server'
     const query = {
@@ -277,58 +184,3 @@ export async function fetchCadastralSubunits(dataset: string, uuid: string, fiel
     
 }
 
-export async function fetchChildren(params: {
-    uuids?: string[],
-    mode?: string,
-    within?: string,
-    dataset?: string
-}): Promise<[any, number]> {
-    'use server'
-    const { uuids, mode, within, dataset } = params
-
-    if (!mode) {
-        return [{ error: "Mode is required" }, 400]
-    }
-
-    if (!uuids && !(dataset && within)) {
-        return [{ error: "Either uuids or both dataset and within are required" }, 400]
-    }
-
-    const geo = mode == 'map' && {
-        aggs: {
-            viewport: {
-                geo_bounds: {
-                    field: "location",
-                    wrap_longitude: true
-                }
-            }
-        }
-    }
-
-    const query = {
-        size: 1000,
-        _source: false,
-        fields: ["uuid","label", "attestations.label", "altLabels", "sosi", "location",
-                ...dataset && treeSettings[dataset] ? Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => key) : [],
-                ...dataset && treeSettings[dataset] ? [treeSettings[dataset].leaf.replace("__", ".")] : [],
-                ...dataset && treeSettings[dataset] ? [treeSettings[dataset].subunit.replace("__", ".")] : [],
-
-        ],
-        query: {
-            ...(uuids ? {
-                terms: {
-                    "uuid": uuids
-                }
-            } : {
-                term: {
-                    "within.keyword": within
-                }
-            })
-        },
-        ...(dataset ? {sort: treeSettings[dataset]?.sort?.map(field => field.includes("__") ? {[field.replace("__", ".")]: {nested: {path: field.split("__")[0]}}} : field) || getSortArray(dataset)} : {}),
-        ...geo || {}
-    }
-
-    const [res, status] = await postQuery(dataset || `*,-search-stadnamn-${process.env.SN_ENV}-search`, query)
-    return [res, status] as [any, number]
-}

@@ -11,7 +11,7 @@ export default function Clickable({ children, remove, add, only, link, href, rep
     if (only) {
         Object.entries(only).forEach(([key, value]) => {
             if (value != null && value !== '') {
-                newParams.set(key, value)
+                newParams.set(key, value.toString())
             }
         }
         )
@@ -25,7 +25,7 @@ export default function Clickable({ children, remove, add, only, link, href, rep
                 newParams.delete(key)
             }
             else if (value !== '') {
-                newParams.set(key, value)
+                newParams.set(key, value.toString())
             }
         })
     }

@@ -6,7 +6,7 @@ import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
 import { stringToBase64Url } from '@/lib/param-utils';
-import { useMode, usePerspective } from '@/lib/param-hooks';
+import { useGroup, useMode, usePerspective } from '@/lib/param-hooks';
 
 const uniqueLabels = (hit: any) => {
     const labels = new Set<string>();
@@ -51,8 +51,8 @@ export default function ResultItem({hit}: {hit: any}) {
     const snippetRenderer = resultRenderers[docDataset]?.snippet || defaultResultRenderer.snippet
 
     const isGrunnord = docDataset?.includes('_g')
-    const group = searchParams.get('group')
-    const isSelected = highlightedGroup ? highlightedGroup == stringToBase64Url(hit.fields?.['group.id']?.[0]) : group == stringToBase64Url(hit.fields?.['group.id']?.[0])
+    const {groupCode, groupValue } = useGroup()
+    const isSelected = highlightedGroup ? highlightedGroup == stringToBase64Url(hit.fields?.['group.id']?.[0]) : groupValue == hit.fields?.['group.id']?.[0]
 
 
     useEffect(() => {
@@ -70,7 +70,7 @@ export default function ResultItem({hit}: {hit: any}) {
                         "border-neutral-200 bg-neutral-50 border rounded-md my-1 hover:bg-neutral-100 hover:shadow-sm aria-[current='page']:border-accent-200"
                         : "border-l-accent-700 border-b border-b-neutral-200  aria-[current='page']:border-l-4"} flex items-center group hover:bg-neutral-50 no-underline `} 
                     aria-current={isSelected ? 'page' : undefined}
-                    remove={['group', 'parent', ...(isMobile ? ['nav', 'namesNav'] : [])]}
+                    remove={['group', 'docIndex', 'parent', ...(isMobile ? ['nav', 'namesNav'] : [])]}
                     add={{
                         //doc: hit.fields.uuid,
                         details: mode == 'list' ? 'group' : details || 'doc', 

@@ -1,9 +1,9 @@
 'use client'
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { PiCaretLeft, PiMagnifyingGlass, PiX } from 'react-icons/pi';
+import { PiCaretLeft, PiMagnifyingGlass, PiMapTrifold, PiX } from 'react-icons/pi';
 import { datasetTitles } from '@/config/metadata-config';
-import { useContext, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { useSearchQuery } from '@/lib/search-params';
 import Form from 'next/form'
 import Options from './options';
@@ -16,7 +16,7 @@ import { useMode } from '@/lib/param-hooks';
 export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const { isMobile, currentUrl, preferredTabs, inputValue, setInputValue } = useContext(GlobalContext)
+    const { isMobile, currentUrl, preferredTabs, inputValue } = useContext(GlobalContext)
     
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
@@ -27,21 +27,45 @@ export default function SearchForm() {
     
 
     const clearQuery = () => {
-        setInputValue(''); 
-        input.current?.focus()
+        inputValue.current = ''; 
+        if (input.current) {
+            input.current.value = '';
+            input.current.focus();
+        }
     }  
+
+    useEffect(() => {
+        if (input.current?.value && !isMobile) {
+            input.current.select();
+        }
+    }, []);
     
 
-    return pathname == '/search' ? <>   
-        <div className="sr-only xl:not-sr-only flex !px-4 divide-x-2 divide-primary-400 gap-4 overflow-clip items-center content-center !w-[calc(25svw-0.5rem)]">
+    return pathname != '/' ? <>   
+        <div className={`sr-only xl:not-sr-only flex !px-4  ${pathname=='/search' ? 'divide-primary-400 divide-x-2' : ''} gap-4 overflow-clip items-center content-center !w-[calc(25svw-0.5rem)]`}>
             <Link href="/" scroll={false} className="text-base font-serif uppercase no-underline">Stadnamnportalen</Link>
-            <h1 className="!text-lg text-neutral-800 px-3 truncate">{datasetTitles[perspective]}</h1></div>   
+            
+            { pathname == '/search' ?
+            <h1 className="!text-lg text-neutral-800 px-3 truncate">{datasetTitles[perspective]}</h1>
+            : !isMobile ? 
+            <>{currentUrl.current ? 
+            <Link scroll={false} href={currentUrl.current} className='text-lg flex !justify-self-start items-center gap-2 no-underline invisible lg:visible'><PiCaretLeft className="text-primary-600" aria-hidden="true"/>Tilbake til søket</Link>
+        : <Link scroll={false} href="/search" className='text-lg flex !justify-self-start items-center gap-2 no-underline invisible lg:visible'><PiMapTrifold className="text-neutral-700" aria-hidden="true"/>Vis kartet</Link>
+        }</> : null
+            
+            }
+            </div>   
         <div className="h-full flex grow">
 
             <Form ref={form} action="/search" className="flex w-full h-full" onSubmit={() => {
-                if (isMobile && input.current) {
+                if (!input.current) return;
+                if (isMobile) {
                     input.current.blur();
                 }
+                else {
+                    input.current.select();
+                }
+                
             }}>
 
             <div className='flex w-full pr-1 bg-white focus-within:border-b-2 focus-within:border-primary-600 xl:border-none xl:outline xl:outline-1 xl:outline-neutral-300 xl:focus-within:border-neutral-200 xl:rounded-md xl:m-1 items-center relative group focus-within:xl:outline-2 focus-within:xl:outline-neutral-600'>
@@ -52,9 +76,9 @@ export default function SearchForm() {
                 type="text" 
                 ref={input} 
                 name="q" 
+                defaultValue={searchParams.get('q') || inputValue.current || ''}
                 autoFocus={true}
-                value={inputValue} 
-                onChange={(event) => setInputValue(event.target.value)} 
+                onChange={(event) => inputValue.current = event.target.value} 
                 className={`bg-transparent pr-4 pl-4 focus:outline-none flex w-full shrink`}
             />
             
@@ -85,7 +109,7 @@ export default function SearchForm() {
      : <>
      <div className="flex gap-6">
      <Link href="/" scroll={false} className="text-md px-4 font-serif self-center uppercase no-underline">Stadnamnportalen</Link>
-     {currentUrl && !isMobile && <Link scroll={false} href={currentUrl} className='text-lg flex !justify-self-start items-center gap-2 no-underline invisible lg:visible'><PiCaretLeft className="text-primary-600" aria-hidden="true"/>Tilbake til søket</Link>}
+     
      </div>
      </>
           

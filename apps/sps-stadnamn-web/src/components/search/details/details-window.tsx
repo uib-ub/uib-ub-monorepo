@@ -3,8 +3,8 @@ import { PiX } from "react-icons/pi"
 import DocInfo from "./doc/doc-info"
 import { useRouter, useSearchParams } from "next/navigation"
 import DocSkeleton from "../../doc/doc-skeleton"
-import { useContext, useEffect, useState } from "react"
-import { useMode } from "@/lib/param-hooks"
+import { useContext, useEffect, useState, useRef } from "react"
+import { useDocIndex, useGroup, useMode } from "@/lib/param-hooks"
 import GroupDetails from "./group/group-details"
 import HitNavigation from "./hit-navigation"
 import DetailsFooter from "./details-footer"
@@ -12,7 +12,8 @@ import DetailsTabs from "./details-tabs"
 import DocToolbar from "./doc/doc-toolbar"
 import useDocData from "@/state/hooks/doc-data"
 import { GlobalContext } from "@/app/global-provider"
-import useGroupNavigation from "@/state/hooks/group-navigation"
+import useGroupData from "@/state/hooks/group-data"
+import { doc } from "prettier"
 
 
 
@@ -20,27 +21,23 @@ export default function DetailsWindow() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
     const namesNav = searchParams.get('namesNav')
-    const { docLoading, docData, docRefetching, docDataset } = useDocData()
+    
     const mode = useMode()
-    const { groupData, groupLoading, groupTotal, docIndex } = useGroupNavigation()
+    const { groupData, groupLoading, groupTotal, groupRefetching, groupFetching } = useGroupData()
     const router = useRouter()
-    const { initialUrl, setInitialUrl } = useContext(GlobalContext)
-    const [prevDocUuid, setPrevDocUuid] = useState()
-    const [nextDocUuid, setNextDocUuid] = useState()
+    const docIndex = useDocIndex()
+    const { groupCode } = useGroup()
+    const [docUpdated, setDocUpdated] = useState(false)
+    const { docLoading, docData, docDataset } = useDocData({docData: groupData?.[docIndex]})
+
+    console.log("RENDERING")
 
 
-
-
-    // Calculate prev and next doc UUIDs
     useEffect(() => {
-        if (groupData && docIndex !== -1) {
-            const prevIndex = docIndex - 1;
-            const nextIndex = docIndex + 1;
-            
-            setPrevDocUuid(prevIndex >= 0 ? groupData[prevIndex]?._source?.uuid : undefined);
-            setNextDocUuid(nextIndex < groupData.length ? groupData[nextIndex]?._source?.uuid : undefined);
-        }
-    }, [groupData, docIndex]);
+        setDocUpdated(true);
+        const timeout = setTimeout(() => setDocUpdated(false), 100);
+        return () => clearTimeout(timeout);
+    }, [docIndex, groupCode]);
 
     useEffect(() => {
       const handleKeyDown = (e: KeyboardEvent) => {
@@ -57,18 +54,18 @@ export default function DetailsWindow() {
           if (!e.shiftKey) return;
           
           if (e.key === 'ArrowLeft') {
-              if (!prevDocUuid || docIndex <= 0) return;
+              if (docIndex <= 0) return;
               e.preventDefault();
               const params = new URLSearchParams(searchParams);
-              params.set('doc', prevDocUuid);
+              params.set('docIndex', docIndex - 1 + '');
               router.push(`?${params.toString()}`);
           }
           
           if (e.key === 'ArrowRight') {
               e.preventDefault();
-              if (!nextDocUuid || docIndex >= (groupData?.length || 0) - 1) return;
+              if (docIndex >= (groupTotal?.value || 0) - 1) return;
               const params = new URLSearchParams(searchParams);
-              params.set('doc', nextDocUuid);
+              params.set('docIndex', docIndex + 1 + '');
               router.push(`?${params.toString()}`);
           }
           if (e.key === 'ArrowUp') {
@@ -79,15 +76,10 @@ export default function DetailsWindow() {
                   router.push(`?${params.toString()}`);
               }
               else if (namesNav === 'timeline') {
-                  if (initialUrl) {
-                      router.push(initialUrl)
-                      setInitialUrl(null)
-                  }
-                  else {
-                      params.delete('namesNav');
-                      params.set('details', 'doc');
-                      router.push(`?${params.toString()}`);
-                  }
+                params.delete('namesNav');
+                params.set('details', 'doc');
+                router.push(`?${params.toString()}`);
+                  
               }
               else if (details === 'group') {
                   params.set('details', 'doc');
@@ -105,7 +97,6 @@ export default function DetailsWindow() {
                   params.set('namesNav', 'timeline');
                   params.delete('details')
                   params.delete('doc')
-                  setInitialUrl(`?${searchParams.toString()}`)
 
               }
               else if (namesNav === 'timeline') {
@@ -118,12 +109,11 @@ export default function DetailsWindow() {
 
       window.addEventListener('keydown', handleKeyDown);
       return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [groupData, docIndex, searchParams, router, details, namesNav, groupTotal, initialUrl, setInitialUrl, prevDocUuid, nextDocUuid]);
+  }, [groupData, docIndex]);
     
 
     return <>
-    <div className={`flex tabs p-2 ${(details || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
-   
+    <div className={`flex tabs p-2 ${(details || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>   
 
     {mode != 'table' ? <DetailsTabs/> : <DocToolbar docData={docData}/>}
     <div className="flex gap-2 ml-auto">
@@ -148,12 +138,8 @@ export default function DetailsWindow() {
 
     {(groupTotal?.value || (!namesNav && docData)) ?
     
-    <div className={`flex flex-wrap gap-2 p-2 transition-opacity duration-200 ${groupLoading ? 'opacity-50' : 'opacity-100'}`}>
-    {!namesNav && <HitNavigation
-        docIndex={docIndex}
-        prevDocUuid={prevDocUuid}
-        nextDocUuid={nextDocUuid}
-    />}
+    <div className={`flex flex-wrap gap-2 p-2 transition-opacity duration-200 ${docLoading || groupLoading || docUpdated ? 'opacity-50' : 'opacity-100'}`}>
+    {!namesNav && <HitNavigation/>}
 
    {mode != 'table' && <DocToolbar docData={docData}/>}
 
@@ -174,11 +160,12 @@ export default function DetailsWindow() {
 
 
 
-  {(details == "doc" || (details == "group" &&  !groupData)) && <div className={`overflow-y-auto border-y stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docRefetching ? 'opacity-50' : 'opacity-100'}`}>
-      <DocInfo docParams={{docData: groupData[0]}}/>
+  {(details == "doc" || groupTotal?.value == 1) && (
+  <div className={`overflow-y-auto border-y stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docLoading || groupLoading || docUpdated ? 'opacity-50' : 'opacity-100'}`}>
+      <DocInfo docParams={{docData: groupData?.[docIndex]}}/>
   </div>
-}
-{ docLoading && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
+)}
+{ (groupLoading || docLoading) && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
 
 
   
@@ -193,7 +180,7 @@ export default function DetailsWindow() {
     
 
 
-  {!docDataset?.endsWith("_g") && <DetailsFooter/>}
+  {!docDataset?.endsWith("_g") && <DetailsFooter source={docData}/>}
 
   
 </>

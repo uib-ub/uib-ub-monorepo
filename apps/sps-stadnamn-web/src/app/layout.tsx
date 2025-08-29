@@ -10,6 +10,7 @@ import { headers } from "next/headers";
 import SearchForm from "@/components/search/form/search-form";
 import GlobalProvider from "./global-provider";
 import { fetchVocab } from "./api/_utils/actions";
+import QueryProvider from "@/state/providers/query-provider";
  
 const serif = Source_Serif_4({
   subsets: ['latin'],
@@ -64,7 +65,9 @@ export default async function RootLayout({
           </Suspense>
           <NavBar className={`hidden xl:flex lg:min-w-[calc(25svw+0.5rem)] text-lg xl:text-xl px-4 items-center shrink-0 small-caps gap-3 font-semibold mb-1 justify-end`}/>
         </header>
+         <QueryProvider>
         {children}
+        </QueryProvider>
         </GlobalProvider>
         
       </body>

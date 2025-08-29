@@ -30,7 +30,8 @@ export const RESERVED_PARAMS = [
   'namesNav',
   'facetQuery',
   'mode',
-  'geotile'
+  'geotile',
+  'docIndex'
 ] as const;
 
 export function extractFacets(request: Request) {

@@ -19,9 +19,11 @@ export default async function SearchPage() {
   const device = userAgent({headers: headersList}).device
   const isMobile = device.type === 'mobile'
 
-  
-  return    <QueryProvider>
-                  {isMobile  ? <MobileLayout/> : <DesktopLayout/>}
-            </QueryProvider>
+  if (isMobile) {
+    return <MobileLayout/>
+  }
+  else {
+    return <DesktopLayout/>
+  }
 }
 

@@ -137,7 +137,7 @@ export default function ServerFacet() {
           remove={[facet]}
           add={{ [facet]: '_true'}}
           aria-pressed={currentValue == '_true'}
-          className={`flex flex-1 items-center group gap-1 py-1.5`}
+          className={`flex flex-1 items-center group gap-1 py-1.5 px-2`}
         >
           Med <Badge count={yesCount} />
           {facetAggregation?.buckets && (
@@ -146,12 +146,6 @@ export default function ServerFacet() {
                 count={yesCount} 
                 total={allCount} 
               />
-              <span className="tabular-nums">
-                {yesCount === 0 ? '0' : yesCount === allCount ? '100' : 
-                  ((yesCount/allCount) * 100) > 99 || ((yesCount/allCount) * 100) < 1 
-                    ? ((yesCount/allCount) * 100).toFixed(1)
-                    : Math.round((yesCount/allCount) * 100)}%
-              </span>
             </div>
           )}
         </Clickable>
@@ -160,7 +154,7 @@ export default function ServerFacet() {
           remove={[facet]}
           add={{ [facet]: '_false'}}
           aria-pressed={currentValue == '_false'}
-          className={`flex flex-1 items-center group gap-1 py-1.5`}
+          className={`flex flex-1 items-center group gap-1 py-1.5 px-2`}
         >
           Utan <Badge count={noCount} />
           {facetAggregation?.buckets && (
@@ -169,12 +163,6 @@ export default function ServerFacet() {
                 count={noCount} 
                 total={allCount} 
               />
-              <span className="tabular-nums">
-                {noCount === 0 ? '0' : noCount === allCount ? '100' : 
-                  ((noCount/allCount) * 100) > 99 || ((noCount/allCount) * 100) < 1 
-                    ? ((noCount/allCount) * 100).toFixed(1)
-                    : Math.round((noCount/allCount) * 100)}%
-              </span>
             </div>
           )}
         </Clickable>

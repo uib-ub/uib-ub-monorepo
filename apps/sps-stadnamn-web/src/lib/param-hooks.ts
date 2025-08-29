@@ -13,10 +13,9 @@ export function usePerspective() {
 }
 
 
-export function useGroupIndex() {
+export function useDocIndex(): number {
     const searchParams = useSearchParams()
-    const groupIndex = parseInt(searchParams.get('groupIndex') || '1')
-    return groupIndex - 1
+    return parseInt(searchParams.get('docIndex') || '0') 
 }
 
 export function useGroup() {

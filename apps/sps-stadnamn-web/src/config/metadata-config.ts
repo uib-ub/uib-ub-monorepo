@@ -29,9 +29,8 @@ export interface DatasetPresentation {
 }
 
 export const datasetTitles: DatasetTitles = {
-    search: "Stadnamnsøk",
-    core_gnidu: "GNIDu",
     all: "Stadnamnsøk",
+    core_gnidu: "GNIDu",
     tree: "Hierarki",
     base: "Grunnord",
     deep: "Djupinnsamlingar",
@@ -68,7 +67,6 @@ export const datasetTitles: DatasetTitles = {
 }
 
 export const datasetDescriptions: Record<string, string> = {
-  search: "Stadnamnsøk samanstiller data frå ei rekke datasett og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta er lista opp som kjelder.",
   all: "Avansert søk på tvers av grunnlagsdatasetta. Til skilnad frå det overordna søket er ikkje førekomster av same stadnamn slått saman, og felta er i liten grad standardiserte på tvers av datasett. Dette søket er derfor meist eigna til å samanlikne eit utval datasett på felt som overlappar.",
   wikidata: "",
   bsn: "Bustadnavnregisteret ble skapt på 1950-talet inneholder informasjon om navn på ca 190 000 bosteder (garder, bruk og plasser) fra ti fylker i landet. Registeret består av ca. 109 000 arkivsedler. Hver seddel inneholder også informasjon om fylke, kommune, gardsnummer og bruksnummer. Stedene er georeferert utifra kartverkets moderne matrikkel - så nøyaktig som mulig.",
@@ -101,7 +99,6 @@ export const datasetDescriptions: Record<string, string> = {
 
 
 export const datasetShortDescriptions: Record<string, string> = {
-  search: "Stadnamnsøk er eit overordna søk som samanstiller data frå ei rekke datasett og slår saman resultat med tilnærma same namn. Oppslag i dei einskilde datasetta er lista opp som kjelder.",
   wikidata: "",
   all: "Avansert søk på tvers av grunnlagsdatasetta. Merk at dette søket kan vere tregare enn stadnamnsøk, og felta er ikkje like standardiserte. Det er derfor meist eigna til å samanlikne eit utval datasett på felt som overlappar.",
   bsn: "Opprettet på 1950-tallet, inneholder informasjon om navn på omtrent 190 000 bosteder fra ti fylker i Norge.",
@@ -179,13 +176,6 @@ export const licenses: Record<string, {name: string, url: string}> = {
 
 
 export const datasetPresentation: DatasetPresentation = {
-      search: {
-        img: "icon.svg",
-        alt: "Kart over Norge med stedsnavn",
-        imageAttribution: "Kartverket",
-        attribution: "Språksamlingene",
-        license: licenses.ccby4,
-      },
       all: {
         img: "icon.svg",
         alt: "Kart over Norge med stedsnavn",

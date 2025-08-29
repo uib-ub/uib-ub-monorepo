@@ -6,12 +6,12 @@ import { useSearchParams, useRouter } from "next/navigation"
 import DocSkeleton from "@/components/doc/doc-skeleton"
 import DocToolbar from "../details/doc/doc-toolbar"
 import CoordinateMenu from "../details/coordinate-menu"
-import useGroupNavigation from "@/state/hooks/group-navigation"
 import React from "react"
 import { useInView } from 'react-intersection-observer'
 import { useMode } from '@/lib/param-hooks';
 import useCollapsedData from "@/state/hooks/collapsed-data"
 import useSearchData from "@/state/hooks/search-data"
+import useGroupData from "@/state/hooks/group-data"
 
 function DocItem({ item, index, group, isMobile }: any) {
     const docDataset = item._index.split('-')[2]
@@ -50,7 +50,7 @@ function InfiniteScrollTrigger({ onLoadMore, canLoadMore }: { onLoadMore: () => 
 
 export default function ListExplorer() {
     const { isMobile } = useContext(GlobalContext)
-    const {groupData, groupLoading, groupTotal, fetchMore, canFetchMore} = useGroupNavigation()
+    const {groupData, groupLoading, groupTotal, fetchMore, canFetchMore} = useGroupData()
     const searchParams = useSearchParams()
     const group = searchParams.get('group')
     const mode = useMode()

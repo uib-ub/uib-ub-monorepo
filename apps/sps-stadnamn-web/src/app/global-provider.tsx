@@ -2,7 +2,7 @@
 import { facetConfig } from '@/config/search-config';
 import { usePerspective } from '@/lib/param-hooks';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useRef, useState } from 'react'
 
 interface FacetOption {
   sort: 'doc_count' | 'asc' | 'desc';
@@ -10,8 +10,7 @@ interface FacetOption {
 }
 
 export const GlobalContext = createContext({
-  currentUrl: null as string | null,    
-  setCurrentUrl: (url: string | null) => {},
+  currentUrl: { current: null as string | null },
   isMobile: false,
   facetOptions: {} as Record<string, Record<string, Partial<FacetOption>>>,
   updateFacetOption: (facetName: string, options: Partial<FacetOption>) => {},
@@ -21,16 +20,13 @@ export const GlobalContext = createContext({
   setPreferredTab: (dataset: string, tab: string) => {},
   visibleColumns: {} as Record<string, string[]>,
   setVisibleColumns: (dataset: string, columns: string[]) => {},
-  inputValue: '',
-  setInputValue: (value: string) => {},
-  initialUrl: null as string | null,
-  setInitialUrl: (url: string | null) => {},
-  highlightedGroup: null as string | null,
-  setHighlightedGroup: (group: string) => {},
+  inputValue: { current: '' as string },
+  initialUrl: { current: null as string | null },
+  highlightedGroup: { current: null as string | null },
 });
 
 export default function GlobalProvider({ children, isMobile, sosiVocab, coordinateVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any>, coordinateVocab: Record<string, any> }) {
-  const [currentUrl, setCurrentUrl] = useState<string | null>(null);
+  const currentUrl = useRef<string | null>(null);
   const [facetOptions, setFacetOptions] = useState<Record<string, Record<string, Partial<FacetOption>>>>({});
   const perspective = usePerspective()
   const [preferredTabs, setPreferredTabs] = useState<Record<string, string>>({});
@@ -38,9 +34,9 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
     [perspective]: ['adm', ...facetConfig[perspective].filter(item => item.table).map(facet => facet.key)]
   });
   const searchParams = useSearchParams()
-  const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
-  const [initialUrl, setInitialUrl] = useState<string | null>(null)
-  const [highlightedGroup, setHighlightedGroup] = useState<string | null>(null)
+  const inputValue = useRef<string>('');
+  const initialUrl = useRef<string | null>(null);
+  const highlightedGroup = useRef<string | null>(null);
   const searchParamsString = searchParams.toString()
   const pathname = usePathname()
 
@@ -63,8 +59,8 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
     // Set url for navigation back to search
     useEffect(() => {
       if (searchParamsString && pathname == '/search') {
-        setCurrentUrl("/search?" + searchParamsString)
-      }}, [searchParamsString, setCurrentUrl, pathname])
+        currentUrl.current = "/search?" + searchParamsString
+      }}, [searchParamsString, pathname])
 
 
   // Update localStorage when facet options change
@@ -115,7 +111,6 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
     <GlobalContext.Provider 
       value={{
         currentUrl,
-        setCurrentUrl,
         isMobile,
         facetOptions,
         updateFacetOption,
@@ -126,11 +121,8 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
         visibleColumns,
         setVisibleColumns: setVisibleColumnsHandler,
         inputValue,
-        setInputValue,
         initialUrl,
-        setInitialUrl,
-        highlightedGroup,
-        setHighlightedGroup,
+        highlightedGroup
       }}
     >
       {children}

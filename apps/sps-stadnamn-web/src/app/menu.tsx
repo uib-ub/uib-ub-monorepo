@@ -43,8 +43,8 @@ export default function Menu() {
 
     return (
         <div ref={menuRef} className="xl:hidden !ml-auto flex gap-1 items-center">
-            { pathName !== '/' && pathName != '/search' && currentUrl && 
-                <Link href={currentUrl} aria-label="Tilbake til søket"><PiCaretLeft className="text-3xl"/></Link>
+            { pathName !== '/' && pathName != '/search' && currentUrl.current && 
+                <Link href={currentUrl.current} aria-label="Tilbake til søket"><PiCaretLeft className="text-3xl"/></Link>
             }
             <button aria-controls="menu_navbar" 
                         onBlur={handleBlur}

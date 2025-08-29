@@ -1,13 +1,15 @@
 import { GlobalContext } from "@/app/global-provider";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
+import { useDocIndex } from "@/lib/param-hooks";
 import useGroupData from "@/state/hooks/group-data";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeftBold, PiCaretRightBold } from "react-icons/pi";
 
 
-export default function HitNavigation({docIndex, prevDocUuid, nextDocUuid}: {docIndex: number, prevDocUuid: string | undefined, nextDocUuid: string | undefined}) {
+export default function HitNavigation() {
     const {groupTotal } = useGroupData()
     const {isMobile} = useContext(GlobalContext)
+    const docIndex = useDocIndex()
 
 
     return <>
@@ -16,8 +18,8 @@ export default function HitNavigation({docIndex, prevDocUuid, nextDocUuid}: {doc
       <ClickableIcon 
         label="Forrige (shift + venstre piltast)" 
         className={`btn btn-outline btn-compact rounded-r-none ${isMobile ? 'rounded-full' : ''}`} 
-        add={{doc: prevDocUuid || null}}
-        disabled={!prevDocUuid}
+        add={{docIndex: docIndex -1}}
+        disabled={docIndex <= 0}
       >
         {isMobile ? <PiCaretDoubleLeft className="text-xl" aria-hidden="true"/> : <PiCaretLeftBold className="xl:text-xl text-primary-600" aria-hidden="true"/>}
       </ClickableIcon>
@@ -26,8 +28,8 @@ export default function HitNavigation({docIndex, prevDocUuid, nextDocUuid}: {doc
       <ClickableIcon 
         label="Neste (shift + høgre piltast)" 
         className={`btn btn-outline btn-compact rounded-l-none ${isMobile ? 'rounded-full' : ''}`} 
-        add={{doc: nextDocUuid || null}}
-        disabled={!nextDocUuid}
+        add={{docIndex: docIndex + 1}}
+        disabled={docIndex >= (groupTotal?.value || 1) -1}
       >
         {isMobile ? <PiCaretDoubleRight className="text-xl" aria-hidden="true"/> : <PiCaretRightBold className="xl:text-xl text-primary-600" aria-hidden="true"/>}
       </ClickableIcon>
