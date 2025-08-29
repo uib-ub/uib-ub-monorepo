@@ -36,3 +36,9 @@ defineProps({
   labelLang: { type: Array, required: true },
 });
 </script>
+
+<style>
+mark {
+  @apply bg-tpblue-100
+}
+</style>
