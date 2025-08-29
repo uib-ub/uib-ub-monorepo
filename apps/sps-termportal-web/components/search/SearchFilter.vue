@@ -59,6 +59,7 @@ import { useI18n } from "vue-i18n";
 
 const appConfig = useAppConfig();
 
+const bootstrapData = useBootstrapData();
 const orderedTermbases = useOrderedTermbases();
 const showSearchFilter = useShowSearchFilter();
 const searchDataStats = useSearchDataStats();
@@ -97,7 +98,13 @@ const filterSections = () => {
       title: null,
       key: "context",
       data: searchInterface.value.useDomain
-        ? flattenOrderDomains(Object.keys(searchDataStats.value.context || {}))
+      // TODO
+        ? intersectUnique(
+            bootstrapData.value?.domain
+              ? flattenDict(bootstrapData.value.domain, "subdomains")
+                  .map(domain => domain[0])
+              : [],
+            Object.keys(searchDataStats.value.context || {}))
         : intersectUnique(
             orderedTermbases.value.map(tb => `${tb}-3A${tb}`),
             Object.keys(searchDataStats.value.context || {})),

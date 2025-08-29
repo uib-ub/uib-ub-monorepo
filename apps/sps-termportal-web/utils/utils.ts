@@ -183,7 +183,7 @@ export function htmlify(data: string): string {
   }
 }
 
-function flattenDict(dict: object, nestingKey: string, level = 0): string[] {
+export function flattenDict(dict: object, nestingKey: string, level = 0): string[] {
   let items: string[] = [];
   for (const key in dict) {
     items.push([key, level]);
@@ -194,24 +194,6 @@ function flattenDict(dict: object, nestingKey: string, level = 0): string[] {
     }
   }
   return items;
-}
-
-export function flattenOrderDomains(domains?) {
-  const bootstrapData = useBootstrapData();
-  if (bootstrapData.value.domain) {
-    const flatDomains = flattenDict(bootstrapData.value.domain, "subdomains");
-    if (!domains) {
-      return flatDomains;
-    }
-    else {
-      return flatDomains
-        .filter(entry => domains.includes(entry[0]))
-        .map(entry => entry[0]); // TODO should be removed and handled down the line
-    }
-  }
-  else {
-    return [];
-  }
 }
 
 export const getLangOptions = () => {
