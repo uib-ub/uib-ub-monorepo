@@ -49,10 +49,9 @@ export default async function Home() {
     <Link
       href="/search"
       className="btn mt-2 self-center text-base px-6 py-2 rounded-md flex items-center gap-2"
-      aria-label="Opne kart"
     >
       <PiMapTrifold className="text-xl" />
-      Opne kartet
+      Uftorsk kartet
     </Link>
   </div>
   

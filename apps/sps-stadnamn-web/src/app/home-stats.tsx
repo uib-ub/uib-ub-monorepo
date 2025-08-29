@@ -16,7 +16,7 @@ export default function HomeStats() {
 
     return <div className="flex flex-row items-end justify-center gap-12">
   <div className="flex flex-col items-center">
-    <span className="uppercase text-xs tracking-widest text-neutral-700 mb-2">Grupper i søket</span>
+    <span className="uppercase text-xs tracking-widest text-neutral-700 mb-2">Oppslag i søket</span>
     <span className="text-3xl font-serif text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
       {(statsLoading || !statsData) ? skeleton() : (
         statsData.groupCount?.toLocaleString('nb-NO')
@@ -24,7 +24,7 @@ export default function HomeStats() {
     </span>
   </div>
   <div className="flex flex-col items-center">
-    <span className="uppercase text-xs tracking-widest text-neutral-700 mb-2">Alle oppslag</span>
+    <span className="uppercase text-xs tracking-widest text-neutral-700 mb-2">Underoppslag</span>
     <span className="text-3xl font-serif text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
       {searchLoading ? skeleton() : (
         totalHits?.value?.toLocaleString('nb-NO')

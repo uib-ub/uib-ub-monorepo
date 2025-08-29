@@ -40,7 +40,7 @@ export async function GET() {
 
     // Fetch stats and IIIF stats in parallel
     const [[res, status], iiifStats] = await Promise.all([
-        postQuery("all", query),
+        postQuery("all", query, undefined, true, ['stats']),
         fetchIIIFStats()
     ]);
 

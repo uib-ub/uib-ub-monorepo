@@ -35,7 +35,7 @@ export async function fetchIIIFStats(manifestUuid?: string) {
         }
       }
     }
-  })
+  }, undefined, true, ['iiif']);
 
   if (status !== 200) {
     return null
