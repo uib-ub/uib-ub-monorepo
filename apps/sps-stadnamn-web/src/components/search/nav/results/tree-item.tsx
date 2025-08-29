@@ -4,7 +4,7 @@ import Clickable from '@/components/ui/clickable/clickable';
 import { treeSettings } from '@/config/server-config';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
-import { useMode } from '@/lib/search-params';
+import { useMode } from '@/lib/param-hooks';
 import useDocData from '@/state/hooks/doc-data';
 export default function TreeItem({hit}: {hit: any}) {
     const searchParams = useSearchParams()

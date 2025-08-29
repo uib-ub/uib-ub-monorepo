@@ -1,7 +1,7 @@
 import { useSearchParams } from "next/navigation"
 import { useContext } from "react"
 import Clickable from "@/components/ui/clickable/clickable"
-import { base64UrlToString, stringToBase64Url } from "@/lib/utils"
+import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils"
 
 import CoordinateMenu from "./coordinate-menu"
 import { PiBinocularsFill, PiCaretRightBold } from "react-icons/pi"

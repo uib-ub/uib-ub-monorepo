@@ -1,12 +1,12 @@
 'use client'
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
-import { useContext, useRef } from 'react';
-import { PiBookOpen, PiBookOpenFill, PiBookOpenLight, PiMapPin, PiMapPinDuotone, PiMapPinFill, PiMapPinLight } from 'react-icons/pi';
+import { useRef } from 'react';
+import { PiBookOpenFill, PiBookOpenLight, PiMapPinDuotone, PiMapPinFill } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { getFieldValue } from '@/lib/utils';
 import ClickableIcon from '../ui/clickable/clickable-icon';
-import { useMode } from '@/lib/search-params';
+import { useMode } from '@/lib/param-hooks';
 import useGroupData from '@/state/hooks/group-data';
 
 

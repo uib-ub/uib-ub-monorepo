@@ -4,7 +4,7 @@ import DocInfo from "./doc/doc-info"
 import { useRouter, useSearchParams } from "next/navigation"
 import DocSkeleton from "../../doc/doc-skeleton"
 import { useContext, useEffect, useState } from "react"
-import { useMode, useSearchQuery } from "@/lib/search-params"
+import { useMode } from "@/lib/param-hooks"
 import GroupDetails from "./group/group-details"
 import HitNavigation from "./hit-navigation"
 import DetailsFooter from "./details-footer"
@@ -175,7 +175,7 @@ export default function DetailsWindow() {
 
 
   {(details == "doc" || (details == "group" &&  !groupData)) && <div className={`overflow-y-auto border-y stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docRefetching ? 'opacity-50' : 'opacity-100'}`}>
-      <DocInfo/>
+      <DocInfo docParams={{docData: groupData[0]}}/>
   </div>
 }
 { docLoading && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }

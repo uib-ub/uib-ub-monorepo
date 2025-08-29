@@ -3,13 +3,13 @@ import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query'
 
 
-const docDataQuery = async (docUuid: string, docParams?: {docData: Record<string, any>, docDataset: string}) => {
+const docDataQuery = async (docUuid: string, docParams?: {docData: Record<string, any>, docDataset?: string}) => {
 
     if (docParams) {
         return {
             docData: docParams.docData,
             docAdm: docParams.docData.adm2 + '__' + docParams.docData.adm1,
-            docDataset: docParams.docDataset,
+            docDataset: docParams.docDataset || docParams.docData._index.split('-')?.[2],
             docGroup: docParams.docData._source.group?.id
         }
     }
@@ -32,7 +32,7 @@ const docDataQuery = async (docUuid: string, docParams?: {docData: Record<string
     throw new Error('Doc not found')
 }
 
-export default function useDocData(docParams?: {docData: Record<string, any>, docDataset: string}) {
+export default function useDocData(docParams?: {docData: Record<string, any>, docDataset?: string}) {
     const searchParams = useSearchParams()
     const docUuid = docParams?.docData?._source?.uuid || searchParams.get('doc')
 

@@ -1,8 +1,8 @@
 'use client'
 import { useEffect, useRef, useState } from "react"
-import { PiBinoculars, PiBookOpen, PiDatabase, PiDatabaseFill, PiDatabaseLight, PiFunnel, PiListBullets, PiTreeViewFill, PiWallFill, PiWallLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeViewLight, PiArrowUp, PiCaretUpBold } from "react-icons/pi";
+import { PiBookOpen, PiDatabase, PiFunnel, PiListBullets, PiTreeViewFill } from "react-icons/pi";
 import SearchResults from "./nav/results/search-results";
-import { useSearchQuery, useMode } from "@/lib/search-params";
+import { useSearchQuery } from "@/lib/search-params";
 import StatusSection from "./status-section";
 import TreeResults from "./nav/results/tree-results";
 import TableExplorer from "./table/table-explorer";
@@ -11,18 +11,18 @@ import ListExplorer from "./list/list-explorer";
 import DocInfo from "./details/doc/doc-info";
 import FacetSection from "./nav/facets/facet-section";
 import ActiveFilters from "./form/active-filters";
-import { base64UrlToString, formatNumber, stringToBase64Url } from "@/lib/utils";
+import { formatNumber } from "@/lib/utils";
 import DatasetFacet from "./nav/facets/dataset-facet";
 import Clickable from "../ui/clickable/clickable";
 import GroupDetails from "./details/group/group-details";
 import NamesExplorer from "./names/names-explorer";
-import ClickableIcon from "../ui/clickable/clickable-icon";
 import InfoPopover from "../ui/info-popover";
 import useDocData from "@/state/hooks/doc-data";
 import useGroupData from "@/state/hooks/group-data";
 import MapWrapper from "./map-wrapper";
 import useSearchData from "@/state/hooks/search-data";
 import MobileSearchNav from "./details/doc/mobile-search-nav";
+import { useMode } from "@/lib/param-hooks"
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -216,10 +216,7 @@ export default function MobileLayout() {
             if (drawerRef.current && !drawerRef.current.contains(event.target as Node)
                 && mobileNav.current && !mobileNav.current.contains(event.target as Node)) {
                 if (!group && !doc) {
-                    setCurrentPosition(0)
-                    setSnappedPosition(0)
                     setDrawerContent(null)
-                    setSnapped(true)
                 }
                 else {
                     setCurrentPosition(25)

@@ -1,10 +1,11 @@
 import { useState, useEffect, useContext, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useSearchQuery, usePerspective } from '@/lib/search-params';
+import { useSearchQuery } from '@/lib/search-params';
+
 import { PiFunnel } from 'react-icons/pi';
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/app/global-provider';
-import { fieldConfig } from '@/config/search-config';
+import { usePerspective } from '@/lib/param-hooks';
 
 
 

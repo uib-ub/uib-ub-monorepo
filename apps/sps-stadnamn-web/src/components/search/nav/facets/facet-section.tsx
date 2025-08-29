@@ -1,5 +1,5 @@
 'use client'
-import { usePerspective, useSearchQuery } from "@/lib/search-params"
+import { useSearchQuery } from "@/lib/search-params"
 import ClientFacet from "./client-facet"
 import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchParams } from "next/navigation"
@@ -10,6 +10,7 @@ import { useEffect, useState } from "react"
 import { datasetTitles } from "@/config/metadata-config"
 import WikiAdmFacet from "./wikiAdm-facet"
 import { getSkeletonLength } from "@/lib/utils"
+import { usePerspective } from "@/lib/param-hooks"
 
 export default function FacetSection() {
     const perspective = usePerspective()

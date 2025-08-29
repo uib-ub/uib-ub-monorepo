@@ -5,7 +5,7 @@ import { PiInfoFill, PiWarningFill } from 'react-icons/pi';
 import ModeSelector from '../tabs/mode-selector';
 import { GlobalContext } from '@/app/global-provider';
 import SortSelector from './sort/sort-selector'
-import { useMode } from '@/lib/search-params';
+import { useMode } from '@/lib/param-hooks';
 import { useSearchParams } from 'next/navigation';
 import useSearchData from '@/state/hooks/search-data';
 

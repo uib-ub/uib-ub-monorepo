@@ -1,9 +1,9 @@
 'use client'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { stringToBase64Url } from '@/lib/utils'
+import { stringToBase64Url } from '@/lib/param-utils'
 import useCollapsedData from '@/state/hooks/collapsed-data'
-import { PiBinocularsBold, PiBinocularsLight, PiBookOpen, PiBookOpenFill, PiBookOpenLight, PiCaretLeftBold, PiCaretRightBold, PiCaretUpBold, PiDatabaseFill, PiDatabaseLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight } from 'react-icons/pi'
+import { PiBinocularsBold, PiBinocularsLight, PiBookOpenFill, PiBookOpenLight, PiCaretLeftBold, PiCaretRightBold, PiCaretUpBold, PiDatabaseFill, PiDatabaseLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight } from 'react-icons/pi'
 import ClickableIcon from '@/components/ui/clickable/clickable-icon'
 
 export default function MobileSearchNav({ currentPosition, drawerContent, showScrollToTop, scrollableContent }: { currentPosition: number, drawerContent: string, showScrollToTop: boolean, scrollableContent: React.RefObject<HTMLDivElement> }) {
@@ -14,7 +14,6 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
   const groupDecoded = group ? atob(decodeURIComponent(group)) : null
   const [nextGroup, setNextGroup] = useState<Record<string, any> | null>(null)
   const [prevGroup, setPrevGroup] = useState<Record<string, any> | null>(null)
-  const nav = searchParams.get('nav')
   const details = searchParams.get('details')
   const datasetTag = searchParams.get('datasetTag')
   const namesNav = searchParams.get('namesNav')

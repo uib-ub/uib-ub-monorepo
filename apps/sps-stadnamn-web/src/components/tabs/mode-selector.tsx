@@ -1,11 +1,10 @@
 import { useSearchParams } from "next/navigation";
-import { PiBookOpenFill, PiBookOpenLight, PiMapTrifold, PiMapTrifoldFill, PiMapTrifoldLight, PiTableFill, PiTableLight } from "react-icons/pi";
+import { PiBookOpenFill, PiBookOpenLight, PiMapTrifoldFill, PiMapTrifoldLight, PiTableFill, PiTableLight } from "react-icons/pi";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { useContext } from "react";
 import { GlobalContext } from "@/app/global-provider";
-import { usePerspective, useMode } from "@/lib/search-params";
+import { usePerspective, useMode } from "@/lib/param-hooks";
 import { contentSettings } from "@/config/server-config";
-import useDocData from "@/state/hooks/doc-data";
 
 export default function ModeSelector() {
     const searchParams = useSearchParams()
@@ -13,7 +12,6 @@ export default function ModeSelector() {
     const perspective = usePerspective()
     const mode = useMode()
     const { setPreferredTab, isMobile } = useContext(GlobalContext)
-    const {docDataset} = useDocData()
     const group = searchParams.get('group')
 
     return <div className={`inline-flex tabs ${mode == 'map' ? 'rounded-br-md lg:rounded-md shadow-lg bg-white' : ''} ${isMobile ? 'pl-2 pt-2 pr-1 pb-1' : ' p-2 gap-1'}`} role="tablist">

@@ -1,40 +1,7 @@
 import { useSearchParams } from 'next/navigation'
 import { fieldConfig } from '@/config/search-config';
-import { contentSettings } from '@/config/server-config';
+import { usePerspective } from './param-hooks';
 
-export function useQueryWithout(omit : string[]) {
-    const params = useSearchParams()
-    const paramsArray = Array.from(params.entries());
-    // IF in omit or first character is underscore
-    return  paramsArray.filter(([key]) => !omit.includes(key) && key[0] !== '_');
-
-}
-
-export function useQueryStringWithout(omit : string[]) {
-    return new URLSearchParams(useQueryWithout(omit)).toString();
-}
-
-export function usePerspective() {
-    const searchParams = useSearchParams()
-    const datasetParams = searchParams.getAll('indexDataset')
-    if (datasetParams.length == 1) {
-        return datasetParams[0]
-    }
-    return 'all'
-}
-
-export function useMode() {
-    const searchParams = useSearchParams()
-    const datasetTag = searchParams.get('datasetTag')
-    const perspective = usePerspective()
-
-    if (datasetTag == 'base') {
-        return 'list'
-    }
-
-
-    return searchParams?.get('mode') || contentSettings[perspective]?.display || 'map'
-}
 
 
 /**

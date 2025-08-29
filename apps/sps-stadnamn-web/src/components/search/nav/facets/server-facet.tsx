@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { usePerspective, useSearchQuery } from '@/lib/search-params';
+import { useSearchQuery } from '@/lib/search-params';
 import { facetConfig, fieldConfig } from '@/config/search-config';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 
@@ -10,6 +10,7 @@ import FacetToolbar from './facet-toolbar';
 import { formatNumber, getSkeletonLength } from '@/lib/utils';
 import Clickable from '@/components/ui/clickable/clickable';
 import PercentageCircle from './percentage-circle';
+import { usePerspective } from '@/lib/param-hooks';
 
 const Badge = ({ count }: { count: number }) => {
   return (

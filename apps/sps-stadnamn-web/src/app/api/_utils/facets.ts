@@ -1,7 +1,7 @@
 import { datasetTitles, datasetTypes } from "@/config/metadata-config";
 import { baseAllConfig } from "@/config/search-config";
 import { treeSettings } from "@/config/server-config";
-import { base64UrlToString } from "@/lib/utils";
+import { base64UrlToString } from "@/lib/param-utils";
 
 export const RESERVED_PARAMS = [
   'q',

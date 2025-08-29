@@ -1,7 +1,7 @@
 'use client'
 import { fieldConfig } from "@/config/search-config"
 import { datasetTitles } from "@/config/metadata-config"
-import { usePerspective, useMode, useSearchQuery } from "@/lib/search-params"
+import { useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PiCaretDownBold, PiMagnifyingGlass, PiTrash, PiX } from "react-icons/pi"
 import { useContext } from "react"
@@ -14,6 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
+import { usePerspective, useMode } from "@/lib/param-hooks"
 
 
 export default function ActiveFilters() {

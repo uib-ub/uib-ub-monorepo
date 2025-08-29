@@ -1,22 +1,20 @@
 import { GlobalContext } from "@/app/global-provider";
 import IconButton from "@/components/ui/icon-button";
 import { facetConfig } from "@/config/search-config";
-import { usePerspective, useSearchQuery } from "@/lib/search-params";
+import { usePerspective } from "@/lib/param-hooks";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useContext } from "react";
-import { PiFunnelSimple, PiPushPin, PiPushPinSlash, PiSortDescending, PiSortAscending, PiTrash } from "react-icons/pi";
+import { PiFunnelSimple, PiSortDescending, PiSortAscending, PiTrash } from "react-icons/pi";
 
 export default function FacetToolbar() {
     const perspective = usePerspective()
     const {facetOptions, updateFacetOption } = useContext(GlobalContext)
     const searchParams = useSearchParams()
     const facet = searchParams.get('facet') || 'adm'
-    const {facetFilters} = useSearchQuery()
     const router = useRouter()
 
     const currentFacet = facet || facetConfig[perspective][0]?.key
 
-    const pinned = facetOptions[perspective]?.[currentFacet]?.pinningActive
     const sortMode = facetOptions[perspective]?.[currentFacet]?.sort
     
 

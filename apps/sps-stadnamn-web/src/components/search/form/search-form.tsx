@@ -1,14 +1,16 @@
 'use client'
 import Link from 'next/link';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { PiCaretLeft, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 import { datasetTitles } from '@/config/metadata-config';
-import { useContext, useEffect, useRef, useState } from 'react';
-import { usePerspective, useMode, useSearchQuery } from '@/lib/search-params';
+import { useContext, useRef } from 'react';
+import { useSearchQuery } from '@/lib/search-params';
 import Form from 'next/form'
 import Options from './options';
 import { GlobalContext } from '@/app/global-provider';
 import IconButton from '@/components/ui/icon-button';
+import { usePerspective } from '@/lib/param-hooks';
+import { useMode } from '@/lib/param-hooks';
 
 
 export default function SearchForm() {

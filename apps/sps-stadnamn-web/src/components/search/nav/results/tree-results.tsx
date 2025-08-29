@@ -2,7 +2,7 @@
 import { useContext, useEffect } from "react"
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { usePerspective } from "@/lib/search-params";
+import { usePerspective } from "@/lib/param-hooks";
 import TreeItem from "./tree-item";
 import { treeSettings } from "@/config/server-config";
 import Clickable from "@/components/ui/clickable/clickable";

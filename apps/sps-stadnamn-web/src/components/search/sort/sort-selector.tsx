@@ -1,7 +1,7 @@
-import { PiArrowCounterClockwise, PiCaretDown, PiCaretDownBold, PiSortAscending, PiSortDescending, PiTrash } from "react-icons/pi"
+import { PiCaretDownBold, PiSortAscending, PiSortDescending, PiTrash } from "react-icons/pi"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { facetConfig } from "@/config/search-config"
-import { usePerspective } from "@/lib/search-params"
+import { usePerspective } from '@/lib/param-hooks';
 import { contentSettings } from "@/config/server-config"
 import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchParams } from "next/navigation"

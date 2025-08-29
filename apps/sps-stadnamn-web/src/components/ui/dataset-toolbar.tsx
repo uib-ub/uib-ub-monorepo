@@ -5,7 +5,7 @@ import { PiCaretRight, PiMagnifyingGlass, PiTreeView, PiWall } from "react-icons
 import { datasetPresentation, datasetTitles } from "@/config/metadata-config";
 import { GlobalContext } from "@/app/global-provider";
 import { useContext } from "react";
-import { useMode } from "@/lib/search-params";
+import { useMode } from '@/lib/param-hooks';
 
 const icons: {[key: string]: JSX.Element} ={
     "base": <PiWall className="text-neutral-800" aria-hidden="true"/>,

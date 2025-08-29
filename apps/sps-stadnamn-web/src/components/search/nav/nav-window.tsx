@@ -1,4 +1,4 @@
-import { useMode } from "@/lib/search-params";
+import { useMode } from '@/lib/param-hooks';
 import { PiArchiveFill, PiArchiveLight, PiDatabaseFill, PiDatabaseLight, PiFunnelFill, PiFunnelLight } from "react-icons/pi";
 import { useTransition } from "react";
 import FacetSection from "./facets/facet-section";

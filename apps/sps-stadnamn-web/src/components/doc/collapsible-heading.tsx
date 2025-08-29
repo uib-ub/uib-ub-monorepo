@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold } from "react-icons/pi";
 import { usePathname } from "next/navigation";
-import { useMode } from "@/lib/search-params";
+import { useMode } from '@/lib/param-hooks';
 export default function CollapsibleHeading(props: {
   title: string;
   children: React.ReactNode;

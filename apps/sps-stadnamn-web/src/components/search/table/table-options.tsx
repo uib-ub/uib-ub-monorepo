@@ -1,9 +1,9 @@
 import { facetConfig } from "@/config/search-config";
 import { GlobalContext } from "@/app/global-provider";
 import { useContext, useState } from "react";
-import { usePerspective } from "@/lib/search-params";
+import { usePerspective } from '@/lib/param-hooks';
 import { contentSettings } from "@/config/server-config";
-import { PiArrowCounterClockwise, PiCaretDownBold, PiCaretUpBold, PiFunnel } from "react-icons/pi";
+import { PiArrowCounterClockwise, PiFunnel } from "react-icons/pi";
 import { DownloadButton } from "./download-button";
 import Clickable from "@/components/ui/clickable/clickable";
 import { formatCadastre } from "@/config/result-renderers";

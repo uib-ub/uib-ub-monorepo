@@ -1,7 +1,7 @@
 import ClickableIcon from "../../ui/clickable/clickable-icon"
 import { PiX } from "react-icons/pi"
 import { useSearchParams } from "next/navigation"
-import { useMode } from "@/lib/search-params"
+import { useMode } from '@/lib/param-hooks';
 import NamesExplorer from "./names-explorer"
 import InfoPopover from "@/components/ui/info-popover"
 

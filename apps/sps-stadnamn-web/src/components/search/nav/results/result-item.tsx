@@ -1,11 +1,12 @@
 'use client'
 import { resultRenderers, defaultResultRenderer } from '@/config/result-renderers';
-import { useMode, usePerspective, useSearchQuery } from '@/lib/search-params';
+import { useSearchQuery } from '@/lib/search-params';
 import { useRef, useEffect, useContext } from 'react';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/app/global-provider';
-import { stringToBase64Url } from '@/lib/utils';
+import { stringToBase64Url } from '@/lib/param-utils';
+import { useMode, usePerspective } from '@/lib/param-hooks';
 
 const uniqueLabels = (hit: any) => {
     const labels = new Set<string>();
@@ -38,7 +39,6 @@ export default function ResultItem({hit}: {hit: any}) {
     const mode = useMode()
     const { highlightedGroup } = useContext(GlobalContext)
     const details = searchParams.get('details')
-    const datasetTag = searchParams.get('datasetTag')
     const { searchFilterParamsString } = useSearchQuery()
 
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title

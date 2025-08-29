@@ -1,5 +1,5 @@
 import { facetConfig } from "@/config/search-config";
-import { usePerspective, useSearchQuery } from "@/lib/search-params";
+import { useSearchQuery } from "@/lib/search-params";
 import { useRouter } from "next/navigation";
 import { PiDownload, PiX } from "react-icons/pi";
 import {
@@ -14,6 +14,7 @@ import {
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
 import { contentSettings } from "@/config/server-config";
+import { usePerspective } from "@/lib/param-hooks";
 
 
 

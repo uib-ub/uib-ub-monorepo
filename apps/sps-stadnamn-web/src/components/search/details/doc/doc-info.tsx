@@ -4,7 +4,6 @@ import { useSearchParams } from "next/navigation"
 import { PiInfoFill } from "react-icons/pi"
 import ClientThumbnail from "../../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
-import { usePerspective, useMode } from "@/lib/search-params"
 import { useContext, useMemo } from "react"
 import { treeSettings } from "@/config/server-config"
 import CadastreBreadcrumb from "./cadastre-breadcrumb"
@@ -19,10 +18,11 @@ import { getFieldValue } from "@/lib/utils"
 import ErrorMessage from "@/components/error-message"
 import Timeline from "@/components/doc/timeline"
 import useDocData from "@/state/hooks/doc-data"
+import { usePerspective, useMode } from "@/lib/param-hooks"
 
 
 
-export default function DocInfo({docParams}: {docParams?: {docData: Record<string, any>, docDataset: string}}) {
+export default function DocInfo({docParams}: {docParams?: {docData: Record<string, any>, docDataset?: string}}) {
     const searchParams = useSearchParams()
     const perspective = usePerspective()
     const { docDataset, docData } = useDocData(docParams)

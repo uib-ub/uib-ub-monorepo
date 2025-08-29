@@ -10,18 +10,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { usePerspective, useSearchQuery } from "@/lib/search-params";
+import { useSearchQuery } from "@/lib/search-params";
 import { getClusterMarker, getLabelMarkerIcon } from "./markers";
 import { useSearchParams } from "next/navigation";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import * as h3 from "h3-js";
 import { useRouter } from "next/navigation";
 import wkt from 'wellknown';
-import { stringToBase64Url } from "@/lib/utils";
+import { stringToBase64Url } from "@/lib/param-utils";
 import useDocData from "@/state/hooks/doc-data";
 import { useQueries } from "@tanstack/react-query";
 import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius } from "@/lib/map-utils";
 import useSearchData from "@/state/hooks/search-data";
+import { usePerspective } from "@/lib/param-hooks";
 
 
 
@@ -396,27 +397,9 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     return {
       click: () => {
         const newQueryParams = new URLSearchParams(searchParams)
-
-
-        newQueryParams.set('doc', selected?.uuid[0])
         newQueryParams.set('details', details)
-
-        if (selected?.["group.id"]) {
-          newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
-        }
-        else {
-          newQueryParams.delete('group')
-        }
-
+        newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
         router.push(`?${newQueryParams.toString()}`)
-
-        if (hits && hits.length > 1) {
-          //setSameMarkerList([...hits].sort((a, b) => a.fields.label[0].localeCompare(b.fields.label[0], 'nb')))
-        }
-        else {
-
-          //setSameMarkerList([])
-        }
       }
     }
   }

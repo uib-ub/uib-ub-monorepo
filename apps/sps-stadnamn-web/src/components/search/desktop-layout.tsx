@@ -1,5 +1,5 @@
 'use client'
-import { useMode } from "@/lib/search-params"
+import { useMode } from '@/lib/param-hooks';
 import StatusSection from "./status-section"
 import TableExplorer from "./table/table-explorer"
 import { useSearchParams } from "next/navigation"

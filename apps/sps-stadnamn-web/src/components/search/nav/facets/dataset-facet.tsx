@@ -1,10 +1,10 @@
-import { useState, useEffect, useContext, ChangeEvent, useMemo } from 'react';
+import { useState, useEffect, useContext, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { usePerspective, useSearchQuery } from '@/lib/search-params';
-import { facetConfig, fieldConfig } from '@/config/search-config';
-import { PiMagnifyingGlass, PiInfo, PiInfoFill, PiCaretDown, PiCaretRight, PiCaretDownBold, PiCaretUpBold, PiTreeView, PiTreeFill, PiTreeLight, PiTreeViewFill, PiTreeViewLight, PiDatabaseLight, PiDatabaseFill, PiMicroscopeFill, PiMicroscopeLight, PiCircleFill, PiCircleLight, PiListFill, PiListLight, PiStack, PiStackLight, PiStackFill, PiWallFill, PiWallLight } from 'react-icons/pi';
+import { useSearchQuery } from '@/lib/search-params';
+import { facetConfig } from '@/config/search-config';
+import { PiMagnifyingGlass, PiCaretRight, PiCaretDownBold, PiTreeViewFill, PiTreeViewLight, PiDatabaseLight, PiDatabaseFill, PiMicroscopeFill, PiMicroscopeLight, PiCircleFill, PiCircleLight, PiListFill, PiListLight, PiStack, PiStackLight, PiStackFill, PiWallFill, PiWallLight } from 'react-icons/pi';
 
-import { datasetTitles, typeNames, datasetTypes, datasetDescriptions, datasetShortDescriptions } from '@/config/metadata-config';
+import { datasetTitles, datasetShortDescriptions } from '@/config/metadata-config';
 
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/app/global-provider';
@@ -12,6 +12,7 @@ import { formatNumber, getSkeletonLength } from '@/lib/utils';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
 import Clickable from '@/components/ui/clickable/clickable';
+import { usePerspective } from '@/lib/param-hooks';
 
 // Memoized RegExp factory to prevent memory leaks
 const createSearchRegex = (() => {

@@ -1,6 +1,6 @@
 'use client'
 import { facetConfig } from '@/config/search-config';
-import { usePerspective } from '@/lib/search-params';
+import { usePerspective } from '@/lib/param-hooks';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { createContext, useEffect, useState } from 'react'
 

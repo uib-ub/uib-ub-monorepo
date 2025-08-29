@@ -4,7 +4,7 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { useSearchQuery } from '@/lib/search-params';
 import useDocData from './doc-data';
 import { useEffect, useCallback } from 'react';
-import { base64UrlToString } from '@/lib/utils';
+import { useGroup } from '@/lib/param-hooks';
 
 const groupDataQuery = async (group: string, searchQueryString: string, pageParam: { size: number, from: number }) => {
         const res = await fetch(`/api/search/group?${searchQueryString}&group=${group}&size=${pageParam.size}&from=${pageParam.from}`)
@@ -24,7 +24,7 @@ const groupDataQuery = async (group: string, searchQueryString: string, pagePara
 export default function useGroupData() {
     const searchParams = useSearchParams()
     const { searchQueryString } = useSearchQuery()
-    const group = searchParams.get('group')
+    const { groupCode, groupValue} = useGroup()
     const namesNav = searchParams.get('namesNav')
     
     // Check if names navigator is open
@@ -32,7 +32,7 @@ export default function useGroupData() {
     
     const { docData, docGroup } = useDocData()
     const docUuid = docData?._source?.uuid
-    const sameGroup = group && docGroup == base64UrlToString(group)
+    const sameGroup = groupCode && docGroup == groupValue
 
     // Use select to transform data and control when re-renders happen
     const {
@@ -44,8 +44,8 @@ export default function useGroupData() {
         status,
         isFetchingNextPage
     } = useInfiniteQuery({
-        queryKey: ['group', group, isNamesNavOpen, searchQueryString],
-        queryFn: async ({ pageParam }) => group ? groupDataQuery(group, searchQueryString, pageParam) : null,
+        queryKey: ['group', groupCode, isNamesNavOpen, searchQueryString],
+        queryFn: async ({ pageParam }) => groupCode ? groupDataQuery(groupCode, searchQueryString, pageParam) : null,
 
         // Use larger initial size when names navigator is open
         initialPageParam: isNamesNavOpen ? { size: 1000, from: 0 } : { size: 5, from: 0 },
@@ -84,7 +84,7 @@ export default function useGroupData() {
             // 1. Document should be in results but isn't found yet
             // 2. sameGroup is true (continue until total)
             // 3. Document is the last one (fetch one more for next button)
-            const shouldContinue = (docUuid && docGroup === group && !docFound) ||
+            const shouldContinue = (docUuid && docGroup === groupValue && !docFound) ||
                                   sameGroup ||
                                   isDocLast
             
@@ -97,7 +97,7 @@ export default function useGroupData() {
             
             return nextSize <= 100 ? { size: nextSize, from: nextFrom } : undefined
         },
-        enabled: !!group,
+        enabled: !!groupCode,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
         // Transform data and control when to expose it

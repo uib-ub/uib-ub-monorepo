@@ -1,7 +1,7 @@
 import { GlobalContext } from "@/app/global-provider"
 import Clickable from "@/components/ui/clickable/clickable"
 import { datasetTitles } from "@/config/metadata-config"
-import { base64UrlToString, getSkeletonLength } from "@/lib/utils"
+import { getSkeletonLength } from "@/lib/utils"
 import { useSearchParams } from "next/navigation"
 import { useContext, useState, useCallback, useEffect } from "react"
 import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi"
@@ -9,6 +9,7 @@ import * as h3 from 'h3-js';
 import SourceItem from "@/components/children/source-item"
 import useGroupData from "@/state/hooks/group-data"
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { base64UrlToString } from "@/lib/param-utils"
 
 export default function NamesExplorer() {
     const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({})

@@ -1,18 +1,19 @@
 import { facetConfig } from "@/config/search-config"
-import { contentSettings, treeSettings } from "@/config/server-config"
-import { usePerspective, useMode, useSearchQuery } from "@/lib/search-params"
+import { contentSettings } from "@/config/server-config"
+import { usePerspective } from "@/lib/param-hooks"
 import { useSearchParams } from "next/navigation"
-import { Fragment, useContext, useEffect, useState } from "react"
+import { Fragment, useContext } from "react"
 import { PiBookOpen, PiMapPinFill } from "react-icons/pi"
 import SortHeader from "./sort-header"
 import Pagination from "@/components/results/pagination"
 import { formatCadastre } from "@/config/result-renderers"
-import { getSkeletonLength, stringToBase64Url } from "@/lib/utils"
+import { getSkeletonLength } from "@/lib/utils"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import Clickable from "@/components/ui/clickable/clickable"
 import { GlobalContext } from "@/app/global-provider"
 import useSearchData from "@/state/hooks/search-data"
 import useTableData from "@/state/hooks/table-data"
+import { stringToBase64Url } from "@/lib/param-utils"
 
 export default function TableExplorer() {
     const perspective = usePerspective()

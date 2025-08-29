@@ -5,8 +5,7 @@ import { datasetTitles } from "@/config/metadata-config";
 import { useSearchParams } from "next/navigation";
 import { useContext } from "react";
 import { GlobalContext } from "@/app/global-provider";
-import { usePerspective, useMode } from "@/lib/search-params";
-import AudioExplorer from "./audio-explorer";
+import { useMode } from "@/lib/param-hooks"
 
 
 

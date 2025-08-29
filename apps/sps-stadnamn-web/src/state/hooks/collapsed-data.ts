@@ -2,9 +2,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useSearchQuery } from '@/lib/search-params';
-import { useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { stringToBase64Url } from '@/lib/utils';
+import { useRef } from 'react';
 
 const PER_PAGE = 40;
 
