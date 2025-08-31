@@ -1,10 +1,11 @@
 name: Publish container image for API using latest as an image tag and short-sha
 
-on: workflow_dispatch # run maually
-push:
- paths:
-   - 'apps/api/**'
-
+on: 
+  workflow_dispatch: # run maually
+  push:
+   paths:
+     - 'apps/api/**'
+     - '.github/workflows/cicd-publish-api-image.yaml'
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}-api
