@@ -35,6 +35,9 @@ jobs:
       - name: Set short SHA for tagging
         run: echo "SHORT_SHA=$(echo '${{ github.sha }}' | cut -c1-7)" >> $GITHUB_ENV
 
+      - name: Copy dockerfile to root directory
+        run: mv apps/api/Dockerfile Dockerfile.api
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
