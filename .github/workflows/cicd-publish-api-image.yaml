@@ -9,7 +9,7 @@ env:
 jobs:
   build-and-publish-image:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+   # if: github.ref == 'refs/heads/main'
 
     permissions:
       contents: read
@@ -46,3 +46,13 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.33.0
+        with:
+          image-ref:  ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest,${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ env.SHORT_SHA }}
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
