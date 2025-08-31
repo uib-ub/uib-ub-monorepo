@@ -15,7 +15,8 @@ FROM base AS builder
 COPY . .
 
 # Prune and prepare the application
-RUN npm install turbo@latest && \
+# Turbo version should be same major version as in global package.json
+RUN npm install -g turbo@^2 && \
   turbo prune api --docker
 
 # Installer stage to set up environment
