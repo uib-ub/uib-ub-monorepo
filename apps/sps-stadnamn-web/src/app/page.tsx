@@ -56,7 +56,7 @@ export default async function Home() {
       type="submit" 
       aria-label="Søk"
     >
-      <PiMagnifyingGlass className="text-3xl"/>
+      <PiMagnifyingGlass className="text-3xl xl:text-2xl"/>
     </button>
   </Form>
   </div>
@@ -80,7 +80,7 @@ export default async function Home() {
 </div>
     <Link
       href="/search"
-      className="bg-neutral-900 text-white no-underline xl:mb-12 mt-2 self-center w-full h-16 xl:h-auto xl:w-auto text-2xl pr-12 pl-8 py-4 xl:py-2 xl:pr-8 xl:pl-6 rounded-lg xl:rounded-full flex items-center gap-3 transition-colors duration-200"
+      className="bg-neutral-950/80 text-white no-underline xl:mb-16 mt-2 self-center w-full h-16 xl:h-auto xl:w-auto text-xl pr-12 pl-8 py-4 xl:py-2 xl:pr-8 xl:pl-6 rounded-lg xl:rounded-full flex items-center gap-3 transition-colors duration-200"
     >
       <PiMapTrifoldFill className="text-2xl" />
       Utforsk kartet
@@ -100,8 +100,8 @@ export default async function Home() {
 
 
 
-<div className="flex items-center self-center justify-center flex-col lg:flex-row gap-12 relative z-20 bg-neutral-100/80 w-full py-16">
-  <div className="flex flex-col md:flex-row items-center gap-6 text-neutral-950 "><UiBLogo/><div className="flex flex-col gap-1 text-center md:text-left"><h2 className="tracking-widest font-serif uppercase">Universitetet i Bergen</h2><em className="font-serif">Universitetsbiblioteket</em></div>
+<div className="flex items-center self-center justify-center flex-col lg:flex-row gap-12 relative z-20 bg-neutral-950/80 w-full py-16 text-white">
+  <div className="flex flex-col md:flex-row items-center gap-6 text-white "><UiBLogo/><div className="flex flex-col gap-1 text-center md:text-left"><h2 className="tracking-widest font-serif uppercase">Universitetet i Bergen</h2><em className="font-serif">Universitetsbiblioteket</em></div>
   </div>
   <div className="flex flex-col md:flex-row gap-6 jusitfy-between text-center">
   <div className="flex flex-col"><span className="font-semibold">Språksamlingane</span>
@@ -113,7 +113,7 @@ export default async function Home() {
   </div>
   <div className="flex flex-col items-center container gap-24 relative z-20 px-4">
   <section className="flex flex-col  gap-6" aria-labelledby="recently_added">
-    <h2 id="recently_added" className="font-semibold font-serif text-3xl text-neutral-950 text-center">Sist lagt til</h2>
+    <h2 id="recently_added" className="font-semibold font-serif text-3xl text-neutral-950/90 text-center">Sist lagt til</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {newest.map((card, index) => (
         <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">
@@ -145,7 +145,7 @@ export default async function Home() {
     </ul>
 </section>
   <section className="flex flex-col gap-6" aria-labelledby="dataset_showcase">
-    <h2 id="dataset_showcase" className="font-semibold font-serif text-3xl text-neutral-950 text-center">Utvalde datasett</h2>
+    <h2 id="dataset_showcase" className="font-semibold font-serif text-3xl text-neutral-950/90 text-center">Utvalde datasett</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {cards.map((card, index) => (
         <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">
