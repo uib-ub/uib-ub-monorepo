@@ -28,7 +28,7 @@ export default function CopyLink({ uuid, isIconButton, className }: { uuid: stri
     return (
         <button type="button" onClick={copyLink} className={className}>
             <span className="flex items-center gap-2">
-                {linkCopied == uuid ? 
+                {uuid && linkCopied == uuid ? 
                     <PiCheckBold className="xl:text-xl" aria-hidden="true"/> : 
                     <PiCopySimple className="xl:text-xl" aria-hidden="true"/>
                 }
