@@ -1,18 +1,20 @@
 'use client'
 import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query'
+import useGroupData from './group-data';
+import { useDocIndex } from '@/lib/param-hooks';
 
 
 const docDataQuery = async (docUuid: string, docParams?: {docData: Record<string, any>, docDataset?: string}) => {
-
-    if (docParams) {
+    if (docParams?.docData) {
         return {
             docData: docParams.docData,
-            docAdm: docParams.docData.adm2 + '__' + docParams.docData.adm1,
-            docDataset: docParams.docDataset || docParams.docData._index.split('-')?.[2],
+            docAdm: docParams.docData._source.adm2 + '__' + docParams.docData._source.adm1,
+            docDataset: docParams.docDataset || docParams.docData._index.split('-')[2],
             docGroup: docParams.docData._source.group?.id
         }
     }
+
 
     const res = await fetch(`/api/doc?uuid=${docUuid}`)
     if (!res.ok) {
@@ -34,7 +36,12 @@ const docDataQuery = async (docUuid: string, docParams?: {docData: Record<string
 
 export default function useDocData(docParams?: {docData: Record<string, any>, docDataset?: string}) {
     const searchParams = useSearchParams()
-    const docUuid = docParams?.docData?._source?.uuid || searchParams.get('doc')
+    const { groupData } = useGroupData()
+    const docIndex = useDocIndex()
+    
+    
+    const docUuid = searchParams.get('doc') || docParams?.docData?._source?.uuid || groupData?.[docIndex]?._source?.uuid
+    console.log("Fetching doc for uuid:", docUuid)
 
     const { data, error: docError, isLoading: docLoading, isRefetching: docRefetching, isFetchedAfterMount: docFetchedAfterMount } = useQuery({
         queryKey: ['doc', docUuid],
