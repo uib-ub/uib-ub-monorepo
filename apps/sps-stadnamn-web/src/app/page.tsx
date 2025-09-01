@@ -7,10 +7,11 @@ import { datasetTitles, datasetPresentation, publishDates, datasetShortDescripti
 import Footer from '../components/layout/footer';
 import Form from "next/form";
 import React from 'react';
-import HomeStats from "./home-stats";
 import HomeNavCards from "./home-nav-cards";
+import { fetchStats } from "./api/_utils/stats";
 
 export default async function Home() {
+  const { iiifStats, datasets, totalHits, groupCount } = await fetchStats()
   const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
     const info = datasetPresentation[code]
     return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: datasetShortDescriptions[code], subindices: info.subindices, initMode: info.initMode }
@@ -45,7 +46,20 @@ export default async function Home() {
 
 
   <div className="flex flex-col items-center gap-6">
-    <HomeStats/>
+  <div className="flex flex-row items-end justify-center gap-12">
+  <div className="flex flex-col items-center">
+    <span className="uppercase text-xs tracking-widest text-neutral-700 mb-2">Oppslag i søket</span>
+    <span className="text-3xl font-serif text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+      {groupCount?.toLocaleString('nb-NO')}
+    </span>
+  </div>
+  <div className="flex flex-col items-center">
+    <span className="uppercase text-xs tracking-widest text-neutral-700 mb-2">Underoppslag</span>
+    <span className="text-3xl font-serif text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+      {totalHits?.toLocaleString('nb-NO')}
+    </span>
+  </div>
+</div>
     <Link
       href="/search"
       className="btn mt-2 self-center text-base px-6 py-2 rounded-md flex items-center gap-2"
@@ -63,7 +77,7 @@ export default async function Home() {
 
 </div>
 
-  <HomeNavCards/>
+  <HomeNavCards iiifStats={iiifStats} datasets={datasets}/>
     </div>
 
 

@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation"
 import ListExplorer from "./list/list-explorer"
 import NavWindow from "./nav/nav-window"
 import DetailsWindow from "./details/details-window"
-import FuzzyWindow from "./names/names-window"
+import NamesWindow from "./names/names-window"
 import MapWrapper from "./map-wrapper"
 
 export default function DesktopLayout() {    
@@ -24,7 +24,7 @@ export default function DesktopLayout() {
         <div className="flex lg:gap-4 flex-col h-full w-[40svw] lg:w-full max-h-[calc(100svh-4rem)] ">
         
 
-        {  (mode == 'map' || (mode == 'table' ? details != 'doc' : true)) && !namesNav && <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
+        {  (mode == 'map' || (mode == 'table' ? details != 'doc' : true)) && !doc && <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
             <NavWindow/>  
         </section> 
         }
@@ -64,8 +64,8 @@ export default function DesktopLayout() {
         </div>
         }
 
-{  namesNav && <div className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
-        <FuzzyWindow/>       
+{  doc && <div className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${details ? 'hidden lg:flex' : 'flex'}`}>
+        <NamesWindow/>       
         </div> }
 
 

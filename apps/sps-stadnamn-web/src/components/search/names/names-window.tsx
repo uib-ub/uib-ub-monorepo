@@ -6,7 +6,7 @@ import NamesExplorer from "./names-explorer"
 import InfoPopover from "@/components/ui/info-popover"
 import useGroupData from "@/state/hooks/group-data";
 
-export default function FuzzyWindow() {
+export default function NamesWindow() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
     const mode = useMode()
@@ -23,7 +23,7 @@ export default function FuzzyWindow() {
 
     <ClickableIcon
             label="Lukk"
-            remove={["namesNav"]} 
+            remove={["namesNav", "doc"]} 
             className="ml-auto" >
             <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
     </ClickableIcon>
@@ -34,7 +34,7 @@ export default function FuzzyWindow() {
   
 
 
-    <div className="overflow-y-auto stable-scrollbar max-h-[calc(100svh-7rem)] 2xl:max-h-[calc(100svh-8.5rem)] p-4 pb-8 border-neutral-200 ">
+    <div className="overflow-y-auto stable-scrollbar max-h-[calc(100svh-7rem)] 2xl:max-h-[calc(100svh-8.5rem)] p-2 pb-8 border-neutral-200 ">
     <NamesExplorer/>
     </div>
 

@@ -17,25 +17,19 @@ export default function DetailsFooter() {
     const group = searchParams.get('group')
     const docSource = docData?._source
     const {isMobile} = useContext(GlobalContext)
+    const doc = searchParams.get('doc')
 
 
     return <div className={`flex gap-2 border-t border-neutral-200 ${isMobile ? 'justify-end' : 'justify-between'} p-2 items-center`}>
     <CoordinateMenu/>
 
-    {!namesNav && docSource?.group?.id &&
+
+    {!doc && docData?._source?.group?.id &&
       <Clickable
         aria-current={(namesNav && group == stringToBase64Url(docSource.group)) ? true : false}
         className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10" 
-        add={{group: stringToBase64Url(docSource.group.id), namesNav: namesNav || 'timeline'}}>
+        add={{doc: docData?._source?.uuid, group: stringToBase64Url(docSource.group.id)}}>
         <PiBinocularsFill className="text-lg text-white" aria-hidden="true"/>Oversikt
-      </Clickable>
-    }
-    {JSON.stringify(docSource?._source)}
-    {namesNav && group && docSource?.group?.id && docSource?.group?.id != base64UrlToString(group) && <Clickable
-        className="btn btn-outline btn-compact flex items-center gap-2 flex-shrink-0 pl-6 whitespace-nowrap h-10" 
-        remove={["namesNav"]} 
-        add={{group: stringToBase64Url(docSource.group.id)}}>
-        Vel gruppe<PiCaretRightBold className="text-primary-600" aria-hidden="true"/>
       </Clickable>
     }
   </div>

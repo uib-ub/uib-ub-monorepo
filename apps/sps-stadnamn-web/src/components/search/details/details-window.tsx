@@ -13,7 +13,6 @@ import DocToolbar from "./doc/doc-toolbar"
 import useDocData from "@/state/hooks/doc-data"
 import { GlobalContext } from "@/app/global-provider"
 import useGroupData from "@/state/hooks/group-data"
-import { doc } from "prettier"
 
 
 
@@ -29,6 +28,7 @@ export default function DetailsWindow() {
     const { groupCode } = useGroup()
     const [docUpdated, setDocUpdated] = useState(false)
     const { docLoading, docData, docDataset } = useDocData()
+    const doc = searchParams.get('doc')
 
     console.log("RENDERING")
 
@@ -119,7 +119,6 @@ export default function DetailsWindow() {
     
 
     return <>
-    {groupData.length}
     <div className={`flex tabs p-2 border-b border-neutral-200 ${(details || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
 
         {details == "doc" && <>
@@ -131,7 +130,7 @@ export default function DetailsWindow() {
     
     <div className={`flex gap-2 transition-opacity duration-200 ${docLoading || groupLoading || docUpdated ? 'opacity-50' : 'opacity-100'}`}>
 
-<DocToolbar docData={docData}/>{!namesNav && <HitNavigation/>}
+<DocToolbar docData={docData}/>{!doc && <HitNavigation/>}
    
       
   </div>
@@ -154,7 +153,7 @@ export default function DetailsWindow() {
              
     <ClickableIcon
             label="Lukk"
-            remove={[...mode == "map" && !namesNav ? ["group"] : [], "doc", "details"]}
+            remove={["doc"]}
 
             className="h-10 flex items-center p-1 pl-2" >
             <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
@@ -170,7 +169,7 @@ export default function DetailsWindow() {
 
   {(details == "doc" || groupTotal?.value == 1) && (
   <div className={`overflow-y-auto stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docLoading || groupLoading || docUpdated ? 'opacity-50' : 'opacity-100'}`}>
-      <DocInfo docParams={{docData: groupData?.[docIndex]}}/>
+      <DocInfo/>
   </div>
 )}
 { (groupLoading || docLoading) && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }

@@ -1,4 +1,4 @@
-import { fetchChildren, fetchDoc } from '@/app/api/_utils/actions'
+import { fetchDoc } from '@/app/api/_utils/actions'
 import ErrorMessage from '@/components/error-message'
 import { datasetPresentation, datasetShortDescriptions, datasetTitles } from '@/config/metadata-config'
 import { infoPageRenderers } from '@/config/info-renderers'
@@ -10,14 +10,11 @@ import CollapsibleHeading from '@/components/doc/collapsible-heading'
 import CoordinateInfo from '@/components/search/details/doc/coordinate-info'
 import { treeSettings } from '@/config/server-config'
 import ServerCadastreBreadcrumb from './server-cadastre-breadcrumb'
-import ServerSourcesList from './server-sources-list'
 import { getValueByPath } from '@/lib/utils'
 import { facetConfig } from '@/config/search-config'
-import ServerParent from './server-parent'
-import JsonLdTable from './json-ld-table'
-import { defaultDoc2jsonld, doc2jsonld } from '@/config/rdf-config'
 import { redirect, notFound } from 'next/navigation'
 import CadastralSubdivisions from '@/components/children/cadastral-subdivisions'
+import GroupList from './GroupList'
 
 export async function generateMetadata( { params }: { params: Promise<{ uuid: string }> }) {
     const { uuid } = await params
@@ -40,12 +37,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
         notFound()
     }
     
-    const [response] = await fetchChildren(
-        docData._source.children 
-            ? { uuids: docData._source.children, mode: 'table' }
-            : { within: docData._source.uuid, dataset: docDataset, mode: 'table' }
-    )
-    const children = response?.hits?.hits || []
+
 
     if (docData.error) {
         return <ErrorMessage error={docData} message="Kunne ikke hente dokumentet"/>
@@ -99,9 +91,9 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
             { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](docData?._source) : null }
 
 
-           {facetConfig[docDataset] && (docDataset != 'mu1950' || docData._source.sosi != 'gard') && <div className="flex flex-wrap gap-24">
+           {facetConfig[docDataset] && (docDataset != 'mu1950' || docData._source.sosi != 'gard') && <div className="flex flex-wrap gap-8">
         {facetConfig[docDataset]
-          ?.filter(item => item.key && !['sosi', 'datasets'].includes(item.key))
+          ?.filter(item => item.key && !['sosi', 'datasets', 'adm'].includes(item.key))
           .map((facet) => {
             const value = getValueByPath(docData._source, facet.key);
             if (!value || (Array.isArray(value) && value.length === 0)) return null;
@@ -161,11 +153,11 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
       {treeSettings[docDataset] && docData._source.sosi == 'gard' &&
       <div className="mt-4"> 
       <h2 className="">Underordna bruk</h2>
-      <CadastralSubdivisions dataset={docDataset} doc={uuid} childrenData={children} landingPage={true}/>
+      <CadastralSubdivisions dataset={docDataset} doc={uuid} childrenData={docData._source.children} landingPage={true}/>
       </div>
       }
 
-<CollapsibleHeading alwaysOpen={false} headingLevel="h2" title="Data">
+<CollapsibleHeading alwaysOpen={true} headingLevel="h2" title="Data">
 
 <div className="flex gap-4 flex-wrap my-2 mb-8 text-neutral-950">
   <Link href={"/uuid/" + docData._source.uuid + ".json"} className="flex whitespace-nowrap items-center gap-1 no-underline">
@@ -185,9 +177,6 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
 
 
 
-{<JsonLdTable jsonLd={doc2jsonld[docDataset as keyof typeof doc2jsonld] ? 
-    doc2jsonld[docDataset as keyof typeof doc2jsonld](docData._source, children) : 
-    defaultDoc2jsonld(docData._source, children)}/>}
 </CollapsibleHeading>
 
 
@@ -205,13 +194,11 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
         <Link href={"/info/datasets/" + docDataset } className="btn btn-outline">Les meir</Link>
       </div>
     </aside>
-     {docDataset != 'search' && <ServerParent uuid={uuid}/>}
-     { docDataset == 'search' && children.length > 0 && 
-      <aside className="bg-neutral-50 shadow-md !text-neutral-950 px-4 pb-4 pt-0 rounded-md">
-        <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Kjelder</h2>
-        <ServerSourcesList childrenData={children}/>
-      </aside>
-     }
+
+     
+
+      <GroupList docData={docData}/>
+     
      
 
 

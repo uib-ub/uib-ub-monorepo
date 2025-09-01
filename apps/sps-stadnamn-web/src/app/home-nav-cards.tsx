@@ -1,36 +1,21 @@
-"use client"
 import Link from "next/link";
 import { PiArchive, PiDatabase } from "react-icons/pi";
 import React from "react";
-import useStatsData from "@/state/hooks/stats-data";
 
-export default function HomeNavCards() {
-    const { statsData, iiifStats, statsLoading } = useStatsData();
-
-    const skeleton = () => (
-        <span className="inline-block bg-neutral-900/10 rounded-lg animate-pulse text-transparent w-16 h-7" />
-    );
+export default function HomeNavCards({iiifStats, datasets }: {datasets: any, iiifStats: any}) {
 
     const navCards = [
         {
             href: "/info/datasets",
             icon: <PiDatabase aria-hidden="true"/>,
-            stat: statsLoading
-                ? skeleton()
-                : statsData?.datasets
-                    ? Object.keys(statsData.datasets).length.toLocaleString('nb-NO')
-                    : "",
+            stat: Object.keys(datasets).length.toLocaleString('nb-NO'),
             title: "Datasett",
             description: "Få oversikt over kjeldegrunnlaget i Stadnamnportalen",
         },
         {
             href: "/iiif",
             icon: <PiArchive aria-hidden="true"/>,
-            stat: statsLoading
-                ? skeleton()
-                : iiifStats
-                    ? (iiifStats.images + iiifStats.audio).toLocaleString('nb-NO')
-                    : "",
+            stat: (iiifStats.images + iiifStats.audio).toLocaleString('nb-NO'),
             title: "Arkiv",
             description: "Hierarkisk utforsker for arkivressurser som faksimiler og lydopptak",
         },

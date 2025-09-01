@@ -11,7 +11,7 @@ const groupDataQuery = async (
     pageParam: { size: number; from: number }
 ) => {
     const res = await fetch(
-        `/api/search/group?${searchQueryString}&group=${group}&size=${pageParam.size}&from=${pageParam.from}`
+        `/api/group?${searchQueryString}&group=${group}&size=${pageParam.size}&from=${pageParam.from}`
     )
     if (!res.ok) {
         throw new Error('Failed to fetch group')
@@ -30,11 +30,7 @@ export default function useGroupData() {
     const searchParams = useSearchParams()
     const { searchQueryString } = useSearchQuery()
     const { groupCode } = useGroup()
-    const namesNav = searchParams.get('namesNav')
-    const details = searchParams.get('details')
 
-    // Check if names navigator is open
-    const isNamesNavOpen = !!namesNav
 
     // docIndex is now the driver (instead of docUuid)
     const docIndex = useDocIndex()
@@ -68,13 +64,6 @@ export default function useGroupData() {
 
             if (allDataFetched) return undefined
 
-            // ✅ Names navigation: fetch everything
-            if (isNamesNavOpen || details == 'group') {
-                const remainingItems = (totalData?.value || 0) - totalFetched
-                if (remainingItems <= 0) return undefined
-                const nextSize = Math.min(remainingItems, 1000)
-                return { size: nextSize, from: totalFetched }
-            }
 
             // ✅ Regular doc view: fetch until we reach docIndex
             if (docIndex != null && totalFetched <= docIndex) {
@@ -102,26 +91,22 @@ export default function useGroupData() {
                     allHits,
                     totalData,
                     shouldExposeData:
-                        isNamesNavOpen || allHits.length > docIndex || allDataFetched,
+                        allHits.length > docIndex || allDataFetched,
                 }
             },
-            [docIndex, isNamesNavOpen]
+            [docIndex]
         ),
 
         //notifyOnChangeProps: ['data', 'error'],
     })
 
-    // Automatically fetch all pages when names navigation is open
-    useEffect(() => {
-        if ((isNamesNavOpen || details == 'group') && hasNextPage && !isFetchingNextPage) {
-            fetchNextPage()
-        }
-    }, [isNamesNavOpen, hasNextPage, isFetchingNextPage, fetchNextPage, details])
+
 
     return {
         groupData: processedData?.allHits || [],
         groupTotal: processedData?.totalData || null,
         groupLabel: processedData?.allHits?.[0]?._source?.label || null,
+        groupDoc: processedData?.allHits?.[0] || null,
         groupError,
         groupLoading, //|| (isFetchingNextPage && !processedData?.shouldExposeData),
         groupRefetching,

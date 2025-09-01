@@ -6,7 +6,7 @@ import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
 import { getFieldValue } from '@/lib/utils';
 import ClickableIcon from '../ui/clickable/clickable-icon';
-import { useMode } from '@/lib/param-hooks';
+import { useGroup, useMode } from '@/lib/param-hooks';
 import useGroupData from '@/state/hooks/group-data';
 
 
@@ -19,6 +19,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
     const details = searchParams.get('details')
     const mode = useMode()
     const { groupData } = useGroupData()
+    const { groupCode, groupValue } = useGroup()
 
 
 
@@ -43,7 +44,6 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
                 className="group no-underline flex gap-1 items-center rounded-full"
                 add={{
                     doc: getFieldValue(hit, 'uuid'),
-                    //group: getFieldValue(hit, 'group'),
                     details: mode == 'map' ? 'doc' : details
                 }}
                 
@@ -55,7 +55,7 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
             </Clickable>
 
             {sourceDetails(hit)}
-            {groupData?.[0]?._source?.group.id != getFieldValue(hit, 'group.id') && <em className="ml-auto px-4">Anna gruppe</em>}
+            {groupData?.[0]?._source?.group.id != getFieldValue(hit, 'group.id') && <em className="ml-auto px-4">Liknande oppslag</em>}
             
         </div>
 }

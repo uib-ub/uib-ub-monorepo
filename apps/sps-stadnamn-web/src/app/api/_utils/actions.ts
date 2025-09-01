@@ -101,53 +101,6 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
     return {coordinateVocab, sosiVocab}
 }
 
-
-
-export async function fetchSNID(snid: string) {
-    'use server'
-    const query = {
-        query: {
-            term: {
-                "snid.keyword": snid,
-            }
-        },
-        fields: ["uuid"],
-        _source: false
-    }
-
-    const [res, status] = await postQuery('search', query)
-    if (status != 200) {
-        return {error: "Failed to fetch SNID", status: status}
-    }
-
-    return res.hits?.hits?.[0] || res
-
-}
-
-
-// Fetch snid when you have the uuid of a child
-export async function fetchSNIDParent(uuid: string) {
-    'use server'
-    const query = {
-        query: {
-            term: {
-                "children.keyword": uuid,
-            }
-        },
-        fields: ["uuid", "snid", "label", "datasets"],
-        _source: false
-    }
-
-    const [res, status] = await postQuery('search', query)
-    if (status != 200) {
-        return {error: "Failed to fetch parent", status: status}
-    }
-
-    return res.hits?.hits?.[0] || res
-
-}
-
-
 // Fetch children of a document in the same index (documents that have the uuid as the value in "within" field)
 export async function fetchCadastralSubunits(dataset: string, uuid: string, fields: string[], sortFields: string[]) {
     'use server'
