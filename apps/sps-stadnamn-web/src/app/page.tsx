@@ -67,13 +67,13 @@ export default async function Home() {
   <div className="flex flex-col xl:flex-row items-end justify-center xl:gap-12 gap-6">
   <div className="flex flex-col items-center">
     <span className="uppercase tracking-widest text-neutral-900 xl:text-sm font-semibold mb-2">Oppslag i søket</span>
-    <span className="text-4xl font-bold text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+    <span className="xl:text-3xl text-4xl font-bold text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
       {groupCount?.toLocaleString('nb-NO')}
     </span>
   </div>
   <div className="flex flex-col items-center">
     <span className="uppercase tracking-widest text-neutral-900 xl:text-sm font-semibold mb-2">Underoppslag</span>
-    <span className="text-4xl font-bold text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+    <span className="xl:text-3xl text-4xl font-bold text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
       {totalHits?.toLocaleString('nb-NO')}
     </span>
   </div>
