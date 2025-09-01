@@ -266,7 +266,6 @@ export default function NamesExplorer() {
     // Process results directly from the React Query result
     const groups = namesResult ? processResults(namesResult) : []
 
-    const groupName = group && base64UrlToString(group).split('_').slice(2).join('_')
     
     return <>        
         <div className="flex flex-col gap-4">
@@ -412,7 +411,7 @@ export default function NamesExplorer() {
                                             {group.year || 'Utan årstal'}
                                         </span>
                                     )}
-                                    {namesNav === 'datasets' && (
+                                    {namesNav === 'datasets' && (datasetTitles[group.dataset] || group.dataset) && (
                                         <span className="mr-2 my-1 mt-1 font-medium text-neutral-700">
                                             {datasetTitles[group.dataset] || group.dataset}
                                         </span>
@@ -468,7 +467,7 @@ export default function NamesExplorer() {
                                                 const isNameExpanded = expandedGroups[nameId] ?? false
                                                 
                                                 return (
-                                                    <li key={name} className="flex flex-col w-full py-2">
+                                                    <li key={name} className="flex flex-col w-full">
                                                         <button
                                                             onClick={() => toggleGroupExpansion(nameId)}
                                                             className="text-left flex items-center gap-2 py-1 cursor-pointer hover:text-neutral-700 transition-colors"

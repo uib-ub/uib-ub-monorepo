@@ -119,6 +119,7 @@ export default function DetailsWindow() {
     
 
     return <>
+    {groupData.length}
     <div className={`flex tabs p-2 border-b border-neutral-200 ${(details || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
 
         {details == "doc" && <>
