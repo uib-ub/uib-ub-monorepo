@@ -39,6 +39,9 @@ jobs:
       - name: Set short SHA for tagging
         run: echo "SHORT_SHA=$(echo '${{ github.sha }}' | cut -c1-7)" >> $GITHUB_ENV
 
+      - name: Set variable for dated test tag
+        run: export TIMESTAMP=$(date +%Y-%m-%dT%H%M) && echo $TIMESTAMP && echo "new_tag=${publish_env:=test}-$TIMESTAMP" >> $GITHUB_ENV
+
       - name: Copy dockerfile to root directory
         run: mv apps/api/Dockerfile Dockerfile.api
 
@@ -49,7 +52,7 @@ jobs:
           file: Dockerfile.api
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest,${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ env.SHORT_SHA }}
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest,${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ env.new_tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
