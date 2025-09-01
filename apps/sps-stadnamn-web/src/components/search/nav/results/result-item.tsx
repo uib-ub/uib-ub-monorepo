@@ -24,7 +24,10 @@ const uniqueLabels = (hit: any) => {
         if (labels.size === 3) break;
     }
     return Array.from(labels).map((label, idx) => (
-        <span key={label + idx} className="mr-2">{label}</span>
+        <span key={label + idx}>
+            {label}
+            {idx < hits.length - 1 && <span>, </span>}
+        </span>
     ));
 }
 
@@ -63,6 +66,9 @@ export default function ResultItem({hit}: {hit: any}) {
         }
     }, [nav, doc, hit.fields.uuid, isMobile])
 
+
+    const label = hit.inner_hits.group.hits.hits[0].fields.label[0]
+
     
 
     
@@ -93,12 +99,9 @@ export default function ResultItem({hit}: {hit: any}) {
   </div>
 </>}
 
-                <span className="text-neutral-950 flex items-center">
-                    
-                    
-                    {uniqueLabels(hit)}
-                     {false && titleRenderer(hit, 'map')}{hit.inner_hits?.group?.hits?.total?.value > 3 && "..."}
-                    
+                <span className="text-neutral-950">
+                    {isGrunnord && <>{uniqueLabels(hit)}...</>}
+                    {!isGrunnord && <strong>{label}</strong>}
                 </span>
                 
                 {detailsRenderer(hit)}
