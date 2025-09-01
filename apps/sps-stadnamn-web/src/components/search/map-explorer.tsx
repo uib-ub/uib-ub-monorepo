@@ -22,7 +22,7 @@ import useDocData from "@/state/hooks/doc-data";
 import { useQueries } from "@tanstack/react-query";
 import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius } from "@/lib/map-utils";
 import useSearchData from "@/state/hooks/search-data";
-import { usePerspective } from "@/lib/param-hooks";
+import { useGroup, usePerspective } from "@/lib/param-hooks";
 
 
 
@@ -42,6 +42,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const allowFitBounds = useRef(false)
   const maxDocCount = useRef(0)
   const minDocCount = useRef(0)
+  const { groupCode, groupValue } = useGroup()
 
 
 
@@ -760,7 +761,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
             {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
 
-            {docData?._source?.location?.coordinates?.[1] && doc != parent && docData?._source?.uuid == doc && <Marker
+            {docData?._source?.location?.coordinates?.[1] && docData?._source?.group?.id == groupValue && <Marker
               zIndexOffset={1000}
               position={[
                 docData._source.location.coordinates[1],

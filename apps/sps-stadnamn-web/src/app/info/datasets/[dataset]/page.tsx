@@ -1,9 +1,9 @@
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import { datasetFeatures, datasetPresentation, datasetTitles, featureNames, subpages, publishDates } from "@/config/metadata-config"
+import { datasetFeatures, datasetPresentation, datasetTitles, featureNames, subpages } from "@/config/metadata-config"
 import { datasetDescriptions, datasetShortDescriptions, datasetTypes, typeNames } from "@/config/metadata-config"
-import { PiArticleFill, PiSpeakerHighFill, PiEarFill, PiMapPinLineFill, PiLinkSimpleFill, PiMapTrifoldFill, PiWallFill, PiArchiveFill, PiBooksFill, PiDatabaseFill, PiGavelFill, PiMicroscope, PiMicroscopeFill, PiBoxArrowDown, PiBoxArrowDownFill, PiBinary, PiBinaryFill } from "react-icons/pi"
+import { PiArticleFill, PiSpeakerHighFill, PiEarFill, PiMapPinLineFill, PiLinkSimpleFill, PiMapTrifoldFill, PiWallFill, PiArchiveFill, PiBooksFill, PiDatabaseFill, PiGavelFill, PiBoxArrowDownFill, PiBinaryFill } from "react-icons/pi"
 import DatasetStats from "../dataset-stats";
-import { fetchStats } from "@/app/api/_utils/actions";
+import { fetchStats } from "@/app/api/_utils/stats";
 
 import SubpageNav from '@/components/layout/subpage-nav'
 
@@ -37,7 +37,7 @@ export async function generateMetadata( { params }: { params: Promise<{ dataset:
 export default async function DatasetPage({params}: {params: Promise<{dataset: string}>}) {
     const { dataset } = await params
     const info = datasetPresentation[dataset]
-    const stats = await fetchStats(dataset)
+    const stats = await fetchStats()
 
     return <div className="flex flex-col md:flex-row gap-4 page-info">
         <div className="xl:w-2/3">

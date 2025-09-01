@@ -1,6 +1,6 @@
 import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchQuery } from "@/lib/search-params"
-import { stringToBase64Url } from "@/lib/utils"
+import { stringToBase64Url } from "@/lib/param-utils"
 import { useEffect, useState } from "react"
 
 export default function RootWords({hit}: {hit: any}) {

@@ -22,7 +22,7 @@ export default function DetailsWindow() {
     const namesNav = searchParams.get('namesNav')
     
     const mode = useMode()
-    const { groupData, groupLoading, groupTotal, groupRefetching, groupFetching } = useGroupData()
+    const { groupData, groupLoading, groupTotal } = useGroupData()
     const router = useRouter()
     const docIndex = useDocIndex()
     const { groupCode } = useGroup()

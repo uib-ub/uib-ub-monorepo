@@ -2,7 +2,7 @@ import IIIFMetadataPanel from "./iiif-metadata-panel";
 import { PiArticle, PiCaretLeft, PiCaretLineLeft, PiCaretLineRight, PiCaretRight, PiFile, PiSpeakerHigh } from "react-icons/pi";
 import { resolveLanguage } from "../iiif-utils";
 import IIIFExpandSummary from "./iiif-expand-summary";
-import { fetchIIIFStats } from "@/app/api/iiif/iiif-stats";
+import { fetchIIIFStats } from "@/app/api/_utils/stats";
 import IconLink from "@/components/ui/icon-link";
 
 export default async function IIIFInfoSection({manifest, neighbours, manifestDataset}: {manifest: any, neighbours: any, manifestDataset: string}) {
