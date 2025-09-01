@@ -47,14 +47,25 @@ export default async function RootLayout({
   const { coordinateVocab, sosiVocab } = await fetchVocab();
 
   return (
-    <html lang="no" className={`${serif.variable} ${sans.className} h-full w-full bg-neutral-900`}>
+    <html 
+      lang="no" 
+      className={`${serif.variable} ${sans.className} h-full w-full `}
+    >
       <head>
         <PlausibleProvider domain="stadnamnportalen.uib.no" />
+        {!isMobile && <link rel="preload" href="/Carta_Marina.webp" as="image" type="image/webp" />}
       </head>
-      <body className="flex flex-col w-full h-full relative">
-        
+      <body className="flex flex-col w-full h-full relative bg-neutral-900" style={true ? {
+        backgroundImage: isMobile ? 'url(/Carta_Marina_compressed.webp)' : 'url(/Carta_Marina.webp)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      } : {}}>
+        {/* Remove the Image component since we're using CSS background-image */}
+
         <GlobalProvider isMobile={isMobile} sosiVocab={sosiVocab || {}} coordinateVocab={coordinateVocab || {}}>
-      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[5001] focus:top-1 focus:py-3 focus:px-6 bg-primary-700 text-white no-underline self-center">
+          <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[5001] focus:top-1 focus:py-3 focus:px-6 bg-primary-700 text-white no-underline self-center">
         Gå til hovudinnhald
       </a>
         <header className="flex lg:justify-between text-neutral-900 w-full bg-neutral-50 relative shadow-md !h-12 flex-none items-center !z-[4000]">

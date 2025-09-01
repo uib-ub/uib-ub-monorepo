@@ -10,7 +10,7 @@ export default function HomeNavCards({iiifStats, datasets }: {datasets: any, iii
             icon: <PiDatabase aria-hidden="true"/>,
             stat: Object.keys(datasets).length.toLocaleString('nb-NO'),
             title: "Datasett",
-            description: "Få oversikt over kjeldegrunnlaget i Stadnamnportalen",
+            description: "Få oversikt over kjeldene stadnamnsøket er basert på",
         },
         {
             href: "/iiif",
@@ -41,7 +41,7 @@ export default function HomeNavCards({iiifStats, datasets }: {datasets: any, iii
                                     </div>
                                 )}
                             </div>
-                            <span className="flex flex-row items-center gap-2 text-neutral-900 text-2xl font-serif rounded-full mt-2" style={{ fontVariantNumeric: "tabular-nums" }}>
+                            <span className="flex flex-row items-center gap-2 text-neutral-900 text-2xl font-bold rounded-full mt-2" style={{ fontVariantNumeric: "tabular-nums" }}>
                                 {card.stat}
                             </span>
                         </div>
