@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "iiif-image",
+  "type": "registry:block",
+  "title": "IIIF Image",
+  "description": "IIIF Image",
+  "dependencies": [
+    "@samvera/clover-iiif",
+    "next"
+  ],
+  "files": [
+    {
+      "path": "src/registry/default/blocks/iiif-image/components/index.tsx",
+      "content": "'use client';\n\nimport dynamic from 'next/dynamic';\n\nconst Image = dynamic(\n  () => import('@samvera/clover-iiif/image').then((Clover) => Clover.default),\n  {\n    ssr: false,\n  },\n);\n\nconst customTheme = {\n  showNavigator: false,\n  showHomeControl: true,\n  showControlPanel: false,\n  showZoomControl: false,\n  showFullPageControl: false,\n  showNavigationControl: false,\n  showRotationControl: false,\n};\n\nexport const IIIFImage = ({ src }: { src: string }) => {\n  return (\n    // eslint-disable-next-line jsx-a11y/alt-text\n    <Image\n      src={src}\n      openSeadragonConfig={customTheme}\n    />\n  );\n};\n",
+      "type": "registry:component",
+      "target": "/components/iiif-image.tsx"
+    }
+  ]
+}
