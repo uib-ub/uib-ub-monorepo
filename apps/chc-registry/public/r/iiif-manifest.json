@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "iiif-manifest",
+  "type": "registry:block",
+  "title": "IIIF Manifest",
+  "description": "IIIF Manifest",
+  "dependencies": [
+    "@samvera/clover-iiif",
+    "next"
+  ],
+  "files": [
+    {
+      "path": "src/registry/default/blocks/iiif-manifest/components/index.tsx",
+      "content": "'use client';\n\nimport dynamic from 'next/dynamic';\n\nconst Viewer = dynamic(\n  () => import('@samvera/clover-iiif/viewer').then((Clover) => Clover.default),\n  {\n    ssr: false,\n  },\n);\n\nconst customTheme = {\n  colors: {\n    /**\n     * Black and dark grays in a light theme.\n     * All must contrast to 4.5 or greater with `secondary`.\n     */\n    primary: \"var(--color-core-600)\",\n    primaryMuted: \"var(--color-core-700)\",\n    primaryAlt: \"var(--color-core-800)\",\n\n    /**\n     * Key brand color(s).\n     * `accent` must contrast to 4.5 or greater with `secondary`.\n     */\n    accent: \"var(--color-core-500)\",\n    accentMuted: \"var(--color-core-400)\",\n    accentAlt: \"var(--color-core-600)\",\n\n    /**\n     * White and light grays in a light theme.\n     * All must must contrast to 4.5 or greater with `primary` and  `accent`.\n     */\n    secondary: \"var(--color-white)\",\n    secondaryMuted: \"var(--color-core-100)\",\n    secondaryAlt: \"var(--color-core-200)\",\n  },\n  fonts: {\n    sans: \"'Open Sans', sans-serif\",\n    display: \"Optima, Georgia, Arial, sans-serif\",\n  },\n};\n\nconst options = {\n  canvasHeight: 'auto',\n  showIIIFBadge: false,\n};\n\nexport const IIIFManifest = ({ iiifContent }: { iiifContent: string | Record<string, unknown> }) => {\n  return (\n    <div className='relative h-[70vh] w-full z-0'>\n      <Viewer\n        iiifContent={iiifContent}\n        customTheme={customTheme}\n        options={options}\n      />\n    </div>\n  );\n};",
+      "type": "registry:component",
+      "target": "/components/iiif-manifest.tsx"
+    }
+  ]
+}
