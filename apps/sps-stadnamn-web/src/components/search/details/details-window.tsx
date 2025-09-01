@@ -28,16 +28,20 @@ export default function DetailsWindow() {
     const docIndex = useDocIndex()
     const { groupCode } = useGroup()
     const [docUpdated, setDocUpdated] = useState(false)
-    const { docLoading, docData, docDataset } = useDocData({docData: groupData?.[docIndex]})
+    const { docLoading, docData, docDataset } = useDocData()
 
     console.log("RENDERING")
 
 
     useEffect(() => {
         setDocUpdated(true);
+        
+    }, [docIndex, groupCode]);
+
+    useEffect(() => {
         const timeout = setTimeout(() => setDocUpdated(false), 100);
         return () => clearTimeout(timeout);
-    }, [docIndex, groupCode]);
+    }, [docData, groupData]);
 
     useEffect(() => {
       const handleKeyDown = (e: KeyboardEvent) => {
