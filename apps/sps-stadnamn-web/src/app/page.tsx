@@ -1,5 +1,5 @@
 import UiBLogo from "@/components/svg/UiBLogo"
-import { PiMapTrifold } from 'react-icons/pi';
+import { PiMapTrifold, PiMapTrifoldFill } from 'react-icons/pi';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -31,8 +31,8 @@ export default async function Home() {
   <div className="flex flex-col w-full xl:w-auto gap-8 md:p-8 lg:py-8 self-center md:bg-white md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:bg-opacity-75 md:shadow-lg self align-middle justify-center">
   <div className="flex flex-col gap-8 md:px-8">
   <div className="flex flex-col gap-8">
-    <div className="flex flex-col gap-6 mt-24">
-  <h1 className="self-center text-5xl text-neutral-900 sr-only md:not-sr-only !px-2">Stadnamnportalen</h1>
+    <div className="flex flex-col gap-6 xl:mt-24">
+  <h1 className="self-center text-5xl text-neutral-900 sr-only md:not-sr-only !px-2">Stadnamnsøk</h1>
   
   <Form className="grid grid-cols-4 md:grid-cols-6 items-center justify-center gap-3" action="search">
    
@@ -46,26 +46,26 @@ export default async function Home() {
 
 
   <div className="flex flex-col items-center gap-6">
-  <div className="flex flex-row items-end justify-center gap-12">
+  <div className="flex flex-col xl:flex-row items-end justify-center xl:gap-12 gap-6">
   <div className="flex flex-col items-center">
-    <span className="uppercase text-xs tracking-widest text-neutral-700 mb-2">Oppslag i søket</span>
-    <span className="text-3xl font-serif text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+    <span className="uppercase tracking-widest text-neutral-700 mb-2">Oppslag i søket</span>
+    <span className="text-4xl font-serif text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
       {groupCount?.toLocaleString('nb-NO')}
     </span>
   </div>
   <div className="flex flex-col items-center">
-    <span className="uppercase text-xs tracking-widest text-neutral-700 mb-2">Underoppslag</span>
-    <span className="text-3xl font-serif text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+    <span className="uppercase tracking-widest text-neutral-700 mb-2">Underoppslag</span>
+    <span className="text-4xl font-serif text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
       {totalHits?.toLocaleString('nb-NO')}
     </span>
   </div>
 </div>
     <Link
       href="/search"
-      className="btn mt-2 self-center text-base px-6 py-2 rounded-md flex items-center gap-2"
+      className="bg-neutral-200 text-neutral-900 no-underline m-12 mt-2 self-center w-full h-16 xl:h-auto xl:w-auto text-2xl pr-12 pl-8 py-4 rounded-full flex items-center gap-3"
     >
-      <PiMapTrifold className="text-xl" />
-      Uftorsk kartet
+      <PiMapTrifoldFill className="text-3xl" />
+      Utforsk kartet
     </Link>
   </div>
   

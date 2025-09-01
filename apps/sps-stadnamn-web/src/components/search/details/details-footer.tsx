@@ -7,15 +7,16 @@ import CoordinateMenu from "./coordinate-menu"
 import { PiBinocularsFill, PiCaretRightBold } from "react-icons/pi"
 import { GlobalContext } from "@/app/global-provider"
 import useDocData from "@/state/hooks/doc-data"
+import useGroupData from "@/state/hooks/group-data"
 
 
 export default function DetailsFooter() {
     const searchParams = useSearchParams()
     const namesNav = searchParams.get('namesNav')
-    const { docData } = useDocData()
+    const { groupData } = useGroupData()
 
     const group = searchParams.get('group')
-    const docSource = docData?._source
+    const docSource = groupData?.[0]?._source
     const {isMobile} = useContext(GlobalContext)
     const doc = searchParams.get('doc')
 
@@ -24,11 +25,11 @@ export default function DetailsFooter() {
     <CoordinateMenu/>
 
 
-    {!doc && docData?._source?.group?.id &&
+    {!doc && docSource?.group?.id &&
       <Clickable
         aria-current={(namesNav && group == stringToBase64Url(docSource.group)) ? true : false}
         className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10" 
-        add={{doc: docData?._source?.uuid, group: stringToBase64Url(docSource.group.id)}}>
+        add={{doc: docSource?.uuid, group: stringToBase64Url(docSource.group.id)}}>
         <PiBinocularsFill className="text-lg text-white" aria-hidden="true"/>Oversikt
       </Clickable>
     }
