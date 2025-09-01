@@ -44,6 +44,7 @@ export default async function RootLayout({
   const device = userAgent({ headers: headersList }).device;
   const isMobile = device.type === 'mobile'
 
+
   const { coordinateVocab, sosiVocab } = await fetchVocab();
 
   return (
@@ -53,15 +54,15 @@ export default async function RootLayout({
     >
       <head>
         <PlausibleProvider domain="stadnamnportalen.uib.no" />
-        {!isMobile && <link rel="preload" href="/Carta_Marina.webp" as="image" type="image/webp" />}
+        <link rel="preload" href="/Carta_Marina_compressed.webp" as="image" type="image/webp" />
       </head>
-      <body className="flex flex-col w-full h-full relative bg-neutral-900" style={true ? {
-        backgroundImage: isMobile ? 'url(/Carta_Marina_compressed.webp)' : 'url(/Carta_Marina.webp)',
+      <body className="flex flex-col w-full h-full relative bg-neutral-900" style={{
+        backgroundImage: `url(/Carta_Marina_compressed.webp)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         backgroundAttachment: 'fixed'
-      } : {}}>
+      }}>
         {/* Remove the Image component since we're using CSS background-image */}
 
         <GlobalProvider isMobile={isMobile} sosiVocab={sosiVocab || {}} coordinateVocab={coordinateVocab || {}}>
