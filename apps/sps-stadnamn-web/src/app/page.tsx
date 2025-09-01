@@ -14,6 +14,9 @@ import { headers } from "next/headers";
 
 export default async function Home() {
   const { iiifStats, datasets, totalHits, groupCount } = await fetchStats()
+  const headersList = await headers()
+  const device = userAgent({headers: headersList}).device
+  const isMobile = device.type === 'mobile'
   const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
     const info = datasetPresentation[code]
     return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: datasetShortDescriptions[code], subindices: info.subindices, initMode: info.initMode }
@@ -31,11 +34,11 @@ export default async function Home() {
 <main 
   id="main" 
   tabIndex={-1} 
-  className="flex flex-col grow-1 gap-24 items-center justify-center pb-24 pt-4 md:pt-8 w-full flex-grow relative bg-neutral-100/80">
+  className="flex flex-col grow-1 items-center justify-center   w-full flex-grow relative ">
   
-  
-  <div className="flex flex-col gap-3 relative z-20 px-4">
-  <div className="flex flex-col w-full xl:w-auto gap-8 md:p-8 lg:py-8 self-center md:bg-white md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:bg-opacity-75 md:shadow-lg self align-middle justify-center">
+  <div className={`bg-neutral-50/${isMobile ? '80' : '60'} w-full pt-4 md:pt-8 pb-24`}>
+  <div className={`flex flex-col gap-3 relative z-20 px-4`}>
+  <div className="flex flex-col w-full xl:w-auto gap-8 md:p-8 lg:py-8 self-center md:bg-neutral-50/90 md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:shadow-lg self align-middle justify-center">
   <div className="flex flex-col gap-8 md:px-8">
   <div className="flex flex-col gap-8">
     <div className="flex flex-col gap-6 xl:mt-24">
@@ -97,6 +100,7 @@ export default async function Home() {
 
   <HomeNavCards iiifStats={iiifStats} datasets={datasets}/>
     </div>
+    </div>
 
 
 
@@ -111,8 +115,8 @@ export default async function Home() {
 
   </div>
   </div>
-  <div className="flex flex-col items-center container gap-24 relative z-20 px-4">
-  <section className="flex flex-col  gap-6" aria-labelledby="recently_added">
+  <div className="flex flex-col items-center gap-24 relative z-20 px-4 py-24 bg-neutral-50/80 w-full">
+  <section className="flex flex-col container gap-6" aria-labelledby="recently_added">
     <h2 id="recently_added" className="font-semibold font-serif text-3xl text-neutral-950/90 text-center">Sist lagt til</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {newest.map((card, index) => (
@@ -144,7 +148,7 @@ export default async function Home() {
       ))}
     </ul>
 </section>
-  <section className="flex flex-col gap-6" aria-labelledby="dataset_showcase">
+  <section className="flex flex-col container gap-6" aria-labelledby="dataset_showcase">
     <h2 id="dataset_showcase" className="font-semibold font-serif text-3xl text-neutral-950/90 text-center">Utvalde datasett</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {cards.map((card, index) => (
