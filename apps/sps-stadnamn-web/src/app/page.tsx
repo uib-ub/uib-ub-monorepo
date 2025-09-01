@@ -41,7 +41,7 @@ export default async function Home() {
   <div className="flex flex-col w-full xl:w-auto gap-8 md:p-8 lg:py-8 self-center md:bg-neutral-50/90 md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:shadow-lg self align-middle justify-center">
   <div className="flex flex-col gap-8 md:px-8">
   <div className="flex flex-col gap-8">
-    <div className="flex flex-col gap-6 xl:mt-24">
+    <div className="flex flex-col gap-6 xl:mt-32">
   <h1 className="self-center text-5xl text-neutral-900 sr-only md:not-sr-only !px-2 font-serif">Stadnamnsøk</h1>
   
   <Form className="flex items-center justify-center gap-2 w-full" action="search">
@@ -117,7 +117,7 @@ export default async function Home() {
   </div>
   <div className="flex flex-col items-center gap-24 relative z-20 px-4 py-24 bg-neutral-50/80 w-full">
   <section className="flex flex-col container gap-6" aria-labelledby="recently_added">
-    <h2 id="recently_added" className="font-semibold font-serif text-3xl text-neutral-950/90 text-center">Sist lagt til</h2>
+    <h2 id="recently_added" className="font-semibold font-serif text-3xl text-neutral-950 text-center">Sist lagt til</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {newest.map((card, index) => (
         <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">
@@ -149,7 +149,7 @@ export default async function Home() {
     </ul>
 </section>
   <section className="flex flex-col container gap-6" aria-labelledby="dataset_showcase">
-    <h2 id="dataset_showcase" className="font-semibold font-serif text-3xl text-neutral-950/90 text-center">Utvalde datasett</h2>
+    <h2 id="dataset_showcase" className="font-semibold font-serif text-3xl text-neutral-950 text-center">Utvalde datasett</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
       {cards.map((card, index) => (
         <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">
