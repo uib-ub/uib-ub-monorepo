@@ -47,7 +47,7 @@ export default function MobileLayout() {
     const { docData } = useDocData()
     const datasetCount = searchParams.getAll('indexDataset')?.length || 0
     const details = searchParams.get('details')
-    const { groupTotal } = useGroupData()
+    const { groupTotal, groupLabel } = useGroupData()
     const namesNav = searchParams.get('namesNav')
     const group = searchParams.get('group')
 
@@ -256,7 +256,7 @@ export default function MobileLayout() {
                         </div>}
                         {namesNav &&
                             <div className="pb-12 pt-2 px-2">
-                                <span className="flex items-center pb-2 text-xl"><h2 className="text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 ">Namneformer</h2>
+                                <span className="flex items-center pb-2 text-xl"><h2 className="text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 ">{groupLabel}</h2>
                                     <InfoPopover>
                                         Utvida oversikt over liknande oppslag i nærområdet. Treffa er ikkje nødvendigvis former av namnet du har valt, og det kan vere namnformer som ikkje kjem med.
                                     </InfoPopover></span>

@@ -35,6 +35,8 @@ export default function DetailsWindow() {
 
     useEffect(() => {
         setDocUpdated(true);
+        const timeout = setTimeout(() => setDocUpdated(false), 300);
+        return () => clearTimeout(timeout);
         
     }, [docIndex, groupCode]);
 
@@ -117,9 +119,35 @@ export default function DetailsWindow() {
     
 
     return <>
-    <div className={`flex tabs p-2 ${(details || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>   
+    <div className={`flex tabs p-2 border-b border-neutral-200 ${(details || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
 
-    {mode != 'table' ? <DetailsTabs/> : <DocToolbar docData={docData}/>}
+        {details == "doc" && <>
+
+    
+
+
+    {(groupTotal?.value || (!namesNav && docData)) ?
+    
+    <div className={`flex gap-2 transition-opacity duration-200 ${docLoading || groupLoading || docUpdated ? 'opacity-50' : 'opacity-100'}`}>
+
+<DocToolbar docData={docData}/>{!namesNav && <HitNavigation/>}
+   
+      
+  </div>
+  : <div className="flex gap-2 justify-between p-2">
+  {/* Navigation buttons skeleton */}
+  <div className="flex gap-2 h-10">
+      <div className="h-10 w-10 bg-neutral-900/10 rounded animate-pulse"></div>
+      <div className="h-10 w-10 bg-neutral-900/10 rounded animate-pulse"></div>
+      <div className="h-10 w-24 bg-neutral-900/10 rounded animate-pulse"></div>
+  </div>
+</div>
+  
+  }
+  </>
+}   
+
+    
     <div className="flex gap-2 ml-auto">
     
              
@@ -135,37 +163,12 @@ export default function DetailsWindow() {
 
   
 
-  {details == "doc" && mode != 'table' && <>
-
-    
-
-
-    {(groupTotal?.value || (!namesNav && docData)) ?
-    
-    <div className={`flex flex-wrap gap-2 p-2 transition-opacity duration-200 ${docLoading || groupLoading || docUpdated ? 'opacity-50' : 'opacity-100'}`}>
-    {!namesNav && <HitNavigation/>}
-
-   {mode != 'table' && <DocToolbar docData={docData}/>}
-
-      
-  </div>
-  : <div className="flex flex-wrap gap-2 justify-between p-2 border-b border-neutral-200">
-  {/* Navigation buttons skeleton */}
-  <div className="flex gap-2 h-10">
-      <div className="h-10 w-10 bg-neutral-900/10 rounded animate-pulse"></div>
-      <div className="h-10 w-10 bg-neutral-900/10 rounded animate-pulse"></div>
-      <div className="h-10 w-24 bg-neutral-900/10 rounded animate-pulse"></div>
-  </div>
-</div>
   
-  }
-  </>
-}
 
 
 
   {(details == "doc" || groupTotal?.value == 1) && (
-  <div className={`overflow-y-auto border-y stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docLoading || groupLoading || docUpdated ? 'opacity-50' : 'opacity-100'}`}>
+  <div className={`overflow-y-auto stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docLoading || groupLoading || docUpdated ? 'opacity-50' : 'opacity-100'}`}>
       <DocInfo docParams={{docData: groupData?.[docIndex]}}/>
   </div>
 )}
@@ -184,7 +187,7 @@ export default function DetailsWindow() {
     
 
 
-  {!docDataset?.endsWith("_g") && <DetailsFooter source={docData}/>}
+  {!docDataset?.endsWith("_g") && details == 'doc' && <DetailsFooter/>}
 
   
 </>

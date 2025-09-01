@@ -203,35 +203,50 @@ export default function NamesExplorer() {
             const highlight = result.highlight || {}
             const source = result._source || result.fields || {}
             
-            const allNames = Array.from(new Set(
-                (source.attestations?.map((att: any) => att.label) || [])
-                    .concat(source.label ? [source.label] : [])
-                    .concat(source.altLabels || [])
-            ))
-            
-            allNames.forEach((name) => {
-                const nameStr = name as string
-                let groupKey
+            if (namesNav === 'datasets') {
+                // For datasets view, don't group by dataset here - let the render section handle it
+                const groupKey = 'all-datasets'
                 
-                if (namesNav === 'timeline') {
-                    const year = source.attestations?.find((att: any) => att.label === nameStr)?.year || source.year || null
-                    groupKey = year || 'no-year'
-                    
-                    if (!groupMap.has(groupKey)) {
-                        groupMap.set(groupKey, { key: groupKey, year, results: [] })
-                    }
-                } else {
-                    groupKey = nameStr
-                    if (!groupMap.has(groupKey)) {
-                        groupMap.set(groupKey, { key: groupKey, results: [] })
-                    }
+                if (!groupMap.has(groupKey)) {
+                    groupMap.set(groupKey, { key: groupKey, results: [] })
                 }
                 
                 groupMap.get(groupKey).results.push({
                     doc: result,
-                    highlightedName: nameStr,
+                    highlightedName: source.label || source.altLabels?.[0] || 'Unknown'
                 })
-            })
+            } else {
+                // For timeline and list views, keep existing name-based grouping
+                const allNames = Array.from(new Set(
+                    (source.attestations?.map((att: any) => att.label) || [])
+                        .concat(source.label ? [source.label] : [])
+                        .concat(source.altLabels || [])
+                ))
+                
+                allNames.forEach((name) => {
+                    const nameStr = name as string
+                    let groupKey
+                    
+                    if (namesNav === 'timeline') {
+                        const year = source.attestations?.find((att: any) => att.label === nameStr)?.year || source.year || null
+                        groupKey = year || 'no-year'
+                        
+                        if (!groupMap.has(groupKey)) {
+                            groupMap.set(groupKey, { key: groupKey, year, results: [] })
+                        }
+                    } else {
+                        groupKey = nameStr
+                        if (!groupMap.has(groupKey)) {
+                            groupMap.set(groupKey, { key: groupKey, results: [] })
+                        }
+                    }
+                    
+                    groupMap.get(groupKey).results.push({
+                        doc: result,
+                        highlightedName: nameStr,
+                    })
+                })
+            }
         })
         
         const groups = Array.from(groupMap.values())
@@ -255,142 +270,182 @@ export default function NamesExplorer() {
     
     return <>        
         <div className="flex flex-col gap-4">
-            <div className="flex gap-2">
-                <div className="flex border border-neutral-200 rounded-lg p-1 tabs text-tabs">
-                    <Clickable
-                        add={{ namesNav: 'timeline' }}
-                        aria-pressed={namesNav === 'timeline'}
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline`}
-                    >
-                        Tidslinje
-                    </Clickable>
-                    <Clickable
-                        add={{ namesNav: 'list' }}
-                        aria-pressed={namesNav === 'list'}
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline`}
-                    >
-                        Liste
-                    </Clickable>
-                </div>
-                <div className="flex border border-neutral-200 rounded-lg p-1 tabs text-tabs">
-                    <Clickable
-                        add={{ namesScope: 'group' }}
-                        aria-pressed={namesScope === 'group'}
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline`}
-                    >
-                        Gruppe
-                    </Clickable>
-                    <Clickable
-                        add={{ namesScope: 'extended' }}
-                        aria-pressed={namesScope === 'extended'}
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline`}
-                    >
-                        Utvida søk
-                    </Clickable>
-                </div>
-            </div>
-            <h3 className="text-lg font-serif">{groupName}</h3>
-        </div>
-
-        {namesResult && namesResult.length === 0 && !namesResultLoading ? (
-            <p className="text-neutral-800">Fann ingen liknande namn i nærleiken</p>
-        ) : !namesResult || namesResultLoading ? (
-            // Loading skeleton - only show when loading or no results exist yet
-            <ul className={`${namesNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
-                {Array.from({length: 3}).map((_, index) => (
-                    <li key={`skeleton-${index}`} className={namesNav === 'timeline' ? 'flex items-center !pb-4 !pt-0 relative w-full' : 'flex flex-col gap-2 py-2 w-full'}>
-                        {namesNav === 'timeline' && (
-                            <>
-                                <div className="bg-neutral-900/10 absolute w-1 left-0 top-1 h-full"></div>
-                                <div className="w-4 h-4 rounded-full bg-neutral-900/10 absolute -left-1.5 top-2"></div>
-                            </>
-                        )}
-                        
-                        <div className={namesNav === 'timeline' ? 'ml-6 flex flex-col w-full' : 'flex flex-col gap-2 w-full'}>
-                            {namesNav === 'timeline' && (
-                                <div className="h-5 bg-neutral-900/10 rounded-full animate-pulse mr-2 my-1 mt-1" style={{width: `${getSkeletonLength(index, 3, 6)}rem`}}></div>
-                            )}
-                            
-                            <ul className="flex flex-col gap-1">
-                                {Array.from({length: 2}).map((_, nameIndex) => (
-                                    <li key={`skeleton-name-${nameIndex}`} className="flex flex-col w-full">
-                                        <div className="flex items-center gap-2 py-1">
-                                            <div className="w-3 h-3 bg-neutral-900/10 rounded-sm animate-pulse flex-shrink-0"></div>
-                                            <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{width: `${getSkeletonLength(index + nameIndex, 6, 12)}rem`}}></div>
-                                            <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse w-8"></div>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
+            <div className="flex flex-col gap-2">
+                {isMobile ? (
+                    <>
+                        <div className="flex border border-neutral-200 rounded-lg p-1 tabs text-tabs">
+                            <Clickable
+                                add={{ namesNav: 'datasets' }}
+                                aria-pressed={namesNav === 'datasets'}
+                                className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesNav === 'datasets' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                            >
+                                Datasett
+                            </Clickable>
+                            <Clickable
+                                add={{ namesNav: 'timeline' }}
+                                aria-pressed={namesNav === 'timeline'}
+                                className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesNav === 'timeline' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                            >
+                                Tidslinje
+                            </Clickable>
+                            <Clickable
+                                add={{ namesNav: 'list' }}
+                                aria-pressed={namesNav === 'list'}
+                                className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesNav === 'list' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                            >
+                                Namn
+                            </Clickable>
                         </div>
-                    </li>
-                ))}
-            </ul>
-        ) : (
-            <ul className={`${namesNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
-                {groups.map((group, index) => {
-                    const groupId = `${namesNav}-${group.key}`
-                    const groupsWithYears = groups.filter(g => g.year)
-                    const indexInYearGroups = groupsWithYears.findIndex(g => g.key === group.key)
-                    const isLastYearGroup = indexInYearGroups === groupsWithYears.length - 1
-                    
-                    return (
-                        <li key={groupId} className={namesNav === 'timeline' ? 'flex items-center !pb-4 !pt-0 relative w-full' : 'flex flex-col gap-2 py-2 w-full'}>
-                            {namesNav === 'timeline' && group.year && (
+                        <div className="flex border border-neutral-200 rounded-lg p-1 tabs text-tabs">
+                            <Clickable
+                                add={{ namesScope: 'group' }}
+                                aria-pressed={namesScope === 'group'}
+                                className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesScope === 'group' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                            >
+                                Gruppe
+                            </Clickable>
+                            <Clickable
+                                add={{ namesScope: 'extended' }}
+                                aria-pressed={namesScope === 'extended'}
+                                className={`flex whitespace-nowrap items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesScope === 'extended' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                            >
+                                Utvida søk
+                            </Clickable>
+                        </div>
+                    </>
+                ) : (
+                    <div className="flex border border-neutral-200 rounded-lg p-1 tabs text-tabs">
+                        <Clickable
+                            add={{ namesNav: 'datasets' }}
+                            aria-pressed={namesNav === 'datasets'}
+                            className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesNav === 'datasets' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                        >
+                            Datasett
+                        </Clickable>
+                        <Clickable
+                            add={{ namesNav: 'timeline' }}
+                            aria-pressed={namesNav === 'timeline'}
+                            className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesNav === 'timeline' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                        >
+                            Tidslinje
+                        </Clickable>
+                        <Clickable
+                            add={{ namesNav: 'list' }}
+                            aria-pressed={namesNav === 'list'}
+                            className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesNav === 'list' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                        >
+                            Namn
+                        </Clickable>
+                        <div className="w-px bg-neutral-300 mx-2 self-stretch flex-shrink-0"></div>
+                        <Clickable
+                            add={{ namesScope: 'group' }}
+                            aria-pressed={namesScope === 'group'}
+                            className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesScope === 'group' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                        >
+                            Gruppe
+                        </Clickable>
+                        <Clickable
+                            add={{ namesScope: 'extended' }}
+                            aria-pressed={namesScope === 'extended'}
+                            className={`flex whitespace-nowrap items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesScope === 'extended' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                        >
+                            Utvida søk
+                        </Clickable>
+                    </div>
+                )}
+            </div>
+
+            {namesResult && namesResult.length === 0 && !namesResultLoading ? (
+                <p className="text-neutral-800">Fann ingen liknande namn i nærleiken</p>
+            ) : !namesResult || namesResultLoading ? (
+                // Loading skeleton - only show when loading or no results exist yet
+                <ul className={`${namesNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
+                    {Array.from({length: 3}).map((_, index) => (
+                        <li key={`skeleton-${index}`} className={namesNav === 'timeline' ? 'flex items-center !pb-4 !pt-0 relative w-full' : 'flex flex-col gap-2 py-2 w-full'}>
+                            {namesNav === 'timeline' && (
                                 <>
-                                    <div className={`bg-primary-300 absolute w-1 left-0 top-1 ${isLastYearGroup ? 'h-4' : 'h-full'} ${indexInYearGroups === 0 ? 'mt-2' : ''}`}></div>
-                                    <div className={`w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-2`}></div>
+                                    <div className="bg-neutral-900/10 absolute w-1 left-0 top-1 h-full"></div>
+                                    <div className="w-4 h-4 rounded-full bg-neutral-900/10 absolute -left-1.5 top-2"></div>
                                 </>
                             )}
                             
-                            <div className={namesNav === 'timeline' ? (group.year ? 'ml-6 flex flex-col w-full' : 'flex flex-col w-full') : 'flex flex-col gap-2 w-full'}>
+                            <div className={namesNav === 'timeline' ? 'ml-6 flex flex-col w-full' : 'flex flex-col gap-2 w-full'}>
                                 {namesNav === 'timeline' && (
-                                    <span className="mr-2 my-1 mt-1 font-medium text-neutral-700">
-                                        {group.year || 'Utan årstal'}
-                                    </span>
+                                    <div className="h-5 bg-neutral-900/10 rounded-full animate-pulse mr-2 my-1 mt-1" style={{width: `${getSkeletonLength(index, 3, 6)}rem`}}></div>
                                 )}
                                 
                                 <ul className="flex flex-col gap-1">
-                                    {(Array.from(new Set(group.results.map((r: any) => r.highlightedName))) as string[]).map(name => {
-                                        const nameResults = group.results.filter((r: any) => r.highlightedName === name)
-                                        const nameId = `${groupId}-${name}`
-                                        const isNameExpanded = expandedGroups[nameId] ?? false
-                                        
-                                        return (
-                                            <li key={name} className="flex flex-col w-full">
-                                                <button
-                                                    onClick={() => toggleGroupExpansion(nameId)}
-                                                    className="text-left flex items-center gap-2 py-1 cursor-pointer hover:text-neutral-700 transition-colors"
-                                                >
-                                                    <div className="flex-shrink-0">
-                                                        {isNameExpanded ? <PiCaretUpBold className="text-sm" aria-hidden="true"/> : <PiCaretDownBold className="text-sm" aria-hidden="true"/>}
-                                                    </div>
-                                                    <span className="font-medium">{name}</span>
-                                                    <span className="text-sm text-neutral-700">({nameResults.length})</span>
-                                                </button>
-                                                
-                                                {isNameExpanded && (
-                                                    <div className="flex flex-col ml-5 mt-1 w-full">
-                                                        {(() => {
-                                                            // Group results by dataset
-                                                            const datasetGroups = nameResults.reduce((acc: any, resultItem: any) => {
-                                                                const dataset = resultItem.doc._index.split('-')[2]
-                                                                if (!acc[dataset]) {
-                                                                    acc[dataset] = []
-                                                                }
-                                                                acc[dataset].push(resultItem)
-                                                                return acc
-                                                            }, {})
+                                    {Array.from({length: 2}).map((_, nameIndex) => (
+                                        <li key={`skeleton-name-${nameIndex}`} className="flex flex-col w-full">
+                                            <div className="flex items-center gap-2 py-1">
+                                                <div className="w-3 h-3 bg-neutral-900/10 rounded-sm animate-pulse flex-shrink-0"></div>
+                                                <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{width: `${getSkeletonLength(index + nameIndex, 6, 12)}rem`}}></div>
+                                                <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse w-8"></div>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <ul className={`${namesNav === 'timeline' ? 'relative p-2' : 'flex flex-col divide-y divide-neutral-200'} w-full`}>
+                    {groups.map((group, index) => {
+                        const groupId = `${namesNav}-${group.key}`
+                        const groupsWithYears = groups.filter(g => g.year)
+                        const indexInYearGroups = groupsWithYears.findIndex(g => g.key === group.key)
+                        const isLastYearGroup = indexInYearGroups === groupsWithYears.length - 1
+                        
+                        return (
+                            <li key={groupId} className={namesNav === 'timeline' ? 'flex items-center !pb-4 !pt-0 relative w-full' : 'flex flex-col gap-2 py-2 w-full'}>
+                                {namesNav === 'timeline' && group.year && (
+                                    <>
+                                        <div className={`bg-primary-300 absolute w-1 left-0 top-1 ${isLastYearGroup ? 'h-4' : 'h-full'} ${indexInYearGroups === 0 ? 'mt-2' : ''}`}></div>
+                                        <div className={`w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-2`}></div>
+                                    </>
+                                )}
+                                
+                                <div className={namesNav === 'timeline' ? (group.year ? 'ml-6 flex flex-col w-full' : 'flex flex-col w-full') : 'flex flex-col gap-2 w-full'}>
+                                    {namesNav === 'timeline' && (
+                                        <span className="mr-2 my-1 mt-1 font-medium text-neutral-700">
+                                            {group.year || 'Utan årstal'}
+                                        </span>
+                                    )}
+                                    {namesNav === 'datasets' && (
+                                        <span className="mr-2 my-1 mt-1 font-medium text-neutral-700">
+                                            {datasetTitles[group.dataset] || group.dataset}
+                                        </span>
+                                    )}
+                                    
+                                    <ul className="flex flex-col gap-1">
+                                        {namesNav === 'datasets' ? (
+                                            // For datasets view, show collapsible dataset groups with EXACT same styling as names
+                                            <ul className="flex flex-col divide-y divide-neutral-200 w-full">
+                                                {(Array.from(new Set(group.results.map((r: any) => r.doc._index?.split('-')[2] || 'unknown'))) as string[]).map((dataset, index) => {
+                                                    const datasetResults = group.results.filter((r: any) => r.doc._index?.split('-')[2] === dataset)
+                                                    const datasetId = `${groupId}-${dataset}`
+                                                    const isDatasetExpanded = expandedGroups[datasetId] ?? false
+                                                    
+                                                    return (
+                                                        <li key={dataset} className="flex flex-col w-full py-2">
+                                                            <button
+                                                                onClick={() => toggleGroupExpansion(datasetId)}
+                                                                className="text-left flex items-center gap-2 py-1 cursor-pointer hover:text-neutral-700 transition-colors"
+                                                            >
+                                                                <div className="flex-shrink-0">
+                                                                    {isDatasetExpanded ? <PiCaretUpBold className="text-sm" aria-hidden="true"/> : <PiCaretDownBold className="text-sm" aria-hidden="true"/>}
+                                                                </div>
+                                                                <span className="font-medium">{datasetTitles[dataset] || dataset}</span>
+                                                                <span className="text-sm text-neutral-700">({datasetResults.length})</span>
+                                                            </button>
                                                             
-                                                            return Object.entries(datasetGroups).map(([dataset, items]: [string, any]) => (
-                                                                <div key={dataset} className="mb-3 last:mb-0">
-                                                                    <span className="font-medium text-sm text-neutral-700 uppercase tracking-wider">
-                                                                        {datasetTitles[dataset]}
-                                                                    </span>
-                                                                    <ul className="flex flex-col mt-1 divide-y divide-neutral-200 w-full">
-                                                                        {(items as any[]).map((resultItem: any, resultIndex: number) => {
+                                                            {isDatasetExpanded && (
+                                                                <div className="flex flex-col ml-5 mt-1 w-full">
+                                                                    <ul className="flex flex-col divide-y divide-neutral-200 w-full">
+                                                                        {datasetResults.map((resultItem: any, resultIndex: number) => {
                                                                             const doc = resultItem.doc
-                                                                            const uniqueKey = `${doc._id}-${resultItem.highlightedName}-${resultIndex}`
+                                                                            const uniqueKey = `${doc._id}-${resultIndex}`
                                                                             
                                                                             return (
                                                                                 <li key={uniqueKey} className="flex w-full">
@@ -400,20 +455,78 @@ export default function NamesExplorer() {
                                                                         })}
                                                                     </ul>
                                                                 </div>
-                                                            ))
-                                                        })()}
-                                                    </div>
-                                                )}
-                                            </li>
-                                        )
-                                    })}
-                                </ul>
-                            </div>
-                        </li>
-                    )
-                })}
-            </ul>
-        )}
+                                                            )}
+                                                        </li>
+                                                    )
+                                                })}
+                                            </ul>
+                                        ) : (
+                                            // For timeline and list views, keep existing name-based grouping
+                                            (Array.from(new Set(group.results.map((r: any) => r.highlightedName))) as string[]).map(name => {
+                                                const nameResults = group.results.filter((r: any) => r.highlightedName === name)
+                                                const nameId = `${groupId}-${name}`
+                                                const isNameExpanded = expandedGroups[nameId] ?? false
+                                                
+                                                return (
+                                                    <li key={name} className="flex flex-col w-full py-2">
+                                                        <button
+                                                            onClick={() => toggleGroupExpansion(nameId)}
+                                                            className="text-left flex items-center gap-2 py-1 cursor-pointer hover:text-neutral-700 transition-colors"
+                                                        >
+                                                            <div className="flex-shrink-0">
+                                                                {isNameExpanded ? <PiCaretUpBold className="text-sm" aria-hidden="true"/> : <PiCaretDownBold className="text-sm" aria-hidden="true"/>}
+                                                            </div>
+                                                            <span className="font-medium">{name}</span>
+                                                            <span className="text-sm text-neutral-700">({nameResults.length})</span>
+                                                        </button>
+                                                        
+                                                        {isNameExpanded && (
+                                                            <div className="flex flex-col ml-5 mt-1 w-full">
+                                                                {(() => {
+                                                                    // Group results by dataset
+                                                                    const datasetGroups = nameResults.reduce((acc: any, resultItem: any) => {
+                                                                        const dataset = resultItem.doc._index.split('-')[2]
+                                                                        if (!acc[dataset]) {
+                                                                            acc[dataset] = []
+                                                                        }
+                                                                        acc[dataset].push(resultItem)
+                                                                        return acc
+                                                                    }, {})
+                                                                    
+                                                                    return Object.entries(datasetGroups).map(([dataset, items]: [string, any]) => (
+                                                                        <div key={dataset} className="mb-3 last:mb-0">
+                                                                            <span className="font-medium text-sm text-neutral-700 uppercase tracking-wider">
+                                                                                {datasetTitles[dataset]}
+                                                                            </span>
+                                                                            <ul className="flex flex-col mt-1 divide-y divide-neutral-200 w-full">
+                                                                                {(items as any[]).map((resultItem: any, resultIndex: number) => {
+                                                                                    const doc = resultItem.doc
+                                                                                    const uniqueKey = `${doc._id}-${resultItem.highlightedName}-${resultIndex}`
+                                                                                    
+                                                                                    return (
+                                                                                        <li key={uniqueKey} className="flex w-full">
+                                                                                            <SourceItem hit={doc} isMobile={isMobile}/>
+                                                                                        </li>
+                                                                                    )
+                                                                                })}
+                                                                            </ul>
+                                                                        </div>
+                                                                    ))
+                                                                })()}
+                                                            </div>
+                                                        )}
+                                                    </li>
+                                                )
+                                            })
+                                        )}
+                                    </ul>
+                                </div>
+                            </li>
+                        )
+                    })}
+                </ul>
+            )}
+        </div>
     </>
 }
 

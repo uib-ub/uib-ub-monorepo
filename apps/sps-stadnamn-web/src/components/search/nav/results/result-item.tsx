@@ -26,7 +26,7 @@ const uniqueLabels = (hit: any) => {
     return Array.from(labels).map((label, idx) => (
         <span key={label + idx}>
             {label}
-            {idx < hits.length - 1 && <span>, </span>}
+            {idx < Array.from(labels).length - 1 && <span>, </span>}
         </span>
     ));
 }
@@ -73,7 +73,7 @@ export default function ResultItem({hit}: {hit: any}) {
 
     
     return  <Clickable link ref={itemRef} className={`w-full h-full p-3 aria-[current='page']:bg-accent-50 ${isGrunnord ? 
-                        "border-neutral-200 bg-neutral-50 border rounded-md my-1 hover:bg-neutral-100 hover:shadow-sm aria-[current='page']:border-accent-200"
+                        "border-neutral-200 border rounded-md my-1 hover:bg-neutral-100 hover:shadow-sm aria-[current='page']:border-accent-200"
                         : "border-l-accent-700 border-b border-b-neutral-200  aria-[current='page']:border-l-4"} flex items-center group hover:bg-neutral-50 no-underline `} 
                     aria-current={isSelected ? 'page' : undefined}
                     remove={['group', 'docIndex', 'parent', ...(isMobile ? ['nav', 'namesNav'] : [])]}
@@ -100,7 +100,7 @@ export default function ResultItem({hit}: {hit: any}) {
 </>}
 
                 <span className="text-neutral-950">
-                    {isGrunnord && <>{uniqueLabels(hit)}...</>}
+                    {isGrunnord && <span className="text-lg">{uniqueLabels(hit)}{uniqueLabels(hit).length > 3 && '...'}</span>}
                     {!isGrunnord && <strong>{label}</strong>}
                 </span>
                 

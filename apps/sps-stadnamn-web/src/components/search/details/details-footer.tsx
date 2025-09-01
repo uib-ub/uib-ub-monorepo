@@ -9,29 +9,29 @@ import { GlobalContext } from "@/app/global-provider"
 import useDocData from "@/state/hooks/doc-data"
 
 
-export default function DetailsFooter( {source}: {source?: any}) {
+export default function DetailsFooter() {
     const searchParams = useSearchParams()
     const namesNav = searchParams.get('namesNav')
     const { docData } = useDocData()
 
     const group = searchParams.get('group')
-    const docSource = source || docData?._source
+    const docSource = docData?._source
     const {isMobile} = useContext(GlobalContext)
 
 
-    return <div className={`flex gap-2 ${isMobile ? 'justify-end' : 'justify-between'} p-2 items-center`}>
+    return <div className={`flex gap-2 border-t border-neutral-200 ${isMobile ? 'justify-end' : 'justify-between'} p-2 items-center`}>
     <CoordinateMenu/>
-    {JSON.stringify(docSource?.group)}
 
     {!namesNav && docSource?.group?.id &&
       <Clickable
         aria-current={(namesNav && group == stringToBase64Url(docSource.group)) ? true : false}
         className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10" 
         add={{group: stringToBase64Url(docSource.group.id), namesNav: namesNav || 'timeline'}}>
-        <PiBinocularsFill className="text-lg text-white" aria-hidden="true"/>Namneformer
+        <PiBinocularsFill className="text-lg text-white" aria-hidden="true"/>Oversikt
       </Clickable>
     }
-    {namesNav && group && source?.group?.id && docSource?.group?.id != base64UrlToString(group) && <Clickable
+    {JSON.stringify(docSource?._source)}
+    {namesNav && group && docSource?.group?.id && docSource?.group?.id != base64UrlToString(group) && <Clickable
         className="btn btn-outline btn-compact flex items-center gap-2 flex-shrink-0 pl-6 whitespace-nowrap h-10" 
         remove={["namesNav"]} 
         add={{group: stringToBase64Url(docSource.group.id)}}>

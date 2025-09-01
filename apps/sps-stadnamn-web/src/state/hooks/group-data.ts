@@ -31,6 +31,7 @@ export default function useGroupData() {
     const { searchQueryString } = useSearchQuery()
     const { groupCode } = useGroup()
     const namesNav = searchParams.get('namesNav')
+    const details = searchParams.get('details')
 
     // Check if names navigator is open
     const isNamesNavOpen = !!namesNav
@@ -49,15 +50,12 @@ export default function useGroupData() {
         status,
         isFetchingNextPage,
     } = useInfiniteQuery({
-        queryKey: ['group', groupCode, isNamesNavOpen, searchQueryString, docIndex],
+        queryKey: ['group', groupCode, searchQueryString, docIndex],
         queryFn: async ({ pageParam }) =>
             groupCode ? groupDataQuery(groupCode, searchQueryString, pageParam) : null,
 
         // Use larger initial size when names navigation is open
-        initialPageParam: isNamesNavOpen
-            ? { size: 1000, from: 0 }
-            : { size: docIndex + 2, from: 0 },
-
+        initialPageParam: { size: docIndex + 2, from: 0 },
         getNextPageParam: (lastPage, allPages) => {
             if (!lastPage || !lastPage.hits.length) return undefined
 
@@ -71,7 +69,7 @@ export default function useGroupData() {
             if (allDataFetched) return undefined
 
             // ✅ Names navigation: fetch everything
-            if (isNamesNavOpen) {
+            if (isNamesNavOpen || details == 'group') {
                 const remainingItems = (totalData?.value || 0) - totalFetched
                 if (remainingItems <= 0) return undefined
                 const nextSize = Math.min(remainingItems, 1000)
@@ -110,19 +108,20 @@ export default function useGroupData() {
             [docIndex, isNamesNavOpen]
         ),
 
-        notifyOnChangeProps: ['data', 'error'],
+        //notifyOnChangeProps: ['data', 'error'],
     })
 
     // Automatically fetch all pages when names navigation is open
     useEffect(() => {
-        if (isNamesNavOpen && hasNextPage && !isFetchingNextPage) {
+        if ((isNamesNavOpen || details == 'group') && hasNextPage && !isFetchingNextPage) {
             fetchNextPage()
         }
-    }, [isNamesNavOpen, hasNextPage, isFetchingNextPage, fetchNextPage])
+    }, [isNamesNavOpen, hasNextPage, isFetchingNextPage, fetchNextPage, details])
 
     return {
         groupData: processedData?.allHits || [],
         groupTotal: processedData?.totalData || null,
+        groupLabel: processedData?.allHits?.[0]?._source?.label || null,
         groupError,
         groupLoading, //|| (isFetchingNextPage && !processedData?.shouldExposeData),
         groupRefetching,

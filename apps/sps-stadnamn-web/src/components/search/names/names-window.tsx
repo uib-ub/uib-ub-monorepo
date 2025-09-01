@@ -4,18 +4,21 @@ import { useSearchParams } from "next/navigation"
 import { useMode } from '@/lib/param-hooks';
 import NamesExplorer from "./names-explorer"
 import InfoPopover from "@/components/ui/info-popover"
+import useGroupData from "@/state/hooks/group-data";
 
 export default function FuzzyWindow() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details') || 'doc'
     const mode = useMode()
+    const { groupData } = useGroupData()
     
 
     return <>
     <div className={`flex p-2 border-b border-neutral-200 ${(details || mode == 'map') ? 'gap-1 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
-        <h2 className="text-neutral-900 text-xl self-center flex items-center px-2">Namneformer<InfoPopover>
-        Få oversikt over liknande oppslag i nærområdet. Treffa er ikkje nødvendigvis former av namnet du har valt, og det kan vere namnformer som ikkje kjem med.
+        <h2 className="text-neutral-900 text-xl self-center flex items-center px-2">{groupData[0]?._source?.label}<InfoPopover>
+        Få oversikt over treffa innanfor den valde gruppa. Du kan også utvide søket til å gjelde liknande namn i nærleiken. Treffa er ikkje nødvendigvis former av namnet du har valt, og det kan vere namnformer som ikkje kjem med.
         </InfoPopover></h2>
+        
 
 
     <ClickableIcon
