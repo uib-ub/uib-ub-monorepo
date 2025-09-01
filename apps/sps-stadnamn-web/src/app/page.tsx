@@ -62,7 +62,7 @@ export default async function Home() {
 </div>
     <Link
       href="/search"
-      className="bg-neutral-200 text-neutral-900 no-underline m-12 mt-2 self-center w-full h-16 xl:h-auto xl:w-auto text-2xl pr-12 pl-8 py-4 rounded-full flex items-center gap-3"
+      className="bg-neutral-200 text-neutral-900 no-underline xl:mb-12 mt-2 self-center w-full h-16 xl:h-auto xl:w-auto text-2xl pr-12 pl-8 py-4 rounded-full flex items-center gap-3"
     >
       <PiMapTrifoldFill className="text-3xl" />
       Utforsk kartet

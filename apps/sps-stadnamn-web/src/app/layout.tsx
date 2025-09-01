@@ -47,7 +47,7 @@ export default async function RootLayout({
   const { coordinateVocab, sosiVocab } = await fetchVocab();
 
   return (
-    <html lang="no" className={`${serif.variable} ${sans.className} h-full w-full`}>
+    <html lang="no" className={`${serif.variable} ${sans.className} h-full w-full bg-neutral-900`}>
       <head>
         <PlausibleProvider domain="stadnamnportalen.uib.no" />
       </head>
