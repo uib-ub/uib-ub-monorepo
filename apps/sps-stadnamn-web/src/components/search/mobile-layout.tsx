@@ -56,6 +56,7 @@ export default function MobileLayout() {
     const mapContainerRef = useRef<HTMLDivElement>(null)
     const drawerRef = useRef<HTMLDivElement>(null)
     const mobileNav = useRef<HTMLDivElement>(null)
+    const namesNav = searchParams.get('namesNav')
 
     const [showScrollToTop, setShowScrollToTop] = useState(false);
 
@@ -247,13 +248,9 @@ export default function MobileLayout() {
                 <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 pb-20 border-neutral-800 max-h-[calc(100svh-12rem)] overscroll-contain`} ref={scrollableContent} style={{ overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none' }}>
 
                     {drawerContent == 'details' && <>
-                        {group && details == 'doc' && !doc && <div className="pb-24"><ListExplorer /></div>}
-                        {details == 'group' && <div className="pb-12 pt-2 px-2">
-                            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide flex items-center gap-1 pb-2">Gruppe</h2>
-
-                            <GroupDetails />
-                        </div>}
-                        {doc &&
+                        {group && !doc && !namesNav && <div className="pb-24"><ListExplorer /></div>}
+                        { doc && namesNav && <div className="pb-24 p-2"><DocInfo /></div>}
+                        {namesNav && !doc &&
                             <div className="pb-12 pt-2 px-2">
                                 <span className="flex items-center pb-2 text-xl"><h2 className="text-neutral-800 text-2xl tracking-wide flex items-center gap-1 ">{groupLabel}</h2>
                                     <InfoPopover>

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { Fragment, useEffect, useRef, useState, useCallback, useMemo, useContext } from "react";
 import Map from "../map/map";
 import { baseMaps, baseMapKeys, defaultBaseMap, baseMapLookup } from "@/config/basemap-config";
 import { PiCheckCircleFill, PiCrop, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill, PiStackSimpleFill } from "react-icons/pi";
@@ -23,6 +23,7 @@ import { useQueries } from "@tanstack/react-query";
 import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius } from "@/lib/map-utils";
 import useSearchData from "@/state/hooks/search-data";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
+import { GlobalContext } from "@/app/global-provider";
 
 
 
@@ -43,7 +44,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const maxDocCount = useRef(0)
   const minDocCount = useRef(0)
   const { groupCode, groupValue } = useGroup()
-
+  const { isMobile } = useContext(GlobalContext)
 
 
   // Calculate initial bounds based on zoom level and center before map renders
@@ -398,7 +399,14 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     return {
       click: () => {
         const newQueryParams = new URLSearchParams(searchParams)
-        newQueryParams.set('details', details)
+        if (doc && !isMobile) {
+          newQueryParams.set('doc', selected.uuid[0])
+        }
+        else {
+          newQueryParams.delete('doc')
+          newQueryParams.delete('namesNav')
+        }
+
         newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
         router.push(`?${newQueryParams.toString()}`)
       }

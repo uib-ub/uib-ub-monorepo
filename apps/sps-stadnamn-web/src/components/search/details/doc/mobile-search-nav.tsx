@@ -5,6 +5,7 @@ import { stringToBase64Url } from '@/lib/param-utils'
 import useCollapsedData from '@/state/hooks/collapsed-data'
 import { PiBinocularsBold, PiBinocularsLight, PiBookOpenFill, PiBookOpenLight, PiCaretLeftBold, PiCaretRightBold, PiCaretUpBold, PiDatabaseFill, PiDatabaseLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight } from 'react-icons/pi'
 import ClickableIcon from '@/components/ui/clickable/clickable-icon'
+import Clickable from '@/components/ui/clickable/clickable'
 
 export default function MobileSearchNav({ currentPosition, drawerContent, showScrollToTop, scrollableContent }: { currentPosition: number, drawerContent: string, showScrollToTop: boolean, scrollableContent: React.RefObject<HTMLDivElement> }) {
 
@@ -14,9 +15,9 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
   const groupDecoded = group ? atob(decodeURIComponent(group)) : null
   const [nextGroup, setNextGroup] = useState<Record<string, any> | null>(null)
   const [prevGroup, setPrevGroup] = useState<Record<string, any> | null>(null)
-  const details = searchParams.get('details')
   const datasetTag = searchParams.get('datasetTag')
   const namesNav = searchParams.get('namesNav')
+  const doc = searchParams.get('doc')
 
   const { flattenedPages, groupPosition } = useMemo((): { flattenedPages: any[]; groupPosition: number } => {
     const flattenedPages = collapsedData?.pages.flatMap(page => page.data ?? []) ?? [];
@@ -62,7 +63,6 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
 
 
 
-
   return (
 
     <div className={`py-4 w-full flex justify-between gap-4 px-4 z-[5000] transition-all duration-300 ease-in-out`}
@@ -71,7 +71,12 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
         opacity: currentPosition == 75 ? 1 : 0,
         pointerEvents: currentPosition == 75 ? 'auto' : 'none'
       }}>
-      {drawerContent == 'details' && <div className="flex gap-4">
+        {doc && <div className="flex gap-4">
+          <Clickable remove={['doc']} className="bg-neutral-700 text-white btn rounded-full shadow-lg h-12 flex items-center justify-center gap-2">
+            <PiCaretLeftBold className="text-xl" aria-hidden="true" />Tilbake
+          </Clickable>
+        </div>}
+      {drawerContent == 'details' && !doc && <div className="flex gap-4">
         <ClickableIcon label="forrige" add={{
           group: stringToBase64Url(prevGroup?.fields?.['group.id']?.[0] || ''),
           doc: prevGroup?.fields?.uuid[0]
@@ -90,22 +95,22 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
         {group && !groupDecoded?.startsWith('grunnord') ? <>
         <ClickableIcon label="Oppslag"
             remove={['namesNav']}
-            add={{ details: 'doc' }}
             aria-current={!namesNav ? 'page' : 'false'}
             className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"  
           >
-            {details == 'doc' ? <PiBookOpenFill className="text-xl" aria-hidden="true" /> : <PiBookOpenLight className="text-xl" aria-hidden="true" />}
+            {!namesNav ? <PiBookOpenFill className="text-xl" aria-hidden="true" /> : <PiBookOpenLight className="text-xl" aria-hidden="true" />}
           </ClickableIcon>
           <ClickableIcon
-            label="Finn namneformer"
+            label="Oversikt"
+            remove={['doc']}
             add={{
               group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
               namesNav: 'list'
             }}
-            aria-current={searchParams.get('namesNav') ? 'page' : 'false'}
+            aria-current={(namesNav && !doc) ? 'page' : 'false'}
             className="bg-primary-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
           >
-            {namesNav ? <PiBinocularsBold className="text-xl" aria-hidden="true" /> : <PiBinocularsLight className="text-xl" aria-hidden="true" />}
+            {(namesNav && !doc )? <PiBinocularsBold className="text-xl" aria-hidden="true" /> : <PiBinocularsLight className="text-xl" aria-hidden="true" />}
           </ClickableIcon>
         </> : null}
         {/* End "Finn namneformer" */}

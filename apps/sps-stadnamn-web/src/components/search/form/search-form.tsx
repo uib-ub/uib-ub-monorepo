@@ -54,7 +54,7 @@ export default function SearchForm() {
             : !isMobile ? 
             <>{currentUrl.current ? 
             <Link scroll={false} href={currentUrl.current} className='text-lg flex !justify-self-start items-center gap-2 no-underline invisible lg:visible'><PiCaretLeft className="text-primary-600" aria-hidden="true"/>Tilbake til søket</Link>
-        : <Link scroll={false} href="/search" className='text-lg flex !justify-self-start items-center gap-2 no-underline invisible lg:visible'><PiMapTrifold className="text-neutral-700" aria-hidden="true"/>Vis kartet</Link>
+        : <Link scroll={false} href="/search" className='text-lg flex !justify-self-start items-center gap-2 no-underline invisible lg:visible ml-auto'><PiMapTrifold className="text-neutral-700" aria-hidden="true"/>Vis kartet</Link>
         }</> : null
             
             }

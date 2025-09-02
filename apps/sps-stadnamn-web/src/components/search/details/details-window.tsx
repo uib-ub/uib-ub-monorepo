@@ -1,5 +1,5 @@
 import ClickableIcon from "../../ui/clickable/clickable-icon"
-import { PiX } from "react-icons/pi"
+import { PiCaretLeftBold, PiX } from "react-icons/pi"
 import DocInfo from "./doc/doc-info"
 import { useRouter, useSearchParams } from "next/navigation"
 import DocSkeleton from "../../doc/doc-skeleton"
@@ -13,6 +13,7 @@ import DocToolbar from "./doc/doc-toolbar"
 import useDocData from "@/state/hooks/doc-data"
 import { GlobalContext } from "@/app/global-provider"
 import useGroupData from "@/state/hooks/group-data"
+import Clickable from "@/components/ui/clickable/clickable"
 
 
 
