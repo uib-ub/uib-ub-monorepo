@@ -54,22 +54,15 @@ export default async function RootLayout({
     >
       <head>
         <PlausibleProvider domain="stadnamnportalen.uib.no" />
-        <link rel="preload" href="/Carta_Marina_compressed.webp" as="image" type="image/webp" />
       </head>
-      <body className="flex flex-col w-full h-full relative bg-neutral-900" style={{
-        backgroundImage: `url(/Carta_Marina_compressed.webp)`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed'
-      }}>
+      <body className="flex flex-col w-full h-full relative bg-neutral-900">
         {/* Remove the Image component since we're using CSS background-image */}
 
         <GlobalProvider isMobile={isMobile} sosiVocab={sosiVocab || {}} coordinateVocab={coordinateVocab || {}}>
           <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[5001] focus:top-1 focus:py-3 focus:px-6 bg-primary-700 text-white no-underline self-center">
         Gå til hovudinnhald
       </a>
-        <header className="flex lg:justify-between text-neutral-900 w-full bg-neutral-50 relative shadow-md !h-12 flex-none items-center !z-[4000]">
+        <header className="flex lg:justify-between text-neutral-900 w-full bg-neutral-50 relative shadow-md h-14 xl:h-12 flex-none items-center !z-[4000]">
 
           <SearchForm/>
           <Suspense>

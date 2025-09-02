@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { PiCaretLeft, PiMagnifyingGlass, PiMapTrifold, PiX } from 'react-icons/pi';
 import { datasetTitles } from '@/config/metadata-config';
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useSearchQuery } from '@/lib/search-params';
 import Form from 'next/form'
 import Options from './options';
@@ -24,13 +24,17 @@ export default function SearchForm() {
 
     const { facetFilters } = useSearchQuery()
     const mode = useMode()
+
+    const [inputState, setInputState] = useState<string>('') // Ensure updates within the component
     
 
     const clearQuery = () => {
         inputValue.current = ''; 
+        setInputState('')
         if (input.current) {
             input.current.value = '';
             input.current.focus();
+            
         }
     }  
 
@@ -78,20 +82,20 @@ export default function SearchForm() {
                 name="q" 
                 defaultValue={searchParams.get('q') || inputValue.current || ''}
                 autoFocus={true}
-                onChange={(event) => inputValue.current = event.target.value} 
-                className={`bg-transparent pr-4 pl-4 focus:outline-none flex w-full shrink`}
+                onChange={(event) => {inputValue.current = event.target.value; setInputState(event.target.value)}} 
+                className={`bg-transparent pr-4 pl-4 focus:outline-none flex w-full shrink text-lg xl:text-base`}
             />
             
             {searchParams.getAll('indexDataset')?.map((dataset, index) => <input type="hidden" key={index} name="indexDataset" value={dataset}/>)}
             {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''}/>}
             
-            { inputValue && 
+            { inputState && 
             <IconButton  onClick={() => { clearQuery() }} 
 
                             // Replace results with filters if no facetFilters
 
-                            label="Tøm søkefelt"><PiX className="text-2xl lg:text-xl text-neutral-600 group-focus-within:text-neutral-800 m-1"/></IconButton> }
-            <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-2xl lg:text-xl shrink-0 text-neutral-600 group-focus-within:text-neutral-800" aria-hidden="true"/></button>
+                            label="Tøm søkefelt"><PiX className="text-3xl lg:text-xl text-neutral-600 group-focus-within:text-neutral-800 m-1"/></IconButton> }
+            <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-xl shrink-0 text-neutral-600 group-focus-within:text-neutral-800" aria-hidden="true"/></button>
             </div>
             <Options/>
             

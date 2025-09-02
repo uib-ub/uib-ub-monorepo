@@ -42,7 +42,7 @@ export default function Menu() {
 
 
     return (
-        <div ref={menuRef} className="xl:hidden !ml-auto flex gap-1 items-center">
+        <div ref={menuRef} className="xl:hidden !ml-auto flex gap-1 items-center justify-center h-full border-l-2 border-neutral-200 xl:border-none">
             { pathName !== '/' && pathName != '/search' && currentUrl.current && 
                 <Link href={currentUrl.current} aria-label="Tilbake til søket"><PiCaretLeft className="text-3xl"/></Link>
             }
@@ -50,7 +50,7 @@ export default function Menu() {
                         onBlur={handleBlur}
                         aria-label="Meny"
                         aria-expanded={menuOpen} 
-                        className="p-1 px-2 rounded-sm items-center flex h-full" 
+                        className="items-center justify-center flex h-full w-14 xl:w-12" 
                         onClick={() => setMenuOpen(!menuOpen)}>
                 <PiList className="text-3xl"/></button>
             {menuOpen && 

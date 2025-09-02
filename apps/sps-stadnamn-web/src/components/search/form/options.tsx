@@ -16,13 +16,9 @@ export default function Options() {
     };
     return <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                <button aria-label="Søkealternativ" className="p-1 px-2 rounded-sm items-center flex h-full border-neutral-200">
-                    <span className="relative">
-                        <PiFaders className="text-2xl" aria-hidden="true"/>
-                        {fulltext === 'on' && (
-                            <div className="absolute -top-1 -right-1 w-[6px] h-[6px] bg-red-500 rounded-full" aria-hidden="true" />
-                        )}
-                    </span>
+                <button aria-label="Søkealternativ" className="items-center flex justify-center h-full border-neutral-200 !w-14 xl:w-12 border-l-2 border-neutral-200 xl:border-none shrink-0">
+                    <PiFaders className="text-3xl" aria-hidden="true"/>
+
                 </button>
                     </DropdownMenuTrigger>
                 <DropdownMenuContent className="z-[4000] bg-white p-2 rounded-md shadow-md">

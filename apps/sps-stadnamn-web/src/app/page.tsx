@@ -34,9 +34,9 @@ export default async function Home() {
 <main 
   id="main" 
   tabIndex={-1} 
-  className="flex flex-col grow-1 items-center justify-center   w-full flex-grow relative ">
+  className="flex flex-col grow-1 items-center justify-center carta-marina  w-full flex-grow relative ">
   
-  <div className={`bg-neutral-50/${isMobile ? '80' : '60'} w-full pt-4 md:pt-8 pb-24`}>
+  <div className={`bg-neutral-50/75 w-full pt-4 md:pt-8 pb-24`}>
   <div className={`flex flex-col gap-3 relative z-20 px-4`}>
   <div className="flex flex-col w-full xl:w-auto gap-8 md:p-8 lg:py-8 self-center md:bg-neutral-50/90 md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:shadow-lg self align-middle justify-center">
   <div className="flex flex-col gap-8 md:px-8">
@@ -49,13 +49,13 @@ export default async function Home() {
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
     <input 
       id="search_input" 
-      className="flex-1 rounded-lg h-16 xl:h-12 border border-gray-300 text-lg xl:text-base px-4 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all" 
+      className="flex-1 rounded-lg h-14 xl:h-12 border border-gray-300 text-lg xl:text-base px-4 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all" 
       name="q" 
       type="text"
     />
     <input type="hidden" name="nav" value="results"/>
     <button 
-      className="bg-red-700 hover:bg-red-800 text-white rounded-lg h-16 xl:h-12 w-16 xl:w-12 flex items-center justify-center transition-colors duration-200 flex-shrink-0" 
+      className="bg-red-700 hover:bg-red-800 text-white rounded-lg h-14 xl:h-12 w-14 xl:w-12 flex items-center justify-center transition-colors duration-200 flex-shrink-0" 
       type="submit" 
       aria-label="Søk"
     >
@@ -68,22 +68,22 @@ export default async function Home() {
 
   <div className="flex flex-col items-center gap-6">
   <div className="flex flex-col xl:flex-row items-end justify-center xl:gap-12 gap-6">
-  <div className="flex flex-col items-center">
-    <span className="uppercase tracking-widest text-neutral-900 xl:text-sm font-semibold mb-2">Oppslag i søket</span>
-    <span className="xl:text-3xl text-4xl font-bold text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+  <div className="flex flex-col items-center gap-2">
+    <span className="uppercase tracking-widest text-neutral-950 xl:text-sm font-semibold">Oppslag i søket</span>
+    <span className="xl:text-3xl text-4xl font-bold text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
       {groupCount?.toLocaleString('nb-NO')}
     </span>
   </div>
-  <div className="flex flex-col items-center">
-    <span className="uppercase tracking-widest text-neutral-900 xl:text-sm font-semibold mb-2">Underoppslag</span>
-    <span className="xl:text-3xl text-4xl font-bold text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+  <div className="flex flex-col items-center gap-2">
+    <span className="uppercase tracking-widest text-neutral-950 xl:text-sm font-semibold">Underoppslag</span>
+    <span className="xl:text-3xl text-4xl font-bold text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
       {totalHits?.toLocaleString('nb-NO')}
     </span>
   </div>
 </div>
     <Link
       href="/search"
-      className="bg-neutral-950/80 text-white no-underline xl:mb-16 mt-2 self-center w-full h-16 xl:h-auto xl:w-auto text-xl pr-12 pl-8 py-4 xl:py-2 xl:pr-8 xl:pl-6 rounded-lg xl:rounded-full flex items-center gap-3 transition-colors duration-200"
+      className="bg-neutral-950/80 text-white no-underline xl:mb-16 mt-6 xl:mt-2 self-center w-full h-14 xl:h-auto xl:w-auto text-xl pr-12 pl-8 py-4 xl:py-2 xl:pr-8 xl:pl-6 rounded-lg xl:rounded-full flex items-center gap-3 transition-colors duration-200"
     >
       <PiMapTrifoldFill className="text-2xl" />
       Utforsk kartet
@@ -115,7 +115,7 @@ export default async function Home() {
 
   </div>
   </div>
-  <div className="flex flex-col items-center gap-24 relative z-20 px-4 py-24 bg-neutral-50/80 w-full">
+  <div className="flex flex-col items-center gap-24 relative z-20 px-4 py-24 bg-neutral-50/75 w-full">
   <section className="flex flex-col container gap-6" aria-labelledby="recently_added">
     <h2 id="recently_added" className="font-semibold font-serif text-3xl text-neutral-950 text-center">Sist lagt til</h2>
     <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">

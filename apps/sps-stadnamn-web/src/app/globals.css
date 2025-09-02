@@ -68,14 +68,13 @@
 
 
 
-  @media (min-width: 768px) {
-    .carta-marina::before {
-      @apply absolute inset-0 opacity-40 z-[-1] h-full animate-fade-in;
-      @apply sm:visible;
-      content: '';
-      background-image: linear-gradient(to bottom, rgba(255,255,255,0), #f6f5f4), url('/Carta_Marina.webp');
-    }
+
+  .carta-marina::before {
+    @apply fixed top-0 left-0 z-[-1] h-[100vh] w-full animate-fade-in;
+    content: '';
+    background-image: url('/Carta_Marina_compressed.webp');
   }
+  
 
   .mobile-interface {
     z-index: 3999;
@@ -413,7 +412,7 @@
       opacity: 0;
     }
     to {
-      opacity: 0.4;
+      opacity: 1;
     }
   }
 
