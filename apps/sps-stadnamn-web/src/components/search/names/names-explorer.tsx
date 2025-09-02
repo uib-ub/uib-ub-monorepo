@@ -384,20 +384,20 @@ export default function NamesExplorer() {
                                                                 </button>
                                                                 
                                                                 {isDatasetExpanded && (
-                                                                    <div className="ml-6 mt-2">
+                                                                    
                                                                         <ul className="flex flex-col divide-y divide-neutral-200 w-full">
                                                                             {datasetResults.map((resultItem: any, resultIndex: number) => {
                                                                                 const doc = resultItem.doc
                                                                                 const uniqueKey = `${doc._id}-${resultIndex}`
                                                                                 
                                                                                 return (
-                                                                                    <li key={uniqueKey} className="flex w-full py-2">
+                                                                                    <li key={uniqueKey} className="flex w-full py-1">
                                                                                         <SourceItem hit={doc} isMobile={isMobile}/>
                                                                                     </li>
                                                                                 )
                                                                             })}
                                                                         </ul>
-                                                                    </div>
+                                                                   
                                                                 )}
                                                             </li>
                                                         )
@@ -424,7 +424,7 @@ export default function NamesExplorer() {
                                                             </button>
                                                             
                                                             {isNameExpanded && (
-                                                                <div className="ml-6 mt-2">
+                                                                <>
                                                                     {(() => {
                                                                         // Group results by dataset
                                                                         const datasetGroups = nameResults.reduce((acc: any, resultItem: any) => {
@@ -441,13 +441,13 @@ export default function NamesExplorer() {
                                                                                 <span className="font-medium text-sm text-neutral-700 uppercase tracking-wider">
                                                                                     {datasetTitles[dataset]}
                                                                                 </span>
-                                                                                <ul className="flex flex-col mt-2 divide-y divide-neutral-200 w-full">
+                                                                                <ul className="flex flex-col divide-y divide-neutral-200 w-full">
                                                                                     {(items as any[]).map((resultItem: any, resultIndex: number) => {
                                                                                         const doc = resultItem.doc
                                                                                         const uniqueKey = `${doc._id}-${resultItem.highlightedName}-${resultIndex}`
                                                                                         
                                                                                         return (
-                                                                                            <li key={uniqueKey} className="flex w-full py-2">
+                                                                                            <li key={uniqueKey} className="flex w-full py-1">
                                                                                                 <SourceItem hit={doc} isMobile={isMobile}/>
                                                                                             </li>
                                                                                         )
@@ -456,7 +456,7 @@ export default function NamesExplorer() {
                                                                             </div>
                                                                         ))
                                                                     })()}
-                                                                </div>
+                                                                </>
                                                             )}
                                                         </li>
                                                     )
