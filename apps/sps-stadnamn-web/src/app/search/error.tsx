@@ -42,7 +42,7 @@ export default function Error({
     <main className="flex-1 flex lg:items-center justify-center p-4 bg-white lg:bg-transparent" >
       <div role="alert" aria-live="assertive" className="w-full max-w-xl lg:rounded-lg p-8 space-y-6">
         <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-serif">Det har oppstått ein feil</h2>
+          <h2 className="text-2xl font-serif text-white">Det har oppstått ein feil</h2>
         </div>
 
         <div className="space-y-4">

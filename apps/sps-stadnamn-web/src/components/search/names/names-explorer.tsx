@@ -3,139 +3,14 @@ import Clickable from "@/components/ui/clickable/clickable"
 import { datasetTitles } from "@/config/metadata-config"
 import { getSkeletonLength } from "@/lib/utils"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useContext, useState, useCallback, useEffect } from "react"
+import { useContext, useState, useEffect, useRef } from "react"
 import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi"
 import * as h3 from 'h3-js';
 import SourceItem from "@/components/children/source-item"
 import useGroupData from "@/state/hooks/group-data"
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { base64UrlToString } from "@/lib/param-utils"
 import { useGroup } from "@/lib/param-hooks"
-
-
-const overviewQuery = async (groupCode: string | null, namesScope: string, groupData: any[], groupValue: string | null, groupDoc: any) => {
-            
-        if (!groupValue || !groupData || groupData.length === 0) {
-            console.log('Early return: missing group or groupData')
-            return null
-        }
-
-
-        
-        console.log('Decoded group:', groupValue)
-        const firstUnderscore = groupValue.indexOf('_')
-        const secondUnderscore = groupValue.indexOf('_', firstUnderscore + 1)
-        const groupType = groupValue.substring(0, firstUnderscore)
-        const groupLocation = groupValue.substring(firstUnderscore + 1, secondUnderscore)
-        console.log('Group type:', groupType, 'Group value:', groupLocation)
-
-
-        if (namesScope === 'group') {
-            const res = await fetch(`/api/group?group=${groupCode}&size=1000`)
-            const data = await res.json()
-            return data.hits.hits
-        }
-
-        
-        // Otherwise, for 'extended' scope, perform fuzzy search
-        console.log('Preparing fuzzy search for extended scope')
-        const requestBody: any = {}
-        const seenNames = new Set<string>()
-        const allNames: string[] = []
-        const allGnidu: Set<string> = new Set()
-        const allSnid: Set<string> = new Set()
-        
-        const processName = (name: string) => {
-            name = name.trim().replace("-", " ")
-            if (name.includes(' ')) {
-                name = name.replace(/(?:^|[\s,])(vestre|nordre|[søndre|østre|austre|mellem|mellom|[Yy]tt?re)(?=\s|$)/giu, '').trim()
-                // Remove repeating caps
-                name = name.replace(/([A-Z])\1+/gu, '$1')
-            }
-            return name
-        }
-
-        const source = groupDoc._source
-
-
-        // Handle gnidu - make sure we handle it correctly whether it's an array or not
-        if (source?.gnidu) {
-            const gnidus = Array.isArray(source.gnidu) ? source.gnidu : [source.gnidu];
-            gnidus.forEach((gnidu: string) => {
-                allGnidu.add(gnidu);
-            });
-        }
-
-        // Handle snid - single value field
-        if (source?.snid) {
-            allSnid.add(source.snid);
-        }
-
-        // Process label and altLabels
-        ['label', 'altLabels'].forEach((field: string) => {
-            if (source && source[field]) {
-                const labels = Array.isArray(source[field]) ? source[field] : [source[field]];
-                labels.forEach((label: string) => {
-                    if (label && !seenNames.has(label)) {
-                        seenNames.add(label);
-                        allNames.push(processName(label));
-                    }
-                });
-            }
-        });
-
-
-        // Use the processed names
-        if (allNames.length > 0) {
-            requestBody.searchTerms = [...new Set(allNames.filter(Boolean))];
-            console.log(`Found ${requestBody.searchTerms.length} search terms:`, requestBody.searchTerms)
-        } else {
-            console.log("No search terms found");
-            return [];
-        }
-
-        if (groupType === 'h3') {
-            const neighbours = h3.gridDisk(groupLocation, 1)
-            requestBody.h3 = neighbours
-            console.log(`Added ${neighbours.length} H3 neighbors to request`)
-        }
-
-        if (allSnid.size > 0) {
-            requestBody.snid = Array.from(allSnid)
-            console.log(`Added ${requestBody.snid.length} SNIDs to request`)
-        }
-        
-        if (allGnidu.size > 0) {
-            requestBody.gnidu = Array.from(allGnidu)
-            console.log(`Added ${requestBody.gnidu.length} GNIDUs to request`)
-        }
-
-
-        const res = await fetch('/api/search/fuzzy', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody)
-        })
-        
-        console.log('Fuzzy search response status:', res.status)
-        
-        if (!res.ok) {
-            const errorText = await res.text()
-            console.error('Fuzzy search failed:', errorText)
-            throw new Error(`Failed to fetch fuzzy search results: ${res.status} ${errorText}`)
-        }
-        
-        const data = await res.json()
-        console.log(`Received ${data.hits.hits.length} results from fuzzy search`)
-        return data.hits.hits
-
-    }
-
-
-
-
+import ErrorMessage from "@/components/error-message"
+import useOverviewData from "@/state/hooks/overview-data"
 
 
 
@@ -145,110 +20,66 @@ export default function NamesExplorer() {
     const namesNav = searchParams.get('namesNav') || 'datasets'
     const { isMobile } = useContext(GlobalContext)
     const namesScope = searchParams.get('namesScope') || 'group'
+    const { groupDoc } = useGroupData()
     
-
-
-    const { groupData, groupDoc } = useGroupData()
-    const { groupCode, groupValue} = useGroup()
+    const { groupCode } = useGroup()
     const router = useRouter()
-    const [ selectedDoc, setSelectedDoc ] = useState<any>(groupDoc?._source?.uuid || null)
-    const doc = searchParams.get('doc')
+    const selectedKey = `nameSelected:${groupCode}`
+    const selectedRef = useRef<any>(null)
+    const [ selectedDoc, setSelectedDoc ] = useState<any>(() => {
+        try {
+            const raw = sessionStorage.getItem(selectedKey)
+            if (raw) {
+                return JSON.parse(raw)
+            }
+        } catch {}
+        return  groupDoc?._source?.uuid || null
+
+    })
+
+    const { groups, namesResultError, namesResultLoading } = useOverviewData()
+
+
+
+    useEffect(() => {
+        console.log("SELECTED CHANGED")
+        if (selectedRef.current) {
+            window.scrollTo({top: selectedRef.current?.offsetTop, behavior: 'instant'})
+        }
+    }, [selectedDoc])
 
     // Persist expandedGroups across navigation using sessionStorage
-    const storageKey = `namesExpanded:${groupCode}:${namesNav}:${namesScope}`
+    const expandedKey = `namesExpanded:${groupCode}:${namesNav}:${namesScope}`
     const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(() => {
         try {
-            const raw = sessionStorage.getItem(storageKey)
+            const raw = sessionStorage.getItem(expandedKey)
             if (raw) {
                 const parsed = JSON.parse(raw)
                 if (parsed && typeof parsed === 'object') {
                     return parsed
                 }
             }
+            
+
         } catch {}
         return {}
     })
 
-
-    useEffect(() => {
+    const goToDoc = (doc: any) => {
+        const groupCode = searchParams.get('group')
+        const selectedKey = `nameSelected:${groupCode}`
+        sessionStorage.setItem(selectedKey, JSON.stringify(doc))
         setSelectedDoc(doc)
-    }, [doc])
+        const newParams = new URLSearchParams(searchParams)
+        newParams.set('doc', doc)
+        router.push(`?${newParams.toString()}`)
+    }
 
 
-    const { data: groups, error: namesResultError, isLoading: namesResultLoading } = useQuery({
-        queryKey: ['namesData', groupCode, namesScope],
-        queryFn: () => overviewQuery(groupCode, namesScope, groupData, groupValue, groupDoc),
-        enabled: !!groupData && groupData.length > 0,
-        select: (data) => {
-            if (!data) return []
-            
-            console.log('Processing results:', data.length)
-            const groupMap = new Map()
-            
-            
-            data.forEach((result: any) => {
-                const source = result._source || result.fields || {}
-                
-                if (namesNav === 'datasets') {
-                    // For datasets view, don't group by dataset here - let the render section handle it
-                    const groupKey = 'all-datasets'
-                    
-                    if (!groupMap.has(groupKey)) {
-                        groupMap.set(groupKey, { key: groupKey, results: [] })
-                    }
-                    
-                    groupMap.get(groupKey).results.push({
-                        doc: result,
-                        highlightedName: source.label || source.altLabels?.[0] || 'Unknown'
-                    })
-                } else {
-                    // For timeline and list views, keep existing name-based grouping
-                    const allNames = Array.from(new Set(
-                        (source.attestations?.map((att: any) => att.label) || [])
-                            .concat(source.label ? [source.label] : [])
-                            .concat(source.altLabels || [])
-                    ))
-                    
-                    allNames.forEach((name) => {
-                        const nameStr = name as string
-                        let groupKey
-                        
-                        if (namesNav === 'timeline') {
-                            const year = source.attestations?.find((att: any) => att.label === nameStr)?.year || source.year || null
-                            groupKey = year || 'no-year'
-                            
-                            if (!groupMap.has(groupKey)) {
-                                groupMap.set(groupKey, { key: groupKey, year, results: [] })
-                            }
-                        } else {
-                            groupKey = nameStr
-                            if (!groupMap.has(groupKey)) {
-                                groupMap.set(groupKey, { key: groupKey, results: [] })
-                            }
-                        }
-                        
-                        groupMap.get(groupKey).results.push({
-                            doc: result,
-                            highlightedName: nameStr,
-                        })
-                    })
-                }
-            })
-            
-            const processedGroups = Array.from(groupMap.values())
-            
-            if (namesNav === 'timeline') {
-                return processedGroups.sort((a, b) => {
-                    if (a.year === null && b.year === null) return 0
-                    if (a.year === null) return 1
-                    if (b.year === null) return -1
-                    return parseInt(a.year) - parseInt(b.year)
-                })
-            } else {
-                return processedGroups
-            }
-        },
-    })
+
+
+
+    
 
     const toggleGroupExpansion = (groupId: string) => {
         setExpandedGroups(prev => {
@@ -257,10 +88,14 @@ export default function NamesExplorer() {
                 [groupId]: !prev[groupId]
             }
             try {
-                sessionStorage.setItem(storageKey, JSON.stringify(next))
+                sessionStorage.setItem(expandedKey, JSON.stringify(next))
             } catch {}
             return next
         })
+    }
+
+    if (namesResultError) {
+        return <ErrorMessage error={{error: namesResultError.message}} message="Det har oppstått ein feil" />
     }
 
     return <>        
@@ -358,10 +193,10 @@ export default function NamesExplorer() {
                 // Results content - preserve exact timeline styling, improve uniformity
                 <div className="px-4">
                     <ul className={`${namesNav === 'timeline' ? 'relative' : 'flex flex-col divide-y divide-neutral-200'}`}>
-                        {groups.map((group, index) => {
+                        {groups.map((group: any, index: number) => {
                             const groupId = `${namesNav}-${group.key}`
-                            const groupsWithYears = groups.filter(g => g.year)
-                            const indexInYearGroups = groupsWithYears.findIndex(g => g.key === group.key)
+                            const groupsWithYears = groups.filter((g: any) => g.year)
+                            const indexInYearGroups = groupsWithYears.findIndex((g: any) => g.key === group.key)
                             const isLastYearGroup = indexInYearGroups === groupsWithYears.length - 1
                             
                             return (
@@ -419,8 +254,8 @@ export default function NamesExplorer() {
                                                                                 const uniqueKey = `${doc._id}-${resultIndex}`
                                                                                 
                                                                                 return (
-                                                                                    <li key={uniqueKey} className="flex w-full py-1">
-                                                                                        <SourceItem hit={doc} isMobile={isMobile} selectedDoc={selectedDoc} setSelectedDoc={setSelectedDoc}/>
+                                                                                    <li key={uniqueKey} ref={doc == selectedDoc ? selectedRef : null} className="flex w-full py-1">
+                                                                                        <SourceItem hit={doc} isMobile={isMobile} selectedDoc={selectedDoc} goToDoc={goToDoc}/>
                                                                                     </li>
                                                                                 )
                                                                             })}
@@ -475,8 +310,8 @@ export default function NamesExplorer() {
                                                                                         const uniqueKey = `${doc._id}-${resultItem.highlightedName}-${resultIndex}`
                                                                                         
                                                                                         return (
-                                                                                            <li key={uniqueKey} className="flex w-full py-1">
-                                                                                                <SourceItem hit={doc} isMobile={isMobile} selectedDoc={selectedDoc} setSelectedDoc={setSelectedDoc}/>
+                                                                                            <li key={uniqueKey} className="flex w-full py-1" ref={doc == selectedDoc ? selectedRef : null}>
+                                                                                                <SourceItem hit={doc} isMobile={isMobile} selectedDoc={selectedDoc} goToDoc={goToDoc}/>
                                                                                             </li>
                                                                                         )
                                                                                     })}
