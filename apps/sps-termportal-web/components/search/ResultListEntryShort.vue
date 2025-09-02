@@ -1,5 +1,5 @@
 <template>
-  <li>
+  <li class="pr-1">
     <AppLink :to="`${entryData.link}`">
       <section
         class="p-2 hover:bg-gray-300 lg:flex"
@@ -18,6 +18,8 @@
 </template>
 
 <script setup lang="ts">
+import { langRtoL } from "#imports";
+
 const route = useRoute();
 
 interface Props {
@@ -34,7 +36,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const isCurrentEntry = computed(() => {
-  if ("/" + props.entryData.link === route.path) {
+  if (props.entryData.link === route.path) {
     return true;
   }
   else {
