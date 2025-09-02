@@ -16,28 +16,19 @@ import useGroupData from "@/state/hooks/group-data"
 export default function DetailsWindow() {
     const searchParams = useSearchParams()
     const namesNav = searchParams.get('namesNav')
+    console.log("DetailsWindow")
     
     const mode = useMode()
-    const { groupData, groupLoading, groupTotal } = useGroupData()
+    const { groupData, groupLoading, groupTotal, groupRefetching, groupFetching } = useGroupData()
     const router = useRouter()
     const docIndex = useDocIndex()
     const { groupCode } = useGroup()
-    const [docUpdated, setDocUpdated] = useState(false)
-    const { docLoading, docData, docDataset } = useDocData()
+
+    const { docLoading, docData, docDataset, docRefetching } = useDocData()
     const doc = searchParams.get('doc')
+    const isUpdating = docLoading || groupLoading || docRefetching || groupRefetching || groupFetching
 
 
-    useEffect(() => {
-        setDocUpdated(true);
-        const timeout = setTimeout(() => setDocUpdated(false), 300);
-        return () => clearTimeout(timeout);
-        
-    }, [docIndex, groupCode]);
-
-    useEffect(() => {
-        const timeout = setTimeout(() => setDocUpdated(false), 100);
-        return () => clearTimeout(timeout);
-    }, [docData, groupData]);
 
     useEffect(() => {
       const handleKeyDown = (e: KeyboardEvent) => {
@@ -114,7 +105,7 @@ export default function DetailsWindow() {
 
       window.addEventListener('keydown', handleKeyDown);
       return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [groupData, docIndex, namesNav, router, searchParams, groupTotal]);
+  }, [docIndex, namesNav, router, searchParams, groupTotal]);
     
 
     return <>
@@ -127,7 +118,7 @@ export default function DetailsWindow() {
 
     {(groupTotal?.value || (!namesNav && docData)) ?
     
-    <div className={`flex gap-2 transition-opacity duration-200 ${docLoading || groupLoading || docUpdated ? 'opacity-50' : 'opacity-100'}`}>
+    <div className={`flex gap-2 transition-opacity duration-200 ${isUpdating ? 'opacity-50' : 'opacity-100'}`}>
 
 <DocToolbar docData={docData}/>{!doc && <HitNavigation/>}
    
@@ -163,7 +154,7 @@ export default function DetailsWindow() {
   
 
 { ((groupLoading || docLoading) && !docData?._source) ? <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> 
-: <div className={`overflow-y-auto stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docLoading || groupLoading || docUpdated ? 'opacity-50' : 'opacity-100'}`}>
+: <div className={`overflow-y-auto stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${isUpdating ? 'opacity-50' : 'opacity-100'}`}>
 <DocInfo/>
 </div> }
 
