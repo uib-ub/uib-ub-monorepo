@@ -14,7 +14,6 @@ import ActiveFilters from "./form/active-filters";
 import { formatNumber } from "@/lib/utils";
 import DatasetFacet from "./nav/facets/dataset-facet";
 import Clickable from "../ui/clickable/clickable";
-import GroupDetails from "./details/group/group-details";
 import NamesExplorer from "./names/names-explorer";
 import InfoPopover from "../ui/info-popover";
 import useDocData from "@/state/hooks/doc-data";
@@ -46,7 +45,6 @@ export default function MobileLayout() {
     const mode = useMode()
     const { docData } = useDocData()
     const datasetCount = searchParams.getAll('indexDataset')?.length || 0
-    const details = searchParams.get('details')
     const { groupTotal, groupLabel } = useGroupData()
     const group = searchParams.get('group')
 
@@ -168,14 +166,14 @@ export default function MobileLayout() {
         if (nav) {
             setDrawerContent(nav)
         }
-        else if (details) {
+        else if (doc || group) {
             setDrawerContent('details')
         }
         else if (!searchFilterParamsString) {
             setDrawerContent(null)
         }
     }
-        , [searchFilterParamsString, nav, details, doc])
+        , [searchFilterParamsString, nav, doc, group])
 
     const toggleDrawer = (tab: string) => {
         setDrawerContent(prev => prev == tab ? null : tab)
@@ -249,7 +247,7 @@ export default function MobileLayout() {
 
                     {drawerContent == 'details' && <>
                         {group && !doc && !namesNav && <div className="pb-24"><ListExplorer /></div>}
-                        { doc && namesNav && <div className="pb-24 p-2"><DocInfo /></div>}
+                        { doc && <div className="pb-24 p-2"><DocInfo /></div>}
                         {namesNav && !doc &&
                             <div className="pb-12 pt-2 px-2">
                                 <span className="flex items-center pb-2 text-xl"><h2 className="text-neutral-800 text-2xl tracking-wide flex items-center gap-1 ">{groupLabel}</h2>
@@ -344,7 +342,7 @@ export default function MobileLayout() {
                         </div>
                     </Clickable>}
 
-                {group && <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('details')} add={{ details: details || 'doc', nav: null }} aria-current={drawerContent == 'details' ? 'page' : 'false'}>
+                {group && <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('details')} add={{nav: null }} aria-current={drawerContent == 'details' ? 'page' : 'false'}>
                      <div className="relative">
                         <PiBookOpen className="text-3xl" />
                             <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${groupTotal && groupTotal.value < 10 ? 'px-1.5' : 'px-1'}`}>

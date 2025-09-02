@@ -11,15 +11,11 @@ import useGroupData from '@/state/hooks/group-data';
 
 
 
-export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean}) {
+export default function SourceItem({hit, isMobile, selectedDoc, setSelectedDoc}: {hit: any, isMobile: boolean, selectedDoc: any, setSelectedDoc: (doc: any) => void}) {
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
-    const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit._index.split('-')[2]
-    const details = searchParams.get('details')
-    const mode = useMode()
     const { groupData } = useGroupData()
-    const { groupCode, groupValue } = useGroup()
 
 
 
@@ -39,17 +35,15 @@ export default function SourceItem({hit, isMobile}: {hit: any, isMobile: boolean
             </ClickableIcon>}
             <Clickable 
                 link
-                aria-current={doc == getFieldValue(hit, 'uuid') ? 'page' : undefined}
-                ref={itemRef}
+                aria-current={selectedDoc == getFieldValue(hit, 'uuid') ? 'page' : undefined}
                 className="group no-underline flex gap-1 items-center rounded-full"
                 add={{
                     doc: getFieldValue(hit, 'uuid'),
-                    details: mode == 'map' ? 'doc' : details
                 }}
                 
             >
                 <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current='page']:border-accent-800 border-2 border-transparent">
-                    {doc == getFieldValue(hit, 'uuid') ? <PiBookOpenFill className="text-primary-600 text-xl group-aria-[current='page']:text-accent-800" /> : <PiBookOpenLight className="text-primary-600 text-xl group-aria-[current='page']:text-accent-800" />}
+                    {selectedDoc == getFieldValue(hit, 'uuid') ? <PiBookOpenFill className="text-primary-600 text-xl group-aria-[current='page']:text-accent-800" /> : <PiBookOpenLight className="text-primary-600 text-xl group-aria-[current='page']:text-accent-800" />}
                 </div>
                 {sourceTitle(hit)}
             </Clickable>

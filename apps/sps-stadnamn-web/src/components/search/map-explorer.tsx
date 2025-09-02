@@ -23,7 +23,6 @@ import { useQueries } from "@tanstack/react-query";
 import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius } from "@/lib/map-utils";
 import useSearchData from "@/state/hooks/search-data";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
-import { GlobalContext } from "@/app/global-provider";
 
 
 
@@ -37,14 +36,12 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const searchParams = useSearchParams()
   const { searchQueryString, searchFilterParamsString } = useSearchQuery()
   const perspective = usePerspective()
-  const details = searchParams.get('details') || 'doc'
   const urlZoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
   const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
   const allowFitBounds = useRef(false)
   const maxDocCount = useRef(0)
   const minDocCount = useRef(0)
-  const { groupCode, groupValue } = useGroup()
-  const { isMobile } = useContext(GlobalContext)
+  const { groupValue } = useGroup()
 
 
   // Calculate initial bounds based on zoom level and center before map renders
@@ -399,13 +396,8 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     return {
       click: () => {
         const newQueryParams = new URLSearchParams(searchParams)
-        if (doc && !isMobile) {
-          newQueryParams.set('doc', selected.uuid[0])
-        }
-        else {
-          newQueryParams.delete('doc')
-          newQueryParams.delete('namesNav')
-        }
+        newQueryParams.set('details', 'group')
+        newQueryParams.delete('doc')
 
         newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
         router.push(`?${newQueryParams.toString()}`)

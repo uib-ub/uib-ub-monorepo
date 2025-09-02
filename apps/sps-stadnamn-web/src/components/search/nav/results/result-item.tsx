@@ -41,7 +41,6 @@ export default function ResultItem({hit}: {hit: any}) {
     const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
     const { highlightedGroup } = useContext(GlobalContext)
-    const details = searchParams.get('details')
     const { searchFilterParamsString } = useSearchQuery()
 
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
@@ -79,7 +78,6 @@ export default function ResultItem({hit}: {hit: any}) {
                     remove={['group', 'docIndex', 'doc', 'parent', ...(isMobile ? ['nav', 'namesNav'] : [])]}
                     add={{
                         //doc: hit.fields.uuid,
-                        details: mode == 'list' ? 'group' : details || 'doc', 
                         
                         ...(hit.fields["group.id"] ? {group: stringToBase64Url(hit.fields["group.id"][0])} : {}),
 

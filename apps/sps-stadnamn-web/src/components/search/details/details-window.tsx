@@ -1,25 +1,20 @@
 import ClickableIcon from "../../ui/clickable/clickable-icon"
-import { PiCaretLeftBold, PiX } from "react-icons/pi"
+import { PiX } from "react-icons/pi"
 import DocInfo from "./doc/doc-info"
 import { useRouter, useSearchParams } from "next/navigation"
 import DocSkeleton from "../../doc/doc-skeleton"
-import { useContext, useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { useDocIndex, useGroup, useMode } from "@/lib/param-hooks"
-import GroupDetails from "./group/group-details"
 import HitNavigation from "./hit-navigation"
 import DetailsFooter from "./details-footer"
-import DetailsTabs from "./details-tabs"
 import DocToolbar from "./doc/doc-toolbar"
 import useDocData from "@/state/hooks/doc-data"
-import { GlobalContext } from "@/app/global-provider"
 import useGroupData from "@/state/hooks/group-data"
-import Clickable from "@/components/ui/clickable/clickable"
 
 
 
 export default function DetailsWindow() {
     const searchParams = useSearchParams()
-    const details = searchParams.get('details') || 'doc'
     const namesNav = searchParams.get('namesNav')
     
     const mode = useMode()
@@ -30,8 +25,6 @@ export default function DetailsWindow() {
     const [docUpdated, setDocUpdated] = useState(false)
     const { docLoading, docData, docDataset } = useDocData()
     const doc = searchParams.get('doc')
-
-    console.log("RENDERING")
 
 
     useEffect(() => {
@@ -83,13 +76,13 @@ export default function DetailsWindow() {
                   router.push(`?${params.toString()}`);
               }
               else if (namesNav === 'timeline') {
-                params.delete('namesNav');
-                params.set('details', 'doc');
+                params.set('namesNav', 'datasets');
                 router.push(`?${params.toString()}`);
                   
               }
-              else if (details === 'group') {
-                  params.set('details', 'doc');
+              else if (namesNav === 'datasets') {
+                  params.delete('namesNav');
+                  params.delete('doc')
                   router.push(`?${params.toString()}`);
               }
           }
@@ -97,32 +90,37 @@ export default function DetailsWindow() {
               e.preventDefault();
               const params = new URLSearchParams(searchParams);
               
-              if (!namesNav && details === 'doc' && groupTotal?.value && groupTotal.value > 1) {
-                  params.set('details', 'group');
+              if (!namesNav && groupTotal?.value && groupTotal.value > 1) {
+                  params.set('namesNav', 'datasets');
+                  router.push(`?${params.toString()}`);
+                  
               }
-              else if (!namesNav) {
+              else if (namesNav === 'datasets') {
                   params.set('namesNav', 'timeline');
-                  params.delete('details')
-                  params.delete('doc')
+                  router.push(`?${params.toString()}`);
+                  
 
               }
               else if (namesNav === 'timeline') {
                   params.set("namesNav", "list")
+                  router.push(`?${params.toString()}`);
+                  
                   
               }
-              router.push(`?${params.toString()}`);
+
+              
           }
       };
 
       window.addEventListener('keydown', handleKeyDown);
       return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [groupData, docIndex]);
+  }, [groupData, docIndex, namesNav, router, searchParams, groupTotal]);
     
 
     return <>
-    <div className={`flex tabs p-2 border-b border-neutral-200 ${(details || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
+    <div className={`flex tabs p-2 border-b border-neutral-200 ${((doc || groupCode) || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
 
-        {details == "doc" && <>
+        {(doc || groupCode) && <>
 
     
 
@@ -154,7 +152,7 @@ export default function DetailsWindow() {
              
     <ClickableIcon
             label="Lukk"
-            remove={["doc"]}
+            remove={[...doc ? ["doc"] : ["group"]]}
 
             className="h-10 flex items-center p-1 pl-2" >
             <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
@@ -164,31 +162,12 @@ export default function DetailsWindow() {
 
   
 
-  
+{ ((groupLoading || docLoading) && !docData?._source) ? <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> 
+: <div className={`overflow-y-auto stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docLoading || groupLoading || docUpdated ? 'opacity-50' : 'opacity-100'}`}>
+<DocInfo/>
+</div> }
 
-
-
-  {(details == "doc" || groupTotal?.value == 1) && (
-  <div className={`overflow-y-auto stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${docLoading || groupLoading || docUpdated ? 'opacity-50' : 'opacity-100'}`}>
-      <DocInfo/>
-  </div>
-)}
-{ (groupLoading || docLoading) && details == "doc" && !docData?._source && <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> }
-
-
-  
-
-
-  {details == "group" && <div className="overflow-y-auto stable-scrollbar max-h-[calc(100svh-10rem)] xl:max-h-[calc(100svh-12rem)] p-4 pb-8 border-y border-neutral-200 ">
-    <GroupDetails/>
-    </div>}
-
-
-
-    
-
-
-  {!docDataset?.endsWith("_g") && details == 'doc' && <DetailsFooter/>}
+  {!docDataset?.endsWith("_g") && (doc || groupCode) && <DetailsFooter/>}
 
   
 </>

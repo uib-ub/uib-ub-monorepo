@@ -29,7 +29,7 @@ export default function DetailsFooter() {
       <Clickable
         aria-current={(namesNav && group == stringToBase64Url(docSource.group)) ? true : false}
         className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10" 
-        add={{doc: docSource?.uuid, group: stringToBase64Url(docSource.group.id)}}>
+        add={{namesNav: 'datasets', details: 'doc', doc: docSource?.uuid, group: stringToBase64Url(docSource.group.id)}}>
         <PiBinocularsFill className="text-lg text-white" aria-hidden="true"/>Oversikt
       </Clickable>
     }

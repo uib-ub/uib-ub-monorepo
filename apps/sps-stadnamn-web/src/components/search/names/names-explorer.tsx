@@ -140,24 +140,46 @@ const overviewQuery = async (groupCode: string | null, namesScope: string, group
 
 
 export default function NamesExplorer() {
-    const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({})
+    
     const searchParams = useSearchParams()
-    const namesNav = searchParams.get('namesNav') || 'timeline'
+    const namesNav = searchParams.get('namesNav') || 'datasets'
     const { isMobile } = useContext(GlobalContext)
     const namesScope = searchParams.get('namesScope') || 'group'
+    
 
 
     const { groupData, groupDoc } = useGroupData()
     const { groupCode, groupValue} = useGroup()
     const router = useRouter()
-    
+    const [ selectedDoc, setSelectedDoc ] = useState<any>(groupDoc?._source?.uuid || null)
+    const doc = searchParams.get('doc')
+
+    // Persist expandedGroups across navigation using sessionStorage
+    const storageKey = `namesExpanded:${groupCode}:${namesNav}:${namesScope}`
+    const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(() => {
+        try {
+            const raw = sessionStorage.getItem(storageKey)
+            if (raw) {
+                const parsed = JSON.parse(raw)
+                if (parsed && typeof parsed === 'object') {
+                    return parsed
+                }
+            }
+        } catch {}
+        return {}
+    })
+
+
+    useEffect(() => {
+        setSelectedDoc(doc)
+    }, [doc])
+
 
     const { data: groups, error: namesResultError, isLoading: namesResultLoading } = useQuery({
         queryKey: ['namesData', groupCode, namesScope],
         queryFn: () => overviewQuery(groupCode, namesScope, groupData, groupValue, groupDoc),
         enabled: !!groupData && groupData.length > 0,
         select: (data) => {
-            console.log("DATA:", data)
             if (!data) return []
             
             console.log('Processing results:', data.length)
@@ -229,10 +251,16 @@ export default function NamesExplorer() {
     })
 
     const toggleGroupExpansion = (groupId: string) => {
-        setExpandedGroups(prev => ({
-            ...prev,
-            [groupId]: !prev[groupId]
-        }))
+        setExpandedGroups(prev => {
+            const next = {
+                ...prev,
+                [groupId]: !prev[groupId]
+            }
+            try {
+                sessionStorage.setItem(storageKey, JSON.stringify(next))
+            } catch {}
+            return next
+        })
     }
 
     return <>        
@@ -392,7 +420,7 @@ export default function NamesExplorer() {
                                                                                 
                                                                                 return (
                                                                                     <li key={uniqueKey} className="flex w-full py-1">
-                                                                                        <SourceItem hit={doc} isMobile={isMobile}/>
+                                                                                        <SourceItem hit={doc} isMobile={isMobile} selectedDoc={selectedDoc} setSelectedDoc={setSelectedDoc}/>
                                                                                     </li>
                                                                                 )
                                                                             })}
@@ -448,7 +476,7 @@ export default function NamesExplorer() {
                                                                                         
                                                                                         return (
                                                                                             <li key={uniqueKey} className="flex w-full py-1">
-                                                                                                <SourceItem hit={doc} isMobile={isMobile}/>
+                                                                                                <SourceItem hit={doc} isMobile={isMobile} selectedDoc={selectedDoc} setSelectedDoc={setSelectedDoc}/>
                                                                                             </li>
                                                                                         )
                                                                                     })}
