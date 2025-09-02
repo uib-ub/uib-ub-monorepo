@@ -5,7 +5,6 @@ import { getSkeletonLength } from "@/lib/utils"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useContext, useState, useEffect, useRef } from "react"
 import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi"
-import * as h3 from 'h3-js';
 import SourceItem from "@/components/children/source-item"
 import useGroupData from "@/state/hooks/group-data"
 import { useGroup } from "@/lib/param-hooks"
@@ -20,17 +19,19 @@ export default function NamesExplorer() {
     const namesNav = searchParams.get('namesNav') || 'datasets'
     const { isMobile } = useContext(GlobalContext)
     const namesScope = searchParams.get('namesScope') || 'group'
-    const { groupDoc } = useGroupData()
+    const { groupDoc, groupLoading } = useGroupData()
     
     const { groupCode } = useGroup()
     const router = useRouter()
     const selectedKey = `nameSelected:${groupCode}`
-    const selectedRef = useRef<any>(null)
     const [ selectedDoc, setSelectedDoc ] = useState<any>(() => {
         try {
             const raw = sessionStorage.getItem(selectedKey)
             if (raw) {
-                return JSON.parse(raw)
+                const parsed = JSON.parse(raw)
+                if (typeof parsed === 'string') return parsed
+                if (parsed?._source?.uuid) return parsed._source.uuid
+                if (parsed?.uuid) return parsed.uuid
             }
         } catch {}
         return  groupDoc?._source?.uuid || null
@@ -39,14 +40,25 @@ export default function NamesExplorer() {
 
     const { groups, namesResultError, namesResultLoading } = useOverviewData()
 
+    const itemRefs = useRef<Record<string, HTMLElement | null>>({})
+
 
 
     useEffect(() => {
-        console.log("SELECTED CHANGED")
-        if (selectedRef.current) {
-            window.scrollTo({top: selectedRef.current?.offsetTop, behavior: 'instant'})
-        }
-    }, [selectedDoc])
+        if (!selectedDoc) return
+        requestAnimationFrame(() => {
+            const el = itemRefs.current[selectedDoc]
+            if (!el) return
+            const rect = el.getBoundingClientRect()
+            const viewportHeight = window.innerHeight || document.documentElement.clientHeight
+            const topThreshold = 8
+            const bottomThreshold = 8
+            const fullyVisible = rect.top >= topThreshold && rect.bottom <= (viewportHeight - bottomThreshold)
+            if (!fullyVisible) {
+                el.scrollIntoView({ behavior: 'instant', block: 'center' })
+            }
+        })
+    }, [selectedDoc, groups])
 
     // Persist expandedGroups across navigation using sessionStorage
     const expandedKey = `namesExpanded:${groupCode}:${namesNav}:${namesScope}`
@@ -68,10 +80,12 @@ export default function NamesExplorer() {
     const goToDoc = (doc: any) => {
         const groupCode = searchParams.get('group')
         const selectedKey = `nameSelected:${groupCode}`
-        sessionStorage.setItem(selectedKey, JSON.stringify(doc))
-        setSelectedDoc(doc)
+        const uuid = typeof doc === 'string' ? doc : doc?._source?.uuid || doc?.uuid
+        if (!uuid) return
+        sessionStorage.setItem(selectedKey, JSON.stringify(uuid))
+        setSelectedDoc(uuid)
         const newParams = new URLSearchParams(searchParams)
-        newParams.set('doc', doc)
+        newParams.set('doc', uuid)
         router.push(`?${newParams.toString()}`)
     }
 
@@ -93,6 +107,7 @@ export default function NamesExplorer() {
             return next
         })
     }
+
 
     if (namesResultError) {
         return <ErrorMessage error={{error: namesResultError.message}} message="Det har oppstått ein feil" />
@@ -147,7 +162,7 @@ export default function NamesExplorer() {
             </div>
 
             {/* Content Section - improved uniformity */}
-            {groups && groups.length === 0 && !namesResultLoading ? (
+            {groups && groups.length === 0 && !namesResultLoading && !groupLoading ? (
                 <div className="p-4 text-center">
                     <p className="text-neutral-800">Fann ingen liknande namn i nærleiken</p>
                 </div>
@@ -254,7 +269,12 @@ export default function NamesExplorer() {
                                                                                 const uniqueKey = `${doc._id}-${resultIndex}`
                                                                                 
                                                                                 return (
-                                                                                    <li key={uniqueKey} ref={doc == selectedDoc ? selectedRef : null} className="flex w-full py-1">
+                                                                                    <li
+                                                                                        key={uniqueKey}
+                                                                                        data-doc-uuid={doc?._source?.uuid}
+                                                                                        className="flex w-full py-1"
+                                                                                        ref={(el) => { itemRefs.current[doc?._source?.uuid as string] = el }}
+                                                                                    >
                                                                                         <SourceItem hit={doc} isMobile={isMobile} selectedDoc={selectedDoc} goToDoc={goToDoc}/>
                                                                                     </li>
                                                                                 )
@@ -310,7 +330,12 @@ export default function NamesExplorer() {
                                                                                         const uniqueKey = `${doc._id}-${resultItem.highlightedName}-${resultIndex}`
                                                                                         
                                                                                         return (
-                                                                                            <li key={uniqueKey} className="flex w-full py-1" ref={doc == selectedDoc ? selectedRef : null}>
+                                                                                            <li
+                                                                                                key={uniqueKey}
+                                                                                                className="flex w-full py-1"
+                                                                                                data-doc-uuid={doc?._source?.uuid}
+                                                                                                ref={(el) => { itemRefs.current[doc?._source?.uuid as string] = el }}
+                                                                                            >
                                                                                                 <SourceItem hit={doc} isMobile={isMobile} selectedDoc={selectedDoc} goToDoc={goToDoc}/>
                                                                                             </li>
                                                                                         )

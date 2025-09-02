@@ -72,7 +72,7 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
         pointerEvents: currentPosition == 75 ? 'auto' : 'none'
       }}>
         {doc && <div className="flex gap-4">
-          <Clickable remove={['doc']} className="bg-neutral-700 text-white btn rounded-full shadow-lg h-12 flex items-center justify-center gap-2">
+          <Clickable remove={['doc']} className="btn btn-outline rounded-full shadow-lg h-12 flex items-center justify-center gap-2">
             <PiCaretLeftBold className="text-xl" aria-hidden="true" />Tilbake
           </Clickable>
         </div>}
