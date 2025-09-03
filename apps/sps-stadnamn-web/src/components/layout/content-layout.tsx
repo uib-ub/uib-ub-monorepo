@@ -4,6 +4,6 @@ export default function ContentLayout({ children }: { children: React.ReactNode 
     <main id="main" tabIndex={-1} className="bg-white px-4 pt-8 pb-16 lg:px-16 lg:pt-12 lg:pb-24 page-info flex-grow flex-1" >
       {children}
       </main>
-    <Footer/>
+    <Footer addBackground/>
     </>
   }
