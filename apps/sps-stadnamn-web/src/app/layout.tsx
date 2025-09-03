@@ -50,19 +50,19 @@ export default async function RootLayout({
   return (
     <html 
       lang="no" 
-      className={`${serif.variable} ${sans.className} h-full w-full `}
+      className={`${serif.variable} ${sans.className}`}
     >
       <head>
         <PlausibleProvider domain="stadnamnportalen.uib.no" />
       </head>
-      <body className="flex flex-col w-full h-full relative bg-neutral-900">
+      <body className="bg-neutral-900 flex flex-col min-h-screen">
         {/* Remove the Image component since we're using CSS background-image */}
 
         <GlobalProvider isMobile={isMobile} sosiVocab={sosiVocab || {}} coordinateVocab={coordinateVocab || {}}>
           <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[5001] focus:top-1 focus:py-3 focus:px-6 bg-primary-700 text-white no-underline self-center">
         Gå til hovudinnhald
       </a>
-        <header className="flex lg:justify-between text-neutral-900 w-full bg-neutral-50 relative shadow-md h-14 xl:h-12 flex-none items-center !z-[4000]">
+        <header className="sticky top-0 left-0 right-0 flex lg:justify-between text-neutral-900 bg-neutral-50  shadow-md h-14 xl:h-12 flex-none items-center !z-[4000]">
 
           <SearchForm/>
           <Suspense>
