@@ -141,6 +141,7 @@ export default function DatasetFacet() {
   <Clickable
     role="tab"
     aria-controls="dataset-facet-content"
+    remove={["dataset", "group", "doc"]}
     add={{ datasetTag: 'deep'}}
     aria-selected={datasetTag == 'deep'}
     className={`flex items-center gap-2 p-1 px-2 flex-1`}
@@ -153,6 +154,7 @@ export default function DatasetFacet() {
   <Clickable
     role="tab"
     aria-controls="dataset-facet-content"
+    remove={["dataset", "group", "doc"]}
     add={{ datasetTag: 'tree'}}
     aria-selected={datasetTag == 'tree'}
     className={`flex items-center gap-2 p-1 px-2 flex-1`}
@@ -165,7 +167,7 @@ export default function DatasetFacet() {
   <Clickable
     role="tab"
     aria-controls="dataset-facet-content"
-    remove={["datasetTag"]}
+    remove={["dataset", "group", "doc"]}
     add={{ datasetTag: 'base'}}
     aria-selected={datasetTag == 'base'}
     className={`flex items-center gap-2 p-1 px-2 flex-1`}
