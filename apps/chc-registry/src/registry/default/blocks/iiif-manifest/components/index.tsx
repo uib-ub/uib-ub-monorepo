@@ -15,9 +15,9 @@ const customTheme = {
      * Black and dark grays in a light theme.
      * All must contrast to 4.5 or greater with `secondary`.
      */
-    primary: "var(--color-core-600)",
-    primaryMuted: "var(--color-core-700)",
-    primaryAlt: "var(--color-core-800)",
+    primary: "var(--primary)",
+    primaryMuted: "var(--muted)",
+    primaryAlt: "var(--primary)",
 
     /**
      * Key brand color(s).
