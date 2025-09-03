@@ -27,7 +27,7 @@ export function useSearchQuery() {
 
     searchParams.forEach((value, key) => {
         if (validFields.includes(key)) {
-            if (key == 'indexDataset') {
+            if (key == 'dataset') {
                 datasetFilters.push([key, value])
             }
             else if (key == 'cadastralIndex' || key == 'boost_gt') {
@@ -35,6 +35,7 @@ export function useSearchQuery() {
             }
             else if (key == 'datasetTag') {
                 datasetFilters.push([key, value])
+                
             }
             else if (key != 'q') {
                 searchQuery.append(key, value)

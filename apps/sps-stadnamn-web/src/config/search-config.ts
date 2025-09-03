@@ -16,7 +16,7 @@ export interface FieldConfigItem {
   featuredFacet?: boolean; // Show in custom facet
   child?: string; // Child facet. The parent facet is handled client side, the child is handled server side,
   datasets?: string[]; // Datasets that contain this field - used in cross-dataset search
-  indexDataset?: string[]; // Used to filter by _index
+  dataset?: string[]; // Used to filter by _index
   altField?: string; // Add this new property
   numeric?: boolean;
   keyword?: boolean; // Is mapped as keyword in ES
@@ -52,14 +52,14 @@ const image = {"image.manifest": {label: "Seddel", result}}
 const html = {"content.html": {label: "Tekstinnhald", fulltext}}
 const text = {"content.text": {label: "Tekstinnhald", fulltext}}
 const boost = {numeric}
-const indexDataset = {label: "Datasett"}
+const dataset = {label: "Datasett"}
 const datasetTag = {label: "Datasettgruppe"}
 
 const labelDefaults = {
   "altLabels": {label: "Andre namn", table, facet, result},
   "attestations": {label: "Kjeldeformer", table, result},
 }
-const required = {uuid, boost, label, indexDataset, datasetTag}
+const required = {uuid, boost, label, dataset, datasetTag}
 
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     core_gnidu: {
@@ -434,7 +434,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 // TODO: refactor so that required is not needed in the individual configs
 export const baseAllConfig: Record<string, FieldConfigItem> = {
   ...required, adm, wikiAdm, adm1, adm2, sosi, ...cadastre,
-  "indexDataset": {label: "Datasett", facet},
+  "dataset": {label: "Datasett", facet},
   "cadastralIndex": {label: "Hierarki"},
   ...text,
   ...html,

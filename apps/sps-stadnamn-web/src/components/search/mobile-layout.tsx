@@ -44,7 +44,7 @@ export default function MobileLayout() {
     const [showLoading, setShowLoading] = useState<boolean>(false)
     const mode = useMode()
     const { docData } = useDocData()
-    const datasetCount = searchParams.getAll('indexDataset')?.length || 0
+    const datasetCount = searchParams.getAll('dataset')?.length || 0
     const { groupTotal, groupLabel } = useGroupData()
     const group = searchParams.get('group')
 
@@ -306,7 +306,7 @@ export default function MobileLayout() {
                     {(drawerContent == 'datasets' || drawerContent == 'datasetInfo') &&
                         <div className="p-2">
                             <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide pb-2 flex items-center gap-1 px-1">
-                                {datasetTag == 'tree' && 'Hierarki'}
+                                {datasetTag == 'tree' && 'Registre'}
                                 {datasetTag == 'base' && 'Grunnord'}
                                 {datasetTag == 'deep' && 'Djupinnsamlingar'}
                                 {!datasetTag && 'Datasett'}

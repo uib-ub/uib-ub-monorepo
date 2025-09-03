@@ -31,7 +31,7 @@ export interface DatasetPresentation {
 export const datasetTitles: DatasetTitles = {
     all: "Stadnamnsøk",
     core_gnidu: "GNIDu",
-    tree: "Hierarki",
+    tree: "Registre",
     base: "Grunnord",
     deep: "Djupinnsamlingar",
     bsn: "Bustadnavnregisteret",

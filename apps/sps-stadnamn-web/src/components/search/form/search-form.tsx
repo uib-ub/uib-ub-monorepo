@@ -96,7 +96,7 @@ export default function SearchForm() {
                 className={`bg-transparent pr-4 pl-4 focus:outline-none flex w-full shrink text-lg xl:text-base`}
             />
             
-            {searchParams.getAll('indexDataset')?.map((dataset, index) => <input type="hidden" key={index} name="indexDataset" value={dataset}/>)}
+            {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset}/>)}
             {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''}/>}
             
             { inputState && 

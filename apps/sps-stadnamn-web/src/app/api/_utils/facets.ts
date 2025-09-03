@@ -54,7 +54,7 @@ export function extractFacets(request: Request) {
   for (const [key, value] of urlParams.entries()) {
     if (RESERVED_PARAMS.includes(key as any)) {
       reservedParams[key] = urlParams.get(key)!;
-      if (key == 'datasetTag') {
+      if (key == 'datasetTag' && !urlParams.get('dataset')) { // Don't add datasets to the search if dataset is already set
         if (value == 'tree') {
           datasets.push(...Object.keys(treeSettings))
         }
@@ -224,7 +224,7 @@ export function extractFacets(request: Request) {
           }
         });
 
-      } else if (key == 'indexDataset') {
+      } else if (key == 'dataset') {
         values.forEach(value => {
           if (!datasets.includes(value)) {
             datasets.push(value);
@@ -253,9 +253,9 @@ export function extractFacets(request: Request) {
   if (datasets.length) {
     termFilters.push({
       "bool": {
-        "should": datasets.map(datasetTag => ({
+        "should": datasets.map(tag => ({
           "term": {
-            "_index": `search-stadnamn-${process.env.SN_ENV}-${datasetTag}`
+            "_index": `search-stadnamn-${process.env.SN_ENV}-${tag}`
           }
         })),
         "minimum_should_match": 1

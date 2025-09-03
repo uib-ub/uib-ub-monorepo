@@ -91,7 +91,7 @@ export default function DatasetSelector() {
                           {itemDataset != 'all' && itemDataset != 'search' && <Clickable 
                             className="btn btn-outline xl:btn-compact flex items-center gap-2 text-base !pl-2" 
                             link 
-                            add={perspective == 'all' ? {indexDataset: itemDataset, nav: 'filters', facet: 'indexDataset'} : {datasets: itemDataset, nav: 'filters', facet: 'datasets'}} 
+                            add={perspective == 'all' ? {dataset: itemDataset, nav: 'filters', facet: 'dataset'} : {datasets: itemDataset, nav: 'filters', facet: 'datasets'}} 
                           >
                             <PiFunnel className="text-neutral-600 text-lg" aria-hidden="true"/>
                             Bruk som filter

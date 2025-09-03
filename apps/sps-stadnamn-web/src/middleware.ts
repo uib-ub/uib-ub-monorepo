@@ -56,7 +56,7 @@ export async function middleware(request: NextRequest) {
             return handleApiRedirect(`${baseUrl}/api/iiif/${path[4]}`, () => "/iiif/" + path[4]);
         }
         
-        searchParams.set('indexDataset', dataset)
+        searchParams.set('dataset', dataset)
         
         return Response.redirect(baseUrl + "/search?" + searchParams.toString() , 302)
     }

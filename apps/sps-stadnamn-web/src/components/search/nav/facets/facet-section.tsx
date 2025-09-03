@@ -16,8 +16,8 @@ export default function FacetSection() {
     const perspective = usePerspective()
     const searchParams = useSearchParams()
     const facet = searchParams.get('facet')
-    const indexDatasets = searchParams.getAll('indexDataset')
-    const filterDataset = perspective == 'all' ? indexDatasets.length == 1 ? indexDatasets[0] : 'all' : perspective
+    const datasets = searchParams.getAll('dataset')
+    const filterDataset = perspective == 'all' ? datasets.length == 1 ? datasets[0] : 'all' : perspective
 
     const [facetFieldCounts, setFacetFieldCounts] = useState<Record<string, any>>({})
 
@@ -29,7 +29,7 @@ export default function FacetSection() {
     /*
     
     const availableFacets = filterDataset == 'all'
-        ? facetConfig['all'].filter(f => indexDatasets.length > 0 ? f.datasets?.find((d: string) => indexDatasets.includes(d)) : f.key == 'indexDataset' || (f.datasets?.length && f.datasets?.length > 1)).sort((a, b) => (a.key === 'indexDataset' ? -1 : b.key === 'indexDataset' ? 1 : (b?.datasets?.length || 0) - (a?.datasets?.length || 0)))
+        ? facetConfig['all'].filter(f => datasets.length > 0 ? f.datasets?.find((d: string) => datasets.includes(d)) : f.key == 'dataset' || (f.datasets?.length && f.datasets?.length > 1)).sort((a, b) => (a.key === 'dataset' ? -1 : b.key === 'dataset' ? 1 : (b?.datasets?.length || 0) - (a?.datasets?.length || 0)))
         : facetConfig[filterDataset];
       */
   
@@ -59,7 +59,7 @@ export default function FacetSection() {
             const hasCount = facetFieldCounts?.[f.key]?.doc_count > 0 || facetFieldCounts?.[fieldName]?.doc_count > 0;
             const isFiltered = facetFilters.some(([key]) => key === f.key);
             return hasCount || isFiltered;
-        }).filter(f => indexDatasets.length > 0 ? f.datasets?.find((d: string) => indexDatasets.includes(d)) : f.key == 'indexDataset' || (f.datasets?.length && f.datasets?.length > 1))
+        }).filter(f => datasets.length > 0 ? f.datasets?.find((d: string) => datasets.includes(d)) : f.key == 'dataset' || (f.datasets?.length && f.datasets?.length > 1))
         : facetConfig[filterDataset]?.filter(f => {
             if (f.specialFacet) return true;
             const fieldName = f.key + (f.type ? '' : '.keyword');
@@ -90,7 +90,7 @@ export default function FacetSection() {
             </>
           )}
 
-          { availableFacets.filter(f => !f.child && f.key != 'indexDataset').map(f => {
+          { availableFacets.filter(f => !f.child && f.key != 'dataset').map(f => {
             const isExpanded = facet == f.key
             return (
             <div key={f.key} className={facetsLoading ? 'opacity-50' : ''}>

@@ -52,7 +52,7 @@ export default function ActiveFilters() {
         }
 
 
-        if (name == 'indexDataset') {
+        if (name == 'dataset') {
           return datasetTitles[value] || value
         }
   
@@ -127,7 +127,7 @@ export default function ActiveFilters() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}>
-                {datasetFilters.length} datasett
+                {datasetFilters.length} kjeldefilter
                 <PiCaretDownBold className="inline text-lg" aria-hidden="true"/>
               </button>
             </DropdownMenuTrigger>

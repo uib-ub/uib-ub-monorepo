@@ -155,7 +155,7 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
         </ClickableIcon>
 
         <ClickableIcon
-          label="Hierarki"
+          label="Registre"
           remove={["boost_gt"]}
           add={{ datasetTag: 'tree' }}
           aria-current={datasetTag == 'tree' ? 'page' : 'false'}
@@ -167,6 +167,7 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
         </ClickableIcon>
         <ClickableIcon
           label="Grunnord"
+          remove={["dataset"]}
           add={{ datasetTag: 'base' }}
           aria-current={datasetTag == 'base' ? 'page' : 'false'}
           className={`bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12`}

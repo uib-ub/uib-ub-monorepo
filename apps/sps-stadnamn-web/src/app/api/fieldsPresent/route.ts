@@ -10,12 +10,12 @@ export async function GET(request: Request) {
   const perspective = reservedParams.perspective || 'all'
   const { simple_query_string } = getQueryString(reservedParams)
   
-  // Filter facets based on indexDataset selection (similar to facet-section.tsx logic)
+  // Filter facets based on dataset selection (similar to facet-section.tsx logic)
   const availableFacets = perspective == 'all'
     ? facetConfig['all'].filter(f => 
         datasets.length > 0 
           ? f.datasets?.find((d: string) => datasets.includes(d)) 
-          : f.key == 'indexDataset' || (f.datasets?.length && f.datasets?.length > 1)
+          : f.key == 'dataset' || (f.datasets?.length && f.datasets?.length > 1)
       )
     : facetConfig[perspective];
     

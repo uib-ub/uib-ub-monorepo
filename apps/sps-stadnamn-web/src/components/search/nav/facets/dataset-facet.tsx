@@ -42,18 +42,18 @@ export default function DatasetFacet() {
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
   const availableFacets = useMemo(() => facetConfig[perspective], [perspective]);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
-  const paramsExceptFacet = removeFilterParams('indexDataset')
+  const paramsExceptFacet = removeFilterParams('dataset')
   const datasetTag = searchParams.get('datasetTag')
 
   useEffect(() => {
 
     // Fetch data only if we have a valid facet
-    fetch(`/api/facet?perspective=all&facets=indexDataset${
+    fetch(`/api/facet?perspective=all&facets=dataset${
       facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${
         paramsExceptFacet ? '&' + paramsExceptFacet : ''}${
           sortMode != 'doc_count' ? '&facetSort=' + sortMode : ''}`).then(response => response.json()).then(es_data => {
       
-      setFacetAggregation(es_data.aggregations?.indexDataset)
+      setFacetAggregation(es_data.aggregations?.dataset)
 
       setFacetLoading(false);
     })
@@ -69,7 +69,7 @@ export default function DatasetFacet() {
     
     // Remove existing value if present
     const existingValues = params.getAll(facet);
-    params.delete('indexDataset');
+    params.delete('dataset');
 
     params.delete('page')
 
@@ -80,7 +80,7 @@ export default function DatasetFacet() {
     params.delete('doc')
     params.delete('group')
     
-    // For indexDataset, convert all values to dataset tags before filtering
+    // For dataset, convert all values to dataset tags before filtering
     
     const currentValue = value.split('-')[2];
     existingValues
@@ -102,7 +102,7 @@ export default function DatasetFacet() {
 
 
   const isChecked = (itemKey: string) => {
-    const existingValues = searchParams.getAll('indexDataset');
+    const existingValues = searchParams.getAll('dataset');
     const datasetId = itemKey.split('-')[2];
     return existingValues.includes(datasetId);
 
@@ -160,7 +160,7 @@ export default function DatasetFacet() {
     <span className="flex-shrink-0">
       {datasetTag == 'tree' ? <PiTreeViewFill className="text-base text-accent-800" aria-hidden="true"/> : <PiTreeViewLight className="text-base text-neutral-900" aria-hidden="true"/>}
     </span>
-    Hierarki
+    Registre
   </Clickable>
   <Clickable
     role="tab"
@@ -228,7 +228,7 @@ export default function DatasetFacet() {
                       type="checkbox" 
                       checked={isChecked(item.key)} 
                       className="mr-2 flex-shrink-0" 
-                      name="indexDataset" 
+                      name="dataset" 
                       value={item.key} 
                       onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
                     />
