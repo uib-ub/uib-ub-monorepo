@@ -1,10 +1,10 @@
 {
   "aliases": {
-    "uiDir": "./components/ui",
-    "componentsDir": "./components",
-    "blockDir": "./components",
-    "cssDir": "./styles",
-    "libDir": "./lib"
+    "uiDir": "./registry/default/ui",
+    "componentsDir": "./registry/default/components",
+    "blockDir": "./registry/default/components",
+    "cssDir": "./registry/default/styles",
+    "libDir": "./registry/default/lib"
   },
   "baseDir": "src",
   "commands": {}
