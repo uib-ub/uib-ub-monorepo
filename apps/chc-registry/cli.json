@@ -1,0 +1,11 @@
+{
+  "aliases": {
+    "uiDir": "./registry/default/ui",
+    "componentsDir": "./registry/default/components",
+    "blockDir": "./registry/default/components",
+    "cssDir": "./registry/default/styles",
+    "libDir": "./registry/default/lib"
+  },
+  "baseDir": "src",
+  "commands": {}
+}
