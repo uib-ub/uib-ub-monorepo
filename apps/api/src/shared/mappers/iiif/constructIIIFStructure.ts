@@ -164,7 +164,7 @@ export function constructIIIFStructure(item: any, fileset: any) {
       ]);
 
       if (fileset) {
-        (fileset.hasPart).map((item: any) => {
+        (fileset.data.hasPart).map((item: any) => {
           const root = `${env.API_URL}/items/${filesetID}`
           const canvasID = `${root}/canvas/${item.sequenceNr}`
           const annotationPageID = `${root}/canvas/${item.sequenceNr}/annotation-page/1`;
