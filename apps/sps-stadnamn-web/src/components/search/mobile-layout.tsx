@@ -71,7 +71,7 @@ export default function MobileLayout() {
         , [searchLoading, facetIsLoading])
 
     const isScrolling = (target: EventTarget) => {
-        if (snappedPosition == 75 && target instanceof Node && scrollableContent.current?.contains(target)) {
+        if (snappedPosition == 80 && target instanceof Node && scrollableContent.current?.contains(target)) {
             return scrollableContent.current.scrollTop != 0
         }
     }
@@ -85,7 +85,7 @@ export default function MobileLayout() {
 
     const pos2svh = (yPos: number) => {
         const windowHeight = window.visualViewport?.height || window.innerHeight;
-        return (windowHeight - yPos) / windowHeight * 75
+        return (windowHeight - yPos) / windowHeight * 80
     }
 
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -114,32 +114,61 @@ export default function MobileLayout() {
             return
         }
 
-        let newPosition = drawerSwipeDirection === 'up' ? Math.ceil(currentPosition / 25) * 25 : Math.floor(currentPosition / 25) * 25
+        let newPosition = currentPosition;
+        
         if (isQuickSwipe) {
             if (drawerSwipeDirection === 'up') {
-                newPosition = 75
+                newPosition = 80
             }
-            if (drawerSwipeDirection === 'down') {
-                if (currentPosition > 25) {
-                    newPosition = 25
+            else if (drawerSwipeDirection === 'down') {
+                if (currentPosition > 20) {
+                    newPosition = 20
                 }
                 else {
                     setDrawerContent(null)
                     newPosition = snappedPosition
                 }
             }
-
         }
         else {
-            if (newPosition < 25) {
+            // Custom snapping logic for positions 20, 40, 80
+            const snapPositions = [20, 40, 80];
+            let closestPosition = snapPositions[0];
+            let minDistance = Math.abs(currentPosition - closestPosition);
+            
+            for (const pos of snapPositions) {
+                const distance = Math.abs(currentPosition - pos);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestPosition = pos;
+                }
+            }
+            
+            // Determine direction-based snapping
+            if (drawerSwipeDirection === 'up') {
+                // Find the next higher position
+                newPosition = snapPositions.find(pos => pos > currentPosition) || snapPositions[snapPositions.length - 1];
+            } else if (drawerSwipeDirection === 'down') {
+                // Find the next lower position
+                const lowerPositions = snapPositions.filter(pos => pos < currentPosition);
+                if (lowerPositions.length > 0) {
+                    newPosition = lowerPositions[lowerPositions.length - 1];
+                } else {
+                    setDrawerContent(null)
+                    newPosition = snappedPosition
+                }
+            } else {
+                // Use closest position
+                newPosition = closestPosition;
+            }
+            
+            if (newPosition < 20) {
                 setDrawerContent(null)
-                newPosition = snappedPosition
+                newPosition = snappedPosition  // Keep original logic - don't change this!
             }
-
-            else if (newPosition > 75) {
-                newPosition = 75
+            else if (newPosition > 80) {
+                newPosition = 80
             }
-
         }
 
         setCurrentPosition(newPosition);
@@ -159,7 +188,7 @@ export default function MobileLayout() {
 
         const newHeight = snappedPosition - pos2svh(startTouchY) + pos2svh(e.touches[0].clientY)
         setDrawerSwipeDirection(newHeight > currentPosition ? 'up' : 'down');
-        setCurrentPosition(newHeight < 75 ? newHeight : 75);
+        setCurrentPosition(newHeight < 80 ? newHeight : 80);
     }
 
     useEffect(() => {
@@ -192,7 +221,7 @@ export default function MobileLayout() {
         };
 
         const currentRef = scrollableContent.current;
-        if (currentRef && currentPosition === 75) {
+        if (currentRef && currentPosition === 80) {
             currentRef.addEventListener('scroll', handleScroll, { passive: true });
         }
 
@@ -211,14 +240,13 @@ export default function MobileLayout() {
         if (!drawerContent) return;
 
         function handleClickOutside(event: MouseEvent) {
-            if (drawerRef.current && !drawerRef.current.contains(event.target as Node)
-                && mobileNav.current && !mobileNav.current.contains(event.target as Node)) {
+            if (drawerRef.current && !drawerRef.current.contains(event.target as Node)) {
                 if (!group && !doc) {
                     setDrawerContent(null)
                 }
                 else {
-                    setCurrentPosition(25)
-                    setSnappedPosition(25)
+                    setCurrentPosition(20)
+                    setSnappedPosition(20)
                     setSnapped(true)
                 }
 
@@ -243,7 +271,7 @@ export default function MobileLayout() {
             {drawerContent && <>
                 <div className="w-full flex  items-center h-4 pt-2 rounded-t-md bg-neutral-800 relative px-2" style={{ touchAction: 'none' }}>
                     <div className="absolute -translate-x-1/2 left-1/2 h-1.5 top-1.5 w-16 bg-neutral-300 rounded-full"></div></div>
-                <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 pb-20 border-neutral-800 max-h-[calc(100svh-12rem)] overscroll-contain`} ref={scrollableContent} style={{ overflowY: currentPosition == 75 ? 'auto' : 'hidden', touchAction: (currentPosition == 75 && isScrollable()) ? 'pan-y' : 'none' }}>
+                <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 pb-20 border-neutral-800 max-h-[calc(100svh-10rem)] overscroll-contain`} ref={scrollableContent} style={{ overflowY: snappedPosition == 80 ? 'auto' : 'hidden', touchAction: (snappedPosition == 80 && isScrollable()) ? 'pan-y' : 'none' }}>
 
                     {drawerContent == 'details' && <>
                         {group && !doc && !namesNav && <div className="pb-24"><ListExplorer /></div>}
@@ -357,7 +385,7 @@ export default function MobileLayout() {
         </div>
         </div>
 
-        <div className={`absolute top-12 right-0 w-full bg-transparent rounded-md z-[1000] ${mode == 'map' ? '' : 'max-h-[calc(100svh-6rem)] h-full overflow-y-auto stable-scrollbar'}`}>
+        <div className={`absolute top-12 right-0 w-full bg-white rounded-md z-[1000] ${mode == 'map' ? '' : 'max-h-[calc(100svh-6rem)] h-full overflow-y-auto stable-scrollbar'}`}>
             <StatusSection />
             {mode == 'table' && <TableExplorer />}
             {mode == 'list' && <ListExplorer />}

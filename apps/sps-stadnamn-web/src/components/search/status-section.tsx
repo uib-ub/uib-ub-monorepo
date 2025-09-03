@@ -20,7 +20,7 @@ export default function StatusSection() {
 
     return <div className={`flex flex-col gap-2 ${mode != 'map' ? 'bg-white shadow-lg rounded-md' : ''}`}> 
     <div className={`flex gap-1 items-start ${(mode == 'map' && !isMobile) ? 'lg:mt-2' : ''}`}>
-    {datasetTag != 'base' && <ModeSelector/>}
+    {datasetTag != 'base' && !isMobile && <ModeSelector/>}
     
     
     { !isMobile && <div className={`flex flex-wrap ${datasetTag == 'base' ? 'm-2': 'p-1'} xl:flex-row h-full xl:py-0 gap-2`}><ActiveFilters/> </div> }

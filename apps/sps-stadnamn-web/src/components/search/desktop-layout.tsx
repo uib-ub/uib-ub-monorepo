@@ -19,20 +19,20 @@ export default function DesktopLayout() {
     const nav = searchParams.get('nav') || 'datasets'
     
 
-    return <main id="main" className="flex scroll-container relative w-[100svw] h-[calc(100svh-3rem)]">   
+    return <main id="main" className="flex scroll-container relative w-[100svw] h-[calc(100svh-3rem)] bg-neutral-50">   
 
         
         <div className="flex lg:gap-4 flex-col h-full w-[40svw] lg:w-full max-h-[calc(100svh-4rem)] ">
         
 
-        {  nav && !namesNav && !(mode != 'map' && (doc || group)) && <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${(doc || group) ? 'hidden lg:flex' : 'flex'}`}>
+        {  nav && !namesNav && !(mode != 'map' && mode != 'list' && (doc || group)) && <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${(doc || group) ? 'hidden lg:flex' : 'flex'}`}>
             <NavWindow/>  
         </section> 
         }
 
         
 
-        { mode != 'map' && (doc || (group && !namesNav)) && <section className={`lg:absolute left-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'flex' : 'flex'}`}>
+        { mode != 'map' && mode != 'list' && (doc || (group && !namesNav)) && <section className={`lg:absolute left-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'flex' : 'flex'}`}>
 
             <DetailsWindow/>
 

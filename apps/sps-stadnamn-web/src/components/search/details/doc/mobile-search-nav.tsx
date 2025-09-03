@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { stringToBase64Url } from '@/lib/param-utils'
 import useCollapsedData from '@/state/hooks/collapsed-data'
-import { PiBinocularsBold, PiBinocularsLight, PiBookOpenFill, PiBookOpenLight, PiCaretLeftBold, PiCaretRightBold, PiCaretUpBold, PiDatabaseFill, PiDatabaseLight, PiMicroscopeFill, PiMicroscopeLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight } from 'react-icons/pi'
+import { PiBinocularsBold, PiBinocularsFill, PiBinocularsLight, PiBookOpenFill, PiBookOpenLight, PiCaretLeftBold, PiCaretRightBold, PiCaretUpBold, PiClock, PiClockBold, PiClockFill, PiClockLight, PiDatabaseFill, PiDatabaseLight, PiMicroscopeFill, PiMicroscopeLight, PiSignpost, PiSignpostFill, PiSignpostLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight } from 'react-icons/pi'
 import ClickableIcon from '@/components/ui/clickable/clickable-icon'
 import Clickable from '@/components/ui/clickable/clickable'
 
@@ -55,7 +55,7 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
   }, [collapsedData, groupPosition, flattenedPages, collapsedHasNextPage, collapsedFetchNextPage])
 
 
-  if (currentPosition != 75) {
+  if (currentPosition != 80) {
     return null
 
   }
@@ -64,32 +64,20 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
 
 
   return (
-
-    <div className={`py-4 w-full flex justify-between gap-4 px-4 z-[5000] transition-all duration-300 ease-in-out`}
+    <>
+    <div className={`absolute bottom-14 m-3 left-0 flex shrink-1 justify-between gap-3 z-[5000] transition-all duration-300 ease-in-out rounded-full`}
       style={{
-        transform: currentPosition == 75 ? 'translateY(0)' : 'translateY(100%)',
-        opacity: currentPosition == 75 ? 1 : 0,
-        pointerEvents: currentPosition == 75 ? 'auto' : 'none'
+        transform: currentPosition == 80 ? 'translateY(0)' : 'translateY(100%)',
+        opacity: currentPosition == 80 ? 1 : 0,
+        pointerEvents: currentPosition == 80 ? 'auto' : 'none'
       }}>
-        {drawerContent == 'details' && doc && <div className="flex gap-4">
+        {drawerContent == 'details' && doc && <div className="flex gap-1">
           <Clickable remove={['doc']} className="btn btn-outline rounded-full shadow-lg h-12 flex items-center justify-center gap-2">
             <PiCaretLeftBold className="text-xl" aria-hidden="true" />Tilbake
           </Clickable>
         </div>}
-      {drawerContent == 'details' && !doc && <div className="flex gap-4">
-        <ClickableIcon label="forrige" add={{
-          group: stringToBase64Url(prevGroup?.fields?.['group.id']?.[0] || ''),
-          doc: prevGroup?.fields?.uuid[0]
-        }} className={`bg-neutral-700 text-white btn rounded-full shadow-lg h-12 w-12`}>
-          <PiCaretLeftBold className="text-xl" aria-hidden="true" />
-        </ClickableIcon>
+      {drawerContent == 'details' && !doc && <>
 
-        <ClickableIcon label="neste" add={{
-          group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
-          doc: nextGroup?.fields?.uuid[0]
-        }} className="bg-neutral-700 text-white btn rounded-full shadow-lg h-12 w-12">
-          <PiCaretRightBold className='text-xl' aria-hidden="true" />
-        </ClickableIcon>
         
         {/* Show "Finn namneformer" if group is not grunnord */}
         {group && !groupDecoded?.startsWith('grunnord') ? <>
@@ -100,24 +88,50 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
           >
             {!namesNav ? <PiBookOpenFill className="text-xl" aria-hidden="true" /> : <PiBookOpenLight className="text-xl" aria-hidden="true" />}
           </ClickableIcon>
+          
+          <ClickableIcon
+            label="Tidslinje"
+            remove={['doc']}
+            add={{
+              group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
+              namesNav: 'timeline'
+            }}
+            aria-current={(namesNav == 'timeline' && !doc) ? 'page' : 'false'}
+            className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
+          >
+            {(namesNav == 'timeline' && !doc )? <PiClockFill className="text-xl" aria-hidden="true" /> : <PiClockLight className="text-xl" aria-hidden="true" />}
+          </ClickableIcon>
+          <ClickableIcon
+            label="Namn"
+            remove={['doc']}
+            add={{
+              group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
+              namesNav: 'names'
+            }}
+            aria-current={(namesNav == 'names' && !doc) ? 'page' : 'false'}
+            className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
+          >
+            {(namesNav == 'names' && !doc )? <PiSignpostFill className="text-xl" aria-hidden="true" /> : <PiSignpostLight className="text-xl" aria-hidden="true" />}
+          </ClickableIcon>
           <ClickableIcon
             label="Oversikt"
             remove={['doc']}
             add={{
               group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
-              namesNav: 'list'
+              namesNav: 'overview'
             }}
-            aria-current={(namesNav && !doc) ? 'page' : 'false'}
-            className="bg-primary-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
+            aria-current={(namesNav == 'overview' && !doc) ? 'page' : 'false'}
+            className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
           >
-            {(namesNav && !doc )? <PiBinocularsBold className="text-xl" aria-hidden="true" /> : <PiBinocularsLight className="text-xl" aria-hidden="true" />}
+            {(namesNav == 'overview' && !doc )? <PiBinocularsFill className="text-xl" aria-hidden="true" /> : <PiBinocularsLight className="text-xl" aria-hidden="true" />}
           </ClickableIcon>
+
         </> : null}
         {/* End "Finn namneformer" */}
-      </div>}
+      </>}
 
 
-      {drawerContent == 'datasets' && <div className="flex gap-4">
+      {drawerContent == 'datasets' && <>
         <ClickableIcon
           label="Alle"
           remove={["datasetTag"]}
@@ -161,23 +175,25 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
             <PiWallFill className="text-3xl text-white" /> :
             <PiWallLight className="text-3xl" />}
         </ClickableIcon>
-      </div>
+      </>
       }
 
 
 
 
-      {showScrollToTop && (
+      
+
+    </div>
+    {showScrollToTop && (
         <button
           onClick={scrollToTop}
-          className="bg-neutral-700 text-white btn rounded-full shadow-lg h-12 w-12 ml-auto"
+          className="bg-neutral-700 text-white btn rounded-full shadow-lg h-12 w-12 absolute right-0 bottom-14 m-3 z-[5000] transition-all duration-300 ease-in-out"
           aria-label="Scroll to top"
         >
           <PiCaretUpBold className="text-xl" />
         </button>
       )}
-
-    </div>
+    </>
 
   )
 }

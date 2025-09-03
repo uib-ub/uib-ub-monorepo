@@ -3,7 +3,7 @@ import { datasetTypes } from "@/config/metadata-config";
 import { publishDates } from "@/config/metadata-config";
 
 export default function DatasetStats({ statsItem, itemDataset }: { statsItem: any, itemDataset: string }) {
-    return <div className="flex items-center gap-2">
+    return <div className="flex flex-col md:flex-row md:items-center gap-2">
     {statsItem?.doc_count && (
       <div className="flex items-center border border-neutral-200 rounded-md">
         <span className="font-medium text-neutral-950 p-0.5 px-2 bg-neutral-50 rounded-l-md border-r border-neutral-200">Oppslag</span>

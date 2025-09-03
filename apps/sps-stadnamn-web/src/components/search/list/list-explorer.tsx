@@ -18,7 +18,7 @@ function DocItem({ item, index, group, isMobile }: any) {
     const images = item._source.image?.manifest ? {manifest: item._source.image?.manifest, dataset: docDataset} : item._source.images    
     
     return (
-        <li key={item._source.uuid} className={`flex${isMobile ? 'flex-col' : 'justify-between gap-4 p-2'}`}>
+        <li key={item._source.uuid} className={`flex  ${isMobile ? 'flex-col !py-0' : 'justify-between gap-4 p-2'}`}>
             {isMobile && images?.length && <div className="lg:min-w-[20svw] lg:max-w-[20svw]"><ClientThumbnail iiif={images}/></div>}
             <div className="flex flex-col p-2 w-full">
                 <DocInfo docParams={{docDataset, docData: item}}/>
@@ -32,9 +32,8 @@ function DocItem({ item, index, group, isMobile }: any) {
     )
 }
 
-function InfiniteScrollTrigger({ onLoadMore, canLoadMore }: { onLoadMore: () => void, canLoadMore: boolean }) {
+function InfiniteScrollTrigger({ children, onLoadMore, canLoadMore }: { children: React.ReactNode, onLoadMore: () => void, canLoadMore: boolean }) {
     const { ref, inView } = useInView({
-        rootMargin: '200px',
         threshold: 0
     })
 
@@ -45,7 +44,7 @@ function InfiniteScrollTrigger({ onLoadMore, canLoadMore }: { onLoadMore: () => 
         }
     }, [inView, canLoadMore, onLoadMore])
 
-    return <div ref={ref} className="h-1" />
+    return <div className="flex w-full flex-col divide-y divide-neutral-200" ref={ref}>{children}</div>
 }
 
 export default function ListExplorer() {
@@ -85,7 +84,6 @@ export default function ListExplorer() {
             
             if (firstItemGroupId && firstItemUuid) {
                 const currentParams = new URLSearchParams(searchParams.toString());
-                currentParams.set('doc', firstItemUuid);
                 currentParams.set('group', btoa(firstItemGroupId));
                 //currentParams.set('detail', 'results');
                 
@@ -95,7 +93,14 @@ export default function ListExplorer() {
       }, [router, searchParams, mode, searchLoading, group, datasetTag, collapsedData, groupData]);
 
     return (
-        <ul className={`flex flex-col divide-y divide-neutral-200 instance-info ${isMobile ? 'gap-4' : 'gap-8'} ${groupLoading ? 'opacity-50' : ''}`}>
+        <ul className={`flex flex-col divide-y divide-neutral-200 instance-info ${isMobile ? 'gap-4' : 'gap-8'} ${groupData && groupLoading ? 'opacity-50' : ''}`}>
+            {!groupData &&
+            
+                <li className={`flex w-full flex-col p-4 xl:p-8 my-4 xl:my-8`}>
+                    <DocSkeleton />
+                </li>
+            }
+            
             
             {/* Render all loaded items directly - no lazy loading */}
             {groupData?.map((item: any, index: number) => (
@@ -110,19 +115,21 @@ export default function ListExplorer() {
             
             {/* Infinite scroll trigger - placed after loaded items */}
             {canFetchMore && (
-                <InfiniteScrollTrigger onLoadMore={handleLoadMore} canLoadMore={canFetchMore} />
-            )}
-            
-            {/* Show a few skeleton items for loading feedback */}
-            {skeletonCount > 0 && (
+                <InfiniteScrollTrigger onLoadMore={handleLoadMore} canLoadMore={canFetchMore}>
+                    {skeletonCount > 0 && (
                 <>
                     {Array(skeletonCount).fill(null).map((_, index) => (
-                        <li key={`skeleton-${index}`} className={`flex${isMobile ? 'flex-col' : 'justify-between gap-4 p-2'} min-h-[120px]`}>
+                        <li key={`skeleton-${index}`} className={`flex w-full flex-col p-4 xl:p-8 my-4 xl:my-8`}>
                             <DocSkeleton />
                         </li>
                     ))}
                 </>
             )}
+                </InfiniteScrollTrigger>
+            )}
+            
+            {/* Show a few skeleton items for loading feedback */}
+           
         </ul>
     )
 }

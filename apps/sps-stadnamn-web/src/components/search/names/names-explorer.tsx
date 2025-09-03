@@ -16,7 +16,7 @@ import useOverviewData from "@/state/hooks/overview-data"
 export default function NamesExplorer() {
     
     const searchParams = useSearchParams()
-    const namesNav = searchParams.get('namesNav') || 'datasets'
+    const namesNav = searchParams.get('namesNav') || 'overview'
     const { isMobile } = useContext(GlobalContext)
     const namesScope = searchParams.get('namesScope') || 'group'
     const { groupDoc, groupLoading } = useGroupData()
@@ -116,14 +116,14 @@ export default function NamesExplorer() {
     return <>        
         <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
-                {/* Tabs - completely untouched */}
-                <div className="flex border border-neutral-200 rounded-lg p-1 tabs text-tabs">
+
+                {!isMobile && <div className="flex border border-neutral-200 rounded-lg p-1 tabs text-tabs">
                     <Clickable
-                        add={{ namesNav: 'datasets' }}
-                        aria-pressed={namesNav === 'datasets'}
-                        className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesNav === 'datasets' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                        add={{ namesNav: 'overview' }}
+                        aria-pressed={namesNav === 'overview'}
+                        className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesNav === 'overview' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
                     >
-                        Datasett
+                        Oversikt
                     </Clickable>
                     <Clickable
                         add={{ namesNav: 'timeline' }}
@@ -133,15 +133,14 @@ export default function NamesExplorer() {
                         Tidslinje
                     </Clickable>
                     <Clickable
-                        add={{ namesNav: 'list' }}
-                        aria-pressed={namesNav === 'list'}
-                        className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesNav === 'list' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                        add={{ namesNav: 'names' }}
+                        aria-pressed={namesNav === 'names'}
+                        className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesNav === 'names' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
                     >
                         Namn
                     </Clickable>
-                </div>
+                </div>}
                 
-                {/* Scope Toggle - only minor spacing improvements */}
                 <div className="flex items-center gap-2 p-2 border border-neutral-200 rounded-lg">
                     <label className="flex items-center gap-2 cursor-pointer">
                         <input
@@ -233,55 +232,45 @@ export default function NamesExplorer() {
                                                 {group.year || 'Utan årstal'}
                                             </span>
                                         )}
-                                        {namesNav === 'datasets' && (datasetTitles[group.dataset] || group.dataset) && (
+                                        {namesNav === 'overview' && (datasetTitles[group.dataset] || group.dataset) && (
                                             <span className="mr-2 my-1 mt-1 font-medium text-neutral-700">
                                                 {datasetTitles[group.dataset] || group.dataset}
                                             </span>
                                         )}
                                         
                                         <ul className="flex flex-col gap-1">
-                                            {namesNav === 'datasets' ? (
-                                                // For datasets view, show collapsible dataset groups
+                                            {namesNav === 'overview' ? (
+                                                // For datasets view, show all datasets expanded without collapsing
                                                 <ul className="flex flex-col divide-y divide-neutral-200 w-full">
                                                     {(Array.from(new Set(group.results.map((r: any) => r.doc._index?.split('-')[2] || 'unknown'))) as string[]).map((dataset, index) => {
                                                         const datasetResults = group.results.filter((r: any) => r.doc._index?.split('-')[2] === dataset)
-                                                        const datasetId = `${groupId}-${dataset}`
-                                                        const isDatasetExpanded = expandedGroups[datasetId] ?? false
                                                         
                                                         return (
                                                             <li key={dataset} className="flex flex-col w-full py-1">
-                                                                <button
-                                                                    onClick={() => toggleGroupExpansion(datasetId)}
-                                                                    className="text-left flex items-center gap-3 py-2 cursor-pointer hover:text-neutral-700 transition-colors"
-                                                                >
-                                                                    <div className="flex-shrink-0">
-                                                                        {isDatasetExpanded ? <PiCaretUpBold className="text-sm" aria-hidden="true"/> : <PiCaretDownBold className="text-sm" aria-hidden="true"/>}
-                                                                    </div>
-                                                                    <span className="font-medium">{datasetTitles[dataset] || dataset}</span>
+                                                                <div className="flex items-center gap-3 py-2">
+                                                                    <span className="font-medium text-sm text-neutral-700 uppercase tracking-wider">
+                                                                        {datasetTitles[dataset] || dataset}
+                                                                    </span>
                                                                     <span className="text-sm text-neutral-700">({datasetResults.length})</span>
-                                                                </button>
+                                                                </div>
                                                                 
-                                                                {isDatasetExpanded && (
-                                                                    
-                                                                        <ul className="flex flex-col divide-y divide-neutral-200 w-full">
-                                                                            {datasetResults.map((resultItem: any, resultIndex: number) => {
-                                                                                const doc = resultItem.doc
-                                                                                const uniqueKey = `${doc._id}-${resultIndex}`
-                                                                                
-                                                                                return (
-                                                                                    <li
-                                                                                        key={uniqueKey}
-                                                                                        data-doc-uuid={doc?._source?.uuid}
-                                                                                        className="flex w-full py-1"
-                                                                                        ref={(el) => { itemRefs.current[doc?._source?.uuid as string] = el }}
-                                                                                    >
-                                                                                        <SourceItem hit={doc} isMobile={isMobile} selectedDoc={selectedDoc} goToDoc={goToDoc}/>
-                                                                                    </li>
-                                                                                )
-                                                                            })}
-                                                                        </ul>
-                                                                   
-                                                                )}
+                                                                <ul className="flex flex-col divide-y divide-neutral-200 w-full">
+                                                                    {datasetResults.map((resultItem: any, resultIndex: number) => {
+                                                                        const doc = resultItem.doc
+                                                                        const uniqueKey = `${doc._id}-${resultIndex}`
+                                                                        
+                                                                        return (
+                                                                            <li
+                                                                                key={uniqueKey}
+                                                                                data-doc-uuid={doc?._source?.uuid}
+                                                                                className="flex w-full py-1"
+                                                                                ref={(el) => { itemRefs.current[doc?._source?.uuid as string] = el }}
+                                                                            >
+                                                                                <SourceItem hit={doc} isMobile={isMobile} selectedDoc={selectedDoc} goToDoc={goToDoc}/>
+                                                                            </li>
+                                                                        )
+                                                                    })}
+                                                                </ul>
                                                             </li>
                                                         )
                                                     })}

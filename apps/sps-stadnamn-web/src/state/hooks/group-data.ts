@@ -64,14 +64,9 @@ export default function useGroupData() {
 
             if (allDataFetched) return undefined
 
-
-            // ✅ Regular doc view: fetch until we reach docIndex
-            if (docIndex != null && totalFetched <= docIndex) {
-                const nextSize = Math.min(lastPage.size * 2, 100)
-                return { size: nextSize, from: totalFetched }
-            }
-
-            return undefined
+            // ✅ Use Elasticsearch total to determine if more data can be fetched
+            const nextSize = Math.min(lastPage.size * 2, 100)
+            return { size: nextSize, from: totalFetched }
         },
 
         enabled: !!groupCode,

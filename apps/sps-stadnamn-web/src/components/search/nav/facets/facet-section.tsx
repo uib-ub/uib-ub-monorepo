@@ -54,12 +54,14 @@ export default function FacetSection() {
     const availableFacets = filterDataset == 'all'
         ? facetConfig['all'].filter(f => {
             // Check if this facet field has count > 0 OR is currently being filtered
+            if (f.specialFacet) return true;
             const fieldName = f.key + (f.type ? '' : '.keyword');
             const hasCount = facetFieldCounts?.[f.key]?.doc_count > 0 || facetFieldCounts?.[fieldName]?.doc_count > 0;
             const isFiltered = facetFilters.some(([key]) => key === f.key);
             return hasCount || isFiltered;
         }).filter(f => indexDatasets.length > 0 ? f.datasets?.find((d: string) => indexDatasets.includes(d)) : f.key == 'indexDataset' || (f.datasets?.length && f.datasets?.length > 1))
         : facetConfig[filterDataset]?.filter(f => {
+            if (f.specialFacet) return true;
             const fieldName = f.key + (f.type ? '' : '.keyword');
             const hasCount = facetFieldCounts?.[f.key]?.doc_count > 0 || facetFieldCounts?.[fieldName]?.doc_count > 0;
             const isFiltered = facetFilters.some(([key]) => key === f.key);
@@ -69,7 +71,6 @@ export default function FacetSection() {
 
     return (
         <>
-        { false && JSON.stringify(facetFieldCounts)}
         <div className="flex flex-col divide-y divide-neutral-200">
           {(facetsLoading && !availableFacets.length) && (
             <>

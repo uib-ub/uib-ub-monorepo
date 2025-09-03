@@ -20,22 +20,24 @@ export interface FieldConfigItem {
   altField?: string; // Add this new property
   numeric?: boolean;
   keyword?: boolean; // Is mapped as keyword in ES
+  noInfobox?: boolean; // Not shown in facets infobox
+  specialFacet?: boolean; // Special facet, e. g. adm client facet
 }
 
 interface FacetConfigItem extends FieldConfigItem {
   key: string; 
 }
  
-const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, numeric, keyword] = Array(9).fill(true);
+const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, numeric, keyword, noInfobox, specialFacet] = Array(11).fill(true);
 
-const sosi = {label: "Lokalitetstype (SOSI)", description: "SOSI-standarden", facet, table, result}
+const sosi = {label: "Lokalitetstype (SOSI)", description: "SOSI-standarden", facet, table, result, noInfobox}
 const cadastre = {"within": {label: "Gard", result},
                   "cadastre__gnr": {label: "Gardsnummer", result, sort: "asc" as const, type: "integer" as const}, 
                   "cadastre__bnr": {label: "Bruksnummer", result, sort: "asc" as const, type: "integer" as const}
                 }
 const uuid = {label: "UUID", result}
 const label = {label: "Namn", result}
-const adm = {label: "Områdeinndeling", facet}
+const adm = {label: "Områdeinndeling", facet, specialFacet, noInfobox}
 const adm1 = {label: "Fylke", result} // Necessary for it to be included in fields
 const adm2 = {label: "Kommune", result} // Necessary for it to be included in fields
 const adm3 = {label: "Sogn, bydel eller tidlegare kommune", result}
@@ -43,7 +45,7 @@ const snid = {label: "Stadnamn ID", facet, omitLabel}
 const gnidu = {label: "GNIDu", facet, result}
 const midu = {label: "MIDu", facet}
 const h3 = {label: "H3", result}
-const wikiAdm = {label: "Historisk områdeinndeling", result, keyword, facet}
+const wikiAdm = {label: "Historisk områdeinndeling", result, keyword, facet, noInfobox}
 const identifiers = {snid, gnidu, midu, h3}
 const link = {label: "Lenke", result}
 const image = {"image.manifest": {label: "Seddel", result}}
@@ -442,7 +444,7 @@ export const baseAllConfig: Record<string, FieldConfigItem> = {
 };
 
 fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
-  if (dataset !== 'search') {
+
     Object.entries(fields).forEach(([key, config]) => {
       if (!config.label) return; // Skip fields without labels
 
@@ -482,7 +484,7 @@ fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) =>
         acc[key] = simplifiedConfig;
       }
     });
-  }
+  
   return acc;
 }, { ...baseAllConfig } as Record<string, FieldConfigItem>)
 

@@ -111,7 +111,7 @@ const overviewQuery = async (
     fetchedData.forEach((result: any) => {
         const source = result._source || result.fields || {}
 
-        if (namesNav === 'datasets') {
+        if (namesNav === 'overview') {
             const groupKey = 'all-datasets'
 
             if (!groupMap.has(groupKey)) {
@@ -176,7 +176,7 @@ const overviewQuery = async (
 
 export default function useOverviewData() {
     const searchParams = useSearchParams()
-    const namesNav = searchParams.get('namesNav') || 'datasets'
+    const namesNav = searchParams.get('namesNav') || 'overview'
     const namesScope = searchParams.get('namesScope') || 'group'
     const { groupDoc } = useGroupData()
     const { groupCode, groupValue } = useGroup()

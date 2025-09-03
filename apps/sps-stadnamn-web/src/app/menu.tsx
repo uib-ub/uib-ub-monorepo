@@ -1,17 +1,24 @@
 'use client'
 import { useState, useRef, useEffect, useContext } from "react";
-import { PiCaretLeft, PiList } from 'react-icons/pi';
+import { PiBookOpen, PiBookOpenLight, PiBookOpenText, PiBookOpenTextFill, PiBookOpenTextLight, PiCaretLeft, PiList, PiListFill, PiListLight, PiMapPinLineFill, PiMapTrifoldFill, PiMapTrifoldLight, PiTableFill, PiTableLight } from 'react-icons/pi';
 import NavBar from "./nav-bar";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { GlobalContext } from "./global-provider";
 import Link from "next/link";
+import Clickable from "@/components/ui/clickable/clickable";
+import { useMode } from "@/lib/param-hooks";
 
 export default function Menu() {
     const [menuOpen, setMenuOpen] = useState(false)
     const menuRef = useRef<HTMLDivElement>(null);
-    const pathName = usePathname();
+    const pathname = usePathname();
     const searchParams = useSearchParams();
-    const { currentUrl } = useContext(GlobalContext)
+    const { currentUrl, isMobile } = useContext(GlobalContext)
+    const fulltext = searchParams.get('fulltext')
+    const mode = useMode()
+    const modeOutsideSearch = pathname == '/search' ? mode : null
+    const router = useRouter()
+    const q = searchParams.get("q")
 
     const handleBlur = (event: React.FocusEvent<HTMLButtonElement>) => {
         if (menuRef.current) {
@@ -37,15 +44,14 @@ export default function Menu() {
 
     useEffect(() => {
         setMenuOpen(false);
-    }, [pathName, searchParams]);
+    }, [q, mode]);
+
+
 
 
 
     return (
         <div ref={menuRef} className="xl:hidden !ml-auto flex gap-1 items-center justify-center h-full border-l-2 border-neutral-200 xl:border-none">
-            { pathName !== '/' && pathName != '/search' && currentUrl.current && 
-                <Link href={currentUrl.current} aria-label="Tilbake til søket"><PiCaretLeft className="text-3xl"/></Link>
-            }
             <button aria-controls="menu_navbar" 
                         onBlur={handleBlur}
                         aria-label="Meny"
@@ -53,15 +59,61 @@ export default function Menu() {
                         className="items-center justify-center flex h-full w-14 xl:w-12" 
                         onClick={() => setMenuOpen(!menuOpen)}>
                 <PiList className="text-3xl"/></button>
-            {menuOpen && 
+ 
                 <div 
                      id="menu_navbar" 
-                     className="absolute !z-[3000] !top-[100%] left-0 w-full">
+                     className={`absolute !z-[3000] !top-[100%] left-0 w-full bg-neutral-50 border-t border-neutral-200 h-[calc(100svh-3rem)] ${menuOpen ? 'block' : 'hidden'}`}>
+                         { pathname !== '/' && pathname != '/search' && currentUrl.current && 
+                <div className="flex items-center justify-center py-4 border-b border-neutral-200 gap-2 no-underline text-xl "><Link href={currentUrl.current} className="flex items-center gap-2 no-underline text-xl"><PiCaretLeft className="text-2xl"/>Tilbake til søket</Link></div>
+            }
+                {isMobile && <div className="flex flex-col gap-3 justify-center py-3 w-full">
+                    <label className="flex items-center gap-3 my-3 text-2xl self-center">
+                        <input form="search-form"
+                               type="checkbox" 
+                               id="menu_navbar_checkbox" 
+                               name="fulltext" 
+                               className="h-6 w-6" 
+                               defaultChecked={fulltext == 'on'} 
+                               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                  if (pathname == '/search') {
+                                    const newUrl = new URLSearchParams(searchParams);
+                                    
+                                    if (event.target.checked) {
+                                        newUrl.set('fulltext', 'on');
+                                        console.log("on")
+                                    }
+                                    else {
+                                        console.log("off")
+                                        newUrl.delete('fulltext');
+                                    }
+                                    router.push(`?${newUrl.toString()}`);
+                                  }
+
+                                }} />
+                        Fulltekstsøk
+                    </label>
+                    
+                    <div className="flex gap-3 items-center justify-center w-full">
+                   
+                    <Clickable link href="/search" aria-current={modeOutsideSearch == 'map' ? 'page' : undefined} add={{mode: 'map'}} className="flex w-24 h-24 p-3 flex-col items-center justify-center gap-2 rounded-lg aria-[current=page]:text-white aria-[current=page]:bg-accent-800 no-underline">
+                        {modeOutsideSearch == 'map' ? <PiMapTrifoldFill className="text-4xl text-white" /> : <PiMapTrifoldLight className="text-4xl" />}
+                        Kart
+                    </Clickable>
+                    <Clickable link href="/search" aria-current={modeOutsideSearch == 'table' ? 'page' : undefined} add={{mode: 'table'}} className="flex w-24 h-24 p-3 flex-col items-center justify-center gap-2 rounded-lg aria-[current=page]:text-white aria-[current=page]:bg-accent-800 no-underline">
+                        {modeOutsideSearch == 'table' ? <PiTableFill className="text-4xl text-white" /> : <PiTableLight className="text-4xl" />}
+                        Tabell
+                    </Clickable>
+                    <Clickable link href="/search" aria-current={modeOutsideSearch == 'list' ? 'page' : undefined} add={{mode: 'list'}} className="flex w-24 h-24 p-3 flex-col items-center justify-center gap-2 rounded-lg aria-[current=page]:text-white aria-[current=page]:bg-accent-800 no-underline">
+                        {modeOutsideSearch == 'list' ? <PiBookOpenTextFill className="text-4xl text-white" /> : <PiBookOpenTextLight className="text-4xl" />}
+                        Liste
+                    </Clickable>
+                    </div>
+                    </div>}
                 <NavBar 
                         onBlur={handleBlur}
-                        className="bg-neutral-50 xl:hidden text-xl text-center py-6 small-caps flex flex-col w-full h-full font-semibold border-t-2 border-neutral-200 shadow-md"/>
+                        className=" xl:hidden text-3xl text-center py-6 small-caps flex flex-col w-full font-semibold border-t border-neutral-200 "/>
                 </div>
-               }
+               
         </div>
     )
 

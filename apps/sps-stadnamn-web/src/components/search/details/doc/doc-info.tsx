@@ -40,7 +40,7 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
         if (!docDataset || !docSource || (docDataset == 'mu1950' && docSource.sosi == 'gard')) return [];
         
         return facetConfig[docDataset]?.filter(item => {
-            if (!item.key || ['sosi', 'datasets'].includes(item.key)) return false;
+            if (!item.key || item.noInfobox) return false;
             const value = getFieldValue(docSource, item.key);
             return value && value.length > 0;
         });
@@ -52,7 +52,7 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
       return null
     }
 
-    return <><article className={`instance-info flex flex-col gap-4 ${isMobile ? 'mb-12' : 'p-4 pb-8 '}`}>
+    return <><article className={`instance-info flex flex-col gap-4 ${isMobile ? 'mb-12 px-2' : 'p-4 pb-8 '}`}>
 
       <div className="!mt-0">
 

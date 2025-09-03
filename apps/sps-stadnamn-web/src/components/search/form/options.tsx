@@ -1,5 +1,8 @@
+import { GlobalContext } from "@/app/global-provider";
+import { useMode } from "@/lib/param-hooks";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useContext } from "react";
 
 import { PiCheck, PiFaders } from "react-icons/pi";
 
@@ -8,12 +11,22 @@ export default function Options() {
     const searchParams = useSearchParams()
     const fulltext = searchParams.get('fulltext') || 'off'
     const router = useRouter()
-    
+    const mode = useMode()
+    const { isMobile } = useContext(GlobalContext)
+
     const toggleFulltext = () => {
         const params = new URLSearchParams(searchParams);
         params.set('fulltext', fulltext == 'on' ? 'off' : 'on');
         router.push(`?${params.toString()}`);
     };
+
+    const toggleMode = (mode: string) => {
+        const params = new URLSearchParams(searchParams);
+        params.set('mode', mode);
+        router.push(`?${params.toString()}`);
+    };
+
+
     return <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                 <button aria-label="Søkealternativ" className="items-center flex justify-center h-full border-neutral-200 !w-14 xl:w-12 border-l-2 border-neutral-200 xl:border-none shrink-0">
@@ -34,6 +47,23 @@ export default function Options() {
                           Fulltekst {fulltext == 'on' && <span className="ml-auto"><PiCheck className="text-lg inline" aria-hidden="true"/></span>}
                         </DropdownMenuRadioItem>
                     </DropdownMenuRadioGroup>
+
+                    {isMobile && <>
+                        <DropdownMenuLabel className="font-semibold px-4 py-2">Visning:</DropdownMenuLabel>
+                        <DropdownMenuRadioGroup value={mode} onValueChange={toggleMode}>
+    
+                            <DropdownMenuRadioItem key="map" value="map" className="text-nowrap cursor-pointer px-4 py-2">
+                                Kart {mode == 'map' && <span className="ml-auto"><PiCheck className="text-lg inline" aria-hidden="true"/></span>}
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem key="table" value="table" className="text-nowrap cursor-pointer px-4 py-2">
+                                Tabell {mode == 'table' && <span className="ml-auto"><PiCheck className="text-lg inline" aria-hidden="true"/></span>}
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem key="list" value="list" className="text-nowrap cursor-pointer px-4 py-2">
+                                Liste {mode == 'list' && <span className="ml-auto"><PiCheck className="text-lg inline" aria-hidden="true"/></span>}
+                            </DropdownMenuRadioItem>
+                        </DropdownMenuRadioGroup>
+
+                    </>}
                   
                 </DropdownMenuContent>
         </DropdownMenu>

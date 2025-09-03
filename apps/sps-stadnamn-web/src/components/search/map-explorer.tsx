@@ -314,7 +314,9 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     }
     else if (markerResults.every(result => result.isSuccess)) {
       allowFitBounds.current = false
-      mapInstance.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+      if (searchBounds?.length) {
+        mapInstance.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+      }
     }
 
 
@@ -776,11 +778,11 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
     </Map>
     {/* Canvas overlay for label mode */}
-    <div className={`absolute top-12 lg:top-auto right-0 flex-col lg:flex-row p-2 gap-2 lg:bottom-0 lg:left-1/2 lg:transform lg:-translate-x-1/2 flex justify-center p-2 gap-2 text-white z-[3001]`}>
+    <div className={`absolute right-0 p-2 gap-3 bottom-5 left-1/2 transform -translate-x-1/2 flex justify-center p-2 gap-2 text-white z-[3001]`}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <IconButton label="Bakgrunnskart" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm cursor-pointer">
-            <PiStackSimpleFill className="lg:text-xl" />
+            <PiStackSimpleFill className="text-xl" />
           </IconButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="z-[4000] bg-white">
@@ -847,7 +849,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <IconButton label="Markørar" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm cursor-pointer">
-            <PiMapPinLineFill className="lg:text-xl" />
+            <PiMapPinLineFill className="text-xl" />
           </IconButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="z-[4000] bg-white">
@@ -884,20 +886,20 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
         </DropdownMenuContent>
       </DropdownMenu>
       <IconButton onClick={() => mapInstance.current?.zoomIn()} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn">
-        <PiMagnifyingGlassPlusFill className="lg:text-xl" />
+        <PiMagnifyingGlassPlusFill className="text-xl" />
       </IconButton>
       <IconButton onClick={() => mapInstance.current?.zoomOut()} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut">
-        <PiMagnifyingGlassMinusFill className="lg:text-xl" />
+        <PiMagnifyingGlassMinusFill className="text-xl" />
       </IconButton>
       <IconButton onClick={getMyLocation} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon">
-        <PiNavigationArrowFill className="lg:text-xl" />
+        <PiNavigationArrowFill className="text-xl" />
       </IconButton>
       <IconButton className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom til søkeresultat" onClick={() => {
         if (searchBounds?.length) {
           mapInstance.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
         }
       }}>
-        <PiCrop className="lg:text-xl" />
+        <PiCrop className="text-xl" />
       </IconButton>
     </div>
   </>

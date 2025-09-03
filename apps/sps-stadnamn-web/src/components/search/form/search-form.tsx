@@ -26,14 +26,15 @@ export default function SearchForm() {
     const mode = useMode()
 
     const [inputState, setInputState] = useState<string>('') // Ensure updates within the component
-    
 
     const clearQuery = () => {
         inputValue.current = ''; 
         setInputState('')
         if (input.current) {
             input.current.value = '';
-            input.current.focus();
+            if (!isMobile && pathname == '/search') {
+                input.current.focus();
+            }
             
         }
     }  
@@ -43,9 +44,19 @@ export default function SearchForm() {
             input.current.select();
         }
     }, []);
+
+    console.log(pathname)
+
+
+    if (pathname == "/" || ["/info/datasets", "/iiif" ].find((path) => pathname.startsWith(path))) {
+        return <div className="flex gap-6">
+        <Link href="/" scroll={false} className="text-md px-4 font-serif self-center uppercase no-underline">Stadnamnportalen</Link>
+        
+        </div>
+    }
     
 
-    return pathname != '/' ? <>   
+    return <>
         <div className={`sr-only xl:not-sr-only flex !px-4  ${pathname=='/search' ? 'divide-primary-400 divide-x-2' : ''} gap-4 overflow-clip items-center content-center !w-[calc(25svw-0.5rem)]`}>
             <Link href="/" scroll={false} className="text-base font-serif uppercase no-underline">Stadnamnportalen</Link>
             
@@ -61,7 +72,7 @@ export default function SearchForm() {
             </div>   
         <div className="h-full flex grow">
 
-            <Form ref={form} action="/search" className="flex w-full h-full" onSubmit={() => {
+            <Form ref={form} action="/search" id="search-form" className="flex w-full h-full" onSubmit={() => {
                 if (!input.current) return;
                 if (isMobile) {
                     input.current.blur();
@@ -81,7 +92,7 @@ export default function SearchForm() {
                 ref={input} 
                 name="q" 
                 defaultValue={searchParams.get('q') || inputValue.current || ''}
-                autoFocus={true}
+                autoFocus={!isMobile && pathname == '/search'}
                 onChange={(event) => {inputValue.current = event.target.value; setInputState(event.target.value)}} 
                 className={`bg-transparent pr-4 pl-4 focus:outline-none flex w-full shrink text-lg xl:text-base`}
             />
@@ -97,7 +108,7 @@ export default function SearchForm() {
                             label="Tøm søkefelt"><PiX className="text-3xl lg:text-xl text-neutral-600 group-focus-within:text-neutral-800 m-1"/></IconButton> }
             <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-xl shrink-0 text-neutral-600 group-focus-within:text-neutral-800" aria-hidden="true"/></button>
             </div>
-            <Options/>
+            {!isMobile && <Options/>}
             
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''}/>}
             <input type="hidden" name="nav" value={ 'results'}/>
@@ -110,11 +121,6 @@ export default function SearchForm() {
         </div>
         
         </>
-     : <>
-     <div className="flex gap-6">
-     <Link href="/" scroll={false} className="text-md px-4 font-serif self-center uppercase no-underline">Stadnamnportalen</Link>
-     
-     </div>
-     </>
+
           
 }
