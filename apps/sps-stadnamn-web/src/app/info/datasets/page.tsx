@@ -14,7 +14,7 @@ export default function Datasets() {
     <>
      <Breadcrumbs parentUrl="/info" parentName="Informasjon" currentName="Datasett"/>
         <h1 className="mt-4">Datasett</h1>
-        <div className='flex flex-col gap-y-4 xl:grid xl:grid-cols-1 xl:grid-cols-4 xl:gap-x-8 h-full'>
+        <div className='flex flex-col gap-y-4 xl:grid xl:grid-cols-1 xl:grid-cols-4 xl:gap-x-8'>
         <DatasetBrowser/>
         </div>
     

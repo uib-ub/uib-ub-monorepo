@@ -44,7 +44,7 @@ export default function Menu() {
 
     useEffect(() => {
         setMenuOpen(false);
-    }, [q, mode]);
+    }, [q, mode, pathname]);
 
 
 
@@ -80,10 +80,8 @@ export default function Menu() {
                                     
                                     if (event.target.checked) {
                                         newUrl.set('fulltext', 'on');
-                                        console.log("on")
                                     }
                                     else {
-                                        console.log("off")
                                         newUrl.delete('fulltext');
                                     }
                                     router.push(`?${newUrl.toString()}`);

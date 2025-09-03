@@ -45,7 +45,6 @@ export default function SearchForm() {
         }
     }, []);
 
-    console.log(pathname)
 
 
     if (pathname == "/" || ["/info/datasets", "/iiif" ].find((path) => pathname.startsWith(path))) {

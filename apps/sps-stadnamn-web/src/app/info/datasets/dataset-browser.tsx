@@ -264,8 +264,8 @@ const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((ac
                 {/* Content column */}
                 <div className="min-w-0 col-start-2">
                   {/* Header: title + stats inline on mobile, stacked on xl */}
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1 xl:flex-col xl:items-start xl:gap-1">
-                    <h3 className="!text-xl font-serif !font-normal text-neutral-900 !m-0 break-words">{datasetTitles[itemDataset]}</h3>
+                  <div className="flex flex-col items-start justify-center gap-1 mb-2 self-center">
+                    <h3 className="!text-xl font-serif !p-0 !font-normal text-neutral-900 !m-0 break-words">{datasetTitles[itemDataset]}</h3>
                     <div className="max-w-full">
                       <DatasetStats statsItem={stats?.datasets?.[itemDataset]} itemDataset={itemDataset}/>
                     </div>
