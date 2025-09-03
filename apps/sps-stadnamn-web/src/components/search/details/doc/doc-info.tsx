@@ -56,7 +56,7 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
 
       <div className="!mt-0">
 
-       <div className="flex gap-1  items-center">
+       {<div className="flex gap-1  items-center">
           
           <span className="text-neutral-800 uppercase font-semibold tracking-wider text-sm">{datasetTitles[docDataset as string]}</span>
           
@@ -66,16 +66,15 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
                 <PiInfoFill aria-hidden="true" className="text-lg text-primary-600"/>
         </IconLink>
         
-        </div>
+        </div>}
       
-
-        { perspective != 'search' && docData?._source?.within && docDataset && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}        
+      
  
         </div>
 
         <div className="flex gap-2"><h2>{docSource.label}</h2>
         </div>
-        <div className="flex gap-1 flex-wrap">
+        <div className="flex gap-2 flex-wrap items-center">
         {
          docSource.sosi && docDataset != 'search' && <ExternalLinkTooltip description={sosiVocab[docSource.sosi] ? `SOSI-standarden: ${sosiVocab[docSource.sosi]['description']}` : 'stadtype'} className="flex items-center bg-neutral-50 border border-neutral-200 pl-2 pr-0 rounded-md text-neutral-950 no-underline external-link"
          href={"https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype/" + docSource.sosi}>
@@ -83,8 +82,9 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
         </ExternalLinkTooltip>
          
         }
+        {  treeSettings[docDataset] && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}  
         
-            {Array.isArray(docSource.wikiAdm) && docSource.wikiAdm?.length > 1 && 
+            {!treeSettings[docDataset] && ( Array.isArray(docSource.wikiAdm) && docSource.wikiAdm?.length > 1 && 
                 <>
                 {[docSource.adm1, docSource.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
                 {[docSource.adm1, docSource.adm2, docSource.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link className="flex items-center gap-1 bg-neutral-100 px-2 rounded-md text-neutral-900 no-underline" key={index} href={'http://www.wikidata.org/entity/' + docSource.wikiAdm[index]}>{item}</Link>)}
@@ -104,7 +104,7 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
                 {docSource.adm2 && multivalue(docSource.adm2) + ", "}
                 {multivalue(docSource.adm1)}
                 </span>
-            }       
+           ) }       
 
         </div>
 

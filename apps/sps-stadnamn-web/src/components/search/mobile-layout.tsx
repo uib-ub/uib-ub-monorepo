@@ -22,6 +22,7 @@ import MapWrapper from "./map-wrapper";
 import useSearchData from "@/state/hooks/search-data";
 import MobileSearchNav from "./details/doc/mobile-search-nav";
 import { useMode } from "@/lib/param-hooks"
+import TreeWindow from "./nav/tree-window";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -325,7 +326,7 @@ export default function MobileLayout() {
 
                     }
                     {drawerContent == 'tree' &&
-                        <TreeResults />
+                        <TreeWindow />
                     }
                 </div>
             </>
