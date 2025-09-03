@@ -44,7 +44,7 @@ export default async function Home() {
     <div className="flex flex-col gap-6 xl:mt-32">
   <h1 className="self-center text-5xl text-neutral-900 sr-only md:not-sr-only !px-2 font-serif">Stadnamnsøk</h1>
   
-  <Form className="flex items-center justify-center gap-2 w-full" action="search">
+  <Form id="search-form" className="flex items-center justify-center gap-2 w-full" action="search">
    
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
     <input 
