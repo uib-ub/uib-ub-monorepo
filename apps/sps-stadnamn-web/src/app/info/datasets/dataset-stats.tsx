@@ -3,23 +3,23 @@ import { datasetTypes } from "@/config/metadata-config";
 import { publishDates } from "@/config/metadata-config";
 
 export default function DatasetStats({ statsItem, itemDataset }: { statsItem: any, itemDataset: string }) {
-    return <div className="flex flex-col md:flex-row md:items-center gap-2">
+    return <div className="flex flex-wrap gap-1.5 text-sm">
     {statsItem?.doc_count && (
-      <div className="flex items-center border border-neutral-200 rounded-md">
-        <span className="font-medium text-neutral-950 p-0.5 px-2 bg-neutral-50 rounded-l-md border-r border-neutral-200">Oppslag</span>
-        <span className="text-neutral-900 bg-white p-0.5 px-2 rounded-r-md">{statsItem.doc_count.toLocaleString()}</span>
+      <div className="flex items-center">
+        <span className="font-medium text-neutral-900 mr-1">Oppslag:</span>
+        <span className="text-neutral-900 font-semibold">{statsItem.doc_count.toLocaleString()}</span>
       </div>
     )}
     {publishDates[itemDataset] && (
-      <div className="flex items-center border border-neutral-200 rounded-md">
-        <span className="font-medium text-neutral-950 p-0.5 px-2 bg-neutral-50 rounded-l-md border-r border-neutral-200">Lagt til</span>
-        <span className="text-neutral-900 bg-white p-0.5 px-2 rounded-r-md ">{new Date(publishDates[itemDataset]).toLocaleDateString('no')}</span>
+      <div className="flex items-center">
+        <span className="font-medium text-neutral-900 mr-1">Lagt til:</span>
+        <span className="text-neutral-900">{new Date(publishDates[itemDataset]).toLocaleDateString('no')}</span>
       </div>
     )}
     {datasetTypes[itemDataset]?.includes('updated') && (
-      <div className="flex items-center border border-neutral-200 rounded-md">
-        <span className="font-medium text-neutral-950 p-0.5 px-2 bg-neutral-50 rounded-l-md border-r border-neutral-200">Oppdatert</span>
-        <span className="text-neutral-900 bg-white p-0.5 px-2 rounded-r-md">{new Date(parseInt(statsItem?.timestamp) * 1000).toLocaleDateString('no')}</span>
+      <div className="flex items-center">
+        <span className="font-medium text-neutral-900 mr-1">Oppdatert:</span>
+        <span className="text-neutral-900">{new Date(parseInt(statsItem?.timestamp) * 1000).toLocaleDateString('no')}</span>
       </div>
     )}
     </div>

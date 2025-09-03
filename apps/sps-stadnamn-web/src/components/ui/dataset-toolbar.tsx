@@ -15,22 +15,22 @@ export default function DatasetToolbar({itemDataset}: {itemDataset: string}) {
     const mode = useMode()
     const pathname = usePathname()
 
-    return <nav className="mt-auto flex flex-col md:flex-row gap-2">
+    return <nav className="flex flex-wrap gap-2">
               <Link aria-current={(pathname == '/search' && mode == 'map') ? 'page' : false}
                       href={`/search?dataset=${itemDataset}`} 
-                      className="flex whitespace-nowrap items-center gap-1 no-underline bg-neutral-50 border border-neutral-200 rounded-md w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-accent-200">
+                      className="btn btn-outline btn-compact">
                         <PiMagnifyingGlass aria-hidden="true"/> Søk
                 </Link>
                 {Object.entries(datasetPresentation[itemDataset]?.subindices || {}).map(([key, value]) => (
                     <Link key={key} href={`/search?dataset=${key}&mode=list`} 
-                    className="flex whitespace-nowrap items-center gap-1 no-underline bg-neutral-50 border border-neutral-200 rounded-md w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2 aria-[current=page]:bg-accent-200">
+                    className="btn btn-outline btn-compact">
                         {icons[value.icon]} {datasetTitles[key][0].toUpperCase() + datasetTitles[key].slice(1)}
                     </Link>
                 ))}
                 
-            { treeSettings[itemDataset] && <Link href={`/search?dataset=${itemDataset}&nav=tree`} className="flex whitespace-nowrap items-center rounded-md gap-1 no-underline bg-neutral-50 border border-neutral-200 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2"><PiTreeView className="text-neutral-800" aria-hidden="true"/>Register</Link>}
+            { treeSettings[itemDataset] && <Link href={`/search?dataset=${itemDataset}&nav=tree`} className="btn btn-outline btn-compact"><PiTreeView className="text-neutral-800" aria-hidden="true"/>Register</Link>}
 
-            <Link href={`/info/datasets/${itemDataset}`} className="flex whitespace-nowrap items-center rounded-md gap-1 no-underline bg-neutral-50 border border-neutral-200 w-full p-2 px-4 lg:w-auto lg:p-1 lg:px-2">Les meir<PiCaretRight className="text-primary-600" aria-hidden="true"/></Link>
+            <Link href={`/info/datasets/${itemDataset}`} className="btn btn-outline btn-compact">Les meir<PiCaretRight className="text-primary-600" aria-hidden="true"/></Link>
 
         </nav>
     
