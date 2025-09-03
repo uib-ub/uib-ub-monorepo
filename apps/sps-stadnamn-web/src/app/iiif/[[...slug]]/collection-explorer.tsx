@@ -84,7 +84,7 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
             <div className="flex flex-col lg:flex-row gap-2">
             {/* Add fixed height and min-height to prevent squishing */}
             {manifest && 
-                <div className="w-full">
+                <div className="w-full justify-center flex items-center">
                     <Breadcrumbs
                         homeUrl="/iiif"
                         homeLabel="Arkivressurser"

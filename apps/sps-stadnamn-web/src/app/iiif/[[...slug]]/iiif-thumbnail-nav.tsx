@@ -45,18 +45,18 @@ export default function IIIFThumbnailNav({manifest, neighbours, manifestDataset}
                 
                 {neighbours.data && neighbours.total > 1 && <div className="flex flex-wrap justify-center items-center lg:justify-start lg:flex-nowrap items-center gap-2 lg:ml-auto p-6 lg:p-0">
                     <span className="text-neutral-700 lg:hidden !w-full text-center text-xl">{manifest.order}/{neighbours.total}</span>
-                        <IconLink label="Første element" href={`/iiif/${neighbours.data.first}`} className="flex btn btn-outline items-center justify-center p-4 lg:p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <PiCaretLineLeftBold className="w-10 h-10 lg:w-5 lg:h-5" />
+                        <IconLink label="Første element" href={`/iiif/${neighbours.data.first}`} className="flex btn btn-outline items-center justify-center p-2 lg:p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <PiCaretLineLeftBold className="w-6 h-6 lg:w-5 lg:h-5" />
                         </IconLink>
-                        <IconLink label="Forrige element" href={`/iiif/${neighbours.data.previous || neighbours.data.last}`} className="flex btn btn-outline items-center justify-center p-4 lg:p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <PiCaretLeftBold className="w-10 h-10 lg:w-5 lg:h-5" />
+                        <IconLink label="Forrige element" href={`/iiif/${neighbours.data.previous || neighbours.data.last}`} className="flex btn btn-outline items-center justify-center p-2 lg:p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <PiCaretLeftBold className="w-6 h-6 lg:w-5 lg:h-5" />
                         </IconLink>
                         <span className="text-neutral-700 hidden lg:block px-4">{manifest.order}/{neighbours.total}</span>
-                        <IconLink label="Neste element" href={`/iiif/${neighbours.data.next || neighbours.data.first}`} className="flex btn btn-outline items-center justify-center p-4 lg:p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <PiCaretRightBold className="w-10 h-10 lg:w-5 lg:h-5" />
+                        <IconLink label="Neste element" href={`/iiif/${neighbours.data.next || neighbours.data.first}`} className="flex btn btn-outline items-center justify-center p-2 lg:p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <PiCaretRightBold className="w-6 h-6 lg:w-5 lg:h-5" />
                         </IconLink>
-                         <IconLink label="Siste element" href={`/iiif/${neighbours.data.last}`} className="flex btn btn-outline items-center justify-center p-4 lg:p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <PiCaretLineRight className="w-10 h-10 lg:w-5 lg:h-5" />
+                         <IconLink label="Siste element" href={`/iiif/${neighbours.data.last}`} className="flex btn btn-outline items-center justify-center p-2 lg:p-2 rounded hover:bg-neutral-100 text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <PiCaretLineRight className="w-6 h-6 lg:w-5 lg:h-5" />
                         </IconLink>
                         <button className="btn btn-outline items-center gap-2 hidden lg:flex" aria-expanded={isOpen} aria-controls="thumbnail-nav" onClick={() => setIsOpen(!isOpen)}>
                             {isOpen ? <PiCaretDownBold className="w-5 h-5" /> : <PiCaretUpBold className="w-5 h-5" />}

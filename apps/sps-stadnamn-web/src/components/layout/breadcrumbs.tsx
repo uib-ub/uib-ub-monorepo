@@ -16,18 +16,35 @@ export default function Breadcrumbs({ parentUrl, parentName, currentName, homeUr
         })
     
     return (
-        <nav className="flex flex-wrap lg:flex-row gap-2 items-center  text-lg">
-            {homeUrl && <Fragment key="home"><IconLink label={homeLabel || "Hjem"} className="breadcrumb-link" href={homeUrl}><PiHouse className="w-4 h-4 self-center" /></IconLink><PiCaretRight className="w-4 h-4 self-center" /></Fragment>}
+        <nav className="flex flex-wrap gap-1 sm:gap-2 items-center text-lg min-w-0">
+            {homeUrl && (
+                <Fragment key="home">
+                    <IconLink label={homeLabel || "Hjem"} className="breadcrumb-link flex-shrink-0" href={homeUrl}>
+                        <PiHouse className="w-4 h-4 self-center" />
+                    </IconLink>
+                    <PiCaretRight className="w-4 h-4 self-center flex-shrink-0" />
+                </Fragment>
+            )}
             { parents?.map((name, index) => urls[index] ? (
                 <Fragment key={name}>
-                    <span className="gap-x-1 flex items-center">
-                        <Link key={name} className="breadcrumb-link" href={urls[index]}>
+                    <span className="gap-x-1 flex items-center min-w-0">
+                        <Link 
+                            key={name} 
+                            className="breadcrumb-link truncate max-w-[120px] sm:max-w-[200px] lg:max-w-none" 
+                            href={urls[index]}
+                            title={name}
+                        >
                             {name}
                         </Link>
-                        <PiCaretRight className="w-4 h-4 self-center" /></span>
+                        <PiCaretRight className="w-4 h-4 self-center flex-shrink-0" />
+                    </span>
                 </Fragment>
             ) : null)}
-            {currentName && <span className="truncate overflow-hidden">{currentName}</span>}
+            {currentName && (
+                <span className="truncate overflow-hidden min-w-0 max-w-[150px] sm:max-w-[250px] lg:max-w-none" title={currentName}>
+                    {currentName}
+                </span>
+            )}
         </nav>
     )
 }
