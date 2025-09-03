@@ -5,6 +5,7 @@ import CollectionExplorer from "./collection-explorer";
 import { resolveLanguage } from "../iiif-utils";
 import IIIFInfoSection from "./iiif-info-section";
 import IIIFThumbnailNav from "./iiif-thumbnail-nav";
+import IIIIFMobileInfoWrapper from "./iiiif-mobile-info-wrapper";
 
 
 export default async function IIIFPage({params}: {params: Promise<{slug: string[]}>}) {
@@ -26,7 +27,7 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
             <div className={`flex flex-col lg:grid lg:grid-cols-5 ${manifest?.type == 'Manifest' ? 'lg:min-h-[calc(100svh-7rem)]' : 'h-full'}`}>
                 <div className={`col-span-1 ${manifest?.type == 'Manifest' ? 'hidden lg:block' : 'block'} page-info bg-white break-words border-l-2 border-neutral-200 border-r border-neutral-200 lg:overflow-y-auto ${manifest?.type == 'Manifest' ? 'lg:max-h-[calc(100svh-7rem)]' : 'lg:max-h-[calc(100svh-3rem)]'} overflow-y-auto`}>
             
-               <IIIFInfoSection manifest={manifest} neighbours={neighbours} manifestDataset={manifestDataset} />
+               <IIIIFMobileInfoWrapper manifest={manifest} neighbours={neighbours} manifestDataset={manifestDataset} showOnMobile={false} />
                 
                 
                 </div>
@@ -42,7 +43,7 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
                         </audio>
                     </div>}
                     
-                    {isCollection && <CollectionExplorer manifest={manifest}/>}
+                    {isCollection && <CollectionExplorer manifest={manifest} neighbours={neighbours} manifestDataset={manifestDataset}/>}
 
                 </div>
                 

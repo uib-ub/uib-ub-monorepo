@@ -1,60 +1,56 @@
 'use client'
 import Breadcrumbs from "@/components/layout/breadcrumbs"
 import { PiMagnifyingGlass, PiX } from "react-icons/pi"
-import { useState, useEffect, useRef, Fragment, useCallback } from "react"
+import { useState, useEffect, useRef, Fragment, useCallback, useContext } from "react"
 import { resolveLanguage } from "../iiif-utils";
 import Spinner from "@/components/svg/Spinner";
 import FileCard from "./file-card";
 import IIIFTypeCounts from "./iiif-type-counts";
+import { GlobalContext } from "@/app/global-provider";
+import IIIIFMobileInfoWrapper from "./iiiif-mobile-info-wrapper";
+import { useQuery } from "@tanstack/react-query";
 
+const iiifQuery = async (collectionUuid: string, searchQuery: string, size: number) => {
+    const params = new URLSearchParams();
+    
+    if (collectionUuid) {
+        params.set('collection', collectionUuid);
+    }
+    if (searchQuery) {
+        params.set('q', searchQuery);
+    }
+    params.set('size', size.toString());
 
-export default function CollectionExplorer({manifest}: {manifest: any}) {
+    const response = await fetch(`/api/iiif/search?${params.toString()}`);
+    if (!response.ok) throw new Error('Failed to fetch results');
+    return response.json();
+};
+
+export default function CollectionExplorer({manifest, neighbours, manifestDataset}: {manifest: any, neighbours: any, manifestDataset: string}) {
+    const { inputValue } = useContext(GlobalContext);
     const [searchQuery, setSearchQuery] = useState('');
-    const [inputValue, setInputValue] = useState('');
-    const [results, setResults] = useState<any[]>([]);
     const [size, setSize] = useState(50);
-    const [loading, setLoading] = useState(false);
-    const [typeCounts, setTypeCounts] = useState<any>([]);
-    const [total, setTotal] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
     const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
 
-    useEffect(() => {
-        const params = new URLSearchParams();
-        
-        if (manifest?.uuid) {
-            params.set('collection', manifest.uuid);
-        }
-        if (searchQuery) {
-            params.set('q', searchQuery);
-        }
-        params.set('size', size.toString());
+    const { data, isLoading, isFetching, error } = useQuery({
+        queryKey: ['iiifSearch', manifest?.uuid, searchQuery, size],
+        queryFn: () => iiifQuery(manifest?.uuid, searchQuery, size),
+    });
 
-        // Single fetch call that returns all results
-        fetch(`/api/iiif/search?${params.toString()}`)
-            .then((response) => {
-                if (!response.ok) throw new Error('Failed to fetch results');
-                return response.json();
-            })
-            .then((data) => {
-                // Get all results in a single array
-                const results = data.hits?.hits || [];
-                setResults(results);
-                setTotal(data.hits?.total?.value);
-                setTypeCounts(data.aggregations?.types?.buckets);
-                setLoading(false);
-            });
-    }, [manifest?.uuid, searchQuery, size]);
+    // Extract data from the query result
+    const results = data?.hits?.hits || [];
+    const total = data?.hits?.total?.value || 0;
+    const typeCounts = data?.aggregations?.types?.buckets || [];
 
     const handleScroll = useCallback(() => {
-        if (!containerRef.current || loading || total <= size) return;
+        if (!containerRef.current || isLoading || total <= size) return;
         
         const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
         if (scrollHeight - scrollTop <= clientHeight * 3) {
             setSize(prev => prev + 100);
-            setLoading(true);
         }
-    }, [loading, total, size]);
+    }, [isLoading, total, size]);
 
     useEffect(() => {
         const container = containerRef.current;
@@ -62,13 +58,12 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
             container.addEventListener('scroll', handleScroll);
             return () => container.removeEventListener('scroll', handleScroll);
         }
-    }, [loading, total, handleScroll]);
+    }, [handleScroll]);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setInputValue(value);
+        inputValue.current = value;
         setSize(20);
-        setResults([]);
 
         if (searchTimeout.current) {
             clearTimeout(searchTimeout.current);
@@ -79,12 +74,18 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
         }, 300);
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            (e.target as HTMLInputElement).blur();
+        }
+    };
+
     return (
-        <div ref={containerRef} className="flex flex-col gap-4 p-4 lg:overflow-y-auto lg:h-[calc(100svh-3rem)] stable-scrollbar">
-            <div className="flex flex-col lg:flex-row gap-2">
+        <div ref={containerRef} className="flex flex-col lg:gap-4 py-4 lg:p-4 lg:overflow-y-auto lg:h-[calc(100svh-3rem)] stable-scrollbar">
+            <div className="flex flex-col lg:flex-row gap-2 px-4 pb-4 lg:px-0 lg:pb-0 border-b border-neutral-200 lg:border-b-0">
             {/* Add fixed height and min-height to prevent squishing */}
             {manifest && 
-                <div className="w-full justify-center flex items-center">
+                <div className="w-full flex items-center">
                     <Breadcrumbs
                         homeUrl="/iiif"
                         homeLabel="Arkivressurser"
@@ -105,15 +106,16 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
                         id="search-input"
                         type="text"
                         name="query"
-                        value={inputValue}
+                        value={inputValue.current}
                         onChange={handleSearch}
+                        onKeyDown={handleKeyDown}
                         className="bg-transparent px-4 focus:outline-none w-full p-2"
                     />
                     <div className="w-8 flex justify-center">
-                        {inputValue && (
+                        {inputValue.current && (
                             <button
                                 onClick={() => {
-                                    setInputValue('');
+                                    inputValue.current = '';
                                     setSearchQuery('');
                                 }}
                                 className="hover:bg-neutral-100 rounded-full p-1"
@@ -129,9 +131,10 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
             
 
             </div>
+            <IIIIFMobileInfoWrapper manifest={manifest} neighbours={neighbours} manifestDataset={manifestDataset} showOnMobile={true} />
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                { results.map((result, index) => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 lg:p-0">
+                { results.map((result: any, index: number) => {
                     const itemDataset = result._index.split('-')[2].split('_')[1]
                     return (
                         <Fragment key={index}>
@@ -142,7 +145,7 @@ export default function CollectionExplorer({manifest}: {manifest: any}) {
                 
                
             </div>
-            {loading && (
+            {(isLoading || isFetching) && (
                 <div className="flex w-full justify-center items-center">
                     <Spinner status="Laster mer innhold..." className="w-12 h-12 my-12"/>
                 </div>
