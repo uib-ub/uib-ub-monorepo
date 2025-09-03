@@ -62,7 +62,7 @@ export default function Menu() {
  
                 <div 
                      id="menu_navbar" 
-                     className={`absolute !z-[3000] !top-[100%] left-0 w-full bg-neutral-50 border-t border-neutral-200 h-[calc(100svh-3rem)] ${menuOpen ? 'block' : 'hidden'}`}>
+                     className={`!z-[3000]  bg-neutral-50 border-t border-neutral-200 overflow-y-auto ${menuOpen ? 'fixed top-14 bottom-0 left-0 right-0' : 'hidden'}`}>
                          { pathname !== '/' && pathname != '/search' && currentUrl.current && 
                 <div className="flex items-center justify-center py-4 border-b border-neutral-200 gap-2 no-underline text-xl "><Link href={currentUrl.current} className="flex items-center gap-2 no-underline text-xl"><PiCaretLeft className="text-2xl"/>Tilbake til søket</Link></div>
             }
