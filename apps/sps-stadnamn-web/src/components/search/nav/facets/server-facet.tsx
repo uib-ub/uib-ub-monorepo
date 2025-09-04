@@ -187,7 +187,7 @@ export default function ServerFacet() {
     {  (facetLoading || facetAggregation?.buckets.length) ?
     <fieldset>
       <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[perspective][facet].label}`}</legend>
-      <ul role="status" aria-live="polite" className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate mb-2'>
+      <ul aria-live="polite" className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate mb-2'>
         {facetAggregation?.buckets.length ? facetAggregation?.buckets
           .map((item: any, index: number) => 
             (!clientSearch?.length || createSearchRegex(clientSearch)?.test(renderLabel(facet, item.key))) && (

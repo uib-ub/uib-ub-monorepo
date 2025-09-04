@@ -139,7 +139,7 @@ export default function WikiAdmFacet() {
       {facetAggregation?.buckets ? (
         <fieldset>
           <legend className="sr-only">Filtreringsalternativer for områdeinndeling</legend>
-          <ul role="status" aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200'>
+          <ul aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200'>
             {facetAggregation.buckets.map((item: any) => {
               const isExpanded = expandedItems.has(item.key);
               const firstPath = getFirstPath(item);

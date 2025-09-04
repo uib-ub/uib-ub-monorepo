@@ -202,7 +202,7 @@ export default function DatasetFacet() {
     { (facetLoading || facetAggregation?.buckets.length) ?
     <fieldset>
       <legend className="sr-only">Filtreringsalternativer for datasett</legend>
-      <ul role="status" aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200'>
+      <ul aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200'>
         {facetAggregation?.buckets.length ? facetAggregation?.buckets
           .map((item: any) => {
             const label = renderLabel(item.key)
