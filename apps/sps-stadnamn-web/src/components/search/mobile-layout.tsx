@@ -44,13 +44,10 @@ export default function MobileLayout() {
     const [facetIsLoading, setFacetIsLoading] = useState(false)
     const [showLoading, setShowLoading] = useState<boolean>(false)
     const mode = useMode()
-    const { docData } = useDocData()
     const datasetCount = searchParams.getAll('dataset')?.length || 0
     const { groupTotal, groupLabel } = useGroupData()
     const group = searchParams.get('group')
 
-    const boost_gt = searchParams.get('boost_gt')
-    const cadastralIndex = searchParams.get('cadastralIndex')
     const datasetTag = searchParams.get('datasetTag')
     const mapContainerRef = useRef<HTMLDivElement>(null)
     const drawerRef = useRef<HTMLDivElement>(null)

@@ -11,6 +11,7 @@ import { GlobalContext } from '@/app/global-provider';
 import IconButton from '@/components/ui/icon-button';
 import { usePerspective } from '@/lib/param-hooks';
 import { useMode } from '@/lib/param-hooks';
+import FulltextToggle from '@/app/fulltext-toggle';
 
 
 export default function SearchForm() {
@@ -107,7 +108,7 @@ export default function SearchForm() {
                             label="Tøm søkefelt"><PiX className="text-3xl lg:text-xl text-neutral-600 group-focus-within:text-neutral-800 m-1"/></IconButton> }
             <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-xl shrink-0 text-neutral-600 group-focus-within:text-neutral-800" aria-hidden="true"/></button>
             </div>
-            {!isMobile && <Options/>}
+            {!isMobile && <FulltextToggle/>}
             
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''}/>}
             <input type="hidden" name="nav" value={ 'results'}/>

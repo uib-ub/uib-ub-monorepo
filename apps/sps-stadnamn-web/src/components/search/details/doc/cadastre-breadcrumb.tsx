@@ -2,6 +2,7 @@
 import Clickable from "@/components/ui/clickable/clickable"
 import { datasetTitles } from "@/config/metadata-config"
 import { contentSettings, treeSettings } from "@/config/server-config"
+import { useSearchQuery } from "@/lib/search-params"
 import { getValueByPath } from "@/lib/utils"
 import { useSearchParams } from "next/navigation"
 import { PiCaretRight } from "react-icons/pi"
@@ -12,12 +13,14 @@ export default function CadastreBreadcrumb({source, docDataset, subunitName}: {s
     const adm2 = source.adm2
     const mode = searchParams.get('mode') || contentSettings[docDataset]?.display || 'map'
     const parentLabel = getValueByPath(source, treeSettings[docDataset]?.subunit) + " " + getValueByPath(source, subunitName )
-    const currentName = getValueByPath(source, treeSettings[docDataset]?.leaf) || getValueByPath(source, treeSettings[docDataset]?.subunit) + " " + source.label 
+    const currentName = (getValueByPath(source, treeSettings[docDataset]?.leaf) || getValueByPath(source, treeSettings[docDataset]?.subunit)) + " " + source.label 
     return <>
-      {docDataset && (
+      {docDataset && false && (
         <>
           <Clickable link className="breadcrumb-link text-lg" 
-                     add={{dataset: docDataset, nav: 'tree'}}>{datasetTitles[docDataset]}
+          
+
+                    only={{dataset: docDataset, nav: 'tree', doc: source.uuid}}>{datasetTitles[docDataset]}
           </Clickable>
           <PiCaretRight className="w-4 h-4 self-center-center flex-shrink-0" />
         </>
@@ -25,7 +28,8 @@ export default function CadastreBreadcrumb({source, docDataset, subunitName}: {s
       {adm1 && (
         <>
           <Clickable link className="breadcrumb-link text-lg" 
-                     add={{doc: source.within, parent: mode != 'map' ? source.within : null, dataset: docDataset}}>{adm1}
+                     only={{dataset: docDataset, adm1: adm1, nav: 'tree', doc: source.uuid}}>{adm1}
+                     
           </Clickable>
           <PiCaretRight className="w-4 h-4 self-center flex-shrink-0" />
         </>
@@ -33,7 +37,7 @@ export default function CadastreBreadcrumb({source, docDataset, subunitName}: {s
       {adm2 && (
         <>
           <Clickable link className="breadcrumb-link text-lg" 
-                     add={{doc: source.within, parent: mode != 'map' ? source.within : null, dataset: docDataset, adm1: adm1}}>{adm2}
+                     only={{dataset: docDataset, adm1: adm1, adm2: adm2, nav: 'tree', doc: source.uuid}}>{adm2}
           </Clickable>
           <PiCaretRight className="w-4 h-4 self-center flex-shrink-0" />
         </>
@@ -41,7 +45,7 @@ export default function CadastreBreadcrumb({source, docDataset, subunitName}: {s
       {source.within && (
         <>
           <Clickable link className="breadcrumb-link text-lg" 
-                     add={{doc: source.within, parent: mode != 'map' ? source.within : null, dataset: docDataset, adm1: adm1, adm2: adm2}}>{parentLabel}
+                     only={{doc: source.within, parent: mode != 'map' ? source.within : null, dataset: docDataset, adm1: adm1, adm2: adm2}}>{parentLabel}
           </Clickable>
           <PiCaretRight className="w-4 h-4 self-center flex-shrink-0" />
         </>

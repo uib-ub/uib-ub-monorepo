@@ -1,5 +1,5 @@
 import ClickableIcon from "../../ui/clickable/clickable-icon"
-import { PiX } from "react-icons/pi"
+import { PiBinocularsFill, PiX } from "react-icons/pi"
 import DocInfo from "./doc/doc-info"
 import { useRouter, useSearchParams } from "next/navigation"
 import DocSkeleton from "../../doc/doc-skeleton"
@@ -10,6 +10,8 @@ import DetailsFooter from "./details-footer"
 import DocToolbar from "./doc/doc-toolbar"
 import useDocData from "@/state/hooks/doc-data"
 import useGroupData from "@/state/hooks/group-data"
+import Clickable from "@/components/ui/clickable/clickable"
+import { stringToBase64Url } from "@/lib/param-utils"
 
 
 
@@ -109,20 +111,33 @@ export default function DetailsWindow() {
     
 
     return <>
-    <div className={`flex tabs p-2 border-b border-neutral-200 ${((doc || groupCode) || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
+    <div className={`flex p-2 border-b border-neutral-200 ${((doc || groupCode) || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
 
         {(doc || groupCode) && <>
+        
 
     
 
 
     {(groupTotal?.value || (!namesNav && docData)) ?
-    
+
+    <div className="flex flex-col gap-2">
     <div className={`flex gap-2 transition-opacity duration-200 ${isUpdating ? 'opacity-50' : 'opacity-100'}`}>
 
-<DocToolbar docData={docData}/>{!doc && <HitNavigation/>}
+{!doc && <HitNavigation/>}
+
+{!doc && groupData?.[0]?._source?.group &&
+    <Clickable
+    aria-current={(namesNav && groupCode == groupData[0]._source.group) ? true : false}
+    className="btn btn-outline btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10 self-end" 
+    add={{namesNav: 'overview'}}>
+    <PiBinocularsFill className="text-lg text-primary-600" aria-hidden="true"/>
+    Liknande namn
+    </Clickable>
+}
    
       
+  </div>
   </div>
   : <div className="flex gap-2 justify-between p-2">
   {/* Navigation buttons skeleton */}
@@ -158,7 +173,7 @@ export default function DetailsWindow() {
 <DocInfo/>
 </div> }
 
-  {!docDataset?.endsWith("_g") && (doc || groupCode) && <DetailsFooter/>}
+  {!docDataset?.endsWith("_g") && (doc || groupCode) && <DetailsFooter docData={docData}/>}
 
   
 </>

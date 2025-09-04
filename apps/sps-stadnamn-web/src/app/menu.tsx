@@ -7,6 +7,7 @@ import { GlobalContext } from "./global-provider";
 import Link from "next/link";
 import Clickable from "@/components/ui/clickable/clickable";
 import { useMode } from "@/lib/param-hooks";
+import FulltextToggle from "./fulltext-toggle";
 
 export default function Menu() {
     const [menuOpen, setMenuOpen] = useState(false)
@@ -67,29 +68,7 @@ export default function Menu() {
                 <div className="flex items-center justify-center py-4 border-b border-neutral-200 gap-2 no-underline text-xl "><Link href={currentUrl.current} className="flex items-center gap-2 no-underline text-xl"><PiCaretLeft className="text-2xl"/>Tilbake til søket</Link></div>
             }
                 {isMobile && <div className="flex flex-col gap-3 justify-center py-3 w-full">
-                    <label className="flex items-center gap-3 my-3 text-2xl self-center">
-                        <input form="search-form"
-                               type="checkbox" 
-                               id="menu_navbar_checkbox" 
-                               name="fulltext" 
-                               className="h-6 w-6" 
-                               defaultChecked={fulltext == 'on'} 
-                               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                  if (pathname == '/search') {
-                                    const newUrl = new URLSearchParams(searchParams);
-                                    
-                                    if (event.target.checked) {
-                                        newUrl.set('fulltext', 'on');
-                                    }
-                                    else {
-                                        newUrl.delete('fulltext');
-                                    }
-                                    router.push(`?${newUrl.toString()}`);
-                                  }
-
-                                }} />
-                        Fulltekstsøk
-                    </label>
+                    <FulltextToggle/>
                     
                     <div className="flex gap-3 items-center justify-center w-full">
                    

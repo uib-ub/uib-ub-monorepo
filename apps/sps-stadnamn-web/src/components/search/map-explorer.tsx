@@ -401,7 +401,6 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     return {
       click: () => {
         const newQueryParams = new URLSearchParams(searchParams)
-        newQueryParams.set('details', 'group')
         newQueryParams.delete('doc')
 
         newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
