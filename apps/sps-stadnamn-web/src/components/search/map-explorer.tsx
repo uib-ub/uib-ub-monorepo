@@ -23,6 +23,7 @@ import { useQueries } from "@tanstack/react-query";
 import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius } from "@/lib/map-utils";
 import useSearchData from "@/state/hooks/search-data";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
+import { GlobalContext } from "@/app/global-provider";
 
 
 
@@ -42,6 +43,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const maxDocCount = useRef(0)
   const minDocCount = useRef(0)
   const { groupValue } = useGroup()
+  const { isMobile } = useContext(GlobalContext)
 
 
   // Calculate initial bounds based on zoom level and center before map renders
@@ -621,8 +623,9 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                 ];
 
 
-                const boundsWidth = clusterBounds[1][1] - clusterBounds[0][1]; // east - west
+                //const boundsWidth = 
                 const boundsHeight = clusterBounds[0][0] - clusterBounds[1][0]; // north - south
+                const boundsWidth = isMobile ?  boundsHeight : clusterBounds[1][1] - clusterBounds[0][1]; // east - west
 
 
                 // Zoom target must be centered around the average location if it's too far from the cell center
@@ -667,7 +670,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                         click: () => {
                           // Zoom in to the cell bounds when cluster is clicked
                           if (mapInstance.current) {
-                            mapInstance.current.fitBounds(zoomTarget, { maxZoom: 18 });
+                            mapInstance.current.fitBounds(zoomTarget, { maxZoom: 18, padding: [-50, -50] });
                           }
                         }
                       }}
