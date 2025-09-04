@@ -24,6 +24,7 @@ import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZo
 import useSearchData from "@/state/hooks/search-data";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
 import { GlobalContext } from "@/app/global-provider";
+const debug = process.env.NODE_ENV === 'development'
 
 
 
@@ -625,12 +626,12 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
                 //const boundsWidth = 
                 const boundsHeight = clusterBounds[0][0] - clusterBounds[1][0]; // north - south
-                const boundsWidth = isMobile ?  boundsHeight : clusterBounds[1][1] - clusterBounds[0][1]; // east - west
+                const boundsWidth = clusterBounds[1][1] - clusterBounds[0][1]; // east - west
 
 
                 // Zoom target must be centered around the average location if it's too far from the cell center
-                const zoomTarget = [[avgLocation[0] + boundsHeight / 2, avgLocation[1] - boundsWidth / 2],
-                [avgLocation[0] - boundsHeight / 2, avgLocation[1] + boundsWidth / 2]]
+                const zoomTarget = [[avgLocation[0] + boundsHeight / 3, avgLocation[1] - boundsWidth / 3],
+                [avgLocation[0] - boundsHeight / 3, avgLocation[1] + boundsWidth / 3]]
 
 
 
@@ -641,7 +642,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
                 return (
                   <Fragment key={`cluster-fragment-${item.key}`}>
-                    {false && <>{false && <Rectangle
+                    {debug && showGeotileGrid && <><Rectangle
                       key={`cluster-rect-${item.key}`}
                       bounds={clusterBounds!}
                       pathOptions={{
@@ -650,7 +651,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                         opacity: 0.5,
                         fillOpacity: 0.1
                       }}
-                    />}
+                    />
                       <Rectangle
                         key={`cluster-rect-inner-${item.key}`}
                         bounds={zoomTarget}
@@ -670,7 +671,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                         click: () => {
                           // Zoom in to the cell bounds when cluster is clicked
                           if (mapInstance.current) {
-                            mapInstance.current.fitBounds(zoomTarget, { maxZoom: 18, padding: [-50, -50] });
+                            mapInstance.current.fitBounds(zoomTarget, { maxZoom: 18 });
                           }
                         }
                       }}
@@ -699,7 +700,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
             })}
 
             {/* Debug: draw rectangle for each backend bucket/tile */}
-            {showGeotileGrid && processedMarkerResults && markerResults.map((result) => result.data?.map((bucket: any) => {
+            {debug && showGeotileGrid && processedMarkerResults && markerResults.map((result) => result.data?.map((bucket: any) => {
               return <Rectangle
                 key={`bucket-${bucket.key}`}
                 bounds={geotileKeyToBounds(bucket.key)!}
@@ -712,7 +713,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
               />
             }))}
 
-            {showGeotileGrid && markerCells.map((cell) => {
+            {debug && showGeotileGrid && markerCells.map((cell) => {
               const bounds = geotileKeyToBounds(cell.key)
               if (!bounds) return null;
               return <Rectangle
@@ -803,7 +804,9 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
             </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator />
-          <DropdownMenuLabel>Overlegg</DropdownMenuLabel>
+          {debug && (
+            <>
+            <DropdownMenuLabel>Overlegg</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => setShowH3Grid(!showH3Grid)}
             className={`flex items-center py-2 px-4 cursor-pointer justify-between ${showH3Grid ? "bg-neutral-100" : ""}`}
@@ -846,6 +849,9 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                 Rødt rektangel viser zoom +2 nivå
               </div>
             </div>
+            
+          )}
+          </>
           )}
         </DropdownMenuContent>
       </DropdownMenu>
