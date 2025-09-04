@@ -9,7 +9,6 @@ import { datasetTitles } from '@/config/metadata-config';
 import FacetToolbar from './facet-toolbar';
 import { formatNumber, getSkeletonLength } from '@/lib/utils';
 import Clickable from '@/components/ui/clickable/clickable';
-import PercentageCircle from './percentage-circle';
 import { usePerspective } from '@/lib/param-hooks';
 import Badge from '@/components/ui/badge';
 
@@ -135,14 +134,6 @@ export default function ServerFacet() {
           className={`flex flex-1 items-center group gap-1 py-1.5 px-2`}
         >
           Med <Badge count={yesCount} />
-          {facetAggregation?.buckets && (
-            <div className="flex items-center gap-1">
-              <PercentageCircle 
-                count={yesCount} 
-                total={allCount} 
-              />
-            </div>
-          )}
         </Clickable>
 
         <Clickable
@@ -152,14 +143,7 @@ export default function ServerFacet() {
           className={`flex flex-1 items-center group gap-1 py-1.5 px-2`}
         >
           Utan <Badge count={noCount} />
-          {facetAggregation?.buckets && (
-            <div className="flex items-center gap-1">
-              <PercentageCircle 
-                count={noCount} 
-                total={allCount} 
-              />
-            </div>
-          )}
+
         </Clickable>
         <button
           onClick={() => {
