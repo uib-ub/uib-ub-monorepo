@@ -28,20 +28,14 @@ export default function DetailsFooter() {
     return <div className={`flex gap-2 border-t border-neutral-200 ${isMobile ? 'justify-end' : ''} p-2 items-center`}>
     <CoordinateMenu/>
 
-    <ClickableIcon label="Register" className="btn btn-outline btn-compact flex self-end items-center gap-2 flex-shrink-0 whitespace-nowrap h-10"
-      only={{datatset: docDataset, doc: docSource?.uuid, adm1: docSource?.adm1, adm2: docSource?.adm2}}>
-        <PiTreeViewFill className="text-lg text-neutral-900" aria-hidden="true"/>
-    </ClickableIcon>
-
-
     {!doc && docSource?.group?.id &&
-      <ClickableIcon
-        label="Oversikt"
+      <Clickable
         aria-current={(namesNav && group == stringToBase64Url(docSource.group)) ? true : false}
         className="btn btn-primary btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10 self-end" 
         add={{namesNav: 'overview', details: 'doc', doc: docSource?.uuid, group: stringToBase64Url(docSource.group.id)}}>
         <PiBinocularsFill className="text-lg text-white" aria-hidden="true"/>
-      </ClickableIcon>
+        Liknande namn
+      </Clickable>
     }
   </div>
 

@@ -114,7 +114,7 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
             {(namesNav == 'names' && !doc )? <PiSignpostFill className="text-xl" aria-hidden="true" /> : <PiSignpostLight className="text-xl" aria-hidden="true" />}
           </ClickableIcon>
           <ClickableIcon
-            label="Oversikt"
+            label="Liknande namn"
             remove={['doc']}
             add={{
               group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
