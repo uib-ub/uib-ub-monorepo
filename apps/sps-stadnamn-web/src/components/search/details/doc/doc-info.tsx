@@ -61,7 +61,7 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
           <span className="text-neutral-800 uppercase font-semibold tracking-wider text-sm">{datasetTitles[docDataset as string]}</span>
           
         <IconLink label="Om datasettet" 
-              href={docDataset == 'search' ? '/info/search' : `/info/datasets/${docDataset}`}
+              href={ `/info/datasets/${docDataset.split('_')[0]}`}
               className="flex items-center">
                 <PiInfoFill aria-hidden="true" className="text-lg text-primary-600"/>
         </IconLink>
