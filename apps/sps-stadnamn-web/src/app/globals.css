@@ -13,7 +13,7 @@
 
 @layer base {
   body {
-    @apply bg-neutral-50 text-neutral-950 antialiased;
+    @apply text-black antialiased;
   }
 
   html:has(.scroll-container), body:has(.scroll-container), .scroll-container  {
@@ -107,7 +107,7 @@
     @apply flex items-center justify-center rounded-md;
     @apply border border-transparent;
     @apply aria-pressed:bg-neutral-100 aria-pressed:border-neutral-200;
-    @apply aria-[pressed=false]:text-neutral-900 aria-[pressed=false]:hover:bg-neutral-50;
+    @apply aria-[pressed=false]:text-black aria-[pressed=false]:hover:bg-neutral-50;
     @apply aria-selected:bg-neutral-100 aria-selected:border-neutral-200 aria-selected:shadow-inner;
     @apply aria-expanded:bg-neutral-100 aria-expanded:border-neutral-200 aria-expanded:shadow-inner;
   }

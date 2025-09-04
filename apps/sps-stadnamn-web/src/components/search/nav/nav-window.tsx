@@ -28,7 +28,7 @@ export default function NavWindow() {
                     aria-controls="nav-window-content"
                     className="flex h-10 whitespace-nowrap items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pr-4 pl-3">
                         {nav == 'datasets' ? <PiDatabaseFill className="text-lg text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-lg text-neutral-900" aria-hidden="true"/>}
-                        <span className="text-neutral-900 sr-only 2xl:not-sr-only whitespace-nowrap">Datasett</span>
+                        <span className="sr-only 2xl:not-sr-only whitespace-nowrap">Datasett</span>
                 </Clickable>            
                 <Clickable
                       add={nav !== 'filters' ? {nav: 'filters'} : {}}
@@ -37,7 +37,7 @@ export default function NavWindow() {
                       aria-controls="nav-window-content"
                       className="flex whitespace-nowrap items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pr-4 pl-3">
                        {nav == 'filters' ? <PiFunnelFill className="text-lg text-accent-800" aria-hidden="true"/> : <PiFunnelLight className="text-lg text-neutral-900" aria-hidden="true"/>}
-                       <span className="text-neutral-900 sr-only 2xl:not-sr-only whitespace-nowrap">Filter</span>
+                       <span className="sr-only 2xl:not-sr-only whitespace-nowrap">Filter</span>
                 </Clickable>
 
                 <Clickable
@@ -47,7 +47,7 @@ export default function NavWindow() {
                       aria-expanded={nav == 'results'}
                       aria-controls="nav-window-content"
                       className="flex whitespace-nowrap  items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pl-4 pr-3 ml-auto">
-                        <span className="text-neutral-900">Treff</span>
+                        Treff
                         { searchLoading ? <span className=""><Spinner className="text-neutral-900" status="Laster søkeresultat..." /></span> : <>
                         {nav == 'results' ? <span className={`results-badge bg-accent-800 font-bold text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>
                             {totalHits && formatNumber(totalHits.value)}</span>

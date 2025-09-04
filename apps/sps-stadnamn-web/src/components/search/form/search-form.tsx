@@ -60,7 +60,7 @@ export default function SearchForm() {
             <Link href="/" scroll={false} className="text-base font-serif uppercase no-underline">Stadnamnportalen</Link>
             
             { pathname == '/search' ?
-            <h1 className="!text-lg text-neutral-800 px-3 truncate">{modes[mode || 'map'].title}</h1>
+            <h1 className="!text-lg text-neutral-900 px-3 truncate">{modes[mode || 'map'].title}</h1>
             : !isMobile ? 
             <>{currentUrl.current ? 
             <Link scroll={false} href={currentUrl.current} className='text-lg flex !justify-self-start items-center gap-2 no-underline invisible lg:visible'><PiCaretLeft className="text-primary-600" aria-hidden="true"/>Tilbake til søket</Link>
