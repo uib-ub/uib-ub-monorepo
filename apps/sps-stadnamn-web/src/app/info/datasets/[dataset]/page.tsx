@@ -29,7 +29,7 @@ export async function generateMetadata( { params }: { params: Promise<{ dataset:
     
     
     return {
-      title: "Datasett:" + datasetTitles[dataset],
+      title: datasetTitles[dataset],
       description: datasetShortDescriptions[dataset]
     }
   }
