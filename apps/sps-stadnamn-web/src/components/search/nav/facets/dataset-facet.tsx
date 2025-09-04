@@ -249,14 +249,14 @@ export default function DatasetFacet() {
                               {firstPart + ' '}
                               <span className="whitespace-nowrap">
                                 {lastWord}
-                                &nbsp;<Badge count={item.doc_count} />
+                                <Badge count={item.doc_count} />
 
                               </span>
                             </>
                           ) : (
                             <>
                               {lastWord}
-                              &nbsp;<Badge count={item.doc_count} />
+                              <Badge count={item.doc_count} />
                             </>
                           )}
                         </span>
