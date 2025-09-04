@@ -8,10 +8,11 @@ import { useDocIndex, useGroup } from '@/lib/param-hooks';
 const groupDataQuery = async (
     group: string,
     searchQueryString: string,
-    pageParam: { size: number; from: number }
+    pageParam: { size: number; from: number },
+    includeFilters: boolean
 ) => {
     const res = await fetch(
-        `/api/group?${searchQueryString}&group=${group}&size=${pageParam.size}&from=${pageParam.from}`
+        `/api/group?${includeFilters ? '': `namesNav=${searchQueryString}&`}group=${group}&size=${pageParam.size}&from=${pageParam.from}`
     )
     if (!res.ok) {
         throw new Error('Failed to fetch group')
@@ -30,6 +31,8 @@ export default function useGroupData() {
     const searchParams = useSearchParams()
     const { searchQueryString } = useSearchQuery()
     const { groupCode } = useGroup()
+    const namesNav = searchParams.get('namesNav')
+    const includeFilters = !!namesNav
 
 
     // docIndex is now the driver (instead of docUuid)
@@ -46,9 +49,9 @@ export default function useGroupData() {
         status,
         isFetchingNextPage,
     } = useInfiniteQuery({
-        queryKey: ['group', groupCode, searchQueryString, docIndex],
+        queryKey: ['group', groupCode, searchQueryString, docIndex, includeFilters],
         queryFn: async ({ pageParam }) =>
-            groupCode ? groupDataQuery(groupCode, searchQueryString, pageParam) : null,
+            groupCode ? groupDataQuery(groupCode, searchQueryString, pageParam, includeFilters) : null,
 
         // Use larger initial size when names navigation is open
         initialPageParam: { size: docIndex + 2, from: 0 },

@@ -106,7 +106,7 @@ export default function ResultItem({hit}: {hit: any}) {
                 {detailsRenderer(hit)}
                 {hit.highlight && snippetRenderer && <>{snippetRenderer(hit)}</>}
             </div>
-            {perspective == "all" && hit.inner_hits?.group?.hits?.total?.value > 1 && (
+            {hit.inner_hits?.group?.hits?.total?.value > 1 && (
                 <div className={`ml-auto flex items-center rounded-full text-sm px-2.5 py-1 bg-neutral-100 text-neutral-950 group-aria-[current='page']:bg-accent-800 group-aria-[current='page']:text-white ${
                     isGrunnord ? "bg-neutral-200 text-black" : ""
                 }`}>
