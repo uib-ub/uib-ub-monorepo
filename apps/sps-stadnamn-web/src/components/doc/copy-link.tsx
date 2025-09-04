@@ -18,7 +18,7 @@ export default function CopyLink({ uuid, isIconButton, className }: { uuid: stri
             <IconButton label="Kopier lenke" onClick={copyLink} className={className}>
                 {linkCopied == uuid ? 
                     <PiCheckBold className="xl:text-xl" aria-hidden="true"/> : 
-                    <PiCopySimple className="xl:text-xl" aria-hidden="true"/>
+                    <PiLinkSimple className="xl:text-xl" aria-hidden="true"/>
                 }
             </IconButton>
         )
@@ -30,7 +30,7 @@ export default function CopyLink({ uuid, isIconButton, className }: { uuid: stri
             <span className="flex items-center gap-2">
                 {uuid && linkCopied == uuid ? 
                     <PiCheckBold className="xl:text-xl" aria-hidden="true"/> : 
-                    <PiCopySimple className="xl:text-xl" aria-hidden="true"/>
+                    <PiLinkSimple className="xl:text-xl" aria-hidden="true"/>
                 }
                 Kopier lenke
             </span>
