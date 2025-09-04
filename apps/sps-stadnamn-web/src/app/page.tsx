@@ -11,6 +11,7 @@ import HomeNavCards from "./home-nav-cards";
 import { fetchStats } from "./api/_utils/stats";
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
+import { Metadata } from "next";
 
 export default async function Home() {
   const { iiifStats, datasets, totalHits, groupCount } = await fetchStats()

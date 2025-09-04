@@ -28,6 +28,12 @@ export interface DatasetPresentation {
   }
 }
 
+export const modes: Record<string, {title: string, description: string}> = {
+  map: {title: "Stadnamnkart", description: "Stadnamnsøk med kartvisning"},
+  list: {title: "Listevisning", description: "Stadnamnsøk med listevisning"},
+  table: {title: "Tabellvisning", description: "Stadnamnsøk med tabellvisning"},
+}
+
 export const datasetTitles: DatasetTitles = {
     all: "Stadnamnsøk",
     core_gnidu: "GNIDu",
