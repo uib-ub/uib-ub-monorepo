@@ -17,7 +17,7 @@ export default function CadastreBreadcrumb({source, docDataset, subunitName}: {s
       {docDataset && (
         <>
           <Clickable link className="breadcrumb-link text-lg" 
-                     add={{doc: source.within, parent: mode != 'map' ? source.within : null}}>{datasetTitles[docDataset]}
+                     add={{dataset: docDataset, nav: 'tree'}}>{datasetTitles[docDataset]}
           </Clickable>
           <PiCaretRight className="w-4 h-4 self-center-center flex-shrink-0" />
         </>
