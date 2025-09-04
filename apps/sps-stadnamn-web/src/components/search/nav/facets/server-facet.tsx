@@ -127,11 +127,11 @@ export default function ServerFacet() {
   <div className="flex bg-white rounded-lg tabs pb-2">
     {!facetLoading &&  (
       <>
-               <Clickable
+        <Clickable
           remove={[facet]}
           add={{ [facet]: '_true'}}
           aria-pressed={currentValue == '_true'}
-          className={`flex flex-1 items-center group gap-1 py-1.5 px-2`}
+          className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
         >
           Med <Badge count={yesCount} />
         </Clickable>
@@ -140,17 +140,16 @@ export default function ServerFacet() {
           remove={[facet]}
           add={{ [facet]: '_false'}}
           aria-pressed={currentValue == '_false'}
-          className={`flex flex-1 items-center group gap-1 py-1.5 px-2`}
+          className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
         >
           Utan <Badge count={noCount} />
-
         </Clickable>
         <button
           onClick={() => {
             router.push(`?${new URLSearchParams(Array.from(searchParams.entries()).filter(([key, value]) => key != facet || (value != '_true' && value != '_false')))}`)
           }}
           aria-pressed={currentValue != '_true' && currentValue != '_false'}
-          className={`flex flex-1 items-center group gap-1 py-1.5`}
+          className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
         >
           Alle <Badge count={allCount} />
         </button>
