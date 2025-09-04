@@ -30,6 +30,7 @@ export default function ActiveFilters() {
     // Get boost_gt parameter for djupinnsamlingar filter
     const boostGt = searchParams.get('boost_gt')
     const cadastralIndex = searchParams.get('cadastralIndex')
+    const showClearButton = (Number(facetFilters.length > 0) + Number(datasetFilters.length > 0) + Number(fulltext == 'on') + Number(searchParams.get('q') != null)) > 1
 
 
     const getFieldLabel = (name: string, value: string) => {
@@ -228,6 +229,13 @@ export default function ActiveFilters() {
             </DropdownMenuContent>
           </DropdownMenu>
         )}
+
+        {showClearButton && <Clickable remove={['q', ...facetFilters.map(([key, value]) => key), ...datasetFilters.map(([key, value]) => key)]}
+        className={` rounded-full bg-accent-700 text-white  gap-2 pl-3 pr-2 py-1 flex items-center  shadow-mdborder bg-neutral-50 border-neutral-200 box-content`}>
+          Tøm
+          <PiTrash className="inline text-lg" aria-hidden="true"/>
+        </Clickable>}
+
 
 
       </>
