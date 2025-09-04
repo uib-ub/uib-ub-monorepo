@@ -13,6 +13,7 @@ import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
 import Clickable from '@/components/ui/clickable/clickable';
 import { usePerspective } from '@/lib/param-hooks';
+import Badge from '@/components/ui/badge';
 
 // Memoized RegExp factory to prevent memory leaks
 const createSearchRegex = (() => {
@@ -248,17 +249,14 @@ export default function DatasetFacet() {
                               {firstPart + ' '}
                               <span className="whitespace-nowrap">
                                 {lastWord}
-                                <span className="ml-2 bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full align-baseline">
-                                  {formatNumber(item.doc_count)}
-                                </span>
+                                &nbsp;<Badge count={item.doc_count} />
+
                               </span>
                             </>
                           ) : (
                             <>
                               {lastWord}
-                              <span className="ml-2 bg-white border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full align-baseline">
-                                {formatNumber(item.doc_count)}
-                              </span>
+                              &nbsp;<Badge count={item.doc_count} />
                             </>
                           )}
                         </span>

@@ -11,14 +11,9 @@ import { formatNumber, getSkeletonLength } from '@/lib/utils';
 import Clickable from '@/components/ui/clickable/clickable';
 import PercentageCircle from './percentage-circle';
 import { usePerspective } from '@/lib/param-hooks';
+import Badge from '@/components/ui/badge';
 
-const Badge = ({ count }: { count: number }) => {
-  return (
-    <span className="inline-flex items-center justify-center min-w-[1.75rem] bg-white group-aria-pressed:bg-accent-800 group-aria-pressed:text-white text-neutral-700 border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">
-    {formatNumber(count)}
-  </span>
-  );
-};
+
 
 export default function ServerFacet() {
   const router = useRouter()
