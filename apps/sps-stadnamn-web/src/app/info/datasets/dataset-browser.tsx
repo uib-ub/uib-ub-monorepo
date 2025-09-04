@@ -274,7 +274,7 @@ const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((ac
                   {/* Desktop: description + toolbar in right column */}
                   {!isMobile && (
                     <div className="flex flex-col gap-3 xl:gap-4">
-                      <p className="text-sm text-neutral-700 xl:line-clamp-2">
+                      <p className="text-sm text-neutral-700">
                         {datasetDescriptions[itemDataset]}
                       </p>
                       <DatasetToolbar itemDataset={itemDataset}/>
