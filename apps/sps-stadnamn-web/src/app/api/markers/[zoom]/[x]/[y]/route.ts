@@ -38,7 +38,7 @@ export async function GET(
       grid: {
         geotile_grid: {
           field: "location",
-          size: (Number(precision) > 17 || (totalHits && totalHits < 1000)) ? 200 : 3,
+          size: 200,
           precision: precision == "0" ? 6 : parseInt(precision) + 3
         },
         "aggs": {
