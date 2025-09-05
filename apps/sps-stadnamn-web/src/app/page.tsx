@@ -43,7 +43,7 @@ export default async function Home() {
   <div className="flex flex-col gap-8 md:px-8">
   <div className="flex flex-col gap-8">
     <div className="flex flex-col gap-6 xl:mt-32">
-  <h1 className="self-center text-5xl text-neutral-900 sr-only md:not-sr-only !px-2 font-serif">Stadnamnsøk</h1>
+  <h1 className="self-center text-5xl text-neutral-950 sr-only md:not-sr-only !px-2 font-serif">Stadnamnsøk</h1>
   
   <Form id="search-form" className="flex items-center justify-center gap-2 w-full" action="search">
    
@@ -70,23 +70,23 @@ export default async function Home() {
   <div className="flex flex-col items-center gap-6">
   <div className="flex flex-col xl:flex-row items-end justify-center xl:gap-12 gap-6">
   <div className="flex flex-col items-center gap-2">
-    <span className="uppercase tracking-widest text-neutral-900 xl:text-sm font-semibold">Oppslag i søket</span>
-    <span className="xl:text-3xl text-4xl font-bold text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+    <span className="uppercase tracking-widest text-neutral-950 xl:text-sm font-semibold">Oppslag i søket</span>
+    <span className="xl:text-3xl text-4xl font-bold text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
       {groupCount?.toLocaleString('nb-NO')}
     </span>
   </div>
   <div className="flex flex-col items-center gap-2">
-    <span className="uppercase tracking-widest text-neutral-900 xl:text-sm font-semibold">Underoppslag</span>
-    <span className="xl:text-3xl text-4xl font-bold text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+    <span className="uppercase tracking-widest text-neutral-950 xl:text-sm font-semibold">Underoppslag</span>
+    <span className="xl:text-3xl text-4xl font-bold text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
       {totalHits?.toLocaleString('nb-NO')}
     </span>
   </div>
 </div>
     <Link
       href="/search"
-      className="bg-neutral-900/80 text-white no-underline xl:mb-16 mt-6 xl:mt-2 self-center w-full h-14 xl:h-auto xl:w-auto text-xl pr-12 pl-8 py-4 xl:py-2 xl:pr-8 xl:pl-6 rounded-lg xl:rounded-full flex items-center gap-3 transition-colors duration-200"
+      className="text-neutral-950 no-underline xl:mb-16 mt-6 xl:mt-2 self-center w-full h-14 xl:h-auto xl:w-auto text-3xl pr-12 pl-8 py-4 xl:py-2 xl:pr-8 xl:pl-6 rounded-lg xl:rounded-full flex items-center gap-3 transition-colors duration-200"
     >
-      <PiMapTrifoldFill className="text-2xl" />
+      <PiMapTrifoldFill className="text-4xl" />
       Utforsk kartet
     </Link>
   </div>
