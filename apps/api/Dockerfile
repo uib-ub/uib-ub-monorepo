@@ -1,22 +1,11 @@
+ARG BUN_VERSION=1.2.21
 # Set bun image version
-ARG BUN_VERSION=1.1.8
+FROM node:22-alpine AS base
 
-# Use node 20 buster as base image
-FROM node:20-buster AS base
-
-# Install bash for base and clean cache for smaller image
-RUN apt-get update && apt-get install -y && apt-get clean bash
-
-# Install turbo for base
-RUN npm install -g turbo@latest
-
-# Install Bun for base
-RUN curl -fsSL https://bun.sh/install | bash
-RUN mv /root/.bun/bin/bun /usr/local/bin/
-# Ensure Bun environment
-ENV PATH="/usr/local/bin:$PATH"
-# Check Bun installation
-RUN bun -v
+# Install bash, curl, and turbo for base, then clean up
+RUN apk update && \
+  apk add --no-cache bash curl npm && \
+  rm -rf /var/cache/apk/*
 
 # Set working directory for base
 WORKDIR /app
@@ -26,30 +15,40 @@ FROM base AS builder
 COPY . .
 
 # Prune and prepare the application
-RUN turbo prune api --docker
+# Turbo version should be same major version as in global package.json
+RUN npm install -g turbo@^2 && \
+  turbo prune api --docker
 
 # Installer stage to set up environment
 FROM base AS installer
-COPY --from=builder /app/.gitignore ./.gitignore
-COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/out/package-lock.json ./package-lock.json
-
-# Install dependencies
-RUN npm install
-
-# Copy build artifacts
-COPY --from=builder /app/out/full/ .
-COPY --from=builder /app/turbo.json ./turbo.json
-
-# FROM bun image AS runner stage to run the application
-FROM oven/bun:${BUN_VERSION}-alpine AS runner
-
-RUN apk update && \
-  apk add --no-cache curl bash
 
 # Set working directory
 WORKDIR /app
+
+COPY --from=builder /app/out/json/ .
+
+# Install dependencies without audit to speed up the process
+RUN npm install
+
+COPY --from=builder /app/out/full/ .
+
+RUN npx turbo run build
+
+# Install bash and curl (if required)
+RUN apk update && \
+  apk add --no-cache bash curl && \
+  rm -rf /var/cache/apk/*
+
+# Change and copy to to bun image
+FROM oven/bun:${BUN_VERSION}-alpine AS runner
+
+RUN apk add --no-cache bash curl && \
+  rm -rf /var/cache/apk/*
+
+COPY --from=installer /app /app
+
+# Set working directory
+WORKDIR /app/apps/api
 
 # Set up non-root user
 RUN addgroup --system honojs && \
@@ -58,6 +57,8 @@ RUN addgroup --system honojs && \
 USER honojs
 
 # Copy application from the installer stage
-COPY --from=installer /app .
+# COPY --from=installer /app/node_modules ./node_modules
+# COPY --from=installer /app/apps ./apps
+# COPY --from=installer /app/packages ./packages
 
-CMD ["bun", "run", "./apps/api/src/main.ts"]
+CMD ["bun", "run", "src/main.ts"]

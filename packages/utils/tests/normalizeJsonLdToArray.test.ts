@@ -1,4 +1,4 @@
-import { normalizeJsonLdToArray } from './normalizeJsonLdToArray';
+import { normalizeJsonLdToArray } from '../src/normalizeJsonLdToArray';
 
 describe('normalizeJsonLdToArray', () => {
   it('should remove @context and return array for single object', () => {

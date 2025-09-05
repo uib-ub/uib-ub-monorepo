@@ -12,8 +12,8 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts",
-    "dev": "tsup src/index.ts --format esm --dts --watch",
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "check-types": "tsc --noEmit",
     "la-download": "node ./scripts/la-sync.js",
@@ -28,7 +28,6 @@
     "json-schema-to-typescript": "^11.0.5",
     "tiged": "^2.12.5",
     "ts-to-zod": "^3.8.5",
-    "tsup": "^8",
     "typescript": "^5.9.2"
   },
   "dependencies": {

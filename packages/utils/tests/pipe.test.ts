@@ -1,4 +1,4 @@
-import { pipe } from './pipe';
+import { pipe } from '../src/pipe';
 
 test("pipe function", async () => {
   test("should compose synchronous functions", async () => {

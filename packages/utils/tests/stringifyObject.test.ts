@@ -1,4 +1,4 @@
-import { stringifyObject } from './stringifyObject';
+import { stringifyObject } from '../src/stringifyObject';
 
 describe('stringifyObject', () => {
   test('should stringify all values in the object', () => {
