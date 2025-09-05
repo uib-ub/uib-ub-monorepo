@@ -744,7 +744,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
               }
               else {
                 const childCount = zoomState > 16 && item.children?.length > 0 ? item.children?.length: undefined
-                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', baseMap && baseMapLookup[baseMap]?.markers ? 'white' : 'black', childCount)
+                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', baseMap && baseMapLookup[baseMap]?.bright ? 'black' : 'white', childCount)
 
                 if (groupValue && item.fields?.["group.id"]?.[0] == groupValue) {
                   return null
@@ -758,7 +758,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                   riseOnHover={true}
                   eventHandlers={selectDocHandler(item.fields, childCount ? [item, ...(item.children || [])] : [])}
                 >
-                    {item.children?.length && item.fields?.["group.id"]?.[0] && <Popup>
+                    {childCount && item.fields?.["group.id"]?.[0] && <Popup>
                       <ul className="list-none p-0 m-0 max-h-[50svh] overflow-y-auto stable-scrollbar text-lg divide-y divide-neutral-200 flex flex-col">
                         {[item, ...(item.children || [])].map((entry: any) => (
                           <li key={`entry-${entry.fields.uuid[0]}`} className="!p-0 !m-0">

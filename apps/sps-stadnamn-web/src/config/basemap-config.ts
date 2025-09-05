@@ -12,7 +12,7 @@ export const defaultBaseMap: Record<string, string> = {
 interface BaseMap {
     key: string;
     name: string;
-    markers?: 'dark' | 'light';
+    bright?: boolean;
     props: {
         url: string;
         attribution: string;
@@ -68,6 +68,7 @@ export const baseMaps: BaseMap[] = [
     { // 
         key: 'word_map',
         name: 'Verdskart',
+        bright: true,
         props: {
             url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
