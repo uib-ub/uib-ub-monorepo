@@ -13,7 +13,6 @@ env:
 jobs:
   build-and-publish-image:
     runs-on: ubuntu-latest
-   # if: github.ref == 'refs/heads/main'
 
     permissions:
       contents: read
@@ -35,9 +34,6 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set short SHA for tagging
-        run: echo "SHORT_SHA=$(echo '${{ github.sha }}' | cut -c1-7)" >> $GITHUB_ENV
 
       - name: Set variable for dated test tag
         run: export TIMESTAMP=$(date +%Y-%m-%dT%H%M) && echo $TIMESTAMP && echo "new_tag=${publish_env:=test}-$TIMESTAMP" >> $GITHUB_ENV
