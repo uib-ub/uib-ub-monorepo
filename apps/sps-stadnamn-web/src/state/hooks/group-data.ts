@@ -31,8 +31,9 @@ export default function useGroupData() {
     const searchParams = useSearchParams()
     const { searchQueryString } = useSearchQuery()
     const { groupCode } = useGroup()
-    const namesNav = searchParams.get('namesNav')
-    const includeFilters = !!namesNav
+    const details = searchParams.get('details')
+
+    const includeFilters = (!details || details == 'group')
 
 
     // docIndex is now the driver (instead of docUuid)

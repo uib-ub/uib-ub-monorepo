@@ -25,6 +25,7 @@ import useSearchData from "@/state/hooks/search-data";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
 import { GlobalContext } from "@/app/global-provider";
 import Clickable from "../ui/clickable/clickable";
+import useGroupData from "@/state/hooks/group-data";
 const debug = process.env.NODE_ENV === 'development'
 
 
@@ -43,6 +44,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
   const allowFitBounds = useRef(false)
   const { groupValue } = useGroup()
+  const { groupLoading } = useGroupData()
   const { isMobile } = useContext(GlobalContext)
   
 
@@ -451,12 +453,13 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
           const newQueryParams = new URLSearchParams(searchParams)
           newQueryParams.delete('doc')
           newQueryParams.delete('group')
+          newQueryParams.delete('details')
           router.push(`?${newQueryParams.toString()}`)
         }
         else {
         const newQueryParams = new URLSearchParams(searchParams)
         newQueryParams.delete('doc')
-
+        newQueryParams.set('details', 'group')
         newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
         router.push(`?${newQueryParams.toString()}`)
         }
@@ -746,7 +749,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                 const childCount = zoomState > 16 && item.children?.length > 0 ? item.children?.length: undefined
                 const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', baseMap && baseMapLookup[baseMap]?.bright ? 'black' : 'white', childCount)
 
-                if (groupValue && item.fields?.["group.id"]?.[0] == groupValue) {
+                if (groupValue && item.fields?.["group.id"]?.[0] == groupValue && !groupLoading) {
                   return null
                 }
 

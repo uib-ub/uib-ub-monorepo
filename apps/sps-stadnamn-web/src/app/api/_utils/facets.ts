@@ -27,7 +27,6 @@ export const RESERVED_PARAMS = [
   'facets',
   'zoom',
   'point',
-  'namesNav',
   'facetQuery',
   'mode',
   'geotile',

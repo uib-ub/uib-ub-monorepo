@@ -17,7 +17,7 @@ import { stringToBase64Url } from "@/lib/param-utils"
 
 export default function DetailsWindow() {
     const searchParams = useSearchParams()
-    const namesNav = searchParams.get('namesNav')    
+    const details = searchParams.get('details')    
     const mode = useMode()
     const { groupData, groupLoading, groupTotal, groupRefetching, groupFetching } = useGroupData()
     const router = useRouter()
@@ -62,17 +62,17 @@ export default function DetailsWindow() {
           if (e.key === 'ArrowUp') {
               e.preventDefault();
               const params = new URLSearchParams(searchParams);
-              if (namesNav === 'list') {
-                  params.set('namesNav', 'timeline');
+              if (details === 'list') {
+                  params.set('details', 'timeline');
                   router.push(`?${params.toString()}`);
               }
-              else if (namesNav === 'timeline') {
-                params.set('namesNav', 'datasets');
+              else if (details === 'timeline') {
+                params.set('details', 'datasets');
                 router.push(`?${params.toString()}`);
                   
               }
-              else if (namesNav === 'datasets') {
-                  params.delete('namesNav');
+              else if (details === 'datasets') {
+                  params.delete('details');
                   params.delete('doc')
                   router.push(`?${params.toString()}`);
               }
@@ -81,19 +81,19 @@ export default function DetailsWindow() {
               e.preventDefault();
               const params = new URLSearchParams(searchParams);
               
-              if (!namesNav && groupTotal?.value && groupTotal.value > 1) {
-                  params.set('namesNav', 'datasets');
+              if (!details && groupTotal?.value && groupTotal.value > 1) {
+                  params.set('details', 'datasets');
                   router.push(`?${params.toString()}`);
                   
               }
-              else if (namesNav === 'datasets') {
-                  params.set('namesNav', 'timeline');
+              else if (details === 'datasets') {
+                  params.set('details', 'timeline');
                   router.push(`?${params.toString()}`);
                   
 
               }
-              else if (namesNav === 'timeline') {
-                  params.set("namesNav", "list")
+              else if (details === 'timeline') {
+                  params.set("details", "list")
                   router.push(`?${params.toString()}`);
                   
                   
@@ -105,7 +105,7 @@ export default function DetailsWindow() {
 
       window.addEventListener('keydown', handleKeyDown);
       return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [docIndex, namesNav, router, searchParams, groupTotal]);
+  }, [docIndex, router, searchParams, groupTotal, details]);
     
 
     return <>
@@ -117,7 +117,7 @@ export default function DetailsWindow() {
     
 
 
-    {(groupTotal?.value || (!namesNav && docData)) ?
+    {(groupTotal?.value || ((!details || details == 'group') && docData)) ?
 
     <div className="flex flex-col gap-2">
     <div className={`flex gap-2 transition-opacity duration-200 ${isUpdating ? 'opacity-50' : 'opacity-100'}`}>
@@ -126,9 +126,9 @@ export default function DetailsWindow() {
 
 {!doc && groupData?.[0]?._source?.group &&
     <Clickable
-    aria-current={(namesNav && groupCode == groupData[0]._source.group) ? true : false}
+    aria-current={((!details || details == 'group') && groupCode == groupData[0]._source.group) ? true : false}
     className="btn btn-outline btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10 self-end" 
-    add={{namesNav: 'overview'}}>
+    add={{details: 'overview'}}>
     <PiBinocularsFill className="text-lg text-primary-600" aria-hidden="true"/>
     Liknande namn
     </Clickable>

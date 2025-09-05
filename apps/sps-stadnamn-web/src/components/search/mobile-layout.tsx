@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from "react"
-import { PiBookOpen, PiDatabase, PiFunnel, PiListBullets, PiTreeViewFill } from "react-icons/pi";
+import { PiBinocularsFill, PiBookOpen, PiCaretRightBold, PiDatabase, PiFunnel, PiListBullets, PiTreeViewFill } from "react-icons/pi";
 import SearchResults from "./nav/results/search-results";
 import { useSearchQuery } from "@/lib/search-params";
 import StatusSection from "./status-section";
@@ -45,14 +45,14 @@ export default function MobileLayout() {
     const [showLoading, setShowLoading] = useState<boolean>(false)
     const mode = useMode()
     const datasetCount = searchParams.getAll('dataset')?.length || 0
-    const { groupTotal, groupLabel } = useGroupData()
+    const { groupTotal, groupLabel, groupLoading } = useGroupData()
     const group = searchParams.get('group')
 
     const datasetTag = searchParams.get('datasetTag')
     const mapContainerRef = useRef<HTMLDivElement>(null)
     const drawerRef = useRef<HTMLDivElement>(null)
     const mobileNav = useRef<HTMLDivElement>(null)
-    const namesNav = searchParams.get('namesNav')
+    const details = searchParams.get('details')
 
     const [showScrollToTop, setShowScrollToTop] = useState(false);
 
@@ -191,7 +191,7 @@ export default function MobileLayout() {
 
     useEffect(() => {
        
-        if (doc || group) {
+        if (details) {
             setDrawerContent('details')
         }
         else if (nav) {
@@ -201,7 +201,7 @@ export default function MobileLayout() {
             setDrawerContent(null)
         }
     }
-        , [searchFilterParamsString, nav, doc, group])
+        , [searchFilterParamsString, nav, doc, group, details])
 
     const toggleDrawer = (tab: string) => {
         setDrawerContent(prev => prev == tab ? null : tab)
@@ -270,12 +270,18 @@ export default function MobileLayout() {
             {drawerContent && <>
                 <div className="w-full flex  items-center h-4 pt-2 rounded-t-md bg-neutral-800 relative px-2" style={{ touchAction: 'none' }}>
                     <div className="absolute -translate-x-1/2 left-1/2 h-1.5 top-1.5 w-16 bg-neutral-300 rounded-full"></div></div>
-                <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 pb-20 border-neutral-800 max-h-[calc(100svh-10rem)] overscroll-contain`} ref={scrollableContent} style={{ overflowY: snappedPosition == 80 ? 'auto' : 'hidden', touchAction: (snappedPosition == 80 && isScrollable()) ? 'pan-y' : 'none' }}>
-
+                <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 pb-20 border-neutral-800 max-h-[calc(100svh-10rem)] overscroll-contain`} ref={scrollableContent} style={{ overflowY: snappedPosition == 80 && currentPosition == 80 ? 'auto' : 'hidden', touchAction: ( snappedPosition == 80 && currentPosition == 80 && isScrollable()) ? 'pan-y' : 'none' }}>
+{drawerSwipeDirection}
                     {drawerContent == 'details' && <>
-                        {group && !doc && !namesNav && <div className="pb-24"><ListExplorer /></div>}
+                        {group && !doc && details == 'group' && <div className="pb-24">
+                            <ListExplorer />
+                            {!groupLoading && <Clickable className="px-3 bg-neutral-50 text-xl border-y border-neutral-200 w-full mt-4 aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-12" add={{details: 'overview', namesScope: 'extended'}}>
+                               
+                                Finn liknande namn<PiCaretRightBold className="text-primary-600" aria-hidden="true"/>
+                            </Clickable>}
+                            </div>}
                         { doc && <div className="pb-24 p-2"><DocInfo /></div>}
-                        {namesNav && !doc &&
+                        {details && details != 'group' && !doc &&
                             <div className="pb-12 pt-2 px-2">
                                 <span className="flex items-center pb-2 text-xl"><h2 className="text-neutral-800 text-2xl tracking-wide flex items-center gap-1 ">{groupLabel}</h2>
                                     <InfoPopover>
@@ -333,7 +339,7 @@ export default function MobileLayout() {
                 <MobileSearchNav showScrollToTop={showScrollToTop} currentPosition={currentPosition} drawerContent={drawerContent || ''} scrollableContent={scrollableContent} />
 
             <div className=" bg-neutral-800 text-white w-full h-14 p-1 flex items-center justify-between nav-toolbar">
-                {<Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" add={nav == 'datasets' ? { nav: null } : { nav: 'datasets' }} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
+                {<Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" add={nav == 'datasets' ? { nav: null } : { nav: 'datasets', details: null }} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
                     <div className="relative">
                         <PiDatabase className="text-3xl" />
                         {datasetCount > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -345,11 +351,11 @@ export default function MobileLayout() {
 
 
 
-                {datasetTag == 'tree' && <Clickable aria-label='Register' onClick={() => toggleDrawer('tree')} add={nav == 'tree' ? { nav: null } : { nav: 'tree' }} aria-current={drawerContent == 'tree' ? 'page' : 'false'}>
+                {datasetTag == 'tree' && <Clickable aria-label='Register' onClick={() => toggleDrawer('tree')} add={nav == 'tree' ? { nav: null } : { nav: 'tree' }} remove={['details']} aria-current={drawerContent == 'tree' ? 'page' : 'false'}>
                     <PiTreeViewFill className="text-3xl" />
                 </Clickable>}
 
-                {<Clickable aria-label="Filtre" onClick={() => toggleDrawer('filters')} add={nav == 'filters' ? { nav: null } : { nav: 'filters' }} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'}>
+                {<Clickable aria-label="Filtre" onClick={() => toggleDrawer('filters')} add={nav == 'filters' ? { nav: null } : { nav: 'filters' }} remove={['details']} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'}>
                     <div className="relative">
                         <PiFunnel className="text-3xl" />
                         {facetFilters.length > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${facetFilters.length < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -359,7 +365,7 @@ export default function MobileLayout() {
                 </Clickable>}
 
                 {mode != 'table' &&
-                    <Clickable aria-label='Søkeresultater' onClick={() => toggleDrawer('results')} add={nav == 'results' ? { nav: null } : { nav: 'results' }}
+                    <Clickable aria-label='Søkeresultater' onClick={() => toggleDrawer('results')} add={nav == 'results' ? { nav: null } : { nav: 'results' }} remove={['details']}
                         aria-current={drawerContent == 'results' ? 'page' : 'false'}>
                         <div className="relative">
                             <PiListBullets className="text-3xl" />
@@ -369,7 +375,7 @@ export default function MobileLayout() {
                         </div>
                     </Clickable>}
 
-                {group && <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('details')} add={{nav: null }} aria-current={drawerContent == 'details' ? 'page' : 'false'}>
+                {group && groupTotal?.value > 0 &&  <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('details')} add={{nav: null }} remove={['nav']} aria-current={drawerContent == 'details' ? 'page' : 'false'}>
                      <div className="relative">
                         <PiBookOpen className="text-3xl" />
                             <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${groupTotal && groupTotal.value < 10 ? 'px-1.5' : 'px-1'}`}>

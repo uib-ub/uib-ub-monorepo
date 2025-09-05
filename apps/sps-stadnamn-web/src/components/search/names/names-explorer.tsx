@@ -16,11 +16,10 @@ import useOverviewData from "@/state/hooks/overview-data"
 export default function NamesExplorer() {
     
     const searchParams = useSearchParams()
-    const namesNav = searchParams.get('namesNav') || 'overview'
     const { isMobile } = useContext(GlobalContext)
     const namesScope = searchParams.get('namesScope') || 'group'
     const { groupDoc, groupLoading } = useGroupData()
-    
+    const details = searchParams.get('details')
     const { groupCode } = useGroup()
     const router = useRouter()
     const selectedKey = `nameSelected:${groupCode}`
@@ -61,7 +60,7 @@ export default function NamesExplorer() {
     }, [selectedDoc, groups])
 
     // Persist expandedGroups across navigation using sessionStorage
-    const expandedKey = `namesExpanded:${groupCode}:${namesNav}:${namesScope}`
+    const expandedKey = `namesExpanded:${groupCode}:${details}:${namesScope}`
     const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(() => {
         try {
             const raw = sessionStorage.getItem(expandedKey)
@@ -119,23 +118,23 @@ export default function NamesExplorer() {
 
                 {!isMobile && <div className="flex border border-neutral-200 rounded-lg p-1 tabs text-tabs">
                     <Clickable
-                        add={{ namesNav: 'overview' }}
-                        aria-pressed={namesNav === 'overview'}
-                        className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesNav === 'overview' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                        add={{ details: 'overview' }}
+                        aria-pressed={details === 'overview'}
+                        className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${details === 'overview' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
                     >
                         Oversikt
                     </Clickable>
                     <Clickable
-                        add={{ namesNav: 'timeline' }}
-                        aria-pressed={namesNav === 'timeline'}
-                        className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesNav === 'timeline' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                        add={{ details: 'timeline' }}
+                        aria-pressed={details === 'timeline'}
+                        className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${details === 'timeline' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
                     >
                         Tidslinje
                     </Clickable>
                     <Clickable
-                        add={{ namesNav: 'names' }}
-                        aria-pressed={namesNav === 'names'}
-                        className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${namesNav === 'names' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
+                        add={{ details: 'names' }}
+                        aria-pressed={details === 'names'}
+                        className={`flex items-center justify-center gap-2 px-2 py-1 rounded-md text-sm font-medium transition-colors no-underline flex-1 ${details === 'names' ? 'bg-primary-100 text-primary-700' : 'hover:bg-neutral-100'}`}
                     >
                         Namn
                     </Clickable>
@@ -168,22 +167,22 @@ export default function NamesExplorer() {
             ) : !groups || namesResultLoading ? (
                 // Loading skeleton - preserve exact timeline styling
                 <div className="px-4">
-                    <ul className={`${namesNav === 'timeline' ? 'relative' : 'flex flex-col divide-y divide-neutral-200'}`}>
+                    <ul className={`${details === 'timeline' ? 'relative' : 'flex flex-col divide-y divide-neutral-200'}`}>
                         {Array.from({length: 3}).map((_, index) => (
                             <li key={`skeleton-${index}`} className={
-                                namesNav === 'timeline' 
+                                details === 'timeline' 
                                     ? 'flex items-center !pb-4 !pt-0 relative w-full' 
                                     : 'flex flex-col gap-2 py-1 w-full'
                             }>
-                                {namesNav === 'timeline' && (
+                                {details === 'timeline' && (
                                     <>
                                         <div className="bg-neutral-900/10 absolute w-1 left-0 top-1 h-full"></div>
                                         <div className="w-4 h-4 rounded-full bg-neutral-900/10 absolute -left-1.5 top-2"></div>
                                     </>
                                 )}
                                 
-                                <div className={namesNav === 'timeline' ? 'ml-6 flex flex-col w-full' : 'flex flex-col gap-2 w-full'}>
-                                    {namesNav === 'timeline' && (
+                                <div className={details === 'timeline' ? 'ml-6 flex flex-col w-full' : 'flex flex-col gap-2 w-full'}>
+                                    {details === 'timeline' && (
                                         <div className="h-5 bg-neutral-900/10 rounded-full animate-pulse mr-2 my-1 mt-1" style={{width: `${getSkeletonLength(index, 3, 6)}rem`}}></div>
                                     )}
                                     
@@ -206,40 +205,40 @@ export default function NamesExplorer() {
             ) : (
                 // Results content - preserve exact timeline styling, improve uniformity
                 <div className="px-4">
-                    <ul className={`${namesNav === 'timeline' ? 'relative' : 'flex flex-col divide-y divide-neutral-200'}`}>
+                    <ul className={`${details === 'timeline' ? 'relative' : 'flex flex-col divide-y divide-neutral-200'}`}>
                         {groups.map((group: any, index: number) => {
-                            const groupId = `${namesNav}-${group.key}`
+                            const groupId = `${details}-${group.key}`
                             const groupsWithYears = groups.filter((g: any) => g.year)
                             const indexInYearGroups = groupsWithYears.findIndex((g: any) => g.key === group.key)
                             const isLastYearGroup = indexInYearGroups === groupsWithYears.length - 1
                             
                             return (
                                 <li key={groupId} className={
-                                    namesNav === 'timeline' 
+                                    details === 'timeline' 
                                         ? 'flex items-center !pb-4 !pt-0 relative w-full' 
                                         : 'flex flex-col gap-2 py-1 w-full'
                                 }>
-                                    {namesNav === 'timeline' && group.year && (
+                                    {details === 'timeline' && group.year && (
                                         <>
                                             <div className={`bg-primary-300 absolute w-1 left-0 top-1 ${isLastYearGroup ? 'h-4' : 'h-full'} ${indexInYearGroups === 0 ? 'mt-2' : ''}`}></div>
                                             <div className={`w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-2`}></div>
                                         </>
                                     )}
                                     
-                                    <div className={namesNav === 'timeline' ? (group.year ? 'ml-6 flex flex-col w-full' : 'flex flex-col w-full') : 'flex flex-col gap-2 w-full'}>
-                                        {namesNav === 'timeline' && (
+                                    <div className={details === 'timeline' ? (group.year ? 'ml-6 flex flex-col w-full' : 'flex flex-col w-full') : 'flex flex-col gap-2 w-full'}>
+                                        {details === 'timeline' && (
                                             <span className="mr-2 my-1 mt-1 font-medium text-neutral-700">
                                                 {group.year || 'Utan årstal'}
                                             </span>
                                         )}
-                                        {namesNav === 'overview' && (datasetTitles[group.dataset] || group.dataset) && (
+                                        {details === 'overview' && (datasetTitles[group.dataset] || group.dataset) && (
                                             <span className="mr-2 my-1 mt-1 font-medium text-neutral-700">
                                                 {datasetTitles[group.dataset] || group.dataset}
                                             </span>
                                         )}
                                         
                                         <ul className="flex flex-col gap-1">
-                                            {namesNav === 'overview' ? (
+                                            {details === 'overview' ? (
                                                 // For datasets view, show all datasets expanded without collapsing
                                                 <ul className="flex flex-col divide-y divide-neutral-200 w-full">
                                                     {(Array.from(new Set(group.results.map((r: any) => r.doc._index?.split('-')[2] || 'unknown'))) as string[]).map((dataset, index) => {

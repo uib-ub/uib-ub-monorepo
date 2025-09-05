@@ -16,8 +16,8 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
   const [nextGroup, setNextGroup] = useState<Record<string, any> | null>(null)
   const [prevGroup, setPrevGroup] = useState<Record<string, any> | null>(null)
   const datasetTag = searchParams.get('datasetTag')
-  const namesNav = searchParams.get('namesNav')
   const doc = searchParams.get('doc')
+  const details = searchParams.get('details')
 
   const { flattenedPages, groupPosition } = useMemo((): { flattenedPages: any[]; groupPosition: number } => {
     const flattenedPages = collapsedData?.pages.flatMap(page => page.data ?? []) ?? [];
@@ -82,11 +82,11 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
         {/* Show "Finn namneformer" if group is not grunnord */}
         {groupCode && !groupValue?.startsWith('grunnord') ? <>
         <ClickableIcon label="Oppslag"
-            remove={['namesNav']}
-            aria-current={!namesNav ? 'page' : 'false'}
+            add={{details: 'group'}}
+            aria-current={details == 'group' ? 'page' : 'false'}
             className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"  
           >
-            {!namesNav ? <PiBookOpenFill className="text-xl" aria-hidden="true" /> : <PiBookOpenLight className="text-xl" aria-hidden="true" />}
+            {details == 'group' ? <PiBookOpenFill className="text-xl" aria-hidden="true" /> : <PiBookOpenLight className="text-xl" aria-hidden="true" />}
           </ClickableIcon>
           
           <ClickableIcon
@@ -94,36 +94,36 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
             remove={['doc']}
             add={{
               group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
-              namesNav: 'timeline'
+              details: 'timeline'
             }}
-            aria-current={(namesNav == 'timeline' && !doc) ? 'page' : 'false'}
+            aria-current={(details == 'timeline' && !doc) ? 'page' : 'false'}
             className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
           >
-            {(namesNav == 'timeline' && !doc )? <PiClockFill className="text-xl" aria-hidden="true" /> : <PiClockLight className="text-xl" aria-hidden="true" />}
+            {(details == 'timeline' && !doc )? <PiClockFill className="text-xl" aria-hidden="true" /> : <PiClockLight className="text-xl" aria-hidden="true" />}
           </ClickableIcon>
           <ClickableIcon
             label="Namn"
             remove={['doc']}
             add={{
               group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
-              namesNav: 'names'
+              details: 'names'
             }}
-            aria-current={(namesNav == 'names' && !doc) ? 'page' : 'false'}
+            aria-current={(details == 'names' && !doc) ? 'page' : 'false'}
             className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
           >
-            {(namesNav == 'names' && !doc )? <PiSignpostFill className="text-xl" aria-hidden="true" /> : <PiSignpostLight className="text-xl" aria-hidden="true" />}
+            {(details == 'names' && !doc )? <PiSignpostFill className="text-xl" aria-hidden="true" /> : <PiSignpostLight className="text-xl" aria-hidden="true" />}
           </ClickableIcon>
           <ClickableIcon
             label="Liknande namn"
             remove={['doc']}
             add={{
               group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
-              namesNav: 'overview'
+              details: 'overview'
             }}
-            aria-current={(namesNav == 'overview' && !doc) ? 'page' : 'false'}
+            aria-current={(details == 'overview' && !doc) ? 'page' : 'false'}
             className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
           >
-            {(namesNav == 'overview' && !doc )? <PiBinocularsFill className="text-xl" aria-hidden="true" /> : <PiBinocularsLight className="text-xl" aria-hidden="true" />}
+            {(details == 'overview' && !doc )? <PiBinocularsFill className="text-xl" aria-hidden="true" /> : <PiBinocularsLight className="text-xl" aria-hidden="true" />}
           </ClickableIcon>
 
         </> : null}

@@ -57,7 +57,7 @@ export async function POST(request: Request) {
           [field]: {
             "query": searchTerm,
             "boost": boost,
-            "fuzziness": (h3 || gnidu) ? "AUTO" : 1,
+            "fuzziness": "AUTO" //(h3 || gnidu) ? "AUTO" : 1,
           }
         }
       })
@@ -73,10 +73,24 @@ export async function POST(request: Request) {
   }
 
   // Add geographic/identifier filters as should clauses within the required section
+  /*
   if (h3 && Array.isArray(h3) && h3.length > 0) {
     identifierQuery.bool.should.push({
       "terms": {
         "h3": h3
+      }
+    })
+  }
+    */
+
+  if (body.lat && body.lon) {
+    identifierQuery.bool.should.push({
+      "geo_distance": {
+        "distance": "3km",
+        "location": {
+          "lat": body.lat,
+          "lon": body.lon
+        }
       }
     })
   }
@@ -88,6 +102,7 @@ export async function POST(request: Request) {
       }
     })
   }
+    
 
   // Only add the identifier requirement if we have identifier filters
   if (identifierQuery.bool.should.length > 0) {

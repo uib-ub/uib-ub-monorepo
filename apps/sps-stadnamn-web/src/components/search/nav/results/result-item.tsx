@@ -75,9 +75,10 @@ export default function ResultItem({hit}: {hit: any}) {
                         "border-neutral-200 border rounded-md my-1 hover:bg-neutral-100 hover:shadow-sm aria-[current='page']:border-accent-200"
                         : "border-l-accent-700 border-b border-b-neutral-200  aria-[current='page']:border-l-4"} flex items-center group hover:bg-neutral-50 no-underline `} 
                     aria-current={isSelected ? 'page' : undefined}
-                    remove={['group', 'docIndex', 'doc', 'parent', ...(isMobile ? ['nav', 'namesNav'] : [])]}
+                    remove={['group', 'docIndex', 'doc', 'parent', ...(isMobile ? ['nav'] : [])]}
                     add={{
                         //doc: hit.fields.uuid,
+                        details: 'group',
                         
                         ...(hit.fields["group.id"] ? {group: stringToBase64Url(hit.fields["group.id"][0])} : {}),
 

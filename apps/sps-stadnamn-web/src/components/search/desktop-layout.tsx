@@ -13,7 +13,7 @@ import TreeWindow from './nav/tree-window';
 
 export default function DesktopLayout() {    
     const searchParams = useSearchParams()
-    const namesNav = searchParams.get('namesNav')
+    const details = searchParams.get('details')
     const mode = useMode()
     const doc = searchParams.get('doc')
 
@@ -27,7 +27,7 @@ export default function DesktopLayout() {
         <div className="flex lg:gap-4 flex-col h-full w-[40svw] lg:w-full max-h-[calc(100svh-4rem)] ">
         
 
-        {  nav && !namesNav && !(mode != 'map' && mode != 'list' && (doc || group)) && 
+        {  nav && (!details || details == 'group') && !(mode != 'map' && mode != 'list' && (doc || group)) && 
         <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${(doc || group) ? 'hidden lg:flex' : 'flex'}`}>
            {nav == 'tree' ? <TreeWindow/> : <NavWindow/>}  
         </section> 
@@ -35,7 +35,7 @@ export default function DesktopLayout() {
 
         
 
-        { mode != 'map' && mode != 'list' && (doc || (group && !namesNav)) && <section className={`lg:absolute left-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'flex' : 'flex'}`}>
+        { mode != 'map' && mode != 'list' && (doc || (group && details == 'group')) && <section className={`lg:absolute left-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'flex' : 'flex'}`}>
 
             <DetailsWindow/>
 
@@ -63,12 +63,12 @@ export default function DesktopLayout() {
 
 
 
-        {  namesNav && <div className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${(doc || group) ? 'hidden lg:flex' : 'flex'}`}>
+        {  details && details != 'group' && <div className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${(doc || group) ? 'hidden lg:flex' : 'flex'}`}>
             <NamesWindow/>       
         </div> }
 
 
-        {  mode == 'map' && (doc || (group && !namesNav)) &&
+        {  mode == 'map' && (doc || (group && details == 'group')) &&
         <div className="lg:absolute lg:right-2 lg:top-2 flex-col max-w-[40svw] xl:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg xl:rounded-md xl:flex">
         
         <DetailsWindow/> 

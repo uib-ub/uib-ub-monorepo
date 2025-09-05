@@ -11,7 +11,7 @@ const overviewQuery = async (
     namesScope: string,
     groupValue: string | null,
     groupDoc: any,
-    namesNav: string
+    details: string | null
 ) => {
     if (!groupValue || !groupDoc) {
         console.log("Early return: missing group value or groupDoc")
@@ -89,6 +89,11 @@ const overviewQuery = async (
             requestBody.gnidu = Array.from(allGnidu)
         }
 
+        if (source.location) {
+            requestBody.lat = source.location.coordinates[1]
+            requestBody.lon = source.location.coordinates[0]
+        }
+
         const res = await fetch('/api/search/fuzzy', {
             method: 'POST',
             headers: {
@@ -111,7 +116,7 @@ const overviewQuery = async (
     fetchedData.forEach((result: any) => {
         const source = result._source || result.fields || {}
 
-        if (namesNav === 'overview') {
+        if (details === 'overview') {
             const groupKey = 'all-datasets'
 
             if (!groupMap.has(groupKey)) {
@@ -135,7 +140,7 @@ const overviewQuery = async (
                 const nameStr = name as string
                 let groupKey: string
 
-                if (namesNav === 'timeline') {
+                if (details === 'timeline') {
                     const year =
                         source.attestations?.find((att: any) => att.label === nameStr)?.year ||
                         source.year ||
@@ -162,7 +167,7 @@ const overviewQuery = async (
 
     const processedGroups = Array.from(groupMap.values())
 
-    if (namesNav === 'timeline') {
+    if (details === 'timeline') {
         return processedGroups.sort((a: any, b: any) => {
             if (a.year === null && b.year === null) return 0
             if (a.year === null) return 1
@@ -176,14 +181,14 @@ const overviewQuery = async (
 
 export default function useOverviewData() {
     const searchParams = useSearchParams()
-    const namesNav = searchParams.get('namesNav') || 'overview'
+    const details = searchParams.get('details')
     const namesScope = searchParams.get('namesScope') || 'group'
     const { groupDoc } = useGroupData()
     const { groupCode, groupValue } = useGroup()
 
     const { data, error, isLoading } = useQuery({
-        queryKey: ['namesData', groupValue, namesScope, namesNav, groupDoc?._source?.uuid],
-        queryFn: () => overviewQuery(groupCode, namesScope, groupValue, groupDoc, namesNav),
+        queryKey: ['namesData', groupValue, namesScope, details, groupDoc?._source?.uuid],
+        queryFn: () => overviewQuery(groupCode, namesScope, groupValue, groupDoc, details),
         enabled: !!groupValue && !!groupDoc,
     })
 
