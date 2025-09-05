@@ -6,6 +6,8 @@
       "outputs": [
         "dist/**",
         ".next/**",
+        ".nuxt/**",
+        ".output/**",
         "storybook-static/**"
       ],
       "dependsOn": [

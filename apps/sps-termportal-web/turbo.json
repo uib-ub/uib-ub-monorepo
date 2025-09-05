@@ -1,10 +1,17 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "extends": ["//"],
+  "extends": [
+    "//"
+  ],
   "tasks": {
     "build": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build"],
+      "outputs": [
+        ".nuxt/**",
+        ".output/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
       "env": [
         "SANITY_PROJECT_ID",
         "SANITY_API_TOKEN",

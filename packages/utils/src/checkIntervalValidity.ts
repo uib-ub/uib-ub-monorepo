@@ -8,7 +8,6 @@
 export const checkIntervalValidity = (after: any, before: any) => {
   if (new Date(after['@value']) > new Date(before['@value'])) {
     [after, before] = [before, after];
-    console.log('Interval swaped: ', after['@value'], before['@value']);
     return [after, before];
   }
   return [after, before];

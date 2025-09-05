@@ -29,7 +29,7 @@
     "tiged": "^2.12.5",
     "ts-to-zod": "^3.8.5",
     "tsup": "^8",
-    "typescript": "^5.9.2"
+    "typescript": "^5"
   },
   "dependencies": {
     "@hono/zod-openapi": "^0.19.5"

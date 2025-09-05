@@ -22,7 +22,7 @@ export const reduceValuesByLanguage = (values: Record<string, any>): Record<stri
           acc[key].push(value[key])
         }
       } else {
-        acc[key] = value[key]
+        acc[key] = Array.isArray(value[key]) ? value[key] : [value[key]]
       }
     })
     return acc

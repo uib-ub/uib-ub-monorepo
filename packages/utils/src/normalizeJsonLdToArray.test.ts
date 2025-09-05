@@ -1,7 +1,7 @@
 import { normalizeJsonLdToArray } from './normalizeJsonLdToArray';
 
 describe('normalizeJsonLdToArray', () => {
-  it('should remove @context and return array for single object', () => {
+  test('should remove @context and return array for single object', () => {
     const input = {
       '@context': 'http://example.org/context',
       'title': 'Test Title',
@@ -16,7 +16,7 @@ describe('normalizeJsonLdToArray', () => {
     expect(normalizeJsonLdToArray(input)).toEqual(expected);
   });
 
-  it('should remove @context and return @graph array if present', () => {
+  test('should remove @context and return @graph array if present', () => {
     const input = {
       '@context': 'http://example.org/context',
       '@graph': [

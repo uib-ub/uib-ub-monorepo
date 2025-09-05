@@ -548,7 +548,7 @@ export const crmP106IFormsPartOf1Schema = z.array(
   z.union([crmE36VisualItem1Schema, crmE33LinguisticObject1Schema]),
 );
 
-export const noName1Schema = z.record(z.unknown());
+export const noName1Schema = z.record(z.string(), z.unknown());
 
 export const crmP91HasUnitSchema = z.object({
   id: theSubjectUriSchema,
@@ -1019,7 +1019,7 @@ export const laDigitallyShownBySchema: z.ZodSchema<LaDigitallyShownBy> = z.lazy(
 
 export const digD1DigitalObjectSchema: z.ZodSchema<DigD1_Digital_Object> =
   z.lazy(() =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType6Schema.and(specific16Schema).optional(),
         _label: rdfsLabelSchema.optional(),
@@ -1095,7 +1095,7 @@ export const laDigitallyAvailableViaSchema: z.ZodSchema<LaDigitallyAvailableVia>
 
 export const laDigitalServiceSchema: z.ZodSchema<LaDigitalService> = z.lazy(
   () =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType11Schema.and(specific21Schema).optional(),
         _label: rdfsLabelSchema.optional(),
@@ -1173,7 +1173,7 @@ export const crmP46IsComposedOfSchema: z.ZodSchema<CrmP46IsComposedOf> = z.lazy(
 
 export const crmE12ProductionSchema: z.ZodSchema<CrmE12_Production> = z.lazy(
   () =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType22Schema.and(specific34Schema).optional(),
         _label: rdfsLabelSchema.optional(),
@@ -1198,7 +1198,7 @@ export const crmP113IWasRemovedBySchema: z.ZodSchema<CrmP113IWasRemovedBy> =
 
 export const crmE80PartRemovalSchema: z.ZodSchema<CrmE80_Part_Removal> = z.lazy(
   () =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType24Schema.and(specific36Schema).optional(),
         _label: rdfsLabelSchema.optional(),
@@ -1223,7 +1223,7 @@ export const sciO19IWasObjectEncounteredAtSchema: z.ZodSchema<SciO19IWasObjectEn
 
 export const sciS19EncounterEventSchema: z.ZodSchema<SciS19_Encounter_Event> =
   z.lazy(() =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType25Schema.and(specific37Schema).optional(),
         _label: rdfsLabelSchema.optional(),
@@ -1412,7 +1412,7 @@ export const crmP16IWasUsedFor4Schema: z.ZodSchema<CrmP16IWasUsedFor4> = z.lazy(
 
 export const crmP94IWasCreatedBySchema: z.ZodSchema<CrmP94IWasCreatedBy> =
   z.lazy(() =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType9Schema.and(specific18Schema).optional(),
         _label: rdfsLabelSchema.optional(),
@@ -1463,7 +1463,7 @@ export const crmP191HadDurationSchema: z.ZodSchema<CrmP191HadDuration> = z.lazy(
 
 export const crmP94IWasCreatedBy1Schema: z.ZodSchema<CrmP94IWasCreatedBy1> =
   z.lazy(() =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType9Schema.and(specific18Schema).optional(),
         _label: rdfsLabelSchema.optional(),
@@ -1484,7 +1484,7 @@ export const crmP94IWasCreatedBy1Schema: z.ZodSchema<CrmP94IWasCreatedBy1> =
 
 export const crmP95IWasFormedBySchema: z.ZodSchema<CrmP95IWasFormedBy> = z.lazy(
   () =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType16Schema.and(specific27Schema).optional(),
         _label: rdfsLabelSchema.optional(),
@@ -1505,7 +1505,7 @@ export const crmP95IWasFormedBySchema: z.ZodSchema<CrmP95IWasFormedBy> = z.lazy(
 
 export const crmP99IWasDissolvedBySchema: z.ZodSchema<CrmP99IWasDissolvedBy> =
   z.lazy(() =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType17Schema.and(specific28Schema).optional(),
         _label: rdfsLabelSchema.optional(),
@@ -1523,7 +1523,7 @@ export const crmP99IWasDissolvedBySchema: z.ZodSchema<CrmP99IWasDissolvedBy> =
 
 export const crmP94IWasCreatedBy3Schema: z.ZodSchema<CrmP94IWasCreatedBy3> =
   z.lazy(() =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType9Schema.and(specific18Schema).optional(),
         _label: rdfsLabelSchema.optional(),
@@ -1544,7 +1544,7 @@ export const crmP94IWasCreatedBy3Schema: z.ZodSchema<CrmP94IWasCreatedBy3> =
 
 export const crmP94IWasCreatedBy2Schema: z.ZodSchema<CrmP94IWasCreatedBy2> =
   z.lazy(() =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType9Schema.and(specific18Schema).optional(),
         _label: rdfsLabelSchema.optional(),
@@ -1565,7 +1565,7 @@ export const crmP94IWasCreatedBy2Schema: z.ZodSchema<CrmP94IWasCreatedBy2> =
 
 export const crmP108IWasProducedBySchema: z.ZodSchema<CrmP108IWasProducedBy> =
   z.lazy(() =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType22Schema.and(specific34Schema).optional(),
         _label: rdfsLabelSchema.optional(),
@@ -1587,7 +1587,7 @@ export const crmP108IWasProducedBySchema: z.ZodSchema<CrmP108IWasProducedBy> =
 
 export const crmP13IWasDestroyedBySchema: z.ZodSchema<CrmP13IWasDestroyedBy> =
   z.lazy(() =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType23Schema.and(specific35Schema).optional(),
         _label: rdfsLabelSchema.optional(),
@@ -1603,7 +1603,7 @@ export const crmP13IWasDestroyedBySchema: z.ZodSchema<CrmP13IWasDestroyedBy> =
   );
 
 export const crmP98IWasBornSchema: z.ZodSchema<CrmP98IWasBorn> = z.lazy(() =>
-  z.record(z.unknown()).and(
+  z.record(z.string(), z.unknown()).and(
     z.object({
       type: rdfType27Schema.and(specific40Schema).optional(),
       _label: rdfsLabelSchema.optional(),
@@ -1618,7 +1618,7 @@ export const crmP98IWasBornSchema: z.ZodSchema<CrmP98IWasBorn> = z.lazy(() =>
 );
 
 export const crmP100IDiedInSchema: z.ZodSchema<CrmP100IDiedIn> = z.lazy(() =>
-  z.record(z.unknown()).and(
+  z.record(z.string(), z.unknown()).and(
     z.object({
       type: rdfType28Schema.and(specific41Schema).optional(),
       _label: rdfsLabelSchema.optional(),
@@ -1647,7 +1647,7 @@ export const laPaidAmountSchema: z.ZodSchema<LaPaidAmount> = z.lazy(() =>
 
 export const crmP94IWasCreatedBy4Schema: z.ZodSchema<CrmP94IWasCreatedBy4> =
   z.lazy(() =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType9Schema.and(specific18Schema).optional(),
         _label: rdfsLabelSchema.optional(),
@@ -1668,7 +1668,7 @@ export const crmP94IWasCreatedBy4Schema: z.ZodSchema<CrmP94IWasCreatedBy4> =
 
 export const crmP94IWasCreatedBy5Schema: z.ZodSchema<CrmP94IWasCreatedBy5> =
   z.lazy(() =>
-    z.record(z.unknown()).and(
+    z.record(z.string(), z.unknown()).and(
       z.object({
         type: rdfType9Schema.and(specific18Schema).optional(),
         _label: rdfsLabelSchema.optional(),
