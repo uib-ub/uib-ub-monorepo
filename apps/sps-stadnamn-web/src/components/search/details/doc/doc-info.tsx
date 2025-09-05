@@ -72,7 +72,6 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
 
 
       
-        {false &&  <div className="flex flex-wrap gap-2"><CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/></div>}  
  
         </div>
         
