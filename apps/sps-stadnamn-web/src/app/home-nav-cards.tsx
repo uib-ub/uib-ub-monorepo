@@ -28,20 +28,20 @@ export default function HomeNavCards({iiifStats, datasets }: {datasets: any, iii
                     <Link
                         key={card.title + idx}
                         href={card.href}
-                        className="flex flex-row shadow-md bg-neutral-50/90 rounded-lg p-4 gap-4 no-underline transition-shadow hover:shadow-lg w-full"
+                        className="flex flex-row shadow-md bg-neutral-50/90 rounded-lg p-4 gap-4 no-underline transition-shadow hover:shadow-lg w-full text-neutral-900"
                     >
                         <div className="flex flex-col justify-between flex-1 min-w-0 items-center">
                             <div className="flex flex-col items-center">
-                                <h2 className="text-2xl text-neutral-800 font-serif font-semibold mb-1 flex items-center gap-2">
+                                <h2 className="text-2xl font-serif font-semibold mb-1 flex items-center gap-2">
                                     {card.title}
                                 </h2>
                                 {card.description && (
-                                    <div className="text-neutral-800 font-normal text-center">
+                                    <div className="font-normal text-center">
                                         {card.description}
                                     </div>
                                 )}
                             </div>
-                            <span className="flex flex-row items-center gap-2 text-neutral-900 text-2xl font-bold rounded-full mt-2" style={{ fontVariantNumeric: "tabular-nums" }}>
+                            <span className="flex flex-row items-center gap-2 text-2xl font-bold rounded-full mt-2" style={{ fontVariantNumeric: "tabular-nums" }}>
                                 {card.stat}
                             </span>
                         </div>

@@ -24,6 +24,7 @@ import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZo
 import useSearchData from "@/state/hooks/search-data";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
 import { GlobalContext } from "@/app/global-provider";
+import Clickable from "../ui/clickable/clickable";
 const debug = process.env.NODE_ENV === 'development'
 
 
@@ -45,6 +46,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const minDocCount = useRef(0)
   const { groupValue } = useGroup()
   const { isMobile } = useContext(GlobalContext)
+  
 
 
   // Calculate initial bounds based on zoom level and center before map renders
@@ -127,7 +129,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     const buckets = markerResults.flatMap((result) => result.isSuccess && result.data ? result.data : [])
 
 
-    const [labelBuckets, countBuckets] = buckets.reduce<[any[], any[]]>((acc, bucket) => {
+    const [labelBuckets, countBuckets] = zoomState > 17 ? [buckets, []] : buckets.reduce<[any[], any[]]>((acc, bucket) => {
       if (activeMarkerMode == 'labels' || bucket.top.hits.total.value == bucket.top.hits.hits.length) {
         acc[0].push(bucket)
       } else {
@@ -162,28 +164,51 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
         return { markerIndex, tile: bucket.key, ...hit }
       })
     })
-      .sort((a: any, b: any) => a.markerIndex - b.markerIndex) // process the first hit in all buckets first, then the second hit etc.
+      .sort((a: any, b: any) => a.markerIndex - b.markerIndex) // process the first hit in all buckets first, then the second hit etc. This ensures that prioritized hits are processed first.
       .map((hit: Record<string, any>) => {
 
         const tileArea = [hit.tile, ...bucketNeighbourMap[hit.tile]]
 
+        let overLappingLabel: Record<string, any> | null = null;
 
-        const hasOverlappingLabel = tileArea.some(tileKey => {
-          return labeledMarkersLookup[tileKey]?.some((otherHit: Record<string, any>) => {
+        for (const tileKey of tileArea) {
+          const overlapping = labeledMarkersLookup[tileKey]?.find((otherHit: Record<string, any>) => {
+            const yDist = yDistance(
+              mapInstance.current,
+              otherHit.fields.location[0].coordinates[1],
+              hit.fields.location[0].coordinates[1]
+            );
+            const xDist = xDistance(
+              mapInstance.current,
+              otherHit.fields.location[0].coordinates[0],
+              hit.fields.location[0].coordinates[0]
+            );
 
-            const yDist = yDistance(mapInstance.current, otherHit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[1]);
-            const xDist = xDistance(mapInstance.current, otherHit.fields.location[0].coordinates[0], hit.fields.location[0].coordinates[0]);
-            return yDist < 32 && xDist < (64 + (4 * otherHit.fields.label[0].length));
-          })
-        })
+            return yDist < 24 && xDist < 64 + 4 * otherHit.fields.label[0].length;
+          });
 
-        if (!hasOverlappingLabel) {
+          if (overlapping) {
+            overLappingLabel = overlapping;
+            break; 
+          }
+        }
+
+
+
+        if (overLappingLabel) {
+          console.log("OVERLAPPING LABEL", overLappingLabel)
+          overLappingLabel.children.push(hit)
+
+        }
+        else {
           if (!labeledMarkersLookup[hit.tile]) {
             labeledMarkersLookup[hit.tile] = []
           }
-          labeledMarkersLookup[hit.tile].push(hit)
-          return { ...hit, showLabel: true }
+          const labeledHit = { ...hit, showLabel: true, children: [] }
+          labeledMarkersLookup[hit.tile].push(labeledHit)
+          return labeledHit
         }
+
         return hit
       }).sort((a: any, b: any) => {
         // Sort so that labels further north are first
@@ -196,7 +221,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     markerResultsRef.current = allMarkers
 
     return allMarkers
-  }, [markerResults, activeMarkerMode])
+  }, [markerResults, activeMarkerMode, zoomState])
 
 
 
@@ -400,11 +425,15 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const selectDocHandler = (selected: Record<string, any>, hits?: Record<string, any>[]) => {
     return {
       click: () => {
+        if (hits?.length) {
+        }
+        else {
         const newQueryParams = new URLSearchParams(searchParams)
         newQueryParams.delete('doc')
 
         newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
         router.push(`?${newQueryParams.toString()}`)
+        }
       }
     }
   }
@@ -682,18 +711,33 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
               const lat = item.fields.location?.[0]?.coordinates?.[1];
               const lng = item.fields.location?.[0]?.coordinates?.[0];
               // Ensure lat/lng exist (0 is a valid value) and are finite
+              
               if (!item.showLabel || lat == undefined || lng == undefined || !isPointInViewport(lat, lng)) {
                 return null;
               }
-              else return (
+              else {
+                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', baseMap && baseMapLookup[baseMap]?.markers ? 'white' : 'black', item.children?.length)
+
+                return (
                 <Marker
                   key={`result-${item.fields.group?.id || item.fields.uuid[0]}`}
                   position={[lat, lng]}
-                  icon={new leaflet.DivIcon(getLabelMarkerIcon(item.fields.label?.[0] || 'Unknown', baseMap && baseMapLookup[baseMap]?.markers ? 'white' : 'black', undefined, true))}
+                  icon={new leaflet.DivIcon(icon)}
                   riseOnHover={true}
-                  eventHandlers={selectDocHandler(item.fields)}
-                />
+                  eventHandlers={selectDocHandler(item.fields, item.children)}
+                >
+                    <Popup>
+                      <ul className="list-none p-0 m-0">
+                        {[item, ...(item.children || [])].map((entry: any) => (
+                          <li key={`entry-${entry.fields.uuid[0]}`}>
+                            <Clickable add={{group: entry.fields.group.id[0]}}>{entry.fields.label?.[0]}</Clickable>
+                          </li>
+                        ))}
+                      </ul>
+                    </Popup>
+                </Marker>
               )
+            }
 
 
             })}

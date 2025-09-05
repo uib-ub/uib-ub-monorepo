@@ -39,16 +39,16 @@ export default function Error({
   }
  
   return (
-    <main className="flex-1 flex lg:items-center justify-center p-4 bg-white lg:bg-transparent" >
+    <main className="flex-1 flex lg:items-center justify-center p-4 bg-neutral-50" >
       <div role="alert" aria-live="assertive" className="w-full max-w-xl lg:rounded-lg p-8 space-y-6">
         <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-serif text-white">Det har oppstått ein feil</h2>
+          <h2 className="text-2xl font-serif">Det har oppstått ein feil</h2>
         </div>
 
         <div className="space-y-4">
-          <div className="inner-slate p-4 rounded-md">
+          {process.env.NODE_ENV === 'development' && <div className="inner-slate bg-white p-4 rounded-md">
             <p className="font-mono text-sm text-neutral-700 break-words" lang="en">{error.message}</p>
-          </div>
+          </div>}
 
           <div className="flex flex-col sm:flex-row gap-3">
             <button
