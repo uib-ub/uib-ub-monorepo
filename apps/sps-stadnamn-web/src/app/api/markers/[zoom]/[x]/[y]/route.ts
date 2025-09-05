@@ -17,19 +17,18 @@ export async function GET(
   
   const query: Record<string, any> = {
     size: 0,
-    collapse: {
-      field: "group.id"
-    },
+
     _source: false,
     track_total_hits: false,
     track_scores: false,
+    //sort: [{"group.placeScore": {order: "desc", missing: "_last"}}, { "boost": {order: "desc", missing: "_last"}}, { "group.id": {order: "asc", missing: "_last"}} ],
     
     query: {
       bool: {
         filter: [
           {
             geo_grid: {
-                location: { geotile: `${precision}/${x}/${y}` }
+              location: { geotile: `${precision}/${x}/${y}` }
             }
           },
         ]
@@ -39,19 +38,33 @@ export async function GET(
       grid: {
         geotile_grid: {
           field: "location",
-          size: 1000,
+          size: (Number(precision) > 17 || (totalHits && totalHits < 1000)) ? 200 : 3,
           precision: precision == "0" ? 6 : parseInt(precision) + 3
         },
-        aggs: {
-          top: {
-            top_hits: {
-              size: (Number(precision) > 17 || (totalHits && totalHits < 1000)) ? 100 : 3,
-              sort: [ { "uuid": "asc" } ],
-              _source: false,
-              fields: ["label", "location", "group.id", "uuid"],
+        "aggs": {
+          "groups": {
+            "terms": {
+              "field": "group.id",
+              "order": { "max_placeScore": "desc"}
+            },
+            "aggs": {
+              "max_placeScore": {
+                "max": { "field": "group.placeScore" }
+              },
+              "max_boost": {
+                "max": { "field": "boost" }
+              },
+              "top": {
+                "top_hits": {
+                  "size": 1,
+                  "_source": false,
+                  "fields": ["label", "location", "group.id", "uuid"],
+                }
+              },
             }
           }
         }
+
       }
     }
   }

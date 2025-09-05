@@ -6,13 +6,13 @@ import useCollapsedData from '@/state/hooks/collapsed-data'
 import { PiBinocularsBold, PiBinocularsFill, PiBinocularsLight, PiBookOpenFill, PiBookOpenLight, PiCaretLeftBold, PiCaretRightBold, PiCaretUpBold, PiClock, PiClockBold, PiClockFill, PiClockLight, PiDatabaseFill, PiDatabaseLight, PiMicroscopeFill, PiMicroscopeLight, PiSignpost, PiSignpostFill, PiSignpostLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight } from 'react-icons/pi'
 import ClickableIcon from '@/components/ui/clickable/clickable-icon'
 import Clickable from '@/components/ui/clickable/clickable'
+import { useGroup } from '@/lib/param-hooks'
 
 export default function MobileSearchNav({ currentPosition, drawerContent, showScrollToTop, scrollableContent }: { currentPosition: number, drawerContent: string, showScrollToTop: boolean, scrollableContent: React.RefObject<HTMLDivElement> }) {
 
   const searchParams = useSearchParams()
   const { collapsedData, collapsedHasNextPage, collapsedFetchNextPage } = useCollapsedData()
-  const group = searchParams.get('group')
-  const groupDecoded = group ? atob(decodeURIComponent(group)) : null
+  const {groupCode, groupValue} = useGroup()
   const [nextGroup, setNextGroup] = useState<Record<string, any> | null>(null)
   const [prevGroup, setPrevGroup] = useState<Record<string, any> | null>(null)
   const datasetTag = searchParams.get('datasetTag')
@@ -21,10 +21,10 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
 
   const { flattenedPages, groupPosition } = useMemo((): { flattenedPages: any[]; groupPosition: number } => {
     const flattenedPages = collapsedData?.pages.flatMap(page => page.data ?? []) ?? [];
-    const groupPosition = flattenedPages.findIndex(doc => doc.fields['group.id']?.[0] === groupDecoded);
-    console.log('Group Position:', groupPosition, 'for group:', groupDecoded);
+    const groupPosition = flattenedPages.findIndex(doc => doc.fields['group.id']?.[0] === groupValue);
+    console.log('Group Position:', groupPosition, 'for group:', groupValue);
     return { flattenedPages, groupPosition };
-  }, [collapsedData, groupDecoded]);
+  }, [collapsedData, groupValue]);
 
 
   const scrollToTop = () => {
@@ -80,7 +80,7 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
 
         
         {/* Show "Finn namneformer" if group is not grunnord */}
-        {group && !groupDecoded?.startsWith('grunnord') ? <>
+        {groupCode && !groupValue?.startsWith('grunnord') ? <>
         <ClickableIcon label="Oppslag"
             remove={['namesNav']}
             aria-current={!namesNav ? 'page' : 'false'}

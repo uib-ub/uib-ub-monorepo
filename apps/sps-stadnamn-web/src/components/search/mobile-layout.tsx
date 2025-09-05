@@ -190,11 +190,12 @@ export default function MobileLayout() {
     }
 
     useEffect(() => {
-        if (nav) {
-            setDrawerContent(nav)
-        }
-        else if (doc || group) {
+       
+        if (doc || group) {
             setDrawerContent('details')
+        }
+        else if (nav) {
+            setDrawerContent(nav)
         }
         else if (!searchFilterParamsString) {
             setDrawerContent(null)

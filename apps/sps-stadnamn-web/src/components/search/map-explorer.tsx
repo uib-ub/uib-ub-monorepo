@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef, useState, useCallback, useMemo, useContext } from "react";
 import Map from "../map/map";
 import { baseMaps, baseMapKeys, defaultBaseMap, baseMapLookup } from "@/config/basemap-config";
-import { PiCheckCircleFill, PiCrop, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill, PiStackSimpleFill } from "react-icons/pi";
+import { PiBookOpen, PiBookOpenFill, PiCheckCircleFill, PiCrop, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill, PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 import {
   DropdownMenu,
@@ -42,8 +42,6 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const urlZoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
   const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
   const allowFitBounds = useRef(false)
-  const maxDocCount = useRef(0)
-  const minDocCount = useRef(0)
   const { groupValue } = useGroup()
   const { isMobile } = useContext(GlobalContext)
   
@@ -127,95 +125,110 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     }
 
     const buckets = markerResults.flatMap((result) => result.isSuccess && result.data ? result.data : [])
+    //("BUCKETS", buckets)
 
 
-    const [labelBuckets, countBuckets] = zoomState > 17 ? [buckets, []] : buckets.reduce<[any[], any[]]>((acc, bucket) => {
-      if (activeMarkerMode == 'labels' || bucket.top.hits.total.value == bucket.top.hits.hits.length) {
-        acc[0].push(bucket)
-      } else {
-        acc[1].push(bucket)
-      }
-      return acc
-    }, [[], []])
-
-    maxDocCount.current = countBuckets?.reduce((acc: number, cur: any) => Math.max(acc, cur.doc_count), 0)
-    minDocCount.current = countBuckets?.reduce((acc: number, cur: any) => Math.min(acc, cur.doc_count), Infinity);
-
-
+    const countItems: Record<string, any>[] = []
+    let minDocCount = Infinity
+    let maxDocCount = 0
     const labeledMarkersLookup: Record<string, Record<string, any>[]> = {}
-    const bucketNeighbourMap: Record<string, any[]> = labelBuckets?.reduce<Record<string, any[]>>((acc, bucket) => {
-      const [z, x, y] = bucket.key.split('/').map(Number);
-      const neighbors = [
-        `${z}/${x - 1}/${y}`,     // West
-        `${z}/${x + 1}/${y}`,     // East
-        `${z}/${x}/${y - 1}`,     // North
-        `${z}/${x}/${y + 1}`,     // South
-        `${z}/${x - 1}/${y - 1}`,   // North-West
-        `${z}/${x + 1}/${y - 1}`,   // North-East
-        `${z}/${x - 1}/${y + 1}`,   // South-West
-        `${z}/${x + 1}/${y + 1}`    // South-East
-      ];
-      acc[bucket.key] = neighbors;
-      return acc;
-    }, {})
 
-    const markers: Record<string, any>[] = labelBuckets?.flatMap((bucket: any) => {
-      return bucket.top.hits.hits.map((hit: Record<string, any>, markerIndex: number) => {
-        return { markerIndex, tile: bucket.key, ...hit }
-      })
-    })
-      .sort((a: any, b: any) => a.markerIndex - b.markerIndex) // process the first hit in all buckets first, then the second hit etc. This ensures that prioritized hits are processed first.
-      .map((hit: Record<string, any>) => {
+    buckets.forEach((bucket) => {
+      if (true || zoomState > 17 || activeMarkerMode == 'labels' || !bucket.groups.sum_other_doc_count) {
+        const [z, x, y] = bucket.key.split('/').map(Number);
+        const neighborTiles = [
+          `${z}/${x}/${y}`,     // Center
+          `${z}/${x - 1}/${y}`,     // West
+          `${z}/${x + 1}/${y}`,     // East
+          `${z}/${x}/${y - 1}`,     // North
+          `${z}/${x}/${y + 1}`,     // South
+          `${z}/${x - 1}/${y - 1}`,   // North-West
+          `${z}/${x + 1}/${y - 1}`,   // North-East
+          `${z}/${x - 1}/${y + 1}`,   // South-West
+          `${z}/${x + 1}/${y + 1}`    // South-East
+        ];
 
-        const tileArea = [hit.tile, ...bucketNeighbourMap[hit.tile]]
-
-        let overLappingLabel: Record<string, any> | null = null;
-
-        for (const tileKey of tileArea) {
-          const overlapping = labeledMarkersLookup[tileKey]?.find((otherHit: Record<string, any>) => {
+        const evaluateNeighborMarkers = (self: Record<string, any>, neighbourMarkers: Record<string, any>[]): {other: Record<string, any> | null, otherIndex: number | null} => {
+          let otherIndex = 0
+          for (const other of neighbourMarkers) {
             const yDist = yDistance(
               mapInstance.current,
-              otherHit.fields.location[0].coordinates[1],
-              hit.fields.location[0].coordinates[1]
+              other.fields.location[0].coordinates[1],
+              self.fields.location[0].coordinates[1]
             );
             const xDist = xDistance(
               mapInstance.current,
-              otherHit.fields.location[0].coordinates[0],
-              hit.fields.location[0].coordinates[0]
+              other.fields.location[0].coordinates[0],
+              self.fields.location[0].coordinates[0]
             );
 
-            return yDist < 24 && xDist < 64 + 4 * otherHit.fields.label[0].length;
-          });
-
-          if (overlapping) {
-            overLappingLabel = overlapping;
-            break; 
+            if (yDist < 32 && xDist < 64 + 4 * other.fields.label[0].length) {
+              return {other, otherIndex}
+            }
+            otherIndex++
           }
+          return {other: null, otherIndex: null}
         }
 
+        bucket.groups.buckets.map((group: any) => {
+          const top_hit: Record<string, any> = group.top.hits.hits[0]
+          let otherFound = false
 
-
-        if (overLappingLabel) {
-          console.log("OVERLAPPING LABEL", overLappingLabel)
-          overLappingLabel.children.push(hit)
-
-        }
-        else {
-          if (!labeledMarkersLookup[hit.tile]) {
-            labeledMarkersLookup[hit.tile] = []
+          for (const neighborTile of neighborTiles) {
+            const neighborMarkers = labeledMarkersLookup[neighborTile]
+            const {other, otherIndex} = evaluateNeighborMarkers(top_hit, neighborMarkers || []) 
+            if (other && otherIndex !== null) {
+              if ((other.fields.boost || 0) < (top_hit.fields.boost || 0)) {
+                const stolenChildren = other.children || []
+                const childlessOther = { ...other, children: undefined}
+                labeledMarkersLookup[neighborTile][otherIndex] = {...top_hit, children: [childlessOther, ...stolenChildren]}
+              }
+              else {
+                const lostChildren = top_hit.children || []
+                const childlessTopHit = { ...top_hit, children: undefined}
+                labeledMarkersLookup[neighborTile][otherIndex] = {...other, children: [childlessTopHit, ...lostChildren]}
+              }
+              otherFound = true
+              break
+            }
           }
-          const labeledHit = { ...hit, showLabel: true, children: [] }
-          labeledMarkersLookup[hit.tile].push(labeledHit)
-          return labeledHit
-        }
 
-        return hit
-      }).sort((a: any, b: any) => {
-        // Sort so that labels further north are first
-        return b.fields.location[0].coordinates[1] - a.fields.location[0].coordinates[1]
-      }) || []
+          if (!otherFound) {
+            if (!labeledMarkersLookup[bucket.key]) {
+              labeledMarkersLookup[bucket.key] = []
+            }
+            labeledMarkersLookup[bucket.key].push(top_hit)
+          }
 
-    const allMarkers = [...markers, ...countBuckets]
+
+        
+
+
+          ///labelItems.push({key: bucket.key, ...top_hit})
+          
+        })
+      } else {
+        bucket.groups.buckets.forEach((group: any) => {
+          minDocCount = Math.min(minDocCount, group.doc_count)
+          maxDocCount = Math.max(maxDocCount, group.doc_count)
+          countItems.push({key: bucket.key, ...group})
+        })
+      }
+    })
+
+    //("LABELED MARKERS LOOKUP", JSON.stringify(labeledMarkersLookup, null, 2))
+    const markers = Object.entries(labeledMarkersLookup).flatMap(([key, items]: [string, Record<string, any>[]]) => 
+      items.map(item => ({tile: key, ...item}))
+    )
+    const clusters = countItems.map((item: any) => ({...item, radius: calculateRadius(item.doc_count, maxDocCount, minDocCount)}))
+
+    //console.log("MARKERS", markers)
+    //console.log("CLUSTERS", clusters)
+
+
+
+
+    const allMarkers = [...markers, ...clusters]
 
 
     markerResultsRef.current = allMarkers
@@ -238,7 +251,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
 
   const updateMarkerGrid = useCallback((liveBounds: [[number, number], [number, number]], liveZoom: number, gridSizeData: { gridSize: number, precision: number }, currentCells: GeotileCell[]) => {
-    console.log("UPDATE MARKER GRID", liveBounds, liveZoom, gridSizeData, currentCells)
+   // console.log("UPDATE MARKER GRID", liveBounds, liveZoom, gridSizeData, currentCells)
     const { gridSize, precision } = gridSizeData
     const [[north, west], [south, east]] = liveBounds
 
@@ -311,7 +324,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
   useEffect(() => {
     updateMarkerGrid(snappedBounds, zoomState, gridSizeRef.current, markerCells)
-    console.log("INITIALIZE MARKER GRID")
+    //console.log("INITIALIZE MARKER GRID")
   }, [])
 
 
@@ -337,7 +350,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   }, [searchUpdatedAt])
 
   useEffect(() => {
-    if (!allowFitBounds.current || markerResults.some(result => result.data?.some((bucket: any) => bucket.top.hits.hits.length > 0))) {
+    if (!allowFitBounds.current || markerResults.some(result => result.isSuccess && result.data.aggregations?.grid.buckets.length > 0)) {
       return
     }
     else if (markerResults.every(result => result.isSuccess)) {
@@ -426,6 +439,10 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     return {
       click: () => {
         if (hits?.length) {
+          const newQueryParams = new URLSearchParams(searchParams)
+          newQueryParams.delete('doc')
+          newQueryParams.delete('group')
+          router.push(`?${newQueryParams.toString()}`)
         }
         else {
         const newQueryParams = new URLSearchParams(searchParams)
@@ -554,7 +571,6 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
               suspendMarkerDiscoveryRef.current = true
             },
             moveend: () => {
-              console.log("MAP MOVEEND")
 
               const mapBounds = map.getBounds();
               const mapCenter = mapBounds.getCenter();
@@ -664,9 +680,9 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
 
 
-                const clusterIcon = new leaflet.DivIcon(getClusterMarker(item.doc_count, calculateRadius(item.doc_count, maxDocCount.current, minDocCount.current) * 2 + (item.doc_count > 99 ? item.doc_count.toString().length / 4 : 0),
-                  calculateRadius(item.doc_count, maxDocCount.current, minDocCount.current) * 2,
-                  calculateRadius(item.doc_count, maxDocCount.current, minDocCount.current) * 0.8))
+                const clusterIcon = new leaflet.DivIcon(getClusterMarker(item.doc_count, item.radius * 2 + (item.doc_count > 99 ? item.doc_count.toString().length / 4 : 0),
+                  item.radius * 2,
+                  item.radius * 0.8))
 
                 return (
                   <Fragment key={`cluster-fragment-${item.key}`}>
@@ -712,7 +728,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
               const lng = item.fields.location?.[0]?.coordinates?.[0];
               // Ensure lat/lng exist (0 is a valid value) and are finite
               
-              if (!item.showLabel || lat == undefined || lng == undefined || !isPointInViewport(lat, lng)) {
+              if (lat == undefined || lng == undefined || !isPointInViewport(lat, lng)) {
                 return null;
               }
               else {
@@ -720,21 +736,21 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
                 return (
                 <Marker
-                  key={`result-${item.fields.group?.id || item.fields.uuid[0]}`}
+                  key={`result-${item.fields.uuid[0]}`}
                   position={[lat, lng]}
                   icon={new leaflet.DivIcon(icon)}
                   riseOnHover={true}
-                  eventHandlers={selectDocHandler(item.fields, item.children)}
+                  eventHandlers={selectDocHandler(item.fields, [item, ...(item.children || [])])}
                 >
-                    <Popup>
-                      <ul className="list-none p-0 m-0">
+                    {item.children?.length && item.fields?.["group.id"]?.[0] && <Popup>
+                      <ul className="list-none p-0 m-0 max-h-[50svh] overflow-y-auto stable-scrollbar text-lg divide-y divide-neutral-200 flex flex-col">
                         {[item, ...(item.children || [])].map((entry: any) => (
-                          <li key={`entry-${entry.fields.uuid[0]}`}>
-                            <Clickable add={{group: entry.fields.group.id[0]}}>{entry.fields.label?.[0]}</Clickable>
+                          <li key={`entry-${entry.fields.uuid[0]}`} className="!p-0 !m-0">
+                            <Clickable className="no-underline !text-black flex gap-2 items-center py-2" link add={{group: stringToBase64Url(entry.fields["group.id"]?.[0])}}>{groupValue == entry.fields["group.id"]?.[0] ? <PiBookOpenFill className="text-accent-700" /> : <PiBookOpen className="text-primary-600" />}{entry.fields.label?.[0]}</Clickable>
                           </li>
                         ))}
                       </ul>
-                    </Popup>
+                    </Popup>}
                 </Marker>
               )
             }
