@@ -132,9 +132,12 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     let minDocCount = Infinity
     let maxDocCount = 0
     const labeledMarkersLookup: Record<string, Record<string, any>[]> = {}
+    const seenGroups = new Set<string>()
 
     buckets.forEach((bucket) => {
-      if ( zoomState > 17 || activeMarkerMode == 'labels' || bucket.doc_count == 1) {
+      if ( zoomState > 16 || activeMarkerMode == 'labels' || bucket.doc_count == 1) {
+
+
         const [z, x, y] = bucket.key.split('/').map(Number);
         const neighborTiles = [
           `${z}/${x}/${y}`,     // Center
@@ -170,9 +173,16 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
           return {other: null, otherIndex: null}
         }
 
-        bucket.groups.buckets.map((group: any) => {
+        bucket.groups.buckets.forEach((group: any) => {
           const top_hit: Record<string, any> = group.top.hits.hits[0]
           let otherFound = false
+          if (seenGroups.has(top_hit.fields["group.id"]?.[0])) {
+            return
+          }
+          else {
+            seenGroups.add(top_hit.fields["group.id"]?.[0])
+          }
+
 
           for (const neighborTile of neighborTiles) {
             const neighborMarkers = labeledMarkersLookup[neighborTile]
@@ -733,7 +743,12 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                 return null;
               }
               else {
-                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', baseMap && baseMapLookup[baseMap]?.markers ? 'white' : 'black', item.children?.length)
+                const childCount = zoomState > 16 && item.children?.length > 0 ? item.children?.length: undefined
+                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', baseMap && baseMapLookup[baseMap]?.markers ? 'white' : 'black', childCount)
+
+                if (groupValue && item.fields?.["group.id"]?.[0] == groupValue) {
+                  return null
+                }
 
                 return (
                 <Marker
@@ -741,7 +756,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                   position={[lat, lng]}
                   icon={new leaflet.DivIcon(icon)}
                   riseOnHover={true}
-                  eventHandlers={selectDocHandler(item.fields, [item, ...(item.children || [])])}
+                  eventHandlers={selectDocHandler(item.fields, childCount ? [item, ...(item.children || [])] : [])}
                 >
                     {item.children?.length && item.fields?.["group.id"]?.[0] && <Popup>
                       <ul className="list-none p-0 m-0 max-h-[50svh] overflow-y-auto stable-scrollbar text-lg divide-y divide-neutral-200 flex flex-col">
