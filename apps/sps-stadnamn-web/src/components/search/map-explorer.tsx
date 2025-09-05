@@ -134,7 +134,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     const labeledMarkersLookup: Record<string, Record<string, any>[]> = {}
 
     buckets.forEach((bucket) => {
-      if (true || zoomState > 17 || activeMarkerMode == 'labels' || !bucket.groups.sum_other_doc_count) {
+      if ( zoomState > 17 || activeMarkerMode == 'labels' || bucket.doc_count == 1) {
         const [z, x, y] = bucket.key.split('/').map(Number);
         const neighborTiles = [
           `${z}/${x}/${y}`,     // Center
@@ -208,11 +208,10 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
           
         })
       } else {
-        bucket.groups.buckets.forEach((group: any) => {
-          minDocCount = Math.min(minDocCount, group.doc_count)
-          maxDocCount = Math.max(maxDocCount, group.doc_count)
-          countItems.push({key: bucket.key, ...group})
-        })
+        countItems.push(bucket)
+        maxDocCount = Math.max(maxDocCount, bucket.doc_count)
+        minDocCount = Math.min(minDocCount, bucket.doc_count)
+
       }
     })
 
@@ -220,10 +219,10 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     const markers = Object.entries(labeledMarkersLookup).flatMap(([key, items]: [string, Record<string, any>[]]) => 
       items.map(item => ({tile: key, ...item}))
     )
-    const clusters = countItems.map((item: any) => ({...item, radius: calculateRadius(item.doc_count, maxDocCount, minDocCount)}))
+    const clusters = countItems.map((item: any) => ({...item, radius: calculateRadius(item.doc_count, maxDocCount, minDocCount )}))
 
     //console.log("MARKERS", markers)
-    //console.log("CLUSTERS", clusters)
+    console.log("CLUSTERS", clusters)
 
 
 
@@ -501,7 +500,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const geotileKeyToBounds = useCallback((key: string) => {
     const parts = key.split('/');
     if (parts.length !== 3) {
-      throw new Error('Invalid geotile key format');
+      throw new Error('Invalid geotile key format: ' + key);
     }
 
     const precision = parseInt(parts[0]);
@@ -654,17 +653,19 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
             {processedMarkerResults?.map((item: any) => {
 
               if (item.doc_count) {
+                console.log(item)
 
                 const clusterBounds = geotileKeyToBounds(item.key)
 
                 let latSum = 0, lngSum = 0;
-                item.top.hits.hits.forEach((hit: any) => {
+                const flattenedTopHits = item.groups.buckets.map((bucket: any) => bucket.top.hits.hits[0])
+                flattenedTopHits.forEach((hit: any) => {
                   latSum += hit.fields.location[0].coordinates?.[1] ?? 0;
                   lngSum += hit.fields.location[0].coordinates?.[0] ?? 0;
                 });
                 const avgLocation: [number, number] = [
-                  latSum / item.top.hits.hits.length,
-                  lngSum / item.top.hits.hits.length
+                  latSum / flattenedTopHits.length,
+                  lngSum / flattenedTopHits.length
                 ];
 
 
