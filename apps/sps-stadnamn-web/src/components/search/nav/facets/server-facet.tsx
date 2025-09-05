@@ -11,6 +11,7 @@ import { formatNumber, getSkeletonLength } from '@/lib/utils';
 import Clickable from '@/components/ui/clickable/clickable';
 import { usePerspective } from '@/lib/param-hooks';
 import Badge from '@/components/ui/badge';
+import PercentageCircle from './percentage-circle';
 
 
 
@@ -133,7 +134,7 @@ export default function ServerFacet() {
           aria-pressed={currentValue == '_true'}
           className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
         >
-          Med <Badge count={yesCount} />
+          Med <PercentageCircle count={yesCount} total={allCount} /> {Math.round((yesCount / allCount) * 100)}%
         </Clickable>
 
         <Clickable
@@ -142,7 +143,7 @@ export default function ServerFacet() {
           aria-pressed={currentValue == '_false'}
           className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
         >
-          Utan <Badge count={noCount} />
+          Utan <PercentageCircle count={noCount} total={allCount} /> {Math.round((noCount / allCount) * 100)}%
         </Clickable>
         <button
           onClick={() => {

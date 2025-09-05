@@ -154,9 +154,10 @@ export default function StatusPage() {
     return null;
   };
 
+
   if (loading) {
     return (
-      <main className="flex flex-col items-center justify-center min-h-screen p-4">
+      <main className="flex flex-col items-center justify-center min-h-screen p-4 bg-neutral-50">
         <div className="flex items-center gap-2 text-neutral-600">
           <PiDatabase className="animate-pulse text-2xl" />
           <span>Loading status...</span>
@@ -176,8 +177,10 @@ export default function StatusPage() {
     );
   }
 
+  
+
   return (
-    <main className="container mx-auto px-4 py-6">
+    <main className="px-4 py-6 bg-neutral-50 !h-full flex-grow">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

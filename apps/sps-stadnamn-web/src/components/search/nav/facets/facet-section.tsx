@@ -101,14 +101,14 @@ export default function FacetSection() {
                        add={{facet: isExpanded ? null : f.key}}>
               <div className="flex flex-wrap gap-4">
               <span className="text-xl">{f.label}</span>
-              {filterDataset == 'all' && (f.datasets?.length || 0) > 1 && <em className="text-neutral-700 text-sm self-center">{f.datasets?.length} datasett</em>}
+
               {filterDataset == 'all' && (f.datasets?.length || 0) == 1 && f.datasets?.[0] && <em className="text-neutral-700 text-sm self-center">{datasetTitles[f.datasets?.[0]]}</em>}
               {filterDataset != 'all' && f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}
               </div>
               {isExpanded ? <PiCaretUpBold className="inline self-center text-primary-600 text-xl" /> : <PiCaretDownBold className="inline self-center text-primary-600 text-xl" />}
               
             </Clickable>
-            <div id={f.key + '-collapsible'} className={`${isExpanded ? 'block mt-2' : 'hidden'}`}>
+            <div id={f.key + '-collapsible'} className={`${isExpanded ? 'block' : 'hidden'}`}>
               {isExpanded && (f.key == 'adm' ? <ClientFacet facetName={f.key} /> : f.key == 'wikiAdm' ? <WikiAdmFacet /> : <ServerFacet/>)}
             </div>
             </div>

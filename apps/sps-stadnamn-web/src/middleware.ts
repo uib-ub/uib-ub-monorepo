@@ -37,6 +37,11 @@ export async function middleware(request: NextRequest) {
     const url = new URL(request.url)
     const path = url.pathname.split('/')
 
+    // Return 404 if /status and not dev
+    if (path[1] == 'status' && process.env.NODE_ENV !== 'development') {
+        return Response.redirect(baseUrl + '/404', 302)
+    }
+
     if (path[1] == 'search') {
         const dataset = url.searchParams.getAll('dataset') || ['all']
 
@@ -88,6 +93,7 @@ export const config = {
         '/search',
         '/view/:path*',
         '/iiif/:path*',
+        '/status',
     ],
 }
 

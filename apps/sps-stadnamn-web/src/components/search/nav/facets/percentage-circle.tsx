@@ -6,7 +6,7 @@ type PercentageCircleProps = {
   size?: string; // e.g. "1em", "24px", "2rem"
 };
 
-export default function PercentageCircle({ count, total, size = "2em" }: PercentageCircleProps) {
+export default function PercentageCircle({ count, total, size = "1.25em" }: PercentageCircleProps) {
   const percentage = useMemo(() => Math.round((count / total) * 100), [count, total]);
   // Increase radius for more space
   const radius = 10;
@@ -22,7 +22,7 @@ export default function PercentageCircle({ count, total, size = "2em" }: Percent
         cy={center}
         fill="transparent"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="3"
         className="opacity-20"
       />
       <circle
@@ -31,21 +31,10 @@ export default function PercentageCircle({ count, total, size = "2em" }: Percent
         cy={center}
         fill="transparent"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="3"
         strokeDasharray={`${dash} ${circumference - dash}`}
         transform={`rotate(-90 ${center} ${center})`}
       />
-      <text
-        x={center}
-        y={center}
-        textAnchor="middle"
-        fontSize="0.55em"
-        fill="currentColor"
-        dominantBaseline="middle"
-        alignmentBaseline="middle"
-      >
-        {percentage}%
-      </text>
     </svg>
   );
 }

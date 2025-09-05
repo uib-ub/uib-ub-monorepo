@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { usePerspective, useMode } from "@/lib/param-hooks"
+import CadastreBreadcrumb from "../details/doc/cadastre-breadcrumb"
 
 
 export default function ActiveFilters() {
@@ -23,6 +24,7 @@ export default function ActiveFilters() {
     const searchParams = useSearchParams()
     const perspective = usePerspective()
     const mode = useMode()
+    const nav = searchParams.get('nav')
 
     const {isMobile, inputValue} = useContext(GlobalContext)
     const fulltext = searchParams.get('fulltext')
@@ -109,6 +111,11 @@ export default function ActiveFilters() {
 
 
     //const gnr =  getGnr(parentData, perspective)
+
+    if (nav == 'tree') {
+      return <div className={`text-neutral-950  rounded-md gap-2 px-3 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}>
+        <CadastreBreadcrumb/></div>
+    }
 
 
 

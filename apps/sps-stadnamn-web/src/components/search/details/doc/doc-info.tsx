@@ -1,7 +1,7 @@
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { PiInfoFill } from "react-icons/pi"
+import { PiCaretRight, PiInfoFill, PiTreeView } from "react-icons/pi"
 import ClientThumbnail from "../../../doc/client-thumbnail"
 import { infoPageRenderers } from "@/config/info-renderers"
 import { useContext, useMemo } from "react"
@@ -14,11 +14,12 @@ import IconLink from "@/components/ui/icon-link"
 import FacetsInfobox from "@/components/doc/facets-infobox"
 import SearchDocInfo from "@/components/doc/search-doc-info"
 import { facetConfig } from "@/config/search-config"
-import { getFieldValue } from "@/lib/utils"
+import { getFieldValue, getValueByPath } from "@/lib/utils"
 import ErrorMessage from "@/components/error-message"
 import Timeline from "@/components/doc/timeline"
 import useDocData from "@/state/hooks/doc-data"
 import { usePerspective, useMode } from "@/lib/param-hooks"
+import Clickable from "@/components/ui/clickable/clickable"
 
 
 
@@ -30,6 +31,7 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
     const mode = useMode()
     const datasetTag = searchParams.get('datasetTag')
     const { isMobile, sosiVocab } = useContext(GlobalContext)
+    const nav = searchParams.get('nav')
 
     
     const multivalue = (value: string|string[]) => {
@@ -54,9 +56,9 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
 
     return <><article className={`instance-info flex flex-col gap-4 ${isMobile ? 'mb-12 px-2' : 'p-4 pb-8 '}`}>
 
-      <div className="!mt-0">
+      <div className="!mt-0 flex flex-col gap-1">
 
-       {<div className="flex gap-1  items-center">
+       {nav != 'tree' && docDataset && <div className="flex gap-1  items-center">
           
           <span className="text-neutral-800 uppercase font-semibold tracking-wider text-sm">{datasetTitles[docDataset as string]}</span>
           
@@ -67,10 +69,13 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
         </IconLink>
         
         </div>}
+
+
       
-      
+        {false &&  <div className="flex flex-wrap gap-2"><CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/></div>}  
  
         </div>
+        
 
         <div className="flex gap-2"><h2>{docSource.label}</h2>
         </div>
@@ -82,9 +87,9 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
         </ExternalLinkTooltip>
          
         }
-        {  treeSettings[docDataset] && <CadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}  
         
-            {!treeSettings[docDataset] && ( Array.isArray(docSource.wikiAdm) && docSource.wikiAdm?.length > 1 && 
+        
+            {( Array.isArray(docSource.wikiAdm) && docSource.wikiAdm?.length > 1 && 
                 <>
                 {[docSource.adm1, docSource.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
                 {[docSource.adm1, docSource.adm2, docSource.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link className="flex items-center gap-1 bg-neutral-100 px-2 rounded-md text-neutral-900 no-underline" key={index} href={'http://www.wikidata.org/entity/' + docSource.wikiAdm[index]}>{item}</Link>)}
@@ -104,9 +109,21 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
                 {docSource.adm2 && multivalue(docSource.adm2) + ", "}
                 {multivalue(docSource.adm1)}
                 </span>
-           ) }       
+           ) } 
+
+           {treeSettings[docDataset] && docSource.within && <Clickable link 
+           only={{nav: 'tree', dataset: docDataset, adm2: docSource.adm2, adm1: docSource.adm1, doc: docSource.within}}
+           className="inline items-center gap-1 bg-neutral-50 border border-neutral-200 pr-0 !px-2 rounded-md text-neutral-950 no-underline">
+            {getValueByPath(docSource, treeSettings[docDataset]?.subunit) + " " + getValueByPath(docSource, treeSettings[docDataset].parentName )}
+            </Clickable>}     
+
+            {treeSettings[docDataset] && <Clickable link className="inline items-center gap-1 bg-neutral-50 border border-neutral-200 pr-0 !px-2 rounded-md text-neutral-950 no-underline" only={{nav: 'tree', dataset: docDataset, adm2: docSource.adm2, adm1: docSource.adm1, doc: docSource.uuid}}>
+            {getValueByPath(docSource, docSource.within ? treeSettings[docDataset].leaf : treeSettings[docDataset].subunit)} {docSource.label}
+            </Clickable>}     
 
         </div>
+
+        
 
        
             

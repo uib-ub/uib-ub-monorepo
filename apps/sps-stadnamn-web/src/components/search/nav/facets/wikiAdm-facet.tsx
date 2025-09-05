@@ -120,7 +120,7 @@ export default function WikiAdmFacet() {
   };
 
   return (
-    <div className="flex flex-col gap-2 py-2">
+    <div className="flex flex-col gap-2 pb-2">
       {/* Search input and toolbar */}
       <div className='flex gap-2'>
         <div className='relative grow'>

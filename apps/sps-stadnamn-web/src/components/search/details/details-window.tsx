@@ -17,9 +17,7 @@ import { stringToBase64Url } from "@/lib/param-utils"
 
 export default function DetailsWindow() {
     const searchParams = useSearchParams()
-    const namesNav = searchParams.get('namesNav')
-    console.log("DetailsWindow")
-    
+    const namesNav = searchParams.get('namesNav')    
     const mode = useMode()
     const { groupData, groupLoading, groupTotal, groupRefetching, groupFetching } = useGroupData()
     const router = useRouter()
@@ -111,9 +109,9 @@ export default function DetailsWindow() {
     
 
     return <>
-    <div className={`flex p-2 border-b border-neutral-200 ${((doc || groupCode) || mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
+    {groupCode && <div className={`flex p-2 ${groupCode ? 'border-b border-neutral-200' : ''} ${( mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
 
-        {(doc || groupCode) && <>
+        {(groupCode) && <>
         
 
     
@@ -165,6 +163,7 @@ export default function DetailsWindow() {
     </ClickableIcon>
   </div>
   </div>
+}
 
   
 
