@@ -57,7 +57,7 @@
                 || entryData.lang.includes('en-gb')
                 || entryData.lang.includes('en-us')
             "
-            class="hidden px-2 sm:w-2/5 lg:block lg:max-w-[10rem]"
+            class="hidden px-2 sm:w-2/5 lg:block lg:max-w-40"
             :class="{
               'lg:hidden': searchInterface.translate !== 'none',
             }"

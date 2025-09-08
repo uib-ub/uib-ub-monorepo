@@ -112,6 +112,8 @@ function execSearch() {
 </script>
 
 <style>
+@config "../../tailwind.config.ts";
+
 #navbarautocomplete_0 {
   display: none;
 }

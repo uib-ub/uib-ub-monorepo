@@ -7,9 +7,10 @@ import { v4 as uuidv4 } from "uuid";
 export default defineNuxtConfig({
   extends: ["termportal-ui"],
   modules: [
+    "@nuxt/eslint",
     "@nuxt/content",
     "@nuxtjs/sanity",
-    "@nuxt/eslint",
+    "@nuxtjs/tailwindcss"
     // "@nuxtjs/html-validator",
     // "@unlighthouse/nuxt",
   ],

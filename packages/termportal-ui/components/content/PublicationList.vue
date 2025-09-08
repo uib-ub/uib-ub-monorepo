@@ -1,5 +1,5 @@
 <template>
-  <ol class="publication-list">
+  <ol class="publication-list space-y-1.5">
     <ContentSlot :use="$slots.default" unwrap="p" />
   </ol>
 </template>
@@ -8,6 +8,5 @@
 .publication-list {
   padding-left: 0em;
   list-style-type: none;
-  @apply space-y-1.5;
-}
+  }
 </style>

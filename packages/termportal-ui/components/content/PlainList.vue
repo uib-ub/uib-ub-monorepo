@@ -12,11 +12,11 @@ const props = defineProps({
 
 <style>
 .plain-list {
-  @apply space-y-1;
-}
+  margin-top: 0.25rem;
+  }
 
 .plain-list-indent {
   margin-left: 2em;
-  @apply space-y-2;
+  margin-top: 0.55rem;
 }
 </style>

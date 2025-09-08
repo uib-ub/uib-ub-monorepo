@@ -56,7 +56,7 @@
       <div class="flex justify-center">
         <button
           v-if="domainSelected"
-          class="absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border-[2px] border-gray-200 border-t-white bg-white"
+          class="absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border-2 border-gray-200 border-t-white bg-white"
           @click="panel = !panel"
         >
           <Icon

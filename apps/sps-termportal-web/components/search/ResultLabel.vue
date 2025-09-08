@@ -39,6 +39,6 @@ defineProps({
 
 <style>
 mark {
-  @apply bg-tpblue-100
-}
+  background-color: #e2efff;
+  }
 </style>

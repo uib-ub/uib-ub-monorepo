@@ -38,14 +38,20 @@ onMounted(() => {
 
 <style scoped>
 h1 {
-  @apply text-3xl pt-4;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  padding-top: 1rem;
 }
 
 h2 {
-  @apply text-2xl pb-1;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  padding-bottom: 0.25rem;
 }
 
 h3 {
-  @apply font-semibold pb-1 pt-6;
+  font-weight: 600;
+  padding-bottom: 0.25rem;
+  padding-top: 1.5rem;
 }
 </style>
