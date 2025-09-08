@@ -22,7 +22,6 @@ export default function ModeSelector() {
                       role="tab"
                       label="Kart"
                       remove={['mode']}
-                      add={{...mode != 'map' && group && !doc ? {details: 'group'} : {}, ...mode != 'map' && doc ? {details: 'doc'} : {}}}
                       className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-auto p-1 px-2">
                         { mode == 'map' ? <PiMapTrifoldFill className="text-3xl text-accent-800" aria-hidden="true"/>  : <PiMapTrifoldLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
 
