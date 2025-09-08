@@ -23,7 +23,7 @@ export default function Pagination() {
   }
 
   return  (
-    <div className='flex gap-8 flex-col md:flex-wrap md:flex-row content-center'>
+    <nav className='flex gap-8 flex-col md:flex-wrap md:flex-row content-center'>
       <div className='flex gap-2 justify-between items-center'>
         
         {totalPages > 2 && <ClickableIcon 
@@ -77,7 +77,7 @@ export default function Pagination() {
           ))}
         </select>
       </div>
-    </div>
+    </nav>
   )
 }
   
