@@ -3,15 +3,15 @@ import { PiBinocularsFill, PiX } from "react-icons/pi"
 import DocInfo from "./doc/doc-info"
 import { useRouter, useSearchParams } from "next/navigation"
 import DocSkeleton from "../../doc/doc-skeleton"
-import { useEffect, useState } from "react"
+import { useContext, useEffect } from "react"
 import { useDocIndex, useGroup, useMode } from "@/lib/param-hooks"
 import HitNavigation from "./hit-navigation"
-import DetailsFooter from "./details-footer"
-import DocToolbar from "./doc/doc-toolbar"
 import useDocData from "@/state/hooks/doc-data"
 import useGroupData from "@/state/hooks/group-data"
 import Clickable from "@/components/ui/clickable/clickable"
-import { stringToBase64Url } from "@/lib/param-utils"
+import CoordinateMenu from "./coordinate-menu"
+import DocToolbar from "./doc/doc-toolbar"
+import { GlobalContext } from "@/app/global-provider"
 
 
 
@@ -23,8 +23,9 @@ export default function DetailsWindow() {
     const router = useRouter()
     const docIndex = useDocIndex()
     const { groupCode } = useGroup()
+    const { isMobile } = useContext(GlobalContext)
 
-    const { docLoading, docData, docDataset, docRefetching } = useDocData()
+    const { docLoading, docData, docRefetching } = useDocData()
     const doc = searchParams.get('doc')
     const isUpdating = docLoading || groupLoading || docRefetching || groupRefetching || groupFetching
 
@@ -109,7 +110,7 @@ export default function DetailsWindow() {
     
 
     return <>
-    {groupCode && <div className={`flex p-2 ${groupCode ? 'border-b border-neutral-200' : ''} ${( mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
+    {groupCode && !doc && <div className={`flex p-2 ${groupCode ? 'border-b border-neutral-200' : ''} ${( mode == 'map') ? 'gap-2 p-2' : 'flex-col gap-4 py-4 px-2' }`}>
 
         {(groupCode) && <>
         
@@ -156,7 +157,7 @@ export default function DetailsWindow() {
              
     <ClickableIcon
             label="Lukk"
-            remove={[...doc ? ["doc"] : ["group"]]}
+            remove={[...doc ? ["doc"] : ["group", "docIndex", "details"]]}
 
             className="h-10 flex items-center p-1 pl-2" >
             <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
@@ -164,6 +165,13 @@ export default function DetailsWindow() {
   </div>
   </div>
 }
+{ doc &&<ClickableIcon
+            label="Lukk"
+            remove={[...doc ? ["doc"] : ["group", "docIndex", "details"]]}
+
+            className="h-10 flex absolute top-2 right-2 items-center p-1 pl-2" >
+            <PiX aria-hidden="true" className="text-3xl text-neutral-900"/>
+    </ClickableIcon>}
 
   
 
@@ -172,10 +180,16 @@ export default function DetailsWindow() {
 <DocInfo/>
 </div> }
 
-  {!docDataset?.endsWith("_g") && (doc || groupCode) && <DetailsFooter docData={docData}/>}
+  {(docLoading || groupLoading) ? <div className="p-4 flex gap-2"><div className="h-10 w-10 bg-neutral-900/10 rounded animate-pulse"/> <div className="h-10 w-10 bg-neutral-900/10 rounded animate-pulse"/><div className="h-10 w-10 bg-neutral-900/10 rounded animate-pulse"/></div>
+  : <div className={`flex gap-2 border-t border-neutral-200 ${isMobile ? 'justify-end' : ''} p-2 items-center ${isUpdating ? 'opacity-50' : 'opacity-100'}`}>
+    {docData?._source.location && <CoordinateMenu/>}
+    <DocToolbar docData={docData}/>
 
-  
-</>
+  </div>
+    }
+  </>
+
+
 }
 
 

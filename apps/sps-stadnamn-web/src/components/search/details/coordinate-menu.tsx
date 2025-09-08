@@ -16,7 +16,7 @@ export default function CoordinateMenu() {
 
 
     return docData?._source.location ? (
-            <DynamicClickable href={`info/coordinate-types/${docData._source.coordinateType}`} className={`btn btn-outline btn-compact mr-auto flex items-center gap-2 h-10 ${!isMobile ? 'pr-4' : ''} min-w-0 shrink`}>
+            <DynamicClickable href={`info/coordinate-types/${docData._source.coordinateType}`} className={`btn btn-outline btn-compact flex items-center gap-2 h-10 min-w-0 shrink`}>
               <div className="flex items-center gap-2 min-w-0">
                 <PiMapPinFill className="text-lg text-neutral-600 flex-shrink-0" aria-hidden="true"/>
                 {!isMobile && <span className="text-sm truncate block min-w-0">{docData._source.coordinateType ? coordinateVocab[docData._source.coordinateType].creator : datasetTitles[docDataset as string]}{!isOriginal && <span className="text-neutral-800"> (berika)</span>}</span>}
@@ -24,9 +24,7 @@ export default function CoordinateMenu() {
               
               
             </DynamicClickable>
-          ) : docLoading ? <div className="h-10 w-20 bg-neutral-900/10 rounded animate-pulse"/> : 
-          (
-            <em className="text-sm text-neutral-500 flex items-center gap-2 p-2">
+          ) : <em className="text-sm text-neutral-500 flex items-center gap-2 p-2">
               Utan koordinater
             </em>
-          )}
+}
