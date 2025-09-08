@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useSearchQuery } from "@/lib/search-params";
-import { getClusterMarker, getLabelMarkerIcon } from "./markers";
+import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 import { useSearchParams } from "next/navigation";
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import * as h3 from "h3-js";
@@ -137,7 +137,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     const seenGroups = new Set<string>()
 
     buckets.forEach((bucket) => {
-      if ( zoomState > 16 || activeMarkerMode == 'labels' || bucket.doc_count == 1) {
+      if ( zoomState > 15 || activeMarkerMode == 'labels' || bucket.doc_count == 1) {
 
 
         const [z, x, y] = bucket.key.split('/').map(Number);
@@ -451,11 +451,15 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       click: () => {
         if (hits?.length) {
           const newQueryParams = new URLSearchParams(searchParams)
-          newQueryParams.delete('doc')
-          newQueryParams.delete('group')
-          newQueryParams.delete('docIndex')
-          newQueryParams.delete('details')
-          router.push(`?${newQueryParams.toString()}`)
+          if (!hits.find((hit: any) => hit.fields["group.id"]?.[0] == selected["group.id"][0])) {
+            newQueryParams.delete('doc')
+            newQueryParams.delete('group')
+            newQueryParams.delete('docIndex')
+            newQueryParams.delete('details')
+            router.push(`?${newQueryParams.toString()}`)
+          }
+
+          
         }
         else {
         const newQueryParams = new URLSearchParams(searchParams)
@@ -560,20 +564,6 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   );
 
 
-
-
-  const memoizedPopupData = useMemo(() => {
-    if (docData?._source?.location?.coordinates?.[1] && docData?._source?.group?.id == groupValue) {
-      return {
-        position: [
-          docData._source.location.coordinates[1],
-          docData._source.location.coordinates[0]
-        ] as [number, number],
-        label: docData._source.label
-      };
-    }
-    return null;
-  }, [docData?._source?.location?.coordinates, docData?._source?.group?.id, docData?._source?.label, groupValue]);
 
 
   return <>
@@ -762,12 +752,13 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                 return null;
               }
               else {
-                const childCount = zoomState > 16 && item.children?.length > 0 ? item.children?.length: undefined
-                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', baseMap && baseMapLookup[baseMap]?.bright ? 'black' : 'white', childCount)
-
+                let color = 'black'
                 if (docData?._source?.group?.id && item.fields?.["group.id"]?.[0] == docData?._source?.group?.id && !groupLoading) {
-                  return null
+                  color = 'white'
                 }
+
+                const childCount = zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
+                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', color, childCount)
 
                 return (
                 <Marker
@@ -781,7 +772,10 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                       <ul className="list-none p-0 m-0 max-h-[50svh] overflow-y-auto stable-scrollbar text-lg divide-y divide-neutral-200 flex flex-col">
                         {[item, ...(item.children || [])].map((entry: any) => (
                           <li key={`entry-${entry.fields.uuid[0]}`} className="!p-0 !m-0">
-                            <Clickable className="no-underline !text-black flex gap-2 items-center py-2" link add={{group: stringToBase64Url(entry.fields["group.id"]?.[0])}}>{groupValue == entry.fields["group.id"]?.[0] ? <PiBookOpenFill className="text-accent-700" /> : <PiBookOpen className="text-primary-600" />}{entry.fields.label?.[0]}</Clickable>
+                            <Clickable className="no-underline !text-black flex gap-2 items-center py-2" 
+                                        link add={{details: 'group', group: stringToBase64Url(entry.fields["group.id"]?.[0])}}>
+                                          {groupValue == entry.fields["group.id"]?.[0] ? <PiBookOpenFill className="text-accent-700" /> : <PiBookOpen className="text-primary-600" />}{entry.fields.label?.[0]}
+                            </Clickable>
                           </li>
                         ))}
                       </ul>
@@ -859,20 +853,14 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
               </Fragment>
             )}
 
-            {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
+            {docData?._source?.location?.coordinates && myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
 
-            {memoizedPopupData && (
-              <Popup 
-                closeButton={false}
-                closeOnEscape={false}
-                autoClose={false}
-                position={memoizedPopupData.position}
+            {docData?._source?.location?.coordinates?.length && <Marker 
+                icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))}
+                position={[docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]}
               >
-                <div className="text-sm text-neutral-600">
-                  {memoizedPopupData.label}
-                </div>
-              </Popup>
-            )}
+              </Marker>
+            }
 
           </>)
       }}
