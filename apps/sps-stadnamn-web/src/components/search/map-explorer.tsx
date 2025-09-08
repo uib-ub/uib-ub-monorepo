@@ -345,7 +345,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   useEffect(() => {
     if (!mapInstance.current || searchLoading) return
 
-    if (doc && docData?._source?.location?.coordinates?.length && docData?._source.uuid == doc) {
+    if (docData?._source?.location?.coordinates?.length && docData?._source?.group?.id == groupValue) {
       const currentBounds = mapInstance.current.getBounds();
       const center = [docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]
       if (currentBounds && !currentBounds.contains(center)) {
@@ -353,7 +353,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       }
     }
 
-  }, [mapInstance, searchLoading, doc, docData])
+  }, [mapInstance, searchLoading, groupValue, docData])
 
   // Fly to results
   useEffect(() => {
