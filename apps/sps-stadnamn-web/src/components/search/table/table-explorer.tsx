@@ -14,6 +14,7 @@ import { GlobalContext } from "@/app/global-provider"
 import useSearchData from "@/state/hooks/search-data"
 import useTableData from "@/state/hooks/table-data"
 import { stringToBase64Url } from "@/lib/param-utils"
+import { DownloadButton } from "./download-button"
 
 export default function TableExplorer() {
     const perspective = usePerspective()
@@ -102,8 +103,7 @@ export default function TableExplorer() {
                                             link
                                             aria-current={doc == hit._source?.uuid}
                                             add={{doc: hit._source?.uuid, 
-                                                group: group ? stringToBase64Url(hit._source?.group?.id) : null,
-                                                details: 'doc'
+                                                details: 'group'
                                             }}
                                         >
                                             <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current=true]:border-accent-800 border-2 border-transparent">
@@ -171,10 +171,12 @@ export default function TableExplorer() {
                     </div>
                     </div>
                     
-                    <nav className="center gap-2 mx-2 pb-4">
+                    <div className="flex items-center gap-2 mx-2 pb-4 gap-4 justify-between">
 
                     { totalHits && totalHits.value > 10 && <Pagination/>}
-                    </nav>
+                    <DownloadButton visibleColumns={visibleColumns[perspective] || []} showCadastre={showCadastre ?? false} joinWithSlash={joinWithSlash} formatCadastre={(cadastre: string) => formatCadastre([{cadastre}])}/>
+                    </div>
+                    
                     
                     </div>
 

@@ -55,7 +55,6 @@ export default function TableOptions() {
     return <div className="flex flex-col gap-2 px-1">
     <div className='flex gap-2 mt-2 xl:mt-0'>
     
-    <DownloadButton visibleColumns={visibleColumns[perspective] || []} showCadastre={showCadastre ?? false} joinWithSlash={joinWithSlash} formatCadastre={(cadastre: string) => formatCadastre([{cadastre}])}/>
     { (searchParams.get('asc') || searchParams.get('desc')) &&
         <Clickable type="button" className='btn btn-outline btn-compact pl-2' add={{asc: null, desc: null}}>
         <PiArrowCounterClockwise className='text-xl mr-2' aria-hidden="true"/>
