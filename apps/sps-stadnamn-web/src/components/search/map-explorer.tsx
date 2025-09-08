@@ -453,12 +453,14 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
           const newQueryParams = new URLSearchParams(searchParams)
           newQueryParams.delete('doc')
           newQueryParams.delete('group')
+          newQueryParams.delete('docIndex')
           newQueryParams.delete('details')
           router.push(`?${newQueryParams.toString()}`)
         }
         else {
         const newQueryParams = new URLSearchParams(searchParams)
         newQueryParams.delete('doc')
+        newQueryParams.delete('docIndex')
         newQueryParams.set('details', 'group')
         newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
         router.push(`?${newQueryParams.toString()}`)
@@ -558,6 +560,20 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   );
 
 
+
+
+  const memoizedPopupData = useMemo(() => {
+    if (docData?._source?.location?.coordinates?.[1] && docData?._source?.group?.id == groupValue) {
+      return {
+        position: [
+          docData._source.location.coordinates[1],
+          docData._source.location.coordinates[0]
+        ] as [number, number],
+        label: docData._source.label
+      };
+    }
+    return null;
+  }, [docData?._source?.location?.coordinates, docData?._source?.group?.id, docData?._source?.label, groupValue]);
 
 
   return <>
@@ -749,7 +765,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                 const childCount = zoomState > 16 && item.children?.length > 0 ? item.children?.length: undefined
                 const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', baseMap && baseMapLookup[baseMap]?.bright ? 'black' : 'white', childCount)
 
-                if (groupValue && item.fields?.["group.id"]?.[0] == groupValue && !groupLoading) {
+                if (docData?._source?.group?.id && item.fields?.["group.id"]?.[0] == docData?._source?.group?.id && !groupLoading) {
                   return null
                 }
 
@@ -845,14 +861,18 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
             {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
 
-            {docData?._source?.location?.coordinates?.[1] && docData?._source?.group?.id == groupValue && <Marker
-              zIndexOffset={1000}
-              position={[
-                docData._source.location.coordinates[1],
-                docData._source.location.coordinates[0]
-              ]}
-              icon={new leaflet.DivIcon(getLabelMarkerIcon(docData._source.label, 'accent', 0, true))} />
-            }
+            {memoizedPopupData && (
+              <Popup 
+                closeButton={false}
+                closeOnEscape={false}
+                autoClose={false}
+                position={memoizedPopupData.position}
+              >
+                <div className="text-sm text-neutral-600">
+                  {memoizedPopupData.label}
+                </div>
+              </Popup>
+            )}
 
           </>)
       }}
