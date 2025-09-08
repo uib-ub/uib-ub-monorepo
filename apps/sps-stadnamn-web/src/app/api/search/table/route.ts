@@ -69,7 +69,6 @@ export async function GET(request: Request) {
     }
   }
 
-  console.log("QUERY", JSON.stringify(query, null, 2))
 
   const [data, status] = await postQuery(dataset, query)
 
