@@ -17,21 +17,21 @@ const tableQuery = async ({
     desc?: string | null;
     asc?: string | null;
 }) => {
-    const params = new URLSearchParams();
+    // Build URL with already-encoded searchQueryString and additional parameters
+    const additionalParams = new URLSearchParams();
+    additionalParams.set('size', perPage.toString());
+    if (desc) additionalParams.set('desc', desc);
+    if (asc) additionalParams.set('asc', asc);
+    if (page > 1) additionalParams.set('from', ((page - 1) * perPage).toString());
 
-    params.set('size', perPage.toString());
-    if (searchQueryString) {
-        // searchQueryString may contain multiple params, so we append them directly
-        searchQueryString.split('&').forEach(pair => {
-            const [key, value] = pair.split('=');
-            if (key && value !== undefined) params.append(key, value);
-        });
-    }
-    if (desc) params.set('desc', desc);
-    if (asc) params.set('asc', asc);
-    if (page > 1) params.set('from', ((page - 1) * perPage).toString());
+    // Combine searchQueryString with additional parameters
+    const baseUrl = `/api/search/table?${searchQueryString}`;
+    const additionalParamsString = additionalParams.toString();
+    const fullUrl = additionalParamsString 
+        ? `${baseUrl}&${additionalParamsString}`
+        : baseUrl;
 
-    const res = await fetch(`/api/search/table?${params.toString()}`);
+    const res = await fetch(fullUrl);
     if (!res.ok) {
         throw new Error(res.status.toString());
     }
