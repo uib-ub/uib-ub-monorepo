@@ -308,7 +308,7 @@ export default function MobileLayout() {
                         </section>
 
                     }
-                    {(drawerContent == 'datasets' || drawerContent == 'datasetInfo') &&
+                    {(drawerContent == 'datasets') &&
                         <div className="p-2">
                             <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide pb-2 flex items-center gap-1 px-1">
                                 {datasetTag == 'tree' && 'Registre'}
@@ -322,7 +322,7 @@ export default function MobileLayout() {
 
 
                     }
-                    {(drawerContent == 'filters' || drawerContent == 'adm') &&
+                    {drawerContent == 'filters' &&
                         <div className="p-2">
                             <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">Filter {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
                             <FacetSection />
@@ -339,7 +339,7 @@ export default function MobileLayout() {
                 <MobileSearchNav showScrollToTop={showScrollToTop} currentPosition={currentPosition} drawerContent={drawerContent || ''} scrollableContent={scrollableContent} />
 
             <div className=" bg-neutral-800 text-white w-full h-14 p-1 flex items-center justify-between nav-toolbar">
-                {<Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" add={nav == 'datasets' ? { nav: null } : { nav: 'datasets', details: null }} aria-current={(drawerContent && ["datasetInfo", "datasets"].includes(drawerContent)) ? 'page' : 'false'}>
+                {<Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" add={nav == 'datasets' ? { nav: null } : { nav: 'datasets', details: null }} aria-current={(drawerContent && ["datasets"].includes(drawerContent)) ? 'page' : 'false'}>
                     <div className="relative">
                         <PiDatabase className="text-3xl" />
                         {datasetCount > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -375,7 +375,7 @@ export default function MobileLayout() {
                         </div>
                     </Clickable>}
 
-                {group && groupTotal?.value > 0 &&  <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('details')} add={{nav: null }} remove={['nav']} aria-current={drawerContent == 'details' ? 'page' : 'false'}>
+                {group && groupTotal?.value > 0 &&  <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('details')} add={{nav: null , details: 'group'}} remove={['nav']} aria-current={drawerContent == 'details' ? 'page' : 'false'}>
                      <div className="relative">
                         <PiBookOpen className="text-3xl" />
                             <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${groupTotal && groupTotal.value < 10 ? 'px-1.5' : 'px-1'}`}>
