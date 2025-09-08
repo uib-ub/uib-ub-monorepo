@@ -271,7 +271,6 @@ export default function MobileLayout() {
                 <div className="w-full flex  items-center h-4 pt-2 rounded-t-md bg-neutral-800 relative px-2" style={{ touchAction: 'none' }}>
                     <div className="absolute -translate-x-1/2 left-1/2 h-1.5 top-1.5 w-16 bg-neutral-300 rounded-full"></div></div>
                 <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 pb-20 border-neutral-800 max-h-[calc(100svh-10rem)] overscroll-contain`} ref={scrollableContent} style={{ overflowY: snappedPosition == 80 && currentPosition == 80 ? 'auto' : 'hidden', touchAction: ( snappedPosition == 80 && currentPosition == 80 && isScrollable()) ? 'pan-y' : 'none' }}>
-{drawerSwipeDirection}
                     {drawerContent == 'details' && <>
                         {group && !doc && details == 'group' && <div className="pb-24">
                             <ListExplorer />
