@@ -52,7 +52,7 @@ export function extractFacets(request: Request) {
 
   for (const [key, value] of urlParams.entries()) {
     if (RESERVED_PARAMS.includes(key as any)) {
-      reservedParams[key] = urlParams.get(key)!;
+      reservedParams[key] = value
       if (key == 'datasetTag' && !urlParams.get('dataset')) { // Don't add datasets to the search if dataset is already set
         if (value == 'tree') {
           datasets.push(...Object.keys(treeSettings))
