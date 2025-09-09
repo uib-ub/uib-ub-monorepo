@@ -33,8 +33,14 @@ app.get('/', (c) => {
     : new URL(c.req.url).origin.replace('http', 'https') // TODO: On vercel we get http, but we want https.
 
   return c.json({
-    reference_url: `${url}/reference`,
-    openapi_url: `${url}/openapi`,
+    id: url,
+    title: 'UiB-UB CHC API',
+    description: 'The API for the UNiversity of Bergen Library Cultural Heritage Collections applications.',
+    version: env.API_VERSION,
+    links: {
+      reference_url: `${url}/reference`,
+      openapi_url: `${url}/openapi`,
+    }
   })
 })
 
@@ -54,12 +60,12 @@ app.doc31('/openapi', c => ({
   info: {
     version: '0.0.1',
     title: 'UiB-UB API',
-    summary: 'The API for the UiB-UB applications.',
-    description: `The API is currently in development, and is subject to change. The API is based on the [Hono](//hono.dev) framework.`,
-    termsOfService: 'https://docs-ub.vercel.app/terms/',
+    summary: 'The API for the University of Bergen Library Cultural Heritage Collections applications.',
+    description: `The API is currently in development, and is subject to change.`,
+    termsOfService: `${env.DOCUMENTATION_URL}/terms`,
     contact: {
       name: 'API Support',
-      url: 'https://docs-ub.vercel.app/support',
+      url: `${env.DOCUMENTATION_URL}/support`,
       email: 'support@uib.no'
     },
   },
