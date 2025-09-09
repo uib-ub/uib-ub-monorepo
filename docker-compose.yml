@@ -3,7 +3,7 @@ services:
   hono_api:
     build:
       context: .
-      dockerfile: Dockerfile.api
+      dockerfile: apps/api/Dockerfile
     container_name: hono-api
     environment:
       NODE_ENV: production
