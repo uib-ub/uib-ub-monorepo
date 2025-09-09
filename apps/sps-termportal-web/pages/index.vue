@@ -26,26 +26,28 @@
         <div class="basis-7/12">
           <ContentRenderer
             v-if="page"
+            :key="key"
             :value="page"
             class="content-wrapper"
           />
         </div>
         <NewsWrapper
-          :key="`news${locale}`"
+          :key="`news_${locale}`"
           class="basis-5/12"
         />
       </div>
       <CollaboratorsTP class="mt-8 xl:mt-12" />
     </main>
-    {{ page }}
   </div>
 </template>
 
 <script setup lang="ts">
 const locale = useLocale();
-const route = useRoute();
 
-const { data: page } = await useAsyncData("mykey", () => {
-  return queryCollection("docs").path("/web/nb/welcome").first();
+const key = computed(() => `welcome_${locale.value}`);
+const { data: page, refresh } = await useAsyncData(key.value, () => {
+  return queryCollection("docs").path(`/web/${locale.value}/welcome`).first();
 });
+
+watch(() => locale.value, () => refresh());
 </script>

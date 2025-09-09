@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     "@nuxt/icon",
     "@nuxtjs/sanity",
-    "@nuxtjs/tailwindcss",],
+    "@nuxtjs/tailwindcss"],
   ssr: false,
   app: {
     head: {
@@ -21,27 +21,13 @@ export default defineNuxtConfig({
   },
   content: {
     experimental: {
-      sqliteConnector: "native"
+      sqliteConnector: "native",
     },
     build: {
       markdown: {
         remarkPlugins: {
-          'remark-emoji': false
-        }}},
-
-    sources: {
-      content: {
-        driver: "fs",
-        prefix: "/docs", // All contents inside this source will be prefixed with `/docs`
-        base: resolve(__dirname, "content"),
-      },
-      github: {
-        driver: "github",
-        repo: "uib-ub/terminologi-content",
-        branch: "main",
-        dir: "web",
-      },
-    },
+          "remark-emoji": false,
+        } } },
   },
   runtimeConfig: {
     apiKey: uuidv4(),
