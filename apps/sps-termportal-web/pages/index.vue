@@ -24,10 +24,9 @@
         class="flex flex-col justify-between gap-x-8 gap-y-6 pt-6 lg:flex-row"
       >
         <div class="basis-7/12">
-          <ContentDoc
-            :key="`welcome${locale}`"
-            :head="false"
-            :path="`/${locale}/welcome`"
+          <ContentRenderer
+            v-if="page"
+            :value="page"
             class="content-wrapper"
           />
         </div>
@@ -38,9 +37,15 @@
       </div>
       <CollaboratorsTP class="mt-8 xl:mt-12" />
     </main>
+    {{ page }}
   </div>
 </template>
 
 <script setup lang="ts">
 const locale = useLocale();
+const route = useRoute();
+
+const { data: page } = await useAsyncData("mykey", () => {
+  return queryCollection("docs").path("/web/nb/welcome").first();
+});
 </script>

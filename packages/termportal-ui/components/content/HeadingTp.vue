@@ -1,7 +1,7 @@
 <template>
   <component :is="tag" ref="headingRef" :class="headingClass">
     <AppLink :to="`#${elementId}`">
-      <ContentSlot :use="$slots.default" unwrap="p" />
+      <slot :use="$slots.default" unwrap="p" />
     </AppLink>
   </component>
 </template>

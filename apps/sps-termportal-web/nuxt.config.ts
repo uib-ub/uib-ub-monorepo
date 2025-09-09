@@ -7,13 +7,11 @@ import { v4 as uuidv4 } from "uuid";
 export default defineNuxtConfig({
   extends: ["termportal-ui"],
   modules: [
-    "@nuxt/eslint",
     "@nuxt/content",
+    "@nuxt/eslint",
+    "@nuxt/icon",
     "@nuxtjs/sanity",
-    "@nuxtjs/tailwindcss"
-    // "@nuxtjs/html-validator",
-    // "@unlighthouse/nuxt",
-  ],
+    "@nuxtjs/tailwindcss",],
   ssr: false,
   app: {
     head: {
@@ -22,6 +20,15 @@ export default defineNuxtConfig({
     },
   },
   content: {
+    experimental: {
+      sqliteConnector: "native"
+    },
+    build: {
+      markdown: {
+        remarkPlugins: {
+          'remark-emoji': false
+        }}},
+
     sources: {
       content: {
         driver: "fs",
