@@ -198,7 +198,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
       </>
     },
     ssr2016: null,
-    ssr2020: null,
+    ssr: null,
     nrk: (source: any) => {
       return <>
       {(source.rawData.Uttale2 || source.rawData.Uttale1) && 

@@ -55,7 +55,7 @@ export const datasetTitles: DatasetTitles = {
     sof: "Fylkesarkivet i Sogn og Fjordane",
     tot: "Totennavn",
     ssr2016: "Sentralt stadnamnregister 2016",
-    ssr2020: "Sentralt stadnamnregister 2020",
+    ssr: "Sentralt stadnamnregister",
     nrk: "NRKs gamle stadnamnarkiv",
     gn2019: "Geonames",
     ft1900: "Folketellingen 1900",
@@ -75,6 +75,7 @@ export const datasetTitles: DatasetTitles = {
 export const datasetDescriptions: Record<string, string> = {
   all: "Søk på tvers av alle datasett i Stadnamnportalen.",
   wikidata: "",
+  ssr: "Sentralt stadnamnregister (SSR), Kartverket sitt offisielle register over stadnamn i Noreg.",
   bsn: "Bustadnamnregisteret vart oppretta på 1950-talet og inneheld informasjon om namn på om lag 190 000 bustader (gardar, bruk og plassar) frå ti fylke i landet. Registeret består av om lag 109 000 arkivsedlar. Kvar seddel inneheld òg informasjon om fylke, kommune, gardsnummer og bruksnummer. Stadene er georefererte ut frå Kartverket si moderne matrikkel – så nøyaktig som mogleg.",
   hord: "Hordanamn er ei samling av stadnamn, særleg smånamn på åkrar, utmark, lier, tjern og fjell m.m. I alt 179 000 stadnamn frå det tidlegare Hordaland fylke er å finne i samlinga, fordelt på rundt 185 000 oppslag. Det er mogleg å sjå informasjon om kvart stadnamn og sjå plasseringa til namnet i kartet. Uttale er ofte oppgjeven, og i mange tilfelle er det òg mogleg å lytte til den lokale uttalen.",
   rygh: "Digitalisert utgåve av Oluf Rygh sitt standardverk for stadnamn i Noreg, opphavleg gjeve ut i 18 bind i åra 1897–1924. Oppslagsverket inneheld busetnadsnamn frå heile Noreg, unnateke Finnmark. Utgjevinga omfattar om lag 69 000 bustadnamn, derav ca. 3 700 namnegardsnamn, 44 500 gardsnamn, 16 000 bruksnamn, 4 000 forsvunne namn og 1 000 namn på sokn og herad. Kvart gardsnamn er oppgjeve med uttale og følgt gjennom tidene med språkvitskapleg tolking.",
@@ -87,7 +88,6 @@ export const datasetDescriptions: Record<string, string> = {
   sof: "Stadnamnsamlinga frå Fylkesarkivet i Sogn og Fjordane, no overført til Fylkesarkivet i Vestland, er resultatet av ei stor innsamling på 1980-talet frå Sogn og Fjordane og Møre og Romsdal. Supplerande innsamlingar vart òg gjorde i enkelte kommunar seinare.",
   tot: "Totennamn er ei samling av namn på gardar, bruk, småbruk, forsvunne stadnamn, skogteigar og jorder frå heile Toten. Materialet byggjer på kjeldemateriale samla inn til Norsk stadnamnarkiv ved Universitetet i Oslo. Arbeidet vart utført av Trond Nygård på oppdrag frå dåverande Seksjon for namnegransking. Prosjektet vart avslutta i 2007. Kartfesting vart gjort ved Språksamlingane i 2024.",
   ssr2016: "Datasettet Sentralt stadnamnregister 2016 byggjer på Kartverket sitt første gratis stadnamndatasett, opphavleg lansert i 2000. Stadnamna var del av søkjetenesta Norgesglaset, der det var mogleg å søkje på alle gateadresser i Noreg eller i ca. 700 000 stadnamn. Kartgrunnlaget til stadnamndatasettet var fem landsdekkjande kartseriar i målestokkane 1:2 millionar, 1:1 million, 1:250 000, 1:50 000 og 1:5 000. Norgesglaset vart i 2015 erstatta av tenesta Norgeskart, og i 2016 vart det noverande SSR lansert med ny datastruktur.",
-  ssr2020: "Sentralt stadnamnregister (SSR), Kartverket sitt offisielle register over stadnamn i Noreg.",
   nrk: "NRK sitt gamle stadnamnarkiv vart laga rundt 1960. Arkivet har tilrådd uttale for 2000 ulike stadnamn i Noreg. I datasettet finn du tilrådd uttale frå det gamle arkivet. Merk at uttalen av stadnamn kan endre seg over tid, og at uttalen som var tilrådd på 1960-talet ikkje nødvendigvis samsvarar med uttalen i dag.",
   m2010: "Datasettet Matrikkelen 2010 er basert på GAB-registeret (Grunneiendom-, adresse- og bygningsregisteret) – eit offentleg register over faste eigedomar i Noreg. Registeret vart ført av Statens kartverk for kvar kommune med opplysningar om alle grunneigedomar, festegrunnar med eige grunnboksblad i tinglysingsregisteret, samt anna med eige grunnboksblad, til dømes eigarseksjonar. I tillegg til nemning og stadfesting av eigedomen inneheld GAB-registeret opplysningar om kva for ein eigedom han var utskild frå, arealet, eigarforhold, adresse og bygningsdata. GAB-registeret er i dag avløyst av matrikkelen.",
   gn2019: "GeoNames er ein brukarstyrt geografisk database grunnlagd i 2005 og tilgjengeleg via ulike nettenester under Creative Commons-lisens. Databasen inneheld over 25 millionar geografiske namn for meir enn 11,8 millionar unike stader globalt, med meir enn 600 000 norske stadnamn. Data inkluderer namn på fleire språk, koordinatar, høgd over havet, folketal, administrative inndelingar og postnummer. Alle koordinatar nyttar World Geodetic System 1984 (WGS84). Brukarar kan redigere og forbetre databasen gjennom eit wiki-grensesnitt, noko som gjer GeoNames til eit levande og stadig oppdatert geografisk oppslagsverk. Dette datasettet er basert på eit uttrekk frå 2019, men vert jamleg oppdatert.",
@@ -104,6 +104,7 @@ export const datasetDescriptions: Record<string, string> = {
 
 export const datasetShortDescriptions: Record<string, string> = {
   all: "Søk på tvers av alle datasett i Stadnamnportalen.",
+  ssr: "Kartverket sitt offisielle register over stadnamn i Noreg.",
   wikidata: "",
   bsn: "Oppretta på 1950-talet, inneheld informasjon om namn på om lag 190 000 bustader frå ti fylke i Noreg.",
   hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert smånamn for åkrar, utmark, lier, tjørn og fjell.",
@@ -117,7 +118,6 @@ export const datasetShortDescriptions: Record<string, string> = {
   sof: "Eit omfattande materiale som er resultatet av ei stor innsamling av stadnamn på 1980-talet frå Sogn og Fjordane og Møre og Romsdal.",
   tot: "Ei samling av ulike stadnamn frå Toten-regionen, basert på kjeldemateriale samla inn til Norsk stadnamnarkiv ved Universitetet i Oslo.",
   ssr2016: "Basert på Kartverket sitt første frie stadnamndatasett frå 2000. Databasen var i bruk fram til 2016 då den noverande datastrukturen vart lansert.",
-  ssr2020: "Kartverket sitt offisielle register over stadnamn i Noreg.",
   nrk: "NRK sitt stadnamnarkiv frå 1960 inneheld tilrådd uttale for 2000 stadnamn i Noreg. Uttalen kan ha endra seg sidan den gong.",
   m2010: "Eit datasett basert på GAB-registeret (Grunneiendom-, adresse- og bygningsregisteret), som var eit offentleg register over faste eigedomar i Noreg.",
   gn2019: "GeoNames 2019 gjev over 600 000 norske stadnamn med koordinatar, høgd, administrative inndelingar og språkvariantar.",
@@ -149,7 +149,7 @@ export const publishDates: Record<string, string> = {
   sof: "2024-06-13",
   tot: "2024-08-26",
   ssr2016: "2024-09-10",
-  ssr2020: "2025-03-04",
+  ssr: "2025-06-09",
   nrk: "2025-03-06",
   gn2019: "2025-03-13",
   ft1900: "2025-03-13",
@@ -283,7 +283,7 @@ export const datasetPresentation: DatasetPresentation = {
         attribution: "Statens kartverk og Språksamlingane",
         license: licenses.ccby4,
       },
-      ssr2020: {
+      ssr: {
         img: "/datasets/Logo ståande, WEB-fargar.svg",
         alt: "Kartverkets logo",
         imageAttribution: "Statens kartverk",
@@ -423,6 +423,7 @@ export const typeNames: Record<string, string> = {
 
 
 export const datasetFeatures: Record<string, string[]> = {
+  ssr: ["link"],
   bsn: ["image"],
   hord: ["audio", "coordinates", "phonetic", "digi"],
   rygh: ["phonetic", "digi", "base"],
@@ -435,7 +436,6 @@ export const datasetFeatures: Record<string, string[]> = {
   sof: ["link", "coordinates", "phonetic"],
   tot: ["phonetic"],
   ssr2016: ["link"],
-  ssr2020: ["link"],
   nrk: ["phonetic", "image", "digi"],
   gn2019: ["link"],
   frogn: ["phonetic"],
@@ -446,6 +446,7 @@ export const datasetFeatures: Record<string, string[]> = {
 }
 
 export const datasetTypes: Record<string, string[]> = {
+  ssr: ["database", "public"],
   bsn: ["sprak", "collection"],
   hord: ["sprak", "database", "collection"],
   rygh: ["encyclopedia", "collection"],
@@ -460,7 +461,6 @@ export const datasetTypes: Record<string, string[]> = {
   sof: ["database", "collection"],
   tot: ["database", "sprak", "collection"],
   ssr2016: ["database", "public"],
-  ssr2020: ["database", "public"],
   nrk: ["database", "collection"],
   gn2019: ["database"],
   m2010: ["database", "public"],

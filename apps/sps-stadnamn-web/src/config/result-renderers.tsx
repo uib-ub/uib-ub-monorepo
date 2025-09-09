@@ -312,7 +312,7 @@ export const resultRenderers: ResultRenderers = {
       return <>{formatAdm(hit)}</>
     }
   },
-  ssr2020: {
+  ssr: {
     title: defaultTitle,
     details: (hit: any, display: string) => {
       return <>{formatAdm(hit)}</>
