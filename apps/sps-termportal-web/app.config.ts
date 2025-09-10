@@ -187,54 +187,70 @@ export default defineAppConfig({
       en: "field of special knowledge" },
     termpost: {
       nb: "del av en strukturert samling terminologiske data som gjelder ett enkelt begrep",
-      nn: "", en: "" },
+      nn: "del av ei strukturert samling terminologiske data som gjeld eitt einskilt omgrep",
+      en: "" },
     termbase: {
       nb: "database som inneholder terminologiske data",
-      nn: "", en: "" },
+      nn: "database som inneheld terminologiske data",
+      en: "" },
     prefLabel: {
       nb: "term som blir sett på som den best egnede for et bestemt begrep",
-      nn: "", en: "" },
+      nn: "term som blir sett på som den best eigna for eit visst omgrep", en: "" },
     altLabel: {
       nb: "term som blir sett på som egnet for et bestemt begrep, og som blir brukt ved siden av en anbefalt term",
-      nn: "", en: "" },
+      nn: "term som blir sett på som eigna for eit visst omgrep, og som blir brukt ved sida av ein tilrådd term",
+      en: "" },
     hiddenLabel: {
       nb: "term som blir sett på som uegnet for et bestemt begrep",
-      nn: "", en: "" },
+      nn: "term som blir sett på som ueigna for eit visst omgrep",
+      en: "" },
     obsoleteTerm: {
       nb: "term som ikke lenger er i praktisk bruk",
-      nn: "", en: "" },
+      nn: "term som ikkje lenger er i praktisk bruk",
+      en: "" },
     multiWordTerm: {
       nb: "term som består av to eller flere atskilte ord",
-      nn: "", en: "" },
+      nn: "term som omfattar to eller fleire åtskilde ord",
+      en: "" },
     complexTerm: {
       nb: "term som består av ett ord satt sammen av to eller flere ord",
-      nn: "", en: "" },
+      nn: "term som er eitt ord sett saman av to eller fleire ord",
+      en: "" },
     acceptabilityRating: {
       nb: "",
-      nn: "", en: "" },
+      nn: "",
+      en: "" },
     definition: {
       nb: "beskrivelse som avgrenser begrepet mot beslektede begreper",
-      nn: "", en: "" },
+      nn: "beskriving som avgrensar omgrepet mot nærståande omgrep",
+      en: "" },
     note: {
       nb: "tilleggsinformasjon om begrepet eller termene i en termpost",
-      nn: "", en: "" },
+      nn: "tilleggsinformasjon om omgrepet eller termane i ein termpost",
+      en: "" },
     kontext: {
       nb: "tekstutdrag som viser hvordan en betegnelse brukes",
-      nn: "", en: "" },
+      nn: "tekstutdrag som viser korleis ei nemning blir brukt",
+      en: "" },
     relation: {
       nb: "relasjon mellom begreper basert på deres vesentlige kjennetegn",
-      nn: "", en: "" },
+      nn: "relasjon mellom omgrep basert på dei vesentlege kjenneteikna deira",
+      en: "" },
     genericRelation: {
       nb: "begrepsrelasjon der det ene begrepets begrepsinnhold omfatter det andre begrepets begrepsinnhold og i tillegg ytterligere ett eller flere atskillende kjennetegn",
-      nn: "", en: "" },
+      nn: "omgrepsrelasjon der omgrepsinnhaldet til det eine omgrepet omfattar omgrepsinnhaldet til det andre omgrepet og i tillegg ytterlegare eitt eller fleire åtskiljande kjenneteikn",
+      en: "" },
     partitiveRelation: {
       nb: "begrepsrelasjon der det ene begrepet gjelder en helhet og det andre en del av denne helheten",
-      nn: "", en: "" },
+      nn: "omgrepsrelasjon der det eine omgrepet gjeld ein heilskap og det andre ein del av denne heilskapen",
+      en: "" },
     relatedRelation: {
       nb: "begrepsrelasjon som bygger på en bestemt ikke-hierarkisk, tematisk sammenheng mellom begrepenes referenter",
-      nn: "", en: "" },
+      nn: "omgrepsrelasjon som byggjer på ein viss ikkje-hierarkisk, tematisk samanheng mellom referentane til omgrepa",
+      en: "" },
     equivalence: {
-      nb: "relasjon mellom betegnelser som i ulike språk står for samme begrep",
-      nn: "", en: "" },
+      nb: "relasjon mellom betegnelser som i ulike språk står for samme begrep",
+      nn: "relasjon mellom nemningar som i ulike språk står for same omgrep",
+      en: "" },
   },
 });
