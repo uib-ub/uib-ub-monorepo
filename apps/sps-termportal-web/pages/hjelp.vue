@@ -5,10 +5,10 @@
     </Head>
     <div class="flex">
       <SideBar />
-      <main class="max-w-2xl">
+      <main class="max-w-3xl">
         <h1
           id="main"
-          class="pb-3 pt-6"
+          class="mt-3.5 mb-2"
         >
           <AppLink
             to="#main"

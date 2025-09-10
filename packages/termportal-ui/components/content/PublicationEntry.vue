@@ -2,7 +2,7 @@
   <li class="hangindent group">
     <span v-if="to">
       <AppLink :to="to">
-        <slot />
+        <slot mdc-unwrap="p" />
         <span>{{ " " }}</span>
         <span v-if="linkDesc" class="underline group-hover:decoration-2">
           {{ linkDesc }}

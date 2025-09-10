@@ -1,13 +1,14 @@
 <template>
-  <ul class="plain-list" :class="indent ? 'plain-list-indent' : ''">
-    <ContentSlot :use="$slots.default" unwrap="p ul" />
+  <ul class="plain-list space-y-0.5" :class="indent == 'true' ? 'plain-list-indent' : ''">
+    <slot mdc-unwrap="p ul" />
   </ul>
 </template>
 
 <script setup lang="ts">
 const props = defineProps({
-  indent: { type: Boolean, default: false },
+  indent: { type: String, default: "false" },
 });
+
 </script>
 
 <style>

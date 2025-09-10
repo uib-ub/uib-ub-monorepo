@@ -6,10 +6,10 @@
     <div class="flex">
       <SideBar />
       <main class="max-w-3xl">
-        <ContentDoc
-          :key="`about${locale}`"
-          :head="false"
-          :path="`/${locale}/om/about`"
+        <ContentRenderer
+          v-if="about"
+          :key="aboutKey"
+          :value="about"
           class="content-wrapper"
         />
         <Accordion
@@ -23,10 +23,9 @@
                 {{ $t("om.aboutUs") }}
               </h2>
             </template>
-            <ContentDoc
-              :key="`aboutus${locale}`"
-              :head="false"
-              :path="`/${locale}/om/about-us`"
+            <ContentRenderer
+              :key="aboutUsKey"
+              :value="aboutUs"
               class="content-wrapper"
             />
           </AccordionTab>
@@ -37,17 +36,17 @@
                 {{ $t("om.fagrad") }}
               </h2>
             </template>
-            <ContentDoc
-              :key="`fagrad${locale}`"
-              :head="false"
-              :path="`/${locale}/om/fagrad`"
+            <ContentRenderer
+              v-if="fagrad"
+              :key="fagradKey"
+              :value="fagrad"
               class="content-wrapper"
             />
             <div />
-            <ContentDoc
-              :key="`mandat${locale}`"
-              :head="false"
-              :path="`/${locale}/om/fagrad-mandat`"
+            <ContentRenderer
+              v-if="mandate"
+              :key="mandateKey"
+              :value="mandate"
               class="content-wrapper"
             />
           </AccordionTab>
@@ -58,17 +57,17 @@
                 {{ $t("om.history") }}
               </h2>
             </template>
-            <ContentDoc
-              :key="`history${locale}`"
-              :head="false"
-              :path="`/${locale}/om/history`"
+            <ContentRenderer
+              v-if="history"
+              :key="historyKey"
+              :value="history"
               class="content-wrapper"
             />
             <div />
-            <ContentDoc
-              :key="`publications${locale}`"
-              :path="`/${locale}/om/publications`"
-              :head="false"
+            <ContentRenderer
+              v-if="publications"
+              :key="publicationsKey"
+              :value="publications"
               class="content-wrapper"
             />
           </AccordionTab>
@@ -82,10 +81,10 @@
                 {{ $t("om.kommeiGang") }}
               </h2>
             </template>
-            <ContentDoc
-              :key="`get-started${locale}`"
-              :head="false"
-              :path="`/${locale}/om/get-started`"
+            <ContentRenderer
+              v-if="getStarted"
+              :key="getStartedKey"
+              :value="getStarted"
               class="content-wrapper"
             />
           </AccordionTab>
@@ -95,10 +94,10 @@
                 {{ $t("om.links") }}
               </h2>
             </template>
-            <ContentDoc
-              :key="`links${locale}`"
-              :head="false"
-              :path="`/${locale}/om/links`"
+            <ContentRenderer
+              v-if="links"
+              :key="linksKey"
+              :value="links"
               class="content-wrapper"
             />
           </AccordionTab>
@@ -109,5 +108,58 @@
 </template>
 
 <script setup lang="ts">
+import { Value } from "sass";
+
 const locale = useLocale();
+
+const aboutKey = computed(() => `om_main_${locale.value}`);
+const { data: about, refresh: refreshAbout } = await useAsyncData(aboutKey.value, () => {
+  return queryCollection("docs").path(`/web/${locale.value}/om/about`).first();
+});
+
+const aboutUsKey = computed(() => `om_aboutus_${locale.value}`);
+const { data: aboutUs, refresh: refreshAboutUs } = await useAsyncData(aboutUsKey.value, () => {
+  return queryCollection("docs").path(`/web/${locale.value}/om/about-us`).first();
+});
+
+const fagradKey = computed(() => `om_fagrad_${locale.value}`);
+const { data: fagrad, refresh: refreshFagrad } = await useAsyncData(fagradKey.value, () => {
+  return queryCollection("docs").path(`/web/${locale.value}/om/fagrad`).first();
+});
+
+const mandateKey = computed(() => `om_mandate_${locale.value}`);
+const { data: mandate, refresh: refreshMandate } = await useAsyncData(mandateKey.value, () => {
+  return queryCollection("docs").path(`/web/${locale.value}/om/fagrad-mandat`).first();
+});
+
+const historyKey = computed(() => `om_history_${locale.value}`);
+const { data: history, refresh: refreshHistory } = await useAsyncData(historyKey.value, () => {
+  return queryCollection("docs").path(`/web/${locale.value}/om/history`).first();
+});
+
+const publicationsKey = computed(() => `om_publications_${locale.value}`);
+const { data: publications, refresh: refreshPublications } = await useAsyncData(publicationsKey.value, () => {
+  return queryCollection("docs").path(`/web/${locale.value}/om/publications`).first();
+});
+
+const getStartedKey = computed(() => `om_getstarted_${locale.value}`);
+const { data: getStarted, refresh: refreshGetStarted } = await useAsyncData(getStartedKey.value, () => {
+  return queryCollection("docs").path(`/web/${locale.value}/om/get-started`).first();
+});
+
+const linksKey = computed(() => `om_links_${locale.value}`);
+const { data: links, refresh: refreshLinks } = await useAsyncData(linksKey.value, () => {
+  return queryCollection("docs").path(`/web/${locale.value}/om/links`).first();
+});
+
+watch(() => locale.value, () => {
+  refreshAbout();
+  refreshAboutUs();
+  refreshFagrad();
+  refreshMandate();
+  refreshHistory();
+  refreshPublications();
+  refreshGetStarted();
+  refreshLinks();
+});
 </script>
