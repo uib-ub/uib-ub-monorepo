@@ -188,34 +188,35 @@ export default defineAppConfig({
     termpost: {
       nb: "del av en strukturert samling terminologiske data som gjelder ett enkelt begrep",
       nn: "del av ei strukturert samling terminologiske data som gjeld eitt einskilt omgrep",
-      en: "" },
+      en: "part of a terminological data collection which contains the terminological data related to one concept" },
     termbase: {
       nb: "database som inneholder terminologiske data",
       nn: "database som inneheld terminologiske data",
-      en: "" },
+      en: "database containing terminological data" },
     prefLabel: {
       nb: "term som blir sett på som den best egnede for et bestemt begrep",
-      nn: "term som blir sett på som den best eigna for eit visst omgrep", en: "" },
+      nn: "term som blir sett på som den best eigna for eit visst omgrep",
+      en: "term rated according to the scale of the term acceptability rating as the primary term for a given concept" },
     altLabel: {
       nb: "term som blir sett på som egnet for et bestemt begrep, og som blir brukt ved siden av en anbefalt term",
       nn: "term som blir sett på som eigna for eit visst omgrep, og som blir brukt ved sida av ein tilrådd term",
-      en: "" },
+      en: "term rated according to the scale of the term acceptability rating as a synonym for a preferred term" },
     hiddenLabel: {
       nb: "term som blir sett på som uegnet for et bestemt begrep",
       nn: "term som blir sett på som ueigna for eit visst omgrep",
-      en: "" },
+      en: "term rated according to the scale of the term acceptability rating as undesired" },
     obsoleteTerm: {
       nb: "term som ikke lenger er i praktisk bruk",
       nn: "term som ikkje lenger er i praktisk bruk",
-      en: "" },
+      en: "term rated according to the scale of the term acceptability rating as undesired" },
     multiWordTerm: {
       nb: "term som består av to eller flere atskilte ord",
       nn: "term som omfattar to eller fleire åtskilde ord",
-      en: "" },
+      en: "term consisting of two or more words" },
     complexTerm: {
       nb: "term som består av ett ord satt sammen av to eller flere ord",
       nn: "term som er eitt ord sett saman av to eller fleire ord",
-      en: "" },
+      en: "term containing two or more roots" },
     acceptabilityRating: {
       nb: "",
       nn: "",
@@ -223,34 +224,34 @@ export default defineAppConfig({
     definition: {
       nb: "beskrivelse som avgrenser begrepet mot beslektede begreper",
       nn: "beskriving som avgrensar omgrepet mot nærståande omgrep",
-      en: "" },
+      en: "representation of a concept by a descriptive statement which serves to differentiate it from related concepts" },
     note: {
       nb: "tilleggsinformasjon om begrepet eller termene i en termpost",
       nn: "tilleggsinformasjon om omgrepet eller termane i ein termpost",
-      en: "" },
+      en: "statement which provides further information on any part of a terminological entry" },
     kontext: {
       nb: "tekstutdrag som viser hvordan en betegnelse brukes",
       nn: "tekstutdrag som viser korleis ei nemning blir brukt",
-      en: "" },
+      en: "text which illustrates a concept or the use of a designation" },
     relation: {
       nb: "relasjon mellom begreper basert på deres vesentlige kjennetegn",
       nn: "relasjon mellom omgrep basert på dei vesentlege kjenneteikna deira",
-      en: "" },
+      en: "relation between concepts" },
     genericRelation: {
       nb: "begrepsrelasjon der det ene begrepets begrepsinnhold omfatter det andre begrepets begrepsinnhold og i tillegg ytterligere ett eller flere atskillende kjennetegn",
       nn: "omgrepsrelasjon der omgrepsinnhaldet til det eine omgrepet omfattar omgrepsinnhaldet til det andre omgrepet og i tillegg ytterlegare eitt eller fleire åtskiljande kjenneteikn",
-      en: "" },
+      en: "relation between two concepts where the intension of one of the concepts includes that of the other concept and at least one additional delimiting characteristic" },
     partitiveRelation: {
       nb: "begrepsrelasjon der det ene begrepet gjelder en helhet og det andre en del av denne helheten",
       nn: "omgrepsrelasjon der det eine omgrepet gjeld ein heilskap og det andre ein del av denne heilskapen",
-      en: "" },
+      en: "relation between two concepts where one of the concepts constitutes the whole and the other concept a part of that whole" },
     relatedRelation: {
       nb: "begrepsrelasjon som bygger på en bestemt ikke-hierarkisk, tematisk sammenheng mellom begrepenes referenter",
       nn: "omgrepsrelasjon som byggjer på ein viss ikkje-hierarkisk, tematisk samanheng mellom referentane til omgrepa",
-      en: "" },
+      en: "relation between two concepts having a non-hierarchical thematic connection by virtue of experience" },
     equivalence: {
       nb: "relasjon mellom betegnelser som i ulike språk står for samme begrep",
       nn: "relasjon mellom nemningar som i ulike språk står for same omgrep",
-      en: "" },
+      en: "relation between designations in different languages representing the same concept" },
   },
 });
