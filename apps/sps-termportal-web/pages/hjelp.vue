@@ -40,6 +40,32 @@
               class="content-wrapper"
             />
           </AccordionTab>
+          <AccordionTab>
+            <template #header>
+              <h2 class="font-semibold">
+                {{ $t("hjelp.termpost") }}
+              </h2>
+            </template>
+            <ContentRenderer
+              v-if="termpost"
+              :key="termpostKey"
+              :value="termpost"
+              class="content-wrapper"
+            />
+          </AccordionTab>
+          <AccordionTab>
+            <template #header>
+              <h2 class="font-semibold">
+                {{ $t("hjelp.data") }}
+              </h2>
+            </template>
+            <ContentRenderer
+              v-if="data"
+              :key="dataKey"
+              :value="data"
+              class="content-wrapper"
+            />
+          </AccordionTab>
         </Accordion>
       </main>
     </div>
@@ -59,8 +85,20 @@ const { data: search, refresh: refreshSearch } = await useAsyncData(searchKey.va
   return queryCollection("docs").path(`/web/${locale.value}/hjelp/search`).first();
 });
 
+const termpostKey = computed(() => `help_termpost_${locale.value}`);
+const { data: termpost, refresh: refreshTermpost } = await useAsyncData(termpostKey.value, () => {
+  return queryCollection("docs").path(`/web/${locale.value}/hjelp/termpost`).first();
+});
+
+const dataKey = computed(() => `help_data_${locale.value}`);
+const { data, refresh: refreshData } = await useAsyncData(dataKey.value, () => {
+  return queryCollection("docs").path(`/web/${locale.value}/hjelp/data`).first();
+});
+
 watch(() => locale.value, () => {
   refreshMain();
   refreshSearch();
+  refreshTermpost();
+  refreshData();
 });
 </script>
