@@ -102,6 +102,7 @@
   },
   "domainOverview": { "domainsAndBases": "Domains & Termbases" },
   "navBar": {
+    "hjelp": "Help",
     "om": "About Termportalen",
     "innstillinger": "Settings",
     "menuButtonShow": "Extend menu",
@@ -222,6 +223,12 @@
     "term": "Term",
     "language": "Language",
     "termbase": "Termbase"
+  },
+  "hjelp": {
+    "title": "Help",
+    "search": "Searching",
+    "termpost": "Terminological entries",
+    "data": "Open data"
   },
   "om": {
     "title": "About Termportalen",
