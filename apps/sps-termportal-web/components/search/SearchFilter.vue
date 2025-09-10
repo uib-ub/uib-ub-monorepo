@@ -37,7 +37,7 @@
         <SearchFilterFieldset
           v-if="displaySection(key, data)"
           :title="title"
-          :fkey="key"
+          :filter-key="key"
         >
           <SearchFilterCheckbox
             v-for="d in data"
@@ -53,10 +53,14 @@
 </template>
 
 <script setup lang="ts">
+import { resetSearchFilterSelection, useFetchSearchData, useGenSearchOptions } from "#imports";
+
 import { useI18n } from "vue-i18n";
 
 const appConfig = useAppConfig();
 
+const bootstrapData = useBootstrapData();
+const orderedTermbases = useOrderedTermbases();
 const showSearchFilter = useShowSearchFilter();
 const searchDataStats = useSearchDataStats();
 const localeLangOrder = useLocaleLangOrder();
@@ -91,12 +95,20 @@ const filterSections = () => {
       ),
     },
     {
-      title: "",
+      title: null,
       key: "context",
-      fkey: "context",
       data: searchInterface.value.useDomain
-        ? flattenOrderDomains(Object.keys(searchDataStats.value.context || {}))
-        : Object.keys(searchDataStats.value.context || {}).sort(),
+      // TODO
+        ? intersectUnique(
+            bootstrapData.value?.domain
+              ? flattenDict(bootstrapData.value.domain, "subdomains")
+                  .map(domain => domain[0])
+              : [],
+            Object.keys(searchDataStats.value.context || {}))
+        : intersectUnique(
+            orderedTermbases.value.map(tb => `${tb}-3A${tb}`),
+            Object.keys(searchDataStats.value.context || {})),
+
     },
     {
       title: i18n.t("searchFilter.termproperty"),

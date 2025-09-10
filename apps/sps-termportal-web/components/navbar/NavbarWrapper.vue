@@ -20,6 +20,9 @@
           <NavbarTermbases
             :key="'termbaseslst_' + (bootstrapData ? Object.keys(bootstrapData) : 'not_loaded')"
           />
+          <NavBarLink to="/hjelp">
+            {{ $t("navBar.hjelp") }}
+          </NavBarLink>
           <NavBarLink to="/om">
             {{ $t("navBar.om") }}
           </NavBarLink>

@@ -68,6 +68,7 @@ const menuOptions = computed(() => [
     label: `${i18n.t("navBar.navigation")}`,
     items: [
       { label: `${i18n.t("global.termbase", 2)}`, to: "/termbaser" },
+      { label: `${i18n.t("navBar.hjelp")}`, to: "/hjelp" },
       { label: `${i18n.t("navBar.om")}`, to: "/om" },
       { label: `${i18n.t("navBar.innstillinger")}`, to: "/innstillinger" },
     ],

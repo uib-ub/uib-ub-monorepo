@@ -66,7 +66,23 @@
           :data-lang="lang"
         />
       </TermpostTermProp>
+      <TermpostTermProp
+        v-if="concept.xlDefinition?.[lang]"
+        :label="$t('id.definisjon')"
+      >
+        <TermpostTermDescription
+          :data="concept?.xlDefinition?.[lang]"
+          prop="xlDefinition"
+          :data-lang="lang"
+        />
+      </TermpostTermProp>
 
+      <!-- SN: extras -->
+      <TermpostLanguageSectionSnExtras
+        v-if="router.currentRoute.value.params.termbase === 'SN'"
+        :concept="concept"
+        :lang="lang"
+      />
       <!-- Anbefalt term -->
       <TermpostTermProp
         v-if="concept?.prefLabel?.[lang]"
@@ -119,6 +135,8 @@
 </template>
 
 <script setup lang="ts">
+const router = useRouter();
+
 defineProps({
   meta: { type: Object, required: true },
   concept: { type: Object, required: true },

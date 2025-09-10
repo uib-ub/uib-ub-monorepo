@@ -102,6 +102,7 @@
   },
   "domainOverview": { "domainsAndBases": "Domener og termbaser" },
   "navBar": {
+    "hjelp": "Hjelp",
     "om": "Om Termportalen",
     "innstillinger": "Innstillinger",
     "menuButtonShow": "Utvid menyen",
@@ -214,7 +215,8 @@
     "browser": "Ekstern nettleser",
     "audience": "Målgruppemerknad",
     "icsCode": "ICS-kode",
-    "source": "Kilde"
+    "source": "Kilde",
+    "example": "Eksempel"
   },
   "index": { "title": "Termportalen" },
   "search": {
@@ -222,6 +224,12 @@
     "term": "Term",
     "language": "Språk",
     "termbase": "Termbase"
+  },
+  "hjelp": {
+    "title": "Hjelp",
+    "search": "Søk",
+    "termpost": "Termposten",
+    "data": "Åpne data"
   },
   "om": {
     "title": "Om Termportalen",

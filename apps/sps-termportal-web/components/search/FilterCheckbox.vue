@@ -39,6 +39,8 @@
 </template>
 
 <script setup lang="ts">
+import { useFetchSearchData, useGenSearchOptions } from "#imports";
+
 import { useI18n } from "vue-i18n";
 
 const i18n = useI18n();

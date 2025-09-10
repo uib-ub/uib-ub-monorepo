@@ -16,5 +16,5 @@ export default defineEventHandler(async (event) => {
       "Authorization": `Basic ${instance.authHeader}`,
     },
   });
-  return data.results.bindings.map(processBinding);
+  return data.results.bindings.map(binding => processBinding(binding, body));
 });

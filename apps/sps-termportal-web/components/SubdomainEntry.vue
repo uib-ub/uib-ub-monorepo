@@ -12,7 +12,7 @@
       :for="label"
       class="tp-transition-shadow flex cursor-pointer rounded-[7px] border border-transparent px-2 py-1 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
     >
-      <div class="-mt-[1px]">
+      <div class="-mt-px">
         <Icon
           v-if="
             modelValue[label] === true

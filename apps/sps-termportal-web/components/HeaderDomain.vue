@@ -6,7 +6,7 @@
     <button
       :id="`${tabId}Domains-tab`"
       class="px-2 pt-1"
-      :class="{ 'border-b-[2px] border-black': searchInterface.domain[0] == tabId }"
+      :class="{ 'border-b-2 border-black': searchInterface.domain[0] == tabId }"
       :aria-current="searchInterface.domain[0] == tabId"
       type="button"
       @click="searchInterface.domain = [tabId]"
