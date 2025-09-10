@@ -100,19 +100,19 @@
               ).includes(tb),
             }"
           >
-            <div class="-mt-px w-6">
+            <div class="flex items-start w-6">
               <Icon
                 v-if="searchInterface.termbase.includes(tb)"
                 name="mdi:checkbox-marked-outline"
                 size="1.4em"
-                class="text-tpblue-400"
+                class="text-tpblue-400 mt-0.5"
                 aria-hidden="true"
               />
               <Icon
                 v-else
                 name="mdi:checkbox-blank-outline"
                 size="1.4em"
-                class="text-tpblue-400"
+                class="text-tpblue-400 mt-0.5"
                 aria-hidden="true"
               />
             </div>

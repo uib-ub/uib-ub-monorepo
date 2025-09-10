@@ -12,19 +12,19 @@
       class="tp-transition-shadow flex cursor-pointer gap-x-2 rounded-[7px] border border-transparent px-1.5 py-0.5 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
       :for="`filter-${placement}-${ftype}-${fvalue}`"
     >
-      <div class="-mt-[2px]">
+      <div class="flex items-start">
         <Icon
           v-if="searchFilterSelection[ftype].includes(fvalue)"
           name="mdi:checkbox-marked-outline"
           size="1.3em"
-          class="text-tpblue-400"
+          class="text-tpblue-400 mt-0.5"
           aria-hidden="true"
         />
         <Icon
           v-else
           name="mdi:checkbox-blank-outline"
           size="1.3em"
-          class="text-tpblue-400"
+          class="text-tpblue-400 mt-0.5"
           aria-hidden="true"
         />
       </div>

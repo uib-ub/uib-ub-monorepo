@@ -56,14 +56,14 @@
                   class="text-tpblue-400"
                   name="akar-icons:radio-fill"
                   aria-hidden="true"
-                  size="1.5em"
+                  size="1.4em"
                 />
                 <Icon
                   v-else
                   name="akar-icons:radio"
                   class="text-tpblue-400"
                   aria-hidden="true"
-                  size="1.5em"
+                  size="1.4em"
                 />
                 <span class="text-base text-black">
                   {{ $t("global.lang." + lang) }}</span></label>
