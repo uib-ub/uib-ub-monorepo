@@ -79,7 +79,7 @@ const buildMultiMarker = (color: string, style: string) => {
 
 
 
-export function getLabelMarkerIcon(label: string, color: string, docCount?: number, selected?: boolean, hideLabel?: boolean) {
+export function getLabelMarkerIcon(label: string, color: string, docCount?: number, selected?: boolean, hideLabel?: boolean, showPin?: boolean) {
     const sizeAdjustment = selected ? 1.5 : 1;
     const colorValue = colorMapping[color] || color
     return {
@@ -92,6 +92,9 @@ export function getLabelMarkerIcon(label: string, color: string, docCount?: numb
                 <div class="max-w-32 min-w-0 block truncate">${label}</div>
                 ${docCount ? `<span class="ml-1 text-xs bg-neutral-100  flex items-center py-0 my-0.5 text-neutral-950 rounded-full px-1 text-center font-normal">+${docCount}</span>` : ''}
               </div>
+              ${showPin ? `<div class="w-0 h-0 drop-shadow-lg" style="border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid ${colorValue}; margin-top: 0px;"></div>` : ''}
+            </div>
+
              
             </div>
           </div>

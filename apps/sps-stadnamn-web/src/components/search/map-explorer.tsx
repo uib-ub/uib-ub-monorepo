@@ -45,7 +45,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
   const allowFitBounds = useRef(false)
   const { groupValue } = useGroup()
-  const { groupLoading } = useGroupData()
+  const { groupLoading, groupTotal } = useGroupData()
   const { isMobile, mapInstance } = useContext(GlobalContext)
   const { overviewGroups } = useOverviewData()
   const details = searchParams.get('details')
@@ -765,9 +765,10 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
               }
               else {
                 const selected = groupValue && item.fields?.["group.id"]?.[0] == groupValue && !groupLoading
+                const multipleGroupMembers = groupTotal?.value && groupTotal?.value > 1
 
                 const childCount = zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
-                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', selected ? 'white' : 'black', childCount)
+                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', selected ? multipleGroupMembers ? 'white' : 'accent' : 'black', childCount, false, false, !!(selected && !multipleGroupMembers))
 
                 return (
                 <Marker
@@ -911,7 +912,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
               ))
             }
 
-            {docData?._source?.location?.coordinates?.length && <Marker 
+            {docData?._source?.location?.coordinates?.length && groupTotal?.value && groupTotal?.value > 1 && <Marker 
             zIndexOffset={1000}
                 icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))}
                 position={[docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]}
