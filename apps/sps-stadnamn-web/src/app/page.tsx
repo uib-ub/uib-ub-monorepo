@@ -71,13 +71,13 @@ export default async function Home() {
   <div className="flex flex-col xl:flex-row items-end justify-center xl:gap-12 gap-6">
   <div className="flex flex-col items-center gap-2">
     <span className="uppercase tracking-widest text-neutral-950 xl:text-sm font-semibold">Oppslag i søket</span>
-    <span className="xl:text-3xl text-4xl font-bold text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
+    <span className="xl:text-3xl text-4xl font-semibold text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
       {groupCount?.toLocaleString('nb-NO')}
     </span>
   </div>
   <div className="flex flex-col items-center gap-2">
     <span className="uppercase tracking-widest text-neutral-950 xl:text-sm font-semibold">Underoppslag</span>
-    <span className="xl:text-3xl text-4xl font-bold text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
+    <span className="xl:text-3xl text-4xl font-semibold text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
       {totalHits?.toLocaleString('nb-NO')}
     </span>
   </div>

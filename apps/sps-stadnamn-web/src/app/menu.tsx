@@ -88,7 +88,7 @@ export default function Menu() {
                     </div>}
                 <NavBar 
                         onBlur={handleBlur}
-                        className=" xl:hidden text-3xl text-center py-6 small-caps flex flex-col w-full font-semibold border-t border-neutral-200 "/>
+                        className=" xl:hidden text-3xl text-center py-6 uppercase flex flex-col w-full border-t border-neutral-200 tracking-wider "/>
                 </div>
                
         </div>

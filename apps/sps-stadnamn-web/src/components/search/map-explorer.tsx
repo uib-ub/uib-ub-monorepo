@@ -579,7 +579,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       zoomDelta={0.5}
       bounds={snappedBounds}
       className='w-full h-full'>
-      {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon, Popup }: any, leaflet: any) => {
+      {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon, Popup, MultiPolygon, Polyline }: any, leaflet: any) => {
 
         function EventHandlers() {
           const map = useMap();
@@ -819,38 +819,84 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
 
             {docData?._source?.area && (
-              <Fragment>
+              <>
                 {(() => {
                   try {
                     const geoJSON = wkt.parse(docData._source.area);
                     if (!geoJSON) return null;
 
-                    // Handle both Polygon and MultiPolygon types
-                    const coordinates = geoJSON.type === 'MultiPolygon'
-                      ? (geoJSON as any).coordinates
-                      : [(geoJSON as any).coordinates];
-
-                    return coordinates.map((polygon: number[][][], index: number) => (
-                      <Polygon
-                        key={`area-${index}`}
-                        positions={polygon.map(ring =>
-                          // WKT uses [lon, lat] while Leaflet uses [lat, lon]
-                          ring.map(([lon, lat]) => [lat, lon])
-                        )}
-                        pathOptions={{
-                          color: '#0066ff',
-                          weight: 2,
-                          opacity: 0.8,
-                          fillOpacity: 0.2
-                        }}
-                      />
-                    ));
+                    switch (geoJSON.type) {
+                      case 'Polygon':
+                        return <Polygon
+                          positions={geoJSON.coordinates[0]}
+                          pathOptions={{
+                            color: '#0066ff',
+                            weight: 2,
+                            opacity: 0.8,
+                            fillOpacity: 0.2
+                          }}
+                        />;
+                      case 'MultiPolygon':
+                        return <MultiPolygon
+                          positions={geoJSON.coordinates}
+                          pathOptions={{
+                            color: '#0066ff',
+                            weight: 2,
+                            opacity: 0.8,
+                            fillOpacity: 0.2
+                          }}
+                        />;
+                      case 'MultiPoint':
+                        return (
+                          <>
+                            {geoJSON.coordinates.map((coord, index) => (
+                              <Marker
+                                key={index}
+                                position={[coord[1], coord[0]]} // Swap to [lat, lon] for Leaflet
+                                icon={new leaflet.DivIcon({
+                                  className: 'bg-accent-600 rounded-full w-2 h-2'
+                                })}
+                              />
+                            ))}
+                          </>
+                        );
+                        case 'LineString':
+                          return <Polyline
+                            positions={geoJSON.coordinates.map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
+                            pathOptions={{
+                              color: '#0066ff',
+                              weight: 5,
+                              opacity: 0.8,
+                              fillOpacity: 0.2
+                            }}
+                          />;
+                        
+                        case 'MultiLineString':
+                          return (
+                            <>
+                              {geoJSON.coordinates.map((lineCoords, index) => (
+                                <Polyline
+                                  key={index}
+                                  positions={lineCoords.map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
+                                  pathOptions={{
+                                    color: '#0066ff',
+                                    weight: 5,
+                                    opacity: 0.8,
+                                    fillOpacity: 0.2
+                                  }}
+                                />
+                              ))}
+                            </>
+                          );
+                      default:
+                        return null;
+                    }
                   } catch (error) {
                     console.error('Failed to parse WKT:', error);
                     return null;
                   }
                 })()}
-              </Fragment>
+              </>
             )}
 
             {docData?._source?.location?.coordinates && myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}

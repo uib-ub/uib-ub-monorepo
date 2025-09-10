@@ -198,7 +198,11 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
       </>
     },
     ssr2016: null,
-    ssr: null,
+    ssr: (source: any) => {
+      return <>
+      {source.ssr && <Link href={`https://stadnamn.kartverket.no/fakta/${source.ssr}`}>Stadnummer:{source.ssr}</Link>}
+      </>
+    },
     nrk: (source: any) => {
       return <>
       {(source.rawData.Uttale2 || source.rawData.Uttale1) && 

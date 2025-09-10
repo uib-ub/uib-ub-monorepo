@@ -18,12 +18,8 @@ export default function FacetSection() {
     const facet = searchParams.get('facet')
     const datasets = searchParams.getAll('dataset')
     const filterDataset = perspective == 'all' ? datasets.length == 1 ? datasets[0] : 'all' : perspective
-
     const [facetFieldCounts, setFacetFieldCounts] = useState<Record<string, any>>({})
-
     const { facetFilters } = useSearchQuery()
-
-
     const [facetsLoading, setFacetsLoading] = useState(true)
 
     /*
@@ -55,14 +51,15 @@ export default function FacetSection() {
         ? facetConfig['all'].filter(f => {
             // Check if this facet field has count > 0 OR is currently being filtered
             if (f.specialFacet) return true;
-            const fieldName = f.key + (f.type ? '' : '.keyword');
+            const fieldName = f.key + ((f.type || f.keyword) ? '' : '.keyword');
             const hasCount = facetFieldCounts?.[f.key]?.doc_count > 0 || facetFieldCounts?.[fieldName]?.doc_count > 0;
             const isFiltered = facetFilters.some(([key]) => key === f.key);
             return hasCount || isFiltered;
         }).filter(f => datasets.length > 0 ? f.datasets?.find((d: string) => datasets.includes(d)) : f.key == 'dataset' || (f.datasets?.length && f.datasets?.length > 1))
-        : facetConfig[filterDataset]?.filter(f => {
+        : 
+        facetConfig[filterDataset]?.filter(f => {
             if (f.specialFacet) return true;
-            const fieldName = f.key + (f.type ? '' : '.keyword');
+            const fieldName = f.key + ((f.type || f.keyword) ? '' : '.keyword');
             const hasCount = facetFieldCounts?.[f.key]?.doc_count > 0 || facetFieldCounts?.[fieldName]?.doc_count > 0;
             const isFiltered = facetFilters.some(([key]) => key === f.key);
             return hasCount || isFiltered;

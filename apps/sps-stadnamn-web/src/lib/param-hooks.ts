@@ -6,6 +6,10 @@ import { contentSettings } from "@/config/server-config"
 export function usePerspective() {
     const searchParams = useSearchParams()
     const datasetParams = searchParams.getAll('dataset')
+    const datasetTag = searchParams.get('datasetTag')
+    if (datasetTag == 'base') {
+        return 'base'
+    }
     if (datasetParams.length == 1) {
         return datasetParams[0]
     }

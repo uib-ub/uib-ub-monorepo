@@ -54,6 +54,8 @@ const text = {"content.text": {label: "Tekstinnhald", fulltext}}
 const boost = {numeric}
 const dataset = {label: "Datasett"}
 const datasetTag = {label: "Datasettgruppe"}
+const coordinateType = {label: "Koordinattype", facet}
+const ssr = {label: "SSR Stadnummer", facet, keyword}
 
 const labelDefaults = {
   "altLabels": {label: "Andre namn", table, facet, result},
@@ -256,7 +258,10 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     },
     ssr: {
       ...required, adm, adm1, adm2,
+      ssr,
+      "location.type": {label: "Areal", facet, keyword},
       sosi,
+      coordinateType,
       ...labelDefaults,
     },
     nrk: {
@@ -483,7 +488,7 @@ fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) =>
 //console.log(fieldConfig.all)
 
 
-fieldConfig.grunnord = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
+fieldConfig.base = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
   // Only include datasets ending with _g
   if (dataset.endsWith('_g')) {
     Object.entries(fields).forEach(([key, config]) => {
