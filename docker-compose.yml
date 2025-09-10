@@ -1,10 +1,10 @@
 # Note: please create .env file based on .env-template file for keys and tokens.
 services:
-  hono_api:
+  chc_api_hono:
     build:
       context: .
-      dockerfile: Dockerfile.api
-    container_name: hono-api
+      dockerfile: apps/api/Dockerfile
+    container_name: chc-api-hono
     environment:
       NODE_ENV: production
       ES_HOST: https://search.ub.uib.no

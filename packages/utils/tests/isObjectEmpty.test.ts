@@ -1,4 +1,4 @@
-import { isObjectEmpty } from './isObjectEmpty';
+import { isObjectEmpty } from '../src/isObjectEmpty';
 
 describe('isObjectEmpty', () => {
   test('should return true for an empty object', () => {
