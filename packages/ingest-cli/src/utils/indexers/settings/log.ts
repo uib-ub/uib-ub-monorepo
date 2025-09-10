@@ -1,5 +1,5 @@
 export const logSettings = {
-  "name": "log-settings",
+  "name": "chc-log-settings",
   "template": {
     "settings": {
       "index.lifecycle.name": "log-lifecycle-policy"
