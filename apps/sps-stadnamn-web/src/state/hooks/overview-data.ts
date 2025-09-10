@@ -22,6 +22,7 @@ const overviewQuery = async (
     const secondUnderscore = groupValue.indexOf('_', firstUnderscore + 1)
     const groupType = groupValue.substring(0, firstUnderscore)
     const groupLocation = groupValue.substring(firstUnderscore + 1, secondUnderscore)
+    console.log("FETCHING DATA FOR", groupValue, groupType, groupLocation)
 
     let fetchedData: any[] = []
 
@@ -180,20 +181,20 @@ const overviewQuery = async (
 }
 
 export default function useOverviewData() {
+    console.log("OVERVIEW USED")
     const searchParams = useSearchParams()
     const details = searchParams.get('details')
     const namesScope = searchParams.get('namesScope') || 'group'
     const { groupDoc } = useGroupData()
     const { groupCode, groupValue } = useGroup()
-
     const { data, error, isLoading } = useQuery({
         queryKey: ['namesData', groupValue, namesScope, details, groupDoc?._source?.uuid],
         queryFn: () => overviewQuery(groupCode, namesScope, groupValue, groupDoc, details),
-        enabled: !!groupValue && !!groupDoc,
+        //enabled: !!groupValue && !!groupDoc,
     })
 
     return {
-        groups: data || [],
+        overviewGroups: data || [],
         namesResultError: error as any,
         namesResultLoading: isLoading,
     }

@@ -37,7 +37,7 @@ export default function NamesExplorer() {
 
     })
 
-    const { groups, namesResultError, namesResultLoading } = useOverviewData()
+    const { overviewGroups, namesResultError, namesResultLoading } = useOverviewData()
 
     const itemRefs = useRef<Record<string, HTMLElement | null>>({})
 
@@ -57,7 +57,7 @@ export default function NamesExplorer() {
                 el.scrollIntoView({ behavior: 'instant', block: 'center' })
             }
         })
-    }, [selectedDoc, groups])
+    }, [selectedDoc, overviewGroups])
 
     // Persist expandedGroups across navigation using sessionStorage
     const expandedKey = `namesExpanded:${groupCode}:${details}:${namesScope}`
@@ -109,7 +109,8 @@ export default function NamesExplorer() {
 
 
     if (namesResultError) {
-        return <ErrorMessage error={{error: namesResultError.message}} message="Det har oppstått ein feil" />
+        console.error(namesResultError)
+        return <ErrorMessage error={{}} message="Det har oppstått ein feil" />
     }
 
     return <>        
@@ -160,11 +161,11 @@ export default function NamesExplorer() {
             </div>
 
             {/* Content Section - improved uniformity */}
-            {groups && groups.length === 0 && !namesResultLoading && !groupLoading ? (
+            {overviewGroups && overviewGroups.length === 0 && !namesResultLoading && !groupLoading ? (
                 <div className="p-4 text-center">
                     <p className="text-neutral-800">Fann ingen liknande namn i nærleiken</p>
                 </div>
-            ) : !groups || namesResultLoading ? (
+            ) : !overviewGroups || namesResultLoading ? (
                 // Loading skeleton - preserve exact timeline styling
                 <div className="px-4">
                     <ul className={`${details === 'timeline' ? 'relative' : 'flex flex-col divide-y divide-neutral-200'}`}>
@@ -206,9 +207,9 @@ export default function NamesExplorer() {
                 // Results content - preserve exact timeline styling, improve uniformity
                 <div className="px-4">
                     <ul className={`${details === 'timeline' ? 'relative' : 'flex flex-col divide-y divide-neutral-200'}`}>
-                        {groups.map((group: any, index: number) => {
+                        {overviewGroups.map((group: any, index: number) => {
                             const groupId = `${details}-${group.key}`
-                            const groupsWithYears = groups.filter((g: any) => g.year)
+                            const groupsWithYears = overviewGroups.filter((g: any) => g.year)
                             const indexInYearGroups = groupsWithYears.findIndex((g: any) => g.key === group.key)
                             const isLastYearGroup = indexInYearGroups === groupsWithYears.length - 1
                             
@@ -247,7 +248,7 @@ export default function NamesExplorer() {
                                                         return (
                                                             <li key={dataset} className="flex flex-col w-full py-1">
                                                                 <div className="flex items-center gap-3 py-2">
-                                                                    <span className="font-medium text-sm text-neutral-700 uppercase tracking-wider">
+                                                                    <span className="font-medium text-sm text-neutral-900 uppercase tracking-wider">
                                                                         {datasetTitles[dataset] || dataset}
                                                                     </span>
                                                                     <span className="text-sm text-neutral-700">({datasetResults.length})</span>
@@ -309,7 +310,7 @@ export default function NamesExplorer() {
                                                                         
                                                                         return Object.entries(datasetGroups).map(([dataset, items]: [string, any]) => (
                                                                             <div key={dataset} className="mb-4 last:mb-0">
-                                                                                <span className="font-medium text-sm text-neutral-700 uppercase tracking-wider">
+                                                                                <span className="font-medium text-sm text-neutral-900 uppercase tracking-wider">
                                                                                     {datasetTitles[dataset]}
                                                                                 </span>
                                                                                 <ul className="flex flex-col divide-y divide-neutral-200 w-full">

@@ -12,7 +12,7 @@ const groupDataQuery = async (
     includeFilters: boolean
 ) => {
     const res = await fetch(
-        `/api/group?${includeFilters ? '': `namesNav=${searchQueryString}&`}group=${group}&size=${pageParam.size}&from=${pageParam.from}`
+        `/api/group?${includeFilters ? `${searchQueryString}&` : ''}group=${group}&size=${pageParam.size}&from=${pageParam.from}`
     )
     if (!res.ok) {
         throw new Error('Failed to fetch group')
@@ -47,15 +47,15 @@ export default function useGroupData() {
         isFetching: groupFetching,
         fetchNextPage,
         hasNextPage,
+        refetch,
         status,
-        isFetchingNextPage,
     } = useInfiniteQuery({
-        queryKey: ['group', groupCode, searchQueryString, docIndex, includeFilters],
+        queryKey: ['group', groupCode, searchQueryString, includeFilters, docIndex],
         queryFn: async ({ pageParam }) =>
             groupCode ? groupDataQuery(groupCode, searchQueryString, pageParam, includeFilters) : null,
 
-        // Use larger initial size when names navigation is open
-        initialPageParam: { size: docIndex + 2, from: 0 },
+        // Use larger initial size when docIndex is 4 or more
+        initialPageParam: { size: docIndex >= 4 ? 1000 : docIndex + 5, from: 0 },
         getNextPageParam: (lastPage, allPages) => {
             if (!lastPage || !lastPage.hits.length) return undefined
 
@@ -68,12 +68,17 @@ export default function useGroupData() {
 
             if (allDataFetched) return undefined
 
-            // ✅ Use Elasticsearch total to determine if more data can be fetched
+            // When docIndex is 4 or more, fetch all remaining data
+            if (docIndex >= 4) {
+                const remainingItems = (totalData?.value || 0) - totalFetched
+                return { size: remainingItems, from: totalFetched }
+            }
+
+            // Otherwise keep the existing behavior
             const nextSize = Math.min(lastPage.size * 2, 100)
             return { size: nextSize, from: totalFetched }
         },
 
-        enabled: !!groupCode,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
         placeholderData: (prevData) => prevData,
@@ -89,15 +94,21 @@ export default function useGroupData() {
                 return {
                     allHits,
                     totalData,
-                    shouldExposeData:
-                        allHits.length > docIndex || allDataFetched,
+                    shouldExposeData: true, // Always expose data since we handle pagination differently now
                 }
             },
-            [docIndex]
+            []
         ),
-
-        //notifyOnChangeProps: ['data', 'error'],
     })
+
+    // Add effect to handle docIndex changes
+    useEffect(() => {
+        if (docIndex >= 4) {
+            refetch()
+        }
+    }, [docIndex, refetch])
+
+    console.log("ALL HITS", processedData)
 
 
 

@@ -26,6 +26,7 @@ import { useGroup, usePerspective } from "@/lib/param-hooks";
 import { GlobalContext } from "@/app/global-provider";
 import Clickable from "../ui/clickable/clickable";
 import useGroupData from "@/state/hooks/group-data";
+import useOverviewData from "@/state/hooks/overview-data";
 const debug = process.env.NODE_ENV === 'development'
 
 
@@ -46,6 +47,8 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const { groupValue } = useGroup()
   const { groupLoading } = useGroupData()
   const { isMobile } = useContext(GlobalContext)
+  const { overviewGroups } = useOverviewData()
+  console.log("OVERVIEW GROUPS", overviewGroups.flatMap((dataset => dataset?.results)))
   
 
 
@@ -451,11 +454,13 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       click: () => {
         if (hits?.length) {
           const newQueryParams = new URLSearchParams(searchParams)
-          if (!hits.find((hit: any) => hit.fields["group.id"]?.[0] == selected["group.id"][0])) {
+          if (!hits.find((hit: any) => (hit._source?.group?.id || hit.fields["group.id"]?.[0]) == (selected.group?.id || selected["group.id"][0]))) {
             newQueryParams.delete('doc')
             newQueryParams.delete('group')
             newQueryParams.delete('docIndex')
-            newQueryParams.delete('details')
+            if (!newQueryParams.get('details')) {
+              newQueryParams.delete('details')
+            }
             router.push(`?${newQueryParams.toString()}`)
           }
 
@@ -465,7 +470,9 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
         const newQueryParams = new URLSearchParams(searchParams)
         newQueryParams.delete('doc')
         newQueryParams.delete('docIndex')
-        newQueryParams.set('details', 'group')
+        if (!newQueryParams.get('details')) {
+          newQueryParams.set('details', 'group')
+        }
         newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
         router.push(`?${newQueryParams.toString()}`)
         }
@@ -752,13 +759,10 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                 return null;
               }
               else {
-                let color = 'black'
-                if (docData?._source?.group?.id && item.fields?.["group.id"]?.[0] == docData?._source?.group?.id && !groupLoading) {
-                  color = 'white'
-                }
+                const selected = groupValue && item.fields?.["group.id"]?.[0] == groupValue && !groupLoading
 
                 const childCount = zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
-                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', color, childCount)
+                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', selected ? 'white' : 'black', childCount)
 
                 return (
                 <Marker
@@ -766,9 +770,9 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                   position={[lat, lng]}
                   icon={new leaflet.DivIcon(icon)}
                   riseOnHover={true}
-                  eventHandlers={selectDocHandler(item.fields, childCount ? [item, ...(item.children || [])] : [])}
+                  eventHandlers={selected ? undefined : selectDocHandler(item.fields, childCount ? [item, ...(item.children || [])] : [])}
                 >
-                    {childCount && item.fields?.["group.id"]?.[0] && <Popup>
+                    {childCount && item.fields?.["group.id"]?.[0] && <Popup offset={[0, -24]}>
                       <ul className="list-none p-0 m-0 max-h-[50svh] overflow-y-auto stable-scrollbar text-lg divide-y divide-neutral-200 flex flex-col">
                         {[item, ...(item.children || [])].map((entry: any) => (
                           <li key={`entry-${entry.fields.uuid[0]}`} className="!p-0 !m-0">
@@ -846,20 +850,6 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                             fillOpacity: 0.2
                           }}
                         />;
-                      case 'MultiPoint':
-                        return (
-                          <>
-                            {geoJSON.coordinates.map((coord, index) => (
-                              <Marker
-                                key={index}
-                                position={[coord[1], coord[0]]} // Swap to [lat, lon] for Leaflet
-                                icon={new leaflet.DivIcon({
-                                  className: 'bg-accent-600 rounded-full w-2 h-2'
-                                })}
-                              />
-                            ))}
-                          </>
-                        );
                         case 'LineString':
                           return <Polyline
                             positions={geoJSON.coordinates.map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
@@ -900,8 +890,25 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
             )}
 
             {docData?._source?.location?.coordinates && myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
+            {
+              overviewGroups.flatMap((dataset => dataset?.results)).map((item: any) => item.doc).filter((group) => group._source?.location?.coordinates?.[1] && group._source?.location?.coordinates?.[0]).map((docItem) => (
+                <CircleMarker 
+                  key={"marker" + docItem._id}
+                  center={[docItem._source.location?.coordinates?.[1], docItem._source.location?.coordinates?.[0]]}
+                  radius={5}
+                  weight={1}
+                  fillOpacity={0.9}
+                  zIndexOffset={1000}
+
+                  eventHandlers={selectDocHandler(docItem._source, [docItem])}
+                  fillColor={"black"}
+                  color="white"
+                />
+              ))
+            }
 
             {docData?._source?.location?.coordinates?.length && <Marker 
+            zIndexOffset={1000}
                 icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))}
                 position={[docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]}
               >

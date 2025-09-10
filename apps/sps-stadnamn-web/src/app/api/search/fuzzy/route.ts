@@ -18,16 +18,17 @@ export async function POST(request: Request) {
     "track_scores": true,
     "sort": [
       {
-        _score: "desc"
-      },
-      {
         boost: {
           order: "desc",
           missing: "_last"
         }
       },
+      {
+        _score: "desc"
+      },
+      
     ],
-    "_source": ["group.id", "label", "adm1", "adm2", "uuid", "sosi", "description", "attestations", "year", "gnidu", "h3"],
+    "_source": ["group.id", "label", "adm1", "adm2", "uuid", "sosi", "description", "attestations", "year", "gnidu", "h3", "location"],
   }
 
   // Build the query with bool structure
@@ -73,15 +74,15 @@ export async function POST(request: Request) {
   }
 
   // Add geographic/identifier filters as should clauses within the required section
-  /*
-  if (h3 && Array.isArray(h3) && h3.length > 0) {
+  
+  if (false && h3 && Array.isArray(h3) && h3.length > 0) {
     identifierQuery.bool.should.push({
       "terms": {
         "h3": h3
       }
     })
   }
-    */
+    
 
   if (body.lat && body.lon) {
     identifierQuery.bool.should.push({
