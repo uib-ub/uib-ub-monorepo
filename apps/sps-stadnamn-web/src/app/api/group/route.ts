@@ -8,8 +8,6 @@ import { getSortArray } from '@/config/server-config';
 export async function GET(request: Request) {
   const {termFilters, reservedParams} = extractFacets(request)
 
-
-
   const perspective = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
   const { simple_query_string } = getQueryString(reservedParams)
 
@@ -21,12 +19,21 @@ export async function GET(request: Request) {
     sortArray = getSortArray(perspective)
   }
 
-
+  const from = reservedParams.from || 0;
+  const isFirstPage = from === 0;
     
   const query: Record<string,any> = {
     "size": reservedParams.size || 20,
-    "from": reservedParams.from || 0,
+    "from": from,
     "track_scores": true,
+    "aggs": {
+      "viewport": {
+        "geo_bounds": {
+          "field": "location",
+          "wrap_longitude": true
+        },
+      }
+    },
     "sort": [
       {
         _score: "desc"
@@ -41,7 +48,6 @@ export async function GET(request: Request) {
     "_source": true
   }
 
-  
 
   if (simple_query_string && termFilters.length) {
     query.query = {
@@ -60,6 +66,8 @@ export async function GET(request: Request) {
       }
     }
   }
+
+  
   
   const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
   return Response.json(data, {status: status})

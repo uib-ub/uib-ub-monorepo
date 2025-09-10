@@ -46,10 +46,22 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const allowFitBounds = useRef(false)
   const { groupValue } = useGroup()
   const { groupLoading } = useGroupData()
-  const { isMobile } = useContext(GlobalContext)
+  const { isMobile, mapInstance } = useContext(GlobalContext)
   const { overviewGroups } = useOverviewData()
-  console.log("OVERVIEW GROUPS", overviewGroups.flatMap((dataset => dataset?.results)))
-  
+  const details = searchParams.get('details')
+
+  const dedupedOverviewDocs = useMemo(() => {
+    const seen = new Set<string>();
+    return (overviewGroups ?? [])
+      .flatMap((dataset: any) => dataset?.results ?? [])
+      .map((item: any) => item.doc)
+      .filter((doc: any) => doc?._source?.location?.coordinates?.[0] != null && doc?._source?.location?.coordinates?.[1] != null)
+      .filter((doc: any) => {
+        if (seen.has(doc._id)) return false;
+        seen.add(doc._id);
+        return true;
+      });
+  }, [overviewGroups])
 
 
   // Calculate initial bounds based on zoom level and center before map renders
@@ -69,15 +81,8 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const [zoomState, setZoomState] = useState<number>(urlZoom || calculateZoomFromBounds(snappedBounds))
   const suspendMarkerDiscoveryRef = useRef(false)
 
-
   const gridSizeRef = useRef<{ gridSize: number, precision: number }>(getGridSize(snappedBounds, zoomState));
-
-
-
   const router = useRouter()
-  const parent = searchParams.get('parent')
-  const doc = searchParams.get('doc')
-  const mapInstance = useRef<any>(null);
 
   // Add state for H3 resolution
   const [h3Resolution, setH3Resolution] = useState(8);
@@ -889,17 +894,16 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
               </>
             )}
 
-            {docData?._source?.location?.coordinates && myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
-            {
-              overviewGroups.flatMap((dataset => dataset?.results)).map((item: any) => item.doc).filter((group) => group._source?.location?.coordinates?.[1] && group._source?.location?.coordinates?.[0]).map((docItem) => (
+            {docData?._source?.location?.coordinates?.length && myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
+            { details && details !== 'group' &&
+              dedupedOverviewDocs.map((docItem: any) => (
                 <CircleMarker 
-                  key={"marker" + docItem._id}
+                  key={docItem._id}
                   center={[docItem._source.location?.coordinates?.[1], docItem._source.location?.coordinates?.[0]]}
                   radius={5}
                   weight={1}
                   fillOpacity={0.9}
                   zIndexOffset={1000}
-
                   eventHandlers={selectDocHandler(docItem._source, [docItem])}
                   fillColor={"black"}
                   color="white"

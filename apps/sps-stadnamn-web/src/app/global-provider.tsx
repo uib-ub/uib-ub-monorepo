@@ -23,6 +23,7 @@ export const GlobalContext = createContext({
   inputValue: { current: '' as string },
   initialUrl: { current: null as string | null },
   highlightedGroup: { current: null as string | null },
+  mapInstance: { current: null as any },
 });
 
 export default function GlobalProvider({ children, isMobile, sosiVocab, coordinateVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any>, coordinateVocab: Record<string, any> }) {
@@ -39,6 +40,7 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   const highlightedGroup = useRef<string | null>(null);
   const searchParamsString = searchParams.toString()
   const pathname = usePathname()
+  const mapInstance = useRef<any>(null);
 
 
   // Load facet options from localStorage on mount
@@ -111,6 +113,7 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
     <GlobalContext.Provider 
       value={{
         currentUrl,
+        mapInstance,
         isMobile,
         facetOptions,
         updateFacetOption,

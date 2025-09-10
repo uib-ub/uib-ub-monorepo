@@ -13,6 +13,8 @@ const overviewQuery = async (
     groupDoc: any,
     details: string | null
 ) => {
+
+    
     if (!groupValue || !groupDoc) {
         console.log("Early return: missing group value or groupDoc")
         return []
@@ -190,7 +192,7 @@ export default function useOverviewData() {
     const { data, error, isLoading } = useQuery({
         queryKey: ['namesData', groupValue, namesScope, details, groupDoc?._source?.uuid],
         queryFn: () => overviewQuery(groupCode, namesScope, groupValue, groupDoc, details),
-        //enabled: !!groupValue && !!groupDoc,
+        enabled: !!groupValue && !!groupDoc && details !== null && details !== 'group'
     })
 
     return {

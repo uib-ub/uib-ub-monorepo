@@ -1,5 +1,5 @@
 import ClickableIcon from "../../ui/clickable/clickable-icon"
-import { PiBinocularsFill, PiX } from "react-icons/pi"
+import { PiBinocularsFill, PiCrop, PiX } from "react-icons/pi"
 import DocInfo from "./doc/doc-info"
 import { useRouter, useSearchParams } from "next/navigation"
 import DocSkeleton from "../../doc/doc-skeleton"
@@ -12,6 +12,7 @@ import Clickable from "@/components/ui/clickable/clickable"
 import CoordinateMenu from "./coordinate-menu"
 import DocToolbar from "./doc/doc-toolbar"
 import { GlobalContext } from "@/app/global-provider"
+import IconButton from "@/components/ui/icon-button"
 
 
 
@@ -19,11 +20,11 @@ export default function DetailsWindow() {
     const searchParams = useSearchParams()
     const details = searchParams.get('details')    
     const mode = useMode()
-    const { groupData, groupLoading, groupTotal, groupRefetching, groupFetching } = useGroupData()
+    const { groupData, groupLoading, groupTotal, groupRefetching, groupFetching, groupViewport } = useGroupData()
     const router = useRouter()
     const docIndex = useDocIndex()
     const { groupCode } = useGroup()
-    const { isMobile } = useContext(GlobalContext)
+    const { isMobile, mapInstance } = useContext(GlobalContext)
 
     const { docLoading, docData, docRefetching } = useDocData()
     const doc = searchParams.get('doc')
@@ -124,15 +125,30 @@ export default function DetailsWindow() {
     <div className={`flex gap-2 transition-opacity duration-200 ${isUpdating ? 'opacity-50' : 'opacity-100'}`}>
 
 {!doc && <HitNavigation/>}
+{groupViewport && <IconButton
+onClick={() => {
+    const flyBounds = [
+        [groupViewport.bottom_right.lat, groupViewport.top_left.lon],
+        [groupViewport.top_left.lat, groupViewport.bottom_right.lon]
+    ]
+    mapInstance.current?.flyToBounds(flyBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+}}
+    label="Zoom til søkeresultat"
+    className="btn btn-outline btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10 self-end" 
+    add={{mapInstance: mapInstance.current}}>
+    <PiCrop className="text-lg text-black" aria-hidden="true"/>
+    
+    </IconButton>}
 
 {!doc && groupData?.[0]?._source?.group &&
-    <Clickable
+    <ClickableIcon
+    label="Liknande namn"
     aria-current={((!details || details == 'group') && groupCode == groupData[0]._source.group) ? true : false}
     className="btn btn-outline btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10 self-end" 
     add={{details: 'overview'}}>
     <PiBinocularsFill className="text-lg text-primary-600" aria-hidden="true"/>
-    Liknande namn
-    </Clickable>
+    
+    </ClickableIcon>
 }
    
       

@@ -183,7 +183,7 @@ export default function DatasetFacet() {
     
     <div id="dataset-facet-content" className='flex flex-col gap-2'>
     { datasetTag == 'deep' && <span className="px-1">Datasett som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>}
-    {datasetTag == 'tree' && <span className="px-1">Datasett ordna i eit hierarki, fortrinsvis etter matrikkelinndelinga.</span>}
+    {datasetTag == 'tree' && <span className="px-1">Datasett ordna i eit hierarki etter matrikkelinndelinga.</span>}
 
     <div className='flex gap-2 px-1'>
     <div className='relative grow'>

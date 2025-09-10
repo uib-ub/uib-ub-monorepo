@@ -24,6 +24,7 @@ const groupDataQuery = async (
         total: data.hits?.total,
         size: pageParam.size,
         from: pageParam.from,
+        aggregations: data.aggregations || null,
     }
 }
 
@@ -34,7 +35,6 @@ export default function useGroupData() {
     const details = searchParams.get('details')
 
     const includeFilters = (!details || details == 'group')
-
 
     // docIndex is now the driver (instead of docUuid)
     const docIndex = useDocIndex()
@@ -85,15 +85,17 @@ export default function useGroupData() {
         // Transform data and expose only when ready
         select: useCallback(
             (data: any) => {
-                const allHits =
-                    data?.pages?.flatMap((page: any) => page?.hits || []) || []
+                const allHits = data?.pages?.flatMap((page: any) => page?.hits || []) || []
                 const totalData = data?.pages?.[0]?.total
-                const allDataFetched =
-                    !data?.pageParams || allHits.length >= (totalData?.value || 0)
+
+
+                // Get viewport from the first page (which has aggregations)
+                const viewport = data?.pages?.[0]?.aggregations?.viewport?.bounds || null
 
                 return {
                     allHits,
                     totalData,
+                    viewport,
                     shouldExposeData: true, // Always expose data since we handle pagination differently now
                 }
             },
@@ -108,15 +110,13 @@ export default function useGroupData() {
         }
     }, [docIndex, refetch])
 
-    console.log("ALL HITS", processedData)
-
-
 
     return {
         groupData: processedData?.allHits || [],
         groupTotal: processedData?.totalData || null,
         groupLabel: processedData?.allHits?.[0]?._source?.label || null,
         groupDoc: processedData?.allHits?.[0] || null,
+        groupViewport: processedData?.viewport || null,
         groupError,
         groupLoading, //|| (isFetchingNextPage && !processedData?.shouldExposeData),
         groupRefetching,
