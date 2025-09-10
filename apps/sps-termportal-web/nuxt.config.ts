@@ -11,7 +11,9 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     "@nuxt/icon",
     "@nuxtjs/sanity",
-    "@nuxtjs/tailwindcss"],
+    "@nuxtjs/tailwindcss",
+    "shadcn-nuxt",
+  ],
   ssr: false,
   app: {
     head: {
@@ -27,7 +29,9 @@ export default defineNuxtConfig({
       markdown: {
         remarkPlugins: {
           "remark-emoji": false,
-        } } },
+        },
+      },
+    },
   },
   runtimeConfig: {
     apiKey: uuidv4(),
@@ -114,6 +118,10 @@ export default defineNuxtConfig({
     apiVersion: "2023-10-09",
     token: process.env.SANITY_API_TOKEN,
     useCdn: true,
+  },
+  shadcn: {
+    prefix: "",
+    componentDir: "./components/ui",
   },
   // htmlValidator: {
   //  usePrettier: true,

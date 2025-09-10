@@ -47,6 +47,7 @@
     "prettier-plugin-tailwindcss": "^0.6.14",
     "primevue": "3.35.0",
     "sass": "^1.64.1",
+    "shadcn-nuxt": "^2.2.0",
     "tailwindcss": "^4.1.13",
     "termportal-ui": "*",
     "typescript": "^5.9.2",
@@ -57,5 +58,13 @@
     "vue-i18n": "^9.2.2",
     "vue-matomo": "^4.2.0",
     "zod": "^4.0.15"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^0.543.0",
+    "reka-ui": "^2.5.0",
+    "tailwind-merge": "^3.3.1",
+    "tw-animate-css": "^1.3.8"
   }
 }
