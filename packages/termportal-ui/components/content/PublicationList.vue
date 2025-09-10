@@ -1,6 +1,6 @@
 <template>
   <ol class="publication-list space-y-1.5">
-    <ContentSlot :use="$slots.default" unwrap="p" />
+    <slot/>
   </ol>
 </template>
 
