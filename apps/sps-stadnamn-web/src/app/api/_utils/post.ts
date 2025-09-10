@@ -1,5 +1,5 @@
 
-export async function postQuery(dataset: string, query: any, search_type?: string, enableCache = false, cacheTags: string[] = ['all']): Promise<any[]> {
+export async function postQuery(dataset: string, query: any, search_type?: string, enableCache = true, cacheTags: string[] = ['all']): Promise<any[]> {
     
     // TODO: use the same variable name in prod and test
     const endpoint = process.env.STADNAMN_ES_ENDPOINT
@@ -11,7 +11,7 @@ export async function postQuery(dataset: string, query: any, search_type?: strin
 
     try {
         res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${dataset}/_search${search_type ? `?search_type=${search_type}` : ''}`, {
-            ...enableCache ? {cache: 'force-cache',next: {tags: cacheTags}} : {cache: 'no-store'},
+            ...enableCache ? {cache: 'force-cache', next: {tags: cacheTags}} : {cache: 'no-store'},
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
