@@ -47,9 +47,9 @@ route.openapi(getList, async (c) => {
   const limitInt = parseInt(limit)
 
   const data = await client.search({
-    index: `search-chc`,
+    index: `search-chc-items*`,
     ignore_unavailable: true,
-    from: pageInt,
+    from: pageInt * limitInt, // Multiply page by limit to get correct offset
     size: limitInt,
     // @TODO: Add sorting
     sort: [
@@ -66,6 +66,7 @@ route.openapi(getList, async (c) => {
     data.hits.hits.map((hit: any) => {
       return {
         ...hit._source,
+        identifier: hit._source.id,
         id: `${env.PROD_URL}/items/${hit._source.id}`,
       }
     })
