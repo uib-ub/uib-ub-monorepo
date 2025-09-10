@@ -208,7 +208,7 @@ export default defineAppConfig({
     obsoleteTerm: {
       nb: "term som ikke lenger er i praktisk bruk",
       nn: "term som ikkje lenger er i praktisk bruk",
-      en: "term rated according to the scale of the term acceptability rating as undesired" },
+      en: "term which is no longer in common use" },
     multiWordTerm: {
       nb: "term som består av to eller flere atskilte ord",
       nn: "term som omfattar to eller fleire åtskilde ord",
