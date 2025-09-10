@@ -172,4 +172,69 @@ export default defineAppConfig({
     "DOMENE-3AOkonomiAdministrasjon",
   ] },
   db: { esCacheKeys: ["bootstrap_data"] },
+  tmp: {
+    concept: {
+      nb: "kunnskapsenhet som er dannet gjennom en unik kombinasjon av kjennetegn",
+      nn: "kunnskapseining som er danna gjennom ein unik kombinasjon av kjenneteikn",
+      en: "unit of knowledge created by a unique combination of characteristics" },
+    term: {
+      nb: "betegnelse for et allmennbegrep som tilhører et fagområde",
+      nn: "nemning for eit allmennomgrep som høyrer til eit fagområde",
+      en: "verbal designation of a general concept in a specific subject field" },
+    domain: {
+      nb: "spesialisert kunnskapsområde",
+      nn: "spesialisert kunnskapsområde",
+      en: "field of special knowledge" },
+    termpost: {
+      nb: "del av en strukturert samling terminologiske data som gjelder ett enkelt begrep",
+      nn: "", en: "" },
+    termbase: {
+      nb: "database som inneholder terminologiske data",
+      nn: "", en: "" },
+    prefLabel: {
+      nb: "term som blir sett på som den best egnede for et bestemt begrep",
+      nn: "", en: "" },
+    altLabel: {
+      nb: "term som blir sett på som egnet for et bestemt begrep, og som blir brukt ved siden av en anbefalt term",
+      nn: "", en: "" },
+    hiddenLabel: {
+      nb: "term som blir sett på som uegnet for et bestemt begrep",
+      nn: "", en: "" },
+    obsoleteTerm: {
+      nb: "term som ikke lenger er i praktisk bruk",
+      nn: "", en: "" },
+    multiWordTerm: {
+      nb: "term som består av to eller flere atskilte ord",
+      nn: "", en: "" },
+    complexTerm: {
+      nb: "term som består av ett ord satt sammen av to eller flere ord",
+      nn: "", en: "" },
+    acceptabilityRating: {
+      nb: "",
+      nn: "", en: "" },
+    definition: {
+      nb: "beskrivelse som avgrenser begrepet mot beslektede begreper",
+      nn: "", en: "" },
+    note: {
+      nb: "tilleggsinformasjon om begrepet eller termene i en termpost",
+      nn: "", en: "" },
+    kontext: {
+      nb: "tekstutdrag som viser hvordan en betegnelse brukes",
+      nn: "", en: "" },
+    relation: {
+      nb: "relasjon mellom begreper basert på deres vesentlige kjennetegn",
+      nn: "", en: "" },
+    genericRelation: {
+      nb: "begrepsrelasjon der det ene begrepets begrepsinnhold omfatter det andre begrepets begrepsinnhold og i tillegg ytterligere ett eller flere atskillende kjennetegn",
+      nn: "", en: "" },
+    partitiveRelation: {
+      nb: "begrepsrelasjon der det ene begrepet gjelder en helhet og det andre en del av denne helheten",
+      nn: "", en: "" },
+    relatedRelation: {
+      nb: "begrepsrelasjon som bygger på en bestemt ikke-hierarkisk, tematisk sammenheng mellom begrepenes referenter",
+      nn: "", en: "" },
+    equivalence: {
+      nb: "relasjon mellom betegnelser som i ulike språk står for samme begrep",
+      nn: "", en: "" },
+  },
 });
