@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React, { Fragment } from 'react';
 import parse from 'html-react-parser';
-import { PiInfoFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi';
+import { PiCodeSimple, PiInfoFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import InfoPopover from '@/components/ui/info-popover';
 
@@ -199,8 +199,11 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     },
     ssr2016: null,
     ssr: (source: any) => {
-      return <>
-      {source.ssr && <Link href={`https://stadnamn.kartverket.no/fakta/${source.ssr}`}>Stadnummer:{source.ssr}</Link>}
+      return <><div><PiWarningFill className="inline-block mr-1 text-neutral-600 text-lg" />Sjå faktaark hos Kartverket for informasjon om normeringsstatus</div>
+      {source.ssr && <div className="flex flex-wrap gap-2"><Link className="rectangular-external-link" href={`https://stadnamn.kartverket.no/fakta/${source.ssr}`}>Faktaark</Link>
+      <Link className="rectangular-external-link" href={`http://wfs.geonorge.no/skwms1/wfs.stedsnavn50?service=WFS&version=2.0.0&request=GetFeature&STOREDQUERY_ID=urn:ogc:def:storedQuery:OGC-WFS::Stedsnummer&stedsnummer=${source.ssr}`}>Rådata</Link>
+      </div>}
+      
       </>
     },
     nrk: (source: any) => {

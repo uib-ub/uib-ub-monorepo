@@ -45,7 +45,7 @@ export default function MobileLayout() {
     const [showLoading, setShowLoading] = useState<boolean>(false)
     const mode = useMode()
     const datasetCount = searchParams.getAll('dataset')?.length || 0
-    const { groupTotal, groupLabel, groupLoading } = useGroupData()
+    const { groupTotal, groupLabel, groupLoading, groupDoc } = useGroupData()
     const group = searchParams.get('group')
 
     const datasetTag = searchParams.get('datasetTag')
@@ -274,7 +274,7 @@ export default function MobileLayout() {
                     {drawerContent == 'details' && <>
                         {group && !doc && details == 'group' && <div className="pb-24">
                             <ListExplorer />
-                            {!groupLoading && <Clickable className="px-3 bg-neutral-50 text-xl border-y border-neutral-200 w-full mt-4 aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-12" add={{details: 'overview', namesScope: 'extended'}}>
+                            {groupDoc?._source?.location && <Clickable className="px-3 bg-neutral-50 text-xl border-y border-neutral-200 w-full mt-4 aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-12" add={{details: 'overview', namesScope: 'extended'}}>
                                
                                 Finn liknande namn<PiCaretRightBold className="text-primary-600" aria-hidden="true"/>
                             </Clickable>}

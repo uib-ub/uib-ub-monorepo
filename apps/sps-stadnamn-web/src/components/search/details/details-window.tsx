@@ -125,30 +125,16 @@ export default function DetailsWindow() {
     <div className={`flex gap-2 transition-opacity duration-200 ${isUpdating ? 'opacity-50' : 'opacity-100'}`}>
 
 {!doc && <HitNavigation/>}
-{groupViewport && <IconButton
-onClick={() => {
-    const flyBounds = [
-        [groupViewport.bottom_right.lat, groupViewport.top_left.lon],
-        [groupViewport.top_left.lat, groupViewport.bottom_right.lon]
-    ]
-    mapInstance.current?.flyToBounds(flyBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-}}
-    label="Zoom til søkeresultat"
-    className="btn btn-outline btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10 self-end" 
-    add={{mapInstance: mapInstance.current}}>
-    <PiCrop className="text-lg text-black" aria-hidden="true"/>
-    
-    </IconButton>}
+
 
 {!doc && groupData?.[0]?._source?.group &&
-    <ClickableIcon
-    label="Liknande namn"
+    <Clickable
     aria-current={((!details || details == 'group') && groupCode == groupData[0]._source.group) ? true : false}
     className="btn btn-outline btn-compact aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-10 self-end" 
     add={{details: 'overview'}}>
-    <PiBinocularsFill className="text-lg text-primary-600" aria-hidden="true"/>
+    <PiBinocularsFill className="text-lg text-primary-600" aria-hidden="true"/>Liknande oppslag
     
-    </ClickableIcon>
+    </Clickable>
 }
    
       
@@ -191,7 +177,7 @@ onClick={() => {
 
   
 
-{ ((groupLoading || docLoading) && !docData?._source) ? <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> 
+{ !docData?._source ? <div className="relative break-words p-4 overflow-y-auto stable-scrollbar"><DocSkeleton/></div> 
 : <div className={`overflow-y-auto stable-scrollbar max-h-[calc(100svh-14.5rem)] lg:max-h-[calc(100svh-15.5rem)] border-neutral-200 transition-opacity duration-200 ${isUpdating ? 'opacity-50' : 'opacity-100'}`}>
 <DocInfo/>
 </div> }
