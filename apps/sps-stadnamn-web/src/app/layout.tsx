@@ -68,7 +68,7 @@ export default async function RootLayout({
           <Suspense>
             <Menu/>
           </Suspense>
-          <NavBar className={`hidden xl:flex lg:min-w-[calc(25svw+0.5rem)] text-lg xl:text-xl px-4 items-center shrink-0 small-caps gap-3 font-semibold mb-1 justify-end`}/>
+          <NavBar className={`hidden xl:flex lg:min-w-[calc(25svw+0.5rem)] text-lg font-semibold text-neutral-950 px-4 items-center shrink-0 gap-3 justify-end`}/>
         </header>
          <QueryProvider>
         {children}
