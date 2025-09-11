@@ -3,7 +3,7 @@ import { useState, useEffect, useContext} from 'react';
 import { datasetPresentation, datasetTitles, datasetFeatures, featureNames, datasetTypes, typeNames, datasetDescriptions, datasetShortDescriptions, publishDates } from '@/config/metadata-config'
 import Image from 'next/image'
 import { PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiFunnel, PiMagnifyingGlass } from 'react-icons/pi';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import DatasetToolbar from '@/components/ui/dataset-toolbar';
 import { GlobalContext } from '@/app/global-provider';
 import { fieldConfig } from '@/config/search-config';
@@ -15,10 +15,25 @@ interface FieldWithDatasets {
 
 export default function DatasetBrowser() {
   const searchParams = useSearchParams()
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const router = useRouter()
+  
+  // Initialize state from URL parameters
+  const [selectedFilters, setSelectedFilters] = useState<string[]>(() => {
+    const types = searchParams.getAll('types');
+    const resources = searchParams.getAll('resources'); 
+    const fields = searchParams.getAll('fields');
+    return [...types, ...resources, ...fields];
+  });
+  
+  const [searchTerm, setSearchTerm] = useState<string>(() => {
+    return searchParams.get('search') || '';
+  });
+  
+  const [expandedOption, setExpandedOption] = useState<string | null>(() => {
+    return searchParams.get('expanded') || null;
+  });
+  
   const [stats, setStats] = useState<any>(null);
-  const [expandedOption, setExpandedOption] = useState<string | null>(null);
   const [showAllFields, setShowAllFields] = useState(false);
 
   const allFeatures = Object.keys(featureNames);
@@ -44,9 +59,46 @@ const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((ac
   .sort((a, b) => b.datasets.length - a.datasets.length)
   .map(f => f.label);
 
+  // Update URL when filters change
+  const updateURL = (newFilters: string[], newSearchTerm: string, newExpandedOption: string | null) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    // Clear existing filter params
+    params.delete('types');
+    params.delete('resources');
+    params.delete('fields');
+    params.delete('search');
+    params.delete('expanded');
+    
+    // Categorize filters and add to params
+    newFilters.forEach(filter => {
+      if (Object.keys(typeNames).includes(filter)) {
+        params.append('types', filter);
+      } else if (Object.keys(featureNames).includes(filter)) {
+        params.append('resources', filter);
+      } else {
+        params.append('fields', filter);
+      }
+    });
+    
+    // Add search term
+    if (newSearchTerm) {
+      params.set('search', newSearchTerm);
+    }
+    
+    // Add expanded option
+    if (newExpandedOption) {
+      params.set('expanded', newExpandedOption);
+    }
+    
+    // Use Next.js router to update URL
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+    const newSearchTerm = event.target.value;
+    setSearchTerm(newSearchTerm);
+    updateURL(selectedFilters, newSearchTerm, expandedOption);
   };
 
   useEffect(() => {
@@ -100,11 +152,17 @@ const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((ac
 
 
   const handleFilterChange = (filter: string) => {
-    setSelectedFilters(prevFilters =>
-      prevFilters.includes(filter)
-        ? prevFilters.filter(f => f !== filter)
-        : [...prevFilters, filter]
-    );
+    const newFilters = selectedFilters.includes(filter)
+      ? selectedFilters.filter(f => f !== filter)
+      : [...selectedFilters, filter];
+    
+    setSelectedFilters(newFilters);
+    updateURL(newFilters, searchTerm, expandedOption);
+  };
+
+  const handleExpandedOptionChange = (option: string | null) => {
+    setExpandedOption(option);
+    updateURL(selectedFilters, searchTerm, option);
   };
 
 
@@ -134,13 +192,13 @@ const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((ac
           </div>
           
           <div className="flex gap-4 mt-2">
-          <button className="flex items-center gap-1" onClick={() => setExpandedOption(prev => prev == 'type' ? null : 'type')} aria-controls="dataset-type" aria-expanded={expandedOption == 'type'}>
+          <button className="flex items-center gap-1" onClick={() => handleExpandedOptionChange(expandedOption == 'type' ? null : 'type')} aria-controls="dataset-type" aria-expanded={expandedOption == 'type'}>
             {expandedOption == 'type' ? <PiCaretUpBold aria-hidden="true"/> : <PiCaretDownBold aria-hidden="true"/>}
             Datasettype</button>
-          <button className="flex items-center gap-1" onClick={() => setExpandedOption(prev => prev == 'resources' ? null : 'resources')} aria-controls="dataset-resources" aria-expanded={expandedOption == 'resources'}>
+          <button className="flex items-center gap-1" onClick={() => handleExpandedOptionChange(expandedOption == 'resources' ? null : 'resources')} aria-controls="dataset-resources" aria-expanded={expandedOption == 'resources'}>
             {expandedOption == 'resources' ? <PiCaretUpBold aria-hidden="true"/> : <PiCaretDownBold aria-hidden="true"/>}
             Ressurser</button>
-          <button className="flex items-center gap-1" onClick={() => setExpandedOption(prev => prev == 'fields' ? null : 'fields')} aria-controls="dataset-fields" aria-expanded={expandedOption == 'fields'}>
+          <button className="flex items-center gap-1" onClick={() => handleExpandedOptionChange(expandedOption == 'fields' ? null : 'fields')} aria-controls="dataset-fields" aria-expanded={expandedOption == 'fields'}>
             {expandedOption == 'fields' ? <PiCaretUpBold aria-hidden="true"/> : <PiCaretDownBold aria-hidden="true"/>}
             Felt</button>
           <div className="ml-auto xl:sr-only" role="status" aria-live="polite">{filteredDatasets.length} / {totalValidDatasets}</div>
