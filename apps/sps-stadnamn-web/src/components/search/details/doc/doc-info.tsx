@@ -76,7 +76,9 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
         </div>
         
 
-        <div className="flex gap-2"><h2>{docSource.label}</h2>
+        <div className="flex gap-2">
+          <h2>{nav == 'tree' && treeSettings[docDataset] ? docSource.within ? getValueByPath(docSource, treeSettings[docDataset].leaf) + " "  : getValueByPath(docSource, treeSettings[docDataset].subunit) + " " : ''}
+            {docSource.label}</h2>
         </div>
         <div className="flex gap-2 flex-wrap items-center">
         {
@@ -88,7 +90,7 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
         }
         
         
-            {( Array.isArray(docSource.wikiAdm) && docSource.wikiAdm?.length > 1 && 
+            {nav != 'tree' && ( Array.isArray(docSource.wikiAdm) && docSource.wikiAdm?.length > 1 && 
                 <>
                 {[docSource.adm1, docSource.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
                 {[docSource.adm1, docSource.adm2, docSource.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link className="flex items-center gap-1 bg-neutral-100 px-2 rounded-md text-neutral-900 no-underline" key={index} href={'http://www.wikidata.org/entity/' + docSource.wikiAdm[index]}>{item}</Link>)}
@@ -110,13 +112,13 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
                 </span>
            ) } 
 
-           {treeSettings[docDataset] && docSource.within && <Clickable link 
+           {treeSettings[docDataset] && (nav != 'tree' || docSource.within) && docSource.within && <Clickable link 
            only={{nav: 'tree', dataset: docDataset, adm2: docSource.adm2, adm1: docSource.adm1, doc: docSource.within}}
            className="inline items-center gap-1 bg-neutral-50 border border-neutral-200 pr-0 !px-2 rounded-md text-neutral-950 no-underline">
             {getValueByPath(docSource, treeSettings[docDataset]?.subunit) + " " + getValueByPath(docSource, treeSettings[docDataset].parentName )}
             </Clickable>}     
 
-            {treeSettings[docDataset] && <Clickable link className="inline items-center gap-1 bg-neutral-50 border border-neutral-200 pr-0 !px-2 rounded-md text-neutral-950 no-underline" only={{nav: 'tree', dataset: docDataset, adm2: docSource.adm2, adm1: docSource.adm1, doc: docSource.uuid}}>
+            {treeSettings[docDataset] && nav != 'tree' && <Clickable link className="inline items-center gap-1 bg-neutral-50 border border-neutral-200 pr-0 !px-2 rounded-md text-neutral-950 no-underline" only={{nav: 'tree', dataset: docDataset, adm2: docSource.adm2, adm1: docSource.adm1, doc: docSource.uuid}}>
             {getValueByPath(docSource, docSource.within ? treeSettings[docDataset].leaf : treeSettings[docDataset].subunit)} {docSource.label}
             </Clickable>}     
 

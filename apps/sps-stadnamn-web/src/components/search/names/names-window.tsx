@@ -15,7 +15,6 @@ export default function NamesWindow() {
     return <>
     <div className={`flex p-2 border-b border-neutral-200 gap-1 p-2`}>
         <h2 className="text-neutral-900 text-xl self-center flex items-center px-2">{groupData[0]?._source?.label}<InfoPopover>
-          {JSON.stringify(groupData)}HER
         Få oversikt over treffa innanfor den valde gruppa. Du kan også utvide søket til å gjelde liknande namn i nærleiken. Treffa er ikkje nødvendigvis former av namnet du har valt, og det kan vere namnformer som ikkje kjem med.
         </InfoPopover></h2>
         
