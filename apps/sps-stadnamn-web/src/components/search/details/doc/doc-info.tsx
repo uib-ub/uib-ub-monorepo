@@ -90,7 +90,7 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
         }
         
         
-            {nav != 'tree' && ( Array.isArray(docSource.wikiAdm) && docSource.wikiAdm?.length > 1 && 
+            { ( Array.isArray(docSource.wikiAdm) && docSource.wikiAdm?.length > 1 && 
                 <>
                 {[docSource.adm1, docSource.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
                 {[docSource.adm1, docSource.adm2, docSource.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link className="flex items-center gap-1 bg-neutral-100 px-2 rounded-md text-neutral-900 no-underline" key={index} href={'http://www.wikidata.org/entity/' + docSource.wikiAdm[index]}>{item}</Link>)}

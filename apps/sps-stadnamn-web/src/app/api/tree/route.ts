@@ -4,15 +4,20 @@ import { postQuery } from "../_utils/post";
 
 
 export async function GET(request: Request) {
-    // get params dataset and groupBy, and adm1 and adm2 if they exist
     const searchParams = new URL(request.url).searchParams;
     const { dataset, adm1, adm2 } = Object.fromEntries(searchParams.entries())
     
     const query = {
-        size: 1000,
+        size: 10000,
         track_scores: false,
         query: {
-            exists: { field: "within" }
+            bool: {
+                must: [
+                    { exists: { field: "within" } },
+                    ...(adm1 ? [{ term: { "adm1.keyword": adm1 } }] : []),
+                    ...(adm2 ? [{ term: { "adm2.keyword": adm2 } }] : [])
+                ]
+            }
         },
         sort: adm2 ? 
             treeSettings[dataset].sort.map(field => {
@@ -38,21 +43,11 @@ export async function GET(request: Request) {
             }],
         fields: ["adm1", "adm2", treeSettings[dataset].parentName, "within", treeSettings[dataset].subunit.replace("__", "."), treeSettings[dataset].aggSort],
         collapse: {
-            field: adm2 ? "within.keyword" : adm2 ? treeSettings[dataset].aggSort : "adm1.keyword"
-
-
-            
+            field: adm2 ? "within.keyword" : "adm2.keyword"
         },
-
         _source: false
-        
     }
 
-
-
-
-
-    
     const [data, status] = await postQuery(dataset, query)
 
     return Response.json(data, { status: status })

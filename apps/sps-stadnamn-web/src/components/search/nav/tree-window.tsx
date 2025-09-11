@@ -2,14 +2,19 @@ import useTableData from "@/state/hooks/table-data"
 import { useQuery } from "@tanstack/react-query"
 import { useSearchParams } from "next/navigation"
 import Clickable from "../../ui/clickable/clickable"
-import { formatNumber } from "@/lib/utils"
+import { formatNumber, getValueByPath } from "@/lib/utils"
 import { treeSettings } from "@/config/server-config"
 import { datasetTitles } from '@/config/metadata-config'
+import useSearchData from "@/state/hooks/search-data"
 
-const getTreeData = async (dataset: string, adm1?: string, adm2?: string) => {
+const getTreeData = async (dataset: string | null, adm1?: string | null, adm2?: string | null) => {
     const params = new URLSearchParams()
     if (adm1) params.set('adm1', adm1)
     if (adm2) params.set('adm2', adm2)
+
+    if (!dataset) return null
+
+
     params.set('dataset', dataset)
 
     const res = await fetch(`/api/tree?${params.toString()}`)
@@ -22,6 +27,7 @@ export default function TreeWindow() {
     const adm1 = searchParams.get('adm1')
     const adm2 = searchParams.get('adm2')
     const dataset = searchParams.get('dataset')
+    const { searchData } = useSearchData()
     
     const { data: treeData } = useQuery({
         queryKey: ['treeData', dataset, adm1, adm2],
@@ -49,7 +55,8 @@ export default function TreeWindow() {
 
                         // If we're at adm2 level, show the farm names with gnr
                         if (adm2) {
-                            const gnr = fields[settings.subunit.replace('__', '.')]?.[0]
+                            // Try both nested and direct paths for gnr
+                            const gnr = fields.cadastre?.[0]?.gnr?.[0] || getValueByPath(fields, settings.subunit.replace('__', '.'))
                             const farmName = fields[settings.parentName]?.[0]
                             return (
                                 <li key={item._id}>
@@ -59,7 +66,7 @@ export default function TreeWindow() {
                                         className="flex items-center justify-between p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full"
                                     >
                                         <span className="flex-1 text-neutral-900">
-                                            {farmName} {gnr && `(${gnr})`}
+                                            {gnr && `${gnr}. `}{farmName}
                                         </span>
                                     </Clickable>
                                 </li>
@@ -69,7 +76,7 @@ export default function TreeWindow() {
                         // If we're at adm1 level, show municipality numbers and farm names
                         if (adm1) {
                             const municipalityNumber = fields[settings.aggSort]?.[0]
-                            const farmName = fields[settings.parentName]?.[0]
+                            const municipalityName = fields['adm2']
                             return (
                                 <li key={item._id}>
                                     <Clickable
@@ -78,7 +85,7 @@ export default function TreeWindow() {
                                         className="flex items-center justify-between p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full"
                                     >
                                         <span className="flex-1 text-neutral-900">
-                                            {settings.showNumber ? `${municipalityNumber} ` : ''}{farmName}
+                                            {settings.showNumber ? `${municipalityNumber} ` : ''}{municipalityName}
                                         </span>
                                     </Clickable>
                                 </li>
