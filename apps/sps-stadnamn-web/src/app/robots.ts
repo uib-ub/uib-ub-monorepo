@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: process.env.VERCEL_ENV === 'production' ? {
       userAgent: '*',
       allow: '/',
-      disallow: ['/search/', '/status', '/api'],
+      disallow: ['/search/', '/status', '/api', '/presentasjon'],
     } : {
       userAgent: '*',
       disallow: '/',

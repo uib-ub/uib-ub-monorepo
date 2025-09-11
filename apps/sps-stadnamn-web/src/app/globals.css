@@ -39,6 +39,52 @@
     scrollbar-gutter: stable;
   }
 
+  /* Presentation-specific styles */
+  .prose-presentation a {
+    @apply text-2xl;
+  }
+
+
+  .prose-presentation {
+    @apply text-neutral-950 max-w-none;
+  }
+
+  .prose-presentation h1 {
+    @apply text-6xl md:text-7xl font-bold text-neutral-950 mb-8 leading-tight tracking-tight;
+    font-family: inherit;
+  }
+
+  .prose-presentation h2 {
+    @apply text-4xl md:text-5xl font-semibold text-neutral-900 mb-6 mt-12 leading-tight;
+    font-family: inherit;
+  }
+
+  .prose-presentation h3 {
+    @apply text-3xl md:text-4xl font-medium text-neutral-800 mb-4 mt-8 leading-snug;
+    font-family: inherit;
+  }
+
+  .prose-presentation p {
+    @apply text-xl md:text-3xl text-neutral-800 mb-6 leading-relaxed;
+  }
+
+  .prose-presentation ul {
+    @apply text-xl md:text-4xl text-neutral-800 mb-6 pl-8;
+  }
+
+  .prose-presentation li {
+    @apply mb-3 leading-relaxed;
+  }
+
+
+  .prose-presentation strong {
+    @apply font-semibold text-neutral-900;
+  }
+
+  .prose-presentation em {
+    @apply italic text-neutral-800;
+  }
+
   * {
     scrollbar-color:  #8e8580 transparent;
     scrollbar-width: thin;

@@ -15,9 +15,6 @@ export default function SlideLayout({ children, slideNumber }: SlideLayoutProps)
   const router = useRouter()
 
   useEffect(() => {
-    // Store current path for navbar
-    localStorage.setItem('lastPresentationPage', `/presentasjon/historiedagar2025/${slideNumber}`)
-
     // Set up keyboard navigation
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
