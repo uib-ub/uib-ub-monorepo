@@ -50,9 +50,6 @@ export function extractFacets(request: Request) {
     urlParams.set('boost_lt', '20')
   }
 
-  if (urlParams.get('datasetTag') == 'tree') {
-    urlParams.set('sosi', 'gard')
-  }
 
 
   for (const [key, value] of urlParams.entries()) {

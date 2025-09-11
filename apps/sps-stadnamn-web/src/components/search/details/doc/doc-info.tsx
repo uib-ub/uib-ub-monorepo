@@ -112,6 +112,7 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
                 </span>
            ) } 
 
+
            {treeSettings[docDataset] && (nav != 'tree' || docSource.within) && docSource.within && <Clickable link 
            only={{nav: 'tree', dataset: docDataset, adm2: docSource.adm2, adm1: docSource.adm1, doc: docSource.within}}
            className="inline items-center gap-1 bg-neutral-50 border border-neutral-200 pr-0 !px-2 rounded-md text-neutral-950 no-underline">

@@ -50,6 +50,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const { overviewGroups } = useOverviewData()
   const details = searchParams.get('details')
   const mapInstance = useRef<any>(null)
+  const nav = searchParams.get('nav')
 
 
 
@@ -117,8 +118,17 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
         queryKey: ['markerResults', key, searchQueryString],
         placeHolder: (prevData: any) => prevData,
         queryFn: async () => {
-          const queryParams = new URLSearchParams(searchQueryString);
-          const res = await fetch(`/api/markers/${cell.precision}/${cell.x}/${cell.y}${queryParams.toString() ? `?${queryParams.toString()}` : ''}${searchFilterParamsString ? `&totalHits=${totalHits.value}` : ''}`, { signal: controllerRef.current.signal })
+          const existingParams = new URLSearchParams(searchQueryString)
+    
+          const newParams = existingParams.toString() ? existingParams : new URLSearchParams()
+          if (searchFilterParamsString) {
+            newParams.set('totalHits', totalHits.value)
+          }
+          if (nav == 'tree' && !searchParams.get('within')) {
+            newParams.set('sosi', 'gard')
+          }
+
+          const res = await fetch(`/api/markers/${cell.precision}/${cell.x}/${cell.y}${newParams.toString() ? `?${newParams.toString()}` : ''}`, { signal: controllerRef.current.signal })
           const data = await res.json()
           return data.aggregations.grid.buckets
         }
@@ -475,16 +485,22 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
           
         }
         else {
-        const newQueryParams = new URLSearchParams(searchParams)
-        newQueryParams.delete('doc')
-        newQueryParams.delete('docIndex')
-        if (!newQueryParams.get('details')) {
-          newQueryParams.set('details', 'group')
+            const newQueryParams = new URLSearchParams(searchParams)
+            newQueryParams.delete('doc')
+            newQueryParams.delete('docIndex')
+          if (!newQueryParams.get('details')) {
+            newQueryParams.set('details', 'group')
+          }
+          if (nav == 'tree') {
+            newQueryParams.set('doc', selected.uuid[0])
+          }
+          else {
+            newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
+          
+          }
+          router.push(`?${newQueryParams.toString()}`)
+          }
         }
-        newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
-        router.push(`?${newQueryParams.toString()}`)
-        }
-      }
     }
   }
 
