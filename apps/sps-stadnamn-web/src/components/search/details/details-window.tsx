@@ -24,7 +24,7 @@ export default function DetailsWindow() {
     const router = useRouter()
     const docIndex = useDocIndex()
     const { groupCode } = useGroup()
-    const { isMobile, mapInstance } = useContext(GlobalContext)
+    const { isMobile } = useContext(GlobalContext)
 
     const { docLoading, docData, docRefetching } = useDocData()
     const doc = searchParams.get('doc')
