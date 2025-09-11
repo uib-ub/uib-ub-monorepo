@@ -16,7 +16,12 @@
         "NODE_ENV",
         "SN_ENV",
         "STADNAMN_ES_ENDPOINT",
-        "STADNAMN_ES_TOKEN"
+        "STADNAMN_ES_TOKEN",
+        "ES_TOKEN_TEST",
+        "ES_TOKEN",
+        "ES_ENDPOINT",
+        "ES_ENDPOINT_TEST",
+        "STADNAMN_CACHE_TOKEN"
       ]
     }
   }
