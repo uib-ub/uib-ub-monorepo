@@ -40,13 +40,9 @@
   }
 
   /* Presentation-specific styles */
-  .prose-presentation a {
-    @apply text-2xl;
-  }
-
 
   .prose-presentation {
-    @apply text-neutral-950 max-w-none;
+    @apply text-neutral-950 max-w-none text-4xl;
   }
 
   .prose-presentation h1 {
@@ -65,11 +61,11 @@
   }
 
   .prose-presentation p {
-    @apply text-xl md:text-3xl text-neutral-800 mb-6 leading-relaxed;
+    @apply text-neutral-800 mb-6 leading-relaxed;
   }
 
   .prose-presentation ul {
-    @apply text-xl md:text-4xl text-neutral-800 mb-6 pl-8;
+    @apply text-neutral-800 mb-6 pl-8;
   }
 
   .prose-presentation li {

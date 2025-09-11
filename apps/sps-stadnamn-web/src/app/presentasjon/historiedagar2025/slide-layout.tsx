@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-const TOTAL_PAGES = 3
+const TOTAL_PAGES = 5
 
 interface SlideLayoutProps {
   children: React.ReactNode
