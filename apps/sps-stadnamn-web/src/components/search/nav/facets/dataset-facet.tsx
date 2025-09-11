@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSearchQuery } from '@/lib/search-params';
 import { facetConfig } from '@/config/search-config';
-import { PiMagnifyingGlass, PiCaretRight, PiCaretDownBold, PiTreeViewFill, PiTreeViewLight, PiDatabaseLight, PiDatabaseFill, PiMicroscopeFill, PiMicroscopeLight, PiCircleFill, PiCircleLight, PiListFill, PiListLight, PiStack, PiStackLight, PiStackFill, PiWallFill, PiWallLight } from 'react-icons/pi';
+import { PiMagnifyingGlass, PiCaretRight, PiCaretDownBold, PiTreeViewFill, PiTreeViewLight, PiDatabaseLight, PiDatabaseFill, PiMicroscopeFill, PiMicroscopeLight, PiCircleFill, PiCircleLight, PiListFill, PiListLight, PiStack, PiStackLight, PiStackFill, PiWallFill, PiWallLight, PiCaretUpBold, PiCaretRightBold } from 'react-icons/pi';
 
 import { datasetTitles, datasetShortDescriptions } from '@/config/metadata-config';
 
@@ -14,6 +14,7 @@ import Link from 'next/link';
 import Clickable from '@/components/ui/clickable/clickable';
 import { usePerspective } from '@/lib/param-hooks';
 import Badge from '@/components/ui/badge';
+import { treeSettings } from '@/config/server-config';
 
 // Memoized RegExp factory to prevent memory leaks
 const createSearchRegex = (() => {
@@ -45,6 +46,7 @@ export default function DatasetFacet() {
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
   const paramsExceptFacet = removeFilterParams('dataset')
   const datasetTag = searchParams.get('datasetTag')
+  const isCadastral = searchParams.get('datasetTag') == 'tree'
 
   useEffect(() => {
 
@@ -163,7 +165,7 @@ export default function DatasetFacet() {
     <span className="flex-shrink-0">
       {datasetTag == 'tree' ? <PiTreeViewFill className="text-base text-accent-800" aria-hidden="true"/> : <PiTreeViewLight className="text-base text-neutral-900" aria-hidden="true"/>}
     </span>
-    Registre
+    Matriklar
   </Clickable>
   <Clickable
     role="tab"
@@ -185,8 +187,8 @@ export default function DatasetFacet() {
     { datasetTag == 'deep' && <span className="px-1">Datasett som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>}
     {datasetTag == 'tree' && <span className="px-1">Datasett ordna i eit hierarki etter matrikkelinndelinga.</span>}
 
-    <div className='flex gap-2 px-1'>
-    <div className='relative grow'>
+    {datasetTag != 'tree' && <div className='flex gap-2 px-1'>
+     <div className='relative grow'>
       <input aria-label="Søk i fasett" onChange={(e) => setClientSearch(e.target.value)}
           className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"/>
       <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
@@ -195,7 +197,7 @@ export default function DatasetFacet() {
     </div>
 
     <FacetToolbar/>
-    </div>
+    </div>}
     </div>
     
 
@@ -206,6 +208,14 @@ export default function DatasetFacet() {
         {facetAggregation?.buckets.length ? facetAggregation?.buckets
           .map((item: any) => {
             const label = renderLabel(item.key)
+
+            if (isCadastral) {
+              const dataset = item.key.split('-')[2]
+              
+              return {item, titleMatch: !!treeSettings[dataset]}
+            }
+
+
             const regex = createSearchRegex(clientSearch);
             const titleMatch = clientSearch?.length && regex?.test(label)
             let descriptionMatch = null
@@ -226,9 +236,14 @@ export default function DatasetFacet() {
                 return  (
               <li key={index} className='py-2'>
                 <div className='flex items-start gap-2 lg:gap-1 xl:gap-2'>
-                  <label className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0">
+                  {isCadastral ? 
+                  <Clickable link only={{nav: 'tree',dataset: item.key.split('-')[2]}} className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0 no-underline">
+                  {renderLabel(item.key)}<PiCaretRightBold className="text-primary-600" aria-hidden="true"/>
+                  </Clickable>
+                  
+                  :<label className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0">
                     <input 
-                      type="checkbox" 
+                      type="checkbox"
                       checked={isChecked(item.key)} 
                       className="mr-2 flex-shrink-0" 
                       name="dataset" 
@@ -262,14 +277,14 @@ export default function DatasetFacet() {
                         </span>
                       );
                     })()}
-                  </label>
+                  </label>}
                   <IconButton
                     label={`${isExpanded ? 'Skjul' : 'Vis'} beskrivelse`}
                     onClick={() => toggleDescription(item.key)}
                     className="rounded-full btn btn-outline btn-compact p-1 flex-shrink-0"
                     aria-label={`${isExpanded ? 'Skjul' : 'Vis'} beskrivelse`}
                   >
-                    <PiCaretDownBold className="w-4 h-4" />
+                    {isExpanded ? <PiCaretUpBold className="w-4 h-4" /> : <PiCaretDownBold className="w-4 h-4" />}
                   </IconButton>
                 </div>
                 {isExpanded && (

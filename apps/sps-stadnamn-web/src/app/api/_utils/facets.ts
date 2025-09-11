@@ -47,6 +47,7 @@ export function extractFacets(request: Request) {
   if (urlParams.get('datasetTag') == 'deep') {
     // add boost_gt: '3'
     urlParams.set('boost_gt', '3')
+    urlParams.set('boost_lt', '20')
   }
 
 

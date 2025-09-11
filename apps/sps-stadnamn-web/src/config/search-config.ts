@@ -259,7 +259,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     ssr: {
       ...required, adm, adm1, adm2,
       ssr,
-      "location.type": {label: "Areal", facet, keyword},
+      //"location.type": {label: "Areal", facet, keyword}, // Fungerte bare i tabellen. Dukket ikke opp som facet
       sosi,
       coordinateType,
       ...labelDefaults,

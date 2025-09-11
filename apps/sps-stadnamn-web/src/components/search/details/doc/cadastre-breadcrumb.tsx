@@ -16,21 +16,23 @@ export default function CadastreBreadcrumb() {
     return <>
       {dataset && (
         <>
-        <Clickable link remove={['adm1', 'adm2']}>
+        <Clickable link remove={['adm1', 'adm2', 'dataset']}>
           <PiTreeView className="w-4 h-4 self-center flex-shrink-0" aria-hidden="true" />
         </Clickable>
         <PiCaretRight className="w-4 h-4 self-center flex-shrink-0" />
-          <Clickable link className="breadcrumb-link text-lg" 
+        {adm1 && <>
+                  <Clickable link className="breadcrumb-link text-lg whitespace-nowrap" 
           
 
                     remove={['adm1', 'adm2']}>{datasetTitles[dataset]}
           </Clickable>
           <PiCaretRight className="w-4 h-4 self-center-center flex-shrink-0" />
+         </>}
         </>
       )}
-      {adm1 && (
+      {adm1 && adm2 && (
         <>
-          <Clickable link className="breadcrumb-link text-lg" 
+          <Clickable link className="breadcrumb-link text-lg whitespace-nowrap" 
                      remove={['adm2']}>{adm1}
                      
           </Clickable>
@@ -38,7 +40,7 @@ export default function CadastreBreadcrumb() {
         </>
       )}
 
-      <span className="text-lg">{adm2 || adm1}</span>
+      {dataset && <span className="text-lg">{adm2 || adm1 || datasetTitles[dataset]}</span>}
     </>
   }
   

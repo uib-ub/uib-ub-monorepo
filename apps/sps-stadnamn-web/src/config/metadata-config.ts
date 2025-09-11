@@ -37,7 +37,7 @@ export const modes: Record<string, {title: string, description: string}> = {
 export const datasetTitles: DatasetTitles = {
     all: "Stadnamnsøk",
     core_gnidu: "GNIDu",
-    tree: "Registre",
+    tree: "Matriklar",
     base: "Grunnord",
     deep: "Djupinnsamlingar",
     bsn: "Bustadnamnregisteret",

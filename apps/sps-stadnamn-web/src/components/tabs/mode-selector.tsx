@@ -12,7 +12,7 @@ export default function ModeSelector() {
     const perspective = usePerspective()
     const mode = useMode()
     const { setPreferredTab, isMobile } = useContext(GlobalContext)
-    const group = searchParams.get('group')
+    const nav = searchParams.get('nav')
 
     return <div className={`inline-flex tabs ${mode == 'map' ? 'rounded-br-md lg:rounded-md shadow-lg bg-white' : ''} ${isMobile ? 'pl-2 pt-2 pr-1 pb-1' : ' p-2 gap-1'}`} role="tablist">
             {contentSettings[perspective]?.display == 'map' && <ClickableIcon aria-selected={mode == 'map' ? true : false}
@@ -38,7 +38,7 @@ export default function ModeSelector() {
                             {mode == 'table' ? <PiTableFill className="text-3xl text-accent-800" aria-hidden="true"/>  : <PiTableLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
             </ClickableIcon>
 
-            <ClickableIcon add={{mode: 'list'}} 
+            {nav != 'tree' && <ClickableIcon add={{mode: 'list'}} 
                         onClick={() => {
                             setPreferredTab(perspective, 'list')
                         }}
@@ -47,7 +47,7 @@ export default function ModeSelector() {
                         aria-selected={mode == 'list' ? true : false}
                         className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-auto p-1 px-2">
                             {mode == 'list' ? <PiBookOpenFill className="text-3xl text-accent-800" aria-hidden="true"/>  : <PiBookOpenLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
-            </ClickableIcon>
+            </ClickableIcon>}
 
         </div>
     

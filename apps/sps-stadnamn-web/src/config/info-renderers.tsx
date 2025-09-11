@@ -203,6 +203,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
       {source.ssr && <div className="flex flex-wrap gap-2"><Link className="rectangular-external-link" href={`https://stadnamn.kartverket.no/fakta/${source.ssr}`}>Faktaark</Link>
       <Link className="rectangular-external-link" href={`http://wfs.geonorge.no/skwms1/wfs.stedsnavn50?service=WFS&version=2.0.0&request=GetFeature&STOREDQUERY_ID=urn:ogc:def:storedQuery:OGC-WFS::Stedsnummer&stedsnummer=${source.ssr}`}>Rådata</Link>
       </div>}
+  
       
       </>
     },
