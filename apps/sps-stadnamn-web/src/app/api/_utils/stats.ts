@@ -34,7 +34,7 @@ export async function fetchIIIFStats(manifestUuid?: string) {
         }
       }
     }
-  }, undefined, ['iiif']);
+  }, undefined, ['all', 'iiif']);
 
   if (status !== 200) {
     return null
@@ -87,7 +87,7 @@ export async function fetchStats() {
 
     // Fetch stats and IIIF stats in parallel
     const [[res, status], iiifStats] = await Promise.all([
-        postQuery("all", query, undefined, ['stats']),
+        postQuery("all", query, undefined, ['all', 'stats']),
         fetchIIIFStats()
     ]);
 
