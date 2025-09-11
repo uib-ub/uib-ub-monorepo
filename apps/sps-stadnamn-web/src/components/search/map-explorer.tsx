@@ -46,9 +46,12 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const allowFitBounds = useRef(false)
   const { groupValue } = useGroup()
   const { groupLoading, groupTotal } = useGroupData()
-  const { isMobile, mapInstance } = useContext(GlobalContext)
+  const { isMobile, mapFunctionRef } = useContext(GlobalContext)
   const { overviewGroups } = useOverviewData()
   const details = searchParams.get('details')
+  const mapInstance = useRef<any>(null)
+
+
 
   const dedupedOverviewDocs = useMemo(() => {
     const seen = new Set<string>();
@@ -583,6 +586,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       whenReady={(e: any) => {
         if (!mapInstance.current) {
           mapInstance.current = e.target;
+          mapFunctionRef.current = e.target;
         }
 
       }}

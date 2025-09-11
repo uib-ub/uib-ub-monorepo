@@ -6,6 +6,7 @@ import { useContext, useId } from "react";
 import { PiMapPinFill, PiMapPin } from "react-icons/pi";
 import Link from 'next/link';
 import CoordinateType from './doc/coordinate-type';
+import { useRouter, useSearchParams } from "next/navigation";
 
 function convertDMS(lat: number, lon: number): string {
     function toDMS(degree: number, direction: string[]): string {
@@ -23,11 +24,14 @@ function convertDMS(lat: number, lon: number): string {
 }
 
 export default function CoordinateMenu() {
-    const { coordinateVocab, isMobile, mapInstance } = useContext(GlobalContext)
+    const { coordinateVocab, isMobile, mapFunctionRef } = useContext(GlobalContext)
     const { docData, docDataset } = useDocData()
     const id = useId();
     const popoverId = `coordinate-popover-${id}`;
     const anchorName = `--anchor-${id}`;
+    const searchParams = useSearchParams()
+    const router = useRouter()
+
 
     const coordinateType = docData?._source.coordinateType
     const coordinateMetadata = coordinateVocab[coordinateType]
@@ -36,8 +40,12 @@ export default function CoordinateMenu() {
     const handleFlyTo = () => {
         const lat = docData._source.location.coordinates[1];
         const lng = docData._source.location.coordinates[0];
+        const newUrl = new URLSearchParams(searchParams)
+        newUrl.set('center', `${lat},${lng}`)
+        newUrl.set('zoom', '15')
+        router.push(`?${newUrl.toString()}`)
         
-        mapInstance.current?.flyTo([lat, lng], 15);
+        mapFunctionRef.current?.flyTo([lat, lng], 15);
     }
 
     return docData?._source.location ? (
