@@ -80,6 +80,6 @@ export async function GET(
   }
 
 
-  const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch", true)
+  const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
   return Response.json(data, { status: status })
 }

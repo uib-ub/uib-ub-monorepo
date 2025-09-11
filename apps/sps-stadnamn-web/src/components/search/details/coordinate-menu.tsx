@@ -24,7 +24,7 @@ function convertDMS(lat: number, lon: number): string {
 
 export default function CoordinateMenu() {
     const { coordinateVocab, isMobile, mapInstance } = useContext(GlobalContext)
-    const { docData, docLoading, docDataset } = useDocData()
+    const { docData, docDataset } = useDocData()
     const id = useId();
     const popoverId = `coordinate-popover-${id}`;
     const anchorName = `--anchor-${id}`;
@@ -58,7 +58,7 @@ export default function CoordinateMenu() {
                 popover="auto"
                 // @ts-expect-error: anchor is not yet in React's type definitions
                 anchor={anchorName}
-                className="absolute p-4 rounded-md shadow-md bg-white border border-neutral-200 text-base max-w-[100svw] max-h-[50svh] overflow-auto"
+                className="absolute p-4 rounded-md shadow-md bg-white border border-neutral-200 text-base max-w-[100svw] max-h-[30svh] overflow-auto"
                 style={{
                     top: "auto",
                     left:  "50%",
@@ -73,7 +73,8 @@ export default function CoordinateMenu() {
                 onTouchEnd={(e) => e.stopPropagation()}
             >
                 <div className="my-2 pb-8">
-                <h2 className="text-lg font-bold">Punkt</h2>
+                <h2 className="text-lg font-bold">{docData._source.coordinateType ? coordinateVocab[docData._source.coordinateType].label : "Uspesifisert koordinattype"}</h2>
+                
                     <div className="flex items-center space-x-2">
                         
                         <Link className="font-semibold" 
@@ -81,13 +82,12 @@ export default function CoordinateMenu() {
                             {convertDMS(docData._source.location.coordinates[1], docData._source.location.coordinates[0])}
                         </Link>
                     </div>
-                    {docData._source.coordinateType && 
-                        <CoordinateType source={docData._source}/> 
-                    }
+                    <p>{docData._source.coordinateType ? coordinateVocab[docData._source.coordinateType].definition : "Uspesifisert koordinattype"}</p>
+
                 </div>
             </div>
         </>
     ) : <em className="text-sm text-neutral-500 flex items-center gap-2 p-2">
-        Utan koordinater
+        {docData?._source.location ? "Utan koordinattype" : "Utan koordinater"}
     </em>
 }

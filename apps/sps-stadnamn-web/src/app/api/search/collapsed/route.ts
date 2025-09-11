@@ -98,7 +98,7 @@ export async function GET(request: Request) {
   }
 
   // Only cache if no search string an no filters
-  const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch", !simple_query_string)
+  const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
   return Response.json(data, {status: status})
   
 }

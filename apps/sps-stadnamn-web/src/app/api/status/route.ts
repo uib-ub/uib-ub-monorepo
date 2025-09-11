@@ -60,7 +60,10 @@ export async function GET(request: Request) {
             Object.entries(aliasResult).map(async ([indexName, indexInfo]: [string, any]) => {
                 // Get count for this specific index
                 const indexCountResponse = await fetch(`${endpoint}${indexName}/_count`, {
-                    cache: 'no-store',
+                    cache: 'force-cache',
+                    next: {
+                        tags: ["all"]
+                    },
                     headers: {
                         'Authorization': `ApiKey ${token}`,
                         'Content-Type': 'application/json'
