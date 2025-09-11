@@ -51,6 +51,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const details = searchParams.get('details')
   const mapInstance = useRef<any>(null)
   const nav = searchParams.get('nav')
+  const doc = searchParams.get('doc')
 
 
 
@@ -366,7 +367,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   useEffect(() => {
     if (!mapInstance.current || searchLoading) return
 
-    if (docData?._source?.location?.coordinates?.length && docData?._source?.group?.id == groupValue) {
+    if (docData?._source?.location?.coordinates?.length && (docData?._source?.group?.id == groupValue || docData?._source?.uuid == doc)) {
       const currentBounds = mapInstance.current.getBounds();
       const center = [docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]
       if (currentBounds && !currentBounds.contains(center)) {
@@ -374,7 +375,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       }
     }
 
-  }, [mapInstance, searchLoading, groupValue, docData])
+  }, [mapInstance, searchLoading, groupValue, docData, doc])
 
   // Fly to results
   useEffect(() => {
