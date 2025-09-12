@@ -8,7 +8,7 @@ import { datasetTitles } from '@/config/metadata-config'
 import useSearchData from "@/state/hooks/search-data"
 import CadastralTable from "../details/doc/cadastral-table"
 import useDocData from "@/state/hooks/doc-data"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 const getTreeData = async (dataset: string | null, adm1?: string | null, adm2?: string | null) => {
     const params = new URLSearchParams()
@@ -36,6 +36,19 @@ export default function TreeWindow() {
     
     // Add state to track previous active item
     const [previousDoc, setPreviousDoc] = useState<string | null>(null)
+
+    // Add ref to track the active list item
+    const activeItemRef = useRef<HTMLLIElement>(null)
+
+    // Scroll into view when docData changes
+    useEffect(() => {
+        if (docData?._source && activeItemRef.current) {
+            activeItemRef.current.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            })
+        }
+    }, [docData])
 
     // Update previous doc when current doc changes
     useEffect(() => {
@@ -102,7 +115,10 @@ export default function TreeWindow() {
                             const wasPreviouslyActive = itemWithin === previousDoc
 
                             return (
-                                <li key={item._id}>
+                                <li 
+                                    key={item._id} 
+                                    ref={isActive ? activeItemRef : undefined}
+                                >
                                     <Clickable
                                         link
                                         add={{ doc: itemWithin }}
