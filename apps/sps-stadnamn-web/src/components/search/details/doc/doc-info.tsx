@@ -135,7 +135,7 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
       { docSource.attestations && <Timeline arr={docSource.attestations} parent={docSource.uuid}/> }
       
       {/* Replace the cadastral section with the new component */}
-      { docDataset && docSource.sosi === 'gard' && (
+      { false && docDataset && docSource.sosi === 'gard' && (
         <CadastralTable 
           dataset={docDataset}
           uuid={docSource.uuid}

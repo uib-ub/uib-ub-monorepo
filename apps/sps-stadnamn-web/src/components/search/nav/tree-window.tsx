@@ -6,6 +6,9 @@ import { formatNumber, getSkeletonLength, getValueByPath } from "@/lib/utils"
 import { treeSettings } from "@/config/server-config"
 import { datasetTitles } from '@/config/metadata-config'
 import useSearchData from "@/state/hooks/search-data"
+import CadastralTable from "../details/doc/cadastral-table"
+import useDocData from "@/state/hooks/doc-data"
+import { useState, useEffect } from "react"
 
 const getTreeData = async (dataset: string | null, adm1?: string | null, adm2?: string | null) => {
     const params = new URLSearchParams()
@@ -28,7 +31,19 @@ export default function TreeWindow() {
     const adm2 = searchParams.get('adm2')
     const dataset = searchParams.get('dataset')
     const { searchData } = useSearchData()
+    const doc = searchParams.get('doc')
+    const { docData } = useDocData()
     
+    // Add state to track previous active item
+    const [previousDoc, setPreviousDoc] = useState<string | null>(null)
+
+    // Update previous doc when current doc changes
+    useEffect(() => {
+        if (doc !== previousDoc) {
+            setPreviousDoc(doc)
+        }
+    }, [doc])
+
     const { data: treeData } = useQuery({
         queryKey: ['treeData', dataset, adm1, adm2],
         queryFn: () => getTreeData(dataset, adm1, adm2),
@@ -77,15 +92,20 @@ export default function TreeWindow() {
 
                         // If we're at adm2 level, show the farm names with gnr
                         if (adm2) {
-                            // Try both nested and direct paths for gnr
                             const gnr = fields.cadastre?.[0]?.gnr?.[0] || getValueByPath(fields, settings.subunit.replace('__', '.'))
                             const farmName = fields[settings.parentName]?.[0]
-                            const isActive = fields.within?.[0] === searchParams.get('doc')
+                            const itemWithin = fields.within?.[0]
+                            const isActive = !!docData?._source && (
+                                (itemWithin === docData._source.uuid) || 
+                                (itemWithin === docData._source.within)
+                            )
+                            const wasPreviouslyActive = itemWithin === previousDoc
+
                             return (
                                 <li key={item._id}>
                                     <Clickable
                                         link
-                                        add={{ doc: fields.within?.[0] }}
+                                        add={{ doc: itemWithin }}
                                         className="flex items-center justify-between p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full aria-[current='page']:bg-accent-50"
                                         aria-current={isActive ? 'page' : undefined}
                                     >
@@ -93,6 +113,19 @@ export default function TreeWindow() {
                                             {gnr && `${gnr}. `}{farmName}
                                         </span>
                                     </Clickable>
+
+                                    {(isActive || wasPreviouslyActive) && itemWithin && (
+                                        <div 
+                                            className={`px-3 pb-3 transition-opacity duration-200 ${
+                                                isActive ? 'opacity-100' : 'opacity-0'
+                                            }`}
+                                        >
+                                            <CadastralTable
+                                                dataset={dataset as string}
+                                                uuid={itemWithin as string}
+                                            />
+                                        </div>
+                                    )}
                                 </li>
                             )
                         }

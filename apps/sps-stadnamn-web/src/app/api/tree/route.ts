@@ -41,7 +41,7 @@ export async function GET(request: Request) {
             [{
                 [treeSettings[dataset].aggSort]: { order: "asc" }
             }],
-        fields: ["adm1", "adm2", treeSettings[dataset].parentName, "within", treeSettings[dataset].subunit.replace("__", "."), treeSettings[dataset].aggSort],
+        fields: ["uuid","adm1", "adm2", treeSettings[dataset].parentName, "within", treeSettings[dataset].subunit.replace("__", "."), treeSettings[dataset].aggSort],
         collapse: {
             field: adm2 ? "within.keyword" : adm1 ? "adm2.keyword" : "adm1.keyword"
         },
