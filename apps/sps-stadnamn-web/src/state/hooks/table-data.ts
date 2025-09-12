@@ -52,9 +52,9 @@ export default function useTableData() {
     const perPage = searchParams.get('perPage') ? parseInt(searchParams.get('perPage')!) : 10
     const desc = searchParams.get('desc')
     const asc = searchParams.get('asc')
-    const nav = searchParams.get('nav')
+    const datasetTag = searchParams.get('datasetTag')
     const doc = searchParams.get('doc')
-    const cadastreDoc = nav == 'tree' ? doc : null
+    const cadastreDoc = datasetTag == 'tree' ? doc : null
 
     const { data, error, isLoading, isFetching, refetch, dataUpdatedAt } = useQuery({
         queryKey: ['tableData', page, perPage, searchQueryString, desc, asc, cadastreDoc],

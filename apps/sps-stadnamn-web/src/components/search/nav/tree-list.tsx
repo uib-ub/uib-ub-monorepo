@@ -123,7 +123,7 @@ export default function TreeList() {
                                     <CadastralTable
                                         dataset={dataset as string}
                                         uuid={itemWithin as string}
-                                        list
+                                        list={true}
                                     />
                                 </div>
                             )}

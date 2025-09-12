@@ -237,7 +237,7 @@ export default function DatasetFacet() {
               <li key={index} className='py-2'>
                 <div className='flex items-start gap-2 lg:gap-1 xl:gap-2'>
                   {isCadastral ? 
-                  <Clickable link only={{nav: 'tree',dataset: item.key.split('-')[2]}} className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0 no-underline">
+                  <Clickable link only={{datasetTag: 'tree', dataset: item.key.split('-')[2]}} className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0 no-underline">
                   {renderLabel(item.key)}<PiCaretRightBold className="text-primary-600" aria-hidden="true"/>
                   </Clickable>
                   

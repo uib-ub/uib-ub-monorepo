@@ -16,6 +16,7 @@ export default function NavWindow() {
     const searchParams = useSearchParams()
     const mode = useMode()
     const nav = searchParams.get('nav')
+    const datasetTag = searchParams.get('datasetTag')
     const [isPending, startTransition] = useTransition()
 
 
@@ -24,7 +25,7 @@ export default function NavWindow() {
                 <Clickable
                     add={nav !== 'datasets' ? {nav: 'datasets'} : {}}
                     remove={nav === 'datasets' ? ["nav"] : []}
-                    aria-expanded={nav == 'datasets' || nav == 'tree'}
+                    aria-expanded={nav == 'datasets' || datasetTag == 'tree'}
                     aria-controls="nav-window-content"
                     className="flex h-10 whitespace-nowrap items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pr-4 pl-3">
                         {nav == 'datasets' ? <PiDatabaseFill className="text-lg text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-lg text-neutral-900" aria-hidden="true"/>}
@@ -70,7 +71,7 @@ export default function NavWindow() {
         { nav == 'filters' &&
                 <FacetSection/>
         }
-        { (nav == 'datasets' || nav == 'tree') &&
+        { (nav == 'datasets' || datasetTag == 'tree') &&
         <div className="flex flex-col gap-2">
         <h2 className="text-xl px-2" >
         Datasett

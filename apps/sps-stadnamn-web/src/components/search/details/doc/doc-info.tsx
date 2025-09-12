@@ -58,7 +58,7 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
 
       <div className="!mt-0 flex flex-col gap-1">
 
-       {nav != 'tree' && docDataset && <div className="flex gap-1  items-center">
+       {datasetTag != 'tree' && docDataset && <div className="flex gap-1  items-center">
           
           <span className="text-neutral-800 uppercase font-semibold tracking-wider text-sm">{datasetTitles[docDataset as string]}</span>
           
@@ -77,7 +77,7 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
         
 
         <div className="flex gap-2">
-          <h2>{nav == 'tree' && treeSettings[docDataset] ? docSource.within ? getValueByPath(docSource, treeSettings[docDataset].leaf) + " "  : getValueByPath(docSource, treeSettings[docDataset].subunit) + " " : ''}
+          <h2>{datasetTag == 'tree' && treeSettings[docDataset] ? docSource.within ? getValueByPath(docSource, treeSettings[docDataset].leaf) + " "  : getValueByPath(docSource, treeSettings[docDataset].subunit) + " " : ''}
             {docSource.label}</h2>
         </div>
         <div className="flex gap-2 flex-wrap items-center">
@@ -113,13 +113,13 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
            ) } 
 
 
-           {treeSettings[docDataset] && (nav != 'tree' || docSource.within) && docSource.within && <Clickable link 
-           only={{nav: 'tree', dataset: docDataset, adm2: docSource.adm2, adm1: docSource.adm1, doc: docSource.within}}
+           {treeSettings[docDataset] && (datasetTag != 'tree' || docSource.within) && docSource.within && <Clickable link 
+           only={{datasetTag: 'tree', dataset: docDataset, adm2: docSource.adm2, adm1: docSource.adm1, doc: docSource.within}}
            className="inline items-center gap-1 bg-neutral-50 border border-neutral-200 pr-0 !px-2 rounded-md text-neutral-950 no-underline">
             {getValueByPath(docSource, treeSettings[docDataset]?.subunit) + " " + getValueByPath(docSource, treeSettings[docDataset].parentName )}
             </Clickable>}     
 
-            {treeSettings[docDataset] && nav != 'tree' && <Clickable link className="inline items-center gap-1 bg-neutral-50 border border-neutral-200 pr-0 !px-2 rounded-md text-neutral-950 no-underline" only={{nav: 'tree', dataset: docDataset, adm2: docSource.adm2, adm1: docSource.adm1, doc: docSource.uuid}}>
+            {treeSettings[docDataset] && datasetTag != 'tree' && <Clickable link className="inline items-center gap-1 bg-neutral-50 border border-neutral-200 pr-0 !px-2 rounded-md text-neutral-950 no-underline" only={{datasetTag: 'tree', dataset: docDataset, adm2: docSource.adm2, adm1: docSource.adm1, doc: docSource.uuid}}>
             {getValueByPath(docSource, docSource.within ? treeSettings[docDataset].leaf : treeSettings[docDataset].subunit)} {docSource.label}
             </Clickable>}     
 
@@ -135,10 +135,11 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
       { docSource.attestations && <Timeline arr={docSource.attestations} parent={docSource.uuid}/> }
       
       {/* Replace the cadastral section with the new component */}
-      { false && docDataset && docSource.sosi === 'gard' && (
+      { docDataset && docSource.sosi === 'gard' && (
         <CadastralTable 
           dataset={docDataset}
           uuid={docSource.uuid}
+          list={false}
         />
       )}
 

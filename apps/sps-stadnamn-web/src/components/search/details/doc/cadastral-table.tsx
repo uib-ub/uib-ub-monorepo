@@ -46,7 +46,7 @@ export default function CadastralTable({ dataset, uuid, list }: CadastralTablePr
     return <ul className="list-none divide-y divide-neutral-200">
       {hits.map((hit: any) => (
         <li key={hit._id} className="py-2">
-            <Clickable link add={{ doc: hit._source.uuid }} className="no-underline block px-3 py-2 hover:bg-neutral-50">
+            <Clickable link add={{ doc: hit._source.uuid, details: 'group' }} className="no-underline block px-3 py-2 hover:bg-neutral-50">
                 {`${getBnr(hit, dataset)} ${hit._source.label}`}
             </Clickable>
         </li>

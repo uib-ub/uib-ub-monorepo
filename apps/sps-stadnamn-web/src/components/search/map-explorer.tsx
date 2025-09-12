@@ -52,6 +52,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const mapInstance = useRef<any>(null)
   const nav = searchParams.get('nav')
   const doc = searchParams.get('doc')
+  const datasetTag = searchParams.get('datasetTag')
 
 
 
@@ -125,7 +126,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
           if (searchFilterParamsString) {
             newParams.set('totalHits', totalHits.value)
           }
-          if (nav == 'tree' && !searchParams.get('within')) {
+          if (datasetTag == 'tree' && !searchParams.get('within')) {
             newParams.set('sosi', 'gard')
           }
 
@@ -492,7 +493,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
           if (!newQueryParams.get('details')) {
             newQueryParams.set('details', 'group')
           }
-          if (nav == 'tree') {
+          if (datasetTag == 'tree') {
             newQueryParams.set('doc', selected.uuid[0])
           }
           else {

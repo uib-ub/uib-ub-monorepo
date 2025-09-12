@@ -19,8 +19,8 @@ export function useSearchQuery() {
     const datasetFilters: [string, string][] = []
     const secondaryDatasetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
-    const nav = searchParams.get('nav')
     const size = parseInt(searchParams.get('size') || "20")
+    const datasetTag = searchParams.get('datasetTag')
     
 
 
@@ -75,7 +75,7 @@ export function useSearchQuery() {
     })
     
     const fulltext = searchParams.get('fulltext')
-    if (fulltext && nav != 'tree') {
+    if (fulltext && datasetTag != 'tree') {
         searchQuery.set('fulltext', 'on')
     }
 
