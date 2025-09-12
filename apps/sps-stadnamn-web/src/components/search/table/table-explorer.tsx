@@ -24,7 +24,7 @@ export default function TableExplorer() {
     
 
     const doc = searchParams.get('doc')
-    const nav = searchParams.get('nav')
+    const datasetTag = searchParams.get('datasetTag')
 
     const { tableData, tableLoading } = useTableData()
 
