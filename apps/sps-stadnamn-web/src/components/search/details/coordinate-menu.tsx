@@ -35,7 +35,7 @@ export default function CoordinateMenu() {
 
     const coordinateType = docData?._source.coordinateType
     const coordinateMetadata = coordinateVocab[coordinateType]
-    const isOriginal = !coordinateType || (docDataset && ["ssr2016", "ssr2020"].includes(docDataset)) || coordinateMetadata?.creator === "ssr"
+    const isOriginal = !coordinateType || (docDataset && ["ssr2016"].includes(docDataset)) || coordinateMetadata?.creator === "ssr"
     
     const handleFlyTo = () => {
         const lat = docData._source.location.coordinates[1];
