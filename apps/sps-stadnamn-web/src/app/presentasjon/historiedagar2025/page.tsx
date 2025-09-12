@@ -157,7 +157,7 @@ export default function OverviewPage() {
             </div>
 
             {/* Print button */}
-            <div className="fixed left-12 bottom-32 bg-black/10 backdrop-blur-sm p-2 rounded-lg z-[60]">
+            {false &&<div className="fixed left-12 bottom-32 bg-black/10 backdrop-blur-sm p-2 rounded-lg z-[60]">
                 <button
                     onClick={handlePrint}
                     className="p-2 rounded hover:bg-black/20 flex items-center gap-2 flex-nowrap"
@@ -165,7 +165,7 @@ export default function OverviewPage() {
                 >
                     <PiPrinter className="text-2xl" aria-hidden="true"/>Skriv ut
                 </button>
-            </div>
+            </div>}
 
             {/* Main content */}
             <div className="flex-grow max-w-5xl mx-auto px-4 py-8 w-full flex items-center justify-center min-h-[60vh] md:min-h-[70vh]">

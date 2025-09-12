@@ -18,6 +18,7 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
   const datasetTag = searchParams.get('datasetTag')
   const doc = searchParams.get('doc')
   const details = searchParams.get('details')
+  const nav = searchParams.get('nav')
 
   const { flattenedPages, groupPosition } = useMemo((): { flattenedPages: any[]; groupPosition: number } => {
     const flattenedPages = collapsedData?.pages.flatMap(page => page.data ?? []) ?? [];
@@ -71,7 +72,7 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
         opacity: currentPosition == 80 ? 1 : 0,
         pointerEvents: currentPosition == 80 ? 'auto' : 'none'
       }}>
-        {drawerContent == 'details' && doc && <div className="flex gap-1">
+        {nav != 'tree' && drawerContent == 'details' && doc && <div className="flex gap-1">
           <Clickable remove={['doc']} className="btn btn-outline rounded-full shadow-lg h-12 flex items-center justify-center gap-2">
             <PiCaretLeftBold className="text-xl" aria-hidden="true" />Tilbake
           </Clickable>

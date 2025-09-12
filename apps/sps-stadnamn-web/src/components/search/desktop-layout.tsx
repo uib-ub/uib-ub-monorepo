@@ -8,7 +8,6 @@ import NavWindow from "./nav/nav-window"
 import DetailsWindow from "./details/details-window"
 import NamesWindow from "./names/names-window"
 import MapWrapper from "./map-wrapper"
-import TreeResults from './nav/results/tree-results';
 import TreeWindow from './nav/tree-window';
 
 export default function DesktopLayout() {    

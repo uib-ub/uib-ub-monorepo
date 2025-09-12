@@ -22,7 +22,10 @@ import MapWrapper from "./map-wrapper";
 import useSearchData from "@/state/hooks/search-data";
 import MobileSearchNav from "./details/doc/mobile-search-nav";
 import { useMode } from "@/lib/param-hooks"
-import TreeWindow from "./nav/tree-window";
+import TreeWindow from "./nav/tree-list";
+import TreeList from "./nav/tree-list";
+import { datasetTitles } from "@/config/metadata-config";
+import CadastreBreadcrumb from "./details/doc/cadastre-breadcrumb";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -34,6 +37,9 @@ export default function MobileLayout() {
     const scrollableContent = useRef<HTMLDivElement>(null);
     const [startTouchTime, setStartTouchTime] = useState<number>(0);
     const searchParams = useSearchParams()
+    const adm2 = searchParams.get('adm2')
+    const adm1 = searchParams.get('adm1')
+    const dataset = searchParams.get('dataset')
 
     const [drawerContent, setDrawerContent] = useState<string | null>(null)
     const nav = searchParams.get('nav')
@@ -292,7 +298,16 @@ export default function MobileLayout() {
 
 
                     </>}
-                    {drawerContent == 'results' &&
+                    {drawerContent == 'results' && nav == 'tree' &&
+                        <section className="flex flex-col gap-2 p-2">
+                            <h2 className="text-neutral-900 text-xl px-2">
+                                {adm2 ? adm2 : adm1 ? adm1 : datasetTitles[dataset || '']}
+                            </h2>
+                            <div className="flex flex-wrap items-center gap-2 p-2"><CadastreBreadcrumb/></div>
+                            <TreeList/>
+                        </section>
+                    }
+                    {drawerContent == 'results' && nav != 'tree' &&
                         <section className="flex flex-col gap-2 p-2">
                             <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">
                                 Treff <span className={`results-badge bg-primary-500 left-8 rounded-full text-white text-xs whitespace-nowrap ${totalHits && totalHits.value < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -328,9 +343,6 @@ export default function MobileLayout() {
                         </div>
 
                     }
-                    {drawerContent == 'tree' &&
-                        <TreeWindow />
-                    }
                 </div>
             </>
             }
@@ -350,11 +362,9 @@ export default function MobileLayout() {
 
 
 
-                {datasetTag == 'tree' && <Clickable aria-label='Register' onClick={() => toggleDrawer('tree')} add={nav == 'tree' ? { nav: null } : { nav: 'tree' }} remove={['details']} aria-current={drawerContent == 'tree' ? 'page' : 'false'}>
-                    <PiTreeViewFill className="text-3xl" />
-                </Clickable>}
+                
 
-                {<Clickable aria-label="Filtre" onClick={() => toggleDrawer('filters')} add={nav == 'filters' ? { nav: null } : { nav: 'filters' }} remove={['details']} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'}>
+                { nav != 'tree' && <Clickable aria-label="Filtre" onClick={() => toggleDrawer('filters')} add={nav == 'filters' ? { nav: null } : { nav: 'filters' }} remove={['details']} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'}>
                     <div className="relative">
                         <PiFunnel className="text-3xl" />
                         {facetFilters.length > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${facetFilters.length < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -364,17 +374,17 @@ export default function MobileLayout() {
                 </Clickable>}
 
                 {mode != 'table' &&
-                    <Clickable aria-label='Søkeresultater' onClick={() => toggleDrawer('results')} add={nav == 'results' ? { nav: null } : { nav: 'results' }} remove={['details']}
+                    <Clickable aria-label='Søkeresultater' onClick={() => toggleDrawer('results')} remove={['details']}
                         aria-current={drawerContent == 'results' ? 'page' : 'false'}>
                         <div className="relative">
-                            <PiListBullets className="text-3xl" />
+                            {nav == 'tree' ? <PiTreeViewFill className="text-3xl" /> : <PiListBullets className="text-3xl" />}
                             <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${totalHits && totalHits.value < 10 ? 'px-1.5' : 'px-1'}`}>
                                 {totalHits && formatNumber(totalHits.value)}
                             </span>
                         </div>
                     </Clickable>}
 
-                {group && groupTotal?.value > 0 &&  <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('details')} add={{nav: null , details: 'group'}} remove={['nav']} aria-current={drawerContent == 'details' ? 'page' : 'false'}>
+                {(doc || (group && groupTotal?.value > 0)) &&  <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('details')} add={{details: 'group'}} aria-current={drawerContent == 'details' ? 'page' : 'false'}>
                      <div className="relative">
                         <PiBookOpen className="text-3xl" />
                             <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${groupTotal && groupTotal.value < 10 ? 'px-1.5' : 'px-1'}`}>
