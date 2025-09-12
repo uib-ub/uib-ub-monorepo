@@ -940,6 +940,14 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
               >
               </Marker>
             }
+            {doc && docData?._source?.within && <Marker 
+              zIndexOffset={1000}
+              icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))}
+              position={[docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]}
+            >
+              {docData?._source?.label}
+            </Marker>
+            }
 
           </>)
       }}

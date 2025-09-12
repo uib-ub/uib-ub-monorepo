@@ -19,7 +19,7 @@ export default function StatusSection() {
     const datasetTag = searchParams.get('datasetTag')
 
     return <div className={`flex flex-col gap-2 ${mode != 'map' ? 'bg-white shadow-lg rounded-md' : ''}`}> 
-    <div className={`flex gap-1 items-start ${(mode == 'map' && !isMobile) ? 'lg:mt-2' : ''}`}>
+    <div className={`flex gap-1 items-start ${(mode == 'map' && !isMobile) ? 'lg:mt-2' : 'items-center'}`}>
     {datasetTag != 'base' && !isMobile && <ModeSelector/>}
     
     

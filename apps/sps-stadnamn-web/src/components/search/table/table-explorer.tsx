@@ -1,5 +1,5 @@
 import { facetConfig } from "@/config/search-config"
-import { contentSettings } from "@/config/server-config"
+import { contentSettings, treeSettings } from "@/config/server-config"
 import { usePerspective } from "@/lib/param-hooks"
 import { useSearchParams } from "next/navigation"
 import { Fragment, useContext } from "react"
@@ -7,7 +7,7 @@ import { PiBookOpen, PiMapPinFill } from "react-icons/pi"
 import SortHeader from "./sort-header"
 import Pagination from "@/components/results/pagination"
 import { formatCadastre } from "@/config/result-renderers"
-import { getSkeletonLength } from "@/lib/utils"
+import { getGnr, getSkeletonLength, getValueByPath } from "@/lib/utils"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import Clickable from "@/components/ui/clickable/clickable"
 import { GlobalContext } from "@/app/global-provider"
@@ -24,7 +24,7 @@ export default function TableExplorer() {
     
 
     const doc = searchParams.get('doc')
-    const group = searchParams.get('group')
+    const nav = searchParams.get('nav')
 
     const { tableData, tableLoading } = useTableData()
 
@@ -58,9 +58,10 @@ export default function TableExplorer() {
 
     return <div  className='flex flex-col py-2 gap-y-4 h-full'>
                     <div className='flex  flex-col gap-4 xl:gap-2 !mx-2'>
-                    
+                    { nav == 'tree' && doc && tableData?.[0]?._source && treeSettings[perspective] && <h2 className="text-xl px-1">{`${getGnr(tableData?.[0], perspective) || getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.subunit) || ""} ${getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.parentName) || tableData?.[0]?._source?.label || ""}`}</h2>}
                     
                     <div className="border border-neutral-300 rounded-md">
+                    
                      <table className='result-table'>
                         <thead>
                             {!searchLoading ? <tr className={`${tableLoading ? 'opacity-50' : ''}`}>

@@ -113,7 +113,7 @@ export default function ActiveFilters() {
     //const gnr =  getGnr(parentData, perspective)
 
     if (nav == 'tree') {
-      return <div className={`text-neutral-950 flex-wrap  rounded-md gap-2 px-3 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}>
+      return <div className={`text-neutral-950 flex-wrap  rounded-md gap-2 px-3 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : ''}`}>
         <CadastreBreadcrumb/></div>
     }
 
