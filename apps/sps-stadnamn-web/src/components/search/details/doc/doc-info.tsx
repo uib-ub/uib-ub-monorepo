@@ -20,7 +20,7 @@ import Timeline from "@/components/doc/timeline"
 import useDocData from "@/state/hooks/doc-data"
 import { usePerspective, useMode } from "@/lib/param-hooks"
 import Clickable from "@/components/ui/clickable/clickable"
-
+import CadastralTable from "./cadastral-table"
 
 
 export default function DocInfo({docParams}: {docParams?: {docData: Record<string, any>, docDataset?: string}}) {
@@ -134,8 +134,14 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
 
       { docSource.attestations && <Timeline arr={docSource.attestations} parent={docSource.uuid}/> }
       
-      
-      
+      {/* Replace the cadastral section with the new component */}
+      { docDataset && docSource.sosi === 'gard' && (
+        <CadastralTable 
+          dataset={docDataset}
+          uuid={docSource.uuid}
+        />
+      )}
+
       {docDataset && (() => {
         try {
           return infoPageRenderers[docDataset]?.(docSource);

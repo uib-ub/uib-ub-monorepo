@@ -9,13 +9,16 @@ const tableQuery = async ({
     perPage = 10,
     searchQueryString = '',
     desc = null,
-    asc = null
+    asc = null,
+    within = null
+
 }: {
     page?: number;
     perPage?: number;
     searchQueryString?: string;
     desc?: string | null;
     asc?: string | null;
+    within?: string | null;
 }) => {
     // Build URL with already-encoded searchQueryString and additional parameters
     const additionalParams = new URLSearchParams();
@@ -23,6 +26,7 @@ const tableQuery = async ({
     if (desc) additionalParams.set('desc', desc);
     if (asc) additionalParams.set('asc', asc);
     if (page > 1) additionalParams.set('from', ((page - 1) * perPage).toString());
+    if (within) additionalParams.set('within', within);
 
     // Combine searchQueryString with additional parameters
     const baseUrl = `/api/search/table?${searchQueryString}`;
@@ -48,10 +52,13 @@ export default function useTableData() {
     const perPage = searchParams.get('perPage') ? parseInt(searchParams.get('perPage')!) : 10
     const desc = searchParams.get('desc')
     const asc = searchParams.get('asc')
+    const nav = searchParams.get('nav')
+    const doc = searchParams.get('doc')
+    const cadastreDoc = nav == 'tree' ? doc : null
 
     const { data, error, isLoading, isFetching, refetch, dataUpdatedAt } = useQuery({
-        queryKey: ['tableData', page, perPage, searchQueryString, desc, asc],
-        queryFn: () => tableQuery({ page, perPage, searchQueryString, desc, asc }),
+        queryKey: ['tableData', page, perPage, searchQueryString, desc, asc, cadastreDoc],
+        queryFn: () => tableQuery({ page, perPage, searchQueryString, desc, asc, within: cadastreDoc }),
         placeholderData : (prevData) => prevData,
         refetchOnWindowFocus: false,
         staleTime: 1000 * 60 * 5, // 5 minutes
