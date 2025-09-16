@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef, useState, useCallback, useMemo, useContext } from "react";
 import Map from "../map/map";
 import { baseMaps, baseMapKeys, defaultBaseMap, baseMapLookup } from "@/config/basemap-config";
-import { PiBookOpen, PiBookOpenFill, PiCheckCircleFill, PiCrop, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill, PiStackSimpleFill } from "react-icons/pi";
+import { PiBookOpen, PiBookOpenFill, PiCheckCircleFill, PiCrop, PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill, PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 import {
   DropdownMenu,
@@ -956,8 +956,8 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
     </Map>
     {/* Canvas overlay for label mode */}
-    <div className={`absolute right-0 p-2 gap-3 bottom-5 left-1/2 transform -translate-x-1/2 flex justify-center p-2 gap-2 text-white z-[3001]`}>
-      <DropdownMenu>
+    {!isMobile && <div className={`absolute xl:right-0 p-2 bottom-5 right-0 xl:left-1/2 transform xl:-translate-x-1/2 flex flex-col lg:flex-row justify-center gap-2 text-white z-[3001]`}>
+      {!isMobile && <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <IconButton label="Bakgrunnskart" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm cursor-pointer">
             <PiStackSimpleFill className="text-xl" />
@@ -1028,8 +1028,8 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
           </>
           )}
         </DropdownMenuContent>
-      </DropdownMenu>
-      <DropdownMenu>
+      </DropdownMenu>}
+      {!isMobile && <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <IconButton label="Markørar" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm cursor-pointer">
             <PiMapPinLineFill className="text-xl" />
@@ -1067,23 +1067,23 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
             </>
           )}
         </DropdownMenuContent>
-      </DropdownMenu>
-      <IconButton onClick={() => mapInstance.current?.zoomIn()} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn">
+      </DropdownMenu>}
+      {!isMobile && <IconButton onClick={() => mapInstance.current?.zoomIn()} side="top" className="p-2 lg:p-2.5 rounded-md xl:rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn">
         <PiMagnifyingGlassPlusFill className="text-xl" />
-      </IconButton>
-      <IconButton onClick={() => mapInstance.current?.zoomOut()} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut">
+      </IconButton>}
+      {!isMobile && <IconButton onClick={() => mapInstance.current?.zoomOut()} side="top" className="p-2 lg:p-2.5 rounded-md xl:rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut">
         <PiMagnifyingGlassMinusFill className="text-xl" />
+      </IconButton>}
+      <IconButton onClick={getMyLocation} side="top" className="p-2 lg:p-2.5 rounded-md xl:rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon">
+        <PiGpsFix className="text-xl" />
       </IconButton>
-      <IconButton onClick={getMyLocation} side="top" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon">
-        <PiNavigationArrowFill className="text-xl" />
-      </IconButton>
-      <IconButton className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom til søkeresultat" onClick={() => {
+      <IconButton className="p-2 lg:p-2.5 rounded-md xl:rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom til søkeresultat" onClick={() => {
         if (searchBounds?.length) {
           mapInstance.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
         }
       }}>
         <PiCrop className="text-xl" />
       </IconButton>
-    </div>
+    </div>}
   </>
 }

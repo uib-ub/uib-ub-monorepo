@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from "react"
-import { PiBinocularsFill, PiBookOpen, PiCaretRightBold, PiDatabase, PiFunnel, PiListBullets, PiTreeViewFill } from "react-icons/pi";
+import { PiBinocularsFill, PiBookOpen, PiCaretRightBold, PiDatabase, PiFunnel, PiGpsFix, PiListBullets, PiStackPlus, PiTreeViewFill } from "react-icons/pi";
 import SearchResults from "./nav/results/search-results";
 import { useSearchQuery } from "@/lib/search-params";
 import StatusSection from "./status-section";
@@ -26,6 +26,7 @@ import TreeWindow from "./nav/tree-list";
 import TreeList from "./nav/tree-list";
 import { datasetTitles } from "@/config/metadata-config";
 import CadastreBreadcrumb from "./details/doc/cadastre-breadcrumb";
+import ClickableIcon from "../ui/clickable/clickable-icon";
 
 export default function MobileLayout() {
     const [currentPosition, setCurrentPosition] = useState(25);
@@ -75,9 +76,9 @@ export default function MobileLayout() {
         , [searchLoading, facetIsLoading])
 
     const isScrolling = (target: EventTarget) => {
-        if (snappedPosition == 80 && target instanceof Node && scrollableContent.current?.contains(target)) {
+        if (snappedPosition == 50 && target instanceof Node && scrollableContent.current?.contains(target)) {
             return scrollableContent.current.scrollTop != 0
-        }
+    }
     }
 
     const isScrollable = () => {
@@ -89,7 +90,7 @@ export default function MobileLayout() {
 
     const pos2svh = (yPos: number) => {
         const windowHeight = window.visualViewport?.height || window.innerHeight;
-        return (windowHeight - yPos) / windowHeight * 80
+        return (windowHeight - yPos) / windowHeight * 50
     }
 
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -122,11 +123,11 @@ export default function MobileLayout() {
         
         if (isQuickSwipe) {
             if (drawerSwipeDirection === 'up') {
-                newPosition = 80
+                newPosition = 50
             }
             else if (drawerSwipeDirection === 'down') {
-                if (currentPosition > 20) {
-                    newPosition = 20
+                if (currentPosition > 25) {
+                    newPosition = 25
                 }
                 else {
                     setDrawerContent(null)
@@ -135,8 +136,8 @@ export default function MobileLayout() {
             }
         }
         else {
-            // Custom snapping logic for positions 20, 40, 80
-            const snapPositions = [20, 40, 80];
+            // Custom snapping logic for positions 25, 40, 80
+            const snapPositions = [25, 50];
             let closestPosition = snapPositions[0];
             let minDistance = Math.abs(currentPosition - closestPosition);
             
@@ -166,12 +167,12 @@ export default function MobileLayout() {
                 newPosition = closestPosition;
             }
             
-            if (newPosition < 20) {
+            if (newPosition < 25) {
                 setDrawerContent(null)
                 newPosition = snappedPosition  // Keep original logic - don't change this!
             }
-            else if (newPosition > 80) {
-                newPosition = 80
+            else if (newPosition > 50) {
+                newPosition = 50
             }
         }
 
@@ -192,7 +193,7 @@ export default function MobileLayout() {
 
         const newHeight = snappedPosition - pos2svh(startTouchY) + pos2svh(e.touches[0].clientY)
         setDrawerSwipeDirection(newHeight > currentPosition ? 'up' : 'down');
-        setCurrentPosition(newHeight < 80 ? newHeight : 80);
+        setCurrentPosition(newHeight < 50 ? newHeight : 50);
     }
 
     useEffect(() => {
@@ -226,7 +227,7 @@ export default function MobileLayout() {
         };
 
         const currentRef = scrollableContent.current;
-        if (currentRef && currentPosition === 80) {
+        if (currentRef && currentPosition === 50) {
             currentRef.addEventListener('scroll', handleScroll, { passive: true });
         }
 
@@ -250,8 +251,8 @@ export default function MobileLayout() {
                     setDrawerContent(null)
                 }
                 else {
-                    setCurrentPosition(20)
-                    setSnappedPosition(20)
+                    setCurrentPosition(25)
+                    setSnappedPosition(25)
                     setSnapped(true)
                 }
 
@@ -265,20 +266,65 @@ export default function MobileLayout() {
         };
     }, [drawerContent, doc, group]);
 
-    return <div className="scroll-container">
+    return <>
+    {snappedPosition < 50 &&  <>
+    	<div
+	className={`absolute flex gap-2 left-3 z-[4000]`}
+	style={{ bottom: drawerContent ? `calc(${currentPosition}svh - 1.75rem)` : '2rem' }}
+>
+{drawerContent != 'filters' && <ClickableIcon
+	onClick={() => toggleDrawer('filters')}
+	label="Filtre"
+	className={`rounded-full bg-white text-neutral-800 shadow-lg p-3 ${snapped ? 'transition-[bottom] duration-300 ease-in-out' : ''}`}
+>
+	<PiFunnel className="text-2xl" aria-hidden="true" />
+	</ClickableIcon>}
+
+    {!drawerContent && <ClickableIcon
+	onClick={() => toggleDrawer('details')}
+	label="Oppslag"
+	className={`rounded-full bg-white text-neutral-800 shadow-lg p-3 ${snapped ? 'transition-[bottom] duration-300 ease-in-out' : ''}`}
+>
+	<PiBookOpen className="text-2xl" aria-hidden="true" />
+	</ClickableIcon>}
+	
+	</div>
+   <div className="absolute flex gap-2 right-3 z-[4000]"
+    style={{ bottom: drawerContent ? `calc(${currentPosition}svh - 1.75rem)` : '2rem' }}
+    >
+        <ClickableIcon
+        label="Min posisjon"
+        onClick={() => {}}
+        className="rounded-full bg-white text-neutral-800 shadow-lg p-3"
+        >
+        <PiGpsFix className="text-2xl" aria-hidden="true" />
+        </ClickableIcon>
+    </div>
+    <div className="absolute flex gap-2 top-[4.5rem] right-3 z-[4000]">
+        <ClickableIcon
+        label="Min posisjon"
+        onClick={() => {}}
+        className="rounded-full bg-white text-neutral-800 shadow-lg p-3"
+        >
+        <PiStackPlus className="text-2xl" aria-hidden="true" />
+        </ClickableIcon>
+    </div></>}
+    
+    <div className="scroll-container">
+        
         <div
             ref={drawerRef}
-            className={`mobile-interface fixed bottom-8 w-full h-full rounded-t-xl bg-neutral-800 ${snapped ? 'transition-all duration-300 ease-in-out ' : ''}`}
+            className={`mobile-interface fixed -bottom-10 w-full h-full  rounded-t-full drawer bg-white ${snapped ? 'transition-[height] duration-300 ease-in-out ' : ''}`}
             style={{ height: `${drawerContent ? currentPosition : 0}svh` }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}>
             {drawerContent && <>
-                <div className="w-full flex  items-center h-4 pt-2 rounded-t-md bg-neutral-800 relative px-2" style={{ touchAction: 'none' }}>
-                    <div className="absolute -translate-x-1/2 left-1/2 h-1.5 top-1.5 w-16 bg-neutral-300 rounded-full"></div></div>
-                <div className={`h-full bg-white flex flex-col rounded-lg shadow-inner border-4 pb-20 border-neutral-800 max-h-[calc(100svh-10rem)] overscroll-contain`} ref={scrollableContent} style={{ overflowY: snappedPosition == 80 && currentPosition == 80 ? 'auto' : 'hidden', touchAction: ( snappedPosition == 80 && currentPosition == 80 && isScrollable()) ? 'pan-y' : 'none' }}>
+                <div className={`w-full flex  items-center h-4 pt-2 rounded-t-full bg-white relative px-2`} style={{ touchAction: 'none' }}>
+                    <div className="absolute -translate-x-1/2 -translate-y-1 left-1/2 w-16 h-1.5 bg-neutral-200 rounded-full"></div></div>
+                <div className={`h-full bg-white flex flex-col pb-20 max-h-[calc(100svh-10rem)] ${snappedPosition == 50 ? 'border-t border-neutral-200' : ''} overscroll-contain`} ref={scrollableContent} style={{ overflowY: snappedPosition == 50 && currentPosition == 50 ? 'auto' : 'hidden', touchAction: ( snappedPosition == 50 && currentPosition == 50 && isScrollable()) ? 'pan-y' : 'none' }}>
                     {drawerContent == 'details' && <>
-                        {group && !doc && details == 'group' && <div className="pb-24">
+                        {group && !doc && <div className="pb-24">
                             <ListExplorer />
                             {groupDoc?._source?.location && <Clickable className="px-3 bg-neutral-50 text-xl border-y border-neutral-200 w-full mt-4 aria-[current=true]:btn-accent flex items-center gap-2 flex-shrink-0 whitespace-nowrap h-12" add={{details: 'overview', namesScope: 'extended'}}>
                                
@@ -286,7 +332,7 @@ export default function MobileLayout() {
                             </Clickable>}
                             </div>}
                         { doc && <div className="pb-24 p-2"><DocInfo /></div>}
-                        {details && details != 'group' && !doc &&
+                        {false && details && details != 'group' && !doc &&
                             <div className="pb-12 pt-2 px-2">
                                 <span className="flex items-center pb-2 text-xl"><h2 className="text-neutral-800 text-2xl tracking-wide flex items-center gap-1 ">{groupLabel}</h2>
                                     <InfoPopover>
@@ -308,7 +354,7 @@ export default function MobileLayout() {
                             <TreeList/>
                         </section>
                     }
-                    {drawerContent == 'results' && datasetTag != 'tree' &&
+                    {false && drawerContent == 'results' && datasetTag != 'tree' &&
                         <section className="flex flex-col gap-2 p-2">
                             <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">
                                 Treff <span className={`results-badge bg-primary-500 left-8 rounded-full text-white text-xs whitespace-nowrap ${totalHits && totalHits.value < 10 ? 'px-1.5' : 'px-1'}`}>
@@ -350,7 +396,7 @@ export default function MobileLayout() {
             <div ref={mobileNav} className="fixed bottom-0 left-0 w-full">
                 <MobileSearchNav showScrollToTop={showScrollToTop} currentPosition={currentPosition} drawerContent={drawerContent || ''} scrollableContent={scrollableContent} />
 
-            <div className=" bg-neutral-800 text-white w-full h-14 p-1 flex items-center justify-between nav-toolbar">
+            <div className="hidden bg-neutral-100 text-white w-full h-14 p-1 flex items-center justify-between nav-toolbar">
                 {<Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" aria-current={(drawerContent && ["datasets"].includes(drawerContent)) ? 'page' : 'false'}>
                     <div className="relative">
                         <PiDatabase className="text-3xl" />
@@ -418,7 +464,7 @@ export default function MobileLayout() {
             {doc && mode == 'doc' && <DocInfo />}
         </div>
 
-        {mode == 'map' && <div ref={mapContainerRef} className="absolute top-12 right-0 bottom-0 max-h-[calc(100svh-6.5rem)] w-full bg-white rounded-md">
+        {mode == 'map' && <div ref={mapContainerRef} className="absolute top-12 right-0 bottom-0 max-h-[100svh] w-full bg-white rounded-md">
             <MapWrapper />
 
         </div>}
@@ -427,4 +473,5 @@ export default function MobileLayout() {
 
 
     </div>
+    </>
 }

@@ -62,7 +62,9 @@ export default async function RootLayout({
           <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[5001] focus:top-1 focus:py-3 focus:px-6 bg-primary-700 text-white no-underline self-center">
         Gå til hovudinnhald
       </a>
-        <header className="sticky top-0 left-0 right-0 flex lg:justify-between bg-neutral-50  shadow-md h-14 xl:h-12 flex-none items-center !z-[4000]">
+      <QueryProvider>
+      
+        <header className="sticky top-0 left-0 right-0 flex lg:justify-between bg-neutral-50  shadow-md h-14 xl:h-12 flex-none items-center !z-[6000]">
 
           <SearchForm/>
           <Suspense>
@@ -70,7 +72,7 @@ export default async function RootLayout({
           </Suspense>
           <NavBar className={`hidden xl:flex lg:min-w-[calc(25svw+0.5rem)] text-lg font-semibold text-neutral-950 px-4 items-center shrink-0 gap-3 justify-end`}/>
         </header>
-         <QueryProvider>
+        
         {children}
         </QueryProvider>
         </GlobalProvider>

@@ -12,12 +12,24 @@ import IconButton from '@/components/ui/icon-button';
 import { usePerspective } from '@/lib/param-hooks';
 import { useMode } from '@/lib/param-hooks';
 import FulltextToggle from '@/app/fulltext-toggle';
+import { useQuery } from '@tanstack/react-query';
+
+
+export async function AutocompleteQuery(inputState: string) {
+    const res = await fetch(`/api/search/collapsed?q=${inputState}&size=10`)
+    if (!res.ok) {
+        throw new Error(res.status.toString())
+    }
+    const data = await res.json()
+    return data
+}
 
 
 export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const { isMobile, currentUrl, preferredTabs, inputValue } = useContext(GlobalContext)
+    const [autocompleteOpen, setAutocompleteOpen] = useState<boolean>(false)
     
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
@@ -26,7 +38,12 @@ export default function SearchForm() {
     const { facetFilters } = useSearchQuery()
     const mode = useMode()
 
-    const [inputState, setInputState] = useState<string>('') // Ensure updates within the component
+    const [inputState, setInputState] = useState<string>(inputValue.current || '') // Ensure updates within the component
+
+    const { data, isLoading } = useQuery({
+        queryKey: ['autocomplete', inputState],
+        queryFn: () => AutocompleteQuery(inputState)
+    })
 
     const clearQuery = () => {
         inputValue.current = ''; 
@@ -54,6 +71,8 @@ export default function SearchForm() {
         
         </div>
     }
+
+    
     
 
     return <>
@@ -80,6 +99,7 @@ export default function SearchForm() {
                 else {
                     input.current.select();
                 }
+                setAutocompleteOpen(false)
                 
             }}>
 
@@ -93,6 +113,8 @@ export default function SearchForm() {
                 name="q" 
                 defaultValue={searchParams.get('q') || inputValue.current || ''}
                 autoFocus={!isMobile && pathname == '/search'}
+                onFocus={() => setAutocompleteOpen(true)}
+                onBlur={() => setAutocompleteOpen(false)}
                 onChange={(event) => {inputValue.current = event.target.value; setInputState(event.target.value)}} 
                 className={`bg-transparent pr-4 pl-4 focus:outline-none flex w-full shrink text-lg xl:text-base`}
             />
@@ -116,7 +138,11 @@ export default function SearchForm() {
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''}/>}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''}/>}
             {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''}/>}
-            
+            {autocompleteOpen && <ul className="absolute top-full left-0 w-full bg-neutral-50 border-t border-neutral-300">
+                {data?.hits?.hits?.map((hit: any) => (
+                    <li key={hit._id}>{hit.inner_hits.group.hits.hits[0].fields.label}</li>
+                ))}
+            </ul>}
         </Form>
         </div>
         

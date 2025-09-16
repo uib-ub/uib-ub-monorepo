@@ -16,6 +16,8 @@
     @apply text-black antialiased;
   }
 
+  
+
   html:has(.scroll-container), body:has(.scroll-container), .scroll-container  {
     @apply h-full overflow-hidden;
   }
@@ -140,6 +142,11 @@
 }
 
 @layer components {
+  .drawer {
+    filter: drop-shadow(0 -0.5rem 1rem rgba(0, 0, 0, 0.18));
+  }
+
+
   .tabs {
     @apply flex gap-1;
   }
