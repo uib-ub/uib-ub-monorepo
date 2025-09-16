@@ -266,6 +266,7 @@ export default function MobileLayout() {
         };
     }, [drawerContent, doc, group]);
 
+
     return <>
     {snappedPosition < 50 &&  <>
     	<div

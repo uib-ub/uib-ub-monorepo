@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { PiCaretLeft, PiMagnifyingGlass, PiMapTrifold, PiX } from 'react-icons/pi';
 import { datasetTitles, modes } from '@/config/metadata-config';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -13,10 +13,11 @@ import { usePerspective } from '@/lib/param-hooks';
 import { useMode } from '@/lib/param-hooks';
 import FulltextToggle from '@/app/fulltext-toggle';
 import { useQuery } from '@tanstack/react-query';
+import ResultItem from '../nav/results/result-item';
 
 
 export async function AutocompleteQuery(inputState: string) {
-    const res = await fetch(`/api/search/collapsed?q=${inputState}&size=10`)
+    const res = await fetch(`/api/search/collapsed?q=${inputState}&size=5`)
     if (!res.ok) {
         throw new Error(res.status.toString())
     }
@@ -29,8 +30,10 @@ export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const { isMobile, currentUrl, preferredTabs, inputValue } = useContext(GlobalContext)
-    const [autocompleteOpen, setAutocompleteOpen] = useState<boolean>(false)
-    
+    //const [autocompleteOpen, setAutocompleteOpen] = useState<boolean>(false)
+    const autocompleteOpen = searchParams.get('nav') == 'results'
+    const router = useRouter()
+                    
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
     const perspective = usePerspective()
@@ -45,12 +48,23 @@ export default function SearchForm() {
         queryFn: () => AutocompleteQuery(inputState)
     })
 
+    const setAutocompleteOpen = (open: boolean) => {
+        const newSearchParams = new URLSearchParams(searchParams)
+        if (open) {
+            newSearchParams.set('nav', 'results')
+        }
+        else {
+            newSearchParams.delete('nav')
+        }
+        router.push(`?${newSearchParams.toString()}`)
+    }
+
     const clearQuery = () => {
         inputValue.current = ''; 
         setInputState('')
         if (input.current) {
             input.current.value = '';
-            if (!isMobile && pathname == '/search') {
+            if (pathname == '/search') {
                 input.current.focus();
             }
             
@@ -103,7 +117,14 @@ export default function SearchForm() {
                 
             }}>
 
-            <div className='flex w-full pr-1 bg-white focus-within:border-b-2 focus-within:border-primary-600 xl:border-none xl:outline xl:outline-1 xl:outline-neutral-300 xl:focus-within:border-neutral-200 xl:rounded-md xl:m-1 items-center relative group focus-within:xl:outline-2 focus-within:xl:outline-neutral-600'>
+            <div className='flex w-full pr-1 bg-white focus-within:border-b-2 focus-within:border-primary-600 xl:border-none xl:outline xl:outline-1 xl:outline-neutral-300 xl:focus-within:border-neutral-200 xl:rounded-md xl:m-1 items-center relative group focus-within:xl:outline-2 focus-within:xl:outline-neutral-600 touch-none'>
+            { autocompleteOpen &&
+            <IconButton
+                onClick={() => { setAutocompleteOpen(false) }}
+                label="Tilbake"
+                className="px-3">
+                <PiCaretLeft className="text-3xl lg:text-xl text-neutral-600 group-focus-within:text-neutral-800"/>
+            </IconButton> }
             <label htmlFor="search-input" className="sr-only">Søk</label>
             <input 
                 id="search-input"
@@ -116,7 +137,7 @@ export default function SearchForm() {
                 onFocus={() => setAutocompleteOpen(true)}
                 onBlur={() => setAutocompleteOpen(false)}
                 onChange={(event) => {inputValue.current = event.target.value; setInputState(event.target.value)}} 
-                className={`bg-transparent pr-4 pl-4 focus:outline-none flex w-full shrink text-lg xl:text-base`}
+                className={`bg-transparent pr-4 ${autocompleteOpen ? 'pl-0' : 'pl-4'} focus:outline-none flex w-full shrink text-lg xl:text-base`}
             />
             
             {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset}/>)}
@@ -138,9 +159,9 @@ export default function SearchForm() {
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''}/>}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''}/>}
             {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''}/>}
-            {autocompleteOpen && <ul className="absolute top-full left-0 w-full bg-neutral-50 border-t border-neutral-300">
+            {autocompleteOpen && <ul className="absolute top-full left-0 w-full h-[calc(100svh-3rem)] bg-neutral-50 border-t border-neutral-300 overflow-y-auto overscroll-none">
                 {data?.hits?.hits?.map((hit: any) => (
-                    <li key={hit._id}>{hit.inner_hits.group.hits.hits[0].fields.label}</li>
+                    <li key={hit._id}><ResultItem hit={hit}/></li>
                 ))}
             </ul>}
         </Form>

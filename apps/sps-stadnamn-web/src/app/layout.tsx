@@ -55,7 +55,7 @@ export default async function RootLayout({
       <head>
         <PlausibleProvider domain="stadnamnportalen.uib.no" />
       </head>
-      <body className="bg-neutral-900 flex flex-col min-h-screen">
+      <body className="bg-neutral-900 flex flex-col min-h-[100svh]">
         {/* Remove the Image component since we're using CSS background-image */}
 
         <GlobalProvider isMobile={isMobile} sosiVocab={sosiVocab || {}} coordinateVocab={coordinateVocab || {}}>
@@ -64,13 +64,11 @@ export default async function RootLayout({
       </a>
       <QueryProvider>
       
-        <header className="sticky top-0 left-0 right-0 flex lg:justify-between bg-neutral-50  shadow-md h-14 xl:h-12 flex-none items-center !z-[6000]">
+        <header className="sticky top-0 left-0 right-0 flex lg:justify-between bg-neutral-50  shadow-md h-14 xl:h-12 flex-none items-center !z-[6000] overscroll-none">
 
           <SearchForm/>
-          <Suspense>
             <Menu/>
-          </Suspense>
-          <NavBar className={`hidden xl:flex lg:min-w-[calc(25svw+0.5rem)] text-lg font-semibold text-neutral-950 px-4 items-center shrink-0 gap-3 justify-end`}/>
+          <NavBar className={`hidden xl:flex lg:min-w-[calc(25svw+0.5rem)] text-lg font-semibold text-neutral-950 px-4 items-center shrink-0 gap-3 justify-end overscroll-none`}/>
         </header>
         
         {children}

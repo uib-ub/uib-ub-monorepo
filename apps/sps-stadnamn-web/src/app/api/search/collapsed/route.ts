@@ -46,7 +46,7 @@ export async function GET(request: Request) {
         }
       },
     ],
-    "_source": false
+    "_source": true
   }
 
   // Construct the query part

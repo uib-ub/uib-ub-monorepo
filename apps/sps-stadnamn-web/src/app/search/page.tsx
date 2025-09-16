@@ -4,7 +4,6 @@ import MobileLayout from "@/components/search/mobile-layout";
 import DesktopLayout from "@/components/search/desktop-layout";
 import { modes } from "@/config/metadata-config";
 import React from "react";
-import QueryProvider from "@/state/providers/query-provider";
 
 export async function generateMetadata({searchParams}: {searchParams: Promise<{mode: string}>}) {
   const { mode } = await searchParams
