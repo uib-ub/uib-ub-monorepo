@@ -159,7 +159,7 @@ export default function SearchForm() {
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''}/>}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''}/>}
             {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''}/>}
-            {autocompleteOpen && <ul className="absolute top-full left-0 w-full h-[calc(100svh-3rem)] bg-neutral-50 border-t border-neutral-300 overflow-y-auto overscroll-none">
+            {autocompleteOpen && <ul className="absolute top-full left-0 w-full h-[calc(100svh-3rem)] bg-neutral-50 border-t border-neutral-300 overflow-y-auto overscroll-none xl:max-w-[50svw] xl:max-h-[50svh] xl:left-[25svw] xl-p-2 xl rounded-b-lg">
                 {data?.hits?.hits?.map((hit: any) => (
                     <li key={hit._id}><ResultItem hit={hit}/></li>
                 ))}
