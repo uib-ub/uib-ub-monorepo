@@ -18,7 +18,7 @@ export default function DesktopLayout() {
     const doc = searchParams.get('doc')
 
     const group = searchParams.get('group')
-    const nav = searchParams.get('nav') || 'datasets'
+    const nav = searchParams.get('nav')
     
 
     return <main id="main" className="flex scroll-container relative w-[100svw] h-[100svh] bg-neutral-50">   

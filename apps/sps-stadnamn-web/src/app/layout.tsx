@@ -67,14 +67,14 @@ export default async function RootLayout({
       </a>
       <QueryProvider>
         
-          <header className={`absolute bg-neutral-50 ${isMobile ? '' : 'xl:bg-transparent'} top-0 left-0 right-0 flex h-14 flex-none items-center overscroll-none`}>
+          {false && <header className={`absolute bg-neutral-50 ${isMobile ? '' : 'xl:bg-transparent'} top-0 left-0 right-0 flex h-14 flex-none items-center overscroll-none`}>
           <Menu/>
             <SearchForm/>
             <SearchTitle/>
             
             
           {false && <NavBar className="hidden z-[4000] ml-auto mr-2 xl:flex !py-1 text-xl text-black bg-neutral-50/90 rounded-lg items-center justify-end overscroll-none"/>}
-        </header>
+        </header>}
         
         {children}
         </QueryProvider>

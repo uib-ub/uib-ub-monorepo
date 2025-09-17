@@ -12,6 +12,7 @@ import { fetchStats } from "./api/_utils/stats";
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
 import { Metadata } from "next";
+import Header from "./header";
 
 export default async function Home() {
   const { iiifStats, datasets, totalHits, groupCount } = await fetchStats()
@@ -32,10 +33,11 @@ export default async function Home() {
 
   return (
     <>
+    <Header/>
 <main 
   id="main" 
   tabIndex={-1} 
-  className="flex flex-col grow-1 pt-14 items-center justify-center carta-marina  w-full flex-grow relative ">
+  className="flex flex-col grow-1 items-center justify-center carta-marina  w-full flex-grow relative ">
   
   <div className={`bg-neutral-50/75 w-full pt-4 md:pt-8 pb-24`}>
   <div className={`flex flex-col gap-3 relative z-20 px-4`}>

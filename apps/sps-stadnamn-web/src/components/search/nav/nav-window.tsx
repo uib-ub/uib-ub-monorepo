@@ -1,5 +1,5 @@
 import { useMode } from '@/lib/param-hooks';
-import { PiArchiveFill, PiArchiveLight, PiDatabaseFill, PiDatabaseLight, PiFunnelFill, PiFunnelLight } from "react-icons/pi";
+import { PiArchiveFill, PiArchiveLight, PiDatabaseFill, PiDatabaseLight, PiFunnelFill, PiFunnelLight, PiX } from "react-icons/pi";
 import { useTransition } from "react";
 import FacetSection from "./facets/facet-section";
 import SearchResults from "./results/search-results";
@@ -10,6 +10,7 @@ import DatasetFacet from "./facets/dataset-facet";
 import Clickable from "../../ui/clickable/clickable";
 import TableOptions from "../table/table-options";
 import useSearchData from "@/state/hooks/search-data";
+import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 
 export default function NavWindow() {
     const { totalHits, searchLoading } = useSearchData()
@@ -47,7 +48,7 @@ export default function NavWindow() {
                       remove={nav === 'results' ? ["nav"] : []}
                       aria-expanded={nav == 'results'}
                       aria-controls="nav-window-content"
-                      className="flex whitespace-nowrap  items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pl-4 pr-3 ml-auto">
+                      className="flex whitespace-nowrap  items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pl-4 pr-3">
                         Treff
                         { searchLoading ? <span className=""><Spinner className="text-neutral-900" status="Laster søkeresultat..." /></span> : <>
                         {nav == 'results' ? <span className={`results-badge bg-accent-800 font-bold text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>
@@ -55,6 +56,8 @@ export default function NavWindow() {
                         : <span className={`results-badge text-primary-700 bg-primary-200 font-bold left-8 rounded-full py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>{totalHits && formatNumber(totalHits.value)}</span>}
                         </>}
                 </Clickable>
+                <ClickableIcon label="Lukk" remove={["nav"]} className="ml-auto">   
+                    <PiX className="text-3xl text-neutral-900"/></ClickableIcon>
                 
                 
 

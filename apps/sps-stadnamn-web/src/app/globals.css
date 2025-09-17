@@ -16,12 +16,6 @@
     @apply text-black antialiased;
   }
 
-
-  main.page-info::before {
-    content: '';
-    @apply absolute top-0 left-0 w-full h-14 bg-neutral-100;
-  }
-
   header:not(:has(#search-input)) {
     @apply bg-neutral-50;
   }
@@ -98,7 +92,11 @@
   }
 
   input[type='checkbox'], input[type='radio'] {
-    accent-color: theme('colors.accent.900');
+    accent-color: theme('colors.accent.800');
+  }
+
+  input[type='checkbox'] {
+    @apply !rounded-lg;
   }
 
   input[type='checkbox']:checked:hover, input[type='radio']:checked:hover {

@@ -53,23 +53,6 @@ export default function SearchForm() {
         queryFn: () => autocompleteQuery(inputState, isMobile)
     })
 
-    const toggleAutocomplete = useCallback((open: boolean) => {
-        setAutocompleteOpen(open)
-        if (!open) {
-            setAutocompleteFacetFilters(facetFilters)
-            setAutocompleteDatasetFilters(datasetFilters)
-        }
-        if (!isMobile) return
-
-        const newSearchParams = new URLSearchParams(searchParams)
-        if (open) {
-            newSearchParams.set('nav', 'results')
-        }
-        else {
-            newSearchParams.delete('nav')
-        }
-        router.push(`?${newSearchParams.toString()}`)
-    }, [isMobile, searchParams, router, facetFilters, datasetFilters])
 
     const clearQuery = () => {
         inputValue.current = '';
@@ -89,12 +72,36 @@ export default function SearchForm() {
         }
     }, [isMobile]);
 
+    // Handle back button on mobile - close autocomplete instead of navigating
     useEffect(() => {
-        if (isMobile) {
-            toggleAutocomplete(nav == 'results')
-        }
-    }, [isMobile, nav, toggleAutocomplete])
+        if (!isMobile) return
 
+        const handlePopState = () => {
+            if (autocompleteOpen) {
+                // Close autocomplete and blur input
+                setAutocompleteOpen(false)
+                setAutocompleteFacetFilters(facetFilters)
+                setAutocompleteDatasetFilters(datasetFilters)
+                // Blur the input to remove focus
+                if (input.current) {
+                    input.current.blur()
+                }
+                // Push current URL back to prevent navigation
+                window.history.pushState(null, '', window.location.href)
+            }
+        }
+
+        window.addEventListener('popstate', handlePopState)
+        return () => window.removeEventListener('popstate', handlePopState)
+    }, [isMobile, autocompleteOpen, facetFilters, datasetFilters])
+
+    // Add history entry when autocomplete opens on mobile
+    useEffect(() => {
+        if (!isMobile || !autocompleteOpen) return
+
+        // Add a history entry when autocomplete opens so we can intercept back button
+        window.history.pushState({ autocomplete: true }, '', window.location.href)
+    }, [isMobile, autocompleteOpen])
 
 
     if (pathname != "/search") {
@@ -109,11 +116,11 @@ export default function SearchForm() {
 
     return <>
 
-        <div className={`${autocompleteOpen ? 'z-[4000]' : 'z-[3000]'} h-full w-full flex xl:!px-1 xl:!py-0.5 xl:!w-[25svw] bg-neutral-50 xl:bg-transparent`}>
+        <div className={`${autocompleteOpen ? 'z-[4000]' : 'z-[3000]'} h-full w-full w-full flex xl:!py-1 bg-neutral-50 xl:bg-transparent`}>
 
             <Form ref={form} action="/search" id="search-form" className="flex w-full h-full"
-                onFocus={() => toggleAutocomplete(Boolean(inputState))}
-                onBlur={() => toggleAutocomplete(false)}
+                onFocus={() => setAutocompleteOpen(Boolean(inputState))}
+                onBlur={() => setAutocompleteOpen(false)}
 
                 onSubmit={() => {
                     if (!input.current) return;
@@ -123,14 +130,14 @@ export default function SearchForm() {
                     else {
                         input.current.select();
                     }
-                    toggleAutocomplete(false)
+                    setAutocompleteOpen(false)
 
                 }}>
 
-                <div className='flex w-full pr-1 bg-white shadow-lg focus-within:border-b-2 focus-within:border-primary-600 xl:border-none xl:focus-within:border-neutral-200 xl:rounded-md xl:m-1 items-center relative group focus-within:xl:outline-2 focus-within:xl:outline-neutral-600 touch-none'>
+                <div className='flex w-full pr-1 bg-white shadow-lg xl:rounded-md xl:m-1 items-center relative group touch-none'>
                     {isMobile && autocompleteOpen &&
                         <IconButton
-                            onClick={() => { toggleAutocomplete(false) }}
+                            onClick={() => { setAutocompleteOpen(false) }}
                             label="Tilbake"
                             className="px-2">
                             <PiCaretLeftBold className="text-3xl lg:text-xl text-neutral-600 group-focus-within:text-neutral-800" />
@@ -149,7 +156,7 @@ export default function SearchForm() {
                         autoFocus={!isMobile && pathname == '/search'}
 
 
-                        onChange={(event) => { inputValue.current = event.target.value; setInputState(event.target.value); toggleAutocomplete(Boolean(event.target.value)) }}
+                        onChange={(event) => { inputValue.current = event.target.value; setInputState(event.target.value); setAutocompleteOpen(Boolean(event.target.value)) }}
                         className={`bg-transparent pr-4 ${(isMobile && autocompleteOpen) ? 'pl-0' : 'pl-4'} focus:outline-none flex w-full shrink text-lg xl:text-base`}
                     />
 
@@ -173,7 +180,7 @@ export default function SearchForm() {
                 {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
                 {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
                 {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''} />}
-                {autocompleteOpen && <ul className="absolute top-full left-0 xl:left[0.5] !z-[6000] w-full max-h-[calc(100svh-4rem)] xl:h-auto bg-white xl:shadow-lg border-t border-neutral-300 overflow-y-auto overscroll-none xl:max-w-[calc(25svw-0.5rem)] left-0 xl-p-2 xl rounded-b-lg">
+                {autocompleteOpen && <ul className="absolute top-[3.5rem] left-0 xl:left-2 !z-[6000] w-full max-h-[calc(100svh-4rem)] xl:h-auto bg-white xl:shadow-lg overflow-y-auto overscroll-none xl:max-w-[calc(25svw-0.5rem)] left-0 xl-p-2 xl rounded-lg">
                     {data?.hits?.hits?.map((hit: any) => (
                         <li key={hit._id} role="option"><ResultItem hit={hit} /></li>
                     ))}
