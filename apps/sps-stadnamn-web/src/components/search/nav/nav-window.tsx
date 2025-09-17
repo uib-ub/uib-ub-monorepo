@@ -20,7 +20,7 @@ export default function NavWindow() {
     const [isPending, startTransition] = useTransition()
 
 
-    return <><div className={`flex overflow-x-auto tabs rounded-md gap-1 p-2`}>
+    return <><div className={`flex overflow-x-auto tabs rounded-md gap-1 p-1`}>
 
                 <Clickable
                     add={nav !== 'datasets' ? {nav: 'datasets'} : {}}

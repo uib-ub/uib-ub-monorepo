@@ -8,6 +8,7 @@ import NavWindow from "./nav/nav-window"
 import DetailsWindow from "./details/details-window"
 import NamesWindow from "./names/names-window"
 import MapWrapper from "./map-wrapper"
+import TreeResults from './nav/results/tree-results';
 import TreeWindow from './nav/tree-window';
 
 export default function DesktopLayout() {    
@@ -18,25 +19,23 @@ export default function DesktopLayout() {
 
     const group = searchParams.get('group')
     const nav = searchParams.get('nav') || 'datasets'
-    const datasetTag = searchParams.get('datasetTag')
-    const dataset = searchParams.get('dataset')
     
 
-    return <main id="main" className="flex scroll-container relative w-[100svw] h-[calc(100svh-3rem)] bg-neutral-50">   
+    return <main id="main" className="flex scroll-container relative w-[100svw] h-[100svh] bg-neutral-50">   
 
         
         <div className="flex lg:gap-4 flex-col h-full w-[40svw] lg:w-full max-h-[calc(100svh-4rem)] ">
         
 
-        {  nav && (!details || details == 'group') && !(mode != 'map' && datasetTag != 'tree' && mode != 'list' && (doc || group)) && 
-        <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${(doc || group) ? 'hidden lg:flex' : 'flex'}`}>
-           {(dataset && datasetTag == 'tree' )? <TreeWindow/> : <NavWindow/>}  
+        {  nav && (!details || details == 'group') && !(mode != 'map' && mode != 'list' && (doc || group)) && 
+        <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-14 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${(doc || group) ? 'hidden lg:flex' : 'flex'}`}>
+           {nav == 'tree' ? <TreeWindow/> : <NavWindow/>}  
         </section> 
         }
 
         
 
-        { mode != 'map' && datasetTag != 'tree' && mode != 'list' && (doc || (group && details == 'group')) && <section className={`lg:absolute left-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'flex' : 'flex'}`}>
+        { mode != 'map' && mode != 'list' && (doc || (group && details == 'group')) && <section className={`lg:absolute left-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'flex' : 'flex'}`}>
 
             <DetailsWindow/>
 
@@ -46,10 +45,10 @@ export default function DesktopLayout() {
         }
 
         <div className={`absolute
-                left-[40svw] lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(75svw-0.5rem)] max-h-[calc(100svh-20rem)]
+                left-[40svw] top-0 lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(75svw-0.5rem)] max-h-[calc(100svh-20rem)]
                                         
-                ${mode == 'map' ? 'top-0   lg:max-w-[calc(50svw-0.5rem)] z-[2000]'
-                                : 'top-2 rounded-md max-h-[calc(100svh-3.5rem)]' } 
+                ${mode == 'map' ? 'lg:max-w-[calc(50svw-0.5rem)] z-[2000]'
+                                : 'rounded-md max-h-[calc(100svh-3.5rem)]' } 
                 flex flex-col pb-6`}>
             <StatusSection/>
             {mode != 'map' ? <div className="bg-white shadow-lg mt-2 rounded-md overflow-y-auto stable-scrollbar">
@@ -64,7 +63,7 @@ export default function DesktopLayout() {
 
 
 
-        {  details && details != 'group' && <div className={`xl:absolute left-2 top-2 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${(doc || group) ? 'hidden lg:flex' : 'flex'}`}>
+        {  details && details != 'group' && <div className={`xl:absolute left-2 top-14 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${(doc || group) ? 'hidden lg:flex' : 'flex'}`}>
             <NamesWindow/>       
         </div> }
 

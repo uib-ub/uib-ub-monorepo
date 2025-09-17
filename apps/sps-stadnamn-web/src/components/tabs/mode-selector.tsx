@@ -1,3 +1,4 @@
+'use client'
 import { useSearchParams } from "next/navigation";
 import { PiBookOpenFill, PiBookOpenLight, PiMapTrifoldFill, PiMapTrifoldLight, PiTableFill, PiTableLight } from "react-icons/pi";
 import ClickableIcon from "../ui/clickable/clickable-icon";
@@ -13,7 +14,7 @@ export default function ModeSelector() {
     const { setPreferredTab, isMobile } = useContext(GlobalContext)
     const datasetTag = searchParams.get('datasetTag')
 
-    return <div className={`inline-flex tabs ${mode == 'map' ? 'rounded-br-md lg:rounded-md shadow-lg bg-white' : ''} ${isMobile ? 'pl-2 pt-2 pr-1 pb-1' : ' p-2 gap-1'}`} role="tablist">
+    return <div className={`absolute z-[4000] tabs ${mode == 'map' ? 'rounded-br-md lg:rounded-md shadow-lg bg-white' : ''} ${isMobile ? 'pl-2 pt-2 pr-1 pb-1' : ' p-2 gap-1'}`} role="tablist">
             {contentSettings[perspective]?.display == 'map' && <ClickableIcon aria-selected={mode == 'map' ? true : false}
                       onClick={() => {
                         setPreferredTab(perspective, 'map')

@@ -35,7 +35,7 @@ export default async function Home() {
 <main 
   id="main" 
   tabIndex={-1} 
-  className="flex flex-col grow-1 items-center justify-center carta-marina  w-full flex-grow relative ">
+  className="flex flex-col grow-1 pt-14 items-center justify-center carta-marina  w-full flex-grow relative ">
   
   <div className={`bg-neutral-50/75 w-full pt-4 md:pt-8 pb-24`}>
   <div className={`flex flex-col gap-3 relative z-20 px-4`}>

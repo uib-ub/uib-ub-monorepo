@@ -11,6 +11,9 @@ import SearchForm from "@/components/search/form/search-form";
 import GlobalProvider from "./global-provider";
 import { fetchVocab } from "./api/_utils/actions";
 import QueryProvider from "@/state/providers/query-provider";
+import Link from "next/link";
+import SearchTitle from "@/components/layout/search-title";
+import ModeSelector from "@/components/tabs/mode-selector";
  
 const serif = Source_Serif_4({
   subsets: ['latin'],
@@ -29,8 +32,8 @@ const sans = Source_Sans_3  ({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s - Stadnamnportalen",
-    default: "Stadnamnportalen"
+    template: "%s - stadnamn.no",
+    default: "stadnamn.no"
   },
   description: "Søketjeneste for norske stedstnavn",
 };
@@ -63,12 +66,14 @@ export default async function RootLayout({
         Gå til hovudinnhald
       </a>
       <QueryProvider>
-      
-        <header className="sticky top-0 left-0 right-0 flex lg:justify-between bg-neutral-50  shadow-md h-14 xl:h-12 flex-none items-center !z-[6000] overscroll-none">
-
-          <SearchForm/>
-            <Menu/>
-          <NavBar className={`hidden xl:flex lg:min-w-[calc(25svw+0.5rem)] text-lg font-semibold text-neutral-950 px-4 items-center shrink-0 gap-3 justify-end overscroll-none`}/>
+        
+          <header className={`absolute bg-neutral-50 ${isMobile ? '' : 'xl:bg-transparent'} top-0 left-0 right-0 flex h-14 flex-none items-center overscroll-none`}>
+          <Menu/>
+            <SearchForm/>
+            <SearchTitle/>
+            
+            
+          {false && <NavBar className="hidden z-[4000] ml-auto mr-2 xl:flex !py-1 text-xl text-black bg-neutral-50/90 rounded-lg items-center justify-end overscroll-none"/>}
         </header>
         
         {children}

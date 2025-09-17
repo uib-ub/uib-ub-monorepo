@@ -16,6 +16,15 @@
     @apply text-black antialiased;
   }
 
+
+  main.page-info::before {
+    content: '';
+    @apply absolute top-0 left-0 w-full h-14 bg-neutral-100;
+  }
+
+  header:not(:has(#search-input)) {
+    @apply bg-neutral-50;
+  }
   
 
   html:has(.scroll-container), body:has(.scroll-container), .scroll-container  {
@@ -115,10 +124,11 @@
 
 
   .carta-marina::before {
-    @apply fixed top-0 left-0 z-[-1] h-[100vh] w-full animate-fade-in;
+    @apply fixed top-14 left-0 z-[-1] h-[100vh] w-full animate-fade-in;
     content: '';
     @apply bg-[url('/Carta_Marina_compressed.webp')] bg-cover bg-no-repeat bg-[center_40%];
   }
+
 
   @screen md {
     .carta-marina::before {

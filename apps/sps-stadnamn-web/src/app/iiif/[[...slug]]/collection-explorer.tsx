@@ -81,7 +81,7 @@ export default function CollectionExplorer({manifest, neighbours, manifestDatase
     };
 
     return (
-        <div ref={containerRef} className="flex flex-col lg:gap-4 py-4 lg:p-4 lg:overflow-y-auto lg:h-[calc(100svh-3rem)] stable-scrollbar">
+        <div ref={containerRef} className="flex flex-col lg:gap-4 py-4 lg:p-4 lg:overflow-y-auto lg:h-[calc(100svh-3.5rem)] stable-scrollbar">
             <div className="flex flex-col lg:flex-row gap-2 px-4 pb-4 lg:px-0 lg:pb-0 border-b border-neutral-200 lg:border-b-0">
             {/* Add fixed height and min-height to prevent squishing */}
             {manifest && 
