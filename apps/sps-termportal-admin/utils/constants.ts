@@ -23,7 +23,7 @@ export const wikiPageLink = "https://wiki.terminologi.no/index.php?title=";
 export const colorMappingFreshness = {
   2: { color: "text-green-400", description: "i dag eller i går" },
   7: { color: "text-teal-300", description: "mindre enn syv dager siden" },
-  30: { color: "text-tpblue-200", description: "mindre enn 30 dager siden" },
+  30: { color: "text-blue-300", description: "mindre enn 30 dager siden" },
   1000: { color: "text-tpblue-100", description: "for mer enn 30 dager siden" },
 };
 
