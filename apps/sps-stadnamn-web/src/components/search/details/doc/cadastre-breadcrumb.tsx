@@ -16,8 +16,8 @@ export default function CadastreBreadcrumb() {
     return <>
       {dataset && (
         <>
-        <Clickable link add={{nav: 'datasets', datasetTag: 'tree' }} remove={['adm1', 'adm2', 'dataset']}>
-          <PiTreeView className="w-4 h-4 self-center flex-shrink-0" aria-hidden="true" />
+        <Clickable className="breadcrumb-link text-lg whitespace-nowrap flex items-center gap-1" link add={{datasetTag: 'tree' }} remove={['adm1', 'adm2', 'dataset']}>
+          Matriklar
         </Clickable>
         <PiCaretRight className="w-4 h-4 self-center flex-shrink-0" />
         {adm1 && <>

@@ -43,6 +43,7 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   const mapFunctionRef = useRef<any>(null)
 
 
+
   // Load facet options from localStorage on mount
   useEffect(() => {
     const storedOptions = localStorage.getItem('facetOptions');

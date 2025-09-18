@@ -1,6 +1,6 @@
 'use client'
-import { useEffect, useRef, useState } from "react"
-import { PiBinocularsFill, PiBookOpen, PiCaretRightBold, PiDatabase, PiFunnel, PiGpsFix, PiListBullets, PiStackPlus, PiTreeViewFill } from "react-icons/pi";
+import { useContext, useEffect, useRef, useState } from "react"
+import { PiBinocularsFill, PiBookOpen, PiCaretRightBold, PiDatabase, PiFunnel, PiGpsFix, PiListBullets, PiSliders, PiStackPlus, PiTreeViewFill } from "react-icons/pi";
 import SearchResults from "./nav/results/search-results";
 import { useSearchQuery } from "@/lib/search-params";
 import StatusSection from "./status-section";
@@ -18,7 +18,7 @@ import NamesExplorer from "./names/names-explorer";
 import InfoPopover from "../ui/info-popover";
 import useDocData from "@/state/hooks/doc-data";
 import useGroupData from "@/state/hooks/group-data";
-import MapWrapper from "./map-wrapper";
+import MapWrapper from "../map/map-wrapper";
 import useSearchData from "@/state/hooks/search-data";
 import MobileSearchNav from "./details/doc/mobile-search-nav";
 import { useMode } from "@/lib/param-hooks"
@@ -27,10 +27,11 @@ import TreeList from "./nav/tree-list";
 import { datasetTitles } from "@/config/metadata-config";
 import CadastreBreadcrumb from "./details/doc/cadastre-breadcrumb";
 import ClickableIcon from "../ui/clickable/clickable-icon";
+import { GlobalContext } from "@/app/global-provider";
 
 export default function MobileLayout() {
-    const [currentPosition, setCurrentPosition] = useState(25);
-    const [snappedPosition, setSnappedPosition] = useState(25);
+    const [currentPosition, setCurrentPosition] = useState(30);
+    const [snappedPosition, setSnappedPosition] = useState(30);
     const [snapped, setSnapped] = useState(false);
     const [startTouchY, setStartTouchY] = useState(0);
     const [startTouchX, setStartTouchX] = useState(0);
@@ -41,6 +42,7 @@ export default function MobileLayout() {
     const adm2 = searchParams.get('adm2')
     const adm1 = searchParams.get('adm1')
     const dataset = searchParams.get('dataset')
+    const { mapFunctionRef } = useContext(GlobalContext)
 
     const [drawerContent, setDrawerContent] = useState<string | null>(null)
     const nav = searchParams.get('nav')
@@ -76,7 +78,7 @@ export default function MobileLayout() {
         , [searchLoading, facetIsLoading])
 
     const isScrolling = (target: EventTarget) => {
-        if (snappedPosition == 50 && target instanceof Node && scrollableContent.current?.contains(target)) {
+        if (snappedPosition == 60 && target instanceof Node && scrollableContent.current?.contains(target)) {
             return scrollableContent.current.scrollTop != 0
     }
     }
@@ -90,7 +92,7 @@ export default function MobileLayout() {
 
     const pos2svh = (yPos: number) => {
         const windowHeight = window.visualViewport?.height || window.innerHeight;
-        return (windowHeight - yPos) / windowHeight * 50
+        return (windowHeight - yPos) / windowHeight * 60
     }
 
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -123,11 +125,11 @@ export default function MobileLayout() {
         
         if (isQuickSwipe) {
             if (drawerSwipeDirection === 'up') {
-                newPosition = 50
+                newPosition = 60
             }
             else if (drawerSwipeDirection === 'down') {
-                if (currentPosition > 25) {
-                    newPosition = 25
+                if (currentPosition > 30) {
+                    newPosition = 30
                 }
                 else {
                     setDrawerContent(null)
@@ -137,7 +139,7 @@ export default function MobileLayout() {
         }
         else {
             // Custom snapping logic for positions 25, 40, 80
-            const snapPositions = [25, 50];
+            const snapPositions = [30, 60];
             let closestPosition = snapPositions[0];
             let minDistance = Math.abs(currentPosition - closestPosition);
             
@@ -167,12 +169,12 @@ export default function MobileLayout() {
                 newPosition = closestPosition;
             }
             
-            if (newPosition < 25) {
+            if (newPosition < 30) {
                 setDrawerContent(null)
                 newPosition = snappedPosition  // Keep original logic - don't change this!
             }
-            else if (newPosition > 50) {
-                newPosition = 50
+            else if (newPosition > 60) {
+                newPosition = 60
             }
         }
 
@@ -193,7 +195,7 @@ export default function MobileLayout() {
 
         const newHeight = snappedPosition - pos2svh(startTouchY) + pos2svh(e.touches[0].clientY)
         setDrawerSwipeDirection(newHeight > currentPosition ? 'up' : 'down');
-        setCurrentPosition(newHeight < 50 ? newHeight : 50);
+        setCurrentPosition(newHeight < 60 ? newHeight : 60);
     }
 
     useEffect(() => {
@@ -227,7 +229,7 @@ export default function MobileLayout() {
         };
 
         const currentRef = scrollableContent.current;
-        if (currentRef && currentPosition === 50) {
+        if (currentRef && currentPosition === 60) {
             currentRef.addEventListener('scroll', handleScroll, { passive: true });
         }
 
@@ -251,8 +253,8 @@ export default function MobileLayout() {
                     setDrawerContent(null)
                 }
                 else {
-                    setCurrentPosition(25)
-                    setSnappedPosition(25)
+                    setCurrentPosition(30)
+                    setSnappedPosition(30)
                     setSnapped(true)
                 }
 
@@ -268,7 +270,7 @@ export default function MobileLayout() {
 
 
     return <>
-    {snappedPosition < 50 &&  <>
+    {snappedPosition < 60 &&  <>
     	<div
 	className={`absolute flex gap-2 left-3 z-[4000]`}
 	style={{ bottom: drawerContent ? `calc(${currentPosition}svh - 1.75rem)` : '2rem' }}
@@ -323,7 +325,7 @@ export default function MobileLayout() {
             {drawerContent && <>
                 <div className={`w-full flex  items-center h-4 pt-2 rounded-t-full bg-white relative px-2`} style={{ touchAction: 'none' }}>
                     <div className="absolute -translate-x-1/2 -translate-y-1 left-1/2 w-16 h-1.5 bg-neutral-200 rounded-full"></div></div>
-                <div className={`h-full bg-white flex flex-col pb-20 max-h-[calc(100svh-10rem)] ${snappedPosition == 50 ? 'border-t border-neutral-200' : ''} overscroll-contain`} ref={scrollableContent} style={{ overflowY: snappedPosition == 50 && currentPosition == 50 ? 'auto' : 'hidden', touchAction: ( snappedPosition == 50 && currentPosition == 50 && isScrollable()) ? 'pan-y' : 'none' }}>
+                <div className={`h-full bg-white flex flex-col pb-20 max-h-[calc(100svh-10rem)] ${snappedPosition == 60 ? 'border-t border-neutral-200' : ''} overscroll-contain`} ref={scrollableContent} style={{ overflowY: snappedPosition == 60 && currentPosition == 60 ? 'auto' : 'hidden', touchAction: ( snappedPosition == 60 && currentPosition == 60 && isScrollable()) ? 'pan-y' : 'none' }}>
                     {drawerContent == 'details' && <>
                         {group && !doc && <div className="pb-24">
                             <ListExplorer />
@@ -458,14 +460,14 @@ export default function MobileLayout() {
         </div>
         </div>
 
-        <div className={`absolute top-12 right-0 w-full bg-white rounded-md z-[1000] ${mode == 'map' ? '' : 'max-h-[calc(100svh-6rem)] h-full overflow-y-auto stable-scrollbar'}`}>
+        <div className={`absolute top-12 right-0 w-full rounded-md z-[1000] ${mode == 'map' ? '' : 'max-h-[calc(100svh-6rem)] h-full overflow-y-auto stable-scrollbar'}`}>
             <StatusSection />
             {mode == 'table' && <TableExplorer />}
             {mode == 'list' && <ListExplorer />}
             {doc && mode == 'doc' && <DocInfo />}
         </div>
 
-        {mode == 'map' && <div ref={mapContainerRef} className="absolute top-12 right-0 bottom-0 max-h-[100svh] w-full bg-white rounded-md">
+        {mode == 'map' && <div ref={mapContainerRef} className="absolute top-0 right-0 bottom-0 top-[3.5rem] max-h-[calc(100svh-3.5rem)] w-full bg-white rounded-md">
             <MapWrapper />
 
         </div>}

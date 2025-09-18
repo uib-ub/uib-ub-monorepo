@@ -127,7 +127,7 @@ export default function ActiveFilters() {
           <button 
               key={`${key}__${value}`} 
               onClick={() => removeFilter(key, value)} 
-              className={`text-neutral-950  rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
+              className={`text-neutral-950  rounded-md gap-2 pl-4 pr-3 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
           >
             {datasetTitles[value]} <PiX className="inline text-lg" aria-hidden="true"/>
           </button>
@@ -135,8 +135,8 @@ export default function ActiveFilters() {
         { datasetFilters.length > 1 && 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}>
-                {datasetFilters.length} avgrensinger
+              <button className={`text-neutral-950 h-10  rounded-md gap-2 pl-4 pr-3 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}>
+                {datasetFilters.length} kjeldeval
                 <PiCaretDownBold className="inline text-lg" aria-hidden="true"/>
               </button>
             </DropdownMenuTrigger>
@@ -163,45 +163,24 @@ export default function ActiveFilters() {
           </DropdownMenu>
         }
         {fulltext == 'on' && <Clickable remove={['fulltext']}
-      className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => removeFilter('fulltext', 'on')}>
+      className={`text-neutral-950 h-10  rounded-md gap-2 pl-4 pr-3 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => removeFilter('fulltext', 'on')}>
         <span className="flex items-center">Fulltekstsøk</span>
         <PiX className="inline text-lg" aria-hidden="true"/>
       </Clickable>}
       {/* Search chip */}
       { searchParams.get('q') && <Clickable remove={['q']}
-      className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => {inputValue.current = ""; removeFilter('q', searchParams.get('q')!)}}>
-        <span className="flex items-center"><PiMagnifyingGlass className="text-neutral-600 !mr-1" aria-hidden="true"/>{searchParams.get('q')}</span>
+      className={`text-white rounded-md gap-2 h-10 pl-4 pr-3 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-accent-700 shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => {inputValue.current = ""; removeFilter('q', searchParams.get('q')!)}}>
+        <span className="flex items-center">{searchParams.get('q')}</span>
         <PiX className="inline text-lg" aria-hidden="true"/>
       </Clickable>}
       
-        
-        {/* Djupinnsamlingar chip */}
-        {boostGt === '3' && !isMobile &&
-            <button 
-                onClick={() => removeFilter('boost_gt', '3')} 
-                className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
-            >
-                Djupinnsamlingar
-                <PiX className="inline text-lg" aria-hidden="true"/>
-            </button>
-        }
-        
-        {cadastralIndex &&
-            <button 
-                onClick={() => removeFilter('cadastralIndex', '_true')} 
-                className={`text-neutral-950 rounded-md gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
-            >
-                Hierarki
-                <PiX className="inline text-lg" aria-hidden="true"/>
-            </button>
-        }
         
 
         {facetFilters.length > 0 && facetFilters.length < 2 && facetFilters.map(([key, value]) => (
             <button 
                 key={`${key}__${value}`} 
                 onClick={() => removeFilter(key, value)} 
-                className={`text-neutral-950 rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
+                className={`text-neutral-950 h-10  rounded-full gap-2 pl-4 pr-3 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
             >
               {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
             </button>
@@ -210,7 +189,7 @@ export default function ActiveFilters() {
         {facetFilters.length >= 2 && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className={`text-neutral-950 rounded-full gap-2 pl-3 pr-2 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}>
+              <button className={`text-neutral-950 h-10  rounded-full gap-2 pl-4 pr-3 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}>
                 {facetFilters.length} filter
                 <PiCaretDownBold className="inline text-lg" aria-hidden="true"/>
               </button>
@@ -239,7 +218,7 @@ export default function ActiveFilters() {
         )}
 
         {showClearButton && <Clickable remove={['q', ...facetFilters.map(([key, value]) => key), ...datasetFilters.map(([key, value]) => key)]}
-        className={` rounded-full bg-accent-700 text-white  gap-2 pl-3 pr-2 py-1 flex items-center  shadow-md box-content`}>
+        className={` rounded-full bg-accent-700 text-white h-10  gap-2 pl-4 pr-3 flex items-center  shadow-md box-content`}>
           Tøm
           <PiTrash className="inline text-lg" aria-hidden="true"/>
         </Clickable>}

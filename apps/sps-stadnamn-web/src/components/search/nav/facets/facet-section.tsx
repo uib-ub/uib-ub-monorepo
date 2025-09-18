@@ -11,6 +11,7 @@ import { datasetTitles } from "@/config/metadata-config"
 import WikiAdmFacet from "./wikiAdm-facet"
 import { getSkeletonLength } from "@/lib/utils"
 import { usePerspective } from "@/lib/param-hooks"
+import DatasetFacet from "./dataset-facet"
 
 export default function FacetSection() {
     const perspective = usePerspective()
@@ -21,7 +22,6 @@ export default function FacetSection() {
     const [facetFieldCounts, setFacetFieldCounts] = useState<Record<string, any>>({})
     const { facetFilters } = useSearchQuery()
     const [facetsLoading, setFacetsLoading] = useState(true)
-
     /*
     
     const availableFacets = filterDataset == 'all'
@@ -67,8 +67,24 @@ export default function FacetSection() {
 
 
     return (
-        <>
+        
+        
         <div className="flex flex-col divide-y divide-neutral-200">
+          <Clickable type="button" 
+                       aria-expanded={facet == 'dataset'} 
+                       className="w-full flex justify-between p-3"
+                       aria-controls="dataset-facet-collapsible" 
+                       add={{facet: facet == 'dataset' ? null : 'dataset'}}>
+            
+              <span className="text-xl">Datasett</span>
+              {facet == 'dataset' ? <PiCaretUpBold className="inline self-center text-primary-600 text-xl" /> : <PiCaretDownBold className="inline self-center text-primary-600 text-xl" />}
+           
+          </Clickable>
+          <div id="dataset-facet-collapsible" className={`${facet == 'dataset' ? 'block' : 'hidden'}`}>
+            <DatasetFacet />
+          </div>
+
+
           {(facetsLoading && !availableFacets.length) && (
             <>
               {Array.from({length: 3}).map((_, index) => (
@@ -112,7 +128,7 @@ export default function FacetSection() {
           )
         })}
         </div>
-        </>
+        
     )
 }
 

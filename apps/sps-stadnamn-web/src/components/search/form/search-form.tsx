@@ -14,6 +14,8 @@ import { useMode } from '@/lib/param-hooks';
 import FulltextToggle from '@/app/fulltext-toggle';
 import { useQuery } from '@tanstack/react-query';
 import ResultItem from '../nav/results/result-item';
+import Menu from '@/app/menu';
+import { useSessionStore } from '@/app/session-store';
 
 
 export async function autocompleteQuery(inputState: string, isMobile: boolean) {
@@ -30,10 +32,8 @@ export async function autocompleteQuery(inputState: string, isMobile: boolean) {
 export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const { isMobile, currentUrl, preferredTabs, inputValue } = useContext(GlobalContext)
-    const [autocompleteOpen, setAutocompleteOpen] = useState<boolean>(false)
-    //const autocompleteOpen = searchParams.get('nav') == 'results'
-    const router = useRouter()
+    const { isMobile, currentUrl, preferredTabs, inputValue } = useContext(GlobalContext)    //const autocompleteOpen = searchParams.get('nav') == 'results'
+    const { menuOpen, autocompleteOpen, setAutocompleteOpen } = useSessionStore()
 
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
@@ -93,7 +93,7 @@ export default function SearchForm() {
 
         window.addEventListener('popstate', handlePopState)
         return () => window.removeEventListener('popstate', handlePopState)
-    }, [isMobile, autocompleteOpen, facetFilters, datasetFilters])
+    }, [isMobile, autocompleteOpen, facetFilters, datasetFilters, setAutocompleteOpen])
 
     // Add history entry when autocomplete opens on mobile
     useEffect(() => {
@@ -116,7 +116,17 @@ export default function SearchForm() {
 
     return <>
 
-        <div className={`${autocompleteOpen ? 'z-[4000]' : 'z-[3000]'} h-full w-full w-full flex xl:!py-1 bg-neutral-50 xl:bg-transparent`}>
+        <div className={`${(autocompleteOpen || menuOpen) ? 'z-[6000]' : 'z-[3000]'} h-full w-full w-full flex`}>
+
+        {(!isMobile || !autocompleteOpen) && <Menu shadow/>}
+                
+                {isMobile && autocompleteOpen &&
+                    <IconButton
+                        onClick={() => { setAutocompleteOpen(false) }}
+                        label="Tilbake"
+                        className="items-center justify-center flex h-full shadow-lg aspect-square xl:rounded-md bg-neutral-50 border-r-2 xl:border-r-0  border-neutral-200">
+                        <PiCaretLeftBold className="text-2xl" />
+                    </IconButton>}
 
             <Form ref={form} action="/search" id="search-form" className="flex w-full h-full"
                 onFocus={() => setAutocompleteOpen(Boolean(inputState))}
@@ -134,14 +144,8 @@ export default function SearchForm() {
 
                 }}>
 
-                <div className='flex w-full pr-1 bg-white shadow-lg xl:rounded-md xl:m-1 items-center relative group touch-none'>
-                    {isMobile && autocompleteOpen &&
-                        <IconButton
-                            onClick={() => { setAutocompleteOpen(false) }}
-                            label="Tilbake"
-                            className="px-2">
-                            <PiCaretLeftBold className="text-3xl lg:text-xl text-neutral-600 group-focus-within:text-neutral-800" />
-                        </IconButton>}
+                <div className='flex w-full pr-1 bg-white shadow-lg xl:rounded-md items-center relative group touch-none'>
+                    
                     <label htmlFor="search-input" className="sr-only">Søk</label>
                     <input
                         id="search-input"
@@ -157,7 +161,7 @@ export default function SearchForm() {
 
 
                         onChange={(event) => { inputValue.current = event.target.value; setInputState(event.target.value); setAutocompleteOpen(Boolean(event.target.value)) }}
-                        className={`bg-transparent pr-4 ${(isMobile && autocompleteOpen) ? 'pl-0' : 'pl-4'} focus:outline-none flex w-full shrink text-lg xl:text-base`}
+                        className={`bg-transparent pr-4 pl-4 focus:outline-none flex w-full shrink text-lg xl:text-base`}
                     />
 
                     {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset} />)}
@@ -180,7 +184,7 @@ export default function SearchForm() {
                 {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
                 {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
                 {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''} />}
-                {autocompleteOpen && <ul className="absolute top-[3.5rem] left-0 xl:left-2 !z-[6000] w-full max-h-[calc(100svh-4rem)] xl:h-auto bg-white xl:shadow-lg overflow-y-auto overscroll-none xl:max-w-[calc(25svw-0.5rem)] left-0 xl-p-2 xl rounded-lg">
+                {autocompleteOpen && <ul className="absolute top-[3.5rem] left-0 xl:left-2 border-t border-neutral-200 w-full max-h-[calc(100svh-4rem)] xl:h-auto bg-white xl:shadow-lg overflow-y-auto overscroll-none xl:max-w-[calc(25svw-0.5rem)] left-0 xl-p-2 xl xl:rounded-lg">
                     {data?.hits?.hits?.map((hit: any) => (
                         <li key={hit._id} role="option"><ResultItem hit={hit} /></li>
                     ))}

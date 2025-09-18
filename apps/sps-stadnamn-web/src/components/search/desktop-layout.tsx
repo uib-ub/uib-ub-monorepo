@@ -7,7 +7,7 @@ import ListExplorer from "./list/list-explorer"
 import NavWindow from "./nav/nav-window"
 import DetailsWindow from "./details/details-window"
 import NamesWindow from "./names/names-window"
-import MapWrapper from "./map-wrapper"
+import MapWrapper from "../map/map-wrapper"
 import TreeResults from './nav/results/tree-results';
 import TreeWindow from './nav/tree-window';
 
@@ -19,6 +19,7 @@ export default function DesktopLayout() {
 
     const group = searchParams.get('group')
     const nav = searchParams.get('nav')
+    const datasetTag = searchParams.get('datasetTag')
     
 
     return <main id="main" className="flex scroll-container relative w-[100svw] h-[100svh] bg-neutral-50">   
@@ -29,8 +30,14 @@ export default function DesktopLayout() {
 
         {  nav && (!details || details == 'group') && !(mode != 'map' && mode != 'list' && (doc || group)) && 
         <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-14 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${(doc || group) ? 'hidden lg:flex' : 'flex'}`}>
-           {nav == 'tree' ? <TreeWindow/> : <NavWindow/>}  
+           {datasetTag == 'tree' ? <TreeWindow/> : <NavWindow/>}  
         </section> 
+        }
+        {
+            datasetTag == 'tree' && 
+            <section aria-labelledby="tree-window-title" className="xl:absolute left-2 top-14 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex">
+            <TreeWindow/>
+            </section>
         }
 
         
@@ -44,7 +51,7 @@ export default function DesktopLayout() {
             </section>
         }
 
-        <div className={`absolute
+        <div className={`absolute px-1
                 left-[40svw] top-0 lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(75svw-0.5rem)] max-h-[calc(100svh-20rem)]
                                         
                 ${mode == 'map' ? 'lg:max-w-[calc(50svw-0.5rem)] z-[2000]'

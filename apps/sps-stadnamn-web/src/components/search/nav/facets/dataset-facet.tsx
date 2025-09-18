@@ -127,65 +127,11 @@ export default function DatasetFacet() {
 
   return (
     <>
-    <div className="flex flex-col gap-2">
-    {!isMobile && <div className="border p-1 rounded-lg border-neutral-200 tabs gap-1 text-sm flex flex-col 2xl:flex-wrap 2xl:flex-row" role="tablist">
-  <Clickable
-    remove={["datasetTag"]}
-    role="tab"
-    aria-controls="dataset-facet-content"
-    aria-selected={!datasetTag}
-    className={`flex items-center gap-2 p-1 px-2 flex-1`}
-  >
-    <span className="flex-shrink-0">
-      {!datasetTag ? <PiDatabaseFill className="text-base text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-base text-neutral-900" aria-hidden="true"/>}
-    </span>
-    Alle
-  </Clickable>
-  <Clickable
-    role="tab"
-    aria-controls="dataset-facet-content"
-    remove={["dataset", "group", "doc"]}
-    add={{ datasetTag: 'deep'}}
-    aria-selected={datasetTag == 'deep'}
-    className={`flex items-center gap-2 p-1 px-2 flex-1`}
-  >
-    <span className="flex-shrink-0">
-      {datasetTag == 'deep' ? <PiMicroscopeFill className="text-base text-accent-800" aria-hidden="true"/> : <PiMicroscopeLight className="text-base text-neutral-900" aria-hidden="true"/>}
-    </span>
-    Djupinnsamlingar
-  </Clickable>
-  <Clickable
-    role="tab"
-    aria-controls="dataset-facet-content"
-    remove={["dataset", "group", "doc"]}
-    add={{ datasetTag: 'tree'}}
-    aria-selected={datasetTag == 'tree'}
-    className={`flex items-center gap-2 p-1 px-2 flex-1`}
-  >
-    <span className="flex-shrink-0">
-      {datasetTag == 'tree' ? <PiTreeViewFill className="text-base text-accent-800" aria-hidden="true"/> : <PiTreeViewLight className="text-base text-neutral-900" aria-hidden="true"/>}
-    </span>
-    Matriklar
-  </Clickable>
-  <Clickable
-    role="tab"
-    aria-controls="dataset-facet-content"
-    remove={["dataset", "group", "doc"]}
-    add={{ datasetTag: 'base'}}
-    aria-selected={datasetTag == 'base'}
-    className={`flex items-center gap-2 p-1 px-2 flex-1`}
-  >
-    <span className="flex-shrink-0">
-      {datasetTag == 'base' ? <PiWallFill className="text-base text-accent-800" aria-hidden="true"/> : <PiWallLight className="text-base text-neutral-900" aria-hidden="true"/>}
-    </span>
-    Grunnord
-  </Clickable>
-</div>}
-            
+    <div className="flex flex-col gap-2 pl-2">            
     
     <div id="dataset-facet-content" className='flex flex-col gap-2'>
-    { datasetTag == 'deep' && <span className="px-1">Datasett som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>}
-    {datasetTag == 'tree' && <span className="px-1">Datasett ordna i eit hierarki etter matrikkelinndelinga.</span>}
+    { datasetTag == 'deep' && <span className="p-2">Datasett som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>}
+    {datasetTag == 'tree' && <span className="p-2">Datasett ordna i eit hierarki etter matrikkelinndelinga.</span>}
 
     {datasetTag != 'tree' && <div className='flex gap-2 px-1'>
      <div className='relative grow'>

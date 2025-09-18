@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef, useEffect, useContext } from "react";
-import { PiArchive, PiBookOpen, PiBookOpenLight, PiBookOpenText, PiBookOpenTextFill, PiBookOpenTextLight, PiCaretLeft, PiChatCircleText, PiHouse, PiInfo, PiList, PiListFill, PiListLight, PiMapPinLineFill, PiMapTrifold, PiMapTrifoldFill, PiMapTrifoldLight, PiQuestion, PiTable, PiTableFill, PiTableLight, PiX } from 'react-icons/pi';
+import { PiArchive, PiBookOpen, PiBookOpenLight, PiBookOpenText, PiBookOpenTextFill, PiBookOpenTextLight, PiCaretLeft, PiChatCircleText, PiDatabaseFill, PiDatabaseLight, PiHouse, PiInfo, PiList, PiListFill, PiListLight, PiMapPinLineFill, PiMapTrifold, PiMapTrifoldFill, PiMapTrifoldLight, PiMicroscopeFill, PiMicroscopeLight, PiQuestion, PiTable, PiTableFill, PiTableLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight, PiX } from 'react-icons/pi';
 import NavBar from "./nav-bar";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { GlobalContext } from "./global-provider";
@@ -8,9 +8,11 @@ import Link from "next/link";
 import Clickable from "@/components/ui/clickable/clickable";
 import { useMode } from "@/lib/param-hooks";
 import FulltextToggle from "./fulltext-toggle";
+import { useSessionStore } from "./session-store";
+import { infoPages } from "./info/info-pages";
 
 export default function Menu( { shadow }: { shadow?: boolean } ) {
-    const [menuOpen, setMenuOpen] = useState(false)
+    const { menuOpen, setMenuOpen } = useSessionStore()
     const menuRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -20,6 +22,9 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
     const modeOutsideSearch = pathname == '/search' ? mode : null
     const router = useRouter()
     const q = searchParams.get("q")
+    const datasetTag = searchParams.get("datasetTag")
+
+	const menuBtn = "flex w-24 h-16  p-2 text-sm flex-col items-center justify-center gap-1 rounded-lg aria-selected:text-white aria-selected:bg-accent-800 no-underline"
 
     const handleBlur = (event: React.FocusEvent<HTMLButtonElement>) => {
         if (menuRef.current) {
@@ -45,53 +50,129 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
 
     useEffect(() => {
         setMenuOpen(false);
-    }, [q, mode, pathname]);
+    }, [q, pathname]);
 
 
 
 
 
     return (
-        <div ref={menuRef} className="bg-neutral-50 xl:bg-transparent z-[6000] py-2 flex items-center justify-center h-full">
+        <div ref={menuRef} className={`${menuOpen ? 'z-[6000]' : 'z-[3000]'} flex items-center justify-center h-full`}>
             <button id="menu-button" aria-controls="menu_navbar" 
                         onBlur={handleBlur}
                         aria-label="Meny"
                         aria-expanded={menuOpen} 
-                        className={`items-center justify-center flex h-full w-12 xl:w-10 ml-1.5 mr-0.5 ${shadow ? 'xl:bg-neutral-50 rounded-lg' : ''}`} 
+                        className={`items-center justify-center flex h-full aspect-square xl:rounded-md bg-neutral-50 ${shadow ? 'xl:shadow-lg border-r-2 xl:border-r-0  border-neutral-200' : ''}`} 
                         onClick={() => setMenuOpen(!menuOpen)}>
                 {menuOpen ? <PiX className="text-2xl" aria-hidden="true"/> : <PiList className="text-2xl" aria-hidden="true"/>}</button>
  
                 <div 
                      id="menu_navbar" 
-                     className={` bg-neutral-50 px-3 w-full xl:w-[25svw] overscroll-none h-[calc(100svh-3rem)] border-t border-neutral-200 overflow-y-auto ${menuOpen ? 'fixed top-14 bottom-0 left-0' : 'hidden'}`}>
+                     className={` bg-neutral-50 px-2 w-full xl:w-[25svw] overscroll-none h-[calc(100svh-3rem)] overflow-y-auto ${menuOpen ? 'fixed top-14 bottom-0 left-0' : 'hidden'}`}>
                          { pathname !== '/' && pathname != '/search' && currentUrl.current && 
-                <div className="flex items-center justify-center py-4 border-b border-neutral-200 gap-2 no-underline text-xl "><Link href={currentUrl.current} className="flex items-center gap-2 no-underline text-xl"><PiCaretLeft className="text-2xl"/>Tilbake til søket</Link></div>
+                <div className="flex items-center justify-center py-4 border-b border-neutral-200 gap-2 no-underline text-xl "><Link href={currentUrl.current} className="flex items-center gap-2 no-underline text-xl"><PiCaretLeft className="text-2xl"/>Tilbake til søket</Link>
+                </div>
                 }
-                <div className="flex flex-col gap-2 p-3 w-full">
-                    <FulltextToggle/>
+                <nav id="top" className="text-xl py-6 flex flex-col divide-y divide-neutral-200" onBlur={handleBlur}>
+                    {pathname != "/" && <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:mx-0" href="/"><PiHouse aria-hidden="true"/>Til forsida</Link>}
+                    <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:mx-0" href="/help"><PiQuestion aria-hidden="true"/>Søketips</Link>
+                    <div className="flex flex-col gap-2 p-3 w-full">
+                        <span className="text-lg">Resultatvisning</span>		
+					<div className="flex gap-2 items-center w-full pb-3 text-base" role="tablist">
+					
+					<Clickable link href="/search" role="tab" onClick={() => setMenuOpen(false)} aria-selected={modeOutsideSearch == 'map'} add={{mode: 'map'}} className={menuBtn}>
+						{modeOutsideSearch == 'map' ? <PiMapTrifoldFill className="text-xl text-white" /> : <PiMapTrifoldLight className="text-xl" />}
+						Kart
+					</Clickable>
+					<Clickable link href="/search" role="tab" onClick={() => setMenuOpen(false)} aria-selected={modeOutsideSearch == 'table'} add={{mode: 'table'}} className={menuBtn}>
+						{modeOutsideSearch == 'table' ? <PiTableFill className="text-xl text-white" /> : <PiTableLight className="text-xl" />}
+						Tabell
+					</Clickable>
+					<Clickable link href="/search" role="tab" onClick={() => setMenuOpen(false)} aria-selected={modeOutsideSearch == 'list'} add={{mode: 'list'}} className={menuBtn}>
+						{modeOutsideSearch == 'list' ? <PiBookOpenTextFill className="text-xl text-white" /> : <PiBookOpenTextLight className="text-xl" />}
+						Liste
+					</Clickable>
+					</div>
+                    </div>
+                    <div className="flex flex-col gap-2 p-3 w-full">
+                    <span className="text-lg">Søkemodus</span>
+                    <div className="flex gap-2 items-center w-full pb-3 text-base flex-wrap" role="tablist">
+                        
+							<Clickable
+								remove={["datasetTag"]}
+								role="tab"
+								aria-selected={!datasetTag && pathname == "/search"}
+								className={menuBtn}
+                                onClick={() => setMenuOpen(false)}
+							>
+								<span className="flex-shrink-0">
+									{!datasetTag && pathname == "/search" ? <PiDatabaseFill className="text-xl text-white" aria-hidden="true"/> : <PiDatabaseLight className="text-xl" aria-hidden="true"/>}
+								</span>
+								Alle datasett
+							</Clickable>
+							<Clickable
+								role="tab"
+								remove={["dataset", "group", "doc"]}
+								add={{ datasetTag: 'deep' , nav: 'datasets'}}
+                                onClick={() => setMenuOpen(false)}
+								aria-selected={datasetTag == 'deep'}
+								className={menuBtn}
+							>
+								<span className="flex-shrink-0">
+									{datasetTag == 'deep' ? <PiMicroscopeFill className="text-xl text-white" aria-hidden="true"/> : <PiMicroscopeLight className="text-xl" aria-hidden="true"/>}
+								</span>
+								Djup&shy;innsamlingar
+							</Clickable>
+							<Clickable
+								role="tab"
+								remove={["dataset", "group", "doc"]}
+								add={{ datasetTag: 'tree' , nav: 'datasets'}}
+                                onClick={() => setMenuOpen(false)}
+								aria-selected={datasetTag == 'tree'}
+								className={menuBtn}
+							>
+								<span className="flex-shrink-0">
+									{datasetTag == 'tree' ? <PiTreeViewFill className="text-xl text-white" aria-hidden="true"/> : <PiTreeViewLight className="text-xl" aria-hidden="true"/>}
+								</span>
+								Matriklar
+							</Clickable>
+							<Clickable
+								role="tab"
+								remove={["dataset", "group", "doc"]}
+								add={{ datasetTag: 'base' , nav: 'datasets'}}
+                                onClick={() => setMenuOpen(false)}
+								aria-selected={datasetTag == 'base'}
+								className={menuBtn}
+							>
+								<span className="flex-shrink-0">
+									{datasetTag == 'base' ? <PiWallFill className="text-xl text-white" aria-hidden="true"/> : <PiWallLight className="text-xl" aria-hidden="true"/>}
+								</span>
+								Grunnord
+							</Clickable>
+						
+                        </div>
+                    </div>
                     
-                    <div className="flex gap-2 items-center w-full">
                    
-                    <Clickable link href="/search" aria-current={modeOutsideSearch == 'map' ? 'page' : undefined} add={{mode: 'map'}} className="flex w-24 h-24 p-3 flex-col items-center justify-center gap-2 rounded-lg aria-[current=page]:text-white aria-[current=page]:bg-accent-800 no-underline">
-                        {modeOutsideSearch == 'map' ? <PiMapTrifoldFill className="text-4xl text-white" /> : <PiMapTrifoldLight className="text-4xl" />}
-                        Kart
-                    </Clickable>
-                    <Clickable link href="/search" aria-current={modeOutsideSearch == 'table' ? 'page' : undefined} add={{mode: 'table'}} className="flex w-24 h-24 p-3 flex-col items-center justify-center gap-2 rounded-lg aria-[current=page]:text-white aria-[current=page]:bg-accent-800 no-underline">
-                        {modeOutsideSearch == 'table' ? <PiTableFill className="text-4xl text-white" /> : <PiTableLight className="text-4xl" />}
-                        Tabell
-                    </Clickable>
-                    <Clickable link href="/search" aria-current={modeOutsideSearch == 'list' ? 'page' : undefined} add={{mode: 'list'}} className="flex w-24 h-24 p-3 flex-col items-center justify-center gap-2 rounded-lg aria-[current=page]:text-white aria-[current=page]:bg-accent-800 no-underline">
-                        {modeOutsideSearch == 'list' ? <PiBookOpenTextFill className="text-4xl text-white" /> : <PiBookOpenTextLight className="text-4xl" />}
-                        Liste
-                    </Clickable>
+                    <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:mx-0" href="https://skjemaker.app.uib.no/view.php?id=16665712"><PiChatCircleText aria-hidden="true"/>Tilbakemelding</Link>
+                    					
+                   <div className="flex flex-col gap-2 w-full">
+                    <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:pr-8 lg:mx-0" href="/info"><PiInfo aria-hidden="true"/>Om stadnamnportalen</Link>
+					<ul className="flex flex-col gap-0 pb-2">
+						{infoPages.map((p: any) => (
+							<li key={p.href}>
+							<Link
+								key={p.href}
+								scroll={false}
+								className="flex items-center gap-2 py-2 lg:px-8 lg:mx-0 text-base"
+								href={p.href}
+							>
+								{p.label}
+							</Link>
+                            </li>
+						))}
+					</ul>
                     </div>
-                    </div>
-                <nav id="top" className="text-2xl py-6 px-3 flex flex-col border-t border-neutral-200" onBlur={handleBlur}>
-                    {pathname == "/search" && <Link scroll={false} className="flex items-center gap-2 py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0" href="/"><PiHouse aria-hidden="true"/>Til forsiden</Link>}
-                    <Link scroll={false} className="flex items-center gap-2 py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0" href="/help"><PiQuestion aria-hidden="true"/>Søketips</Link>
-                   
-                    <Link scroll={false} className="flex items-center gap-2 py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0" href="https://skjemaker.app.uib.no/view.php?id=16665712"><PiChatCircleText aria-hidden="true"/>Tilbakemelding</Link>
-                    <Link scroll={false} className="flex items-center gap-2 py-3 lg:py-0 lg:my-1 lg:px-4 lg:pr-8 lg:mx-0" href="/info"><PiInfo aria-hidden="true"/>Info</Link>
       
 
                 </nav>

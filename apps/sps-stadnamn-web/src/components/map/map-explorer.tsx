@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef, useState, useCallback, useMemo, useContext } from "react";
-import Map from "../map/map";
+import Map from "./leaflet/map";
 import { baseMaps, baseMapKeys, defaultBaseMap, baseMapLookup } from "@/config/basemap-config";
 import { PiBookOpen, PiBookOpenFill, PiCheckCircleFill, PiCrop, PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill, PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
@@ -50,7 +50,6 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const { overviewGroups } = useOverviewData()
   const details = searchParams.get('details')
   const mapInstance = useRef<any>(null)
-  const nav = searchParams.get('nav')
   const doc = searchParams.get('doc')
   const datasetTag = searchParams.get('datasetTag')
 

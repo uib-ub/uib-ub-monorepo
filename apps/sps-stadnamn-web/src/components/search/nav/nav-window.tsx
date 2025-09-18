@@ -21,50 +21,11 @@ export default function NavWindow() {
     const [isPending, startTransition] = useTransition()
 
 
-    return <><div className={`flex overflow-x-auto tabs rounded-md gap-1 p-1`}>
-
-                <Clickable
-                    add={nav !== 'datasets' ? {nav: 'datasets'} : {}}
-                    remove={nav === 'datasets' ? ["nav"] : []}
-                    aria-expanded={nav == 'datasets' || datasetTag == 'tree'}
-                    aria-controls="nav-window-content"
-                    className="flex h-10 whitespace-nowrap items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pr-4 pl-3">
-                        {nav == 'datasets' ? <PiDatabaseFill className="text-lg text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-lg text-neutral-900" aria-hidden="true"/>}
-                        <span className="sr-only 2xl:not-sr-only whitespace-nowrap">Datasett</span>
-                </Clickable>            
-                <Clickable
-                      add={nav !== 'filters' ? {nav: 'filters'} : {}}
-                      remove={nav === 'filters' ? ["nav"] : []}
-                      aria-expanded={nav == 'filters'}
-                      aria-controls="nav-window-content"
-                      className="flex whitespace-nowrap items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pr-4 pl-3">
-                       {nav == 'filters' ? <PiFunnelFill className="text-lg text-accent-800" aria-hidden="true"/> : <PiFunnelLight className="text-lg text-neutral-900" aria-hidden="true"/>}
-                       <span className="sr-only 2xl:not-sr-only whitespace-nowrap">Filter</span>
-                </Clickable>
-
-                <Clickable
-
-                      add={nav !== 'results' ? {nav: 'results'} : {}}
-                      remove={nav === 'results' ? ["nav"] : []}
-                      aria-expanded={nav == 'results'}
-                      aria-controls="nav-window-content"
-                      className="flex whitespace-nowrap  items-center basis-1 gap-2 no-underline w-full lg:w-auto p-1 pl-4 pr-3">
-                        Treff
-                        { searchLoading ? <span className=""><Spinner className="text-neutral-900" status="Laster søkeresultat..." /></span> : <>
-                        {nav == 'results' ? <span className={`results-badge bg-accent-800 font-bold text-white shadow-sm left-8 rounded-full px-1.5 py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>
-                            {totalHits && formatNumber(totalHits.value)}</span>
-                        : <span className={`results-badge text-primary-700 bg-primary-200 font-bold left-8 rounded-full py-0.5 text-sm whitespace-nowrap ${totalHits?.value > 9 ? 'px-1.5': 'px-2'}`}>{totalHits && formatNumber(totalHits.value)}</span>}
-                        </>}
-                </Clickable>
-                <ClickableIcon label="Lukk" remove={["nav"]} className="ml-auto">   
+    return <>
+                <ClickableIcon label="Lukk" remove={["nav"]} className="ml-autob">   
                     <PiX className="text-3xl text-neutral-900"/></ClickableIcon>
                 
-                
 
-
-
-
-        </div>
         <div id="nav-window-content" className={`overflow-y-auto stable-scrollbar px-2 max-h-[calc(100svh-11rem)] xl:max-h-[calc(100svh-8.5rem)] py-6 border-t border-neutral-200 ${(!nav || isPending) ? "hidden" : ""}`}>
                 
 
@@ -74,21 +35,14 @@ export default function NavWindow() {
         { nav == 'filters' &&
                 <FacetSection/>
         }
-        { (nav == 'datasets' || datasetTag == 'tree') &&
-        <div className="flex flex-col gap-2">
-        <h2 className="text-xl px-2" >
-        Datasett
-      </h2>
-            <DatasetFacet/>
-            </div>
-        }
+
         { nav == 'results' && mode != 'table' &&
             <SearchResults/>
         }
 
 
 
-        { nav == 'results' && mode == 'table' && <>
+        { nav != 'filters' && mode == 'table' && <>
         <h2 className="text-xl px-1">Tabellvisning</h2>
         <p className="px-1">Tabellvisning viser søkeresultat utan gruppering</p>
         <TableOptions/>
