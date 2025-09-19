@@ -31,6 +31,7 @@ import { GlobalContext } from "@/app/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { getMyLocation } from "@/lib/map-utils";
 import MapSettings from "../map/map-settings";
+import FulltextToggle from "@/app/fulltext-toggle";
 
 export default function MobileLayout() {
 
@@ -391,7 +392,8 @@ export default function MobileLayout() {
                     {drawerContent == 'filters' &&
                         <div className="p-2">
                             <h2 className="text-2xl px-1">Søkealternativ {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
-                            <div className="flex flex-wrap gap-2 pb-2"><ActiveFilters /></div>
+                            <FulltextToggle/>
+                            <div className="flex flex-wrap gap-2 py-2"><ActiveFilters /></div>
                             <FacetSection />
                         </div>
 

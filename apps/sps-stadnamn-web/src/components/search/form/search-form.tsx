@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { PiCaretLeft, PiCaretLeftBold, PiFunnel, PiMagnifyingGlass, PiMapTrifold, PiX } from 'react-icons/pi';
+import { PiCaretLeft, PiCaretLeftBold, PiFunnel, PiMagnifyingGlass, PiMapTrifold, PiPencilLine, PiSliders, PiSlidersHorizontal, PiTreeView, PiX } from 'react-icons/pi';
 import { datasetTitles, modes } from '@/config/metadata-config';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useSearchQuery } from '@/lib/search-params';
@@ -17,6 +17,8 @@ import ResultItem from '../nav/results/result-item';
 import Menu from '@/app/menu';
 import { useSessionStore } from '@/state/zustand/session-store';
 import Clickable from '@/components/ui/clickable/clickable';
+import ClickableIcon from '@/components/ui/clickable/clickable-icon';
+import { formatNumber } from '@/lib/utils';
 
 export async function autocompleteQuery(inputState: string, isMobile: boolean) {
     if (!inputState) return null
@@ -36,6 +38,12 @@ export default function SearchForm() {
     const menuOpen = useSessionStore((s: any) => s.menuOpen)
     const autocompleteOpen = useSessionStore((s: any) => s.autocompleteOpen)
     const setAutocompleteOpen = useSessionStore((s: any) => s.setAutocompleteOpen)
+    const snappedPosition = useSessionStore((s: any) => s.snappedPosition)
+    const setDrawerContent = useSessionStore((s: any) => s.setDrawerContent)
+    const setSnappedPosition = useSessionStore((s: any) => s.setSnappedPosition)
+    const setCurrentPosition = useSessionStore((s: any) => s.setCurrentPosition)
+    const datasetTag = searchParams.get('datasetTag')
+    
 
 
     const input = useRef<HTMLInputElement | null>(null)
@@ -43,8 +51,11 @@ export default function SearchForm() {
     const perspective = usePerspective()
 
     const { facetFilters, datasetFilters } = useSearchQuery()
+    const filterCount = facetFilters.length + datasetFilters.length
+
+
     const mode = useMode()
-    const nav = searchParams.get('nav')
+   
 
     const [inputState, setInputState] = useState<string>(inputValue.current || '') // Ensure updates within the component
     const [autocompleteFacetFilters, setAutocompleteFacetFilters] = useState<[string, string][]>(facetFilters)
@@ -150,6 +161,17 @@ export default function SearchForm() {
                 <div className='flex w-full pr-1 bg-white shadow-lg xl:rounded-md items-center relative group'>
                     
                     <label htmlFor="search-input" className="sr-only">Søk</label>
+                    { datasetTag != 'tree' && <ClickableIcon onClick={() => {setDrawerContent('filters'); setSnappedPosition(60); setCurrentPosition(60)}} add={{nav: 'filters'}} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
+                <PiSliders className="text-3xl xl:text-2xl" aria-hidden="true"/>
+                {filterCount > 0 && <span className={`results-badge bg-primary-500 absolute top-1 left-1 rounded-full text-white text-xs ${filterCount < 10 ? 'px-1.5' : 'px-1'}`}>
+                            {formatNumber(filterCount)}
+                        </span>}
+                </ClickableIcon>}
+                { datasetTag == 'tree' && <ClickableIcon onClick={() => {setDrawerContent('tree'); setSnappedPosition(60); setCurrentPosition(60)}} add={{nav: 'tree'}} label="Matrikkelnavigasjon" className={`flex items-center justify-center relative py-2 px-3`}>
+                <PiTreeView className="text-3xl xl:text-2xl" aria-hidden="true"/>
+                </ClickableIcon>}
+                    
+                    
                     <input
                         id="search-input"
                         required
@@ -164,7 +186,7 @@ export default function SearchForm() {
 
 
                         onChange={(event) => { inputValue.current = event.target.value; setInputState(event.target.value); setAutocompleteOpen(Boolean(event.target.value)) }}
-                        className={`bg-transparent pr-4 pl-4 focus:outline-none flex w-full shrink text-lg xl:text-base`}
+                        className={`bg-transparent pr-4 focus:outline-none flex w-full shrink text-lg xl:text-base`}
                     />
 
                     {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset} />)}

@@ -37,14 +37,8 @@ export default function StatusSection() {
     
     
     <div className={`flex flex-wrap  xl:flex-row h-full gap-2`}>
-    {(mode != 'map' || snappedPosition < 60) && datasetTag != 'tree' && <Clickable onClick={() => {setDrawerContent('filters'); setSnappedPosition(60); setCurrentPosition(60)}} add={{nav: 'filters'}} aria-label="Filter" className={`flex items-center justify-center bg-white relative xl:h-10 xl:w-10 p-3 xl:p-0 gap-2 text-neutral-800 shadow-lg rounded-full`}>
-                <PiSlidersHorizontal className="text-2xl" aria-hidden="true"/>
-                {isMobile  && filterCount > 0 && <span className={`results-badge bg-primary-500 absolute bottom-0 -right-1 -ml-2 rounded-full text-white text-xs ${filterCount < 10 ? 'px-1.5' : 'px-1'}`}>
-                            {formatNumber(filterCount)}
-                        </span>}
-    </Clickable>}
       
-      {(!isMobile || mode=='table') && <ActiveFilters/> }</div>
+      {!isMobile && <ActiveFilters/> }</div>
 
 
 

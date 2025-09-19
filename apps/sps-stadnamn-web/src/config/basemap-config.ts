@@ -5,7 +5,8 @@ export const backgroundMap = {
 }
 
 export const defaultBaseMap: Record<string, string> = {
-    search: 'word_map',
+    all: 'world_map',
+    ssr: 'world_map',
     ssr2016: 'world_map'
 }
    
@@ -65,8 +66,8 @@ export const baseMaps: BaseMap[] = [
             attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
         }
     },
-    { // 
-        key: 'word_map',
+    { 
+        key: 'world_map',
         name: 'Verdskart',
         bright: true,
         props: {

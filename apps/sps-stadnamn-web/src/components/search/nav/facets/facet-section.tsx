@@ -6,13 +6,14 @@ import { useSearchParams } from "next/navigation"
 import ServerFacet from "./server-facet"
 import { facetConfig } from "@/config/search-config"
 import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { datasetTitles } from "@/config/metadata-config"
 import WikiAdmFacet from "./wikiAdm-facet"
 import { getSkeletonLength } from "@/lib/utils"
 import { usePerspective } from "@/lib/param-hooks"
 import DatasetFacet from "./dataset-facet"
 import FulltextToggle from "@/app/fulltext-toggle"
+import { GlobalContext } from "@/app/global-provider"
 
 export default function FacetSection() {
     const perspective = usePerspective()
@@ -23,6 +24,7 @@ export default function FacetSection() {
     const [facetFieldCounts, setFacetFieldCounts] = useState<Record<string, any>>({})
     const { facetFilters } = useSearchQuery()
     const [facetsLoading, setFacetsLoading] = useState(true)
+    const { isMobile } = useContext(GlobalContext)
     /*
     
     const availableFacets = filterDataset == 'all'
@@ -71,7 +73,7 @@ export default function FacetSection() {
         
         
         <div className="flex flex-col divide-y divide-neutral-200">
-          <FulltextToggle/>
+          {!isMobile && <FulltextToggle/>}
           <Clickable type="button" 
                        aria-expanded={facet == 'dataset'} 
                        className="w-full flex justify-between p-3"

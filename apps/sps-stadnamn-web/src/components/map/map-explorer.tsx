@@ -901,7 +901,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     {/* Canvas overlay for label mode */}
     {!isMobile && <div className={`absolute xl:right-0 p-2 bottom-5 right-0 xl:left-1/2 transform xl:-translate-x-1/2 flex flex-col lg:flex-row justify-center gap-2 text-white z-[3001]`}>
       {!isMobile && <Clickable 
-        className="rounded-full bg-white text-neutral-800 shadow-lg p-3" 
+        className="rounded-full bg-white text-neutral-900 shadow-lg p-3" 
         add={{nav: 'mapSettings'}} 
         onClick={() => setDrawerContent('mapSettings')}
       >
@@ -911,7 +911,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       {!isMobile && <IconButton 
         onClick={() => mapInstance.current?.zoomIn()} 
         side="top" 
-        className="rounded-full bg-white text-neutral-800 shadow-lg p-3" 
+        className="rounded-full bg-white text-neutral-900 shadow-lg p-3" 
         label="Zoom inn"
       >
         <PiMagnifyingGlassPlusFill className="text-2xl" />
@@ -920,7 +920,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       {!isMobile && <IconButton 
         onClick={() => mapInstance.current?.zoomOut()} 
         side="top" 
-        className="rounded-full bg-white text-neutral-800 shadow-lg p-3" 
+        className="rounded-full bg-white text-neutral-900 shadow-lg p-3" 
         label="Zoom ut"
       >
         <PiMagnifyingGlassMinusFill className="text-2xl" />
@@ -934,14 +934,14 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
           })}
         } 
         side="top" 
-        className="rounded-full bg-white text-neutral-800 shadow-lg p-3" 
+        className="rounded-full bg-white text-neutral-900 shadow-lg p-3" 
         label="Min posisjon"
       >
         <PiGpsFix className="text-2xl" />
       </IconButton>
       
       <IconButton 
-        className="rounded-full bg-white text-neutral-800 shadow-lg p-3" 
+        className="rounded-full bg-white text-neutral-900 shadow-lg p-3" 
         label="Zoom til søkeresultat" 
         onClick={() => {
           if (searchBounds?.length) {
