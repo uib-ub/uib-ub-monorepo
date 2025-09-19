@@ -93,7 +93,7 @@ export default function ListExplorer() {
       }, [router, searchParams, mode, searchLoading, group, datasetTag, collapsedData, groupData]);
 
     return (
-        <ul className={`flex flex-col divide-y divide-neutral-200 instance-info ${isMobile ? 'gap-4' : 'gap-8'} ${groupData && groupLoading ? 'opacity-50' : ''}`}>
+        <ul className={`flex bg-white flex-col divide-y divide-neutral-200 instance-info ${isMobile ? 'gap-4' : 'gap-8'} ${groupData && groupLoading ? 'opacity-50' : ''}`}>
             {!groupData &&
             
                 <li className={`flex w-full flex-col p-4 xl:p-8 my-4 xl:my-8`}>

@@ -28,10 +28,14 @@ import { datasetTitles } from "@/config/metadata-config";
 import CadastreBreadcrumb from "./details/doc/cadastre-breadcrumb";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { GlobalContext } from "@/app/global-provider";
+import { useSessionStore } from "@/app/session-store";
 
 export default function MobileLayout() {
-    const [currentPosition, setCurrentPosition] = useState(30);
-    const [snappedPosition, setSnappedPosition] = useState(30);
+    const snappedPosition = useSessionStore((s) => s.snappedPosition);
+    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
+    const drawerContent = useSessionStore((s) => s.drawerContent);
+    const setDrawerContent = useSessionStore((s) => s.setDrawerContent);
+    const [currentPosition, setCurrentPosition] = useState(snappedPosition);
     const [snapped, setSnapped] = useState(false);
     const [startTouchY, setStartTouchY] = useState(0);
     const [startTouchX, setStartTouchX] = useState(0);
@@ -44,7 +48,6 @@ export default function MobileLayout() {
     const dataset = searchParams.get('dataset')
     const { mapFunctionRef } = useContext(GlobalContext)
 
-    const [drawerContent, setDrawerContent] = useState<string | null>(null)
     const nav = searchParams.get('nav')
 
     const doc = searchParams.get('doc')
@@ -58,7 +61,7 @@ export default function MobileLayout() {
     const group = searchParams.get('group')
 
     const datasetTag = searchParams.get('datasetTag')
-    const mapContainerRef = useRef<HTMLDivElement>(null)
+
     const drawerRef = useRef<HTMLDivElement>(null)
     const mobileNav = useRef<HTMLDivElement>(null)
     const details = searchParams.get('details')
@@ -213,7 +216,7 @@ export default function MobileLayout() {
         , [searchFilterParamsString, nav, doc, group, details])
 
     const toggleDrawer = (tab: string) => {
-        setDrawerContent(prev => prev == tab ? null : tab)
+        setDrawerContent(tab == drawerContent ? null : tab)
     }
 
 
@@ -271,30 +274,16 @@ export default function MobileLayout() {
 
     return <>
     {snappedPosition < 60 &&  <>
-    	<div
-	className={`absolute flex gap-2 left-3 z-[4000]`}
-	style={{ bottom: drawerContent ? `calc(${currentPosition}svh - 1.75rem)` : '2rem' }}
->
-{drawerContent != 'filters' && <ClickableIcon
-	onClick={() => toggleDrawer('filters')}
-	label="Filtre"
-	className={`rounded-full bg-white text-neutral-800 shadow-lg p-3 ${snapped ? 'transition-[bottom] duration-300 ease-in-out' : ''}`}
->
-	<PiFunnel className="text-2xl" aria-hidden="true" />
-	</ClickableIcon>}
-
-    {!drawerContent && <ClickableIcon
+   <div className="absolute flex gap-2 right-4 z-[4000]"
+    style={{ bottom: drawerContent ? `calc(${currentPosition}svh - 1.75rem)` : '2rem' }}
+    >
+        {drawerContent != 'details' && <ClickableIcon
 	onClick={() => toggleDrawer('details')}
 	label="Oppslag"
 	className={`rounded-full bg-white text-neutral-800 shadow-lg p-3 ${snapped ? 'transition-[bottom] duration-300 ease-in-out' : ''}`}
 >
 	<PiBookOpen className="text-2xl" aria-hidden="true" />
 	</ClickableIcon>}
-	
-	</div>
-   <div className="absolute flex gap-2 right-3 z-[4000]"
-    style={{ bottom: drawerContent ? `calc(${currentPosition}svh - 1.75rem)` : '2rem' }}
-    >
         <ClickableIcon
         label="Min posisjon"
         onClick={() => {}}
@@ -303,7 +292,7 @@ export default function MobileLayout() {
         <PiGpsFix className="text-2xl" aria-hidden="true" />
         </ClickableIcon>
     </div>
-    <div className="absolute flex gap-2 top-[4.5rem] right-3 z-[4000]">
+    <div className="absolute flex gap-2 top-[4.5rem] right-4 z-[4000]">
         <ClickableIcon
         label="Min posisjon"
         onClick={() => {}}
@@ -317,7 +306,7 @@ export default function MobileLayout() {
         
         <div
             ref={drawerRef}
-            className={`mobile-interface fixed -bottom-10 w-full h-full  rounded-t-full drawer bg-white ${snapped ? 'transition-[height] duration-300 ease-in-out ' : ''}`}
+            className={`mobile-interface fixed w-full -bottom-10  rounded-t-full drawer ${snapped ? 'transition-[height] duration-300 ease-in-out ' : ''}`}
             style={{ height: `${drawerContent ? currentPosition : 0}svh` }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -396,78 +385,16 @@ export default function MobileLayout() {
                 </div>
             </>
             }
-            <div ref={mobileNav} className="fixed bottom-0 left-0 w-full">
-                <MobileSearchNav showScrollToTop={showScrollToTop} currentPosition={currentPosition} drawerContent={drawerContent || ''} scrollableContent={scrollableContent} />
-
-            <div className="hidden bg-neutral-100 text-white w-full h-14 p-1 flex items-center justify-between nav-toolbar">
-                {<Clickable onClick={() => toggleDrawer('datasets')} label="Datasett" aria-current={(drawerContent && ["datasets"].includes(drawerContent)) ? 'page' : 'false'}>
-                    <div className="relative">
-                        <PiDatabase className="text-3xl" />
-                        {datasetCount > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${datasetCount < 10 ? 'px-1.5' : 'px-1'}`}>
-                            {formatNumber(datasetCount)}
-                        </span>}
-                        {!datasetCount && <span className="results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full h-2 w-2">    </span>}
-                    </div>
-                </Clickable>}
-
-
-
-                
-
-                { datasetTag != 'tree' && <Clickable aria-label="Filtre" onClick={() => toggleDrawer('filters')} add={nav == 'filters' ? { nav: null } : { nav: 'filters' }} remove={['details']} aria-current={drawerContent == 'filters' || drawerContent == 'adm' ? 'page' : 'false'}>
-                    <div className="relative">
-                        <PiFunnel className="text-3xl" />
-                        {facetFilters.length > 0 && <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${facetFilters.length < 10 ? 'px-1.5' : 'px-1'}`}>
-                            {facetFilters.length}
-                        </span>}
-                    </div>
-                </Clickable>}
-
-                {mode != 'table' && datasetTag != 'tree' &&
-                    <Clickable aria-label='Søkeresultater' onClick={() => toggleDrawer('results')} remove={['details']}
-                        aria-current={drawerContent == 'results' ? 'page' : 'false'}>
-                        <div className="relative">
-                            <PiListBullets className="text-3xl" />
-                            <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${totalHits && totalHits.value < 10 ? 'px-1.5' : 'px-1'}`}>
-                                {totalHits && formatNumber(totalHits.value)}
-                            </span>
-                        </div>
-                    </Clickable>}
-
-                {mode != 'table' && datasetTag == 'tree' &&
-                    <Clickable aria-label='Register' onClick={() => toggleDrawer('tree')} remove={['details']}
-                        aria-current={drawerContent == 'tree' ? 'page' : 'false'}>
-                        <div className="relative">
-                            <PiTreeViewFill className="text-3xl" />
-                            <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${totalHits && totalHits.value < 10 ? 'px-1.5' : 'px-1'}`}>
-                                {totalHits && formatNumber(totalHits.value)}
-                            </span>
-                        </div>
-                    </Clickable>}
-
-                {(doc || (group && groupTotal?.value > 0)) &&  <Clickable aria-label="Oppslag" onClick={() => toggleDrawer('details')} add={{details: 'group'}} aria-current={drawerContent == 'details' ? 'page' : 'false'}>
-                     <div className="relative">
-                        <PiBookOpen className="text-3xl" />
-                            <span className={`results-badge bg-primary-500 absolute -top-1 left-full -ml-2 rounded-full text-white text-xs ${groupTotal && groupTotal.value < 10 ? 'px-1.5' : 'px-1'}`}>
-                                { groupTotal && formatNumber(groupTotal.value)}
-                            </span>
-                        </div>
-                </Clickable>}
-
-                
-            </div>
-            
-        </div>
         </div>
 
-        <div className={`absolute top-12 right-0 w-full rounded-md z-[1000] ${mode == 'map' ? '' : 'max-h-[calc(100svh-6rem)] h-full overflow-y-auto stable-scrollbar'}`}>
+        <div className={`absolute top-14 m-4 left-0 z-[1000] ${mode == 'map' ? '' : 'max-h-[calc(100svh-3rem)] overflow-auto bg-neutral-50 !m-0 h-full w-full stable-scrollbar'}`}>
             <StatusSection />
             {mode == 'table' && <TableExplorer />}
             {mode == 'list' && <ListExplorer />}
             {doc && mode == 'doc' && <DocInfo />}
         </div>
 
-        {mode == 'map' && <div ref={mapContainerRef} className="absolute top-0 right-0 bottom-0 top-[3.5rem] max-h-[calc(100svh-3.5rem)] w-full bg-white rounded-md">
+        {mode == 'map' && <div className="absolute top-0 right-0 bottom-0 top-14 max-h-[calc(100svh-3.5rem)] w-full bg-white rounded-md">
             <MapWrapper />
 
         </div>}

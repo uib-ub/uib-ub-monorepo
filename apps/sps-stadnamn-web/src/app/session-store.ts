@@ -6,10 +6,24 @@ export const useSessionStore = create<{ menuOpen: boolean,
 	setMenuOpen: (open: boolean) => void, toggleMenu: () => void,
 	autocompleteOpen: boolean,
 	setAutocompleteOpen: (open: boolean) => void,
-	toggleAutocompleteOpen: () => void }>()((set) => ({
+	toggleAutocompleteOpen: () => void,
+
+	drawerContent: string | null,
+	setDrawerContent: (content: string | null) => void,
+	
+	snappedPosition: number,
+	setSnappedPosition: (position: number) => void,
+	
+	}>()((set) => ({
 		menuOpen: false,
 		setMenuOpen: (open) => set({ menuOpen: open }),
 		toggleMenu: () => set((s) => ({ menuOpen: !s.menuOpen })),
+
+		drawerContent: null,
+		setDrawerContent: (content) => set({ drawerContent: content }),
+
+		snappedPosition: 30,
+		setSnappedPosition: (position: number) => set({ snappedPosition: position }),
 		
 		autocompleteOpen: false,
 		setAutocompleteOpen: (open) => set({ autocompleteOpen: open }),

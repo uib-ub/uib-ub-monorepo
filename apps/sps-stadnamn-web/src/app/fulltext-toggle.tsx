@@ -5,7 +5,7 @@ export default function FulltextToggle() {
     const searchParams = useSearchParams()
     const fulltext = searchParams.get('fulltext')
     const router = useRouter()
-    return <label className="flex items-center gap-3 my-3 text-2xl xl:text-lg">
+    return <label className="flex items-center gap-3 my-3 text-2xl xl:text-lg px-2">
     <input form="search-form"
            type="checkbox" 
            id="menu_navbar_checkbox" 

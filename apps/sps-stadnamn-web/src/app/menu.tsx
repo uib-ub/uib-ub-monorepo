@@ -12,7 +12,8 @@ import { useSessionStore } from "./session-store";
 import { infoPages } from "./info/info-pages";
 
 export default function Menu( { shadow }: { shadow?: boolean } ) {
-    const { menuOpen, setMenuOpen } = useSessionStore()
+    const menuOpen = useSessionStore((s) => s.menuOpen)
+    const setMenuOpen = useSessionStore((s) => s.setMenuOpen)
     const menuRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -64,7 +65,7 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
                         aria-expanded={menuOpen} 
                         className={`items-center justify-center flex h-full aspect-square xl:rounded-md bg-neutral-50 ${shadow ? 'xl:shadow-lg border-r-2 xl:border-r-0  border-neutral-200' : ''}`} 
                         onClick={() => setMenuOpen(!menuOpen)}>
-                {menuOpen ? <PiX className="text-2xl" aria-hidden="true"/> : <PiList className="text-2xl" aria-hidden="true"/>}</button>
+                {menuOpen ? <PiX className="text-3xl xl:text-2xl" aria-hidden="true"/> : <PiList className="text-3xl xl:text-2xl" aria-hidden="true"/>}</button>
  
                 <div 
                      id="menu_navbar" 

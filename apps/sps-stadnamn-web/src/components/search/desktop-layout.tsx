@@ -30,7 +30,7 @@ export default function DesktopLayout() {
 
         {  nav && (!details || details == 'group') && !(mode != 'map' && mode != 'list' && (doc || group)) && 
         <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-14 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${(doc || group) ? 'hidden lg:flex' : 'flex'}`}>
-           {datasetTag == 'tree' ? <TreeWindow/> : <NavWindow/>}  
+         <NavWindow/>  
         </section> 
         }
         {
@@ -51,12 +51,12 @@ export default function DesktopLayout() {
             </section>
         }
 
-        <div className={`absolute px-1
-                left-[40svw] top-0 lg:left-[25svw] w-[calc(60svw-0.5rem)] lg:w-[calc(75svw-0.5rem)] max-h-[calc(100svh-20rem)]
+        <div className={`absolute
+                left-[40svw] top-2 lg:left-[25svw]
                                         
-                ${mode == 'map' ? 'lg:max-w-[calc(50svw-0.5rem)] z-[2000]'
-                                : 'rounded-md max-h-[calc(100svh-3.5rem)]' } 
-                flex flex-col pb-6`}>
+                ${mode == 'map' ? 'lg:max-w-[calc(75svw-0.5rem)] lg:max-w-[calc(50svw-0.5rem)] max-h-[calc(100svh-20rem)] z-[2000]'
+                                : 'max-h-[calc(100svh-3.5rem)]' } 
+                flex flex-col`}>
             <StatusSection/>
             {mode != 'map' ? <div className="bg-white shadow-lg mt-2 rounded-md overflow-y-auto stable-scrollbar">
 

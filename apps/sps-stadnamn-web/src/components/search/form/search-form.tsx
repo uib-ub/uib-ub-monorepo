@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { PiCaretLeft, PiCaretLeftBold, PiMagnifyingGlass, PiMapTrifold, PiX } from 'react-icons/pi';
+import { PiCaretLeft, PiCaretLeftBold, PiFunnel, PiMagnifyingGlass, PiMapTrifold, PiX } from 'react-icons/pi';
 import { datasetTitles, modes } from '@/config/metadata-config';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useSearchQuery } from '@/lib/search-params';
@@ -16,7 +16,7 @@ import { useQuery } from '@tanstack/react-query';
 import ResultItem from '../nav/results/result-item';
 import Menu from '@/app/menu';
 import { useSessionStore } from '@/app/session-store';
-
+import Clickable from '@/components/ui/clickable/clickable';
 
 export async function autocompleteQuery(inputState: string, isMobile: boolean) {
     if (!inputState) return null
@@ -33,7 +33,10 @@ export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const { isMobile, currentUrl, preferredTabs, inputValue } = useContext(GlobalContext)    //const autocompleteOpen = searchParams.get('nav') == 'results'
-    const { menuOpen, autocompleteOpen, setAutocompleteOpen } = useSessionStore()
+    const menuOpen = useSessionStore((s) => s.menuOpen)
+    const autocompleteOpen = useSessionStore((s) => s.autocompleteOpen)
+    const setAutocompleteOpen = useSessionStore((s) => s.setAutocompleteOpen)
+
 
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
@@ -116,7 +119,7 @@ export default function SearchForm() {
 
     return <>
 
-        <div className={`${(autocompleteOpen || menuOpen) ? 'z-[6000]' : 'z-[3000]'} h-full w-full w-full flex`}>
+        <div className={`${(autocompleteOpen || menuOpen) ? 'z-[6000]' : 'z-[3000]'} h-full w-full w-full flex xl:gap-2`}>
 
         {(!isMobile || !autocompleteOpen) && <Menu shadow/>}
                 
@@ -144,7 +147,7 @@ export default function SearchForm() {
 
                 }}>
 
-                <div className='flex w-full pr-1 bg-white shadow-lg xl:rounded-md items-center relative group touch-none'>
+                <div className='flex w-full pr-1 bg-white shadow-lg xl:rounded-md items-center relative group'>
                     
                     <label htmlFor="search-input" className="sr-only">Søk</label>
                     <input

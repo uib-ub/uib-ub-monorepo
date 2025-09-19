@@ -471,6 +471,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const selectDocHandler = (selected: Record<string, any>, hits?: Record<string, any>[]) => {
     return {
       click: () => {
+        console.log("CLICKING")
         if (hits?.length) {
           const newQueryParams = new URLSearchParams(searchParams)
           if (!hits.find((hit: any) => (hit._source?.group?.id || hit.fields["group.id"]?.[0]) == (selected.group?.id || selected["group.id"][0]))) {
@@ -797,7 +798,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
                   position={[lat, lng]}
                   icon={new leaflet.DivIcon(icon)}
                   riseOnHover={true}
-                  eventHandlers={selected ? undefined : selectDocHandler(item.fields, childCount ? [item, ...(item.children || [])] : [])}
+                  eventHandlers={selectDocHandler(item.fields, childCount ? [item, ...(item.children || [])] : [])}
                 >
                     {childCount && item.fields?.["group.id"]?.[0] && <Popup offset={[0, -24]}>
                       <ul className="list-none p-0 m-0 max-h-[50svh] overflow-y-auto stable-scrollbar text-lg divide-y divide-neutral-200 flex flex-col">
