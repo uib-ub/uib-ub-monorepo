@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { usePerspective, useMode } from "@/lib/param-hooks"
 import CadastreBreadcrumb from "../details/doc/cadastre-breadcrumb"
+import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 
 
 export default function ActiveFilters() {
@@ -26,6 +27,7 @@ export default function ActiveFilters() {
     const mode = useMode()
     const nav = searchParams.get('nav')
     const datasetTag = searchParams.get('datasetTag')
+    const dataset = searchParams.get('dataset')
 
     const {isMobile, inputValue} = useContext(GlobalContext)
     const fulltext = searchParams.get('fulltext')
@@ -34,6 +36,8 @@ export default function ActiveFilters() {
     const boostGt = searchParams.get('boost_gt')
     const cadastralIndex = searchParams.get('cadastralIndex')
     const showClearButton = (Number(facetFilters.length > 0) + Number(datasetFilters.length > 0) + Number(fulltext == 'on') + Number(searchParams.get('q') != null)) > 1
+
+
 
 
     const getFieldLabel = (name: string, value: string) => {
@@ -114,8 +118,8 @@ export default function ActiveFilters() {
     //const gnr =  getGnr(parentData, perspective)
 
     if (datasetTag == 'tree') {
-      return <div className={`text-neutral-950 flex-wrap  rounded-md gap-2 px-3 py-1 flex items-center bg-white shadow-md`}>
-        <CadastreBreadcrumb/></div>
+      return <div className={`text-neutral-950 flex-wrap  rounded-md gap-2 h-10 pl-3 pr-2 py-1 flex items-center bg-white shadow-md`}>
+        {dataset &&<CadastreBreadcrumb/>}<ClickableIcon label="Lukk matrikkelvisning" remove={["datasetTag"]}><PiX className="w-6 h-6 self-center flex-shrink-0" /></ClickableIcon></div>
     }
 
 
@@ -164,13 +168,13 @@ export default function ActiveFilters() {
           </DropdownMenu>
         }
         {fulltext == 'on' && <Clickable remove={['fulltext']}
-      className={`text-neutral-950 h-10  rounded-md gap-2 pl-4 pr-3 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`} onClick={() => removeFilter('fulltext', 'on')}>
+      className={`text-neutral-950 h-10  rounded-md gap-2 pl-4 pr-3 py-1 flex items-center bg-white shadow-md`} onClick={() => removeFilter('fulltext', 'on')}>
         <span className="flex items-center">Fulltekstsøk</span>
         <PiX className="inline text-lg" aria-hidden="true"/>
       </Clickable>}
       {/* Search chip */}
       { searchParams.get('q') && <Clickable remove={['q']}
-      className={`text-white rounded-md gap-2 h-10 pl-4 pr-3 py-1 flex items-center bg-accent-700 shadow-md`} onClick={() => {inputValue.current = ""; removeFilter('q', searchParams.get('q')!)}}>
+      className={`text-neutral-950 rounded-md gap-2 h-10 pl-4 pr-3 py-1 flex items-center bg-white shadow-md`} onClick={() => {inputValue.current = ""; removeFilter('q', searchParams.get('q')!)}}>
         <span className="flex items-center">{searchParams.get('q')}</span>
         <PiX className="inline text-lg" aria-hidden="true"/>
       </Clickable>}
@@ -219,7 +223,7 @@ export default function ActiveFilters() {
         )}
 
         {showClearButton && <Clickable remove={['q', ...facetFilters.map(([key, value]) => key), ...datasetFilters.map(([key, value]) => key)]}
-        className={` rounded-full bg-accent-700 text-white h-10  gap-2 pl-4 pr-3 flex items-center  shadow-md box-content`}>
+        className={` rounded-full bg-white text-neutral-950 h-10  gap-2 pl-4 pr-3 flex items-center  shadow-md box-content`}>
           Tøm
           <PiTrash className="inline text-lg" aria-hidden="true"/>
         </Clickable>}

@@ -28,8 +28,9 @@ import { datasetTitles } from "@/config/metadata-config";
 import CadastreBreadcrumb from "./details/doc/cadastre-breadcrumb";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { GlobalContext } from "@/app/global-provider";
-import { useSessionStore } from "@/app/session-store";
+import { useSessionStore } from "@/state/zustand/session-store";
 import { getMyLocation } from "@/lib/map-utils";
+import MapSettings from "../map/map-settings";
 
 export default function MobileLayout() {
 
@@ -39,11 +40,12 @@ export default function MobileLayout() {
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
 
-
+    const currentPosition = useSessionStore((s) => s.currentPosition);
+    const setCurrentPosition = useSessionStore((s) => s.setCurrentPosition);
+    
     const setMyLocation = useSessionStore((s) => s.setMyLocation);
 
-   
-    const [currentPosition, setCurrentPosition] = useState(snappedPosition);
+
     const [snapped, setSnapped] = useState(false);
     const [startTouchY, setStartTouchY] = useState(0);
     const [startTouchX, setStartTouchX] = useState(0);
@@ -273,7 +275,7 @@ export default function MobileLayout() {
         {mode == 'map' &&<div className="absolute flex gap-2 top-[4.5rem] right-4 z-[4000]">
         <ClickableIcon
         label="Min posisjon"
-        onClick={() => setDrawerContent('mapOptions')}
+        onClick={() => {setDrawerContent('mapSettings'); setSnappedPosition(60); setCurrentPosition(60); }}
         className="rounded-full bg-white text-neutral-800 shadow-lg p-3"
         >
         <PiStackPlus className="text-2xl" aria-hidden="true" />
@@ -349,16 +351,17 @@ export default function MobileLayout() {
                         </section>
                     }
                     {
-                        drawerContent == 'mapOptions' &&
+                        drawerContent == 'mapSettings' &&
                         <div className="p-2">
-                            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">
-                                Kartinnstillinger
+                            <h2 className="text-2xl px-1">
+                                Kartinnstillingar
                             </h2>
+                            <MapSettings />
                         </div>
                     }
                     {false && drawerContent == 'results' && datasetTag != 'tree' &&
                         <section className="flex flex-col gap-2 p-2">
-                            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">
+                            <h2 className="text-2xl px-1">
                                 Treff <span className={`results-badge bg-primary-500 left-8 rounded-full text-white text-xs whitespace-nowrap ${totalHits && totalHits.value < 10 ? 'px-1.5' : 'px-1'}`}>
                                     {totalHits && formatNumber(totalHits.value)}
                                 </span>
@@ -373,7 +376,7 @@ export default function MobileLayout() {
                     }
                     {(drawerContent == 'datasets') &&
                         <div className="p-2">
-                            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide pb-2 flex items-center gap-1 px-1">
+                            <h2 className="text-2xl px-1">
                                 {datasetTag == 'tree' && 'Registre'}
                                 {datasetTag == 'base' && 'Grunnord'}
                                 {datasetTag == 'deep' && 'Djupinnsamlingar'}
@@ -387,7 +390,8 @@ export default function MobileLayout() {
                     }
                     {drawerContent == 'filters' &&
                         <div className="p-2">
-                            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">Filter {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
+                            <h2 className="text-2xl px-1">Søkealternativ {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
+                            <ActiveFilters />
                             <FacetSection />
                         </div>
 

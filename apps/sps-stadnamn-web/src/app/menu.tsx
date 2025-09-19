@@ -8,7 +8,7 @@ import Link from "next/link";
 import Clickable from "@/components/ui/clickable/clickable";
 import { useMode } from "@/lib/param-hooks";
 import FulltextToggle from "./fulltext-toggle";
-import { useSessionStore } from "./session-store";
+import { useSessionStore } from "../state/zustand/session-store";
 import { infoPages } from "./info/info-pages";
 
 export default function Menu( { shadow }: { shadow?: boolean } ) {
@@ -24,6 +24,7 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
     const router = useRouter()
     const q = searchParams.get("q")
     const datasetTag = searchParams.get("datasetTag")
+	const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
 
 	const menuBtn = "flex w-24 h-16  p-2 text-sm flex-col items-center justify-center gap-1 rounded-lg aria-selected:text-white aria-selected:bg-accent-800 no-underline"
 
@@ -115,7 +116,7 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
 								role="tab"
 								remove={["dataset", "group", "doc"]}
 								add={{ datasetTag: 'deep' , nav: 'datasets'}}
-                                onClick={() => setMenuOpen(false)}
+                                onClick={() => {setMenuOpen(false); setDrawerContent('datasets')}}
 								aria-selected={datasetTag == 'deep'}
 								className={menuBtn}
 							>
@@ -127,8 +128,8 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
 							<Clickable
 								role="tab"
 								remove={["dataset", "group", "doc"]}
-								add={{ datasetTag: 'tree' , nav: 'datasets'}}
-                                onClick={() => setMenuOpen(false)}
+								add={{ datasetTag: 'tree' , nav: 'tree'}}
+                                onClick={() => {setMenuOpen(false); setDrawerContent('datasets')}}
 								aria-selected={datasetTag == 'tree'}
 								className={menuBtn}
 							>
@@ -141,7 +142,7 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
 								role="tab"
 								remove={["dataset", "group", "doc"]}
 								add={{ datasetTag: 'base' , nav: 'datasets'}}
-                                onClick={() => setMenuOpen(false)}
+                                onClick={() => {setMenuOpen(false); setDrawerContent('datasets')}}
 								aria-selected={datasetTag == 'base'}
 								className={menuBtn}
 							>

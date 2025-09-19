@@ -72,14 +72,14 @@ export default async function Home() {
   <div className="flex flex-col items-center gap-3 xl:gap-6 bg-neutral-50/90 p-4 py-8 rounded-lg xl:bg-transparent xl:p-0">
   <div className="flex flex-col xl:flex-row items-end justify-center xl:gap-12 gap-3">
   <div className="flex flex-col items-center gap-2">
-    <span className="uppercase tracking-widest text-neutral-900 xl:text-sm font-semibold">Oppslag i søket</span>
-    <span className="xl:text-3xl text-4xl text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+    <span className="uppercase tracking-widest text-neutral-950 xl:text-sm font-semibold">Oppslag i søket</span>
+    <span className="xl:text-3xl text-4xl text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
       {groupCount?.toLocaleString('nb-NO')}
     </span>
   </div>
   <div className="flex flex-col items-center gap-2">
     <span className="uppercase tracking-widest text-neutral-900 xl:text-sm font-semibold">Underoppslag</span>
-    <span className="xl:text-3xl text-4xl text-neutral-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+    <span className="xl:text-3xl text-4xl text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
       {totalHits?.toLocaleString('nb-NO')}
     </span>
   </div>
@@ -89,7 +89,7 @@ export default async function Home() {
       className="text-neutral-950 no-underline xl:mb-16 mt-6 xl:mt-2 self-center w-full h-14 xl:h-auto xl:w-auto text-3xl pr-12 pl-8 py-4 xl:py-2 xl:pr-8 xl:pl-6 rounded-lg xl:rounded-full flex items-center gap-3 transition-colors duration-200"
     >
       <PiMapTrifoldFill className="text-4xl" />
-      Utforsk kartet
+      Kart
     </Link>
   </div>
   

@@ -127,7 +127,7 @@ export default function DatasetFacet() {
 
   return (
     <>
-    <div className="flex flex-col gap-2 pl-2">            
+    <div className="flex flex-col gap-2">            
     
     <div id="dataset-facet-content" className='flex flex-col gap-2'>
     { datasetTag == 'deep' && <span className="p-2">Datasett som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>}

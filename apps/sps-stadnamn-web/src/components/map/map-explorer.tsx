@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef, useState, useCallback, useMemo, useContext } from "react";
 import Map from "./leaflet/map";
 import { baseMaps, baseMapKeys, defaultBaseMap, baseMapLookup } from "@/config/basemap-config";
-import { PiBookOpen, PiBookOpenFill, PiCheckCircleFill, PiCrop, PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill, PiStackSimpleFill } from "react-icons/pi";
+import { PiBookOpen, PiBookOpenFill, PiCheckCircleFill, PiCrop, PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill, PiStackPlus, PiStackPlusFill, PiStackSimpleFill } from "react-icons/pi";
 import IconButton from "../ui/icon-button";
 import {
   DropdownMenu,
@@ -27,7 +27,8 @@ import { GlobalContext } from "@/app/global-provider";
 import Clickable from "../ui/clickable/clickable";
 import useGroupData from "@/state/hooks/group-data";
 import useOverviewData from "@/state/hooks/overview-data";
-import { useSessionStore } from "@/app/session-store";
+import { useSessionStore } from "@/state/zustand/session-store";
+import { useMapSettings } from '@/state/zustand/persistent-map-settings'
 
 const debug = process.env.NODE_ENV === 'development'
 
@@ -40,8 +41,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
 
   const controllerRef = useRef(new AbortController());
-  const [baseMap, setBasemap] = useState<null | string>(null)
-  const [markerMode, setMarkerMode] = useState<null | string>(null)
+  const { baseMap, markerMode, setBaseMap, setMarkerMode, initializeSettings } = useMapSettings()
   const searchParams = useSearchParams()
   const { searchQueryString, searchFilterParamsString } = useSearchQuery()
   const perspective = usePerspective()
@@ -361,6 +361,10 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
 
   useEffect(() => {
+    initializeSettings(perspective)
+  }, [perspective])
+
+  useEffect(() => {
     updateMarkerGrid(snappedBounds, zoomState, gridSizeRef.current, markerCells)
     //console.log("INITIALIZE MARKER GRID")
   }, [])
@@ -402,49 +406,6 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   }, [markerResults, searchBounds])
 
 
-
-
-  useEffect(() => {
-    if (baseMap === null) {
-      const storedSettings = localStorage.getItem('mapSettings')
-      const settings = storedSettings ? JSON.parse(storedSettings) : {}
-
-      if (settings[perspective]?.baseMap && baseMapKeys.includes(settings[perspective].baseMap)) {
-        setBasemap(settings[perspective].baseMap)
-      } else {
-        setBasemap(defaultBaseMap[perspective] || baseMaps[0].key)
-        // Remove old format if it exists
-        localStorage.removeItem('baseMap')
-      }
-    } else {
-      const storedSettings = localStorage.getItem('mapSettings')
-      const settings = storedSettings ? JSON.parse(storedSettings) : {}
-
-      settings[perspective] = {
-        ...settings[perspective],
-        baseMap: baseMap
-      }
-
-      localStorage.setItem('mapSettings', JSON.stringify(settings))
-    }
-  }, [baseMap, perspective])
-
-  useEffect(() => {
-    if (markerMode === null) {
-      const storedMarkerMode = localStorage.getItem('markerMode')
-      if (storedMarkerMode && ['auto', 'counts', 'labels'].includes(storedMarkerMode)) {
-        setMarkerMode(storedMarkerMode)
-      }
-
-      else {
-        setMarkerMode('auto')
-        localStorage.removeItem('markerMode')
-      }
-    }
-    else {
-      localStorage.setItem('markerMode', markerMode)
-    }
-  }, [markerMode])
 
 
   const selectDocHandler = (selected: Record<string, any>, hits?: Record<string, any>[]) => {
@@ -667,7 +628,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
           <>
             <EventHandlers />
-            {baseMap && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapLookup[baseMap].props} />}
+            {baseMap[perspective] && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapLookup[baseMap[perspective]].props} />}
 
             {/* Add H3 grid overlay */}
             {showH3Grid && mapInstance.current && getH3Cells(mapInstance.current.getBounds()).map((polygon, index) => (
@@ -898,7 +859,8 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
               </>
             )}
 
-            {docData?._source?.location?.coordinates?.length && myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
+            { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
+
             { details && details !== 'group' &&
               dedupedOverviewDocs.map((docItem: any) => (
                 <CircleMarker 
@@ -938,138 +900,56 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     </Map>
     {/* Canvas overlay for label mode */}
     {!isMobile && <div className={`absolute xl:right-0 p-2 bottom-5 right-0 xl:left-1/2 transform xl:-translate-x-1/2 flex flex-col lg:flex-row justify-center gap-2 text-white z-[3001]`}>
-      {!isMobile && <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <IconButton label="Bakgrunnskart" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm cursor-pointer">
-            <PiStackSimpleFill className="text-xl" />
-          </IconButton>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="z-[4000] bg-white">
-          <DropdownMenuLabel>Bakgrunnskart</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {baseMap != null && baseMaps.map((item) => (
-            <DropdownMenuItem
-              key={item.key}
-              onClick={() => setBasemap(item.key)}
-              className={`flex items-center py-2 px-4 cursor-pointer justify-between ${baseMap === item.key ? "bg-neutral-100" : ""}`}
-              aria-selected={baseMap === item.key}
-            >
-              {item.name}
-              {baseMap === item.key && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
-            </DropdownMenuItem>
-          ))}
-          <DropdownMenuSeparator />
-          {debug && (
-            <>
-            <DropdownMenuLabel>Overlegg</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => setShowH3Grid(!showH3Grid)}
-            className={`flex items-center py-2 px-4 cursor-pointer justify-between ${showH3Grid ? "bg-neutral-100" : ""}`}
-          >
-            H3 Rutenett
-            {showH3Grid && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
-          </DropdownMenuItem>
-          {showH3Grid && (
-            <div className="px-4 py-2 flex items-center gap-2">
-              <button
-                onClick={() => setH3Resolution(Math.max(0, h3Resolution - 1))}
-                className="p-1 rounded bg-neutral-100 hover:bg-neutral-200 disabled:opacity-50"
-                disabled={h3Resolution <= 0}
-              >
-                -
-              </button>
-              <span className="text-sm">Res: {h3Resolution}</span>
-              <button
-                onClick={() => setH3Resolution(Math.min(9, h3Resolution + 1))}
-                className="p-1 rounded bg-neutral-100 hover:bg-neutral-200 disabled:opacity-50"
-                disabled={h3Resolution >= 9}
-              >
-                +
-              </button>
-            </div>
-          )}
-          <DropdownMenuItem
-            onClick={() => setShowGeotileGrid(!showGeotileGrid)}
-            className={`flex items-center py-2 px-4 cursor-pointer justify-between ${showGeotileGrid ? "bg-neutral-100" : ""}`}
-          >
-            Geotile Rutenett
-            {showGeotileGrid && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
-          </DropdownMenuItem>
-          {showGeotileGrid && (
-            <div className="px-4 py-2">
-              <div className="text-xs text-neutral-600 mb-1">
-                Auto-precision: {gridSizeRef.current?.gridSize}
-              </div>
-              <div className="text-xs text-neutral-500">
-                Rødt rektangel viser zoom +2 nivå
-              </div>
-            </div>
-            
-          )}
-          </>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>}
-      {!isMobile && <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <IconButton label="Markørar" className="p-2 lg:p-2.5 rounded-full border bg-neutral-900 border-white shadow-sm cursor-pointer">
-            <PiMapPinLineFill className="text-xl" />
-          </IconButton>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="z-[4000] bg-white">
-          <DropdownMenuLabel>Markørar</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {markerMode != null && (
-            <>
-              <DropdownMenuItem
-                onClick={() => setMarkerMode('auto')}
-                className={`flex items-center py-2 px-4 cursor-pointer justify-between ${markerMode === 'auto' ? "bg-neutral-100" : ""}`}
-                aria-selected={markerMode === 'auto'}
-              >
-                Automatisk
-                {markerMode === 'auto' && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setMarkerMode('counts')}
-                className={`flex items-center py-2 px-4 cursor-pointer justify-between ${markerMode === 'counts' ? "bg-neutral-100" : ""}`}
-                aria-selected={markerMode === 'counts'}
-              >
-                Klynger
-                {markerMode === 'counts' && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setMarkerMode('labels')}
-                className={`flex items-center py-2 px-4 cursor-pointer justify-between ${markerMode === 'labels' ? "bg-neutral-100" : ""}`}
-                aria-selected={markerMode === 'labels'}
-              >
-                Etiketter
-                {markerMode === 'labels' && <PiCheckCircleFill className="ml-2 text-neutral-800" aria-hidden="true" />}
-              </DropdownMenuItem>
-            </>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>}
-      {!isMobile && <IconButton onClick={() => mapInstance.current?.zoomIn()} side="top" className="p-2 lg:p-2.5 rounded-md xl:rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom inn">
-        <PiMagnifyingGlassPlusFill className="text-xl" />
+      {!isMobile && <Clickable 
+        className="rounded-full bg-white text-neutral-800 shadow-lg p-3" 
+        add={{nav: 'mapSettings'}} 
+        onClick={() => setDrawerContent('mapSettings')}
+      >
+        <PiStackPlus className="text-2xl" />
+      </Clickable>}
+      
+      {!isMobile && <IconButton 
+        onClick={() => mapInstance.current?.zoomIn()} 
+        side="top" 
+        className="rounded-full bg-white text-neutral-800 shadow-lg p-3" 
+        label="Zoom inn"
+      >
+        <PiMagnifyingGlassPlusFill className="text-2xl" />
       </IconButton>}
-      {!isMobile && <IconButton onClick={() => mapInstance.current?.zoomOut()} side="top" className="p-2 lg:p-2.5 rounded-md xl:rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut">
-        <PiMagnifyingGlassMinusFill className="text-xl" />
+      
+      {!isMobile && <IconButton 
+        onClick={() => mapInstance.current?.zoomOut()} 
+        side="top" 
+        className="rounded-full bg-white text-neutral-800 shadow-lg p-3" 
+        label="Zoom ut"
+      >
+        <PiMagnifyingGlassMinusFill className="text-2xl" />
       </IconButton>}
-      <IconButton onClick={() => {
-    getMyLocation((location) => {
-        mapFunctionRef?.current?.setView(location, 15)
-        setMyLocation(location)
-    })}
-
-      } side="top" className="p-2 lg:p-2.5 rounded-md xl:rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon">
-        <PiGpsFix className="text-xl" />
+      
+      <IconButton 
+        onClick={() => {
+          getMyLocation((location) => {
+            mapFunctionRef?.current?.setView(location, 15)
+            setMyLocation(location)
+          })}
+        } 
+        side="top" 
+        className="rounded-full bg-white text-neutral-800 shadow-lg p-3" 
+        label="Min posisjon"
+      >
+        <PiGpsFix className="text-2xl" />
       </IconButton>
-      <IconButton className="p-2 lg:p-2.5 rounded-md xl:rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom til søkeresultat" onClick={() => {
-        if (searchBounds?.length) {
-          mapInstance.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-        }
-      }}>
-        <PiCrop className="text-xl" />
+      
+      <IconButton 
+        className="rounded-full bg-white text-neutral-800 shadow-lg p-3" 
+        label="Zoom til søkeresultat" 
+        onClick={() => {
+          if (searchBounds?.length) {
+            mapInstance.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+          }
+        }}
+      >
+        <PiCrop className="text-2xl" />
       </IconButton>
     </div>}
   </>

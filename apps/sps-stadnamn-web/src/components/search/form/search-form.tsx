@@ -15,7 +15,7 @@ import FulltextToggle from '@/app/fulltext-toggle';
 import { useQuery } from '@tanstack/react-query';
 import ResultItem from '../nav/results/result-item';
 import Menu from '@/app/menu';
-import { useSessionStore } from '@/app/session-store';
+import { useSessionStore } from '@/state/zustand/session-store';
 import Clickable from '@/components/ui/clickable/clickable';
 
 export async function autocompleteQuery(inputState: string, isMobile: boolean) {

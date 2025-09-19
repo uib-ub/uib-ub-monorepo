@@ -5,12 +5,12 @@ export default function FulltextToggle() {
     const searchParams = useSearchParams()
     const fulltext = searchParams.get('fulltext')
     const router = useRouter()
-    return <label className="flex items-center gap-3 my-3 text-2xl xl:text-lg px-2">
+    return <label className="flex items-center gap-3 my-3 text-xl xl:text-lg px-2">
     <input form="search-form"
            type="checkbox" 
            id="menu_navbar_checkbox" 
            name="fulltext" 
-           className="h-6 w-6 xl:h-4 xl:w-4" 
+           className="h-3 w-3 xl:h-4 xl:w-4" 
            checked={pathname == '/search' ? !!fulltext : undefined}
 
            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {

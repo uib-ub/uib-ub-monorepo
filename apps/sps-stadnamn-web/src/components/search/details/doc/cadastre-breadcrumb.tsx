@@ -5,7 +5,7 @@ import { contentSettings, treeSettings } from "@/config/server-config"
 import { useSearchQuery } from "@/lib/search-params"
 import { getValueByPath } from "@/lib/utils"
 import { useSearchParams } from "next/navigation"
-import { PiCaretRight, PiHouse, PiTreeView } from "react-icons/pi"
+import { PiCaretRight, PiHouse, PiTreeView, PiX } from "react-icons/pi"
 
 export default function CadastreBreadcrumb() {
     const searchParams = useSearchParams()
@@ -13,10 +13,10 @@ export default function CadastreBreadcrumb() {
     const adm1 = searchParams.get('adm1')
     const adm2 = searchParams.get('adm2')
 
+    if (!dataset) return null
+
     return <>
-      {dataset && (
-        <>
-        <Clickable className="breadcrumb-link text-lg whitespace-nowrap flex items-center gap-1" link add={{datasetTag: 'tree' }} remove={['adm1', 'adm2', 'dataset']}>
+       <Clickable className="breadcrumb-link text-lg whitespace-nowrap flex items-center gap-1" link add={{datasetTag: 'tree' }} remove={['adm1', 'adm2', 'dataset']}>
           Matriklar
         </Clickable>
         <PiCaretRight className="w-4 h-4 self-center flex-shrink-0" />
@@ -28,8 +28,7 @@ export default function CadastreBreadcrumb() {
           </Clickable>
           <PiCaretRight className="w-4 h-4 self-center-center flex-shrink-0" />
          </>}
-        </>
-      )}
+
       {adm1 && adm2 && (
         <>
           <Clickable link className="breadcrumb-link text-lg whitespace-nowrap" 
@@ -40,7 +39,8 @@ export default function CadastreBreadcrumb() {
         </>
       )}
 
-      {dataset && <span className="text-lg">{adm2 || adm1 || datasetTitles[dataset]}</span>}
+      <span className="text-lg">{adm2 || adm1 || datasetTitles[dataset]}</span>
     </>
   }
+
   

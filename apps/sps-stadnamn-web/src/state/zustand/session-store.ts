@@ -17,6 +17,9 @@ export const useSessionStore = create<{ menuOpen: boolean,
 	snappedPosition: number,
 	setSnappedPosition: (position: number) => void,
 	
+	currentPosition: number,
+	setCurrentPosition: (position: number) => void,
+	
 	}>()((set) => ({
 		menuOpen: false,
 		setMenuOpen: (open) => set({ menuOpen: open }),
@@ -30,6 +33,9 @@ export const useSessionStore = create<{ menuOpen: boolean,
 
 		snappedPosition: 30,
 		setSnappedPosition: (position: number) => set({ snappedPosition: position }),
+
+		currentPosition: 30,
+		setCurrentPosition: (position: number) => set({ currentPosition: position }),
 		
 		autocompleteOpen: false,
 		setAutocompleteOpen: (open) => set({ autocompleteOpen: open }),

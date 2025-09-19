@@ -11,6 +11,7 @@ import Clickable from "../../ui/clickable/clickable";
 import TableOptions from "../table/table-options";
 import useSearchData from "@/state/hooks/search-data";
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
+import { useSessionStore } from '@/state/zustand/session-store';
 
 export default function NavWindow() {
     const { totalHits, searchLoading } = useSearchData()
@@ -19,23 +20,27 @@ export default function NavWindow() {
     const nav = searchParams.get('nav')
     const datasetTag = searchParams.get('datasetTag')
     const [isPending, startTransition] = useTransition()
+    const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
 
     const titles = {
-        filters: 'Filter og søkealternativ',
+        filters: 'Søkealternativ',
         results: mode == 'table' ? 'Tabellvisning' : 'Søkeresultat',
+        datasets: 'Datasett',
     }
 
 
     return <>
 
        <div className="flex p-2"><h2 className="text-xl px-1">{titles[nav as keyof typeof titles]}</h2>
-                <ClickableIcon label="Lukk" remove={["nav"]} className="ml-auto">   
+                <ClickableIcon label="Lukk" remove={["nav"]} onClick={() => setDrawerContent(null)} className="ml-auto">   
                     <PiX className="text-3xl text-neutral-900"/></ClickableIcon>
         </div>
-        <div id="nav-window-content" className={`overflow-y-auto stable-scrollbar px-2 max-h-[calc(100svh-11rem)] xl:max-h-[calc(100svh-8.5rem)] pb-6 border-t border-neutral-200 ${(!nav || isPending) ? "hidden" : ""}`}>
+        <div id="nav-window-content" className={`overflow-y-auto stable-scrollbar max-h-[calc(100svh-11rem)] xl:max-h-[calc(100svh-8.5rem)] pb-6 border-t border-neutral-200 ${(!nav || isPending) ? "hidden" : ""}`}>
                 
 
-
+        { nav == 'datasets' &&
+            <DatasetFacet/>
+        }
 
         
         { nav == 'filters' &&
