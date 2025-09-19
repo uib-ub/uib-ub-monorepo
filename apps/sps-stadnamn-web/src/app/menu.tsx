@@ -64,7 +64,7 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
                         onBlur={handleBlur}
                         aria-label="Meny"
                         aria-expanded={menuOpen} 
-                        className={`items-center justify-center flex h-full aspect-square xl:rounded-md bg-neutral-50 ${shadow ? 'xl:shadow-lg border-r-2 xl:border-r-0  border-neutral-200' : ''}`} 
+                        className={`items-center justify-center flex h-full aspect-square xl:rounded-md bg-neutral-50 ${shadow ? 'shadow-lg border-r-2 xl:border-r-0  border-neutral-200' : ''}`} 
                         onClick={() => setMenuOpen(!menuOpen)}>
                 {menuOpen ? <PiX className="text-3xl xl:text-2xl" aria-hidden="true"/> : <PiList className="text-3xl xl:text-2xl" aria-hidden="true"/>}</button>
  

@@ -33,9 +33,9 @@ export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const { isMobile, currentUrl, preferredTabs, inputValue } = useContext(GlobalContext)    //const autocompleteOpen = searchParams.get('nav') == 'results'
-    const menuOpen = useSessionStore((s) => s.menuOpen)
-    const autocompleteOpen = useSessionStore((s) => s.autocompleteOpen)
-    const setAutocompleteOpen = useSessionStore((s) => s.setAutocompleteOpen)
+    const menuOpen = useSessionStore((s: any) => s.menuOpen)
+    const autocompleteOpen = useSessionStore((s: any) => s.autocompleteOpen)
+    const setAutocompleteOpen = useSessionStore((s: any) => s.setAutocompleteOpen)
 
 
     const input = useRef<HTMLInputElement | null>(null)

@@ -42,7 +42,7 @@ export default function MobileLayout() {
 
     const currentPosition = useSessionStore((s) => s.currentPosition);
     const setCurrentPosition = useSessionStore((s) => s.setCurrentPosition);
-    
+
     const setMyLocation = useSessionStore((s) => s.setMyLocation);
 
 
@@ -366,7 +366,7 @@ export default function MobileLayout() {
                                     {totalHits && formatNumber(totalHits.value)}
                                 </span>
                             </h2>
-                            {(searchParams.get('q') || searchParams.get('fulltext') == 'on') && <div className="flex flex-wrap gap-2 pb-2 border-b border-neutral-200">
+                            {(searchParams.get('q') || searchParams.get('fulltext') == 'on') && <div className="flex gap-2 pb-2 border-b border-neutral-200">
                                 <ActiveFilters />
                             </div>}
 
@@ -391,7 +391,7 @@ export default function MobileLayout() {
                     {drawerContent == 'filters' &&
                         <div className="p-2">
                             <h2 className="text-2xl px-1">Søkealternativ {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
-                            <ActiveFilters />
+                            <div className="flex flex-wrap gap-2 pb-2"><ActiveFilters /></div>
                             <FacetSection />
                         </div>
 

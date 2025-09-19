@@ -65,17 +65,7 @@ export default async function RootLayout({
           <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[5001] focus:top-1 focus:py-3 focus:px-6 bg-primary-700 text-white no-underline self-center">
         Gå til hovudinnhald
       </a>
-      <QueryProvider>
-        
-          {false && <header className={`absolute bg-neutral-50 ${isMobile ? '' : 'xl:bg-transparent'} top-0 left-0 right-0 flex h-14 flex-none items-center overscroll-none`}>
-          <Menu/>
-            <SearchForm/>
-            <SearchTitle/>
-            
-            
-          {false && <NavBar className="hidden z-[4000] ml-auto mr-2 xl:flex !py-1 text-xl text-black bg-neutral-50/90 rounded-lg items-center justify-end overscroll-none"/>}
-        </header>}
-        
+      <QueryProvider>        
         {children}
         </QueryProvider>
         </GlobalProvider>

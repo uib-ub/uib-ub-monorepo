@@ -132,7 +132,7 @@ export default function ActiveFilters() {
           <button 
               key={`${key}__${value}`} 
               onClick={() => removeFilter(key, value)} 
-              className={`text-neutral-950  rounded-md gap-2 pl-4 pr-3 py-1 flex items-center bg-white shadow-md`}
+              className={`text-neutral-950  rounded-md gap-2 pl-2 pr-1 xl:pl-4 xl:pr-3 xl:py-1 flex items-center bg-white shadow-md`}
           >
             {datasetTitles[value]} <PiX className="inline text-lg" aria-hidden="true"/>
           </button>
@@ -140,7 +140,7 @@ export default function ActiveFilters() {
         { datasetFilters.length > 1 && 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className={`text-neutral-950 h-10  rounded-md gap-2 pl-4 pr-3 py-1 flex items-center bg-white shadow-md`}>
+              <button className={`text-neutral-950 h-10  rounded-md gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 xl:py-1 flex items-center bg-white shadow-md`}>
                 {datasetFilters.length} kjeldeval
                 <PiCaretDownBold className="inline text-lg" aria-hidden="true"/>
               </button>
@@ -168,13 +168,13 @@ export default function ActiveFilters() {
           </DropdownMenu>
         }
         {fulltext == 'on' && <Clickable remove={['fulltext']}
-      className={`text-neutral-950 h-10  rounded-md gap-2 pl-4 pr-3 py-1 flex items-center bg-white shadow-md`} onClick={() => removeFilter('fulltext', 'on')}>
+      className={`text-neutral-950 h-10  rounded-md gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 xl:py-1 flex items-center bg-white shadow-md`} onClick={() => removeFilter('fulltext', 'on')}>
         <span className="flex items-center">Fulltekstsøk</span>
         <PiX className="inline text-lg" aria-hidden="true"/>
       </Clickable>}
       {/* Search chip */}
       { searchParams.get('q') && <Clickable remove={['q']}
-      className={`text-neutral-950 rounded-md gap-2 h-10 pl-4 pr-3 py-1 flex items-center bg-white shadow-md`} onClick={() => {inputValue.current = ""; removeFilter('q', searchParams.get('q')!)}}>
+      className={`text-neutral-950 rounded-md gap-2 h-10 pl-3 pr-2 xl:pl-4 xl:pr-3 xl:py-1 flex items-center bg-white shadow-md`} onClick={() => {inputValue.current = ""; removeFilter('q', searchParams.get('q')!)}}>
         <span className="flex items-center">{searchParams.get('q')}</span>
         <PiX className="inline text-lg" aria-hidden="true"/>
       </Clickable>}
@@ -185,7 +185,7 @@ export default function ActiveFilters() {
             <button 
                 key={`${key}__${value}`} 
                 onClick={() => removeFilter(key, value)} 
-                className={`text-neutral-950 h-10  rounded-full gap-2 pl-4 pr-3 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
+                className={`text-neutral-950 h-10  rounded-full gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 xl:py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}
             >
               {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
             </button>
@@ -194,7 +194,7 @@ export default function ActiveFilters() {
         {facetFilters.length >= 2 && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className={`text-neutral-950 h-10  rounded-full gap-2 pl-4 pr-3 py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}>
+              <button className={`text-neutral-950 h-10  rounded-full gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 xl:py-1 flex items-center ${mode == 'map' && !isMobile ? 'bg-white shadow-md' : 'border bg-neutral-50 border-neutral-200 box-content'}`}>
                 {facetFilters.length} filter
                 <PiCaretDownBold className="inline text-lg" aria-hidden="true"/>
               </button>
@@ -223,7 +223,7 @@ export default function ActiveFilters() {
         )}
 
         {showClearButton && <Clickable remove={['q', ...facetFilters.map(([key, value]) => key), ...datasetFilters.map(([key, value]) => key)]}
-        className={` rounded-full bg-white text-neutral-950 h-10  gap-2 pl-4 pr-3 flex items-center  shadow-md box-content`}>
+        className={` rounded-full bg-white text-neutral-950 h-10  gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 xl:py-1 flex items-center  shadow-md box-content`}>
           Tøm
           <PiTrash className="inline text-lg" aria-hidden="true"/>
         </Clickable>}
