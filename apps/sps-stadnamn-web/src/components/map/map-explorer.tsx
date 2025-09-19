@@ -20,24 +20,28 @@ import wkt from 'wellknown';
 import { stringToBase64Url } from "@/lib/param-utils";
 import useDocData from "@/state/hooks/doc-data";
 import { useQueries } from "@tanstack/react-query";
-import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius } from "@/lib/map-utils";
+import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius, getMyLocation } from "@/lib/map-utils";
 import useSearchData from "@/state/hooks/search-data";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
 import { GlobalContext } from "@/app/global-provider";
 import Clickable from "../ui/clickable/clickable";
 import useGroupData from "@/state/hooks/group-data";
 import useOverviewData from "@/state/hooks/overview-data";
+import { useSessionStore } from "@/app/session-store";
+
 const debug = process.env.NODE_ENV === 'development'
 
 
 
 export default function MapExplorer({ containerDimensions }: { containerDimensions: { width: number, height: number } }) {
   const { totalHits, searchBounds, searchLoading, searchUpdatedAt } = useSearchData()
+  const myLocation = useSessionStore((s) => s.myLocation)
+  const setMyLocation = useSessionStore((s) => s.setMyLocation)
+
 
   const controllerRef = useRef(new AbortController());
   const [baseMap, setBasemap] = useState<null | string>(null)
   const [markerMode, setMarkerMode] = useState<null | string>(null)
-  const [myLocation, setMyLocation] = useState<[number, number] | null>(null)
   const searchParams = useSearchParams()
   const { searchQueryString, searchFilterParamsString } = useSearchQuery()
   const perspective = usePerspective()
@@ -52,6 +56,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const mapInstance = useRef<any>(null)
   const doc = searchParams.get('doc')
   const datasetTag = searchParams.get('datasetTag')
+  const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
 
 
 
@@ -442,36 +447,10 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   }, [markerMode])
 
 
-
-  function getMyLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          // Assuming mapInstance is a ref to your map instance
-          mapInstance.current.setView([latitude, longitude], 15); // Zoom level 13 is just an example
-          setMyLocation([latitude, longitude]);
-        },
-        (error) => {
-          console.error("Error getting the location: ", error);
-          // Handle error or notify user here
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-      // Notify user that geolocation is not supported
-    }
-  }
-
-
-
-
-
-
   const selectDocHandler = (selected: Record<string, any>, hits?: Record<string, any>[]) => {
     return {
       click: () => {
-        console.log("CLICKING")
+        
         if (hits?.length) {
           const newQueryParams = new URLSearchParams(searchParams)
           if (!hits.find((hit: any) => (hit._source?.group?.id || hit.fields["group.id"]?.[0]) == (selected.group?.id || selected["group.id"][0]))) {
@@ -502,6 +481,8 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
           }
           router.push(`?${newQueryParams.toString()}`)
           }
+
+        setDrawerContent('details')
         }
     }
   }
@@ -1074,7 +1055,13 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       {!isMobile && <IconButton onClick={() => mapInstance.current?.zoomOut()} side="top" className="p-2 lg:p-2.5 rounded-md xl:rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom ut">
         <PiMagnifyingGlassMinusFill className="text-xl" />
       </IconButton>}
-      <IconButton onClick={getMyLocation} side="top" className="p-2 lg:p-2.5 rounded-md xl:rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon">
+      <IconButton onClick={() => {
+    getMyLocation((location) => {
+        mapFunctionRef?.current?.setView(location, 15)
+        setMyLocation(location)
+    })}
+
+      } side="top" className="p-2 lg:p-2.5 rounded-md xl:rounded-full border bg-neutral-900 border-white shadow-sm" label="Min posisjon">
         <PiGpsFix className="text-xl" />
       </IconButton>
       <IconButton className="p-2 lg:p-2.5 rounded-md xl:rounded-full border bg-neutral-900 border-white shadow-sm" label="Zoom til søkeresultat" onClick={() => {

@@ -24,6 +24,8 @@ function unproject([x, y]: [number, number]): [number, number] {
   return [lat, lng];
 }
 
+
+
 /**
  * Calculate geographic bounds for a given container size, center and zoom,
  * using Leaflet's default CRS (EPSG:3857).
@@ -271,4 +273,25 @@ export const getValidDegree = (degrees: number, maxValue: number): string => {
         return maxValue.toString()
     }
     return degrees.toString()
+    }
+
+
+    export const getMyLocation = (setMyLocation: (location: [number, number]) => void) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const location: [number, number] = [latitude, longitude];
+            setMyLocation(location);
+            return location;
+          },
+          (error) => {
+            console.error("Error getting the location: ", error);
+            alert("Kunne ikkje finne din posisjon")
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+        alert("Nettlesaren din støttar ikkje posisjonsbestemming")
+      }
     }

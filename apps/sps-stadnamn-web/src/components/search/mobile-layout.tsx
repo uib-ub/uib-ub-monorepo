@@ -29,12 +29,20 @@ import CadastreBreadcrumb from "./details/doc/cadastre-breadcrumb";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { GlobalContext } from "@/app/global-provider";
 import { useSessionStore } from "@/app/session-store";
+import { getMyLocation } from "@/lib/map-utils";
 
 export default function MobileLayout() {
+
+   const drawerContent = useSessionStore((s) => s.drawerContent);
+    const setDrawerContent = useSessionStore((s) => s.setDrawerContent);
+
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
-    const drawerContent = useSessionStore((s) => s.drawerContent);
-    const setDrawerContent = useSessionStore((s) => s.setDrawerContent);
+
+
+    const setMyLocation = useSessionStore((s) => s.setMyLocation);
+
+   
     const [currentPosition, setCurrentPosition] = useState(snappedPosition);
     const [snapped, setSnapped] = useState(false);
     const [startTouchY, setStartTouchY] = useState(0);
@@ -201,19 +209,7 @@ export default function MobileLayout() {
         setCurrentPosition(newHeight < 60 ? newHeight : 60);
     }
 
-    useEffect(() => {
-       
-        if (details) {
-            setDrawerContent('details')
-        }
-        else if (nav) {
-            setDrawerContent(nav)
-        }
-        else if (!searchFilterParamsString) {
-            setDrawerContent(null)
-        }
-    }
-        , [searchFilterParamsString, nav, doc, group, details])
+
 
     const toggleDrawer = (tab: string) => {
         setDrawerContent(tab == drawerContent ? null : tab)
@@ -274,6 +270,15 @@ export default function MobileLayout() {
 
     return <>
     {snappedPosition < 60 &&  <>
+        {mode == 'map' &&<div className="absolute flex gap-2 top-[4.5rem] right-4 z-[4000]">
+        <ClickableIcon
+        label="Min posisjon"
+        onClick={() => setDrawerContent('mapOptions')}
+        className="rounded-full bg-white text-neutral-800 shadow-lg p-3"
+        >
+        <PiStackPlus className="text-2xl" aria-hidden="true" />
+        </ClickableIcon>
+    </div>}
    <div className="absolute flex gap-2 right-4 z-[4000]"
     style={{ bottom: drawerContent ? `calc(${currentPosition}svh - 1.75rem)` : '2rem' }}
     >
@@ -284,23 +289,20 @@ export default function MobileLayout() {
 >
 	<PiBookOpen className="text-2xl" aria-hidden="true" />
 	</ClickableIcon>}
-        <ClickableIcon
+       {mode == 'map' && <ClickableIcon
         label="Min posisjon"
-        onClick={() => {}}
+        onClick={() => {
+            getMyLocation((location) => {
+                mapFunctionRef?.current?.setView(location, 15)
+                setMyLocation(location)
+            });
+        }}
         className="rounded-full bg-white text-neutral-800 shadow-lg p-3"
         >
         <PiGpsFix className="text-2xl" aria-hidden="true" />
-        </ClickableIcon>
+        </ClickableIcon>}
     </div>
-    <div className="absolute flex gap-2 top-[4.5rem] right-4 z-[4000]">
-        <ClickableIcon
-        label="Min posisjon"
-        onClick={() => {}}
-        className="rounded-full bg-white text-neutral-800 shadow-lg p-3"
-        >
-        <PiStackPlus className="text-2xl" aria-hidden="true" />
-        </ClickableIcon>
-    </div></>}
+    </>}
     
     <div className="scroll-container">
         
@@ -345,6 +347,14 @@ export default function MobileLayout() {
                             <div className="flex flex-wrap items-center gap-2 p-2"><CadastreBreadcrumb/></div>
                             <TreeList/>
                         </section>
+                    }
+                    {
+                        drawerContent == 'mapOptions' &&
+                        <div className="p-2">
+                            <h2 className="text-xl text-neutral-800 font-bold uppercase tracking-wide border-b border-neutral-200 pb-2 flex items-center gap-1">
+                                Kartinnstillinger
+                            </h2>
+                        </div>
                     }
                     {false && drawerContent == 'results' && datasetTag != 'tree' &&
                         <section className="flex flex-col gap-2 p-2">
