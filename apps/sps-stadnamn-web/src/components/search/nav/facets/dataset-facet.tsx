@@ -133,7 +133,7 @@ export default function DatasetFacet() {
     { datasetTag == 'deep' && <span className="p-2">Datasett som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>}
     {datasetTag == 'tree' && <span className="p-2">Datasett ordna i eit hierarki etter matrikkelinndelinga.</span>}
 
-    {datasetTag != 'tree' && <div className='flex gap-2 px-1'>
+    {datasetTag != 'tree' && <div className='flex gap-2 px-1 pt-1'>
      <div className='relative grow'>
       <input aria-label="Søk i fasett" onChange={(e) => setClientSearch(e.target.value)}
           className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"/>

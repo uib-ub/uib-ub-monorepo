@@ -138,7 +138,7 @@ export default function SearchForm() {
                     <IconButton
                         onClick={() => { setAutocompleteOpen(false) }}
                         label="Tilbake"
-                        className="items-center justify-center flex h-full shadow-lg aspect-square xl:rounded-md bg-neutral-50 border-r-2 xl:border-r-0  border-neutral-200">
+                        className="items-center justify-center flex h-full shadow-lg  aspect-square xl:rounded-md bg-neutral-50 border-r-2 xl:border-r-0  border-neutral-200">
                         <PiCaretLeftBold className="text-2xl" />
                     </IconButton>}
 
@@ -158,7 +158,7 @@ export default function SearchForm() {
 
                 }}>
 
-                <div className='flex w-full pr-1 bg-white shadow-lg xl:rounded-md items-center relative group'>
+                <div className='flex w-full pr-1 bg-white shadow-lg focus-within:shadow-md focus-within:shadow-primary-600 xl:rounded-md items-center relative group'>
                     
                     <label htmlFor="search-input" className="sr-only">Søk</label>
                     { datasetTag != 'tree' && <ClickableIcon onClick={() => {setDrawerContent('filters'); setSnappedPosition(60); setCurrentPosition(60)}} add={{nav: 'filters'}} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
@@ -198,8 +198,8 @@ export default function SearchForm() {
 
                             // Replace results with filters if no facetFilters
 
-                            label="Tøm søkefelt"><PiX className="text-3xl lg:text-xl text-neutral-600 group-focus-within:text-neutral-800 m-1" /></IconButton>}
-                    <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-xl shrink-0 text-neutral-600 group-focus-within:text-neutral-800" aria-hidden="true" /></button>
+                            label="Tøm søkefelt"><PiX className="text-3xl lg:text-2xl text-neutral-600 group-focus-within:text-neutral-800 m-1" /></IconButton>}
+                    <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800 group-focus-within:text-primary-600" aria-hidden="true" /></button>
                 </div>
                 {!isMobile && false && <FulltextToggle />}
 

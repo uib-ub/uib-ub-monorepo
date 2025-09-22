@@ -49,7 +49,7 @@ export default function DesktopLayout() {
             </section>
         }
         {
-            datasetTag == 'tree' && 
+            nav == 'tree' && 
             <section aria-labelledby="tree-window-title" className="xl:absolute left-2 top-14 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex">
             <TreeWindow/>
             </section>

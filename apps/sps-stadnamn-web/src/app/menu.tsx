@@ -102,10 +102,11 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
                         
 							<Clickable
 								remove={["datasetTag"]}
+								add={{nav: 'datasets'}}
 								role="tab"
 								aria-selected={!datasetTag && pathname == "/search"}
 								className={menuBtn}
-                                onClick={() => setMenuOpen(false)}
+                                onClick={() => {setMenuOpen(false); setDrawerContent('datasets')}}
 							>
 								<span className="flex-shrink-0">
 									{!datasetTag && pathname == "/search" ? <PiDatabaseFill className="text-xl text-white" aria-hidden="true"/> : <PiDatabaseLight className="text-xl" aria-hidden="true"/>}
@@ -129,7 +130,7 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
 								role="tab"
 								remove={["dataset", "group", "doc"]}
 								add={{ datasetTag: 'tree' , nav: 'tree'}}
-                                onClick={() => {setMenuOpen(false); setDrawerContent('datasets')}}
+                                onClick={() => {setMenuOpen(false); setDrawerContent('tree')}}
 								aria-selected={datasetTag == 'tree'}
 								className={menuBtn}
 							>

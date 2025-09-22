@@ -29,6 +29,7 @@ import useGroupData from "@/state/hooks/group-data";
 import useOverviewData from "@/state/hooks/overview-data";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { useMapSettings } from '@/state/zustand/persistent-map-settings'
+import ClickableIcon from "../ui/clickable/clickable-icon";
 
 const debug = process.env.NODE_ENV === 'development'
 
@@ -898,15 +899,15 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
 
     </Map>
-    {/* Canvas overlay for label mode */}
+
     {!isMobile && <div className={`absolute xl:right-0 p-2 bottom-5 right-0 xl:left-1/2 transform xl:-translate-x-1/2 flex flex-col lg:flex-row justify-center gap-2 text-white z-[3001]`}>
-      {!isMobile && <Clickable 
+      {!isMobile && <ClickableIcon label="Kartinnstillingar"
         className="rounded-full bg-white text-neutral-900 shadow-lg p-3" 
         add={{nav: 'mapSettings'}} 
         onClick={() => setDrawerContent('mapSettings')}
       >
-        <PiStackPlus className="text-2xl" />
-      </Clickable>}
+        <PiStackPlus className="text-2xl"/>
+      </ClickableIcon>}
       
       {!isMobile && <IconButton 
         onClick={() => mapInstance.current?.zoomIn()} 

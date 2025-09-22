@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { PiArrowElbowLeftUp, PiArrowUp, PiCaretUp, PiCaretUpBold, PiX } from "react-icons/pi";
 import DatasetFacet from "./facets/dataset-facet";
+import { useSessionStore } from "@/state/zustand/session-store";
 
 export default function TreeWindow() {
     const searchParams = useSearchParams()
@@ -17,7 +18,7 @@ export default function TreeWindow() {
             <h2 className="text-black text-xl mr-auto mx-1">
                 {adm2 ? adm2 : adm1 ? adm1 : dataset ? datasetTitles[dataset || ''] : 'Matriklar'}
             </h2>
-            <ClickableIcon label="lukk" remove={['dataset', 'datasetTag']} add={{details: 'group'}}>
+            <ClickableIcon label="lukk" remove={['nav']}>
                 <PiX className="text-3xl text-neutral-900"/>
             </ClickableIcon>
         </div>
