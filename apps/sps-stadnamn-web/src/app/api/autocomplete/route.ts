@@ -19,6 +19,8 @@ export async function GET(request: Request) {
     "size": reservedParams.size || 10,
     ...reservedParams.from ? {from: reservedParams.from} : {},
     "query": {
+        /*
+      
       "dis_max": {
         "queries": [
           {
@@ -37,6 +39,11 @@ export async function GET(request: Request) {
         ],
         "tie_breaker": 0.3
       }
+      */
+      "prefix": {
+        "label": reservedParams.q?.toLowerCase() || ""
+      }
+      
     },
     "track_scores": true,
     "track_total_hits": false,
@@ -60,7 +67,7 @@ export async function GET(request: Request) {
 
 
   // Only cache if no search string an no filters
-  const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
+  const [data, status] = await postQuery(perspective, query)
   return Response.json(data, {status: status})
   
 }
