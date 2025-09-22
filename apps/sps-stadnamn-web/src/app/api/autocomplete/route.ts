@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     "size": reservedParams.size || 10,
     ...reservedParams.from ? {from: reservedParams.from} : {},
     "query": {
-        /*
+      
       
       "dis_max": {
         "queries": [
@@ -39,10 +39,12 @@ export async function GET(request: Request) {
         ],
         "tie_breaker": 0.3
       }
-      */
+        /*
+      
       "prefix": {
         "label": reservedParams.q?.toLowerCase() || ""
       }
+        */
       
     },
     "track_scores": true,
