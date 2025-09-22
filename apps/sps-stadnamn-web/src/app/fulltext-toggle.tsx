@@ -5,7 +5,7 @@ export default function FulltextToggle() {
     const searchParams = useSearchParams()
     const fulltext = searchParams.get('fulltext')
     const router = useRouter()
-    return <label className="flex items-center gap-3 my-3 text-xl xl:text-lg px-2">
+    return <div className="flex flex-wrap xl:px-1"><label className="flex items-center gap-3 my-3 text-xl xl:text-lg px-2">
     <input form="search-form"
            type="checkbox" 
            id="menu_navbar_checkbox" 
@@ -29,4 +29,22 @@ export default function FulltextToggle() {
             }} />
     Fulltekstsøk
 </label>
+<label className="flex items-center gap-3 my-3 text-xl xl:text-lg px-2">
+  <input type="checkbox" 
+        name="datasetTag" value="deep"
+        checked={searchParams.get('datasetTag') == 'deep'}
+        className="h-3 w-3 xl:h-4 xl:w-4"
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          const newUrl = new URLSearchParams(searchParams);
+          if (event.target.checked) {
+            newUrl.set('datasetTag', 'deep');
+          }
+          else {
+            newUrl.delete('datasetTag');
+          }
+          router.push(`?${newUrl.toString()}`);
+        }}/>
+  Djupinnsamlingar
+</label>
+</div>
 }

@@ -45,7 +45,7 @@ export default async function Home() {
   <div className="flex flex-col gap-8 md:px-8">
   <div className="flex flex-col gap-8">
     <div className="flex flex-col gap-6 xl:mt-32">
-  <h1 className="self-center text-5xl text-neutral-950 sr-only md:not-sr-only !px-2 font-serif">Søk i stadnamn</h1>
+  <h1 className="self-center text-5xl text-neutral-950 sr-only md:not-sr-only !px-2 font-serif">Stadnamn</h1>
   
   <Form id="search-form" className="flex items-center justify-center gap-2 w-full" action="search">
    

@@ -272,7 +272,7 @@ export default function MobileLayout() {
 
 
     return <>
-    {snappedPosition < 60 &&  <>
+    {(snappedPosition < 60 || !drawerContent) &&  <>
         {mode == 'map' &&<div className="absolute flex gap-2 top-[4.5rem] right-4 z-[4000]">
         <ClickableIcon
         label="Min posisjon"
@@ -286,12 +286,15 @@ export default function MobileLayout() {
     style={{ bottom: drawerContent ? `calc(${currentPosition}svh - 1.75rem)` : '2rem' }}
     >
         {drawerContent != 'details' && <ClickableIcon
-	onClick={() => toggleDrawer('details')}
-	label="Oppslag"
-	className={`rounded-full bg-white text-neutral-800 shadow-lg p-3 ${snapped ? 'transition-[bottom] duration-300 ease-in-out' : ''}`}
+    onClick={() => toggleDrawer('details')}
+    label="Oppslag"
+    className={`rounded-full bg-white text-neutral-800 shadow-lg p-3 px-4 ${snapped ? 'transition-[bottom] duration-300 ease-in-out' : ''}`}
 >
-	<PiBookOpen className="text-2xl" aria-hidden="true" />
-	</ClickableIcon>}
+    <span className="flex items-center gap-2 whitespace-nowrap">
+        {!searchFilterParamsString && <PiBookOpen className="text-xl" aria-hidden="true" />}
+        {searchFilterParamsString && totalHits && totalHits.value > 0 ? <span className="space-x-1"><span className="uppercase tracking-wider font-semibold">Treff</span><span className="results-badge text-primary-700 bg-primary-200 font-bold left-8 rounded-full py-0.5 text-sm whitespace-nowrap px-1.5">{formatNumber(totalHits.value)}</span></span> :  <span>{groupDoc?._source?.label}</span>}
+    </span>
+</ClickableIcon>}
        {mode == 'map' && <ClickableIcon
         label="Min posisjon"
         onClick={() => {
@@ -331,7 +334,7 @@ export default function MobileLayout() {
                         { doc && <div className="pb-24 p-2"><DocInfo /></div>}
                         {false && details && details != 'group' && !doc &&
                             <div className="pb-12 pt-2 px-2">
-                                <span className="flex items-center pb-2 text-xl"><h2 className="text-neutral-800 text-2xl tracking-wide flex items-center gap-1 ">{groupLabel}</h2>
+                                <span className="flex items-center pb-2 text-xl"><h2 className="text-neutral-800 text-xl tracking-wide flex items-center gap-1 ">{groupLabel}</h2>
                                     <InfoPopover>
                                         Utvida oversikt over liknande oppslag i nærområdet. Treffa er ikkje nødvendigvis former av namnet du har valt, og det kan vere namnformer som ikkje kjem med.
                                     </InfoPopover></span>
@@ -354,7 +357,7 @@ export default function MobileLayout() {
                     {
                         drawerContent == 'mapSettings' &&
                         <div className="p-2">
-                            <h2 className="text-2xl px-1">
+                            <h2 className="text-xl px-1">
                                 Kartinnstillingar
                             </h2>
                             <MapSettings />
@@ -377,7 +380,7 @@ export default function MobileLayout() {
                     }
                     {(drawerContent == 'datasets') &&
                         <div className="p-2">
-                            <h2 className="text-2xl px-1">
+                            <h2 className="text-xl px-1">
                                 {datasetTag == 'tree' && 'Registre'}
                                 {datasetTag == 'base' && 'Grunnord'}
                                 {datasetTag == 'deep' && 'Djupinnsamlingar'}
@@ -391,8 +394,7 @@ export default function MobileLayout() {
                     }
                     {drawerContent == 'filters' &&
                         <div className="p-2">
-                            <h2 className="text-2xl px-1">Søkealternativ {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
-                            <FulltextToggle/>
+                            <h2 className="text-xl px-1">Søkealternativ {facetFilters.length > 0 && <span className="results-badge bg-primary-500 left-8 rounded-full px-1 text-white text-xs whitespace-nowrap">{facetFilters.length}</span>}</h2>
                             <div className="flex flex-wrap gap-2 py-2"><ActiveFilters /></div>
                             <FacetSection />
                         </div>

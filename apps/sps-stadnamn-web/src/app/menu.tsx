@@ -70,7 +70,7 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
  
                 <div 
                      id="menu_navbar" 
-                     className={` bg-neutral-50 px-2 w-full xl:w-[25svw] overscroll-none h-[calc(100svh-3rem)] overflow-y-auto ${menuOpen ? 'fixed top-14 bottom-0 left-0' : 'hidden'}`}>
+                     className={` bg-neutral-50 px-2 w-full xl:w-[calc(25svw-0.5rem)] xl:rounded-r-md xl:shadow-lg overscroll-none h-[calc(100svh-3rem)] overflow-y-auto ${menuOpen ? 'fixed top-14 bottom-0 left-0' : 'hidden'}`}>
                          { pathname !== '/' && pathname != '/search' && currentUrl.current && 
                 <div className="flex items-center justify-center py-4 border-b border-neutral-200 gap-2 no-underline text-xl "><Link href={currentUrl.current} className="flex items-center gap-2 no-underline text-xl"><PiCaretLeft className="text-2xl"/>Tilbake til søket</Link>
                 </div>
@@ -96,7 +96,7 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
 					</Clickable>
 					</div>
                     </div>
-                    <div className="flex flex-col gap-2 p-3 w-full">
+                    {false && <div className="flex flex-col gap-2 p-3 w-full">
                     <span className="text-lg">Søkemodus</span>
                     <div className="flex gap-2 items-center w-full pb-3 text-base flex-wrap" role="tablist">
                         
@@ -154,14 +154,14 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
 							</Clickable>
 						
                         </div>
-                    </div>
+                    </div>}
                     
                    
                     <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:mx-0" href="https://skjemaker.app.uib.no/view.php?id=16665712"><PiChatCircleText aria-hidden="true"/>Tilbakemelding</Link>
                     					
                    <div className="flex flex-col gap-2 w-full">
                     <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:pr-8 lg:mx-0" href="/info"><PiInfo aria-hidden="true"/>Om stadnamnportalen</Link>
-					<ul className="flex flex-col gap-0 pb-2">
+					{false && <ul className="flex flex-col gap-0 pb-2">
 						{infoPages.map((p: any) => (
 							<li key={p.href}>
 							<Link
@@ -174,7 +174,7 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
 							</Link>
                             </li>
 						))}
-					</ul>
+					</ul>}
                     </div>
       
 

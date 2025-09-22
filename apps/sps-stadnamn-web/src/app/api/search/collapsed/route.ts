@@ -22,15 +22,9 @@ export async function GET(request: Request) {
     ...highlight ? {highlight} : {},
     "track_scores": true,
     "track_total_hits": false,
-    "fields": ["group.adm1", "group.adm2", "uuid", "boost"],
+    "fields": ["group.adm1", "group.adm2", "uuid", "boost", "label"],
     "collapse": {
       "field": "group.id",
-      "inner_hits": {
-        "name": "group",
-        "size": 3,
-        "_source": false,
-        "fields": [ "label", "altLabels", "attestations.label"],
-      }
     },
     
     "sort": reservedParams.datasetTag == 'base' ?

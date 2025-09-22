@@ -67,7 +67,7 @@ export default function ResultItem({hit}: {hit: any}) {
     }, [nav, doc, hit.fields.uuid, isMobile])
 
 
-    const label = hit.inner_hits.group.hits.hits[0].fields.label[0]
+    const label = hit.fields?.label?.[0] || JSON.stringify(hit)
 
     
 
@@ -93,7 +93,7 @@ export default function ResultItem({hit}: {hit: any}) {
                     </span>}
                     {!searchFilterParamsString && isGrunnord && 
                     <span className="bg-neutral-700 font-semibold text-white w-6 h-6 group-aria-[current='page']:bg-accent-800 rounded-full flex items-center justify-center ml-1.5">
-                        {hit.inner_hits.group.hits.hits[0].fields.label[0][0].toUpperCase()}
+                        {hit.fields.label?.[0]?.[0].toUpperCase() || JSON.stringify(hit)}
                     </span>
                     }
                 </div>}

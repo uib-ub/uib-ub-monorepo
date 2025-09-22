@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { PiCaretLeft, PiCaretLeftBold, PiFunnel, PiMagnifyingGlass, PiMapTrifold, PiPencilLine, PiSliders, PiSlidersHorizontal, PiTreeView, PiX } from 'react-icons/pi';
+import { PiCaretLeft, PiCaretLeftBold, PiFunnel, PiMagnifyingGlass, PiMapPin, PiMapPinFill, PiMapTrifold, PiPencilLine, PiSliders, PiSlidersHorizontal, PiTreeView, PiWall, PiX } from 'react-icons/pi';
 import { datasetTitles, modes } from '@/config/metadata-config';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useSearchQuery } from '@/lib/search-params';
@@ -20,9 +20,14 @@ import Clickable from '@/components/ui/clickable/clickable';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { formatNumber } from '@/lib/utils';
 
-export async function autocompleteQuery(inputState: string, isMobile: boolean) {
+export async function autocompleteQuery(searchFilterParamsString: string, inputState: string, isMobile: boolean, signal: AbortSignal) {
     if (!inputState) return null
-    const res = await fetch(`/api/search/collapsed?q=${inputState}&size=${isMobile ? 5 : 20}`)
+    const newQuery = new URLSearchParams(searchFilterParamsString)
+    newQuery.set('q', inputState)
+    const autocompleteQuery = newQuery.toString()
+    
+    
+    const res = await fetch(`/api/autocomplete?${autocompleteQuery}&size=${isMobile ? 5 : 20}`, {signal})
     if (!res.ok) {
         throw new Error(res.status.toString())
     }
@@ -43,6 +48,8 @@ export default function SearchForm() {
     const setSnappedPosition = useSessionStore((s: any) => s.setSnappedPosition)
     const setCurrentPosition = useSessionStore((s: any) => s.setCurrentPosition)
     const datasetTag = searchParams.get('datasetTag')
+    const router = useRouter()
+    const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
     
 
 
@@ -50,7 +57,7 @@ export default function SearchForm() {
     const form = useRef<HTMLFormElement | null>(null)
     const perspective = usePerspective()
 
-    const { facetFilters, datasetFilters } = useSearchQuery()
+    const { facetFilters, datasetFilters, searchFilterParamsString } = useSearchQuery()
     const filterCount = facetFilters.length + datasetFilters.length
 
 
@@ -64,8 +71,18 @@ export default function SearchForm() {
     const { data, isLoading } = useQuery({
         queryKey: ['autocomplete', inputState],
         placeholderData: (prevData: any) => prevData,
-        queryFn: () => autocompleteQuery(inputState, isMobile)
+        queryFn: ( {signal} ) => autocompleteQuery(searchFilterParamsString, inputState, isMobile, signal)
     })
+
+
+    const dropdownSelect = (event: React.MouseEvent<HTMLDivElement>, group: string, label: string) => {
+        event.preventDefault()
+        setSelectedGroup(group)
+        setInputState(label)
+        if (form.current) {
+            form.current.requestSubmit()
+        }
+    }
 
 
     const clearQuery = () => {
@@ -78,6 +95,13 @@ export default function SearchForm() {
             }
 
         }
+        const newSearchParams = new URLSearchParams(searchParams)
+        if (isMobile) {
+            newSearchParams.delete('q')
+            newSearchParams.delete('nav')
+            router.push(`?${newSearchParams.toString()}`)
+        }
+        
     }
 
     useEffect(() => {
@@ -144,7 +168,7 @@ export default function SearchForm() {
 
             <Form ref={form} action="/search" id="search-form" className="flex w-full h-full"
                 onFocus={() => setAutocompleteOpen(Boolean(inputState))}
-                onBlur={() => setAutocompleteOpen(false)}
+                //onBlur={() => setAutocompleteOpen(false)}
 
                 onSubmit={() => {
                     if (!input.current) return;
@@ -174,9 +198,10 @@ export default function SearchForm() {
                     
                     <input
                         id="search-input"
-                        required
                         type="text"
                         role="combobox"
+                        aria-controls="autocomplete-results"
+                        aria-expanded={autocompleteOpen}
                         maxLength={20}
                         ref={input}
                         name="q"
@@ -193,15 +218,14 @@ export default function SearchForm() {
                     {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''} />}
                     {false && `${JSON.stringify(autocompleteFacetFilters)}${JSON.stringify(autocompleteDatasetFilters)}`}
 
-                    {inputState &&
+                    {(inputState || searchFilterParamsString?.length > 0) &&
                         <IconButton onClick={() => { clearQuery() }}
 
                             // Replace results with filters if no facetFilters
 
-                            label="Tøm søkefelt"><PiX className="text-3xl lg:text-2xl text-neutral-600 group-focus-within:text-neutral-800 m-1" /></IconButton>}
+                            label="Nullstill søket"><PiX className="text-3xl lg:text-2xl text-neutral-800 group-focus-within:text-neutral-800 m-1" /></IconButton>}
                     <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800 group-focus-within:text-primary-600" aria-hidden="true" /></button>
                 </div>
-                {!isMobile && false && <FulltextToggle />}
 
                 {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''} />}
                 <input type="hidden" name="nav" value={'results'} />
@@ -209,9 +233,23 @@ export default function SearchForm() {
                 {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
                 {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
                 {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''} />}
-                {autocompleteOpen && <ul className="absolute top-[3.5rem] left-0 xl:left-2 border-t border-neutral-200 w-full max-h-[calc(100svh-4rem)] xl:h-auto bg-white xl:shadow-lg overflow-y-auto overscroll-none xl:max-w-[calc(25svw-0.5rem)] left-0 xl-p-2 xl xl:rounded-lg">
+                {autocompleteOpen && <ul className="absolute top-[3.5rem] xl:left-2 border-t border-neutral-200 w-full max-h-[calc(100svh-4rem)] xl:h-auto bg-neutral-50 xl:shadow-lg overflow-y-auto overscroll-none xl:max-w-[calc(25svw-1rem)] left-0 xl-p-2 xl xl:rounded-lg divide-y divide-neutral-300">
                     {data?.hits?.hits?.map((hit: any) => (
-                        <li key={hit._id} role="option"><ResultItem hit={hit} /></li>
+                        <li key={hit._id} tabIndex={-1} role="option" aria-selected={selectedGroup == hit.fields["group.id"][0]}>
+                          <div className="cursor-pointer py-3 px-4 flex hover:bg-neutral-100" onClick={(event) => dropdownSelect(event, hit.fields["group.id"][0], hit.fields.label[0])}>
+                            {hit.fields.location?.length ? (
+                              <PiMapPinFill aria-hidden="true" className="text-neutral-700 flex-shrink-0 mt-1 mr-2" />
+                            ) : null}
+                            {hit._index.split('-')[2].endsWith('_g') && <PiWall aria-hidden="true" className="text-neutral-700 flex-shrink-0 mt-1 mr-2" />}
+                            <div>
+                              {hit.fields.label[0]}{' '}
+                              <span className="text-neutral-700">
+                                {hit.fields["group.adm2"]?.[0] ? hit.fields["group.adm2"]?.[0] + ', ' : ''}
+                                {hit.fields["group.adm1"]?.[0]}
+                              </span>
+                            </div>
+                          </div>
+                        </li>
                     ))}
                 </ul>}
             </Form>

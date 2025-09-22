@@ -73,14 +73,14 @@ export default function FacetSection() {
         
         
         <div className="flex flex-col divide-y divide-neutral-200">
-          {!isMobile && <FulltextToggle/>}
+           <FulltextToggle/>
           <Clickable type="button" 
                        aria-expanded={facet == 'dataset'} 
                        className="w-full flex justify-between p-3"
                        aria-controls="dataset-facet-collapsible" 
                        add={{facet: facet == 'dataset' ? null : 'dataset'}}>
             
-              <span className="text-xl">Datasett</span>
+              <span className="text-lg">Datasett</span>
               {facet == 'dataset' ? <PiCaretUpBold className="inline self-center text-primary-600 text-xl" /> : <PiCaretDownBold className="inline self-center text-primary-600 text-xl" />}
            
           </Clickable>
@@ -117,7 +117,7 @@ export default function FacetSection() {
                        aria-controls={f.key + '-collapsible'} 
                        add={{facet: isExpanded ? null : f.key}}>
               <div className="flex flex-wrap gap-4">
-              <span className="text-xl">{f.label}</span>
+              <span className="text-lg">{f.label}</span>
 
               {filterDataset == 'all' && (f.datasets?.length || 0) == 1 && f.datasets?.[0] && <em className="text-neutral-700 text-sm self-center">{datasetTitles[f.datasets?.[0]]}</em>}
               {filterDataset != 'all' && f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}

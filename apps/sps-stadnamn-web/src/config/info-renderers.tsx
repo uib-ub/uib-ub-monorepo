@@ -199,9 +199,9 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     },
     ssr2016: null,
     ssr: (source: any) => {
-      return <><div><PiWarningFill className="inline-block mr-1 text-neutral-600 text-lg" />Sjå faktaark hos Kartverket for normeringsstatus</div>
-      {source.ssr && <div className="flex flex-wrap gap-2"><Link className="rectangular-external-link" href={`https://stadnamn.kartverket.no/fakta/${source.ssr}`}>Faktaark</Link>
-      <Link className="rectangular-external-link" href={`http://wfs.geonorge.no/skwms1/wfs.stedsnavn50?service=WFS&version=2.0.0&request=GetFeature&STOREDQUERY_ID=urn:ogc:def:storedQuery:OGC-WFS::Stedsnummer&stedsnummer=${source.ssr}`}>Rådata</Link>
+      return <><div><PiWarningFill className="inline-block mr-1 text-neutral-600 text-lg" />Sjå normeringsstatus på kartverket.no</div>
+      {source.ssr && <div className="flex flex-wrap gap-2"><Link className="rectangular-external-link" href={`https://stadnamn.kartverket.no/fakta/${source.ssr}`}>kartverket.no</Link>
+      <Link className="rectangular-external-link" href={`http://wfs.geonorge.no/skwms1/wfs.stedsnavn50?service=WFS&version=2.0.0&request=GetFeature&STOREDQUERY_ID=urn:ogc:def:storedQuery:OGC-WFS::Stedsnummer&stedsnummer=${source.ssr}`}>WFS kartdata</Link>
       </div>}
   
       

@@ -111,7 +111,7 @@ export default function ActiveFilters() {
     //const gnr =  getGnr(parentData, perspective)
 
     if (datasetTag == 'tree') {
-      return <div className={`text-neutral-950 flex-wrap rounded-md gap-2 xl:h-10 pl-3 pr-2 py-1 flex items-center bg-white xl:shadow-md`}>
+      return <div className={`text-neutral-950 flex-wrap rounded-md gap-2 xl:h-8 pl-3 pr-2 py-1 flex items-center bg-white xl:shadow-md`}>
         {dataset &&<CadastreBreadcrumb/>}<ClickableIcon label="Lukk matrikkelvisning" remove={["datasetTag"]}><PiX className="w-6 h-6 self-center flex-shrink-0" /></ClickableIcon></div>
     }
 
@@ -125,7 +125,7 @@ export default function ActiveFilters() {
           <button 
               key={`${key}__${value}`} 
               onClick={() => removeFilter(key, value)} 
-              className={`text-neutral-950  rounded-md gap-2 pl-2 pr-1 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none`}
+              className={`text-neutral-950 xl:h-8 rounded-md gap-2 pl-2 pr-1 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none`}
           >
             {datasetTitles[value]} <PiX className="inline text-lg" aria-hidden="true"/>
           </button>
@@ -133,7 +133,7 @@ export default function ActiveFilters() {
         { datasetFilters.length > 1 && 
   <>
     <button 
-      className="text-neutral-950 xl:h-10 rounded-md gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none"
+      className="text-neutral-950 xl:h-8 rounded-md gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none"
       popoverTarget="dataset-filters-popover"
       popoverTargetAction="toggle"
     >
@@ -158,7 +158,7 @@ export default function ActiveFilters() {
       <div className="h-px bg-neutral-200 my-1" />
       <button
         onClick={clearDatasetFilters}
-        className="flex w-full items-center py-2 px-4 hover:bg-neutral-100 rounded cursor-pointer text-accent-700"
+        className="flex w-full items-center py-2 px-4 hover:bg-neutral-100 rounded cursor-pointer text-accent-700 xl:h-8"
       >
         Tøm
         <PiTrash className="ml-auto text-lg" aria-hidden="true"/>
@@ -167,13 +167,13 @@ export default function ActiveFilters() {
   </>
 }
         {fulltext == 'on' && !isMobile && <Clickable remove={['fulltext']}
-      className={`text-neutral-950 xl:h-10  rounded-md gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none`} onClick={() => removeFilter('fulltext', 'on')}>
+      className={`text-neutral-950 xl:h-8  rounded-md gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none`} onClick={() => removeFilter('fulltext', 'on')}>
         <span className="flex items-center">Fulltekstsøk</span>
         <PiX className="inline text-lg" aria-hidden="true"/>
       </Clickable>}
       {/* Search chip */}
       { searchParams.get('q') && <Clickable remove={['q']}
-      className={`text-neutral-950 rounded-md gap-2 xl:h-10 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none`} onClick={() => {inputValue.current = ""; removeFilter('q', searchParams.get('q')!)}}>
+      className={`text-neutral-950 rounded-md gap-2 xl:h-8 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none`} onClick={() => {inputValue.current = ""; removeFilter('q', searchParams.get('q')!)}}>
         <span className="flex items-center">{searchParams.get('q')}</span>
         <PiX className="inline text-lg" aria-hidden="true"/>
       </Clickable>}
@@ -184,7 +184,7 @@ export default function ActiveFilters() {
             <button 
                 key={`${key}__${value}`} 
                 onClick={() => removeFilter(key, value)} 
-                className={`text-neutral-950 xl:h-10  rounded-full gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none`}
+                className={`text-neutral-950 xl:h-8  rounded-full gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none`}
             >
               {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
             </button>
@@ -193,7 +193,7 @@ export default function ActiveFilters() {
         {facetFilters.length >= 2 && (
   <>
     <button 
-      className="text-neutral-950 xl:h-10 rounded-full gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none"
+      className="text-neutral-950 xl:h-8 rounded-full gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none"
       popoverTarget="facet-filters-popover"
       popoverTargetAction="toggle"
     >
@@ -228,7 +228,7 @@ export default function ActiveFilters() {
 )}
 
         {showClearButton && <Clickable remove={['q', ...facetFilters.map(([key, value]) => key), ...datasetFilters.map(([key, value]) => key)]}
-        className={` rounded-full bg-white text-neutral-950 xl:h-10  gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center  xl:shadow-md box-content border bg-neutral-50 border-neutral-200 box-content xl:border-none`}>
+        className={` rounded-full bg-white text-neutral-950 xl:h-8  gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center  xl:shadow-md box-content border bg-neutral-50 border-neutral-200 box-content xl:border-none`}>
           Tøm
           <PiTrash className="inline text-lg" aria-hidden="true"/>
         </Clickable>}
