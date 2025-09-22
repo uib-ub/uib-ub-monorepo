@@ -20,14 +20,14 @@ import Clickable from '@/components/ui/clickable/clickable';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { formatNumber } from '@/lib/utils';
 
-export async function autocompleteQuery(searchFilterParamsString: string, inputState: string, isMobile: boolean, signal: AbortSignal) {
+export async function autocompleteQuery(searchFilterParamsString: string, inputState: string, isMobile: boolean) {
     if (!inputState) return null
     const newQuery = new URLSearchParams(searchFilterParamsString)
     newQuery.set('q', inputState)
     const autocompleteQuery = newQuery.toString()
     
     
-    const res = await fetch(`/api/autocomplete?${autocompleteQuery}&size=${isMobile ? 5 : 20}`, {signal})
+    const res = await fetch(`/api/autocomplete?${autocompleteQuery}&size=${isMobile ? 5 : 20}`)
     if (!res.ok) {
         throw new Error(res.status.toString())
     }
@@ -50,6 +50,7 @@ export default function SearchForm() {
     const datasetTag = searchParams.get('datasetTag')
     const router = useRouter()
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
+    const [inputFocus, setInputFocus] = useState(false)
     
 
 
@@ -71,7 +72,7 @@ export default function SearchForm() {
     const { data, isLoading } = useQuery({
         queryKey: ['autocomplete', inputState],
         placeholderData: (prevData: any) => prevData,
-        queryFn: ( {signal} ) => autocompleteQuery(searchFilterParamsString, inputState, isMobile, signal)
+        queryFn: () => autocompleteQuery(searchFilterParamsString, inputState, isMobile)
     })
 
 
@@ -156,9 +157,9 @@ export default function SearchForm() {
 
         <div className={`${(autocompleteOpen || menuOpen) ? 'z-[6000]' : 'z-[3000]'} h-full w-full w-full flex xl:gap-2`}>
 
-        {(!isMobile || !autocompleteOpen) && <Menu shadow/>}
+        {(!isMobile || !inputFocus) && <Menu shadow/>}
                 
-                {isMobile && autocompleteOpen &&
+                {false && isMobile && autocompleteOpen &&
                     <IconButton
                         onClick={() => { setAutocompleteOpen(false) }}
                         label="Tilbake"
@@ -167,7 +168,7 @@ export default function SearchForm() {
                     </IconButton>}
 
             <Form ref={form} action="/search" id="search-form" className="flex w-full h-full"
-                onFocus={() => setAutocompleteOpen(Boolean(inputState))}
+                //
                 //onBlur={() => setAutocompleteOpen(false)}
 
                 onSubmit={() => {
@@ -185,15 +186,13 @@ export default function SearchForm() {
                 <div className='flex w-full pr-1 bg-white shadow-lg focus-within:shadow-md focus-within:shadow-primary-600 xl:rounded-md items-center relative group'>
                     
                     <label htmlFor="search-input" className="sr-only">Søk</label>
-                    { datasetTag != 'tree' && <ClickableIcon onClick={() => {setDrawerContent('filters'); setSnappedPosition(60); setCurrentPosition(60)}} add={{nav: 'filters'}} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
+                { datasetTag != 'tree' && !(isMobile && inputFocus) && <ClickableIcon onClick={() => {setDrawerContent('filters'); setSnappedPosition(60); setCurrentPosition(60)}} add={{nav: 'filters'}} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
                 <PiSliders className="text-3xl xl:text-2xl" aria-hidden="true"/>
                 {filterCount > 0 && <span className={`results-badge bg-primary-500 absolute top-1 left-1 rounded-full text-white text-xs ${filterCount < 10 ? 'px-1.5' : 'px-1'}`}>
                             {formatNumber(filterCount)}
                         </span>}
                 </ClickableIcon>}
-                { datasetTag == 'tree' && <ClickableIcon onClick={() => {setDrawerContent('tree'); setSnappedPosition(60); setCurrentPosition(60)}} add={{nav: 'tree'}} label="Matrikkelnavigasjon" className={`flex items-center justify-center relative py-2 px-3`}>
-                <PiTreeView className="text-3xl xl:text-2xl" aria-hidden="true"/>
-                </ClickableIcon>}
+                {isMobile && inputFocus && <ClickableIcon label="Tilbake" onClick={() => setAutocompleteOpen(false)} className={`flex items-center justify-center relative py-2 px-3`}><PiCaretLeftBold className="text-3xl xl:text-2xl" aria-hidden="true"/></ClickableIcon>}
                     
                     
                     <input
@@ -208,6 +207,8 @@ export default function SearchForm() {
                         defaultValue={searchParams.get('q') || inputValue.current || ''}
                         autoComplete="off"
                         autoFocus={!isMobile && pathname == '/search'}
+                        onFocus={() => {setInputFocus(true); setAutocompleteOpen(Boolean(inputState))}}
+                        onBlur={() => setInputFocus(false)}
 
 
                         onChange={(event) => { inputValue.current = event.target.value; setInputState(event.target.value); setAutocompleteOpen(Boolean(event.target.value)) }}
@@ -236,14 +237,14 @@ export default function SearchForm() {
                 {autocompleteOpen && <ul className="absolute top-[3.5rem] xl:left-2 border-t border-neutral-200 w-full max-h-[calc(100svh-4rem)] xl:h-auto bg-neutral-50 xl:shadow-lg overflow-y-auto overscroll-none xl:max-w-[calc(25svw-1rem)] left-0 xl-p-2 xl xl:rounded-lg divide-y divide-neutral-300">
                     {data?.hits?.hits?.map((hit: any) => (
                         <li key={hit._id} tabIndex={-1} role="option" aria-selected={selectedGroup == hit.fields["group.id"][0]}>
-                          <div className="cursor-pointer py-3 px-4 flex hover:bg-neutral-100" onClick={(event) => dropdownSelect(event, hit.fields["group.id"][0], hit.fields.label[0])}>
+                          <div className="cursor-pointer flex items-center p-4 flex hover:bg-neutral-100" onClick={(event) => dropdownSelect(event, hit.fields["group.id"][0], hit.fields.label[0])}>
                             {hit.fields.location?.length ? (
-                              <PiMapPinFill aria-hidden="true" className="text-neutral-700 flex-shrink-0 mt-1 mr-2" />
+                              <PiMapPinFill aria-hidden="true" className="flex-shrink-0 mt-1 mr-2 text-neutral-700" />
                             ) : null}
-                            {hit._index.split('-')[2].endsWith('_g') && <PiWall aria-hidden="true" className="text-neutral-700 flex-shrink-0 mt-1 mr-2" />}
+                            {hit._index.split('-')[2].endsWith('_g') && <PiWall aria-hidden="true" className="flex-shrink-0 mt-1 mr-2" />}
                             <div>
-                              {hit.fields.label[0]}{' '}
-                              <span className="text-neutral-700">
+                              <strong>{hit.fields.label[0]}</strong>{' '}
+                              <span className="text-neutral-900">
                                 {hit.fields["group.adm2"]?.[0] ? hit.fields["group.adm2"]?.[0] + ', ' : ''}
                                 {hit.fields["group.adm1"]?.[0]}
                               </span>
