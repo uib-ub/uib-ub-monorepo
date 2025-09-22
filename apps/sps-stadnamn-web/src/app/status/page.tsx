@@ -145,7 +145,7 @@ export default function StatusPage() {
 
   const extractTransformationDate = (indexName: string): string | null => {
     const parts = indexName.split('-');
-    const timestamp = parts[parts.length - 1];
+    const timestamp = parts[parts.length - 2];
     
     if (timestamp && !isNaN(Number(timestamp))) {
       const date = new Date(Number(timestamp)*1000);
