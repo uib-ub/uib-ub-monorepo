@@ -910,7 +910,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       </ClickableIcon>}
       
       {!isMobile && <IconButton 
-        onClick={() => mapInstance.current?.zoomIn()} 
+        onClick={() => mapInstance.current?.zoomIn(2)} 
         side="top" 
         className="rounded-full bg-white text-neutral-900 shadow-lg p-3" 
         label="Zoom inn"
@@ -919,7 +919,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       </IconButton>}
       
       {!isMobile && <IconButton 
-        onClick={() => mapInstance.current?.zoomOut()} 
+        onClick={() => mapInstance.current?.zoomOut(2)} 
         side="top" 
         className="rounded-full bg-white text-neutral-900 shadow-lg p-3" 
         label="Zoom ut"
