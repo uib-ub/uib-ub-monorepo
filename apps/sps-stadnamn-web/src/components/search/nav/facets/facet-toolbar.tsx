@@ -1,4 +1,4 @@
-import { GlobalContext } from "@/app/global-provider";
+import { GlobalContext } from "@/state/providers/global-provider";
 import IconButton from "@/components/ui/icon-button";
 import { facetConfig } from "@/config/search-config";
 import { usePerspective } from "@/lib/param-hooks";

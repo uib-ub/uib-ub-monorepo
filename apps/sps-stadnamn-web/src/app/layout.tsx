@@ -8,7 +8,7 @@ import PlausibleProvider from 'next-plausible'
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
 import SearchForm from "@/components/search/form/search-form";
-import GlobalProvider from "./global-provider";
+import GlobalProvider from "../state/providers/global-provider";
 import { fetchVocab } from "./api/_utils/actions";
 import QueryProvider from "@/state/providers/query-provider";
 import Link from "next/link";

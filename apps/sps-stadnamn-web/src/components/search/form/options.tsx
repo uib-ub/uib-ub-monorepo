@@ -1,4 +1,4 @@
-import { GlobalContext } from "@/app/global-provider";
+import { GlobalContext } from "@/state/providers/global-provider";
 import { useMode } from "@/lib/param-hooks";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { useRouter, useSearchParams } from "next/navigation";

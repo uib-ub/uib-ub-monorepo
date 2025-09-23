@@ -7,7 +7,7 @@ import { infoPageRenderers } from "@/config/info-renderers"
 import { useContext, useMemo } from "react"
 import { treeSettings } from "@/config/server-config"
 import CadastreBreadcrumb from "./cadastre-breadcrumb"
-import { GlobalContext } from "@/app/global-provider"
+import { GlobalContext } from "@/state/providers/global-provider"
 import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import ExternalLinkTooltip from "@/components/ui/clickable/external-link-tooltip"
 import IconLink from "@/components/ui/icon-link"

@@ -1,7 +1,7 @@
 import { useContext, useMemo, useCallback, useEffect } from "react"
 import ClientThumbnail from "@/components/doc/client-thumbnail"
 import DocInfo from "../details/doc/doc-info"
-import { GlobalContext } from "@/app/global-provider"
+import { GlobalContext } from "@/state/providers/global-provider"
 import { useSearchParams, useRouter } from "next/navigation"
 import DocSkeleton from "@/components/doc/doc-skeleton"
 import DocToolbar from "../details/doc/doc-toolbar"

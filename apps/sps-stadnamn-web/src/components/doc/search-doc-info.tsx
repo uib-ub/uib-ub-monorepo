@@ -4,7 +4,7 @@ import Timeline from "../doc/timeline";
 import { datasetTitles } from "@/config/metadata-config";
 import { useSearchParams } from "next/navigation";
 import { useContext } from "react";
-import { GlobalContext } from "@/app/global-provider";
+import { GlobalContext } from "@/state/providers/global-provider";
 import { useMode } from "@/lib/param-hooks"
 
 

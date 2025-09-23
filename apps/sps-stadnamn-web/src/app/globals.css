@@ -15,10 +15,6 @@
   body {
     @apply text-black antialiased;
   }
-
-  header:not(:has(#search-input)) {
-    @apply bg-neutral-50;
-  }
   
 
   html:has(.scroll-container), body:has(.scroll-container), .scroll-container  {

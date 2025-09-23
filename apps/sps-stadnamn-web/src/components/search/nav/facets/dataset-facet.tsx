@@ -7,7 +7,7 @@ import { PiMagnifyingGlass, PiCaretRight, PiCaretDownBold, PiTreeViewFill, PiTre
 import { datasetTitles, datasetShortDescriptions } from '@/config/metadata-config';
 
 import FacetToolbar from './facet-toolbar';
-import { GlobalContext } from '@/app/global-provider';
+import { GlobalContext } from '@/state/providers/global-provider';
 import { formatNumber, getSkeletonLength } from '@/lib/utils';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';

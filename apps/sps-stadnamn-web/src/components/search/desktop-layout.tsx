@@ -34,7 +34,7 @@ export default function DesktopLayout() {
         
 
         {  nav && nav != 'mapSettings' && (!details || details == 'group') && !(mode != 'map' && mode != 'list' && (doc || group)) && 
-        <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-14 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${(doc || group) ? 'hidden lg:flex' : 'flex'}`}>
+        <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-[4rem] flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${(doc || group) ? 'hidden lg:flex' : 'flex'}`}>
          <NavWindow/>  
         </section> 
         }

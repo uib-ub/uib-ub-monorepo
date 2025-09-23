@@ -8,7 +8,7 @@ import {
 import { ParamProps } from "./param-types"
 import Clickable from './clickable'
 import { useContext } from "react"
-import { GlobalContext } from "@/app/global-provider"
+import { GlobalContext } from "@/state/providers/global-provider"
 
 type Props = ParamProps & {
     label: string

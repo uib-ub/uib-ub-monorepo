@@ -23,7 +23,7 @@ import { useQueries } from "@tanstack/react-query";
 import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius, getMyLocation } from "@/lib/map-utils";
 import useSearchData from "@/state/hooks/search-data";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
-import { GlobalContext } from "@/app/global-provider";
+import { GlobalContext } from "@/state/providers/global-provider";
 import Clickable from "../ui/clickable/clickable";
 import useGroupData from "@/state/hooks/group-data";
 import useOverviewData from "@/state/hooks/overview-data";

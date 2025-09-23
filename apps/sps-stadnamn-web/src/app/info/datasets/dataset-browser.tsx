@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold, PiFunnel, PiMagnifyingGlass } from 'react-icons/pi';
 import { useSearchParams, useRouter } from 'next/navigation';
 import DatasetToolbar from '@/components/ui/dataset-toolbar';
-import { GlobalContext } from '@/app/global-provider';
+import { GlobalContext } from '@/state/providers/global-provider';
 import { fieldConfig } from '@/config/search-config';
 import DatasetStats from './dataset-stats';
 interface FieldWithDatasets {

@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import ActiveFilters from './form/active-filters';
 import { PiFunnel, PiInfoFill, PiSlidersHorizontal, PiWarningFill } from 'react-icons/pi';
 import ModeSelector from '../tabs/mode-selector';
-import { GlobalContext } from '@/app/global-provider';
+import { GlobalContext } from '@/state/providers/global-provider';
 import SortSelector from './sort/sort-selector'
 import { useMode } from '@/lib/param-hooks';
 import { useSearchParams } from 'next/navigation';

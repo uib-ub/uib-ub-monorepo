@@ -1,4 +1,4 @@
-import { GlobalContext } from "@/app/global-provider";
+import { GlobalContext } from "@/state/providers/global-provider";
 import DynamicClickable from "@/components/ui/clickable/dynamic-clickable";
 import { datasetTitles } from "@/config/metadata-config";
 import useDocData from "@/state/hooks/doc-data";

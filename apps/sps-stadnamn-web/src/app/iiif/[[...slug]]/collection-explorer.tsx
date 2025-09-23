@@ -6,9 +6,11 @@ import { resolveLanguage } from "../iiif-utils";
 import Spinner from "@/components/svg/Spinner";
 import FileCard from "./file-card";
 import IIIFTypeCounts from "./iiif-type-counts";
-import { GlobalContext } from "@/app/global-provider";
-import IIIIFMobileInfoWrapper from "./iiiif-mobile-info-wrapper";
+import { GlobalContext } from "@/state/providers/global-provider";
 import { useQuery } from "@tanstack/react-query";
+import IconButton from "@/components/ui/icon-button";
+import { PiInfo } from "react-icons/pi";
+import { useSessionStore } from "@/state/zustand/session-store";
 
 const iiifQuery = async (collectionUuid: string, searchQuery: string, size: number) => {
     const params = new URLSearchParams();
@@ -26,16 +28,18 @@ const iiifQuery = async (collectionUuid: string, searchQuery: string, size: numb
     return response.json();
 };
 
-export default function CollectionExplorer({manifest, neighbours, manifestDataset}: {manifest: any, neighbours: any, manifestDataset: string}) {
+export default function CollectionExplorer({manifest, manifestDataset, isCollection}: {manifest: any, manifestDataset: string, isCollection: boolean}) {
     const { inputValue } = useContext(GlobalContext);
     const [searchQuery, setSearchQuery] = useState('');
     const [size, setSize] = useState(50);
     const containerRef = useRef<HTMLDivElement>(null);
     const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
+    const { isMobile } = useContext(GlobalContext);
 
     const { data, isLoading, isFetching, error } = useQuery({
         queryKey: ['iiifSearch', manifest?.uuid, searchQuery, size],
         queryFn: () => iiifQuery(manifest?.uuid, searchQuery, size),
+        enabled: isCollection,
     });
 
     // Extract data from the query result
@@ -80,12 +84,15 @@ export default function CollectionExplorer({manifest, neighbours, manifestDatase
         }
     };
 
+
+
+
     return (
-        <div ref={containerRef} className="flex flex-col lg:gap-4 py-4 lg:p-4 lg:overflow-y-auto lg:h-[calc(100svh-3.5rem)] stable-scrollbar">
-            <div className="flex flex-col lg:flex-row gap-2 px-4 pb-4 lg:px-0 lg:pb-0 border-b border-neutral-200 lg:border-b-0">
+        <div ref={containerRef} className="flex-1 min-w-0 flex flex-col lg:gap-4 py-4 lg:p-4 overflow-y-auto h-[calc(100svh-3.5rem-30svh)] lg:overflow-y-auto lg:h-[calc(100svh-3.5rem)] stable-scrollbar">
+            <div className="w-full z-[6000] flex flex-col lg:flex-row gap-2 px-4 pb-4 lg:px-0 lg:pb-0 border-b border-neutral-200 lg:border-b-0">
             {/* Add fixed height and min-height to prevent squishing */}
-            {manifest && 
-                <div className="w-full flex items-center">
+            {manifest && !isMobile &&
+                <div className=" flex items-center">
                     <Breadcrumbs
                         homeUrl="/iiif"
                         homeLabel="Arkivressurser"
@@ -96,10 +103,10 @@ export default function CollectionExplorer({manifest, neighbours, manifestDatase
                 </div>
             }
 
-            <div className="flex flex-col lg:flex-row items-center gap-4 lg:ml-auto">
+            {isCollection && <div className="flex flex-col lg:flex-row items-center gap-4 lg:ml-auto mr-2">
             {typeCounts && <div className="hidden lg:block"><IIIFTypeCounts typeCounts={typeCounts}/></div>}
 
-                <div className='flex w-full lg:w-80 items-center bg-white border-2 border-neutral-200 group px-2 rounded-md'>
+            <div className='flex w-full lg:w-80 items-center bg-white border-2 border-neutral-200 group px-2 rounded-md'>
                     <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
                     <label htmlFor="search-input" className="sr-only">Søk</label>
                     <input
@@ -126,12 +133,11 @@ export default function CollectionExplorer({manifest, neighbours, manifestDatase
                         )}
                     </div>
                 </div>
-            </div>
+            </div>}
             {typeCounts && <div className="block lg:hidden"><IIIFTypeCounts typeCounts={typeCounts}/></div>}
             
 
             </div>
-            <IIIIFMobileInfoWrapper manifest={manifest} neighbours={neighbours} manifestDataset={manifestDataset} showOnMobile={true} />
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 lg:p-0">
                 { results.map((result: any, index: number) => {
@@ -141,9 +147,11 @@ export default function CollectionExplorer({manifest, neighbours, manifestDatase
                             <FileCard item={result._source} itemDataset={itemDataset}/>
                         </Fragment>
                     )})}
-                
-                
-               
+                {(!isLoading && results.length === 0) && (
+                    <div className="col-span-full text-center text-neutral-600 py-8">
+                        Ingen innhold å vise.
+                    </div>
+                )}
             </div>
             {(isLoading || isFetching) && (
                 <div className="flex w-full justify-center items-center">
@@ -153,3 +161,4 @@ export default function CollectionExplorer({manifest, neighbours, manifestDatase
         </div>
     )
 }
+

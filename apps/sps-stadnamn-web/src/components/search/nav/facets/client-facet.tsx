@@ -4,7 +4,7 @@ import { useSearchQuery } from '@/lib/search-params';
 
 import { PiFunnel } from 'react-icons/pi';
 import FacetToolbar from './facet-toolbar';
-import { GlobalContext } from '@/app/global-provider';
+import { GlobalContext } from '@/state/providers/global-provider';
 import { usePerspective } from '@/lib/param-hooks';
 import Badge from '@/components/ui/badge';
 

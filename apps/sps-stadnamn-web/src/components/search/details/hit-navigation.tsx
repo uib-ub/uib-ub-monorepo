@@ -1,4 +1,4 @@
-import { GlobalContext } from "@/app/global-provider";
+import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { useDocIndex } from "@/lib/param-hooks";
 import useGroupData from "@/state/hooks/group-data";

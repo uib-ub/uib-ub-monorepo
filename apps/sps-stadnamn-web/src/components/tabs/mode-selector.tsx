@@ -3,7 +3,7 @@ import { useSearchParams } from "next/navigation";
 import { PiBookOpenFill, PiBookOpenLight, PiMapTrifoldFill, PiMapTrifoldLight, PiTableFill, PiTableLight } from "react-icons/pi";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { useContext } from "react";
-import { GlobalContext } from "@/app/global-provider";
+import { GlobalContext } from "@/state/providers/global-provider";
 import { usePerspective, useMode } from "@/lib/param-hooks";
 import { contentSettings } from "@/config/server-config";
 

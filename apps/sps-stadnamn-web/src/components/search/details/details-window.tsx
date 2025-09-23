@@ -11,7 +11,7 @@ import useGroupData from "@/state/hooks/group-data"
 import Clickable from "@/components/ui/clickable/clickable"
 import CoordinateMenu from "./coordinate-menu"
 import DocToolbar from "./doc/doc-toolbar"
-import { GlobalContext } from "@/app/global-provider"
+import { GlobalContext } from "@/state/providers/global-provider"
 import IconButton from "@/components/ui/icon-button"
 
 

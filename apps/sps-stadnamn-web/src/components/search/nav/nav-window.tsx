@@ -31,7 +31,7 @@ export default function NavWindow() {
 
     return <>
 
-       <div className="flex p-2"><h2 className="text-xl px-1">{titles[nav as keyof typeof titles]}</h2>
+       <div className="flex h-12 items-center px-2"><h2 className="text-xl px-1">{titles[nav as keyof typeof titles]}</h2>
                 <ClickableIcon label="Lukk" remove={["nav"]} onClick={() => setDrawerContent(null)} className="ml-auto">   
                     <PiX className="text-3xl text-neutral-900"/></ClickableIcon>
         </div>

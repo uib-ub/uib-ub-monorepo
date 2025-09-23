@@ -27,7 +27,7 @@ import TreeList from "./nav/tree-list";
 import { datasetTitles } from "@/config/metadata-config";
 import CadastreBreadcrumb from "./details/doc/cadastre-breadcrumb";
 import ClickableIcon from "../ui/clickable/clickable-icon";
-import { GlobalContext } from "@/app/global-provider";
+import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { getMyLocation } from "@/lib/map-utils";
 import MapSettings from "../map/map-settings";

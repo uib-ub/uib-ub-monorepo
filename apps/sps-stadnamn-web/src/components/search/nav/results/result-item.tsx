@@ -4,7 +4,7 @@ import { useSearchQuery } from '@/lib/search-params';
 import { useRef, useEffect, useContext } from 'react';
 import Clickable from '@/components/ui/clickable/clickable';
 import { useSearchParams } from 'next/navigation';
-import { GlobalContext } from '@/app/global-provider';
+import { GlobalContext } from '@/state/providers/global-provider';
 import { stringToBase64Url } from '@/lib/param-utils';
 import { useGroup, useMode, usePerspective } from '@/lib/param-hooks';
 

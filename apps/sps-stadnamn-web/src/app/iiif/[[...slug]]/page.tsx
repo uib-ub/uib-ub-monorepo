@@ -1,40 +1,63 @@
 import { fetchDoc } from "@/app/api/_utils/actions"
-import { fetchIIIFNeighbours } from "@/app/api/iiif/neighbours";
 import ImageViewer from "./image-viewer";
+import IIIFThumbnailNav from "./iiif-thumbnail-nav";
 import CollectionExplorer from "./collection-explorer";
 import { resolveLanguage } from "../iiif-utils";
+import IIIFMobileDrawer from "./iiif-mobile-drawer";
+import { headers } from "next/headers";
+import { userAgent } from "next/server";
 import IIIFInfoSection from "./iiif-info-section";
-import IIIFThumbnailNav from "./iiif-thumbnail-nav";
-import IIIIFMobileInfoWrapper from "./iiiif-mobile-info-wrapper";
+import { fetchIIIFStats } from "@/app/api/_utils/stats";
 
 
 export default async function IIIFPage({params}: {params: Promise<{slug: string[]}>}) {
     const { slug } = await params
+
     //const manifest = await fetchManifest(manifestId)
     const manifestDoc = slug?.[0] ? await fetchDoc({uuid: slug[0], dataset: 'iiif_*'}) : null
     const manifest = manifestDoc?._source
-    const neighbours = (manifest?.order && manifest?.partOf) ? await fetchIIIFNeighbours(manifest.order, manifest.partOf) : {data: null, total: 0}
     const manifestDataset = manifestDoc?._index?.split('-')?.[2]?.split('_')?.[1]
     const isImage = manifest?.type == "Manifest" && manifest?.images
     const isCollection = !slug?.[0] || manifest?.type === "Collection";
+
+    // Server-side stats
+    let stats: any = null
+    if (!slug?.[0]) {
+        // Top-level overview
+        stats = await fetchIIIFStats()
+    } else if (isCollection) {
+        // Collection page: use childCount if present, otherwise fetch aggregated stats for this collection
+        stats = manifest?.childCount ?? await fetchIIIFStats(manifest.uuid)
+    } else {
+        // Item page (Manifest): use childCount if present, otherwise fetch stats scoped to its collection UUID
+        stats = manifest?.childCount ?? await fetchIIIFStats(manifest.uuid)
+    }
+
+    const headersList = await headers()
+    const device = userAgent({headers: headersList}).device
+    const isMobile = device.type === 'mobile'
     
     
-    return (
+    
+    return <>
 
        
 
-            <div className='flex flex-col !h-full !w-full'>   
-            <div className={`flex flex-col lg:grid lg:grid-cols-5 ${manifest?.type == 'Manifest' ? 'lg:min-h-[calc(100svh-7rem)]' : 'h-full'}`}>
-                <div className={`col-span-1 ${manifest?.type == 'Manifest' ? 'hidden lg:block' : 'block'} page-info bg-white break-words border-l-2 border-neutral-200 border-r border-neutral-200 lg:overflow-y-auto ${manifest?.type == 'Manifest' ? 'lg:max-h-[calc(100svh-7rem)]' : 'lg:max-h-[calc(100svh-7rem)]'} overflow-y-auto`}>
+<div className={`flex h-[calc(100svh-3.5rem)] min-h-0 w-full`}>
+                <div className={`hidden lg:block h-full w-[20svw] page-info bg-white break-words border-l-2 border-neutral-200 border-r border-neutral-200 lg:overflow-y-auto overflow-y-auto`}>
             
-               <IIIIFMobileInfoWrapper manifest={manifest} neighbours={neighbours} manifestDataset={manifestDataset} showOnMobile={false} />
+               {!isMobile && <IIIFInfoSection manifest={manifest} manifestDataset={manifestDataset} stats={stats} />}
                 
                 
                 </div>
-            
-                          
-                <div className={`lg:col-span-4 bg-neutral-200`}>
-                    {isImage && <ImageViewer images={manifest.images} manifestDataset={manifestDataset} manifestId={manifest.uuid}/>}
+
+                {isCollection && (
+                <CollectionExplorer manifest={manifest} isCollection={isCollection} manifestDataset={manifestDataset}/>
+                )}
+                {!isCollection && (isImage || manifest?.audio) && (
+                <div className={`flex-1 min-w-0 bg-neutral-200 flex flex-col`}>
+                    <IIIFThumbnailNav manifest={manifest} manifestDataset={manifestDataset}/>
+                    {isImage && <div className="relative flex-1"><ImageViewer images={manifest.images} manifestDataset={manifestDataset} manifestId={manifest.uuid}/></div>}
                     {manifest?.audio && <div className="flex flex-col gap-4 items-center justify-center h-full hidden lg:flex">
                         <h2 className="text-2xl text-neutral-900 font-semibold">{resolveLanguage(manifest.audio.label)}</h2>
                         
@@ -42,27 +65,21 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
                             Your browser does not support the audio element.
                         </audio>
                     </div>}
-                    
-                    {isCollection && <CollectionExplorer manifest={manifest} neighbours={neighbours} manifestDataset={manifestDataset}/>}
-
+                </div>
+                )}
+                
                 </div>
                 
-                </div>
-                { manifest?.type == 'Manifest' && <div className="p-4 lg:hidden bg-white">
-                        <IIIFInfoSection manifest={manifest} neighbours={neighbours} manifestDataset={manifestDataset} />
-                </div>}
+
+                {/* Mobile preview drawer (persistent, not dismissable) */}
+                {isMobile && <IIIFMobileDrawer manifest={manifest} manifestDataset={manifestDataset} stats={stats} />}
+
                 
                 
-                {manifest && manifest?.type != 'Collection' &&
-                <IIIFThumbnailNav manifest={manifest} neighbours={neighbours} manifestDataset={manifestDataset}/>
-                }
-            </div>
+                
+                
 
 
 
-
-
-
-
-    );
+    </>
 }

@@ -1,5 +1,5 @@
 import { facetConfig } from "@/config/search-config";
-import { GlobalContext } from "@/app/global-provider";
+import { GlobalContext } from "@/state/providers/global-provider";
 import { useContext, useState } from "react";
 import { usePerspective } from '@/lib/param-hooks';
 import { contentSettings } from "@/config/server-config";

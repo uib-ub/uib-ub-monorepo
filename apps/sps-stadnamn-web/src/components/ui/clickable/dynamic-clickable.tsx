@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { ParamProps } from "./param-types";
-import { GlobalContext } from "@/app/global-provider";
+import { GlobalContext } from "@/state/providers/global-provider";
 import Clickable from "./clickable";
 import ClickableIcon from "./clickable-icon";
 

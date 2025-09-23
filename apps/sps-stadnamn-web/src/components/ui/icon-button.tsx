@@ -1,5 +1,5 @@
 'use client'
-import { GlobalContext } from "@/app/global-provider";
+import { GlobalContext } from "@/state/providers/global-provider";
 import {
     Tooltip,
     TooltipContent,

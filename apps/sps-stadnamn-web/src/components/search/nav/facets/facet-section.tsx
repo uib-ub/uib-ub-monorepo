@@ -13,7 +13,7 @@ import { getSkeletonLength } from "@/lib/utils"
 import { usePerspective } from "@/lib/param-hooks"
 import DatasetFacet from "./dataset-facet"
 import FulltextToggle from "@/app/fulltext-toggle"
-import { GlobalContext } from "@/app/global-provider"
+import { GlobalContext } from "@/state/providers/global-provider"
 
 export default function FacetSection() {
     const perspective = usePerspective()

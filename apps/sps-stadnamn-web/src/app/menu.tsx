@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { PiArchive, PiBookOpen, PiBookOpenLight, PiBookOpenText, PiBookOpenTextFill, PiBookOpenTextLight, PiCaretLeft, PiChatCircleText, PiDatabaseFill, PiDatabaseLight, PiHouse, PiInfo, PiList, PiListFill, PiListLight, PiMapPinLineFill, PiMapTrifold, PiMapTrifoldFill, PiMapTrifoldLight, PiMicroscopeFill, PiMicroscopeLight, PiQuestion, PiTable, PiTableFill, PiTableLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight, PiX } from 'react-icons/pi';
 import NavBar from "./nav-bar";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { GlobalContext } from "./global-provider";
+import { GlobalContext } from "../state/providers/global-provider";
 import Link from "next/link";
 import Clickable from "@/components/ui/clickable/clickable";
 import { useMode } from "@/lib/param-hooks";
@@ -64,7 +64,7 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
                         onBlur={handleBlur}
                         aria-label="Meny"
                         aria-expanded={menuOpen} 
-                        className={`items-center justify-center flex h-full aspect-square xl:rounded-md bg-neutral-50 ${shadow ? 'shadow-lg border-r-2 xl:border-r-0  border-neutral-200' : ''}`} 
+                        className={`items-center justify-center flex h-full w-full aspect-square`} 
                         onClick={() => setMenuOpen(!menuOpen)}>
                 {menuOpen ? <PiX className="text-3xl xl:text-2xl" aria-hidden="true"/> : <PiList className="text-3xl xl:text-2xl" aria-hidden="true"/>}</button>
  
@@ -76,10 +76,8 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
                 </div>
                 }
                 <nav id="top" className="text-xl py-6 flex flex-col divide-y divide-neutral-200" onBlur={handleBlur}>
-                    {pathname != "/" && <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:mx-0" href="/"><PiHouse aria-hidden="true"/>Til forsida</Link>}
-                    <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:mx-0" href="/help"><PiQuestion aria-hidden="true"/>Søketips</Link>
-                    <div className="flex flex-col gap-2 p-3 w-full">
-                        <span className="text-lg">Resultatvisning</span>		
+				<div className="flex flex-col gap-2 p-3 w-full">
+                        <span className="text-lg">Stadnamnsøk</span>		
 					<div className="flex gap-2 items-center w-full pb-3 text-base" role="tablist">
 					
 					<Clickable link href="/search" role="tab" onClick={() => setMenuOpen(false)} aria-selected={modeOutsideSearch == 'map'} add={{mode: 'map'}} className={menuBtn}>
@@ -96,6 +94,9 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
 					</Clickable>
 					</div>
                     </div>
+                    {pathname != "/" && <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:mx-0" href="/"><PiHouse aria-hidden="true"/>Til forsida</Link>}
+                    <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:mx-0" href="/help"><PiQuestion aria-hidden="true"/>Søketips</Link>
+                    
                     {false && <div className="flex flex-col gap-2 p-3 w-full">
                     <span className="text-lg">Søkemodus</span>
                     <div className="flex gap-2 items-center w-full pb-3 text-base flex-wrap" role="tablist">
