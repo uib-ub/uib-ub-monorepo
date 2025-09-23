@@ -6,29 +6,9 @@ import { resolveLanguage } from "../iiif-utils";
 import Spinner from "@/components/svg/Spinner";
 import FileCard from "./file-card";
 import IIIFTypeCounts from "./iiif-type-counts";
+import { GlobalContext } from "@/app/global-provider";
 import IIIIFMobileInfoWrapper from "./iiiif-mobile-info-wrapper";
 import { useQuery } from "@tanstack/react-query";
-
-function useSessionSyncedState(key: string, initialValue: string) {
-	const [value, setValue] = useState<string>(() => {
-		if (typeof window === 'undefined') return initialValue;
-		try {
-			const saved = sessionStorage.getItem(key);
-			return saved !== null ? saved : initialValue;
-		} catch {
-			return initialValue;
-		}
-	});
-
-	useEffect(() => {
-		if (typeof window === 'undefined') return;
-		try {
-			sessionStorage.setItem(key, value);
-		} catch {}
-	}, [key, value]);
-
-	return [value, setValue] as const;
-}
 
 const iiifQuery = async (collectionUuid: string, searchQuery: string, size: number) => {
     const params = new URLSearchParams();
@@ -47,7 +27,8 @@ const iiifQuery = async (collectionUuid: string, searchQuery: string, size: numb
 };
 
 export default function CollectionExplorer({manifest, neighbours, manifestDataset}: {manifest: any, neighbours: any, manifestDataset: string}) {
-    const [searchQuery, setSearchQuery] = useSessionSyncedState(manifest?.uuid ? `iiif:q:${manifest.uuid}` : 'iiif:q', '');
+    const { inputValue } = useContext(GlobalContext);
+    const [searchQuery, setSearchQuery] = useState('');
     const [size, setSize] = useState(50);
     const containerRef = useRef<HTMLDivElement>(null);
     const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
@@ -81,6 +62,7 @@ export default function CollectionExplorer({manifest, neighbours, manifestDatase
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
+        inputValue.current = value;
         setSize(20);
 
         if (searchTimeout.current) {
@@ -124,15 +106,16 @@ export default function CollectionExplorer({manifest, neighbours, manifestDatase
                         id="search-input"
                         type="text"
                         name="query"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        value={inputValue.current}
+                        onChange={handleSearch}
                         onKeyDown={handleKeyDown}
                         className="bg-transparent px-4 focus:outline-none w-full p-2"
                     />
                     <div className="w-8 flex justify-center">
-                        {searchQuery && (
+                        {inputValue.current && (
                             <button
                                 onClick={() => {
+                                    inputValue.current = '';
                                     setSearchQuery('');
                                 }}
                                 className="hover:bg-neutral-100 rounded-full p-1"
