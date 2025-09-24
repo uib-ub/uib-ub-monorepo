@@ -9,7 +9,7 @@ interface DrawerProps {
     currentPosition: number
     setSnappedPosition: (position: number) => void
     setCurrentPosition: (position: number) => void
-    collapsedHeightRem?: number
+    minHeightRem?: number
     maxHeightSvh?: number,
     scrollContainerRef?: React.RefObject<HTMLDivElement>
 }
@@ -22,7 +22,7 @@ export default function Drawer({
     currentPosition,
     setSnappedPosition,
     setCurrentPosition,
-    collapsedHeightRem = 12,
+    minHeightRem = 12,
     maxHeightSvh = 60,
     scrollContainerRef
 }: DrawerProps) {
@@ -78,8 +78,8 @@ export default function Drawer({
     // Initialize to collapsed bottom height if unset
     useLayoutEffect(() => {
         if (!snappedPosition && !currentPosition) {
-            setSnappedPosition(collapsedHeightRem)
-            setCurrentPosition(collapsedHeightRem)
+            setSnappedPosition(minHeightRem)
+            setCurrentPosition(minHeightRem)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -102,6 +102,13 @@ export default function Drawer({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [snappedPosition, currentPosition])
+
+    // Ensure opening animates from 0 to the saved snapped height
+    useLayoutEffect(() => {
+        if (drawerOpen) {
+            setSnapped(true)
+        }
+    }, [drawerOpen])
 
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
         if (e.target && isScrolling(e.target)) {
@@ -132,16 +139,17 @@ export default function Drawer({
         const velocity = swipeDistance / durationMs // px per ms; negative = down
         let newPosition = currentPosition
         if (Math.abs(swipeDistance) > 30) {
-            newPosition = swipeDistance > 0 ? maxRem() : collapsedHeightRem
+            newPosition = swipeDistance > 0 ? maxRem() : minHeightRem
         } else {
-            const mid = (collapsedHeightRem + maxRem()) / 2
-            newPosition = currentPosition < mid ? collapsedHeightRem : maxRem()
+            const mid = (minHeightRem + maxRem()) / 2
+            newPosition = currentPosition < mid ? minHeightRem : maxRem()
         }
-        const pulledBelowThreshold = lastRawHeightRef.current < (collapsedHeightRem - 1)
-        const fastDownFromCollapsed = velocity < -0.6 && currentPosition <= (collapsedHeightRem + 1)
-        const longDownDragNearCollapsed = (endTouchY - startTouchY) > 60 && currentPosition <= (collapsedHeightRem + 0.5)
-        if (newPosition < collapsedHeightRem || pulledBelowThreshold || fastDownFromCollapsed || longDownDragNearCollapsed) {
+        const pulledBelowThreshold = lastRawHeightRef.current < (minHeightRem - 1)
+        const fastDownFromCollapsed = velocity < -0.6 && currentPosition <= (minHeightRem + 1)
+        const longDownDragNearCollapsed = (endTouchY - startTouchY) > 60 && currentPosition <= (minHeightRem + 0.5)
+        if (newPosition < minHeightRem || pulledBelowThreshold || fastDownFromCollapsed || longDownDragNearCollapsed) {
             // Dismiss but preserve current/snapped positions so reopen restores previous height
+            setCurrentPosition(snappedPosition)
             setDrawerOpen(false)
             return
         } else if (newPosition > maxRem()) {
@@ -170,7 +178,7 @@ export default function Drawer({
     return (
         <div
             ref={outerRef}
-            className={`fixed w-full left-0 ${!drawerOpen ? 'hidden' : ''} drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''} flex flex-col`}
+            className={`fixed w-full left-0 drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''} flex flex-col`}
             style={{ bottom: '-0.5rem', height: `${drawerOpen ? currentPosition : 0}rem`, pointerEvents: drawerOpen ? 'auto' : 'none', zIndex: 6000, touchAction: 'none', overscrollBehaviorY: 'none' as any }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
