@@ -104,7 +104,7 @@ export default function CollectionExplorer({manifest, manifestDataset, isCollect
             }
 
             {isCollection && <div className="flex flex-col lg:flex-row items-center gap-4 lg:ml-auto mr-2">
-            {typeCounts && <div className="hidden lg:block"><IIIFTypeCounts typeCounts={typeCounts}/></div>}
+            
 
             <div className='flex w-full lg:w-80 items-center bg-white border-2 border-neutral-200 group px-2 rounded-md'>
                     <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
@@ -134,7 +134,6 @@ export default function CollectionExplorer({manifest, manifestDataset, isCollect
                     </div>
                 </div>
             </div>}
-            {typeCounts && <div className="block lg:hidden"><IIIFTypeCounts typeCounts={typeCounts}/></div>}
             
 
             </div>
