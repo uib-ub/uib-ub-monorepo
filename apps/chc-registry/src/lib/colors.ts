@@ -36,6 +36,7 @@ export function getColorFormat(color: Color) {
 export type ColorFormat = keyof ReturnType<typeof getColorFormat>
 
 export function getColors() {
+  console.log(colors.red, colors.neutral)
   const tailwindColors = colorPaletteSchema.array().parse(
     Object.entries(colors)
       .map(([name, color]) => {
@@ -62,10 +63,12 @@ export function getColors() {
                 /^hsl\(([\d.]+),([\d.]+%),([\d.]+%)\)$/,
                 "$1 $2 $3"
               ),
-              oklch: `oklch(${color.oklch.replace(
-                /^oklch\(([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\)$/,
-                "$1 $2 $3"
-              )})`,
+              oklch: (() => {
+                const raw = color.oklch.trim()
+                const inner = raw.startsWith("oklch(") ? raw.slice(6, -1) : raw
+                const normalized = inner.replace(/,/g, " ").replace(/\s+/g, " ").trim()
+                return `oklch(${normalized})`
+              })(),
               foreground: getForegroundFromBackground(rgb),
             }
           }),

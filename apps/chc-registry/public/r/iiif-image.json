@@ -10,10 +10,9 @@
   ],
   "files": [
     {
-      "path": "src/registry/default/blocks/iiif-image/components/index.tsx",
-      "content": "'use client';\n\nimport dynamic from 'next/dynamic';\n\nconst Image = dynamic(\n  () => import('@samvera/clover-iiif/image').then((Clover) => Clover.default),\n  {\n    ssr: false,\n  },\n);\n\nconst customTheme = {\n  showNavigator: false,\n  showHomeControl: false,\n  showControlPanel: false,\n  showZoomControl: false,\n  showFullPageControl: false,\n  showNavigationControl: false,\n  showRotationControl: false,\n};\n\nexport const IIIFImage = ({ src }: { src: string }) => {\n  return (\n    // eslint-disable-next-line jsx-a11y/alt-text\n    <Image\n      src={src}\n      openSeadragonConfig={customTheme}\n    />\n  );\n};\n",
-      "type": "registry:component",
-      "target": "/components/iiif-image.tsx"
+      "path": "src/registry/uib-ub/items/iiif-image/components/iiif-image.tsx",
+      "content": "'use client';\n\nimport dynamic from 'next/dynamic';\nimport { cn } from '@/lib/utils';\n\nconst Image = dynamic(\n  () => import('@samvera/clover-iiif/image').then((Clover) => Clover.default),\n  {\n    ssr: false,\n  },\n);\n\nconst customTheme = {\n  showNavigator: false,\n  showHomeControl: true,\n  showControlPanel: true,\n  showZoomControl: true,\n  showFullPageControl: true,\n  showNavigationControl: true,\n  showRotationControl: false,\n};\n\nexport const IIIFImage = ({ src, className }: { src: string, className?: string }) => {\n  return (\n    <div className={cn('iiif-image-wrapper block w-full', className)}>\n      <Image\n        src={src}\n        openSeadragonConfig={customTheme}\n      />\n    </div>\n  );\n};\n",
+      "type": "registry:component"
     }
   ]
 }
