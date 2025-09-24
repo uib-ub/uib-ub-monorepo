@@ -8,7 +8,7 @@ import Drawer from '@/components/ui/drawer'
 
 export default function IIIFMobileDrawer({ manifest, manifestDataset, stats }: { manifest: any, manifestDataset: string, stats: any }) {
     const [drawerOpen, setDrawerOpen] = useState(true)
-    const [snappedPosition, setSnappedPosition] = useState<number>(0)
+    const [snappedPosition, setSnappedPosition] = useState<'min' | 'max'>('min')
     const [currentPosition, setCurrentPosition] = useState<number>(0)
     const { neighbours } = useIIIFNeighbours(manifest?.order, manifest?.partOf)
 
@@ -57,7 +57,7 @@ export default function IIIFMobileDrawer({ manifest, manifestDataset, stats }: {
                 onClick={() => { setDrawerOpen(true); }}
                 aria-label="Open details"
             >{manifest?.type === 'Manifest' ? <PiInfoFill aria-hidden="true" className='text-xl text-primary-600' /> : <PiArchiveFill aria-hidden="true" className='text-xl text-primary-600' />}
-                {typeof manifest?.label === 'string' ? manifest.label : (manifest?.label?.no || manifest?.label?.en || manifest?.label?.['@none'] || 'Detaljar')}
+                {typeof manifest?.label === 'string' ? manifest.label : (manifest?.label?.no || manifest?.label?.en || manifest?.label?.['@none'] || 'Arkivressurser')}
             </button>
         )}
         </>

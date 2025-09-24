@@ -14,8 +14,8 @@ export const useSessionStore = create<{ menuOpen: boolean,
 	drawerContent: string | null,
 	setDrawerContent: (content: string | null) => void,
 
-	snappedPosition: number,
-	setSnappedPosition: (position: number) => void,
+	snappedPosition: 'min' | 'max',
+	setSnappedPosition: (position: 'min' | 'max') => void,
 	
 	currentPosition: number,
 	setCurrentPosition: (position: number) => void,
@@ -31,10 +31,10 @@ export const useSessionStore = create<{ menuOpen: boolean,
 		myLocation: null,
 		setMyLocation: (location) => set({ myLocation: location }),
 
-		snappedPosition: 30,
-		setSnappedPosition: (position: number) => set({ snappedPosition: position }),
+		snappedPosition: 'min',
+		setSnappedPosition: (position: 'min' | 'max') => set({ snappedPosition: position }),
 
-		currentPosition: 30,
+		currentPosition: 0,
 		setCurrentPosition: (position: number) => set({ currentPosition: position }),
 		
 		autocompleteOpen: false,

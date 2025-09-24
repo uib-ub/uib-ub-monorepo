@@ -5,9 +5,9 @@ interface DrawerProps {
     children: React.ReactNode
     drawerOpen: boolean
     setDrawerOpen: (open: boolean) => void
-    snappedPosition: number
+    snappedPosition: 'min' | 'max'
+    setSnappedPosition: (position: 'min' | 'max') => void
     currentPosition: number
-    setSnappedPosition: (position: number) => void
     setCurrentPosition: (position: number) => void
     minHeightRem?: number
     maxHeightSvh?: number,
@@ -19,18 +19,18 @@ export default function Drawer({
     drawerOpen,
     setDrawerOpen,
     snappedPosition,
-    currentPosition,
     setSnappedPosition,
+    currentPosition,
     setCurrentPosition,
-    minHeightRem = 12,
-    maxHeightSvh = 60,
+    minHeightRem = 10,
+    maxHeightSvh = 50,
     scrollContainerRef
 }: DrawerProps) {
 
     const [snapped, setSnapped] = useState(false)
-    const [startTouchY, setStartTouchY] = useState(0)
-    const [startTouchX, setStartTouchX] = useState(0)
-    const [startTouchTime, setStartTouchTime] = useState(0)
+    const startTouchY = useRef(0)
+    const startTouchX = useRef(0)
+    const startTouchTime = useRef(0)
     const lastRawHeightRef = useRef<number>(0)
     const localScrollRef = useRef<HTMLDivElement>(null)
     const outerRef = useRef<HTMLDivElement>(null)
@@ -45,15 +45,15 @@ export default function Drawer({
     }
     const maxRem = () => svhToRem(maxHeightSvh)
     const approximately = (a: number, b: number, epsilon = 0.5) => Math.abs(a - b) < epsilon
+    const snappedPositionRem = () => snappedPosition === 'max' ? maxRem() : minHeightRem
     const atMax = () => {
         if (typeof window === 'undefined') return false
         const max = maxRem()
-        return approximately(snappedPosition, max) && approximately(currentPosition, max)
+        return snappedPosition === 'max' && approximately(currentPosition, max)
     }
     const atSnappedMax = () => {
         if (typeof window === 'undefined') return false
-        const max = maxRem()
-        return approximately(snappedPosition, max)
+        return snappedPosition === 'max'
     }
 
     const isScrolling = (target: EventTarget) => {
@@ -77,12 +77,23 @@ export default function Drawer({
 
     // Initialize to collapsed bottom height if unset
     useLayoutEffect(() => {
-        if (!snappedPosition && !currentPosition) {
-            setSnappedPosition(minHeightRem)
+        if (!currentPosition) {
             setCurrentPosition(minHeightRem)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    // currentPosition is controlled by parent; siblings should observe it there
+
+    // When external snappedPosition changes, open drawer at that snap and update current height
+    useLayoutEffect(() => {
+        const target = snappedPositionRem()
+        if (target && approximately(currentPosition, target) === false) {
+            setCurrentPosition(target)
+        }
+        if (!drawerOpen) setDrawerOpen(true)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [snappedPosition])
 
     // Ensure non-passive touch handlers to allow preventDefault for PTR prevention
     useLayoutEffect(() => {
@@ -110,6 +121,25 @@ export default function Drawer({
         }
     }, [drawerOpen])
 
+    // Dismiss on outside click/touch
+    useLayoutEffect(() => {
+        if (!drawerOpen) return
+        const handlePointerDown = (e: MouseEvent | TouchEvent) => {
+            const container = outerRef.current
+            if (!container) return
+            const target = e.target as Node
+            if (!container.contains(target)) {
+                setSnappedPosition('min')
+            }
+        }
+        document.addEventListener('mousedown', handlePointerDown)
+        document.addEventListener('touchstart', handlePointerDown)
+        return () => {
+            document.removeEventListener('mousedown', handlePointerDown)
+            document.removeEventListener('touchstart', handlePointerDown)
+        }
+    }, [drawerOpen, setDrawerOpen, setSnappedPosition])
+
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
         if (e.target && isScrolling(e.target)) {
             return
@@ -118,10 +148,10 @@ export default function Drawer({
         if (typeof e.cancelable !== 'undefined' && e.cancelable && !(atMax() && isScrollable())) {
             e.preventDefault()
         }
-        setStartTouchY(e.touches[0].clientY)
-        setStartTouchX(e.touches[0].clientX)
+        startTouchY.current = e.touches[0].clientY
+        startTouchX.current = e.touches[0].clientX
         setSnapped(false)
-        setStartTouchTime(Date.now())
+        startTouchTime.current = Date.now()
     }
 
     const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -134,8 +164,8 @@ export default function Drawer({
         }
         const endTouchY = e.changedTouches[0].clientY
         setSnapped(true)
-        const swipeDistance = startTouchY - endTouchY
-        const durationMs = Math.max(1, Date.now() - startTouchTime)
+        const swipeDistance = startTouchY.current - endTouchY
+        const durationMs = Math.max(1, Date.now() - startTouchTime.current)
         const velocity = swipeDistance / durationMs // px per ms; negative = down
         let newPosition = currentPosition
         if (Math.abs(swipeDistance) > 30) {
@@ -146,33 +176,67 @@ export default function Drawer({
         }
         const pulledBelowThreshold = lastRawHeightRef.current < (minHeightRem - 1)
         const fastDownFromCollapsed = velocity < -0.6 && currentPosition <= (minHeightRem + 1)
-        const longDownDragNearCollapsed = (endTouchY - startTouchY) > 60 && currentPosition <= (minHeightRem + 0.5)
+        const longDownDragNearCollapsed = (endTouchY - startTouchY.current) > 60 && currentPosition <= (minHeightRem + 0.5)
         if (newPosition < minHeightRem || pulledBelowThreshold || fastDownFromCollapsed || longDownDragNearCollapsed) {
             // Dismiss but preserve current/snapped positions so reopen restores previous height
-            setCurrentPosition(snappedPosition)
+            setCurrentPosition(snappedPositionRem())
             setDrawerOpen(false)
             return
         } else if (newPosition > maxRem()) {
             newPosition = maxRem()
         }
         setCurrentPosition(newPosition)
-        setSnappedPosition(newPosition)
+        const mid = (minHeightRem + maxRem()) / 2
+        setSnappedPosition(newPosition < mid ? 'min' : 'max')
     }
 
     const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
         if (e.target && isScrolling(e.target)) {
             return
         }
-        const isHorizontalSwipe = Math.abs(startTouchX - e.touches[0].clientX) > Math.abs(startTouchY - e.touches[0].clientY)
+        const isHorizontalSwipe = Math.abs(startTouchX.current - e.touches[0].clientX) > Math.abs(startTouchY.current - e.touches[0].clientY)
         if (!isHorizontalSwipe) {
             e.preventDefault()
         } else {
             return
         }
-        const rawNewHeight = snappedPosition - pos2rem(startTouchY) + pos2rem(e.touches[0].clientY)
+        const rawNewHeight = snappedPositionRem() - pos2rem(startTouchY.current) + pos2rem(e.touches[0].clientY)
         lastRawHeightRef.current = rawNewHeight
         const clamped = Math.max(0, Math.min(maxRem(), rawNewHeight))
         setCurrentPosition(clamped)
+    }
+
+    // Track if the scroll container is scrolled from top
+    const [scrolled, setScrolled] = useState(false)
+    const handleScroll = () => {
+        const top = effectiveScrollRef.current?.scrollTop || 0
+        if ((top > 0) !== scrolled) setScrolled(top > 0)
+    }
+    useLayoutEffect(() => {
+        // Sync when opening or snapping height changes
+        handleScroll()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [drawerOpen, currentPosition, snappedPosition])
+
+    // Scroll-to-top visibility
+    const [showScrollToTop, setShowScrollToTop] = useState(false)
+    useLayoutEffect(() => {
+        const el = effectiveScrollRef.current
+        if (!el) return
+        const onScroll = () => {
+            setShowScrollToTop(el.scrollTop > 300)
+        }
+        el.addEventListener('scroll', onScroll, { passive: true } as any)
+        onScroll()
+        return () => {
+            el.removeEventListener('scroll', onScroll as any)
+        }
+    }, [effectiveScrollRef])
+
+    const scrollToTop = () => {
+        if (effectiveScrollRef.current) {
+            effectiveScrollRef.current.scrollTo({ top: 0, behavior: 'auto' })
+        }
     }
 
     return (
@@ -185,17 +249,26 @@ export default function Drawer({
             onTouchEnd={handleTouchEnd}
         >
             {/* Grip */}
-            <div className="w-full h-4 pt-2 rounded-t-full bg-white relative border-b border-neutral-200" style={{ touchAction: 'none' }}>
+            <div className={`w-full h-4 pt-2 rounded-t-full bg-white relative ${scrolled ? 'border-b border-neutral-200' : ''}`} style={{ touchAction: 'none' }}>
                 <div className="absolute -translate-x-1/2 -translate-y-1 left-1/2 w-16 h-1.5 bg-neutral-200 rounded-full"></div>
             </div>
-            {/* Optional internal scroll container if consumer did not provide one */}
+            {/* Scroll container: scrollable if the drawer is at the max height */}
             <div
                 ref={effectiveScrollRef}
-                className="flex-1 min-h-0"
+                className="flex-1 min-h-0 bg-white"
                 style={{ overflowY: atMax() ? 'auto' : 'hidden', touchAction: (atMax() && isScrollable()) ? 'pan-y' : 'none', overscrollBehaviorY: 'contain' as any }}
+                onScroll={handleScroll}
             >
                 {children}
             </div>
+            {showScrollToTop && (
+                <button
+                    type="button"
+                    className="absolute right-4 bottom-6 z-[6001] rounded-full bg-white text-neutral-800 shadow-lg px-4 py-2 border border-neutral-200"
+                    onClick={scrollToTop}
+                    aria-label="Scroll to top"
+                >▲ Til toppen</button>
+            )}
         </div>
     )
 }
