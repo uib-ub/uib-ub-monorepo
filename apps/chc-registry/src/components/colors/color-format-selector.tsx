@@ -10,8 +10,8 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from "@/registry/default/ui/select"
-import { Skeleton } from "@/registry/default/ui/skeleton"
+} from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function ColorFormatSelector({
   color,
