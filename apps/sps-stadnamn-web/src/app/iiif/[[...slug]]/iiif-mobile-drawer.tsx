@@ -18,8 +18,29 @@ export default function IIIFMobileDrawer({ manifest, manifestDataset, stats }: {
 
     const [snapped, setSnapped] = useState(false)
     const [startTouchY, setStartTouchY] = useState(0)
+    const [startTouchX, setStartTouchX] = useState(0)
     const [, setDrawerSwipeDirection] = useState<null | 'up' | 'down'>(null)
     const scrollableContent = useRef<HTMLDivElement>(null)
+    // Configure the collapsed drawer height in rem
+    const COLLAPSED_HEIGHT_REM = 10.5
+    const svhToRem = (svh: number) => {
+        if (typeof window === 'undefined' || typeof document === 'undefined') return 0
+        const windowHeight = window.visualViewport?.height || window.innerHeight
+        const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+        return ((svh / 100) * windowHeight) / rootFontSize
+    }
+    const maxRem = () => svhToRem(60)
+    const approximately = (a: number, b: number, epsilon = 0.5) => Math.abs(a - b) < epsilon
+    const atMax = () => {
+        if (typeof window === 'undefined') return false
+        const max = maxRem()
+        return approximately(snappedPosition, max) && approximately(currentPosition, max)
+    }
+    const isScrolling = (target: EventTarget) => {
+        if (atMax() && target instanceof Node && scrollableContent.current?.contains(target)) {
+            return scrollableContent.current.scrollTop != 0
+        }
+    }
     const isScrollable = () => {
         if (scrollableContent.current) {
             return scrollableContent.current.scrollHeight > scrollableContent.current.clientHeight
@@ -29,31 +50,45 @@ export default function IIIFMobileDrawer({ manifest, manifestDataset, stats }: {
 
     const { neighbours } = useIIIFNeighbours(manifest?.order, manifest?.partOf)
 
-    const pos2svh = (yPos: number) => {
-        const windowHeight = window.visualViewport?.height || window.innerHeight
-        return (windowHeight - yPos) / windowHeight * 60
+    const pos2rem = (yPos: number) => {
+        const windowHeight = (typeof window !== 'undefined' && (window.visualViewport?.height || window.innerHeight)) || 0
+        const max = maxRem()
+        return windowHeight ? ((windowHeight - yPos) / windowHeight) * max : 0
     }
 
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+        if (e.target && isScrolling(e.target)) {
+            return
+        }
         setStartTouchY(e.touches[0].clientY)
+        setStartTouchX(e.touches[0].clientX)
         setSnapped(false)
     }
 
     const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-        setSnapped(true)
+        if (e.target && isScrolling(e.target)) {
+            return
+        }
         const endTouchY = e.changedTouches[0].clientY
+        const endTouchX = e.changedTouches[0].clientX
+        const isHorizontalSwipe = Math.abs(startTouchX - endTouchX) > Math.abs(startTouchY - endTouchY)
+        if (!isHorizontalSwipe) {
+            e.preventDefault()
+        }
+        setSnapped(true)
         const swipeDistance = startTouchY - endTouchY
         let newPosition = currentPosition
         if (Math.abs(swipeDistance) > 30) {
-            newPosition = swipeDistance > 0 ? 60 : 30
+            newPosition = swipeDistance > 0 ? maxRem() : COLLAPSED_HEIGHT_REM
         } else {
-            newPosition = currentPosition < 45 ? 30 : 60
+            const mid = (COLLAPSED_HEIGHT_REM + maxRem()) / 2
+            newPosition = currentPosition < mid ? COLLAPSED_HEIGHT_REM : maxRem()
         }
-        if (newPosition < 30) {
+        if (newPosition < COLLAPSED_HEIGHT_REM) {
             // Clamp to minimum visible height (not dismissable)
-            newPosition = 30
-        } else if (newPosition > 60) {
-            newPosition = 60
+            newPosition = COLLAPSED_HEIGHT_REM
+        } else if (newPosition > maxRem()) {
+            newPosition = maxRem()
         }
         setCurrentPosition(newPosition)
         setSnappedPosition(newPosition)
@@ -61,17 +96,26 @@ export default function IIIFMobileDrawer({ manifest, manifestDataset, stats }: {
     }
 
     const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-        const newHeight = snappedPosition - pos2svh(startTouchY) + pos2svh(e.touches[0].clientY)
+        if (e.target && isScrolling(e.target)) {
+            return
+        }
+        const isHorizontalSwipe = Math.abs(startTouchX - e.touches[0].clientX) > Math.abs(startTouchY - e.touches[0].clientY)
+        if (!isHorizontalSwipe) {
+            e.preventDefault()
+        } else {
+            return
+        }
+        const newHeight = snappedPosition - pos2rem(startTouchY) + pos2rem(e.touches[0].clientY)
         setDrawerSwipeDirection(newHeight > currentPosition ? 'up' : 'down')
         // Allow dragging below 30svh to signal closing; we'll clamp in end handler
-        const clamped = Math.max(0, Math.min(60, newHeight))
+        const clamped = Math.max(COLLAPSED_HEIGHT_REM, Math.min(maxRem(), newHeight))
         setCurrentPosition(clamped)
     }
 
     // Initialize to minimum visible position; drawer is not dismissable in IIIF
     useEffect(() => {
-        setSnappedPosition(30)
-        setCurrentPosition(30)
+        setSnappedPosition(COLLAPSED_HEIGHT_REM)
+        setCurrentPosition(COLLAPSED_HEIGHT_REM)
     }, [setSnappedPosition, setCurrentPosition])
 
     const open = true
@@ -79,8 +123,8 @@ export default function IIIFMobileDrawer({ manifest, manifestDataset, stats }: {
 
     return (
         <div
-            className={`mobile-interface fixed w-full left-0 drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''}`}
-            style={{ bottom: '-0.5rem', height: `${open ? currentPosition : 0}svh`, pointerEvents: open ? 'auto' : 'none', zIndex: 6000, overscrollBehavior: 'none' as any }}
+            className={`mobile-interface fixed w-full left-0 drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''} flex flex-col`}
+            style={{ bottom: '-0.5rem', height: `${open ? currentPosition : 0}rem`, pointerEvents: open ? 'auto' : 'none', zIndex: 6000, overscrollBehavior: 'none' as any, overscrollBehaviorY: 'contain' as any, touchAction: 'none' }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -93,8 +137,8 @@ export default function IIIFMobileDrawer({ manifest, manifestDataset, stats }: {
                     </div>
                     <div
                         ref={scrollableContent}
-                        className={`bg-white border-t border-neutral-200 h-[calc(100%-1rem)] stable-scrollbar overscroll-contain`}
-                        style={{ overflowY: snappedPosition == 60 && currentPosition == 60 ? 'auto' : 'hidden', touchAction: (snappedPosition == 60 && currentPosition == 60 && isScrollable()) ? 'pan-y' : 'none' }}
+                        className={`bg-white border-t border-neutral-200 flex-1 min-h-0 stable-scrollbar overscroll-contain`}
+                        style={{ overflowY: atMax() ? 'auto' : 'hidden', touchAction: (atMax() && isScrollable()) ? 'pan-y' : 'none', overscrollBehaviorY: 'contain' as any }}
                     >
                         <div className="p-3">
                             {/* Manifest pager for mobile */}
