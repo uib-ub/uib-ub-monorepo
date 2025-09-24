@@ -1,3 +1,79 @@
+import Color from "colorjs.io";
+
+const uibColorBase = {
+  'uib-red': {
+    50: new Color('#fef9f1'),
+    100: new Color('#ffdacc'),
+    200: new Color('#ffb1a3'),
+    300: new Color('#ff8c79'),
+    400: new Color('#ff7061'),
+    500: new Color('#ec3d3c'),
+    600: new Color('#aa1317'),
+    700: new Color('#761a19'),
+    800: new Color('#300a09'),
+    900: new Color('#1d0606'),
+    950: new Color('#0d0303'),
+  },
+  'uib-blue': {
+    50: new Color('#f2fbfd'),
+    100: new Color('#d1ebff'),
+    200: new Color('#b9ddfe'),
+    300: new Color('#9acdfd'),
+    400: new Color('#65b4ff'),
+    500: new Color('#009fee'),
+    600: new Color('#0175bf'),
+    700: new Color('#00417d'),
+    800: new Color('#012050'),
+    900: new Color('#00102a'),
+    950: new Color('#000515'),
+  },
+  'uib-green': {
+    50: new Color('#f2fdf6'),
+    100: new Color('#d4fce5'),
+    200: new Color('#b1f5cc'),
+    300: new Color('#8df0b5'),
+    400: new Color('#32cd8e'),
+    500: new Color('#28a465'),
+    600: new Color('#058356'),
+    700: new Color('#006647'),
+    800: new Color('#09301c'),
+    900: new Color('#051b0f'),
+    950: new Color('#020a07'),
+  },
+  'uib-beige': {
+    50: new Color('#eae2d5'),
+  },
+  'uib-lavender': {
+    500: new Color('#aaadfd'),
+  },
+  'uib-orange': {
+    500: new Color('#faa978'),
+  },
+  'uib-pink': {
+    500: new Color('#ff80ad'),
+  },
+  'uib-yellow': {
+    300: new Color('#fff0a4'),
+  },
+}
+
+
+const uibColors = {
+  ...Object.entries(uibColorBase).map(([name, colorScale]) => [
+    name,
+    Object.entries(colorScale).map(([scale, color]) => ({
+      scale: parseInt(scale),
+      hex: color.toString({ format: 'hex' }),
+      rgb: color.toString({ format: 'rgb' }),
+      hsl: color.to('hsl').toString(),
+      oklch: color.to('oklch').toString({ format: 'oklch' }),
+    }))
+  ]).reduce((acc, [name, colors]) => ({
+    ...acc,
+    [name as string]: colors
+  }), {})
+}
+
 export const colors = {
   inherit: "inherit",
   current: "currentColor",
@@ -14,6 +90,7 @@ export const colors = {
     hsl: "hsl(0,0%,100%)",
     oklch: "oklch(1.00,0.00,0)",
   },
+  ...uibColors,
   neutral: [
     {
       scale: 50,

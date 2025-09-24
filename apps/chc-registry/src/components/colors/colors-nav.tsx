@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 
 import { getColors } from "@/lib/colors"
 import { cn } from "@/lib/utils"
-import { ScrollArea, ScrollBar } from "@/registry/default/ui/scroll-area"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 export function ColorsNav({
   className,

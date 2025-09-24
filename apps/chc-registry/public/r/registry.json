@@ -4,23 +4,6 @@
   "homepage": "https://chc-registry.vercel.app",
   "items": [
     {
-      "name": "iiif-image",
-      "type": "registry:block",
-      "title": "IIIF Image",
-      "description": "IIIF Image",
-      "dependencies": [
-        "@samvera/clover-iiif",
-        "next"
-      ],
-      "files": [
-        {
-          "path": "src/registry/default/blocks/iiif-image/components/index.tsx",
-          "type": "registry:component",
-          "target": "/components/iiif-image.tsx"
-        }
-      ]
-    },
-    {
       "name": "iiif-manifest",
       "type": "registry:block",
       "title": "IIIF Manifest",
@@ -31,9 +14,65 @@
       ],
       "files": [
         {
-          "path": "src/registry/default/blocks/iiif-manifest/components/index.tsx",
+          "path": "src/registry/uib-ub/items/iiif-manifest/components/iiif-manifest.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "iiif-image",
+      "type": "registry:block",
+      "title": "IIIF Image",
+      "description": "IIIF Image",
+      "dependencies": [
+        "@samvera/clover-iiif",
+        "next"
+      ],
+      "files": [
+        {
+          "path": "src/registry/uib-ub/items/iiif-image/components/iiif-image.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "content-grid",
+      "type": "registry:block",
+      "title": "Content Grid",
+      "description": "Content Grid",
+      "dependencies": [
+        "@radix-ui/react-slot",
+        "next"
+      ],
+      "files": [
+        {
+          "path": "src/registry/uib-ub/items/content-grid/components/content-grid.tsx",
           "type": "registry:component",
-          "target": "/components/iiif-manifest.tsx"
+          "target": "~/components/ui/chc/content-grid/content-grid.tsx"
+        },
+        {
+          "path": "src/registry/uib-ub/items/content-grid/components/styles/content-grid.css",
+          "type": "registry:style",
+          "target": "~/components/ui/chc/content-grid/styles/content-grid.css"
+        }
+      ],
+      "css": {
+        "@import \"../components/ui/chc/content-grid/styles/content-grid.css\"": {}
+      }
+    },
+    {
+      "name": "button",
+      "type": "registry:block",
+      "title": "Button",
+      "description": "Button",
+      "dependencies": [
+        "@radix-ui/react-slot",
+        "next"
+      ],
+      "files": [
+        {
+          "path": "src/registry/uib-ub/items/button/components/button.tsx",
+          "type": "registry:component"
         }
       ]
     }

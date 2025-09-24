@@ -1,4 +1,4 @@
-import { IIIFManifest } from '../blocks/iiif-manifest/components';
+import { IIIFManifest } from '../components/iiif-manifest';
 
 export default function IIFManifestDemo() {
   // Using a more reliable IIIF manifest for testing

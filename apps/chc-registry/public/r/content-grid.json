@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "content-grid",
+  "type": "registry:block",
+  "title": "Content Grid",
+  "description": "Content Grid",
+  "dependencies": [
+    "@radix-ui/react-slot",
+    "next"
+  ],
+  "files": [
+    {
+      "path": "src/registry/uib-ub/items/content-grid/components/content-grid.tsx",
+      "content": "import { cn } from '@/lib/utils';\n\nexport function ContentGrid({ className, children }: { className?: string, children: React.ReactNode }) {\n  return <div className={cn('content-grid', className)} >{children}</div>;\n}",
+      "type": "registry:component",
+      "target": "~/components/ui/chc/content-grid/content-grid.tsx"
+    },
+    {
+      "path": "src/registry/uib-ub/items/content-grid/components/styles/content-grid.css",
+      "content": "\n@layer components {\n  .content-grid {\n    --gap: clamp(1rem, 6vw, 3rem);\n    --full: minmax(var(--gap), 1fr);\n    --content: min(55ch, 100% - var(--gap) * 2);\n    --popout: minmax(1rem, 1.5rem);\n    --feature: minmax(0, 10rem);\n\n    display: grid;\n    container-name: content-grid;\n    container-type: inline-size;\n    row-gap: 0;\n    width: 100%;\n    grid-template-columns:\n      [full-start] var(--full)\n      [feature-start] var(--feature)\n      [popout-start] var(--popout)\n      [content-start] var(--content) [content-end]\n      var(--popout) [popout-end]\n      var(--feature) [feature-end]\n      var(--full) [full-end];\n\n    p, h1, h2, h3, h4, h5, h6 {\n      grid-column: content;\n    }\n    p {\n      margin-block: 0.5rem !important;\n    }\n    h1, h2, h3, h4, h5, h6 {\n      margin-block: 0.25rem !important;\n    }\n\n    aside {\n      grid-column: 6/7;\n      font-size: var(--text-base);\n      line-height: var(--leading-snug);\n\n      @container (width < 64rem) {\n        @apply border rounded-md;\n        grid-column: content;\n        padding: 0.5rem;\n        margin-block: 0.5rem !important;\n      }\n    }\n\n    .feature, figure {\n      margin-block: 3.5rem;\n      \n      @container (width < 64rem) {\n        display: flex;\n        flex-direction: column;\n        grid-column: feature;\n      }\n      \n      @container (width >= 64rem) {\n        display: grid;\n        grid-template-rows: 1fr;\n        grid-column: feature;\n        grid-template-columns: subgrid;\n      }\n\n      .img, img, picture, .iiif-image-wrapper, p:first-child {\n        display: grid;\n        grid-column: feature-start / content-end;\n        grid-template-columns: subgrid;\n      }\n      \n      .caption, figcaption {\n        grid-column: 5/6;\n        overflow-y: auto;\n        margin-top: 0 !important;\n        font-size: var(--text-sm);\n        line-height: var(--leading-snug);\n\n        @container (width < 64rem) {\n          margin-top: 0.5rem !important;\n        }\n      }\n    }\n  }\n}",
+      "type": "registry:style",
+      "target": "~/components/ui/chc/content-grid/styles/content-grid.css"
+    }
+  ],
+  "css": {
+    "@import \"../components/ui/chc/content-grid/styles/content-grid.css\"": {}
+  }
+}
