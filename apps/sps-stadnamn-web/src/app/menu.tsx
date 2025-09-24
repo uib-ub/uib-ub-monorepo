@@ -157,11 +157,11 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
                         </div>
                     </div>}
                     
-                   
+                    
                     <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:mx-0" href="https://skjemaker.app.uib.no/view.php?id=16665712"><PiChatCircleText aria-hidden="true"/>Tilbakemelding</Link>
-                    					
+					<Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:mx-0" href="/iiif"><PiArchive aria-hidden="true"/>Arkiv</Link>
                    <div className="flex flex-col gap-2 w-full">
-                    <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:pr-8 lg:mx-0" href="/info"><PiInfo aria-hidden="true"/>Om stadnamnportalen</Link>
+                    <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:pr-8 lg:mx-0" href="/info"><PiInfo aria-hidden="true"/>Informasjon</Link>
 					{false && <ul className="flex flex-col gap-0 pb-2">
 						{infoPages.map((p: any) => (
 							<li key={p.href}>
