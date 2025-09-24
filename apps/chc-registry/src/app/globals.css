@@ -196,7 +196,7 @@
         grid-template-columns: subgrid;
       }
 
-      img, picture, .iiif-image-wrapper, p:first-child {
+      img, picture, .iiif-image-wrapper, .content {
         display: grid;
         grid-column: feature-start / content-end;
         grid-template-columns: subgrid;
