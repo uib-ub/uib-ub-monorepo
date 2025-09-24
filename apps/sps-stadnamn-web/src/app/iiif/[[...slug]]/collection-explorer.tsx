@@ -88,8 +88,8 @@ export default function CollectionExplorer({manifest, manifestDataset, isCollect
 
 
     return (
-        <div ref={containerRef} className="flex-1 min-w-0 flex flex-col lg:gap-4 py-4 lg:p-4 overflow-y-auto h-[calc(100svh-3.5rem-30svh)] lg:overflow-y-auto lg:h-[calc(100svh-3.5rem)] stable-scrollbar">
-            <div className="w-full z-[6000] flex flex-col lg:flex-row gap-2 px-4 pb-4 lg:px-0 lg:pb-0 border-b border-neutral-200 lg:border-b-0">
+        <div ref={containerRef} className="flex-1 min-w-0 flex flex-col lg:gap-4 py-4 lg:p-4 pb-48 overflow-y-auto lg:overflow-y-auto stable-scrollbar">
+            <div className="w-full z-[6000] flex flex-col xl:flex-row gap-2 border-b border-neutral-200 xl:border-b-0 sticky top-0 xl:top-auto">
             {/* Add fixed height and min-height to prevent squishing */}
             {manifest && !isMobile &&
                 <div className=" flex items-center">
