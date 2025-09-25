@@ -37,10 +37,10 @@ export async function fetchIIIFNeighbours(order: number, partOf: string) {
   
   // Query for neighbors and first item
   const neighboursQuery = {
-    size: 5,
-    from: order > lastItemPosition - 3 ? 
-        Math.max(0, lastItemPosition - 5) : // When near the end, show last 7 items
-        Math.max(0, order - 3), // Otherwise, center the current item
+    size: 3,
+    from: order > lastItemPosition - 2 ? 
+        Math.max(0, lastItemPosition - 3) : // When near the end, show last 7 items
+        Math.max(0, order - 2), // Otherwise, center the current item
     query: {
       term: {
         "partOf": partOf
@@ -51,7 +51,7 @@ export async function fetchIIIFNeighbours(order: number, partOf: string) {
         "order": "asc"
       }
     ],
-    _source: ["uuid", "order", "images", "label", "type", "audio"],
+    _source: ["uuid", "order"] //, "images", "label", "type", "audio"],
   }
 
   

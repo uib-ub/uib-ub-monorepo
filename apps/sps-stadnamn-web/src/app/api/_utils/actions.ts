@@ -52,6 +52,30 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
 
   }
 
+  export async function fetchIIFDocByIndex(params: {partOf: string, order: string}) {
+    'use server'
+    const { partOf, order } = params
+    const query = {
+        size: 1,
+        fields: ['uuid'],
+        _source: false,
+        query: {
+            bool: {
+                must: [
+                    { term: { partOf: partOf } },
+                    { term: { order: parseInt(order) } }
+                ]
+            }
+        }
+    }
+    const [res, status] = await postQuery("iiif_*", query)
+    if (status !== 200) {
+        return { error: "Failed to fetch IIIF document", status: status }
+    }
+
+    return res.hits.hits[0]
+  }
+
   export async function fetchSOSI(params: {sosiCode: string}) {
     'use server'
     const { sosiCode } = params

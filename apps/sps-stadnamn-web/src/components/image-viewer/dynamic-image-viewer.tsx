@@ -248,7 +248,7 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
             label="Forrige side">
               <PiCaretLeftFill aria-hidden="true" />
           </IconButton>
-          <span className='text-base'>side {`${currentPage + 1}/${numberOfPages}`}</span>
+          <span className='text-base'>{`${currentPage + 1}/${numberOfPages}`}</span>
           <IconButton 
             onClick={() => viewer.current?.goToPage(currentPage + 1)}
             label="Neste side">
@@ -266,7 +266,7 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
             label="Forrige side">
               <PiCaretLeftFill aria-hidden="true" />
           </IconButton>
-          <span className='text-base'>side {`${currentPage + 1}/${numberOfPages}`}</span>
+          <span className='text-base'>{`${currentPage + 1}/${numberOfPages}`}</span>
           <IconButton 
             onClick={() => viewer.current?.goToPage(currentPage + 1)}
             label="Neste side">

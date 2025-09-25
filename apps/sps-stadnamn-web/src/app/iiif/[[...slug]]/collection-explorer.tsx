@@ -28,7 +28,7 @@ const iiifQuery = async (collectionUuid: string, searchQuery: string, size: numb
     return response.json();
 };
 
-export default function CollectionExplorer({manifest, manifestDataset, isCollection}: {manifest: any, manifestDataset: string, isCollection: boolean}) {
+export default function CollectionExplorer({manifest, isCollection}: {manifest: any, isCollection: boolean}) {
     const { inputValue } = useContext(GlobalContext);
     const [searchQuery, setSearchQuery] = useState('');
     const [size, setSize] = useState(50);
@@ -88,14 +88,14 @@ export default function CollectionExplorer({manifest, manifestDataset, isCollect
 
 
     return (
-        <div ref={containerRef} className="flex-1 min-w-0 flex flex-col lg:gap-4 py-4 lg:p-4 pb-48 overflow-y-auto lg:overflow-y-auto stable-scrollbar">
+        <div ref={containerRef} className="flex-1 min-w-0 flex flex-col lg:gap-4 lg:p-4 pb-48 overflow-y-auto lg:overflow-y-auto stable-scrollbar">
             <div className="w-full z-[6000] flex flex-col xl:flex-row gap-2 border-b border-neutral-200 xl:border-b-0 sticky top-0 xl:top-auto">
             {/* Add fixed height and min-height to prevent squishing */}
-            {manifest && !isMobile &&
-                <div className=" flex items-center">
+            {manifest?.collections && !isMobile &&
+                <div className=" flex items-center px-2">
                     <Breadcrumbs
                         homeUrl="/iiif"
-                        homeLabel="Arkivressurser"
+                        homeLabel="Arkiv"
                         parentUrl={manifest.collections?.slice().reverse().map((item: any) => item.uuid)} 
                         parentName={manifest.collections?.slice().reverse().map((item: any) => resolveLanguage(item.label))} 
                         currentName={resolveLanguage(manifest.label)} 
@@ -106,11 +106,11 @@ export default function CollectionExplorer({manifest, manifestDataset, isCollect
             {isCollection && <div className="flex flex-col lg:flex-row items-center gap-4 lg:ml-auto mr-2">
             
 
-            <div className='flex w-full lg:w-80 items-center bg-white border-2 border-neutral-200 group px-2 rounded-md'>
-                    <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
+            <div className='flex w-full lg:w-80 items-center bg-white border-2 border-neutral-200 group xl:px-2 rounded-md'>
+                    <PiMagnifyingGlass className="text-2xl xl:shrink-0 xl:ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
                     <label htmlFor="search-input" className="sr-only">Søk</label>
                     <input
-                        id="search-input"
+                        id={"search-input-" + manifest?.uuid}
                         type="text"
                         name="query"
                         value={inputValue.current}
@@ -147,8 +147,8 @@ export default function CollectionExplorer({manifest, manifestDataset, isCollect
                         </Fragment>
                     )})}
                 {(!isLoading && results.length === 0) && (
-                    <div className="col-span-full text-center text-neutral-600 py-8">
-                        Ingen innhold å vise.
+                    <div className="col-span-full text-center text-neutral-800 py-8">
+                        Fann ikkje noko innhald
                     </div>
                 )}
             </div>
