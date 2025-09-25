@@ -59,7 +59,7 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
 
 
     return (
-        <div ref={menuRef} className={`${menuOpen ? 'z-[6000]' : 'z-[3000]'} flex items-center justify-center h-full`}>
+        <div ref={menuRef} className={`${menuOpen ? 'z-[7000]' : 'z-[3000]'} flex items-center justify-center h-full`}>
             <button id="menu-button" aria-controls="menu_navbar" 
                         onBlur={handleBlur}
                         aria-label="Meny"
