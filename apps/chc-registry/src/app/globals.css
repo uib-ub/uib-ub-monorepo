@@ -44,6 +44,44 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --color-blue-50: #f2fbfd;
+  --color-blue-100: #d1ebff;
+  --color-blue-200: #b9ddfe;
+  --color-blue-300: #9acdfd;
+  --color-blue-400: #65b4ff;
+  --color-blue-500: #009fee;
+  --color-blue-600: #0175bf;
+  --color-blue-700: #00417d;
+  --color-blue-800: #012050;
+  --color-blue-900: #00102a;
+  --color-blue-950: #00102a;
+  --color-red-50: #fef9f1;
+  --color-red-100: #ffdacc;
+  --color-red-200: #ffb1a3;
+  --color-red-300: #ff8c79;
+  --color-red-400: #ff7061;
+  --color-red-500: #ec3d3c;
+  --color-red-600: #aa1317;
+  --color-red-700: #761a19;
+  --color-red-800: #300a09;
+  --color-red-900: #1d0606;
+  --color-red-950: #0d0303;
+  --color-green-50: #f2fdf6;
+  --color-green-100: #d4fce5;
+  --color-green-200: #b1f5cc;
+  --color-green-300: #8df0b5;
+  --color-green-400: #32cd8e;
+  --color-green-500: #28a465;
+  --color-green-600: #058356;
+  --color-green-700: #006647;
+  --color-green-800: #09301c;
+  --color-green-900: #051b0f;
+  --color-green-950: #020a07;
+  --color-beige-50: #eae2d5;
+  --color-lavender-500: #aaadfd;
+  --color-orange-500: #faa978;
+  --color-pink-500: #ff80ad;
+  --color-yellow-300: #fff0a4;
 }
 
 :root {
@@ -157,7 +195,7 @@
       var(--feature) [feature-end]
       var(--full) [full-end];
 
-    p, h1, h2, h3, h4, h5, h6 {
+    *:not(.full > *, figure, .feature, figcaption, aside) {
       grid-column: content;
     }
     p {
@@ -173,14 +211,15 @@
       line-height: var(--leading-snug);
 
       @container (width < 64rem) {
-        @apply border rounded-md;
         grid-column: content;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
         padding: 0.5rem;
         margin-block: 0.5rem !important;
       }
     }
 
-    .feature, figure {
+    figure:not(.full, .feature) {
       margin-block: 3.5rem;
       
       @container (width < 64rem) {
@@ -196,7 +235,7 @@
         grid-template-columns: subgrid;
       }
 
-      img, picture, .iiif-image-wrapper, .content {
+      img, picture, > *:first-child {
         display: grid;
         grid-column: feature-start / content-end;
         grid-template-columns: subgrid;
@@ -213,6 +252,15 @@
           margin-top: 0.5rem !important;
         }
       }
+    }
+    .feature {
+      grid-column: feature;
+      grid-template-columns: subgrid;
+      margin-block: 1.5rem;
+    }
+    .full {
+      grid-column: full;
+      margin-block: 1.5rem;
     }
   }
 }
