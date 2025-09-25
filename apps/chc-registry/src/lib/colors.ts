@@ -36,7 +36,6 @@ export function getColorFormat(color: Color) {
 export type ColorFormat = keyof ReturnType<typeof getColorFormat>
 
 export function getColors() {
-  console.log(colors.red, colors.neutral)
   const tailwindColors = colorPaletteSchema.array().parse(
     Object.entries(colors)
       .map(([name, color]) => {
