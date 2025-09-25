@@ -21,14 +21,10 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
 
     // Server-side stats
     let stats: any = manifest?.resourceStats
-    if (!stats) {
-        if (!slug?.[0]) {
-            // Top-level overview
-            stats = await fetchIIIFStats()
-        } else if (isCollection) {
-            // Collection page: use childCount if present, otherwise fetch aggregated stats for this collection
-            stats = manifest?.childCount ?? await fetchIIIFStats(manifest.uuid)
-        }
+
+    if (!slug?.[0]) {
+        // Top-level overview
+        stats = await fetchIIIFStats()
     }
 
     const headersList = await headers()

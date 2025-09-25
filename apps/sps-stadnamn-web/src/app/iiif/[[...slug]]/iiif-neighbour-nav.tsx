@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PiArchive, PiArrowElbowRightUp, PiArrowUp, PiArrowUpBold, PiCaretLeftBold, PiCaretLineLeftBold, PiCaretLineRightBold, PiCaretRightBold } from "react-icons/pi";
+import { PiArchive, PiArrowElbowRightUp, PiArrowUp, PiArrowUpBold, PiCaretLeftBold, PiCaretLineLeftBold, PiCaretLineRightBold, PiCaretRightBold, PiHouse } from "react-icons/pi";
 import { resolveLanguage } from "../iiif-utils";
 
 export default function IIIFNeighbourNav({manifest}: {manifest: any}) {
@@ -14,7 +14,7 @@ export default function IIIFNeighbourNav({manifest}: {manifest: any}) {
                     aria-label="Gå til overordna samling"
                 >
                     <div className="bg-white rounded-full p-2 flex-shrink-0">
-                        <PiArrowUpBold className="text-xl" />
+                        {manifest?.collections?.length > 0 ? <PiArrowUpBold className="text-xl" aria-hidden="true" /> : <PiHouse className="text-xl" aria-hidden="true" />}
                     </div>
                     <span className="truncate pr-2 min-w-0">{manifest?.collections?.length > 0 ? resolveLanguage(manifest.collections[0].label) : 'Arkiv'}</span>
                 </Link>
@@ -29,7 +29,7 @@ export default function IIIFNeighbourNav({manifest}: {manifest: any}) {
                             href={`/iiif/${manifest.partOf}/1`} 
                             className="flex items-center justify-center bg-white border border-white rounded-l-full xl:rounded-full p-2"
                         >
-                            <PiCaretLineLeftBold className="text-xl" />
+                            <PiCaretLineLeftBold className="text-xl" aria-hidden="true"/>
                         </Link>
 
                         {/* Previous button */}
@@ -39,7 +39,7 @@ export default function IIIFNeighbourNav({manifest}: {manifest: any}) {
                             href={`/iiif/${manifest.partOf}/${Math.max(manifest.order - 1, 1)}`}
                             className="flex items-center justify-center bg-white border border-white xl:rounded-full p-2"
                         >
-                            <PiCaretLeftBold className="text-xl" />
+                            <PiCaretLeftBold className="text-xl" aria-hidden="true"/>
                         </Link>
                         
                         {/* Counter */}
@@ -54,7 +54,7 @@ export default function IIIFNeighbourNav({manifest}: {manifest: any}) {
                             href={`/iiif/${manifest.partOf}/${Math.min(manifest.order + 1, manifest.parentLength)}`} 
                             className="flex items-center justify-center bg-white xl:rounded-full p-2"
                         >
-                            <PiCaretRightBold className="text-xl" />
+                            <PiCaretRightBold className="text-xl" aria-hidden="true"/>
                         </Link>
 
                         {/* Last button */}
@@ -64,7 +64,7 @@ export default function IIIFNeighbourNav({manifest}: {manifest: any}) {
                             href={`/iiif/${manifest.partOf}/${manifest.parentLength}`} 
                             className="flex items-center justify-center bg-white rounded-r-full xl:rounded-full p-2"
                         >
-                            <PiCaretLineRightBold className="text-xl" />
+                            <PiCaretLineRightBold className="text-xl" aria-hidden="true"/>
                         </Link>
                     </div>
                 )}

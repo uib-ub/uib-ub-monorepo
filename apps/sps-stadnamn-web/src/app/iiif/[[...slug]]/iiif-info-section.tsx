@@ -57,7 +57,7 @@ export default function IIIFInfoSection({manifest, manifestDataset, stats}: {man
                 {(stats || manifest?.childCount) && (manifest?.type != 'Manifest' || !manifest) && (
                     <ul className="text-base !p-0">
                         <li className='flex flex-col'>
-                            <span className='font-semibold text-neutral-800'>Elementer</span>
+                            <span className='font-semibold text-neutral-800'>Visningssider</span>
                             <span className="flex items-center gap-1">
                                 <PiFile aria-hidden="true"/>
                                 {(stats?.manifests ?? manifest?.childCount?.manifests)?.toLocaleString?.('no-NO') || 0}

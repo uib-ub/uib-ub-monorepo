@@ -89,9 +89,9 @@ export default function CollectionExplorer({manifest, isCollection}: {manifest: 
 
     return (
         <div ref={containerRef} className="flex-1 min-w-0 flex flex-col lg:gap-4 lg:p-4 pb-48 overflow-y-auto lg:overflow-y-auto stable-scrollbar">
-            <div className="w-full z-[6000] flex flex-col xl:flex-row gap-2 border-b border-neutral-200 xl:border-b-0 sticky top-0 xl:top-auto">
+            <div className="w-full z-[6000] flex flex-col xl:flex-row gap-2 border-y xl:border-none border-neutral-200 xl:border-b-0 sticky top-0 xl:top-auto">
             {/* Add fixed height and min-height to prevent squishing */}
-            {manifest?.collections && !isMobile &&
+            {manifest && !isMobile &&
                 <div className=" flex items-center px-2">
                     <Breadcrumbs
                         homeUrl="/iiif"
@@ -103,11 +103,11 @@ export default function CollectionExplorer({manifest, isCollection}: {manifest: 
                 </div>
             }
 
-            {isCollection && <div className="flex flex-col lg:flex-row items-center gap-4 lg:ml-auto mr-2">
+            {isCollection && <div className="flex flex-col lg:flex-row items-center gap-4 lg:ml-auto xl:mr-2">
             
 
-            <div className='flex w-full lg:w-80 items-center bg-white border-2 border-neutral-200 group xl:px-2 rounded-md'>
-                    <PiMagnifyingGlass className="text-2xl xl:shrink-0 xl:ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
+            <div className='flex w-full xl:w-80 items-center bg-white xl:border-2 h-12 xl:h-auto border-neutral-200 group xl:px-1 xl:rounded-md px-3'>
+                    <PiMagnifyingGlass className="text-3xl xl:text-2xl xl:shrink-0 xl:ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
                     <label htmlFor="search-input" className="sr-only">Søk</label>
                     <input
                         id={"search-input-" + manifest?.uuid}
@@ -116,7 +116,7 @@ export default function CollectionExplorer({manifest, isCollection}: {manifest: 
                         value={inputValue.current}
                         onChange={handleSearch}
                         onKeyDown={handleKeyDown}
-                        className="bg-transparent px-4 focus:outline-none w-full p-2"
+                        className="bg-transparent px-3 xl:px-2 focus:outline-none w-full p-2"
                     />
                     <div className="w-8 flex justify-center">
                         {inputValue.current && (
