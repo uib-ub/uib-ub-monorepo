@@ -28,6 +28,7 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
   const [isFullScreen, setIsFullScreen] = useState(false);
   const currentPosition = useIIIFSessionStore((s) => s.currentPosition)
   const snappedPosition = useIIIFSessionStore((s) => s.snappedPosition)
+  const drawerOpen = useIIIFSessionStore((s) => s.drawerOpen)
   const { isMobile } = useContext(GlobalContext)
 
 
@@ -243,8 +244,8 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
       </div>}
 
       {numberOfPages > 1 && <div 
-        className="absolute right-2 xl:right-1/2 xl:translate-x-1/2 flex z-[1000] font-semibold bg-neutral-950/70 items-center text-white rounded-full backdrop-blur-sm"
-        style={{ bottom: isMobile ? `${currentPosition}rem` : '4rem' }}
+        className="absolute right-4 xl:right-1/2 xl:translate-x-1/2 flex z-[1000] font-semibold bg-neutral-950/70 items-center text-white rounded-full backdrop-blur-sm"
+        style={{ bottom: (isMobile ? `${drawerOpen ? currentPosition : 4.5}rem` : '1rem') }}
       >
 
           <IconButton 
