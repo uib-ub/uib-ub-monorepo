@@ -1,13 +1,11 @@
 'use client'
 import { useState, useRef, useEffect, useContext } from "react";
 import { PiArchive, PiBookOpen, PiBookOpenLight, PiBookOpenText, PiBookOpenTextFill, PiBookOpenTextLight, PiCaretLeft, PiChatCircleText, PiDatabaseFill, PiDatabaseLight, PiHouse, PiInfo, PiList, PiListFill, PiListLight, PiMapPinLineFill, PiMapTrifold, PiMapTrifoldFill, PiMapTrifoldLight, PiMicroscopeFill, PiMicroscopeLight, PiQuestion, PiTable, PiTableFill, PiTableLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight, PiX } from 'react-icons/pi';
-import NavBar from "./nav-bar";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { GlobalContext } from "../state/providers/global-provider";
 import Link from "next/link";
 import Clickable from "@/components/ui/clickable/clickable";
 import { useMode } from "@/lib/param-hooks";
-import FulltextToggle from "./fulltext-toggle";
 import { useSessionStore } from "../state/zustand/session-store";
 import { infoPages } from "./info/info-pages";
 
@@ -94,8 +92,8 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
 					</Clickable>
 					</div>
                     </div>
-                    {pathname != "/" && <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:mx-0" href="/"><PiHouse aria-hidden="true"/>Til forsida</Link>}
-                    <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:mx-0" href="/help"><PiQuestion aria-hidden="true"/>Søketips</Link>
+                    {pathname != "/" && <Link scroll={false} className="flex items-center gap-2 py-3 px-4 lg:mx-0" href="/"><PiHouse aria-hidden="true"/>Til forsida</Link>}
+                    <Link scroll={false} className="flex items-center gap-2 py-3 px-4 lg:mx-0" href="/help"><PiQuestion aria-hidden="true"/>Søketips</Link>
                     
                     {false && <div className="flex flex-col gap-2 p-3 w-full">
                     <span className="text-lg">Søkemodus</span>
@@ -158,29 +156,18 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
                     </div>}
                     
                     
-                    <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:mx-0" href="https://skjemaker.app.uib.no/view.php?id=16665712"><PiChatCircleText aria-hidden="true"/>Tilbakemelding</Link>
-					<Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:mx-0" href="/iiif"><PiArchive aria-hidden="true"/>Arkiv</Link>
-                   <div className="flex flex-col gap-2 w-full">
-                    <Link scroll={false} className="flex items-center gap-2 py-3 lg:px-4 lg:pr-8 lg:mx-0" href="/info"><PiInfo aria-hidden="true"/>Informasjon</Link>
-					{false && <ul className="flex flex-col gap-0 pb-2">
-						{infoPages.map((p: any) => (
-							<li key={p.href}>
-							<Link
-								key={p.href}
-								scroll={false}
-								className="flex items-center gap-2 py-2 lg:px-8 lg:mx-0 text-base"
-								href={p.href}
-							>
-								{p.label}
-							</Link>
-                            </li>
-						))}
-					</ul>}
+                    <Link scroll={false} className="flex items-center gap-2 py-3 px-4 lg:mx-0" href="https://skjemaker.app.uib.no/view.php?id=16665712"><PiChatCircleText aria-hidden="true"/>Tilbakemelding</Link>
+					<Link scroll={false} className="flex items-center gap-2 py-3 px-4 lg:mx-0" href="/iiif"><PiArchive aria-hidden="true"/>Arkiv</Link>
+                   <div className="flex flex-col w-full">
+                    <Link scroll={false} className="flex items-center gap-2 py-3 px-4 lg:mx-0" href="/info"><PiInfo aria-hidden="true"/>Informasjon</Link>
+					<Link scroll={false} className="flex items-center gap-2 py-3 px-4 pl-10 lg:mx-0" href="/info/privacy">Personvern</Link>
+					<Link scroll={false} className="flex items-center gap-2 py-3 px-4 pl-10 lg:mx-0" href="/info/license">Opphavsrett</Link>
+					<Link scroll={false} className="flex items-center gap-2 py-3 px-4 pl-10 lg:mx-0" href="/info/a11y">Tilgjengeerklæring</Link>
                     </div>
       
-
                 </nav>
                 </div>
+				
 
                
         </div>
