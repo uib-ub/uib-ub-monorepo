@@ -152,7 +152,7 @@ export default function SearchForm() {
     return <div className="flex">
         <header className={`${isMobile && autocompleteOpen ? 'sr-only' : 'flex xl:absolute xl:top-2 xl:left-2 w-14 h-14 xl:h-12 xl:w-auto'} ${(autocompleteOpen || menuOpen) ? 'z-[6000] xl:!rounded-b-none' : 'z-[3000] shadow-lg'} bg-neutral-50 xl:rounded-l-md`}><Menu shadow/></header>
         <Form ref={form} action="/search" id="search-form" aria-label="Stadnamnsøk"
-                className={`${isMobile && autocompleteOpen ? 'w-[100svw] ' : 'w-[calc(100svw-3.5rem)] xl:w-[calc(25svw-4rem)] xl:absolute xl:top-2 xl:left-[3.5rem] h-14 xl:h-12'} ${(autocompleteOpen || menuOpen) ? 'z-[6000] xl:!rounded-b-none' : 'z-[3000]'}`}
+                className={`h-14 xl:h-12 ${isMobile && autocompleteOpen ? 'w-[100svw]' : 'w-[calc(100svw-3.5rem)] xl:w-[calc(25svw-4rem)] xl:absolute xl:top-2 xl:left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? 'z-[6000] xl:!rounded-b-none' : 'z-[3000]'}`}
             
             onBlur={(e) => { 
                 return
@@ -223,13 +223,13 @@ export default function SearchForm() {
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
             {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''} />}
-            {(false || autocompleteOpen) && <ul className="absolute top-[3rem] xl:-left-12 border-t border-neutral-200 w-full max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 xl:shadow-lg overflow-y-auto overscroll-none xl:w-[calc(25svw-1rem)] left-0 xl-p-2 xl xl:rounded-lg xl:rounded-t-none divide-y divide-neutral-300">
+            {(false || autocompleteOpen) && <ul className="absolute top-[3.5rem] xl:top-[3rem] xl:-left-12 border-t border-neutral-200 w-full max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 xl:shadow-lg overflow-y-auto overscroll-none xl:w-[calc(25svw-1rem)] left-0 xl-p-2 xl xl:rounded-lg xl:rounded-t-none divide-y divide-neutral-300">
                 {data?.hits?.hits?.map((hit: any) => (
                     <li key={hit._id} 
                         tabIndex={-1} 
                         role="option" 
                         data-autocomplete-option 
-                        onClick={(event) => { dropdownSelect(event, hit.fields["group.id"][0], hit.fields.label[0])}}
+                        onMouseDown={(event) => { dropdownSelect(event, hit.fields["group.id"][0], hit.fields.label[0])}}
                         aria-selected={selectedGroup == hit.fields["group.id"][0]}>
                         <div className="cursor-pointer flex items-center h-14 xl:h-12 px-2 hover:bg-neutral-100">
                         {hit.fields.location?.length ? (

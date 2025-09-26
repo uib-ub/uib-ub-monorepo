@@ -28,7 +28,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import { getMyLocation } from "@/lib/map-utils";
 import MapSettings from "../map/map-settings";
 import Drawer from "@/components/ui/drawer";
-import { RoundIconButton } from "../ui/clickable/round-icon-button";
+import { RoundButton, RoundIconButton } from "../ui/clickable/round-icon-button";
 
 export default function MobileLayout() {
 
@@ -100,9 +100,9 @@ export default function MobileLayout() {
             <div className="absolute flex gap-2 right-4 z-[4000]"
                 style={{ bottom: drawerOpen ? `calc(${currentPosition}rem + +.5rem)` : '2rem' }}
             >
-                {drawerContent != 'details' && <RoundIconButton
+                {drawerContent != 'details' && <RoundButton
+                    className="pl-4"
                     onClick={() => toggleDrawer('details')}
-                    label="Oppslag"
                 >
                     <span className="flex items-center gap-2 whitespace-nowrap">
                         {!searchFilterParamsString && <PiBookOpen className="text-xl" aria-hidden="true" />}
@@ -112,7 +112,7 @@ export default function MobileLayout() {
                                 <span className="results-badge text-primary-700 bg-primary-200 font-bold left-8 rounded-full py-0.5 text-sm whitespace-nowrap px-1.5">
                                     {formatNumber(totalHits.value)}</span></span> : <span>{groupDoc?._source?.label}</span>}
                     </span>
-                </RoundIconButton>}
+                </RoundButton>}
                 {mode == 'map' && <RoundIconButton
                     label="Min posisjon"
                     onClick={() => {
@@ -229,7 +229,7 @@ export default function MobileLayout() {
                 {doc && mode == 'doc' && <DocInfo />}
             </div>
 
-            {mode == 'map' && <div className="absolute top-0 right-0 bottom-0 top-14 max-h-[calc(100svh-3.5rem)] w-full bg-white rounded-md">
+            {mode == 'map' && <div className="absolute right-0 bottom-0 top-14 max-h-[calc(100svh-3.5rem)] w-full bg-white rounded-md">
                 <MapWrapper />
 
             </div>}
