@@ -12,13 +12,10 @@ export default function IIIFNeighbourNav({manifest, isMobile}: {manifest: any, i
                 <RoundIconButton 
                     href={`/iiif${manifest.partOf ? `/${manifest.partOf}` : ''}`} 
                     label="Gå til overordna samling">
-
-                         <PiArrowElbowLeftUpBold className="text-xl xl:text-base"/>
-       
+                    <PiArrowElbowLeftUpBold className="text-xl xl:text-base"/>
                 </RoundIconButton>
 
-                {/* Navigation controls */}
-                {manifest.order && manifest.parentLength && manifest.partOf && manifest.parentLength > 1 && (
+                {(manifest.order && manifest.parentLength && manifest.partOf && manifest.parentLength > 1) ? (
                     <div className="flex xl:gap-2 h-full">
                         {/* First button */}
                         <RoundIconButton
@@ -64,7 +61,7 @@ export default function IIIFNeighbourNav({manifest, isMobile}: {manifest: any, i
                             <PiCaretLineRightBold className="text-xl xl:text-base"/>
                         </RoundIconButton>
                     </div>
-                )}
+                ) : null}
 
         </nav>
     )
