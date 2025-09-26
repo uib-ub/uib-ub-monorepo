@@ -37,7 +37,7 @@ export default function IIIFInfoSection({manifest, manifestDataset, stats}: {man
                     })()
                 )}
             <div id="iiif-info-collapsible" className="flex flex-col gap-6">
-                {manifest?.summary?.length > 0 && 
+                {manifest?.summary && 
                     <div>
                         {resolveLanguage(manifest.summary).length > 150 ?
                         <>
