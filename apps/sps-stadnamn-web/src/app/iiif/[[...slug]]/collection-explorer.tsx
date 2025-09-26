@@ -157,7 +157,7 @@ export default function CollectionExplorer({manifest, isCollection}: {manifest: 
                     )})}
                 {(!isLoading && results.length === 0) && (
                     <div className="col-span-full text-center text-neutral-800 py-8">
-                        Ingen treff
+                        {searchQuery ? 'Ingen treff' : 'Samlinga manglar innhald'}
                     </div>
                 )}
             </div>
