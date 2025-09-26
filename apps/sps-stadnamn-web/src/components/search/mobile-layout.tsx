@@ -28,6 +28,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import { getMyLocation } from "@/lib/map-utils";
 import MapSettings from "../map/map-settings";
 import Drawer from "@/components/ui/drawer";
+import { RoundIconButton } from "../ui/clickable/round-icon-button";
 
 export default function MobileLayout() {
 
@@ -89,21 +90,19 @@ export default function MobileLayout() {
     return <>
         {(snappedPosition !== 'max' || !drawerContent) && <>
             {mode == 'map' && <div className="absolute flex gap-2 top-[4.5rem] right-4 z-[4000]">
-                <ClickableIcon
+                <RoundIconButton
                     label="Min posisjon"
                     onClick={() => { setDrawerContent('mapSettings'); setSnappedPosition('max') }}
-                    className="rounded-full bg-white text-neutral-800 shadow-lg p-3"
                 >
                     <PiStackPlus className="text-2xl" aria-hidden="true" />
-                </ClickableIcon>
+                </RoundIconButton>
             </div>}
             <div className="absolute flex gap-2 right-4 z-[4000]"
                 style={{ bottom: drawerOpen ? `calc(${currentPosition}rem + +.5rem)` : '2rem' }}
             >
-                {drawerContent != 'details' && <ClickableIcon
+                {drawerContent != 'details' && <RoundIconButton
                     onClick={() => toggleDrawer('details')}
                     label="Oppslag"
-                    className={`rounded-full bg-white text-neutral-800 shadow-lg p-3 px-4`}
                 >
                     <span className="flex items-center gap-2 whitespace-nowrap">
                         {!searchFilterParamsString && <PiBookOpen className="text-xl" aria-hidden="true" />}
@@ -113,8 +112,8 @@ export default function MobileLayout() {
                                 <span className="results-badge text-primary-700 bg-primary-200 font-bold left-8 rounded-full py-0.5 text-sm whitespace-nowrap px-1.5">
                                     {formatNumber(totalHits.value)}</span></span> : <span>{groupDoc?._source?.label}</span>}
                     </span>
-                </ClickableIcon>}
-                {mode == 'map' && <ClickableIcon
+                </RoundIconButton>}
+                {mode == 'map' && <RoundIconButton
                     label="Min posisjon"
                     onClick={() => {
                         getMyLocation((location) => {
@@ -122,10 +121,9 @@ export default function MobileLayout() {
                             setMyLocation(location)
                         });
                     }}
-                    className="rounded-full bg-white text-neutral-800 shadow-lg p-3"
                 >
                     <PiGpsFix className="text-2xl" aria-hidden="true" />
-                </ClickableIcon>}
+                </RoundIconButton>}
             </div>
         </>}
 

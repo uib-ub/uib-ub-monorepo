@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useContext } from 'react';
 import OpenSeadragon from 'openseadragon';
-import { PiMagnifyingGlassPlusFill, PiMagnifyingGlassMinusFill, PiCornersOut, PiCaretRightFill, PiCaretLeftFill, PiXBold, PiArrowClockwise, PiDownloadSimple } from 'react-icons/pi';
+import { PiMagnifyingGlassPlusFill, PiMagnifyingGlassMinusFill, PiCornersOut, PiCaretRightFill, PiCaretLeftFill, PiXBold, PiArrowClockwise, PiDownloadSimple, PiMagnifyingGlassMinusBold, PiMagnifyingGlassPlusBold, PiArrowClockwiseBold, PiDownloadSimpleBold, PiCornersOutBold } from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
 import ErrorMessage from '../error-message';
@@ -15,6 +15,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { RoundIconButton } from '../ui/clickable/round-icon-button';
+import { useIIIFSessionStore } from '@/state/zustand/iiif-session-store';
+import { GlobalContext } from '@/state/providers/global-provider';
 
 const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Record<string, any>[], manifestDataset: string, manifestId: string}) => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
@@ -23,6 +26,9 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
   const [currentPage, setCurrentPage] = useState(0);
   const [error, setError] = useState<any>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const currentPosition = useIIIFSessionStore((s) => s.currentPosition)
+  const snappedPosition = useIIIFSessionStore((s) => s.snappedPosition)
+  const { isMobile } = useContext(GlobalContext)
 
 
   useEffect(() => {
@@ -166,32 +172,28 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
       <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner status="Lastar inn bilde" className='w-20 h-20'/></div>
         : null
       }
-      <div className='absolute top-0 flex z-[1000] gap-2 text-xl p-2 text-white w-full'>
-        <IconButton 
+      {(!isMobile || snappedPosition != 'max') && <div className={`absolute xl:bottom-auto xl:top-0 right-0 xl:right-auto xl:left-0 flex z-[1000] gap-2 p-2 text-white`}>
+        {!isMobile && <><RoundIconButton 
           onClick={() => viewer.current?.viewport.zoomBy(1.5)} 
-          className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
           label="Zoom inn">
-            <PiMagnifyingGlassPlusFill aria-hidden="true" />
-        </IconButton>
-        <IconButton 
+            <PiMagnifyingGlassPlusBold className='text-xl xl:text-base' />
+        </RoundIconButton>
+        <RoundIconButton 
           onClick={() => viewer.current?.viewport.zoomBy(0.667)} 
-          className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
           label="Zoom ut">
-            <PiMagnifyingGlassMinusFill aria-hidden="true" />
-        </IconButton>
-        <IconButton 
+            <PiMagnifyingGlassMinusBold  className='text-xl xl:text-base' />
+        </RoundIconButton></>}
+        <RoundIconButton 
           onClick={() => viewer.current?.viewport.goHome()} 
-          className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
           label="Nullstill zoom">
-            <PiArrowClockwise aria-hidden="true" />
-        </IconButton>
+            <PiArrowClockwiseBold  className='text-xl xl:text-base' />
+        </RoundIconButton>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <IconButton 
-              className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
+            <RoundIconButton 
               label="Last ned">
-                <PiDownloadSimple aria-hidden="true" />
-            </IconButton>
+                <PiDownloadSimpleBold className='text-xl xl:text-base'  />
+            </RoundIconButton>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogCancel className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
@@ -233,52 +235,43 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        <IconButton 
+        <RoundIconButton 
           onClick={handleFullscreenClick} 
-          className="p-2 rounded-full border bg-neutral-900 border-white shadow-sm" 
           label="Fullskjerm">
-            <PiCornersOut aria-hidden="true" />
-        </IconButton>
-      </div>
+            <PiCornersOutBold  className='text-xl xl:text-base' />
+        </RoundIconButton>
+      </div>}
 
-      <div className='absolute top-0 right-0 flex z-[1000] gap-2 text-xl p-2 text-white'>
-        {numberOfPages > 1 && <div className="rounded-full border-white bottom-0 border bg-neutral-900 shadow-sm p-2 px-3 flex gap-2">
+      {numberOfPages > 1 && <div 
+        className="absolute right-2 xl:right-1/2 xl:translate-x-1/2 flex z-[1000] font-semibold bg-neutral-950/70 items-center text-white rounded-full backdrop-blur-sm"
+        style={{ bottom: isMobile ? `${currentPosition}rem` : '4rem' }}
+      >
+
           <IconButton 
+          className="p-3"
             onClick={() => viewer.current?.goToPage(currentPage - 1)}
             label="Forrige side">
               <PiCaretLeftFill aria-hidden="true" />
           </IconButton>
           <span className='text-base'>{`${currentPage + 1}/${numberOfPages}`}</span>
           <IconButton 
+          className="p-3"
             onClick={() => viewer.current?.goToPage(currentPage + 1)}
             label="Neste side">
               <PiCaretRightFill aria-hidden="true" />
           </IconButton>
-        </div>}
-      </div>
+
+      </div>}
       
       <div id="openseadragon-viewer" ref={viewerRef} style={{ width: '100%', height: '100%' }}>
-        {isFullScreen && (
+        {isFullScreen && isMobile && (
           <div className='fixed top-4 right-4 z-[9999] text-xl text-white flex gap-2'>
-            {numberOfPages > 1 && <div className="rounded-full border-white items-center border bg-neutral-900 shadow-sm p-2 px-3 flex gap-2">
-          <IconButton 
-            onClick={() => viewer.current?.goToPage(currentPage - 1)}
-            label="Forrige side">
-              <PiCaretLeftFill aria-hidden="true" />
-          </IconButton>
-          <span className='text-base'>{`${currentPage + 1}/${numberOfPages}`}</span>
-          <IconButton 
-            onClick={() => viewer.current?.goToPage(currentPage + 1)}
-            label="Neste side">
-              <PiCaretRightFill aria-hidden="true" />
-          </IconButton>
-        </div>}
-            <IconButton 
+            <RoundIconButton 
               onClick={handleFullscreenClick}
-              className="p-2 px-3 rounded-full border aspect-square bg-neutral-900 border-white shadow-sm items-center" 
+             
               label="Lukk fullskjerm">
                 <PiXBold aria-hidden="true" />
-            </IconButton>
+            </RoundIconButton>
           </div>
         )}
       </div>

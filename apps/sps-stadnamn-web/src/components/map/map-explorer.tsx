@@ -30,6 +30,7 @@ import useOverviewData from "@/state/hooks/overview-data";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { useMapSettings } from '@/state/zustand/persistent-map-settings'
 import ClickableIcon from "../ui/clickable/clickable-icon";
+import { RoundIconButton } from "../ui/clickable/round-icon-button";
 
 const debug = process.env.NODE_ENV === 'development'
 
@@ -901,33 +902,30 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     </Map>
 
     {!isMobile && <div className={`absolute xl:right-0 p-2 bottom-5 right-0 xl:left-1/2 transform xl:-translate-x-1/2 flex flex-col lg:flex-row justify-center gap-2 text-white z-[3001]`}>
-      {!isMobile && <ClickableIcon label="Kartinnstillingar"
-        className="rounded-full bg-white text-neutral-900 shadow-lg p-3" 
+      {!isMobile && <RoundIconButton label="Kartinnstillingar"
         add={{nav: 'mapSettings'}} 
         onClick={() => setDrawerContent('mapSettings')}
       >
         <PiStackPlus className="text-2xl"/>
-      </ClickableIcon>}
-      
-      {!isMobile && <IconButton 
+      </RoundIconButton>}
+
+      {!isMobile && <RoundIconButton 
         onClick={() => mapInstance.current?.zoomIn(2)} 
         side="top" 
-        className="rounded-full bg-white text-neutral-900 shadow-lg p-3" 
         label="Zoom inn"
       >
         <PiMagnifyingGlassPlusFill className="text-2xl" />
-      </IconButton>}
-      
-      {!isMobile && <IconButton 
+      </RoundIconButton>}
+
+      {!isMobile && <RoundIconButton 
         onClick={() => mapInstance.current?.zoomOut(2)} 
         side="top" 
-        className="rounded-full bg-white text-neutral-900 shadow-lg p-3" 
         label="Zoom ut"
       >
         <PiMagnifyingGlassMinusFill className="text-2xl" />
-      </IconButton>}
-      
-      <IconButton 
+      </RoundIconButton>}
+
+      <RoundIconButton 
         onClick={() => {
           getMyLocation((location) => {
             mapFunctionRef?.current?.setView(location, 15)
@@ -935,14 +933,12 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
           })}
         } 
         side="top" 
-        className="rounded-full bg-white text-neutral-900 shadow-lg p-3" 
         label="Min posisjon"
       >
         <PiGpsFix className="text-2xl" />
-      </IconButton>
-      
-      <IconButton 
-        className="rounded-full bg-white text-neutral-900 shadow-lg p-3" 
+      </RoundIconButton>
+
+      <RoundIconButton 
         label="Zoom til søkeresultat" 
         onClick={() => {
           if (searchBounds?.length) {
@@ -951,7 +947,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
         }}
       >
         <PiCrop className="text-2xl" />
-      </IconButton>
+      </RoundIconButton>
     </div>}
   </>
 }

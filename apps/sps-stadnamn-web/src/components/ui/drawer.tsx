@@ -1,5 +1,7 @@
 'use client'
 import { useLayoutEffect, useRef, useState } from "react"
+import { PiCaretUp, PiCaretUpBold } from "react-icons/pi"
+import { RoundIconButton } from "./clickable/round-icon-button"
 
 interface DrawerProps {
     children: React.ReactNode
@@ -262,12 +264,12 @@ export default function Drawer({
                 {children}
             </div>
             {showScrollToTop && (
-                <button
+                <RoundIconButton
                     type="button"
-                    className="absolute right-4 bottom-6 z-[6001] rounded-full bg-white text-neutral-800 shadow-lg px-4 py-2 border border-neutral-200"
+                    className="absolute right-3 top-6 z-[6001] rounded-full"
                     onClick={scrollToTop}
-                    aria-label="Scroll to top"
-                >▲ Til toppen</button>
+                    label="Til toppen"
+                ><PiCaretUpBold className="text-xl xl:text-base"/></RoundIconButton>
             )}
         </div>
     )

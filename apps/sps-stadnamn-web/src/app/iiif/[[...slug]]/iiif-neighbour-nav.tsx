@@ -1,74 +1,71 @@
 import Link from "next/link";
-import { PiArchive, PiArrowElbowRightUp, PiArrowUp, PiArrowUpBold, PiCaretLeftBold, PiCaretLineLeftBold, PiCaretLineRightBold, PiCaretRightBold, PiHouse } from "react-icons/pi";
+import { PiArchive, PiArrowElbowLeftUpBold, PiArrowElbowRightUp, PiArrowUp, PiArrowUpBold, PiCaretLeftBold, PiCaretLineLeftBold, PiCaretLineRightBold, PiCaretRightBold, PiHouse } from "react-icons/pi";
 import { resolveLanguage } from "../iiif-utils";
+import { RoundIconButton } from "@/components/ui/clickable/round-icon-button";
 
-export default function IIIFNeighbourNav({manifest}: {manifest: any}) {
+export default function IIIFNeighbourNav({manifest, isMobile}: {manifest: any, isMobile: boolean}) {
     if (!manifest) return null
+
     return (
-        <nav className="sticky bottom-3 xl:bottom-0 left-3 xl:left-0 right-3 xl:right-0 w-full mt-auto xl:bg-neutral-50 xl:border-t border-neutral-200">
-            <div className="flex flex-row items-center gap-2 p-2">
+        <nav className={`${isMobile ? 'fixed bottom-6 left-4 right-4' : ''} flex items-center gap-2`}>
                 {/* Collection link */}
-                <Link 
+                <RoundIconButton 
                     href={`/iiif${manifest.partOf ? `/${manifest.partOf}` : ''}`} 
-                    className="flex h-10 items-center gap-2 pr-2 bg-neutral-50 rounded-full border-neutral-200 border no-underline min-w-0 flex-shrink" 
-                    aria-label="Gå til overordna samling"
-                >
-                    <div className="bg-white rounded-full p-2 flex-shrink-0">
-                        {manifest?.collections?.length > 0 ? <PiArrowUpBold className="text-xl" aria-hidden="true" /> : <PiHouse className="text-xl" aria-hidden="true" />}
-                    </div>
-                    <span className="truncate pr-2 min-w-0">{manifest?.collections?.length > 0 ? resolveLanguage(manifest.collections[0].label) : 'Arkiv'}</span>
-                </Link>
+                    label="Gå til overordna samling">
+
+                         <PiArrowElbowLeftUpBold className="text-xl xl:text-base"/>
+       
+                </RoundIconButton>
 
                 {/* Navigation controls */}
                 {manifest.order && manifest.parentLength && manifest.partOf && manifest.parentLength > 1 && (
-                    <div className="flex items-center xl:gap-2 divide-x divide-x-neutral-300 bg-neutral-50 h-10 rounded-full xl:ml-auto border-neutral-200 border flex-shrink-0">
+                    <div className="flex xl:gap-2 h-full">
                         {/* First button */}
-                        <Link 
-                            aria-current={manifest.order === 1 ? "page" : undefined} 
-                            aria-label="Første element" 
-                            href={`/iiif/${manifest.partOf}/1`} 
-                            className="flex items-center justify-center bg-white border border-white rounded-l-full xl:rounded-full p-2"
-                        >
-                            <PiCaretLineLeftBold className="text-xl" aria-hidden="true"/>
-                        </Link>
+                        <RoundIconButton
+                            aria-current={manifest.order === 1 ? "page" : undefined}
+                            label="Første element i samlinga"
+                            className="rounded-r-none xl:rounded-full"
+                            href={`/iiif/${manifest.partOf}/1`}                        >
+                            <PiCaretLineLeftBold className="text-xl xl:text-base"/>
+                        </RoundIconButton>
 
                         {/* Previous button */}
-                        <Link
+                        <RoundIconButton    
                             aria-current={manifest.order === 1 ? "page" : undefined}
-                            aria-label="Forrige element"
+                            className="rounded-none xl:rounded-full"
+                            label="Forrige element i samlinga"
                             href={`/iiif/${manifest.partOf}/${Math.max(manifest.order - 1, 1)}`}
-                            className="flex items-center justify-center bg-white border border-white xl:rounded-full p-2"
                         >
-                            <PiCaretLeftBold className="text-xl" aria-hidden="true"/>
-                        </Link>
-                        
+                            <PiCaretLeftBold className="text-xl xl:text-base"/>
+                        </RoundIconButton>
+
                         {/* Counter */}
-                        <span className="p-2 font-semibold">
+                        <div className="flex items-center p-2 px-4 font-semibold bg-neutral-950/70 text-white xl:rounded-full backdrop-blur-sm">
                             {manifest.order}/{manifest.parentLength}
-                        </span>
+                        </div>
 
                         {/* Next button */}
-                        <Link 
-                            aria-current={manifest.order === manifest.parentLength ? "page" : undefined} 
-                            aria-label="Neste element" 
-                            href={`/iiif/${manifest.partOf}/${Math.min(manifest.order + 1, manifest.parentLength)}`} 
-                            className="flex items-center justify-center bg-white xl:rounded-full p-2"
+                        <RoundIconButton
+                            aria-current={manifest.order === manifest.parentLength ? "page" : undefined}
+                            label="Neste element i samlinga"
+                            className="rounded-none xl:rounded-full"
+                            href={`/iiif/${manifest.partOf}/${Math.min(manifest.order + 1, manifest.parentLength)}`}
                         >
-                            <PiCaretRightBold className="text-xl" aria-hidden="true"/>
-                        </Link>
+                            <PiCaretRightBold className="text-xl xl:text-base"/>
+                        </RoundIconButton>
 
                         {/* Last button */}
-                        <Link 
-                            aria-current={manifest.order === manifest.parentLength ? "page" : undefined} 
-                            aria-label="Siste element" 
-                            href={`/iiif/${manifest.partOf}/${manifest.parentLength}`} 
-                            className="flex items-center justify-center bg-white rounded-r-full xl:rounded-full p-2"
+                        <RoundIconButton
+                            aria-current={manifest.order === manifest.parentLength ? "page" : undefined}
+                            className="rounded-l-none xl:rounded-full"
+                            label="Siste element i samlinga"
+                            href={`/iiif/${manifest.partOf}/${manifest.parentLength}`}
                         >
-                            <PiCaretLineRightBold className="text-xl" aria-hidden="true"/>
-                        </Link>
+                            <PiCaretLineRightBold className="text-xl xl:text-base"/>
+                        </RoundIconButton>
                     </div>
                 )}
-            </div>
+
         </nav>
     )
 }

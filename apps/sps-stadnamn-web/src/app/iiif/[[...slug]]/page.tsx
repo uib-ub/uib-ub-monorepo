@@ -40,15 +40,15 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
 <div className={`flex h-[calc(100svh-3.5rem)] min-h-0 w-full`}>
                 <div className={`hidden lg:block h-full w-[20svw] page-info bg-white break-words border-l-2 border-r border-neutral-200 lg:overflow-y-auto overflow-y-auto`}>
             
-               {!isMobile && <div className="flex flex-col min-h-full w-full bg-white">
+               {!isMobile && <div className="flex flex-col min-h-full w-full bg-white">   
                 <IIIFInfoSection manifest={manifest} manifestDataset={manifestDataset} stats={stats} />    
-                <IIIFNeighbourNav manifest={manifest} />            
+                      
                 </div>}
                 </div>
 
-                {isCollection && (
-                <CollectionExplorer manifest={manifest} isCollection={isCollection}/>
-                )}
+                
+                
+                
                 {!isCollection && (isImage || manifest?.audio) && (
                 <div className={`flex-1 min-w-0 bg-neutral-200 flex flex-col`}>
                     {isImage && <div className="relative flex-1"><ImageViewer images={manifest.images} manifestDataset={manifestDataset} manifestId={manifest.uuid}/></div>}
@@ -61,9 +61,10 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
                     </div>}
                 </div>
                 )}
-                
+                {(!isMobile || isCollection) && <CollectionExplorer manifest={manifest} isCollection={isCollection}/>}
+
                 </div>
-                
+
 
                 {/* Mobile preview drawer (persistent, not dismissable) */}
                 {isMobile && <IIIFMobileDrawer manifest={manifest} manifestDataset={manifestDataset} stats={stats} />}

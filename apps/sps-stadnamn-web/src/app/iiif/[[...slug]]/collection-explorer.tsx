@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import IconButton from "@/components/ui/icon-button";
 import { PiInfo } from "react-icons/pi";
 import { useSessionStore } from "@/state/zustand/session-store";
+import IIIFNeighbourNav from "./iiif-neighbour-nav";
 
 const iiifQuery = async (collectionUuid: string, searchQuery: string, size: number) => {
     const params = new URLSearchParams();
@@ -84,15 +85,21 @@ export default function CollectionExplorer({manifest, isCollection}: {manifest: 
         }
     };
 
+    if (!isCollection && !isMobile) {
+        return <div className="absolute top-16 right-2 z-[6000]">
+             <IIIFNeighbourNav manifest={manifest} isMobile={isMobile}/>
+        </div>
+    }
+
 
 
 
     return (
-        <div ref={containerRef} className="flex-1 min-w-0 flex flex-col lg:gap-4 lg:p-4 pb-48 overflow-y-auto lg:overflow-y-auto stable-scrollbar">
-            <div className="w-full z-[6000] flex flex-col xl:flex-row gap-2 border-y xl:border-none border-neutral-200 xl:border-b-0 sticky top-0 xl:top-auto">
+        <div ref={containerRef} className="flex-1 min-w-0 flex flex-col lg:gap-4 lg:p-4 pb-48 overflow-y-auto lg:overflow-y-auto stable-scrollbar bg-neutral-200">
+            <div className="w-full z-[6000] flex flex-col xl:flex-row gap-2  sticky top-0 xl:top-auto">
             {/* Add fixed height and min-height to prevent squishing */}
             {manifest && !isMobile &&
-                <div className=" flex items-center px-2">
+                <div className=" flex items-center px-2 justify-between w-full">
                     <Breadcrumbs
                         homeUrl="/iiif"
                         homeLabel="Arkiv"
@@ -100,18 +107,19 @@ export default function CollectionExplorer({manifest, isCollection}: {manifest: 
                         parentName={manifest.collections?.slice().reverse().map((item: any) => resolveLanguage(item.label))} 
                         currentName={resolveLanguage(manifest.label)} 
                     />
+                    <IIIFNeighbourNav manifest={manifest} isMobile={isMobile}/>
                 </div>
             }
 
-            {isCollection && <div className="flex flex-col lg:flex-row items-center gap-4 lg:ml-auto xl:mr-2">
+            <div className={`flex flex-col lg:flex-row items-center gap-4 lg:ml-auto xl:mr-2`}>
             
 
-            <div className='flex w-full xl:w-80 items-center bg-white xl:border-2 h-12 xl:h-auto border-neutral-200 group xl:px-1 xl:rounded-md px-3'>
+            <div className='flex w-full xl:w-80 items-center bg-white group px-3 xl:px-1 shadow-md border-y border-neutral-300 xl:border-none h-14 xl:h-auto xl:rounded-md'>
                     <PiMagnifyingGlass className="text-3xl xl:text-2xl xl:shrink-0 xl:ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
-                    <label htmlFor="search-input" className="sr-only">Søk</label>
                     <input
                         id={"search-input-" + manifest?.uuid}
                         type="text"
+                        aria-label="Søk i arkivsamling"
                         name="query"
                         value={inputValue.current}
                         onChange={handleSearch}
@@ -133,7 +141,8 @@ export default function CollectionExplorer({manifest, isCollection}: {manifest: 
                         )}
                     </div>
                 </div>
-            </div>}
+            </div>
+                    
             
 
             </div>
@@ -148,7 +157,7 @@ export default function CollectionExplorer({manifest, isCollection}: {manifest: 
                     )})}
                 {(!isLoading && results.length === 0) && (
                     <div className="col-span-full text-center text-neutral-800 py-8">
-                        Fann ikkje noko innhald
+                        Ingen treff
                     </div>
                 )}
             </div>

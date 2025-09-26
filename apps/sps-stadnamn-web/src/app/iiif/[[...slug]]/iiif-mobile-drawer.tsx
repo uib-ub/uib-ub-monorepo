@@ -7,12 +7,15 @@ import Drawer from '@/components/ui/drawer'
 import { resolveLanguage } from '../iiif-utils'
 import { useIIIFSessionStore } from '@/state/zustand/iiif-session-store'
 import IIIFNeighbourNav from './iiif-neighbour-nav'
+import { RoundButton, RoundIconButton } from '@/components/ui/clickable/round-icon-button'
 
 export default function IIIFMobileDrawer({ manifest, manifestDataset, stats }: { manifest: any, manifestDataset: string, stats: any }) {
     const drawerOpen = useIIIFSessionStore((s) => s.drawerOpen)
     const setDrawerOpen = useIIIFSessionStore((s) => s.setDrawerOpen)
-    const [snappedPosition, setSnappedPosition] = useState<'min' | 'max'>('min')
-    const [currentPosition, setCurrentPosition] = useState<number>(0)
+    const currentPosition = useIIIFSessionStore((s) => s.currentPosition)
+    const setCurrentPosition = useIIIFSessionStore((s) => s.setCurrentPosition)
+    const snappedPosition = useIIIFSessionStore((s) => s.snappedPosition)
+    const setSnappedPosition = useIIIFSessionStore((s) => s.setSnappedPosition)
 
  
 
@@ -30,18 +33,17 @@ export default function IIIFMobileDrawer({ manifest, manifestDataset, stats }: {
         >
                 <div className="h-full bg-white">
                     <IIIFInfoSection manifest={manifest} manifestDataset={manifestDataset} stats={stats} />
-                    {snappedPosition == 'max' && <IIIFNeighbourNav manifest={manifest} />}
+                    {snappedPosition == 'max' && <IIIFNeighbourNav manifest={manifest} isMobile={true} />}
                 </div>
         </Drawer>
-        {!drawerOpen && (
-            <button
-                type="button"
-                className="fixed flex gap-2 items-center right-4 z-[6001] rounded-full bg-white text-neutral-800 shadow-lg px-4 py-2 bottom-6 border border-neutral-200"
+        {!drawerOpen && (   
+            <RoundButton
+                className="fixed flex gap-2 items-center right-4 z-[6001] shadow-lg px-4 py-2 bottom-6"
                 onClick={() => { setDrawerOpen(true); }}
-                aria-label="Open details"
-            >{manifest?.type === 'Manifest' ? <PiInfoFill aria-hidden="true" className='text-xl text-primary-600' /> : <PiArchiveFill aria-hidden="true" className='text-xl text-primary-600' />}
+
+            >{manifest?.type === 'Manifest' ? <PiInfoFill aria-hidden="true" className='text-xl text-neutral-700' /> : <PiArchiveFill aria-hidden="true" className='text-xl text-primary-600' />}
                 {manifest?.label ? resolveLanguage(manifest.label) : 'Arkiv'}
-            </button>
+            </RoundButton>
         )}
         </>
     )

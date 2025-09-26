@@ -10,7 +10,7 @@ export default function IIIFInfoSection({manifest, manifestDataset, stats}: {man
 
 
 
-    return <div className={`flex-1 flex flex-col gap-2 p-4 pb-8 w-full`}>
+    return <div className={`flex-1 flex flex-col gap-2 p-4 pb-24 w-full`}>
 
                 <h1>{manifest ? resolveLanguage(manifest.label) : 'Arkiv'}</h1>
                 {manifest?.collections?.length > 0 && (
