@@ -72,7 +72,7 @@ export default function FacetSection() {
     return (
         
         
-        <div className="flex flex-col divide-y divide-neutral-200">
+        <div className="flex flex-col divide-y divide-neutral-200 w-full">
            <FulltextToggle/>
           <Clickable type="button" 
                        aria-expanded={facet == 'dataset'} 

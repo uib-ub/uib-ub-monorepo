@@ -14,6 +14,7 @@ import { useSessionStore } from '@/state/zustand/session-store';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { formatNumber } from '@/lib/utils';
 import { useContext, useEffect, useRef, useState } from 'react';
+import { stringToBase64Url } from '@/lib/param-utils';
 
 export async function autocompleteQuery(searchFilterParamsString: string, inputState: string, isMobile: boolean) {
     if (!inputState) return null
@@ -44,7 +45,6 @@ export default function SearchForm() {
     const datasetTag = searchParams.get('datasetTag')
     const router = useRouter()
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
-    
 
 
     const input = useRef<HTMLInputElement | null>(null)
@@ -85,6 +85,7 @@ export default function SearchForm() {
     const clearQuery = () => {
         inputValue.current = '';
         setInputState('')
+        setSelectedGroup(null) // Clear the selected group when clearing query
         if (input.current) {
             input.current.value = '';
             if (pathname == '/search') {
@@ -154,11 +155,6 @@ export default function SearchForm() {
         <Form ref={form} action="/search" id="search-form" aria-label="Stadnamnsøk"
                 className={`h-14 xl:h-12 ${isMobile && autocompleteOpen ? 'w-[100svw]' : 'w-[calc(100svw-3.5rem)] xl:w-[calc(25svw-4rem)] xl:absolute xl:top-2 xl:left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? 'z-[6000] xl:!rounded-b-none' : 'z-[3000]'}`}
             
-            onBlur={(e) => { 
-                return
-                //if (e.relatedTarget && e.relatedTarget.getAttribute('data-autocomplete-option')) return;
-                //setAutocompleteOpen(false)
-            }}
 
             onSubmit={() => {
                 if (!input.current) return;
@@ -218,6 +214,7 @@ export default function SearchForm() {
             </div>
 
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''} />}
+            {selectedGroup && <input type="hidden" name="group" value={selectedGroup} />}
             <input type="hidden" name="nav" value={'results'} />
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
@@ -229,7 +226,7 @@ export default function SearchForm() {
                         tabIndex={-1} 
                         role="option" 
                         data-autocomplete-option 
-                        onMouseDown={(event) => { dropdownSelect(event, hit.fields["group.id"][0], hit.fields.label[0])}}
+                        onMouseDown={(event) => { dropdownSelect(event, stringToBase64Url(hit.fields["group.id"][0]), hit.fields.label[0])}}
                         aria-selected={selectedGroup == hit.fields["group.id"][0]}>
                         <div className="cursor-pointer flex items-center h-14 xl:h-12 px-2 hover:bg-neutral-100">
                         {hit.fields.location?.length ? (

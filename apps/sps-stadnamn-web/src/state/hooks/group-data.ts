@@ -7,13 +7,23 @@ import { useDocIndex, useGroup } from '@/lib/param-hooks';
 
 const groupDataQuery = async (
     group: string,
-    searchQueryString: string,
+    datasets: string[] | null,
+    datasetTags: string[] | null,
     pageParam: { size: number; from: number },
-    includeFilters: boolean
 ) => {
-    const res = await fetch(
-        `/api/group?${includeFilters ? `${searchQueryString}&` : ''}group=${group}&size=${pageParam.size}&from=${pageParam.from}`
-    )
+    const newParams= new URLSearchParams();
+    newParams.set('group', group);
+    newParams.set('size', pageParam.size.toString());
+    newParams.set('from', pageParam.from.toString());
+    if (datasets) {
+        // Add multiple dataset params, as separate keys
+        datasets.forEach((ds: string) => newParams.append('dataset', ds));
+    }  
+    if (datasetTags) {
+        // Add multiple datasetTag params, as separate keys
+        datasetTags.forEach((tag: string) => newParams.append('datasetTag', tag));
+    }
+    const res = await fetch(`/api/group?${newParams.toString()}`)
     if (!res.ok) {
         throw new Error('Failed to fetch group')
     }
@@ -33,8 +43,9 @@ export default function useGroupData() {
     const { searchQueryString } = useSearchQuery()
     const { groupCode } = useGroup()
     const details = searchParams.get('details')
+    const datasets = searchParams.getAll('dataset')
+    const datasetTags = searchParams.getAll('datasetTag')
 
-    const includeFilters = (!details || details == 'group')
 
     // docIndex is now the driver (instead of docUuid)
     const docIndex = useDocIndex()
@@ -50,9 +61,9 @@ export default function useGroupData() {
         refetch,
         status,
     } = useInfiniteQuery({
-        queryKey: ['group', groupCode, searchQueryString, includeFilters, docIndex],
+        queryKey: ['group', groupCode, searchQueryString, docIndex],
         queryFn: async ({ pageParam }) =>
-            groupCode ? groupDataQuery(groupCode, searchQueryString, pageParam, includeFilters) : null,
+            groupCode ? groupDataQuery(groupCode, datasets, datasetTags, pageParam) : null,
 
         // Use larger initial size when docIndex is 4 or more
         initialPageParam: { size: docIndex >= 4 ? 1000 : docIndex + 5, from: 0 },

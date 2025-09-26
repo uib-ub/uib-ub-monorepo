@@ -23,7 +23,6 @@ export default function DesktopLayout() {
 
     const group = searchParams.get('group')
     const nav = searchParams.get('nav')
-    const datasetTag = searchParams.get('datasetTag')
     const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
     
 
@@ -33,21 +32,10 @@ export default function DesktopLayout() {
         <div className="flex lg:gap-4 flex-col h-full w-[40svw] lg:w-full max-h-[calc(100svh-4rem)] ">
         
 
-        {  nav && nav != 'mapSettings' && (!details || details == 'group') && !(mode != 'map' && mode != 'list' && (doc || group)) && 
-        <section aria-label="Søkeverktøy" className={`xl:absolute left-2 top-[4rem] flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex ${(doc || group) ? 'hidden lg:flex' : 'flex'}`}>
-         <NavWindow/>  
-        </section> 
+        {  nav != 'tree' && mode != 'list' && mode != 'table' && 
+         <NavWindow/>
         }
-        {
-            nav == 'mapSettings' &&
-            <section aria-labelledby="map-options-title" className="xl:absolute left-2 top-14 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex">
-            <div className="flex p-2"><h2 className="text-xl px-1">Kartinnstillingar</h2>
-                <ClickableIcon label="Lukk" remove={["nav"]} onClick={() => setDrawerContent(null)} className="ml-auto">   
-                        <PiX className="text-3xl text-neutral-900"/></ClickableIcon>
-            </div>
-            <MapSettings/>
-            </section>
-        }
+
         {
             nav == 'tree' && 
             <section aria-labelledby="tree-window-title" className="xl:absolute left-2 top-14 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex">
@@ -59,7 +47,7 @@ export default function DesktopLayout() {
 
         
 
-        { mode != 'map' && mode != 'list' && (doc || (group && details == 'group')) && <section className={`lg:absolute left-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md ${(doc || parent) ? 'flex' : 'flex'}`}>
+        { mode != 'map' && mode != 'list' && (doc || group) && <section className={`lg:absolute left-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md`}>
 
             <DetailsWindow/>
 
@@ -92,7 +80,7 @@ export default function DesktopLayout() {
         </div> }
 
 
-        {  mode == 'map' && (doc || (group && details == 'group')) &&
+        {  mode == 'map' && (doc || group) &&
         <div className="lg:absolute lg:right-2 lg:top-2 flex-col max-w-[40svw] xl:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg xl:rounded-md xl:flex">
         
         <DetailsWindow/> 
