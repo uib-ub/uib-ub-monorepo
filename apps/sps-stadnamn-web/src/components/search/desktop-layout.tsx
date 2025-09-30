@@ -14,6 +14,9 @@ import MapSettings from '../map/map-settings';
 import { PiX } from 'react-icons/pi';
 import ClickableIcon from '../ui/clickable/clickable-icon';
 import { useSessionStore } from '@/state/zustand/session-store';
+import FacetSection from './nav/facets/facet-section';
+import DatasetFacet from './nav/facets/dataset-facet';
+import LeftPanel from './nav/left-panel';
 
 export default function DesktopLayout() {    
     const searchParams = useSearchParams()
@@ -24,37 +27,55 @@ export default function DesktopLayout() {
     const group = searchParams.get('group')
     const nav = searchParams.get('nav')
     const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
+
+    const showResults = searchParams.get('showResults')
+    const showOptions = searchParams.get('showOptions')
+    const showGroup = searchParams.get('showGroup')
+
+    const titles = {
+        filters: 'Søkealternativ',
+        results: mode == 'table' ? 'Tabellvisning' : 'Søkeresultat',
+        datasets: 'Datasett',
+    }
     
 
     return <main id="main" className="flex scroll-container relative w-[100svw] h-[100svh] bg-neutral-50">   
 
         
         <div className="flex lg:gap-4 flex-col h-full w-[40svw] lg:w-full max-h-[calc(100svh-4rem)] ">
-        
 
-        {  nav != 'tree' && mode != 'list' && mode != 'table' && 
-         <NavWindow/>
-        }
 
-        {
+             {
             nav == 'tree' && 
             <section aria-labelledby="tree-window-title" className="xl:absolute left-2 top-14 flex-col lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] bg-white shadow-lg rounded-b-md lg:rounded-md flex">
             <TreeWindow/>
             </section>
         }
 
+
+             {  mode == 'map' && (doc || group) &&
+        <div className="lg:absolute lg:left-2 lg:top-16 flex-col max-w-[40svw] xl:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg xl:rounded-md xl:flex">
         
-
-        
-
-        { mode != 'map' && mode != 'list' && (doc || group) && <section className={`lg:absolute left-2 top-2 flex-col max-w-[40svw] lg:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg lg:rounded-md`}>
-
-            <DetailsWindow/>
-
-
-
-            </section>
+        <DetailsWindow/> 
+        </div>
         }
+
+        {  nav != 'tree' && mode != 'list' && mode != 'table' && 
+         <LeftPanel/>
+        }
+        
+
+        {  nav != 'tree' && mode != 'list' && mode != 'table' && 
+         <NavWindow/>
+        }
+
+        
+
+       
+
+
+        
+
 
         <div className={`absolute
                 left-[40svw] top-2 lg:left-[25svw]
@@ -80,12 +101,7 @@ export default function DesktopLayout() {
         </div> }
 
 
-        {  mode == 'map' && (doc || group) &&
-        <div className="lg:absolute lg:right-2 lg:top-2 flex-col max-w-[40svw] xl:w-[calc(25svw-1rem)] !z-[3001] bg-white shadow-lg xl:rounded-md xl:flex">
-        
-        <DetailsWindow/> 
-        </div>
-        }
+       
 
 
 

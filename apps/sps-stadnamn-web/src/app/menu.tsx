@@ -57,25 +57,30 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
 
 
     return (
-        <div ref={menuRef} className={`${menuOpen ? 'z-[7000]' : 'z-[3000]'} flex items-center justify-center h-full`}>
+        <div ref={menuRef} className={`flex items-center justify-center h-full`} style={{zIndex: menuOpen ? 10000 : 10000}}>
             <button id="menu-button" aria-controls="menu_navbar" 
                         onBlur={handleBlur}
                         aria-label="Meny"
                         aria-expanded={menuOpen} 
-                        className={`items-center justify-center flex h-full w-full aspect-square`} 
+                        className={`items-center justify-center flex  aspect-square bg-neutral-50 z-[60000] ${menuOpen ? 'fixed top-0 left-0 w-14 h-14 ': 'h-full w-full shadow-lg border-r border-neutral-200 xl:rounded-l-md'}`} 
                         onClick={() => setMenuOpen(!menuOpen)}>
                 {menuOpen ? <PiX className="text-3xl xl:text-2xl" aria-hidden="true"/> : <PiList className="text-3xl xl:text-2xl" aria-hidden="true"/>}</button>
  
                 <div 
                      id="menu_navbar" 
-                     className={` bg-neutral-50 px-2 w-full xl:w-[calc(25svw-0.5rem)] xl:rounded-r-md xl:shadow-lg overscroll-none h-[calc(100svh-3rem)] overflow-y-auto ${menuOpen ? 'fixed top-14 bottom-0 left-0' : 'hidden'}`}>
+                     className={`bg-neutral-50 w-[calc(100svw-5rem)] xl:w-[calc(25svw-0.5rem)] xl:rounded-r-md shadow-lg overscroll-none h-[100svh] overflow-y-auto fixed top-0 bottom-0 left-0 transition-transform duration-300 ease-in-out ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                          { pathname !== '/' && pathname != '/search' && currentUrl.current && 
                 <div className="flex items-center justify-center py-4 border-b border-neutral-200 gap-2 no-underline text-xl "><Link href={currentUrl.current} className="flex items-center gap-2 no-underline text-xl"><PiCaretLeft className="text-2xl"/>Tilbake til søket</Link>
                 </div>
                 }
-                <nav id="top" className="text-xl py-6 flex flex-col divide-y divide-neutral-200" onBlur={handleBlur}>
-				<div className="flex flex-col gap-2 p-3 w-full">
-                        <span className="text-lg">Stadnamnsøk</span>		
+                <nav id="top" className="text-xl pb-6 flex flex-col" onBlur={handleBlur}>
+                <div className="flex items-center ml-14 h-14 px-2">
+                    <Link href="/" className="text-xl no-underline">stadnamn.no</Link>
+            
+            </div>
+                
+				<div className="flex flex-col gap-2 p-3 w-full ">
+                        <h1 className="text-lg">Stadnamnsøk</h1>		
 					<div className="flex gap-2 items-center w-full pb-3 text-base" role="tablist">
 					
 					<Clickable link href="/search" role="tab" onClick={() => setMenuOpen(false)} aria-selected={modeOutsideSearch == 'map'} add={{mode: 'map'}} className={menuBtn}>
@@ -92,7 +97,6 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
 					</Clickable>
 					</div>
                     </div>
-                    {pathname != "/" && <Link scroll={false} className="flex items-center gap-2 py-3 px-4 lg:mx-0" href="/"><PiHouse aria-hidden="true"/>Til forsida</Link>}
                     <Link scroll={false} className="flex items-center gap-2 py-3 px-4 lg:mx-0" href="/help"><PiQuestion aria-hidden="true"/>Søketips</Link>
                     
                     {false && <div className="flex flex-col gap-2 p-3 w-full">

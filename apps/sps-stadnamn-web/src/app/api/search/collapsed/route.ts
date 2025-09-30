@@ -15,6 +15,8 @@ export async function GET(request: Request) {
   if (!sortArray.length) {
     sortArray = getSortArray(perspective)
   }
+  console.log("PARAMS", reservedParams)
+  console.log("REQUEST", request.url)
     
   const query: Record<string,any> = {
     "size":  reservedParams.size  || 10,
@@ -30,6 +32,12 @@ export async function GET(request: Request) {
     "sort": reservedParams.datasetTag == 'base' ?
     [{'group.id': "asc"}, {'label.keyword': "asc"}]
     : [
+      ...reservedParams.sortPoint ? [{
+        _geo_distance: {
+          location: reservedParams.sortPoint,
+          order: "asc"
+        }
+      }] : [],
       {
         _score: "desc"
       },

@@ -1,3 +1,4 @@
+'use client'
 import ClickableIcon from "../../ui/clickable/clickable-icon"
 import { PiBinocularsFill, PiCrop, PiX } from "react-icons/pi"
 import DocInfo from "./doc/doc-info"

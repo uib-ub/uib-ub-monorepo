@@ -1,3 +1,4 @@
+'use client'
 import { useEffect, useState } from "react";
 import MapExplorer from "./map-explorer";
 import Spinner from "../svg/Spinner";
@@ -31,11 +32,13 @@ export default function MapWrapper() {
         return () => window.removeEventListener('resize', updateDimensions);
     }, []);
 
-
-    if (searchData && containerDimensions) return <MapExplorer containerDimensions={containerDimensions}/>
-    else if (searchError) return <div className="p-4"><ErrorMessage error={searchData} message="Kunne ikkje laste kartet"/></div>
-    else return <div className="flex items-center h-full justify-center bg-neutral-100"><Spinner className="h-32 w-32" status="Lastar kart"/></div>
+    let content;
 
 
+    if (searchData && containerDimensions) content =  <MapExplorer containerDimensions={containerDimensions}/>
+    else if (searchError) content = <div className="p-4"><ErrorMessage error={searchData} message="Kunne ikkje laste kartet"/></div>
+    else content = <div className="flex items-center h-full justify-center bg-neutral-100"><Spinner className="h-32 w-32" status="Lastar kart"/></div>
+
+
+    return content
 }
-    

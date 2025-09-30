@@ -1,3 +1,4 @@
+'use client'
 import { useSearchParams } from "next/navigation"
 import { base64UrlToString } from "./param-utils"
 import { contentSettings } from "@/config/server-config"

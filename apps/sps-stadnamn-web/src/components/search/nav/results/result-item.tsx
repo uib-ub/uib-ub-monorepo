@@ -84,7 +84,7 @@ export default function ResultItem({hit}: {hit: any}) {
                         //...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
                     }}>
                         
-            <div className="flex flex-col w-full">             
+            <div className="flex w-full flex-col">             
              
                 <span className="text-neutral-950 flex gap-2">
                 {isGrunnord && <div className="flex  items-center">
@@ -101,9 +101,10 @@ export default function ResultItem({hit}: {hit: any}) {
 
                     {isGrunnord && <span className="text-lg">{uniqueLabels(hit)}{uniqueLabels(hit).length > 3 && '...'}</span>}
                     {!isGrunnord && <strong>{label}</strong>}
+                     {" "}{detailsRenderer(hit)}
                 </span>
                 
-                {detailsRenderer(hit)} {false &&JSON.stringify(hit)}
+               
                 {hit.highlight && snippetRenderer && <>{snippetRenderer(hit)}</>}
             </div>
             {hit.inner_hits?.group?.hits?.total?.value > 1 && (

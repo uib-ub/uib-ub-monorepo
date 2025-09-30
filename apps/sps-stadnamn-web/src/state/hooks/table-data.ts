@@ -1,3 +1,4 @@
+'use client'
 import { useSearchQuery } from "@/lib/search-params";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";

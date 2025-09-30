@@ -1,3 +1,4 @@
+'use client'
 import { useContext, useMemo, useCallback, useEffect } from "react"
 import ClientThumbnail from "@/components/doc/client-thumbnail"
 import DocInfo from "../details/doc/doc-info"
@@ -48,8 +49,9 @@ function InfiniteScrollTrigger({ children, onLoadMore, canLoadMore }: { children
 }
 
 export default function ListExplorer() {
+    return
     const { isMobile } = useContext(GlobalContext)
-    const {groupData, groupLoading, groupTotal, fetchMore, canFetchMore} = useGroupData()
+    const {groupData, groupLoading, groupTotal} = useGroupData()
     const searchParams = useSearchParams()
     const group = searchParams.get('group')
     const mode = useMode()

@@ -33,16 +33,16 @@ export default function IIIFMobileDrawer({ manifest, manifestDataset, stats }: {
         >
                 <div className="h-full bg-white">
                     <IIIFInfoSection manifest={manifest} manifestDataset={manifestDataset} stats={stats} />
-                    {snappedPosition == 'max' && <IIIFNeighbourNav manifest={manifest} isMobile={true} />}
+                    {snappedPosition == 'max' && drawerOpen &&  <IIIFNeighbourNav manifest={manifest} isMobile={true} />}
                 </div>
         </Drawer>
         {!drawerOpen && (   
             <RoundButton
-                className="fixed flex gap-2 items-center right-4 z-[6001] shadow-lg px-4 py-2 bottom-6"
+                className="fixed flex gap-2 items-center left-4 z-[5001] shadow-lg px-4 py-2 bottom-6"
                 onClick={() => { setDrawerOpen(true); }}
 
-            >{manifest?.type === 'Manifest' ? <PiInfoFill aria-hidden="true" className='text-xl text-neutral-700' /> : <PiArchiveFill aria-hidden="true" className='text-xl text-primary-600' />}
-                {manifest?.label ? resolveLanguage(manifest.label) : 'Arkiv'}
+            >{manifest?.type === 'Manifest' ? <PiInfoFill aria-hidden="true" className='text-xl text-neutral-700' /> : <PiArchiveFill aria-hidden="true" className='text-xl text-neutral-700' />}
+                {manifest?.label ? resolveLanguage(manifest.label) || "[utan namn]" : 'Arkiv'}
             </RoundButton>
         )}
         </>

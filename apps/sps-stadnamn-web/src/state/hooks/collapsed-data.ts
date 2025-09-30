@@ -9,8 +9,16 @@ const PER_PAGE = 40;
 const collapsedDataQuery = async ({
     pageParam = 0,
     searchQueryString,
-}: { pageParam?: number; searchQueryString: string }) => {       
-    const res = await fetch(`/api/search/collapsed?${searchQueryString}&size=${PER_PAGE}&from=${pageParam * PER_PAGE}`)
+    sortPoint
+}: { pageParam?: number; searchQueryString: string, sortPoint: string | null}) => {       
+
+    const newParams = new URLSearchParams(searchQueryString);
+    newParams.set('size', PER_PAGE.toString());
+    newParams.set('from', (pageParam * PER_PAGE).toString());
+    if (sortPoint) {
+        newParams.set('sortPoint', sortPoint);
+    }
+    const res = await fetch(`/api/search/collapsed?${newParams.toString()}`)
     if (!res.ok) {
         throw new Error(res.status.toString())
     }
@@ -27,6 +35,7 @@ export default function useCollapsedData() {
     const initialPage = parseInt(searchParams.get('page') || '1')
     const initialPageRef = useRef(initialPage)
     const { searchQueryString } = useSearchQuery()
+    const sortPoint = searchParams.get('sortPoint')
     
     const {
         data,
@@ -41,7 +50,8 @@ export default function useCollapsedData() {
         queryKey: ['collapsedData', searchQueryString],
         queryFn: ({ pageParam }) => collapsedDataQuery({ 
             pageParam, 
-            searchQueryString 
+            searchQueryString,
+            sortPoint
         }),
         initialPageParam: initialPageRef.current - 1,
         getNextPageParam: (lastPage) => lastPage.nextCursor,

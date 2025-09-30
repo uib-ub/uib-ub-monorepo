@@ -1,3 +1,4 @@
+'use client'
 import { Fragment, useEffect, useRef, useState, useCallback, useMemo, useContext } from "react";
 import Map from "./leaflet/map";
 import { baseMaps, baseMapKeys, defaultBaseMap, baseMapLookup } from "@/config/basemap-config";
@@ -544,6 +545,60 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
 
   return <>
+
+  {mapInstance.current && <>
+  <RoundIconButton label="Kartinnstillingar"
+        className="absolute top-[4.5rem] xl:top-auto right-4 z-[5000] xl:right-1/2 xl:translate-x-[-5.5rem] xl:bottom-8"
+        add={{nav: 'mapSettings'}} 
+        onClick={() => setDrawerContent('mapSettings')}
+      >
+        <PiStackPlus className="text-2xl"/>
+      </RoundIconButton>
+
+      <RoundIconButton 
+        onClick={() => mapInstance.current?.zoomIn(2)} 
+        side="top" 
+        label="Zoom inn"
+        className="invisible xl:visible absolute xl:bottom-8 z-[5000] xl:right-1/2 xl:translate-x-[-2rem]"
+      >
+        <PiMagnifyingGlassPlusFill className="text-2xl" />
+      </RoundIconButton>
+
+      <RoundIconButton 
+        onClick={() => mapInstance.current?.zoomOut(2)} 
+        side="top" 
+        label="Zoom ut"
+        className="invisible xl:visible absolute xl:bottom-8 z-[5000] xl:right-1/2 xl:translate-x-1/2"
+      >
+        <PiMagnifyingGlassMinusFill className="text-2xl" />
+      </RoundIconButton>
+
+      <RoundIconButton 
+        onClick={() => {
+          getMyLocation((location) => {
+            mapFunctionRef?.current?.setView(location, 15)
+            setMyLocation(location)
+          })}
+        } 
+        side="top" 
+        label="Min posisjon"
+        className="absolute right-4 bottom-[5.5rem] xl:bottom-8 z-[5000] xl:right-1/2 xl:translate-x-[5rem]"
+      >
+        <PiGpsFix className="text-2xl" />
+      </RoundIconButton>
+
+      <RoundIconButton 
+        label="Zoom til søkeresultat" 
+        onClick={() => {
+          if (searchBounds?.length) {
+            mapInstance.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+          }
+        }}
+        className="absolute right-4 bottom-8 xl:bottom-8 z-[5000] xl:right-1/2 xl:translate-x-[8.5rem]"
+      >
+        <PiCrop className="text-2xl" />
+      </RoundIconButton>
+      </>}
     <Map
       whenReady={(e: any) => {
         if (!mapInstance.current) {
@@ -556,7 +611,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       zoomSnap={0.5}
       zoomDelta={0.5}
       bounds={snappedBounds}
-      className='w-full h-full'>
+      className='absolute top-0 right-0 h-full w-full'>
       {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon, Popup, MultiPolygon, Polyline }: any, leaflet: any) => {
 
         function EventHandlers() {
@@ -901,53 +956,5 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
     </Map>
 
-    {!isMobile && <div className={`absolute xl:right-0 p-2 bottom-5 right-0 xl:left-1/2 transform xl:-translate-x-1/2 flex flex-col lg:flex-row justify-center gap-2 text-white z-[3001]`}>
-      {!isMobile && <RoundIconButton label="Kartinnstillingar"
-        add={{nav: 'mapSettings'}} 
-        onClick={() => setDrawerContent('mapSettings')}
-      >
-        <PiStackPlus className="text-2xl"/>
-      </RoundIconButton>}
-
-      {!isMobile && <RoundIconButton 
-        onClick={() => mapInstance.current?.zoomIn(2)} 
-        side="top" 
-        label="Zoom inn"
-      >
-        <PiMagnifyingGlassPlusFill className="text-2xl" />
-      </RoundIconButton>}
-
-      {!isMobile && <RoundIconButton 
-        onClick={() => mapInstance.current?.zoomOut(2)} 
-        side="top" 
-        label="Zoom ut"
-      >
-        <PiMagnifyingGlassMinusFill className="text-2xl" />
-      </RoundIconButton>}
-
-      <RoundIconButton 
-        onClick={() => {
-          getMyLocation((location) => {
-            mapFunctionRef?.current?.setView(location, 15)
-            setMyLocation(location)
-          })}
-        } 
-        side="top" 
-        label="Min posisjon"
-      >
-        <PiGpsFix className="text-2xl" />
-      </RoundIconButton>
-
-      <RoundIconButton 
-        label="Zoom til søkeresultat" 
-        onClick={() => {
-          if (searchBounds?.length) {
-            mapInstance.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-          }
-        }}
-      >
-        <PiCrop className="text-2xl" />
-      </RoundIconButton>
-    </div>}
   </>
 }

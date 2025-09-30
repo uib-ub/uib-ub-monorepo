@@ -24,12 +24,7 @@ export default function StatusSection() {
     const datasetTag = searchParams.get('datasetTag')
     const { facetFilters, datasetFilters } = useSearchQuery()
     const fulltext = searchParams.get('fulltext')
-    const filterCount = facetFilters.length + datasetFilters.length + (fulltext ? 1 : 0)
-    const snappedPosition = useSessionStore((s) => s.snappedPosition)
-    const drawerContent = useSessionStore((s) => s.drawerContent)
-    const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
-    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
-    const setCurrentPosition = useSessionStore((s) => s.setCurrentPosition)
+
 
 
     return <div className={`flex flex-col gap-2 ${mode == 'map' ? '' : 'px-2 pt-4 pb-2'}`}> 

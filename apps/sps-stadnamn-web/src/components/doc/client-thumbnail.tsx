@@ -1,4 +1,4 @@
-import useDocData from "@/state/hooks/doc-data"
+'use client'
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { PiCaretLeft, PiCaretRight } from "react-icons/pi"

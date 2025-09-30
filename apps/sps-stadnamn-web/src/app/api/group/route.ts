@@ -45,7 +45,7 @@ export async function GET(request: Request) {
         }
       },
     ],
-    "_source": true
+    "_source": ["uuid", "label", "attestations", "sosi", "content", "image", "recordings", "location"]
   }
 
 
@@ -70,6 +70,61 @@ export async function GET(request: Request) {
   
   
   const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
-  return Response.json(data, {status: status})
+
+
+  const topDoc = data.hits?.hits?.[0]?._source
+  const group = topDoc?.group
+  const { adm1, adm2, adm3 } = group || {}
+  const label = topDoc?.label
+  
+
+
+  console.log('GROUP DATA', {adm1, adm2, adm3, label})
+
+  type OutputData = {
+    label: any;
+    adm1?: any;
+    adm2?: any;
+    adm3?: any;
+    viewport?: any;
+    total?: number;
+    sources: {uuid: string, label: string, sosi: string, location?: any}[];
+  };
+
+  const outputData: OutputData = {
+    label,
+    ...adm1 ? {adm1} : {},
+    ...adm2 ? {adm2} : {},
+    ...adm3 ? {adm3} : {},
+    "sources": data.hits?.hits.map((hit: any) => {
+      return {uuid: hit._source.uuid, 
+              dataset: hit._index.split('-')[2],
+              ...hit._source.label != label ? {label: hit._source.label} : {},
+              ...hit.attestations ? {attestations: hit._source.attestations} : {}, 
+              ...hit.location ? {location: hit._source.location} : {},
+              ...hit.sosi ? {sosi: hit._source.sosi,
+              ...hit._source.content ? {content: hit._source.content} : {},
+              ...hit._source.image ? {image: hit._source.image} : {},
+              ...hit._source.recordings ? {recordings: hit._source.recordings} : {},
+                } : {}}
+    }) || []
+  }
+              
+              
+ 
+
+  if (data.aggregations?.viewport?.bounds) {
+    outputData['viewport'] = data.aggregations.viewport.bounds
+  }
+
+  outputData['total'] = data.hits?.total?.value || 0
+
+
+
+
+
+
+
+  return Response.json(outputData, {status: status})
   
 }

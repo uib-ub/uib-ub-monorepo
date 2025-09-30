@@ -1,3 +1,4 @@
+'use client'
 import { GlobalContext } from "@/state/providers/global-provider";
 import IconButton from "@/components/ui/icon-button";
 import { facetConfig } from "@/config/search-config";

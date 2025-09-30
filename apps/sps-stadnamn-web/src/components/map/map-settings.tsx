@@ -1,3 +1,4 @@
+'use client'
 import { baseMaps } from "@/config/basemap-config";
 import { useMapSettings } from "@/state/zustand/persistent-map-settings";
 import { PiCheckCircleFill } from "react-icons/pi";

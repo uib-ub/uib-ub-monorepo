@@ -1,3 +1,4 @@
+'use client'
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { useDocIndex } from "@/lib/param-hooks";

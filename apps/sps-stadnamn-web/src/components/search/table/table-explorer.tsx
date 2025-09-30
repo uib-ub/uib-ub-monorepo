@@ -1,3 +1,4 @@
+'use client'
 import { facetConfig } from "@/config/search-config"
 import { contentSettings, treeSettings } from "@/config/server-config"
 import { usePerspective } from "@/lib/param-hooks"

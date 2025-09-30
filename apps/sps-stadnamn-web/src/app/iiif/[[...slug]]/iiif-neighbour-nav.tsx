@@ -2,6 +2,8 @@ import Link from "next/link";
 import { PiArchive, PiArrowElbowLeftUpBold, PiArrowElbowRightUp, PiArrowUp, PiArrowUpBold, PiCaretLeftBold, PiCaretLineLeftBold, PiCaretLineRightBold, PiCaretRightBold, PiHouse } from "react-icons/pi";
 import { resolveLanguage } from "../iiif-utils";
 import { RoundIconButton } from "@/components/ui/clickable/round-icon-button";
+import IconButton from "@/components/ui/icon-button";
+import IconLink from "@/components/ui/icon-link";
 
 export default function IIIFNeighbourNav({manifest, isMobile}: {manifest: any, isMobile: boolean}) {
     if (!manifest) return null
@@ -16,50 +18,49 @@ export default function IIIFNeighbourNav({manifest, isMobile}: {manifest: any, i
                 </RoundIconButton>
 
                 {(manifest.order && manifest.parentLength && manifest.partOf && manifest.parentLength > 1) ? (
-                    <div className="flex xl:gap-2 h-full">
+                    <div className="flex h-full items-center font-semibold bg-neutral-950/70 text-white rounded-full backdrop-blur-sm px-2">
                         {/* First button */}
-                        <RoundIconButton
-                            aria-current={manifest.order === 1 ? "page" : undefined}
+                        {manifest.parentLength > 3 && <IconLink
                             label="Første element i samlinga"
-                            className="rounded-r-none xl:rounded-full"
+                            className="rounded-full p-1 xl:p-2"
                             href={`/iiif/${manifest.partOf}/1`}                        >
                             <PiCaretLineLeftBold className="text-xl xl:text-base"/>
-                        </RoundIconButton>
+                        </IconLink>}
 
                         {/* Previous button */}
-                        <RoundIconButton    
+                        <IconLink    
                             aria-current={manifest.order === 1 ? "page" : undefined}
-                            className="rounded-none xl:rounded-full"
+                            className="rounded-full p-1 xl:p-2"
                             label="Forrige element i samlinga"
                             href={`/iiif/${manifest.partOf}/${Math.max(manifest.order - 1, 1)}`}
                         >
                             <PiCaretLeftBold className="text-xl xl:text-base"/>
-                        </RoundIconButton>
+                        </IconLink>
 
                         {/* Counter */}
-                        <div className="flex items-center p-2 px-4 font-semibold bg-neutral-950/70 text-white xl:rounded-full backdrop-blur-sm">
+                        <div className="flex items-center p-1 xl:p-2">
                             {manifest.order}/{manifest.parentLength}
                         </div>
 
                         {/* Next button */}
-                        <RoundIconButton
+                        <IconLink
                             aria-current={manifest.order === manifest.parentLength ? "page" : undefined}
                             label="Neste element i samlinga"
-                            className="rounded-none xl:rounded-full"
+                            className="rounded-full p-1 xl:p-2"
                             href={`/iiif/${manifest.partOf}/${Math.min(manifest.order + 1, manifest.parentLength)}`}
                         >
                             <PiCaretRightBold className="text-xl xl:text-base"/>
-                        </RoundIconButton>
+                        </IconLink>
 
                         {/* Last button */}
-                        <RoundIconButton
+                        {manifest.parentLength > 3 && <IconLink
                             aria-current={manifest.order === manifest.parentLength ? "page" : undefined}
-                            className="rounded-l-none xl:rounded-full"
+                            className="rounded-full p-1 xl:p-2"
                             label="Siste element i samlinga"
                             href={`/iiif/${manifest.partOf}/${manifest.parentLength}`}
                         >
                             <PiCaretLineRightBold className="text-xl xl:text-base"/>
-                        </RoundIconButton>
+                        </IconLink>}
                     </div>
                 ) : null}
 

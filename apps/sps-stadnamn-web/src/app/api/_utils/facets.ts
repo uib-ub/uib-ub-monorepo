@@ -30,7 +30,11 @@ export const RESERVED_PARAMS = [
   'facetQuery',
   'mode',
   'geotile',
-  'docIndex'
+  'docIndex',
+
+  'sortPoint',
+  'options',
+  'results'
 ] as const;
 
 export function extractFacets(request: Request) {

@@ -1,3 +1,4 @@
+'use client'
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
@@ -12,7 +13,6 @@ import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import ExternalLinkTooltip from "@/components/ui/clickable/external-link-tooltip"
 import IconLink from "@/components/ui/icon-link"
 import FacetsInfobox from "@/components/doc/facets-infobox"
-import SearchDocInfo from "@/components/doc/search-doc-info"
 import { facetConfig } from "@/config/search-config"
 import { getFieldValue, getValueByPath } from "@/lib/utils"
 import ErrorMessage from "@/components/error-message"
@@ -130,7 +130,6 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
        
             
       
-      { docDataset == 'search' && <SearchDocInfo docSource={docSource}/> }
 
       { docSource.attestations && <Timeline arr={docSource.attestations} parent={docSource.uuid}/> }
       

@@ -41,10 +41,10 @@ export default function SearchForm() {
     const setAutocompleteOpen = useSessionStore((s: any) => s.setAutocompleteOpen)
     const setDrawerContent = useSessionStore((s: any) => s.setDrawerContent)
     const setSnappedPosition = useSessionStore((s: any) => s.setSnappedPosition)
-    const setCurrentPosition = useSessionStore((s: any) => s.setCurrentPosition)
     const datasetTag = searchParams.get('datasetTag')
     const router = useRouter()
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
+    const nav = searchParams.get('nav')
 
 
     const input = useRef<HTMLInputElement | null>(null)
@@ -59,6 +59,7 @@ export default function SearchForm() {
    
 
     const [inputState, setInputState] = useState<string>(inputValue.current || '') // Ensure updates within the component
+    const [sortPoint, setSortPoint] = useState<string>()
     const [autocompleteFacetFilters, setAutocompleteFacetFilters] = useState<[string, string][]>(facetFilters)
     const [autocompleteDatasetFilters, setAutocompleteDatasetFilters] = useState<[string, string][]>(datasetFilters)
 
@@ -69,10 +70,17 @@ export default function SearchForm() {
     })
 
 
-    const dropdownSelect = (event: React.MouseEvent<HTMLLIElement>, group: string, label: string) => {
+    const dropdownSelect = (event: React.MouseEvent<HTMLLIElement>, group: string, label: string, coordinates: [number, number]) => {
         inputValue.current = label
         setSelectedGroup(group)
         setInputState(label)
+        if (coordinates?.length == 2) {
+            setSortPoint(coordinates[1] + "," + coordinates[0])
+        } 
+        else {
+            setSortPoint(undefined)
+        }
+
         if (input.current) {
             input.current.value = label // ensure the form control has the new value
         }
@@ -151,7 +159,7 @@ export default function SearchForm() {
 
 
     return <div className="flex">
-        <header className={`${isMobile && autocompleteOpen ? 'sr-only' : 'flex xl:absolute xl:top-2 xl:left-2 w-14 h-14 xl:h-12 xl:w-auto'} ${(autocompleteOpen || menuOpen) ? 'z-[6000] xl:!rounded-b-none' : 'z-[3000] shadow-lg'} bg-neutral-50 xl:rounded-l-md`}><Menu shadow/></header>
+        <header className={`${isMobile && autocompleteOpen ? 'sr-only' : 'flex xl:absolute xl:top-2 xl:left-2 w-14 h-14 xl:h-12 xl:w-auto'} ${(autocompleteOpen || menuOpen) ? 'xl:!rounded-b-none' : 'shadow-lg'} bg-neutral-50 xl:rounded-l-md`}><Menu shadow/></header>
         <Form ref={form} action="/search" id="search-form" aria-label="Stadnamnsøk"
                 className={`h-14 xl:h-12 ${isMobile && autocompleteOpen ? 'w-[100svw]' : 'w-[calc(100svw-3.5rem)] xl:w-[calc(25svw-4rem)] xl:absolute xl:top-2 xl:left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? 'z-[6000] xl:!rounded-b-none' : 'z-[3000]'}`}
             
@@ -171,7 +179,7 @@ export default function SearchForm() {
             <div className='flex w-full h-full pr-1 bg-white shadow-lg xl:shadow-l-none xl:rounded-l-none xl:rounded-md items-center relative group'>
                 
                 <label htmlFor="search-input" className="sr-only">Søk</label>
-            { datasetTag != 'tree' && !(isMobile && autocompleteOpen) && <ClickableIcon onClick={() => {setDrawerContent('filters'); setSnappedPosition('max')}} add={{nav: 'filters'}} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
+            { datasetTag != 'tree' && !(isMobile && autocompleteOpen) && <ClickableIcon onClick={() => {setDrawerContent('filters'); setSnappedPosition('max')}} add={{nav: nav == 'filters' ? null : 'filters'}} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
             <PiSliders className="text-3xl xl:text-2xl" aria-hidden="true"/>
             {filterCount > 0 && <span className={`results-badge bg-primary-500 absolute top-1 left-1 rounded-full text-white text-xs ${filterCount < 10 ? 'px-1.5' : 'px-1'}`}>
                         {formatNumber(filterCount)}
@@ -192,7 +200,9 @@ export default function SearchForm() {
                     defaultValue={searchParams.get('q') || inputValue.current || ''}
                     autoComplete="off"
                     autoFocus={!isMobile && pathname == '/search'}
-                    onFocus={() => {setAutocompleteOpen(true)}}
+                    onFocus={() => { 
+                        if (inputValue.current?.length) return; setAutocompleteOpen(true);
+                    }}
                     onBlur={() => setAutocompleteOpen(false)}
 
 
@@ -201,10 +211,11 @@ export default function SearchForm() {
                 />
 
                 {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset} />)}
+                {sortPoint && <input type="hidden" name="sortPoint" value={sortPoint} />}
                 {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''} />}
                 {false && `${JSON.stringify(autocompleteFacetFilters)}${JSON.stringify(autocompleteDatasetFilters)}`}
 
-                {(inputState || searchFilterParamsString?.length > 0) &&
+                {(inputState || searchFilterParamsString?.length > 0) && !menuOpen &&
                     <IconButton onClick={() => { clearQuery() }}
 
                         // Replace results with filters if no facetFilters
@@ -215,7 +226,7 @@ export default function SearchForm() {
 
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''} />}
             {selectedGroup && <input type="hidden" name="group" value={selectedGroup} />}
-            <input type="hidden" name="nav" value={'results'} />
+            <input type="hidden" name="results" value={'on'} />
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
@@ -226,7 +237,7 @@ export default function SearchForm() {
                         tabIndex={-1} 
                         role="option" 
                         data-autocomplete-option 
-                        onMouseDown={(event) => { dropdownSelect(event, stringToBase64Url(hit.fields["group.id"][0]), hit.fields.label[0])}}
+                        onMouseDown={(event) => { dropdownSelect(event, stringToBase64Url(hit.fields["group.id"][0]), hit.fields.label[0], hit.fields.location?.[0].coordinates) }}
                         aria-selected={selectedGroup == hit.fields["group.id"][0]}>
                         <div className="cursor-pointer flex items-center h-14 xl:h-12 px-2 hover:bg-neutral-100">
                         {hit.fields.location?.length ? (

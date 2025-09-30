@@ -14,7 +14,7 @@ import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { useSessionStore } from '@/state/zustand/session-store';
 import { useSearchQuery } from '@/lib/search-params';
 
-export default function NavWindow() {
+export default function LeftPanel() {
     const searchParams = useSearchParams()
     const mode = useMode()
     const nav = searchParams.get('nav')
@@ -33,41 +33,23 @@ export default function NavWindow() {
 
 
 
-    return <div className={`xl:absolute right-2 top-2 lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] max-h-[calc(100svh-4.5rem)] flex flex-col`}>
+    return <div className={`xl:absolute left-2 top-[4rem] lg:w-[calc(25svw-1rem)] max-w-[40svw] !z-[3001] max-h-[calc(100svh-4.5rem)] flex flex-col`}>
 
 
-        {mode != 'table' && ((nav == 'datasets' || nav == 'filters') || (totalHits?.value > 0 && searchFilterParamsString)) && false &&
+        {totalHits?.value > 0 && searchFilterParamsString &&
             <div className="flex flex-col w-full items-center gap-2 mb-2 scroll-container bg-white rounded-md shadow-lg max-h-[calc(100svh-8rem)]">
                 <div className="flex border-b border-neutral-200 min-h-12 items-center px-2 w-full"><h2 className="text-xl px-1">{nav == 'datasets' ? 'Datasett' : 'Søkealternativ'}</h2>
                     <ClickableIcon label="Lukk" remove={["nav"]} onClick={() => setDrawerContent(null)} className="ml-auto">
                         <PiX className="text-3xl text-neutral-900" /></ClickableIcon>
                 </div>
-                {(nav == 'datasets' || nav == 'filters') && <div className="flex flex-col items-center gap-2 w-full overflow-y-auto stable-scrollbar max-h-[calc(100svh-3.5rem)] xl:max-h-[calc(100svh-6rem)] px-2">
+                { <div className="flex flex-col items-center gap-2 w-full overflow-y-auto stable-scrollbar max-h-[calc(100svh-3.5rem)] xl:max-h-[calc(100svh-6rem)] px-2">
                 {nav == 'datasets' && <DatasetFacet />}
-                {nav == 'filters' && <FacetSection />}
+                {<FacetSection />}
             </div>}
             </div>
         }
 
 
-        {mode != 'table' && totalHits?.value > 0 && searchFilterParamsString &&
-        <div className="flex flex-col items-center gap-2 w-full scroll-container bg-white rounded-md shadow-lg">
-
-                <Clickable onClick={() => setDrawerContent(null)} add={{nav: nav == 'results' ? null : 'results'}} className="flex border-b border-neutral-200 min-h-12 items-center px-2 w-full">
-                    
-                    <h2 className="flex items-center gap-2 whitespace-nowrap">
-                                                <span className="space-x-1">
-                                                    <span className="uppercase tracking-wider font-semibold">Treff</span>
-                                                    <span className="results-badge text-primary-700 bg-primary-200 font-bold left-8 rounded-full py-0.5 text-sm whitespace-nowrap px-1.5">
-                                                        {formatNumber(totalHits.value)}</span></span>
-                            </h2>
-
-                        {nav == 'results' ? <PiCaretUp className="ml-auto text-xl text-primary-600" aria-hidden="true"/> 
-                        : <PiCaretDown className="ml-auto text-xl text-primary-600" aria-hidden="true"/>}
-                </Clickable>
-                { <div className="w-full overflow-y-auto stable-scrollbar max-h-[calc(100svh-3.5rem)] xl:max-h-[calc(100svh-6rem)]"><SearchResults /></div>}
-        </div>
-        }
 
 
 
