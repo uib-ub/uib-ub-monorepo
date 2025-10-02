@@ -59,6 +59,7 @@ export default function useGroupData() {
 
     return {
         groupData: processedData,
+        groupTotal: processedData?.total,
         groupError,
         groupLoading, //|| (isFetchingNextPage && !processedData?.shouldExposeData),
         groupRefetching,
