@@ -34,6 +34,7 @@ export default function Drawer({
     const [snapped, setSnapped] = useState(false)
     const startTouchY = useRef(0)
     const startTouchX = useRef(0)
+    const startTouchTime = useRef(0)
     
     const lastRawHeightRef = useRef<number>(0)
     const localScrollRef = useRef<HTMLDivElement>(null)
@@ -153,6 +154,7 @@ export default function Drawer({
         startTouchY.current = e.touches[0].clientY
         startTouchX.current = e.touches[0].clientX
         setSnapped(false)
+        startTouchTime.current = Date.now()
         // If at max and content cannot scroll, prevent default early to avoid viewport gestures
         if (e.cancelable && atMax() && !isScrollable()) {
             e.preventDefault()
@@ -176,8 +178,16 @@ export default function Drawer({
             return
         }
 
+        // Only apply swipe-based snapping if dragging is allowed per current logic
+        const durationMs = Math.max(1, Date.now() - startTouchTime.current)
+        const dragAllowedNow = !(shouldAllowScroll() && (effectiveScrollRef.current?.scrollTop || 0) > 0)
+        if (!dragAllowedNow) return
+
+        const quickSwipe = durationMs < 300 && Math.abs(swipeDistance) > 30
         const mid = (minHeightRem + maxRem()) / 2
-        let snapTarget = currentPosition < mid ? minHeightRem : maxRem()
+        let snapTarget = quickSwipe
+            ? (swipeDistance > 0 ? maxRem() : minHeightRem)
+            : (currentPosition < mid ? minHeightRem : maxRem())
         if (snapTarget > maxRem()) snapTarget = maxRem()
         if (!dismissable && snapTarget < minHeightRem) snapTarget = minHeightRem
         setCurrentPosition(snapTarget)
