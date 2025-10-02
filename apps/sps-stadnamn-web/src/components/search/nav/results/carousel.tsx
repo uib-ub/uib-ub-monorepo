@@ -13,12 +13,19 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
     return <div className="flex flex-row h-64 relative">
         
         
-            <div key={items[currentIndex].uuid} className="w-full h-full bg-neutral-100 border-y border-neutral-300 flex flex-col">
+            <div key={items[currentIndex].uuid} className="w-full h-full bg-neutral-50 border-y border-neutral-300 flex flex-col">
                 <div className="overflow-hidden h-full">
                 
                 {items[currentIndex].iiif && <ClientThumbnail iiif={items[currentIndex].iiif}/>}
-                {items[currentIndex].content?.html && <div className="p-2 bg-neutral-50 h-full text-black" dangerouslySetInnerHTML={{ __html: items[currentIndex].content.html }} />}
-                {items[currentIndex].content?.text && <div className="p-2 bg-neutral-50 h-full text-black" dangerouslySetInnerHTML={{ __html: items[currentIndex].content.text }} />}
+                {items[currentIndex].content?.html && <div className="p-2 h-full text-black relative">
+                    <div dangerouslySetInnerHTML={{ __html: items[currentIndex].content.html }} />
+                    <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-neutral-50 to-transparent pointer-events-none" />
+                </div>}
+                {items[currentIndex].content?.text && <div className="p-2 h-full text-black relative">
+                    <div dangerouslySetInnerHTML={{ __html: items[currentIndex].content.text }} />
+                    <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-neutral-50 to-transparent pointer-events-none" />
+                </div>}
+                
                 </div>
                 <div className="flex flex-row gap-2 p-1 items-center border-t border-neutral-300">
                 {currentIndex > 0 && <RoundIconButton label="Forrige" className="size-8 flex items-center justify-center" onClick={() => setCurrentIndex(currentIndex - 1)}><PiCaretLeft className="text-sm"/></RoundIconButton>}
