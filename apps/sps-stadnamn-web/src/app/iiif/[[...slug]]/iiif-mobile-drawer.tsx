@@ -24,7 +24,8 @@ export default function IIIFMobileDrawer({ manifest, manifestDataset, stats }: {
     return (
         <>
         <Drawer
-            drawerOpen={drawerOpen}
+            drawerOpen={true}
+            dismissable={false}
             setDrawerOpen={setDrawerOpen}
             snappedPosition={snappedPosition}
             currentPosition={currentPosition}
@@ -36,7 +37,7 @@ export default function IIIFMobileDrawer({ manifest, manifestDataset, stats }: {
                     {snappedPosition == 'max' && drawerOpen &&  <IIIFNeighbourNav manifest={manifest} isMobile={true} />}
                 </div>
         </Drawer>
-        {!drawerOpen && (   
+        {false && !drawerOpen && (   
             <RoundButton
                 className="fixed flex gap-2 items-center left-4 z-[5001] shadow-lg px-4 py-2 bottom-6"
                 onClick={() => { setDrawerOpen(true); }}

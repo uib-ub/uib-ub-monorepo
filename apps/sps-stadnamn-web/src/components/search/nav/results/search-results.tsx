@@ -4,10 +4,18 @@ import ResultItem from "./result-item";
 import { getSkeletonLength } from "@/lib/utils";
 import useCollapsedData from "@/state/hooks/collapsed-data";
 import useSearchData from "@/state/hooks/search-data";
+import GroupInfo from "../../details/group/group-info";
+//import { useGroup } from "@/lib/param-hooks";
+import Clickable from "@/components/ui/clickable/clickable";
+import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
+import { useSearchParams } from "next/navigation";
+import { useGroup } from "@/lib/param-hooks";
 
 export default function SearchResults() {
   const { searchError } = useSearchData()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
+  const { groupValue } = useGroup()
+  const searchParams = useSearchParams()
   
   // Use the enhanced infinite query hook
   const {
@@ -19,6 +27,8 @@ export default function SearchResults() {
     collapsedStatus,
     collapsedInitialPage
   } = useCollapsedData()
+
+  
 
 
 
@@ -45,6 +55,24 @@ export default function SearchResults() {
     return () => observer.disconnect()
   }, [handleObserver])
 
+   // DEBUG: Check if component remounts
+   const renderCount = useRef(0)
+   const mountCount = useRef(0)
+   
+   useEffect(() => {
+     mountCount.current += 1
+     console.log('🔴 SearchResults MOUNTED (mount #' + mountCount.current + ')')
+     return () => {
+       console.log('🔴 SearchResults UNMOUNTED')
+     }
+   }, [])
+   
+   renderCount.current += 1
+   console.log('🔵 SearchResults RENDER #' + renderCount.current + ', groupValue:', groupValue)
+   
+
+
+
   // Render loading state
   if (collapsedStatus === 'pending' && collapsedInitialPage === 1) {
     return (
@@ -65,17 +93,24 @@ export default function SearchResults() {
 
   return (
     <div ref={resultsContainerRef}>
-      <ul id="result_list" className='flex flex-col mb-2'>
-        {collapsedData?.pages.map((page, pageIndex) => (
-            <Fragment key={`page-${pageIndex}`}>
-            {page.data?.map((item: any, itemIndex: number) => (
-              <ResultItem 
-              key={`item-${pageIndex}-${itemIndex}`} 
-              hit={item}
-              />
-            ))}
-            </Fragment>
-        ))}
+      <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-200'>
+      {collapsedData?.pages.map((page, pageIndex) => (
+    <Fragment key={`page-${pageIndex}`}>
+    {page.data?.map((item: any) => {
+      const expanded = groupValue == item.fields["group.id"]
+      const itemKey = item.fields["group.id"]?.[0] || item._id || item.fields.uuid?.[0]
+      return (
+        <li key={itemKey}>
+        <ResultItem 
+          hit={item}
+          aria-controls={`group-info-${item.fields["group.id"]}`}
+          aria-expanded={expanded}
+        />
+        { expanded && <div id={`group-info-${item.fields["group.id"]}`}><GroupInfo/></div>}
+      </li>
+      )})}
+    </Fragment>
+))}
         
         {/* Loading more indicator — attach observer to the skeleton block */}
         {collapsedHasNextPage && (

@@ -3,18 +3,9 @@ import { Fragment, useEffect, useRef, useState, useCallback, useMemo, useContext
 import Map from "./leaflet/map";
 import { baseMaps, baseMapKeys, defaultBaseMap, baseMapLookup } from "@/config/basemap-config";
 import { PiBookOpen, PiBookOpenFill, PiCheckCircleFill, PiCrop, PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill, PiStackPlus, PiStackPlusFill, PiStackSimpleFill } from "react-icons/pi";
-import IconButton from "../ui/icon-button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { useSearchQuery } from "@/lib/search-params";
 import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 import { useSearchParams } from "next/navigation";
-import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import * as h3 from "h3-js";
 import { useRouter } from "next/navigation";
 import wkt from 'wellknown';
@@ -27,17 +18,16 @@ import { useGroup, usePerspective } from "@/lib/param-hooks";
 import { GlobalContext } from "@/state/providers/global-provider";
 import Clickable from "../ui/clickable/clickable";
 import useGroupData from "@/state/hooks/group-data";
-import useOverviewData from "@/state/hooks/overview-data";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { useMapSettings } from '@/state/zustand/persistent-map-settings'
-import ClickableIcon from "../ui/clickable/clickable-icon";
 import { RoundIconButton } from "../ui/clickable/round-icon-button";
+import DynamicMap from "./leaflet/dynamic-map";
 
 const debug = process.env.NODE_ENV === 'development'
 
 
 
-export default function MapExplorer({ containerDimensions }: { containerDimensions: { width: number, height: number } }) {
+export default function MapExplorer() {
   const { totalHits, searchBounds, searchLoading, searchUpdatedAt } = useSearchData()
   const myLocation = useSessionStore((s) => s.myLocation)
   const setMyLocation = useSessionStore((s) => s.setMyLocation)
@@ -52,37 +42,30 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
   const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
   const allowFitBounds = useRef(false)
   const { groupValue } = useGroup()
-  const { groupLoading, groupTotal } = useGroupData()
+  const { groupLoading } = useGroupData()
   const { isMobile, mapFunctionRef } = useContext(GlobalContext)
-  const { overviewGroups } = useOverviewData()
-  const details = searchParams.get('details')
   const mapInstance = useRef<any>(null)
   const doc = searchParams.get('doc')
   const datasetTag = searchParams.get('datasetTag')
   const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
 
+  const defaultZoom = isMobile ? 4 : 5
+  const defaultCenter: [number, number] = isMobile ? [62, 16] :  [62, 16]
 
 
-  const dedupedOverviewDocs = useMemo(() => {
-    const seen = new Set<string>();
-    return (overviewGroups ?? [])
-      .flatMap((dataset: any) => dataset?.results ?? [])
-      .map((item: any) => item.doc)
-      .filter((doc: any) => doc?._source?.location?.coordinates?.[0] != null && doc?._source?.location?.coordinates?.[1] != null)
-      .filter((doc: any) => {
-        if (seen.has(doc._id)) return false;
-        seen.add(doc._id);
-        return true;
-      });
-  }, [overviewGroups])
-
-
-  // Calculate initial bounds based on zoom level and center before map renders
   const [snappedBounds, setSnappedBounds] = useState<[[number, number], [number, number]]>(() => {
-    if (urlCenter && urlCenter.length === 2 && urlZoom !== null) {
+    const center = urlCenter || defaultCenter
+    const zoom = urlZoom || defaultZoom
+    if (center && center.length === 2 && zoom !== null) {
       // Calculate bounds based on zoom level and center point
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      // Get the computed value of 3rem in pixels
+      const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+      const headerHeight = rootFontSize * 3;
 
-      return boundsFromZoomAndCenter(containerDimensions, urlCenter as [number, number], urlZoom);
+      return boundsFromZoomAndCenter({width: viewportWidth, height: viewportHeight - headerHeight}, center, zoom);
     }
     if (searchBounds?.length) {
       return searchBounds
@@ -90,8 +73,12 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     // Fallback to default bounds
     return [[72, -5], [54, 25]];
   });
+  
 
-  const [zoomState, setZoomState] = useState<number>(urlZoom || calculateZoomFromBounds(snappedBounds))
+
+
+
+  const [zoomState, setZoomState] = useState<number>(urlZoom || defaultZoom)
   const suspendMarkerDiscoveryRef = useRef(false)
 
   const gridSizeRef = useRef<{ gridSize: number, precision: number }>(getGridSize(snappedBounds, zoomState));
@@ -264,7 +251,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     const clusters = countItems.map((item: any) => ({...item, radius: calculateRadius(item.doc_count, maxDocCount, minDocCount )}))
 
     //console.log("MARKERS", markers)
-    console.log("CLUSTERS", clusters)
+    //console.log("CLUSTERS", clusters)
 
 
 
@@ -394,6 +381,8 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     allowFitBounds.current = true
   }, [searchUpdatedAt])
 
+
+  /*
   useEffect(() => {
     if (!allowFitBounds.current || markerResults.some(result => result.isSuccess && result.data.aggregations?.grid.buckets.length > 0)) {
       return
@@ -407,6 +396,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
 
   }, [markerResults, searchBounds])
+  */
 
 
 
@@ -421,6 +411,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
             newQueryParams.delete('doc')
             newQueryParams.delete('group')
             newQueryParams.delete('docIndex')
+            newQueryParams.set('sortPoint', `${selected.location[0].coordinates[1]},${selected.location[0].coordinates[0]}`)
             if (!newQueryParams.get('details')) {
               newQueryParams.delete('details')
             }
@@ -433,6 +424,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
             const newQueryParams = new URLSearchParams(searchParams)
             newQueryParams.delete('doc')
             newQueryParams.delete('docIndex')
+            newQueryParams.set('sortPoint', `${selected.location[0].coordinates[1]},${selected.location[0].coordinates[0]}`)
           if (!newQueryParams.get('details')) {
             newQueryParams.set('details', 'group')
           }
@@ -528,17 +520,12 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
     (lat: number, lng: number) => {
       const mapBounds = mapInstance?.current?.getBounds();
       if (!mapBounds) return false;
-      const bounds = suspendMarkerDiscoveryRef.current
-        ? snappedBounds
-        : [
-          [mapBounds.getNorth(), mapBounds.getWest()],
-          [mapBounds.getSouth(), mapBounds.getEast()],
-        ];
+      const bounds = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()],];
       if (!bounds) return false;
       const [[north, west], [south, east]] = bounds;
       return lat <= north && lat >= south && lng >= west && lng <= east;
     },
-    [snappedBounds]
+    []
   );
 
 
@@ -599,7 +586,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
         <PiCrop className="text-2xl" />
       </RoundIconButton>
       </>}
-    <Map
+    <DynamicMap
       whenReady={(e: any) => {
         if (!mapInstance.current) {
           mapInstance.current = e.target;
@@ -610,8 +597,10 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       zoomControl={false}
       zoomSnap={0.5}
       zoomDelta={0.5}
-      bounds={snappedBounds}
-      className='absolute top-0 right-0 h-full w-full'>
+      attributionControl={true}
+      zoom={urlZoom || defaultZoom}
+      center={urlCenter || defaultCenter}
+      className='absolute top-0 right-0 bottom-28 xl:bottom-0 left-0 !pb-10'>
       {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon, Popup, MultiPolygon, Polyline }: any, leaflet: any) => {
 
         function EventHandlers() {
@@ -786,10 +775,9 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
               }
               else {
                 const selected = groupValue && item.fields?.["group.id"]?.[0] == groupValue && !groupLoading
-                const multipleGroupMembers = groupTotal?.value && groupTotal?.value > 1
 
                 const childCount = zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
-                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', selected ? multipleGroupMembers ? 'white' : 'accent' : 'black', childCount, false, false, !!(selected && !multipleGroupMembers))
+                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', selected ? 'accent' : 'black', childCount, false, false, !!(selected))
 
                 return (
                 <Marker
@@ -918,29 +906,9 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
 
             { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
 
-            { details && details !== 'group' &&
-              dedupedOverviewDocs.map((docItem: any) => (
-                <CircleMarker 
-                  key={docItem._id}
-                  center={[docItem._source.location?.coordinates?.[1], docItem._source.location?.coordinates?.[0]]}
-                  radius={5}
-                  weight={1}
-                  fillOpacity={0.9}
-                  zIndexOffset={1000}
-                  eventHandlers={selectDocHandler(docItem._source, [docItem])}
-                  fillColor={"black"}
-                  color="white"
-                />
-              ))
-            }
 
-            {docData?._source?.location?.coordinates?.length && groupTotal?.value && groupTotal?.value > 1 && <Marker 
-            zIndexOffset={1000}
-                icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))}
-                position={[docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]}
-              >
-              </Marker>
-            }
+
+
             {doc && docData?._source?.within && <Marker 
               zIndexOffset={1000}
               icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))}
@@ -954,7 +922,7 @@ export default function MapExplorer({ containerDimensions }: { containerDimensio
       }}
 
 
-    </Map>
+    </DynamicMap>
 
   </>
 }

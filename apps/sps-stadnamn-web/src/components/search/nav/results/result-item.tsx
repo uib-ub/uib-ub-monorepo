@@ -31,12 +31,12 @@ const uniqueLabels = (hit: any) => {
     ));
 }
 
-export default function ResultItem({hit}: {hit: any}) {
+export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, any>) {
     const perspective = usePerspective()
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
     const nav = searchParams.get('nav')
-    const itemRef = useRef<HTMLAnchorElement>(null)
+    const itemRef = useRef<HTMLAnchorElement>(null) 
     const docDataset = hit._index.split('-')[2]
     const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
@@ -55,7 +55,6 @@ export default function ResultItem({hit}: {hit: any}) {
     const isGrunnord = docDataset?.includes('_g')
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
     const {groupCode, groupValue } = useGroup()
-    const isSelected = highlightedGroup?.current ? highlightedGroup.current == stringToBase64Url(hit.fields?.['group.id']?.[0]) : groupValue == hit.fields?.['group.id']?.[0]
 
 
     useEffect(() => {
@@ -72,20 +71,13 @@ export default function ResultItem({hit}: {hit: any}) {
     
 
     
-    return  <Clickable link ref={itemRef} className={`w-full h-full p-3 aria-[current='page']:bg-accent-50 border-l-accent-700 border-b border-b-neutral-200  aria-[current='page']:border-l-4"} flex items-center group hover:bg-neutral-50 no-underline `} 
-                    aria-current={isSelected ? 'page' : undefined}
+    return  <Clickable link ref={itemRef} {...rest} className={`w-full h-full p-3 aria-[current='page']:bg-accent-50 border-l-accent-700  aria-[current='page']:border-l-4"} flex items-center group hover:bg-neutral-50 no-underline `} 
                     remove={['group', 'docIndex', 'doc', 'parent', ...(isMobile ? ['nav'] : [])]}
                     add={{
-                        //doc: hit.fields.uuid,
-                        details: 'group',
-                        
-                        ...(hit.fields["group.id"] ? {group: stringToBase64Url(hit.fields["group.id"][0])} : {}),
-
-                        //...(hit.fields.location?.[0].type == 'Point' && !parent) ? {center: hit.fields.location[0].coordinates.toReversed()} : {}
+                        ...(hit.fields["group.id"] && hit.fields["group.id"][0] != groupValue ? {group: stringToBase64Url(hit.fields["group.id"][0])} : {group: null}),
                     }}>
-                        
-            <div className="flex w-full flex-col">             
-             
+                       
+            <div className="flex w-full flex-col">
                 <span className="text-neutral-950 flex gap-2">
                 {isGrunnord && <div className="flex  items-center">
                     {!perspectiveIsGrunnord && <span className="font-semibold text-lg text-neutral-700 group-aria-[current='page']:text-accent-800">

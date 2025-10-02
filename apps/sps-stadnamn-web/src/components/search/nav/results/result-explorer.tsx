@@ -6,7 +6,6 @@ import SearchResults from "./search-results";
 export default function ResultExplorer() {
     return (
         <div>
-            <GroupInfo/>
             <SearchResults/>
         </div>
     );

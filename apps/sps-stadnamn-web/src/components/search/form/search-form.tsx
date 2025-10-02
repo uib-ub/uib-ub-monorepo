@@ -39,12 +39,12 @@ export default function SearchForm() {
     const menuOpen = useSessionStore((s: any) => s.menuOpen)
     const autocompleteOpen = useSessionStore((s: any) => s.autocompleteOpen)
     const setAutocompleteOpen = useSessionStore((s: any) => s.setAutocompleteOpen)
-    const setDrawerContent = useSessionStore((s: any) => s.setDrawerContent)
     const setSnappedPosition = useSessionStore((s: any) => s.setSnappedPosition)
+    const setDrawerOpen = useSessionStore((s) => s.setDrawerOpen)
     const datasetTag = searchParams.get('datasetTag')
     const router = useRouter()
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
-    const nav = searchParams.get('nav')
+    const options = searchParams.get('options')
 
 
     const input = useRef<HTMLInputElement | null>(null)
@@ -173,13 +173,14 @@ export default function SearchForm() {
                     input.current.select();
                 }
                 setAutocompleteOpen(false)
+                setDrawerOpen(true)
 
             }}>
 
             <div className='flex w-full h-full pr-1 bg-white shadow-lg xl:shadow-l-none xl:rounded-l-none xl:rounded-md items-center relative group'>
                 
                 <label htmlFor="search-input" className="sr-only">Søk</label>
-            { datasetTag != 'tree' && !(isMobile && autocompleteOpen) && <ClickableIcon onClick={() => {setDrawerContent('filters'); setSnappedPosition('max')}} add={{nav: nav == 'filters' ? null : 'filters'}} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
+            { datasetTag != 'tree' && !(isMobile && autocompleteOpen) && <ClickableIcon onClick={() => { setSnappedPosition('max')}} add={{options: options ? null : 'on'}} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
             <PiSliders className="text-3xl xl:text-2xl" aria-hidden="true"/>
             {filterCount > 0 && <span className={`results-badge bg-primary-500 absolute top-1 left-1 rounded-full text-white text-xs ${filterCount < 10 ? 'px-1.5' : 'px-1'}`}>
                         {formatNumber(filterCount)}

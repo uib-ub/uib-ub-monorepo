@@ -45,7 +45,7 @@ export async function GET(request: Request) {
         }
       },
     ],
-    "_source": ["uuid", "label", "attestations", "sosi", "content", "image", "recordings", "location"]
+    "_source": ["uuid", "label", "attestations", "sosi", "content", "iiif", "recordings", "location"]
   }
 
 
@@ -99,14 +99,14 @@ export async function GET(request: Request) {
     "sources": data.hits?.hits.map((hit: any) => {
       return {uuid: hit._source.uuid, 
               dataset: hit._index.split('-')[2],
+              ...hit._source.iiif ? {iiif: hit._source.iiif} : {},
               ...hit._source.label != label ? {label: hit._source.label} : {},
               ...hit.attestations ? {attestations: hit._source.attestations} : {}, 
               ...hit.location ? {location: hit._source.location} : {},
-              ...hit.sosi ? {sosi: hit._source.sosi,
+              ...hit.sosi ? {sosi: hit._source.sosi} : {},
               ...hit._source.content ? {content: hit._source.content} : {},
-              ...hit._source.image ? {image: hit._source.image} : {},
-              ...hit._source.recordings ? {recordings: hit._source.recordings} : {},
-                } : {}}
+              ...hit._source.recordings?.length ?  {recordings: hit._source.recordings} : {},
+                }
     }) || []
   }
               

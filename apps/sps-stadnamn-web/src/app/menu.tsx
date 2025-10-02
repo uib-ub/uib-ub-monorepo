@@ -62,17 +62,14 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
                         onBlur={handleBlur}
                         aria-label="Meny"
                         aria-expanded={menuOpen} 
-                        className={`items-center justify-center flex  aspect-square bg-neutral-50 z-[60000] ${menuOpen ? 'fixed top-0 left-0 w-14 h-14 ': 'h-full w-full shadow-lg border-r border-neutral-200 xl:rounded-l-md'}`} 
+                        className={`items-center justify-center flex aspect-square bg-neutral-50 z-[60000] ${menuOpen ? 'fixed top-0 left-0 w-14 h-14 ' : 'h-full w-full xl:rounded-l-md'}${shadow ? ' shadow-lg border-r border-neutral-200' : ''}`}
                         onClick={() => setMenuOpen(!menuOpen)}>
                 {menuOpen ? <PiX className="text-3xl xl:text-2xl" aria-hidden="true"/> : <PiList className="text-3xl xl:text-2xl" aria-hidden="true"/>}</button>
  
                 <div 
                      id="menu_navbar" 
                      className={`bg-neutral-50 w-[calc(100svw-5rem)] xl:w-[calc(25svw-0.5rem)] xl:rounded-r-md shadow-lg overscroll-none h-[100svh] overflow-y-auto fixed top-0 bottom-0 left-0 transition-transform duration-300 ease-in-out ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-                         { pathname !== '/' && pathname != '/search' && currentUrl.current && 
-                <div className="flex items-center justify-center py-4 border-b border-neutral-200 gap-2 no-underline text-xl "><Link href={currentUrl.current} className="flex items-center gap-2 no-underline text-xl"><PiCaretLeft className="text-2xl"/>Tilbake til søket</Link>
-                </div>
-                }
+                         
                 <nav id="top" className="text-xl pb-6 flex flex-col" onBlur={handleBlur}>
                 <div className="flex items-center ml-14 h-14 px-2">
                     <Link href="/" className="text-xl no-underline">stadnamn.no</Link>
@@ -80,6 +77,10 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
             </div>
                 
 				<div className="flex flex-col gap-2 p-3 w-full ">
+                { pathname !== '/' && pathname != '/search' && currentUrl.current && 
+                <div className="flex items-center justify-center py-4 border-b border-neutral-200 gap-2 no-underline text-xl "><Link href={currentUrl.current} className="flex items-center gap-2 no-underline text-xl"><PiCaretLeft className="text-2xl"/>Tilbake til søket</Link>
+                </div>
+                }
                         <h1 className="text-lg">Stadnamnsøk</h1>		
 					<div className="flex gap-2 items-center w-full pb-3 text-base" role="tablist">
 					

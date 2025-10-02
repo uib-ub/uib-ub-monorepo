@@ -47,7 +47,7 @@ export default function useCollapsedData() {
         isLoading,
         status
     } = useInfiniteQuery({
-        queryKey: ['collapsedData', searchQueryString],
+        queryKey: ['collapsedData', searchQueryString, sortPoint],
         queryFn: ({ pageParam }) => collapsedDataQuery({ 
             pageParam, 
             searchQueryString,
