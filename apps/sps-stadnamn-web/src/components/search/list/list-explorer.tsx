@@ -15,6 +15,7 @@ import useSearchData from "@/state/hooks/search-data"
 import useGroupData from "@/state/hooks/group-data"
 
 function DocItem({ item, index, group, isMobile }: any) {
+    
     const docDataset = item._index.split('-')[2]
     const images = item._source.image?.manifest ? {manifest: item._source.image?.manifest, dataset: docDataset} : item._source.images    
     
@@ -33,23 +34,9 @@ function DocItem({ item, index, group, isMobile }: any) {
     )
 }
 
-function InfiniteScrollTrigger({ children, onLoadMore, canLoadMore }: { children: React.ReactNode, onLoadMore: () => void, canLoadMore: boolean }) {
-    const { ref, inView } = useInView({
-        threshold: 0
-    })
-
-    // Trigger load more when in view
-    React.useEffect(() => {
-        if (inView && canLoadMore) {
-            onLoadMore()
-        }
-    }, [inView, canLoadMore, onLoadMore])
-
-    return <div className="flex w-full flex-col divide-y divide-neutral-200" ref={ref}>{children}</div>
-}
 
 export default function ListExplorer() {
-    return
+
     const { isMobile } = useContext(GlobalContext)
     const {groupData, groupLoading, groupTotal} = useGroupData()
     const searchParams = useSearchParams()
@@ -60,18 +47,7 @@ export default function ListExplorer() {
     const { collapsedData } = useCollapsedData()
     const router = useRouter()
 
-    // Handle infinite scroll
-    const handleLoadMore = useCallback(() => {
-        if (canFetchMore && !groupLoading) {
-            fetchMore()
-        }
-    }, [canFetchMore, groupLoading, fetchMore])
 
-    // Calculate how many skeleton items to show for loading feedback
-    const skeletonCount = useMemo(() => {
-        if (!canFetchMore) return 0
-        return Math.min(5, (groupTotal?.value || 0) - (groupData?.length || 0))
-    }, [canFetchMore, groupTotal?.value, groupData?.length])
 
       // Handle URL update in the component, not the hook
       useEffect(() => {
@@ -116,24 +92,20 @@ export default function ListExplorer() {
             ))}
             
             {/* Infinite scroll trigger - placed after loaded items */}
-            {canFetchMore && (
-                <InfiniteScrollTrigger onLoadMore={handleLoadMore} canLoadMore={canFetchMore}>
-                    {skeletonCount > 0 && (
-                <>
-                    {Array(skeletonCount).fill(null).map((_, index) => (
+
+                    {Array(groupTotal - groupData?.length).fill(null).map((_, index) => (
                         <li key={`skeleton-${index}`} className={`flex w-full flex-col p-4 xl:p-8 my-4 xl:my-8`}>
                             <DocSkeleton />
                         </li>
                     ))}
-                </>
-            )}
-                </InfiniteScrollTrigger>
-            )}
+            
+
             
             {/* Show a few skeleton items for loading feedback */}
            
         </ul>
     )
+    
 }
                     
                   
