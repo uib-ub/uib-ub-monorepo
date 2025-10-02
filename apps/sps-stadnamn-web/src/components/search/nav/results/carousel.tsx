@@ -19,11 +19,11 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
                 {items[currentIndex].iiif && <ClientThumbnail iiif={items[currentIndex].iiif}/>}
                 {items[currentIndex].content?.html && <div className="p-2 h-full text-black relative">
                     <div dangerouslySetInnerHTML={{ __html: items[currentIndex].content.html }} />
-                    <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-neutral-50 to-transparent pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-neutral-50 to-transparent pointer-events-none" />
                 </div>}
                 {items[currentIndex].content?.text && <div className="p-2 h-full text-black relative">
                     <div dangerouslySetInnerHTML={{ __html: items[currentIndex].content.text }} />
-                    <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-neutral-50 to-transparent pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-neutral-50 to-transparent pointer-events-none" />
                 </div>}
                 
                 </div>
