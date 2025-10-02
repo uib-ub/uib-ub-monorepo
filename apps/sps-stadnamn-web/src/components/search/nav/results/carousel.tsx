@@ -3,7 +3,7 @@ import { RoundButton, RoundIconButton } from "@/components/ui/clickable/round-ic
 import { useState } from "react"
 import { PiCaretLeft, PiCaretRight } from "react-icons/pi"
 
-type CarouselItem = { dataset: string, uuid: string, iiif?: string, html?: string, text?: string }
+type CarouselItem = { dataset: string, uuid: string, iiif?: string, content?: { text?: string, html?: string } }
 
 export default function Carousel({ items }: { items: CarouselItem[] }) {
     const [currentIndex, setCurrentIndex] = useState<number>(0)
@@ -18,6 +18,7 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
                 
                 {items[currentIndex].iiif && <ClientThumbnail iiif={items[currentIndex].iiif}/>}
                 {items[currentIndex].content?.html && <div className="p-2 bg-neutral-50 h-full text-black" dangerouslySetInnerHTML={{ __html: items[currentIndex].content.html }} />}
+                {items[currentIndex].content?.text && <div className="p-2 bg-neutral-50 h-full text-black" dangerouslySetInnerHTML={{ __html: items[currentIndex].content.text }} />}
                 </div>
                 <div className="flex flex-row gap-2 p-1 items-center border-t border-neutral-300">
                 {currentIndex > 0 && <RoundIconButton label="Forrige" className="size-8 flex items-center justify-center" onClick={() => setCurrentIndex(currentIndex - 1)}><PiCaretLeft className="text-sm"/></RoundIconButton>}

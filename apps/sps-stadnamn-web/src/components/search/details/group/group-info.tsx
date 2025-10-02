@@ -19,7 +19,7 @@ export default function GroupInfo() {
                 prviewItems?.length > 0 && <Carousel items={prviewItems}/>
             }
             ANNET
-            { JSON.stringify(groupData)}
+            { false && JSON.stringify(groupData)}
         </div>
     );
 }
