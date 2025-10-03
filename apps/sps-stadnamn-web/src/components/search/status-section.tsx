@@ -10,7 +10,6 @@ import { useSearchParams } from 'next/navigation';
 import useSearchData from '@/state/hooks/search-data';
 import Clickable from '../ui/clickable/clickable';
 import { useSearchQuery } from '@/lib/search-params';
-import Badge from '../ui/badge';
 import { formatNumber } from '@/lib/utils';
 import { useSessionStore } from '@/state/zustand/session-store';
 
