@@ -10,8 +10,9 @@ import FacetToolbar from './facet-toolbar';
 import { formatNumber, getSkeletonLength } from '@/lib/utils';
 import Clickable from '@/components/ui/clickable/clickable';
 import { usePerspective } from '@/lib/param-hooks';
-import Badge from '@/components/ui/badge';
+import { FacetBadge } from '@/components/ui/badge';
 import PercentageCircle from './percentage-circle';
+
 
 
 
