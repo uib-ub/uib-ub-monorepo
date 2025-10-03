@@ -154,7 +154,7 @@ export default function OverlayInterface() {
                             
                         <div className="flex items-center gap-1 pb-1 ml-auto">
                         {}
-                        {isMobile && !mapSettings && <Clickable  className="bg-neutral-800 rounded-full px-2 py-1 flex items-center gap-1 text-white text-sm xl:text-base">
+                        {isMobile && !mapSettings && <Clickable remove={["results"]}  className="bg-neutral-800 rounded-full px-2 py-1 flex items-center gap-1 text-white text-sm xl:text-base">
                            {!filterCount && <PiFunnel className="text-white text-lg" />}Filter {filterCount > 0 && <Badge className="bg-neutral-900 font-bold" count={filterCount} />}
                         </Clickable>}
                         { mapSettings && <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings"]}>
