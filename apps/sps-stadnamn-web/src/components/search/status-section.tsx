@@ -33,7 +33,7 @@ export default function StatusSection() {
     
     <div className={`flex flex-wrap  xl:flex-row h-full gap-2`}>
       
-      {!isMobile && <ActiveFilters/> }</div>
+      {false &&!isMobile && <ActiveFilters/> }</div>
 
 
 

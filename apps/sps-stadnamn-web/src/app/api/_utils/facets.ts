@@ -34,7 +34,8 @@ export const RESERVED_PARAMS = [
 
   'sortPoint',
   'options',
-  'results'
+  'results',
+  'mapSettings'
 ] as const;
 
 export function extractFacets(request: Request) {

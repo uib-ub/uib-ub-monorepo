@@ -93,7 +93,7 @@ export default function SearchResults() {
 
   return (
     <div ref={resultsContainerRef}>
-      <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-200'>
+      <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-200 border-t border-neutral-200'>
       {collapsedData?.pages.map((page, pageIndex) => (
     <Fragment key={`page-${pageIndex}`}>
     {page.data?.map((item: any) => {

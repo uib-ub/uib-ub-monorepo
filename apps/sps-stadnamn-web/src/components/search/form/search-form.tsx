@@ -15,6 +15,7 @@ import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { formatNumber } from '@/lib/utils';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { stringToBase64Url } from '@/lib/param-utils';
+import { MAP_DRAWER_MIN_HEIGHT_REM } from '@/lib/map-utils';
 
 export async function autocompleteQuery(searchFilterParamsString: string, inputState: string, isMobile: boolean) {
     if (!inputState) return null
@@ -41,6 +42,8 @@ export default function SearchForm() {
     const setAutocompleteOpen = useSessionStore((s: any) => s.setAutocompleteOpen)
     const setSnappedPosition = useSessionStore((s: any) => s.setSnappedPosition)
     const setDrawerOpen = useSessionStore((s) => s.setDrawerOpen)
+    const snappedPosition = useSessionStore((s: any) => s.snappedPosition)
+    const currentPosition = useSessionStore((s: any) => s.currentPosition)
     const datasetTag = searchParams.get('datasetTag')
     const router = useRouter()
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
@@ -158,7 +161,13 @@ export default function SearchForm() {
 
 
 
-    return <div className="flex">
+    return <div
+        className="flex"
+        style={{
+            position: (!isMobile || currentPosition <= MAP_DRAWER_MIN_HEIGHT_REM)    ? undefined : 'absolute',
+            top: (!isMobile || currentPosition <= MAP_DRAWER_MIN_HEIGHT_REM) ? undefined : `${-currentPosition + MAP_DRAWER_MIN_HEIGHT_REM}rem`,
+            left: (!isMobile || currentPosition <= MAP_DRAWER_MIN_HEIGHT_REM) ? undefined : `0`
+        }}>
         <header className={`${isMobile && autocompleteOpen ? 'sr-only' : 'flex xl:absolute xl:top-2 xl:left-2 w-14 h-14 xl:h-12 xl:w-auto'} ${(autocompleteOpen || menuOpen) ? 'xl:!rounded-b-none' : 'shadow-lg'} bg-neutral-50 xl:rounded-l-md`}><Menu shadow/></header>
         <Form ref={form} action="/search" id="search-form" aria-label="Stadnamnsøk"
                 className={`h-14 xl:h-12 ${isMobile && autocompleteOpen ? 'w-[100svw]' : 'w-[calc(100svw-3.5rem)] xl:w-[calc(25svw-4rem)] xl:absolute xl:top-2 xl:left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? 'z-[6000] xl:!rounded-b-none' : 'z-[3000]'}`}

@@ -12,7 +12,7 @@ import wkt from 'wellknown';
 import { stringToBase64Url } from "@/lib/param-utils";
 import useDocData from "@/state/hooks/doc-data";
 import { useQueries } from "@tanstack/react-query";
-import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius, getMyLocation } from "@/lib/map-utils";
+import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius, getMyLocation, MAP_DRAWER_MIN_HEIGHT_REM } from "@/lib/map-utils";
 import useSearchData from "@/state/hooks/search-data";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
 import { GlobalContext } from "@/state/providers/global-provider";
@@ -22,6 +22,8 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import { useMapSettings } from '@/state/zustand/persistent-map-settings'
 import { RoundIconButton } from "../ui/clickable/round-icon-button";
 import DynamicMap from "./leaflet/dynamic-map";
+import MapToolbar from "./map-toolbar";
+
 
 const debug = process.env.NODE_ENV === 'development'
 
@@ -48,6 +50,8 @@ export default function MapExplorer() {
   const doc = searchParams.get('doc')
   const datasetTag = searchParams.get('datasetTag')
   const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
+  const mapSettings = searchParams.get('mapSettings') == 'on'
+
 
   const defaultZoom = isMobile ? 4 : 5
   const defaultCenter: [number, number] = isMobile ? [62, 16] :  [62, 16]
@@ -532,60 +536,7 @@ export default function MapExplorer() {
 
 
   return <>
-
-  {mapInstance.current && <>
-  <RoundIconButton label="Kartinnstillingar"
-        className="absolute top-[4.5rem] xl:top-auto right-4 z-[5000] xl:right-1/2 xl:translate-x-[-5.5rem] xl:bottom-8"
-        add={{nav: 'mapSettings'}} 
-        onClick={() => setDrawerContent('mapSettings')}
-      >
-        <PiStackPlus className="text-2xl"/>
-      </RoundIconButton>
-
-      <RoundIconButton 
-        onClick={() => mapInstance.current?.zoomIn(2)} 
-        side="top" 
-        label="Zoom inn"
-        className="invisible xl:visible absolute xl:bottom-8 z-[5000] xl:right-1/2 xl:translate-x-[-2rem]"
-      >
-        <PiMagnifyingGlassPlusFill className="text-2xl" />
-      </RoundIconButton>
-
-      <RoundIconButton 
-        onClick={() => mapInstance.current?.zoomOut(2)} 
-        side="top" 
-        label="Zoom ut"
-        className="invisible xl:visible absolute xl:bottom-8 z-[5000] xl:right-1/2 xl:translate-x-1/2"
-      >
-        <PiMagnifyingGlassMinusFill className="text-2xl" />
-      </RoundIconButton>
-
-      <RoundIconButton 
-        onClick={() => {
-          getMyLocation((location) => {
-            mapFunctionRef?.current?.setView(location, 15)
-            setMyLocation(location)
-          })}
-        } 
-        side="top" 
-        label="Min posisjon"
-        className="absolute right-4 bottom-[5.5rem] xl:bottom-8 z-[5000] xl:right-1/2 xl:translate-x-[5rem]"
-      >
-        <PiGpsFix className="text-2xl" />
-      </RoundIconButton>
-
-      <RoundIconButton 
-        label="Zoom til søkeresultat" 
-        onClick={() => {
-          if (searchBounds?.length) {
-            mapInstance.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-          }
-        }}
-        className="absolute right-4 bottom-8 xl:bottom-8 z-[5000] xl:right-1/2 xl:translate-x-[8.5rem]"
-      >
-        <PiCrop className="text-2xl" />
-      </RoundIconButton>
-      </>}
+  <MapToolbar/>
     <DynamicMap
       whenReady={(e: any) => {
         if (!mapInstance.current) {
@@ -597,15 +548,24 @@ export default function MapExplorer() {
       zoomControl={false}
       zoomSnap={0.5}
       zoomDelta={0.5}
-      attributionControl={true}
       zoom={urlZoom || defaultZoom}
       center={urlCenter || defaultCenter}
-      className='absolute top-0 right-0 bottom-28 xl:bottom-0 left-0 !pb-10'>
+      className={`absolute top-0 right-0 left-0`}
+      style={{
+        bottom: isMobile ? `${MAP_DRAWER_MIN_HEIGHT_REM}rem` : '0',
+      }}
+      >
       {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon, Popup, MultiPolygon, Polyline }: any, leaflet: any) => {
 
         function EventHandlers() {
           const map = useMap();
           useMapEvents({
+            movestart: () => {
+              const attribution = map.attributionControl;
+              if (attribution) {
+                attribution.getContainer().style.display = mapSettings ? "block" : "none";
+              }
+            }, 
             zoomstart: () => {
 
               suspendMarkerDiscoveryRef.current = true
@@ -777,7 +737,7 @@ export default function MapExplorer() {
                 const selected = groupValue && item.fields?.["group.id"]?.[0] == groupValue && !groupLoading
 
                 const childCount = zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
-                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', selected ? 'accent' : 'black', childCount, false, false, !!(selected))
+                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', selected ? 'accent' : 'white', childCount, false, false, !!(selected))
 
                 return (
                 <Marker

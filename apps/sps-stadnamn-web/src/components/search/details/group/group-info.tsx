@@ -2,23 +2,48 @@ import ClientThumbnail from "@/components/doc/client-thumbnail";
 import useGroupData from "@/state/hooks/group-data";
 import Carousel from "../../nav/results/carousel";
 import AudioExplorer from "@/components/doc/audio-explorer";
+import { useState } from "react";
+import { datasetTitles } from "@/config/metadata-config";
 
 export default function GroupInfo() {
     const { groupData } = useGroupData()
 
-    const prviewItems = groupData?.sources?.filter((source: any) => source.iiif || source.content?.html || source.content?.text)
-    const audioItems = groupData?.sources?.flatMap((source: any) => source.recordings ?? []);
+    const [expandedSection, setExpandedSection] = useState<string | null>(null)
+
+    const iiifItems: any[] = []
+    const textItems: any[] = []
+    const audioItems: any[] = []
+
+
+
+
+    groupData?.sources?.forEach((source: any) => {
+        if (source.iiif) {
+            iiifItems.push(source)
+        }
+        if (source.content?.html) {
+            textItems.push(source)
+        }
+        if (source.recordings) {
+            audioItems.push(source)
+        }
+    })
+
+
 
     
     return (
-        <div className="w-full">
+        <div className="w-full flex flex-col border-l-4 border-white">
             {
-                audioItems?.length > 0 && <AudioExplorer recordings={audioItems}/>
+                audioItems?.map((audioItem) => (
+                    <>JSON.stringify(audioItem)</>
+                ))
             }
-            {
-                prviewItems?.length > 0 && <Carousel items={prviewItems}/>
+
+            { iiifItems?.length > 0 && <>
+               <Carousel items={iiifItems}/>
+                </>
             }
-            ANNET
             { false && JSON.stringify(groupData)}
         </div>
     );

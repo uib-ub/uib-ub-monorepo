@@ -14,7 +14,7 @@ export default function Drawer({
     setSnappedPosition,
     currentPosition,
     setCurrentPosition,
-    minHeightRem = 9,
+    minHeightRem = 8,
     maxHeightSvh = 50,
     scrollContainerRef
 }: {
@@ -250,7 +250,7 @@ export default function Drawer({
             onTouchEnd={handleTouchEnd}
         >
             {/* Grip */}
-            <button onClick={() => setSnappedPosition(snappedPosition == 'min' ? 'max' : 'min')} className={`w-full h-2 flex items-center justify-center pt-2 rounded-t-full bg-white relative ${scrolled ? 'border-b border-neutral-200 pb-2' : ''}`} style={{ touchAction: 'none' }}>
+            <button onClick={() => setSnappedPosition(snappedPosition == 'min' ? 'max' : 'min')} className={`w-full h-2 flex items-center justify-center pt-2 ${currentPosition > minHeightRem ? 'rounded-t-full' : ''} bg-white relative ${scrolled ? 'border-b border-neutral-200 pb-2' : ''}`} style={{ touchAction: 'none' }}>
                 <div className="w-16 h-1.5 bg-neutral-200 rounded-full"></div>
             </button>
             {/* Scroll container: scrollable if the drawer is at the max height */}

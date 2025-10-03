@@ -3,6 +3,7 @@ import IconButton from "../icon-button";
 import IconLink from "../icon-link";
 import { twMerge } from "tailwind-merge";
 import Clickable from "./clickable";
+import ClickableIcon from "./clickable-icon";
 
 const buttonStyling = "rounded-full bg-white text-neutral-900 p-3" + 
     " [box-shadow:0_2px_8px_-1px_rgb(0_0_0_/_0.25),0_1px_3px_-1px_rgb(0_0_0_/_0.35),inset_0_1px_0_rgb(0_0_0_/_0.08)]";
@@ -39,6 +40,19 @@ export function RoundClickable ({ children, onClick, className, ...rest }: { chi
         >
             {children}
         </Clickable>
+    );
+}
+
+export function RoundIconClickable({ children, onClick, className, label, ...rest }: { children: React.ReactNode, onClick: () => void, className?: string, label: string, [x: string]: any }) {
+    return (
+        <ClickableIcon
+            label={label}
+            className={twMerge(buttonStyling, className)}
+            onClick={onClick}
+            {...rest}
+        >
+            {children}
+        </ClickableIcon>
     );
 }
 

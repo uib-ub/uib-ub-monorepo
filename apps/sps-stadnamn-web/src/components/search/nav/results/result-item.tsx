@@ -71,7 +71,7 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
     
 
     
-    return  <Clickable link ref={itemRef} {...rest} className={`w-full h-full p-3 aria-[current='page']:bg-accent-50 border-l-accent-700  aria-[current='page']:border-l-4"} flex items-center group hover:bg-neutral-50 no-underline `} 
+    return  <Clickable link ref={itemRef} {...rest} className={`w-full h-full p-3 aria-expanded:bg-accent-50 border-l-accent-700  aria-expanded:border-l-4 flex items-center group hover:bg-neutral-50 no-underline `} 
                     remove={['group', 'docIndex', 'doc', 'parent', ...(isMobile ? ['nav'] : [])]}
                     add={{
                         ...(hit.fields["group.id"] && hit.fields["group.id"][0] != groupValue ? {group: stringToBase64Url(hit.fields["group.id"][0])} : {group: null}),
@@ -80,11 +80,11 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
             <div className="flex w-full flex-col">
                 <span className="text-neutral-950 flex gap-2">
                 {isGrunnord && <div className="flex  items-center">
-                    {!perspectiveIsGrunnord && <span className="font-semibold text-lg text-neutral-700 group-aria-[current='page']:text-accent-800">
+                    {!perspectiveIsGrunnord && <span className="font-semibold text-lg text-neutral-700 group-aria-expanded:text-accent-800">
                     Grunnord:
                     </span>}
                     {!searchFilterParamsString && isGrunnord && 
-                    <span className="bg-neutral-700 font-semibold text-white w-6 h-6 group-aria-[current='page']:bg-accent-800 rounded-full flex items-center justify-center ml-1.5">
+                    <span className="bg-neutral-700 font-semibold text-white w-6 h-6 group-aria-expanded:bg-accent-800 rounded-full flex items-center justify-center ml-1.5">
                         {hit.fields.label?.[0]?.[0].toUpperCase() || JSON.stringify(hit)}
                     </span>
                     }
@@ -92,7 +92,7 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
 
 
                     {isGrunnord && <span className="text-lg">{uniqueLabels(hit)}{uniqueLabels(hit).length > 3 && '...'}</span>}
-                    {!isGrunnord && <strong>{label}</strong>}
+                    {!isGrunnord && <h2 className="font-semibold">{label}</h2>}
                      {" "}{detailsRenderer(hit)}
                 </span>
                 
@@ -100,7 +100,7 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
                 {hit.highlight && snippetRenderer && <>{snippetRenderer(hit)}</>}
             </div>
             {hit.inner_hits?.group?.hits?.total?.value > 1 && (
-                <div className={`ml-auto flex items-center rounded-full text-sm px-2.5 py-1 bg-neutral-100 text-neutral-950 group-aria-[current='page']:bg-accent-800 group-aria-[current='page']:text-white`}>
+                <div className={`ml-auto flex items-center rounded-full text-sm px-2.5 py-1 bg-neutral-100 text-neutral-950 group-aria-expanded:bg-accent-800 group-aria-expanded:text-white`}>
                     {hit.inner_hits?.group?.hits?.total?.value}
                 </div>
             )}

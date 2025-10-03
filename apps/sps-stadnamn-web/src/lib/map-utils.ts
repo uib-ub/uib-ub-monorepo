@@ -1,6 +1,9 @@
 // Helper function to calculate bounds from zoom level and center point
 export const EARTH_CIRCUMFERENCE = 40075016.686;
 
+export const MAP_DRAWER_MIN_HEIGHT_REM = 8
+export const MAP_DRAWER_MAX_HEIGHT_SVH = 50
+
 // Web-Mercator helpers (Leaflet's default CRS: EPSG:3857)
 const R = 6378137; // Earth radius used by Spherical Mercator (meters)
 const D2R = Math.PI / 180;
