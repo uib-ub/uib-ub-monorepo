@@ -125,8 +125,8 @@ export default function OverlayInterface() {
                                 
                             </Clickable>
                             <div className="flex items-center gap-1 pb-1 ml-auto">
-                            {isMobile && <Clickable  className={`bg-neutral-800 rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 text-white text-sm xl:text-base`} add={{results: 'on'}} remove={["options"]}>
-                           {!totalHits.value && <PiFunnel className="text-white text-lg" />}Treff {totalHits.value > 0 && <Badge className="bg-neutral-700 font-bold" count={totalHits.value} />}
+                            {isMobile && totalHits && <Clickable  className={`bg-neutral-800 rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 text-white text-sm xl:text-base`} add={{results: 'on'}} remove={["options"]}>
+                            {!totalHits?.value && <PiFunnel className="text-white text-lg" />}Treff {totalHits?.value > 0 && <Badge className="bg-neutral-700 font-bold" count={totalHits.value} />}
                         </Clickable>}
                         </div>
                             </div>
@@ -161,8 +161,8 @@ export default function OverlayInterface() {
                             <PiX className="text-black text-3xl" />
                         </ClickableIcon>}
                         {
-                            !mapSettings && !isMobile && <ClickableIcon label={ results ? "Skjul treff" : "Vis treff"} className="p-2" add={{results: results ? null : 'on'}} remove={["results"]}>
-                                {results ? <PiCaretUpBold className="text-primary-700 text-3xl" /> : <PiCaretDownBold className="text-primary-700 text-3xl" />}
+                            !mapSettings && !isMobile && <ClickableIcon label={ results ? "Skjul treff" : "Vis treff"} className="p-2 bg-primary-700 rounded-full" add={{results: results ? null : 'on'}} remove={["results"]}>
+                                {results ? <PiCaretUpBold className="text-white text-xl" /> : <PiCaretDownBold className="text-white text-xl" />}
                             </ClickableIcon>
                         }
                         </div>
