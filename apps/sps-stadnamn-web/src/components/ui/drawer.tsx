@@ -183,7 +183,7 @@ export default function Drawer({
         const dragAllowedNow = !(shouldAllowScroll() && (effectiveScrollRef.current?.scrollTop || 0) > 0)
         if (!dragAllowedNow) return
 
-        const quickSwipe = durationMs < 300 && Math.abs(swipeDistance) > 30
+        const quickSwipe = durationMs < 500 && Math.abs(swipeDistance) > 10
         const mid = (minHeightRem + maxRem()) / 2
         let snapTarget = quickSwipe
             ? (swipeDistance > 0 ? maxRem() : minHeightRem)
@@ -250,7 +250,7 @@ export default function Drawer({
             onTouchEnd={handleTouchEnd}
         >
             {/* Grip */}
-            <button onClick={() => setSnappedPosition(snappedPosition == 'min' ? 'max' : 'min')} className={`w-full h-4 flex items-center justify-center pt-2 rounded-t-full bg-white relative ${scrolled ? 'border-b border-neutral-200' : ''}`} style={{ touchAction: 'none' }}>
+            <button onClick={() => setSnappedPosition(snappedPosition == 'min' ? 'max' : 'min')} className={`w-full h-2 flex items-center justify-center pt-2 rounded-t-full bg-white relative ${scrolled ? 'border-b border-neutral-200 pb-2' : ''}`} style={{ touchAction: 'none' }}>
                 <div className="w-16 h-1.5 bg-neutral-200 rounded-full"></div>
             </button>
             {/* Scroll container: scrollable if the drawer is at the max height */}
