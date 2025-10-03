@@ -13,7 +13,7 @@ import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
 import Clickable from '@/components/ui/clickable/clickable';
 import { usePerspective } from '@/lib/param-hooks';
-import Badge from '@/components/ui/badge';
+import { FacetBadge } from '@/components/ui/badge';
 import { treeSettings } from '@/config/server-config';
 
 // Memoized RegExp factory to prevent memory leaks
@@ -210,14 +210,14 @@ export default function DatasetFacet() {
                               {firstPart + ' '}
                               <span className="whitespace-nowrap">
                                 {lastWord}
-                                <Badge count={item.doc_count} />
+                                <FacetBadge count={item.doc_count} />
 
                               </span>
                             </>
                           ) : (
                             <>
                               {lastWord}
-                              <Badge count={item.doc_count} />
+                              <FacetBadge count={item.doc_count} />
                             </>
                           )}
                         </span>

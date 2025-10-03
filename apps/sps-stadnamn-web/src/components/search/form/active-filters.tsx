@@ -158,7 +158,7 @@ export default function ActiveFilters() {
       <div className="xl:h-10 bg-neutral-200 my-1" />
       <button
         onClick={clearDatasetFilters}
-        className="flex w-full items-center py-2 px-4 hover:bg-neutral-100 rounded cursor-pointer text-accent-700 xl:h-8"
+        className="flex w-full items-center py-2 px-4 hover:bg-neutral-100 rounded cursor-pointer text-accent-700 xl:h-4"
       >
         Tøm
         <PiTrash className="ml-auto text-lg" aria-hidden="true"/>

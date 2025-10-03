@@ -250,9 +250,9 @@ export default function Drawer({
             onTouchEnd={handleTouchEnd}
         >
             {/* Grip */}
-            <button onClick={() => setSnappedPosition(snappedPosition == 'min' ? 'max' : 'min')} className={`w-full h-2 flex items-center justify-center pt-2 ${currentPosition > minHeightRem ? 'rounded-t-full' : ''} bg-white relative ${scrolled ? 'border-b border-neutral-200 pb-2' : ''}`} style={{ touchAction: 'none' }}>
-                <div className="w-16 h-1.5 bg-neutral-200 rounded-full"></div>
-            </button>
+            <div className={`w-full h-2 flex items-center justify-center pt-2 ${currentPosition > minHeightRem ? 'rounded-t-full' : ''} bg-white relative ${scrolled ? 'border-b border-neutral-200 pb-2' : ''}`}>
+                <button type="button"  onClick={() => setSnappedPosition(snappedPosition == 'min' ? 'max' : 'min')} className="w-16 h-1.5 bg-neutral-200 rounded-full"></button>
+            </div>
             {/* Scroll container: scrollable if the drawer is at the max height */}
             <div
                 ref={effectiveScrollRef}

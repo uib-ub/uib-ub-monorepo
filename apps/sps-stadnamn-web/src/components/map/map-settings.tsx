@@ -16,53 +16,67 @@ export default function MapSettings() {
   ];
 
   return (
-    <div className="flex flex-col divide-y divide-neutral-200">
+    <div className="flex flex-col gap-4 pb-4 xl:px-2">
       {/* Basemap Section */}
       <section>
-        <h3 className="text-base font-semibold text-neutral-900 p-3">Bakgrunnskart</h3>
-        <div role="radiogroup" aria-label="Velg bakgrunnskart" className="flex flex-col px-2 divide-y divide-neutral-200">
-          {baseMaps.map((item) => (
-            <div key={item.key} className="py-2">
-              <Clickable
-                onClick={() => setBaseMap(perspective, item.key)}
-                role="radio"
-                aria-checked={baseMap[perspective] === item.key}
-                className={`flex items-center justify-between p-2 rounded-lg hover:bg-neutral-100 ${
-                  baseMap[perspective] === item.key ? "bg-neutral-100" : ""
-                }`}
-              >
-                <span className="text-neutral-900">{item.name}</span>
-                {baseMap[perspective] === item.key && (
-                  <PiCheckCircleFill className="text-primary-600 text-lg" aria-hidden="true" />
-                )}
-              </Clickable>
-            </div>
-          ))}
-        </div>
+        <fieldset className="border-0 p-0 m-0">
+          <legend className="text-base font-semibold text-neutral-900 p-3">Bakgrunnskart</legend>
+          <div className="flex flex-wrap gap-2 px-2 py-1">
+            {baseMaps.map((item) => {
+              const selected = baseMap[perspective] === item.key;
+              return (
+                <Clickable
+                  key={item.key}
+                  onClick={() => setBaseMap(perspective, item.key)}
+                  role="radio"
+                  aria-checked={selected}
+                  aria-labelledby={`basemap-label-${item.key}`}
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors
+                    ${selected ? "bg-accent-800 text-white" : "bg-neutral-100 text-neutral-900 hover:bg-neutral-200"}
+                    min-w-[2.5rem]`}
+                >
+                  <span
+                    id={`basemap-label-${item.key}`}
+                    className="whitespace-nowrap"
+                  >
+                    {item.name}
+                  </span>
+                </Clickable>
+              );
+            })}
+          </div>
+        </fieldset>
       </section>
 
       {/* Marker Mode Section */}
       <section>
-        <h3 className="text-base font-semibold text-neutral-900 p-3">Markørar</h3>
-        <div role="radiogroup" aria-label="Velg markørtype" className="flex flex-col px-2 divide-y divide-neutral-200">
-          {markerModes.map((mode) => (
-            <div key={mode.key} className="py-2">
-              <Clickable
-                onClick={() => setMarkerMode(mode.key)}
-                role="radio"
-                aria-checked={markerMode === mode.key}
-                className={`flex items-center justify-between p-2 rounded-lg hover:bg-neutral-100 ${
-                  markerMode === mode.key ? "bg-neutral-100" : ""
-                }`}
-              >
-                <span className="text-neutral-900">{mode.label}</span>
-                {markerMode === mode.key && (
-                  <PiCheckCircleFill className="text-primary-600 text-lg" aria-hidden="true" />
-                )}
-              </Clickable>
-            </div>
-          ))}
-        </div>
+        <fieldset className="border-0 p-0 m-0">
+          <legend className="text-base font-semibold text-neutral-900 p-3">Markørar</legend>
+          <div className="flex flex-wrap gap-2 px-2 py-1">
+            {markerModes.map((mode) => {
+              const selected = markerMode === mode.key;
+              return (
+                <Clickable
+                  key={mode.key}
+                  onClick={() => setMarkerMode(mode.key)}
+                  role="radio"
+                  aria-checked={selected}
+                  aria-labelledby={`markermode-label-${mode.key}`}
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors
+                    ${selected ? "bg-accent-800 text-white" : "bg-neutral-100 text-neutral-900 hover:bg-neutral-200"}
+                    min-w-[2.5rem]`}
+                >
+                  <span
+                    id={`markermode-label-${mode.key}`}
+                    className="whitespace-nowrap"
+                  >
+                    {mode.label}
+                  </span>
+                </Clickable>
+              );
+            })}
+          </div>
+        </fieldset>
       </section>
     </div>
   );

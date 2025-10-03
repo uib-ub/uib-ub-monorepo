@@ -152,7 +152,7 @@ export default function ServerFacet() {
           aria-pressed={currentValue != '_true' && currentValue != '_false'}
           className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
         >
-          Alle <Badge count={allCount} />
+          Alle <FacetBadge count={allCount} />
         </button>
       </>
     )}
@@ -202,7 +202,7 @@ export default function ServerFacet() {
                     value={item.key} 
                     onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
                   />
-                  {renderLabel(facet, item.key)} <Badge count={item.doc_count} />
+                  {renderLabel(facet, item.key)} <FacetBadge count={item.doc_count} />
                 </label>
               </li>
           ))

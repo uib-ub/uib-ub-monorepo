@@ -6,7 +6,7 @@ import { PiFunnel } from 'react-icons/pi';
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/state/providers/global-provider';
 import { usePerspective } from '@/lib/param-hooks';
-import Badge from '@/components/ui/badge';
+import { FacetBadge } from '@/components/ui/badge';
 
 
 
@@ -151,7 +151,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
       <li key={item.key} className="my-0">
         <label className="flex items-baseline">
           <input type="checkbox" checked={checked} onChange={(e) => { toggleAdm(e.target.checked, baseName, path)}} className='mr-2' />
-         <span className="text-pretty block">{label} <Badge count={item.doc_count} /></span>
+         <span className="text-pretty block">{label} <FacetBadge count={item.doc_count} /></span>
         </label>
 
       {children?.length && (checked || filteredChildren) ? 

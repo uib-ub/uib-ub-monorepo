@@ -408,41 +408,25 @@ export default function MapExplorer() {
   const selectDocHandler = (selected: Record<string, any>, hits?: Record<string, any>[]) => {
     return {
       click: () => {
-        
-        if (hits?.length) {
-          const newQueryParams = new URLSearchParams(searchParams)
-          if (!hits.find((hit: any) => (hit._source?.group?.id || hit.fields["group.id"]?.[0]) == (selected.group?.id || selected["group.id"][0]))) {
-            newQueryParams.delete('doc')
-            newQueryParams.delete('group')
-            newQueryParams.delete('docIndex')
-            newQueryParams.set('sortPoint', `${selected.location[0].coordinates[1]},${selected.location[0].coordinates[0]}`)
-            if (!newQueryParams.get('details')) {
-              newQueryParams.delete('details')
-            }
-            router.push(`?${newQueryParams.toString()}`)
-          }
-
-          
+        const newQueryParams = new URLSearchParams(searchParams)
+        if (!newQueryParams.get('results')) {
+          newQueryParams.set('results', 'on')
+        }
+        if (newQueryParams.get('mapSettings')) {
+          newQueryParams.delete('mapSettings')
+        }
+        newQueryParams.delete('doc')
+        newQueryParams.set('sortPoint', `${selected.location[0].coordinates[1]},${selected.location[0].coordinates[0]}`)
+        if (datasetTag == 'tree') {
+          newQueryParams.set('doc', selected.uuid[0])
         }
         else {
-            const newQueryParams = new URLSearchParams(searchParams)
-            newQueryParams.delete('doc')
-            newQueryParams.delete('docIndex')
-            newQueryParams.set('sortPoint', `${selected.location[0].coordinates[1]},${selected.location[0].coordinates[0]}`)
-          if (!newQueryParams.get('details')) {
-            newQueryParams.set('details', 'group')
-          }
-          if (datasetTag == 'tree') {
-            newQueryParams.set('doc', selected.uuid[0])
-          }
-          else {
-            newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
+          newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
+        
+        }
+        router.push(`?${newQueryParams.toString()}`)
           
-          }
-          router.push(`?${newQueryParams.toString()}`)
-          }
 
-        setDrawerContent('details')
         }
     }
   }
@@ -552,7 +536,7 @@ export default function MapExplorer() {
       center={urlCenter || defaultCenter}
       className={`absolute top-0 right-0 left-0`}
       style={{
-        bottom: isMobile ? `${MAP_DRAWER_MIN_HEIGHT_REM}rem` : '0',
+        bottom: isMobile ? `${MAP_DRAWER_MIN_HEIGHT_REM-0.5}rem` : '0',
       }}
       >
       {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon, Popup, MultiPolygon, Polyline }: any, leaflet: any) => {

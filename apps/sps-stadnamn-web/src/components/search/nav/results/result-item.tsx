@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { GlobalContext } from '@/state/providers/global-provider';
 import { stringToBase64Url } from '@/lib/param-utils';
 import { useGroup, useMode, usePerspective } from '@/lib/param-hooks';
+import { useSessionStore } from '@/state/zustand/session-store';
 
 const uniqueLabels = (hit: any) => {
     const labels = new Set<string>();
@@ -42,6 +43,7 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
     const mode = useMode()
     const { highlightedGroup } = useContext(GlobalContext)
     const { searchFilterParamsString } = useSearchQuery()
+    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
 
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
     const detailsRenderer = (hit: any) => {
@@ -71,16 +73,19 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
     
 
     
-    return  <Clickable link ref={itemRef} {...rest} className={`w-full h-full p-3 aria-expanded:bg-accent-50 border-l-accent-700  aria-expanded:border-l-4 flex items-center group hover:bg-neutral-50 no-underline `} 
-                    remove={['group', 'docIndex', 'doc', 'parent', ...(isMobile ? ['nav'] : [])]}
+    return  <Clickable link ref={itemRef} {...rest} className={`w-full h-full p-3 aria-expanded:text-white  aria-expanded:bg-accent-800 flex items-center group hover:bg-neutral-50 no-underline `} 
+    onClick={() => {
+        setSnappedPosition('max')
+    }}
+    remove={['group', 'docIndex', 'doc', 'parent', ...(isMobile ? ['nav'] : [])]}
                     add={{
                         ...(hit.fields["group.id"] && hit.fields["group.id"][0] != groupValue ? {group: stringToBase64Url(hit.fields["group.id"][0])} : {group: null}),
                     }}>
                        
             <div className="flex w-full flex-col">
-                <span className="text-neutral-950 flex gap-2">
+                <span className="flex gap-2">
                 {isGrunnord && <div className="flex  items-center">
-                    {!perspectiveIsGrunnord && <span className="font-semibold text-lg text-neutral-700 group-aria-expanded:text-accent-800">
+                    {!perspectiveIsGrunnord && <span className="font-semibold text-lg text-neutral-700 group-aria-expanded:text-neutral-50">
                     Grunnord:
                     </span>}
                     {!searchFilterParamsString && isGrunnord && 

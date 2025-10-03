@@ -33,7 +33,7 @@ export default function GroupInfo() {
 
     
     return (
-        <div className="w-full flex flex-col border-l-4 border-white">
+        <div className="w-full flex flex-col">
             {
                 audioItems?.map((audioItem) => (
                     <>JSON.stringify(audioItem)</>

@@ -1,6 +1,6 @@
 'use client'
 
-import { PiBookOpen, PiCrop, PiFunnel, PiMapPin, PiSliders, PiX } from "react-icons/pi";
+import { PiBookOpen, PiCaretDown, PiCaretDownBold, PiCaretUpBold, PiCrop, PiEye, PiEyeSlash, PiFunnel, PiMapPin, PiSliders, PiX } from "react-icons/pi";
 import { RoundClickable } from "../ui/clickable/round-icon-button";
 import dynamic from "next/dynamic";
 import { formatNumber } from "@/lib/utils";
@@ -17,6 +17,7 @@ import OptionsWindow from "./nav/options-window";
 import Clickable from "../ui/clickable/clickable";
 import { MAP_DRAWER_MIN_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH } from "@/lib/map-utils";
 import ClickableIcon from "../ui/clickable/clickable-icon";
+import { Badge, TitleBadge } from "../ui/badge";
 
 
 
@@ -90,6 +91,8 @@ export default function OverlayInterface() {
     const results = searchParams.get('results') == 'on'
     const options = searchParams.get('options') == 'on'
     const mapSettings = searchParams.get('mapSettings') == 'on'
+    const { facetFilters, datasetFilters } = useSearchQuery()
+    const filterCount = facetFilters.length + datasetFilters.length
 
 
     return <>
@@ -107,31 +110,61 @@ export default function OverlayInterface() {
                     scrollContainerRef={scrollableContent}
                 >
                     {(options || (isMobile && !results && !mapSettings)) && <LeftWindow>  
+                        <div className="w-full flex items-center xl:h-12 px-2 xl:px-0 gap-2">
+                        <h1 className="text-lg xl:text-xl text-neutral-900 xl:px-4">Filter</h1>
+                            
+                                
+                            
+                            <Clickable className="flex items-center gap-1" onClick={() => {
+                                    if (searchBounds?.length) {
+                                        mapFunctionRef?.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+                                    }
+                                }}  
+                            >
+                                <TitleBadge className="bg-primary-200 text-primary-800 font-bold" count={filterCount} />
+                                
+                            </Clickable>
+                            <div className="flex items-center gap-1 pb-1 ml-auto">
+                            {isMobile && <Clickable  className={`bg-neutral-800 rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 text-white text-sm xl:text-base`} add={{results: 'on'}} remove={["options"]}>
+                           {!totalHits.value && <PiFunnel className="text-white text-lg" />}Treff {totalHits.value > 0 && <Badge className="bg-neutral-700 font-bold" count={totalHits.value} />}
+                        </Clickable>}
+                        </div>
+                            </div>
                          <OptionsWindow />
                     </LeftWindow>}
                     
                     <RightWindow>
                         <div className="w-full flex items-center xl:h-12 px-2 xl:px-0 gap-2">
                         
-                            { !mapSettings && <><h1 className="text-lg xl:text-xl text-neutral-900 xl:px-4">Treff</h1><Clickable className="results-badge bg-primary-200 text-primary-700 rounded-full flex items-center gap-1" onClick={() => {
+                            { !mapSettings && <><h1 className="text-lg xl:text-xl text-neutral-900 xl:px-4">Treff</h1>
+                            
+                                
+                            
+                            <Clickable className="flex items-center gap-1" onClick={() => {
                                     if (searchBounds?.length) {
                                         mapFunctionRef?.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
                                     }
                                 }}  
                             >
-                                {formatNumber(totalHits?.value || 0)} <PiCrop className="text-primary-700 text-lg" />
+                                <TitleBadge className="bg-primary-200 text-primary-800 font-bold" count={totalHits?.value || 0} />
                                 
                             </Clickable></>
                             }
                             { mapSettings && <h1 className="text-lg xl:text-xl text-neutral-900 xl:px-4">Kartinnstillingar</h1>}
                             
                         <div className="flex items-center gap-1 pb-1 ml-auto">
-                        {isMobile && !mapSettings && <Clickable  className="bg-neutral-800 rounded-full px-2 py-1 flex items-center gap-1 text-white text-sm xl:text-base" remove={["results"]}>
-                           <PiSliders className="text-white text-lg" />Alternativ
+                        {}
+                        {isMobile && !mapSettings && <Clickable  className="bg-neutral-800 rounded-full px-2 py-1 flex items-center gap-1 text-white text-sm xl:text-base">
+                           {!filterCount && <PiFunnel className="text-white text-lg" />}Filter {filterCount > 0 && <Badge className="bg-neutral-900 font-bold" count={filterCount} />}
                         </Clickable>}
-                        { mapSettings && <ClickableIcon label="Lukk" className="" remove={["mapSettings"]}>
-                            <PiX className="text-black text-2xl" />
+                        { mapSettings && <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings"]}>
+                            <PiX className="text-black text-3xl" />
                         </ClickableIcon>}
+                        {
+                            !mapSettings && !isMobile && <ClickableIcon label={ results ? "Skjul treff" : "Vis treff"} className="p-2" add={{results: results ? null : 'on'}} remove={["results"]}>
+                                {results ? <PiCaretUpBold className="text-primary-700 text-3xl" /> : <PiCaretDownBold className="text-primary-700 text-3xl" />}
+                            </ClickableIcon>
+                        }
                         </div>
                         </div>
                         {(mapSettings ? <MapSettings/> : results && <SearchResults />)}                   
