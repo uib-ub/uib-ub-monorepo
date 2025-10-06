@@ -94,6 +94,7 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
                     </span>
                     }
                 </div>}
+                {hit._score}
 
 
                     {isGrunnord && <span className="text-lg">{uniqueLabels(hit)}{uniqueLabels(hit).length > 3 && '...'}</span>}

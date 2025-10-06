@@ -80,13 +80,12 @@ const buildMultiMarker = (color: string, style: string) => {
 
 
 export function getLabelMarkerIcon(label: string, color: string, docCount?: number, selected?: boolean, hideLabel?: boolean, showPin?: boolean) {
-    const sizeAdjustment = selected ? 1.5 : 1;
     const colorValue = colorMapping[color] || color
     return {
       className: '',
       html: `
-        <div class="map-marker group" style="display: flex; align-items: center; justify-content: center; position: relative; height: ${32 * sizeAdjustment}px;">
-          <div class="absolute -top-7 left-1/2 -translate-x-1/2">
+        <div class="map-marker group" style="display: flex; align-items: center; justify-content: center; position: relative; height: 2rem;">
+          <div class="absolute -top-6 left-1/2 -translate-x-1/2">
             <div class="flex flex-col items-center">
               <div class="flex items-center ${color == 'white' ? 'text-black' : 'text-white'} tracking-wide bg-opacity-40 whitespace-nowrap rounded-md text-center text-sm py-0.5 px-1.5 shadow-lg" style="background-color: ${color == 'accent' ? colorValue : `${colorValue}b3`}; border-color: ${colorValue}b3;">
                 <div class="max-w-32 min-w-0 block truncate">${label}</div>

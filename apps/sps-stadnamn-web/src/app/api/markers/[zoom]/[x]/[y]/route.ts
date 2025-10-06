@@ -52,9 +52,6 @@ export async function GET(
               "max_placeScore": {
                 "max": { "field": "group.placeScore" }
               },
-              "max_boost": {
-                "max": { "field": "boost" }
-              },
               "top": {
                 "top_hits": {
                   "size": 1,

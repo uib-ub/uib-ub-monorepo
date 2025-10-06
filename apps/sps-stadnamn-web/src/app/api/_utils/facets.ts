@@ -30,8 +30,9 @@ export const RESERVED_PARAMS = [
   'facetQuery',
   'mode',
   'geotile',
-  'docIndex',
 
+  'init',
+  'labelBounds',
   'sortPoint',
   'options',
   'results',

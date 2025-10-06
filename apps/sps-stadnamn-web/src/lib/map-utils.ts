@@ -220,6 +220,49 @@ export function addPadding(bounds: [[number, number], [number, number]], isMobil
 }
 
 
+export const getLabelBounds = (currentMap: any, label: string, lat: number, lon: number, remPx: number) => {
+  if (!currentMap) return undefined;
+
+  // Some wrappers/events expose the Leaflet map as `target`
+  const map = (typeof currentMap?.latLngToContainerPoint === 'function' && typeof currentMap?.containerPointToLatLng === 'function')
+    ? currentMap
+    : (typeof currentMap?.target?.latLngToContainerPoint === 'function' && typeof currentMap?.target?.containerPointToLatLng === 'function')
+      ? currentMap.target
+      : undefined;
+
+  if (!map) return undefined;
+
+  // Visual heuristics (kept in sync with markers.ts)
+  const textPx = remPx * 0.875;            // text-sm
+  const textRem = 0.875;                   // text-sm in rem
+  const avgCharWidthEm = 0.5;              // base glyph width in em
+  const letterSpacingEm = 0.025;           // tracking-wide
+  const xPadding = 0.25
+  const perCharEm = avgCharWidthEm + letterSpacingEm
+  const maxWidthRem = 8;                   // max-w-32
+  const paddingXRemTotal = 0.75;           // px-1.5 total (both sides)
+  const heightRem = 2;                   // text-sm line-height (1.25rem) + py-0.5 (0.25rem)
+  const anchorOffsetRem = 1.875;             // -top-6
+
+  // Estimate bubble width/height using rems (clamp text at max-w before padding)
+  const textWidthRem = Math.min(label.length * (perCharEm * textRem), maxWidthRem) + (xPadding * 2);
+  const widthRem = textWidthRem + paddingXRemTotal;
+  const widthPx = Math.ceil(widthRem * remPx);
+  const heightPx = Math.ceil(heightRem * remPx);
+  const anchorOffsetPx = Math.ceil(anchorOffsetRem * remPx);
+
+  // Screen-space rect relative to marker anchor
+  const center = map.latLngToContainerPoint([lat, lon]);
+  const x1 = center.x - (widthPx / 2);
+  const x2 = center.x + (widthPx / 2);
+  const y1 = center.y - anchorOffsetPx;   // bubble top positioned -top-6 above anchor
+  const y2 = y1 + heightPx;               // bubble bottom
+
+  // Convert to geographic bounds [[north, west], [south, east]]
+  const nw = map.containerPointToLatLng([x1, y1]);
+  const se = map.containerPointToLatLng([x2, y2]);
+  return [[nw.lat, nw.lng], [se.lat, se.lng]] as [[number, number], [number, number]];
+}
 
 export const yDistance = (currentMap: any, lat1: number, lat2: number) => {
     // Calculate vertical pixel distance between two latitude points using map projection

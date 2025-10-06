@@ -79,7 +79,7 @@ export async function GET(request: Request) {
   
 
 
-  console.log('GROUP DATA', {adm1, adm2, adm3, label})
+  //console.log('GROUP DATA', {adm1, adm2, adm3, label})
 
   type OutputData = {
     label: any;
@@ -97,15 +97,9 @@ export async function GET(request: Request) {
     ...adm2 ? {adm2} : {},
     ...adm3 ? {adm3} : {},
     "sources": data.hits?.hits.map((hit: any) => {
-      return {uuid: hit._source.uuid, 
+      return { 
               dataset: hit._index.split('-')[2],
-              ...hit._source.iiif ? {iiif: hit._source.iiif} : {},
-              ...hit._source.label != label ? {label: hit._source.label} : {},
-              ...hit.attestations ? {attestations: hit._source.attestations} : {}, 
-              ...hit.location ? {location: hit._source.location} : {},
-              ...hit.sosi ? {sosi: hit._source.sosi} : {},
-              ...hit._source.content ? {content: hit._source.content} : {},
-              ...hit._source.recordings?.length ?  {recordings: hit._source.recordings} : {},
+              ...hit._source
                 }
     }) || []
   }

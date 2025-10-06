@@ -12,7 +12,7 @@ import wkt from 'wellknown';
 import { stringToBase64Url } from "@/lib/param-utils";
 import useDocData from "@/state/hooks/doc-data";
 import { useQueries } from "@tanstack/react-query";
-import { xDistance, yDistance, boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius, getMyLocation, MAP_DRAWER_MIN_HEIGHT_REM } from "@/lib/map-utils";
+import { boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius, getMyLocation, MAP_DRAWER_MIN_HEIGHT_REM, getLabelBounds } from "@/lib/map-utils";
 import useSearchData from "@/state/hooks/search-data";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
 import { GlobalContext } from "@/state/providers/global-provider";
@@ -26,6 +26,7 @@ import MapToolbar from "./map-toolbar";
 
 
 const debug = process.env.NODE_ENV === 'development'
+const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
 
 
 
@@ -176,24 +177,28 @@ export default function MapExplorer() {
 
         const evaluateNeighborMarkers = (self: Record<string, any>, neighbourMarkers: Record<string, any>[]): {other: Record<string, any> | null, otherIndex: number | null} => {
           let otherIndex = 0
-          for (const other of neighbourMarkers) {
-            const yDist = yDistance(
-              mapInstance.current,
-              other.fields.location[0].coordinates[1],
-              self.fields.location[0].coordinates[1]
-            );
-            const xDist = xDistance(
-              mapInstance.current,
-              other.fields.location[0].coordinates[0],
-              self.fields.location[0].coordinates[0]
-            );
 
-            if (yDist < 32 && xDist < 64 + 4 * other.fields.label[0].length) {
-              return {other, otherIndex}
+          const selfLat = self.fields.location[0].coordinates[1]
+          const selfLon = self.fields.location[0].coordinates[0]
+          const selfLabel: string = self.fields.label?.[0] ?? ''
+          self.labelBounds = self.labelBounds || getLabelBounds(mapInstance.current, selfLabel, selfLat, selfLon, rootFontSize)
+          const selfBounds = self.labelBounds
+
+          for (const other of neighbourMarkers) {
+            const otherBounds = other.labelBounds
+
+            if (selfBounds && otherBounds) {
+              const [[aN, aW], [aS, aE]] = selfBounds
+              const [[bN, bW], [bS, bE]] = otherBounds
+              // Rectangles overlap if they are not separated along any axis
+              const separated = (aE < bW) || (aW > bE) || (aS > bN) || (aN < bS)
+              if (!separated) {
+                return { other, otherIndex }
+              }
             }
             otherIndex++
           }
-          return {other: null, otherIndex: null}
+          return { other: null, otherIndex: null }
         }
 
         bucket.groups.buckets.forEach((group: any) => {
@@ -214,7 +219,7 @@ export default function MapExplorer() {
               if ((other.fields.boost || 0) < (top_hit.fields.boost || 0)) {
                 const stolenChildren = other.children || []
                 const childlessOther = { ...other, children: undefined}
-                labeledMarkersLookup[neighborTile][otherIndex] = {...top_hit, children: [childlessOther, ...stolenChildren]}
+                labeledMarkersLookup[neighborTile][otherIndex] = {...top_hit, labelBounds: top_hit.labelBounds, children: [childlessOther, ...stolenChildren]}
               }
               else {
                 const lostChildren = top_hit.children || []
@@ -250,7 +255,16 @@ export default function MapExplorer() {
 
     //("LABELED MARKERS LOOKUP", JSON.stringify(labeledMarkersLookup, null, 2))
     const markers = Object.entries(labeledMarkersLookup).flatMap(([key, items]: [string, Record<string, any>[]]) => 
-      items.map(item => ({tile: key, ...item}))
+      items.map(item => {
+        const lat = item.fields.location?.[0]?.coordinates?.[1]
+        const lon = item.fields.location?.[0]?.coordinates?.[0]
+        const label: string = item.fields.label?.[0] ?? ''
+        const labelBounds = (lat != undefined && lon != undefined)
+          ? getLabelBounds(mapInstance.current, label, lat, lon, rootFontSize)
+          : undefined
+        const blockedBounds = labelBounds
+        return ({ tile: key, labelBounds, blockedBounds, ...item })
+      })
     )
     const clusters = countItems.map((item: any) => ({...item, radius: calculateRadius(item.doc_count, maxDocCount, minDocCount )}))
 
@@ -405,7 +419,7 @@ export default function MapExplorer() {
 
 
 
-  const selectDocHandler = (selected: Record<string, any>, hits?: Record<string, any>[]) => {
+  const selectDocHandler = (selected: Record<string, any>, labelBounds: [[number, number], [number, number]], hits?: Record<string, any>[]) => {
     return {
       click: () => {
         const newQueryParams = new URLSearchParams(searchParams)
@@ -416,7 +430,10 @@ export default function MapExplorer() {
           newQueryParams.delete('mapSettings')
         }
         newQueryParams.delete('doc')
-        newQueryParams.set('sortPoint', `${selected.location[0].coordinates[1]},${selected.location[0].coordinates[0]}`)
+        console.log("SELECTED", labelBounds)
+        newQueryParams.set('labelBounds', labelBounds.flat().join(','))
+
+        newQueryParams.set('init', stringToBase64Url(selected["group.id"][0]))
         if (datasetTag == 'tree') {
           newQueryParams.set('doc', selected.uuid[0])
         }
@@ -724,26 +741,41 @@ export default function MapExplorer() {
                 const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', selected ? 'accent' : 'white', childCount, false, false, !!(selected))
 
                 return (
-                <Marker
-                  key={`result-${item.fields.uuid[0]}`}
-                  position={[lat, lng]}
-                  icon={new leaflet.DivIcon(icon)}
-                  riseOnHover={true}
-                  eventHandlers={selectDocHandler(item.fields, childCount ? [item, ...(item.children || [])] : [])}
-                >
-                    {childCount && item.fields?.["group.id"]?.[0] && <Popup offset={[0, -24]}>
-                      <ul className="list-none p-0 m-0 max-h-[50svh] overflow-y-auto stable-scrollbar text-lg divide-y divide-neutral-200 flex flex-col">
-                        {[item, ...(item.children || [])].map((entry: any) => (
-                          <li key={`entry-${entry.fields.uuid[0]}`} className="!p-0 !m-0">
-                            <Clickable className="no-underline !text-black flex gap-2 items-center py-2" 
-                                        link add={{details: 'group', group: stringToBase64Url(entry.fields["group.id"]?.[0])}}>
-                                          {groupValue == entry.fields["group.id"]?.[0] ? <PiBookOpenFill className="text-accent-700" /> : <PiBookOpen className="text-primary-600" />}{entry.fields.label?.[0]}
-                            </Clickable>
-                          </li>
-                        ))}
-                      </ul>
-                    </Popup>}
-                </Marker>
+                <Fragment key={`result-frag-${item.fields.uuid[0]}`}>
+                  {debug && item.labelBounds && (
+                    <Rectangle
+                      bounds={item.labelBounds}
+                      pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
+                    />
+                  )}
+                  {
+                    debug && <CircleMarker
+                    center={[lat, lng]}
+                    radius={2}
+                    pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
+                  />
+                  }
+                  <Marker
+                    key={`result-${item.fields.uuid[0]}`}
+                    position={[lat, lng]}
+                    icon={new leaflet.DivIcon(icon)}
+                    riseOnHover={true}
+                    eventHandlers={selectDocHandler(item.fields, item.labelBounds, childCount ? [item, ...(item.children || [])] : [])}
+                  >
+                      { childCount && item.fields?.["group.id"]?.[0] && <Popup offset={[0, -24]}>
+                        <ul className="list-none p-0 m-0 max-h-[50svh] overflow-y-auto stable-scrollbar text-lg divide-y divide-neutral-200 flex flex-col">
+                          {[item, ...(item.children || [])].map((entry: any) => (
+                            <li key={`entry-${entry.fields.uuid[0]}`} className="!p-0 !m-0">
+                              <Clickable className="no-underline !text-black flex gap-2 items-center py-2" 
+                                          link add={{details: 'group', group: stringToBase64Url(entry.fields["group.id"]?.[0])}}>
+                                            {groupValue == entry.fields["group.id"]?.[0] ? <PiBookOpenFill className="text-accent-700" /> : <PiBookOpen className="text-primary-600" />}{entry.fields.label?.[0]}
+                              </Clickable>
+                            </li>
+                          ))}
+                        </ul>
+                      </Popup>}
+                  </Marker>
+                </Fragment>
               )
             }
 
