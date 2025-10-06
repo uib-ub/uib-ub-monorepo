@@ -23,14 +23,26 @@ import { useMapSettings } from '@/state/zustand/persistent-map-settings'
 import { RoundIconButton } from "../ui/clickable/round-icon-button";
 import DynamicMap from "./leaflet/dynamic-map";
 import MapToolbar from "./map-toolbar";
+import { useDebugStore } from '../../state/zustand/debug-store';
 
 
-const debug = process.env.NODE_ENV === 'development'
+
 const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
 
 
 
 export default function MapExplorer() {
+  const debug = useDebugStore(state => state.debug);
+  const showH3Grid = useDebugStore(state => state.showH3Grid);
+  const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
+  const showMarkerBounds = useDebugStore(state => state.showMarkerBounds);
+  // Add state for H3 resolution
+  const h3Resolution = useDebugStore(state => state.h3Resolution);
+  const setH3Resolution = useDebugStore(state => state.setH3Resolution);
+
+
+
+
   const { totalHits, searchBounds, searchLoading, searchUpdatedAt } = useSearchData()
   const myLocation = useSessionStore((s) => s.myLocation)
   const setMyLocation = useSessionStore((s) => s.setMyLocation)
@@ -89,8 +101,7 @@ export default function MapExplorer() {
   const gridSizeRef = useRef<{ gridSize: number, precision: number }>(getGridSize(snappedBounds, zoomState));
   const router = useRouter()
 
-  // Add state for H3 resolution
-  const [h3Resolution, setH3Resolution] = useState(8);
+  
 
   // Add state for geotile cells and intersecting cells
   interface GeotileCell {
@@ -253,17 +264,21 @@ export default function MapExplorer() {
       }
     })
 
-    //("LABELED MARKERS LOOKUP", JSON.stringify(labeledMarkersLookup, null, 2))
+    // Flatten
     const markers = Object.entries(labeledMarkersLookup).flatMap(([key, items]: [string, Record<string, any>[]]) => 
       items.map(item => {
-        const lat = item.fields.location?.[0]?.coordinates?.[1]
-        const lon = item.fields.location?.[0]?.coordinates?.[0]
-        const label: string = item.fields.label?.[0] ?? ''
-        const labelBounds = (lat != undefined && lon != undefined)
-          ? getLabelBounds(mapInstance.current, label, lat, lon, rootFontSize)
-          : undefined
-        const blockedBounds = labelBounds
-        return ({ tile: key, labelBounds, blockedBounds, ...item })
+        // Calculate blockingBounds by extending labelBounds to encompass coordinates of the children
+        const [[north, west], [south, east]] = item.labelBounds
+        let blockingBounds = [[north, west], [south, east]]
+        item.children?.forEach((child: any) => {
+          blockingBounds[0][0] = Math.min(blockingBounds[0][0], child.fields.location[0].coordinates[1])
+          blockingBounds[0][1] = Math.min(blockingBounds[0][1], child.fields.location[0].coordinates[0])
+          blockingBounds[1][0] = Math.max(blockingBounds[1][0], child.fields.location[0].coordinates[1])
+          blockingBounds[1][1] = Math.max(blockingBounds[1][1], child.fields.location[0].coordinates[0])
+        })
+        item.blockingBounds = blockingBounds
+
+        return ({ tile: key, blockingBounds, ...item })
       })
     )
     const clusters = countItems.map((item: any) => ({...item, radius: calculateRadius(item.doc_count, maxDocCount, minDocCount )}))
@@ -447,11 +462,6 @@ export default function MapExplorer() {
         }
     }
   }
-
-  // Add this state for toggling the grid
-  const [showH3Grid, setShowH3Grid] = useState(false);
-  const [showGeotileGrid, setShowGeotileGrid] = useState(false);
-
 
 
   // No cleanup needed for the new smart update system
@@ -742,14 +752,20 @@ export default function MapExplorer() {
 
                 return (
                 <Fragment key={`result-frag-${item.fields.uuid[0]}`}>
-                  {debug && item.labelBounds && (
+                  {debug && showMarkerBounds && item.labelBounds && (
                     <Rectangle
                       bounds={item.labelBounds}
                       pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
                     />
                   )}
+                  {debug && showMarkerBounds && item.blockingBounds && (
+                    <Rectangle
+                      bounds={item.blockingBounds}
+                      pathOptions={{ color: '#0000ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
+                    />
+                  )}
                   {
-                    debug && <CircleMarker
+                    debug && showMarkerBounds && <CircleMarker
                     center={[lat, lng]}
                     radius={2}
                     pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
