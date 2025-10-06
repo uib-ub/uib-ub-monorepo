@@ -69,7 +69,7 @@ function RightWindow({children}: {children: React.ReactNode}) {
         if (!mapSettings && !results) return null
         return <>{children}</>
     }
-    return <div className="bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-auto overflow-x-hidden stable-scrollbar">{children}</div>
+    return <div className="bg-white shadow-lg absolute right-0 top-[0.5rem] w-[25svw] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-auto overflow-x-hidden stable-scrollbar">{children}</div>
 }
 
 export default function OverlayInterface() {
@@ -124,7 +124,7 @@ export default function OverlayInterface() {
                                 <TitleBadge className="bg-primary-200 text-primary-800 font-bold" count={filterCount} />
                                 
                             </Clickable>
-                            <div className="flex items-center gap-1 pb-1 ml-auto">
+                            <div className="flex items-center gap- ml-auto">
                             {isMobile && totalHits && <Clickable  className={`bg-neutral-800 rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 text-white text-sm xl:text-base`} add={{results: 'on'}} remove={["options"]}>
                             {!totalHits?.value && <PiFunnel className="text-white text-lg" />}Treff {totalHits?.value > 0 && <Badge className="bg-neutral-700 font-bold" count={totalHits.value} />}
                         </Clickable>}
@@ -152,7 +152,7 @@ export default function OverlayInterface() {
                             }
                             { mapSettings && <h1 className="text-lg xl:text-xl text-neutral-900 xl:px-4">Kartinnstillingar</h1>}
                             
-                        <div className="flex items-center gap-1 pb-1 ml-auto">
+                        <div className="flex items-center gap-1 ml-auto">
                         {}
                         {isMobile && !mapSettings && <Clickable remove={["results"]}  className="bg-neutral-800 rounded-full px-2 py-1 flex items-center gap-1 text-white text-sm xl:text-base">
                            {!filterCount && <PiFunnel className="text-white text-lg" />}Filter {filterCount > 0 && <Badge className="bg-neutral-900 font-bold" count={filterCount} />}
@@ -161,8 +161,8 @@ export default function OverlayInterface() {
                             <PiX className="text-black text-3xl" />
                         </ClickableIcon>}
                         {
-                            !mapSettings && !isMobile && <ClickableIcon label={ results ? "Skjul treff" : "Vis treff"} className="p-2 bg-primary-700 rounded-full" add={{results: results ? null : 'on'}} remove={["results"]}>
-                                {results ? <PiCaretUpBold className="text-white text-xl" /> : <PiCaretDownBold className="text-white text-xl" />}
+                            !mapSettings && !isMobile && <ClickableIcon label={ results ? "Skjul treff" : "Vis treff"} className="btn btn-outline rounded-full px-2" add={{results: results ? null : 'on'}} remove={["results"]}>
+                                {results ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
                             </ClickableIcon>
                         }
                         </div>
