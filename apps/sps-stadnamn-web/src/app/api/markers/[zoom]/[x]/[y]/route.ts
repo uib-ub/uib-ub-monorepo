@@ -46,7 +46,7 @@ export async function GET(
             "terms": {
               "field": "group.id",
               "order": { "max_placeScore": "desc"},
-              size: (Number(precision) > 17 || (totalHits && totalHits < 10000)) ? 200 : 3,
+              size: (Number(precision) > 17 || (totalHits && totalHits < 10000)) ? 500 : 30,
             },
             "aggs": {
               "max_placeScore": {
@@ -66,6 +66,7 @@ export async function GET(
       }
     }
   }
+  console.log("PRECISION", precision)
 
   if (simple_query_string || termFilters.length) {
     if (simple_query_string) {
