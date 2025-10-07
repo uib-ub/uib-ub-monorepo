@@ -8,6 +8,7 @@ import { GlobalContext } from '@/state/providers/global-provider';
 import { stringToBase64Url } from '@/lib/param-utils';
 import { useGroup, useMode, usePerspective } from '@/lib/param-hooks';
 import { useSessionStore } from '@/state/zustand/session-store';
+import { useDebugStore } from '@/state/zustand/debug-store';
 
 const uniqueLabels = (hit: any) => {
     const labels = new Set<string>();
@@ -44,6 +45,7 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
     const { highlightedGroup } = useContext(GlobalContext)
     const { searchFilterParamsString } = useSearchQuery()
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
+    const showScore = useDebugStore((s: any) => s.showScore)
 
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
     const detailsRenderer = (hit: any) => {
@@ -94,7 +96,7 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
                     </span>
                     }
                 </div>}
-                {hit._score}
+                {showScore && hit._score}
 
 
                     {isGrunnord && <span className="text-lg">{uniqueLabels(hit)}{uniqueLabels(hit).length > 3 && '...'}</span>}

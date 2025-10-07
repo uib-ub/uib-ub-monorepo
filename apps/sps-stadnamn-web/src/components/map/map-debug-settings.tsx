@@ -17,6 +17,8 @@ export default function MapDebugSettings() {
   const toggleH3Grid = useDebugStore((s: any) => s.toggleH3Grid);
   const h3Resolution = useDebugStore((s: any) => s.h3Resolution);
   const setH3Resolution = useDebugStore((s: any) => s.setH3Resolution);
+  const showScore = useDebugStore((s: any) => s.showScore);
+  const setShowScore = useDebugStore((s: any) => s.setShowScore);
 
   return (
     <section>
@@ -82,10 +84,26 @@ export default function MapDebugSettings() {
                 />
                 <span>Vis H3 grid</span>
               </label>
+              <fieldset className="border-0 p-0 m-0">
+        <legend className="text-base font-semibold text-neutral-900 p-3">Score</legend>
+        <div className="flex flex-col gap-2 px-2 py-1">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showScore}
+              onChange={() => setShowScore(!showScore)}
+              className="accent-accent-800"
+            />
+            <span>Vis score</span>
+          </label>
+        </div>
+      </fieldset>
             </div>
           )}
         </div>
       </fieldset>
+    
+
     </section>
   );
 }

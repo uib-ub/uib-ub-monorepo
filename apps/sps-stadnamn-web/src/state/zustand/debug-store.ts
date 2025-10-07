@@ -10,6 +10,9 @@ export const useDebugStore = create<{
     setShowGeotileGrid: (show: boolean) => void,
     toggleGeotileGrid: () => void,
 
+    showScore: boolean,
+    setShowScore: (show: boolean) => void,
+
     showMarkerBounds: boolean,
     setShowMarkerBounds: (show: boolean) => void,
     toggleMarkerBounds: () => void,
@@ -25,6 +28,9 @@ export const useDebugStore = create<{
         (set) => ({
             debug: false,
             setDebug: (debug) => set({ debug }),
+
+            showScore: false,
+            setShowScore: (show) => set({ showScore: show }),
 
             showGeotileGrid: false,
             setShowGeotileGrid: (show) => set({ showGeotileGrid: show }),
