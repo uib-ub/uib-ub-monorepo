@@ -267,18 +267,9 @@ export default function MapExplorer() {
     // Flatten
     const markers = Object.entries(labeledMarkersLookup).flatMap(([key, items]: [string, Record<string, any>[]]) => 
       items.map(item => {
-        // Calculate blockingBounds by extending labelBounds to encompass coordinates of the children
-        const [[north, west], [south, east]] = item.labelBounds
-        let blockingBounds = [[north, west], [south, east]]
-        item.children?.forEach((child: any) => {
-          blockingBounds[0][0] = Math.min(blockingBounds[0][0], child.fields.location[0].coordinates[1])
-          blockingBounds[0][1] = Math.min(blockingBounds[0][1], child.fields.location[0].coordinates[0])
-          blockingBounds[1][0] = Math.max(blockingBounds[1][0], child.fields.location[0].coordinates[1])
-          blockingBounds[1][1] = Math.max(blockingBounds[1][1], child.fields.location[0].coordinates[0])
-        })
-        item.blockingBounds = blockingBounds
 
-        return ({ tile: key, blockingBounds, ...item })
+
+        return ({ tile: key, ...item })
       })
     )
     const clusters = countItems.map((item: any) => ({...item, radius: calculateRadius(item.doc_count, maxDocCount, minDocCount )}))
@@ -434,7 +425,7 @@ export default function MapExplorer() {
 
 
 
-  const selectDocHandler = (selected: Record<string, any>, labelBounds: [[number, number], [number, number]], hits?: Record<string, any>[]) => {
+  const selectDocHandler = (selected: Record<string, any>, hits?: Record<string, any>[]) => {
     return {
       click: () => {
         const newQueryParams = new URLSearchParams(searchParams)
@@ -445,8 +436,6 @@ export default function MapExplorer() {
           newQueryParams.delete('mapSettings')
         }
         newQueryParams.delete('doc')
-        console.log("SELECTED", labelBounds)
-        newQueryParams.set('labelBounds', labelBounds.flat().join(','))
 
         newQueryParams.set('init', stringToBase64Url(selected["group.id"][0]))
         if (datasetTag == 'tree') {
@@ -752,31 +741,35 @@ export default function MapExplorer() {
 
                 return (
                 <Fragment key={`result-frag-${item.fields.uuid[0]}`}>
-                  {debug && showMarkerBounds && item.labelBounds && (
+                  { showMarkerBounds && item.labelBounds && (
                     <Rectangle
                       bounds={item.labelBounds}
                       pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
                     />
                   )}
-                  {debug && showMarkerBounds && item.blockingBounds && (
-                    <Rectangle
-                      bounds={item.blockingBounds}
-                      pathOptions={{ color: '#0000ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
-                    />
-                  )}
                   {
-                    debug && showMarkerBounds && <CircleMarker
+                    showMarkerBounds && <CircleMarker
                     center={[lat, lng]}
                     radius={2}
                     pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
                   />
+                  }
+                  {
+                    showMarkerBounds && item.children?.map((child: any) => (
+                      <CircleMarker
+                        key={`child-${child.fields.uuid[0]}`}
+                        center={[child.fields.location[0].coordinates[1], child.fields.location[0].coordinates[0]]}
+                        radius={2}
+                        pathOptions={{ color: '#0000ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
+                      />
+                    ))
                   }
                   <Marker
                     key={`result-${item.fields.uuid[0]}`}
                     position={[lat, lng]}
                     icon={new leaflet.DivIcon(icon)}
                     riseOnHover={true}
-                    eventHandlers={selectDocHandler(item.fields, item.labelBounds, childCount ? [item, ...(item.children || [])] : [])}
+                    eventHandlers={selectDocHandler(item.fields, childCount ? [item, ...(item.children || [])] : [])}
                   >
                       { childCount && item.fields?.["group.id"]?.[0] && <Popup offset={[0, -24]}>
                         <ul className="list-none p-0 m-0 max-h-[50svh] overflow-y-auto stable-scrollbar text-lg divide-y divide-neutral-200 flex flex-col">

@@ -13,10 +13,17 @@ const collapsedDataQuery = async ({
     pageParam = 0,
     searchQueryString,
     initGroupCode,
-    labelBounds
+    initBoost,
+    initPlaceScore,
+    initGroupData,
 
-}: { pageParam?: number; searchQueryString: string, initGroupCode: string | null, labelBounds: string | null }) => {      
+}: { pageParam?: number; searchQueryString: string, initGroupCode: string | null, initBoost: number | null, initPlaceScore: number | null, initGroupData: Record<string, any> | null }) => {      
     
+
+    const initGroupValue = initGroupCode ? base64UrlToString(initGroupCode) : undefined
+    const initLocation = initGroupData?.sources[0]?.location?.coordinates || undefined
+    const initLabel = initGroupData?.sources[0]?.label || undefined
+
     
 
     const res = await fetch(`/api/search/collapsed?${searchQueryString}`, {
@@ -24,11 +31,15 @@ const collapsedDataQuery = async ({
         body: JSON.stringify({
             size: PER_PAGE,
             from: pageParam * PER_PAGE,
-            ...initGroupCode ? {initGroup: base64UrlToString(initGroupCode)} : {},
-            ...labelBounds ? {labelBounds} : {},
+            initGroup: initGroupData?.group,
+            initBoost: initGroupData?.boost,
+            initPlaceScore: initGroupData?.placeScore,
+            initLocation,
+            initLabel,
         })
     })
     if (!res.ok) {
+        console.error("Error fetching collapsed data", res.status)
         throw new Error(res.status.toString())
     }
     const data = await res.json()
@@ -44,9 +55,8 @@ export default function useCollapsedData() {
     const initialPage = parseInt(searchParams.get('page') || '1')
     const initialPageRef = useRef(initialPage)
     const { searchQueryString } = useSearchQuery()
-    const initGroupCode = searchParams.get('init') || searchParams.get('group')
+    const initGroupCode = searchParams.get('init')
     const { groupData, groupFetching } = useGroupData(initGroupCode)
-    const labelBounds = searchParams.get('labelBounds')
     
     const {
         data,
@@ -58,13 +68,16 @@ export default function useCollapsedData() {
         isLoading,
         status
     } = useInfiniteQuery({
-        queryKey: ['collapsedData', searchQueryString, groupFetching, initGroupCode, labelBounds],
+        queryKey: ['collapsedData', searchQueryString, groupFetching, initGroupCode],
         queryFn: ({ pageParam }) => collapsedDataQuery({ 
             pageParam, 
             searchQueryString,
-            initGroupCode,
-            labelBounds
+            initGroupCode: initGroupCode,
+            initBoost: groupData?.boost,
+            initPlaceScore: groupData?.placeScore,
+            initGroupData: groupData,
         }),
+        placeholderData: (prevData) => prevData,
         initialPageParam: initialPageRef.current - 1,
         getNextPageParam: (lastPage) => lastPage.nextCursor,
         refetchOnWindowFocus: false,

@@ -9,23 +9,18 @@ export async function GET(request: Request) {
   const {termFilters, reservedParams} = extractFacets(request)
 
   const perspective = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
-  const { simple_query_string } = getQueryString(reservedParams)
-
-  let sortArray: (string | object)[] = []
-    
-    // Existing sorting logic
-
-  if (!sortArray.length) {
-    sortArray = getSortArray(perspective)
-  }
-
-  const from = reservedParams.from || 0;
-  const isFirstPage = from === 0;
     
   const query: Record<string,any> = {
-    "size": reservedParams.size || 20,
-    "from": from,
-    "track_scores": true,
+    "size": 1000,
+    "query": {
+      "term": {
+        "group.id": reservedParams.group
+      }
+    },
+    "track_scores": false,
+    "track_total_hits": false,
+    "_source": ["uuid", "label", "attestations", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group"],
+    /*
     "aggs": {
       "viewport": {
         "geo_bounds": {
@@ -33,34 +28,11 @@ export async function GET(request: Request) {
           "wrap_longitude": true
         },
       }
-    },
-    "sort": [
-      {
-        _score: "desc"
-      },
-      {
-        boost: {
-          order: "desc",
-          missing: "_last"
-        }
-      },
-    ],
-    "_source": ["uuid", "label", "attestations", "sosi", "content", "iiif", "recordings", "location"]
-  }
-
-
-  if (simple_query_string && termFilters.length) {
-    query.query = {
-      "bool": {
-        "must": simple_query_string,              
-        "filter": termFilters
-      }
     }
+    */
   }
-  else if (simple_query_string) {
-    query.query = simple_query_string
-  }
-  else if (termFilters.length) {
+
+  if (termFilters.length) {
     query.query = {"bool": {
         "filter": termFilters
       }
@@ -68,57 +40,56 @@ export async function GET(request: Request) {
   }
 
   
-  
   const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
 
+  const sources: any[] = []
+  let topDoc = {boost: -1, placeScore: -1, group: data.hits?.hits[0]?._source?.group }
 
-  const topDoc = data.hits?.hits?.[0]?._source
-  const group = topDoc?.group
-  const { adm1, adm2, adm3 } = group || {}
-  const label = topDoc?.label
   
+  data?.hits?.hits.forEach((hit: any) => {
+    const boost = hit._source.boost || 0
+    const placeScore = hit._source.placeScore || 0
+    
+    if ( boost > topDoc.boost) {
+      topDoc['boost'] = boost
+    }
+    if ( placeScore > topDoc.placeScore) {
+      topDoc['placeScore'] = placeScore
+    }
 
+    sources.push({
+      dataset: hit._index.split('-')[2],
+      uuid: hit._source.uuid,
+      label: hit._source.label,
+      attestations: hit._source.attestations,
+      sosi: hit._source.sosi,
+      content: hit._source.content,
+      iiif: hit._source.iiif,
+      recordings: hit._source.recordings,
+      location: hit._source.location,
+    })
 
-  //console.log('GROUP DATA', {adm1, adm2, adm3, label})
+    
+  })
+
 
   type OutputData = {
-    label: any;
-    adm1?: any;
-    adm2?: any;
-    adm3?: any;
-    viewport?: any;
-    total?: number;
-    sources: {uuid: string, label: string, sosi: string, location?: any}[];
+    boost: number,
+    placeScore: number,
+    sources: any[]
+    //viewport: any
+  
+
   };
 
   const outputData: OutputData = {
-    label,
-    ...adm1 ? {adm1} : {},
-    ...adm2 ? {adm2} : {},
-    ...adm3 ? {adm3} : {},
-    "sources": data.hits?.hits.map((hit: any) => {
-      return { 
-              dataset: hit._index.split('-')[2],
-              ...hit._source
-                }
-    }) || []
+    ...topDoc,
+    sources,
+    //viewport: data.aggregations?.viewport?.bounds,
   }
               
-              
- 
 
-  if (data.aggregations?.viewport?.bounds) {
-    outputData['viewport'] = data.aggregations.viewport.bounds
-  }
-
-  outputData['total'] = data.hits?.total?.value || 0
-
-
-
-
-
-
-
+  
   return Response.json(outputData, {status: status})
   
 }

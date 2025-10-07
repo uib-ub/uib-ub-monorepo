@@ -55,21 +55,6 @@ export default function SearchResults() {
     return () => observer.disconnect()
   }, [handleObserver])
 
-   // DEBUG: Check if component remounts
-   const renderCount = useRef(0)
-   const mountCount = useRef(0)
-   
-   useEffect(() => {
-     mountCount.current += 1
-     console.log('🔴 SearchResults MOUNTED (mount #' + mountCount.current + ')')
-     return () => {
-       console.log('🔴 SearchResults UNMOUNTED')
-     }
-   }, [])
-   
-   renderCount.current += 1
-   console.log('🔵 SearchResults RENDER #' + renderCount.current + ', groupValue:', groupValue)
-   
 
 
 

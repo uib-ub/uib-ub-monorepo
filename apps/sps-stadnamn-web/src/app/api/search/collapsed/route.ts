@@ -7,9 +7,13 @@ import { getSortArray } from '@/config/server-config';
 import { base64UrlToString } from '@/lib/param-utils';
 
 export async function POST(request: Request) {
-  const {size, from, perspective, initGroup, labelBounds} = await request.json()
+  const {size, from, perspective, initGroup, initBoost, initPlaceScore, initLabel, initLocation } = await request.json()
   const {termFilters, reservedParams} = extractFacets(request)
   const { highlight, simple_query_string } = getQueryString(reservedParams)
+
+
+  console.log("INIT LOCATION", initLocation)
+
 
 
   const query: Record<string,any> = {
@@ -26,15 +30,16 @@ export async function POST(request: Request) {
     "sort": reservedParams.datasetTag == 'base' ?
     [{'group.id': "asc"}, {'label.keyword': "asc"}]
     : [
-      ...false && reservedParams.sortPoint ? [{
-        _geo_distance: {
-          location: reservedParams.sortPoint,
-          order: "asc"
-        }
-      }] : [],
+      
       {
         _score: "desc"
       },
+      ...initLocation ? [{
+        _geo_distance: {
+          location: initLocation,
+          order: "asc"
+        }
+      }] : [],
       
       {
         boost: {
@@ -71,7 +76,7 @@ export async function POST(request: Request) {
     query.query = { "match_all": {} }
   }
 
-  if (initGroup) {
+  if (initGroup?.id) {
     const baseQuery = {...query.query}  // your existing query
   
     query.query = {
@@ -79,51 +84,48 @@ export async function POST(request: Request) {
         query: baseQuery,   // evaluate your main query once
         functions: [
           {
-            filter: { term: { "group.id": initGroup } },
+            filter: { term: { "group.id": initGroup.id } },
             weight: 10       // boost the initial group very high
-          },
+          }
         ],
         score_mode: "multiply",   // combine weights multiplicatively
         boost_mode: "multiply"    // multiply with base score
       }
     }
 
-    if (labelBounds) {
-      // labelBounds is a comma separated string: "north,west,south,east"
-      // Example: "59.80063426102869,9.953613281250002,59.130863097255904,12.810058593750002"
-      const [north, west, south, east] = labelBounds.split(',').map(Number);
-
-      // Construct geo_bounding_box in Elasticsearch format
-      const geoBoundingBox = {
-        location: {
-          top_left: {
-            lat: north,
-            lon: west
-          },
-          bottom_right: {
-            lat: south,
-            lon: east
-          }
-        }
-      };
-
+    if (initGroup.boost) {
       query.query.function_score.functions.push({
-        filter: { geo_bounding_box: geoBoundingBox },
-        weight: 9
-      });
+        filter: { range: { boost: { gte: initGroup.boost } } },
+        weight: 1
+      })
     }
 
 
+    // Bump items without location within same adm, or bump items within same adm if the init group has no location
+    if ( reservedParams.q?.length && initGroup?.adm1) {
+      query.query.function_score.functions.push({
+        filter: { 
+
+          bool: { 
+            must: [
+              { term: { "group.adm1.keyword": initGroup.adm1[0] } },
+              ...(initGroup.adm2 ? [{ term: { "group.adm2.keyword": initGroup.adm2[0] } }] : []),
+              ...(initLocation ? [{ bool: { must_not: { exists: { field: "location" } } } }] : [])
+              
+            ]
+          }
+        },
+        weight: 2
+      })
+    }
+
   }
-
-  console.log("QUERY", JSON.stringify(query, null, 2))
-
   
  
 
   // Only cache if no search string an no filters
   const [data, status] = await postQuery(perspective || 'all', query, "dfs_query_then_fetch")
-  console.log("DATA", data)
+  //console.log("DATA", data)
   return Response.json(data, {status: status})
   
 }
