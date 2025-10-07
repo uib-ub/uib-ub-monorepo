@@ -1,6 +1,8 @@
 import ClientThumbnail from "@/components/doc/client-thumbnail"
+import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import { datasetTitles } from "@/config/metadata-config"
 import { useRef, useState } from "react"
+import { PiCaretLeft, PiCaretLeftBold, PiCaretRight, PiCaretRightBold } from "react-icons/pi"
 
 type CarouselItem = { dataset: string, uuid: string, iiif?: string | string[], content?: { text?: string, html?: string } }
 
@@ -177,10 +179,12 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
                     </div>
                 )}
             </div>
-            <div className="absolute bottom-1 left-1 flex gap-2 items-center">
+            <div className="absolute bottom-1 left-1 flex gap-1 items-center">
             {items.length > 1 && (
-                <div className="bg-neutral-950/70 text-white rounded-full backdrop-blur-sm px-3 py-1">
+                <div className={`bg-neutral-950/70 flex items-center text-white rounded-full backdrop-blur-sm ${currentIndex > 0 ? 'pr-3' : 'pr-0'} ${currentIndex < items.length - 1 ? 'pl-3' : 'pl-0'} py-1`}>
+                    {currentIndex > 0 && <ClickableIcon label="Forrige" className="text-lg pr-1 pl-2" onClick={() => setCurrentIndex(currentIndex - 1)}><PiCaretLeftBold /></ClickableIcon>}
                     {currentIndex + 1}/{items.length}
+                    {currentIndex < items.length - 1 && <ClickableIcon label="Neste" className="text-lg pl-1 pr-2" onClick={() => setCurrentIndex(currentIndex + 1)}><PiCaretRightBold /></ClickableIcon>}
                 </div>
             )}
             <div className="bg-neutral-950/70 text-white rounded-full backdrop-blur-sm px-3 py-1">{datasetTitles[items[currentIndex].dataset]}</div>
