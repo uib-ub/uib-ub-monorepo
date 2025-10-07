@@ -7,7 +7,7 @@ import { formatNumber } from "@/lib/utils";
 import SearchResults from "./nav/results/search-results";
 import MapSettings from "../map/map-settings";
 import { useSessionStore } from "@/state/zustand/session-store";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import useGroupData from "@/state/hooks/group-data";
 import { useSearchQuery } from "@/lib/search-params";
 import { GlobalContext } from "@/state/providers/global-provider";
@@ -15,9 +15,10 @@ import useSearchData from "@/state/hooks/search-data";
 import { useSearchParams } from "next/navigation";
 import OptionsWindow from "./nav/options-window";
 import Clickable from "../ui/clickable/clickable";
-import { MAP_DRAWER_MIN_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH } from "@/lib/map-utils";
+import { MAP_DRAWER_MIN_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, adjustMapForDrawer, panPointIntoView } from "@/lib/map-utils";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { Badge, TitleBadge } from "../ui/badge";
+import { useGroup } from "@/lib/param-hooks";
 
 
 
@@ -37,11 +38,23 @@ export interface DrawerProps {
     setCurrentPosition: (position: number) => void
     minHeightRem?: number
     maxHeightSvh?: number,
-    scrollContainerRef?: React.RefObject<HTMLDivElement>
+    scrollContainerRef?: React.RefObject<HTMLDivElement>,
+    groupData?: any
 }
 
-function DrawerWrapper({ children, ...rest }: DrawerProps) {
-    const { isMobile } = useContext(GlobalContext)
+function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
+    const { isMobile, mapFunctionRef } = useContext(GlobalContext)
+    const snappedPosition = useSessionStore((s) => s.snappedPosition);
+
+
+    useEffect(() => {
+        if (!isMobile || !mapFunctionRef?.current || snappedPosition !== 'max') return
+        const point = groupData?.sources?.[0]?.location?.coordinates
+        if (!point) return
+
+        panPointIntoView(mapFunctionRef.current, [point[1], point[0]], true, true)
+    }, [isMobile, snappedPosition])
+
     if (!isMobile) {
         return <>{children}</>
     }
@@ -101,6 +114,7 @@ export default function OverlayInterface() {
         <div ref={drawerRef}  className="scroll-container">
                 <DrawerWrapper 
                     drawerOpen={true}
+                    groupData={groupData}
                     dismissable={false}
                     setDrawerOpen={setDrawerOpen}
                     snappedPosition={snappedPosition}

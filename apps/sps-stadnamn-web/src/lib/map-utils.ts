@@ -2,7 +2,7 @@
 export const EARTH_CIRCUMFERENCE = 40075016.686;
 
 export const MAP_DRAWER_MIN_HEIGHT_REM = 8
-export const MAP_DRAWER_MAX_HEIGHT_SVH = 50
+export const MAP_DRAWER_MAX_HEIGHT_SVH = 60
 
 // Web-Mercator helpers (Leaflet's default CRS: EPSG:3857)
 const R = 6378137; // Earth radius used by Spherical Mercator (meters)
@@ -341,3 +341,65 @@ export const getValidDegree = (degrees: number, maxValue: number): string => {
         alert("Nettlesaren din støttar ikkje posisjonsbestemming")
       }
     }
+
+// Utility to pan a point into view with container-based padding for both mobile and desktop
+export function panPointIntoView(
+  map: any,
+  point: [number, number],
+  isMobile: boolean,
+  maxDrawer?: boolean
+) {
+  if (!map || !point) return;
+
+  const [lat, lng] = point;
+  const size = map.getSize();
+  const zoom = map.getZoom();
+
+  // Hard-coded paddings based on platform and drawer state
+  let padLeft = 0, padRight = 0, padTop = 0, padBottom = 0;
+  if (isMobile) {
+    // Small top and x padding always on mobile
+    padTop = Math.round(size.y * 0.08); // ~8%
+    const xPadFrac = 0.05;              // 5% left/right
+    padLeft = Math.round(size.x * xPadFrac);
+    padRight = Math.round(size.x * xPadFrac);
+    // Bottom reserved only when drawer is at max height
+    padBottom = maxDrawer ? Math.round(size.y * (MAP_DRAWER_MAX_HEIGHT_SVH / 100)) : 0;
+  } else {
+    // Desktop: 25% left/right, small symmetric y padding
+    padLeft = Math.round(size.x * 0.25);
+    padRight = Math.round(size.x * 0.25);
+    const yPad = Math.round(Math.min(120, size.y * 0.1));
+    padTop = yPad;
+    padBottom = yPad;
+  }
+
+  // Check visibility within padded rectangle
+  const pt = map.latLngToContainerPoint([lat, lng]);
+  const insideHoriz = pt.x >= padLeft && pt.x <= (size.x - padRight);
+  const insideVert = pt.y >= padTop && pt.y <= (size.y - padBottom);
+
+  if (!(insideHoriz && insideVert)) {
+    const eps = 1e-6;
+    map.flyToBounds(
+      [[lat + eps, lng - eps], [lat - eps, lng + eps]],
+      {
+        paddingTopLeft: [padLeft, padTop],
+        paddingBottomRight: [padRight, padBottom],
+        maxZoom: zoom,
+        duration: 0.25
+      }
+    );
+  }
+}
+
+// Convenience helper to adjust map when drawer opens: keep current center visible with padding
+export function adjustMapForDrawer(
+  map: any,
+  isMobile: boolean,
+  options?: any
+) {
+  if (!map) return;
+  const center = map.getCenter();
+  panPointIntoView(map, [center.lat, center.lng], isMobile, true);
+}

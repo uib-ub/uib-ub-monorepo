@@ -11,18 +11,13 @@ export async function POST(request: Request) {
   const {termFilters, reservedParams} = extractFacets(request)
   const { highlight, simple_query_string } = getQueryString(reservedParams)
 
-
-  console.log("INIT LOCATION", initLocation)
-
-
-
   const query: Record<string,any> = {
     "size":  size  || 10,
     ...from ? {from} : {},
     ...highlight ? {highlight} : {},
     "track_scores": true,
     "track_total_hits": false,
-    "fields": ["group.adm1", "group.adm2", "uuid", "boost", "label"],
+    "fields": ["group.adm1", "group.adm2", "uuid", "boost", "label", "location"],
     "collapse": {
       "field": "group.id",
     },
@@ -122,10 +117,7 @@ export async function POST(request: Request) {
   }
   
  
-
-  // Only cache if no search string an no filters
   const [data, status] = await postQuery(perspective || 'all', query, "dfs_query_then_fetch")
-  //console.log("DATA", data)
   return Response.json(data, {status: status})
   
 }

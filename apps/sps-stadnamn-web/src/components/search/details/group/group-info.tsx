@@ -1,9 +1,8 @@
 import ClientThumbnail from "@/components/doc/client-thumbnail";
 import useGroupData from "@/state/hooks/group-data";
 import Carousel from "../../nav/results/carousel";
-import AudioExplorer from "@/components/doc/audio-explorer";
-import { useState } from "react";
-import { datasetTitles } from "@/config/metadata-config";
+import {  useState } from "react";
+
 
 export default function GroupInfo() {
     const { groupData } = useGroupData()
@@ -36,7 +35,16 @@ export default function GroupInfo() {
         <div className="w-full flex flex-col">
             {
                 audioItems?.map((audioItem) => (
-                    <>JSON.stringify(audioItem)</>
+                    <div key={audioItem.uuid + 'audio'}>JSON.stringify(audioItem)</div>
+                ))
+            }
+            {
+                textItems?.map((textItem) => (
+                    <div key={textItem.uuid + 'text'}>
+
+
+
+                    </div>
                 ))
             }
 

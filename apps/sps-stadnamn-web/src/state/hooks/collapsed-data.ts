@@ -56,7 +56,7 @@ export default function useCollapsedData() {
     const initialPageRef = useRef(initialPage)
     const { searchQueryString } = useSearchQuery()
     const initGroupCode = searchParams.get('init')
-    const { groupData, groupFetching } = useGroupData(initGroupCode)
+    const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(initGroupCode)
     
     const {
         data,
@@ -68,20 +68,20 @@ export default function useCollapsedData() {
         isLoading,
         status
     } = useInfiniteQuery({
-        queryKey: ['collapsedData', searchQueryString, groupFetching, initGroupCode],
+        queryKey: ['collapsedData', searchQueryString, initGroupLoading, initGroupCode],
         queryFn: ({ pageParam }) => collapsedDataQuery({ 
             pageParam, 
             searchQueryString,
             initGroupCode: initGroupCode,
-            initBoost: groupData?.boost,
-            initPlaceScore: groupData?.placeScore,
-            initGroupData: groupData,
+            initBoost: initGroupData?.boost,
+            initPlaceScore: initGroupData?.placeScore,
+            initGroupData: initGroupData,
         }),
         placeholderData: (prevData) => prevData,
         initialPageParam: initialPageRef.current - 1,
         getNextPageParam: (lastPage) => lastPage.nextCursor,
         refetchOnWindowFocus: false,
-        enabled: !groupFetching,
+        enabled: !initGroupLoading,
         staleTime: 1000 * 60 * 5, // 5 minutes
     })
 
@@ -95,6 +95,9 @@ export default function useCollapsedData() {
         collapsedLoading: isLoading,
         collapsedStatus: status,
         collapsedInitialPage: initialPageRef.current,
+        initGroupData: initGroupData,
+        initGroupLoading: initGroupLoading,
+
 
     }
 }

@@ -12,7 +12,7 @@ import wkt from 'wellknown';
 import { stringToBase64Url } from "@/lib/param-utils";
 import useDocData from "@/state/hooks/doc-data";
 import { useQueries } from "@tanstack/react-query";
-import { boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius, getMyLocation, MAP_DRAWER_MIN_HEIGHT_REM, getLabelBounds } from "@/lib/map-utils";
+import { boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius, getMyLocation, MAP_DRAWER_MIN_HEIGHT_REM, getLabelBounds, panPointIntoView } from "@/lib/map-utils";
 import useSearchData from "@/state/hooks/search-data";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
 import { GlobalContext } from "@/state/providers/global-provider";
@@ -387,6 +387,7 @@ export default function MapExplorer() {
 
 
   // Fly to doc
+  /*
   useEffect(() => {
     if (!mapInstance.current || searchLoading) return
 
@@ -399,6 +400,7 @@ export default function MapExplorer() {
     }
 
   }, [mapInstance, searchLoading, groupValue, docData, doc])
+  */
 
   // Fly to results
   useEffect(() => {
@@ -440,10 +442,6 @@ export default function MapExplorer() {
         newQueryParams.set('init', stringToBase64Url(selected["group.id"][0]))
         if (datasetTag == 'tree') {
           newQueryParams.set('doc', selected.uuid[0])
-        }
-        else {
-          newQueryParams.set('group', stringToBase64Url(selected["group.id"][0]))
-        
         }
         router.push(`?${newQueryParams.toString()}`)
           

@@ -32,8 +32,8 @@ const groupDataQuery = async (
 export default function useGroupData(initGroupCode?: string | null) {
     const searchParams = useSearchParams()
     const { searchQueryString } = useSearchQuery()
-    const group = searchParams.get('group')
-    const groupCode = initGroupCode || group
+    const { groupCode } = useGroup()
+    const group = initGroupCode || groupCode
 
     const datasets = searchParams.getAll('dataset')
     const datasetTags = searchParams.getAll('datasetTag')
@@ -50,9 +50,9 @@ export default function useGroupData(initGroupCode?: string | null) {
         isFetching: groupFetching,
         status,
     } = useQuery({
-        queryKey: ['group', groupCode, searchQueryString, docIndex],
+        queryKey: ['group', group, searchQueryString, docIndex],
         queryFn: async ({ pageParam }) =>
-            groupCode ? groupDataQuery(groupCode, datasets, datasetTags) : null,
+            group ? groupDataQuery(group, datasets, datasetTags) : null,
         placeholderData: initGroupCode ? undefined : (prevData) => prevData,
         // Transform data and expose only when ready
     })

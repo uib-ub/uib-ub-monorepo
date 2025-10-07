@@ -134,7 +134,7 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
     return (
         <div
             ref={containerRef}
-            className="flex flex-row h-64 relative select-none overflow-hidden"
+            className="flex flex-row h-48 xl:h-64 relative select-none overflow-hidden group w-full bg-neutral-50 p-2"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -179,17 +179,34 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
                     </div>
                 )}
             </div>
-            <div className="absolute bottom-1 left-1 flex gap-1 items-center">
+            <div className="absolute bottom-1 left-2 flex gap-1">
             {items.length > 1 && (
-                <div className={`bg-neutral-950/70 flex items-center text-white rounded-full backdrop-blur-sm ${currentIndex > 0 ? 'pr-3' : 'pr-0'} ${currentIndex < items.length - 1 ? 'pl-3' : 'pl-0'} py-1`}>
-                    {currentIndex > 0 && <ClickableIcon label="Forrige" className="text-lg pr-1 pl-2" onClick={() => setCurrentIndex(currentIndex - 1)}><PiCaretLeftBold /></ClickableIcon>}
+                <div className={`bg-neutral-950/70 flex items-center text-white rounded-full backdrop-blur-sm h-6 px-2 py-0`}>
                     {currentIndex + 1}/{items.length}
-                    {currentIndex < items.length - 1 && <ClickableIcon label="Neste" className="text-lg pl-1 pr-2" onClick={() => setCurrentIndex(currentIndex + 1)}><PiCaretRightBold /></ClickableIcon>}
                 </div>
             )}
-            <div className="bg-neutral-950/70 text-white rounded-full backdrop-blur-sm px-3 py-1">{datasetTitles[items[currentIndex].dataset]}</div>
+            <div className="px-2 text-black bg-white/50 backdrop-blur-sm rounded-full self-end h-6">{datasetTitles[items[currentIndex].dataset]}</div>
 
             </div>
+            {currentIndex > 0 && <ClickableIcon label="Forrige" 
+                                                className="absolute bg-neutral-950/70 rounded-full text-white text-xl p-2 left-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity" 
+                                                onClick={() => setCurrentIndex(currentIndex - 1)}>
+                                        <PiCaretLeftBold />
+                                        </ClickableIcon>}
+            {currentIndex < items.length - 1 && <ClickableIcon label="Neste" 
+            className="absolute bg-neutral-950/70 rounded-full text-white p-2 text-xl right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity" onClick={() => setCurrentIndex(currentIndex + 1)}><PiCaretRightBold /></ClickableIcon>}
+            {items.length > 1 && (
+                <div className="absolute top-1 left-1/2 -translate-x-1/2 md:hidden pointer-events-none">
+                    <div className="flex items-center gap-1 bg-neutral-950/50 backdrop-blur-sm rounded-full px-2 py-1">
+                        {items.map((_, idx) => (
+                            <span
+                                key={idx}
+                                className={`${idx === currentIndex ? 'bg-white' : 'bg-white/60'} h-1.5 w-1.5 rounded-full`}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

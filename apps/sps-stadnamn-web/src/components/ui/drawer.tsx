@@ -15,7 +15,7 @@ export default function Drawer({
     currentPosition,
     setCurrentPosition,
     minHeightRem = 8,
-    maxHeightSvh = 50,
+    maxHeightSvh = 60,
     scrollContainerRef
 }: {
     children: React.ReactNode

@@ -25,7 +25,7 @@ export function useDocIndex(): number {
 
 export function useGroup() {
     const searchParams = useSearchParams()
-    const groupCode = searchParams.get('group')
+    const groupCode = searchParams.get('group') || searchParams.get('init')
     const groupValue = groupCode ? base64UrlToString(groupCode) : null
     return {groupCode, groupValue}
 }

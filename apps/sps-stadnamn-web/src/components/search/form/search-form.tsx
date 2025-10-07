@@ -15,7 +15,7 @@ import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { formatNumber } from '@/lib/utils';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { stringToBase64Url } from '@/lib/param-utils';
-import { MAP_DRAWER_MIN_HEIGHT_REM } from '@/lib/map-utils';
+import { adjustMapForDrawer, MAP_DRAWER_MIN_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
 
 export async function autocompleteQuery(searchFilterParamsString: string, inputState: string, isMobile: boolean) {
     if (!inputState) return null
@@ -36,7 +36,7 @@ export async function autocompleteQuery(searchFilterParamsString: string, inputS
 export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const { isMobile, preferredTabs, inputValue } = useContext(GlobalContext)    //const autocompleteOpen = searchParams.get('nav') == 'results'
+    const { isMobile, preferredTabs, inputValue, mapFunctionRef } = useContext(GlobalContext)    //const autocompleteOpen = searchParams.get('nav') == 'results'
     const menuOpen = useSessionStore((s: any) => s.menuOpen)
     const autocompleteOpen = useSessionStore((s: any) => s.autocompleteOpen)
     const setAutocompleteOpen = useSessionStore((s: any) => s.setAutocompleteOpen)
@@ -62,7 +62,7 @@ export default function SearchForm() {
    
 
     const [inputState, setInputState] = useState<string>(inputValue.current || '') // Ensure updates within the component
-    const [sortPoint, setSortPoint] = useState<string>()
+    const [point, setPoint] = useState<string>()
     const [autocompleteFacetFilters, setAutocompleteFacetFilters] = useState<[string, string][]>(facetFilters)
     const [autocompleteDatasetFilters, setAutocompleteDatasetFilters] = useState<[string, string][]>(datasetFilters)
 
@@ -78,11 +78,8 @@ export default function SearchForm() {
         setSelectedGroup(group)
         setInputState(label)
         if (coordinates?.length == 2) {
-            setSortPoint(coordinates[1] + "," + coordinates[0])
+            panPointIntoView(mapFunctionRef.current, [coordinates[1], coordinates[0]], isMobile, false)
         } 
-        else {
-            setSortPoint(undefined)
-        }
 
         if (input.current) {
             input.current.value = label // ensure the form control has the new value
@@ -221,7 +218,7 @@ export default function SearchForm() {
                 />
 
                 {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset} />)}
-                {sortPoint && <input type="hidden" name="sortPoint" value={sortPoint} />}
+                {point && <input type="hidden" name="point" value={point} />}
                 {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''} />}
                 {false && `${JSON.stringify(autocompleteFacetFilters)}${JSON.stringify(autocompleteDatasetFilters)}`}
 
@@ -235,7 +232,7 @@ export default function SearchForm() {
             </div>
 
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''} />}
-            {selectedGroup && <input type="hidden" name="group" value={selectedGroup} />}
+            {selectedGroup && <input type="hidden" name="init" value={selectedGroup} />}
             <input type="hidden" name="results" value={'on'} />
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}

@@ -9,6 +9,7 @@ import { stringToBase64Url } from '@/lib/param-utils';
 import { useGroup, useMode, usePerspective } from '@/lib/param-hooks';
 import { useSessionStore } from '@/state/zustand/session-store';
 import { useDebugStore } from '@/state/zustand/debug-store';
+import { MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from '@/lib/map-utils';
 
 const uniqueLabels = (hit: any) => {
     const labels = new Set<string>();
@@ -42,7 +43,7 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
     const docDataset = hit._index.split('-')[2]
     const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
-    const { highlightedGroup } = useContext(GlobalContext)
+    const { mapFunctionRef } = useContext(GlobalContext)
     const { searchFilterParamsString } = useSearchQuery()
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
     const showScore = useDebugStore((s: any) => s.showScore)
@@ -75,9 +76,16 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
     
 
     
-    return  <Clickable link ref={itemRef} {...rest} className={`w-full h-full p-3 aria-expanded:text-white  aria-expanded:bg-accent-800 flex items-center group hover:bg-neutral-50 no-underline `} 
+    return  <Clickable ref={itemRef} {...rest} className={`w-full h-full p-3 aria-expanded:text-white  aria-expanded:bg-accent-800 flex items-center group no-underline `} 
     onClick={() => {
-        setSnappedPosition('max')
+        //setSnappedPosition('max')
+        if (!hit.fields?.location?.[0].coordinates) return;
+        const map = mapFunctionRef.current;
+        if (!map) return;
+
+        let [lng, lat] = hit.fields.location[0].coordinates;
+
+        panPointIntoView(map, [lat, lng], isMobile, isMobile);
     }}
     remove={['group', 'docIndex', 'doc', 'parent', ...(isMobile ? ['nav'] : [])]}
                     add={{
@@ -105,7 +113,7 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
                 </span>
                 
                
-                {hit.highlight && snippetRenderer && <>{snippetRenderer(hit)}</>}
+                {hit.highlight && snippetRenderer && <>{snippetRenderer(hit)}</>} {JSON.stringify(hit)}
             </div>
             {hit.inner_hits?.group?.hits?.total?.value > 1 && (
                 <div className={`ml-auto flex items-center rounded-full text-sm px-2.5 py-1 bg-neutral-100 text-neutral-950 group-aria-expanded:bg-accent-800 group-aria-expanded:text-white`}>
