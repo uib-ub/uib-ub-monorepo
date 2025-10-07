@@ -15,7 +15,7 @@ import useSearchData from "@/state/hooks/search-data";
 import { useSearchParams } from "next/navigation";
 import OptionsWindow from "./nav/options-window";
 import Clickable from "../ui/clickable/clickable";
-import { MAP_DRAWER_MIN_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, adjustMapForDrawer, panPointIntoView } from "@/lib/map-utils";
+import { MAP_DRAWER_MIN_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { Badge, TitleBadge } from "../ui/badge";
 import { useGroup } from "@/lib/param-hooks";

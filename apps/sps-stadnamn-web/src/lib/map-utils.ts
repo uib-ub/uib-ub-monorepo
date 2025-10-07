@@ -392,14 +392,3 @@ export function panPointIntoView(
     );
   }
 }
-
-// Convenience helper to adjust map when drawer opens: keep current center visible with padding
-export function adjustMapForDrawer(
-  map: any,
-  isMobile: boolean,
-  options?: any
-) {
-  if (!map) return;
-  const center = map.getCenter();
-  panPointIntoView(map, [center.lat, center.lng], isMobile, true);
-}

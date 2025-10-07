@@ -15,7 +15,7 @@ import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { formatNumber } from '@/lib/utils';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { stringToBase64Url } from '@/lib/param-utils';
-import { adjustMapForDrawer, MAP_DRAWER_MIN_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
+import { MAP_DRAWER_MIN_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
 
 export async function autocompleteQuery(searchFilterParamsString: string, inputState: string, isMobile: boolean) {
     if (!inputState) return null
