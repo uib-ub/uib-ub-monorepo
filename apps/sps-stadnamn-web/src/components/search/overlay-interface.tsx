@@ -7,7 +7,7 @@ import { formatNumber } from "@/lib/utils";
 import SearchResults from "./nav/results/search-results";
 import MapSettings from "../map/map-settings";
 import { useSessionStore } from "@/state/zustand/session-store";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import useGroupData from "@/state/hooks/group-data";
 import { useSearchQuery } from "@/lib/search-params";
 import { GlobalContext } from "@/state/providers/global-provider";
@@ -45,14 +45,23 @@ export interface DrawerProps {
 function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
+    const [resetEnabled, setResetEnabled] = useState<boolean>(false);
 
 
     useEffect(() => {
-        if (!isMobile || !mapFunctionRef?.current || snappedPosition !== 'max') return
+        if (!isMobile || !mapFunctionRef?.current) return
         const point = groupData?.sources?.[0]?.location?.coordinates
         if (!point) return
 
-        panPointIntoView(mapFunctionRef.current, [point[1], point[0]], true, true)
+        
+
+        
+
+        const wasAdjusted = panPointIntoView(mapFunctionRef.current, [point[1], point[0]], true, snappedPosition === 'max', resetEnabled)
+        if (wasAdjusted) {
+            setResetEnabled(!resetEnabled)
+        }
+        
     }, [isMobile, snappedPosition])
 
     if (!isMobile) {

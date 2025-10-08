@@ -347,9 +347,10 @@ export function panPointIntoView(
   map: any,
   point: [number, number],
   isMobile: boolean,
-  maxDrawer?: boolean
+  maxDrawer?: boolean,
+  reset?: boolean
 ) {
-  if (!map || !point) return;
+  if (!map || !point) return false;
 
   const [lat, lng] = point;
   const size = map.getSize();
@@ -379,7 +380,7 @@ export function panPointIntoView(
   const insideHoriz = pt.x >= padLeft && pt.x <= (size.x - padRight);
   const insideVert = pt.y >= padTop && pt.y <= (size.y - padBottom);
 
-  if (!(insideHoriz && insideVert)) {
+  if (reset || !(insideHoriz && insideVert)) {
     const eps = 1e-6;
     map.flyToBounds(
       [[lat + eps, lng - eps], [lat - eps, lng + eps]],
@@ -390,5 +391,8 @@ export function panPointIntoView(
         duration: 0.25
       }
     );
+    return true
   }
+  return false
 }
+
