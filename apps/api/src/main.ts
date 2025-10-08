@@ -10,6 +10,7 @@ import { env } from './env'
 import item from './routes/items/item.route'
 import items from './routes/items/items.route'
 import person from './routes/person/person.route'
+import set from './routes/sets/set.route'
 import group from './routes/group/group.route'
 import ns from './routes/ns.route'
 import reference from './routes/references.route'
@@ -47,6 +48,7 @@ app.get('/', (c) => {
 app.route('/items', items)
 app.route('/items', item)
 app.route('/person', person)
+app.route('/sets', set)
 app.route('/group', group)
 // The reference route is the OpenAPI documentation UI.
 app.route('/reference', reference)

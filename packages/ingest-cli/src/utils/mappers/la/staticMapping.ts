@@ -338,6 +338,28 @@ export const aatSiblingsType = {
   _label: "Siblings"
 }
 
+export const aatSortValueType = {
+  id: "http://vocab.getty.edu/aat/300456575",
+  type: "Type",
+  _label: "Sort Value"
+}
+
+export const aatArchivalGroupingType = {
+  id: "http://vocab.getty.edu/aat/300404022",
+  type: "Type",
+  _label: "Archival Grouping"
+}
+
+export const aatArchivalSubGroupingType = {
+  id: "http://vocab.getty.edu/aat/300404023",
+  type: "Type",
+  _label: "Archival SubGrouping"
+}
+
+/**
+ * UBB Types
+ */
+
 export const ubbChildrenType = {
   id: "https://api.ub.uib.no/concept/d8c2ea50-2e30-4616-8a5e-9d1173b5b306",
   type: "Type",

@@ -1,6 +1,8 @@
+import { env } from '@/env';
 import { getLanguage } from '../getLanguage';
-import { aatAlternativeTitlesType, aatBirthNameType, aatConstructedTitlesType, aatFirstNameType, aatHistoricalTermsType, aatIsbnType, aatLastNameType, aatPreferredTermsType, aatPrefixesType, aatPrimaryNameType, aatPseudonymsType, aatSuffixesType, uibVolumeNumberType } from '../staticMapping';
+import { aatAlternativeTitlesType, aatBirthNameType, aatConstructedTitlesType, aatFirstNameType, aatHistoricalTermsType, aatIsbnType, aatLastNameType, aatPreferredTermsType, aatPrefixesType, aatPrimaryNameType, aatPseudonymsType, aatSortValueType, aatSuffixesType, uibVolumeNumberType } from '../staticMapping';
 import omitEmptyEs from 'omit-empty-es';
+import { coalesceLabel } from 'utils';
 
 export const constructIdentifiers = (data: any) => {
   const {
@@ -24,6 +26,8 @@ export const constructIdentifiers = (data: any) => {
     honorificSuffix,
     'schema:honorificSuffix': schemaHonorificSuffix,
     volume,
+    sequenceNr,
+    isPartOf,
   } = data;
 
   if (
@@ -46,7 +50,8 @@ export const constructIdentifiers = (data: any) => {
     !schemaHonorificSuffix &&
     !isbn &&
     !title &&
-    !volume
+    !volume &&
+    !sequenceNr
   ) {
     return data;
   }
@@ -59,6 +64,7 @@ export const constructIdentifiers = (data: any) => {
   delete data.previousIdentifier;
   delete data.bibsysID;
   delete data.viafID;
+  delete data.isbn;
   delete data.hasBeenMergedWith;
   delete data.name;
   delete data.firstName;
@@ -67,9 +73,9 @@ export const constructIdentifiers = (data: any) => {
   delete data.pseudonym;
   delete data.honorificPrefix;
   delete data.honorificSuffix;
-  delete data.isbn;
   delete data['schema:honorificPrefix'];
   delete data['schema:honorificSuffix'];
+  delete data.sequenceNr;
 
   if (volume && data.hasType.includes('Article')) {
     delete data.volume;
@@ -82,6 +88,29 @@ export const constructIdentifiers = (data: any) => {
   let viafArray: any[] = [];
   let isbnArray: any[] = [];
   let volumeArray: any[] = [];
+  let sequenceNrArray: any[] = [];
+
+  if (sequenceNr && isPartOf?.length === 1) {
+    sequenceNrArray = [{
+      type: "Identifier",
+      classified_as: [
+        aatSortValueType,
+      ],
+      content: sequenceNr,
+      assigned_by: isPartOf ? [
+        {
+          type: "AttributeAssignment",
+          influenced_by: [
+            {
+              id: `${env.PROD_URL}/sets/${isPartOf[0].identifier}`,
+              type: "Set",
+              _label: coalesceLabel(isPartOf[0]._label),
+            }
+          ]
+        }
+      ] : undefined
+    }];
+  }
 
   if (isbn) {
     isbnArray = [{
@@ -296,6 +325,7 @@ export const constructIdentifiers = (data: any) => {
       ...viafArray,
       ...isbnArray,
       ...volumeArray,
+      ...sequenceNrArray,
     ],
   });
 };

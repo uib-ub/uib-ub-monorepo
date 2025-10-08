@@ -15,6 +15,8 @@ import { ingestPeople } from './utils/ingest-people/ingest-people';
 import { ingestPerson } from './utils/ingest-people/ingest-person';
 import { ingestGroups } from './utils/ingest-groups/ingest-groups';
 import { ingestGroup } from './utils/ingest-groups/ingest-group';
+import { ingestSets } from './utils/ingest-sets/ingest-sets';
+import { ingestSet } from './utils/ingest-sets/ingest-set';
 
 const program = new Command();
 program
@@ -50,6 +52,9 @@ program
           break;
         case 'groups':
           await ingestGroups(limit, page, overwrite);
+          break;
+        case 'sets':
+          await ingestSets(limit, page, overwrite);
           break;
         case 'wab':
           await ingestWab();
@@ -115,6 +120,23 @@ program
       process.exit(1);
     }
   });
+
+program
+  .command('ingest-set')
+  .description('Ingest a single set by ID')
+  .argument('<id>', 'ID of the set to ingest')
+  .action(async (id) => {
+    console.log(`Ingesting set with ID: ${id}`);
+
+    try {
+      await ingestSet(id);
+      console.log(`Successfully ingested set with ID: ${id}`);
+    } catch (error) {
+      console.error(`Error ingesting set with ID ${id}:`, error);
+      process.exit(1);
+    }
+  });
+
 // Templates command
 program
   .command('templates')

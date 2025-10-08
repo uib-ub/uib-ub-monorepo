@@ -7,6 +7,8 @@ import { getIndexFromAlias } from '../indexers/utils/getIndexFromAlias'
 import { fetchItemsCount } from './fetch-items-count'
 import { fetchItemsList, InputItem } from './fetch-items-list'
 import { fetchAndProcessItem } from './fetch-item'
+import { ensureIndexAndTemplatesReady } from '../indexers/utils/ensureIndexAndTemplatesReady'
+import { putTemplates } from '../tempates/es_templates'
 
 export const resolveItems = async (items: InputItem[]) => {
   try {
@@ -25,6 +27,9 @@ export const ingestItems = async (limit = 100, page = 0, overwrite = false) => {
 
   // Get the index name
   const useIndex = await getIndexFromAlias(CHC_SEARCH_ALIAS, CHC_INDICIES.items, overwrite)
+
+  // Ensure index exists
+  await ensureIndexAndTemplatesReady({ index: useIndex, putTemplates })
 
   // Set initial values
   let status = {

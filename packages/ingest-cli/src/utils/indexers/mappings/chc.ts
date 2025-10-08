@@ -57,8 +57,8 @@ export const chcSourceSettings: IndicesPutIndexTemplateRequest = {
   }
 }
 
-export const chcIdTemplateComponent: IndicesPutIndexTemplateRequest = {
-  "name": "chc-id-template-component",
+export const chcCorePropertiesTemplateComponent: IndicesPutIndexTemplateRequest = {
+  "name": "chc-core-properties-template-component",
   "template": {
     "mappings": {
       "properties": {
@@ -69,12 +69,20 @@ export const chcIdTemplateComponent: IndicesPutIndexTemplateRequest = {
               "type": "keyword"
             }
           }
-        }
+        },
+        "type": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
+        },
       },
     }
   },
   "_meta": {
-    "description": "Mapping for id",
+    "description": "Mapping for core properties",
   }
 }
 
@@ -120,7 +128,11 @@ export const chcOwnersTemplateComponent: IndicesPutIndexTemplateRequest = {
           "properties": {
             "id": {
               "type": "text",
-              "index": false,
+              "fields": {
+                "keyword": {
+                  "type": "keyword"
+                }
+              }
             },
             "type": {
               "type": "text",
@@ -138,6 +150,38 @@ export const chcOwnersTemplateComponent: IndicesPutIndexTemplateRequest = {
   }
 }
 
+export const chcMemberOfTemplateComponent: IndicesPutIndexTemplateRequest = {
+  "name": "chc-member-of-template-component",
+  "template": {
+    "mappings": {
+      "properties": {
+        "member_of": {
+          "type": "nested",
+          "properties": {
+            "id": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "type": {
+              "type": "text",
+              "index": false,
+            },
+            "_label": labelComponent('member_of._label_all'),
+            "_label_all": labelAllComponent
+          }
+        }
+      }
+    }
+  },
+  "_meta": {
+    "description": "Mapping for member_of",
+  }
+}
+
 export const chcProductionTemplateComponent: IndicesPutIndexTemplateRequest = {
   "name": "chc-production-template-component",
   "template": {
@@ -148,7 +192,11 @@ export const chcProductionTemplateComponent: IndicesPutIndexTemplateRequest = {
           "properties": {
             "id": {
               "type": "text",
-              "index": false,
+              "fields": {
+                "keyword": {
+                  "type": "keyword"
+                }
+              }
             },
             "type": {
               "type": "text",
@@ -161,7 +209,11 @@ export const chcProductionTemplateComponent: IndicesPutIndexTemplateRequest = {
               "properties": {
                 "id": {
                   "type": "text",
-                  "index": false,
+                  "fields": {
+                    "keyword": {
+                      "type": "keyword"
+                    }
+                  }
                 },
                 "type": {
                   "type": "text",
@@ -176,7 +228,11 @@ export const chcProductionTemplateComponent: IndicesPutIndexTemplateRequest = {
               "properties": {
                 "id": {
                   "type": "text",
-                  "index": false,
+                  "fields": {
+                    "keyword": {
+                      "type": "keyword"
+                    }
+                  }
                 },
                 "type": {
                   "type": "text",
