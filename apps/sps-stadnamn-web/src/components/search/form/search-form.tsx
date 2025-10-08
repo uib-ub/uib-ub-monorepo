@@ -73,16 +73,18 @@ export default function SearchForm() {
     })
 
 
-    const dropdownSelect = (event: React.MouseEvent<HTMLLIElement>, group: string, label: string, coordinates: [number, number]) => {
-        inputValue.current = label
-        setSelectedGroup(group)
-        setInputState(label)
-        if (coordinates?.length == 2) {
-            panPointIntoView(mapFunctionRef.current, [coordinates[1], coordinates[0]], isMobile, false)
-        } 
+    const dropdownSelect = (event: React.MouseEvent<HTMLLIElement>, inputString: string, group?: string, coordinates?: [number, number]) => {
+        inputValue.current = inputString
+        if (group) {
+            setSelectedGroup(group)
+            setInputState(inputString)
+            if (coordinates?.length == 2) {
+                panPointIntoView(mapFunctionRef.current, [coordinates[1], coordinates[0]], isMobile, false)
+            } 
+        }
 
         if (input.current) {
-            input.current.value = label // ensure the form control has the new value
+            input.current.value = inputString // ensure the form control has the new value
         }
         if (form.current) {
             requestAnimationFrame(() => form.current?.requestSubmit())
@@ -208,7 +210,7 @@ export default function SearchForm() {
                     autoComplete="off"
                     autoFocus={!isMobile && pathname == '/search'}
                     onFocus={() => { 
-                        if (inputValue.current?.length) return; setAutocompleteOpen(true);
+                        if (!input.current?.value) return; setInputState(input.current?.value || ''); setAutocompleteOpen(true);
                     }}
                     onBlur={() => setAutocompleteOpen(false)}
 
@@ -220,7 +222,6 @@ export default function SearchForm() {
                 {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset} />)}
                 {point && <input type="hidden" name="point" value={point} />}
                 {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''} />}
-                {false && `${JSON.stringify(autocompleteFacetFilters)}${JSON.stringify(autocompleteDatasetFilters)}`}
 
                 {(inputState || searchFilterParamsString?.length > 0) && !menuOpen &&
                     <IconButton onClick={() => { clearQuery() }}
@@ -238,17 +239,28 @@ export default function SearchForm() {
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
             {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''} />}
-            {(false || autocompleteOpen) && <ul className="absolute top-[3.5rem] xl:top-[3rem] xl:-left-12 border-t border-neutral-200 w-full max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 xl:shadow-lg overflow-y-auto overscroll-none xl:w-[calc(25svw-1rem)] left-0 xl-p-2 xl xl:rounded-lg xl:rounded-t-none divide-y divide-neutral-300">
+            {autocompleteOpen && data?.hits?.hits?.length > 0 && <ul className="absolute top-[3.5rem] xl:top-[3rem] xl:-left-12 border-t border-neutral-200 w-full max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 xl:shadow-lg overflow-y-auto overscroll-none xl:w-[calc(25svw-1rem)] left-0 xl-p-2 xl xl:rounded-lg xl:rounded-t-none divide-y divide-neutral-300">
+                <li className="cursor-pointer flex items-center h-12 px-2 hover:bg-neutral-100"
+                    tabIndex={-1} 
+                    role="option" 
+                    onMouseDown={(event) => { dropdownSelect(event, data.hits.hits[0].fields.label[0]) }}
+                    data-autocomplete-option 
+                    aria-selected={selectedGroup == null}
+                >
+                    
+                        <PiMagnifyingGlass className="flex-shrink-0 mr-2 text-neutral-700" aria-hidden="true" /> { data.hits.hits[0].fields.label[0] }
+                
+                </li>
                 {data?.hits?.hits?.map((hit: any) => (
                     <li key={hit._id} 
                         tabIndex={-1} 
                         role="option" 
                         data-autocomplete-option 
-                        onMouseDown={(event) => { dropdownSelect(event, stringToBase64Url(hit.fields["group.id"][0]), hit.fields.label[0], hit.fields.location?.[0].coordinates) }}
+                        className="cursor-pointer flex items-center h-12 px-2 hover:bg-neutral-100"
+                        onMouseDown={(event) => { dropdownSelect(event, hit.fields.label[0], stringToBase64Url(hit.fields["group.id"][0]), hit.fields.location?.[0].coordinates) }}
                         aria-selected={selectedGroup == hit.fields["group.id"][0]}>
-                        <div className="cursor-pointer flex items-center h-14 xl:h-12 px-2 hover:bg-neutral-100">
                         {hit.fields.location?.length ? (
-                            <PiMapPinFill aria-hidden="true" className="flex-shrink-0 mt-1 mr-2 text-neutral-700" />
+                            <PiMapPinFill aria-hidden="true" className="flex-shrink-0 mr-2 text-neutral-700" />
                         ) : null}
                         {hit._index.split('-')[2].endsWith('_g') && <PiWall aria-hidden="true" className="flex-shrink-0 mt-1 mr-2" />}
                         <div>
@@ -257,7 +269,6 @@ export default function SearchForm() {
                             {hit.fields["group.adm2"]?.[0] ? hit.fields["group.adm2"]?.[0] + ', ' : ''}
                             {hit.fields["group.adm1"]?.[0]}
                             </span>
-                        </div>
                         </div>
                     </li>
                 ))}
