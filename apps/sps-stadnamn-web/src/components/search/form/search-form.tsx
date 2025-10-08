@@ -65,6 +65,8 @@ export default function SearchForm() {
     const [point, setPoint] = useState<string>()
     const [autocompleteFacetFilters, setAutocompleteFacetFilters] = useState<[string, string][]>(facetFilters)
     const [autocompleteDatasetFilters, setAutocompleteDatasetFilters] = useState<[string, string][]>(datasetFilters)
+    const [activeIndex, setActiveIndex] = useState<number>(-1)
+    const listRef = useRef<HTMLUListElement | null>(null)
 
     const { data, isLoading } = useQuery({
         queryKey: ['autocomplete', inputState],
@@ -110,6 +112,50 @@ export default function SearchForm() {
             router.push(`?${newSearchParams.toString()}`)
         }
         
+    }
+
+    // Keep the active option scrolled into view
+    useEffect(() => {
+        if (!autocompleteOpen || activeIndex < 0) return
+        const el = document.getElementById(`autocomplete-option-${activeIndex}`)
+        el?.scrollIntoView({ block: 'nearest' })
+    }, [activeIndex, autocompleteOpen])
+
+    // Reset active index when input changes or menu closes
+    useEffect(() => {
+        setActiveIndex(-1)
+    }, [inputState, autocompleteOpen])
+
+    const selectOption = (index: number) => {
+        if (!data?.hits?.hits?.length) return
+        if (index === 0) {
+            const label = data.hits.hits[0].fields.label[0]
+            inputValue.current = label
+            setInputState(label)
+            setSelectedGroup(null)
+        } else {
+            const hit = data.hits.hits[index - 1]
+            const label = hit.fields.label[0]
+            inputValue.current = label
+            setInputState(label)
+            const groupId = hit.fields["group.id"]?.[0]
+            if (groupId) {
+                setSelectedGroup(stringToBase64Url(groupId))
+            }
+            const coords = hit.fields.location?.[0]?.coordinates
+            if (coords?.length === 2) {
+                panPointIntoView(mapFunctionRef.current, [coords[1], coords[0]], isMobile, false)
+            }
+        }
+
+        if (input.current) {
+            input.current.value = inputValue.current
+        }
+
+        // Submit form after value is set
+        if (form.current) {
+            requestAnimationFrame(() => form.current?.requestSubmit())
+        }
     }
 
     useEffect(() => {
@@ -202,6 +248,7 @@ export default function SearchForm() {
                     type="text"
                     role="combobox"
                     aria-controls="autocomplete-results"
+                    aria-activedescendant={autocompleteOpen && activeIndex >= 0 ? `autocomplete-option-${activeIndex}` : undefined}
                     aria-expanded={autocompleteOpen}
                     maxLength={20}
                     ref={input}
@@ -215,7 +262,34 @@ export default function SearchForm() {
                     onBlur={() => setAutocompleteOpen(false)}
 
 
-                    onChange={(event) => { inputValue.current = event.target.value; setInputState(event.target.value); setAutocompleteOpen(true) }}
+                    onChange={(event) => { inputValue.current = event.target.value; setInputState(event.target.value); setActiveIndex(-1); setAutocompleteOpen(true) }}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Escape') {
+                            e.preventDefault()
+                            setAutocompleteOpen(false)
+                            setActiveIndex(-1)
+                            return
+                        }
+                        if (!data?.hits?.hits?.length) return
+                        const optionsCount = 1 + data.hits.hits.length
+                        if (e.key === 'ArrowDown') {
+                            e.preventDefault()
+                            if (!autocompleteOpen) setAutocompleteOpen(true)
+                            setActiveIndex((prev) => ((prev + 1 + optionsCount) % optionsCount))
+                        } else if (e.key === 'ArrowUp') {
+                            e.preventDefault()
+                            if (!autocompleteOpen) setAutocompleteOpen(true)
+                            setActiveIndex((prev) => ((prev - 1 + optionsCount) % optionsCount))
+                        } else if (e.key === 'Enter') {
+                            if (autocompleteOpen && activeIndex >= 0) {
+                                e.preventDefault()
+                                selectOption(activeIndex)
+                            }
+                        } else {
+                            // Reset active selection on any character key
+                            if (e.key.length === 1 || e.key === ' ') setActiveIndex(-1)
+                        }
+                    }}
                     className={`bg-transparent pr-2 ${autocompleteOpen && isMobile ? 'px-1' : 'px-4'} focus:outline-none flex w-full shrink text-lg xl:text-base`}
                 />
 
@@ -239,13 +313,13 @@ export default function SearchForm() {
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
             {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''} />}
-            {autocompleteOpen && data?.hits?.hits?.length > 0 && <ul className="absolute top-[3.5rem] xl:top-[3rem] xl:-left-12 border-t border-neutral-200 w-full max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 xl:shadow-lg overflow-y-auto overscroll-none xl:w-[calc(25svw-1rem)] left-0 xl-p-2 xl xl:rounded-lg xl:rounded-t-none divide-y divide-neutral-300">
-                <li className="cursor-pointer flex items-center h-12 px-2 hover:bg-neutral-100"
+            {autocompleteOpen && data?.hits?.hits?.length > 0 && <ul id="autocomplete-results" ref={listRef} role="listbox" className="absolute top-[3.5rem] xl:top-[3rem] xl:-left-12 border-t border-neutral-200 w-full max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 xl:shadow-lg overflow-y-auto overscroll-none xl:w-[calc(25svw-1rem)] left-0 xl-p-2 xl xl:rounded-lg xl:rounded-t-none divide-y divide-neutral-300">
+                <li id={`autocomplete-option-0`} className={`cursor-pointer flex items-center h-12 px-2 hover:bg-neutral-100 ${activeIndex === 0 ? 'bg-neutral-100' : ''}`}
                     tabIndex={-1} 
                     role="option" 
                     onMouseDown={(event) => { dropdownSelect(event, data.hits.hits[0].fields.label[0]) }}
                     data-autocomplete-option 
-                    aria-selected={selectedGroup == null}
+                    aria-selected={activeIndex === 0}
                 >
                     
                         <PiMagnifyingGlass className="flex-shrink-0 mr-2 text-neutral-700" aria-hidden="true" /> { data.hits.hits[0].fields.label[0] }
@@ -256,9 +330,10 @@ export default function SearchForm() {
                         tabIndex={-1} 
                         role="option" 
                         data-autocomplete-option 
-                        className="cursor-pointer flex items-center h-12 px-2 hover:bg-neutral-100"
+                        id={`autocomplete-option-${1 + data.hits.hits.findIndex((x: any) => x._id === hit._id)}`}
+                        className={`cursor-pointer flex items-center h-12 px-2 hover:bg-neutral-100 ${activeIndex === 1 + data.hits.hits.findIndex((x: any) => x._id === hit._id) ? 'bg-neutral-100' : ''}`}
                         onMouseDown={(event) => { dropdownSelect(event, hit.fields.label[0], stringToBase64Url(hit.fields["group.id"][0]), hit.fields.location?.[0].coordinates) }}
-                        aria-selected={selectedGroup == hit.fields["group.id"][0]}>
+                        aria-selected={activeIndex === 1 + data.hits.hits.findIndex((x: any) => x._id === hit._id)}>
                         {hit.fields.location?.length ? (
                             <PiMapPinFill aria-hidden="true" className="flex-shrink-0 mr-2 text-neutral-700" />
                         ) : null}
