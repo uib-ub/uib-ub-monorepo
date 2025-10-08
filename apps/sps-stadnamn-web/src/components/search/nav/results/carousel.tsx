@@ -1,7 +1,8 @@
 import ClientThumbnail from "@/components/doc/client-thumbnail"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import { datasetTitles } from "@/config/metadata-config"
-import { useRef, useState } from "react"
+import { GlobalContext } from "@/state/providers/global-provider"
+import { useContext, useRef, useState } from "react"
 import { PiCaretLeft, PiCaretLeftBold, PiCaretRight, PiCaretRightBold } from "react-icons/pi"
 
 type CarouselItem = { dataset: string, uuid: string, iiif?: string | string[], content?: { text?: string, html?: string } }
@@ -17,6 +18,7 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
     const lastXRef = useRef(0)
     const gestureRef = useRef<null | 'horizontal' | 'vertical'>(null)
     const movedRef = useRef(0)
+    const { isMobile } = useContext(GlobalContext)
 
     const SWIPE_ACTIVATE_THRESHOLD = 10     // px before deciding direction
     const SWIPE_NAV_THRESHOLD = 40          // px to trigger navigation on release
@@ -179,24 +181,25 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
                     </div>
                 )}
             </div>
-            <div className="absolute bottom-1 left-2 flex gap-1">
+            <div className="absolute top-0 left-0 text-sm px-1 text-black bg-white/50 backdrop-blur-sm">{datasetTitles[items[currentIndex].dataset]}</div>
+            <div className="absolute bottom-1 left-1 flex gap-1">
             {items.length > 1 && (
-                <div className={`bg-neutral-950/70 flex items-center text-white rounded-full backdrop-blur-sm h-6 px-2 py-0`}>
+                <div className={`bg-neutral-950/70 flex items-center text-white rounded-full backdrop-blur-sm text-sm px-2 py-0`}>
                     {currentIndex + 1}/{items.length}
                 </div>
             )}
-            <div className="px-2 text-black bg-white/50 backdrop-blur-sm rounded-full self-end h-6">{datasetTitles[items[currentIndex].dataset]}</div>
+            
 
             </div>
-            {currentIndex > 0 && <ClickableIcon label="Forrige" 
+            {!isMobile &&currentIndex > 0 && <ClickableIcon label="Forrige" 
                                                 className="absolute bg-neutral-950/70 rounded-full text-white text-xl p-2 left-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity" 
                                                 onClick={() => setCurrentIndex(currentIndex - 1)}>
                                         <PiCaretLeftBold />
                                         </ClickableIcon>}
-            {currentIndex < items.length - 1 && <ClickableIcon label="Neste" 
+            {!isMobile && currentIndex < items.length - 1 && <ClickableIcon label="Neste" 
             className="absolute bg-neutral-950/70 rounded-full text-white p-2 text-xl right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity" onClick={() => setCurrentIndex(currentIndex + 1)}><PiCaretRightBold /></ClickableIcon>}
             {items.length > 1 && (
-                <div className="absolute top-1 left-1/2 -translate-x-1/2 md:hidden pointer-events-none">
+                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 md:hidden pointer-events-none">
                     <div className="flex items-center gap-1 bg-neutral-950/50 backdrop-blur-sm rounded-full px-2 py-1">
                         {items.map((_, idx) => (
                             <span
