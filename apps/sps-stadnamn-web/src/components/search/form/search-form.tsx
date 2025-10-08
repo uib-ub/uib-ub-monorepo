@@ -214,7 +214,7 @@ export default function SearchForm() {
 
 
                     onChange={(event) => { inputValue.current = event.target.value; setInputState(event.target.value); setAutocompleteOpen(true) }}
-                    className={`bg-transparent pr-2 xl:px-4 focus:outline-none flex w-full shrink text-lg xl:text-base`}
+                    className={`bg-transparent pr-2 ${autocompleteOpen && isMobile ? 'px-1' : 'px-4'} focus:outline-none flex w-full shrink text-lg xl:text-base`}
                 />
 
                 {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset} />)}
