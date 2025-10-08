@@ -58,6 +58,7 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
     const snippetRenderer = resultRenderers[docDataset]?.snippet || defaultResultRenderer.snippet
 
     const isGrunnord = docDataset?.includes('_g')
+
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
     const {groupCode, groupValue } = useGroup()
 
@@ -92,34 +93,45 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
                         ...(hit.fields["group.id"] && hit.fields["group.id"][0] != groupValue ? {group: stringToBase64Url(hit.fields["group.id"][0])} : {group: null}),
                     }}>
                        
-            <div className="flex w-full flex-col">
-                <span className="flex gap-2">
-                {isGrunnord && <div className="flex  items-center">
-                    {!perspectiveIsGrunnord && <span className="font-semibold text-lg text-neutral-700 group-aria-expanded:text-neutral-50">
-                    Grunnord:
-                    </span>}
-                    {!searchFilterParamsString && isGrunnord && 
-                    <span className="bg-neutral-700 font-semibold text-white w-6 h-6 group-aria-expanded:bg-accent-800 rounded-full flex items-center justify-center ml-1.5">
-                        {hit.fields.label?.[0]?.[0].toUpperCase() || JSON.stringify(hit)}
-                    </span>
-                    }
-                </div>}
-                {showScore && hit._score}
-
-
-                    {isGrunnord && <span className="text-lg">{uniqueLabels(hit)}{uniqueLabels(hit).length > 3 && '...'}</span>}
-                    {!isGrunnord && <h2 className="font-semibold">{label}</h2>}
-                     {" "}{detailsRenderer(hit)}
+            <div className="w-full text-left">
+                <span className="inline-flex items-center flex-wrap gap-x-2 whitespace-normal w-full">
+                    {isGrunnord && (
+                        <span className="inline-flex items-center gap-x-1">
+                            {!perspectiveIsGrunnord && (
+                                <span className="font-semibold text-lg text-neutral-700 group-aria-expanded:text-neutral-50">
+                                    Grunnord:
+                                </span>
+                            )}
+                            {!searchFilterParamsString && isGrunnord && (
+                                <span className="bg-neutral-700 font-semibold text-white w-6 h-6 group-aria-expanded:bg-accent-800 rounded-full flex items-center justify-center ml-1.5">
+                                    {hit.fields.label?.[0]?.[0].toUpperCase() || JSON.stringify(hit)}
+                                </span>
+                            )}
+                        </span>
+                    )}
+                    {showScore && hit._score}
+                    {isGrunnord && (
+                        <span className="text-lg">
+                            {uniqueLabels(hit)}
+                            {uniqueLabels(hit).length > 3 && '...'}
+                        </span>
+                    )}
+                    {!isGrunnord && (
+                        <h2 className="font-semibold inline">
+                            {label}
+                        </h2>
+                    )}
+                    <span>{detailsRenderer(hit)}</span>
                 </span>
-                
-               
                 {hit.highlight && snippetRenderer && <>{snippetRenderer(hit)}</>}
             </div>
-            {hit.inner_hits?.group?.hits?.total?.value > 1 && (
+            {/*TODO: use for dataset count*/}
+            {false && hit.inner_hits?.group?.hits?.total?.value > 1 && (
                 <div className={`ml-auto flex items-center rounded-full text-sm px-2.5 py-1 bg-neutral-100 text-neutral-950 group-aria-expanded:bg-accent-800 group-aria-expanded:text-white`}>
                     {hit.inner_hits?.group?.hits?.total?.value}
                 </div>
             )}
+            
 
             
             </Clickable>

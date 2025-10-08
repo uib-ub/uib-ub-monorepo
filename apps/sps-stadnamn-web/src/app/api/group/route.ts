@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     },
     "track_scores": false,
     "track_total_hits": false,
-    "_source": ["uuid", "label", "attestations", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group"],
+    "_source": ["uuid", "label", "attestations", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links"],
     /*
     "aggs": {
       "viewport": {

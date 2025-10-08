@@ -16,7 +16,6 @@ export async function POST(request: Request) {
     ...from ? {from} : {},
     ...highlight ? {highlight} : {},
     "track_scores": true,
-    "track_total_hits": false,
     "fields": ["group.adm1", "group.adm2", "uuid", "boost", "label", "location"],
     "collapse": {
       "field": "group.id",
@@ -88,12 +87,12 @@ export async function POST(request: Request) {
       }
     }
 
-    if (initGroup.boost) {
-      query.query.function_score.functions.push({
-        filter: { range: { boost: { gte: initGroup.boost } } },
-        weight: 1
-      })
-    }
+    
+    query.query.function_score.functions.push({
+      filter: { range: { boost: { gte: initGroup.boost || 3 } } },
+      weight: 1
+    })
+    
 
 
     // Bump items without location within same adm, or bump items within same adm if the init group has no location
