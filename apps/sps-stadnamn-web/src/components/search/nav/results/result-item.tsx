@@ -94,17 +94,17 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
                     }}>
                        
             <div className="w-full text-left">
-                <span className="inline-flex items-center flex-wrap gap-x-2 whitespace-normal w-full">
+                <span className="inline-flex items-center flex-wrap gap-x-2 whitespace-normal w-full ext-lg">
                     {isGrunnord && (
                         <span className="inline-flex items-center gap-x-1">
                             {!perspectiveIsGrunnord && (
                                 <span className="font-semibold text-lg text-neutral-700 group-aria-expanded:text-neutral-50">
-                                    Grunnord:
+                                    Grunnord
                                 </span>
                             )}
-                            {!searchFilterParamsString && isGrunnord && (
+                            {isGrunnord && (
                                 <span className="bg-neutral-700 font-semibold text-white w-6 h-6 group-aria-expanded:bg-accent-800 rounded-full flex items-center justify-center ml-1.5">
-                                    {hit.fields.label?.[0]?.[0].toUpperCase() || JSON.stringify(hit)}
+                                    {searchFilterParamsString ? hit.fields.label?.[0]?.[0].toUpperCase() : hit.fields.label?.[0]}
                                 </span>
                             )}
                         </span>
@@ -117,7 +117,7 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
                         </span>
                     )}
                     {!isGrunnord && (
-                        <h2 className="font-semibold inline">
+                        <h2 className="font-semibold inline t">
                             {label}
                         </h2>
                     )}

@@ -3,6 +3,7 @@ import useGroupData from "@/state/hooks/group-data";
 import Carousel from "../../nav/results/carousel";
 import {  useMemo, useState } from "react";
 import { datasetTitles } from "@/config/metadata-config";
+import { formatHtml } from "@/lib/text-utils";
 
 
 export default function GroupInfo() {
@@ -49,10 +50,7 @@ export default function GroupInfo() {
             {
                 textItems?.map((textItem) => (
                     <div className="p-2" key={textItem.uuid + 'text'}>
-                        <strong>{datasetTitles[textItem.dataset]}</strong> | {textItem.content.html}
-
-
-
+                        <strong>{datasetTitles[textItem.dataset]}</strong> | {formatHtml(textItem.content.html)}
                     </div>
                 ))
             }
@@ -62,7 +60,7 @@ export default function GroupInfo() {
                 </>
             }
 
-
+            <div className="p-1 px-2">
             { Object.entries(datasets).map(([dataset, sources]) => (
                 <div key={dataset + 'dataset'}>
                     <h3>{datasetTitles[dataset]}</h3>
@@ -71,6 +69,7 @@ export default function GroupInfo() {
                     ))}
                 </div>
             ))}
+            </div>
 
         </div>
     );

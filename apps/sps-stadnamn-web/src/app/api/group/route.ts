@@ -7,16 +7,19 @@ import { getSortArray } from '@/config/server-config';
 
 export async function GET(request: Request) {
   const {termFilters, reservedParams} = extractFacets(request)
+  const { simple_query_string } = getQueryString(reservedParams)
 
   const perspective = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
     
   const query: Record<string,any> = {
     "size": 1000,
-    "query": {
-      "term": {
-        "group.id": reservedParams.group
-      }
-    },
+    "query": reservedParams.group?.startsWith('grunnord_') && reservedParams.q?.length
+      ? simple_query_string
+      : {
+          "term": {
+            "group.id": reservedParams.group
+          }
+        },
     "track_scores": false,
     "track_total_hits": false,
     "_source": ["uuid", "label", "attestations", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links"],
@@ -32,12 +35,15 @@ export async function GET(request: Request) {
     */
   }
 
+
+/* Todo - add option to filter group? - no, this can be done in the table view
   if (termFilters.length) {
     query.query = {"bool": {
         "filter": termFilters
       }
     }
   }
+    */
 
   
   const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")

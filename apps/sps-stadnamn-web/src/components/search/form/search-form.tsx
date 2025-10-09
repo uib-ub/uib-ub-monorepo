@@ -105,12 +105,6 @@ export default function SearchForm() {
             }
 
         }
-        const newSearchParams = new URLSearchParams(searchParams)
-        if (isMobile) {
-            newSearchParams.delete('q')
-            newSearchParams.delete('nav')
-            router.push(`?${newSearchParams.toString()}`)
-        }
         
     }
 
@@ -298,17 +292,15 @@ export default function SearchForm() {
                 {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''} />}
 
                 {(inputState || searchFilterParamsString?.length > 0) && !menuOpen &&
-                    <IconButton onClick={() => { clearQuery() }}
-
-                        // Replace results with filters if no facetFilters
-
-                        label="Nullstill søket"><PiX className="text-3xl lg:text-2xl text-neutral-800 group-focus-within:text-neutral-800 m-1" /></IconButton>}
+                    <ClickableIcon label="Tøm" remove={['q']} onClick={() => { clearQuery() }}>
+                        <PiX className="text-3xl lg:text-2xl text-neutral-800 group-focus-within:text-neutral-800 m-1" /></ClickableIcon>}
                 <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800" aria-hidden="true" /></button>
             </div>
 
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''} />}
             {selectedGroup && <input type="hidden" name="init" value={selectedGroup} />}
             <input type="hidden" name="results" value={'on'} />
+            {options && <input type="hidden" name="options" value={'on'} />}
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}

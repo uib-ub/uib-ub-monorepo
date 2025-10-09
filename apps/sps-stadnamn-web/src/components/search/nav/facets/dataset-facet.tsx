@@ -36,7 +36,6 @@ export default function DatasetFacet() {
   const perspective = usePerspective()
   const searchParams = useSearchParams()
   const { removeFilterParams } = useSearchQuery()
-  const { isMobile } = useContext(GlobalContext)
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [facetLoading, setFacetLoading] = useState(true);
   const [facetSearch, setFacetSearch] = useState('');
@@ -130,8 +129,6 @@ export default function DatasetFacet() {
     <div className="flex flex-col gap-2">            
     
     <div id="dataset-facet-content" className='flex flex-col gap-2'>
-    { datasetTag == 'deep' && <span className="p-2">Datasett som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>}
-    {datasetTag == 'tree' && <span className="p-2">Datasett ordna i eit hierarki etter matrikkelinndelinga.</span>}
 
     {datasetTag != 'tree' && <div className='flex gap-2 px-1 pt-1'>
      <div className='relative grow'>

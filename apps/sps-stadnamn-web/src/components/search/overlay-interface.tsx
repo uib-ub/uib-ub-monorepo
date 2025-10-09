@@ -18,7 +18,14 @@ import Clickable from "../ui/clickable/clickable";
 import { MAP_DRAWER_MIN_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { Badge, TitleBadge } from "../ui/badge";
-import { useGroup } from "@/lib/param-hooks";
+import { useGroup, usePerspective } from "@/lib/param-hooks";
+import FacetSection from "./nav/facets/facet-section";
+import ActiveFilters from "./form/active-filters";
+import ServerFacet from "./nav/facets/server-facet";
+import ClientFacet from "./nav/facets/client-facet";
+import WikiAdmFacet from "./nav/facets/wikiAdm-facet";
+import { facetConfig } from "@/config/search-config";
+import DatasetFacet from "./nav/facets/dataset-facet";
 
 
 
@@ -79,7 +86,7 @@ function LeftWindow({children}: {children: React.ReactNode}) {
         if (mapSettings && results) return null
         return <>{children}</>
     }
-    return <div className="bg-white shadow-lg absolute left-2 top-[4rem] w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md p-2 overflow-y-auto overflow-x-hidden stable-scrollbar">{children}</div>
+    return <div className="bg-white shadow-lg absolute left-2 top-[4rem] w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-auto overflow-x-hidden stable-scrollbar">{children}</div>
 }
 
 function RightWindow({children}: {children: React.ReactNode}) {
@@ -115,6 +122,8 @@ export default function OverlayInterface() {
     const mapSettings = searchParams.get('mapSettings') == 'on'
     const { facetFilters, datasetFilters } = useSearchQuery()
     const filterCount = facetFilters.length + datasetFilters.length
+    const facet = searchParams.get('facet')
+    const perspective = usePerspective()
 
 
     return <>
@@ -132,64 +141,84 @@ export default function OverlayInterface() {
                     setCurrentPosition={setCurrentPosition}
                     scrollContainerRef={scrollableContent}
                 >
-                    {(options || (isMobile && !results && !mapSettings)) && <LeftWindow>  
-                        <div className="w-full flex items-center xl:h-12 px-2 xl:px-0 gap-2">
-                        <h1 className="text-lg xl:text-xl text-neutral-900 xl:px-4">Filter</h1>
+                    {(!isMobile || ( !results && !mapSettings)) && <LeftWindow>  
+                        {facet ? <div className="w-full flex items-center px-2 xl:px-0 h-12 gap-2 xl:pl-2 flex">
+                            <h1 className="text-lg xl:text-xl text-neutral-900">{facetConfig[perspective].find((f: any) => f.key == facet)?.label}</h1>
+                            <div className="flex items-center gap-1 ml-auto">
+                                    <ClickableIcon label="Lukk" className="p-2" remove={["facet"]}>
+                                        <PiX className="text-black text-3xl" />
+                                    </ClickableIcon>
+                                </div>
+                            
+                        </div>
+                        
+                        :<Clickable notClickable={isMobile} add={{options: options ? null : 'on'}} remove={["options"]}  className="w-full flex items-center xl:h-12 px-2 xl:px-0 gap-2 xl:pl-2">
+                        {
+                            !isMobile && <>
+                                {options ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
+                            </>
+                        }
+                        <h1 className="text-lg xl:text-xl text-neutral-900">Filter</h1>
                             
                                 
                             
-                            <Clickable className="flex items-center gap-1" onClick={() => {
-                                    if (searchBounds?.length) {
-                                        mapFunctionRef?.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-                                    }
-                                }}  
-                            >
-                                <TitleBadge className="bg-primary-200 text-primary-800 font-bold" count={filterCount} />
+                            
+                            { filterCount ? <TitleBadge className="bg-primary-200 text-primary-800 font-bold" count={filterCount} /> : null}
                                 
-                            </Clickable>
+                            
                             <div className="flex items-center gap- ml-auto">
                             {isMobile && totalHits && <Clickable  className={`bg-neutral-800 rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 text-white text-sm xl:text-base`} add={{results: 'on'}} remove={["options"]}>
                             {!totalHits?.value && <PiFunnel className="text-white text-lg" />}Treff {totalHits?.value > 0 && <Badge className="bg-neutral-700 font-bold" count={totalHits.value} />}
                         </Clickable>}
                         </div>
-                            </div>
-                         <OptionsWindow />
+                            </Clickable>}
+                        {(options || isMobile) && !facet && <><div className="flex flex-wrap gap-2 p-2"><ActiveFilters /></div>
+                               <FacetSection /></>}
+                        {facet && <div className="flex flex-col gap-2"> 
+                        {facet == 'adm' ? (
+                            <ClientFacet facetName={facet} />
+                        ) : facet == 'wikiAdm' ? (
+                            <WikiAdmFacet />
+                        ) : facet == 'dataset' ? (
+                            <DatasetFacet />
+                        ) : (
+                            <ServerFacet />
+                        )}
+                        </div>}
                     </LeftWindow>}
                     
                     <RightWindow>
-                        <div className="w-full flex items-center xl:h-12 px-2 xl:px-0 gap-2">
-                        
-                            { !mapSettings && <><h1 className="text-lg xl:text-xl text-neutral-900 xl:px-4">Treff</h1>
-                            
+                        {/* Map Settings Header (separate, only when mapSettings is on) */}
+                        {mapSettings ? (
+                            <div className="w-full flex items-center xl:h-12 px-2 xl:px-0 gap-2">
+                                <h1 className="text-lg xl:text-xl text-neutral-900 xl:px-4">Kartinnstillingar</h1>
+                                <div className="flex items-center gap-1 ml-auto">
+                                    <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings"]}>
+                                        <PiX className="text-black text-3xl" />
+                                    </ClickableIcon>
+                                </div>
+                            </div>
+                        ) : (
+                            <Clickable notClickable={isMobile} add={{results: results ? null : 'on'}} remove={["results"]} className="w-full flex items-center xl:h-12 px-2 xl:px-0 gap-2 xl:pl-2">
+                                {!isMobile && (
+                                        <>
+                                            {results ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
+                                        </>
+                                    )}
+                                <h1 className="text-lg xl:text-xl text-neutral-900">Treff</h1>
                                 
-                            
-                            <Clickable className="flex items-center gap-1" onClick={() => {
-                                    if (searchBounds?.length) {
-                                        mapFunctionRef?.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-                                    }
-                                }}  
-                            >
-                                <TitleBadge className="bg-primary-200 text-primary-800 font-bold" count={totalHits?.value || 0} />
+                                    <TitleBadge className="bg-primary-200 text-primary-800 font-bold" count={totalHits?.value || 0} />
                                 
-                            </Clickable></>
-                            }
-                            { mapSettings && <h1 className="text-lg xl:text-xl text-neutral-900 xl:px-4">Kartinnstillingar</h1>}
-                            
-                        <div className="flex items-center gap-1 ml-auto">
-                        {}
-                        {isMobile && !mapSettings && <Clickable remove={["results"]}  className="bg-neutral-800 rounded-full px-2 py-1 flex items-center gap-1 text-white text-sm xl:text-base">
-                           {!filterCount && <PiFunnel className="text-white text-lg" />}Filter {filterCount > 0 && <Badge className="bg-neutral-900 font-bold" count={filterCount} />}
-                        </Clickable>}
-                        { mapSettings && <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings"]}>
-                            <PiX className="text-black text-3xl" />
-                        </ClickableIcon>}
-                        {
-                            !mapSettings && !isMobile && <ClickableIcon label={ results ? "Skjul treff" : "Vis treff"} className="btn btn-outline rounded-full px-2" add={{results: results ? null : 'on'}} remove={["results"]}>
-                                {results ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
-                            </ClickableIcon>
-                        }
-                        </div>
-                        </div>
+                                <div className="flex items-center gap-1 ml-auto">
+                                    {isMobile && (
+                                        <Clickable remove={["results"]} className="bg-neutral-800 rounded-full px-2 py-1 flex items-center gap-1 text-white text-sm xl:text-base">
+                                            {!filterCount && <PiFunnel className="text-white text-lg" />}Filter {filterCount > 0 && <Badge className="bg-neutral-900 font-bold" count={filterCount} />}
+                                        </Clickable>
+                                    )}
+                                    
+                                </div>
+                            </Clickable>
+                        )}
                         {(mapSettings ? <MapSettings/> : results && <SearchResults />)}                   
                     </RightWindow>
                 </DrawerWrapper>

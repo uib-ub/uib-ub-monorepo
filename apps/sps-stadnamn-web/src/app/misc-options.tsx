@@ -1,11 +1,11 @@
 'use client'
 import { usePathname, useSearchParams, useRouter } from 'next/navigation'
-export default function FulltextToggle() {
+export default function MiscOptions() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const fulltext = searchParams.get('fulltext')
     const router = useRouter()
-    return <div className="flex flex-wrap xl:px-3 gap-4"><label className="flex items-center h-14 gap-3 text-xl xl:text-lg">
+    return <div className="flex flex-wrap px-3 xl:px-0 gap-4"><label className="flex items-center h-14 gap-3 text-lg">
     <input form="search-form"
            type="checkbox" 
            id="menu_navbar_checkbox" 
@@ -29,7 +29,7 @@ export default function FulltextToggle() {
             }} />
     Fulltekstsøk
 </label>
-<label className="flex items-center gap-3 h-14 text-xl xl:text-lg">
+<label className="flex items-center gap-3 h-14 text-lg">
   <input type="checkbox" 
         name="datasetTag" value="deep"
         checked={searchParams.get('datasetTag') == 'deep'}

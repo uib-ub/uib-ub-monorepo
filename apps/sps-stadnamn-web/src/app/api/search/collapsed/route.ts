@@ -45,12 +45,11 @@ export async function POST(request: Request) {
     "_source": false
   }
 
-
-
-
+  // Construct the query part
+  let baseQuery: any;
   
   if (simple_query_string && termFilters.length) {
-    query.query = {
+    baseQuery = {
       "bool": {
         "must": simple_query_string,              
         "filter": termFilters
@@ -58,62 +57,89 @@ export async function POST(request: Request) {
     }
   }
   else if (simple_query_string) {
-    query.query = simple_query_string
+    baseQuery = simple_query_string
   }
   else if (termFilters.length) {
-    query.query = {"bool": {
+    baseQuery = {"bool": {
         "filter": termFilters
       }
     }
   }
   else {
-    query.query = { "match_all": {} }
+    baseQuery = {
+      "match_all": {}
+    }
   }
 
-  if (initGroup?.id) {
-    const baseQuery = {...query.query}  // your existing query
-  
+  if (simple_query_string || initGroup?.id) {
     query.query = {
-      function_score: {
-        query: baseQuery,   // evaluate your main query once
-        functions: [
-          {
-            filter: { term: { "group.id": initGroup.id } },
-            weight: 10       // boost the initial group very high
-          }
-        ],
-        score_mode: "multiply",   // combine weights multiplicatively
-        boost_mode: "multiply"    // multiply with base score
+      "function_score": {
+        "query": baseQuery,
+        "functions": [],
+        "boost_mode": "multiply",
+        "score_mode": "multiply"
       }
     }
+  }
+  else {
+    query.query = baseQuery;
+  }
+  
+  // Apply function score to properly balance text relevance with boost field
+  if (simple_query_string) {
+    query.query.function_score?.functions.push({
+            "field_value_factor": {
+              "field": "boost",
+              "factor": 1,
+              "missing": 1
+            }
+          })
 
-    
-    query.query.function_score.functions.push({
-      filter: { range: { boost: { gte: initGroup.boost || 3 } } },
-      weight: 1
-    })
-    
-
-
-    // Bump items without location within same adm, or bump items within same adm if the init group has no location
-    if ( reservedParams.q?.length && initGroup?.adm1) {
-      query.query.function_score.functions.push({
-        filter: { 
-
-          bool: { 
-            must: [
-              { term: { "group.adm1.keyword": initGroup.adm1[0] } },
-              ...(initGroup.adm2 ? [{ term: { "group.adm2.keyword": initGroup.adm2[0] } }] : []),
-              ...(initLocation ? [{ bool: { must_not: { exists: { field: "location" } } } }] : [])
-              
-            ]
-          }
-        },
-        weight: 2
-      })
+          query.query.function_score?.functions?.push({
+            filter: { term: { "label": reservedParams.q } },
+            weight: 10
+          })
     }
 
-  }
+    
+
+    if (initGroup?.id) {
+      query.query.function_score?.functions?.push({
+              filter: { term: { "group.id": initGroup.id } },
+              weight: 100       // boost the initial group very high
+            })
+      }
+      
+
+  
+  
+      // Bump items without location within same adm, or bump items within same adm if the init group has no location
+      if (simple_query_string && initGroup?.adm1) {
+        query.query.function_score.functions.push({
+          filter: { 
+  
+            bool: { 
+              must: [
+                { term: { "group.adm1.keyword": initGroup.adm1[0] } },
+                ...(initGroup.adm2 ? [{ term: { "group.adm2.keyword": initGroup.adm2[0] } }] : []),
+                ...(initLocation ? [{ bool: { must_not: { exists: { field: "location" } } } }] : [])
+                
+              ]
+            }
+          },
+          weight: 2
+        })
+      }
+  
+    
+
+
+
+
+
+  
+
+  
   
  
   const [data, status] = await postQuery(perspective || 'all', query, "dfs_query_then_fetch")

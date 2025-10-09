@@ -181,7 +181,7 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
                     </div>
                 )}
             </div>
-            <div className="absolute top-0 left-0 text-sm px-1 text-black bg-white/50 backdrop-blur-sm">{datasetTitles[items[currentIndex].dataset]}</div>
+            <div className="absolute top-0 left-0 text-sm px-1 text-black bg-white/70 backdrop-blur-sm">{datasetTitles[items[currentIndex].dataset]}</div>
             <div className="absolute bottom-1 left-1 flex gap-1">
             {items.length > 1 && (
                 <div className={`bg-neutral-950/70 flex items-center text-white rounded-full backdrop-blur-sm text-sm px-2 py-0`}>

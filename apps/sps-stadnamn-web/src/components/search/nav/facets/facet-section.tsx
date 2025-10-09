@@ -5,15 +5,24 @@ import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchParams } from "next/navigation"
 import ServerFacet from "./server-facet"
 import { facetConfig } from "@/config/search-config"
-import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi"
+import { PiCaretDownBold, PiCaretUpBold, PiFunnel, PiMagnifyingGlass } from "react-icons/pi"
 import { useContext, useEffect, useState } from "react"
 import { datasetTitles } from "@/config/metadata-config"
 import WikiAdmFacet from "./wikiAdm-facet"
 import { getSkeletonLength } from "@/lib/utils"
 import { usePerspective } from "@/lib/param-hooks"
 import DatasetFacet from "./dataset-facet"
-import FulltextToggle from "@/app/fulltext-toggle"
+import MiscOptions from "@/app/misc-options"
 import { GlobalContext } from "@/state/providers/global-provider"
+import { useQuery } from "@tanstack/react-query"
+
+const getFacetFieldCounts = async (searchQueryString: string) => {
+  const response = await fetch(`/api/fieldsPresent?${searchQueryString}`)
+  const es_data = await response.json()
+
+  return es_data.aggregations?.fields_present?.buckets
+
+}
 
 export default function FacetSection() {
     const perspective = usePerspective()
@@ -21,9 +30,8 @@ export default function FacetSection() {
     const facet = searchParams.get('facet')
     const datasets = searchParams.getAll('dataset')
     const filterDataset = perspective == 'all' ? datasets.length == 1 ? datasets[0] : 'all' : perspective
-    const [facetFieldCounts, setFacetFieldCounts] = useState<Record<string, any>>({})
     const { facetFilters } = useSearchQuery()
-    const [facetsLoading, setFacetsLoading] = useState(true)
+
     const { isMobile } = useContext(GlobalContext)
     /*
     
@@ -34,20 +42,12 @@ export default function FacetSection() {
   
     const { searchQueryString } = useSearchQuery()
 
+    const { data: facetFieldCounts, isLoading: facetsLoading } = useQuery({
+      queryKey: ['facetFieldCounts', searchQueryString],
+      queryFn: () => getFacetFieldCounts(searchQueryString)
+    })
 
-  
 
-    useEffect(() => {
-        setFacetsLoading(true)
-        fetch(`/api/fieldsPresent?${searchQueryString}`).then(response => response.json()).then(es_data => {
-            setFacetFieldCounts(es_data.aggregations?.fields_present?.buckets)
-        })
-        .catch(error => { 
-            console.error('Error fetching facets:', error);
-            setFacetsLoading(false);
-        })
-        .finally(() => setFacetsLoading(false));
-    }, [searchQueryString])
 
 
     const availableFacets = filterDataset == 'all'
@@ -73,20 +73,17 @@ export default function FacetSection() {
         
         
         <div className="flex flex-col divide-y divide-neutral-200 w-full">
-           <FulltextToggle/>
-          <Clickable type="button" 
-                       aria-expanded={facet == 'dataset'} 
+          <div className="flex flex-col gap-2 px-4">
+           <MiscOptions/>
+           </div>
+          <Clickable 
                        className="w-full flex justify-between p-3"
-                       aria-controls="dataset-facet-collapsible" 
                        add={{facet: facet == 'dataset' ? null : 'dataset'}}>
             
               <span className="text-lg">Datasett</span>
-              {facet == 'dataset' ? <PiCaretUpBold className="inline self-center text-primary-600 text-xl" /> : <PiCaretDownBold className="inline self-center text-primary-600 text-xl" />}
+              <PiFunnel className="inline self-center text-neutral-700 text-xl" />
            
           </Clickable>
-          <div id="dataset-facet-collapsible" className={`${facet == 'dataset' ? 'block' : 'hidden'}`}>
-            <DatasetFacet />
-          </div>
 
 
           {(facetsLoading && !availableFacets.length) && (
@@ -111,23 +108,20 @@ export default function FacetSection() {
             const isExpanded = facet == f.key
             return (
             <div key={f.key} className={facetsLoading ? 'opacity-50' : ''}>
-            <Clickable type="button" 
-                       aria-expanded={isExpanded} 
-                       className="w-full flex justify-between p-3"
+            <Clickable className="w-full flex justify-between p-3"
                        aria-controls={f.key + '-collapsible'} 
-                       add={{facet: isExpanded ? null : f.key}}>
+                       add={{facet: f.key}}>
               <div className="flex flex-wrap gap-4">
               <span className="text-lg">{f.label}</span>
 
               {filterDataset == 'all' && (f.datasets?.length || 0) == 1 && f.datasets?.[0] && <em className="text-neutral-700 text-sm self-center">{datasetTitles[f.datasets?.[0]]}</em>}
               {filterDataset != 'all' && f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}
               </div>
-              {isExpanded ? <PiCaretUpBold className="inline self-center text-primary-600 text-xl" /> : <PiCaretDownBold className="inline self-center text-primary-600 text-xl" />}
+              <PiMagnifyingGlass className="inline self-center text-neutral-700 text-xl" />
+              
               
             </Clickable>
-            <div id={f.key + '-collapsible'} className={`${isExpanded ? 'block' : 'hidden'}`}>
-              {isExpanded && (f.key == 'adm' ? <ClientFacet facetName={f.key} /> : f.key == 'wikiAdm' ? <WikiAdmFacet /> : <ServerFacet/>)}
-            </div>
+
             </div>
           )
         })}

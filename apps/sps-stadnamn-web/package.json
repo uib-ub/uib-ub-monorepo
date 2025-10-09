@@ -19,6 +19,7 @@
     "@types/ngeohash": "^0.6.8",
     "h3-js": "^4.2.1",
     "html-react-parser": "^5.2.2",
+    "isomorphic-dompurify": "2.28.0",
     "jspdf": "^3.0.1",
     "leaflet": "^1.9.4",
     "next": "^15.3.0",
