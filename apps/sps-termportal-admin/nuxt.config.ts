@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   extends: ["termportal-ui"],
-  modules: ["@sidebase/nuxt-auth", "@nuxt/content", "@nuxtjs/sanity", "@nuxt/eslint"],
+  modules: ["@sidebase/nuxt-auth", "@nuxt/content", "@nuxtjs/sanity", "@nuxt/eslint", "@nuxt/icon"],
   ssr: false,
   devtools: { enabled: true },
   app: {
@@ -11,6 +11,16 @@ export default defineNuxtConfig({
     },
   },
   content: {
+    experimental: {
+      sqliteConnector: "native",
+    },
+    build: {
+      markdown: {
+        remarkPlugins: {
+          "remark-emoji": false,
+        },
+      },
+    },
     sources: {
       //   content: {
       //     driver: "fs",
@@ -82,6 +92,9 @@ export default defineNuxtConfig({
   },
   auth: {
     globalAppMiddleware: true,
+    isEnabled: true,
+    disableServerSideAuth: false,
+    originEnvKey: process.env.AUTH_ORIGIN,
   },
   sanity: {
     projectId: process.env.SANITY_PROJECT_ID,

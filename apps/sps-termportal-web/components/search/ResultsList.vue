@@ -49,17 +49,19 @@ const countFetchedMatches = computed(() => {
 });
 
 onMounted(() => {
-  if (props.context === "full") {
-    window.addEventListener("scroll", fetchFurtherSearchData);
-  }
+  // if (props.context === "full") {
+  window.addEventListener("scroll", fetchFurtherSearchData);
+  // }
 });
 onUnmounted(() => {
-  if (props.context === "full") {
-    window.removeEventListener("scroll", fetchFurtherSearchData);
-  }
+  // if (props.context === "full") {
+  window.removeEventListener("scroll", fetchFurtherSearchData);
+  // }
 });
 
+const flatMatchingValues = appConfig.search.options.matching.default.flat();
 const fetchFurtherSearchData = () => {
+  console.log("check to fetch more");
   const element = resultslist.value;
   if (count.value > countFetchedMatches.value && !pending.value) {
     if (element.getBoundingClientRect().bottom * 0.75 < window.innerHeight) {
@@ -70,7 +72,7 @@ const fetchFurtherSearchData = () => {
         let oldOffsetCalc = countFetchedMatches.value;
         let fetchNextMatching = false;
 
-        for (const match of appConfig.search.options.matching.default.flat()) {
+        for (const match of flatMatchingValues) {
           if (
             Object.keys(searchDataStats.value.matching || []).includes(match)
           ) {

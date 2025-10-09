@@ -204,7 +204,10 @@
       class="tp-hover-focus flex w-10 items-center justify-center border-transparent text-gray-500 focus:text-gray-800"
       @click="onDropdownClick"
     >
-      <div v-if="searchterm.length">
+      <div
+        v-if="searchterm.length"
+        class="flex items-center"
+      >
         <Icon
           name="ic:sharp-clear"
           size="1.4em"

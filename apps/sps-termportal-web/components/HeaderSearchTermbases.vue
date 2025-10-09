@@ -35,7 +35,7 @@
     <div class="flex justify-center">
       <!-- Expand all termbases panel -->
       <button
-        class="absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border-[2px] border-gray-200 border-t-white bg-white"
+        class="absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border-2 border-gray-200 border-t-white bg-white"
         @click="panel = !panel"
       >
         <Icon
@@ -100,19 +100,19 @@
               ).includes(tb),
             }"
           >
-            <div class="-mt-[1px] w-6">
+            <div class="flex items-start w-6">
               <Icon
                 v-if="searchInterface.termbase.includes(tb)"
                 name="mdi:checkbox-marked-outline"
                 size="1.4em"
-                class="text-tpblue-400"
+                class="text-tpblue-400 mt-0.5"
                 aria-hidden="true"
               />
               <Icon
                 v-else
                 name="mdi:checkbox-blank-outline"
                 size="1.4em"
-                class="text-tpblue-400"
+                class="text-tpblue-400 mt-0.5"
                 aria-hidden="true"
               />
             </div>

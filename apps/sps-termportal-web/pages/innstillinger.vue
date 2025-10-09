@@ -12,7 +12,7 @@
         >
           <AppLink
             to="#main"
-            class="tp-hover-focus border-transparent px-2 py-1 text-3xl"
+            class="tp-hover-focus border-transparent py-1 text-3xl"
           >
             {{ $t("innstillinger.title") }}
           </AppLink>
@@ -24,12 +24,12 @@
           >
             <AppLink
               to="#global"
-              class="tp-hover-focus border-transparent px-2 py-1"
+              class="tp-hover-focus border-transparent py-1"
             >
               {{ $t("innstillinger.global") }}
             </AppLink>
           </h2>
-          <div class="pl-2.5">
+          <div class="">
             <p>{{ $t("innstillinger.globalLangComment") }}</p>
           </div>
           <div class="flex flex-col gap-0.5 pt-2">
@@ -56,14 +56,14 @@
                   class="text-tpblue-400"
                   name="akar-icons:radio-fill"
                   aria-hidden="true"
-                  size="1.5em"
+                  size="1.4em"
                 />
                 <Icon
                   v-else
                   name="akar-icons:radio"
                   class="text-tpblue-400"
                   aria-hidden="true"
-                  size="1.5em"
+                  size="1.4em"
                 />
                 <span class="text-base text-black">
                   {{ $t("global.lang." + lang) }}</span></label>
@@ -73,7 +73,7 @@
             v-if="false"
             id="locale-select"
             v-model="i18n.locale.value"
-            class="tp-search-dd cursor-pointer px-2 py-1"
+            class="tp-search-dd cursor-pointer py-1"
           >
             <option
               v-for="lang in locales"
@@ -91,7 +91,7 @@
           >
             <AppLink
               to="#conceptview"
-              class="tp-hover-focus border-transparent px-2 py-1"
+              class="tp-hover-focus border-transparent py-1"
             >
               {{ $t("innstillinger.conceptview") }}
             </AppLink>
@@ -103,12 +103,12 @@
             >
               <AppLink
                 to="#dataDispLang"
-                class="tp-hover-focus border-transparent px-2 py-1"
+                class="tp-hover-focus border-transparent py-1"
               >
                 {{ $t("innstillinger.dataDispLang") }}
               </AppLink>
             </legend>
-            <div class="pl-2.5">
+            <div class="">
               <p>{{ $t("innstillinger.dataDispLangComment") }}</p>
             </div>
             <div

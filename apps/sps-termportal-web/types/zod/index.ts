@@ -47,6 +47,7 @@ export const BootstrapData = z.object({
       language: z.array(LangCode),
       versionEdition: z.string().optional(),
       versionNotesLink: z.string().optional(),
+      concepts: z.string().optional()
     })),
   domain: DomainSchema,
 });

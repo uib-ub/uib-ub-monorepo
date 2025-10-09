@@ -102,6 +102,7 @@
   },
   "domainOverview": { "domainsAndBases": "Domains & Termbases" },
   "navBar": {
+    "hjelp": "Help",
     "om": "About Termportalen",
     "innstillinger": "Settings",
     "menuButtonShow": "Extend menu",
@@ -213,7 +214,8 @@
     "browser": "External browser",
     "audience": "Audience note",
     "icsCode": "ICS code",
-    "source": "Source"
+    "source": "Source",
+    "example": "Example"
   },
   "index": { "title": "Termportalen" },
   "search": {
@@ -221,6 +223,12 @@
     "term": "Term",
     "language": "Language",
     "termbase": "Termbase"
+  },
+  "hjelp": {
+    "title": "Help",
+    "search": "Searching",
+    "termpost": "Terminological entries",
+    "data": "Open data"
   },
   "om": {
     "title": "About Termportalen",

@@ -48,6 +48,8 @@ const { data } = useLazySanityQuery(query);
 </script>
 
 <style>
+@reference "tailwindcss";
+
 .arrow > span {
   display: block;
   position: relative;
