@@ -18,8 +18,8 @@ export default defineNuxtConfig({
       markdown: {
         remarkPlugins: {
           "remark-emoji": false,
-        }
-      }
+        },
+      },
     },
     sources: {
       //   content: {
@@ -92,6 +92,9 @@ export default defineNuxtConfig({
   },
   auth: {
     globalAppMiddleware: true,
+    isEnabled: true,
+    disableServerSideAuth: false,
+    originEnvKey: process.env.AUTH_ORIGIN,
   },
   sanity: {
     projectId: process.env.SANITY_PROJECT_ID,
