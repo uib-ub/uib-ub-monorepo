@@ -109,7 +109,7 @@ export default function TableExplorer() {
                                             }}
                                         >
                                             <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current=true]:border-accent-800 border-2 border-transparent">
-                                                <PiBookOpen aria-hidden="true" className="text-primary-600 group-aria-[current=true]:text-accent-800" />
+                                                <PiBookOpen aria-hidden="true" className="text-primary-700 group-aria-[current=true]:text-accent-800" />
                                             </div>
                                             {hit._source?.label}
                                         </Clickable>

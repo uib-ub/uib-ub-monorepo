@@ -172,14 +172,6 @@ export default function ActiveFilters() {
         <span className="flex items-center">Fulltekstsøk</span>
         <PiX className="inline text-lg" aria-hidden="true"/>
       </Clickable>}
-      {/* Search chip */}
-      { searchParams.get('q') && <Clickable remove={['q']}
-      className={`px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-2`} onClick={() => { removeFilter('q', searchParams.get('q')!)}}>
-        <span className="flex items-center">{searchParams.get('q')}</span>
-        <PiX className="inline text-lg" aria-hidden="true"/>
-      </Clickable>}
-      
-        
 
         {facetFilters.length > 0 && facetFilters.length < 2 && facetFilters.map(([key, value]) => (
             <button 

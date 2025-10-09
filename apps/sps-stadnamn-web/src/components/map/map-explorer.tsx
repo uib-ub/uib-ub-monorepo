@@ -775,7 +775,7 @@ export default function MapExplorer() {
                             <li key={`entry-${entry.fields.uuid[0]}`} className="!p-0 !m-0">
                               <Clickable className="no-underline !text-black flex gap-2 items-center py-2" 
                                           link add={{details: 'group', group: stringToBase64Url(entry.fields["group.id"]?.[0])}}>
-                                            {groupValue == entry.fields["group.id"]?.[0] ? <PiBookOpenFill className="text-accent-700" /> : <PiBookOpen className="text-primary-600" />}{entry.fields.label?.[0]}
+                                            {groupValue == entry.fields["group.id"]?.[0] ? <PiBookOpenFill className="text-accent-700" /> : <PiBookOpen className="text-primary-700" />}{entry.fields.label?.[0]}
                               </Clickable>
                             </li>
                           ))}

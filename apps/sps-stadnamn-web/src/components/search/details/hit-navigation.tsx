@@ -22,7 +22,7 @@ export default function HitNavigation() {
         add={{docIndex: docIndex -1}}
         disabled={docIndex <= 0}
       >
-        <PiCaretLeftBold className="xl:text-xl text-primary-600" aria-hidden="true"/>
+        <PiCaretLeftBold className="xl:text-xl text-primary-700" aria-hidden="true"/>
       </ClickableIcon>
       <span className="text-neutral-800 border-y border-neutral-200 shadow-sm h-8 xl:h-10 flex items-center self-center xl:min-w-12 text-center px-4">       
         {docIndex + 1}/{groupTotal?.value}</span>
@@ -32,7 +32,7 @@ export default function HitNavigation() {
         add={{docIndex: docIndex + 1}}
         disabled={docIndex >= (groupTotal?.value || 1) -1}
       >
-        <PiCaretRightBold className="xl:text-xl text-primary-600" aria-hidden="true"/>
+        <PiCaretRightBold className="xl:text-xl text-primary-700" aria-hidden="true"/>
       </ClickableIcon>
   </div>}
   </>

@@ -172,7 +172,7 @@ const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((ac
   return (    
         <>
           <div className='flex flex-col col-span-1'>
-          <div className='flex w-full bg-white border border-neutral-300 rounded-md focus-within:border-primary-600 xl:border-none xl:outline xl:outline-1 xl:outline-neutral-300 xl:focus-within:border-neutral-200 xl:rounded-md items-center relative group focus-within:xl:outline-2 focus-within:xl:outline-neutral-600'>
+          <div className='flex w-full bg-white border border-neutral-300 rounded-md focus-within:border-primary-700 xl:border-none xl:outline xl:outline-1 xl:outline-neutral-300 xl:focus-within:border-neutral-200 xl:rounded-md items-center relative group focus-within:xl:outline-2 focus-within:xl:outline-neutral-600'>
             <PiMagnifyingGlass className="text-xl shrink-0 text-neutral-600 group-focus-within:text-neutral-800 ml-3" aria-hidden="true"/>
             <label htmlFor="titleSearch" className="sr-only">Søk i datasett</label>
             <label htmlFor="titleSearch" className="sr-only">Søk i datasett</label>

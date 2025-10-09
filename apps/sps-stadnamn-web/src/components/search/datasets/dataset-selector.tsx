@@ -57,7 +57,7 @@ export default function DatasetSelector() {
               value={searchTerm}
               onChange={handleSearchChange}
             />
-            <Link href="/info/datasets" className="ml-auto no-underline mt-1 flex items-center gap-1">Utforsk datasetta<PiCaretRight aria-hidden="true" className="text-primary-600 inline"/></Link>
+            <Link href="/info/datasets" className="ml-auto no-underline mt-1 flex items-center gap-1">Utforsk datasetta<PiCaretRight aria-hidden="true" className="text-primary-700 inline"/></Link>
         
 
           </div>

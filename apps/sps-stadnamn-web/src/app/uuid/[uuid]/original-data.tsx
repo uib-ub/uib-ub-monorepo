@@ -9,7 +9,7 @@ export default function OriginalData({rawData}: {rawData: Record<string, any>}) 
         <>
        <h2 className="!m-0 !p-0">
         <button className="flex items-center gap-1" onClick={() => setExpanded(currentValue => !currentValue)} aria-controls="original_data_list" aria-expanded={expanded}>
-            Grunnlagsdata { expanded ? <PiCaretUpBold className="text2xl inline text-primary-600"/> : <PiCaretDownBold className="text2xl text-primary-600"/>} </button>
+            Grunnlagsdata { expanded ? <PiCaretUpBold className="text2xl inline text-primary-700"/> : <PiCaretDownBold className="text2xl text-primary-700"/>} </button>
       </h2>
         <div id="original_data_list">
         {expanded &&

@@ -115,7 +115,7 @@ export default function SearchResults() {
       {/* Error and empty states */}
       {searchError || collapsedError ? (
         <div className="flex justify-center">
-          <div role="status" aria-live="polite" className="text-primary-600 pb-4">
+          <div role="status" aria-live="polite" className="text-primary-700 pb-4">
             <strong>{searchError?.name || collapsedError?.name}</strong> Det har oppstått ein feil
           </div>
         </div>

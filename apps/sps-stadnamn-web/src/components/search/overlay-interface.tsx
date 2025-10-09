@@ -158,7 +158,7 @@ export default function OverlayInterface() {
                                 {options ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
                             </>
                         }
-                        <h1 className="text-lg xl:text-xl text-neutral-900">Filter</h1>
+                        <h1 className="text-lg xl:text-xl text-neutral-900">Alternativ</h1>
                             
                                 
                             

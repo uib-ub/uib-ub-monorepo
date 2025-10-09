@@ -114,7 +114,7 @@ export default function FacetsInfobox({
         href={buildSearchUrl(item.searchParams)}
       >
         {item.value}
-        <PiMagnifyingGlass aria-hidden className="inline text-primary-600" />
+        <PiMagnifyingGlass aria-hidden className="inline text-primary-700" />
       </Link>
     );
   }

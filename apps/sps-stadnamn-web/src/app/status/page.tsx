@@ -189,7 +189,7 @@ export default function StatusPage() {
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center gap-2 px-3 py-1.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+            className="flex items-center gap-2 px-3 py-1.5 bg-primary-700 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
           >
             <PiArrowClockwise className={`text-base ${refreshing ? 'animate-spin' : ''}`} />
             <span>{refreshing ? 'Reloading...' : 'Reload indices'}</span>
@@ -217,7 +217,7 @@ export default function StatusPage() {
                       value={filter.value}
                       checked={selectedFilter === filter.value}
                       onChange={(e) => handleFilterChange(e.target.value)}
-                      className="border-neutral-300 text-primary-600 focus:ring-primary-500"
+                      className="border-neutral-300 text-primary-700 focus:ring-primary-500"
                     />
                     <span className="text-sm text-neutral-700">{filter.label}</span>
                   </label>

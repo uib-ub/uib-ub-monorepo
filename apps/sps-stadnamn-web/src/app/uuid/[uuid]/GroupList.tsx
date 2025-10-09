@@ -103,7 +103,7 @@ export default function GroupList({docData}: {docData: Record<string, any>}) {
                         <li key={index} className="flex flex-grow !p-0 !m-0">
                             <Link aria-current={docData._source.uuid == getFieldValue(hit, 'uuid') ? 'page' : undefined} className="w-full h-full flex items-center gap-2 py-1 no-underline group" href={"/uuid/" + getFieldValue(hit, 'uuid')}>
                                 <div className="group-hover:bg-neutral-100 p-1 rounded-full">
-                                    <PiBookOpen className="text-primary-600 aria-[current='page']:text-accent-800" />
+                                    <PiBookOpen className="text-primary-700 aria-[current='page']:text-accent-800" />
                                 </div>
                                 {sourceTitle(hit)}
                                 {sourceDetails(hit)}

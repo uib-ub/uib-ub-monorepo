@@ -5,7 +5,7 @@ import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchParams } from "next/navigation"
 import ServerFacet from "./server-facet"
 import { facetConfig } from "@/config/search-config"
-import { PiCaretDownBold, PiCaretUpBold, PiFunnel, PiMagnifyingGlass } from "react-icons/pi"
+import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiFunnel, PiMagnifyingGlass } from "react-icons/pi"
 import { useContext, useEffect, useState } from "react"
 import { datasetTitles } from "@/config/metadata-config"
 import WikiAdmFacet from "./wikiAdm-facet"
@@ -81,7 +81,7 @@ export default function FacetSection() {
                        add={{facet: facet == 'dataset' ? null : 'dataset'}}>
             
               <span className="text-lg">Datasett</span>
-              <PiFunnel className="inline self-center text-neutral-700 text-xl" />
+              <PiCaretRightBold className="inline self-center text-primary-700 text-xl" />
            
           </Clickable>
 
@@ -117,7 +117,7 @@ export default function FacetSection() {
               {filterDataset == 'all' && (f.datasets?.length || 0) == 1 && f.datasets?.[0] && <em className="text-neutral-700 text-sm self-center">{datasetTitles[f.datasets?.[0]]}</em>}
               {filterDataset != 'all' && f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}
               </div>
-              <PiMagnifyingGlass className="inline self-center text-neutral-700 text-xl" />
+              <PiCaretRightBold className="inline self-center text-primary-700 text-xl" />
               
               
             </Clickable>

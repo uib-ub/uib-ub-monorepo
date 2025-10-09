@@ -37,7 +37,7 @@ export default function CadastralSubdivisions({ dataset, doc, childrenData, land
     const renderLinkContent = (hit: any) => (
         <>
             <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current='page']:border-accent-800 border-2 border-transparent">
-                <PiBookOpen className="text-primary-600 group-aria-[current='page']:text-accent-800" />
+                <PiBookOpen className="text-primary-700 group-aria-[current='page']:text-accent-800" />
             </div>
             <span>
                 {getBnr(hit, dataset)}{' '}
@@ -81,7 +81,7 @@ export default function CadastralSubdivisions({ dataset, doc, childrenData, land
                                         <span className="flex items-center gap-2 p-2">
                                             <LinkWrapper uuid={getFieldValue(hit, 'uuid')?.[0]}>
                                                 <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current='page']:border-accent-800 border-2 border-transparent">
-                                                    <PiBookOpen className="text-primary-600 group-aria-[current='page']:text-accent-800" />
+                                                    <PiBookOpen className="text-primary-700 group-aria-[current='page']:text-accent-800" />
                                                 </div>
                                                 <span>
                                                     {getBnr(hit, dataset)}&nbsp;
