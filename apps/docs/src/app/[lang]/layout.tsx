@@ -1,13 +1,11 @@
 export const dynamic = 'force-static';
-export const dynamicParams = false;
-
+import { FC, ReactNode } from 'react'
 import { Layout, Navbar, Footer, LocaleSwitch, LastUpdated } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import { UibIcon, UibUbEn } from 'assets'
-import '@/app/globals.css'
-import { FC, ReactNode } from 'react'
 import { getDictionary, getDirection } from '../_dictionaries/get-dictionary'
+import '@/app/globals.css'
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params
@@ -25,7 +23,7 @@ type LayoutProps = Readonly<{
   }>
 }>
 
-const RootLayout: FC<LayoutProps> = async ({ children, params }) => {
+const RootLayout: FC<LayoutProps> = async ({ children, params }: LayoutProps) => {
   const { lang } = await params
   const dictionary = await getDictionary(lang)
   const pageMap = await getPageMap(`/${lang}`)
@@ -71,8 +69,8 @@ const RootLayout: FC<LayoutProps> = async ({ children, params }) => {
             backToTop: dictionary.backToTop,
           }}
           editLink={dictionary.editPage}
-          nextThemes={{ defaultTheme: 'dark' }}
           lastUpdated={<LastUpdated locale={lang}>{dictionary.lastUpdated}</LastUpdated>}
+          /* nextThemes={{ defaultTheme: 'dark' }} */
           themeSwitch={{
             dark: dictionary.dark,
             light: dictionary.light,
