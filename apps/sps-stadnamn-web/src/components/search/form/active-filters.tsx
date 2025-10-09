@@ -10,6 +10,7 @@ import Clickable from "@/components/ui/clickable/clickable"
 import { usePerspective, useMode } from "@/lib/param-hooks"
 import CadastreBreadcrumb from "../details/doc/cadastre-breadcrumb"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
+import { useSessionStore } from "@/state/zustand/session-store"
 
 
 export default function ActiveFilters() {
@@ -30,6 +31,7 @@ export default function ActiveFilters() {
     const boostGt = searchParams.get('boost_gt')
     const cadastralIndex = searchParams.get('cadastralIndex')
     const showClearButton = (Number(facetFilters.length > 0) + Number(datasetFilters.length > 0) + Number(fulltext == 'on') + Number(searchParams.get('q') != null)) > 1
+    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
 
 
 
@@ -117,27 +119,23 @@ export default function ActiveFilters() {
     }
 
 
+    if (!facetFilters.length && !datasetFilters.length) {
+      return null
+    }
+
+
 
 
     return (
-      <>
+      <div className="flex flex-wrap gap-2 px-2 pt-2">
 
-      {datasetFilters.length == 1 && datasetFilters.map(([key, value]) => (
-          <button 
-              key={`${key}__${value}`} 
-              onClick={() => removeFilter(key, value)} 
-              className={`px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1`}
-          >
-            {datasetTitles[value]} <PiX className="inline text-lg" aria-hidden="true"/>
-          </button>
-        ))}
-        { datasetFilters.length > 1 && 
+{ datasetFilters.length > 1 && datasetFilters.length + facetFilters.length > 2 ?
   <>
     <button 
       className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1"
       aria-expanded={expandedActiveFilters == 'datasets'}
       aria-controls="dataset-filters"
-      onClick={() => setExpandedActiveFilters(prev => prev == 'datasets' ? null : 'datasets')}
+      onClick={() => { setExpandedActiveFilters(prev => prev == 'datasets' ? null : 'datasets'); setSnappedPosition('max')}}
     >
       {datasetFilters.length} datasett
       {expandedActiveFilters == 'datasets' ? <PiCaretUpBold className="inline text-lg" aria-hidden="true"/> : <PiCaretDownBold className="inline text-lg" aria-hidden="true"/>}
@@ -166,7 +164,16 @@ export default function ActiveFilters() {
       </button>
     </div>}
   </>
-}
+  : datasetFilters.map(([key, value]) => (
+          <button 
+              key={`${key}__${value}`} 
+              onClick={() => removeFilter(key, value)} 
+              className={`px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1`}
+          >
+            {datasetTitles[value]} <PiX className="inline text-lg" aria-hidden="true"/>
+          </button>
+        ))}
+        
         {false && fulltext == 'on' && !isMobile && <Clickable remove={['fulltext']}
       className={`text-neutral-950 xl:h-10  rounded-md gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none`} onClick={() => removeFilter('fulltext', 'on')}>
         <span className="flex items-center">Fulltekstsøk</span>
@@ -232,7 +239,7 @@ export default function ActiveFilters() {
 
 
 
-      </>
+      </div>
   )
 
 }

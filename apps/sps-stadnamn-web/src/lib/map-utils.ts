@@ -382,13 +382,11 @@ export function panPointIntoView(
 
   if (reset || !(insideHoriz && insideVert)) {
     const eps = 1e-6;
-    map.flyToBounds(
+    map.fitBounds(
       [[lat + eps, lng - eps], [lat - eps, lng + eps]],
       {
         paddingTopLeft: [padLeft, padTop],
         paddingBottomRight: [padRight, padBottom],
-        maxZoom: zoom,
-        duration: 0.125
       }
     );
     return true

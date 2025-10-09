@@ -68,7 +68,7 @@ export function useSearchQuery() {
 
     
     const fulltext = searchParams.get('fulltext')
-    if (fulltext && datasetTag != 'tree') {
+    if (fulltext && datasetTag != 'tree' && searchParams.get('q')) {
         searchQuery.set('fulltext', 'on')
     }
     if (searchParams.get('datasetTag')) {

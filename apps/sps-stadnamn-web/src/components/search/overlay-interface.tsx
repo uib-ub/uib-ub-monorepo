@@ -24,7 +24,7 @@ import ActiveFilters from "./form/active-filters";
 import ServerFacet from "./nav/facets/server-facet";
 import ClientFacet from "./nav/facets/client-facet";
 import WikiAdmFacet from "./nav/facets/wikiAdm-facet";
-import { facetConfig } from "@/config/search-config";
+import { facetConfig, fieldConfig } from "@/config/search-config";
 import DatasetFacet from "./nav/facets/dataset-facet";
 
 
@@ -53,6 +53,8 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const [resetEnabled, setResetEnabled] = useState<boolean>(false);
+    const facet = useSearchParams().get('facet')
+    const { totalHits } = useSearchData()
 
 
     useEffect(() => {
@@ -73,6 +75,11 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
 
     if (!isMobile) {
         return <>{children}</>
+    }
+    if (isMobile && facet) {
+        return <div className="fixed top-0 left-0 w-full h-full z-[3001] bg-white"><div className="h-[calc(100svh-3rem)] overflow-y-auto stable-scrollbar">{children}</div>
+        <Clickable remove={["facet"]} add={{results: 'on'}} className="w-full h-12 text-xl flex items-center justify-center items-center bg-primary-800 text-white relative">Vis treff <Badge className="bg-primary-50 text-primary-800 font-bold absolute right-4" count={totalHits?.value || 0} /></Clickable>
+        </div>
     }
     return <Drawer {...rest} minHeightRem={MAP_DRAWER_MIN_HEIGHT_REM} maxHeightSvh={MAP_DRAWER_MAX_HEIGHT_SVH}>{children}</Drawer>
 }
@@ -143,7 +150,7 @@ export default function OverlayInterface() {
                 >
                     {(!isMobile || ( !results && !mapSettings)) && <LeftWindow>  
                         {facet ? <div className="w-full flex items-center px-2 xl:px-0 h-12 gap-2 xl:pl-2 flex">
-                            <h1 className="text-lg xl:text-xl text-neutral-900">{facetConfig[perspective].find((f: any) => f.key == facet)?.label}</h1>
+                            <h1 className="text-lg xl:text-xl text-neutral-900">{fieldConfig[perspective][facet]?.label}</h1>
                             <div className="flex items-center gap-1 ml-auto">
                                     <ClickableIcon label="Lukk" className="p-2" remove={["facet"]}>
                                         <PiX className="text-black text-3xl" />
@@ -158,21 +165,21 @@ export default function OverlayInterface() {
                                 {options ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
                             </>
                         }
-                        <h1 className="text-lg xl:text-xl text-neutral-900">Alternativ</h1>
+                        <h1 className="text-lg xl:text-xl text-neutral-900">Filter</h1>
                             
                                 
                             
                             
-                            { filterCount ? <TitleBadge className="bg-primary-200 text-primary-800 font-bold" count={filterCount} /> : null}
+                            { filterCount && !isMobile ? <TitleBadge className="bg-primary-200 text-primary-800 font-bold" count={filterCount} /> : null}
                                 
                             
                             <div className="flex items-center gap- ml-auto">
-                            {isMobile && totalHits && <Clickable  className={`bg-neutral-800 rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 text-white text-sm xl:text-base`} add={{results: 'on'}} remove={["options"]}>
-                            {!totalHits?.value && <PiFunnel className="text-white text-lg" />}Treff {totalHits?.value > 0 && <Badge className="bg-neutral-700 font-bold" count={totalHits.value} />}
+                            {isMobile && totalHits && <Clickable onClick={() => setSnappedPosition('max')}  className={`bg-primary-800 rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 text-white text-sm xl:text-base font-semibold`} add={{results: 'on'}} remove={["options"]}>
+                            {!totalHits?.value && <PiFunnel className="text-white text-lg" />}Vis treff{totalHits?.value > 0 && <Badge className="bg-primary-50 text-primary-800 font-bold" count={totalHits.value} />} 
                         </Clickable>}
                         </div>
                             </Clickable>}
-                        {(options || isMobile) && !facet && <><div className="flex flex-wrap gap-2 p-2"><ActiveFilters /></div>
+                        {(options || isMobile) && !facet && <><ActiveFilters />
                                <FacetSection /></>}
                         {facet && <div className="flex flex-col gap-2"> 
                         {facet == 'adm' ? (
@@ -199,7 +206,7 @@ export default function OverlayInterface() {
                                 </div>
                             </div>
                         ) : (
-                            <Clickable notClickable={isMobile} add={{results: results ? null : 'on'}} remove={["results"]} className="w-full flex items-center xl:h-12 px-2 xl:px-0 gap-2 xl:pl-2">
+                            <Clickable notClickable={isMobile} add={{results: results ? null : 'on'}} remove={["results"]} className="w-full flex items-center xl:h-12 px-2 pb-1 xl:px-0 gap-2 xl:pl-2">
                                 {!isMobile && (
                                         <>
                                             {results ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
@@ -211,8 +218,8 @@ export default function OverlayInterface() {
                                 
                                 <div className="flex items-center gap-1 ml-auto">
                                     {isMobile && (
-                                        <Clickable remove={["results"]} className="bg-neutral-800 rounded-full px-2 py-1 flex items-center gap-1 text-white text-sm xl:text-base">
-                                            {!filterCount && <PiFunnel className="text-white text-lg" />}Filter {filterCount > 0 && <Badge className="bg-neutral-900 font-bold" count={filterCount} />}
+                                        <Clickable remove={["results"]} onClick={() => setSnappedPosition('max')} className="bg-neutral-800 rounded-full px-2 py-1 flex items-center gap-1 text-white text-sm xl:text-base">
+                                            {!filterCount && <PiSliders className="text-white text-lg" aria-hidden="true" />}Filter {filterCount > 0 && <Badge className="bg-neutral-900 font-bold" count={filterCount} />}
                                         </Clickable>
                                     )}
                                     

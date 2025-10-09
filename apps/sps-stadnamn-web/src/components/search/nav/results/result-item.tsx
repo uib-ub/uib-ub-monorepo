@@ -94,30 +94,24 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
                     }}>
                        
             <div className="w-full text-left">
-                <span className="inline-flex items-center flex-wrap gap-x-2 whitespace-normal w-full ext-lg">
+                <span className="inline-flex items-center flex-wrap gap-x-2 whitespace-normal w-full text-lg">
                     {isGrunnord && (
-                        <span className="inline-flex items-center gap-x-1">
+                        <h2 className="inline-flex items-center gap-x-2">
                             {!perspectiveIsGrunnord && (
-                                <span className="font-semibold text-lg text-neutral-700 group-aria-expanded:text-neutral-50">
-                                    Grunnord
+                                <span className="text-neutral-800 group-aria-expanded:text-white">
+                                    Grunnord:
                                 </span>
                             )}
-                            {isGrunnord && (
-                                <span className="bg-neutral-700 font-semibold text-white w-6 h-6 group-aria-expanded:bg-accent-800 rounded-full flex items-center justify-center ml-1.5">
-                                    {searchFilterParamsString ? hit.fields.label?.[0]?.[0].toUpperCase() : hit.fields.label?.[0]}
+                            
+                                <span className="font-semibold">
+                                    {hit.fields.label?.[0]}
                                 </span>
-                            )}
-                        </span>
+                            
+                        </h2>
                     )}
                     {showScore && hit._score}
-                    {isGrunnord && (
-                        <span className="text-lg">
-                            {uniqueLabels(hit)}
-                            {uniqueLabels(hit).length > 3 && '...'}
-                        </span>
-                    )}
                     {!isGrunnord && (
-                        <h2 className="font-semibold inline t">
+                        <h2 className="font-semibold">
                             {label}
                         </h2>
                     )}
