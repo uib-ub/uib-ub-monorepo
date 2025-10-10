@@ -12,7 +12,7 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
 
   const searchParams = useSearchParams()
   const { collapsedData, collapsedHasNextPage, collapsedFetchNextPage } = useCollapsedData()
-  const {groupCode, groupValue} = useGroup()
+  const {activeGroupCode, activeGroupValue} = useGroup()
   const [nextGroup, setNextGroup] = useState<Record<string, any> | null>(null)
   const [prevGroup, setPrevGroup] = useState<Record<string, any> | null>(null)
   const datasetTag = searchParams.get('datasetTag')
@@ -22,10 +22,10 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
 
   const { flattenedPages, groupPosition } = useMemo((): { flattenedPages: any[]; groupPosition: number } => {
     const flattenedPages = collapsedData?.pages.flatMap(page => page.data ?? []) ?? [];
-    const groupPosition = flattenedPages.findIndex(doc => doc.fields['group.id']?.[0] === groupValue);
-    console.log('Group Position:', groupPosition, 'for group:', groupValue);
+    const groupPosition = flattenedPages.findIndex(doc => doc.fields['group.id']?.[0] === activeGroupValue);
+    console.log('Group Position:', groupPosition, 'for group:', activeGroupValue);
     return { flattenedPages, groupPosition };
-  }, [collapsedData, groupValue]);
+  }, [collapsedData, activeGroupValue]);
 
 
   const scrollToTop = () => {
@@ -81,7 +81,7 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
 
         
         {/* Show "Finn namneformer" if group is not grunnord */}
-        {groupCode && !groupValue?.startsWith('grunnord') ? <>
+        {activeGroupCode && !activeGroupValue?.startsWith('grunnord') ? <>
         <ClickableIcon label="Oppslag"
             add={{details: 'group'}}
             aria-current={details == 'group' ? 'page' : 'false'}

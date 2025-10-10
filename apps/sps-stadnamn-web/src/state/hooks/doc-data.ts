@@ -38,14 +38,14 @@ export default function useDocData(docParams?: {docData: Record<string, any>, do
     const searchParams = useSearchParams()
     const { groupData } = useGroupData()
     const docIndex = useDocIndex()
-    const {groupCode} = useGroup()
+    const {activeGroupCode} = useGroup()
     const doc = searchParams.get('doc')
     
     
     const docUuid = searchParams.get('doc') || groupData?.[docIndex]?._source?.uuid
 
     const { data, error: docError, isLoading: docLoading, isRefetching: docRefetching, isFetchedAfterMount: docFetchedAfterMount } = useQuery({
-        queryKey: ['doc', groupCode, doc, docIndex, docUuid],
+        queryKey: ['doc', activeGroupCode, doc, docIndex, docUuid],
         placeholderData : (prevData) => prevData,
         queryFn: async () => docUuid ? docDataQuery(docUuid, docParams) : null
     })
