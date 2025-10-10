@@ -7,9 +7,11 @@ import { getSortArray } from '@/config/server-config';
 import { base64UrlToString } from '@/lib/param-utils';
 
 export async function POST(request: Request) {
-  const {size, from, perspective, initGroup, initBoost, initPlaceScore, initLabel, initLocation } = await request.json()
+  const {size, from, perspective, initLocation } = await request.json()
   const {termFilters, reservedParams} = extractFacets(request)
   const { highlight, simple_query_string } = getQueryString(reservedParams)
+
+
 
   const query: Record<string,any> = {
     "size":  size  || 10,
@@ -25,9 +27,9 @@ export async function POST(request: Request) {
     [{'group.id': "asc"}, {'label.keyword': "asc"}]
     : [
       
-      {
+      ...reservedParams.q ? [{
         _score: "desc"
-      },
+      }] : [],
       ...initLocation ? [{
         _geo_distance: {
           location: initLocation,

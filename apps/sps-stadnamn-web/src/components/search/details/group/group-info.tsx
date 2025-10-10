@@ -6,8 +6,8 @@ import { datasetTitles } from "@/config/metadata-config";
 import { formatHtml } from "@/lib/text-utils";
 
 
-export default function GroupInfo() {
-    const { groupData } = useGroupData()
+export default function GroupInfo({overrideGroupCode}: {overrideGroupCode?: string}) {
+    const { groupData } = useGroupData(overrideGroupCode)
 
     const { iiifItems, textItems, audioItems, datasets, timelineItems } = useMemo(() => {
         const iiifItems: any[] = []

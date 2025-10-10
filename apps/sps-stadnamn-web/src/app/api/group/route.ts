@@ -15,6 +15,7 @@ export async function GET(request: Request) {
     
   const query: Record<string,any> = {
     "size": 1000,
+    "fields": ["group.adm1", "group.adm2", "uuid", "boost", "label", "location"],
     "query": groupValue?.startsWith('grunnord_') && reservedParams.q?.length
       ? simple_query_string
       : {
@@ -52,7 +53,11 @@ export async function GET(request: Request) {
   const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
 
   const sources: any[] = []
-  let topDoc = {boost: -1, placeScore: -1, group: data.hits?.hits[0]?._source?.group }
+  const topDoc = {boost: -1, 
+                placeScore: -1, 
+                group: data.hits?.hits[0]?._source?.group, 
+                fields: data.hits?.hits[0]?.fields, 
+                _index: data.hits?.hits[0]?._index}
 
   
   data?.hits?.hits.forEach((hit: any) => {

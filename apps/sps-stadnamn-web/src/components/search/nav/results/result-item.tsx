@@ -34,6 +34,14 @@ const uniqueLabels = (hit: any) => {
     ));
 }
 
+const formatDistance = (meters: number) => {
+    if (meters < 1000) {
+        return `${Math.round(meters)} m`;
+    } else {
+        return `${(meters / 1000).toFixed(1)} km`;
+    }
+};
+
 export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, any>) {
     const perspective = usePerspective()
     const searchParams = useSearchParams()
@@ -116,6 +124,11 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
                         </h2>
                     )}
                     <span>{detailsRenderer(hit)}</span>
+                    {hit.distance && (
+                        <span className=" ml-auto text-sm bg-neutral-100 px-2 py-0.5 rounded-full group-aria-expanded:text-accent-800">
+                            {formatDistance(hit.distance)}
+                        </span>
+                    )}
                 </span>
                 {hit.highlight && snippetRenderer && <>{snippetRenderer(hit)}</>}
             </div>

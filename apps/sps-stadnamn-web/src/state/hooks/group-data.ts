@@ -29,18 +29,14 @@ const groupDataQuery = async (
     return data
 }
 
-export default function useGroupData(initGroupCode?: string | null) {
+export default function useGroupData(overrideGroupCode?: string | null) {
     const searchParams = useSearchParams()
     const { searchQueryString } = useSearchQuery()
     const { groupCode } = useGroup()
-    const group = initGroupCode || groupCode
+    const group = overrideGroupCode || groupCode
 
     const datasets = searchParams.getAll('dataset')
     const datasetTags = searchParams.getAll('datasetTag')
-
-
-    // docIndex is now the driver (instead of docUuid)
-    const docIndex = useDocIndex()
 
     const {
         data: processedData,
@@ -50,10 +46,10 @@ export default function useGroupData(initGroupCode?: string | null) {
         isFetching: groupFetching,
         status,
     } = useQuery({
-        queryKey: ['group', group, searchQueryString, docIndex],
+        queryKey: ['group', group, searchQueryString],
         queryFn: async ({ pageParam }) =>
             group ? groupDataQuery(group, datasets, datasetTags) : null,
-        placeholderData: initGroupCode ? undefined : (prevData) => prevData,
+        placeholderData: overrideGroupCode ? undefined : (prevData) => prevData,
         // Transform data and expose only when ready
     })
 

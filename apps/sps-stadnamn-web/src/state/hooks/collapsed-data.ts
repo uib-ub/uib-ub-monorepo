@@ -7,7 +7,24 @@ import useGroupData from './group-data';
 import { extractFacets } from '@/app/api/_utils/facets';
 import { base64UrlToString } from '@/lib/param-utils';
 
-const PER_PAGE = 40;
+const INITIAL_PAGE_SIZE = 10;
+const SUBSEQUENT_PAGE_SIZE = 30;
+
+// Haversine formula to calculate distance between two coordinates in meters
+const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371000; // Earth's radius in meters
+    const φ1 = lat1 * Math.PI / 180;
+    const φ2 = lat2 * Math.PI / 180;
+    const Δφ = (lat2 - lat1) * Math.PI / 180;
+    const Δλ = (lon2 - lon1) * Math.PI / 180;
+
+    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c; // Distance in meters
+};
 
 const collapsedDataQuery = async ({
     pageParam = 0,
@@ -19,19 +36,23 @@ const collapsedDataQuery = async ({
 
 }: { pageParam?: number; searchQueryString: string, initGroupCode: string | null, initBoost: number | null, initPlaceScore: number | null, initGroupData: Record<string, any> | null }) => {      
     
+    // Determine size and from based on page number
+    const isFirstPage = pageParam === 0;
+    const size = isFirstPage ? INITIAL_PAGE_SIZE : SUBSEQUENT_PAGE_SIZE;
+    const from = isFirstPage ? 0 : INITIAL_PAGE_SIZE + (pageParam - 1) * SUBSEQUENT_PAGE_SIZE;
+
+    console.log(`📄 Fetching page ${pageParam}:`, { isFirstPage, size, from, expectedRange: `${from}-${from + size - 1}` });
 
     const initGroupValue = initGroupCode ? base64UrlToString(initGroupCode) : undefined
     const initLocation = initGroupData?.sources[0]?.location?.coordinates || undefined
     const initLabel = initGroupData?.sources[0]?.label || undefined
 
-    
-
     const res = await fetch(`/api/search/collapsed?${searchQueryString}`, {
         method: 'POST',
         body: JSON.stringify({
-            size: PER_PAGE,
-            from: pageParam * PER_PAGE,
-            initGroup: initGroupData?.group,
+            size: size,
+            from: from,
+            //initGroupValue: initGroupValue,
             initBoost: initGroupData?.boost,
             initPlaceScore: initGroupData?.placeScore,
             initLocation,
@@ -44,9 +65,24 @@ const collapsedDataQuery = async ({
     }
     const data = await res.json()
     
+    // Calculate distances if initLocation exists
+    const hits = data.hits?.hits || [];
+    if (initLocation && initLocation.length === 2) {
+        const [initLon, initLat] = initLocation;
+        hits.forEach((hit: any) => {
+            const hitLocation = hit.fields?.location?.[0]?.coordinates;
+            if (hitLocation && hitLocation.length === 2) {
+                const [hitLon, hitLat] = hitLocation;
+                const distance = calculateDistance(initLat, initLon, hitLat, hitLon);
+                // Add distance to the hit object
+                hit.distance = distance;
+            }
+        });
+    }
+    
     return {
-        data: data.hits?.hits,
-        nextCursor: data.hits?.hits.length === PER_PAGE ? pageParam + 1 : undefined
+        data: hits,
+        nextCursor: hits.length === size ? pageParam + 1 : undefined
     }
 }
 
