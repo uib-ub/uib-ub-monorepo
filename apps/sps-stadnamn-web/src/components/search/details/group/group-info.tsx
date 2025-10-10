@@ -4,6 +4,7 @@ import Carousel from "../../nav/results/carousel";
 import {  useMemo, useState } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { formatHtml } from "@/lib/text-utils";
+import { resultRenderers } from "@/config/result-renderers";
 
 
 export default function GroupInfo({overrideGroupCode}: {overrideGroupCode?: string}) {
@@ -42,23 +43,31 @@ export default function GroupInfo({overrideGroupCode}: {overrideGroupCode?: stri
         <div className="w-full flex flex-col">
             {
                 audioItems?.map((audioItem) => (
-                    <div key={audioItem.uuid + 'audio'}>JSON.stringify(audioItem)</div>
+                    <div key={audioItem.uuid + 'audio'}>{JSON.stringify(audioItem)}</div>
                 ))
             }
-            {
-                textItems?.map((textItem) => (
-                    <div className="p-2" key={textItem.uuid + 'text'}>
-                        <strong>{datasetTitles[textItem.dataset]}</strong> | {formatHtml(textItem.content.html)}
-                    </div>
-                ))
-            }
-
             { iiifItems?.length > 0 && <>
                <Carousel items={iiifItems}/>
                 </>
             }
+            {
+                textItems?.map((textItem) => {
+                    const links = resultRenderers[textItem.dataset]?.links?.(textItem)
+                    return (
+                    <div className="p-3" key={textItem.uuid + 'text'}>
+                        <strong>{datasetTitles[textItem.dataset]}</strong> | {formatHtml(
+                            textItem.content.html
+                                ? textItem.content.html.replace(/<\/?p>/g, '')
+                                : textItem.content.html
+                        )}
+                        {links}
+                    </div>
+                )})
+            }
 
-            <div className="p-1 px-2">
+            
+
+            <div className="py-2 px-3">
             { Object.entries(datasets).map(([dataset, sources]) => (
                 <div key={dataset + 'dataset'}>
                     <h3>{datasetTitles[dataset]}</h3>

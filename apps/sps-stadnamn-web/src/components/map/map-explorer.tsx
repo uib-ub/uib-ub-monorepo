@@ -56,7 +56,7 @@ export default function MapExplorer() {
   const urlZoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
   const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
   const allowFitBounds = useRef(false)
-  const { groupValue } = useGroup()
+  const { activeGroupValue } = useGroup()
   const { groupLoading } = useGroupData()
   const { isMobile, mapFunctionRef } = useContext(GlobalContext)
   const mapInstance = useRef<any>(null)
@@ -544,6 +544,7 @@ export default function MapExplorer() {
 
       }}
       zoomControl={false}
+      attributionControl={false}
       zoomSnap={0.5}
       zoomDelta={0.5}
       zoom={urlZoom || defaultZoom}
@@ -553,7 +554,7 @@ export default function MapExplorer() {
         bottom: isMobile ? `${MAP_DRAWER_MIN_HEIGHT_REM-0.5}rem` : '0',
       }}
       >
-      {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon, Popup, MultiPolygon, Polyline }: any, leaflet: any) => {
+      {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon, Popup, MultiPolygon, Polyline, AttributionControl }: any, leaflet: any) => {
 
         function EventHandlers() {
           const map = useMap();
@@ -632,6 +633,7 @@ export default function MapExplorer() {
 
           <>
             <EventHandlers />
+            <AttributionControl position="bottomleft" />
             {baseMap[perspective] && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapLookup[baseMap[perspective]].props} />}
 
             {/* Add H3 grid overlay */}
@@ -732,7 +734,7 @@ export default function MapExplorer() {
                 return null;
               }
               else {
-                const selected = groupValue && item.fields?.["group.id"]?.[0] == groupValue && !groupLoading
+                const selected = activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue && !groupLoading
 
                 const childCount = zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', selected ? 'accent' : 'white', childCount, false, false, !!(selected))
@@ -775,7 +777,7 @@ export default function MapExplorer() {
                             <li key={`entry-${entry.fields.uuid[0]}`} className="!p-0 !m-0">
                               <Clickable className="no-underline !text-black flex gap-2 items-center py-2" 
                                           link add={{details: 'group', group: stringToBase64Url(entry.fields["group.id"]?.[0])}}>
-                                            {groupValue == entry.fields["group.id"]?.[0] ? <PiBookOpenFill className="text-accent-700" /> : <PiBookOpen className="text-primary-700" />}{entry.fields.label?.[0]}
+                                            {activeGroupValue == entry.fields["group.id"]?.[0] ? <PiBookOpenFill className="text-accent-700" /> : <PiBookOpen className="text-primary-700" />}{entry.fields.label?.[0]}
                               </Clickable>
                             </li>
                           ))}

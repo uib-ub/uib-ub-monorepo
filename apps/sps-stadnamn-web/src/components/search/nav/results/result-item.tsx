@@ -10,6 +10,8 @@ import { useGroup, useMode, usePerspective } from '@/lib/param-hooks';
 import { useSessionStore } from '@/state/zustand/session-store';
 import { useDebugStore } from '@/state/zustand/debug-store';
 import { MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from '@/lib/map-utils';
+import ClickableIcon from '@/components/ui/clickable/clickable-icon';
+import { PiPushPinSlashBold, PiXBold } from 'react-icons/pi';
 
 const uniqueLabels = (hit: any) => {
     const labels = new Set<string>();
@@ -42,7 +44,7 @@ const formatDistance = (meters: number) => {
     }
 };
 
-export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, any>) {
+export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?: () => void} & Record<string, any>) {
     const perspective = usePerspective()
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
@@ -68,7 +70,7 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
     const isGrunnord = docDataset?.includes('_g')
 
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
-    const {groupCode, groupValue } = useGroup()
+    const {activeGroupCode, activeGroupValue, initValue } = useGroup()
 
 
     useEffect(() => {
@@ -85,20 +87,20 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
     
 
     
-    return  <Clickable ref={itemRef} {...rest} className={`w-full h-full p-3 aria-expanded:text-white  aria-expanded:bg-accent-800 flex items-center group no-underline `} 
+    return  <Clickable ref={itemRef} {...rest} className={`w-full h-full p-3  aria-expanded:bg-neutral-100 flex items-center group no-underline ${initValue == hit.fields["group.id"][0] ? 'pb-0' : ''}`} 
     onClick={() => {
-        //setSnappedPosition('max')
+        onClick?.()
         if (!hit.fields?.location?.[0].coordinates) return;
         const map = mapFunctionRef.current;
         if (!map) return;
 
-        let [lng, lat] = hit.fields.location[0].coordinates;
+        const [lng, lat] = hit.fields.location[0].coordinates;
 
         panPointIntoView(map, [lat, lng], isMobile, isMobile);
     }}
     remove={['group', 'docIndex', 'doc', 'parent', ...(isMobile ? ['nav'] : [])]}
                     add={{
-                        ...(hit.fields["group.id"] && hit.fields["group.id"][0] != groupValue ? {group: stringToBase64Url(hit.fields["group.id"][0])} : {group: null}),
+                        ...(hit.fields["group.id"] && hit.fields["group.id"][0] != activeGroupValue ? {group: stringToBase64Url(hit.fields["group.id"][0])} : {group: null}),
                     }}>
                        
             <div className="w-full text-left">
@@ -125,9 +127,16 @@ export default function ResultItem({hit, ...rest}: {hit: any} & Record<string, a
                     )}
                     <span>{detailsRenderer(hit)}</span>
                     {hit.distance && (
-                        <span className=" ml-auto text-sm bg-neutral-100 px-2 py-0.5 rounded-full group-aria-expanded:text-accent-800">
+                        <span className="ml-auto text-sm bg-neutral-100 px-2 py-0.5 rounded-full group-aria-expanded:bg-white">
                             {formatDistance(hit.distance)}
                         </span>
+                    )}
+                    {initValue && initValue == hit.fields["group.id"][0] && (
+                        <>
+                        <ClickableIcon className="ml-auto" label="Fjern utganspunkt for sortering" remove={['init']}>
+                            <PiPushPinSlashBold className="text-neutral-800 group-aria-expanded:text-white text-xl" />
+                        </ClickableIcon>
+                        </>
                     )}
                 </span>
                 {hit.highlight && snippetRenderer && <>{snippetRenderer(hit)}</>}

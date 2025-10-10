@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     
   const query: Record<string,any> = {
     "size": 1000,
-    "fields": ["group.adm1", "group.adm2", "uuid", "boost", "label", "location"],
+    "fields": ["group.adm1", "group.adm2", "group.id", "uuid", "boost", "label", "location"],
     "query": groupValue?.startsWith('grunnord_') && reservedParams.q?.length
       ? simple_query_string
       : {
@@ -25,7 +25,7 @@ export async function GET(request: Request) {
         },
     "track_scores": false,
     "track_total_hits": false,
-    "_source": ["uuid", "label", "attestations", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links"],
+    "_source": ["uuid", "label", "attestations", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area"],
     /*
     "aggs": {
       "viewport": {
@@ -61,16 +61,6 @@ export async function GET(request: Request) {
 
   
   data?.hits?.hits.forEach((hit: any) => {
-    const boost = hit._source.boost || 0
-    const placeScore = hit._source.placeScore || 0
-    
-    if ( boost > topDoc.boost) {
-      topDoc['boost'] = boost
-    }
-    if ( placeScore > topDoc.placeScore) {
-      topDoc['placeScore'] = placeScore
-    }
-
     sources.push({
       dataset: hit._index.split('-')[2],
       uuid: hit._source.uuid,
@@ -81,6 +71,10 @@ export async function GET(request: Request) {
       iiif: hit._source.iiif,
       recordings: hit._source.recordings,
       location: hit._source.location,
+      coordinateType: hit._source.coordinateType,
+      area: hit._source.area,
+      links: hit._source.links,
+      link: hit._source.link,
     })
 
     

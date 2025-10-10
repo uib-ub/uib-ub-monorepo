@@ -25,9 +25,14 @@ export function useDocIndex(): number {
 
 export function useGroup() {
     const searchParams = useSearchParams()
-    const groupCode = searchParams.get('group') || searchParams.get('init')
+    const groupCode = searchParams.get('group') 
+    const initCode = searchParams.get('init')
+    const initValue = initCode ? base64UrlToString(initCode) : null
     const groupValue = groupCode ? base64UrlToString(groupCode) : null
-    return {groupCode, groupValue}
+    const activeGroupValue = initValue || groupValue
+    const activeGroupCode = initCode || groupCode
+
+    return {initCode, initValue, activeGroupValue, activeGroupCode}
 }
 
 

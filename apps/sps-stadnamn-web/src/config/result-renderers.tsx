@@ -1,10 +1,12 @@
 import { getFieldValue } from "@/lib/utils";
 import { formatHighlight, createMarkup } from "@/lib/text-utils";
+import Link from "next/link";
 
 interface Renderer {
   fields?: string[];
   title?: (hit: any, display: string) => any;
   details?: (hit: any, display: string) => any;
+  links?: (hit: any) => any;
   cadastre?: (hit: any) => any;
   snippet?: (hit: any) => any;
   sourceTitle?: (hit: any) => any;
@@ -14,6 +16,7 @@ interface Renderer {
 interface DefaultRenderer {
   title: (hit: any, display: string) => any;
   details: (hit: any, display: string) => any;
+  links?: (hit: any) => any;
   cadastre?: (hit: any) => any;
   snippet: (hit: any) => any;
   sourceTitle: (hit: any) => any;
@@ -136,6 +139,17 @@ export const resultRenderers: ResultRenderers = {
     },
     snippet: (hit: any) => {
       return hit.highlight?.['content.html']?.[0] && formatHighlight(hit.highlight['content.html']?.[0])
+    },
+    links: (hit: any) => {
+      return <>
+      {hit.links?.map((link: any) => {
+        let hostname = new URL(link).hostname
+        hostname = hostname.replace(/^www\./, '');
+        return (
+          <Link className="bg-neutral-200 px-1 rounded-md override-external-icon mx-1 no-underline" key={link} href={link}>{hostname}</Link>
+        )
+      })}
+      </>
     },
     details: (hit: any, display: string) => {
       return cadastreAdm(getFieldValue(hit, 'misc.KNR'), getFieldValue(hit, 'misc.Gnr'), getFieldValue(hit, 'misc.Bnr'), "/", hit, display)

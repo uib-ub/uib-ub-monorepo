@@ -1,5 +1,5 @@
 'use client'
-import { Fragment, useEffect, useRef } from "react"
+import { Fragment, useEffect, useRef, useState } from "react"
 import ResultItem from "./result-item";
 import { getSkeletonLength } from "@/lib/utils";
 import useCollapsedData from "@/state/hooks/collapsed-data";
@@ -12,10 +12,24 @@ import { useGroup } from "@/lib/param-hooks";
 import { PiPlusBold } from "react-icons/pi";
 import useGroupData from "@/state/hooks/group-data";
 
+
+const CollapsibleResultItem = ({hit, activeGroupValue}: {hit: any, activeGroupValue: string | null}) => {
+  const [expanded, setExpanded] = useState(activeGroupValue == hit.fields["group.id"][0])
+  const groupCode = stringToBase64Url(hit.fields["group.id"][0])
+  return (
+    <li className="relative" key={hit.fields["group.id"][0]}>
+      <ResultItem hit={hit} onClick={() => setExpanded(!expanded)} aria-controls={`group-info-${hit.fields["group.id"][0]}`} aria-expanded={expanded}/>
+      {expanded && <div id={`group-info-${hit.fields["group.id"][0]}`} className="pb-4"><GroupInfo overrideGroupCode={groupCode}/>
+      
+      </div>}
+    </li>
+  )
+}
+
 export default function SearchResults() {
   const { searchError } = useSearchData()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
-  const { groupValue } = useGroup()
+  const { activeGroupValue } = useGroup()
   const searchParams = useSearchParams()
   const init = searchParams.get('init')
   const initValue = init ? base64UrlToString(init) : null
@@ -25,6 +39,7 @@ export default function SearchResults() {
   const {
     collapsedData,
     collapsedError,
+    collapsedLoading,
     collapsedFetchNextPage,
     collapsedHasNextPage,
     isFetchingNextPage,
@@ -40,7 +55,6 @@ export default function SearchResults() {
 
   return (
     <div ref={resultsContainerRef}>
-      <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-200 border-t border-neutral-200'>
       {init && (initGroupLoading ? (
         <div className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-200">
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `10rem`}}></div>
@@ -49,13 +63,17 @@ export default function SearchResults() {
       ) : initGroupData && (
         <li key={`init-${initValue}`}>
           <ResultItem 
+            notClickable={true}
             hit={initGroupData}
           />
           <div id={`group-info-${initGroupData.fields["group.id"]}`}><GroupInfo overrideGroupCode={init || undefined}/></div>
         </li>
       ))}
 
-      {collapsedStatus === 'pending' && collapsedInitialPage === 1 ? Array.from({ length: 30 }).map((_, i) => (
+      <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-200 border-t border-neutral-200'>
+      
+
+      {(initGroupLoading || collapsedLoading && collapsedInitialPage === 1) ? Array.from({ length: 30 }).map((_, i) => (
           <div key={`skeleton-${i}`} className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-200">
             <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 4, 10)}rem`}}></div>
             <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 10, 16)}rem`}}></div>
@@ -65,19 +83,14 @@ export default function SearchResults() {
     <Fragment key={`page-${pageIndex}`}>
     {page.data?.map((item: any) => {
       if (initValue && item.fields["group.id"]?.[0] == initValue) return null;
-      const expanded = groupValue == item.fields["group.id"]
-      const itemKey = item.fields["group.id"]?.[0] || item._id || item.fields.uuid?.[0]
       return (
-        <li key={itemKey}>
-          
-        <ResultItem 
-          hit={item}
-          aria-controls={`group-info-${item.fields["group.id"]}`}
-          aria-expanded={expanded}
-        />
-        { expanded && <div id={`group-info-${item.fields["group.id"]}`}><GroupInfo/></div>}
 
-      </li>
+        <CollapsibleResultItem 
+          key={item.fields["group.id"]?.[0]}
+          hit={item}
+          activeGroupValue={activeGroupValue}
+        />
+
       )})}
     </Fragment>
 ))}
