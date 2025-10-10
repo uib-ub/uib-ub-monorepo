@@ -71,6 +71,12 @@ export async function POST(request: Request) {
     }
   }
 
+  query.query = baseQuery;
+
+  /*
+
+  
+
   if (simple_query_string || initGroup?.id) {
     query.query = {
       "function_score": {
@@ -130,6 +136,7 @@ export async function POST(request: Request) {
           weight: 2
         })
       }
+      */
   
     
 

@@ -3,21 +3,23 @@
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';
-import { getSortArray } from '@/config/server-config';
+import { base64UrlToString } from '@/lib/param-utils';
 
 export async function GET(request: Request) {
   const {termFilters, reservedParams} = extractFacets(request)
   const { simple_query_string } = getQueryString(reservedParams)
 
   const perspective = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
+
+  const groupValue = base64UrlToString(reservedParams.group)
     
   const query: Record<string,any> = {
     "size": 1000,
-    "query": reservedParams.group?.startsWith('grunnord_') && reservedParams.q?.length
+    "query": groupValue?.startsWith('grunnord_') && reservedParams.q?.length
       ? simple_query_string
       : {
           "term": {
-            "group.id": reservedParams.group
+            "group.id": groupValue
           }
         },
     "track_scores": false,
@@ -44,6 +46,7 @@ export async function GET(request: Request) {
     }
   }
     */
+
 
   
   const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")

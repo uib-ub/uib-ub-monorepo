@@ -9,8 +9,6 @@ import { formatHtml } from "@/lib/text-utils";
 export default function GroupInfo() {
     const { groupData } = useGroupData()
 
-    const [expandedSection, setExpandedSection] = useState<string | null>(null)
-
     const { iiifItems, textItems, audioItems, datasets, timelineItems } = useMemo(() => {
         const iiifItems: any[] = []
         const textItems: any[] = []

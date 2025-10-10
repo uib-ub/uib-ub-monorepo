@@ -24,7 +24,7 @@ export async function autocompleteQuery(searchFilterParamsString: string, inputS
     const autocompleteQuery = newQuery.toString()
     
     
-    const res = await fetch(`/api/autocomplete?${autocompleteQuery}&size=${isMobile ? 5 : 20}`)
+    const res = await fetch(`/api/autocomplete?${autocompleteQuery}&size=20`)
     if (!res.ok) {
         throw new Error(res.status.toString())
     }

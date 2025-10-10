@@ -32,6 +32,7 @@ export const RESERVED_PARAMS = [
   'geotile',
 
   'init',
+  'group',
   'options',
   'results',
   'mapSettings'
