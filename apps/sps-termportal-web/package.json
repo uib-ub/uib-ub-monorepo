@@ -5,7 +5,7 @@
   "scripts": {
     "build": "nuxt build",
     "check-types": "nuxi typecheck",
-    "clean": "rm -rf .turbo && rm -rf node_modules",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .nuxt && rm -rf .data",
     "coverage": "vitest run --coverage --passWithNoTests",
     "dev": "nuxt dev",
     "generate": "nuxt generate",

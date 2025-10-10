@@ -5,11 +5,10 @@
   "type": "module",
   "main": "./nuxt.config.ts",
   "scripts": {
-    "clean": "rm -rf node_modules"
+    "clean": "rm -rf .turbo && rm -rf node_modules"
   },
   "dependencies": {
-    "@nuxt/icon": "1.15.0",
-    "assets": "*"
+    "@nuxt/icon": "1.15.0"
   },
   "devDependencies": {
     "typescript": "5.9.3"
