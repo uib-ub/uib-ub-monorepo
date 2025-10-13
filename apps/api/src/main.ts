@@ -64,10 +64,10 @@ app.doc31('/openapi', c => ({
     title: 'UiB-UB API',
     summary: 'The API for the University of Bergen Library Cultural Heritage Collections applications.',
     description: `The API is currently in development, and is subject to change.`,
-    termsOfService: `${env.DOCUMENTATION_URL}/terms`,
+    termsOfService: `${env.API_DOCUMENTATION_URL}/terms`,
     contact: {
       name: 'API Support',
-      url: `${env.DOCUMENTATION_URL}/support`,
+      url: `${env.API_DOCUMENTATION_URL}/support`,
       email: 'support@uib.no'
     },
   },
@@ -85,7 +85,7 @@ app.get('/ns/ontology/ubbont.owl', serveStatic({ path: './static/ontology/ubbont
 showRoutes(app)
 
 // Start the server on port 3009.
-const port = env.PORT
+const port = env.API_DEVELOPMENT_PORT
 
 export default {
   port,

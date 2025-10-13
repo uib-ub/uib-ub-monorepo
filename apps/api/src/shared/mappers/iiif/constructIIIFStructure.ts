@@ -20,7 +20,7 @@ export function constructIIIFStructure(item: any, fileset: any) {
   console.log("🚀 ~ constructIIIFStructure ~ filesetID:", filesetID)
 
   const thumbnail = getThumbnailVisualItem(item)
-  const manifestID = `${env.PROD_URL}/items/${filesetID}?as=iiif`
+  const manifestID = `${env.API_BASE_URL}/items/${filesetID}?as=iiif`
   const homepage = `https://marcus.uib.no/items/${filesetID}`
 
   //const mainType = get
@@ -130,7 +130,7 @@ export function constructIIIFStructure(item: any, fileset: any) {
       });
       manifest.setSeeAlso([
         {
-          id: `${env.API_URL}/items/${filesetID}`,
+          id: `${env.API_BASE_URL}/items/${filesetID}`,
           type: "Dataset",
           label: {
             en: ["Object description in JSON format"],
@@ -139,7 +139,7 @@ export function constructIIIFStructure(item: any, fileset: any) {
           format: "application/ld+json"
         },
         {
-          id: `${env.API_URL}/items/${filesetID}?as=ubbont`,
+          id: `${env.API_BASE_URL}/items/${filesetID}?as=ubbont`,
           type: "Dataset",
           label: {
             en: ["Object description in RDF"],
@@ -165,7 +165,7 @@ export function constructIIIFStructure(item: any, fileset: any) {
 
       if (fileset) {
         (fileset.data.hasPart).map((item: any) => {
-          const root = `${env.API_URL}/items/${filesetID}`
+          const root = `${env.API_BASE_URL}/items/${filesetID}`
           const canvasID = `${root}/canvas/${item.sequenceNr}`
           const annotationPageID = `${root}/canvas/${item.sequenceNr}/annotation-page/1`;
           const annotationID = `${root}/canvas/${item.sequenceNr}/annotation/1`;
