@@ -11,7 +11,7 @@ import { useSessionStore } from '@/state/zustand/session-store';
 import { useDebugStore } from '@/state/zustand/debug-store';
 import { MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from '@/lib/map-utils';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
-import { PiPushPinSlashBold, PiXBold } from 'react-icons/pi';
+import { PiPushPinSlashBold, PiXBold, PiXCircle } from 'react-icons/pi';
 
 const uniqueLabels = (hit: any) => {
     const labels = new Set<string>();
@@ -134,7 +134,7 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
                     {initValue && initValue == hit.fields["group.id"][0] && (
                         <>
                         <ClickableIcon className="ml-auto" label="Fjern utganspunkt for sortering" remove={['init']}>
-                            <PiPushPinSlashBold className="text-neutral-800 group-aria-expanded:text-white text-xl" />
+                            <PiXCircle className="text-neutral-700 group-aria-expanded:text-white text-xl" />
                         </ClickableIcon>
                         </>
                     )}

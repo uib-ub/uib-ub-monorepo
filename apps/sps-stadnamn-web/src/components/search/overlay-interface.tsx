@@ -218,8 +218,8 @@ export default function OverlayInterface() {
                                 
                                 <div className="flex items-center gap-1 ml-auto">
                                     {isMobile && (
-                                        <Clickable remove={["results"]} onClick={() => setSnappedPosition('max')} className="bg-neutral-800 rounded-full px-2 py-1 flex items-center gap-1 text-white text-sm xl:text-base">
-                                            {!filterCount && <PiSliders className="text-white text-lg" aria-hidden="true" />}Filter {filterCount > 0 && <Badge className="bg-neutral-900 font-bold" count={filterCount} />}
+                                        <Clickable remove={["results"]} onClick={() => setSnappedPosition('max')} className={`bg-neutral-800 rounded-full px-2 py-1 flex items-center gap-1 text-white text-sm xl:text-base ${filterCount > 0 ? 'pl-1' : ''}`}>
+                                            {filterCount > 0 ? <Badge className="bg-white text-neutral-800 font-bold" count={filterCount} /> :  <PiSliders className="text-white text-lg" aria-hidden="true" />}Filter
                                         </Clickable>
                                     )}
                                     

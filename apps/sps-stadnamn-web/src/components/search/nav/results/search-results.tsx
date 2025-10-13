@@ -11,6 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { useGroup } from "@/lib/param-hooks";
 import { PiPlusBold } from "react-icons/pi";
 import useGroupData from "@/state/hooks/group-data";
+import Spinner from "@/components/svg/Spinner";
 
 
 const CollapsibleResultItem = ({hit, activeGroupValue}: {hit: any, activeGroupValue: string | null}) => {
@@ -99,19 +100,23 @@ export default function SearchResults() {
       {/* Vis meir button */}
       {collapsedHasNextPage && (
         <div className="flex justify-center my-4">
-          <span
+          <button
+            type="button"
             onClick={() => !isFetchingNextPage && collapsedFetchNextPage()}
-            role="button"
-            tabIndex={0}
             className={`
-              text-primary-800 cursor-pointer select-none
-              px-4 py-2 rounded
+              text-neutral-950 cursor-pointer select-none
+              flex items-center gap-2
+              btn-outline btn
+              justify-center
+
+              px-4 py-2 rounded-full
+              w-full mx-3
               transition-colors
-              ${isFetchingNextPage ? 'opacity-60 pointer-events-none' : 'hover:bg-primary-100'}
+              ${isFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
             `}
           >
-            {isFetchingNextPage ? 'Lastar...' : 'Vis fleire'}
-          </span>
+            {isFetchingNextPage ? <Spinner status="Lastar" /> : <PiPlusBold aria-hidden="true" />} {isFetchingNextPage ? 'Lastar...' : 'Vis fleire'}
+          </button>
         </div>
       )}
       {/* Error and empty states */}
