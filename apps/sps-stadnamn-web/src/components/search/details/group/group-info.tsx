@@ -26,57 +26,206 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
 
 
 const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
-    const { byYear, byName, } = useMemo(() => {
-        const byYear: Record<string, any[]> = {}
-        const byName: Record<string, any[]> = {}
+    const [showMoreDatasets, setShowMoreDatasets] = useState<Record<string, boolean>>({})
+    const [activeYear, setActiveYear] = useState<string | null>(null)
+    const [activeName, setActiveName] = useState<string | null>(null)
 
-        Object.entries(datasets).forEach(([dataset, sources]) => {
-            sources.forEach((source) => {
-            if (source?.attestations) {
-                source.attestations.forEach((attestation: any) => {
-                    byYear[attestation.year] = byYear[attestation.year] || []
-                    byYear[attestation.year].push(source)
-                })
-            }
-            if (source?.year) {
-                byYear[source.year] = byYear[source.year] || []
-                byYear[source.year].push(source)
-            }
-            })
-        })
-        return { byYear, byName }
+	const { yearsOrdered, namesByYear, namesWithoutYear, nameCounts, itemsByDataset } = useMemo(() => {
+		// 1) Empty structures
+		const nameToYears: Record<string, Set<string>> = {}
+		const nameCounts: Record<string, number> = {}
+		const itemsByDataset: Record<string, any[]> = {}
 
-        
-    }, [datasets])
-    return <>
+		// 2) Build lookup from labels/altLabels (using source.year) and attestations (using att.year)
+		const pushNameYear = (name: string | undefined, year: any) => {
+			if (!name) return
+			const y = year != null ? String(year) : null
+			if (!y) return
+			nameToYears[name] = nameToYears[name] || new Set<string>()
+			nameToYears[name].add(y)
+			nameCounts[name] = (nameCounts[name] || 0) + 1
+		}
 
+		Object.entries(datasets).forEach(([ds, sources]) => {
+			itemsByDataset[ds] = itemsByDataset[ds] || []
+			sources.forEach((source: any) => {
+				itemsByDataset[ds].push(source)
+				// Labels and altLabels only when source.year exists
+				if (source?.year) {
+					pushNameYear(source.label, source.year)
+					if (Array.isArray(source?.altLabels)) {
+						source.altLabels.forEach((alt: any) => pushNameYear(typeof alt === 'string' ? alt : alt?.label, source.year))
+					}
+				}
+				// Attestations: use their own year
+				if (Array.isArray(source?.attestations)) {
+					source.attestations.forEach((att: any) => pushNameYear(att?.label, att?.year))
+				}
+			})
+		})
 
+		// 3) Compute earliest occurrence per name and bucket names by that year
+		const namesByYear: Record<string, string[]> = {}
+		const namesWithoutYear: string[] = []
+		Object.entries(nameToYears).forEach(([name, yearsSet]) => {
+			const years = Array.from(yearsSet)
+			if (years.length === 0) {
+				namesWithoutYear.push(name)
+				return
+			}
+			const numeric = years
+				.map((y) => ({ raw: y, num: Number(y) }))
+				.filter((y) => !Number.isNaN(y.num))
+				.sort((a, b) => a.num - b.num)
+			const earliest = numeric.length ? numeric[0].raw : years.sort()[0]
+			namesByYear[earliest] = namesByYear[earliest] || []
+			namesByYear[earliest].push(name)
+		})
+		Object.keys(namesByYear).forEach((y) => namesByYear[y].sort())
+		const yearsOrdered = Object.keys(namesByYear)
+			.map((y) => Number.isNaN(Number(y)) ? y : Number(y))
+			.sort((a: any, b: any) => (a > b ? 1 : a < b ? -1 : 0))
+			.map(String)
 
-    {Object.keys(datasets).length > 0 && <div className="flex flex-wrap gap-1">{Object.keys(datasets).map((dataset) => (
-        <div className="bg-neutral-100 rounded-full px-2 text-sm" key={dataset + 'dataset'} >
-            {datasetTitles[dataset]}
-        </div>
-    ))}</div>}
+		return { yearsOrdered, namesByYear, namesWithoutYear, nameCounts, itemsByDataset }
+	}, [datasets])
 
-    {JSON.stringify(byYear)}
+    const toggleShowMore = (ds: string, next?: boolean) => setShowMoreDatasets((prev) => ({ ...prev, [ds]: typeof next === 'boolean' ? next : !prev[ds] }))
 
+    const matchesActiveYear = (s: any) => {
+        if (!activeYear) return true
+        if (String(s?.year) === activeYear) return true
+        if (Array.isArray(s?.attestations)) {
+            if (s.attestations.some((a: any) => String(a?.year) === activeYear)) return true
+        }
+        return false
+    }
+    const matchesActiveName = (s: any) => {
+        if (!activeName) return true
+        if (s?.label && String(s.label) === activeName) return true
+        if (Array.isArray(s?.altLabels)) {
+            if (s.altLabels.some((al: any) => String(typeof al === 'string' ? al : al?.label) === activeName)) return true
+        }
+        if (Array.isArray(s?.attestations)) {
+            if (s.attestations.some((a: any) => String(a?.label) === activeName)) return true
+        }
+        return false
+    }
 
-    FILTRER ETTER DATASETT<br />
-    FILTRER ETTER NAMNEFORM<br />
-    dynamisk visning: tidslinje øverst, deretter navneformer uten år.
-    List opp alle kilder hvis få
+	return <>
+		<ul className="relative !mx-2 !px-0 p-2">
+            {yearsOrdered.map((year, idx) => {
+				const isLast = idx === yearsOrdered.length - 1
+				const nameKeys = namesByYear[year] || []
+				return (
+					<li key={year} className="flex items-center !pb-4 !pt-0 relative w-full">
+						<div className={`bg-primary-300 absolute w-1 left-0 top-1 ${isLast ? 'h-4' : 'h-full'} ${idx === 0 ? 'mt-2' : ''}`}></div>
+						<div className="w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-2"></div>
+                        <div className="ml-6 flex w-full">
+                            <button
+                                type="button"
+                                onClick={() => { setActiveYear(activeYear === year ? null : year); setActiveName(null) }}
+                                className={`mr-2 my-1 mt-1 font-medium ${activeYear === year ? 'text-primary-700' : 'text-neutral-700'} underline-offset-4 hover:underline`}
+                                aria-pressed={activeYear === year}
+                            >
+                                {year}
+                            </button>
+							<ul className="flex gap-1">
+                                {nameKeys.map((nameKey) => (
+                                    <li key={`${year}__${nameKey}`} className="flex w-full">
+                                        <button
+                                            type="button"
+                                            onClick={() => { setActiveName(activeName === nameKey ? null : nameKey); setActiveYear(null) }}
+                                            className={`text-left flex items-center gap-3 py-2 ${activeName === nameKey ? 'text-primary-700' : ''} hover:underline underline-offset-4`}
+                                            aria-pressed={activeName === nameKey}
+                                        >
+                                            <span className="font-medium">{nameKey}</span>
+                                        </button>
+                                    </li>
+                                ))}
+							</ul>
+						</div>
+					</li>
+				)
+			})}
+		</ul>
 
-    { Object.entries(datasets).map(([dataset, sources]) => (
-        <div className="py-2" key={dataset + 'dataset'} >
-            <h3>{datasetTitles[dataset]}</h3>
-            
-            {sources.map((source: any) => (
-                <div key={source.uuid + 'source'}>{source.label}</div>
-            ))}
-            { }
-        </div>
-    ))}
-    </>
+		{namesWithoutYear.length > 0 && (
+			<div className="px-2">
+				<span className="mr-2 my-1 mt-1 font-medium text-neutral-700">Utan årstal</span>
+				<ul className="flex flex-col gap-1">
+					{namesWithoutYear.sort().map((nameKey) => (
+						<li key={`noYear__${nameKey}`} className="flex flex-col w-full">
+							<div className="text-left flex items-center gap-3 py-2">
+								<span className="font-medium">{nameKey}</span>
+								<span className="text-sm text-neutral-700">({nameCounts[nameKey] || 0})</span>
+							</div>
+						</li>
+					))}
+				</ul>
+			</div>
+		)}
+
+        <div className="px-2 pt-2">
+            {(activeYear || activeName) && (
+                <div className="flex items-center gap-2 pb-2 text-sm">
+                    <span className="text-neutral-700">Filter:</span>
+                    {activeYear && <span className="px-2 py-0.5 bg-neutral-100 rounded-full">År: {activeYear}</span>}
+                    {activeName && <span className="px-2 py-0.5 bg-neutral-100 rounded-full">Namn: {activeName}</span>}
+                    <button type="button" className="ml-auto underline underline-offset-4" onClick={() => { setActiveYear(null); setActiveName(null) }}>Nullstill</button>
+                </div>
+            )}
+            <ul className="flex flex-col divide-y divide-neutral-200 w-full gap-4">
+                {Object.keys(itemsByDataset).map((ds) => {
+                    const items = (itemsByDataset[ds] || []).filter((s: any) => matchesActiveYear(s) && matchesActiveName(s))
+                    if (items.length === 0) return null
+                    const hasFilter = !!(activeYear || activeName)
+                    const autoShowAll = hasFilter && items.length <= 5
+                    const isExpanded = autoShowAll || !!showMoreDatasets[ds]
+                    const shouldCollapse = hasFilter ? items.length > 5 : items.length > 2
+                    const collapseCount = hasFilter ? 4 : 1
+                    const visibleItems = (isExpanded || !shouldCollapse) ? items : items.slice(0, collapseCount)
+                    return (
+                        <li key={`ds-${ds}`} className="flex flex-col w-full py-1">
+                            <div className="text-left flex items-center gap-3 py-2">
+                                <span className="font-medium text-sm text-neutral-900 uppercase tracking-wider">{datasetTitles[ds] || ds}</span>
+                                <span className="flex-1" />
+                            </div>
+                            <ul className="flex flex-wrap w-full divide-x divide-neutral-200 -mx-2">
+                                {visibleItems.map((s: any) => (
+                                    <li key={s.uuid} className="px-2 py-1">
+                                        <div className="text-sm">{s.label}</div>
+                                    </li>
+                                ))}
+                                {!autoShowAll && shouldCollapse && !isExpanded && (
+                                    <li className="px-2 py-1">
+                                        <button
+                                            type="button"
+                                            className="text-sm underline underline-offset-4"
+                                            onClick={() => toggleShowMore(ds, true)}
+                                        >
+                                            {`Vis fleire (${items.length - visibleItems.length})`}
+                                        </button>
+                                    </li>
+                                )}
+                                {!autoShowAll && shouldCollapse && isExpanded && (
+                                    <li className="px-2 py-1">
+                                        <button
+                                            type="button"
+                                            className="text-sm underline underline-offset-4"
+                                            onClick={() => toggleShowMore(ds, false)}
+                                        >
+                                            Vis færre
+                                        </button>
+                                    </li>
+                                )}
+                            </ul>
+                        </li>
+                    )
+				})}
+			</ul>
+		</div>
+	</>
 }
 
 const LocationsTab = ({ locations }: { locations: any[] }) => {
@@ -135,10 +284,7 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
         const textItems: any[] = []
         const audioItems: any[] = []
         const datasets: Record<string, any[]> = {}
-        const timelineItems: any[] = []
-
-        const seenNames = new Set<string>()
-        const uniqueNames: string[] = []
+        
         
 
 
@@ -161,6 +307,8 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
         })
         if (textItems.length > 0) {
             setOpenTab('text')
+        } else {
+            setOpenTab('sources')
         }
 
         return { iiifItems, textItems, audioItems, datasets }
@@ -182,7 +330,9 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
 
             <div className="w-full">
                 <TabList>
-                    <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="text" label="Tekstar" />
+                    {textItems.length > 0 && (
+                        <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="text" label="Tolking" />
+                    )}
                     <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="sources" label="Kjelder" />
                     <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="places" label="Lokalitetar" />
                     
