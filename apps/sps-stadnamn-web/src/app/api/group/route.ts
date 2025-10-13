@@ -25,7 +25,7 @@ export async function GET(request: Request) {
         },
     "track_scores": false,
     "track_total_hits": false,
-    "_source": ["uuid", "label", "attestations", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area"],
+    "_source": ["uuid", "label", "attestations", "year", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area"],
     /*
     "aggs": {
       "viewport": {
@@ -66,6 +66,7 @@ export async function GET(request: Request) {
       uuid: hit._source.uuid,
       label: hit._source.label,
       attestations: hit._source.attestations,
+      year: hit._source.year,
       sosi: hit._source.sosi,
       content: hit._source.content,
       iiif: hit._source.iiif,
