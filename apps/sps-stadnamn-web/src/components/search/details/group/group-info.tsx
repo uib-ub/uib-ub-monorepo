@@ -191,7 +191,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                                 <span className="font-medium text-sm text-neutral-900 uppercase tracking-wider">{datasetTitles[ds] || ds}</span>
                                 <span className="flex-1" />
                             </div>
-                            <ul className="flex flex-wrap w-full divide-x divide-neutral-200 -mx-2">
+                            <ul className="flex flex-col w-full -mx-2">
                                 {visibleItems.map((s: any) => (
                                     <li key={s.uuid} className="px-2 py-1">
                                         <div className="text-sm">{s.label}</div>
