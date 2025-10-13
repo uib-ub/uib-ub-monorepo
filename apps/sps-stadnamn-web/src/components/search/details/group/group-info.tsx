@@ -1,10 +1,10 @@
-import ClientThumbnail from "@/components/doc/client-thumbnail";
 import useGroupData from "@/state/hooks/group-data";
 import Carousel from "../../nav/results/carousel";
-import { useMemo, useState, type ReactNode } from "react";
+import { useContext, useMemo, useState, type ReactNode } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { formatHtml } from "@/lib/text-utils";
 import { resultRenderers } from "@/config/result-renderers";
+import { GlobalContext } from "@/state/providers/global-provider";
 
 
 
@@ -26,7 +26,41 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
 
 
 const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
+    const { byYear, byName, } = useMemo(() => {
+        const byYear: Record<string, any[]> = {}
+        const byName: Record<string, any[]> = {}
+
+        Object.entries(datasets).forEach(([dataset, sources]) => {
+            sources.forEach((source) => {
+            if (source?.attestations) {
+                source.attestations.forEach((attestation: any) => {
+                    byYear[attestation.year] = byYear[attestation.year] || []
+                    byYear[attestation.year].push(source)
+                })
+            }
+            if (source?.year) {
+                byYear[source.year] = byYear[source.year] || []
+                byYear[source.year].push(source)
+            }
+            })
+        })
+        return { byYear, byName }
+
+        
+    }, [datasets])
     return <>
+
+
+
+    {Object.keys(datasets).length > 0 && <div className="flex flex-wrap gap-1">{Object.keys(datasets).map((dataset) => (
+        <div className="bg-neutral-100 rounded-full px-2 text-sm" key={dataset + 'dataset'} >
+            {datasetTitles[dataset]}
+        </div>
+    ))}</div>}
+
+    {JSON.stringify(byYear)}
+
+
     FILTRER ETTER DATASETT<br />
     FILTRER ETTER NAMNEFORM<br />
     dynamisk visning: tidslinje øverst, deretter navneformer uten år.
@@ -39,6 +73,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
             {sources.map((source: any) => (
                 <div key={source.uuid + 'source'}>{source.label}</div>
             ))}
+            { }
         </div>
     ))}
     </>
@@ -57,14 +92,13 @@ const TabButton = ({ openTab, setOpenTab, tab, label }: { openTab: string | null
             role="tab"
             aria-selected={isActive}
             tabIndex={isActive ? 0 : -1}
-            className="pb-2 text-sm"
+            className="pb-2 px-3"
             onClick={() => setOpenTab(tab)}
             id={`tab-${tab}`}
             aria-controls={`tabpanel-${tab}`}
             type="button"
         >
-            <span className={`
-                            mx-3 font-semibold border-b-2 transition-colors duration-150 uppercase tracking-wider
+            <span className={`font-semibold border-b-2 transition-colors duration-150 uppercase tracking-wider
                             ${isActive
                     ? 'border-accent-800 text-accent-800'
                     : 'border-transparent text-neutral-800'
@@ -79,11 +113,12 @@ const TabButton = ({ openTab, setOpenTab, tab, label }: { openTab: string | null
 
 
 const TabList = ({ children }: { children: ReactNode }) => {
+    const { isMobile } = useContext(GlobalContext)
     return (
         <div
             role="tablist"
             aria-label="Gruppefaner"
-            className="flex"
+            className={`flex ${isMobile ? 'text-sm' : 'text-xs 2xl:text-sm'}`}
         >
             {children}
         </div>
@@ -95,12 +130,17 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
     const { groupData } = useGroupData(overrideGroupCode)
     const [openTab, setOpenTab] = useState<string | null>(null)
 
-    const { iiifItems, textItems, audioItems, datasets, timelineItems } = useMemo(() => {
+    const { iiifItems, textItems, audioItems, datasets } = useMemo(() => {
         const iiifItems: any[] = []
         const textItems: any[] = []
         const audioItems: any[] = []
         const datasets: Record<string, any[]> = {}
         const timelineItems: any[] = []
+
+        const seenNames = new Set<string>()
+        const uniqueNames: string[] = []
+        
+
 
 
 
@@ -123,7 +163,7 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
             setOpenTab('text')
         }
 
-        return { iiifItems, textItems, audioItems, datasets, timelineItems }
+        return { iiifItems, textItems, audioItems, datasets }
     }, [groupData])
 
 
@@ -142,7 +182,7 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
 
             <div className="w-full">
                 <TabList>
-                    <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="text" label="Tekst" />
+                    <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="text" label="Tekstar" />
                     <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="sources" label="Kjelder" />
                     <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="places" label="Lokalitetar" />
                     
