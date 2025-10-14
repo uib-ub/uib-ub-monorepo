@@ -133,7 +133,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
     }
 
 	return <>
-		{yearsOrdered.length > 1 && <ul className="relative !mx-2 !px-0 p-1">
+		{yearsOrdered.length > 1 && <ul className="relative !mx-2 mt-4 !px-0">
             { yearsOrdered.map((year, idx) => {
 				const isLast = idx === yearsOrdered.length - 1
 				const nameKeys = namesByYear[year] || []
@@ -141,22 +141,22 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
 					<li key={year} className="flex items-center !pb-2 !pt-0 relative w-full">
 						<div className={`bg-primary-300 absolute w-1 left-0 top-1 ${isLast ? 'h-4' : 'h-full'} ${idx === 0 ? 'mt-2' : ''}`}></div>
 						<div className="w-3 h-3 rounded-full bg-primary-500 absolute -left-1 top-2"></div>
-                        <div className="ml-5 flex w-full">
+                        <div className="ml-5 flex w-full items-start">
                             <button
                                 type="button"
                                 onClick={() => { setActiveYear(activeYear === year ? null : year); setActiveName(null) }}
-                                className={`mr-2 my-0 mt-0 font-medium ${activeYear === year ? 'text-primary-700' : 'text-neutral-700'} underline-offset-4 hover:underline text-base`}
+                                className={`mr-2 flex my-0 mt-0 font-medium ${activeYear === year ? 'text-primary-700' : 'text-neutral-700'} underline-offset-4 hover:underline text-base`}
                                 aria-pressed={activeYear === year}
                             >
                                 {year}
                             </button>
-							<ul className="flex gap-0.5">
+                            <ul className="flex flex-col gap-0.5">
                                 {nameKeys.map((nameKey) => (
-                                    <li key={`${year}__${nameKey}`} className="flex w-full">
+                                    <li key={`${year}__${nameKey}`} className="flex w-full py-1 first:pt-0">
                                         <button
                                             type="button"
                                             onClick={() => { setActiveName(activeName === nameKey ? null : nameKey); setActiveYear(null) }}
-                                            className={`text-left flex items-center gap-2 py-1 ${activeName === nameKey ? 'text-primary-700' : ''} hover:underline underline-offset-4`}
+                                            className={`text-left flex items-center gap-2 ${activeName === nameKey ? 'text-primary-700' : ''} hover:underline underline-offset-4`}
                                             aria-pressed={activeName === nameKey}
                                         >
                                             <span className="font-medium">{nameKey}</span>
@@ -330,7 +330,7 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
 
 
     return (
-        <div className="w-full flex flex-col gap-4 my-2 pb-8">
+        <div className="w-full flex flex-col gap-2 my-2 pb-8">
             {
                 audioItems?.map((audioItem) => (
                     <div key={audioItem.uuid + 'audio'}>{JSON.stringify(audioItem)}</div>
@@ -351,7 +351,6 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
                     
                 </TabList>
 
-                <div>
 
                     <div role="tabpanel" className="px-3" id={`tabpanel-${openTab}`} aria-labelledby={`tab-${openTab}`}>
                         {openTab === 'text' && <TextTab textItems={textItems} />}
@@ -359,7 +358,7 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
                         {openTab === 'locations' && <LocationsTab locations={[]} />}
                     </div>
 
-                </div>
+
             </div>
 
 
