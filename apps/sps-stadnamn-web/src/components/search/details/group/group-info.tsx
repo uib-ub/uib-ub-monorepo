@@ -133,8 +133,8 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
     }
 
 	return <>
-		<ul className="relative !mx-2 !px-0 p-1">
-            {yearsOrdered.map((year, idx) => {
+		{yearsOrdered.length > 1 && <ul className="relative !mx-2 !px-0 p-1">
+            { yearsOrdered.map((year, idx) => {
 				const isLast = idx === yearsOrdered.length - 1
 				const nameKeys = namesByYear[year] || []
 				return (
@@ -168,7 +168,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
 					</li>
 				)
 			})}
-		</ul>
+		</ul>}
 
 		{namesWithoutYear.length > 0 && (
 			<div className="px-2">
