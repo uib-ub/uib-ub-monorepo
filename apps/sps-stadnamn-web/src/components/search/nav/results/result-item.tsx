@@ -108,7 +108,7 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
                     {isGrunnord && (
                         <h2 className="inline-flex items-center gap-x-2">
                             {!perspectiveIsGrunnord && (
-                                <span className="text-neutral-800 group-aria-expanded:text-white">
+                                <span className="text-neutral-800">
                                     Grunnord:
                                 </span>
                             )}
