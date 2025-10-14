@@ -96,7 +96,7 @@ route.openapi(getGroup, async (c) => {
 
       const framed = await useFrame({ data, context: ubbontContext as ContextDefinition, type: 'Group', id: url });
       (framed as JsonLdObj)['@context'] = ["https://api.ub.uib.no/ns/ubbont/context.json"];
-      return c.json(reorderDocument(framed as Document, desiredOrder) as z.infer<typeof GroupSchema>);
+      return c.json(reorderDocument(framed, desiredOrder) as z.infer<typeof GroupSchema>);
     } catch (error) {
       return c.json({ error: true, message: `Error fetching item ${id}: ${error instanceof Error ? error.message : 'Unknown error'}` }, 404)
     }
@@ -120,7 +120,7 @@ route.openapi(getGroup, async (c) => {
 
     const itemWithNewId = {
       ...item,
-      id: `${env.PROD_URL}/items/${item.id}`
+      id: `${env.API_BASE_URL}/items/${item.id}`
     }
 
     return c.json(reorderDocument(itemWithNewId, desiredOrder));
