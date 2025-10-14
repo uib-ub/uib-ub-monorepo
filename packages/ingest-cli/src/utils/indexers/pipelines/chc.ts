@@ -1,7 +1,7 @@
 export const chc = {
-  id: "chc",
+  id: "chc-pipeline",
   version: 1,
-  description: "Marcus-next pipeline",
+  description: "Cultural Heritage Collections pipeline",
   /* processors: [
     {
       script: {

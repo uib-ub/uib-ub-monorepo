@@ -10,6 +10,7 @@ import { env } from './env'
 import item from './routes/items/item.route'
 import items from './routes/items/items.route'
 import person from './routes/person/person.route'
+import set from './routes/sets/set.route'
 import group from './routes/group/group.route'
 import ns from './routes/ns.route'
 import reference from './routes/references.route'
@@ -33,14 +34,21 @@ app.get('/', (c) => {
     : new URL(c.req.url).origin.replace('http', 'https') // TODO: On vercel we get http, but we want https.
 
   return c.json({
-    reference_url: `${url}/reference`,
-    openapi_url: `${url}/openapi`,
+    id: url,
+    title: 'UiB-UB CHC API',
+    description: 'The API for the UNiversity of Bergen Library Cultural Heritage Collections applications.',
+    version: env.API_VERSION,
+    links: {
+      reference_url: `${url}/reference`,
+      openapi_url: `${url}/openapi`,
+    }
   })
 })
 
 app.route('/items', items)
 app.route('/items', item)
 app.route('/person', person)
+app.route('/sets', set)
 app.route('/group', group)
 // The reference route is the OpenAPI documentation UI.
 app.route('/reference', reference)
@@ -54,12 +62,12 @@ app.doc31('/openapi', c => ({
   info: {
     version: '0.0.1',
     title: 'UiB-UB API',
-    summary: 'The API for the UiB-UB applications.',
-    description: `The API is currently in development, and is subject to change. The API is based on the [Hono](//hono.dev) framework.`,
-    termsOfService: 'https://docs-ub.vercel.app/terms/',
+    summary: 'The API for the University of Bergen Library Cultural Heritage Collections applications.',
+    description: `The API is currently in development, and is subject to change.`,
+    termsOfService: `${env.API_DOCUMENTATION_URL}/terms`,
     contact: {
       name: 'API Support',
-      url: 'https://docs-ub.vercel.app/support',
+      url: `${env.API_DOCUMENTATION_URL}/support`,
       email: 'support@uib.no'
     },
   },
@@ -77,7 +85,7 @@ app.get('/ns/ontology/ubbont.owl', serveStatic({ path: './static/ontology/ubbont
 showRoutes(app)
 
 // Start the server on port 3009.
-const port = env.PORT
+const port = env.API_DEVELOPMENT_PORT
 
 export default {
   port,

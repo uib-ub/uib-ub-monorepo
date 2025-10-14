@@ -1,4 +1,5 @@
 import { TypeOf, z } from 'zod';
+import { version } from '../package.json';
 
 export const withDevDefault = <T extends z.ZodTypeAny>(
   schema: T,
@@ -6,14 +7,13 @@ export const withDevDefault = <T extends z.ZodTypeAny>(
 ) => (process.env["NODE_ENV"] !== "production" ? schema.default(val) : schema);
 
 const schema = z.object({
-  PROD_URL: z.string().url(),
-  API_URL: withDevDefault(z.string().url(), 'http://localhost'),
-  PORT: withDevDefault(z.string(), '3009').transform(Number),
-  ES_HOST: z.string().url(),
-  ES_APIKEY: z.string(),
-  API_ES_WRITE_TOKEN: z.string(),
-  OBSERVE_ES_HOST: z.string().url(),
-  OBSERVE_ES_APIKEY: z.string(),
+  API_BASE_URL: withDevDefault(z.url(), 'http://localhost:3009'),
+  API_DEVELOPMENT_PORT: withDevDefault(z.string(), '3009').transform(Number),
+  API_BASE_PATH: z.string().optional(),
+  API_SEARCH_HOST: z.url(),
+  API_SEARCH_API_KEY: z.string(),
+  API_OBSERVE_HOST: z.url(),
+  API_OBSERVE_API_KEY: z.string(),
 });
 
 const parsed = schema.safeParse(process.env);
@@ -21,9 +21,14 @@ const parsed = schema.safeParse(process.env);
 if (parsed.success === false) {
   console.error(
     "❌ Invalid environment variables:",
-    JSON.stringify(parsed.error.format(), null, 4)
+    JSON.stringify(z.treeifyError(parsed.error), null, 4)
   );
   throw new Error("Invalid environment variables");
 }
 
-export const env = parsed.data;
+const API_DOCUMENTATION_URL = "https://docs-ub.vercel.app";
+export const env = {
+  ...parsed.data,
+  API_VERSION: `${version}-beta`,
+  API_DOCUMENTATION_URL
+};

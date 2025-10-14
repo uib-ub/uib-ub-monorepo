@@ -58,7 +58,7 @@
       <Column
         sortable
         field="labelsLen"
-        header="Navner"
+        header="Navn"
       >
         <template #body="{ data }">
           <Icon
@@ -115,8 +115,8 @@
     </DataTable>
     <UtilsTableLegend>
       <UtilsTableLegendEntry
-        legend-key="Navner"
-        legend-value="En advarsel betyr at mindre enn tre navner er definert."
+        legend-key="Navn"
+        legend-value="En advarsel betyr at mindre enn tre navn er definert."
       />
       <UtilsTableLegendEntry
         legend-key="Begreper"
