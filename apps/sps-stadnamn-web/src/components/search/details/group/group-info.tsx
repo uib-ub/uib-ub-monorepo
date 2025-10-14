@@ -4,7 +4,8 @@ import { useMemo, useState, type ReactNode } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { formatHtml } from "@/lib/text-utils";
 import { resultRenderers } from "@/config/result-renderers";
-import { PiInfo, PiMinusBold, PiPlusBold, PiQuestionFill, PiWarning, PiXCircle } from "react-icons/pi";
+import { PiInfo, PiMinusBold, PiPlusBold, PiQuestionFill, PiXCircle } from "react-icons/pi";
+import WarningMessage from "./warning-message";
 
 
 // Collapses long HTML to a few lines with a toggle
@@ -37,7 +38,7 @@ const ExpandableHtml = (
             {isLong && (
                 <button
                     type="button"
-                    className="text-sm py-2 mb-2 mr-2 flex items-center gap-1"
+                    className="text-sm mt-2 mb-4 mr-2 flex items-center gap-1"
                     aria-expanded={expanded}
                     onClick={() => setExpanded(!expanded)}
                 >
@@ -62,6 +63,12 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
                 const links = resultRenderers[textItem.dataset]?.links?.(textItem);
                 return (
                     <div className="py-2" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
+                        {textItem.dataset === 'rygh' && (
+                            <WarningMessage 
+                                message="Feil i digitaliseringa av Norske Gaardnavne gjer at nokon teikn ikkje stemmer med originalen, særleg i lydskrift. Sjå trykt utgåve på nb.no"
+                                messageId="rygh-phonetic-warning"
+                            />
+                        )}
                         <ExpandableHtml
                             leading={<><strong>{datasetTitles[textItem.dataset]}</strong> | </>}
                             html={(textItem.content.html ? textItem.content.html.replace(/<\/?p>/g, '') : textItem.content.html) || ''}
@@ -73,7 +80,7 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
             {textItems.length > 1 && (
                 <button
                     type="button"
-                    className="py-1 mr-2 flex items-center gap-1"
+                    className="my-3 mr-2 flex items-center gap-1"
                     aria-expanded={showAll}
                     aria-controls={`text-items-${textItems.length}`}
                     onClick={() => setShowAll(v => !v)}
@@ -191,14 +198,16 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
             </h2>
             <div id="timeline-description" className={showTimelineDescription ? 'block' : 'hidden'}>
                 <p>
-                    Tidleagaste førekomst av namneformane, anten det er kjeldeform eller oppskrivingsår. Trykk på år eller namn for å filtrere kjeldene.
+                    Tidslinja viser tidligaste førekomst av namneformane, enten det er kjeldeform eller oppskrivingsår. Trykk på år eller namn for å filtrere kjeldene.
                 </p>
-                {itemsByDataset['rygh']?.find((s: any) => s.attestations && s.attestations.length > 0) && (
-                    <p className="text-sm mb-3 mt-1 text-neutral-800">
-                        <PiWarning className="inline text-primary-600 text-sm mr-1" aria-hidden="true"/> Det førekjem feil i namneformer henta ut frå teksten i Norske Gaardnavne. Sjå trykt utgåve på nb.no
-                    </p>
-                )}
+                
             </div>
+            {itemsByDataset['rygh']?.find((s: any) => s.attestations && s.attestations.length > 0) && (
+                <WarningMessage 
+                    message="Feil i digitaliseringa av Norske Gaardnavne gjer at namneformene ikkje naudsynlegvis stemmer med originalen"
+                    messageId="rygh-namnform-warning"
+                />
+            )}
         <ul className="relative mt-2 px-2">
            
             { yearsOrdered.map((year, idx) => {
@@ -288,10 +297,10 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                                     <li className="px-2 py-1">
                                         <button
                                             type="button"
-                                            className="text-sm underline underline-offset-4"
+                                            className="text-sm text-neutral-800 flex items-center gap-1"
                                             onClick={() => toggleShowMore(ds, true)}
                                         >
-                                            {`Vis fleire (${items.length - visibleItems.length})`}
+                                            <PiPlusBold aria-hidden="true" /> {`Vis fleire (${items.length - visibleItems.length})`}
                                         </button>
                                     </li>
                                 )}
@@ -299,10 +308,10 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                                     <li className="px-2 py-1">
                                         <button
                                             type="button"
-                                            className="text-sm underline underline-offset-4"
+                                            className="text-sm text-neutral-800 flex items-center gap-1"
                                             onClick={() => toggleShowMore(ds, false)}
                                         >
-                                            Vis færre
+                                            <PiMinusBold aria-hidden="true" /> Vis færre
                                         </button>
                                     </li>
                                 )}
@@ -369,6 +378,7 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
         const iiifItems: any[] = []
         const textItems: any[] = []
         const audioItems: any[] = []
+        const seenEnhetsid = new Set<string>()
         const datasets: Record<string, any[]> = {}
         
         groupData?.sources?.forEach((source: any) => {
@@ -376,6 +386,7 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
                 iiifItems.push(source)
             }
             if (source.content?.html) {
+
                 textItems.push(source)
             }
             if (source.recordings) {
@@ -410,7 +421,7 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
             <div className="w-full">
                 <TabList>
                     {textItems.length > 0 && (
-                        <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="text" label="Tolking" />
+                        <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="text" label="Tolkingar" />
                     )}
                     <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="sources" label="Kjelder" />
                     <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="places" label="Lokalitetar" />

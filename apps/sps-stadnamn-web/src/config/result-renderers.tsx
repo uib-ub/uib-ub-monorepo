@@ -1,6 +1,8 @@
 import { getFieldValue } from "@/lib/utils";
 import { formatHighlight, createMarkup } from "@/lib/text-utils";
 import Link from "next/link";
+import SourceLink from "@/components/search/details/group/source-link";
+import { Fragment } from "react";
 
 interface Renderer {
   fields?: string[];
@@ -142,13 +144,8 @@ export const resultRenderers: ResultRenderers = {
     },
     links: (hit: any) => {
       return <>
-      {hit.links?.map((link: any) => {
-        let hostname = new URL(link).hostname
-        hostname = hostname.replace(/^www\./, '');
-        return (
-          <Link className="bg-neutral-200 px-1 rounded-md override-external-icon mx-1 no-underline" key={link} href={link}>{hostname}</Link>
-        )
-      })}
+      {hit.links?.map((link: any) => <Fragment key={link}><SourceLink   key={link} url={link} />
+      </Fragment>)}
       </>
     },
     details: (hit: any, display: string) => {

@@ -1,5 +1,5 @@
+import sanitizeHtml from 'sanitize-html';
 import parse from 'html-react-parser';
-import DOMPurify from 'isomorphic-dompurify';
 
 // Deprecated
 export const createMarkup = (htmlString: string) => {
@@ -9,10 +9,17 @@ export const createMarkup = (htmlString: string) => {
 
 
   export const formatHtml = (htmlString: string) => {
-    const decoded = htmlString //.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-    const sanitized = DOMPurify.sanitize(decoded);
-    return parse(sanitized);
+
+    const sanitized = sanitizeHtml(htmlString,
+      {
+        allowedTags: ['b', 'i', 'em', "strong", "p", "br", "span", "a", "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6"],
+        allowedAttributes: {
+          a: ['href'],
+        },
+      }
+    );
     
+    return parse(sanitized);
 }
   
 export const formatHighlight = (highlight: string) => {
@@ -37,7 +44,14 @@ export const formatHighlight = (highlight: string) => {
       cleanHighlight += `</${openTags.pop()}>`;
     }
 
-    const sanitized = DOMPurify.sanitize(cleanHighlight);
+    const sanitized = sanitizeHtml(cleanHighlight,
+      {
+        allowedTags: ['b', 'i', 'em', "strong", "p", "br", "span", "a", "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6"],
+        allowedAttributes: {
+          a: ['href'],
+        },
+      }
+    );
     return parse(sanitized);
       
 

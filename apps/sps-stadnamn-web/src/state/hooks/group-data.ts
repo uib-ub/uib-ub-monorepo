@@ -49,7 +49,7 @@ export default function useGroupData(overrideGroupCode?: string | null) {
         queryKey: ['group', groupCode, searchQueryString],
         queryFn: async () =>
             groupCode ? groupDataQuery(groupCode, datasets, datasetTags) : null,
-        placeholderData: (overrideGroupCode || initCode == groupCode) ? undefined : (prevData) => prevData,
+        placeholderData: (overrideGroupCode || initCode == groupCode) ? undefined : (prevData: any) => prevData,
         // Transform data and expose only when ready
     })
 

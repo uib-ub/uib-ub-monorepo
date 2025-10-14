@@ -80,7 +80,7 @@ export default function SearchResults() {
             <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 10, 16)}rem`}}></div>
           </div>
         )) :       
-      collapsedData?.pages.map((page, pageIndex) => (
+      collapsedData?.pages.map((page: any, pageIndex: number) => (
     <Fragment key={`page-${pageIndex}`}>
     {page.data?.map((item: any) => {
       if (initValue && item.fields["group.id"]?.[0] == initValue) return null;
