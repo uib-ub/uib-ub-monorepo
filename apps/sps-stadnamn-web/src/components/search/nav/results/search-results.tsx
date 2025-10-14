@@ -108,6 +108,7 @@ export default function SearchResults() {
               flex items-center gap-2
               btn-outline btn
               justify-center
+              text-xl
 
               px-4 py-2 rounded-full xl:rounded-md
               w-full mx-3
