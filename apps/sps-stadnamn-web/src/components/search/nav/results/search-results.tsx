@@ -55,7 +55,7 @@ export default function SearchResults() {
     (!collapsedData?.pages || collapsedData.pages.length === 0 || collapsedData.pages[0].data?.length === 0);
 
   return (
-    <div ref={resultsContainerRef}>
+    <div ref={resultsContainerRef} className="mb-10 xl:mb-0">
       {init && (initGroupLoading ? (
         <div className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-200">
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `10rem`}}></div>

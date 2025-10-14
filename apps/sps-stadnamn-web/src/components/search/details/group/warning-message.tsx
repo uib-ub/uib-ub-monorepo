@@ -18,15 +18,15 @@ export default function WarningMessage({
     
     return (
         <div className="mb-3 mt-1 text-primary-900 bg-primary-50 p-1 px-2 rounded-md relative">
-            <PiWarning className="inline text-primary-800 mr-1" aria-hidden="true" />
-            {message}
+            
+            <div className="max-w-[calc(100%-2rem)]"><PiWarning className="inline text-primary-800 mr-1" aria-hidden="true" />{message}</div>
             <button 
                 type="button" 
                 className="absolute top-1 right-1"
                 onClick={() => dismissMessage(messageId)}
                 aria-label="Lukk advarsel"
             >
-                <PiX className="text-primary-900 text-lg mr-0.5 align-middle transition-transform" />
+                <PiX className="text-primary-900 text-2xl align-middle transition-transform" aria-hidden="true"/>
             </button>
         </div>
     );
