@@ -204,7 +204,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
             </div>
             {itemsByDataset['rygh']?.find((s: any) => s.attestations && s.attestations.length > 0) && (
                 <WarningMessage 
-                    message="Feil i digitaliseringa av Norske Gaardnavne gjer at namneformene ikkje naudsynlegvis stemmer med originalen"
+                    message="Uregelmessigheiter i digitaliseringa av Norske Gaardnavne gjer at det kan førekomme ord i tidslinja som ikkje er namneformer. Sjå teksten dei er basert på under «Tolkingar»."
                     messageId="rygh-namnform-warning"
                 />
             )}
