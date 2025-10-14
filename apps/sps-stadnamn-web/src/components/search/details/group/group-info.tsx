@@ -7,6 +7,35 @@ import { resultRenderers } from "@/config/result-renderers";
 import { GlobalContext } from "@/state/providers/global-provider";
 
 
+// Collapses long HTML to a few lines with a toggle
+const ExpandableHtml = ({ html, clampLines = 4 }: { html: string, clampLines?: number }) => {
+    const [expanded, setExpanded] = useState(false)
+    const plain = typeof html === 'string' ? html.replace(/<[^>]*>/g, '') : ''
+    const isLong = (plain || '').length > 300
+    const clampStyle = expanded || !isLong ? {} : {
+        display: '-webkit-box',
+        WebkitLineClamp: String(clampLines),
+        WebkitBoxOrient: 'vertical' as any,
+        overflow: 'hidden'
+    }
+    return (
+        <>
+            <span style={clampStyle}>{formatHtml(html)}</span>
+            {isLong && (
+                <button
+                    type="button"
+                    className="text-sm underline underline-offset-4 py-1 ml-2"
+                    aria-expanded={expanded}
+                    onClick={() => setExpanded(!expanded)}
+                >
+                    {expanded ? 'Vis mindre' : 'Vis heile'}
+                </button>
+            )}
+        </>
+    )
+}
+
+
 const TextTab = ({ textItems }: { textItems: any[] }) => {
     const [showAll, setShowAll] = useState(false);
 
@@ -20,11 +49,7 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
                 const links = resultRenderers[textItem.dataset]?.links?.(textItem);
                 return (
                     <div className="py-2" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
-                        <strong>{datasetTitles[textItem.dataset]}</strong> | {formatHtml(
-                            textItem.content.html
-                                ? textItem.content.html.replace(/<\/?p>/g, '')
-                                : textItem.content.html
-                        )}
+                        <strong>{datasetTitles[textItem.dataset]}</strong> | <ExpandableHtml html={(textItem.content.html ? textItem.content.html.replace(/<\/?p>/g, '') : textItem.content.html) || ''} />
                         {links}
                     </div>
                 );
