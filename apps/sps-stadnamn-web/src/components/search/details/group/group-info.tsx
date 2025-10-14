@@ -1,14 +1,16 @@
 import useGroupData from "@/state/hooks/group-data";
 import Carousel from "../../nav/results/carousel";
-import { useContext, useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { formatHtml } from "@/lib/text-utils";
 import { resultRenderers } from "@/config/result-renderers";
-import { GlobalContext } from "@/state/providers/global-provider";
+import { PiInfo, PiMinusBold, PiPlusBold, PiQuestionFill, PiWarning, PiXCircle } from "react-icons/pi";
 
 
 // Collapses long HTML to a few lines with a toggle
-const ExpandableHtml = ({ html, clampLines = 4 }: { html: string, clampLines?: number }) => {
+const ExpandableHtml = (
+    { html, clampLines = 4, leading }: { html: string, clampLines?: number, leading?: ReactNode }
+) => {
     const [expanded, setExpanded] = useState(false)
     const plain = typeof html === 'string' ? html.replace(/<[^>]*>/g, '') : ''
     const isLong = (plain || '').length > 300
@@ -20,15 +22,26 @@ const ExpandableHtml = ({ html, clampLines = 4 }: { html: string, clampLines?: n
     }
     return (
         <>
-            <span style={clampStyle}>{formatHtml(html)}</span>
+            <span style={clampStyle}>
+                {leading}
+                {
+                    (() => {
+                        // Remove <p> tags
+                        let htmlNoP = html.replace(/<\/?p>/g, '');
+                        // Remove a single wrapping tag (e.g., <div>...</div> or <span>...</span>)
+                        htmlNoP = htmlNoP.trim().replace(/^<([a-zA-Z0-9]+)[^>]*>([\s\S]*)<\/\1>$/i, '$2');
+                        return formatHtml(expanded ? html : htmlNoP);
+                    })()
+                }
+            </span>
             {isLong && (
                 <button
                     type="button"
-                    className="text-sm underline underline-offset-4 py-1 ml-2"
+                    className="text-sm py-2 mb-2 mr-2 flex items-center gap-1"
                     aria-expanded={expanded}
                     onClick={() => setExpanded(!expanded)}
                 >
-                    {expanded ? 'Vis mindre' : 'Vis heile'}
+                    {expanded ? <><PiMinusBold aria-hidden="true" /> Vis mindre</> : <><PiPlusBold aria-hidden="true" /> Vis heile</>}
                 </button>
             )}
         </>
@@ -49,7 +62,10 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
                 const links = resultRenderers[textItem.dataset]?.links?.(textItem);
                 return (
                     <div className="py-2" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
-                        <strong>{datasetTitles[textItem.dataset]}</strong> | <ExpandableHtml html={(textItem.content.html ? textItem.content.html.replace(/<\/?p>/g, '') : textItem.content.html) || ''} />
+                        <ExpandableHtml
+                            leading={<><strong>{datasetTitles[textItem.dataset]}</strong> | </>}
+                            html={(textItem.content.html ? textItem.content.html.replace(/<\/?p>/g, '') : textItem.content.html) || ''}
+                        />
                         {links}
                     </div>
                 );
@@ -57,12 +73,12 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
             {textItems.length > 1 && (
                 <button
                     type="button"
-                    className="text-sm underline underline-offset-4 py-1"
+                    className="py-1 mr-2 flex items-center gap-1"
                     aria-expanded={showAll}
                     aria-controls={`text-items-${textItems.length}`}
                     onClick={() => setShowAll(v => !v)}
                 >
-                    {showAll ? `Vis færre tolkingar` : `Vis fleire tolkingar (${textItems.length - 1})`}
+                    {showAll ? <><PiMinusBold aria-hidden="true" /> Vis færre tolkingar</> : <><PiPlusBold aria-hidden="true" /> Vis fleire tolkingar ({textItems.length - 1})</>}
                 </button>
             )}
         </>
@@ -74,6 +90,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
     const [showMoreDatasets, setShowMoreDatasets] = useState<Record<string, boolean>>({})
     const [activeYear, setActiveYear] = useState<string | null>(null)
     const [activeName, setActiveName] = useState<string | null>(null)
+    const [showTimelineDescription, setShowTimelineDescription] = useState(false)
 
 	const { yearsOrdered, namesByYear, namesWithoutYear, nameCounts, itemsByDataset } = useMemo(() => {
 		// 1) Empty structures
@@ -158,7 +175,32 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
     }
 
 	return <>
-		{yearsOrdered.length > 1 && <ul className="relative !mx-2 mt-4 !px-0">
+		{yearsOrdered.length > 1 && <>
+            <h2 className="font-semibold flex items-center text-neutral-800 mt-3 mb-3">
+                Tidslinje
+                <button
+                    type="button"
+                    className="ml-1 text-sm underline underline-offset-4 flex items-center"
+                    aria-expanded={showTimelineDescription}
+                    aria-controls="timeline-description"
+                    onClick={() => setShowTimelineDescription(!showTimelineDescription)}
+                    aria-label={showTimelineDescription ? "Lukk tidslinje-informasjon" : "Vis tidslinje-informasjon"}
+                >
+                    {showTimelineDescription ? <PiXCircle className="text-primary-700 text-lg mr-0.5 align-middle transition-transform" /> : <PiQuestionFill className={`text-primary-700 text-lg mr-0.5 align-middle transition-transform`} />}
+                </button>
+            </h2>
+            <div id="timeline-description" className={showTimelineDescription ? 'block' : 'hidden'}>
+                <p>
+                    Tidleagaste førekomst av namneformane, anten det er kjeldeform eller oppskrivingsår. Trykk på år eller namn for å filtrere kjeldene.
+                </p>
+                {itemsByDataset['rygh']?.find((s: any) => s.attestations && s.attestations.length > 0) && (
+                    <p className="text-sm mb-3 mt-1 text-neutral-800">
+                        <PiWarning className="inline text-primary-600 text-sm mr-1" aria-hidden="true"/> Det førekjem feil i namneformer henta ut frå teksten i Norske Gaardnavne. Sjå trykt utgåve på nb.no
+                    </p>
+                )}
+            </div>
+        <ul className="relative mt-2 px-2">
+           
             { yearsOrdered.map((year, idx) => {
 				const isLast = idx === yearsOrdered.length - 1
 				const nameKeys = namesByYear[year] || []
@@ -193,7 +235,8 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
 					</li>
 				)
 			})}
-		</ul>}
+		</ul>
+        </>}
 
 		{namesWithoutYear.length > 0 && (
 			<div className="px-2">
@@ -233,13 +276,12 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                     return (
                         <li key={`ds-${ds}`} className="flex flex-col w-full py-1">
                             <div className="text-left flex items-center gap-3 py-2">
-                                <span className="font-medium text-sm text-neutral-900 uppercase tracking-wider">{datasetTitles[ds] || ds}</span>
-                                <span className="flex-1" />
+                                <span className="text-neutral-900 uppercase tracking-wider">{datasetTitles[ds] || ds}</span>
                             </div>
                             <ul className="flex flex-col w-full -mx-2">
                                 {visibleItems.map((s: any) => (
                                     <li key={s.uuid} className="px-2 py-1">
-                                        <div className="text-sm">{s.label}</div>
+                                        {s.label}
                                     </li>
                                 ))}
                                 {!autoShowAll && shouldCollapse && !isExpanded && (
@@ -307,12 +349,11 @@ const TabButton = ({ openTab, setOpenTab, tab, label }: { openTab: string | null
 
 
 const TabList = ({ children }: { children: ReactNode }) => {
-    const { isMobile } = useContext(GlobalContext)
     return (
         <div
             role="tablist"
             aria-label="Gruppefaner"
-            className={`flex ${isMobile ? 'text-sm' : 'text-xs 2xl:text-sm'}`}
+            className={`flex`}
         >
             {children}
         </div>

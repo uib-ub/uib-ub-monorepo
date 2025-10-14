@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Menu from "./menu";
+import BackToSearch from "./back-to-search";
 
 
 export default function Header({name, route}: {name?: string, route?: string}) {
@@ -14,6 +15,8 @@ export default function Header({name, route}: {name?: string, route?: string}) {
                     {route ? <Link href={route} className="text-lg truncate no-underline">{name}</Link> : <span className="text-lg truncate">{name}</span>}
                 </>
             )}
+            <BackToSearch/>
+
         </header>
     )
 }

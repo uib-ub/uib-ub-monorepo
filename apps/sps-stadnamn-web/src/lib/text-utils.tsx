@@ -1,8 +1,9 @@
 import parse from 'html-react-parser';
 import DOMPurify from 'isomorphic-dompurify';
 
+// Deprecated
 export const createMarkup = (htmlString: string) => {
-    const decodedHtmlString = "HER" + htmlString.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+    const decodedHtmlString = htmlString.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
     return {__html: decodedHtmlString};
   }
 

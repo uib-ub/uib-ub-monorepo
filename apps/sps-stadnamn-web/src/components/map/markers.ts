@@ -87,7 +87,7 @@ export function getLabelMarkerIcon(label: string, color: string, docCount?: numb
         <div class="map-marker group" style="display: flex; align-items: center; justify-content: center; position: relative; height: 2rem;">
           <div class="absolute -top-6 left-1/2 -translate-x-1/2">
             <div class="flex flex-col items-center">
-              <div class="flex items-center ${color == 'white' ? 'text-black' : 'text-white'} tracking-wide bg-opacity-40 whitespace-nowrap rounded-md text-center text-sm py-0.5 px-1.5 shadow-lg" style="background-color: ${color == 'accent' ? colorValue : `${colorValue}b3`}; border-color: ${colorValue}b3;">
+              <div class="flex items-center ${color == 'white' ? 'text-black' : 'text-white'} tracking-wide whitespace-nowrap rounded-md text-center text-sm py-0.5 px-1.5 shadow-lg" style="background-color: ${color == 'accent' ? colorValue : `${colorValue}e6`}; border-color: ${colorValue}e6;">
                 <div class="max-w-32 min-w-0 block truncate">${label}</div>
                 ${docCount ? `<span class="ml-1 text-xs bg-neutral-100  flex items-center py-0 my-0.5 text-neutral-950 rounded-full px-1 text-center font-normal">+${docCount}</span>` : ''}
               </div>

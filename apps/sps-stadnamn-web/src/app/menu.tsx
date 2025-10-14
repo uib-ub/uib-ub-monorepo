@@ -77,10 +77,6 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
             </div>
                 
 				<div className="flex flex-col gap-2 p-3 w-full ">
-                { pathname !== '/' && pathname != '/search' && currentUrl.current && 
-                <div className="flex items-center justify-center py-4 border-b border-neutral-200 gap-2 no-underline text-xl "><Link href={currentUrl.current} className="flex items-center gap-2 no-underline text-xl"><PiCaretLeft className="text-2xl"/>Tilbake til søket</Link>
-                </div>
-                }
                         <h1 className="text-lg">Stadnamnsøk</h1>		
 					<div className="flex gap-2 items-center w-full pb-3 text-base" role="tablist">
 					

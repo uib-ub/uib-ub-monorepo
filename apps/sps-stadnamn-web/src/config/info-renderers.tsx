@@ -68,7 +68,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     */ 
     return <>
     {source.content?.html && <div className="inline-flex flex-col gap-4 inner-slate">
-      <div className='border-b border-neutral-200 p-4'><Link href="https://urn.nb.no/URN:NBN:no-nb_digibok_2008121704022" className='whitespace-nowrap inline'>Norsk stadnamnleksikon 1997</Link></div>
+      <div className='border-b border-neutral-200 p-4'><Link href="https://urn.nb.no/URN:NBN:no-nb_digibok_2008121704022" className='whitespace-nowrap inline'>norskstadnamnleksikon.no</Link></div>
     <div className='space-y-2 inline px-4 pb-4'>{parse(source.content.html.replace("/view/leks/doc/", "/search?dataset=leks&doc="))}</div>
 
     </div>

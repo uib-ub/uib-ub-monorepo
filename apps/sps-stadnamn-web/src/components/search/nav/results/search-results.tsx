@@ -71,7 +71,7 @@ export default function SearchResults() {
         </li>
       ))}
 
-      <ul id="result_list" className='flex flex-col mb-2 divide-y divide-neutral-200 border-t border-neutral-200'>
+      <ul id="result_list" className='flex flex-col mb-12 xl:mb-2 divide-y divide-neutral-200 border-y border-neutral-200'>
       
 
       {(initGroupLoading || collapsedLoading && collapsedInitialPage === 1) ? Array.from({ length: 30 }).map((_, i) => (
