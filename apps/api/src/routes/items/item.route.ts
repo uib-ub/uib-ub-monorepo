@@ -132,7 +132,7 @@ route.openapi(getItem, async (c) => {
     // Rewrite _id to use the id from the URL parameter
     const itemWithNewId = {
       ...item,
-      id: `${env.PROD_URL}/items/${String(item.id)}`
+      id: `${env.API_BASE_URL}/items/${String(item.id)}`
     }
 
     return c.json(reorderDocument(itemWithNewId, desiredOrder))
