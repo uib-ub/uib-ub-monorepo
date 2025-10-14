@@ -1,4 +1,4 @@
-import { crmE55TypeSchema, crmE74GroupSchema, crmE7ActivitySchema, crmP104IIsSubjectToSchema, crmP7TookPlaceAtSchema, e21PersonSchema } from 'src/la/zod/linked_art';
+import { crmE55TypeSchema, crmE74GroupSchema, crmE7ActivitySchema, crmP104IIsSubjectToSchema, crmP7TookPlaceAtSchema, e21PersonSchema } from '@/la/zod/linked_art';
 import { z } from "@hono/zod-openapi";
 
 export const langLabelSchema = z.record(z.string(), z.array(z.string()));

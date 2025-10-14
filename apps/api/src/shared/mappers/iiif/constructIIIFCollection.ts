@@ -1,5 +1,7 @@
 // Converts a Linked Art "Set" object to a minimal IIIF Presentation 3 Collection object
 
+import { env } from '@env';
+
 type LanguageMap = { [lang: string]: string[] };
 
 interface IIIFCollection {
@@ -58,8 +60,8 @@ function mapItemToIIIFManifest(item: any): IIIFManifest {
 
   // Generate URL and type based on item type
   const baseUrl = item.type === 'HumanMadeObject'
-    ? `https://api.ub.uib.no/items/${item.id}?as=iiif`
-    : `https://api.ub.uib.no/sets/${item.id}?as=iiif`;
+    ? `${env.API_BASE_URL}/items/${item.id}?as=iiif`
+    : `${env.API_BASE_URL}/sets/${item.id}?as=iiif`;
 
   const itemType = item.type === 'HumanMadeObject' ? 'Manifest' : 'Collection';
 
@@ -121,8 +123,8 @@ export function constructIIIFCollection(set: any): IIIFCollection {
 
   // Generate URL based on type
   const baseUrl = set.type === 'HumanMadeObject'
-    ? `https://api.ub.uib.no/items/${set.id}`
-    : `https://api.ub.uib.no/sets/${set.id}`;
+    ? `${env.API_BASE_URL}/items/${set.id}`
+    : `${env.API_BASE_URL}/sets/${set.id}`;
 
   // Compose IIIF Collection object
   const iiif: IIIFCollection = {

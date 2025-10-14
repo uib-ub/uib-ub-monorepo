@@ -1,19 +1,21 @@
 import client from '@shared/clients/es-client'
 import { env } from '@env'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
-import { FailureSchema, TODO } from '@shared/models'
+import { FailureSchema } from '@shared/models'
 import { normalizeJsonLdToArray, reorderDocument, sqb, useFrame } from 'utils'
 import ubbontContext from 'jsonld-contexts/src/ubbontContext'
 import { ContextDefinition } from 'jsonld'
 import { endpointUrl } from '@shared/clients/sparql-chc-client'
 import { setQuery } from './set-query'
 import { constructIIIFCollection } from '@shared/mappers/iiif/constructIIIFCollection'
+import { SearchHit, SearchResponseBody } from '@elastic/elasticsearch/lib/api/types'
+import { JsonLdObj } from 'jsonld/jsonld-spec'
 
 const route = new OpenAPIHono()
 
 const desiredOrder: string[] = ['@context', 'id', 'type', '_label', '_available', '_modified', 'identified_by']
 
-const SetSchema = z.record(z.string()).openapi('Set')
+const SetSchema = z.any().openapi('Set')
 
 export const SetParamsSchema = z.object({
   as: z
@@ -88,26 +90,27 @@ route.openapi(getSet, async (c) => {
 
       const normalizedData = normalizeJsonLdToArray(data)
       // Find the matching item in the graph
-      const matchingItem = normalizedData.find((item: any) => item['dct:identifier'] === id);
+      const matchingItem = normalizedData.find((item: Record<string, unknown>) => item['dct:identifier'] === id);
 
       if (!matchingItem) {
-        return c.json({ error: true, message: 'Group not found in graph' }, 404);
+        return c.json({ error: true, message: 'Not found' }, 404);
       }
 
       const url = matchingItem['@id'].replace('j.0:', 'http://data.ub.uib.no/');
 
-      let framed = await useFrame({ data, context: ubbontContext as ContextDefinition, type: 'Group', id: url });
+      const framed = await useFrame({ data, context: ubbontContext as ContextDefinition, type: 'Set', id: url });
       framed['@context'] = ["https://api.ub.uib.no/ns/ubbont/context.json"];
-      return c.json(reorderDocument(framed, desiredOrder));
+      return c.json(reorderDocument(framed, desiredOrder) as z.infer<typeof SetSchema>);
     } catch (error) {
-      throw new Error(`Error fetching item ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error(`Error fetching item ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      return c.json({ error: true, message: "Ups, something went wrong!" }, 404)
     }
   }
 
   if (as === 'iiif') {
     try {
       // First query: Get the collection
-      const setData: TODO = await client.search({
+      const setData: SearchResponseBody = await client.search({
         index: [`search-chc-sets*`],
         query: {
           term: {
@@ -116,18 +119,18 @@ route.openapi(getSet, async (c) => {
         }
       })
 
-      if (setData.hits?.total.value === 0) {
+      if (setData?.hits?.total === 0 || (typeof setData?.hits?.total === 'object' && setData?.hits?.total?.value === 0)) {
         return c.json({ error: true, message: 'Not found' }, 404)
       }
 
       const set = setData?.hits?.hits?.[0]?._source
 
       if (!set) {
-        return c.json({ error: true, message: 'Item has not been catalogued' }, 404)
+        return c.json({ error: true, message: 'Not found.' }, 404)
       }
 
       // Second query: Get items that reference this collection
-      const itemsData: TODO = await client.search({
+      const itemsData: SearchResponseBody = await client.search({
         index: [`search-chc`],
         query: {
           bool: {
@@ -136,8 +139,8 @@ route.openapi(getSet, async (c) => {
                 nested: {
                   path: "member_of",
                   query: {
-                    term: {
-                      "member_of.id.keyword": `${env.PROD_URL}/sets/${id}`
+                    wildcard: {
+                      "member_of.id.keyword": `*${id}`
                     }
                   }
                 }
@@ -158,8 +161,10 @@ route.openapi(getSet, async (c) => {
       })
 
       // Add the items to the collection data
-      const items = itemsData?.hits?.hits?.map((hit: any) => hit._source) ?? undefined
-      const itemsCount = itemsData?.hits?.total?.value ?? 1
+      const items = itemsData?.hits?.hits?.map((hit: SearchHit) => hit._source) ?? undefined
+      // Needed to check the number of hits, as the value can be a number or an object. Typescript doesn't like this.
+      const itemsTotal = itemsData?.hits?.total
+      const itemsCount = typeof itemsTotal === 'number' ? itemsTotal : itemsTotal?.value ?? 1
 
       const setWithItems = {
         ...set,
@@ -169,8 +174,8 @@ route.openapi(getSet, async (c) => {
       const manifest = constructIIIFCollection(setWithItems)
       // Add total item count to response header
       c.header('X-Total-Count', itemsCount.toString())
-      return c.body(
-        JSON.stringify(manifest),
+      return c.json(
+        manifest as z.infer<typeof SetSchema>,
         200,
         {
           'Content-Type': 'application/ld+json;profile="http://iiif.io/api/presentation/3/context.json"'
@@ -184,7 +189,7 @@ route.openapi(getSet, async (c) => {
 
   // Default to la
   try {
-    const data: TODO = await client.search<any>({
+    const data: SearchResponseBody = await client.search({
       index: `search-chc-sets*`,
       query: {
         match_phrase: {
@@ -193,19 +198,19 @@ route.openapi(getSet, async (c) => {
       }
     })
 
-    if (data?.hits?.total?.value === 0) {
+    if (data?.hits?.total === 0) {
       return c.json({ error: true, message: 'Not found' }, 404)
     }
 
-    const item = data.hits.hits[0]._source
+    const item = data.hits.hits[0]._source as JsonLdObj
 
     // Rewrite _id to use the id from the URL parameter
     const itemWithNewId = {
       ...item,
-      id: `${env.PROD_URL}/items/${item.id}`
+      id: `${env.API_BASE_URL}/sets/${item.id}`
     }
 
-    return c.json(reorderDocument(itemWithNewId as Document, desiredOrder))
+    return c.json(reorderDocument(itemWithNewId, desiredOrder) as z.infer<typeof SetSchema>)
   } catch (error) {
     console.error(error)
     return c.json({ error: true, message: "Ups, something went wrong!" }, 404)
