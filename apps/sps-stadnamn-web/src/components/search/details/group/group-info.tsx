@@ -7,21 +7,41 @@ import { resultRenderers } from "@/config/result-renderers";
 import { GlobalContext } from "@/state/providers/global-provider";
 
 
-
 const TextTab = ({ textItems }: { textItems: any[] }) => {
-    return textItems?.map((textItem) => {
-        const links = resultRenderers[textItem.dataset]?.links?.(textItem)
-        return (
-            <div className="py-2" key={textItem.uuid + 'text'}>
-                <strong>{datasetTitles[textItem.dataset]}</strong> | {formatHtml(
-                    textItem.content.html
-                        ? textItem.content.html.replace(/<\/?p>/g, '')
-                        : textItem.content.html
-                )}
-                {links}
-            </div>
-        )
-    })
+    const [showAll, setShowAll] = useState(false);
+
+    if (!textItems || textItems.length === 0) return null;
+
+    const visibleItems = showAll ? textItems : textItems.slice(0, 1);
+
+    return (
+        <>
+            {visibleItems.map((textItem) => {
+                const links = resultRenderers[textItem.dataset]?.links?.(textItem);
+                return (
+                    <div className="py-2" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
+                        <strong>{datasetTitles[textItem.dataset]}</strong> | {formatHtml(
+                            textItem.content.html
+                                ? textItem.content.html.replace(/<\/?p>/g, '')
+                                : textItem.content.html
+                        )}
+                        {links}
+                    </div>
+                );
+            })}
+            {textItems.length > 1 && (
+                <button
+                    type="button"
+                    className="text-sm underline underline-offset-4 py-1"
+                    aria-expanded={showAll}
+                    aria-controls={`text-items-${textItems.length}`}
+                    onClick={() => setShowAll(v => !v)}
+                >
+                    {showAll ? `Vis færre tolkingar` : `Vis fleire tolkingar (${textItems.length - 1})`}
+                </button>
+            )}
+        </>
+    );
 }
 
 
@@ -113,30 +133,30 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
     }
 
 	return <>
-		<ul className="relative !mx-2 !px-0 p-2">
+		<ul className="relative !mx-2 !px-0 p-1">
             {yearsOrdered.map((year, idx) => {
 				const isLast = idx === yearsOrdered.length - 1
 				const nameKeys = namesByYear[year] || []
 				return (
-					<li key={year} className="flex items-center !pb-4 !pt-0 relative w-full">
+					<li key={year} className="flex items-center !pb-2 !pt-0 relative w-full">
 						<div className={`bg-primary-300 absolute w-1 left-0 top-1 ${isLast ? 'h-4' : 'h-full'} ${idx === 0 ? 'mt-2' : ''}`}></div>
-						<div className="w-4 h-4 rounded-full bg-primary-500 absolute -left-1.5 top-2"></div>
-                        <div className="ml-6 flex w-full">
+						<div className="w-3 h-3 rounded-full bg-primary-500 absolute -left-1 top-2"></div>
+                        <div className="ml-5 flex w-full">
                             <button
                                 type="button"
                                 onClick={() => { setActiveYear(activeYear === year ? null : year); setActiveName(null) }}
-                                className={`mr-2 my-1 mt-1 font-medium ${activeYear === year ? 'text-primary-700' : 'text-neutral-700'} underline-offset-4 hover:underline`}
+                                className={`mr-2 my-0 mt-0 font-medium ${activeYear === year ? 'text-primary-700' : 'text-neutral-700'} underline-offset-4 hover:underline text-base`}
                                 aria-pressed={activeYear === year}
                             >
                                 {year}
                             </button>
-							<ul className="flex gap-1">
+							<ul className="flex gap-0.5">
                                 {nameKeys.map((nameKey) => (
                                     <li key={`${year}__${nameKey}`} className="flex w-full">
                                         <button
                                             type="button"
                                             onClick={() => { setActiveName(activeName === nameKey ? null : nameKey); setActiveYear(null) }}
-                                            className={`text-left flex items-center gap-3 py-2 ${activeName === nameKey ? 'text-primary-700' : ''} hover:underline underline-offset-4`}
+                                            className={`text-left flex items-center gap-2 py-1 ${activeName === nameKey ? 'text-primary-700' : ''} hover:underline underline-offset-4`}
                                             aria-pressed={activeName === nameKey}
                                         >
                                             <span className="font-medium">{nameKey}</span>
@@ -285,13 +305,6 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
         const audioItems: any[] = []
         const datasets: Record<string, any[]> = {}
         
-        
-
-
-
-
-
-
         groupData?.sources?.forEach((source: any) => {
             if (source.iiif) {
                 iiifItems.push(source)

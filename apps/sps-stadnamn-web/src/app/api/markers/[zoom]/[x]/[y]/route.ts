@@ -46,7 +46,7 @@ export async function GET(
             "terms": {
               "field": "group.id",
               "order": { "max_placeScore": "desc"},
-              size: (Number(precision) > 17 || (totalHits && totalHits < 10000)) ? 500 : 30,
+              size: (Number(precision) > 17 || (totalHits && totalHits < 10000)) ? 500 : 10,
             },
             "aggs": {
               "max_placeScore": {

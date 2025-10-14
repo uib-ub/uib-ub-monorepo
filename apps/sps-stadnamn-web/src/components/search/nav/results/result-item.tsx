@@ -40,7 +40,7 @@ const formatDistance = (meters: number) => {
     if (meters < 1000) {
         return `${Math.round(meters)} m`;
     } else {
-        return `${(meters / 1000).toFixed(1)} km`;
+        return `${Math.round(meters / 1000)} km`;
     }
 };
 
@@ -126,7 +126,7 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
                         </h2>
                     )}
                     <span>{detailsRenderer(hit)}</span>
-                    {hit.distance && (
+                    {typeof hit.distance === 'number' && (
                         <span className="ml-auto text-sm bg-neutral-100 px-2 py-0.5 rounded-full group-aria-expanded:bg-white">
                             {formatDistance(hit.distance)}
                         </span>

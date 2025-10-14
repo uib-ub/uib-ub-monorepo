@@ -109,7 +109,7 @@ export default function SearchResults() {
               btn-outline btn
               justify-center
 
-              px-4 py-2 rounded-full
+              px-4 py-2 rounded-full xl:rounded-md
               w-full mx-3
               transition-colors
               ${isFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
