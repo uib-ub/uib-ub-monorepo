@@ -14,20 +14,22 @@ export default function Drawer({
     setSnappedPosition,
     currentPosition,
     setCurrentPosition,
-    minHeightRem = 8,
-    maxHeightSvh = 60,
+    bottomHeightRem = 8,
+    middleHeightSvh = 60,
+    topHeightRem = 20,
     scrollContainerRef
 }: {
     children: React.ReactNode
     drawerOpen: boolean,
     dismissable: boolean,
     setDrawerOpen: (open: boolean) => void
-    snappedPosition: 'min' | 'max'
-    setSnappedPosition: (position: 'min' | 'max') => void
+    snappedPosition: 'bottom' | 'middle' | 'top'
+    setSnappedPosition: (position: 'bottom' | 'middle' | 'top') => void
     currentPosition: number
     setCurrentPosition: (position: number) => void
-    minHeightRem?: number
-    maxHeightSvh?: number,
+    bottomHeightRem?: number
+    middleHeightSvh?: number,
+    topHeightRem?: number,
     scrollContainerRef?: React.RefObject<HTMLDivElement>
 }) {
 
@@ -49,13 +51,28 @@ export default function Drawer({
         const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
         return ((svh / 100) * windowHeight) / rootFontSize
     }
-    const maxRem = () => svhToRem(maxHeightSvh)
+    const middleRem = () => svhToRem(middleHeightSvh)
+    const viewportRem = () => {
+        if (typeof window === 'undefined' || typeof document === 'undefined') return 0
+        const windowHeight = window.visualViewport?.height || window.innerHeight
+        const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+        return windowHeight / rootFontSize
+    }
+    const topRem = () => viewportRem() // 100svh expressed in rem
     const approximately = (a: number, b: number, epsilon = 0.5) => Math.abs(a - b) < epsilon
-    const snappedPositionRem = () => snappedPosition === 'max' ? maxRem() : minHeightRem
-    const atMax = () => {
+    const snappedPositionRem = () => {
+        if (snappedPosition === 'top') return topRem()
+        if (snappedPosition === 'middle') return middleRem()
+        return bottomHeightRem
+    }
+    const atMiddle = () => {
         if (typeof window === 'undefined') return false
-        const max = maxRem()
-        return snappedPosition === 'max' && approximately(currentPosition, max)
+        const middle = middleRem()
+        return snappedPosition === 'middle' && approximately(currentPosition, middle)
+    }
+    const atTop = () => {
+        if (typeof window === 'undefined') return false
+        return snappedPosition === 'top' && approximately(currentPosition, topRem())
     }
     
 
@@ -71,19 +88,19 @@ export default function Drawer({
     }
 
     const shouldAllowScroll = (): boolean => {
-        return atMax() && isScrollable()
+        return (atMiddle() || atTop()) && isScrollable()
     }
 
     const pos2rem = (yPos: number) => {
         const windowHeight = (typeof window !== 'undefined' && (window.visualViewport?.height || window.innerHeight)) || 0
-        const max = maxRem()
-        return windowHeight ? ((windowHeight - yPos) / windowHeight) * max : 0
+        const middle = middleRem()
+        return windowHeight ? ((windowHeight - yPos) / windowHeight) * middle : 0
     }
 
     // Initialize to collapsed bottom height if unset
     useEffect(() => {
         if (!currentPosition) {
-            setCurrentPosition(minHeightRem)
+            setCurrentPosition(bottomHeightRem)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -111,7 +128,7 @@ export default function Drawer({
 
     // Auto-scroll content to top when collapsed
     useEffect(() => {
-        if (snappedPosition === 'min' && effectiveScrollRef.current) {
+        if (snappedPosition === 'bottom' && effectiveScrollRef.current) {
             effectiveScrollRef.current.scrollTo({ top: 0, behavior: 'auto' })
         }
     }, [snappedPosition, effectiveScrollRef])
@@ -137,8 +154,8 @@ export default function Drawer({
             if (!container) return
             const target = e.target as Node
             if (!container.contains(target)) {
-                if (snappedPosition == 'max') {
-                  setSnappedPosition('min')
+                if (snappedPosition == 'middle') {
+                  setSnappedPosition('bottom')
                 }
 
             }
@@ -175,44 +192,87 @@ export default function Drawer({
         }
 
         setSnapped(true)
-        const pulledBelowThreshold = lastRawHeightRef.current < (minHeightRem - 1)
+        const pulledBelowThreshold = lastRawHeightRef.current < (bottomHeightRem - 1)
         if (dismissable && pulledBelowThreshold) {
             setCurrentPosition(snappedPositionRem())
             setDrawerOpen(false)
             return
         }
 
-        // Only apply swipe-based snapping if dragging is allowed per current logic
+        // Only apply swipe-based snapping if dragging is allowed per current logic and direction
         const durationMs = Math.max(1, Date.now() - startTouchTime.current)
-        const dragAllowedNow = dragFromTopZoneRef.current || !(shouldAllowScroll() && (effectiveScrollRef.current?.scrollTop || 0) > 0)
+        const el = effectiveScrollRef.current
+        const scrollTop = el?.scrollTop || 0
+        const canScrollUp = !!el && scrollTop > 0
+        const canScrollDown = !!el && (el.scrollHeight - el.clientHeight - scrollTop) > 1
+        const isSwipeUp = swipeDistance > 0
+        const isSwipeDown = swipeDistance < 0
+        const dragAllowedNow = dragFromTopZoneRef.current || (
+            !shouldAllowScroll() || (
+                (isSwipeDown && !canScrollUp) || (isSwipeUp && !canScrollDown)
+            )
+        )
         if (!dragAllowedNow) return
 
+        // Prevent switching between top and middle unless drag started in grip
+        if (!dragFromTopZoneRef.current) {
+            if (snappedPosition === 'top') return
+            if (snappedPosition === 'middle' && isSwipeUp) return
+        }
+
         const quickSwipe = durationMs < 500 && Math.abs(swipeDistance) > 10
-        const mid = (minHeightRem + maxRem()) / 2
-        let snapTarget = quickSwipe
-            ? (swipeDistance > 0 ? maxRem() : minHeightRem)
-            : (currentPosition < mid ? minHeightRem : maxRem())
-        if (snapTarget > maxRem()) snapTarget = maxRem()
-        if (!dismissable && snapTarget < minHeightRem) snapTarget = minHeightRem
+        const allowTop = dragFromTopZoneRef.current
+
+        let snapTarget: number
+        if (quickSwipe) {
+            if (isSwipeUp) {
+                snapTarget = allowTop ? topRem() : middleRem()
+            } else {
+                snapTarget = snappedPosition === 'top' ? middleRem() : bottomHeightRem
+            }
+        } else {
+            // Choose nearest among allowed stops
+            const candidates = allowTop
+                ? [bottomHeightRem, middleRem(), topRem()]
+                : [bottomHeightRem, middleRem()]
+            snapTarget = candidates.reduce((prev, curr) => Math.abs(curr - currentPosition) < Math.abs(prev - currentPosition) ? curr : prev)
+        }
+
+        if (!dismissable && snapTarget < bottomHeightRem) snapTarget = bottomHeightRem
         setCurrentPosition(snapTarget)
-        setSnappedPosition(snapTarget === minHeightRem ? 'min' : 'max')
+        setSnappedPosition(
+            snapTarget === bottomHeightRem ? 'bottom' :
+            snapTarget === middleRem() ? 'middle' : 'top'
+        )
     }
 
     const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
         const isHorizontal = Math.abs(startTouchX.current - e.touches[0].clientX) > Math.abs(startTouchY.current - e.touches[0].clientY)
         if (isHorizontal) return
 
-    const atMaxAndScrollable = shouldAllowScroll()
-    const scrollTop = effectiveScrollRef.current?.scrollTop || 0
+        const el = effectiveScrollRef.current
+        const canScrollContext = shouldAllowScroll()
+        const scrollTop = el?.scrollTop || 0
+        const canScrollUp = !!el && scrollTop > 0
+        const canScrollDown = !!el && (el.scrollHeight - el.clientHeight - scrollTop) > 1
+        const deltaY = startTouchY.current - e.touches[0].clientY // >0 means moving up
 
-    // If content can scroll and we're not dragging from the grip, let native scroll handle it
-    if (!dragFromTopZoneRef.current && atMaxAndScrollable) return
+        // If content can scroll and we're not dragging from the grip, let native scroll handle it based on direction
+        if (!dragFromTopZoneRef.current && canScrollContext) {
+            if ((deltaY < 0 && canScrollUp) || (deltaY > 0 && canScrollDown)) return
+        }
+        // If not dragging from the grip, block upward movement from middle (toward top) and any movement at top
+        if (!dragFromTopZoneRef.current) {
+            if (snappedPosition === 'top') return
+            if (snappedPosition === 'middle' && deltaY > 0) return
+        }
         // Do not call preventDefault here; touch-action controls native behavior
 
         const rawNewHeight = snappedPositionRem() - pos2rem(startTouchY.current) + pos2rem(e.touches[0].clientY)
         lastRawHeightRef.current = rawNewHeight
-        const minClamp = dismissable ? 0 : minHeightRem
-        const clamped = Math.max(minClamp, Math.min(maxRem(), rawNewHeight))
+        const minClamp = dismissable ? 0 : bottomHeightRem
+        const maxClamp = topRem()
+        const clamped = Math.max(minClamp, Math.min(maxClamp, rawNewHeight))
         setCurrentPosition(clamped)
     }
 
@@ -248,7 +308,7 @@ export default function Drawer({
         <div
             ref={outerRef}
             className={`fixed w-full left-0 drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''} flex flex-col`}
-            style={{ bottom: '-0.5rem', height: `${drawerOpen ? currentPosition : 0}rem`, pointerEvents: drawerOpen ? 'auto' : 'none', zIndex: 6000, touchAction: atMax() ? 'auto' : 'none', overscrollBehaviorY: 'none' as any }}
+            style={{ bottom: '-0.5rem', height: `${drawerOpen ? currentPosition : 0}rem`, pointerEvents: drawerOpen ? 'auto' : 'none', zIndex: 6000, touchAction: atMiddle() ? 'auto' : 'none', overscrollBehaviorY: 'none' as any }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -264,9 +324,9 @@ export default function Drawer({
             {/* Scroll container: scrollable if the drawer is at the max height */}
             <div
                 ref={effectiveScrollRef}
-                className={`flex-1 min-h-0 bg-white ${currentPosition > minHeightRem ? 'rounded-t-lg' : ''}`}
+                className={`flex-1 min-h-0 bg-white ${currentPosition > bottomHeightRem ? 'rounded-t-lg' : ''}`}
                 style={{ 
-                    overflowY: atMax() ? 'auto' : 'hidden', 
+                    overflowY: (atMiddle() || atTop()) ? 'auto' : 'hidden', 
                     touchAction: shouldAllowScroll() ? 'pan-y' : 'none', 
                     overscrollBehaviorY: 'contain' as any 
                 }}

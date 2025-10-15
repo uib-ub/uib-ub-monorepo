@@ -28,7 +28,7 @@ export default function MapToolbar() {
 
                 label="Kartinnstillingar"
                 add={{ mapSettings: 'on' }}
-                onClick={() => setSnappedPosition('max')}
+                onClick={() => setSnappedPosition('middle')}
             >
                 <PiStackPlus className="text-2xl" />
             </RoundIconClickable>

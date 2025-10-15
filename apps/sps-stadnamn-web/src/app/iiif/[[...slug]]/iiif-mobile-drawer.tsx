@@ -34,7 +34,7 @@ export default function IIIFMobileDrawer({ manifest, manifestDataset, stats }: {
         >
                 <div className="h-full bg-white">
                     <IIIFInfoSection manifest={manifest} manifestDataset={manifestDataset} stats={stats} />
-                    {snappedPosition == 'max' && drawerOpen &&  <IIIFNeighbourNav manifest={manifest} isMobile={true} />}
+                    {snappedPosition == 'middle' && drawerOpen &&  <IIIFNeighbourNav manifest={manifest} isMobile={true} />}
                 </div>
         </Drawer>
         {false && !drawerOpen && (   

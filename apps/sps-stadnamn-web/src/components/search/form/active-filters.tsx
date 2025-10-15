@@ -135,7 +135,7 @@ export default function ActiveFilters() {
       className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1"
       aria-expanded={expandedActiveFilters == 'datasets'}
       aria-controls="dataset-filters"
-      onClick={() => { setExpandedActiveFilters(prev => prev == 'datasets' ? null : 'datasets'); setSnappedPosition('max')}}
+      onClick={() => { setExpandedActiveFilters(prev => prev == 'datasets' ? null : 'datasets'); setSnappedPosition('middle')}}
     >
       {datasetFilters.length} datasett
       {expandedActiveFilters == 'datasets' ? <PiCaretUpBold className="inline text-lg" aria-hidden="true"/> : <PiCaretDownBold className="inline text-lg" aria-hidden="true"/>}

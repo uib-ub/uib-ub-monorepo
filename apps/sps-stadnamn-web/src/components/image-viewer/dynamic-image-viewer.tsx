@@ -173,7 +173,7 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
       <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner status="Lastar inn bilde" className='w-20 h-20'/></div>
         : null
       }
-      {(!isMobile || snappedPosition != 'max') && <div className={`absolute xl:bottom-auto xl:top-0 right-0 xl:right-auto xl:left-0 flex z-[1000] gap-2 p-2 text-white`}>
+      {(!isMobile || snappedPosition != 'middle') && <div className={`absolute xl:bottom-auto xl:top-0 right-0 xl:right-auto xl:left-0 flex z-[1000] gap-2 p-2 text-white`}>
         {!isMobile && <><RoundIconButton 
           onClick={() => viewer.current?.viewport.zoomBy(1.5)} 
           label="Zoom inn">
