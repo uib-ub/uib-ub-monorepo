@@ -60,34 +60,38 @@
         <template #body="{ data }">
           <div class="flex align-items-center gap-2">
             <span>{{ data.status }}</span>
-            <div v-if="data.status !== '5. publisert'">
+            <div
+              v-if="data.status !== '5. publisert'"
+            >
               <Icon
                 v-if="data.blocker.status === 'ok'"
                 name="mdi:play"
+                class="mb-[-5px]"
                 size="1.6em"
                 :class="appConfig.ui.color.status.ok.class"
               />
               <Icon
                 v-else-if="data.blocker.status === 'soft'"
                 name="mdi:pause"
+                class="mb-[-5px]"
                 size="1.6em"
                 :class="appConfig.ui.color.status.warning.class"
               />
               <Icon
                 v-else-if="data.blocker.status === 'hard'"
                 name="mdi:stop"
+                class="mb-[-5px]"
                 size="1.6em"
                 :class="appConfig.ui.color.status.error.class"
               />
             </div>
-
             <Icon
               v-else-if="
                 data.status !== '1. kjent' && data.blocker.status !== 'ok'
               "
               name="fa6-solid:triangle-exclamation"
               size="1.2em"
-              class="ml-[6px] mt-[3px]"
+              class="ml-[5px] mt-[3px]"
               :class="
                 data.blocker.status === 'hard'
                   ? appConfig.ui.color.status.error.class
@@ -144,7 +148,7 @@
             <Icon
               name="material-symbols:circle"
               size="1.2em"
-              class="mr-1 mb-[4px]"
+              class="mb-[-4px] mr-2"
               :class="getReminderColorClass(data)"
             />
             {{ data.reminderCalc }} d.

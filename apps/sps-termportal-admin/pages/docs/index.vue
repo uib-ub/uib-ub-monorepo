@@ -13,7 +13,7 @@
       </section>
     </main>
     <ToC
-      class="ml-10 mt-[5rem] hidden lg:block"
+      class="ml-10 mt-20 hidden lg:block"
       content-selector="#content"
     />
   </div>

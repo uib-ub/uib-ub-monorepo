@@ -49,7 +49,7 @@
       </div>
     </div>
     <div
-      class="border-x border-b-[1px] border-gray-300 border-x-white"
+      class="border-x border-b border-gray-300 border-x-white"
       :class="{ hidden: context === 'minimal' }"
     />
   </nav>

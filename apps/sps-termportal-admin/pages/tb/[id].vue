@@ -126,7 +126,7 @@
     <ToC
       v-if="merged?.id"
       :key="merged?.id + merged?._id + mainRef"
-      class="ml-10 mt-[5rem] hidden lg:block"
+      class="ml-10 mt-20 hidden lg:block"
       content-selector="#content"
     />
   </div>

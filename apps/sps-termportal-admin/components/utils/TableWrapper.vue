@@ -11,7 +11,7 @@
         </component>
       </AppLink>
       <IconSpinner
-        v-if="pending || true"
+        v-if="pending"
         class="ml-2 mb-1.5"
         size="1.1em"
       />

@@ -4,7 +4,7 @@
     class="flex items-center"
   >
     <Icon
-      class="tp-spin"
+      class="tp-spin p-1"
       name="icomoon-free:spinner8"
       :size="size"
       aria-hidden="true"
