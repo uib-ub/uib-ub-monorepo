@@ -40,6 +40,7 @@ export default function Drawer({
     const dragFromTopZoneRef = useRef(false)
     
     const lastRawHeightRef = useRef<number>(0)
+    const startHeightRemRef = useRef<number>(0)
     const localScrollRef = useRef<HTMLDivElement>(null)
     const outerRef = useRef<HTMLDivElement>(null)
     const effectiveScrollRef = scrollContainerRef || localScrollRef
@@ -173,6 +174,7 @@ export default function Drawer({
         startTouchX.current = e.touches[0].clientX
         setSnapped(false)
         startTouchTime.current = Date.now()
+        startHeightRemRef.current = currentPosition
         // Detect if touch starts in the top zone (grip area)
         const containerTop = outerRef.current?.getBoundingClientRect().top || 0
         const gripZoneRem = 2.5 // ~40px at 16px base
@@ -226,7 +228,8 @@ export default function Drawer({
         let snapTarget: number
         if (quickSwipe) {
             if (isSwipeUp) {
-                snapTarget = allowTop ? topRem() : middleRem()
+                // Never allow bottom -> top on a single swipe
+                snapTarget = (snappedPosition === 'bottom') ? middleRem() : (allowTop ? topRem() : middleRem())
             } else {
                 snapTarget = snappedPosition === 'top' ? middleRem() : bottomHeightRem
             }
@@ -268,7 +271,9 @@ export default function Drawer({
         }
         // Do not call preventDefault here; touch-action controls native behavior
 
-        const rawNewHeight = snappedPositionRem() - pos2rem(startTouchY.current) + pos2rem(e.touches[0].clientY)
+        const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+        const deltaRem = (startTouchY.current - e.touches[0].clientY) / rootFontSize
+        const rawNewHeight = startHeightRemRef.current + deltaRem
         lastRawHeightRef.current = rawNewHeight
         const minClamp = dismissable ? 0 : bottomHeightRem
         const maxClamp = topRem()
