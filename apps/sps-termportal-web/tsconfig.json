@@ -4,7 +4,13 @@
   "compilerOptions": {
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["@nuxt/types", "@types/node"]
+    "types": [
+      "node"
+    ]
   },
-  "include": [".nuxt/nuxt.d.ts", "**/*", "types"]
+  "include": [
+    ".nuxt/nuxt.d.ts",
+    "**/*",
+    "types"
+  ]
 }
