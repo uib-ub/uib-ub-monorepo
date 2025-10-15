@@ -1,5 +1,8 @@
 <template>
-  <UtilsTableWrapper>
+  <UtilsTableWrapper
+    heading-level="h2"
+    :pending="pending"
+  >
     <template #header>
       Referansegrupper
     </template>
@@ -66,7 +69,7 @@ const query = `
   }
 }
 `;
-const { data } = useLazySanityQuery(query);
+const { data, pending } = useLazySanityQuery(query);
 
 // TODO handle situation where one group consults multiple termgroups
 const procdata = computed(() => {

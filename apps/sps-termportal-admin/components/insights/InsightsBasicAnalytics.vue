@@ -1,5 +1,8 @@
 <template>
-  <UtilsTableWrapper>
+  <UtilsTableWrapper
+    heading-level="h2"
+    :pending="pending"
+  >
     <template #header>
       Basic Analytics
     </template>
@@ -74,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-const { data } = useFetch("/api/analytics/overview");
+const { data, pending } = useFetch("/api/analytics/overview");
 
 const procdata = computed(() => {
   const mapped = data.value?.map((e) => {

@@ -1,5 +1,8 @@
 <template>
-  <UtilsTableWrapper>
+  <UtilsTableWrapper
+    heading-level="h2"
+    :pending="pending"
+  >
     <template #header>
       Domains: Language coverage
     </template>
@@ -87,7 +90,7 @@ const filters = ref({
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
-const { data } = await useLazyFetch("/api/domain/all/domain_language_coverage");
+const { data, pending } = await useLazyFetch("/api/domain/all/domain_language_coverage");
 
 const displayData = computed(() => {
   return data?.value?.map((domain) => {

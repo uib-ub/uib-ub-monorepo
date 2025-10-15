@@ -1,5 +1,8 @@
 <template>
-  <UtilsTableWrapper>
+  <UtilsTableWrapper
+    heading-level="h2"
+    :pending="pending"
+  >
     <template #header>
       Institutions responsible for termbases
     </template>
@@ -63,7 +66,7 @@ const query = `
       }
     }
     `;
-const { data } = useLazySanityQuery(query);
+const { data, pending } = useLazySanityQuery(query);
 
 const procdata = computed(() => {
   const mapped = data.value

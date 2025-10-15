@@ -1,5 +1,8 @@
 <template>
-  <UtilsTableWrapper>
+  <UtilsTableWrapper
+    heading-level="h2"
+    :pending="pending"
+  >
     <template #header>
       Termbases: Language coverage
     </template>
@@ -89,7 +92,7 @@
 <script setup lang="ts">
 import { FilterMatchMode } from "primevue/api";
 
-const { data } = await useLazyFetch("/api/tb/all/termbase_language_coverage");
+const { data, pending } = await useLazyFetch("/api/tb/all/termbase_language_coverage");
 
 const query = `
 *[_type == "termbase" &&

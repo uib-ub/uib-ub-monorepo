@@ -1,5 +1,8 @@
 <template>
-  <UtilsTableWrapper>
+  <UtilsTableWrapper
+    heading-level="h2"
+    :pending="pending"
+  >
     <template #header>
       Analytics: Monthly views per termbase
     </template>
@@ -57,11 +60,13 @@ import { FilterMatchMode } from "primevue/api";
 
 const query = `*[_type == "termbase" && status == "publisert"]{ id }`;
 
-const { data: cmsdata } = useLazySanityQuery(query);
-const { data: visits } = useFetch("/api/analytics/termbasevisits");
-const { data: tboverview } = await useLazyFetch(
+const { data: cmsdata, pending: pendingCms } = useLazySanityQuery(query);
+const { data: visits, pending: pendingVisits } = useFetch("/api/analytics/termbasevisits");
+const { data: tboverview, pending: pendingTboverview } = await useLazyFetch(
   "/api/tb/all/termbase_overview",
 );
+
+const pending = computed(() => pendingCms.value || pendingVisits.value || pendingTboverview.value);
 
 const displayData = computed(() => {
   const labels = {};

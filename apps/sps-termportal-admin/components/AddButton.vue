@@ -6,7 +6,7 @@
   >
     <Icon
       name="mdi:plus"
-      class="text-gray-600 ml-[2px] mb-[1px] hover:text-gray-700"
+      class="text-gray-600 hover:text-gray-700 ml-[2px] mt-[2px]"
       size="1.5em"
     />
   </AppLink>

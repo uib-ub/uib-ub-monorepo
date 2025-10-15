@@ -1,27 +1,18 @@
-import { listenQuery } from 'sanity';
 <template>
   <nav>
     <div class="box-content h-12 w-full bg-white">
       <div class="flex h-full items-center justify-between">
         <div
           class="flex h-full items-center"
-          :class="{ 'pl-6 xl:pl-0': context === 'minimal' }"
+          :class="{ 'ps-6 xl:ps-0': context === 'minimal' }"
         >
-          <SideBar class="flex justify-center">
-            <NuxtLink to="/">
-              <LogoTermportalen
-                class="mt-[2px]"
-                logo-type="wordmark"
-                img-style="height: 38px"
-                :class="{ hidden: context === 'minimal' }"
-              />
-            </NuxtLink>
-          </SideBar>
           <div
-            v-if="context !== 'minimal'"
-            class="flex w-[15em] justify-center xl:hidden"
+            class="flex w-[14em] justify-center"
           >
-            <NuxtLink to="/">
+            <NuxtLink
+              v-if="context !== 'minimal'"
+              to="/"
+            >
               <LogoTermportalen
                 class="mt-[2px]"
                 logo-type="wordmark"
@@ -55,21 +46,6 @@ import { listenQuery } from 'sanity';
             </NavBarLink>
           </ul>
         </div>
-        <div class="">
-          <button
-            class="flex items-center space-x-2 px-9 text-lg font-semibold text-gray-500 hover:text-gray-700 focus:text-gray-700"
-            @click="signOut()"
-          >
-            <div class="">
-              Sign Out
-            </div>
-            <Icon
-              name="mdi:sign-out"
-              size="1.1em"
-              class=""
-            />
-          </button>
-        </div>
       </div>
     </div>
     <div
@@ -80,7 +56,6 @@ import { listenQuery } from 'sanity';
 </template>
 
 <script setup lang="ts">
-const { signOut } = useAuth();
 const route = useRoute();
 
 const context = computed(() => {
