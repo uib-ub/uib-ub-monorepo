@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef, useEffect, useContext } from "react";
-import { PiArchive, PiBookOpen, PiBookOpenLight, PiBookOpenText, PiBookOpenTextFill, PiBookOpenTextLight, PiCaretLeft, PiChatCircleText, PiDatabaseFill, PiDatabaseLight, PiHouse, PiInfo, PiList, PiListFill, PiListLight, PiMapPinLineFill, PiMapTrifold, PiMapTrifoldFill, PiMapTrifoldLight, PiMicroscopeFill, PiMicroscopeLight, PiQuestion, PiTable, PiTableFill, PiTableLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight, PiX } from 'react-icons/pi';
+import { PiArchive, PiBookOpen, PiBookOpenLight, PiBookOpenText, PiBookOpenTextFill, PiBookOpenTextLight, PiCaretLeft, PiChatCircleText, PiDatabaseFill, PiDatabaseLight, PiHouse, PiInfo, PiList, PiListFill, PiListLight, PiMapPinLineFill, PiMapTrifold, PiMapTrifoldFill, PiMapTrifoldLight, PiMicroscopeFill, PiMicroscopeLight, PiPersonArmsSpread, PiQuestion, PiTable, PiTableFill, PiTableLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight, PiX } from 'react-icons/pi';
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { GlobalContext } from "../state/providers/global-provider";
 import Link from "next/link";
@@ -163,8 +163,10 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
                     <Link scroll={false} className="flex items-center gap-2 py-3 px-4 lg:mx-0" href="/info"><PiInfo aria-hidden="true"/>Informasjon</Link>
 					<Link scroll={false} className="flex items-center gap-2 py-3 px-4 pl-10 lg:mx-0" href="/info/privacy">Personvern</Link>
 					<Link scroll={false} className="flex items-center gap-2 py-3 px-4 pl-10 lg:mx-0" href="/info/license">Opphavsrett</Link>
-					<Link scroll={false} className="flex items-center gap-2 py-3 px-4 pl-10 lg:mx-0" href="/info/a11y">Tilgjengeerklæring</Link>
+					
                     </div>
+                    <Link scroll={false} className="flex items-center gap-2 py-3 px-4 lg:mx-0" href="https://uustatus.no/nn/erklaringer/publisert/c3abf798-49b7-4776-b1ee-f07b46dadd38"><PiPersonArmsSpread aria-hidden="true"/>Tilgjengeerklæring</Link>
+                    
       
                 </nav>
                 </div>
