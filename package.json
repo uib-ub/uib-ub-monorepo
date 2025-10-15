@@ -20,7 +20,7 @@
     "*": "prettier --write --ignore-unknown"
   },
   "engines": {
-    "npm": ">=10.0.0",
+    "npm": ">=11.0.0",
     "node": ">=20.0.0"
   },
   "devDependencies": {
@@ -29,11 +29,5 @@
     "prettier": "^3.0.3",
     "turbo": "^2.5.5"
   },
-  "packageManager": "npm@9.8.1",
-  "overrides": {
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
-    "@types/react": "19.0.0",
-    "@types/react-dom": "19.0.0"
-  }
+  "packageManager": "npm@11.5.2"
 }

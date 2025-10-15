@@ -45,5 +45,11 @@
     "typescript": "5.9.3",
     "vite": "7.1.9",
     "vitest": "3.2.4"
+  },
+  "overrides": {
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "@types/react": "19.2.0",
+    "@types/react-dom": "19.2.0"
   }
 }
