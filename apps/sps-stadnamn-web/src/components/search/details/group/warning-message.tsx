@@ -20,6 +20,8 @@ export default function WarningMessage({
     if (isMessageDismissed(messageId)) {
         return null;
     }
+
+    markShown(messageId);
     
     return (
         <div className="mb-3 mt-1 text-primary-900 bg-primary-50 p-1 px-2 rounded-md relative">
