@@ -105,7 +105,7 @@ export default function useCollapsedData() {
         status
     } = useInfiniteQuery({
         queryKey: ['collapsedData', searchQueryString, initGroupLoading, initGroupCode],
-        queryFn: ({ pageParam }) => collapsedDataQuery({ 
+        queryFn: ({ pageParam }: { pageParam: number }) => collapsedDataQuery({ 
             pageParam, 
             searchQueryString,
             initGroupCode: initGroupCode,
@@ -113,9 +113,9 @@ export default function useCollapsedData() {
             initPlaceScore: initGroupCode ? initGroupData?.placeScore : null,
             initGroupData: initGroupCode ? initGroupData : null,
         }),
-        placeholderData: (prevData) => prevData,
+        placeholderData: (prevData: any) => prevData,
         initialPageParam: initialPageRef.current - 1,
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        getNextPageParam: (lastPage: any) => lastPage.nextCursor,
         refetchOnWindowFocus: false,
         enabled: !initGroupLoading,
         staleTime: 1000 * 60 * 5, // 5 minutes

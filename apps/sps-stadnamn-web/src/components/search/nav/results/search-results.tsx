@@ -1,5 +1,5 @@
 'use client'
-import { Fragment, useEffect, useRef, useState } from "react"
+import { Fragment, useContext, useEffect, useRef, useState } from "react"
 import ResultItem from "./result-item";
 import { getSkeletonLength } from "@/lib/utils";
 import useCollapsedData from "@/state/hooks/collapsed-data";
@@ -12,6 +12,8 @@ import { useGroup } from "@/lib/param-hooks";
 import { PiPlusBold } from "react-icons/pi";
 import useGroupData from "@/state/hooks/group-data";
 import Spinner from "@/components/svg/Spinner";
+import { useSessionStore } from "@/state/zustand/session-store";
+import { GlobalContext } from "@/state/providers/global-provider";
 
 
 const CollapsibleResultItem = ({hit, activeGroupValue}: {hit: any, activeGroupValue: string | null}) => {
@@ -35,6 +37,8 @@ export default function SearchResults() {
   const init = searchParams.get('init')
   const initValue = init ? base64UrlToString(init) : null
   const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
+  const snappedPosition = useSessionStore((s) => s.snappedPosition)
+  const { isMobile } = useContext(GlobalContext)
   
   // Use the enhanced infinite query hook
   const {
@@ -51,8 +55,12 @@ export default function SearchResults() {
 
 
   // Check if there are no results
-  const hasNoResults = collapsedStatus === 'success' && 
-    (!collapsedData?.pages || collapsedData.pages.length === 0 || collapsedData.pages[0].data?.length === 0);
+  const hasNoResults = collapsedStatus === 'success' && (!collapsedData?.pages || collapsedData.pages.length === 0 || collapsedData.pages[0].data?.length === 0);
+
+
+  if (isMobile && activeGroupValue && snappedPosition == 'min') {
+    return null
+  }
 
   return (
     <div ref={resultsContainerRef} className="mb-10 xl:mb-0">

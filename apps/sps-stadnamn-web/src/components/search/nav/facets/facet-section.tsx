@@ -72,7 +72,7 @@ export default function FacetSection() {
     return (
         
         
-        <div className="flex flex-col divide-y divide-neutral-200 w-full">
+        <div className="flex flex-col divide-y divide-neutral-200 border-b border-neutral-200 w-full pb-10">
           <div className="flex flex-col gap-2 px-4">
            <MiscOptions/>
            </div>

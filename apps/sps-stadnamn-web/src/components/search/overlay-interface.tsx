@@ -78,7 +78,7 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     }
     if (isMobile && facet) {
         return <div className="fixed top-0 left-0 w-full h-full z-[3001] bg-white"><div className="h-[calc(100svh-3rem)] overflow-y-auto stable-scrollbar">{children}</div>
-        <Clickable remove={["facet"]} add={{results: 'on'}} className="w-full h-12 text-xl flex items-center justify-center items-center bg-primary-800 text-white relative">Vis treff <Badge className="bg-primary-50 text-primary-800 font-bold absolute right-4" count={totalHits?.value || 0} /></Clickable>
+        <Clickable remove={["facet"]} add={{results: 'on'}} className="w-full h-12 text-xl flex items-center justify-center items-center bg-primary-800 text-white relative">Vis resultat <Badge className="bg-primary-50 text-primary-800 font-bold absolute right-4" count={totalHits?.value || 0} /></Clickable>
         </div>
     }
     return <Drawer {...rest} minHeightRem={MAP_DRAWER_MIN_HEIGHT_REM} maxHeightSvh={MAP_DRAWER_MAX_HEIGHT_SVH}>{children}</Drawer>
@@ -116,8 +116,10 @@ export default function OverlayInterface() {
     const drawerOpen = useSessionStore((s) => s.drawerOpen);
     const setDrawerOpen = useSessionStore((s) => s.setDrawerOpen);
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
-
     const searchParams = useSearchParams()
+    const q = searchParams.get('q')
+
+
     const { searchFilterParamsString } = useSearchQuery()
     const { totalHits, searchBounds } = useSearchData()
     const { groupData } = useGroupData()
@@ -159,13 +161,13 @@ export default function OverlayInterface() {
                             
                         </div>
                         
-                        :<Clickable notClickable={isMobile} add={{options: options ? null : 'on'}} remove={["options"]}  className="w-full flex items-center xl:h-12 px-2 xl:px-0 gap-2 xl:pl-2">
+                        :<Clickable notClickable={isMobile} add={{options: options ? null : 'on'}} remove={["options"]}  className="w-full flex items-center xl:h-12 px-2 pt-1 xl:px-0 gap-2 xl:pl-2">
                         {
                             !isMobile && <>
                                 {options ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
                             </>
                         }
-                        <h1 className="text-lg xl:text-xl text-neutral-900">Filter</h1>
+                        <h1 className="text-base xl:text-xl text-neutral-900">Filter</h1>
                             
                                 
                             
@@ -174,9 +176,10 @@ export default function OverlayInterface() {
                                 
                             
                             <div className="flex items-center gap- ml-auto">
-                            {isMobile && totalHits && <Clickable onClick={() => setSnappedPosition('max')}  className={`bg-primary-800 rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 text-white text-sm xl:text-base font-semibold`} add={{results: 'on'}} remove={["options"]}>
-                            {!totalHits?.value && <PiFunnel className="text-white text-lg" />}Vis treff{totalHits?.value > 0 && <Badge className="bg-primary-50 text-primary-800 font-bold" count={totalHits.value} />} 
+                            {isMobile && totalHits?.value > 0 && <Clickable onClick={() => setSnappedPosition('max')}  className={`bg-primary-800 rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 text-white text-sm xl:text-base font-semibold`} add={{results: 'on'}} remove={["options"]}>
+                            Vis resultat{totalHits?.value > 0 && <Badge className="bg-primary-50 text-primary-800 font-bold" count={totalHits.value} />}
                         </Clickable>}
+                        {!totalHits?.value && isMobile && <span className="text-sm xl:text-bas px-2">Ingen resultat</span>}
                         </div>
                             </Clickable>}
                         {(options || isMobile) && !facet && <><ActiveFilters />
@@ -198,7 +201,7 @@ export default function OverlayInterface() {
                         {/* Map Settings Header (separate, only when mapSettings is on) */}
                         {mapSettings ? (
                             <div className="w-full flex items-center xl:h-12 px-2 xl:px-0 gap-2">
-                                <h1 className="text-lg xl:text-xl text-neutral-900 xl:px-4">Kartinnstillingar</h1>
+                                <h1 className="text-base xl:text-xl text-neutral-900 xl:px-4">Kartinnstillingar</h1>
                                 <div className="flex items-center gap-1 ml-auto">
                                     <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings"]}>
                                         <PiX className="text-black text-3xl" />
@@ -206,15 +209,15 @@ export default function OverlayInterface() {
                                 </div>
                             </div>
                         ) : (
-                            <Clickable notClickable={isMobile} add={{results: results ? null : 'on'}} remove={["results"]} className="w-full flex items-center xl:h-12 px-2 pb-1 xl:px-0 gap-2 xl:pl-2">
+                            <Clickable notClickable={isMobile} add={{results: results ? null : 'on'}} remove={["results"]} className="w-full flex items-center xl:h-12 px-2 py-1 xl:px-0 gap-2 xl:pl-2">
                                 {!isMobile && (
                                         <>
                                             {results ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
                                         </>
                                     )}
-                                <h1 className="text-lg xl:text-xl text-neutral-900">Treff</h1>
+                                <h1 className="text-base xl:text-xl text-neutral-900">Resultat</h1>
                                 
-                                    <TitleBadge className="bg-primary-200 text-primary-800 font-bold" count={totalHits?.value || 0} />
+                                    <TitleBadge className="bg-primary-200 text-primary-800 font-bold text-sm xl:text-base" count={totalHits?.value || 0} />
                                 
                                 <div className="flex items-center gap-1 ml-auto">
                                     {isMobile && (

@@ -35,6 +35,7 @@ export default function Drawer({
     const startTouchY = useRef(0)
     const startTouchX = useRef(0)
     const startTouchTime = useRef(0)
+    const dragFromTopZoneRef = useRef(false)
     
     const lastRawHeightRef = useRef<number>(0)
     const localScrollRef = useRef<HTMLDivElement>(null)
@@ -155,8 +156,14 @@ export default function Drawer({
         startTouchX.current = e.touches[0].clientX
         setSnapped(false)
         startTouchTime.current = Date.now()
+        // Detect if touch starts in the top zone (grip area)
+        const containerTop = outerRef.current?.getBoundingClientRect().top || 0
+        const gripZoneRem = 2.5 // ~40px at 16px base
+        const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+        const gripZonePx = gripZoneRem * rootFontSize
+        dragFromTopZoneRef.current = (startTouchY.current - containerTop) <= gripZonePx
         // If at max and content cannot scroll, prevent default early to avoid viewport gestures
-        if (e.cancelable && atMax() && !isScrollable()) {
+        if (e.cancelable && (dragFromTopZoneRef.current || (atMax() && !isScrollable()))) {
             e.preventDefault()
         }
     }
@@ -180,7 +187,7 @@ export default function Drawer({
 
         // Only apply swipe-based snapping if dragging is allowed per current logic
         const durationMs = Math.max(1, Date.now() - startTouchTime.current)
-        const dragAllowedNow = !(shouldAllowScroll() && (effectiveScrollRef.current?.scrollTop || 0) > 0)
+        const dragAllowedNow = dragFromTopZoneRef.current || !(shouldAllowScroll() && (effectiveScrollRef.current?.scrollTop || 0) > 0)
         if (!dragAllowedNow) return
 
         const quickSwipe = durationMs < 500 && Math.abs(swipeDistance) > 10
@@ -201,8 +208,8 @@ export default function Drawer({
         const atMaxAndScrollable = shouldAllowScroll()
         const scrollTop = effectiveScrollRef.current?.scrollTop || 0
 
-        // If content can scroll and is not at top, do not drag the drawer
-        if (atMaxAndScrollable && scrollTop > 0) return
+        // If content can scroll and is not at top, do not drag the drawer (unless starting from grip/top zone)
+        if (!dragFromTopZoneRef.current && atMaxAndScrollable && scrollTop > 0) return
         if (e.cancelable) e.preventDefault()
 
         const rawNewHeight = snappedPositionRem() - pos2rem(startTouchY.current) + pos2rem(e.touches[0].clientY)
@@ -250,13 +257,13 @@ export default function Drawer({
             onTouchEnd={handleTouchEnd}
         >
             {/* Grip */}
-            <div className={`w-full h-2 flex items-center justify-center pt-2 ${currentPosition > minHeightRem ? 'rounded-t-full' : ''} bg-white relative ${scrolled ? 'border-b border-neutral-200 pb-2' : ''}`}>
-                <button type="button"  onClick={() => setSnappedPosition(snappedPosition == 'min' ? 'max' : 'min')} className="w-16 h-1.5 bg-neutral-200 rounded-full"></button>
-            </div>
+            <button type="button"  onClick={() => setSnappedPosition(snappedPosition == 'min' ? 'max' : 'min')} className={`  ${scrolled ? 'rounded-b-lg border-b-2 border-x-2 border-neutral-200 shadow-sm' : ''} bg-white absolute left-1/2 -translate-x-1/2 top-0 z-[6001]`}>
+                <div  className={`${scrolled ? 'bg-neutral-600' : 'bg-neutral-300'} w-16 h-1.5 rounded-full m-1`}></div>
+            </button>
             {/* Scroll container: scrollable if the drawer is at the max height */}
             <div
                 ref={effectiveScrollRef}
-                className="flex-1 min-h-0 bg-white"
+                className={`flex-1 min-h-0 bg-white ${currentPosition > minHeightRem ? 'rounded-t-lg' : ''}`}
                 style={{ 
                     overflowY: atMax() ? 'auto' : 'hidden', 
                     touchAction: shouldAllowScroll() ? 'pan-y' : 'none', 
@@ -268,7 +275,7 @@ export default function Drawer({
             {showScrollToTop && (
                 <RoundIconButton
                     type="button"
-                    className="absolute right-3 top-6 z-[6001] rounded-full"
+                    className="absolute right-6 bottom-12 z-[6001] rounded-full"
                     onClick={scrollToTop}
                     label="Til toppen"
                 ><PiCaretUpBold className="text-xl xl:text-base"/></RoundIconButton>
