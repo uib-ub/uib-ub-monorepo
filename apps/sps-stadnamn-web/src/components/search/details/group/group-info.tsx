@@ -183,7 +183,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
 
 	return <>
 		{yearsOrdered.length > 1 && <>
-            <h2 className="font-semibold flex items-center text-neutral-800 mt-3 mb-3">
+            {false && <h2 className="font-semibold flex items-center text-neutral-800 mt-3 mb-3">
                 Tidslinje
                 <button
                     type="button"
@@ -195,7 +195,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                 >
                     {showTimelineDescription ? <PiXCircle className="text-primary-700 text-lg mr-0.5 align-middle transition-transform" /> : <PiQuestionFill className={`text-primary-700 text-lg mr-0.5 align-middle transition-transform`} />}
                 </button>
-            </h2>
+            </h2>}
             <div id="timeline-description" className={showTimelineDescription ? 'block' : 'hidden'}>
                 <p>
                     Tidslinja viser tidligaste førekomst av namneformane, enten det er kjeldeform eller oppskrivingsår. Trykk på år eller namn for å filtrere kjeldene.
