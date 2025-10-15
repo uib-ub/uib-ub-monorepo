@@ -16,7 +16,7 @@ export default function Drawer({
     setCurrentPosition,
     bottomHeightRem = 8,
     middleHeightSvh = 60,
-    topHeightRem = 20,
+    topSubtractRem = 20,
     scrollContainerRef
 }: {
     children: React.ReactNode
@@ -29,7 +29,7 @@ export default function Drawer({
     setCurrentPosition: (position: number) => void
     bottomHeightRem?: number
     middleHeightSvh?: number,
-    topHeightRem?: number,
+    topSubtractRem?: number,
     scrollContainerRef?: React.RefObject<HTMLDivElement>
 }) {
 
@@ -341,7 +341,7 @@ export default function Drawer({
             {showScrollToTop && (
                 <RoundIconButton
                     type="button"
-                    className="absolute right-6 bottom-12 z-[6001] rounded-full"
+                    className="absolute right-6 bottom-10 z-[6001] rounded-full"
                     onClick={scrollToTop}
                     label="Til toppen"
                 ><PiCaretUpBold className="text-xl xl:text-base"/></RoundIconButton>
