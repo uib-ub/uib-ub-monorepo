@@ -3,7 +3,7 @@
     <!-- <SideBar></SideBar> -->
     <main class="space-y-6 py-8">
       <h1 class="text-2xl">
-        Insights
+        Statistikk
       </h1>
       <div class="space-y-12">
         <InsightsInstitutionsTbs />
