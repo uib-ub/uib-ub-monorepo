@@ -205,12 +205,13 @@ export default function Drawer({
         const isHorizontal = Math.abs(startTouchX.current - e.touches[0].clientX) > Math.abs(startTouchY.current - e.touches[0].clientY)
         if (isHorizontal) return
 
-        const atMaxAndScrollable = shouldAllowScroll()
-        const scrollTop = effectiveScrollRef.current?.scrollTop || 0
+    const atMaxAndScrollable = shouldAllowScroll()
+    const scrollTop = effectiveScrollRef.current?.scrollTop || 0
 
-        // If content can scroll and is not at top, do not drag the drawer (unless starting from grip/top zone)
-        if (!dragFromTopZoneRef.current && atMaxAndScrollable && scrollTop > 0) return
-        if (e.cancelable) e.preventDefault()
+    // If content can scroll and we're not dragging from the grip, let native scroll handle it
+    if (!dragFromTopZoneRef.current && atMaxAndScrollable) return
+    // Only prevent default when we're actually dragging the drawer
+    if (e.cancelable) e.preventDefault()
 
         const rawNewHeight = snappedPositionRem() - pos2rem(startTouchY.current) + pos2rem(e.touches[0].clientY)
         lastRawHeightRef.current = rawNewHeight
@@ -251,7 +252,7 @@ export default function Drawer({
         <div
             ref={outerRef}
             className={`fixed w-full left-0 drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''} flex flex-col`}
-            style={{ bottom: '-0.5rem', height: `${drawerOpen ? currentPosition : 0}rem`, pointerEvents: drawerOpen ? 'auto' : 'none', zIndex: 6000, touchAction: 'none', overscrollBehaviorY: 'none' as any }}
+            style={{ bottom: '-0.5rem', height: `${drawerOpen ? currentPosition : 0}rem`, pointerEvents: drawerOpen ? 'auto' : 'none', zIndex: 6000, touchAction: atMax() ? 'auto' : 'none', overscrollBehaviorY: 'none' as any }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
