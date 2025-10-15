@@ -254,9 +254,13 @@ export default function Drawer({
             onTouchEnd={handleTouchEnd}
         >
             {/* Grip */}
-            <button type="button"  onClick={() => setSnappedPosition(snappedPosition == 'min' ? 'max' : 'min')} className={`  ${scrolled ? 'rounded-b-lg border-b-2 border-x-2 border-neutral-200 shadow-sm' : ''} bg-white absolute left-1/2 -translate-x-1/2 top-0 z-[6001]`}>
+            <div
+                className={`absolute top-0 left-1/2 -translate-x-1/2 order-b border-none border-primary-600 flex z-[6001] pb-5 px-4 bg-gradient-to-b from-white/90 rounded-t-lg via-white/60 to-transparent ${scrolled ? 'w-full left-0 flex justify-center' : ''} `}
+            >
+           
                 <div  className={`${scrolled ? 'bg-neutral-600' : 'bg-neutral-300'} w-16 h-1.5 rounded-full m-1`}></div>
-            </button>
+
+            </div>
             {/* Scroll container: scrollable if the drawer is at the max height */}
             <div
                 ref={effectiveScrollRef}
