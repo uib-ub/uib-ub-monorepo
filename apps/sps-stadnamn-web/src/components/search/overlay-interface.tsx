@@ -15,7 +15,7 @@ import useSearchData from "@/state/hooks/search-data";
 import { useSearchParams } from "next/navigation";
 import OptionsWindow from "./nav/options-window";
 import Clickable from "../ui/clickable/clickable";
-import { MAP_DRAWER_MIN_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
+import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { Badge, TitleBadge } from "../ui/badge";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
@@ -76,12 +76,19 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     if (!isMobile) {
         return <>{children}</>
     }
+    
     if (isMobile && facet) {
         return <div className="fixed top-0 left-0 w-full h-full z-[3001] bg-white"><div className="h-[calc(100svh-3rem)] overflow-y-auto stable-scrollbar">{children}</div>
         <Clickable remove={["facet"]} add={{results: 'on'}} className="w-full h-12 text-xl flex items-center justify-center items-center bg-primary-800 text-white relative">Vis resultat <Badge className="bg-primary-50 text-primary-800 font-bold absolute right-4" count={totalHits?.value || 0} /></Clickable>
         </div>
     }
-    return <Drawer {...rest} bottomHeightRem={MAP_DRAWER_MIN_HEIGHT_REM} middleHeightSvh={MAP_DRAWER_MAX_HEIGHT_SVH}>{children}</Drawer>
+    if (snappedPosition === 'top') {
+        return <div className="bg-white absolute top-14 left-0 right-0 h-[calc(100svh-3.5rem)] z-[3001] overflow-y-auto stable-scrollbar">
+
+            {children}
+            </div>
+    }
+    return <Drawer {...rest} bottomHeightRem={MAP_DRAWER_BOTTOM_HEIGHT_REM} middleHeightSvh={MAP_DRAWER_MAX_HEIGHT_SVH}>{children}</Drawer>
 }
 
 function LeftWindow({children}: {children: React.ReactNode}) {

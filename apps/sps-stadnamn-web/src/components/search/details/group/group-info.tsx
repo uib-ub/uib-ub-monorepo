@@ -263,7 +263,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
 			</div>
 		)}
 
-        <div className="px-2 pt-2">
+        <div className="pt-2">
             {(activeYear || activeName) && (
                 <div className="flex items-center gap-2 pb-2 text-sm">
                     <span className="text-neutral-700">Filter:</span>

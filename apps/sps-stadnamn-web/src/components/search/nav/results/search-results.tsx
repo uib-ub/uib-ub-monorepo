@@ -63,7 +63,7 @@ export default function SearchResults() {
   }
 
   return (
-    <div ref={resultsContainerRef} className="mb-10 xl:mb-0">
+    <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
       {init && (initGroupLoading ? (
         <div className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-200">
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `10rem`}}></div>
@@ -79,7 +79,7 @@ export default function SearchResults() {
         </li>
       ))}
 
-      <ul id="result_list" className='flex flex-col mb-12 xl:mb-2 divide-y divide-neutral-200 border-y border-neutral-200'>
+      <ul id="result_list" className='flex flex-col mb-8 xl:mb-2 divide-y divide-neutral-200 border-y border-neutral-200'>
       
 
       {(initGroupLoading || collapsedLoading && collapsedInitialPage === 1) ? Array.from({ length: 30 }).map((_, i) => (

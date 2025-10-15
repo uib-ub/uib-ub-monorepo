@@ -12,7 +12,7 @@ import wkt from 'wellknown';
 import { stringToBase64Url } from "@/lib/param-utils";
 import useDocData from "@/state/hooks/doc-data";
 import { useQueries } from "@tanstack/react-query";
-import { boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius, getMyLocation, MAP_DRAWER_MIN_HEIGHT_REM, getLabelBounds, panPointIntoView } from "@/lib/map-utils";
+import { boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius, getMyLocation, MAP_DRAWER_BOTTOM_HEIGHT_REM, getLabelBounds, panPointIntoView } from "@/lib/map-utils";
 import useSearchData from "@/state/hooks/search-data";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
 import { GlobalContext } from "@/state/providers/global-provider";
@@ -155,11 +155,11 @@ export default function MapExplorer() {
 
 
   const processedMarkerResults = useMemo(() => {
-    if (markerResults.some(result => result.isLoading)) {
+    if (markerResults.some((result: any) => result.isLoading)) {
       return markerResultsRef?.current
     }
 
-    const buckets = markerResults.flatMap((result) => result.isSuccess && result.data ? result.data : [])
+    const buckets = markerResults.flatMap((result: any) => result.isSuccess && result.data ? result.data : [])
     //("BUCKETS", buckets)
 
 
@@ -169,7 +169,7 @@ export default function MapExplorer() {
     const labeledMarkersLookup: Record<string, Record<string, any>[]> = {}
     const seenGroups = new Set<string>()
 
-    buckets.forEach((bucket) => {
+    buckets.forEach((bucket: any) => {
       if ( zoomState > 15 || activeMarkerMode == 'labels' || bucket.doc_count == 1) {
 
 
@@ -551,7 +551,7 @@ export default function MapExplorer() {
       center={urlCenter || defaultCenter}
       className={`absolute top-0 right-0 left-0`}
       style={{
-        bottom: isMobile ? `${MAP_DRAWER_MIN_HEIGHT_REM-0.5}rem` : '0',
+        bottom: isMobile ? `${MAP_DRAWER_BOTTOM_HEIGHT_REM-0.5}rem` : '0',
       }}
       >
       {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon, Popup, MultiPolygon, Polyline, AttributionControl }: any, leaflet: any) => {
@@ -792,7 +792,7 @@ export default function MapExplorer() {
             })}
 
             {/* Debug: draw rectangle for each backend bucket/tile */}
-            {debug && showGeotileGrid && processedMarkerResults && markerResults.map((result) => result.data?.map((bucket: any) => {
+            {debug && showGeotileGrid && processedMarkerResults && markerResults.map((result: any) => result.data?.map((bucket: any) => {
               return <Rectangle
                 key={`bucket-${bucket.key}`}
                 bounds={geotileKeyToBounds(bucket.key)!}

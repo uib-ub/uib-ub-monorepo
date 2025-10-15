@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react"
 import { PiCaretUpBold } from "react-icons/pi"
 import { RoundIconButton } from "./clickable/round-icon-button"
+import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, MAP_DRAWER_TOP_SUBTRACT_REM } from "@/lib/map-utils"
 
 
 
@@ -14,9 +15,9 @@ export default function Drawer({
     setSnappedPosition,
     currentPosition,
     setCurrentPosition,
-    bottomHeightRem = 8,
-    middleHeightSvh = 60,
-    topSubtractRem = 20,
+    bottomHeightRem = MAP_DRAWER_BOTTOM_HEIGHT_REM,
+    middleHeightSvh = MAP_DRAWER_MAX_HEIGHT_SVH,
+    topSubtractRem = MAP_DRAWER_TOP_SUBTRACT_REM,
     scrollContainerRef
 }: {
     children: React.ReactNode
@@ -59,7 +60,7 @@ export default function Drawer({
         const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
         return windowHeight / rootFontSize
     }
-    const topRem = () => viewportRem() // 100svh expressed in rem
+    const topRem = () => Math.max(0, viewportRem() - topSubtractRem) // reduce top height by topSubtractRem
     const approximately = (a: number, b: number, epsilon = 0.5) => Math.abs(a - b) < epsilon
     const snappedPositionRem = () => {
         if (snappedPosition === 'top') return topRem()

@@ -4,7 +4,7 @@ import { getMyLocation } from "@/lib/map-utils"
 import { useSessionStore } from "@/state/zustand/session-store"
 import { useContext } from "react"
 import { GlobalContext } from "@/state/providers/global-provider"
-import { MAP_DRAWER_MIN_HEIGHT_REM } from "@/lib/map-utils"
+import { MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils"
 
 export default function MapToolbar() {
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
@@ -21,7 +21,7 @@ export default function MapToolbar() {
         <div
             className="flex gap-2 flex-col xl:flex-row absolute right-3 xl:right-[calc(25svw+1.5rem)] z-[5000]"
             style={{
-                top: isMobile ?  currentPosition <= MAP_DRAWER_MIN_HEIGHT_REM ? "4rem" : `${4-currentPosition + MAP_DRAWER_MIN_HEIGHT_REM}rem` : "0.5rem",
+                top: isMobile ?  currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM ? "4rem" : `${4-currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem` : "0.5rem",
             }}
         >
             <RoundIconClickable

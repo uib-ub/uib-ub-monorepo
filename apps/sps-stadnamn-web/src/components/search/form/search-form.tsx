@@ -15,7 +15,7 @@ import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { formatNumber } from '@/lib/utils';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { stringToBase64Url } from '@/lib/param-utils';
-import { MAP_DRAWER_MIN_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
+import { MAP_DRAWER_BOTTOM_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
 
 export async function autocompleteQuery(searchFilterParamsString: string, inputState: string, isMobile: boolean) {
     if (!inputState) return null
@@ -203,9 +203,9 @@ export default function SearchForm() {
     return <div
         className="flex"
         style={{
-            position: (!isMobile || currentPosition <= MAP_DRAWER_MIN_HEIGHT_REM)    ? undefined : 'absolute',
-            top: (!isMobile || currentPosition <= MAP_DRAWER_MIN_HEIGHT_REM) ? undefined : `${-currentPosition + MAP_DRAWER_MIN_HEIGHT_REM}rem`,
-            left: (!isMobile || currentPosition <= MAP_DRAWER_MIN_HEIGHT_REM) ? undefined : `0`
+            position: (!isMobile || currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM)    ? undefined : 'absolute',
+            top: (!isMobile || currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM) ? undefined : (snappedPosition === 'top' ? '0rem' : `calc(${-currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem * (1 - max(0, min(1, (${currentPosition}rem - 60svh) / (100svh - 60svh - 8rem)))))`),
+            left: (!isMobile || currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM) ? undefined : `0`
         }}>
         <header className={`${isMobile && autocompleteOpen ? 'sr-only' : 'flex xl:absolute xl:top-2 xl:left-2 w-14 h-14 xl:h-12 xl:w-auto'} ${(autocompleteOpen || menuOpen) ? 'xl:!rounded-b-none' : 'shadow-lg'} bg-neutral-50 xl:rounded-l-md`}><Menu shadow/></header>
         <Form ref={form} action="/search" id="search-form" aria-label="Stadnamnsøk"
