@@ -1,7 +1,6 @@
 <template>
   <div class="flex">
-    <SideBar class="hidden 2xl:block" />
-    <main class="">
+    <main class="ml-[12em]">
       <header>
         <h1 class="mt-4 mb-8">
           <LogoTermportalen img-style="width: 450px" />
