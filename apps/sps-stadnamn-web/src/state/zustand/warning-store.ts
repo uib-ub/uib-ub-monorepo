@@ -1,62 +1,65 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 
 type DismissedMessages = {
-  dismissedMessages: Set<string>
+  dismissedMessages: Set<string>  
+  shownMessages: Set<string>
   dismissMessage: (messageId: string) => void
-  isMessageDismissed: (messageId: string) => boolean
-  
+  allowMessage: (messageId: string) => boolean
+  markShown: (messageId: string) => void
   resetDismissedMessages: () => void
 }
 
-export const useWarningStore = create<DismissedMessages>()(
-  persist(
-    (set, get) => ({
-      dismissedMessages: new Set<string>(),
-      
-      dismissMessage: (messageId: string) =>
-        set((state) => ({
-          dismissedMessages: new Set([...state.dismissedMessages, messageId])
-        })),
-      
-      isMessageDismissed: (messageId: string) => {
-        return get().dismissedMessages?.has(messageId)
-      },
-      
-      resetDismissedMessages: () =>
-        set({ dismissedMessages: new Set<string>() })
-    }),
-    {
-      name: 'dismissed-messages',
-      // Reset store in development mode on each session
-      onRehydrateStorage: () => (state) => {
-        if (process.env.NODE_ENV === 'development' && state) {
-          state.resetDismissedMessages()
-        }
-      }
-    }
-  )
-)
+// Minimal manual persistence without middleware
+const STORAGE_KEY = 'dismissed-messages'
 
-type SessionWarnings = {
-  shownThisSession: Set<string>
-  markShown: (messageId: string) => void
-  hasBeenShownThisSession: (messageId: string) => boolean
-  resetSession: () => void
+function readDismissedFromStorage(): Set<string> {
+  try {
+    if (typeof window === 'undefined') return new Set<string>()
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return new Set<string>()
+    const parsed = JSON.parse(raw)
+    return new Set<string>(Array.isArray(parsed) ? parsed : [])
+  } catch {
+    return new Set<string>()
+  }
 }
 
-export const useWarningSessionStore = create<SessionWarnings>()((set, get) => ({
-  shownThisSession: new Set<string>(),
-  
+function writeDismissedToStorage(dismissed: Set<string>): void {
+  try {
+    if (typeof window === 'undefined') return
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(dismissed)))
+  } catch {
+    // ignore storage errors
+  }
+}
+
+export const useWarningStore = create<DismissedMessages>()((set, get) => ({
+  dismissedMessages: readDismissedFromStorage(),
+  shownMessages: new Set<string>(),
   markShown: (messageId: string) =>
     set((state) => ({
-      shownThisSession: new Set([...state.shownThisSession, messageId])
+      shownMessages: new Set([...state.shownMessages, messageId])
     })),
+  dismissMessage: (messageId: string) =>
+    set((state) => {
+      const next = new Set<string>([...state.dismissedMessages, messageId])
+      writeDismissedToStorage(next)
+      return { dismissedMessages: next }
+    }),
   
-  hasBeenShownThisSession: (messageId: string) => {
-    return get().shownThisSession?.has(messageId)
+  allowMessage: (messageId: string) => {
+    if (get().shownMessages.has(messageId)) {
+      return false
+    }
+    if (get().dismissedMessages.has(messageId)) {
+      return false
+    }
+    return true
   },
   
-  resetSession: () =>
-    set({ shownThisSession: new Set<string>() })
+  resetDismissedMessages: () => {
+    writeDismissedToStorage(new Set<string>())
+    set({ dismissedMessages: new Set<string>() })
+  }
 }))
+
