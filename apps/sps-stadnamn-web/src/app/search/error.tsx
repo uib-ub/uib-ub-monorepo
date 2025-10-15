@@ -50,7 +50,7 @@ export default function Error({
              Showing stack trace in development or preview environment
             <p className="font-mono text-sm text-neutral-700 break-words" lang="en">{error?.message}</p>
             <pre>
-              {error?.stack}
+              {JSON.stringify(error?.stack, null, 2)}
             </pre>
           </div>}
 
