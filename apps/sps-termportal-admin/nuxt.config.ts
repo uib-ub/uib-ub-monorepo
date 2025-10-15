@@ -21,20 +21,6 @@ export default defineNuxtConfig({
         },
       },
     },
-    sources: {
-      //   content: {
-      //     driver: "fs",
-      //     prefix: "/docs", // All contents inside this source will be prefixed with `/docs`
-      //     base: resolve(__dirname, "content"),
-      //   },
-      github: {
-        // prefix: "/remote",
-        driver: "github",
-        repo: "uib-ub/terminologi-content",
-        branch: "main",
-        dir: "admin",
-      },
-    },
   },
   runtimeConfig: {
     auth: {
@@ -84,11 +70,6 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: "vercel",
-  },
-  vite: {
-    define: {
-      __NUXT_ASYNC_CONTEXT__: false,
-    },
   },
   auth: {
     globalAppMiddleware: true,
