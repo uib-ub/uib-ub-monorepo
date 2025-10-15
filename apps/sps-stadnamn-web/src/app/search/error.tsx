@@ -2,6 +2,7 @@
 import Spinner from '@/components/svg/Spinner'
 import { usePlausible } from 'next-plausible'
 import Link from 'next/link'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { PiArrowClockwise, PiCheck } from 'react-icons/pi'
  
@@ -15,6 +16,10 @@ export default function Error({
   const [isResetting, setIsResetting] = useState(false)
   const [isReported, setIsReported] = useState(false)
   const plausible = usePlausible()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const search = searchParams.toString()
+  const fullUrl = `${pathname}${search ? `?${search}` : ''}`
 
   useEffect(() => {
     // Log the error to an error reporting service
@@ -33,8 +38,7 @@ export default function Error({
         message: error.message,
         stack: error.stack,
         digest: error.digest,
-        node_env: process.env.NODE_ENV,
-        url: window.location.href
+        url: fullUrl
     }
 
     fetch('/api/error', {
