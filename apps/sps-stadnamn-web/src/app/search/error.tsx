@@ -33,6 +33,18 @@ export default function Error({
     reset()
   }
 
+  const props = {
+      message: error.message,
+      stack: error.stack,
+      digest: error.digest,
+      url: fullUrl
+  }
+
+  fetch('/api/error', {
+    method: 'POST',
+    body: JSON.stringify(props)
+  })
+
   const handleReport = () => {
     const props = {
         message: error.message,
@@ -40,11 +52,6 @@ export default function Error({
         digest: error.digest,
         url: fullUrl
     }
-
-    fetch('/api/error', {
-      method: 'POST',
-      body: JSON.stringify(props)
-    })
     plausible('error', {props})
     setIsReported(true)
   }
