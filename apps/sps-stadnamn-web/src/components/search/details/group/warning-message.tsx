@@ -1,5 +1,5 @@
 import { PiWarning, PiX } from "react-icons/pi";
-import { useDismissedMessagesStore } from "@/state/zustand/persistent-warning-store";
+import { useWarningSessionStore, useWarningStore } from "@/state/zustand/warning-store";
 
 interface WarningMessageProps {
     message: string;
@@ -10,8 +10,13 @@ export default function WarningMessage({
     message, 
     messageId
 }: WarningMessageProps) {
-    const { isMessageDismissed, dismissMessage } = useDismissedMessagesStore();
+    const { isMessageDismissed, dismissMessage } = useWarningStore();
+    const { hasBeenShownThisSession, markShown } = useWarningSessionStore();
     
+    if (hasBeenShownThisSession(messageId)) {
+        return null;
+    }
+
     if (isMessageDismissed(messageId)) {
         return null;
     }

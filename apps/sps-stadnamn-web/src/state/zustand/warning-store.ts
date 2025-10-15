@@ -5,10 +5,11 @@ type DismissedMessages = {
   dismissedMessages: Set<string>
   dismissMessage: (messageId: string) => void
   isMessageDismissed: (messageId: string) => boolean
+  
   resetDismissedMessages: () => void
 }
 
-export const useDismissedMessagesStore = create<DismissedMessages>()(
+export const useWarningStore = create<DismissedMessages>()(
   persist(
     (set, get) => ({
       dismissedMessages: new Set<string>(),
@@ -19,7 +20,7 @@ export const useDismissedMessagesStore = create<DismissedMessages>()(
         })),
       
       isMessageDismissed: (messageId: string) => {
-        return get().dismissedMessages.has(messageId)
+        return get().dismissedMessages?.has(messageId)
       },
       
       resetDismissedMessages: () =>
@@ -36,3 +37,26 @@ export const useDismissedMessagesStore = create<DismissedMessages>()(
     }
   )
 )
+
+type SessionWarnings = {
+  shownThisSession: Set<string>
+  markShown: (messageId: string) => void
+  hasBeenShownThisSession: (messageId: string) => boolean
+  resetSession: () => void
+}
+
+export const useWarningSessionStore = create<SessionWarnings>()((set, get) => ({
+  shownThisSession: new Set<string>(),
+  
+  markShown: (messageId: string) =>
+    set((state) => ({
+      shownThisSession: new Set([...state.shownThisSession, messageId])
+    })),
+  
+  hasBeenShownThisSession: (messageId: string) => {
+    return get().shownThisSession?.has(messageId)
+  },
+  
+  resetSession: () =>
+    set({ shownThisSession: new Set<string>() })
+}))
