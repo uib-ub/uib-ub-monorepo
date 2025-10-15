@@ -58,7 +58,7 @@ export default function SearchResults() {
   const hasNoResults = collapsedStatus === 'success' && (!collapsedData?.pages || collapsedData.pages.length === 0 || collapsedData.pages[0].data?.length === 0);
 
 
-  if (isMobile && activeGroupValue && snappedPosition == 'bottom') {
+  if (false && isMobile && activeGroupValue && snappedPosition == 'bottom') {
     return null
   }
 
