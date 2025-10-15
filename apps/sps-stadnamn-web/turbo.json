@@ -21,8 +21,7 @@
         "ES_TOKEN",
         "ES_ENDPOINT",
         "ES_ENDPOINT_TEST",
-        "STADNAMN_CACHE_TOKEN",
-        "VERCEL_ENV"
+        "STADNAMN_CACHE_TOKEN"
       ]
     }
   }
