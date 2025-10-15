@@ -32,8 +32,15 @@ export default function Error({
     const props = {
         message: error.message,
         stack: error.stack,
-        digest: error.digest
+        digest: error.digest,
+        node_env: process.env.NODE_ENV,
+        url: window.location.href
     }
+
+    fetch('/api/error', {
+      method: 'POST',
+      body: JSON.stringify(props)
+    })
     plausible('error', {props})
     setIsReported(true)
   }
