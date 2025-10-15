@@ -2,10 +2,8 @@ import { create } from 'zustand'
 
 type DismissedMessages = {
   dismissedMessages: Set<string>  
-  shownMessages: Set<string>
   dismissMessage: (messageId: string) => void
   allowMessage: (messageId: string) => boolean
-  markShown: (messageId: string) => void
   resetDismissedMessages: () => void
 }
 
@@ -35,11 +33,6 @@ function writeDismissedToStorage(dismissed: Set<string>): void {
 
 export const useWarningStore = create<DismissedMessages>()((set, get) => ({
   dismissedMessages: readDismissedFromStorage(),
-  shownMessages: new Set<string>(),
-  markShown: (messageId: string) =>
-    set((state) => ({
-      shownMessages: new Set([...state.shownMessages, messageId])
-    })),
   dismissMessage: (messageId: string) =>
     set((state) => {
       const next = new Set<string>([...state.dismissedMessages, messageId])
@@ -48,13 +41,7 @@ export const useWarningStore = create<DismissedMessages>()((set, get) => ({
     }),
   
   allowMessage: (messageId: string) => {
-    if (get().shownMessages.has(messageId)) {
-      return false
-    }
-    if (get().dismissedMessages.has(messageId)) {
-      return false
-    }
-    return true
+    return !get().dismissedMessages.has(messageId)
   },
   
   resetDismissedMessages: () => {
