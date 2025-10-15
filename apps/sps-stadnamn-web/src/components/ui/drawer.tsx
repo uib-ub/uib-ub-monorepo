@@ -162,10 +162,7 @@ export default function Drawer({
         const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
         const gripZonePx = gripZoneRem * rootFontSize
         dragFromTopZoneRef.current = (startTouchY.current - containerTop) <= gripZonePx
-        // If at max and content cannot scroll, prevent default early to avoid viewport gestures
-        if (e.cancelable && (dragFromTopZoneRef.current || (atMax() && !isScrollable()))) {
-            e.preventDefault()
-        }
+        // Rely on CSS touch-action/overscroll-behavior instead of preventDefault
     }
 
     const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -210,8 +207,7 @@ export default function Drawer({
 
     // If content can scroll and we're not dragging from the grip, let native scroll handle it
     if (!dragFromTopZoneRef.current && atMaxAndScrollable) return
-    // Only prevent default when we're actually dragging the drawer
-    if (e.cancelable) e.preventDefault()
+        // Do not call preventDefault here; touch-action controls native behavior
 
         const rawNewHeight = snappedPositionRem() - pos2rem(startTouchY.current) + pos2rem(e.touches[0].clientY)
         lastRawHeightRef.current = rawNewHeight
