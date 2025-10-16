@@ -45,6 +45,7 @@ export default function Drawer({
     const localScrollRef = useRef<HTMLDivElement>(null)
     const outerRef = useRef<HTMLDivElement>(null)
     const effectiveScrollRef = scrollContainerRef || localScrollRef
+    const gestureStartedScrollRef = useRef<boolean>(false)
     
 
     const svhToRem = (svh: number) => {
@@ -176,6 +177,7 @@ export default function Drawer({
         setSnapped(false)
         startTouchTime.current = Date.now()
         startHeightRemRef.current = currentPosition
+        gestureStartedScrollRef.current = false
         // Detect if touch starts in the top zone (grip area)
         const containerTop = outerRef.current?.getBoundingClientRect().top || 0
         const gripZoneRem = 2.5 // ~40px at 16px base
@@ -194,6 +196,12 @@ export default function Drawer({
             return
         }
 
+        // If this gesture initiated scrolling, do not move or snap the drawer on release
+        if (gestureStartedScrollRef.current) {
+            gestureStartedScrollRef.current = false
+            return
+        }
+
         setSnapped(true)
         const pulledBelowThreshold = lastRawHeightRef.current < (bottomHeightRem - 1)
         if (dismissable && pulledBelowThreshold) {
@@ -202,48 +210,31 @@ export default function Drawer({
             return
         }
 
-        // Only apply swipe-based snapping if dragging is allowed per current logic and direction
+        // Only apply swipe-based snapping based on nearest allowed snap, do not block by direction
         const durationMs = Math.max(1, Date.now() - startTouchTime.current)
-        const el = effectiveScrollRef.current
-        const scrollTop = el?.scrollTop || 0
-        const canScrollUp = !!el && scrollTop > 0
-        const canScrollDown = !!el && (el.scrollHeight - el.clientHeight - scrollTop) > 1
         const isSwipeUp = swipeDistance > 0
         const isSwipeDown = swipeDistance < 0
-        const dragAllowedNow = dragFromTopZoneRef.current || (
-            !shouldAllowScroll() || (
-                (isSwipeDown && !canScrollUp) || (isSwipeUp && !canScrollDown)
-            )
-        )
-        if (!dragAllowedNow) {
-            const target = snappedPositionRem()
-            setCurrentPosition(target)
-            // Keep snappedPosition unchanged; just restore the height to its snap
-            return
-        }
 
-        // Prevent switching between top and middle unless drag started in grip
-        if (!dragFromTopZoneRef.current) {
-            if (snappedPosition === 'top' && !isSwipeDown) return
-            if (snappedPosition === 'middle' && isSwipeUp) return
-        }
-
-        const quickSwipe = durationMs < 500 && Math.abs(swipeDistance) > 10
         const allowTop = dragFromTopZoneRef.current
+        const candidates = allowTop
+            ? [bottomHeightRem, middleRem(), topRem()]
+            : [bottomHeightRem, middleRem()]
 
         let snapTarget: number
-        if (quickSwipe) {
+        // Guard: from top without grip, an upward swipe must never reduce size (stay at top)
+        if (snappedPosition === 'top' && !allowTop && isSwipeUp) {
+            snapTarget = topRem()
+        } else if (durationMs < 500 && Math.abs(swipeDistance) > 10) {
+            // Quick swipe: choose next snap by direction
             if (isSwipeUp) {
-                // Never allow bottom -> top on a single swipe
-                snapTarget = (snappedPosition === 'bottom') ? middleRem() : (allowTop ? topRem() : middleRem())
+                // Up: prefer higher snap (never bottom)
+                snapTarget = candidates.includes(topRem()) ? topRem() : middleRem()
             } else {
-                snapTarget = snappedPosition === 'top' ? middleRem() : bottomHeightRem
+                // Down: prefer lower snap (never top)
+                snapTarget = candidates.includes(bottomHeightRem) ? bottomHeightRem : middleRem()
             }
         } else {
-            // Choose nearest among allowed stops
-            const candidates = allowTop
-                ? [bottomHeightRem, middleRem(), topRem()]
-                : [bottomHeightRem, middleRem()]
+            // Slow drag: choose nearest among allowed
             snapTarget = candidates.reduce((prev, curr) => Math.abs(curr - currentPosition) < Math.abs(prev - currentPosition) ? curr : prev)
         }
 
@@ -253,6 +244,7 @@ export default function Drawer({
             snapTarget === bottomHeightRem ? 'bottom' :
             snapTarget === middleRem() ? 'middle' : 'top'
         )
+        gestureStartedScrollRef.current = false
     }
 
     const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -260,29 +252,54 @@ export default function Drawer({
         if (isHorizontal) return
 
         const el = effectiveScrollRef.current
-        const canScrollContext = shouldAllowScroll()
+        const canScrollContext = ((snappedPosition === 'middle') || (snappedPosition === 'top')) && isScrollable()
         const scrollTop = el?.scrollTop || 0
         const canScrollUp = !!el && scrollTop > 0
         const canScrollDown = !!el && (el.scrollHeight - el.clientHeight - scrollTop) > 1
         const deltaY = startTouchY.current - e.touches[0].clientY // >0 means moving up
 
-        // If content can scroll and we're not dragging from the grip, let native scroll handle it based on direction
-        if (!dragFromTopZoneRef.current && canScrollContext) {
-            if ((deltaY < 0 && canScrollUp) || (deltaY > 0 && canScrollDown)) return
+        const inGrip = dragFromTopZoneRef.current
+        const atMiddleNow = snappedPosition === 'middle'
+        const atTopNow = snappedPosition === 'top'
+        const atBottomNow = snappedPosition === 'bottom'
+
+        // If a gesture began with scrolling, never switch to resizing until next touchstart
+        if (!inGrip && gestureStartedScrollRef.current) {
+            return
         }
-        // If not dragging from the grip, block upward movement from middle (toward top).
-        // Allow dragging down from top from anywhere inside (ignore scrollability).
-        if (!dragFromTopZoneRef.current) {
-            if (snappedPosition === 'top' && !(deltaY < 0)) {
-                // No move allowed; ensure we stay snapped at top height
-                setCurrentPosition(topRem())
-                return
+
+        // Grip zone: no scrolling, always resize within clamps
+        if (!inGrip) {
+            // Not in grip: follow behavior rules per snap position
+            if (atBottomNow) {
+                // Bottom: no scroll; only allow upward resize
+                if (deltaY <= 0) return
+            } else if (atMiddleNow) {
+                if (deltaY > 0) {
+                    // Middle: swipe/drag up -> scroll down if possible, otherwise do nothing
+                    if (canScrollContext && canScrollDown) return
+                    return
+                } else if (deltaY < 0) {
+                    // Middle: swipe/drag down -> scroll up if scrolled, otherwise resize toward bottom
+                    if (canScrollContext && canScrollUp) { gestureStartedScrollRef.current = true; return }
+                    // else fall through to resize
+                } else {
+                    return
+                }
+            } else if (atTopNow) {
+                if (deltaY > 0) {
+                    // Top: swipe/drag up -> scroll if scrollable
+                    if (canScrollContext && canScrollDown) return
+                    return
+                } else if (deltaY < 0) {
+                    // Top: swipe/drag down -> scroll if content is scrolled, otherwise resize toward middle
+                    if (canScrollContext && canScrollUp) { gestureStartedScrollRef.current = true; return }
+                    // else fall through to resize
+                } else {
+                    return
+                }
             }
-            if (snappedPosition === 'middle' && deltaY > 0) {
-                // No move allowed; ensure we stay snapped at middle height
-                setCurrentPosition(middleRem())
-                return
-            }
+            // If between snaps, we treat as resizing and continue below
         }
         // Do not call preventDefault here; touch-action controls native behavior
 
