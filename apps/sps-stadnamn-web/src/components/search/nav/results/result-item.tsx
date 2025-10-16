@@ -56,6 +56,7 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
     const { mapFunctionRef } = useContext(GlobalContext)
     const { searchFilterParamsString } = useSearchQuery()
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
+    const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const showScore = useDebugStore((s: any) => s.showScore)
 
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
@@ -92,7 +93,7 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
         onClick?.()
         if (!hit.fields?.location?.[0].coordinates) return;
         const map = mapFunctionRef.current;
-        if (!map) return;
+        if (!map || snappedPosition == 'top') return;
 
         const [lng, lat] = hit.fields.location[0].coordinates;
 
