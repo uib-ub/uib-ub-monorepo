@@ -554,7 +554,7 @@ export default function MapExplorer() {
       zoomDelta={0.5}
       zoom={urlZoom || defaultZoom}
       center={urlCenter || defaultCenter}
-      className={`absolute top-0 right-0 left-0`}
+      className={`absolute top-0 right-0 left-0 select-none`}
       style={{
         bottom: isMobile ? `${MAP_DRAWER_BOTTOM_HEIGHT_REM-0.5}rem` : '0',
       }}
