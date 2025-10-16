@@ -18,7 +18,7 @@ import Clickable from "../ui/clickable/clickable";
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { Badge, TitleBadge } from "../ui/badge";
-import { useGroup, usePerspective } from "@/lib/param-hooks";
+import { useGroup, useMode, usePerspective } from "@/lib/param-hooks";
 import FacetSection from "./nav/facets/facet-section";
 import ActiveFilters from "./form/active-filters";
 import ServerFacet from "./nav/facets/server-facet";
@@ -55,6 +55,7 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     const [resetEnabled, setResetEnabled] = useState<boolean>(false);
     const facet = useSearchParams().get('facet')
     const { totalHits } = useSearchData()
+    const mode = useMode()
 
 
     useEffect(() => {
@@ -82,11 +83,11 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
         <Clickable remove={["facet"]} add={{results: 'on'}} className="w-full h-12 text-xl flex items-center justify-center items-center bg-primary-800 text-white relative">Vis resultat <Badge className="bg-primary-50 text-primary-800 font-bold absolute right-4" count={totalHits?.value || 0} /></Clickable>
         </div>
     }
-    if (snappedPosition === 'top') {
+    if (mode == 'list') {
         return <div className="bg-white absolute top-14 left-0 right-0 h-[calc(100svh-3.5rem)] z-[3001] overflow-y-auto stable-scrollbar">
 
             {children}
-            </div>
+        </div>
     }
     return <Drawer {...rest} bottomHeightRem={MAP_DRAWER_BOTTOM_HEIGHT_REM} middleHeightSvh={MAP_DRAWER_MAX_HEIGHT_SVH}>{children}</Drawer>
 }
@@ -183,7 +184,7 @@ export default function OverlayInterface() {
                                 
                             
                             <div className="flex items-center gap- ml-auto">
-                            {isMobile && totalHits?.value > 0 && <Clickable onClick={() => setSnappedPosition('middle')}  className={`bg-primary-800 rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 text-white text-sm xl:text-base font-semibold`} add={{results: 'on'}} remove={["options"]}>
+                            {isMobile && totalHits?.value > 0 && <Clickable onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null}  className={`bg-primary-800 rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 text-white text-sm xl:text-base font-semibold`} add={{results: 'on'}} remove={["options"]}>
                             Vis resultat{totalHits?.value > 0 && <Badge className="bg-primary-50 text-primary-800 font-bold" count={totalHits.value} />}
                         </Clickable>}
                         {!totalHits?.value && isMobile && <span className="text-sm xl:text-bas px-2">Ingen resultat</span>}
@@ -228,7 +229,7 @@ export default function OverlayInterface() {
                                 
                                 <div className="flex items-center gap-1 ml-auto">
                                     {isMobile && (
-                                        <Clickable remove={["results"]} onClick={() => setSnappedPosition('middle')} className={`bg-neutral-800 rounded-full px-2 py-1 flex items-center gap-1 text-white text-sm xl:text-base ${filterCount > 0 ? 'pl-1' : ''}`}>
+                                        <Clickable remove={["results"]} onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null} className={`bg-neutral-800 rounded-full px-2 py-1 flex items-center gap-1 text-white text-sm xl:text-base ${filterCount > 0 ? 'pl-1' : ''}`}>
                                             {filterCount > 0 ? <Badge className="bg-white text-neutral-800 font-bold" count={filterCount} /> :  <PiSliders className="text-white text-lg" aria-hidden="true" />}Filter
                                         </Clickable>
                                     )}

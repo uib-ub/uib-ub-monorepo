@@ -215,11 +215,16 @@ export default function Drawer({
                 (isSwipeDown && !canScrollUp) || (isSwipeUp && !canScrollDown)
             )
         )
-        if (!dragAllowedNow) return
+        if (!dragAllowedNow) {
+            const target = snappedPositionRem()
+            setCurrentPosition(target)
+            // Keep snappedPosition unchanged; just restore the height to its snap
+            return
+        }
 
         // Prevent switching between top and middle unless drag started in grip
         if (!dragFromTopZoneRef.current) {
-            if (snappedPosition === 'top') return
+            if (snappedPosition === 'top' && !isSwipeDown) return
             if (snappedPosition === 'middle' && isSwipeUp) return
         }
 
@@ -265,10 +270,19 @@ export default function Drawer({
         if (!dragFromTopZoneRef.current && canScrollContext) {
             if ((deltaY < 0 && canScrollUp) || (deltaY > 0 && canScrollDown)) return
         }
-        // If not dragging from the grip, block upward movement from middle (toward top) and any movement at top
+        // If not dragging from the grip, block upward movement from middle (toward top).
+        // Allow dragging down from top from anywhere inside (ignore scrollability).
         if (!dragFromTopZoneRef.current) {
-            if (snappedPosition === 'top') return
-            if (snappedPosition === 'middle' && deltaY > 0) return
+            if (snappedPosition === 'top' && !(deltaY < 0)) {
+                // No move allowed; ensure we stay snapped at top height
+                setCurrentPosition(topRem())
+                return
+            }
+            if (snappedPosition === 'middle' && deltaY > 0) {
+                // No move allowed; ensure we stay snapped at middle height
+                setCurrentPosition(middleRem())
+                return
+            }
         }
         // Do not call preventDefault here; touch-action controls native behavior
 
