@@ -22,6 +22,9 @@ export const useSessionStore = create<{ menuOpen: boolean,
 	
 	currentPosition: number,
 	setCurrentPosition: (position: number) => void,
+
+	displayRadius: number | null,
+	setDisplayRadius: (radius: number | null) => void,
 	
 	}>()((set) => ({
 		menuOpen: false,
@@ -43,7 +46,10 @@ export const useSessionStore = create<{ menuOpen: boolean,
 
 		currentPosition: 0,
 		setCurrentPosition: (position: number) => set({ currentPosition: position }),
-		
+
+		displayRadius: null,
+		setDisplayRadius: (radius: number | null) => set({ displayRadius: radius }),
+
 		autocompleteOpen: false,
 		setAutocompleteOpen: (open) => set({ autocompleteOpen: open }),
 		toggleAutocompleteOpen: () => set((s) => ({ autocompleteOpen: !s.autocompleteOpen })),

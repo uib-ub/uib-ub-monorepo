@@ -9,11 +9,13 @@ import Clickable from "@/components/ui/clickable/clickable";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchParams } from "next/navigation";
 import { useGroup } from "@/lib/param-hooks";
-import { PiPlusBold } from "react-icons/pi";
+import { PiMapPinArea, PiMapPinAreaBold, PiMapPinFill, PiMapPinSimpleBold, PiPlusBold, PiXBold } from "react-icons/pi";
 import useGroupData from "@/state/hooks/group-data";
 import Spinner from "@/components/svg/Spinner";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { GlobalContext } from "@/state/providers/global-provider";
+import { useRouter } from "next/navigation";
+
 
 
 const CollapsibleResultItem = ({hit, activeGroupValue}: {hit: any, activeGroupValue: string | null}) => {
@@ -39,6 +41,11 @@ export default function SearchResults() {
   const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const { isMobile } = useContext(GlobalContext)
+  const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
+  const displayRadius = useSessionStore((s) => s.displayRadius)
+  const setDisplayRadius = useSessionStore((s) => s.setDisplayRadius)
+  const submittedRadius = searchParams.get('radius')
+  const router = useRouter()
   
   // Use the enhanced infinite query hook
   const {
@@ -65,8 +72,72 @@ export default function SearchResults() {
     </div>
   }
 
+
+
   return (
     <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
+      {
+        point && (
+          <div className="p-2 flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              Vald punkt: {point.map(coord => coord.toFixed(5)).join(', ')}<Clickable remove={['point', 'radius']}><PiXBold/></Clickable>
+            </div>
+            <div className="flex items-center gap-2">
+              <div id="radius-label">
+                <span>{submittedRadius ? 'Radius: ' : 'Søk i nærleiken:'}</span>
+                {submittedRadius && <span>
+                  {(() => {
+                    const radiusValueRaw = displayRadius || submittedRadius || 1000;
+                    const radiusValue = Number(radiusValueRaw);
+                    if (radiusValue >= 1000) {
+                      return `${(radiusValue / 1000).toLocaleString(undefined, { maximumFractionDigits: 2 })} km`;
+                    } else {
+                      return `${radiusValue} m`;
+                    }
+                  })()}
+                </span>}
+              </div>
+              {submittedRadius ? (
+                <Clickable remove={['radius']}><PiXBold/></Clickable>
+              ) : (
+                <div className="flex items-center gap-2 px-2">
+                  <input
+                    name="radius"
+                    type="range"
+                    min="1000"
+                    max="100000"
+                    step="100"
+                    defaultValue={displayRadius || submittedRadius || 1000}
+                    onChange={e => setDisplayRadius(e.target.value ? parseInt(e.target.value) : null)}
+                    className="accent-primary-700 w-32"
+                    aria-labelledby="radius-label"
+                    onPointerUp={e => {
+                      const value = (e.target as HTMLInputElement).value;
+                      const params = new URLSearchParams(searchParams);
+                      setDisplayRadius(null);
+                      value ? params.set("radius", value) : params.delete("radius");
+                      router.push('?' + params.toString());
+                    }}
+                  />
+                  <span>
+                    {(() => {
+                      const radiusValueRaw = displayRadius || submittedRadius || 1000;
+                      const radiusValue = Number(radiusValueRaw);
+                      if (radiusValue >= 1000) {
+                        return `${(radiusValue / 1000).toLocaleString(undefined, { maximumFractionDigits: 2 })} km`;
+                      } else {
+                        return `${radiusValue} m`;
+                      }
+                    })()}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        )
+        
+
+      }
       {init && (initGroupLoading ? (
         <div className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-200">
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `10rem`}}></div>
@@ -135,7 +206,7 @@ export default function SearchResults() {
       {searchError || collapsedError ? (
         <div className="flex justify-center">
           <div role="status" aria-live="polite" className="text-primary-700 pb-4">
-            <strong>{searchError?.name || collapsedError?.name}</strong> Det har oppstått ein feil
+           Det har oppstått ein feil
           </div>
         </div>
       ) : hasNoResults && (

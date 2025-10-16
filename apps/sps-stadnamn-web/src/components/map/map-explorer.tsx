@@ -64,6 +64,11 @@ export default function MapExplorer() {
   const datasetTag = searchParams.get('datasetTag')
   const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
   const mapSettings = searchParams.get('mapSettings') == 'on'
+  const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
+  const urlRadius = searchParams.get('radius') ? parseInt(searchParams.get('radius')!) : null
+  const displayRadius = useSessionStore((s) => s.displayRadius)
+
+  const tapHoldRef = useRef<null | number>(null)
 
 
   const defaultZoom = isMobile ? 4 : 5
@@ -434,9 +439,8 @@ export default function MapExplorer() {
         if (!newQueryParams.get('results')) {
           newQueryParams.set('results', 'on')
         }
-        if (newQueryParams.get('mapSettings')) {
-          newQueryParams.delete('mapSettings')
-        }
+        newQueryParams.delete('mapSettings')
+        newQueryParams.delete('point')
         newQueryParams.delete('doc')
 
         newQueryParams.set('init', stringToBase64Url(selected["group.id"][0]))
@@ -543,6 +547,7 @@ export default function MapExplorer() {
         }
 
       }}
+      tapHold={true}
       zoomControl={false}
       attributionControl={false}
       zoomSnap={0.5}
@@ -554,17 +559,39 @@ export default function MapExplorer() {
         bottom: isMobile ? `${MAP_DRAWER_BOTTOM_HEIGHT_REM-0.5}rem` : '0',
       }}
       >
-      {({ TileLayer, CircleMarker, Marker, useMapEvents, useMap, Rectangle, Polygon, Popup, MultiPolygon, Polyline, AttributionControl }: any, leaflet: any) => {
+      {({ TileLayer, CircleMarker, Circle, Marker, useMapEvents, useMap, Rectangle, Polygon, Popup, MultiPolygon, Polyline, AttributionControl }: any, leaflet: any) => {
 
         function EventHandlers() {
           const map = useMap();
           useMapEvents({
             movestart: () => {
+              tapHoldRef.current = null
               const attribution = map.attributionControl;
               if (attribution) {
                 attribution.getContainer().style.display = mapSettings ? "block" : "none";
               }
             }, 
+
+            contextmenu: (event: any) => {
+
+
+                
+                const point = event.latlng
+                
+
+                    const newParams = new URLSearchParams(searchParams)
+                    newParams.delete('group')
+                    newParams.delete('init')
+
+                    newParams.set('point', `${point.lat},${point.lng}`)
+                    router.push(`?${newParams.toString()}`)
+                  
+                
+            },
+
+
+
+
             zoomstart: () => {
 
               suspendMarkerDiscoveryRef.current = true
@@ -890,6 +917,10 @@ export default function MapExplorer() {
             )}
 
             { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
+            { urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" />}
+            { displayRadius && point && <Circle center={point} radius={displayRadius} color="#cf3c3a" />}
+            { point && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point.reverse()} />}
+
 
 
 

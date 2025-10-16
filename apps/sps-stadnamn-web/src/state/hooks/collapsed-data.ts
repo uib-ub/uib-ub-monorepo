@@ -33,8 +33,8 @@ const collapsedDataQuery = async ({
     initBoost,
     initPlaceScore,
     initGroupData,
-
-}: { pageParam?: number; searchQueryString: string, initGroupCode: string | null, initBoost: number | null, initPlaceScore: number | null, initGroupData: Record<string, any> | null }) => {      
+    point,
+}: { pageParam?: number; searchQueryString: string, initGroupCode: string | null, initBoost: number | null, initPlaceScore: number | null, initGroupData: Record<string, any> | null, point: string | null }) => {      
     
     // Determine size and from based on page number
     const isFirstPage = pageParam === 0;
@@ -43,8 +43,9 @@ const collapsedDataQuery = async ({
 
     console.log(`📄 Fetching page ${pageParam}:`, { isFirstPage, size, from, expectedRange: `${from}-${from + size - 1}` });
 
+
     const initGroupValue = initGroupCode ? base64UrlToString(initGroupCode) : undefined
-    const initLocation = initGroupData?.sources[0]?.location?.coordinates || undefined
+    const initLocation = initGroupData?.sources[0]?.location?.coordinates || point ? point?.split(',').map(Number).reverse() : undefined
     const initLabel = initGroupData?.sources[0]?.label || undefined
 
     const res = await fetch(`/api/search/collapsed?${searchQueryString}`, {
@@ -92,6 +93,7 @@ export default function useCollapsedData() {
     const initialPageRef = useRef(initialPage)
     const { searchQueryString } = useSearchQuery()
     const initGroupCode = searchParams.get('init')
+    const point = searchParams.get('point')
     const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(initGroupCode)
     
     const {
@@ -104,7 +106,7 @@ export default function useCollapsedData() {
         isLoading,
         status
     } = useInfiniteQuery({
-        queryKey: ['collapsedData', searchQueryString, initGroupLoading, initGroupCode],
+        queryKey: ['collapsedData', searchQueryString, initGroupLoading, initGroupCode, point],
         queryFn: ({ pageParam }: { pageParam: number }) => collapsedDataQuery({ 
             pageParam, 
             searchQueryString,
@@ -112,6 +114,7 @@ export default function useCollapsedData() {
             initBoost: initGroupCode ? initGroupData?.boost : null,
             initPlaceScore: initGroupCode ? initGroupData?.placeScore : null,
             initGroupData: initGroupCode ? initGroupData : null,
+            point: point,
         }),
         placeholderData: (prevData: any) => prevData,
         initialPageParam: initialPageRef.current - 1,

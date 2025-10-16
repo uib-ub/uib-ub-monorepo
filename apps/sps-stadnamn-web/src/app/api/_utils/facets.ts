@@ -27,6 +27,7 @@ export const RESERVED_PARAMS = [
   'facets',
   'zoom',
   'point',
+  'radius',
   'facetQuery',
   'mode',
   'geotile',
@@ -99,6 +100,17 @@ export function extractFacets(request: Request) {
       }
     }
   }
+
+  if (reservedParams.radius && reservedParams.point) {
+    // Add a distance filter
+    termFilters.push({
+      "geo_distance": {
+        "distance": `${reservedParams.radius}m`,
+        "location": reservedParams.point.split(',').map(parseFloat).reverse()
+      }
+    });
+  }
+
 
   // Handle range filters (comparison operators)
   for (const [fieldName, operators] of Object.entries(rangeFilters)) {

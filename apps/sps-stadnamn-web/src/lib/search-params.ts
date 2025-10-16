@@ -75,6 +75,11 @@ export function useSearchQuery() {
         searchQuery.set('datasetTag', searchParams.get('datasetTag')!)
     }
 
+    if (searchParams.get('radius') && searchParams.get('point')) {
+        searchQuery.set('radius', searchParams.get('radius')!)
+        searchQuery.set('point', searchParams.get('point')!)
+    }
+
     const removeFilterParams = (key: string | string[], keep?: string[]) => {
         const outputUrl = new URLSearchParams(searchQuery)
         const keys = Array.isArray(key) ? key : [key]
