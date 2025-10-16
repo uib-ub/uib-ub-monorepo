@@ -71,6 +71,11 @@ export default defineNuxtConfig({
   nitro: {
     preset: "vercel",
   },
+  vite: {
+    resolve: {
+      dedupe: ["react", "react-dom"],
+    },
+  },
   auth: {
     globalAppMiddleware: true,
     isEnabled: true,
