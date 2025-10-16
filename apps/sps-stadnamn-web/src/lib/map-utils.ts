@@ -388,7 +388,8 @@ export function panPointIntoView(
       {
         paddingTopLeft: [padLeft, padTop],
         paddingBottomRight: [padRight, padBottom],
-        maxZoom: zoom
+        maxZoom: zoom,
+        duration: 0.05
       }
     );
     return true
