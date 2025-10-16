@@ -82,9 +82,10 @@ export default function SearchResults() {
             <div className="flex items-center gap-2">
               Vald punkt: {point.map(coord => coord.toFixed(5)).join(', ')}<Clickable remove={['point', 'radius']}><PiXBold/></Clickable>
             </div>
+            {/*TODO: move radius input to filters. Distance from both point and selected group */}
             <div className="flex items-center gap-2">
               <div id="radius-label">
-                <span>{submittedRadius ? 'Radius: ' : 'Søk i nærleiken:'}</span>
+                <span>{submittedRadius ? 'Radius: ' : 'Avgrens søket:'}</span>
                 {submittedRadius && <span>
                   {(() => {
                     const radiusValueRaw = displayRadius || submittedRadius || 1000;
@@ -115,7 +116,11 @@ export default function SearchResults() {
                       const value = (e.target as HTMLInputElement).value;
                       const params = new URLSearchParams(searchParams);
                       setDisplayRadius(null);
-                      value ? params.set("radius", value) : params.delete("radius");
+                      if (value) {
+                        params.set("radius", value)
+                      } else {
+                        params.delete("radius");
+                      }
                       router.push('?' + params.toString());
                     }}
                   />
