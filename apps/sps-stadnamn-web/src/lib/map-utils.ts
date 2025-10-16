@@ -3,7 +3,7 @@ export const EARTH_CIRCUMFERENCE = 40075016.686;
 
 export const MAP_DRAWER_BOTTOM_HEIGHT_REM = 8
 export const MAP_DRAWER_MAX_HEIGHT_SVH = 60
-export const MAP_DRAWER_TOP_SUBTRACT_REM = 3
+export const MAP_DRAWER_TOP_SUBTRACT_REM = 4
 
 // Web-Mercator helpers (Leaflet's default CRS: EPSG:3857)
 const R = 6378137; // Earth radius used by Spherical Mercator (meters)

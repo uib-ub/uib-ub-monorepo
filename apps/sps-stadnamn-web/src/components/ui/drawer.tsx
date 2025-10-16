@@ -213,7 +213,6 @@ export default function Drawer({
         // Only apply swipe-based snapping based on nearest allowed snap, do not block by direction
         const durationMs = Math.max(1, Date.now() - startTouchTime.current)
         const isSwipeUp = swipeDistance > 0
-        const isSwipeDown = swipeDistance < 0
 
         const allowTop = dragFromTopZoneRef.current
         const candidates = allowTop
@@ -224,14 +223,25 @@ export default function Drawer({
         // Guard: from top without grip, an upward swipe must never reduce size (stay at top)
         if (snappedPosition === 'top' && !allowTop && isSwipeUp) {
             snapTarget = topRem()
-        } else if (durationMs < 500 && Math.abs(swipeDistance) > 10) {
-            // Quick swipe: choose next snap by direction
+        } else if (durationMs < 200 && Math.abs(swipeDistance) > 10) {
+            // Quick swipe handling: be conservative about skipping the middle when there is scrollable content.
             if (isSwipeUp) {
-                // Up: prefer higher snap (never bottom)
-                snapTarget = candidates.includes(topRem()) ? topRem() : middleRem()
+                const el = effectiveScrollRef.current
+                const scrollTop = el?.scrollTop || 0
+                const canScrollDown = !!el && (el.scrollHeight - el.clientHeight - scrollTop) > 1
+
+                // Allow quick snap to top only if:
+                // - gesture started in grip, or
+                // - there is no more content to scroll down, or
+                // - we're currently at bottom (allow skipping straight to top)
+                if (dragFromTopZoneRef.current || !canScrollDown || snappedPosition === 'bottom') {
+                    snapTarget = topRem()
+                } else {
+                    snapTarget = middleRem()
+                }
             } else {
-                // Down: prefer lower snap (never top)
-                snapTarget = candidates.includes(bottomHeightRem) ? bottomHeightRem : middleRem()
+                // Down: quick swipe down snaps to bottom
+                snapTarget = bottomHeightRem
             }
         } else {
             // Slow drag: choose nearest among allowed
@@ -342,6 +352,8 @@ export default function Drawer({
     }
 
     return (
+        <>
+        {snappedPosition == 'top' && <div className="absolute top-0 left-0 w-full h-full bg-black/50 z-[3001]"></div>}
         <div
             ref={outerRef}
             className={`fixed w-full left-0 drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''} flex flex-col`}
@@ -352,7 +364,7 @@ export default function Drawer({
         >
             {/* Grip */}
             <div
-                className={`absolute top-0 left-1/2 -translate-x-1/2 order-b border-none border-primary-600 flex z-[6001] pb-5 px-4 bg-gradient-to-b from-white/90 rounded-t-lg via-white/60 to-transparent ${scrolled ? 'w-full left-0 flex justify-center' : ''} `}
+                className={`absolute top-0 left-1/2 -translate-x-1/2 order-b border-none border-primary-600 flex z-[6001] pb-5 px-4  rounded-b-full  bg-gradient-to-b from-white via-white/75 to-transparent`}
             >
            
                 <div  className={`${scrolled ? 'bg-neutral-600' : 'bg-neutral-300'} w-16 h-1.5 rounded-full m-1`}></div>
@@ -379,5 +391,6 @@ export default function Drawer({
                 ><PiCaretUpBold className="text-xl xl:text-base"/></RoundIconButton>
             )}
         </div>
+        </>
     )
 }
