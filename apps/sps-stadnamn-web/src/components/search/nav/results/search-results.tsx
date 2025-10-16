@@ -58,8 +58,11 @@ export default function SearchResults() {
   const hasNoResults = collapsedStatus === 'success' && (!collapsedData?.pages || collapsedData.pages.length === 0 || collapsedData.pages[0].data?.length === 0);
 
 
-  if (false && isMobile && activeGroupValue && snappedPosition == 'bottom') {
-    return null
+  if (isMobile && activeGroupValue && snappedPosition == 'bottom') {
+    return <div className="px-2">
+      Hello
+      TODO: fix scroll issue when container becomes scrollable
+    </div>
   }
 
   return (
