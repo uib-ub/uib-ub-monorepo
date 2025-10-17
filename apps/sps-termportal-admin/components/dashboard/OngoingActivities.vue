@@ -25,13 +25,13 @@
         </AppLink>
         <AppLink
           v-if="activity.type === 'termgruppeOppdatering'"
-          class="p-1"
+          class="p-1 bg-gray-100 hover:bg-gray-200 rounded h-9"
           to="/tasks/memberupdate"
         >
           <Icon
             name="mdi:read-more-outline"
-            size="1.8em"
-            class="p-1 hover:bg-gray-100 rounded"
+            size="1.6em"
+            class="p-1 rounded bg-gray-200 mr-1.5"
           />
         </AppLink>
       </li>

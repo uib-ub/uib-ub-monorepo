@@ -14,7 +14,7 @@
             v-model="searchLanguageTermbase"
             aria-labelledby="languageDropdownLabel"
             :options="optionsLanguage"
-            class="min-w-[11rem]"
+            class="min-w-44"
           />
         </SearchDropdownWrapper>
         <SearchDropdownWrapper target="translate">
@@ -22,7 +22,7 @@
             v-model="searchTranslateTermbase"
             aria-labelledby="translateDropdownLabel"
             :options="optionsTranslate"
-            class="min-w-[6rem]"
+            class="min-w-24"
           />
         </SearchDropdownWrapper>
       </div>

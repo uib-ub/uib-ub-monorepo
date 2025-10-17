@@ -4,10 +4,8 @@ export default defineNuxtConfig({
   },
   modules: [
     "@nuxtjs/tailwindcss",
-    "nuxt-icon",
     "@vueuse/nuxt",
-    // "@nuxtjs/html-validator",
-    // "@unlighthouse/nuxt",
+    "@nuxt/icon",
   ],
   css: ["termportal-ui/assets/tp-theme/theme.scss"],
 });

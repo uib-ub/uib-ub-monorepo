@@ -12,7 +12,7 @@
       :for="label"
       class="tp-transition-shadow flex cursor-pointer rounded-[7px] border border-transparent px-2 py-1 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
     >
-      <div class="-mt-[1px]">
+      <div class="flex items-start">
         <Icon
           v-if="
             modelValue[label] === true
@@ -22,14 +22,14 @@
           "
           name="mdi:checkbox-marked-outline"
           size="1.2em"
-          class="mb-0.5 text-tpblue-400"
+          class="mt-0.5 text-tpblue-400"
           aria-hidden="true"
         />
         <Icon
           v-else
           name="mdi:checkbox-blank-outline"
           size="1.2em"
-          class="mb-0.5 text-tpblue-400"
+          class="mt-0.5 text-tpblue-400"
           aria-hidden="true"
         />
       </div>

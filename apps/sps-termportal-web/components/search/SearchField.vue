@@ -15,7 +15,7 @@
     />
     <button
       id="searchbutton"
-      class="inline-block h-full w-14 items-center rounded-r-md bg-tpblue-400 text-white transition duration-200 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none active:bg-blue-800"
+      class="flex h-full w-14 items-center justify-center rounded-r-md bg-tpblue-400 text-white transition duration-200 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none active:bg-blue-800"
       type="button"
       :aria-label="$t('searchBar.searchButtonLabel')"
       @click="execSearch"
@@ -112,6 +112,8 @@ function execSearch() {
 </script>
 
 <style>
+@config "../../tailwind.config.ts";
+
 #navbarautocomplete_0 {
   display: none;
 }

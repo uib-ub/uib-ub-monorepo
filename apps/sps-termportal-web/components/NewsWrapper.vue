@@ -69,6 +69,8 @@ const { data } = useLazySanityQuery(query);
 </script>
 
 <style>
+@reference "tailwindcss";
+
 .news-wrapper a {
   @apply underline underline-offset-2 hover:decoration-2;
 }

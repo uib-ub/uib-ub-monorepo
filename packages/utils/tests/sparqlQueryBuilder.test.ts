@@ -1,7 +1,7 @@
 import { sqb } from '../src/sparqlQueryBuilder';
 
 describe('sparqlQueryBuilder', () => {
-  it('should interpolate the query string with the given parameters', () => {
+  test('should interpolate the query string with the given parameters', () => {
     const query = `SELECT * WHERE { 
       VALUES ?id {"%id"}
       ?subject dct:identifier ?id ;
@@ -22,7 +22,7 @@ describe('sparqlQueryBuilder', () => {
     expect(result).toEqual(expected);
   });
 
-  it('should throw an error if a parameter is missing', () => {
+  test('should throw an error if a parameter is missing', () => {
     const query = 'SELECT * WHERE { ?subject %predicate %object }';
     const params = {
       predicate: 'http://example.org/predicate',

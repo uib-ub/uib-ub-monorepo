@@ -7,29 +7,63 @@ export default defineEventHandler(async (_) => {
   const runtimeConfig = useRuntimeConfig();
   const instance = getFusekiInstanceInfo(runtimeConfig);
 
+  const esBootstrapData = await checkEsCache("bootstrap_data");
+
   try {
-    const queryLalo = genLazyLocalesQuery(runtimeConfig.public.base);
-    const dataLaLo = await $fetch(instance.url, {
-      method: "post",
-      body: queryLalo,
-      headers: {
-        "Content-type": "application/sparql-query",
-        "Accept": "application/json",
-        "Authorization": `Basic ${instance.authHeader}`,
-      },
-    }).then((data) => {
-      const tmp = { nb: {}, nn: {}, en: {} };
-      data.results.bindings.forEach((entry) => {
-        const lang = entry.label["xml:lang"];
-        const pagelst = entry.page.value.split("/");
-        const page = pagelst[pagelst.length - 1];
-        tmp[lang][page] = entry.label.value;
+    const dataLaLo = esBootstrapData.lalo || (async () => {
+      const queryLalo = genLazyLocalesQuery(runtimeConfig.public.base);
+      return await $fetch(instance.url, {
+        method: "post",
+        body: queryLalo,
+        headers: {
+          "Content-type": "application/sparql-query",
+          "Accept": "application/json",
+          "Authorization": `Basic ${instance.authHeader}`,
+        },
+      }).then((data) => {
+        const tmp = { nb: {}, nn: {}, en: {} };
+        data.results.bindings.forEach((entry) => {
+          const lang = entry.label["xml:lang"];
+          const page = entry.page.value.split("/").pop();
+          tmp[lang][page] = entry.label.value;
+        });
+        return tmp;
       });
-      return tmp;
-    });
+    })();
 
     const queryTermbase = genTermbaseMetaQuery(runtimeConfig.public.base);
-    const dataTermbase = await $fetch(instance.url, {
+    const dataTermbase = esBootstrapData.termbase || (async () => {
+      const queryTermbase = genTermbaseMetaQuery(runtimeConfig.public.base);
+      return await $fetch(instance.url, {
+        method: "post",
+        body: queryTermbase,
+        headers: {
+          "Content-type": "application/sparql-query",
+          "Accept": "application/json",
+          "Authorization": `Basic ${instance.authHeader}`,
+        },
+      }).then((data) => {
+        const tmp = {};
+        data.results.bindings.forEach((entry) => {
+          const tbLabelLst = entry.page.value.split("-3A");
+          const tbLabel = tbLabelLst[tbLabelLst.length - 1];
+          if (!tmp[tbLabel]) {
+            tmp[tbLabel] = {};
+          }
+          tmp[tbLabel].language
+            = entry.languages.value.split(",");
+
+          if (entry?.versionInfo) {
+            const viSplit = entry?.versionInfo.value.split(";;;");
+            tmp[tbLabel].versionEdition = viSplit[0];
+            tmp[tbLabel].versionNotesLink = viSplit[1];
+          }
+        });
+        return tmp;
+      });
+    });
+
+    await $fetch(instance.url, {
       method: "post",
       body: queryTermbase,
       headers: {

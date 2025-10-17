@@ -1,7 +1,7 @@
 <template>
   <h3
     v-if="predicate == 'prefLabel'"
-    class="grow"
+    class=""
   >
     <b
       :lang="(intersectUnique(
@@ -16,7 +16,7 @@
   </h3>
   <h3
     v-else
-    class="grow"
+    class=""
     :lang="(intersectUnique(
       localeLangOrder,
       labelLang as LangCode[])[0]
@@ -36,3 +36,9 @@ defineProps({
   labelLang: { type: Array, required: true },
 });
 </script>
+
+<style>
+mark {
+  background-color: #e2efff;
+  }
+</style>

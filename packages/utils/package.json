@@ -12,10 +12,18 @@
     "build": "tsc -p tsconfig.build.json",
     "dev": "tsc --noEmit --watch",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "dependencies": {
+    "jsonld": "^8.3.3"
   },
   "devDependencies": {
     "eslint-config": "*",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.0",
     "typescript": "^5.9.2",
     "typescript-config": "*"
   },

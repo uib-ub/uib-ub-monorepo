@@ -8,10 +8,11 @@ export default defineNuxtConfig({
   extends: ["termportal-ui"],
   modules: [
     "@nuxt/content",
-    "@nuxtjs/sanity",
     "@nuxt/eslint",
-    // "@nuxtjs/html-validator",
-    // "@unlighthouse/nuxt",
+    "@nuxt/icon",
+    "@nuxtjs/sanity",
+    "@nuxtjs/tailwindcss",
+    "shadcn-nuxt",
   ],
   ssr: false,
   app: {
@@ -21,17 +22,14 @@ export default defineNuxtConfig({
     },
   },
   content: {
-    sources: {
-      content: {
-        driver: "fs",
-        prefix: "/docs", // All contents inside this source will be prefixed with `/docs`
-        base: resolve(__dirname, "content"),
-      },
-      github: {
-        driver: "github",
-        repo: "uib-ub/terminologi-content",
-        branch: "main",
-        dir: "web",
+    experimental: {
+      sqliteConnector: "native",
+    },
+    build: {
+      markdown: {
+        remarkPlugins: {
+          "remark-emoji": false,
+        },
       },
     },
   },
@@ -120,6 +118,10 @@ export default defineNuxtConfig({
     apiVersion: "2023-10-09",
     token: process.env.SANITY_API_TOKEN,
     useCdn: true,
+  },
+  shadcn: {
+    prefix: "",
+    componentDir: "./components/ui",
   },
   // htmlValidator: {
   //  usePrettier: true,

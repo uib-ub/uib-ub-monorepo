@@ -1,5 +1,8 @@
 <template>
-  <UtilsTableWrapper>
+  <UtilsTableWrapper
+    heading-level="h2"
+    :pending="pending"
+  >
     <template #header>
       People participating in Reference groups
     </template>
@@ -75,7 +78,7 @@ const query = `
 }
 `;
 
-const { data } = useLazySanityQuery(query);
+const { data, pending } = useLazySanityQuery(query);
 
 // TODO handle situation where a person leaves and rejoins a group etc.
 // currently defaults to first membership

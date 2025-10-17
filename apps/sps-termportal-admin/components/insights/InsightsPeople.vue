@@ -1,5 +1,8 @@
 <template>
-  <UtilsTableWrapper>
+  <UtilsTableWrapper
+    heading-level="h2"
+    :pending="pending"
+  >
     <template #header>
       People participating in Termgroups
     </template>
@@ -78,7 +81,7 @@ const query = `
 }
 `;
 
-const { data } = useLazySanityQuery(query);
+const { data, pending } = useLazySanityQuery(query);
 
 const procdata = computed(() => {
   const filtered = data.value?.filter(person => person.termgroups.length > 0);

@@ -1,6 +1,6 @@
 import { pipe } from '../src/pipe';
 
-test("pipe function", async () => {
+describe("pipe function", () => {
   test("should compose synchronous functions", async () => {
     const double = (x: number) => x * 2;
     const addTen = (x: number) => x + 10;

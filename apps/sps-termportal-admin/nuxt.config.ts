@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   extends: ["termportal-ui"],
-  modules: ["@sidebase/nuxt-auth", "@nuxt/content", "@nuxtjs/sanity", "@nuxt/eslint"],
+  modules: ["@sidebase/nuxt-auth", "@nuxt/content", "@nuxtjs/sanity", "@nuxt/eslint", "@nuxt/icon"],
   ssr: false,
   devtools: { enabled: true },
   app: {
@@ -11,18 +11,14 @@ export default defineNuxtConfig({
     },
   },
   content: {
-    sources: {
-      //   content: {
-      //     driver: "fs",
-      //     prefix: "/docs", // All contents inside this source will be prefixed with `/docs`
-      //     base: resolve(__dirname, "content"),
-      //   },
-      github: {
-        // prefix: "/remote",
-        driver: "github",
-        repo: "uib-ub/terminologi-content",
-        branch: "main",
-        dir: "admin",
+    experimental: {
+      sqliteConnector: "native",
+    },
+    build: {
+      markdown: {
+        remarkPlugins: {
+          "remark-emoji": false,
+        },
       },
     },
   },
@@ -76,12 +72,16 @@ export default defineNuxtConfig({
     preset: "vercel",
   },
   vite: {
-    define: {
-      __NUXT_ASYNC_CONTEXT__: false,
+    resolve: {
+      dedupe: ["react", "react-dom"],
     },
   },
   auth: {
     globalAppMiddleware: true,
+    isEnabled: true,
+    disableServerSideAuth: false,
+    baseURL: process.env.AUTH_ORIGIN + "/api/auth",
+    originEnvKey: process.env.AUTH_ORIGIN,
   },
   sanity: {
     projectId: process.env.SANITY_PROJECT_ID,

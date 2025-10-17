@@ -33,6 +33,7 @@ next-env.d.ts
 
 # nuxt.js
 .nuxt/
+.data/
 .nitro
 
 # misc

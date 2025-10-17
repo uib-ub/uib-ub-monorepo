@@ -1,5 +1,8 @@
 <template>
-  <UtilsTableWrapper>
+  <UtilsTableWrapper
+    heading-level="h2"
+    :pending="pending"
+  >
     <template #header>
       Upubliserte termbaser
     </template>
@@ -93,7 +96,7 @@ const query = `
 }
 `;
 
-const { data } = useLazySanityQuery(query);
+const { data, pending } = useLazySanityQuery(query);
 
 const displayData = computed(() => {
   const mapped = data.value?.map((tb) => {
