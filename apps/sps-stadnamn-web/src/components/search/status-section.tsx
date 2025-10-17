@@ -44,22 +44,24 @@ export default function StatusSection() {
 
 
     {mode == 'map' && (!searchLoading && !searchBounds?.length && !searchError && totalHits?.value > 0) && 
-      <div role="status" 
-           aria-live="polite" 
-           className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit">
-            <PiInfoFill className="inline text-xl"/> Ingen treff med koordinatar
+      <div
+        role="status"
+        aria-live="polite"
+        className="bg-neutral-900 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit"
+      >
+        <PiInfoFill className="inline text-xl"/> Ingen treff med koordinatar
       </div>
     }
 
 
-    { ( !searchLoading && !searchError && totalHits?.value == 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff</div> : null}
+    { ( !searchLoading && !searchError && totalHits?.value == 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff</div> : null}
     
-    { searchError && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">
+    { searchError && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md h-12 px-4 text-white opacity-90 flex gap-4 items-center w-fit">
         <PiWarningFill className="inline text-xl"/> 
         <span>Kunne ikkje hente søkeresultat</span>
       </div>
     }
-    { !searchBounds && !searchError && !searchLoading && totalHits > 0 && mode == 'map' && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">
+    { !searchBounds && !searchError && !searchLoading && totalHits > 0 && mode == 'map' && <div role="status" aria-live="polite" className="bg-primary-700 h-12 px-4 rounded-md text-white opacity-90 flex gap-4 items-center w-fit">
       <PiWarningFill className="inline text-xl"/> 
       <span>Kunne ikkje hente koordinatar</span>
     </div>}

@@ -5,7 +5,7 @@ import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchParams } from "next/navigation"
 import ServerFacet from "./server-facet"
 import { facetConfig } from "@/config/search-config"
-import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiFunnel, PiMagnifyingGlass } from "react-icons/pi"
+import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiFunnel, PiMagnifyingGlass, PiMapPinArea, PiMapPinAreaFill, PiMapPinFill } from "react-icons/pi"
 import { useContext, useEffect, useState } from "react"
 import { datasetTitles } from "@/config/metadata-config"
 import WikiAdmFacet from "./wikiAdm-facet"
@@ -15,6 +15,10 @@ import DatasetFacet from "./dataset-facet"
 import MiscOptions from "@/app/misc-options"
 import { GlobalContext } from "@/state/providers/global-provider"
 import { useQuery } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
+import { useSessionStore } from "@/state/zustand/session-store"
+import { useGroup } from "@/lib/param-hooks"
+import useGroupData from "@/state/hooks/group-data"
 
 const getFacetFieldCounts = async (searchQueryString: string) => {
   const response = await fetch(`/api/fieldsPresent?${searchQueryString}`)
@@ -22,6 +26,127 @@ const getFacetFieldCounts = async (searchQueryString: string) => {
 
   return es_data.aggregations?.fields_present?.buckets
 
+}
+
+const RadiusFilter = () => {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const { activeGroupCode } = useGroup()
+  const { groupData } = useGroupData()
+  const displayRadius = useSessionStore((s) => s.displayRadius)
+  const setDisplayRadius = useSessionStore((s) => s.setDisplayRadius)
+  const setDisplayPoint = useSessionStore((s) => s.setDisplayPoint)
+  const displayPoint = useSessionStore((s) => s.displayPoint)
+  const submittedRadius = searchParams.get('radius')
+  const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
+
+  // Get the current location (either from point or group)
+  const currentLocation = point || (groupData?.sources?.find((source: any) => source.location?.coordinates)?.location?.coordinates ? 
+    [groupData.sources.find((source: any) => source.location?.coordinates).location.coordinates[1], 
+     groupData.sources.find((source: any) => source.location?.coordinates).location.coordinates[0]] as [number, number] : 
+    null)
+
+  if (!currentLocation) return null
+
+  const handleRadiusChange = (value: string) => {
+    setDisplayRadius(value ? parseInt(value) : null)
+    setDisplayPoint(point || (groupData?.fields?.location?.[0]?.coordinates ? [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]] as [number, number] : null))
+  }
+
+
+  const formatRadius = (radiusValue: number) => {
+    if (radiusValue >= 1000) {
+      return `${(radiusValue / 1000).toLocaleString('no-NO', { maximumFractionDigits: 2 })} km`
+    } else {
+      return `${radiusValue} m`
+    }
+  }
+    
+
+  const currentRadiusValue = displayRadius || submittedRadius || 1000
+
+  return (
+    <div className="px-4 py-3 border-b border-neutral-200">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-sm font-medium">
+          Avstand frå gjeldande punkt
+        </span>
+      </div>
+      
+      <div className="flex items-center gap-2">
+        <div className="flex-1">
+          <input
+            name="radius"
+            type="range"
+            min="10"
+            max="10000"
+            step="10"
+            value={currentRadiusValue}
+            onChange={e => handleRadiusChange(e.target.value)}
+            className="accent-primary-700 w-full"
+            aria-label="Radius for søk"
+          />
+        </div>
+        <span className="text-sm min-w-0 flex-shrink-0">
+          {formatRadius(Number(currentRadiusValue))}
+        </span>
+      </div>
+
+      <div className="flex gap-2 mt-3">
+        {/* Bruk radius */}
+        {!submittedRadius && (
+          <Clickable
+            add={{ radius: displayRadius }}
+            onClick={() => {
+              setDisplayRadius(null);
+              setDisplayPoint(null);
+            }}
+            className="btn btn-outline"
+          >
+            Bruk
+          </Clickable>
+        )}
+
+        {/* Oppdater */}
+        {(displayRadius && submittedRadius && displayRadius !== Number(submittedRadius)) && (
+          <Clickable
+            add={{ radius: displayRadius }}
+            className="btn btn-outline"
+            onClick={() => {
+              setDisplayRadius(null);
+              setDisplayPoint(null);
+            }}
+          >
+            Oppdater
+          </Clickable>
+        )}
+
+        {/* Fjern radius */}
+        {submittedRadius && (
+          <Clickable
+            remove={["radius", ...activeGroupCode ? ["point"] : []]}
+            className="btn btn-outline"
+          >
+            Fjern radius
+          </Clickable>
+        )}
+
+        {/* Avbryt */}
+        {(displayRadius || displayPoint) && (
+          <button
+            type="button"
+            onClick={() => {
+              setDisplayRadius(null);
+              setDisplayPoint(null);
+            }}
+            className="btn-outline btn"
+          >
+            Avbryt
+          </button>
+        )}
+      </div>
+    </div>
+  )
 }
 
 export default function FacetSection() {
@@ -76,6 +201,7 @@ export default function FacetSection() {
           <div className="flex flex-col gap-2 px-4">
            <MiscOptions/>
            </div>
+          <RadiusFilter />
           <Clickable 
                        className="w-full flex justify-between p-3"
                        add={{facet: facet == 'dataset' ? null : 'dataset'}}>

@@ -35,12 +35,18 @@ export default async function SearchPage({searchParams}: {searchParams: Promise<
   return <main id="main" className="bg-neutral-100 w-full h-full">
 
     <OverlayInterface />
-    <div className={`absolute xl:top-2 left-0 xl:left-[25svw] z-[7000] ${(mode == 'map' || !mode) ? '' : 'max-h-[calc(100svh-3rem)] max-w-[calc(100svw-25svw-0.5rem)] overflow-auto bg-white rounded-md !m-0 h-full w-full stable-scrollbar'}`}>
-      {mode == 'table' && <div className="flex items-baseline gap-4 px-4 p-2"><h2 className="text-xl !m-0 !p-0">Kjeldetabell</h2><Clickable className="flex items-center gap-1" remove={['mode']} add={{mode: 'map'}}><PiMapTrifold /> Vis Kart</Clickable></div>}
-      {mode != 'table' && <StatusSection />}
-      {mode == 'table' && <TableExplorerWrapper />}
-      {mode == 'list' && <ListExplorer />}
+    <div className={`absolute left-0 top-0 xl:left-[25svw] z-[7000] ${(mode == 'map' || !mode) ? '' : ' xl:top-2 max-h-[calc(100svh-3rem)] max-w-[calc(100svw-25svw-0.5rem)] overflow-auto bg-white rounded-md !m-0 h-full w-full stable-scrollbar'}`}>
+      {mode == 'table' ?
+      <>
+      
+      <div className="flex items-baseline gap-4 px-4 p-2"><h2 className="text-xl !m-0 !p-0">Kjeldetabell</h2><Clickable className="flex items-center gap-1" remove={['mode']} add={{mode: 'map'}}><PiMapTrifold /> Vis kartet</Clickable></div>
+      <TableExplorerWrapper />
+      </>
+
+      : <StatusSection />
+      }
     </div>
+    
 
     
 

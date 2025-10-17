@@ -25,6 +25,8 @@ export const useSessionStore = create<{ menuOpen: boolean,
 
 	displayRadius: number | null,
 	setDisplayRadius: (radius: number | null) => void,
+	displayPoint: [number, number] | null,
+	setDisplayPoint: (point: [number, number] | null) => void,
 
 	prefTab: 'text' | 'sources' | 'locations',
 	setPrefTab: (tab: 'text' | 'sources' | 'locations') => void,
@@ -55,6 +57,8 @@ export const useSessionStore = create<{ menuOpen: boolean,
 
 		displayRadius: null,
 		setDisplayRadius: (radius: number | null) => set({ displayRadius: radius }),
+		displayPoint: null,
+		setDisplayPoint: (point: [number, number] | null) => set({ displayPoint: point }),
 
 		prefTab: 'text',
 		setPrefTab: (tab: 'text' | 'sources' | 'locations') => set({ prefTab: tab }),

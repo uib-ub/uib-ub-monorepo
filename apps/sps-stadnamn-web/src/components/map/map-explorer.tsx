@@ -57,7 +57,7 @@ export default function MapExplorer() {
   const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
   const allowFitBounds = useRef(false)
   const { activeGroupValue } = useGroup()
-  const { groupLoading } = useGroupData()
+  const { groupLoading, groupData } = useGroupData()
   const { isMobile, mapFunctionRef } = useContext(GlobalContext)
   const mapInstance = useRef<any>(null)
   const doc = searchParams.get('doc')
@@ -67,6 +67,7 @@ export default function MapExplorer() {
   const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
   const urlRadius = searchParams.get('radius') ? parseInt(searchParams.get('radius')!) : null
   const displayRadius = useSessionStore((s) => s.displayRadius)
+  const displayPoint = useSessionStore((s) => s.displayPoint)
 
   const tapHoldRef = useRef<null | number>(null)
 
@@ -918,7 +919,7 @@ export default function MapExplorer() {
 
             { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
             { urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" />}
-            { displayRadius && point && <Circle center={point} radius={displayRadius} color="#cf3c3a" />}
+            { displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" />}
             { point && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point.reverse()} />}
 
 
