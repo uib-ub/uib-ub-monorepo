@@ -7,8 +7,8 @@ import useGroupData from './group-data';
 import { extractFacets } from '@/app/api/_utils/facets';
 import { base64UrlToString } from '@/lib/param-utils';
 
-const INITIAL_PAGE_SIZE = 10;
-const SUBSEQUENT_PAGE_SIZE = 30;
+const INITIAL_PAGE_SIZE = 5;
+const SUBSEQUENT_PAGE_SIZE = 40;
 
 // Haversine formula to calculate distance between two coordinates in meters
 const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
@@ -45,7 +45,7 @@ const collapsedDataQuery = async ({
 
 
     const initGroupValue = initGroupCode ? base64UrlToString(initGroupCode) : undefined
-    const initLocation = initGroupData?.sources[0]?.location?.coordinates || point ? point?.split(',').map(Number).reverse() : undefined
+    const initLocation = initGroupData?.fields?.location?.[0]?.coordinates || (point ? point?.split(',').map(Number).reverse() : undefined)
     const initLabel = initGroupData?.sources[0]?.label || undefined
 
     const res = await fetch(`/api/search/collapsed?${searchQueryString}`, {
@@ -116,7 +116,7 @@ export default function useCollapsedData() {
             initGroupData: initGroupCode ? initGroupData : null,
             point: point,
         }),
-        placeholderData: (prevData: any) => prevData,
+        //placeholderData: (prevData: any) => prevData,
         initialPageParam: initialPageRef.current - 1,
         getNextPageParam: (lastPage: any) => lastPage.nextCursor,
         refetchOnWindowFocus: false,

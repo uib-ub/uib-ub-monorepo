@@ -1,11 +1,14 @@
 import useGroupData from "@/state/hooks/group-data";
 import Carousel from "../../nav/results/carousel";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { formatHtml } from "@/lib/text-utils";
 import { resultRenderers } from "@/config/result-renderers";
-import { PiInfo, PiMinusBold, PiPlusBold, PiQuestionFill, PiXCircle } from "react-icons/pi";
+import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiXCircle, PiMapPinFill } from "react-icons/pi";
 import WarningMessage from "./warning-message";
+import { useSessionStore } from "@/state/zustand/session-store";
+import { group } from "console";
+import Spinner from "@/components/svg/Spinner";
 
 
 // Collapses long HTML to a few lines with a toggle
@@ -325,20 +328,59 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
 }
 
 const LocationsTab = ({ locations }: { locations: any[] }) => {
-    return locations.map((location: any) => (
-        <div key={location.uuid + 'location'}>{location.label}</div>
-    ))
+    if (!locations || locations.length === 0) return null;
+
+    // Group locations by coordinates (lat, lon as key)
+    const groupedByCoords: Record<string, any[]> = {};
+    locations.forEach(location => {
+        if (!location.location?.coordinates || location.location.coordinates.length < 2) return;
+        const [lon, lat] = location.location.coordinates;
+        const key = `${Number(lat).toFixed(6)},${Number(lon).toFixed(6)}`;
+        groupedByCoords[key] = groupedByCoords[key] || [];
+        groupedByCoords[key].push(location);
+    });
+
+    return (
+        <div className="flex flex-col gap-4 py-2">
+            {Object.entries(groupedByCoords).map(([coords, group]) => {
+                const [lat, lon] = coords.split(',');
+                
+                return (
+                    <div key={coords} className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2">
+                            <PiMapPinFill aria-hidden="true" className="text-primary-700 flex-shrink-0 text-lg" />
+                            <span className="text-neutral-900">
+                                {lat}, {lon}
+                            </span>
+                        </div>
+                        <div className="ml-6 flex flex-col gap-1">
+                            {group.map((location, index) => (
+                                <div key={location.uuid || index} className=" text-neutral-800">
+                                    {location.label}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )
+            })}
+        </div>
+    );
 }
 
-const TabButton = ({ openTab, setOpenTab, tab, label }: { openTab: string | null, setOpenTab: (tab: string) => void, tab: string, label: string }) => {
-    const isActive = openTab === tab
+const TabButton = ({ groupData, tab, label }: { groupData: any, tab: 'text' | 'sources' | 'locations', label: string }) => {
+    
+    const setPrefTab = useSessionStore(state => state.setPrefTab)
+    const setOpenTabs = useSessionStore(state => state.setOpenTabs)
+    const openTabs = useSessionStore(state => state.openTabs)
+    const isActive = openTabs[groupData.group.id] === tab
+    
     return (
         <button
             role="tab"
             aria-selected={isActive}
             tabIndex={isActive ? 0 : -1}
-            className="pb-2 px-3"
-            onClick={() => setOpenTab(tab)}
+            className="py-2 px-3"
+            onClick={() => { setOpenTabs(groupData.group.id, tab); setPrefTab(tab) }}
             id={`tab-${tab}`}
             aria-controls={`tabpanel-${tab}`}
             type="button"
@@ -370,14 +412,19 @@ const TabList = ({ children }: { children: ReactNode }) => {
 }
 
 
-export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: string }) {
-    const { groupData } = useGroupData(overrideGroupCode)
-    const [openTab, setOpenTab] = useState<string | null>(null)
+export default function GroupInfo({ id, overrideGroupCode }: { id: string, overrideGroupCode?: string }) {
+    const { groupData, groupLoading } = useGroupData(overrideGroupCode)
+    const prefTab = useSessionStore(state => state.prefTab)
+    const setPrefTab = useSessionStore(state => state.setPrefTab)
+    const openTabs = useSessionStore(state => state.openTabs)
+    const setOpenTabs = useSessionStore(state => state.setOpenTabs)
+    
 
-    const { iiifItems, textItems, audioItems, datasets } = useMemo(() => {
+    const { iiifItems, textItems, audioItems, datasets, locations } = useMemo(() => {
         const iiifItems: any[] = []
         const textItems: any[] = []
         const audioItems: any[] = []
+        const locations: any[] = []
         const seenEnhetsid = new Set<string>()
         const datasets: Record<string, any[]> = {}
         
@@ -392,22 +439,72 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
             if (source.recordings) {
                 audioItems.push(source)
             }
+            if (source.location) {
+                locations.push(source)
+            }
             datasets[source.dataset] = datasets[source.dataset] || []
             datasets[source.dataset].push(source)
         })
-        if (textItems.length > 0) {
-            setOpenTab('text')
-        } else {
-            setOpenTab('sources')
-        }
 
-        return { iiifItems, textItems, audioItems, datasets }
+
+        return { iiifItems, textItems, audioItems, datasets, locations }
     }, [groupData])
+
+    useEffect(() => {
+        if (groupData?.group.id) {
+            const groupId = groupData.group.id;
+            const currentTab = openTabs[groupId];
+            
+            // 1. Check if there's already a value stored at the id in openTabs
+            if (currentTab) {
+                // Verify the tab is still valid for this group
+                if (currentTab === 'text' && textItems.length > 0) {
+                    return; // Keep the existing tab
+                }
+                if (currentTab === 'sources') {
+                    return; // Keep the existing tab
+                }
+                if (currentTab === 'locations' && locations.length > 0) {
+                    return; // Keep the existing tab
+                }
+            }
+            
+            // 2. Use prefTab if the group has the required content
+            if (prefTab === 'text' && textItems.length > 0) {
+                setOpenTabs(groupId, 'text');
+                return;
+            }
+            if (prefTab === 'sources') {
+                setOpenTabs(groupId, 'sources');
+                return;
+            }
+            if (prefTab === 'locations' && locations.length > 0) {
+                setOpenTabs(groupId, 'locations');
+                return;
+            }
+            
+            // 3. Default fallback: text if available, otherwise sources
+            if (textItems.length > 0) {
+                setOpenTabs(groupId, 'text');
+            } else {
+                setOpenTabs(groupId, 'sources');
+            }
+        }
+    }, [groupData?.group.id, textItems.length, locations.length, openTabs, prefTab, setOpenTabs])
+
+
+    if (groupLoading) return (
+        <div className="flex justify-center items-center w-full py-8">
+            <Spinner status="Laster" className="animate-spin rounded-full h-8 w-8"></Spinner>
+        </div>
+    )
+
+
 
 
 
     return (
-        <div className="w-full flex flex-col gap-2 my-2 pb-8">
+        <div id={id} className="w-full flex flex-col gap-2 my-2 pb-8">
             {
                 audioItems?.map((audioItem) => (
                     <div key={audioItem.uuid + 'audio'}>{JSON.stringify(audioItem)}</div>
@@ -421,18 +518,19 @@ export default function GroupInfo({ overrideGroupCode }: { overrideGroupCode?: s
             <div className="w-full">
                 <TabList>
                     {textItems.length > 0 && (
-                        <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="text" label="Tolkingar" />
+                        <TabButton groupData={groupData} tab="text" label="Tolkingar" />
                     )}
-                    <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="sources" label="Kjelder" />
-                    <TabButton openTab={openTab} setOpenTab={setOpenTab} tab="places" label="Lokalitetar" />
+                    <TabButton groupData={groupData} tab="sources" label="Kjelder" />
+                    <TabButton groupData={groupData} tab="locations" label="Lokalitetar" />
                     
                 </TabList>
 
 
-                    <div role="tabpanel" className="px-3" id={`tabpanel-${openTab}`} aria-labelledby={`tab-${openTab}`}>
-                        {openTab === 'text' && <TextTab textItems={textItems} />}
-                        {openTab === 'sources' && <SourcesTab datasets={datasets} />}
-                        {openTab === 'locations' && <LocationsTab locations={[]} />}
+
+                    <div role="tabpanel" className="px-3" id={`tabpanel-${groupData.group.id}`} aria-labelledby={`tab-${openTabs[groupData.group.id]}`}>
+                        {openTabs[groupData.group.id] === 'text' && <TextTab textItems={textItems} />}
+                        {openTabs[groupData.group.id] === 'sources' && <SourcesTab datasets={datasets} />}
+                        {openTabs[groupData.group.id] === 'locations' && <LocationsTab locations={locations} />}
                     </div>
 
 

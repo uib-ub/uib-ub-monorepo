@@ -64,7 +64,7 @@ export default function Error({
         </div>
 
         <div className="space-y-4">
-          {process.env.SN_ENV} DEBUG
+          {process.env.SN_ENV}
           {/* TODO: remove true */}
           {(true ||process.env.NODE_ENV === 'development' || process.env.SN_ENV === 'dev') && <div className="inner-slate bg-white p-4 rounded-md">
              Showing stack trace in development or preview environment

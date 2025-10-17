@@ -1,6 +1,6 @@
 'use client'
 
-import { PiBookOpen, PiCaretDown, PiCaretDownBold, PiCaretUpBold, PiCrop, PiEye, PiEyeSlash, PiFunnel, PiMapPin, PiSliders, PiX } from "react-icons/pi";
+import { PiBookOpen, PiCaretDown, PiCaretDownBold, PiCaretUpBold, PiCrop, PiEye, PiEyeSlash, PiFunnel, PiMapPin, PiSliders, PiTableFill, PiX } from "react-icons/pi";
 import { RoundClickable } from "../ui/clickable/round-icon-button";
 import dynamic from "next/dynamic";
 import { formatNumber } from "@/lib/utils";
@@ -26,6 +26,7 @@ import ClientFacet from "./nav/facets/client-facet";
 import WikiAdmFacet from "./nav/facets/wikiAdm-facet";
 import { facetConfig, fieldConfig } from "@/config/search-config";
 import DatasetFacet from "./nav/facets/dataset-facet";
+import TableOptions from "./table/table-options";
 
 
 
@@ -141,6 +142,8 @@ export default function OverlayInterface() {
     const filterCount = facetFilters.length + datasetFilters.length
     const facet = searchParams.get('facet')
     const perspective = usePerspective()
+    const mode = useMode()
+    const tableOptions = searchParams.get('tableOptions') == 'on'
 
 
     return <>
@@ -158,7 +161,12 @@ export default function OverlayInterface() {
                     setCurrentPosition={setCurrentPosition}
                     scrollContainerRef={scrollableContent}
                 >
-                    {(!isMobile || ( !results && !mapSettings)) && <LeftWindow>  
+                    {(!isMobile || ( !results && !mapSettings) || mode == 'table') && <LeftWindow>  
+
+                        {tableOptions && <TableOptions />}
+
+
+
                         {facet ? <div className="w-full flex items-center px-2 xl:px-0 h-12 gap-2 xl:pl-2 flex">
                             <h1 className="text-lg xl:text-xl text-neutral-900">{fieldConfig[perspective][facet]?.label}</h1>
                             <div className="flex items-center gap-1 ml-auto">
@@ -169,28 +177,39 @@ export default function OverlayInterface() {
                             
                         </div>
                         
-                        :<Clickable notClickable={isMobile} add={{options: options ? null : 'on'}} remove={["options"]}  className="w-full flex items-center xl:h-12 px-2 pt-1 xl:px-0 gap-2 xl:pl-2">
+                        :<div  className="w-full flex items-center xl:h-12 px-2 pt-1 xl:px-0 gap-2 xl:pl-2">
+                        <Clickable className="flex items-center gap-2" add={{options: (options && !isMobile) ? null : 'on'}} remove={["options"]}>
                         {
                             !isMobile && <>
                                 {options ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
                             </>
                         }
-                        <h1 className="text-base xl:text-xl text-neutral-900">Filter</h1>
+                        <h1 className="text-base xl:text-xl text-neutral-900">Alternativ</h1>
                             
                                 
                             
                             
                             { filterCount && !isMobile ? <TitleBadge className="bg-primary-200 text-primary-800 font-bold" count={filterCount} /> : null}
                                 
-                            
+                            </Clickable>
                             <div className="flex items-center gap- ml-auto">
-                            {isMobile && totalHits?.value > 0 && <Clickable onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null}  className={`bg-primary-800 rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 text-white text-sm xl:text-base font-semibold`} add={{results: 'on'}} remove={["options"]}>
-                            Vis resultat{totalHits?.value > 0 && <Badge className="bg-primary-50 text-primary-800 font-bold" count={totalHits.value} />}
+                            {mode == 'map' && isMobile && totalHits?.value > 0 && <Clickable onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null}  className={`btn btn-outline rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 xl:text-base`} add={{results: 'on'}} remove={["options"]}>
+                            <span className="px-1 text-semibold">Vis resultat</span>{totalHits?.value > 0 && <Badge className="bg-primary-700 text-white" count={totalHits.value} />}
+                        </Clickable>}
+                        {mode == 'table' && <Clickable add={{tableOptions: 'on'}} remove={["tableOptions"]} className="btn btn-outline rounded-full px-2 py-1 pr-3 flex items-center gap-2 text-sm xl:text-base">
+                            <PiTableFill className="text-neutral-900" /> Kolonner
                         </Clickable>}
                         {!totalHits?.value && isMobile && <span className="text-sm xl:text-bas px-2">Ingen resultat</span>}
                         </div>
-                            </Clickable>}
+                            </div>}
                         {(options || isMobile) && !facet && <><ActiveFilters />
+                        
+                        
+
+                        
+
+
+
                                <FacetSection /></>}
                         {facet && <div className="flex flex-col gap-2"> 
                         {facet == 'adm' ? (
@@ -205,7 +224,7 @@ export default function OverlayInterface() {
                         </div>}
                     </LeftWindow>}
                     
-                    <RightWindow>
+                    {mode == 'map' && <RightWindow>
                         {/* Map Settings Header (separate, only when mapSettings is on) */}
                         {mapSettings ? (
                             <div className="w-full flex items-center xl:h-12 px-2 xl:px-0 gap-2">
@@ -217,7 +236,8 @@ export default function OverlayInterface() {
                                 </div>
                             </div>
                         ) : (
-                            <Clickable notClickable={isMobile} add={{results: results ? null : 'on'}} remove={["results"]} className="w-full flex items-center xl:h-12 px-2 py-1 xl:px-0 gap-2 xl:pl-2">
+                            <div  className="w-full flex items-center xl:h-12 px-2 py-1 xl:px-0 gap-2 xl:pl-2">
+                                <Clickable className="flex items-center gap-2 xl:px-2" add={{results: (results && !isMobile) ? null : 'on'}} remove={["results"]}>
                                 {!isMobile && (
                                         <>
                                             {results ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
@@ -225,20 +245,34 @@ export default function OverlayInterface() {
                                     )}
                                 <h1 className="text-base xl:text-xl text-neutral-900">Resultat</h1>
                                 
-                                    <TitleBadge className="bg-primary-200 text-primary-800 font-bold text-sm xl:text-base" count={totalHits?.value || 0} />
-                                
-                                <div className="flex items-center gap-1 ml-auto">
+                                   <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={totalHits?.value || 0} />
+                                </Clickable>
+                                <div className="flex items-center gap-2 ml-auto">
+                                    <ClickableIcon 
+                                        add={{mode: 'table'}} 
+                                        className="flex items-center btn btn-outline rounded-full p-1 px-2 h-7 xl:h-10 xl:text-lg xl:w-10 justify-center text-sm"
+                                        label="Vis kjeldetabell"
+                                    >
+                                        <PiTableFill className="text-neutral-900" />
+                                    </ClickableIcon>
                                     {isMobile && (
-                                        <Clickable remove={["results"]} onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null} className={`bg-neutral-800 rounded-full px-2 py-1 flex items-center gap-1 text-white text-sm xl:text-base ${filterCount > 0 ? 'pl-1' : ''}`}>
-                                            {filterCount > 0 ? <Badge className="bg-white text-neutral-800 font-bold" count={filterCount} /> :  <PiSliders className="text-white text-lg" aria-hidden="true" />}Filter
+                                        <Clickable 
+                                            remove={["results"]} 
+                                            onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null} 
+                                            className={`btn btn-outline rounded-full px-2 py-1 pr-3 flex items-center gap-2 text-sm xl:text-base h-7 xl:h-10 ${filterCount > 0 ? 'pl-1' : ''}`}
+                                        >
+                                            {filterCount > 0 
+                                                ? <Badge className="bg-neutral-800 text-white font-bold" count={filterCount} />
+                                                :  <PiSliders className="text-lg" aria-hidden="true" />
+                                            }
+                                            Filtre
                                         </Clickable>
                                     )}
-                                    
                                 </div>
-                            </Clickable>
+                            </div>
                         )}
                         {(mapSettings ? <MapSettings/> : results && <SearchResults />)}                   
-                    </RightWindow>
+                    </RightWindow>}
                 </DrawerWrapper>
                 
             </div>

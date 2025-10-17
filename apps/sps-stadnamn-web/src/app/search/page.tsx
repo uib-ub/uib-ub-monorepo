@@ -9,6 +9,10 @@ import ListExplorer from "@/components/search/list/list-explorer";
 import TableExplorer from "@/components/search/table/table-explorer";
 import StatusSection from "@/components/search/status-section";
 import OverlayInterface from "@/components/search/overlay-interface";
+import { PiArrowLeft, PiMapTrifold, PiTableFill } from "react-icons/pi";
+import Clickable from "@/components/ui/clickable/clickable";
+import { RoundClickable, RoundIconClickable } from "@/components/ui/clickable/round-icon-button";
+import TableExplorerWrapper from "@/components/search/table/table-explorer-wrapper";
 
 
 export async function generateMetadata({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
@@ -31,9 +35,10 @@ export default async function SearchPage({searchParams}: {searchParams: Promise<
   return <main id="main" className="bg-neutral-100 w-full h-full">
 
     <OverlayInterface />
-    <div className={`absolute top-14 xl:top-2 left-0 xl:left-[25svw] z-[1000] ${(mode == 'map' || !mode) ? '' : 'max-h-[calc(100svh-3rem)] overflow-auto bg-neutral-50 !m-0 h-full w-full stable-scrollbar'}`}>
-      <StatusSection />
-      {mode == 'table' && <TableExplorer />}
+    <div className={`absolute xl:top-2 left-0 xl:left-[25svw] z-[7000] ${(mode == 'map' || !mode) ? '' : 'max-h-[calc(100svh-3rem)] max-w-[calc(100svw-25svw-0.5rem)] overflow-auto bg-white rounded-md !m-0 h-full w-full stable-scrollbar'}`}>
+      {mode == 'table' && <div className="flex items-baseline gap-4 px-4 p-2"><h2 className="text-xl !m-0 !p-0">Kjeldetabell</h2><Clickable className="flex items-center gap-1" remove={['mode']} add={{mode: 'map'}}><PiMapTrifold /> Vis Kart</Clickable></div>}
+      {mode != 'table' && <StatusSection />}
+      {mode == 'table' && <TableExplorerWrapper />}
       {mode == 'list' && <ListExplorer />}
     </div>
 

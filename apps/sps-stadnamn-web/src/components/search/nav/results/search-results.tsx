@@ -24,9 +24,7 @@ const CollapsibleResultItem = ({hit, activeGroupValue}: {hit: any, activeGroupVa
   return (
     <li className="relative" key={hit.fields["group.id"][0]}>
       <ResultItem hit={hit} onClick={() => setExpanded(!expanded)} aria-controls={`group-info-${hit.fields["group.id"][0]}`} aria-expanded={expanded}/>
-      {expanded && <div id={`group-info-${hit.fields["group.id"][0]}`} className="pb-4"><GroupInfo overrideGroupCode={groupCode}/>
-      
-      </div>}
+      {expanded && <GroupInfo id={`group-info-${hit.fields["group.id"][0]}`} overrideGroupCode={groupCode}/>}
     </li>
   )
 }
@@ -80,7 +78,7 @@ export default function SearchResults() {
         point && (
           <div className="p-2 flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              Vald punkt: {point.map(coord => coord.toFixed(5)).join(', ')}<Clickable remove={['point', 'radius']}><PiXBold/></Clickable>
+              Vald punkt: <strong className="select">{point.map(coord => coord.toFixed(5)).join(', ')}</strong><Clickable remove={['point', 'radius']}><PiXBold/></Clickable>
             </div>
             {/*TODO: move radius input to filters. Distance from both point and selected group */}
             <div className="flex items-center gap-2">
@@ -149,19 +147,19 @@ export default function SearchResults() {
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `16rem`}}></div>
         </div>
       ) : initGroupData && (
-        <li key={`init-${initValue}`}>
+        <li className="relative" key={`init-${initValue}`}>
           <ResultItem 
             notClickable={true}
             hit={initGroupData}
           />
-          <div id={`group-info-${initGroupData.fields["group.id"]}`}><GroupInfo overrideGroupCode={init || undefined}/></div>
+         <GroupInfo id={`group-info-${initGroupData.fields["group.id"]}`} overrideGroupCode={init || undefined}/>
         </li>
       ))}
 
       <ul id="result_list" className='flex flex-col mb-8 xl:mb-2 divide-y divide-neutral-200 border-y border-neutral-200'>
       
 
-      {(initGroupLoading || collapsedLoading && collapsedInitialPage === 1) ? Array.from({ length: 30 }).map((_, i) => (
+      {(initGroupLoading || collapsedLoading && collapsedInitialPage === 1) ? Array.from({ length: collapsedInitialPage === 1 ? 6 : 40 }).map((_, i) => (
           <div key={`skeleton-${i}`} className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-200">
             <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 4, 10)}rem`}}></div>
             <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 10, 16)}rem`}}></div>

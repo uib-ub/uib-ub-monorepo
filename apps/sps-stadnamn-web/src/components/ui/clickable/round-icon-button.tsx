@@ -43,7 +43,7 @@ export function RoundClickable ({ children, onClick, className, ...rest }: { chi
     );
 }
 
-export function RoundIconClickable({ children, onClick, className, label, ...rest }: { children: React.ReactNode, onClick: () => void, className?: string, label: string, [x: string]: any }) {
+export function RoundIconClickable({ children, onClick, className, label, ...rest }: { children: React.ReactNode, onClick?: () => void, className?: string, label: string, [x: string]: any }) {
     return (
         <ClickableIcon
             label={label}

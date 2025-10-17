@@ -62,7 +62,7 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
                         onBlur={handleBlur}
                         aria-label="Meny"
                         aria-expanded={menuOpen} 
-                        className={`items-center justify-center flex aspect-square bg-neutral-50 z-[60000] ${menuOpen ? 'fixed top-0 left-0 w-14 h-14 ' : 'h-full w-full xl:rounded-l-md'}${shadow ? ' shadow-lg border-r border-neutral-200' : ''}`}
+                        className={`items-center justify-center flex aspect-square bg-neutral-50 z-[6000] ${menuOpen ? 'fixed top-0 left-0 w-14 h-14 ' : 'h-full w-full xl:rounded-l-md'}${(shadow && !menuOpen) ? ' shadow-lg border-r border-neutral-200' : ''}`}
                         onClick={() => setMenuOpen(!menuOpen)}>
                 {menuOpen ? <PiX className="text-3xl xl:text-2xl" aria-hidden="true"/> : <PiList className="text-3xl xl:text-2xl" aria-hidden="true"/>}</button>
  
@@ -76,98 +76,102 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
             
             </div>
                 
-				<div className="flex flex-col gap-2 p-3 w-full ">
-                        <h1 className="text-lg">Stadnamnsøk</h1>		
-					<div className="flex gap-2 items-center w-full pb-3 text-base" role="tablist">
-					
-					<Clickable link href="/search" role="tab" onClick={() => setMenuOpen(false)} aria-selected={modeOutsideSearch == 'map'} add={{mode: 'map'}} className={menuBtn}>
-						{modeOutsideSearch == 'map' ? <PiMapTrifoldFill className="text-xl text-white" /> : <PiMapTrifoldLight className="text-xl" />}
-						Kart
-					</Clickable>
-					<Clickable link href="/search" role="tab" onClick={() => setMenuOpen(false)} aria-selected={modeOutsideSearch == 'table'} add={{mode: 'table'}} className={menuBtn}>
-						{modeOutsideSearch == 'table' ? <PiTableFill className="text-xl text-white" /> : <PiTableLight className="text-xl" />}
-						Tabell
-					</Clickable>
-					<Clickable link href="/search" role="tab" onClick={() => setMenuOpen(false)} aria-selected={modeOutsideSearch == 'list'} add={{mode: 'list'}} className={menuBtn}>
-						{modeOutsideSearch == 'list' ? <PiBookOpenTextFill className="text-xl text-white" /> : <PiBookOpenTextLight className="text-xl" />}
-						Liste
-					</Clickable>
-					</div>
+                <div className="flex flex-col w-full gap-0">
+                    <h1 className="text-lg px-3 pt-6 pb-2">Stadnamnsøk</h1>
+                    <div className="flex flex-col w-full gap-0" role="tablist">
+                        <Clickable
+                            role="tab"
+                            link
+                            href="/search"
+                            onClick={() => setMenuOpen(false)}
+                            aria-selected={modeOutsideSearch == 'map'}
+                            aria-current={modeOutsideSearch == 'map' ? 'page' : undefined}
+                            remove={['mode']}
+                            className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-base text-left
+                                ${modeOutsideSearch == 'map'
+                                    ? 'bg-accent-800 text-white font-semibold'
+                                    : 'hover:bg-accent-100 text-neutral-900'
+                                }`}
+                        >
+                            {modeOutsideSearch == 'map'
+                                ? <PiMapTrifoldFill className="text-xl" />
+                                : <PiMapTrifoldLight className="text-xl" />}
+                            Kart
+                        </Clickable>
+                        <Clickable
+                            role="tab"
+                            href="/search"
+                            link
+                            onClick={() => setMenuOpen(false)}
+                            aria-selected={modeOutsideSearch == 'table'}
+                            aria-current={modeOutsideSearch == 'table' ? 'page' : undefined}
+                            add={{mode: 'table'}}
+                            className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-base text-left
+                                ${modeOutsideSearch == 'table'
+                                    ? 'bg-accent-800 text-white font-semibold'
+                                    : 'hover:bg-accent-100 text-neutral-900'
+                                }`}
+                        >
+                            {modeOutsideSearch == 'table'
+                                ? <PiTableFill className="text-xl" />
+                                : <PiTableLight className="text-xl" />}
+                            Kjeldetabell
+                        </Clickable>
                     </div>
-                    <Link scroll={false} className="flex items-center gap-2 py-3 px-4 lg:mx-0" href="/help"><PiQuestion aria-hidden="true"/>Søketips</Link>
-                    
-                    {false && <div className="flex flex-col gap-2 p-3 w-full">
-                    <span className="text-lg">Søkemodus</span>
-                    <div className="flex gap-2 items-center w-full pb-3 text-base flex-wrap" role="tablist">
-                        
-							<Clickable
-								remove={["datasetTag"]}
-								add={{nav: 'datasets'}}
-								role="tab"
-								aria-selected={!datasetTag && pathname == "/search"}
-								className={menuBtn}
-                                onClick={() => {setMenuOpen(false); setDrawerContent('datasets')}}
-							>
-								<span className="flex-shrink-0">
-									{!datasetTag && pathname == "/search" ? <PiDatabaseFill className="text-xl text-white" aria-hidden="true"/> : <PiDatabaseLight className="text-xl" aria-hidden="true"/>}
-								</span>
-								Alle datasett
-							</Clickable>
-							<Clickable
-								role="tab"
-								remove={["dataset", "group", "doc"]}
-								add={{ datasetTag: 'deep' , nav: 'datasets'}}
-                                onClick={() => {setMenuOpen(false); setDrawerContent('datasets')}}
-								aria-selected={datasetTag == 'deep'}
-								className={menuBtn}
-							>
-								<span className="flex-shrink-0">
-									{datasetTag == 'deep' ? <PiMicroscopeFill className="text-xl text-white" aria-hidden="true"/> : <PiMicroscopeLight className="text-xl" aria-hidden="true"/>}
-								</span>
-								Djup&shy;innsamlingar
-							</Clickable>
-							<Clickable
-								role="tab"
-								remove={["dataset", "group", "doc"]}
-								add={{ datasetTag: 'tree' , nav: 'tree'}}
-                                onClick={() => {setMenuOpen(false); setDrawerContent('tree')}}
-								aria-selected={datasetTag == 'tree'}
-								className={menuBtn}
-							>
-								<span className="flex-shrink-0">
-									{datasetTag == 'tree' ? <PiTreeViewFill className="text-xl text-white" aria-hidden="true"/> : <PiTreeViewLight className="text-xl" aria-hidden="true"/>}
-								</span>
-								Matriklar
-							</Clickable>
-							<Clickable
-								role="tab"
-								remove={["dataset", "group", "doc"]}
-								add={{ datasetTag: 'base' , nav: 'datasets'}}
-                                onClick={() => {setMenuOpen(false); setDrawerContent('datasets')}}
-								aria-selected={datasetTag == 'base'}
-								className={menuBtn}
-							>
-								<span className="flex-shrink-0">
-									{datasetTag == 'base' ? <PiWallFill className="text-xl text-white" aria-hidden="true"/> : <PiWallLight className="text-xl" aria-hidden="true"/>}
-								</span>
-								Grunnord
-							</Clickable>
-						
+                    <hr className="w-full h-px bg-neutral-200 border-0 my-0" />
+                    <div className="flex flex-col gap-0 w-full pb-0">
+                        <Link scroll={false}
+                            className={`flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 ${pathname === '/help' ? 'bg-accent-800 text-white font-semibold' : ''}`}
+                            href="/help"
+                            aria-current={pathname === '/help' ? 'page' : undefined}
+                        >
+                            <PiQuestion aria-hidden="true"/>Søketips
+                        </Link>
+                        <Link scroll={false}
+                            className="flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900"
+                            href="https://skjemaker.app.uib.no/view.php?id=16665712"
+                        >
+                            <PiChatCircleText aria-hidden="true"/>Tilbakemelding
+                        </Link>
+                        <Link scroll={false}
+                            className={`flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 ${pathname === '/iiif' ? 'bg-accent-800 text-white font-semibold' : ''}`}
+                            href="/iiif"
+                            aria-current={pathname === '/iiif' ? 'page' : undefined}
+                        >
+                            <PiArchive aria-hidden="true"/>Arkiv
+                        </Link>
+                        <div className="flex flex-col w-full">
+                            <Link scroll={false}
+                                className={`flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 ${pathname === '/info' ? 'bg-accent-800 text-white font-semibold' : ''}`}
+                                href="/info"
+                                aria-current={pathname === '/info' ? 'page' : undefined}
+                            >
+                                <PiInfo aria-hidden="true"/>Informasjon
+                            </Link>
+                            <Link scroll={false}
+                                className={`flex items-center gap-2 px-4 py-3 pl-10 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 ${pathname === '/info/privacy' ? 'bg-accent-800 text-white font-semibold' : ''}`}
+                                href="/info/privacy"
+                                aria-current={pathname === '/info/privacy' ? 'page' : undefined}
+                            >
+                                Personvern
+                            </Link>
+                            <Link scroll={false}
+                                className={`flex items-center gap-2 px-4 py-3 pl-10 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 ${pathname === '/info/license' ? 'bg-accent-800 text-white font-semibold' : ''}`}
+                                href="/info/license"
+                                aria-current={pathname === '/info/license' ? 'page' : undefined}
+                            >
+                                Opphavsrett
+                            </Link>
                         </div>
-                    </div>}
-                    
-                    
-                    <Link scroll={false} className="flex items-center gap-2 py-3 px-4 lg:mx-0" href="https://skjemaker.app.uib.no/view.php?id=16665712"><PiChatCircleText aria-hidden="true"/>Tilbakemelding</Link>
-					<Link scroll={false} className="flex items-center gap-2 py-3 px-4 lg:mx-0" href="/iiif"><PiArchive aria-hidden="true"/>Arkiv</Link>
-                   <div className="flex flex-col w-full">
-                    <Link scroll={false} className="flex items-center gap-2 py-3 px-4 lg:mx-0" href="/info"><PiInfo aria-hidden="true"/>Informasjon</Link>
-					<Link scroll={false} className="flex items-center gap-2 py-3 px-4 pl-10 lg:mx-0" href="/info/privacy">Personvern</Link>
-					<Link scroll={false} className="flex items-center gap-2 py-3 px-4 pl-10 lg:mx-0" href="/info/license">Opphavsrett</Link>
-					
+                        <Link 
+                            scroll={false}
+                            className="flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900"
+                            href="https://uustatus.no/nn/erklaringer/publisert/c3abf798-49b7-4776-b1ee-f07b46dadd38"
+                        >
+                            <PiPersonArmsSpread aria-hidden="true"/>Tilgjengeerklæring
+                        </Link>
                     </div>
-                    <Link scroll={false} className="flex items-center gap-2 py-3 px-4 lg:mx-0" href="https://uustatus.no/nn/erklaringer/publisert/c3abf798-49b7-4776-b1ee-f07b46dadd38"><PiPersonArmsSpread aria-hidden="true"/>Tilgjengeerklæring</Link>
-                    
-      
+                </div>
                 </nav>
                 </div>
 				

@@ -9,7 +9,7 @@ export default function IIIFNeighbourNav({manifest, isMobile}: {manifest: any, i
     if (!manifest) return null
 
     return (
-        <nav className={`${isMobile ? 'fixed bottom-6 left-4 right-4' : ''} flex items-center gap-2`}>
+        <nav className={`${isMobile ? 'fixed bottom-6 left-4 right-4 z-[4001]' : ''} flex items-center gap-2`}>
                 {/* Collection link */}
                 <RoundIconButton 
                     href={`/iiif${manifest.partOf ? `/${manifest.partOf}` : ''}`} 

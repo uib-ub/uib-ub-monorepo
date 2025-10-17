@@ -135,7 +135,7 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
                     {initValue && initValue == hit.fields["group.id"][0] && (
                         <>
                         <ClickableIcon className="ml-auto" label="Fjern utganspunkt for sortering" remove={['init']}>
-                            <PiXCircle className="text-neutral-700 group-aria-expanded:text-white text-xl" />
+                            <PiXCircle className="text-neutral-700 group-aria-expanded:text-white text-2xl" />
                         </ClickableIcon>
                         </>
                     )}

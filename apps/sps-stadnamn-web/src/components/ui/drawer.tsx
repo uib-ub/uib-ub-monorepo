@@ -353,7 +353,7 @@ export default function Drawer({
 
     return (
         <>
-        {snappedPosition == 'top' && <div className="absolute top-0 left-0 w-full h-full bg-black/50 z-[3001]"></div>}
+        {snappedPosition == 'top' && <div className="absolute top-14 left-0 w-full h-full bg-black/50 z-[3001]"></div>}
         <div
             ref={outerRef}
             className={`fixed w-full left-0 drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''} flex flex-col`}
@@ -373,7 +373,7 @@ export default function Drawer({
             {/* Scroll container: scrollable if the drawer is at the max height */}
             <div
                 ref={effectiveScrollRef}
-                className={`flex-1 min-h-0 bg-white ${currentPosition > bottomHeightRem ? 'rounded-t-lg' : ''}`}
+                className={`flex-1 min-h-0 bg-white ${currentPosition > bottomHeightRem ? 'rounded-t-xl' : ''}`}
                 style={{ 
                     overflowY: (atMiddle() || atTop()) ? 'auto' : 'hidden', 
                     touchAction: shouldAllowScroll() ? 'pan-y' : 'none', 
