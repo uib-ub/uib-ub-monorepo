@@ -1,4 +1,4 @@
-import { checkIntervalValidity } from '../src/checkIntervalValidity';
+import { checkIntervalValidity } from '../checkIntervalValidity';
 
 describe('checkIntervalValidity', () => {
   test('should return the same values if "after" is less than "before"', () => {
