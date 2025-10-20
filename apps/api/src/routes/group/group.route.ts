@@ -118,9 +118,20 @@ route.openapi(getGroup, async (c) => {
 
     const item = data.hits.hits[0]._source as JsonLdObj
 
+    const itemRec = item as Record<string, unknown>
+    let itemId = ''
+    if (typeof itemRec.id === 'string') {
+      itemId = itemRec.id
+    } else {
+      const atId = itemRec['@id']
+      if (typeof atId === 'string') {
+        itemId = atId
+      }
+    }
+
     const itemWithNewId = {
       ...item,
-      id: `${env.API_BASE_URL}/items/${item.id}`
+      id: `${env.API_BASE_URL}/items/${itemId}`
     }
 
     return c.json(reorderDocument(itemWithNewId, desiredOrder));

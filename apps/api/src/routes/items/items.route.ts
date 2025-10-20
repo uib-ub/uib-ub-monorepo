@@ -64,10 +64,17 @@ route.openapi(getList, async (c) => {
 
   return c.json(
     data.hits.hits.map((hit: any) => {
+      const sourceRec = hit._source as Record<string, unknown>
+      let srcId = ''
+      if (typeof sourceRec.id === 'string') {
+        srcId = sourceRec.id
+      } else if (typeof sourceRec['@id'] === 'string') {
+        srcId = sourceRec['@id']
+      }
       return {
         ...hit._source,
-        identifier: hit._source.id,
-        id: `${env.PROD_URL}/items/${hit._source.id}`,
+        identifier: sourceRec.id,
+        id: `${env.API_BASE_URL}/items/${srcId}`,
       }
     })
   )
