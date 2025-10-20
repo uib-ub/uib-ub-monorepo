@@ -64,6 +64,7 @@ const RadiusFilter = () => {
     
 
   const currentRadiusValue = displayRadius || submittedRadius || 1000
+  
 
   return (
     <div className="px-4 py-3 border-b border-neutral-200">
@@ -201,7 +202,7 @@ export default function FacetSection() {
           <div className="flex flex-col gap-2 px-4">
            <MiscOptions/>
            </div>
-          <RadiusFilter />
+          {false && <RadiusFilter />}
           <Clickable 
                        className="w-full flex justify-between p-3"
                        add={{facet: facet == 'dataset' ? null : 'dataset'}}>

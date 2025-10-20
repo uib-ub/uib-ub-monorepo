@@ -3,6 +3,8 @@ import { formatHighlight, createMarkup } from "@/lib/text-utils";
 import Link from "next/link";
 import SourceLink from "@/components/search/details/group/source-link";
 import { Fragment } from "react";
+import IconButton from "@/components/ui/icon-button";
+import { PiFileFill, PiInfoFill } from "react-icons/pi";
 
 interface Renderer {
   fields?: string[];
@@ -39,6 +41,7 @@ const defaultTitle = (hit: any) => {
 const loktypeDetails = (loktype: string, hit: any) => {
   return <>{loktype}{loktype && ' – '} {getFieldValue(hit, 'adm2')}{getFieldValue(hit, 'adm1') && ', ' + getFieldValue(hit, 'adm1')}  </>
 }
+
 
 
 
@@ -130,6 +133,9 @@ export const resultRenderers: ResultRenderers = {
         return defaultTitle(hit)
       }
     },
+    links: (hit: any) => {
+      return <SourceLink url={"https://stadnamn.fylkesarkivet.no/placename/" + hit.uuid} label="fylkesarkivet.no"/>
+    },
     details: (hit: any, display: string) => {
       return cadastreAdm(getFieldValue(hit, 'rawData.KommuneNr'), getFieldValue(hit, 'rawData.GardsNr'), getFieldValue(hit, 'rawData.BruksNr'), "/", hit, display)
     }
@@ -168,6 +174,11 @@ export const resultRenderers: ResultRenderers = {
     title: defaultTitle,
     snippet: (hit: any) => {
       return hit.highlight?.['content.text']?.[0] && formatHighlight(hit.highlight['content.text']?.[0])
+    },
+    links: (hit: any) => {
+      const link = "https://www.norskstadnamnleksikon.no/grunnord.aspx?grunnordCode=" + hit.label
+      return <> <SourceLink   label="norskstadnamnleksikon.no" url={link} /></>
+
     },
     details: (hit: any, display: string) => {
       return 

@@ -76,7 +76,7 @@ export default function SearchResults() {
           <div className="p-2 flex items-center gap-2">
             <PiMapPinFill className="text-primary-700" />
             <span>
-              {"Gjeldande startpunkt: "}
+              {"Startpunkt: "}
               <strong className="select">
                 {point ? 
                   point.map(coord => coord.toFixed(5)).join(', ') :

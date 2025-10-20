@@ -4,11 +4,12 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { formatHtml } from "@/lib/text-utils";
 import { resultRenderers } from "@/config/result-renderers";
-import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiXCircle, PiMapPinFill } from "react-icons/pi";
+import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiXCircle, PiMapPinFill, PiInfoFill } from "react-icons/pi";
 import WarningMessage from "./warning-message";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { group } from "console";
 import Spinner from "@/components/svg/Spinner";
+import Link from "next/link";
 
 
 // Collapses long HTML to a few lines with a toggle
@@ -186,25 +187,6 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
 
 	return <>
 		{yearsOrdered.length > 1 && <>
-            {false && <h2 className="font-semibold flex items-center text-neutral-800 mt-3 mb-3">
-                Tidslinje
-                <button
-                    type="button"
-                    className="ml-1 text-sm underline underline-offset-4 flex items-center"
-                    aria-expanded={showTimelineDescription}
-                    aria-controls="timeline-description"
-                    onClick={() => setShowTimelineDescription(!showTimelineDescription)}
-                    aria-label={showTimelineDescription ? "Lukk tidslinje-informasjon" : "Vis tidslinje-informasjon"}
-                >
-                    {showTimelineDescription ? <PiXCircle className="text-primary-700 text-lg mr-0.5 align-middle transition-transform" /> : <PiQuestionFill className={`text-primary-700 text-lg mr-0.5 align-middle transition-transform`} />}
-                </button>
-            </h2>}
-            <div id="timeline-description" className={showTimelineDescription ? 'block' : 'hidden'}>
-                <p>
-                    Tidslinja viser tidligaste førekomst av namneformane, enten det er kjeldeform eller oppskrivingsår. Trykk på år eller namn for å filtrere kjeldene.
-                </p>
-                
-            </div>
             {itemsByDataset['rygh']?.find((s: any) => s.attestations && s.attestations.length > 0) && (
                 <WarningMessage 
                     message="Uregelmessigheiter i digitaliseringa av Norske Gaardnavne gjer at det kan førekomme ord i tidslinja som ikkje er namneformer. Sjå teksten dei er basert på under «Tolkingar»."
@@ -293,7 +275,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                             <ul className="flex flex-col w-full -mx-2">
                                 {visibleItems.map((s: any) => (
                                     <li key={s.uuid} className="px-2 py-1">
-                                        {s.label}
+                                        <Link className="text-primary-700 no-underline hover:underline" href={"/uuid/" + s.uuid}><strong>{s.label}</strong></Link> {resultRenderers[ds]?.links?.(s)}
                                     </li>
                                 ))}
                                 {!autoShowAll && shouldCollapse && !isExpanded && (
@@ -499,6 +481,8 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         </div>
     )
 
+    const isGrunnord = Object.keys(datasets).some((ds: any) => ds.includes('_g'))
+
 
 
 
@@ -516,14 +500,14 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             }
 
             <div className="w-full">
-                <TabList>
+                {(locations.length > 0 || Object.keys(datasets).length > 1) && !isGrunnord && <TabList>
                     {textItems.length > 0 && (
                         <TabButton groupData={groupData} tab="text" label="Tolkingar" />
                     )}
                     <TabButton groupData={groupData} tab="sources" label="Kjelder" />
-                    <TabButton groupData={groupData} tab="locations" label="Lokalitetar" />
+                    {locations.length > 0 && <TabButton groupData={groupData} tab="locations" label="Lokalitetar" />}
                     
-                </TabList>
+                </TabList>}
 
 
 
