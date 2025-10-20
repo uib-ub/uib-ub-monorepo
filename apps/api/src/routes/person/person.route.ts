@@ -123,10 +123,21 @@ route.openapi(getPerson, async (c) => {
 
     const item = data.hits.hits[0]._source as JsonLdObj
 
-    // Rewrite _id to use the id from the URL parameter
+    // Rewrite _id to use a safe string id before templating
+    const itemRec = item as Record<string, unknown>
+    let itemId = ''
+    if (typeof itemRec.id === 'string') {
+      itemId = itemRec.id
+    } else {
+      const atId = itemRec['@id']
+      if (typeof atId === 'string') {
+        itemId = atId
+      }
+    }
+
     const itemWithNewId = {
       ...item,
-      id: `${env.API_BASE_URL}/items/${String(item.id)}`
+      id: `${env.API_BASE_URL}/items/${itemId}`
     }
 
     return c.json(reorderDocument(itemWithNewId, desiredOrder) as z.infer<typeof PersonSchema>);
