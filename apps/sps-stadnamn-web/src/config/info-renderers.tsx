@@ -4,6 +4,7 @@ import parse from 'html-react-parser';
 import { PiCodeSimple, PiInfoFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
 import InfoPopover from '@/components/ui/info-popover';
+import SourceLink from '@/components/search/details/group/source-link';
 
 const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string[]) => {
     const altLabels = altLabelKeys.map((key) => source[key]).filter((label: string) => label !== prefLabel && label);
@@ -16,6 +17,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
   search: null,
   sof: null,
   rygh: (source: any) => {
+    
     return <>
     { source.cadastre?.length > 0 &&
  <div className='flex flex-wrap gap-2'>
@@ -36,7 +38,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     }
 
     {source.content?.html && <div className="inline-flex flex-col inner-slate">
-     <div className='border-b border-neutral-200 p-4 flex flex-col gap-2'><Link href={source.link} className='whitespace-nowrap inline'>Bind {source.misc.Bind}, s. {source.misc.Side}</Link>
+     <div className='border-b border-neutral-200 p-4 flex gap-2'>Bind {source.misc.Bind}, s. {source.misc.Side}{source.links?.map((link: any) => <div key={link}><SourceLink url={link} /></div>)}
      {source.content.html.includes("font-phonetic") && <span className='text-sm'><PiWarningFill className='inline mr-1 text-primary-700' />Transkriberinga kan innehalde feil teikn, særleg i lydskrift</span>}</div>
     <div className='space-y-2 inline p-4'>{parse(source.content.html)}</div>
 
