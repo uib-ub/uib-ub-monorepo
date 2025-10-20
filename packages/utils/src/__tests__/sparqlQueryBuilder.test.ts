@@ -1,4 +1,4 @@
-import { sqb } from '../src/sparqlQueryBuilder';
+import { sqb } from '../sparqlQueryBuilder';
 
 describe('sparqlQueryBuilder', () => {
   test('should interpolate the query string with the given parameters', () => {
