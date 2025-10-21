@@ -13,8 +13,9 @@
     <span :class="{ 'icon-pad': !hideIcon }">
       <slot />
     </span>
-    <Icon v-if="!hideIcon" name="mdi:external-link" aria-hidden="true"
-  /></NuxtLink>
+      <Icon v-if="!hideIcon" name="mdi:external-link" class="inline-block translate-y-[3px]" aria-hidden="true"
+        />
+  </NuxtLink>
   <NuxtLink v-else :to="to" :target="target"><slot /></NuxtLink>
 </template>
 
