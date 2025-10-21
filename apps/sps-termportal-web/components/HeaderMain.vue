@@ -21,7 +21,7 @@
         <div class="flex justify-between">
           <HeaderSearchOptions />
           <button
-            class="ml-2 flex h-7 justify-center rounded-[4px] border border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
+            class="ml-2 flex h-7 justify-center rounded-[4px] border border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800 cursor-pointer"
             @click="headerDisplayScope = headerSize.Default"
           >
             <IconClose class="text-lg" />
@@ -38,7 +38,7 @@
         class="mt-[-6px] flex w-full max-w-6xl justify-center"
       >
         <button
-          class="absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border border-gray-300 border-t-white bg-white"
+          class="cursor-pointer absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border border-gray-300 border-t-white bg-white"
           @click="headerDisplayScope = headerSize.Full"
         >
           <Icon

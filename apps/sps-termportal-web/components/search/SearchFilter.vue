@@ -17,7 +17,7 @@
       </div>
       <button
         v-if="filterSelected"
-        class="rounded-sm border border-transparent px-1 text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
+        class="cursor-pointer rounded-sm border border-transparent px-1 text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
         @click="
           resetSearchFilterSelection(),
           useFetchSearchData(useGenSearchOptions('filter'))
