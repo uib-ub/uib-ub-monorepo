@@ -103,7 +103,7 @@ export default function SearchResults() {
 
 
   if (isMobile && activeGroupValue && snappedPosition == 'bottom') {
-    return <div className="px-2">
+    return <div className="px-2 h-[100vh]">
       Hello
       TODO: fix scroll issue when container becomes scrollable
     </div>
