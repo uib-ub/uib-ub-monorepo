@@ -7,9 +7,9 @@ import { resultRenderers } from "@/config/result-renderers";
 import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiXCircle, PiMapPinFill, PiInfoFill } from "react-icons/pi";
 import WarningMessage from "./warning-message";
 import { useSessionStore } from "@/state/zustand/session-store";
-import { group } from "console";
 import Spinner from "@/components/svg/Spinner";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 
 
 // Collapses long HTML to a few lines with a toggle
@@ -365,6 +365,24 @@ const TabButton = ({ groupData, tab, label }: { groupData: any, tab: 'text' | 's
     const setOpenTabs = useSessionStore(state => state.setOpenTabs)
     const openTabs = useSessionStore(state => state.openTabs)
     const isActive = openTabs[groupData.group.id] === tab
+    const searchParams = useSearchParams()
+    const router = useRouter();
+
+    const handleClick = () => {
+        setOpenTabs(groupData.group.id, tab);
+        setPrefTab(tab);
+        if (tab == 'locations') {
+            const newParams = new URLSearchParams(searchParams);
+            newParams.set('locations', 'on');
+            router.replace(`?${newParams.toString()}`);
+        }
+        else if (searchParams.get('locations')) {
+            const newParams = new URLSearchParams(searchParams);
+            newParams.delete('locations');
+            router.replace(`?${newParams.toString()}`);
+        }
+
+    }
     
     return (
         <button
@@ -372,7 +390,7 @@ const TabButton = ({ groupData, tab, label }: { groupData: any, tab: 'text' | 's
             aria-selected={isActive}
             tabIndex={isActive ? 0 : -1}
             className="py-2 px-3"
-            onClick={() => { setOpenTabs(groupData.group.id, tab); setPrefTab(tab) }}
+            onClick={handleClick}
             id={`tab-${tab}`}
             aria-controls={`tabpanel-${tab}`}
             type="button"

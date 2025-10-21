@@ -7,13 +7,14 @@ import Clickable from "../ui/clickable/clickable";
 import { usePerspective } from "@/lib/param-hooks";
 import dynamic from "next/dynamic";
 import { GlobalContext } from "@/state/providers/global-provider";
+import { useDebugStore } from "@/state/zustand/debug-store";
 
 const MapDebugSettings = dynamic(() => import("./map-debug-settings"), { ssr: false });
 
 export default function MapSettings() {
   const { baseMap, markerMode, setBaseMap, setMarkerMode } = useMapSettings();
   const perspective = usePerspective();
-  const { debug } = useContext(GlobalContext);  
+  const debug = useDebugStore((s) => s.debug);  
 
   // Add state for h3 resolution
 

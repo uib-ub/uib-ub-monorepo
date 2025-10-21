@@ -1,7 +1,7 @@
 "use client";
 
 import { useDebugStore } from "@/state/zustand/debug-store";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 
 
@@ -17,12 +17,25 @@ export default function MapDebugSettings() {
   const h3Resolution = useDebugStore((s: any) => s.h3Resolution);
   const setH3Resolution = useDebugStore((s: any) => s.setH3Resolution);
   const showScore = useDebugStore((s: any) => s.showScore);
-  const setShowScore = useDebugStore((s: any) => s.setShowScore);
+  const setShowScore = useDebugStore((s: any) => s.setShowScore)
+  const router = useRouter();
+  const setDebug = useDebugStore((s: any) => s.setDebug);
+  const setDebugChildren = useDebugStore((s: any) => s.setDebugChildren);
 
   return (
     <section>
       <fieldset className="border-0 p-0 m-0">
-        <legend className="text-base font-semibold text-neutral-900 p-3">Debug</legend>
+        <legend className="text-base font-semibold text-neutral-900 p-3 flex justify-between items-center">
+          Debug
+          {/* Button to disable debug */}
+          <button
+            type="button"
+            className="ml-4 px-3 py-1 text-sm rounded bg-neutral-200 text-neutral-900 hover:bg-neutral-300 transition-colors"
+            onClick={() => {setDebug(false); setDebugChildren([]); router.refresh()}}
+          >
+            Slå av debug
+          </button>
+        </legend>
         <div className="flex flex-col gap-2 px-2 py-1">
             <div className="flex flex-col gap-2 mt-2">
               <fieldset className="border-0 p-0 m-0">

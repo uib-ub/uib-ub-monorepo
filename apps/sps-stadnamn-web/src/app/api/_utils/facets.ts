@@ -37,7 +37,8 @@ export const RESERVED_PARAMS = [
   'options',
   'results',
   'mapSettings',
-  'debug'
+  'debug',
+  'locations' // Lokaliteter - tab that enables nested markers
   
 ] as const;
 

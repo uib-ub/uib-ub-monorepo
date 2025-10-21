@@ -27,6 +27,7 @@ import WikiAdmFacet from "./nav/facets/wikiAdm-facet";
 import { facetConfig, fieldConfig } from "@/config/search-config";
 import DatasetFacet from "./nav/facets/dataset-facet";
 import TableOptions from "./table/table-options";
+import { useDebugStore } from "@/state/zustand/debug-store";
 
 
 
@@ -144,6 +145,13 @@ export default function OverlayInterface() {
     const perspective = usePerspective()
     const mode = useMode()
     const tableOptions = searchParams.get('tableOptions') == 'on'
+    const setDebug = useDebugStore((s) => s.setDebug)
+
+    useEffect(() => {
+        if (searchParams.get('debug') == 'on') {
+            setDebug(true)
+        }
+    }, [searchParams, setDebug])
 
 
     return <>

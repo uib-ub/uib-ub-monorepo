@@ -100,7 +100,6 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
 
         if (hit._index.includes('group_debug') && hit._source?.misc.children) {
             setDebugChildren(hit._source?.misc.children)
-            console.log("SETTING DEBUG CHILDREN:", hit._source?.misc.children)
             console.log("CELLS:", hit._source?.misc.cells)
         }
 

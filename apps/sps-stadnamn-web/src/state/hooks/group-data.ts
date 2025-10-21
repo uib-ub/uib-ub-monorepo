@@ -26,10 +26,8 @@ const groupDataQuery = async (
     }
     let res 
 
-    console.log("DEBUG CHILDREN BEFORE", debugChildren)
 
     if (debugChildren) {
-        console.log("DEBUG CHILDREN", debugChildren)
         res = await fetch(`/api/group`,
         {
             method: 'POST',
@@ -40,8 +38,6 @@ const groupDataQuery = async (
           }
         
         )
-
-
 
     }
     else {
@@ -68,7 +64,6 @@ export default function useGroupData(overrideGroupCode?: string | null) {
     const datasets = searchParams.getAll('dataset')
     const datasetTags = searchParams.getAll('datasetTag')
     const debugChildren = useDebugStore((s) => s.debugChildren)
-    const { debug } = useContext(GlobalContext)
 
     const {
         data: processedData,

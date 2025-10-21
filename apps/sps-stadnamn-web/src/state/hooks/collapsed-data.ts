@@ -99,7 +99,7 @@ export default function useCollapsedData() {
     const { searchQueryString } = useSearchQuery()
     const initGroupCode = searchParams.get('init')
     const point = searchParams.get('point')
-    const { debug } = useContext(GlobalContext)
+    const debug = useDebugStore((s) => s.debug);
     const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(initGroupCode)
     
     const {

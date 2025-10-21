@@ -24,7 +24,6 @@ export const GlobalContext = createContext({
   initialUrl: { current: null as string | null },
   highlightedGroup: { current: null as string | null },
   mapFunctionRef: { current: null as any },
-  debug: false
 });
 
 export default function GlobalProvider({ children, isMobile, sosiVocab, coordinateVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any>, coordinateVocab: Record<string, any> }) {
@@ -42,7 +41,6 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   const searchParamsString = searchParams.toString()
   const pathname = usePathname()
   const mapFunctionRef = useRef<any>(null)
-  const [debug, setDebug] = useState<boolean>(searchParams.get('debug') === 'on' || searchParams.get('dataset') == "group_debug" || false);
 
 
 
@@ -129,7 +127,6 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
         inputValue,
         initialUrl,
         highlightedGroup,
-        debug
       }}
     >
       {children}

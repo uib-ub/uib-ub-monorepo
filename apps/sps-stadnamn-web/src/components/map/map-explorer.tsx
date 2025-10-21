@@ -59,7 +59,7 @@ export default function MapExplorer() {
   const { groupLoading, groupData } = useGroupData()
   const { groupData: initGroupData } = useGroupData(initCode)
 
-  const { isMobile, mapFunctionRef, debug } = useContext(GlobalContext)
+  const { isMobile, mapFunctionRef } = useContext(GlobalContext)
   const mapInstance = useRef<any>(null)
   const doc = searchParams.get('doc')
   const datasetTag = searchParams.get('datasetTag')
@@ -72,6 +72,8 @@ export default function MapExplorer() {
 
   const tapHoldRef = useRef<null | number>(null)
   const setDebugChildren = useDebugStore((s) => s.setDebugChildren)
+  const locations = searchParams.get('locations') == 'on'
+  const debug = useDebugStore((s) => s.debug)
 
 
 
@@ -111,7 +113,6 @@ export default function MapExplorer() {
   const gridSizeRef = useRef<{ gridSize: number, precision: number }>(getGridSize(snappedBounds, zoomState));
   const router = useRouter()
 
-  
 
   // Add state for geotile cells and intersecting cells
   interface GeotileCell {
@@ -446,10 +447,8 @@ export default function MapExplorer() {
       click: () => {
         const newQueryParams = new URLSearchParams(searchParams)
         const fields = selected.fields || {}
-        console.log("SELECTED", selected)
         if (selected._source?.misc?.children && debug) {
           setDebugChildren(selected._source?.misc?.children)
-          console.log("SET DEBUG CHILDREN", selected)
         }
         if (!newQueryParams.get('results')) {
           newQueryParams.set('results', 'on')
@@ -861,6 +860,18 @@ export default function MapExplorer() {
               icon={new leaflet.DivIcon(getLabelMarkerIcon(groupData.fields.label[0] || '[utan namn]', 'accent', undefined, true, false, true))}
               position={[groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]}
             />
+            }
+
+            {
+              locations && groupData?.sources.map((source: Record<string, any>, index: number) => {
+                if (!source?.location?.coordinates?.length) {
+                  console.log("NO MARKERS", source?.location)
+                  return null;
+                }
+                const lat = source.location.coordinates[1];
+                const lng = source.location.coordinates[0];
+                return <CircleMarker key={`location-marker-${index}`} center={[lat, lng]} radius={6} color="#00cc00" />
+              })
             }
 
             {debug && groupData?.misc.cells.map((hexId: string) => {
