@@ -1,15 +1,14 @@
 'use client'
-import { Fragment, useContext, useEffect, useRef, useState } from "react"
+import { Fragment, useContext, useRef, useState } from "react"
 import ResultItem from "./result-item";
 import { getSkeletonLength } from "@/lib/utils";
 import useCollapsedData from "@/state/hooks/collapsed-data";
 import useSearchData from "@/state/hooks/search-data";
 import GroupInfo from "../../details/group/group-info";
-import Clickable from "@/components/ui/clickable/clickable";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchParams } from "next/navigation";
 import { useGroup } from "@/lib/param-hooks";
-import { PiMapPinArea, PiMapPinAreaBold, PiMapPinFill, PiMapPinSimpleBold, PiPlusBold, PiXBold, PiXCircle, PiXCircleBold } from "react-icons/pi";
+import { PiMapPinFill, PiPlusBold, PiXCircle, PiPencilSimple, PiCheck, PiX } from "react-icons/pi";
 import useGroupData from "@/state/hooks/group-data";
 import Spinner from "@/components/svg/Spinner";
 import { useSessionStore } from "@/state/zustand/session-store";
@@ -41,6 +40,49 @@ export default function SearchResults() {
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const { isMobile } = useContext(GlobalContext)
   const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
+  
+  // State for inline coordinate editing
+  const [isEditingCoordinates, setIsEditingCoordinates] = useState(false)
+  const [editLat, setEditLat] = useState('')
+  const [editLon, setEditLon] = useState('')
+  
+  // Functions for coordinate editing
+  const startEditingCoordinates = () => {
+    if (point) {
+      setEditLat(point[1].toFixed(5)) // lat is second in point array
+      setEditLon(point[0].toFixed(5)) // lon is first in point array
+    } else {
+      const sourceWithLocation = activeGroupData?.sources?.find((source: any) => source.location?.coordinates)
+      if (sourceWithLocation?.location?.coordinates) {
+        const [lon, lat] = sourceWithLocation.location.coordinates
+        setEditLat(lat.toFixed(5))
+        setEditLon(lon.toFixed(5))
+      } else {
+        setEditLat('')
+        setEditLon('')
+      }
+    }
+    setIsEditingCoordinates(true)
+  }
+  
+  const cancelEditingCoordinates = () => {
+    setIsEditingCoordinates(false)
+    setEditLat('')
+    setEditLon('')
+  }
+  
+  const saveCoordinates = () => {
+    const lat = parseFloat(editLat)
+    const lon = parseFloat(editLon)
+    
+    if (!isNaN(lat) && !isNaN(lon)) {
+      // Update URL with new coordinates
+      const newParams = new URLSearchParams(searchParams)
+      newParams.set('point', `${lon},${lat}`)
+      window.history.pushState({}, '', `${window.location.pathname}?${newParams.toString()}`)
+      setIsEditingCoordinates(false)
+    }
+  }
   
   // Use the enhanced infinite query hook
   const {
@@ -77,21 +119,69 @@ export default function SearchResults() {
             <PiMapPinFill className="text-primary-700" />
             <span>
               {"Startpunkt: "}
-              <strong className="select">
-                {point ? 
-                  point.map(coord => coord.toFixed(5)).join(', ') :
-                  (() => {
-                    const sourceWithLocation = activeGroupData?.sources?.find((source: any) => source.location?.coordinates)
-                    if (sourceWithLocation?.location?.coordinates) {
-                      const [lon, lat] = sourceWithLocation.location.coordinates
-                      return `${lat.toFixed(5)}, ${lon.toFixed(5)}`
-                    }
-                    return 'Ukjent lokasjon'
-                  })()
-                }
-              </strong>
+              {isEditingCoordinates ? (
+                <div className="inline-flex items-center gap-2">
+                                    <input
+                    type="number"
+                    value={editLon}
+                    onChange={(e) => setEditLon(e.target.value)}
+                    placeholder="Longitude"
+                    className="w-20 px-1 py-0.5 text-sm border border-neutral-300 rounded"
+
+                  />
+                   <span>,</span>
+                  <input
+                    type="number"
+                    value={editLat}
+                    onChange={(e) => setEditLat(e.target.value)}
+                    placeholder="Latitude"
+                    className="w-20 px-1 py-0.5 text-sm border border-neutral-300 rounded"
+                  />
+                 
+
+                  <button
+                    onClick={saveCoordinates}
+                    className="p-1 text-green-600 hover:text-green-800"
+                    title="Lagre koordinater"
+                  >
+                    <PiCheck className="text-lg" />
+                  </button>
+                  <button
+                    onClick={cancelEditingCoordinates}
+                    className="p-1 text-red-600 hover:text-red-800"
+                    title="Avbryt"
+                  >
+                    <PiX className="text-lg" />
+                  </button>
+                </div>
+              ) : (
+                <strong className="select">
+                  {point ? 
+                    point.map(coord => coord.toFixed(5)).join(', ') :
+                    (() => {
+                      const sourceWithLocation = activeGroupData?.sources?.find((source: any) => source.location?.coordinates)
+                      if (sourceWithLocation?.location?.coordinates) {
+                        const [lon, lat] = sourceWithLocation.location.coordinates
+                        return `${lat.toFixed(5)}, ${lon.toFixed(5)}`
+                      }
+                      return 'Ukjent lokasjon'
+                    })()
+                  }
+                </strong>
+              )}
             </span>
-            <ClickableIcon className="ml-auto" label="Fjern startpunkt" remove={['point', 'radius']}><PiXCircle className="text-neutral-700 group-aria-expanded:text-white text-2xl" /></ClickableIcon>
+            <div className="ml-auto flex items-center gap-1">
+              {!isEditingCoordinates && (
+                <button
+                  onClick={startEditingCoordinates}
+                  className="p-1 text-neutral-600 hover:text-neutral-800"
+                  title="Rediger koordinater"
+                >
+                  <PiPencilSimple className="text-lg" />
+                </button>
+              )}
+              <ClickableIcon label="Fjern startpunkt" remove={['point', 'radius']}><PiXCircle className="text-neutral-700 group-aria-expanded:text-white text-2xl" /></ClickableIcon>
+            </div>
           </div>
         )
       }
