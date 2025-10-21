@@ -23,6 +23,9 @@ export const useDebugStore = create<{
     h3Resolution: number,
     setH3Resolution: (resolution: number) => void,
 
+    debugChildren: any[],
+    setDebugChildren: (children: any[]) => void,
+
 }>()(
     persist(
         (set) => ({
@@ -45,6 +48,9 @@ export const useDebugStore = create<{
             toggleH3Grid: () => set((state) => ({ showH3Grid: !state.showH3Grid })),
             h3Resolution: 5,
             setH3Resolution: (resolution) => set({ h3Resolution: resolution }),
+
+            debugChildren: [],
+            setDebugChildren: (children) => set({ debugChildren: children }),
         }),
         {
             name: 'debug'

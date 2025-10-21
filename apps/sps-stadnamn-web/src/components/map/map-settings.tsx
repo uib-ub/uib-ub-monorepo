@@ -1,17 +1,19 @@
 'use client'
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { baseMaps } from "@/config/basemap-config";
 import { useMapSettings } from "@/state/zustand/persistent-map-settings";
 import { PiCheckCircleFill } from "react-icons/pi";
 import Clickable from "../ui/clickable/clickable";
 import { usePerspective } from "@/lib/param-hooks";
 import dynamic from "next/dynamic";
+import { GlobalContext } from "@/state/providers/global-provider";
 
 const MapDebugSettings = dynamic(() => import("./map-debug-settings"), { ssr: false });
 
 export default function MapSettings() {
   const { baseMap, markerMode, setBaseMap, setMarkerMode } = useMapSettings();
   const perspective = usePerspective();
+  const { debug } = useContext(GlobalContext);  
 
   // Add state for h3 resolution
 
@@ -85,7 +87,7 @@ export default function MapSettings() {
         </fieldset>
       </section>
 
-      {process.env.NODE_ENV === 'development' && <MapDebugSettings />}
+      {debug && <MapDebugSettings />}
     </div>
   );
 }

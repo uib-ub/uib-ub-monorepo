@@ -1,14 +1,13 @@
 "use client";
 
 import { useDebugStore } from "@/state/zustand/debug-store";
+import { useSearchParams } from "next/navigation";
 
 
 
 export default function MapDebugSettings() {
 
-
-  const debug = useDebugStore((s: any) => s.debug);
-  const setDebug = useDebugStore((s: any) => s.setDebug);
+  const searchParams = useSearchParams()
   const showGeotileGrid = useDebugStore((s: any) => s.showGeotileGrid);
   const toggleGeotileGrid = useDebugStore((s: any) => s.toggleGeotileGrid);
   const showMarkerBounds = useDebugStore((s: any) => s.showMarkerBounds);
@@ -25,17 +24,6 @@ export default function MapDebugSettings() {
       <fieldset className="border-0 p-0 m-0">
         <legend className="text-base font-semibold text-neutral-900 p-3">Debug</legend>
         <div className="flex flex-col gap-2 px-2 py-1">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={debug}
-              onChange={(e) => setDebug(e.target.checked)}
-              className="accent-accent-800"
-            />
-            <span>Vis debug-alternativ</span>
-          </label>
-
-          {debug && (
             <div className="flex flex-col gap-2 mt-2">
               <fieldset className="border-0 p-0 m-0">
                 <legend className="text-base font-semibold text-neutral-900 p-3">H3 oppløysing</legend>
@@ -99,7 +87,6 @@ export default function MapDebugSettings() {
         </div>
       </fieldset>
             </div>
-          )}
         </div>
       </fieldset>
     

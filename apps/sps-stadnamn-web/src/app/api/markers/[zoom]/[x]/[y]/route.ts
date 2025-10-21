@@ -10,10 +10,13 @@ export async function GET(
   const { mode, zoom: precision, x, y} = await params
 
 
+
   const { termFilters, reservedParams } =  extractFacets(request)
   const { simple_query_string } = getQueryString(reservedParams)
   const perspective = reservedParams.perspective || 'all'
   const totalHits = reservedParams.totalHits ? parseInt(reservedParams.totalHits) : undefined
+
+  console.log("DEBUG IN GRID", reservedParams.debug)
   
   const query: Record<string, any> = {
     size: 0,
@@ -55,7 +58,7 @@ export async function GET(
               "top": {
                 "top_hits": {
                   "size": 1,
-                  "_source": false,
+                  "_source": reservedParams.debug == 'on' ? true : false,
                   "fields": ["label", "location", "group.id", "uuid"],
                 }
               },
@@ -66,7 +69,7 @@ export async function GET(
       }
     }
   }
-  console.log("PRECISION", precision)
+  console.log("GRID QUERY", JSON.stringify(query, null, 2))
 
   if (simple_query_string || termFilters.length) {
     if (simple_query_string) {
@@ -78,6 +81,6 @@ export async function GET(
   }
 
 
-  const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
+  const [data, status] = await postQuery(reservedParams.debug ? 'group_debug' : perspective, query, "dfs_query_then_fetch")
   return Response.json(data, { status: status })
 }

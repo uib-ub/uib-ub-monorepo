@@ -29,8 +29,8 @@ export function useGroup() {
     const initCode = searchParams.get('init')
     const initValue = initCode ? base64UrlToString(initCode) : null
     const groupValue = groupCode ? base64UrlToString(groupCode) : null
-    const activeGroupValue = initValue || groupValue
-    const activeGroupCode = initCode || groupCode
+    const activeGroupValue = groupValue || initValue
+    const activeGroupCode = groupCode || initCode
 
     return {initCode, initValue, activeGroupValue, activeGroupCode}
 }

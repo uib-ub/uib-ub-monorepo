@@ -2,10 +2,12 @@
 import { useSearchParams } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useSearchQuery } from '@/lib/search-params';
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
 import useGroupData from './group-data';
 import { extractFacets } from '@/app/api/_utils/facets';
 import { base64UrlToString } from '@/lib/param-utils';
+import { useDebugStore } from '../zustand/debug-store';
+import { GlobalContext } from '../providers/global-provider';
 
 const INITIAL_PAGE_SIZE = 5;
 const SUBSEQUENT_PAGE_SIZE = 40;
@@ -34,8 +36,9 @@ const collapsedDataQuery = async ({
     initPlaceScore,
     initGroupData,
     point,
-}: { pageParam?: number; searchQueryString: string, initGroupCode: string | null, initBoost: number | null, initPlaceScore: number | null, initGroupData: Record<string, any> | null, point: string | null }) => {      
-    
+    debug
+}: { pageParam?: number; searchQueryString: string, initGroupCode: string | null, initBoost: number | null, initPlaceScore: number | null, initGroupData: Record<string, any> | null, point: string | null, debug: boolean }) => {
+
     // Determine size and from based on page number
     const isFirstPage = pageParam === 0;
     const size = isFirstPage ? INITIAL_PAGE_SIZE : SUBSEQUENT_PAGE_SIZE;
@@ -58,6 +61,8 @@ const collapsedDataQuery = async ({
             initPlaceScore: initGroupData?.placeScore,
             initLocation,
             initLabel,
+            debug
+            
         })
     })
     if (!res.ok) {
@@ -94,6 +99,7 @@ export default function useCollapsedData() {
     const { searchQueryString } = useSearchQuery()
     const initGroupCode = searchParams.get('init')
     const point = searchParams.get('point')
+    const { debug } = useContext(GlobalContext)
     const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(initGroupCode)
     
     const {
@@ -114,7 +120,8 @@ export default function useCollapsedData() {
             initBoost: initGroupCode ? initGroupData?.boost : null,
             initPlaceScore: initGroupCode ? initGroupData?.placeScore : null,
             initGroupData: initGroupCode ? initGroupData : null,
-            point: point,
+            point,
+            debug
         }),
         //placeholderData: (prevData: any) => prevData,
         initialPageParam: initialPageRef.current - 1,

@@ -59,6 +59,9 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const showScore = useDebugStore((s: any) => s.showScore)
 
+    const setDebugChildren = useDebugStore((s) => s.setDebugChildren)
+    const debugChildren = useDebugStore((s) => s.debugChildren)
+
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
     const detailsRenderer = (hit: any) => {
         const adm1 = hit.fields["group.adm1"]
@@ -95,14 +98,20 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
         const map = mapFunctionRef.current;
         if (!map || snappedPosition == 'top') return;
 
+        if (hit._index.includes('group_debug') && hit._source?.misc.children) {
+            setDebugChildren(hit._source?.misc.children)
+            console.log("SETTING DEBUG CHILDREN:", hit._source?.misc.children)
+            console.log("CELLS:", hit._source?.misc.cells)
+        }
+
+
+
         const [lng, lat] = hit.fields.location[0].coordinates;
 
         panPointIntoView(map, [lat, lng], isMobile, isMobile);
     }}
-    remove={['group', 'docIndex', 'doc', 'parent', ...(isMobile ? ['nav'] : [])]}
-                    add={{
-                        ...(hit.fields["group.id"] && hit.fields["group.id"][0] != activeGroupValue ? {group: stringToBase64Url(hit.fields["group.id"][0])} : {group: null}),
-                    }}>
+    remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
+                    add={{group: activeGroupValue == hit.fields["group.id"][0] ? null : stringToBase64Url(hit.fields["group.id"][0])}}>
                        
             <div className="w-full text-left">
                 <span className="inline-flex items-center flex-wrap gap-x-2 whitespace-normal w-full text-lg">
@@ -116,7 +125,7 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
                             
                                 <span className="font-semibold">
                                     {hit.fields.label?.[0]}
-                                </span>
+                                </span>{JSON.stringify(debugChildren)}
                             
                         </h2>
                     )}

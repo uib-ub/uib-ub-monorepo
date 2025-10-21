@@ -63,8 +63,13 @@ const labelDefaults = {
 const required = {uuid, boost, label, dataset}
 
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
+
     core_gnidu: {
       label
+    },
+    group_debug: {
+      ...required,
+      ...identifiers
     },
     wikidata: {
       ...required, adm, adm1, adm2,

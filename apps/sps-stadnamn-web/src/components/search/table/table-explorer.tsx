@@ -179,10 +179,20 @@ export default function TableExplorer() {
             }
         </div>
 
-        <div className="flex items-center gap-2 mx-2 pb-4 gap-4 justify-between">
-
-            {totalHits && totalHits.value > 10 && <Pagination />}
-            <DownloadButton visibleColumns={visibleColumns[perspective] || []} showCadastre={showCadastre ?? false} joinWithSlash={joinWithSlash} formatCadastre={(cadastre: string) => formatCadastre([{ cadastre }])} />
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mx-2 pb-4 sm:justify-between">
+            {totalHits && totalHits.value > 10 && (
+                <div className="order-2 sm:order-1">
+                    <Pagination />
+                </div>
+            )}
+            <div className="order-1 sm:order-2 w-full sm:w-auto">
+                <DownloadButton 
+                    visibleColumns={visibleColumns[perspective] || []} 
+                    showCadastre={showCadastre ?? false} 
+                    joinWithSlash={joinWithSlash} 
+                    formatCadastre={(cadastre: string) => formatCadastre([{ cadastre }])} 
+                />
+            </div>
         </div>
 
 

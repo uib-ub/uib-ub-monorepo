@@ -36,7 +36,9 @@ export const RESERVED_PARAMS = [
   'group',
   'options',
   'results',
-  'mapSettings'
+  'mapSettings',
+  'debug'
+  
 ] as const;
 
 export function extractFacets(request: Request) {

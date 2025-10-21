@@ -9,7 +9,7 @@ import { useSearchParams } from "next/navigation";
 import * as h3 from "h3-js";
 import { useRouter } from "next/navigation";
 import wkt from 'wellknown';
-import { stringToBase64Url } from "@/lib/param-utils";
+import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import useDocData from "@/state/hooks/doc-data";
 import { useQueries } from "@tanstack/react-query";
 import { boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius, getMyLocation, MAP_DRAWER_BOTTOM_HEIGHT_REM, getLabelBounds, panPointIntoView } from "@/lib/map-utils";
@@ -32,7 +32,6 @@ const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontS
 
 
 export default function MapExplorer() {
-  const debug = useDebugStore(state => state.debug);
   const showH3Grid = useDebugStore(state => state.showH3Grid);
   const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
   const showMarkerBounds = useDebugStore(state => state.showMarkerBounds);
@@ -56,9 +55,11 @@ export default function MapExplorer() {
   const urlZoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
   const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
   const allowFitBounds = useRef(false)
-  const { activeGroupValue } = useGroup()
+  const { activeGroupValue, initValue, initCode } = useGroup()
   const { groupLoading, groupData } = useGroupData()
-  const { isMobile, mapFunctionRef } = useContext(GlobalContext)
+  const { groupData: initGroupData } = useGroupData(initCode)
+
+  const { isMobile, mapFunctionRef, debug } = useContext(GlobalContext)
   const mapInstance = useRef<any>(null)
   const doc = searchParams.get('doc')
   const datasetTag = searchParams.get('datasetTag')
@@ -70,10 +71,13 @@ export default function MapExplorer() {
   const displayPoint = useSessionStore((s) => s.displayPoint)
 
   const tapHoldRef = useRef<null | number>(null)
+  const setDebugChildren = useDebugStore((s) => s.setDebugChildren)
+
 
 
   const defaultZoom = isMobile ? 4 : 5
   const defaultCenter: [number, number] = isMobile ? [62, 16] :  [62, 16]
+
 
 
   const [snappedBounds, setSnappedBounds] = useState<[[number, number], [number, number]]>(() => {
@@ -144,6 +148,10 @@ export default function MapExplorer() {
           }
           if (datasetTag == 'tree' && !searchParams.get('within')) {
             newParams.set('sosi', 'gard')
+          }
+
+          if (debug) {
+            newParams.set('debug', 'on')
           }
 
           const res = await fetch(`/api/markers/${cell.precision}/${cell.x}/${cell.y}${newParams.toString() ? `?${newParams.toString()}` : ''}`, { signal: controllerRef.current.signal })
@@ -437,6 +445,12 @@ export default function MapExplorer() {
     return {
       click: () => {
         const newQueryParams = new URLSearchParams(searchParams)
+        const fields = selected.fields || {}
+        console.log("SELECTED", selected)
+        if (selected._source?.misc?.children && debug) {
+          setDebugChildren(selected._source?.misc?.children)
+          console.log("SET DEBUG CHILDREN", selected)
+        }
         if (!newQueryParams.get('results')) {
           newQueryParams.set('results', 'on')
         }
@@ -444,9 +458,9 @@ export default function MapExplorer() {
         newQueryParams.delete('point')
         newQueryParams.delete('doc')
 
-        newQueryParams.set('init', stringToBase64Url(selected["group.id"][0]))
+        newQueryParams.set('init', stringToBase64Url(fields["group.id"][0]))
         if (datasetTag == 'tree') {
-          newQueryParams.set('doc', selected.uuid[0])
+          newQueryParams.set('doc', fields.uuid[0])
         }
         router.push(`?${newQueryParams.toString()}`)
           
@@ -767,6 +781,7 @@ export default function MapExplorer() {
                 const childCount = zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', selected ? 'accent' : 'white', childCount, false, false, !!(selected))
 
+
                 return (
                 <Fragment key={`result-frag-${item.fields.uuid[0]}`}>
                   { showMarkerBounds && item.labelBounds && (
@@ -797,7 +812,7 @@ export default function MapExplorer() {
                     position={[lat, lng]}
                     icon={new leaflet.DivIcon(icon)}
                     riseOnHover={true}
-                    eventHandlers={selectDocHandler(item.fields, childCount ? [item, ...(item.children || [])] : [])}
+                    eventHandlers={selectDocHandler(item, childCount ? [item, ...(item.children || [])] : [])}
                   >
                       { childCount && item.fields?.["group.id"]?.[0] && <Popup offset={[0, -24]}>
                         <ul className="list-none p-0 m-0 max-h-[50svh] overflow-y-auto stable-scrollbar text-lg divide-y divide-neutral-200 flex flex-col">
@@ -832,6 +847,26 @@ export default function MapExplorer() {
                 }}
               />
             }))}
+            { initGroupData && initGroupData.fields?.location?.[0]?.coordinates && <Marker
+              zIndexOffset={1000}
+              icon={new leaflet.DivIcon(getLabelMarkerIcon(initGroupData.fields.label[0] || '[utan namn]', initValue == activeGroupValue ? 'accent' : 'primary', undefined, true, false, initValue == activeGroupValue))}
+              position={[initGroupData.fields.location[0].coordinates[1], initGroupData.fields.location[0].coordinates[0]]}
+            />
+            }
+
+
+
+            {groupData && groupData.fields?.location?.[0]?.coordinates && initValue != activeGroupValue && <Marker
+              zIndexOffset={1000}
+              icon={new leaflet.DivIcon(getLabelMarkerIcon(groupData.fields.label[0] || '[utan namn]', 'accent', undefined, true, false, true))}
+              position={[groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]}
+            />
+            }
+
+            {debug && groupData?.misc.cells.map((hexId: string) => {
+              const boundary = h3.cellToBoundary(hexId);
+              return <Polygon key={`debug-cell-${hexId}`} positions={boundary} pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }} />;
+            })}
 
             {debug && showGeotileGrid && markerCells.map((cell) => {
               const bounds = geotileKeyToBounds(cell.key)
