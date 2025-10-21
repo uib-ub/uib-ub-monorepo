@@ -170,8 +170,8 @@ export default function OverlayInterface() {
                         {facet ? <div className="w-full flex items-center px-2 xl:px-0 h-12 gap-2 xl:pl-2 flex">
                             <h1 className="text-lg xl:text-xl text-neutral-900">{fieldConfig[perspective][facet]?.label}</h1>
                             <div className="flex items-center gap-1 ml-auto">
-                                    <ClickableIcon label="Lukk" className="p-2" remove={["facet"]}>
-                                        <PiX className="text-black text-3xl" />
+                                    <ClickableIcon label="Tilbake" className="p-2" remove={["facet"]}>
+                                        <PiCaretLeftBold className="text-black text-3xl" />
                                     </ClickableIcon>
                                 </div>
                             
