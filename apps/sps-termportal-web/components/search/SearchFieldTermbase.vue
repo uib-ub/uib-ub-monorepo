@@ -15,7 +15,7 @@
     />
     <button
       id="searchbutton"
-      class="inline-block h-full w-14 items-center rounded-r-md bg-tpblue-400 text-white transition duration-200 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none active:bg-blue-800"
+      class="inline-block h-full w-14 items-center rounded-r-md bg-tpblue-400 text-white transition duration-200 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none active:bg-blue-800 cursor-pointer"
       type="button"
       :aria-label="$t('searchBar.searchButtonLabel')"
       @click="execSearch"
@@ -23,6 +23,7 @@
       <Icon
         name="ic:outline-search"
         size="2em"
+        class="inline-block translate-y-1"
         aria-hidden="true"
       />
     </button>
