@@ -10,6 +10,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Spinner from "@/components/svg/Spinner";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import { group } from "console";
 
 
 // Collapses long HTML to a few lines with a toggle
@@ -428,6 +429,8 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     const setPrefTab = useSessionStore(state => state.setPrefTab)
     const openTabs = useSessionStore(state => state.openTabs)
     const setOpenTabs = useSessionStore(state => state.setOpenTabs)
+
+    
     
 
     const { iiifItems, textItems, audioItems, datasets, locations } = useMemo(() => {
@@ -461,6 +464,10 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     }, [groupData])
 
     useEffect(() => {
+        if (!groupData?.group) {
+            console.log("GROUP ISSUE", groupData);
+            return;
+        }
         if (groupData?.group.id) {
             const groupId = groupData.group.id;
             const currentTab = openTabs[groupId];
@@ -500,7 +507,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 setOpenTabs(groupId, 'sources');
             }
         }
-    }, [groupData?.group.id, textItems.length, locations.length, openTabs, prefTab, setOpenTabs])
+    }, [groupData, textItems.length, locations.length, openTabs, prefTab, setOpenTabs])
 
 
     if (groupLoading) return (
@@ -510,7 +517,6 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     )
 
     const isGrunnord = Object.keys(datasets).some((ds: any) => ds.includes('_g'))
-
 
 
 
