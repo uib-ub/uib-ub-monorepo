@@ -273,11 +273,21 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                                 <span className="text-neutral-900 uppercase tracking-wider">{datasetTitles[ds] || ds}</span>
                             </div>
                             <ul className="flex flex-col w-full -mx-2">
-                                {visibleItems.map((s: any) => (
-                                    <li key={s.uuid} className="px-2 py-1">
-                                        <Link className="text-primary-700 no-underline hover:underline" href={"/uuid/" + s.uuid}><strong>{s.label}</strong></Link> {resultRenderers[ds]?.links?.(s)}
+                                {visibleItems.map((s: any) => {
+                                    const additionalLabels = Array.from(
+                                        new Set([
+                                            ...(s.altLabels ?? []),
+                                            ...(s.attestations?.map((a: any) => a.label) ?? [])
+                                        ].filter(l => l && l !== s.label))
+                                    ).join(", ");
+
+                                    return <li key={s.uuid} className="px-2 py-1">
+                                        <Link className="no-underline hover:underline" href={"/uuid/" + s.uuid}><strong>{s.label}</strong></Link> 
+                                        {s.altLabels} {additionalLabels && <span className="text-neutral-900"> – {additionalLabels}</span>}
+                                        
+                                        {resultRenderers[ds]?.links?.(s)}
                                     </li>
-                                ))}
+                                })}
                                 {!autoShowAll && shouldCollapse && !isExpanded && (
                                     <li className="px-2 py-1">
                                         <button
