@@ -25,6 +25,8 @@ export const useDebugStore = create<{
 
     debugChildren: any[],
     setDebugChildren: (children: any[]) => void,
+    debugGroups: boolean,
+    setDebugGroups: (groups: boolean) => void,
 
 }>()(
     persist(
@@ -51,6 +53,8 @@ export const useDebugStore = create<{
 
             debugChildren: [],
             setDebugChildren: (children) => set({ debugChildren: children }),
+            debugGroups: false,
+            setDebugGroups: (groups) => set({ debugGroups: groups }),
         }),
         {
             name: 'debug'

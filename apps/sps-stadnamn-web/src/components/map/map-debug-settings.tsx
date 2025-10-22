@@ -21,6 +21,8 @@ export default function MapDebugSettings() {
   const router = useRouter();
   const setDebug = useDebugStore((s: any) => s.setDebug);
   const setDebugChildren = useDebugStore((s: any) => s.setDebugChildren);
+  const setDebugGroups = useDebugStore((s: any) => s.setDebugGroups);
+  const debugGroups = useDebugStore((s: any) => s.debugGroups);
 
   return (
     <section>
@@ -84,6 +86,15 @@ export default function MapDebugSettings() {
                   className="accent-accent-800"
                 />
                 <span>Vis H3 grid</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={debugGroups}
+                  onChange={() => setDebugGroups(!debugGroups)}
+                  className="accent-accent-800"
+                />
+                <span>Vis grupper</span>
               </label>
               <fieldset className="border-0 p-0 m-0">
         <legend className="text-base font-semibold text-neutral-900 p-3">Score</legend>
