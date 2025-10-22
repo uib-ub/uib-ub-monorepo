@@ -19,14 +19,18 @@ export const useDebugStore = create<{
 
     showH3Grid: boolean,
     setShowH3Grid: (show: boolean) => void,
-    toggleH3Grid: () => void,
     h3Resolution: number,
     setH3Resolution: (resolution: number) => void,
 
     debugChildren: any[],
     setDebugChildren: (children: any[]) => void,
-    debugGroups: boolean,
-    setDebugGroups: (groups: boolean) => void,
+    
+    showDebugGroups: boolean,
+    setShowDebugGroups: (show: boolean) => void,
+    showTop3H3Counts: boolean,
+    setShowTop3H3Counts: (show: boolean) => void,
+    showTop3UUIDCounts: boolean,
+    setShowTop3UUIDCounts: (show: boolean) => void,
 
 }>()(
     persist(
@@ -46,15 +50,18 @@ export const useDebugStore = create<{
             toggleMarkerBounds: () => set((state) => ({ showMarkerBounds: !state.showMarkerBounds })),
 
             showH3Grid: false,
-            setShowH3Grid: (show) => set({ showH3Grid: show }),
-            toggleH3Grid: () => set((state) => ({ showH3Grid: !state.showH3Grid })),
+            setShowH3Grid: (show: boolean) => set({ showH3Grid: show }),
             h3Resolution: 5,
             setH3Resolution: (resolution) => set({ h3Resolution: resolution }),
 
             debugChildren: [],
             setDebugChildren: (children) => set({ debugChildren: children }),
-            debugGroups: false,
-            setDebugGroups: (groups) => set({ debugGroups: groups }),
+            showDebugGroups: false,
+            setShowDebugGroups: (show) => set({ showDebugGroups: show }),
+            showTop3H3Counts: false,
+            setShowTop3H3Counts: (show) => set({ showTop3H3Counts: show }),
+            showTop3UUIDCounts: false,
+            setShowTop3UUIDCounts: (show) => set({ showTop3UUIDCounts: show }),
         }),
         {
             name: 'debug'

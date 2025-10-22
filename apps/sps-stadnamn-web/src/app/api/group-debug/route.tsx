@@ -50,7 +50,7 @@ export async function GET(request: Request) {
   }
 
   const query: Record<string, any> = {
-    "size": 1000,
+    "size": 300,
     "track_scores": false,
     "query": queryPart,
     "sort": [{ 'misc.h3_count': "desc" }, { 'misc.uuid_count': "desc" }],
@@ -58,7 +58,35 @@ export async function GET(request: Request) {
   };
     
  
-  const [data, status] = await postQuery('core_group_debug', query, "dfs_query_then_fetch")
+  const [data, status] = await postQuery('core_group_debug', query)
   return Response.json(data, {status: status})
   
 }
+
+
+
+export async function POST(request: Request) {
+  const { children } = await request.json()
+
+  const query: Record<string, any> = {
+    "size": 1000,
+    "track_scores": false,
+    "_source": true,
+    "query": {
+      "bool": {
+        "filter": {
+          "terms": {
+            "uuid": children
+          }
+        }
+      }
+    }
+  }
+
+    const [data, status] = await postQuery('all', query)
+    return Response.json(data, {status: status})
+
+
+
+  }
+  

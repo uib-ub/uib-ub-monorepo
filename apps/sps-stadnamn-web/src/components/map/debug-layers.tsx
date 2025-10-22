@@ -1,14 +1,42 @@
+import useGroupDebugData from "@/state/hooks/group-debug-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import * as h3 from "h3-js";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 
-export default function DebugLayers({mapInstance, Polygon, Rectangle, geotileKeyToBounds, groupData, markerCells }: {mapInstance: any, Polygon: any, Rectangle: any, geotileKeyToBounds: any, groupData: any, markerCells: any}) {
+export default function DebugLayers({mapInstance, Polygon, Rectangle, CircleMarker, Popup, geotileKeyToBounds, groupData, markerCells }: {mapInstance: any, Polygon: any, Rectangle: any, CircleMarker: any, Popup: any, geotileKeyToBounds: any, groupData: any, markerCells: any}) {
 
     const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
     const h3Resolution = useDebugStore(state => state.h3Resolution);
     const setH3Resolution = useDebugStore(state => state.setH3Resolution);
     const showH3Grid = useDebugStore(state => state.showH3Grid);
+    const showDebugGroups = useDebugStore(state => state.showDebugGroups);
+    const showTop3H3Counts = useDebugStore(state => state.showTop3H3Counts);
+    const showTop3UUIDCounts = useDebugStore(state => state.showTop3UUIDCounts);
+
+    const [selectedGroup, setSelectedGroup] = useState<any>(null);
+
+    const {data: debugGroups } = useGroupDebugData();
+    const { data: debugChildren } = useGroupDebugData(selectedGroup);
+
+    console.log("GROUP debugGroups", debugGroups);
+
+    // Get top 5 groups by h3_count
+    const top5Groups = debugGroups?.hits?.hits
+      ?.filter((g: any) => g._id !== selectedGroup?._id)
+      ?.sort((a: any, b: any) => (b._source?.misc?.h3_count || 0) - (a._source?.misc?.h3_count || 0))
+      ?.slice(0, 3) || [];
+
+    // Generate random colors for top 5 groups
+    const getRandomColor = (index: number) => {
+      const colors = ['#ff6600', '#ff3366', '#33ff66', '#3366ff', '#ff33cc'];
+      return colors[index % colors.length];
+    };
+
+    const top3uuidGroups = debugGroups?.hits?.hits
+      ?.filter((g: any) => g._id !== selectedGroup?._id)
+      ?.sort((a: any, b: any) => (b._source?.misc?.uuid_count || 0) - (a._source?.misc?.uuid_count || 0))
+      ?.slice(0, 3) || [];
 
 
       // Modify getH3Cells to use the resolution state
@@ -48,11 +76,15 @@ export default function DebugLayers({mapInstance, Polygon, Rectangle, geotileKey
 
 
     return <>
+    {/* ALL HEXAGON POLYGONS - RENDERED FIRST TO APPEAR BEHIND MARKERS */}
+    
+    {/* Group data H3 cells */}
     {groupData?.misc?.h3_cells?.map((hexId: string) => {
               const boundary = h3.cellToBoundary(hexId);
               return <Polygon key={`debug-cell-${hexId}`} positions={boundary} pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }} />;
             })}
 
+    {/* Geotile grid */}
     { showGeotileGrid && markerCells.map((cell: any) => {
         const bounds = geotileKeyToBounds(cell.key)
         if (!bounds) return null;
@@ -68,7 +100,7 @@ export default function DebugLayers({mapInstance, Polygon, Rectangle, geotileKey
         />
     })}
 
-    {/* Add H3 grid overlay */}
+    {/* H3 grid overlay */}
     {showH3Grid && mapInstance.current && getH3Cells(mapInstance.current.getBounds()).map((polygon, index) => (
               <Polygon
                 key={`h3-${index}`}
@@ -82,8 +114,303 @@ export default function DebugLayers({mapInstance, Polygon, Rectangle, geotileKey
               />
             ))}
 
+    {/* Top 5 groups H3 cells - behind markers */}
+    {showTop3H3Counts && (debugGroups && Array.isArray(debugGroups.hits?.hits)) && debugGroups.hits.hits
+      .filter((g: any) => g._id !== selectedGroup?._id) // Exclude selected group
+      .sort((a: any, b: any) => (b._source?.misc?.h3_count || 0) - (a._source?.misc?.h3_count || 0))
+      .slice(0, 5)
+      .map((group: any, groupIndex: number) => {
+        const groupColor = getRandomColor(groupIndex);
+        return group._source?.misc?.h3_cells?.map((hexId: string) => {
+          const boundary = h3.cellToBoundary(hexId);
+          return (
+            <Polygon
+              key={`debug-cell-top5-${group._id}-${hexId}`}
+              positions={boundary}
+              pathOptions={{ color: groupColor, weight: 1, opacity: 0.65, fillOpacity: 0.07 }}
+            />
+          );
+        });
+      })
+    }
 
-            
+    {/* Top 3 groups UUID cells - behind markers */}
+    {showTop3UUIDCounts && top3uuidGroups.map((group: any, groupIndex: number) => {
+      const groupColor = getRandomColor(groupIndex);
+      return group._source?.misc?.h3_cells?.map((hexId: string) => {
+        const boundary = h3.cellToBoundary(hexId);
+        return (
+          <Polygon
+            key={`debug-cell-top3-uuid-${group._id}-${hexId}`}
+            positions={boundary}
+            pathOptions={{ color: groupColor, weight: 1, opacity: 0.8, fillOpacity: 0.1 }}
+          />
+        );
+      });
+    })}
+
+    {/* Selected group H3 cells - most prominent, behind markers */}
+    {selectedGroup?._source?.misc?.h3_cells?.map((hexId: string) => {
+      const boundary = h3.cellToBoundary(hexId);
+      return <Polygon key={`debug-cell-selected-${hexId}`} positions={boundary} pathOptions={{ color: '#000000', weight: 3, opacity: 1, fillOpacity: 0.15 }} />;
+    })}
+
+    {/* ALL MARKERS - RENDERED AFTER HEXAGONS TO APPEAR ON TOP */}
+
+            {showDebugGroups && debugGroups?.hits?.hits?.map((group: any) => {
+              const isSelected = group._id === selectedGroup?._id;
+              const top5Index = top5Groups.findIndex((g: any) => g._id === group._id);
+              const isTop5 = top5Index !== -1;
+              const top3UuidIndex = top3uuidGroups.findIndex((g: any) => g._id === group._id);
+              const isTop3Uuid = top3UuidIndex !== -1;
+              const top5Color = isTop5 ? getRandomColor(top5Index) : '#666';
+              const top3UuidColor = isTop3Uuid ? getRandomColor(top3UuidIndex) : '#666';
+              
+              // List child names in the popup if this is the selected group
+              let childList = null;
+              if (isSelected && debugChildren?.hits?.hits?.length > 0) {
+                childList = (
+                  <>
+                    <br />
+                    <b>Children:</b>
+                    <ul style={{ maxHeight: 64, overflowY: 'auto', margin: 0, paddingLeft: '1em' }}>
+                      {debugChildren.hits.hits.map((item: any) => (
+                        <li key={item._id} style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', maxWidth: 150 }}>
+                          {item._source.label || item._id}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                );
+              }
+
+              return (
+                <CircleMarker
+                  key={`debug-group-${group._id}`}
+                  center={[group._source.location.coordinates[1], group._source.location.coordinates[0]]}
+                  radius={isSelected ? 5 : (isTop5 || isTop3Uuid) ? 4 : 2}
+                  pathOptions={{
+                    color: isSelected ? '#000000' : (isTop5 ? top5Color : isTop3Uuid ? top3UuidColor : '#666'),
+                    weight: isSelected ? 25 : (isTop5 || isTop3Uuid) ? 15 : 10,
+                    opacity: 1,
+                    fillOpacity: isSelected ? 0.4 : (isTop5 || isTop3Uuid) ? 0.3 : 0
+                  }}
+                  eventHandlers={{
+                    click: () => setSelectedGroup(group)
+                  }}
+                >
+                  <Popup 
+                    maxWidth={240}
+                    maxHeight={150}
+                    autoPan={false}
+                    closeButton={true}
+                  >
+                    <div style={{ maxWidth: 220, maxHeight: 110, overflowY: 'auto', wordBreak: 'break-word' }}>
+                      <b>Group:</b> {group._source.label || group._id}
+                      {isTop5 && !isSelected && <span style={{ color: top5Color, fontWeight: 'bold' }}> (Top 5 H3 #{top5Index + 1})</span>}
+                      {isTop3Uuid && !isSelected && !isTop5 && <span style={{ color: top3UuidColor, fontWeight: 'bold' }}> (Top 3 UUID #{top3UuidIndex + 1})</span>}
+                      {isSelected && <span style={{ color: '#000000', fontWeight: 'bold' }}> (SELECTED)</span>}
+                      <br />
+                      <b>ID:</b> {group._id}
+                      {group._source?.misc?.uuid_count !== undefined && (
+                        <>
+                          <br />
+                          <b>UUID count:</b> {group._source.misc.uuid_count}
+                        </>
+                      )}
+                      {group._source?.misc?.h3_count !== undefined && (
+                        <>
+                          <br />
+                          <b>H3 count:</b> {group._source.misc.h3_count}
+                        </>
+                      )}
+                      {childList}
+                    </div>
+                  </Popup>
+                </CircleMarker>
+              );
+            })}
+
+            {showDebugGroups && selectedGroup && debugChildren?.hits?.hits?.map((item: any) => {
+              return (
+                <CircleMarker
+                  key={`debug-child-${item._id}`}
+                  center={[item._source.location.coordinates[1], item._source.location.coordinates[0]]}
+                  radius={2}
+                  pathOptions={{ color: 'red', weight: 2, opacity: 1, fillOpacity: 0 }}
+                >
+                  <Popup
+                    maxWidth={180}
+                    maxHeight={100}
+                    autoPan={false}
+                    closeButton={true}
+                  >
+                    <div style={{ maxWidth: 160, maxHeight: 80, overflowY: 'auto', wordBreak: 'break-word' }}>
+                      <b>Name:</b> {item._source.label || item._id}
+                      <br />
+                      <b>ID:</b> {item._id}
+                    </div>
+                  </Popup>
+                </CircleMarker>
+              );
+            })}
+
+            {/* Top 5 Groups List Overlay */}
+            {showDebugGroups && top5Groups.length > 0 && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '10px',
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  border: '1px solid #ccc',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  maxWidth: '300px',
+                  maxHeight: '400px',
+                  overflowY: 'auto',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  zIndex: 1000,
+                  fontSize: '12px',
+                  fontFamily: 'Arial, sans-serif'
+                }}
+              >
+                <div style={{ fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
+                  Top 5 Groups (by H3 count)
+                </div>
+                {top5Groups.map((group: any, index: number) => {
+                  const groupColor = getRandomColor(index);
+                  return (
+                    <div
+                      key={`top5-list-${group._id}`}
+                      style={{
+                        padding: '6px 8px',
+                        margin: '2px 0',
+                        background: index === 0 ? '#fff3cd' : '#f8f9fa',
+                        border: '1px solid #e9ecef',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}
+                      onClick={() => setSelectedGroup(group)}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = '#e3f2fd';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = index === 0 ? '#fff3cd' : '#f8f9fa';
+                      }}
+                    >
+                      <div style={{ flex: 1, overflow: 'hidden' }}>
+                        <div style={{ fontWeight: 'bold', color: groupColor }}>
+                          #{index + 1} {group._source.label || group._id}
+                        </div>
+                        <div style={{ fontSize: '10px', color: '#666' }}>
+                          H3: {group._source?.misc?.h3_count || 0} | 
+                          UUID: {group._source?.misc?.uuid_count || 0}
+                        </div>
+                      </div>
+                      <div style={{ 
+                        width: '12px', 
+                        height: '12px', 
+                        borderRadius: '50%', 
+                        background: groupColor,
+                        border: '2px solid #fff',
+                        boxShadow: `0 0 0 1px ${groupColor}`
+                      }} />
+                    </div>
+                  );
+                })}
+                <div style={{ 
+                  marginTop: '8px', 
+                  fontSize: '10px', 
+                  color: '#666', 
+                  textAlign: 'center',
+                  fontStyle: 'italic'
+                }}>
+                  Click to select group
+                </div>
+              </div>
+            )}
+
+            {/* Top 3 UUID Groups List Overlay */}
+            {showTop3UUIDCounts && top3uuidGroups.length > 0 && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '10px',
+                  left: '10px',
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  border: '1px solid #ccc',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  maxWidth: '300px',
+                  maxHeight: '400px',
+                  overflowY: 'auto',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                  zIndex: 1000,
+                  fontSize: '12px',
+                  fontFamily: 'Arial, sans-serif'
+                }}
+              >
+                <div style={{ fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
+                  Top 3 Groups (by UUID count)
+                </div>
+                {top3uuidGroups.map((group: any, index: number) => {
+                  const groupColor = getRandomColor(index);
+                  return (
+                    <div
+                      key={`top3-uuid-list-${group._id}`}
+                      style={{
+                        padding: '6px 8px',
+                        margin: '2px 0',
+                        background: index === 0 ? '#fff3cd' : '#f8f9fa',
+                        border: '1px solid #e9ecef',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}
+                      onClick={() => setSelectedGroup(group)}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = '#e3f2fd';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = index === 0 ? '#fff3cd' : '#f8f9fa';
+                      }}
+                    >
+                      <div style={{ flex: 1, overflow: 'hidden' }}>
+                        <div style={{ fontWeight: 'bold', color: groupColor }}>
+                          #{index + 1} {group._source.label || group._id}
+                        </div>
+                        <div style={{ fontSize: '10px', color: '#666' }}>
+                          H3: {group._source?.misc?.h3_count || 0} | 
+                          UUID: {group._source?.misc?.uuid_count || 0}
+                        </div>
+                      </div>
+                      <div style={{ 
+                        width: '12px', 
+                        height: '12px', 
+                        borderRadius: '50%', 
+                        background: groupColor,
+                        border: '2px solid #fff',
+                        boxShadow: `0 0 0 1px ${groupColor}`
+                      }} />
+                    </div>
+                  );
+                })}
+                <div style={{ 
+                  marginTop: '8px', 
+                  fontSize: '10px', 
+                  color: '#666', 
+                  textAlign: 'center',
+                  fontStyle: 'italic'
+                }}>
+                  Click to select group
+                </div>
+              </div>
+            )}
             </>
-
 }

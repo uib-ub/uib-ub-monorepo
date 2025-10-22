@@ -137,13 +137,14 @@ export default function OverlayInterface() {
     const mode = useMode()
     const tableOptions = searchParams.get('tableOptions') == 'on'
     const setDebug = useDebugStore((s) => s.setDebug)
+    const debugParam = searchParams.get('debug')
 
     useEffect(() => {
-        if (searchParams.get('debug') == 'on') {
+        if (debugParam == 'on') {
             setDebug(true)
         }
-    }, [searchParams, setDebug])
-
+        
+    }, [debugParam, setDebug])
 
     return <>
 

@@ -544,7 +544,7 @@ export default function MapExplorer() {
         bottom: isMobile ? `${MAP_DRAWER_BOTTOM_HEIGHT_REM-0.5}rem` : '0',
       }}
       >
-      {({ TileLayer, CircleMarker, Circle, Marker, useMapEvents, useMap, Rectangle, Polygon, Popup, MultiPolygon, Polyline, AttributionControl }: any, leaflet: any) => {
+      {({ TileLayer, CircleMarker, Popup, Circle, Marker, useMapEvents, useMap, Rectangle, Polygon, MultiPolygon, Polyline }: any, leaflet: any) => {
 
         function EventHandlers() {
           const map = useMap();
@@ -815,7 +815,7 @@ export default function MapExplorer() {
               })
             }
 
-            {debug && <DynamicDebugLayers mapInstance={mapInstance.current} Polygon={Polygon} Rectangle={Rectangle} geotileKeyToBounds={geotileKeyToBounds} groupData={groupData} markerCells={markerCells} />}
+            {debug && <DynamicDebugLayers mapInstance={mapInstance} Polygon={Polygon} Rectangle={Rectangle} CircleMarker={CircleMarker} Popup={Popup} geotileKeyToBounds={geotileKeyToBounds} groupData={groupData} markerCells={markerCells} />}
 
 
 

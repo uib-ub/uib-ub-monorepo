@@ -6,14 +6,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 
 export default function MapDebugSettings() {
-
-  const searchParams = useSearchParams()
   const showGeotileGrid = useDebugStore((s: any) => s.showGeotileGrid);
   const toggleGeotileGrid = useDebugStore((s: any) => s.toggleGeotileGrid);
   const showMarkerBounds = useDebugStore((s: any) => s.showMarkerBounds);
   const toggleMarkerBounds = useDebugStore((s: any) => s.toggleMarkerBounds);
   const showH3Grid = useDebugStore((s: any) => s.showH3Grid);
-  const toggleH3Grid = useDebugStore((s: any) => s.toggleH3Grid);
+  const setShowH3Grid = useDebugStore((s: any) => s.setShowH3Grid);
   const h3Resolution = useDebugStore((s: any) => s.h3Resolution);
   const setH3Resolution = useDebugStore((s: any) => s.setH3Resolution);
   const showScore = useDebugStore((s: any) => s.showScore);
@@ -22,7 +20,12 @@ export default function MapDebugSettings() {
   const setDebug = useDebugStore((s: any) => s.setDebug);
   const setDebugChildren = useDebugStore((s: any) => s.setDebugChildren);
   const setDebugGroups = useDebugStore((s: any) => s.setDebugGroups);
-  const debugGroups = useDebugStore((s: any) => s.debugGroups);
+  const showDebugGroups = useDebugStore((s: any) => s.showDebugGroups);
+  const setShowDebugGroups = useDebugStore((s: any) => s.setShowDebugGroups);
+  const showTop3H3Counts = useDebugStore((s: any) => s.showTop3H3Counts);
+  const setShowTop3H3Counts = useDebugStore((s: any) => s.setShowTop3H3Counts);
+  const showTop3UUIDCounts = useDebugStore((s: any) => s.showTop3UUIDCounts);
+  const setShowTop3UUIDCounts = useDebugStore((s: any) => s.setShowTop3UUIDCounts);
 
   return (
     <section>
@@ -82,34 +85,62 @@ export default function MapDebugSettings() {
                 <input
                   type="checkbox"
                   checked={showH3Grid}
-                  onChange={toggleH3Grid}
+                  onChange={() => setShowH3Grid(!showH3Grid)}
                   className="accent-accent-800"
                 />
                 <span>Vis H3 grid</span>
               </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={debugGroups}
-                  onChange={() => setDebugGroups(!debugGroups)}
-                  className="accent-accent-800"
-                />
-                <span>Vis grupper</span>
-              </label>
+
+              {/* Separate section for debug groups */}
+              <fieldset className="border-0 p-0 m-0 mt-3">
+                <legend className="text-base font-semibold text-neutral-900 p-3">Debug grupper</legend>
+                <div className="flex flex-col gap-2 px-2 py-1">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={showDebugGroups}
+                      onChange={() => setShowDebugGroups(!showDebugGroups)}
+                      className="accent-accent-800"
+                    />
+                    <span>Debugging av grupper</span>
+                  </label>
+                </div>
+                <div className="flex flex-col gap-2 px-2 py-1">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={showTop3H3Counts}
+                      onChange={() => setShowTop3H3Counts(!showTop3H3Counts)}
+                      className="accent-accent-800"
+                    />
+                    <span>Vis top 3 H3-antall</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={showTop3UUIDCounts}
+                      onChange={() => setShowTop3UUIDCounts(!showTop3UUIDCounts)}
+                      className="accent-accent-800"
+                    />
+                    <span>Vis top 3 UUID-antall</span>
+                  </label>
+                </div>
+              </fieldset>
+
               <fieldset className="border-0 p-0 m-0">
-        <legend className="text-base font-semibold text-neutral-900 p-3">Score</legend>
-        <div className="flex flex-col gap-2 px-2 py-1">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showScore}
-              onChange={() => setShowScore(!showScore)}
-              className="accent-accent-800"
-            />
-            <span>Vis score</span>
-          </label>
-        </div>
-      </fieldset>
+                <legend className="text-base font-semibold text-neutral-900 p-3">Score</legend>
+                <div className="flex flex-col gap-2 px-2 py-1">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={showScore}
+                      onChange={() => setShowScore(!showScore)}
+                      className="accent-accent-800"
+                    />
+                    <span>Vis score</span>
+                  </label>
+                </div>
+              </fieldset>
             </div>
         </div>
       </fieldset>
