@@ -6,7 +6,7 @@ import { PiBookOpen, PiBookOpenFill, PiCheckCircleFill, PiCrop, PiGpsFix, PiMagn
 import { useSearchQuery } from "@/lib/search-params";
 import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 import { useSearchParams } from "next/navigation";
-import * as h3 from "h3-js";
+
 import { useRouter } from "next/navigation";
 import wkt from 'wellknown';
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
@@ -24,6 +24,11 @@ import { RoundIconButton } from "../ui/clickable/round-icon-button";
 import DynamicMap from "./leaflet/dynamic-map";
 import MapToolbar from "./map-toolbar";
 import { useDebugStore } from '../../state/zustand/debug-store';
+import dynamic from "next/dynamic";
+
+const DynamicDebugLayers = dynamic(() => import('@/components/map/debug-layers'), {
+  ssr: false
+});
 
 
 
@@ -32,12 +37,10 @@ const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontS
 
 
 export default function MapExplorer() {
-  const showH3Grid = useDebugStore(state => state.showH3Grid);
-  const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
+  
   const showMarkerBounds = useDebugStore(state => state.showMarkerBounds);
   // Add state for H3 resolution
-  const h3Resolution = useDebugStore(state => state.h3Resolution);
-  const setH3Resolution = useDebugStore(state => state.setH3Resolution);
+
 
 
 
@@ -74,6 +77,7 @@ export default function MapExplorer() {
   const setDebugChildren = useDebugStore((s) => s.setDebugChildren)
   const locations = searchParams.get('locations') == 'on'
   const debug = useDebugStore((s) => s.debug)
+  const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
 
 
 
@@ -471,41 +475,6 @@ export default function MapExplorer() {
   }
 
 
-  // No cleanup needed for the new smart update system
-
-  // Modify getH3Cells to use the resolution state
-  const getH3Cells = useCallback((bounds: any) => {
-    if (!bounds) return [];
-
-    const zoomLevel = mapInstance.current?.getZoom() || 0;
-    // Don't show high resolution grids when zoomed out
-    if (zoomLevel < 5) return [];
-    if (zoomLevel < 7 && h3Resolution > 4) return [];
-    if (zoomLevel < 9 && h3Resolution > 5) return [];
-    if (zoomLevel < 11 && h3Resolution > 6) return [];
-    if (zoomLevel < 13 && h3Resolution > 7) return [];
-    if (zoomLevel < 15 && h3Resolution > 8) return [];
-
-    const north = bounds.getNorth();
-    const south = bounds.getSouth();
-    const west = bounds.getWest();
-    const east = bounds.getEast();
-
-    const bboxPolygon = [
-      [north, west],
-      [north, east],
-      [south, east],
-      [south, west],
-      [north, west]
-    ];
-
-    const hexagons = h3.polygonToCells(bboxPolygon, h3Resolution);
-
-    return hexagons.map((hexId: string) => {
-      const boundary = h3.cellToBoundary(hexId);
-      return boundary;
-    });
-  }, [h3Resolution]);
 
   // Function to convert geotile key to bounds
   const geotileKeyToBounds = useCallback((key: string) => {
@@ -679,19 +648,6 @@ export default function MapExplorer() {
             
             {baseMap[perspective] && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapLookup[baseMap[perspective]].props} />}
 
-            {/* Add H3 grid overlay */}
-            {showH3Grid && mapInstance.current && getH3Cells(mapInstance.current.getBounds()).map((polygon, index) => (
-              <Polygon
-                key={`h3-${index}`}
-                positions={polygon}
-                pathOptions={{
-                  color: '#666',
-                  weight: 2,
-                  opacity: 1,
-                  fillOpacity: 0
-                }}
-              />
-            ))}
 
             {/* Draw geotile query results */}
             {processedMarkerResults?.map((item: any) => {
@@ -859,25 +815,7 @@ export default function MapExplorer() {
               })
             }
 
-            {debug && groupData?.misc?.h3_cells?.map((hexId: string) => {
-              const boundary = h3.cellToBoundary(hexId);
-              return <Polygon key={`debug-cell-${hexId}`} positions={boundary} pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }} />;
-            })}
-
-            {debug && showGeotileGrid && markerCells.map((cell) => {
-              const bounds = geotileKeyToBounds(cell.key)
-              if (!bounds) return null;
-              return <Rectangle
-                key={`cell-${cell.key}`}
-                bounds={bounds}
-                pathOptions={{
-                  color: '#0078ff',
-                  weight: 2,
-                  opacity: 0.8,
-                  fillOpacity: 0
-                }}
-              />
-            })}
+            {debug && <DynamicDebugLayers mapInstance={mapInstance.current} Polygon={Polygon} Rectangle={Rectangle} geotileKeyToBounds={geotileKeyToBounds} groupData={groupData} markerCells={markerCells} />}
 
 
 
