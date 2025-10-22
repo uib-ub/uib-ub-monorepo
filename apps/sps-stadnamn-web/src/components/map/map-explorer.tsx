@@ -811,20 +811,8 @@ export default function MapExplorer() {
                     position={[lat, lng]}
                     icon={new leaflet.DivIcon(icon)}
                     riseOnHover={true}
-                    eventHandlers={selectDocHandler(item, childCount ? [item, ...(item.children || [])] : [])}
+                    eventHandlers={selectDocHandler(item)}
                   >
-                      { childCount && item.fields?.["group.id"]?.[0] && <Popup offset={[0, -24]}>
-                        <ul className="list-none p-0 m-0 max-h-[50svh] overflow-y-auto stable-scrollbar text-lg divide-y divide-neutral-200 flex flex-col">
-                          {[item, ...(item.children || [])].map((entry: any) => (
-                            <li key={`entry-${entry.fields.uuid[0]}`} className="!p-0 !m-0">
-                              <Clickable className="no-underline !text-black flex gap-2 items-center py-2" 
-                                          link add={{details: 'group', group: stringToBase64Url(entry.fields["group.id"]?.[0])}}>
-                                            {activeGroupValue == entry.fields["group.id"]?.[0] ? <PiBookOpenFill className="text-accent-700" /> : <PiBookOpen className="text-primary-700" />}{entry.fields.label?.[0]}
-                              </Clickable>
-                            </li>
-                          ))}
-                        </ul>
-                      </Popup>}
                   </Marker>
                 </Fragment>
               )
