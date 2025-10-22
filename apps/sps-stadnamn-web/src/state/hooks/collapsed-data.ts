@@ -8,6 +8,7 @@ import { extractFacets } from '@/app/api/_utils/facets';
 import { base64UrlToString } from '@/lib/param-utils';
 import { useDebugStore } from '../zustand/debug-store';
 import { GlobalContext } from '../providers/global-provider';
+import { usePerspective } from '@/lib/param-hooks';
 
 const INITIAL_PAGE_SIZE = 5;
 const SUBSEQUENT_PAGE_SIZE = 40;
@@ -36,8 +37,7 @@ const collapsedDataQuery = async ({
     initPlaceScore,
     initGroupData,
     point,
-    debug
-}: { pageParam?: number; searchQueryString: string, initGroupCode: string | null, initBoost: number | null, initPlaceScore: number | null, initGroupData: Record<string, any> | null, point: string | null, debug: boolean }) => {
+}: { pageParam?: number; searchQueryString: string, initGroupCode: string | null, initBoost: number | null, initPlaceScore: number | null, initGroupData: Record<string, any> | null, point: string | null }) => {
 
     // Determine size and from based on page number
     const isFirstPage = pageParam === 0;
@@ -61,7 +61,6 @@ const collapsedDataQuery = async ({
             initPlaceScore: initGroupData?.placeScore,
             initLocation,
             initLabel,
-            debug
             
         })
     })
@@ -120,8 +119,7 @@ export default function useCollapsedData() {
             initBoost: initGroupCode ? initGroupData?.boost : null,
             initPlaceScore: initGroupCode ? initGroupData?.placeScore : null,
             initGroupData: initGroupCode ? initGroupData : null,
-            point,
-            debug
+            point
         }),
         //placeholderData: (prevData: any) => prevData,
         initialPageParam: initialPageRef.current - 1,

@@ -67,7 +67,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     core_gnidu: {
       label
     },
-    group_debug: {
+    core_group_debug: {
       ...required,
       ...identifiers
     },

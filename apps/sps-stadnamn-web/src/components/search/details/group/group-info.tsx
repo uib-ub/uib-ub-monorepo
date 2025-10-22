@@ -517,8 +517,18 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     )
 
     const isGrunnord = Object.keys(datasets).some((ds: any) => ds.includes('_g'))
-
-
+    if (!groupData?.group?.id) {
+    console.log("Group ID not found")
+    const props = {
+        message: `Group ID not found: ${JSON.stringify(groupData)}`
+    }
+  
+    fetch('/api/error', {
+      method: 'POST',
+      body: JSON.stringify(props)
+    })
+    return <div className="p-2">Kunne ikkje lasta inn gruppe</div>
+    }
 
 
     return (

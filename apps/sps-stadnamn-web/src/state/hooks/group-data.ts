@@ -24,28 +24,10 @@ const groupDataQuery = async (
         // Add multiple datasetTag params, as separate keys
         datasetTags.forEach((tag: string) => newParams.append('datasetTag', tag));
     }
-    let res 
 
 
-    if (debugChildren?.length && debugChildren.length > 0) {
-        res = await fetch(`/api/group`,
-        {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({debugChildren: debugChildren, groupId: base64UrlToString(group) })
-          }
-        
-        )
-
-    }
-    else {
-        console.log("USING GET (CLIENT)",debugChildren )
-        res = await fetch(`/api/group?${newParams.toString()}`, {
-            method: 'GET'
-        })
-    }
+    console.log("DEBUG CHILDREN NOT USED", debugChildren)
+    const res = await fetch(`/api/group?${newParams.toString()}`)
 
     if (!res.ok) {
         throw new Error('Failed to fetch group')
@@ -74,7 +56,7 @@ export default function useGroupData(overrideGroupCode?: string | null) {
         isFetching: groupFetching,
         status,
     } = useQuery({
-        queryKey: ['group', groupCode, searchQueryString, debugChildren],
+        queryKey: ['group', groupCode, searchQueryString],
         queryFn: async () =>
             groupCode ? groupDataQuery(groupCode, datasets, datasetTags, debug ? debugChildren : []) : null,
         placeholderData: (overrideGroupCode || initCode == groupCode) ? undefined : (prevData: any) => prevData,

@@ -50,7 +50,7 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
     const doc = searchParams.get('doc')
     const nav = searchParams.get('nav')
     const itemRef = useRef<HTMLAnchorElement>(null) 
-    const docDataset = hit._index.split('-')[2]
+    const docDataset = hit._index?.split('-')?.[2]
     const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
     const { mapFunctionRef } = useContext(GlobalContext)
@@ -58,9 +58,6 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const showScore = useDebugStore((s: any) => s.showScore)
-
-    const setDebugChildren = useDebugStore((s) => s.setDebugChildren)
-    const debugChildren = useDebugStore((s) => s.debugChildren)
 
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
     const detailsRenderer = (hit: any) => {
@@ -75,18 +72,23 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
 
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
     const {activeGroupCode, activeGroupValue, initValue } = useGroup()
+    
 
 
     useEffect(() => {
         // Scroll into view if section changes to results
+        if (!hit.fields?.uuid) return;
 
         if (isMobile && nav == 'results' && doc == hit.fields.uuid && itemRef.current) {
             itemRef.current.scrollIntoView({behavior: 'instant', block: 'center'})
         }
-    }, [nav, doc, hit.fields.uuid, isMobile])
+    }, [nav, doc, hit.fields?.uuid, isMobile])
 
 
-    const label = hit.fields?.label?.[0] || JSON.stringify(hit)
+    const label = hit.fields?.label?.[0] || ''
+
+
+    if (!hit._index) return <div className="p-2">Det har oppstått ein feil: Kunne ikkje hente kjelder</div>
 
     
 
@@ -97,12 +99,6 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
         if (!hit.fields?.location?.[0].coordinates) return;
         const map = mapFunctionRef.current;
         if (!map || snappedPosition == 'top') return;
-
-        if (hit._index.includes('group_debug') && hit._source?.misc.children) {
-            setDebugChildren(hit._source?.misc.children)
-            console.log("CELLS:", hit._source?.misc.cells)
-        }
-
 
 
         const [lng, lat] = hit.fields.location[0].coordinates;
@@ -124,7 +120,7 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
                             
                                 <span className="font-semibold">
                                     {hit.fields.label?.[0]}
-                                </span>{JSON.stringify(debugChildren)}
+                                </span>
                             
                         </h2>
                     )}

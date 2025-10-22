@@ -3,14 +3,11 @@
 import { extractFacets } from '../../_utils/facets'
 import { getQueryString } from '../../_utils/query-string';
 import { postQuery } from '../../_utils/post';
-import { getSortArray } from '@/config/server-config';
-import { base64UrlToString } from '@/lib/param-utils';
 
 export async function POST(request: Request) {
-  const {size, from, perspective, initLocation, debug } = await request.json()
+  const {size, from, initLocation } = await request.json()
   const {termFilters, reservedParams} = extractFacets(request)
   const { highlight, simple_query_string } = getQueryString(reservedParams)
-
 
   const query: Record<string,any> = {
     "size":  size  || 10,
@@ -25,7 +22,6 @@ export async function POST(request: Request) {
     "sort": reservedParams.datasetTag == 'base' ?
     [{'group.id': "asc"}, {'label.keyword': "asc"}]
     : [
-      ...debug ? [{"misc.length": "desc"}] : [],
       
       ...reservedParams.q ? [{
         _score: "desc"
@@ -44,7 +40,7 @@ export async function POST(request: Request) {
         }
       },
     ],
-    "_source": debug ? true : false
+    "_source": false
   }
 
   // Construct the query part
@@ -141,17 +137,8 @@ export async function POST(request: Request) {
       */
   
     
-
-
-
-
-
-  
-
-  
-  
  
-  const [data, status] = await postQuery(debug ? 'group_debug' : perspective || 'all', query, "dfs_query_then_fetch")
+  const [data, status] = await postQuery('all', query, "dfs_query_then_fetch")
   return Response.json(data, {status: status})
   
 }

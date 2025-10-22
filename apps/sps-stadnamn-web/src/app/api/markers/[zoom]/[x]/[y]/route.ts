@@ -58,7 +58,7 @@ export async function GET(
               "top": {
                 "top_hits": {
                   "size": 1,
-                  "_source": reservedParams.debug == 'on' ? true : false,
+                  "_source": false,
                   "fields": ["label", "location", "group.id", "uuid"],
                 }
               },
@@ -69,7 +69,6 @@ export async function GET(
       }
     }
   }
-  console.log("GRID QUERY", JSON.stringify(query, null, 2))
 
   if (simple_query_string || termFilters.length) {
     if (simple_query_string) {
@@ -79,8 +78,9 @@ export async function GET(
       query.query.bool.filter.push(...termFilters)
     }
   }
+  console.log("PERSPECTIVE", perspective)
 
 
-  const [data, status] = await postQuery(reservedParams.debug ? 'group_debug' : perspective, query, "dfs_query_then_fetch")
+  const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
   return Response.json(data, { status: status })
 }

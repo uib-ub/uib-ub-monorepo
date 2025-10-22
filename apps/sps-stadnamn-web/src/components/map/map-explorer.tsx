@@ -151,9 +151,6 @@ export default function MapExplorer() {
             newParams.set('sosi', 'gard')
           }
 
-          if (debug) {
-            newParams.set('debug', 'on')
-          }
 
           const res = await fetch(`/api/markers/${cell.precision}/${cell.x}/${cell.y}${newParams.toString() ? `?${newParams.toString()}` : ''}`, { signal: controllerRef.current.signal })
           const data = await res.json()
@@ -449,6 +446,9 @@ export default function MapExplorer() {
         const fields = selected.fields || {}
         if (selected._source?.misc?.children && debug) {
           setDebugChildren(selected._source?.misc?.children)
+        }
+        else {
+          //setDebugChildren([])
         }
         if (!newQueryParams.get('results')) {
           newQueryParams.set('results', 'on')
@@ -859,7 +859,7 @@ export default function MapExplorer() {
               })
             }
 
-            {debug && groupData?.misc?.cells?.map((hexId: string) => {
+            {debug && groupData?.misc?.h3_cells?.map((hexId: string) => {
               const boundary = h3.cellToBoundary(hexId);
               return <Polygon key={`debug-cell-${hexId}`} positions={boundary} pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }} />;
             })}

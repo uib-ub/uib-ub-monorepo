@@ -196,7 +196,9 @@ export default function SearchResults() {
             notClickable={true}
             hit={initGroupData}
           />
+          { initGroupData.fields?.["group.id"] ?
          <GroupInfo id={`group-info-${initGroupData.fields["group.id"]}`} overrideGroupCode={init || undefined}/>
+         : <div className="p-2">Det har oppstått ein feil</div>}
         </li>
       ))}
 

@@ -35,7 +35,7 @@ export const modes: Record<string, {title: string, description: string}> = {
 }
 
 export const datasetTitles: DatasetTitles = {
-    group_debug: "Debug",
+    core_group_debug: "Debug",
     all: "Stadnamnsøk",
     core_gnidu: "GNIDu",
     tree: "Matriklar",
@@ -74,7 +74,7 @@ export const datasetTitles: DatasetTitles = {
 }
 
 export const datasetDescriptions: Record<string, string> = {
-  group_debug: "",
+  core_group_debug: "",
   all: "Søk på tvers av alle datasett i Stadnamnportalen.",
   wikidata: "",
   ssr: "Sentralt stadnamnregister (SSR), Kartverket sitt offisielle register over stadnamn i Noreg.",
@@ -105,7 +105,7 @@ export const datasetDescriptions: Record<string, string> = {
 }
 
 export const datasetShortDescriptions: Record<string, string> = {
-  group_debug: "",
+  core_group_debug: "",
   all: "Søk på tvers av alle datasett i Stadnamnportalen.",
   ssr: "Kartverket sitt offisielle register over stadnamn i Noreg.",
   wikidata: "",

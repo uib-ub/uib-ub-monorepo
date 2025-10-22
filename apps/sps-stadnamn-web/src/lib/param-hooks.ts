@@ -14,6 +14,7 @@ export function usePerspective() {
     if (datasetParams.length == 1) {
         return datasetParams[0]
     }
+
     return 'all'
 }
 
