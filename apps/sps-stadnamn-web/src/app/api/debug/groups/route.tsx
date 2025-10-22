@@ -1,6 +1,6 @@
-import { extractFacets } from "../_utils/facets"
-import { postQuery } from "../_utils/post"
-import { getQueryString } from "../_utils/query-string"
+import { extractFacets } from "../../_utils/facets"
+import { postQuery } from "../../_utils/post"
+import { getQueryString } from "../../_utils/query-string"
 
 export async function GET(request: Request) {
   const { reservedParams } = extractFacets(request)

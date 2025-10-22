@@ -9,7 +9,7 @@ const groupDebugDataQuery = async (q: string | null, bounds: { topLeftLat: numbe
     const params = new URLSearchParams()
 
     if (children?.length) {
-        const res = await fetch('/api/group-debug', {
+        const res = await fetch('/api/debug/groups', {
             method: 'POST',
             body: JSON.stringify({ children }),
         })
@@ -31,7 +31,7 @@ const groupDebugDataQuery = async (q: string | null, bounds: { topLeftLat: numbe
         params.set('bottomRightLng', bounds.bottomRightLng.toString())
     }
     
-    const url = params.toString() ? `/api/group-debug?${params.toString()}` : '/api/group-debug'
+    const url = params.toString() ? `/api/debug/groups?${params.toString()}` : '/api/debug/groups'
     const res = await fetch(url)
     if (!res.ok) {
         throw new Error('Failed to fetch group debug data')
@@ -39,7 +39,7 @@ const groupDebugDataQuery = async (q: string | null, bounds: { topLeftLat: numbe
     return res.json()
 }
 
-export default function useGroupDebugData(selectedGroup?: any) {
+export function useGroupDebugData(selectedGroup?: any) {
     const searchParams = useSearchParams()
     const { mapFunctionRef } = useContext(GlobalContext)
     const q = searchParams.get('q')
@@ -81,5 +81,25 @@ export default function useGroupDebugData(selectedGroup?: any) {
         queryKey: ['group-debug', q, selectedGroup?._id, bounds?.topLeftLat, bounds?.topLeftLng, bounds?.bottomRightLat, bounds?.bottomRightLng],
         queryFn: () => groupDebugDataQuery(q, bounds || { topLeftLat: null, topLeftLng: null, bottomRightLat: null, bottomRightLng: null }, children),
         enabled: !!mapFunctionRef?.current && debug // Only run query when map is available and debug groups is enabled
+    })
+}
+
+
+export function useGniduData(selectedGroup?: any) {
+    const gnidus = selectedGroup?._source?.gnidu
+
+    return useQuery({
+        queryKey: ['gnidu', selectedGroup?._id],
+        queryFn: async () => {
+            const res = await fetch(`/api/debug/gnidus`, {
+                method: 'POST',
+                body: JSON.stringify({ gnidus }),
+            })
+            if (!res.ok) {
+                throw new Error('Failed to fetch gnidu data')
+            }
+            return res.json()
+        },
+        enabled: gnidus?.length > 0
     })
 }

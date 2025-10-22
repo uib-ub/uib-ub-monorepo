@@ -1,11 +1,20 @@
-import useGroupDebugData from "@/state/hooks/group-debug-data";
+import {useGroupDebugData, useGniduData} from "@/state/hooks/group-debug-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import * as h3 from "h3-js";
-import { useCallback, useContext, useState } from "react";
+import { Fragment, useCallback, useContext, useState } from "react";
+import * as wkt from "wellknown";
 
-export default function DebugLayers({mapInstance, Polygon, Rectangle, CircleMarker, Popup, geotileKeyToBounds, groupData, markerCells }: {mapInstance: any, Polygon: any, Rectangle: any, CircleMarker: any, Popup: any, geotileKeyToBounds: any, groupData: any, markerCells: any}) {
 
+export default function DebugLayers({mapInstance, 
+                                    Polygon, 
+                                    Polyline, 
+                                    Rectangle, 
+                                    CircleMarker, 
+                                    Popup, 
+                                    geotileKeyToBounds, 
+                                    groupData, 
+                                    markerCells }: {mapInstance: any, Polygon: any, Polyline: any, Rectangle: any, CircleMarker: any, Popup: any, geotileKeyToBounds: any, groupData: any, markerCells: any}) {
     const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
     const h3Resolution = useDebugStore(state => state.h3Resolution);
     const setH3Resolution = useDebugStore(state => state.setH3Resolution);
@@ -14,12 +23,13 @@ export default function DebugLayers({mapInstance, Polygon, Rectangle, CircleMark
     const showTop3H3Counts = useDebugStore(state => state.showTop3H3Counts);
     const showTop3UUIDCounts = useDebugStore(state => state.showTop3UUIDCounts);
 
+
     const [selectedGroup, setSelectedGroup] = useState<any>(null);
+    const [selectedGnidu, setSelectedGnidu] = useState<any>(null);
 
     const {data: debugGroups } = useGroupDebugData();
     const { data: debugChildren } = useGroupDebugData(selectedGroup);
-
-    console.log("GROUP debugGroups", debugGroups);
+    const { data: gniduData } = useGniduData(selectedGroup);
 
     // Get top 5 groups by h3_count
     const top5Groups = debugGroups?.hits?.hits
@@ -218,6 +228,12 @@ export default function DebugLayers({mapInstance, Polygon, Rectangle, CircleMark
                           <b>UUID count:</b> {group._source.misc.uuid_count}
                         </>
                       )}
+                      {group._source?.gnidu?.length > 0 && (
+                        <>
+                          <br />
+                          <b>GNIDU:</b> {group._source.gnidu.join(', ')}
+                        </>
+                      )}
                       {group._source?.misc?.h3_count !== undefined && (
                         <>
                           <br />
@@ -254,6 +270,83 @@ export default function DebugLayers({mapInstance, Polygon, Rectangle, CircleMark
                 </CircleMarker>
               );
             })}
+
+            { gniduData?.hits?.hits?.filter((item: any) => item._source?.area).map((item: any) => {
+                    const areaWkt = item._source?.area;
+                    const isSelected = selectedGnidu?._id === item._id;
+
+                    try {
+
+                        const geoJSON = wkt.parse(areaWkt);
+                        if (!geoJSON) return null;
+
+                        console.log("GEOJSON", geoJSON);
+
+                        const pathOptions = isSelected 
+                            ? { color: 'red', weight: 3, opacity: 1, fillOpacity: 0.2 }
+                            : { color: 'silver', weight: 1, opacity: 0.8, fillOpacity: 0.05 };
+
+                        switch (geoJSON.type) {
+                            case 'Polygon':
+                                return <Polygon
+                                    key={`debug-gnidu-${item._id}`}
+                                    positions={geoJSON.coordinates[0].map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
+                                    pathOptions={pathOptions}
+                                />;
+                            case 'MultiPolygon':
+                                return (
+                                    <Fragment key={`debug-gnidu-${item._id}`}>
+                                        {geoJSON.coordinates.map((polygonCoords, index) => (
+                                            <Polygon
+                                                key={`debug-gnidu-${item._id}-${index}`}
+                                                positions={polygonCoords[0].map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
+                                                pathOptions={pathOptions}
+                                            />
+                                        ))}
+                                    </Fragment>
+                                );
+
+                            default:
+                                return null;
+                        }
+                    } catch (error) {
+                        console.error('Failed to parse WKT:', error);
+                        return null;
+                    }
+            }).filter((item: any) => item !== null)
+
+            }
+
+            {/* GNIDU List Overlay */}
+            {gniduData?.hits?.hits?.length > 0 && (
+              <div className="absolute bottom-64 left-4 bg-white/95 border border-gray-300 rounded-lg p-3 max-w-xs max-h-96 overflow-y-auto shadow-lg z-[1000] text-xs font-sans">
+                <div className="font-bold mb-2 text-gray-800">
+                  GNIDU Items
+                </div>
+                {gniduData.hits.hits.map((item: any, index: number) => {
+                  const isSelected = selectedGnidu?._id === item._id;
+                  return (
+                    <div
+                      key={`gnidu-list-${item._id}`}
+                      className={`p-2 my-1 rounded cursor-pointer transition-colors ${
+                        isSelected ? 'bg-black text-white' : 'bg-gray-50 hover:bg-blue-100'
+                      }`}
+                      onClick={() => setSelectedGnidu(isSelected ? null : item)}
+                    >
+                      <div className="font-bold">
+                        {item._source?.label || item._id}
+                      </div>
+                      <div className="text-xs opacity-75">
+                        ID: {item._id}
+                      </div>
+                    </div>
+                  );
+                })}
+                <div className="mt-3 text-xs text-gray-600 text-center italic">
+                  Click to select/deselect
+                </div>
+              </div>
+            )}
 
             {/* Top 5 Groups List Overlay */}
             {showDebugGroups && top5Groups.length > 0 && (

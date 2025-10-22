@@ -818,7 +818,7 @@ export default function MapExplorer() {
               })
             }
 
-            {debug && <DynamicDebugLayers mapInstance={mapInstance} Polygon={Polygon} Rectangle={Rectangle} CircleMarker={CircleMarker} Popup={Popup} geotileKeyToBounds={geotileKeyToBounds} groupData={groupData} markerCells={markerCells} />}
+            {debug && <DynamicDebugLayers mapInstance={mapInstance} Polygon={Polygon} Polyline={Polyline} Rectangle={Rectangle} CircleMarker={CircleMarker} Popup={Popup} geotileKeyToBounds={geotileKeyToBounds} groupData={groupData} markerCells={markerCells} />}
 
 
 
