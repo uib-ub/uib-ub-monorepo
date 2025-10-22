@@ -1,6 +1,6 @@
 'use client'
 
-import { PiBookOpen, PiCaretDown, PiCaretDownBold, PiCaretLeftBold, PiCaretUpBold, PiCrop, PiEye, PiEyeSlash, PiFunnel, PiMapPin, PiSliders, PiTableFill, PiX } from "react-icons/pi";
+import { PiBookOpen, PiCaretDown, PiCaretDownBold, PiCaretLeftBold, PiCaretUpBold, PiCrop, PiEye, PiEyeSlash, PiFunnel, PiInfoFill, PiMapPin, PiSliders, PiTableFill, PiX } from "react-icons/pi";
 import { RoundClickable } from "../ui/clickable/round-icon-button";
 import dynamic from "next/dynamic";
 import { formatNumber } from "@/lib/utils";
@@ -119,15 +119,10 @@ export default function OverlayInterface() {
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const currentPosition = useSessionStore((s) => s.currentPosition);
     const setCurrentPosition = useSessionStore((s) => s.setCurrentPosition);
-    const drawerOpen = useSessionStore((s) => s.drawerOpen);
     const setDrawerOpen = useSessionStore((s) => s.setDrawerOpen);
-    const { isMobile, mapFunctionRef } = useContext(GlobalContext)
+    const { isMobile } = useContext(GlobalContext)
     const searchParams = useSearchParams()
-    const q = searchParams.get('q')
-
-
-    const { searchFilterParamsString } = useSearchQuery()
-    const { totalHits, searchBounds } = useSearchData()
+    const { totalHits, searchBounds, searchLoading, searchError } = useSearchData()
     const { groupData } = useGroupData()
 
     const drawerRef = useRef<HTMLDivElement>(null)
@@ -151,6 +146,7 @@ export default function OverlayInterface() {
 
 
     return <>
+
 
 
         <div ref={drawerRef}  className="scroll-container">
@@ -278,6 +274,7 @@ export default function OverlayInterface() {
                         {(mapSettings ? <MapSettings/> : results && <SearchResults />)}                   
                     </RightWindow>}
                 </DrawerWrapper>
+
                 
             </div>
     </>

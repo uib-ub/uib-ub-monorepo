@@ -201,11 +201,17 @@ export default function SearchForm() {
 
 
     return <div
-        className="flex"
+        className="flex transition-opacity duration-300 ease-in-out"
         style={{
             position: (!isMobile || currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM)    ? undefined : 'absolute',
             top: (!isMobile || currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM) ? undefined : (snappedPosition === 'top' ? '0rem' : `calc(${-currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem * (1 - max(0, min(1, (${currentPosition}rem - 60svh) / (100svh - 60svh - 8rem)))))`),
-            left: (!isMobile || currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM) ? undefined : `0`
+            left: (!isMobile || currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM) ? undefined : `0`,
+            // Fade only between 'middle' and 'top' on mobile when above bottom threshold
+            opacity: (!isMobile || currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM)
+                ? 1
+                : ((snappedPosition === 'top' || snappedPosition === 'middle')
+                    ? (snappedPosition === 'top' ? 1 : 0)
+                    : 1)
         }}>
         <header className={`${isMobile && autocompleteOpen ? 'sr-only' : 'flex xl:absolute xl:top-2 xl:left-2 w-14 h-14 xl:h-12 xl:w-auto'} ${(autocompleteOpen || menuOpen) ? 'xl:!rounded-b-none' : 'shadow-lg'} bg-neutral-50 xl:rounded-l-md`}><Menu shadow/></header>
         <Form ref={form} onSubmitCapture={() => setSelectedGroup(null)} action="/search" id="search-form" aria-label="Stadnamnsøk"

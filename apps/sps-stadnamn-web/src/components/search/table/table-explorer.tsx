@@ -4,7 +4,7 @@ import { contentSettings, treeSettings } from "@/config/server-config"
 import { usePerspective } from "@/lib/param-hooks"
 import { useSearchParams } from "next/navigation"
 import { Fragment, useContext } from "react"
-import { PiBookOpen, PiMapPinFill } from "react-icons/pi"
+import { PiBookOpen, PiMapPinFill, PiMapTrifold } from "react-icons/pi"
 import SortHeader from "./sort-header"
 import Pagination from "@/components/results/pagination"
 import { formatCadastre } from "@/config/result-renderers"
@@ -17,6 +17,7 @@ import useTableData from "@/state/hooks/table-data"
 import { stringToBase64Url } from "@/lib/param-utils"
 import { DownloadButton } from "./download-button"
 import StatusSection from "../status-section"
+import { useSessionStore } from "@/state/zustand/session-store"
 
 export default function TableExplorer() {
     const perspective = usePerspective()
@@ -29,6 +30,7 @@ export default function TableExplorer() {
     const datasetTag = searchParams.get('datasetTag')
 
     const { tableData, tableLoading } = useTableData()
+    const currentPosition = useSessionStore((s) => s.currentPosition)
 
 
 
@@ -58,7 +60,8 @@ export default function TableExplorer() {
 
 
 
-    return <div className='flex flex-col py-2 gap-y-4 h-full bg-white'>
+    return <><div className="flex items-baseline gap-4 px-4 p-2"><h2 className="text-xl !m-0 !p-0">Kjeldetabell</h2><Clickable className="flex items-center gap-1" remove={['mode']} add={{mode: 'map'}}><PiMapTrifold /> Vis kartet</Clickable></div>
+    <div className='flex flex-col py-2 gap-y-4 h-full bg-white'>
         <div className='flex  flex-col gap-4 xl:gap-2 !mx-2'>
             {datasetTag == 'tree' && doc && tableData?.[0]?._source && treeSettings[perspective] && <h2 className="text-xl px-1">{`${getGnr(tableData?.[0], perspective) || getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.subunit) || ""} ${getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.parentName) || tableData?.[0]?._source?.label || ""}`}</h2>}
 
@@ -197,6 +200,7 @@ export default function TableExplorer() {
 
 
     </div>
+    </>
 
 }
 

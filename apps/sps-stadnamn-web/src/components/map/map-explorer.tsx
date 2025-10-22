@@ -442,7 +442,7 @@ export default function MapExplorer() {
 
 
 
-  const selectDocHandler = (selected: Record<string, any>, hits?: Record<string, any>[]) => {
+  const selectDocHandler = (selected: Record<string, any>, markerPoint: [number, number], hits?: Record<string, any>[]) => {
     return {
       click: () => {
         const newQueryParams = new URLSearchParams(searchParams)
@@ -454,10 +454,12 @@ export default function MapExplorer() {
           newQueryParams.set('results', 'on')
         }
         newQueryParams.delete('mapSettings')
-        newQueryParams.delete('point')
+        newQueryParams.set('point', `${markerPoint[1]},${markerPoint[0]}`)
         newQueryParams.delete('doc')
 
         newQueryParams.set('init', stringToBase64Url(fields["group.id"][0]))
+        newQueryParams.delete('group')
+
         if (datasetTag == 'tree') {
           newQueryParams.set('doc', fields.uuid[0])
         }
@@ -674,7 +676,7 @@ export default function MapExplorer() {
 
           <>
             <EventHandlers />
-            <AttributionControl position="bottomleft" />
+            
             {baseMap[perspective] && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapLookup[baseMap[perspective]].props} />}
 
             {/* Add H3 grid overlay */}
@@ -807,14 +809,14 @@ export default function MapExplorer() {
                       />
                     ))
                   }
-                  <Marker
+                  {activeGroupValue != item.fields?.["group.id"]?.[0] && <Marker
                     key={`result-${item.fields.uuid[0]}`}
                     position={[lat, lng]}
                     icon={new leaflet.DivIcon(icon)}
                     riseOnHover={true}
-                    eventHandlers={selectDocHandler(item)}
+                    eventHandlers={selectDocHandler(item, [lat, lng])}
                   >
-                  </Marker>
+                  </Marker>}
                 </Fragment>
               )
             }
@@ -835,17 +837,11 @@ export default function MapExplorer() {
                 }}
               />
             }))}
-            { initGroupData && initGroupData.fields?.location?.[0]?.coordinates && <Marker
-              zIndexOffset={1000}
-              icon={new leaflet.DivIcon(getLabelMarkerIcon(initGroupData.fields.label[0] || '[utan namn]', initValue == activeGroupValue ? 'accent' : 'primary', undefined, true, false, initValue == activeGroupValue))}
-              position={[initGroupData.fields.location[0].coordinates[1], initGroupData.fields.location[0].coordinates[0]]}
-            />
-            }
 
 
 
-            {groupData && groupData.fields?.location?.[0]?.coordinates && initValue != activeGroupValue && <Marker
-              zIndexOffset={1000}
+            {groupData && groupData.fields?.location?.[0]?.coordinates && <Marker
+              zIndexOffset={2000}
               icon={new leaflet.DivIcon(getLabelMarkerIcon(groupData.fields.label[0] || '[utan namn]', 'accent', undefined, true, false, true))}
               position={[groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]}
             />

@@ -114,7 +114,7 @@ export default function SearchResults() {
   return (
     <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
       {
-        (point) && (
+        (point && !init) && (
           <div className="p-2 flex items-center gap-2">
             <PiMapPinFill className="text-primary-700" />
             <span>

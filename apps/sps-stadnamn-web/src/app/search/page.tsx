@@ -39,20 +39,11 @@ export default async function SearchPage({searchParams}: {searchParams: Promise<
   return <main id="main" className="bg-neutral-100 w-full h-full">
 
     <OverlayInterface />
-    <div style={{paddingBottom: isMobile ? `${MAP_DRAWER_BOTTOM_HEIGHT_REM * 2}rem` : '0rem'}} className={`absolute left-0 top-0 xl:left-[25svw] z-[4000] ${(mode == 'map' || !mode) ? '' : `top-14 xl:top-2 border-t-neutral border-t pt-2 max-h-[calc(100svh-3rem)] xl:max-w-[calc(100svw-25svw-0.5rem)] overflow-auto bg-white xl:rounded-md !m-0 w-full stable-scrollbar`}`}>
-      {mode == 'table' ?
-      <>
-      
-      <div className="flex items-baseline gap-4 px-4 p-2"><h2 className="text-xl !m-0 !p-0">Kjeldetabell</h2><Clickable className="flex items-center gap-1" remove={['mode']} add={{mode: 'map'}}><PiMapTrifold /> Vis kartet</Clickable></div>
+    { mode == 'table' &&
+    <div style={{paddingBottom: isMobile ? `${MAP_DRAWER_BOTTOM_HEIGHT_REM * 2}rem` : '0rem'}} className={`absolute left-0 top-14 xl:left-[25svw] border-t-neutral border-t-2 pt-2 max-h-[calc(100svh-3rem)] xl:max-w-[calc(100svw-25svw-0.5rem)] overflow-auto bg-white xl:rounded-md !m-0 w-full stable-scrollbar`}>
       <TableExplorerWrapper />
-      </>
-
-      : <StatusSection />
-      }
     </div>
-    
-
-    
+      }
 
     {(!mode || mode == 'map' ) && <MapWrapper />}
   </main>

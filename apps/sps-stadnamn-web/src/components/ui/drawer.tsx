@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { PiCaretUpBold } from "react-icons/pi"
 import { RoundIconButton } from "./clickable/round-icon-button"
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, MAP_DRAWER_TOP_SUBTRACT_REM } from "@/lib/map-utils"
+import useSearchData from "@/state/hooks/search-data"
 
 
 
@@ -46,6 +47,7 @@ export default function Drawer({
     const outerRef = useRef<HTMLDivElement>(null)
     const effectiveScrollRef = scrollContainerRef || localScrollRef
     const gestureStartedScrollRef = useRef<boolean>(false)
+
     
 
     const svhToRem = (svh: number) => {
