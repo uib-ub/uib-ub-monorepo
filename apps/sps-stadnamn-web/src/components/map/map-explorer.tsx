@@ -776,8 +776,9 @@ export default function MapExplorer() {
               }
               else {
                 const selected = activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue && !groupLoading
+                if (selected) return null
 
-                const childCount = zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
+                const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', selected ? 'accent' : 'white', childCount, false, false, !!(selected))
 
 
