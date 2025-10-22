@@ -257,25 +257,8 @@ export default function DebugLayers({mapInstance, Polygon, Rectangle, CircleMark
 
             {/* Top 5 Groups List Overlay */}
             {showDebugGroups && top5Groups.length > 0 && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '10px',
-                  right: '10px',
-                  background: 'rgba(255, 255, 255, 0.95)',
-                  border: '1px solid #ccc',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  maxWidth: '300px',
-                  maxHeight: '400px',
-                  overflowY: 'auto',
-                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                  zIndex: 1000,
-                  fontSize: '12px',
-                  fontFamily: 'Arial, sans-serif'
-                }}
-              >
-                <div style={{ fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
+              <div className="absolute bottom-4 left-4 bg-white/95 border border-gray-300 rounded-lg p-3 max-w-xs max-h-96 overflow-y-auto shadow-lg z-[1000] text-xs font-sans">
+                <div className="font-bold mb-2 text-gray-800">
                   Top 5 Groups (by H3 count)
                 </div>
                 {top5Groups.map((group: any, index: number) => {
@@ -283,52 +266,31 @@ export default function DebugLayers({mapInstance, Polygon, Rectangle, CircleMark
                   return (
                     <div
                       key={`top5-list-${group._id}`}
-                      style={{
-                        padding: '6px 8px',
-                        margin: '2px 0',
-                        background: index === 0 ? '#fff3cd' : '#f8f9fa',
-                        border: '1px solid #e9ecef',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center'
-                      }}
+                      className={`p-2 my-1 rounded cursor-pointer flex justify-between items-center transition-colors ${
+                        index === 0 ? 'bg-yellow-100' : 'bg-gray-50'
+                      } hover:bg-blue-100`}
                       onClick={() => setSelectedGroup(group)}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = '#e3f2fd';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = index === 0 ? '#fff3cd' : '#f8f9fa';
-                      }}
                     >
-                      <div style={{ flex: 1, overflow: 'hidden' }}>
-                        <div style={{ fontWeight: 'bold', color: groupColor }}>
+                      <div className="flex-1 overflow-hidden">
+                        <div className="font-bold" style={{ color: groupColor }}>
                           #{index + 1} {group._source.label || group._id}
                         </div>
-                        <div style={{ fontSize: '10px', color: '#666' }}>
+                        <div className="text-xs text-gray-600">
                           H3: {group._source?.misc?.h3_count || 0} | 
                           UUID: {group._source?.misc?.uuid_count || 0}
                         </div>
                       </div>
-                      <div style={{ 
-                        width: '12px', 
-                        height: '12px', 
-                        borderRadius: '50%', 
-                        background: groupColor,
-                        border: '2px solid #fff',
-                        boxShadow: `0 0 0 1px ${groupColor}`
-                      }} />
+                      <div 
+                        className="w-3 h-3 rounded-full border-2 border-white shadow-sm"
+                        style={{ 
+                          background: groupColor,
+                          boxShadow: `0 0 0 1px ${groupColor}`
+                        }}
+                      />
                     </div>
                   );
                 })}
-                <div style={{ 
-                  marginTop: '8px', 
-                  fontSize: '10px', 
-                  color: '#666', 
-                  textAlign: 'center',
-                  fontStyle: 'italic'
-                }}>
+                <div className="mt-3 text-xs text-gray-600 text-center italic">
                   Click to select group
                 </div>
               </div>
@@ -336,25 +298,8 @@ export default function DebugLayers({mapInstance, Polygon, Rectangle, CircleMark
 
             {/* Top 3 UUID Groups List Overlay */}
             {showTop3UUIDCounts && top3uuidGroups.length > 0 && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '10px',
-                  left: '10px',
-                  background: 'rgba(255, 255, 255, 0.95)',
-                  border: '1px solid #ccc',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  maxWidth: '300px',
-                  maxHeight: '400px',
-                  overflowY: 'auto',
-                  boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                  zIndex: 1000,
-                  fontSize: '12px',
-                  fontFamily: 'Arial, sans-serif'
-                }}
-              >
-                <div style={{ fontWeight: 'bold', marginBottom: '8px', color: '#333' }}>
+              <div className="absolute bottom-4 left-64 bg-white/95 border border-gray-300 rounded-lg p-3 max-w-xs max-h-96 overflow-y-auto shadow-lg z-[1000] text-xs font-sans">
+                <div className="font-bold mb-2 text-gray-800">
                   Top 3 Groups (by UUID count)
                 </div>
                 {top3uuidGroups.map((group: any, index: number) => {
@@ -362,52 +307,31 @@ export default function DebugLayers({mapInstance, Polygon, Rectangle, CircleMark
                   return (
                     <div
                       key={`top3-uuid-list-${group._id}`}
-                      style={{
-                        padding: '6px 8px',
-                        margin: '2px 0',
-                        background: index === 0 ? '#fff3cd' : '#f8f9fa',
-                        border: '1px solid #e9ecef',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center'
-                      }}
+                      className={`p-2 my-1 rounded cursor-pointer flex justify-between items-center transition-colors ${
+                        index === 0 ? 'bg-yellow-100' : 'bg-gray-50'
+                      } hover:bg-blue-100`}
                       onClick={() => setSelectedGroup(group)}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = '#e3f2fd';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = index === 0 ? '#fff3cd' : '#f8f9fa';
-                      }}
                     >
-                      <div style={{ flex: 1, overflow: 'hidden' }}>
-                        <div style={{ fontWeight: 'bold', color: groupColor }}>
+                      <div className="flex-1 overflow-hidden">
+                        <div className="font-bold" style={{ color: groupColor }}>
                           #{index + 1} {group._source.label || group._id}
                         </div>
-                        <div style={{ fontSize: '10px', color: '#666' }}>
+                        <div className="text-xs text-gray-600">
                           H3: {group._source?.misc?.h3_count || 0} | 
                           UUID: {group._source?.misc?.uuid_count || 0}
                         </div>
                       </div>
-                      <div style={{ 
-                        width: '12px', 
-                        height: '12px', 
-                        borderRadius: '50%', 
-                        background: groupColor,
-                        border: '2px solid #fff',
-                        boxShadow: `0 0 0 1px ${groupColor}`
-                      }} />
+                      <div 
+                        className="w-3 h-3 rounded-full border-2 border-white shadow-sm"
+                        style={{ 
+                          background: groupColor,
+                          boxShadow: `0 0 0 1px ${groupColor}`
+                        }}
+                      />
                     </div>
                   );
                 })}
-                <div style={{ 
-                  marginTop: '8px', 
-                  fontSize: '10px', 
-                  color: '#666', 
-                  textAlign: 'center',
-                  fontStyle: 'italic'
-                }}>
+                <div className="mt-3 text-xs text-gray-600 text-center italic">
                   Click to select group
                 </div>
               </div>

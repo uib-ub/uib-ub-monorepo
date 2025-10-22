@@ -78,6 +78,7 @@ export default function MapExplorer() {
   const locations = searchParams.get('locations') == 'on'
   const debug = useDebugStore((s) => s.debug)
   const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
+  const showDebugGroups = useDebugStore(state => state.showDebugGroups);
 
 
 
@@ -142,8 +143,9 @@ export default function MapExplorer() {
       const key = `${cell.precision}/${cell.x}/${cell.y}`
 
       return ({
-        queryKey: ['markerResults', key, searchQueryString],
+        queryKey: ['markerResults', key, searchQueryString, showDebugGroups],
         placeHolder: (prevData: any) => prevData,
+        enabled: !showDebugGroups,
         queryFn: async () => {
           const existingParams = new URLSearchParams(searchQueryString)
     
@@ -154,6 +156,7 @@ export default function MapExplorer() {
           if (datasetTag == 'tree' && !searchParams.get('within')) {
             newParams.set('sosi', 'gard')
           }
+          
 
 
           const res = await fetch(`/api/markers/${cell.precision}/${cell.x}/${cell.y}${newParams.toString() ? `?${newParams.toString()}` : ''}`, { signal: controllerRef.current.signal })
