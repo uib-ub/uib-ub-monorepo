@@ -54,27 +54,23 @@ export interface DrawerProps {
 function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
-    const [resetEnabled, setResetEnabled] = useState<boolean>(false);
+    const resetEnabled = useRef<boolean>(false);
     const facet = useSearchParams().get('facet')
     const { totalHits } = useSearchData()
     const mode = useMode()
 
 
     useEffect(() => {
-        if (!isMobile || !mapFunctionRef?.current) return
+        if (!isMobile || mode == 'table' || !mapFunctionRef?.current) return
         const point = groupData?.sources?.[0]?.location?.coordinates
         if (!point) return
 
-        
-
-        
-
-        const wasAdjusted = panPointIntoView(mapFunctionRef.current, [point[1], point[0]], true, snappedPosition === 'middle', resetEnabled)
+        const wasAdjusted = panPointIntoView(mapFunctionRef.current, [point[1], point[0]], true, snappedPosition === 'middle', resetEnabled.current)
         if (wasAdjusted) {
-            setResetEnabled(!resetEnabled)
+            resetEnabled.current = !resetEnabled.current
         }
         
-    }, [isMobile, snappedPosition])
+    }, [isMobile, snappedPosition, groupData, mapFunctionRef, mode])
 
     if (!isMobile) {
         return <>{children}</>
