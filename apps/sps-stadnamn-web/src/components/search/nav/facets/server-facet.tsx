@@ -88,6 +88,7 @@ export default function ServerFacet() {
     params.delete('center')
     params.delete('doc')
     params.delete('group')
+    params.delete('init')
     
     existingValues
       .filter(v => v !== value)

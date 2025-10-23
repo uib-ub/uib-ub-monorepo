@@ -461,7 +461,7 @@ export default function MapExplorer() {
           newQueryParams.set('results', 'on')
         }
         newQueryParams.delete('mapSettings')
-        newQueryParams.set('point', `${markerPoint[1]},${markerPoint[0]}`)
+        newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
         newQueryParams.delete('doc')
 
         newQueryParams.set('init', stringToBase64Url(fields["group.id"][0]))

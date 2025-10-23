@@ -81,6 +81,7 @@ export default function DatasetFacet() {
     params.delete('center')
     params.delete('doc')
     params.delete('group')
+    params.delete('init')
     
     // For dataset, convert all values to dataset tags before filtering
     
