@@ -28,6 +28,9 @@ build
 .swc/
 next-env.d.ts
 
+# Fumadocs
+.source
+
 # sanity
 /studio/dist
 
