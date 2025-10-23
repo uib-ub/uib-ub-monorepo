@@ -14,8 +14,8 @@ import { group } from "console";
 
 
 // Collapses long HTML to a few lines with a toggle
-const ExpandableHtml = (
-    { html, clampLines = 4, leading }: { html: string, clampLines?: number, leading?: ReactNode }
+const ExpandableContent = (
+    { html, text, clampLines = 4, leading }: { html: string, text: string, clampLines?: number, leading?: ReactNode }
 ) => {
     const [expanded, setExpanded] = useState(false)
     const plain = typeof html === 'string' ? html.replace(/<[^>]*>/g, '') : ''
@@ -26,18 +26,22 @@ const ExpandableHtml = (
         WebkitBoxOrient: 'vertical' as any,
         overflow: 'hidden'
     }
+    if (!html && !text) return null;
+
+
     return (
         <>
             <span style={clampStyle}>
                 {leading}
-                {
+                { html ? 
                     (() => {
                         // Remove <p> tags
-                        let htmlNoP = html.replace(/<\/?p>/g, '');
-                        // Remove a single wrapping tag (e.g., <div>...</div> or <span>...</span>)
-                        htmlNoP = htmlNoP.trim().replace(/^<([a-zA-Z0-9]+)[^>]*>([\s\S]*)<\/\1>$/i, '$2');
-                        return formatHtml(expanded ? html : htmlNoP);
-                    })()
+                            let htmlNoP = html.replace(/<\/?p>/g, '');
+                            // Remove a single wrapping tag (e.g., <div>...</div> or <span>...</span>)
+                            htmlNoP = htmlNoP.trim().replace(/^<([a-zA-Z0-9]+)[^>]*>([\s\S]*)<\/\1>$/i, '$2');
+                            return formatHtml(expanded ? html : htmlNoP);
+                        })()
+                    : text
                 }
             </span>
             {isLong && (
@@ -74,9 +78,10 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
                                 messageId="rygh-phonetic-warning"
                             />
                         )}
-                        <ExpandableHtml
+                        <ExpandableContent
                             leading={<><strong>{datasetTitles[textItem.dataset]}</strong> | </>}
-                            html={(textItem.content.html ? textItem.content.html.replace(/<\/?p>/g, '') : textItem.content.html) || ''}
+                            html={(textItem.content.html ? textItem.content.html.replace(/<\/?p>/g, '') : textItem.content.html) || null}
+                            text={textItem.content?.text || null}
                         />
                         {links}
                     </div>
