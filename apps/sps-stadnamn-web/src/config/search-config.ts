@@ -266,8 +266,9 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       //"location.type": {label: "Areal", facet, keyword}, // Fungerte bare i tabellen. Dukket ikke opp som facet
       sosi,
       coordinateType,
-      "rawData.navnesakstatus": {label: "Navnesakstatus", facet},
-      "rawData.navnestatus": {label: "Navnestatus", facet},
+      "misc.navnesakstatus": {label: "Navnesakstatus", facet},
+      "misc.navnestatus": {label: "Navnestatus", facet},
+      "coreNames": {label: "Kjernenamn", facet},
       ...labelDefaults,
     },
     nrk: {

@@ -429,6 +429,8 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     const setPrefTab = useSessionStore(state => state.setPrefTab)
     const openTabs = useSessionStore(state => state.openTabs)
     const setOpenTabs = useSessionStore(state => state.setOpenTabs)
+    const searchParams = useSearchParams()
+    const searchDatasets = searchParams.getAll('dataset')
 
     
     
@@ -440,14 +442,45 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         const locations: any[] = []
         const seenEnhetsid = new Set<string>()
         const datasets: Record<string, any[]> = {}
+
+        groupData?.sources?.sort((a: any, b: any) => {
+            const aInSearch = searchDatasets.includes(a.dataset);
+            const bInSearch = searchDatasets.includes(b.dataset);
+
+            if (aInSearch && !bInSearch) return -1;
+            if (!aInSearch && bInSearch) return 1;
+
+            // Both are in the same category, sort by boost (descending)
+            const boostA = typeof a.boost === "number" ? a.boost : -Infinity;
+            const boostB = typeof b.boost === "number" ? b.boost : -Infinity;
+            if (boostA !== boostB) return boostB - boostA;
+
+            // If boost is equal, fall back to original (optional: keep stable)
+            return 0;
+        })
+
+
+        const seenTextIds = new Set<string>()
+
+
+
         
         groupData?.sources?.forEach((source: any) => {
+            if (!source.textId || !seenTextIds.has(source.textId)) {
+                
+                if (source.content?.html) {
+
+                    textItems.push(source)
+                    if (source.textId) seenTextIds.add(source.textId)
+                }
+                else if (source.content?.text) {
+                    textItems.push(source)
+                    if (source.textId) seenTextIds.add(source.textId)
+                }
+            }
             if (source.iiif) {
                 iiifItems.push(source)
-            }
-            if (source.content?.html) {
-
-                textItems.push(source)
+                
             }
             if (source.recordings) {
                 audioItems.push(source)
@@ -461,7 +494,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
 
         return { iiifItems, textItems, audioItems, datasets, locations }
-    }, [groupData])
+    }, [groupData, searchDatasets])
 
     useEffect(() => {
         if (!groupData?.group) {
@@ -548,7 +581,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                     {textItems.length > 0 && (
                         <TabButton groupData={groupData} tab="text" label="Tolkingar" />
                     )}
-                    <TabButton groupData={groupData} tab="sources" label="Kjelder" />
+                    <TabButton groupData={groupData} tab="sources" label="Namn" />
                     {locations.length > 0 && <TabButton groupData={groupData} tab="locations" label="Lokalitetar" />}
                     
                 </TabList>}

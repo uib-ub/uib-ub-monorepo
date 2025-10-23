@@ -273,6 +273,9 @@ export const resultRenderers: ResultRenderers = {
   },
   ssr: {
     title: defaultTitle,
+    links: (hit: any) => {
+      return <SourceLink url={"https://stadnamn.kartverket.no/fakta/" + hit.ssr} label="kartverket.no"/>
+    },
     details: (hit: any, display: string) => {
       return <>{formatAdm(hit)}</>
     }

@@ -34,7 +34,7 @@ export async function GET(request: Request) {
         },
     "track_scores": false,
     "track_total_hits": false,
-    "_source": ["uuid", "label", "attestations", "year", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area", "rawData.Enhetsnummer"],
+    "_source": ["uuid", "label", "attestations", "year", "boost", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area", "misc.Enhetsnummer", "ssr"],
     /*
     "aggs": {
       "viewport": {
@@ -72,7 +72,7 @@ export async function GET(request: Request) {
       dataset: hit._index.split('-')[2],
       uuid: hit._source.uuid,
       label: hit._source.label,
-      textId: hit._source.rawData?.Enhetsnummer,
+      textId: hit._source.misc?.Enhetsnummer,
       attestations: hit._source.attestations,
       year: hit._source.year,
       sosi: hit._source.sosi,
@@ -84,6 +84,8 @@ export async function GET(request: Request) {
       area: hit._source.area,
       links: hit._source.links,
       link: hit._source.link,
+      ssr: hit._source.ssr,
+      boost: hit._source.boost,
     })
 
     
