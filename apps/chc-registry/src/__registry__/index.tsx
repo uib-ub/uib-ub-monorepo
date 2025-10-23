@@ -61,7 +61,7 @@ export const Index: Record<string, any> ={
     type: "registry:block",
     files: [{
       path: "src/registry/uib-ub/items/iiif-image/components/iiif-image.tsx",
-      content: "'use client';\n\nimport dynamic from 'next/dynamic';\nimport { cn } from '@/lib/utils';\n\nconst Image = dynamic(\n  () => import('@samvera/clover-iiif/image').then((Clover) => Clover.default),\n  {\n    ssr: false,\n  },\n);\n\nconst customTheme = {\n  showNavigator: false,\n  showHomeControl: true,\n  showControlPanel: true,\n  showZoomControl: true,\n  showFullPageControl: true,\n  showNavigationControl: true,\n  showRotationControl: false,\n};\n\nexport const IIIFImage = ({ src, className }: { src: string, className?: string }) => {\n  return (\n    <div className={cn('iiif-image-wrapper block w-full', className)}>\n      <Image\n        src={src}\n        openSeadragonConfig={customTheme}\n      />\n    </div>\n  );\n};\n",
+      content: "'use client';\n\nimport dynamic from 'next/dynamic';\nimport { cn } from '@/lib/utils';\n\nconst Image = dynamic(\n  () => import('@samvera/clover-iiif/image').then((Clover) => Clover.default),\n  {\n    ssr: false,\n    loading: () => <div className=\"w-full aspect-video bg-gray-100 animate-pulse\" />,\n  },\n);\n\nconst customTheme = {\n  showNavigator: false,\n  showHomeControl: true,\n  showControlPanel: true,\n  showZoomControl: true,\n  showFullPageControl: true,\n  showNavigationControl: true,\n  showRotationControl: false,\n};\n\nexport const IIIFImage = ({ src, className }: { src: string, className?: string }) => {\n  return (\n    <div className={cn('iiif-image-wrapper block w-full', className)}>\n      <Image\n        src={src}\n        openSeadragonConfig={customTheme}\n      />\n    </div>\n  );\n};\n",
       type: "registry:component",
     }],
   },
@@ -71,11 +71,11 @@ export const Index: Record<string, any> ={
     type: "registry:example",
     files: [{
       path: "src/registry/uib-ub/items/iiif-image/examples/iiif-image-demo.tsx",
-      content: "import { IIIFImage } from '../components/iiif-image';\n\nexport default function IIFImageDemo() {\n  return (\n    <IIIFImage className='h-96' src='https://iiif.wellcomecollection.org/image/b29346423_0006.jp2/full/full/0/default.jpg' />\n  );\n}\n",
+      content: "import { IIIFImage } from '../components/iiif-image';\n\nexport default function IIIFImageDemo() {\n  return (\n    <IIIFImage className='h-96' src='https://iiif.wellcomecollection.org/image/b29346423_0006.jp2/full/full/0/default.jpg' />\n  );\n}\n",
       type: "registry:example",
     }],
     component: React.lazy(() => import("@/registry/uib-ub/items/iiif-image/examples/iiif-image-demo.tsx")),
-    source: "import { IIIFImage } from '../components/iiif-image';\n\nexport default function IIFImageDemo() {\n  return (\n    <IIIFImage className='h-96' src='https://iiif.wellcomecollection.org/image/b29346423_0006.jp2/full/full/0/default.jpg' />\n  );\n}\n",
+    source: "import { IIIFImage } from '../components/iiif-image';\n\nexport default function IIIFImageDemo() {\n  return (\n    <IIIFImage className='h-96' src='https://iiif.wellcomecollection.org/image/b29346423_0006.jp2/full/full/0/default.jpg' />\n  );\n}\n",
   },
   "iiif-manifest": {
     name: "iiif-manifest",
