@@ -1,0 +1,72 @@
+---
+title: IIIF Manifest
+description: A IIIF manifest component
+---
+
+Based on [Clover](https://samvera-labs.github.io/clover-iiif) by Samvera Labs.
+
+## Preview
+
+<Tabs items={['preview', 'code']}>
+  <Tab>
+    <ComponentPreview name='iiif-manifest-demo'/>
+  </Tab>
+  <Tab>
+    <ComponentSource name='iiif-manifest-demo' />
+  </Tab>
+</Tabs>
+
+## Installation
+
+### CLI
+
+<Tabs items={['npm', 'pnpm']}>
+  <Tab>
+    ```sh
+npx shadcn@latest add https://chc-registry.vercel.app/r/iiif-manifest.json
+    ```
+  </Tab>
+  <Tab>
+    ```sh 
+pnpm dlx shadcn@latest add https://chc-registry.vercel.app/r/iiif-manifest.json 
+    ```
+  </Tab>
+</Tabs>
+
+### Manual
+
+<Steps>
+
+<Step>Install the following dependencies</Step>
+
+<Tabs items={['npm', 'pnpm']}>
+  <Tab>
+    ```sh
+npm install @samvera/clover-iiif
+    ```
+  </Tab>
+  <Tab>
+    ```sh 
+pnpm add @samvera/clover-iiif
+    ```
+  </Tab>
+</Tabs>
+
+<Step>Add a classname utility function</Step>
+
+```tsx
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export const cn = (...inputs: ClassValue[]) => {
+  return twMerge(clsx(inputs));
+};
+```
+
+<Step>Copy and paste the following code into your project</Step>
+
+<ComponentSource name='iiif-manifest' />
+
+<Step>Update the import paths to match your project setup</Step>
+
+</Steps>
