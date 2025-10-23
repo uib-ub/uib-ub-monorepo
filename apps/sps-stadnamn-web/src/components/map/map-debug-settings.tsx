@@ -17,15 +17,13 @@ export default function MapDebugSettings() {
   const showScore = useDebugStore((s: any) => s.showScore);
   const setShowScore = useDebugStore((s: any) => s.setShowScore)
   const router = useRouter();
-  const setDebug = useDebugStore((s: any) => s.setDebug);
-  const setDebugChildren = useDebugStore((s: any) => s.setDebugChildren);
-  const setDebugGroups = useDebugStore((s: any) => s.setDebugGroups);
   const showDebugGroups = useDebugStore((s: any) => s.showDebugGroups);
   const setShowDebugGroups = useDebugStore((s: any) => s.setShowDebugGroups);
   const showTop3H3Counts = useDebugStore((s: any) => s.showTop3H3Counts);
   const setShowTop3H3Counts = useDebugStore((s: any) => s.setShowTop3H3Counts);
   const showTop3UUIDCounts = useDebugStore((s: any) => s.showTop3UUIDCounts);
   const setShowTop3UUIDCounts = useDebugStore((s: any) => s.setShowTop3UUIDCounts);
+  const searchParams = useSearchParams();
 
   return (
     <section>
@@ -36,7 +34,16 @@ export default function MapDebugSettings() {
           <button
             type="button"
             className="ml-4 px-3 py-1 text-sm rounded bg-neutral-200 text-neutral-900 hover:bg-neutral-300 transition-colors"
-            onClick={() => {setDebug(false); setDebugChildren([]); router.refresh()}}
+            onClick={() => {
+              useDebugStore.getInitialState();
+              useDebugStore.persist.clearStorage(); 
+              const newParams = new URLSearchParams(searchParams);
+              newParams.delete('debug');
+              router.push(`?${newParams.toString()}`)
+              window.location.reload();
+            
+            }
+            }
           >
             Slå av debug
           </button>
