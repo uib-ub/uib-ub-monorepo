@@ -108,11 +108,11 @@ export default function SearchResults() {
     if (!activeGroupData) return null;
     
     const label = activeGroupData?.fields?.label?.[0]
-    const datasets: string[] = []
+    const datasets: Set<string> = new Set()
     activeGroupData?.sources?.forEach((source: any) => {
-      datasets.push(source.dataset)
+      datasets.add(source.dataset)
     })
-    const secondaryTitle = datasets.length > 1 ? `${datasets.length} datasett` : datasetTitles[datasets[0]] || datasets[0]
+    const secondaryTitle = datasets.size > 1 ? `${datasets.size} datasett` : datasetTitles[Array.from(datasets)[0]!] || Array.from(datasets)[0]!
 
     return <div className="px-2 h-[100vh]">
       <strong>{label}</strong> <span className="text-neutral-700">| {secondaryTitle}</span>

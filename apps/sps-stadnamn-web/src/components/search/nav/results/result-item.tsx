@@ -109,7 +109,7 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
                     add={{group: activeGroupValue == hit.fields["group.id"][0] ? null : stringToBase64Url(hit.fields["group.id"][0])}}>
                        
             <div className="w-full text-left">
-                <span className="inline-flex items-center flex-wrap gap-x-2 whitespace-normal w-full text-lg">
+                <span className="inline-flex items-center flex-wrap gap-x-2 whitespace-normal w-full text-xl">
                     {isGrunnord && (
                         <h2 className="inline-flex items-center gap-x-2">
                             {!perspectiveIsGrunnord && (
@@ -126,11 +126,11 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
                     )}
                     {showScore && hit._score}
                     {!isGrunnord && (
-                        <h2 className="font-semibold">
+                        <h2 className="font-serif">
                             {label}
                         </h2>
                     )}
-                    <span>{detailsRenderer(hit)}</span>
+                    <span className="text-neutral-900">{detailsRenderer(hit)}</span>
                     {typeof hit.distance === 'number' && (
                         <span className="ml-auto text-sm bg-neutral-100 px-2 py-0.5 rounded-full group-aria-expanded:bg-white">
                             {formatDistance(hit.distance)}

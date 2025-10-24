@@ -185,7 +185,7 @@ export default function OverlayInterface() {
                                 {options ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
                             </>
                         }
-                        <h1 className="text-base xl:text-xl text-neutral-900">Alternativ</h1>
+                        <h1 className="text-base xl:text-xl text-neutral-900 font-sans">Alternativ</h1>
                             
                                 
                             
@@ -244,7 +244,7 @@ export default function OverlayInterface() {
                                             {results ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
                                         </>
                                     )}
-                                <h1 className="text-base xl:text-xl text-neutral-900">Resultat</h1>
+                                <h1 className="text-base xl:text-xl text-neutral-900 font-sans">Resultat</h1>
                                 
                                    <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={totalHits?.value || 0} />
                                 </Clickable>

@@ -892,7 +892,7 @@ export default function MapExplorer() {
             { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
             { urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" />}
             { displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" />}
-            { point && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point.reverse()} />}
+            { point && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point} />}
 
 
 
