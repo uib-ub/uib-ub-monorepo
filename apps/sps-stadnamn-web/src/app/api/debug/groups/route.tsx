@@ -53,7 +53,7 @@ export async function GET(request: Request) {
     "size": 300,
     "track_scores": false,
     "query": queryPart,
-    "sort": [{ 'misc.h3_count': "desc" }, { 'misc.uuid_count': "desc" }],
+    "sort": [{ 'h3_count': "desc" }, { 'uuid_count': "desc" }],
     "_source": true
   };
     
