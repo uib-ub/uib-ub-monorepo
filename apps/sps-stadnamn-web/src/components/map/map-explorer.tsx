@@ -814,7 +814,7 @@ export default function MapExplorer() {
                 }
                 const lat = source.location.coordinates[1];
                 const lng = source.location.coordinates[0];
-                return <CircleMarker key={`location-marker-${index}`} center={[lat, lng]} radius={6} color="#00cc00" />
+                return <CircleMarker key={`location-marker-${index}`} center={[lat, lng]} radius={6} color="black" />
               })
             }
 

@@ -10,8 +10,6 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Spinner from "@/components/svg/Spinner";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { group } from "console";
-
 
 // Collapses long HTML to a few lines with a toggle
 const ExpandableContent = (

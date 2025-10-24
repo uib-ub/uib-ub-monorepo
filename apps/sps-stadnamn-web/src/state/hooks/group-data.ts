@@ -10,20 +10,11 @@ import { base64UrlToString } from '@/lib/param-utils';
 
 const groupDataQuery = async (
     group: string,
-    datasets: string[] | null,
-    datasetTags: string[] | null,
     debugChildren?: any[]
 ) => {
     const newParams= new URLSearchParams();
     newParams.set('group', group);
-    if (datasets) {
-        // Add multiple dataset params, as separate keys
-        datasets.forEach((ds: string) => newParams.append('dataset', ds));
-    }  
-    if (datasetTags) {
-        // Add multiple datasetTag params, as separate keys
-        datasetTags.forEach((tag: string) => newParams.append('datasetTag', tag));
-    }
+
 
 
     console.log("DEBUG CHILDREN NOT USED", debugChildren)
@@ -38,13 +29,10 @@ const groupDataQuery = async (
 }
 
 export default function useGroupData(overrideGroupCode?: string | null) {
-    const searchParams = useSearchParams()
     const { searchQueryString } = useSearchQuery()
     const { activeGroupCode, initCode } = useGroup()
     const groupCode = overrideGroupCode || activeGroupCode
 
-    const datasets = searchParams.getAll('dataset')
-    const datasetTags = searchParams.getAll('datasetTag')
     const debugChildren = useDebugStore((s) => s.debugChildren)
     const debug = useDebugStore((s) => s.debug);
 
@@ -58,7 +46,7 @@ export default function useGroupData(overrideGroupCode?: string | null) {
     } = useQuery({
         queryKey: ['group', groupCode, searchQueryString],
         queryFn: async () =>
-            groupCode ? groupDataQuery(groupCode, datasets, datasetTags, debug ? debugChildren : []) : null,
+            groupCode ? groupDataQuery(groupCode, debug ? debugChildren : []) : null,
         placeholderData: (overrideGroupCode || initCode == groupCode) ? undefined : (prevData: any) => prevData,
 
     })

@@ -14,6 +14,7 @@ import Spinner from "@/components/svg/Spinner";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
+import { datasetTitles } from "@/config/metadata-config";
 
 
 
@@ -103,9 +104,19 @@ export default function SearchResults() {
 
 
   if (isMobile && activeGroupValue && snappedPosition == 'bottom') {
+
+    if (!activeGroupData) return null;
+    
+    const label = activeGroupData?.fields?.label?.[0]
+    const datasets: string[] = []
+    activeGroupData?.sources?.forEach((source: any) => {
+      datasets.push(source.dataset)
+    })
+    const secondaryTitle = datasets.length > 1 ? `${datasets.length} datasett` : datasetTitles[datasets[0]] || datasets[0]
+
     return <div className="px-2 h-[100vh]">
-      Hello
-      TODO: fix scroll issue when container becomes scrollable
+      <strong>{label}</strong> <span className="text-neutral-700">| {secondaryTitle}</span>
+
     </div>
   }
 
