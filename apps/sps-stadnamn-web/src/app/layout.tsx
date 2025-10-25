@@ -58,7 +58,7 @@ export default async function RootLayout({
       <head>
         <PlausibleProvider domain="stadnamnportalen.uib.no" />
       </head>
-      <body className="bg-neutral-900 flex flex-col min-h-[100svh]">
+      <body className="bg-neutral-900 flex flex-col min-h-[100svh] overflow-x-hidden">
         {/* Remove the Image component since we're using CSS background-image */}
 
         <GlobalProvider isMobile={isMobile} sosiVocab={sosiVocab || {}} coordinateVocab={coordinateVocab || {}}>
