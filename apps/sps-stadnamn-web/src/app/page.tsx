@@ -41,10 +41,10 @@ export default async function Home() {
   
   <div className={`bg-neutral-50/75 w-full pt-4 md:pt-8 pb-24`}>
   <div className={`flex flex-col gap-3 relative z-20 px-4`}>
-  <div className="flex flex-col w-full xl:w-auto gap-8 md:p-8 lg:py-8 self-center md:bg-neutral-50/90 md:rounded-xl xl:rounded-full xl:aspect-square my-0 md:my-16 xl:my-0 md:shadow-lg self align-middle justify-center">
+  <div className="flex flex-col w-full lg:w-auto gap-8 md:p-8 lg:py-8 self-center md:bg-neutral-50/90 md:rounded-full md:aspect-square my-0 md:my-16 lg:my-0 md:shadow-lg self align-middle justify-center">
   <div className="flex flex-col gap-8 md:px-8">
   <div className="flex flex-col gap-8">
-    <div className="flex flex-col gap-6 xl:mt-32">
+    <div className="flex flex-col gap-6 lg:mt-32">
   <h1 className="self-center text-5xl text-neutral-950 sr-only md:not-sr-only !px-2 font-serif">Stadnamn</h1>
   
   <Form id="search-form" className="flex items-center justify-center gap-2 w-full" action="search">
@@ -52,45 +52,47 @@ export default async function Home() {
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
     <input 
       id="search_input" 
-      className="flex-1 rounded-lg h-14 xl:h-12 border border-gray-300 text-lg xl:text-base px-4 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all" 
+      className="flex-1 rounded-lg h-14 lg:h-12 border border-gray-300 text-lg lg:text-base px-4 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all" 
       name="q" 
       type="text"
     />
     <input type="hidden" name="nav" value="results"/>
     <button 
-      className="bg-red-700 hover:bg-red-800 text-white rounded-lg h-14 xl:h-12 w-14 xl:w-12 flex items-center justify-center transition-colors duration-200 flex-shrink-0" 
+      className="bg-red-700 hover:bg-red-800 text-white rounded-lg h-14 lg:h-12 w-14 lg:w-12 flex items-center justify-center transition-colors duration-200 flex-shrink-0" 
       type="submit" 
       aria-label="Søk"
     >
-      <PiMagnifyingGlass className="text-3xl xl:text-2xl"/>
+      <PiMagnifyingGlass className="text-3xl lg:text-2xl"/>
     </button>
   </Form>
   </div>
 
 
 
-  <div className="flex flex-col items-center gap-3 xl:gap-6 bg-neutral-50/90 p-4 py-8 rounded-lg xl:bg-transparent xl:p-0">
-  <div className="flex flex-col xl:flex-row items-end justify-center xl:gap-12 gap-3">
+  <div className="flex flex-col items-center gap-3 lg:gap-6 bg-neutral-50/90 p-4 py-8 rounded-lg lg:bg-transparent lg:p-0">
+  <div className="flex flex-col lg:flex-row items-end justify-center lg:gap-12 gap-3">
   <div className="flex flex-col items-center gap-2">
-    <span className="uppercase tracking-widest text-neutral-950 xl:text-sm font-semibold">Oppslag i søket</span>
-    <span className="xl:text-3xl text-4xl text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
+    <span className="uppercase tracking-widest text-neutral-950 lg:text-sm font-semibold">Oppslag i søket</span>
+    <span className="lg:text-3xl text-4xl text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
       {groupCount?.toLocaleString('nb-NO')}
     </span>
   </div>
   <div className="flex flex-col items-center gap-2">
-    <span className="uppercase tracking-widest text-neutral-900 xl:text-sm font-semibold">Underoppslag</span>
-    <span className="xl:text-3xl text-4xl text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
+    <span className="uppercase tracking-widest text-neutral-900 lg:text-sm font-semibold">Underoppslag</span>
+    <span className="lg:text-3xl text-4xl text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
       {totalHits?.toLocaleString('nb-NO')}
     </span>
   </div>
 </div>
-    <Link
-      href="/search"
-      className="text-neutral-950 no-underline xl:mb-16 mt-6 xl:mt-2 self-center w-full h-14 xl:h-auto xl:w-auto text-3xl pr-12 pl-8 py-4 xl:py-2 xl:pr-8 xl:pl-6 rounded-lg xl:rounded-full flex items-center gap-3 transition-colors duration-200"
-    >
-      <PiMapTrifoldFill className="text-4xl" />
-      Kart
-    </Link>
+    <div className="flex w-full justify-center">
+      <Link
+        href="/search"
+        className="text-neutral-950 no-underline lg:mb-16 mt-6 lg:mt-2 w-full lg:w-auto h-14 lg:h-auto text-3xl pr-12 pl-8 py-4 lg:py-2 lg:pr-8 lg:pl-6 rounded-lg md:rounded-full flex items-center gap-3 transition-colors duration-200 justify-center"
+      >
+        <PiMapTrifoldFill className="text-4xl" />
+        Kart
+      </Link>
+    </div>
   </div>
   
 
@@ -121,10 +123,10 @@ export default async function Home() {
   <div className="flex flex-col items-center gap-24 relative z-20 px-4 py-24 bg-neutral-50/75 w-full">
   <section className="flex flex-col container gap-6" aria-labelledby="recently_added">
     <h2 id="recently_added" className="font-semibold font-serif text-3xl text-neutral-950 text-center">Sist lagt til</h2>
-    <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
+    <ul className="flex flex-col gap-6 lg:grid lg:grid-cols-2">
       {newest.map((card, index) => (
-        <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">
-          <Link className="no-underline group flex flex-col md:flex-row xl:flex-row" href={`search?dataset=${card.code}`}>
+        <li key={index} className="bg-white shadow-lg p-4 lg:col-span-1 items-start rounded-lg">
+          <Link className="no-underline group flex flex-col md:flex-row lg:flex-row" href={`search?dataset=${card.code}`}>
             <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-md">
               <div className={`h-full ${card.img.endsWith('.svg') ? 'bg-neutral-100' : ''}`}>
                 <Image 
@@ -153,10 +155,10 @@ export default async function Home() {
 </section>
   <section className="flex flex-col container gap-6" aria-labelledby="dataset_showcase">
     <h2 id="dataset_showcase" className="font-semibold font-serif text-3xl text-neutral-950 text-center">Utvalde datasett</h2>
-    <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
+    <ul className="flex flex-col gap-6 lg:grid lg:grid-cols-2">
       {cards.map((card, index) => (
-        <li key={index} className="bg-white shadow-lg p-4 xl:col-span-1 items-start rounded-lg">
-          <Link className="no-underline group flex flex-col md:flex-row xl:flex-row" href={`search?dataset=${card.code}`}>
+        <li key={index} className="bg-white shadow-lg p-4 lg:col-span-1 items-start rounded-lg">
+          <Link className="no-underline group flex flex-col md:flex-row lg:flex-row" href={`search?dataset=${card.code}`}>
             <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-md">
               <div className={`h-full ${card.img.endsWith('.svg') ? 'bg-neutral-100' : ''}`}>
                 <Image 

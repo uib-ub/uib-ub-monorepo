@@ -120,7 +120,7 @@
 
 
   .carta-marina::before {
-    @apply fixed top-14 left-0 z-[-1] h-[100vh] w-full animate-fade-in;
+    @apply fixed top-0 left-0 z-[-1] h-[100vh] w-full animate-fade-in;
     content: '';
     @apply bg-[url('/Carta_Marina_compressed.webp')] bg-cover bg-no-repeat bg-[center_40%];
   }
