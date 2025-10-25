@@ -528,13 +528,6 @@ export default function MapExplorer() {
   return <>
   <MapToolbar/>
     <DynamicMap
-      whenReady={(e: any) => {
-        if (!mapInstance.current) {
-          mapInstance.current = e.target;
-          mapFunctionRef.current = e.target;
-        }
-
-      }}
       tapHold={true}
       zoomControl={false}
       attributionControl={false}
@@ -547,11 +540,23 @@ export default function MapExplorer() {
         bottom: isMobile ? `${MAP_DRAWER_BOTTOM_HEIGHT_REM-0.5}rem` : '0',
       }}
       >
-      {({ TileLayer, CircleMarker, Popup, Circle, Marker, useMapEvents, useMap, Rectangle, Polygon, MultiPolygon, Polyline }: any, leaflet: any) => {
+      {({ TileLayer, CircleMarker, Popup, Circle, Marker, useMapEvents, useMap, Rectangle, Polygon, MultiPolygon, Polyline, AttributionControl }: any, leaflet: any) => {
 
         function EventHandlers() {
           const map = useMap();
           useMapEvents({
+            whenReady: (e: any) => {
+              if (!mapInstance.current) {
+                mapInstance.current = e.target;
+                mapFunctionRef.current = e.target;
+              }
+              const attribution = map.attributionControl;
+              if (attribution) {
+                attribution.getContainer().style.marginTop = isMobile ? "20rem" : "0";
+              }
+              
+      
+            },
             movestart: () => {
               tapHoldRef.current = null
               const attribution = map.attributionControl;
@@ -647,6 +652,7 @@ export default function MapExplorer() {
         return (
 
           <>
+            <AttributionControl prefix={false} position={isMobile ? "bottomleft" : "bottomright" } />
             <EventHandlers />
             
             {baseMap[perspective] && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapLookup[baseMap[perspective]].props} />}

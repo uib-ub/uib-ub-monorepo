@@ -255,6 +255,19 @@ export const resultRenderers: ResultRenderers = {
     title: (hit: any, display: string) => {
       return <><strong>{getFieldValue(hit, 'label')}</strong> </>
     },
+    links: (hit: any) => {
+      // TODO: handle link texts in dataset script
+
+      return hit.links?.map((link: any, index: number) => {
+        let label = "nb.no"
+        if (hit.links.length > 1) label += ` (${index + 1})`
+        const url = link + "&searchText=" + getFieldValue(hit, 'label')
+
+
+      return <Fragment key={link}><SourceLink label={label}   key={link} url={url} />
+      </Fragment>
+      })
+    },  
     details: (hit: any, display: string) => {
       return <> {getFieldValue(hit, 'rawData.GNID')}{getFieldValue(hit, 'rawData.GNID') && ", "}{formatAdm(hit)}</>
     }
@@ -303,6 +316,21 @@ export const resultRenderers: ResultRenderers = {
 
 export const defaultResultRenderer: DefaultRenderer = {
   title: defaultTitle,
+  links: (hit: any) => {
+
+    // SHould be deprecated
+    if (hit.link) return <SourceLink url={hit.link} />
+    
+    if (!hit.links?.length) return null    
+    if (typeof hit.links === 'string') return <SourceLink url={hit.links} />
+    return <>
+    {hit.links?.map((link: any) => {
+      return <Fragment key={link}><SourceLink  key={link} url={link} />
+      </Fragment>
+    })}
+    </>
+
+  },
   snippet: (hit: any) => {
     return formatHighlight(
       Object.entries(hit.highlight)

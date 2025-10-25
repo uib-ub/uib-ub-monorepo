@@ -77,7 +77,7 @@ export const datasetDescriptions: Record<string, string> = {
   core_group_debug: "",
   all: "Søk på tvers av alle datasett i Stadnamnportalen.",
   wikidata: "",
-  ssr: "Sentralt stadnamnregister (SSR), Kartverket sitt offisielle register over stadnamn i Noreg.",
+  ssr: "Sentralt stadnamnregister (SSR), Kartverket sitt offisielle register over stadnamn i Noreg. Språksamlingane hentar inn data minst ein gong i året, og organiserer oppslaga etter stadnamnnummer.",
   bsn: "Bustadnamnregisteret vart oppretta på 1950-talet og inneheld informasjon om namn på om lag 190 000 bustader (gardar, bruk og plassar) frå ti fylke i landet. Registeret består av om lag 109 000 arkivsedlar. Kvar seddel inneheld òg informasjon om fylke, kommune, gardsnummer og bruksnummer. Stadene er georefererte ut frå Kartverket si moderne matrikkel – så nøyaktig som mogleg.",
   hord: "Hordanamn er ei samling av stadnamn, særleg smånamn på åkrar, utmark, lier, tjern og fjell m.m. I alt 179 000 stadnamn frå det tidlegare Hordaland fylke er å finne i samlinga, fordelt på rundt 185 000 oppslag. Det er mogleg å sjå informasjon om kvart stadnamn og sjå plasseringa til namnet i kartet. Uttale er ofte oppgjeven, og i mange tilfelle er det òg mogleg å lytte til den lokale uttalen.",
   rygh: "Digitalisert utgåve av Oluf Rygh sitt standardverk for stadnamn i Noreg, opphavleg gjeve ut i 18 bind i åra 1897–1924. Oppslagsverket inneheld busetnadsnamn frå heile Noreg, unnateke Finnmark. Utgjevinga omfattar om lag 69 000 bustadnamn, derav ca. 3 700 namnegardsnamn, 44 500 gardsnamn, 16 000 bruksnamn, 4 000 forsvunne namn og 1 000 namn på sokn og herad. Kvart gardsnamn er oppgjeve med uttale og følgt gjennom tidene med språkvitskapleg tolking.",
@@ -107,7 +107,7 @@ export const datasetDescriptions: Record<string, string> = {
 export const datasetShortDescriptions: Record<string, string> = {
   core_group_debug: "",
   all: "Søk på tvers av alle datasett i Stadnamnportalen.",
-  ssr: "Kartverket sitt offisielle register over stadnamn i Noreg.",
+  ssr: "Kartverket sitt offisielle register over stadnamn i Noreg. Språksamlingane hentar inn data minst ein gong i året, og organiserer oppslaga etter stadnamnnummer.",
   wikidata: "",
   bsn: "Oppretta på 1950-talet, inneheld informasjon om namn på om lag 190 000 bustader frå ti fylke i Noreg.",
   hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert smånamn for åkrar, utmark, lier, tjørn og fjell.",
@@ -190,10 +190,10 @@ export const datasetPresentation: DatasetPresentation = {
         license: licenses.ccby4,
       },
       wikidata: {
-        img: "icon.svg",
-        alt: "Kart over Noreg med stadnamn",
-        imageAttribution: "Kartverket",
-        attribution: "Språksamlingane",
+        img: "Wikidata-logo.svg",
+        alt: "Wikidata logo",
+        imageAttribution: "Wikimedia Foundation",
+        attribution: "Språksamlingane, Wikidata",
         license: licenses.ccby4,
       },
       bsn: {

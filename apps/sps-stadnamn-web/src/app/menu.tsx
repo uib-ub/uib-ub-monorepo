@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef, useEffect, useContext } from "react";
-import { PiArchive, PiBookOpen, PiBookOpenLight, PiBookOpenText, PiBookOpenTextFill, PiBookOpenTextLight, PiCaretLeft, PiChatCircleText, PiDatabaseFill, PiDatabaseLight, PiHouse, PiInfo, PiList, PiListFill, PiListLight, PiMapPinLineFill, PiMapTrifold, PiMapTrifoldFill, PiMapTrifoldLight, PiMicroscopeFill, PiMicroscopeLight, PiPersonArmsSpread, PiQuestion, PiTable, PiTableFill, PiTableLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight, PiX } from 'react-icons/pi';
+import { PiArchive, PiBookOpen, PiBookOpenLight, PiBookOpenText, PiBookOpenTextFill, PiBookOpenTextLight, PiCaretLeft, PiChatCircleText, PiDatabaseFill, PiDatabaseLight, PiHouse, PiHouseFill, PiInfo, PiList, PiListFill, PiListLight, PiMapPinLineFill, PiMapTrifold, PiMapTrifoldFill, PiMapTrifoldLight, PiMicroscopeFill, PiMicroscopeLight, PiPersonArmsSpread, PiQuestion, PiTable, PiTableFill, PiTableLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight, PiX } from 'react-icons/pi';
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { GlobalContext } from "../state/providers/global-provider";
 import Link from "next/link";
@@ -24,33 +24,39 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
     const datasetTag = searchParams.get("datasetTag")
 	const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
 
-	const menuBtn = "flex w-24 h-16  p-2 text-sm flex-col items-center justify-center gap-1 rounded-lg aria-selected:text-white aria-selected:bg-accent-800 no-underline"
-
-    const handleBlur = (event: React.FocusEvent<HTMLButtonElement>) => {
-        if (menuRef.current) {
-            if (!menuRef.current.contains(event.relatedTarget as Node)) {
-                setMenuOpen(false);
-            }
-        }
-    }
-
-    useEffect(() => {
+	useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
                 setMenuOpen(false);
             }
+        };
+    
+        const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+            if (menuRef.current && menuOpen && !menuRef.current.contains(event.target as Node)) {
+                setMenuOpen(false);
+            }
+        };
+    
+        if (menuOpen) {
+            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('mousedown', handleClickOutside);
+            document.addEventListener('touchstart', handleClickOutside);
         }
-
-        document.addEventListener('keydown', handleKeyDown);
-
+    
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
-        }
-    }, []);
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('touchstart', handleClickOutside);
+        };
+    }, [menuOpen, setMenuOpen]);
+        
+
+
+
 
     useEffect(() => {
         setMenuOpen(false);
-    }, [q, pathname]);
+    }, [q, pathname, setMenuOpen]);
 
 
 
@@ -59,7 +65,6 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
     return (
         <div ref={menuRef} className={`flex items-center justify-center h-full`} style={{zIndex: menuOpen ? 10000 : 10000}}>
             <button id="menu-button" aria-controls="menu_navbar" 
-                        onBlur={handleBlur}
                         aria-label="Meny"
                         aria-expanded={menuOpen} 
                         className={`items-center justify-center flex aspect-square bg-neutral-50 z-[6000] ${menuOpen ? 'fixed top-0 left-0 w-14 h-14 ' : 'h-full w-full xl:rounded-l-md'}${(shadow && !menuOpen) ? ' shadow-lg border-r border-neutral-200' : ''}`}
@@ -70,14 +75,13 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
                      id="menu_navbar" 
                      className={`bg-neutral-50 w-[calc(100svw-5rem)] xl:w-[calc(25svw-0.5rem)] xl:rounded-r-md shadow-lg overscroll-none h-[100svh] overflow-y-auto fixed top-0 bottom-0 left-0 transition-transform duration-300 ease-in-out ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                          
-                <nav id="top" className="text-xl pb-6 flex flex-col" onBlur={handleBlur}>
-                <div className="flex items-center ml-14 h-14 px-2">
-                    <Link href="/" className="text-xl no-underline">stadnamn.no</Link>
+                <nav id="top" className="text-xl pb-6 flex flex-col">
+                <div className="flex items-center ml-14 h-14 px-2 ml-auto">
+                    <Link href="/" className="text-xl no-underline flex items-center gap-3 w-full ml-auto">stadnamn.no<PiHouseFill className="text-neutral-800 mr-3" aria-hidden="true"/> </Link>
             
             </div>
                 
                 <div className="flex flex-col w-full gap-0">
-                    <h1 className="text-lg px-3 pt-6 pb-2">Stadnamnsøk</h1>
                     <div className="flex flex-col w-full gap-0" role="tablist">
                         <Clickable
                             role="tab"

@@ -72,7 +72,7 @@ export const baseMaps: BaseMap[] = [
         bright: true,
         props: {
             url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
-            attribution: '&copy; <a class="override-external-icon" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors&copy; <a class="override-external-icon" href="https://carto.com/attributions">CARTO</a>'
+            attribution: '🇺🇦 Leaflet<br/>&copy; <a class="override-external-icon" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors<br/> &copy; <a class="override-external-icon" href="https://carto.com/attributions">CARTO</a>'
         }
         
     }

@@ -11,7 +11,7 @@ import { useSessionStore } from '@/state/zustand/session-store';
 import { useDebugStore } from '@/state/zustand/debug-store';
 import { MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from '@/lib/map-utils';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
-import { PiPushPinSlashBold, PiXBold, PiXCircle } from 'react-icons/pi';
+import { PiPushPinSlashBold, PiXBold, PiXCircle, PiXCircleFill } from 'react-icons/pi';
 
 const uniqueLabels = (hit: any) => {
     const labels = new Set<string>();
@@ -93,22 +93,26 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
     
 
     
-    return  <Clickable ref={itemRef} {...rest} className={`w-full h-full p-3  aria-expanded:bg-neutral-100 flex items-center group no-underline ${initValue == hit.fields["group.id"][0] ? 'pb-0' : ''}`} 
-    onClick={() => {
-        onClick?.()
-        if (!hit.fields?.location?.[0].coordinates) return;
-        const map = mapFunctionRef.current;
-        if (!map || snappedPosition == 'top') return;
-
-
-        const [lng, lat] = hit.fields.location[0].coordinates;
-
-        panPointIntoView(map, [lat, lng], isMobile, isMobile);
-    }}
-    remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
-                    add={{group: activeGroupValue == hit.fields["group.id"][0] ? null : stringToBase64Url(hit.fields["group.id"][0])}}>
+    return  <div  {...rest} className={`w-full h-full bg-neutral-50 aria-expanded:border-b aria-expanded:borderneutral-100 flex items-center group no-underline ${initValue == hit.fields["group.id"][0] ? 'pb-0' : ''}`}>
                        
-            <div className="w-full text-left">
+            <Clickable ref={itemRef}
+
+onClick={() => {
+    onClick?.()
+    if (!hit.fields?.location?.[0].coordinates) return;
+    const map = mapFunctionRef.current;
+    if (!map || snappedPosition == 'top') return;
+
+
+    const [lng, lat] = hit.fields.location[0].coordinates;
+
+    panPointIntoView(map, [lat, lng], isMobile, isMobile);
+}}
+remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
+                add={{group: activeGroupValue == hit.fields["group.id"][0] ? null : stringToBase64Url(hit.fields["group.id"][0])}}
+            
+            
+            className="w-full text-left p-3">
                 <span className="inline-flex items-center flex-wrap gap-x-2 whitespace-normal w-full text-xl">
                     {isGrunnord && (
                         <h2 className="inline-flex items-center gap-x-2">
@@ -126,25 +130,35 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
                     )}
                     {showScore && hit._score}
                     {!isGrunnord && (
-                        <h2 className="font-serif">
+                        <h2 className="font-semibold">
                             {label}
                         </h2>
                     )}
                     <span className="text-neutral-900">{detailsRenderer(hit)}</span>
-                    {typeof hit.distance === 'number' && (
-                        <span className="ml-auto text-sm bg-neutral-100 px-2 py-0.5 rounded-full group-aria-expanded:bg-white">
-                            {formatDistance(hit.distance)}
-                        </span>
-                    )}
-                    {initValue && initValue == hit.fields["group.id"][0] && (
-                        <>
-                        <ClickableIcon className="ml-auto" label="Lukk gruppe" remove={['init']}>
-                            <PiXCircle className="text-neutral-700 group-aria-expanded:text-white text-2xl" />
-                        </ClickableIcon>
-                        </>
-                    )}
+                   
+                   
                 </span>
                 {hit.highlight && snippetRenderer && <>{snippetRenderer(hit)}</>}
+            </Clickable>
+            <div className="p-3">
+            {initValue && initValue == hit.fields["group.id"][0] && (
+                        
+                        <ClickableIcon className="flex items-center justify-center" label="Lukk gruppe" remove={['init']}>
+                            <PiXCircleFill className="text-neutral-700 group-aria-expanded:text-white text-2xl" />
+                        </ClickableIcon>
+                        
+                    )}
+             {typeof hit.distance === 'number' && (
+                        <Clickable 
+                        onClick={() => {
+                            mapFunctionRef.current?.panTo([hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]])
+                        }}
+                        remove={['group']}
+                        add={{point: `${hit.fields.location[0].coordinates[1]},${hit.fields.location[0].coordinates[0]}`, init: stringToBase64Url(hit.fields["group.id"][0])}} className="bg-neutral-600 text-white px-2 rounded-full text-nowrap">
+                            {formatDistance(hit.distance)}
+                        
+                        </Clickable>
+                    )}
             </div>
             {/*TODO: use for dataset count*/}
             {false && hit.inner_hits?.group?.hits?.total?.value > 1 && (
@@ -155,6 +169,6 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
             
 
             
-            </Clickable>
+            </div>
 }
 

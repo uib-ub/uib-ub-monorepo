@@ -3,7 +3,7 @@ import Carousel from "../../nav/results/carousel";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { formatHtml } from "@/lib/text-utils";
-import { resultRenderers } from "@/config/result-renderers";
+import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
 import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiXCircle, PiMapPinFill, PiInfoFill } from "react-icons/pi";
 import WarningMessage from "./warning-message";
 import { useSessionStore } from "@/state/zustand/session-store";
@@ -289,7 +289,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                                         <Link className="no-underline hover:underline" href={"/uuid/" + s.uuid}><strong>{s.label}</strong></Link> 
                                         {s.altLabels} {additionalLabels && <span className="text-neutral-900"> – {additionalLabels}</span>}
                                         
-                                        {resultRenderers[ds]?.links?.(s)}
+                                        {resultRenderers[ds]?.links?.(s) || defaultResultRenderer?.links?.(s)}
                                     </li>
                                 })}
                                 {!autoShowAll && shouldCollapse && !isExpanded && (
@@ -568,7 +568,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
 
     return (
-        <div id={id} className="w-full flex flex-col gap-2 my-2 pb-8">
+        <div id={id} className="w-full flex flex-col gap-2 pb-8">
             {
                 audioItems?.map((audioItem) => (
                     <div key={audioItem.uuid + 'audio'}>{JSON.stringify(audioItem)}</div>
