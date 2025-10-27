@@ -205,7 +205,6 @@ export default function SearchResults() {
       ) : initGroupData && (
         <li className="relative" key={`init-${initValue}`}>
           <ResultItem 
-            notClickable={true}
             hit={initGroupData}
           />
           { initGroupData.fields?.["group.id"] ?
