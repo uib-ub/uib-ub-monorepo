@@ -144,7 +144,7 @@ remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
             {initValue && initValue == hit.fields["group.id"][0] && (
                         
                         <ClickableIcon className="flex items-center justify-center" label="Lukk gruppe" remove={['init']}>
-                            <PiXCircleFill className="text-neutral-700 group-aria-expanded:text-white text-2xl" />
+                            <PiXCircleFill className="text-neutral-700 group-aria-expanded:text-white text-2xl hover:text-neutral-800" />
                         </ClickableIcon>
                         
                     )}
@@ -154,7 +154,7 @@ remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
                             mapFunctionRef.current?.panTo([hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]])
                         }}
                         remove={['group']}
-                        add={{point: `${hit.fields.location[0].coordinates[1]},${hit.fields.location[0].coordinates[0]}`, init: stringToBase64Url(hit.fields["group.id"][0])}} className="bg-neutral-600 text-white px-2 rounded-full text-nowrap">
+                        add={{point: `${hit.fields.location[0].coordinates[1]},${hit.fields.location[0].coordinates[0]}`, init: stringToBase64Url(hit.fields["group.id"][0])}} className="bg-neutral-600 text-white px-2 rounded-full hover:bg-neutral-800 text-nowrap">
                             {formatDistance(hit.distance)}
                         
                         </Clickable>
