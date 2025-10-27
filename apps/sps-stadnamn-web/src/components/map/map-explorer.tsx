@@ -526,7 +526,7 @@ export default function MapExplorer() {
 
 
   return <>
-  <MapToolbar/>
+    <MapToolbar/>
     <DynamicMap
       tapHold={true}
       zoomControl={false}

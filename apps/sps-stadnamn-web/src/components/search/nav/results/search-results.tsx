@@ -122,6 +122,7 @@ export default function SearchResults() {
 
 
 
+
   return (
     <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
       {
