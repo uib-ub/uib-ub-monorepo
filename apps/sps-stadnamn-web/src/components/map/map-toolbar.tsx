@@ -26,7 +26,7 @@ export default function MapToolbar() {
     
 
     // If the map is not ready, don't show the toolbar
-    if (!mapFunctionRef?.current) return null
+    //if (!mapFunctionRef?.current) return null
     
 
     return (

@@ -530,6 +530,12 @@ export default function MapExplorer() {
     <DynamicMap
       tapHold={true}
       zoomControl={false}
+      whenReady={(e: any) => {
+        if (!mapInstance.current) {
+          mapInstance.current = e.target;
+          mapFunctionRef.current = e.target;
+        }
+      }}
       attributionControl={false}
       zoomSnap={0.5}
       zoomDelta={0.5}
@@ -545,18 +551,6 @@ export default function MapExplorer() {
         function EventHandlers() {
           const map = useMap();
           useMapEvents({
-            whenReady: (e: any) => {
-              if (!mapInstance.current) {
-                mapInstance.current = e.target;
-                mapFunctionRef.current = e.target;
-              }
-              const attribution = map.attributionControl;
-              if (attribution) {
-                attribution.getContainer().style.marginTop = isMobile ? "20rem" : "0";
-              }
-              
-      
-            },
             movestart: () => {
               tapHoldRef.current = null
               const attribution = map.attributionControl;
