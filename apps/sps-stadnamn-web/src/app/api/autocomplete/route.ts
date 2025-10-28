@@ -49,9 +49,9 @@ export async function GET(request: Request) {
     },
     "track_scores": true,
     "track_total_hits": false,
-    "fields": ["group.adm1", "group.adm2", "uuid", "boost", "label", "location"],
+    "fields": ["group.adm1", "group.adm2", "uuid", "boost", "label", "location", "group.id"],
     "collapse": {
-      "field": "group.id"
+      "field": "group.admId.keyword"
     },
     "sort": [
       {"_score": "desc"},

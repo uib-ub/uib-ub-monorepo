@@ -4,12 +4,13 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { formatHtml } from "@/lib/text-utils";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
-import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiXCircle, PiMapPinFill, PiInfoFill } from "react-icons/pi";
+import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiXCircle, PiMapPinFill, PiInfoFill, PiArchive } from "react-icons/pi";
 import WarningMessage from "./warning-message";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Spinner from "@/components/svg/Spinner";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import AudioExplorer from "@/components/doc/audio-explorer";
 
 // Collapses long HTML to a few lines with a toggle
 const ExpandableContent = (
@@ -569,9 +570,26 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
     return (
         <div id={id} className="w-full flex flex-col gap-2 pb-8">
+
             {
                 audioItems?.map((audioItem) => (
-                    <div key={audioItem.uuid + 'audio'}>{JSON.stringify(audioItem)}</div>
+                    <div key={audioItem.uuid + 'audio'}>
+                        {audioItem.recordings.map((recording: any) => (
+                            <div key={recording.uuid} className="flex items-center">
+                            <audio 
+                                controls 
+                                src={`https://iiif.test.ubbe.no/iiif/audio/hord/${recording.file}`}
+                                className="h-10 rounded-md
+                                    [&::-webkit-media-controls-enclosure]:bg-transparent 
+                                    [&::-webkit-media-controls-current-time-display]:text-neutral-800 
+                                    [&::-webkit-media-controls-time-remaining-display]:text-neutral-800"
+                            />
+                            <Link href={`/iiif/${recording.manifest}`} className="ml-1 p-2 rounded-full aspect-square">
+                                <PiArchive className="text-md text-neutral-800" aria-hidden="true"/>
+                            </Link>
+                        </div>
+                        ))}
+                    </div>
                 ))
             }
             {iiifItems?.length > 0 && <>
