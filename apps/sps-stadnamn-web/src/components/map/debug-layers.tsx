@@ -88,11 +88,6 @@ export default function DebugLayers({mapInstance,
     return <>
     {/* ALL HEXAGON POLYGONS - RENDERED FIRST TO APPEAR BEHIND MARKERS */}
     
-    {/* Group data H3 cells */}
-    {groupData?.h3_cells?.map((hexId: string) => {
-              const boundary = h3.cellToBoundary(hexId);
-              return <Polygon key={`debug-cell-${hexId}`} positions={boundary} pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }} />;
-            })}
 
     {/* Geotile grid */}
     { showGeotileGrid && markerCells.map((cell: any) => {
@@ -171,20 +166,14 @@ export default function DebugLayers({mapInstance,
       );
     })}
 
-    {/* Selected group single h3 cell - less transparent highlight, on top of merged_h3 if both present */}
-    {selectedGroup?._source?.h3 && (
-      (() => {
-        const hexId = selectedGroup._source.h3;
-        const boundary = h3.cellToBoundary(hexId);
-        return (
-          <Polygon
-            key={`debug-cell-selected-h3-${hexId}`}
-            positions={boundary}
-            pathOptions={{ color: '#ff3217', weight: 3, opacity: 1, fillOpacity: 0.35 }}
-          />
-        );
-      })()
-    )}
+
+    {selectedGroup?._source?.allCells.map((hexId: string) => {  
+      const boundary = h3.cellToBoundary(hexId);
+      const isPortal = selectedGroup._source.portals?.includes(hexId);
+      const isMain = selectedGroup._source.h3 === hexId;
+      const color = isPortal ? 'red' : isMain ? '#000000' : 'blue';
+      return <Polygon key={`debug-cell-selected-h3-${hexId}`} positions={boundary} pathOptions={{ color: color, weight: 3, opacity: 1, fillOpacity: 0.35 }} />;
+    })}
 
 
     {/* ALL MARKERS - RENDERED AFTER HEXAGONS TO APPEAR ON TOP */}

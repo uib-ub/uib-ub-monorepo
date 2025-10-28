@@ -29,13 +29,13 @@ export default function FacetToolbar() {
     return (
         <div className="flex items-center text-neutral-950 gap-2">
 
-        {sortMode == 'doc_count' ?
+        {false && <>{sortMode == 'doc_count' ?
             <IconButton className="text-xl aspect-square btn btn-outline btn-compact h-full px-2" label="Sorter stigende" onClick={() => setFacetSort(currentFacet, 'asc')}><PiSortAscending/></IconButton>
             : sortMode == 'asc' ?
             <IconButton className="text-xl aspect-square btn btn-outline btn-compact h-full px-2" label="Sorter synkende" onClick={() => setFacetSort(currentFacet, 'desc')}><PiSortDescending/></IconButton>
             :
             <IconButton className="text-xl aspect-square btn btn-outline btn-compact h-full px-2" label="Sorter etter antall treff" onClick={() => setFacetSort(currentFacet, 'doc_count')}><PiFunnelSimple/></IconButton>
-            }
+            }</>}
 
 
         <IconButton className="text-xl aspect-square btn btn-outline btn-compact h-full px-2" label="Nullstill filter" onClick={() => {

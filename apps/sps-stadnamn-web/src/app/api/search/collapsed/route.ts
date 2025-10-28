@@ -23,14 +23,15 @@ export async function POST(request: Request) {
     [{'group.id': "asc"}, {'label.keyword': "asc"}]
     : [
       
-      ...reservedParams.q ? [{
-        _score: "desc"
-      }] : [],
+      
       ...initLocation ? [{
         _geo_distance: {
           location: initLocation,
           order: "asc"
         }
+      }] : [],
+      ...reservedParams.q ? [{
+        _score: "desc"
       }] : [],
       
       {

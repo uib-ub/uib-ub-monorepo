@@ -178,7 +178,7 @@ export default function OverlayInterface() {
                             
                         </div>
                         
-                        :<div  className="w-full flex items-center xl:h-12 px-2 pt-1 xl:px-0 gap-2 xl:pl-2">
+                        :<div  className="w-full flex items-center xl:h-12 px-2 xl:px-0 gap-2 xl:pl-2">
                         <Clickable className="flex items-center gap-2" add={{options: (options && !isMobile) ? null : 'on'}} remove={["options"]}>
                         {
                             !isMobile && <>
