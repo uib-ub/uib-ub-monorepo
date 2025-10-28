@@ -15,6 +15,7 @@ export const createMarkup = (htmlString: string) => {
         allowedTags: ['b', 'i', 'em', "strong", "p", "br", "span", "a", "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6"],
         allowedAttributes: {
           a: ['href'],
+          span: ['class'],
         },
       }
     );
