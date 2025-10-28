@@ -193,9 +193,9 @@ export default function OverlayInterface() {
                             { filterCount && !isMobile ? <TitleBadge className="bg-primary-200 text-primary-800 font-bold" count={filterCount} /> : null}
                                 
                             </Clickable>
-                            <div className="flex items-center gap- ml-auto">
+                            <div className="flex items-center gap- ml-auto mt-1">
                             {mode == 'map' && isMobile && totalHits?.value > 0 && <Clickable onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null}  className={`btn btn-outline rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 xl:text-base`} add={{results: 'on'}} remove={["options"]}>
-                            <span className="px-1 text-semibold">Vis resultat</span>{totalHits?.value > 0 && <Badge className="bg-primary-700 text-white" count={totalHits.value} />}
+                            <span className="px-1 text-semibold">Resultat</span>{totalHits?.value > 0 && <Badge className="bg-primary-700 text-white" count={totalHits.value} />}
                         </Clickable>}
                         {mode == 'table' && <Clickable add={{tableOptions: 'on'}} remove={["tableOptions"]} className="btn btn-outline rounded-full px-2 py-1 pr-3 flex items-center gap-2 text-sm xl:text-base">
                             <PiTableFill className="text-neutral-900" /> Kolonner
