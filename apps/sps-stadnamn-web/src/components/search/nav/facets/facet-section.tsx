@@ -218,7 +218,7 @@ export default function FacetSection() {
               {Array.from({length: 3}).map((_, index) => (
                 <div key={index}>
                   <div className="w-full flex justify-between p-3">
-                    <div className="flex flex-wrap gap-4">
+                    <div className="flex flex-wrap gap-x-4">
                       <div 
                         style={{width: getSkeletonLength(index, 8, 14) + 'rem'}} 
                         className="h-6 bg-neutral-900/10 rounded-full animate-pulse"
@@ -238,7 +238,7 @@ export default function FacetSection() {
             <Clickable className="w-full flex justify-between p-3"
                        aria-controls={f.key + '-collapsible'} 
                        add={{facet: f.key}}>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-x-4">
               <span className="text-lg">{f.label}</span>
 
               {filterDataset == 'all' && (f.datasets?.length || 0) == 1 && f.datasets?.[0] && <em className="text-neutral-700 text-sm self-center">{datasetTitles[f.datasets?.[0]]}</em>}
