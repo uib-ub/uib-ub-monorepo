@@ -575,7 +575,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 audioItems?.map((audioItem) => (
                     <div key={audioItem.uuid + 'audio'}>
                         {audioItem.recordings.map((recording: any) => (
-                            <div key={recording.uuid} className="flex items-center">
+                            <div key={"audio-" + recording.uuid} className="flex items-center">
                             <audio 
                                 controls 
                                 src={`https://iiif.test.ubbe.no/iiif/audio/hord/${recording.file}`}

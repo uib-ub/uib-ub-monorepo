@@ -8,7 +8,7 @@ import GroupInfo from "../../details/group/group-info";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchParams } from "next/navigation";
 import { useGroup } from "@/lib/param-hooks";
-import { PiMapPinFill, PiPlusBold, PiXCircle, PiPencilSimple, PiCheck, PiX } from "react-icons/pi";
+import { PiMapPinFill, PiPlusBold, PiXCircle, PiPencilSimple, PiCheck, PiX, PiPlayFill } from "react-icons/pi";
 import useGroupData from "@/state/hooks/group-data";
 import Spinner from "@/components/svg/Spinner";
 import { useSessionStore } from "@/state/zustand/session-store";
@@ -108,15 +108,59 @@ export default function SearchResults() {
     if (!activeGroupData) return null;
     
     const label = activeGroupData?.fields?.label?.[0]
-    const datasets: Set<string> = new Set()
-    activeGroupData?.sources?.forEach((source: any) => {
-      datasets.add(source.dataset)
+    const datasets: string[] = []
+    const seenDatasets = new Set<string>()
+    const audioItems: any[] = []
+    
+    activeGroupData?.sources.sort((a: any, b: any) => {
+      const boostA = a.boost ?? -Infinity;
+      const boostB = b.boost ?? -Infinity;
+      return boostB - boostA;
+    })?.forEach((source: any) => {
+      if (!seenDatasets.has(source.dataset)) {
+        datasets.push(source.dataset)
+        seenDatasets.add(source.dataset)
+      }
+      if (source.recordings) {
+        audioItems.push(source)
+      }
     })
-    const secondaryTitle = datasets.size > 1 ? `${datasets.size} datasett` : datasetTitles[Array.from(datasets)[0]!] || Array.from(datasets)[0]!
+    
+    let secondaryTitle = "";
+    if (datasets.length > 1) {
+      const firstDs = datasets[0]!;
+      const restCount = datasets.length - 1;
+      secondaryTitle = `${datasetTitles[firstDs] || firstDs} +${restCount}`;
+    } else {
+      secondaryTitle = datasetTitles[datasets[0]!] || datasets[0]!;
+    }
+
+    const handlePlayAudio = (recording: any) => {
+      const audio = new Audio(`https://iiif.test.ubbe.no/iiif/audio/hord/${recording.file}`)
+      audio.play().catch(console.error)
+    }
 
     return <div className="px-2 h-[100vh]">
-      <strong>{label}</strong> <span className="text-neutral-700">| {secondaryTitle}</span>
-
+      <div className="flex items-center gap-2">
+        <strong>{label}</strong> 
+        <span className="text-neutral-700">| {secondaryTitle}</span>
+        {audioItems.length > 0 && (
+          <div className="flex gap-1 ml-auto">
+            {audioItems.map((audioItem) => 
+              audioItem.recordings.map((recording: any) => (
+                <button
+                  key={"audio-preview-" + recording.uuid}
+                  onClick={() => handlePlayAudio(recording)}
+                  className="p-1 text-primary-700 hover:text-primary-900 transition-colors"
+                  title="Spill av lydopptak"
+                >
+                  <PiPlayFill className="text-lg" />
+                </button>
+              ))
+            )}
+          </div>
+        )}
+      </div>
     </div>
   }
 
