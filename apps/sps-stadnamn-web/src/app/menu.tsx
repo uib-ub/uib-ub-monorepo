@@ -67,7 +67,7 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
             <button id="menu-button" aria-controls="menu_navbar" 
                         aria-label="Meny"
                         aria-expanded={menuOpen} 
-                        className={`items-center justify-center flex aspect-square bg-neutral-50 z-[6000] ${menuOpen ? 'fixed top-0 left-0 w-14 h-14 ' : 'h-full w-full xl:rounded-l-md'}${(shadow && !menuOpen) ? ' shadow-lg border-r border-neutral-200' : ''}`}
+                        className={`items-center justify-center flex aspect-square bg-neutral-50 z-[6000] ${menuOpen ? 'fixed top-0 left-0 w-14 h-14 ' : 'h-full w-full lg:rounded-l-md'}${(shadow && !menuOpen) ? ' shadow-lg border-r border-neutral-200' : ''}`}
                         onClick={() => setMenuOpen(!menuOpen)}>
                 {menuOpen ? <PiX className="text-3xl xl:text-2xl" aria-hidden="true"/> : <PiList className="text-3xl xl:text-2xl" aria-hidden="true"/>}</button>
  

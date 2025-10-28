@@ -213,9 +213,9 @@ export default function SearchForm() {
                     ? (snappedPosition === 'top' ? 1 : 0)
                     : 1)
         }}>
-        <header className={`${isMobile && autocompleteOpen ? 'sr-only' : 'flex flex-none xl:absolute xl:top-2 xl:left-2 w-14 h-14 xl:h-12 xl:w-auto'} ${(autocompleteOpen || menuOpen) ? 'xl:!rounded-b-none' : 'shadow-lg'} bg-neutral-50 xl:rounded-l-md`}><Menu shadow/></header>
+        <header className={`${isMobile && autocompleteOpen ? 'sr-only' : 'flex flex-none lg:absolute lg:top-2 lg:left-2 w-14 h-14 lg:h-12 lg:w-auto'} ${(autocompleteOpen || menuOpen) ? 'lg:!rounded-b-none' : 'shadow-lg'} bg-neutral-50 lg:rounded-l-md`}><Menu shadow/></header>
         <Form ref={form} onSubmitCapture={() => setSelectedGroup(null)} action="/search" id="search-form" aria-label="Stadnamnsøk"
-                className={`h-14 xl:h-12 ${isMobile && autocompleteOpen ? 'w-[100svw]' : 'w-[calc(100svw-3.5rem)] xl:w-[calc(25svw-4rem)] xl:absolute xl:top-2 xl:left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? 'z-[7000] xl:!rounded-b-none' : 'z-[3001]'}`}
+                className={`h-14 lg:h-12 ${isMobile && autocompleteOpen ? 'w-[100svw]' : 'w-[calc(100svw-3.5rem)] lg:w-[calc(25svw-4rem)] lg:absolute lg:top-2 lg:left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? 'z-[7000] lg:!rounded-b-none' : 'z-[3001]'}`}
             
 
             onSubmit={() => {
@@ -231,7 +231,7 @@ export default function SearchForm() {
 
             }}>
 
-            <div className='flex w-full h-full pr-1 bg-white shadow-lg xl:shadow-l-none xl:rounded-l-none xl:rounded-md items-center relative group'>
+            <div className='flex w-full h-full pr-1 bg-white shadow-lg lg:shadow-l-none lg:rounded-l-none lg:rounded-md items-center relative group'>
                 
                 <label htmlFor="search-input" className="sr-only">Søk</label>
             { false && datasetTag != 'tree' && !(isMobile && autocompleteOpen) && <ClickableIcon onClick={() => { setSnappedPosition('middle')}} add={{options: options ? null : 'on'}} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
@@ -311,7 +311,7 @@ export default function SearchForm() {
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
             {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''} />}
-            {autocompleteOpen && data?.hits?.hits?.length > 0 && <ul id="autocomplete-results" ref={listRef} role="listbox" className="absolute top-[3.5rem] xl:top-[3rem] xl:-left-12 border-t border-neutral-200 w-full max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 xl:shadow-lg overflow-y-auto overscroll-none xl:w-[calc(25svw-1rem)] left-0 xl-p-2 xl xl:rounded-lg xl:rounded-t-none divide-y divide-neutral-300">
+            {autocompleteOpen && data?.hits?.hits?.length > 0 && <ul id="autocomplete-results" ref={listRef} role="listbox" className="absolute top-[3.5rem] lg:top-[3rem] lg:-left-12 border-t border-neutral-200 w-full max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 lg:shadow-lg overflow-y-auto overscroll-none lg:w-[calc(25svw-1rem)] left-0 xl-p-2 xl lg:rounded-lg lg:rounded-t-none divide-y divide-neutral-300">
                 <li id={`autocomplete-option-0`} className={`cursor-pointer flex items-center h-12 px-2 hover:bg-neutral-100 ${activeIndex === 0 ? 'bg-neutral-100' : ''}`}
                     tabIndex={-1} 
                     role="option" 
