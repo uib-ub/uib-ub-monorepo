@@ -3,7 +3,7 @@ import { GlobalContext } from "@/state/providers/global-provider";
 import { useContext, useState } from "react";
 import { usePerspective } from '@/lib/param-hooks';
 import { contentSettings } from "@/config/server-config";
-import { PiArrowCounterClockwise, PiFunnel } from "react-icons/pi";
+import { PiArrowCounterClockwise, PiFunnel, PiX } from "react-icons/pi";
 import { DownloadButton } from "./download-button";
 import Clickable from "@/components/ui/clickable/clickable";
 import { formatCadastre } from "@/config/result-renderers";
@@ -64,7 +64,10 @@ export default function TableOptions() {
     }
     </div>
 
+    <div className="flex items-center gap-2">
     <h3 className="text-lg">Kolonner</h3>
+    <Clickable className="ml-auto" remove={["tableOptions"]}><PiX className="text-xl" aria-hidden="true"/></Clickable>
+    </div>
     <div className='relative'>
         <input 
             type="text" 
