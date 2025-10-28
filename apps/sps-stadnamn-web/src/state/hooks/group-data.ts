@@ -1,12 +1,8 @@
 'use client'
-import { useSearchParams } from 'next/navigation';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useSearchQuery } from '@/lib/search-params';
-import { useEffect, useCallback, useContext } from 'react';
-import { useDocIndex, useGroup } from '@/lib/param-hooks';
+import { useGroup } from '@/lib/param-hooks';
 import { useDebugStore } from '../zustand/debug-store';
-import { GlobalContext } from '../providers/global-provider';
-import { base64UrlToString } from '@/lib/param-utils';
 
 const groupDataQuery = async (
     group: string,
