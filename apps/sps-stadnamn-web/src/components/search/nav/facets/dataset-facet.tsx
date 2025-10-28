@@ -131,7 +131,7 @@ export default function DatasetFacet() {
     
     <div id="dataset-facet-content" className='flex flex-col gap-2'>
 
-    {datasetTag != 'tree' && <div className='flex gap-2 px-1 pt-1'>
+    {datasetTag != 'tree' && <div className='flex gap-2 px-2 pt-1'>
      <div className='relative grow'>
       <input aria-label="Søk i fasett" onChange={(e) => setClientSearch(e.target.value)}
           className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"/>
@@ -185,7 +185,7 @@ export default function DatasetFacet() {
                   {renderLabel(item.key)}<PiCaretRightBold className="text-primary-700" aria-hidden="true"/>
                   </Clickable>
                   
-                  :<label className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0">
+                  :<label className="flex items-center gap-2 lg:gap-1 xl:gap-2 px-2 flex-1 min-w-0">
                     <input 
                       type="checkbox"
                       checked={isChecked(item.key)} 

@@ -77,8 +77,8 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     }
     
     if (isMobile && facet) {
-        return <div className="fixed top-0 left-0 w-full h-full z-[3001] bg-white"><div className="h-[calc(100svh-3rem)] overflow-y-auto stable-scrollbar">{children}</div>
-        <Clickable remove={["facet"]} add={{results: 'on'}} className="w-full h-12 text-xl flex items-center justify-center items-center bg-primary-800 text-white relative">Vis resultat <Badge className="bg-primary-50 text-primary-800 font-bold absolute right-4" count={totalHits?.value || 0} /></Clickable>
+        return <div className="fixed top-0 left-0 w-full h-full z-[3001] bg-white"><div className="h-[calc(100svh-4rem)] overflow-y-auto stable-scrollbar">{children}</div>
+        <div className="bg-neutral-200 p-2"><Clickable remove={["facet"]} add={{results: 'on'}} className="w-full h-12 text-xl rounded-md flex items-center justify-center items-center bg-primary-800 text-white relative">Vis resultat <Badge className="bg-primary-50 text-primary-800 font-semibold px-2 absolute right-4" count={totalHits?.value || 0} /></Clickable></div>
         </div>
     }
     if (mode == 'list') {
@@ -169,11 +169,11 @@ export default function OverlayInterface() {
 
 
                         {facet ? <div className="w-full flex items-center px-2 xl:px-0 h-12 gap-2 xl:pl-2 flex">
-                            <h1 className="text-lg xl:text-xl text-neutral-900">{fieldConfig[perspective][facet]?.label}</h1>
+                            <h1 className="text-lg xl:text-xl text-neutral-900 px-1">{fieldConfig[perspective][facet]?.label}</h1>
                             <div className="flex items-center gap-1 ml-auto">
-                                    <ClickableIcon label="Tilbake" className="p-2" remove={["facet"]}>
-                                        <PiCaretLeftBold className="text-black text-3xl" />
-                                    </ClickableIcon>
+                                    <Clickable className="flex items-center gap-1" label="Tilbake" remove={["facet"]}>
+                                        <PiCaretLeftBold className="text-black text-lg" />Tilbake
+                                    </Clickable>
                                 </div>
                             
                         </div>
