@@ -33,6 +33,14 @@ export async function GET(request: Request) {
           }
         },
     "track_scores": false,
+    "sort": [
+      {
+        boost: {
+          order: "desc",
+          missing: "_last"
+        }
+      },
+    ],
     "track_total_hits": false,
     "_source": ["uuid", "label", "attestations", "year", "boost", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area", "misc.Enhetsnummer", "ssr"],
     /*

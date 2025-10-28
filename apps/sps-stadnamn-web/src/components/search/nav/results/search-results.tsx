@@ -39,7 +39,7 @@ export default function SearchResults() {
   const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
   const { groupData: activeGroupData } = useGroupData()
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
-  const { isMobile } = useContext(GlobalContext)
+  const { isMobile, sosiVocab } = useContext(GlobalContext)
   const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
   
   // State for inline coordinate editing
@@ -111,12 +111,53 @@ export default function SearchResults() {
     const datasets: string[] = []
     const seenDatasets = new Set<string>()
     const audioItems: any[] = []
+
+    // Collect other labels with priority: source.label > altLabels > attestation labels (if list isn't too long)
+    const mainLabel = label
     
-    activeGroupData?.sources.sort((a: any, b: any) => {
-      const boostA = a.boost ?? -Infinity;
-      const boostB = b.boost ?? -Infinity;
-      return boostB - boostA;
-    })?.forEach((source: any) => {
+    // First: Collect source.label values that differ from the main label
+    const sourceLabels = Array.from(new Set(
+      (activeGroupData?.sources || [])
+        .map((src: any) => src.label)
+        .filter((label: string) => label && label !== mainLabel)
+    ))
+    
+    // Second: Add altLabels from fields
+    const altLabels = activeGroupData?.fields?.altLabels || []
+    
+    // Combine source labels and alt labels first
+    const otherLabels = [...sourceLabels, ...altLabels]
+      .filter(label => label && label !== mainLabel)
+    
+    // Third: Add attestation labels only if the list isn't too long already (limit to 5 total)
+    const attestationLabels = (activeGroupData?.sources || []).flatMap((src: any) => 
+      src.attestations?.map((att: any) => att.label) ?? []
+    )
+    
+    const uniqueAttestationLabels = Array.from(new Set(attestationLabels))
+      .filter(label => label && label !== mainLabel && !otherLabels.includes(label))
+    
+    // Add attestation labels one by one until we reach the limit
+    for (const attestLabel of uniqueAttestationLabels) {
+      if (otherLabels.length < 5) {
+        otherLabels.push(attestLabel)
+      } else {
+        break
+      }
+    }
+    
+    // Collect unique sosi place types from all sources and map to vocabulary
+    const sosiTypesRaw = Array.from(new Set(
+      (activeGroupData?.sources || [])
+        .flatMap((src: any) => {
+          if (!src.sosi) return []
+          return Array.isArray(src.sosi) ? src.sosi : [src.sosi]
+        })
+        .filter((sosi: string) => sosi)
+    )) as string[]
+    const sosiTypes = sosiTypesRaw.map((type: string) => sosiVocab[type]?.label || type)
+    
+    activeGroupData?.sources?.forEach((source: any) => {
       if (!seenDatasets.has(source.dataset)) {
         datasets.push(source.dataset)
         seenDatasets.add(source.dataset)
@@ -142,10 +183,14 @@ export default function SearchResults() {
 
     return <div className="px-2 h-[100vh]">
       <div className="flex items-center gap-2">
-        <strong>{label}</strong> 
-        <span className="text-neutral-700">| {secondaryTitle}</span>
+        <strong>{label}</strong>
+        {sosiTypes.length > 0 && (
+          <span className="text-neutral-700 text-sm truncate">
+            {sosiTypes.slice(0, 3).join(', ')}{sosiTypes.length > 3 && '...'}
+          </span>
+        )}
         {audioItems.length > 0 && (
-          <div className="flex gap-1 ml-auto">
+          <div className="flex gap-1 ml-auto flex-shrink-0">
             {audioItems.map((audioItem) => 
               audioItem.recordings.map((recording: any) => (
                 <button
@@ -161,6 +206,19 @@ export default function SearchResults() {
           </div>
         )}
       </div>
+      
+      {/* Display name variants and datasets under the title */}
+      {(otherLabels.length > 0 || secondaryTitle) && (
+        <div className="mt-2 text-sm text-neutral-700">
+          {secondaryTitle && <span>{secondaryTitle}</span>}
+          {secondaryTitle && otherLabels.length > 0 && <span className="mx-1">|</span>}
+          {otherLabels.length > 0 && (
+            <span>
+              {otherLabels.join(', ')}
+            </span>
+          )}
+        </div>
+      )}
     </div>
   }
 
@@ -230,7 +288,7 @@ export default function SearchResults() {
               {!isEditingCoordinates && (
                 <button
                   onClick={startEditingCoordinates}
-                  className="p-1 text-neutral-600 hover:text-neutral-800"
+                  className="p-1 text-neutral-700 hover:text-neutral-800"
                   title="Rediger koordinater"
                 >
                   <PiPencilSimple className="text-lg" />
