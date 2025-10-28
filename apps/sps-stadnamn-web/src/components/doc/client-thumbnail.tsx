@@ -1,43 +1,46 @@
-import useDocData from "@/state/hooks/doc-data"
+'use client'
+import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { PiCaretLeft, PiCaretRight } from "react-icons/pi"
 
-export default function ClientThumbnail({ iiif }: { iiif: string | string[]  }) {
+
+async function fetchManifest(iiif: string | string[], imgIndex: number, width: number, aspectRatio: number) {
+    let response: Response
+    if (Array.isArray(iiif)) {
+        response = await fetch(`api/doc?uuid=${iiif[imgIndex]}&dataset=iiif_*`)
+    } else {
+        response = await fetch(`api/doc?uuid=${iiif}&dataset=iiif_*`)
+    }
+    const data = await response.json()
+
+    const dataset = data.hits.hits[0]._index.split("-")[2].split("_")[1]
+    const outputWidth = width * 2
+    const outputHeight = Math.round(outputWidth * (9/16))
+    const thumbnailUrl = `https://iiif.test.ubbe.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${data.hits.hits[0]._source.images[0].uuid}/0,0,${data.hits.hits[0]._source.images[0].width},${Math.round(data.hits.hits[0]._source.images[0].width*aspectRatio)}/${outputWidth},${outputHeight}/0/default.jpg`
+    return {
+        thumbnailUrl,
+        manifestUuid: data.hits.hits[0]._source.uuid,
+    }
+}
+
+
+export default function ClientThumbnail({ iiif, datasetLabel }: { iiif: string | string[], datasetLabel?: string  }) {
     const [imgIndex, setImgIndex] = useState(0)
-    const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null)
     const width = 320
     const aspectRatio = 9 / 16
 
-    const [manifest, setManifest] = useState<string | null>(null)
-    const [manifestUuid, setManifestUuid] = useState<string | null>(null)
-    const [manifestDataset, setManifestDataset] = useState<string | null>(null)
-    const [manifestLoading, setManifestLoading] = useState(true)
-
-    useEffect(() => {
-        const fetchManifest= async (url: string) => {
-            const response = await fetch(url)
-            const data = await response.json()
-            const source = data?.hits?.hits?.[0]?._source
-            setManifest(source)
-            setManifestUuid(source.uuid)
-            const dataset = data?.hits?.hits?.[0]?._index.split("-")[2].split("_")[1]
-            setManifestDataset(dataset)
-            const outputWidth = width * 2
-            const outputHeight = Math.round(outputWidth * (9/16))
-            setThumbnailUrl(`https://iiif.test.ubbe.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${source.images[0].uuid}/0,0,${source.images[0].width},${Math.round(source.images[0].width*aspectRatio)}/${outputWidth},${outputHeight}/0/default.jpg`)
-            setManifestLoading(false)
-        }
+  
 
 
-        if (Array.isArray(iiif)) {
-            fetchManifest(`api/doc?uuid=${iiif[imgIndex]}&dataset=iiif_*`)
-        } else {
-            fetchManifest(`api/doc?uuid=${iiif}&dataset=iiif_*`)
-        }
-    }, [iiif, imgIndex, aspectRatio])
+    const { data, isLoading: manifestLoading } = useQuery({
+        queryKey: ['manifest', iiif, imgIndex],
+        queryFn: async () => fetchManifest(iiif, imgIndex, width, aspectRatio)
+    })
+    const { thumbnailUrl, manifestUuid } = data || {}
 
-    return <div className="flex flex-col gap-1">
+
+    return <div className="flex flex-col gap-1 relative">
         {manifestLoading ? (
             <div className="w-full aspect-[16/9] bg-neutral-200 animate-pulse border border-neutral-200"></div>
         ) : (
@@ -51,7 +54,7 @@ export default function ClientThumbnail({ iiif }: { iiif: string | string[]  }) 
             </Link>
         )}
         
-        <div className="flex gap-1 justify-between">
+        <div className="flex gap-1 justify-between absolute bottom-1 right-1">
             {Array.isArray(iiif) && iiif.length > 1 && (
                 <div className="flex ml-auto">
                     <button 

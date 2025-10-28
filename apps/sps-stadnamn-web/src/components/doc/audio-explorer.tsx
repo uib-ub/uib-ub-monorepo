@@ -20,7 +20,8 @@ export default function AudioExplorer({recordings}: {recordings: any[]}) {
         setCopiedId(recording.manifest)
     }
 
-    return <div className="w-full flex flex-col border-y border-neutral-200">
+    return <div className="w-full flex flex-col px-2">
+      {JSON.stringify(recording)}
     <audio 
       controls 
       src={`https://iiif.test.ubbe.no/iiif/audio/hord/${recording.file}`}

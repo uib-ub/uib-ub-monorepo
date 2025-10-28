@@ -29,12 +29,13 @@ export interface DatasetPresentation {
 }
 
 export const modes: Record<string, {title: string, description: string}> = {
-  map: {title: "Stadnamnkart", description: "Stadnamnsøk med kartvisning"},
-  list: {title: "Listevisning", description: "Stadnamnsøk med listevisning"},
-  table: {title: "Tabellvisning", description: "Stadnamnsøk med tabellvisning"},
+  map: {title: "Kart", description: "Stadnamnsøk med kartvisning"},
+  list: {title: "Liste", description: "Stadnamnsøk med listevisning"},
+  table: {title: "Tabell", description: "Stadnamnsøk med tabellvisning"},
 }
 
 export const datasetTitles: DatasetTitles = {
+    core_group_debug: "Debug",
     all: "Stadnamnsøk",
     core_gnidu: "GNIDu",
     tree: "Matriklar",
@@ -58,8 +59,8 @@ export const datasetTitles: DatasetTitles = {
     ssr: "Sentralt stadnamnregister",
     nrk: "NRKs gamle stadnamnarkiv",
     gn2019: "Geonames",
-    ft1900: "Folketellingen 1900",
-    ft1910: "Folketellingen 1910",
+    ft1900: "Folketeljinga 1900",
+    ft1910: "Folketeljinga 1910",
     m2010: "Matrikkelen 2010",
     frogn: "Frognmaterialet",
     gjerd: "Gjerdrumundersøkelsen",
@@ -73,14 +74,15 @@ export const datasetTitles: DatasetTitles = {
 }
 
 export const datasetDescriptions: Record<string, string> = {
+  core_group_debug: "",
   all: "Søk på tvers av alle datasett i Stadnamnportalen.",
   wikidata: "",
-  ssr: "Sentralt stadnamnregister (SSR), Kartverket sitt offisielle register over stadnamn i Noreg.",
+  ssr: "Sentralt stadnamnregister (SSR), Kartverket sitt offisielle register over stadnamn i Noreg. Språksamlingane hentar inn data minst ein gong i året, og organiserer oppslaga etter stadnamnnummer.",
   bsn: "Bustadnamnregisteret vart oppretta på 1950-talet og inneheld informasjon om namn på om lag 190 000 bustader (gardar, bruk og plassar) frå ti fylke i landet. Registeret består av om lag 109 000 arkivsedlar. Kvar seddel inneheld òg informasjon om fylke, kommune, gardsnummer og bruksnummer. Stadene er georefererte ut frå Kartverket si moderne matrikkel – så nøyaktig som mogleg.",
   hord: "Hordanamn er ei samling av stadnamn, særleg smånamn på åkrar, utmark, lier, tjern og fjell m.m. I alt 179 000 stadnamn frå det tidlegare Hordaland fylke er å finne i samlinga, fordelt på rundt 185 000 oppslag. Det er mogleg å sjå informasjon om kvart stadnamn og sjå plasseringa til namnet i kartet. Uttale er ofte oppgjeven, og i mange tilfelle er det òg mogleg å lytte til den lokale uttalen.",
   rygh: "Digitalisert utgåve av Oluf Rygh sitt standardverk for stadnamn i Noreg, opphavleg gjeve ut i 18 bind i åra 1897–1924. Oppslagsverket inneheld busetnadsnamn frå heile Noreg, unnateke Finnmark. Utgjevinga omfattar om lag 69 000 bustadnamn, derav ca. 3 700 namnegardsnamn, 44 500 gardsnamn, 16 000 bruksnamn, 4 000 forsvunne namn og 1 000 namn på sokn og herad. Kvart gardsnamn er oppgjeve med uttale og følgt gjennom tidene med språkvitskapleg tolking.",
   ostf: "Bustadnamn i Østfold er ei utgjeving over busetnadsnamna (bustadnamna) i Østfold heradsvis (22 herad etter den gamle inndelinga). Namneforskarane Tom Schmidt og Margit Harsson ved Seksjon for namnegransking (UiO) stod for redigering og utgjeving av serien, som byggjer på eit originalmanus av namnegranskaren Kåre Hoel (1922–1989). Serien vart gjeven ut mellom 1994 og 2021 og består av i alt 20 bind. Verket er ei sterkt utvida og revidert utgåve av Oluf Ryghs Norske Gaardnavne (bind 1 Smaalenenes Amt, 1897). Rygh avgrensa seg i hovudsak til namn på matrikkelgardane, men her er òg namn på andre busetnader tekne med, og gardsnamna får ei grundig behandling – både språkvitskapleg og kulturhistorisk.",
-  leks: "Norsk stadnamnleksikon er ei digital utgåve av stadnamn frå heile Noreg og er eit søk som gjev forklaringar på opphavet til viktige stadnamn. Det er mogleg å søkje på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn, og omfattar alle administrative inndelingar i Noreg fram til 2020. Den digitale utgåva er ei vidareføring av den siste trykte utgåva frå 1997.",
+  leks: "Norsk stadnamnleksikon er eit digital oppslagsverk med stadnamn frå heile Noreg, og gjev forklaringar på opphavet til eit utval viktige stadnamn. Det er mogleg å søkje på både enkeltnamn og dei viktigaste grunnorda. Verket inneheld både norske, samiske og kvenske namn, og omfattar alle administrative inndelingar i Noreg fram til 2020. Den digitale utgåva er ei vidareføring av den siste trykte utgåva frå 1997.",
   m1838: "Matrikkelen av 1838 er eit landsomfattande register over jordeigedomar og namna og verdien deira. Dette var den første nye matrikkelen sidan 1665. Registeret omfattar nesten 43 000 gardar og 110 000 bruk, alle med namn, matrikkel- og løpenummer. Matrikkelen er den første heilnorske matrikkelen og dekkjer heile landet unnateke Finnmark, som ikkje vart matrikulert før om lag 150 år seinare.",
   m1886: "Matrikkelen av 1886 er ei oversikt over jordeigedomar i heile landet, med namn, matrikkelnummer og verdi. Som noko nytt vart gardsnummer og bruksnummer tekne i bruk. Alle landets fylke, unnateke Finnmark, er dekte. For kvart bruksnummer er gjeve gards- og bruksnamn, i alt nesten 208 000 matriklar. Matrikkelen vert rekna som den første moderne matrikkelen, fastsett etter det systemet vi kjenner i dag.",
   mu1950: "Matrikkelutkastet av 1950 var førebuinga til ein ny matrikkel for heile Noreg, men arbeidet vart aldri fullført. I staden vart kommunale eigedomsregister nytta. Utkastet dekkjer over 767 000 matriklar frå landkommunane i alle fylke unnateke Finnmark. Kvar matrikkel er oppgjeven med gards- og bruksnamn, matrikkelnummer og verdi.",
@@ -103,14 +105,15 @@ export const datasetDescriptions: Record<string, string> = {
 }
 
 export const datasetShortDescriptions: Record<string, string> = {
+  core_group_debug: "",
   all: "Søk på tvers av alle datasett i Stadnamnportalen.",
-  ssr: "Kartverket sitt offisielle register over stadnamn i Noreg.",
+  ssr: "Kartverket sitt offisielle register over stadnamn i Noreg. Språksamlingane hentar inn data minst ein gong i året, og organiserer oppslaga etter stadnamnnummer.",
   wikidata: "",
   bsn: "Oppretta på 1950-talet, inneheld informasjon om namn på om lag 190 000 bustader frå ti fylke i Noreg.",
   hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert smånamn for åkrar, utmark, lier, tjørn og fjell.",
   rygh: "Digitalisert utgåve av Oluf Rygh sitt standardverk for stadnamn i Noreg, opphavleg gjeve ut i 18 bind i åra 1897–1924.",
   ostf: "Ein 20-binds serie gjeven ut mellom 1994 og 2021, som dekkjer bustadnamn i det tidlegare Østfold fylke.",
-  leks: "Digital utgåve av Norsk stadnamnleksikon (1997) som forklarar opphavet til viktige stadnamn i Noreg, inkludert norske, samiske og kvenske namn, samt administrative inndelingar.",
+  leks: "Digital vidareføring av Norsk stadnamnleksikon (1997) som forklarar opphavet til viktige stadnamn i Noreg, inkludert norske, samiske og kvenske namn, samt administrative inndelingar.",
   m1838: "Noregs første omfattande matrikkel frå 1800-talet, som dekkjer heile landet unnateke Finnmark.",
   mu1950: "Utkast til ein ny nasjonal matrikkel som aldri vart fullført. Han dekte over 767 000 oppføringar frå landkommunar.",
   m1886: "Reknast som Noregs første moderne matrikkel, og innførte gards- og bruksnummer for heile landet unnateke Finnmark.",
@@ -187,10 +190,10 @@ export const datasetPresentation: DatasetPresentation = {
         license: licenses.ccby4,
       },
       wikidata: {
-        img: "icon.svg",
-        alt: "Kart over Noreg med stadnamn",
-        imageAttribution: "Kartverket",
-        attribution: "Språksamlingane",
+        img: "Wikidata-logo.svg",
+        alt: "Wikidata logo",
+        imageAttribution: "Wikimedia Foundation",
+        attribution: "Språksamlingane, Wikidata",
         license: licenses.ccby4,
       },
       bsn: {

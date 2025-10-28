@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PiCaretRight, PiMagnifyingGlass, PiTreeView, PiWall } from "react-icons/pi";
 import { datasetPresentation, datasetTitles } from "@/config/metadata-config";
-import { GlobalContext } from "@/app/global-provider";
+import { GlobalContext } from "@/state/providers/global-provider";
 import { useContext } from "react";
 import { useMode } from '@/lib/param-hooks';
 
@@ -30,7 +30,7 @@ export default function DatasetToolbar({itemDataset}: {itemDataset: string}) {
                 
             { treeSettings[itemDataset] && <Link href={`/search?dataset=${itemDataset}&nav=tree`} className="btn btn-outline btn-compact"><PiTreeView className="text-neutral-800" aria-hidden="true"/>Register</Link>}
 
-            <Link href={`/info/datasets/${itemDataset}`} className="btn btn-outline btn-compact">Les meir<PiCaretRight className="text-primary-600" aria-hidden="true"/></Link>
+            <Link href={`/info/datasets/${itemDataset}`} className="btn btn-outline btn-compact">Les meir<PiCaretRight className="text-primary-700" aria-hidden="true"/></Link>
 
         </nav>
     

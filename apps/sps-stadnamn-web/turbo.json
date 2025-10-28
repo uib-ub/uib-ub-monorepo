@@ -21,8 +21,7 @@
         "ES_TOKEN",
         "ES_ENDPOINT",
         "ES_ENDPOINT_TEST",
-        "STADNAMN_CACHE_TOKEN",
-        "HISTORIEDAGAR_2025"
+        "STADNAMN_CACHE_TOKEN"
       ]
     }
   }

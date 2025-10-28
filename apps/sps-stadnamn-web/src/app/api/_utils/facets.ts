@@ -27,10 +27,19 @@ export const RESERVED_PARAMS = [
   'facets',
   'zoom',
   'point',
+  'radius',
   'facetQuery',
   'mode',
   'geotile',
-  'docIndex'
+
+  'init',
+  'group',
+  'options',
+  'results',
+  'mapSettings',
+  'debug',
+  'locations' // Lokaliteter - tab that enables nested markers
+  
 ] as const;
 
 export function extractFacets(request: Request) {
@@ -94,6 +103,17 @@ export function extractFacets(request: Request) {
       }
     }
   }
+
+  if (reservedParams.radius && reservedParams.point) {
+    // Add a distance filter
+    termFilters.push({
+      "geo_distance": {
+        "distance": `${reservedParams.radius}m`,
+        "location": reservedParams.point.split(',').map(parseFloat).reverse()
+      }
+    });
+  }
+
 
   // Handle range filters (comparison operators)
   for (const [fieldName, operators] of Object.entries(rangeFilters)) {

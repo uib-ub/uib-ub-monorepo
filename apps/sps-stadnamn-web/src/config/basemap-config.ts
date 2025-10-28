@@ -5,7 +5,8 @@ export const backgroundMap = {
 }
 
 export const defaultBaseMap: Record<string, string> = {
-    search: 'word_map',
+    all: 'world_map',
+    ssr: 'world_map',
     ssr2016: 'world_map'
 }
    
@@ -45,7 +46,7 @@ export const baseMaps: BaseMap[] = [
         name: 'Noregskart', 
         props: {
             url: 'https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png',
-            attribution: '<a href="http://www.kartverket.no/">Kartverket</a>',
+            attribution: '&copy; <a class="override-external-icon" href="http://www.kartverket.no/">Kartverket</a>',
         }
     },
     {
@@ -53,7 +54,7 @@ export const baseMaps: BaseMap[] = [
         name: 'Noregskart, gråtone',
         props: {
             url: 'https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png',
-            attribution: '<a href="http://www.kartverket.no/">Kartverket</a>',
+            attribution: '&copy; <a class="override-external-icon" href="http://www.kartverket.no/">Kartverket</a>',
         }
         
     },
@@ -62,16 +63,16 @@ export const baseMaps: BaseMap[] = [
         name: 'Noregskart, store bokstaver', 
         props: {
             url: 'https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png',
-            attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
+            attribution: '&copy; <a class="override-external-icon" href="http://www.kartverket.no/">Kartverket</a>'
         }
     },
-    { // 
-        key: 'word_map',
+    { 
+        key: 'world_map',
         name: 'Verdskart',
         bright: true,
         props: {
             url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            attribution: '&copy; <a class="override-external-icon" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors<br/> &copy; <a class="override-external-icon" href="https://carto.com/attributions">CARTO</a>'
         }
         
     }

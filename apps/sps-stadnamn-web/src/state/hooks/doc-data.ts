@@ -2,7 +2,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query'
 import useGroupData from './group-data';
-import { useDocIndex } from '@/lib/param-hooks';
+import { useDocIndex, useGroup } from '@/lib/param-hooks';
 
 
 const docDataQuery = async (docUuid: string, docParams?: {docData: Record<string, any>, docDataset?: string}) => {
@@ -38,14 +38,14 @@ export default function useDocData(docParams?: {docData: Record<string, any>, do
     const searchParams = useSearchParams()
     const { groupData } = useGroupData()
     const docIndex = useDocIndex()
-    const group = searchParams.get('group')
+    const {activeGroupCode} = useGroup()
     const doc = searchParams.get('doc')
     
     
     const docUuid = searchParams.get('doc') || groupData?.[docIndex]?._source?.uuid
 
     const { data, error: docError, isLoading: docLoading, isRefetching: docRefetching, isFetchedAfterMount: docFetchedAfterMount } = useQuery({
-        queryKey: ['doc', group, doc, docIndex, docUuid],
+        queryKey: ['doc', activeGroupCode, doc, docIndex, docUuid],
         placeholderData : (prevData) => prevData,
         queryFn: async () => docUuid ? docDataQuery(docUuid, docParams) : null
     })

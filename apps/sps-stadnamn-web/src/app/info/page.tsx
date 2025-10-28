@@ -1,4 +1,5 @@
 import SubpageNav from '@/components/layout/subpage-nav'
+import { infoPages } from './info-pages'
 
 export const metadata = { title: 'Info' }
 
@@ -27,13 +28,7 @@ export default function InfoPage() {
       </p>
 
       <SubpageNav 
-        items={[
-          { label: "Om stadnamnsøk", href: "info/search" },
-          { label: "Datasett", href: "info/datasets" },
-          { label: "Ordforklaringar", href: "info/definitions" },
-          { label: "Personvern", href: "info/privacy" },
-          { label: "Opphavsrett", href: "info/license" }
-        ]}
+        items={infoPages}
       />
     </div>
   )

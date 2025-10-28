@@ -7,13 +7,13 @@ import { PiMagnifyingGlass, PiCaretRight, PiCaretDownBold, PiTreeViewFill, PiTre
 import { datasetTitles, datasetShortDescriptions } from '@/config/metadata-config';
 
 import FacetToolbar from './facet-toolbar';
-import { GlobalContext } from '@/app/global-provider';
+import { GlobalContext } from '@/state/providers/global-provider';
 import { formatNumber, getSkeletonLength } from '@/lib/utils';
 import IconButton from '@/components/ui/icon-button';
 import Link from 'next/link';
 import Clickable from '@/components/ui/clickable/clickable';
 import { usePerspective } from '@/lib/param-hooks';
-import Badge from '@/components/ui/badge';
+import { FacetBadge } from '@/components/ui/badge';
 import { treeSettings } from '@/config/server-config';
 
 // Memoized RegExp factory to prevent memory leaks
@@ -36,7 +36,6 @@ export default function DatasetFacet() {
   const perspective = usePerspective()
   const searchParams = useSearchParams()
   const { removeFilterParams } = useSearchQuery()
-  const { isMobile } = useContext(GlobalContext)
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [facetLoading, setFacetLoading] = useState(true);
   const [facetSearch, setFacetSearch] = useState('');
@@ -82,6 +81,7 @@ export default function DatasetFacet() {
     params.delete('center')
     params.delete('doc')
     params.delete('group')
+    params.delete('init')
     
     // For dataset, convert all values to dataset tags before filtering
     
@@ -127,67 +127,11 @@ export default function DatasetFacet() {
 
   return (
     <>
-    <div className="flex flex-col gap-2">
-    {!isMobile && <div className="border p-1 rounded-lg border-neutral-200 tabs gap-1 text-sm flex flex-col 2xl:flex-wrap 2xl:flex-row" role="tablist">
-  <Clickable
-    remove={["datasetTag"]}
-    role="tab"
-    aria-controls="dataset-facet-content"
-    aria-selected={!datasetTag}
-    className={`flex items-center gap-2 p-1 px-2 flex-1`}
-  >
-    <span className="flex-shrink-0">
-      {!datasetTag ? <PiDatabaseFill className="text-base text-accent-800" aria-hidden="true"/> : <PiDatabaseLight className="text-base text-neutral-900" aria-hidden="true"/>}
-    </span>
-    Alle
-  </Clickable>
-  <Clickable
-    role="tab"
-    aria-controls="dataset-facet-content"
-    remove={["dataset", "group", "doc"]}
-    add={{ datasetTag: 'deep'}}
-    aria-selected={datasetTag == 'deep'}
-    className={`flex items-center gap-2 p-1 px-2 flex-1`}
-  >
-    <span className="flex-shrink-0">
-      {datasetTag == 'deep' ? <PiMicroscopeFill className="text-base text-accent-800" aria-hidden="true"/> : <PiMicroscopeLight className="text-base text-neutral-900" aria-hidden="true"/>}
-    </span>
-    Djupinnsamlingar
-  </Clickable>
-  <Clickable
-    role="tab"
-    aria-controls="dataset-facet-content"
-    remove={["dataset", "group", "doc"]}
-    add={{ datasetTag: 'tree'}}
-    aria-selected={datasetTag == 'tree'}
-    className={`flex items-center gap-2 p-1 px-2 flex-1`}
-  >
-    <span className="flex-shrink-0">
-      {datasetTag == 'tree' ? <PiTreeViewFill className="text-base text-accent-800" aria-hidden="true"/> : <PiTreeViewLight className="text-base text-neutral-900" aria-hidden="true"/>}
-    </span>
-    Matriklar
-  </Clickable>
-  <Clickable
-    role="tab"
-    aria-controls="dataset-facet-content"
-    remove={["dataset", "group", "doc"]}
-    add={{ datasetTag: 'base'}}
-    aria-selected={datasetTag == 'base'}
-    className={`flex items-center gap-2 p-1 px-2 flex-1`}
-  >
-    <span className="flex-shrink-0">
-      {datasetTag == 'base' ? <PiWallFill className="text-base text-accent-800" aria-hidden="true"/> : <PiWallLight className="text-base text-neutral-900" aria-hidden="true"/>}
-    </span>
-    Grunnord
-  </Clickable>
-</div>}
-            
+    <div className="flex flex-col gap-2">            
     
     <div id="dataset-facet-content" className='flex flex-col gap-2'>
-    { datasetTag == 'deep' && <span className="px-1">Datasett som har stadnamngransking som hovudformål, og som til døme ikkje er henta frå offentlege register som SSR eller matriklane</span>}
-    {datasetTag == 'tree' && <span className="px-1">Datasett ordna i eit hierarki etter matrikkelinndelinga.</span>}
 
-    {datasetTag != 'tree' && <div className='flex gap-2 px-1'>
+    {datasetTag != 'tree' && <div className='flex gap-2 px-1 pt-1'>
      <div className='relative grow'>
       <input aria-label="Søk i fasett" onChange={(e) => setClientSearch(e.target.value)}
           className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"/>
@@ -238,7 +182,7 @@ export default function DatasetFacet() {
                 <div className='flex items-start gap-2 lg:gap-1 xl:gap-2'>
                   {isCadastral ? 
                   <Clickable link only={{datasetTag: 'tree', dataset: item.key.split('-')[2]}} className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0 no-underline">
-                  {renderLabel(item.key)}<PiCaretRightBold className="text-primary-600" aria-hidden="true"/>
+                  {renderLabel(item.key)}<PiCaretRightBold className="text-primary-700" aria-hidden="true"/>
                   </Clickable>
                   
                   :<label className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0">
@@ -264,14 +208,14 @@ export default function DatasetFacet() {
                               {firstPart + ' '}
                               <span className="whitespace-nowrap">
                                 {lastWord}
-                                <Badge count={item.doc_count} />
+                                <FacetBadge count={item.doc_count} />
 
                               </span>
                             </>
                           ) : (
                             <>
                               {lastWord}
-                              <Badge count={item.doc_count} />
+                              <FacetBadge count={item.doc_count} />
                             </>
                           )}
                         </span>
@@ -295,7 +239,7 @@ export default function DatasetFacet() {
                         href={`info/datasets/${item.key.split('-')[2]}`}
                         className="flex items-center gap-1 no-underline"
                       >
-                        Les meir <PiCaretRight className="xl:text-lg text-primary-600" />
+                        Les meir <PiCaretRight className="xl:text-lg text-primary-700" />
                       </Link>
                     </div>
                   </div>

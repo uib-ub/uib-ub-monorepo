@@ -1,3 +1,4 @@
+'use client'
 import { facetConfig } from "@/config/search-config";
 import { useSearchQuery } from "@/lib/search-params";
 import { useRouter } from "next/navigation";

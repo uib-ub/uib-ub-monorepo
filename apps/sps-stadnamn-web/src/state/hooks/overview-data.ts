@@ -183,11 +183,13 @@ const overviewQuery = async (
 }
 
 export default function useOverviewData() {
-    console.log("OVERVIEW USED")
+    //console.log("OVERVIEW USED")
+
+    /*
     const searchParams = useSearchParams()
     const details = searchParams.get('details')
     const namesScope = searchParams.get('namesScope') || 'group'
-    const { groupDoc } = useGroupData()
+
     const { groupCode, groupValue } = useGroup()
     const { data, error, isLoading } = useQuery({
         queryKey: ['namesData', groupValue, namesScope, details, groupDoc?._source?.uuid],
@@ -200,4 +202,5 @@ export default function useOverviewData() {
         namesResultError: error as any,
         namesResultLoading: isLoading,
     }
+        */
 }

@@ -1,5 +1,5 @@
 import { facetConfig } from "@/config/search-config";
-import { GlobalContext } from "@/app/global-provider";
+import { GlobalContext } from "@/state/providers/global-provider";
 import { useContext, useState } from "react";
 import { usePerspective } from '@/lib/param-hooks';
 import { contentSettings } from "@/config/server-config";
@@ -54,6 +54,7 @@ export default function TableOptions() {
 
     return <div className="flex flex-col gap-2 px-1">
     <div className='flex gap-2 mt-2 xl:mt-0'>
+        
     
     { (searchParams.get('asc') || searchParams.get('desc')) &&
         <Clickable type="button" className='btn btn-outline btn-compact pl-2' add={{asc: null, desc: null}}>

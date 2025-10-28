@@ -3,7 +3,7 @@ import { useRef, useEffect, useContext } from 'react';
 import Clickable from '@/components/ui/clickable/clickable';
 import { treeSettings } from '@/config/server-config';
 import { useSearchParams } from 'next/navigation';
-import { GlobalContext } from '@/app/global-provider';
+import { GlobalContext } from '@/state/providers/global-provider';
 import { useMode } from '@/lib/param-hooks';
 import useDocData from '@/state/hooks/doc-data';
 export default function TreeItem({hit}: {hit: any}) {
@@ -37,7 +37,7 @@ export default function TreeItem({hit}: {hit: any}) {
                         dataset: docDataset,
                         ...(mode != 'map' || parent) ? {parent: hit.fields.uuid, doc: hit.fields.uuid} : {doc: hit.fields.uuid},
                         ...mode != 'map' ? {mode: 'doc'} : {mode: searchParams.get('mode')},
-                        datasetTAg: 'tree',
+                        datasetTag: 'tree',
                         adm: searchParams.get('adm'),
                         zoom: searchParams.get('zoom'),
                         center: searchParams.get('center'),

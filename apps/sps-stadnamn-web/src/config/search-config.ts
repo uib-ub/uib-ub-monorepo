@@ -53,7 +53,6 @@ const html = {"content.html": {label: "Tekstinnhald", fulltext}}
 const text = {"content.text": {label: "Tekstinnhald", fulltext}}
 const boost = {numeric}
 const dataset = {label: "Datasett"}
-const datasetTag = {label: "Datasettgruppe"}
 const coordinateType = {label: "Koordinattype", facet}
 const ssr = {label: "SSR Stadnummer", facet, keyword}
 
@@ -61,11 +60,16 @@ const labelDefaults = {
   "altLabels": {label: "Andre namn", table, facet, result},
   "attestations": {label: "Kjeldeformer", table, result},
 }
-const required = {uuid, boost, label, dataset, datasetTag}
+const required = {uuid, boost, label, dataset}
 
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
+
     core_gnidu: {
       label
+    },
+    core_group_debug: {
+      ...required,
+      ...identifiers
     },
     wikidata: {
       ...required, adm, adm1, adm2,
@@ -262,6 +266,9 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       //"location.type": {label: "Areal", facet, keyword}, // Fungerte bare i tabellen. Dukket ikke opp som facet
       sosi,
       coordinateType,
+      "misc.navnesakstatus": {label: "Navnesakstatus", facet},
+      "misc.navnestatus": {label: "Navnestatus", facet},
+      "coreNames": {label: "Kjernenamn", facet},
       ...labelDefaults,
     },
     nrk: {

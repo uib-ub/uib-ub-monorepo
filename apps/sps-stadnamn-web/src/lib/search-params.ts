@@ -17,7 +17,6 @@ export function useSearchQuery() {
     const validFields = ['q', ...Object.keys(fieldConfig[perspective])]
     const facetFilters: [string, string][] = []
     const datasetFilters: [string, string][] = []
-    const secondaryDatasetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
     const size = parseInt(searchParams.get('size') || "20")
     const datasetTag = searchParams.get('datasetTag')
@@ -30,13 +29,10 @@ export function useSearchQuery() {
             if (key == 'dataset') {
                 datasetFilters.push([key, value])
             }
-            else if (key == 'cadastralIndex' || key == 'boost_gt') {
-                secondaryDatasetFilters.push([key, value])
-            }
-            else if (key == 'datasetTag') {
+            /*else if (key == 'datasetTag') {
                 datasetFilters.push([key, value])
                 
-            }
+            }*/
             else if (key != 'q') {
                 searchQuery.append(key, value)
                 facetFilters.push([key, value])
@@ -70,13 +66,18 @@ export function useSearchQuery() {
         searchQuery.append(filter[0], filter[1])
     })
 
-    secondaryDatasetFilters.forEach(filter => {
-        searchQuery.append(filter[0], filter[1])
-    })
     
     const fulltext = searchParams.get('fulltext')
-    if (fulltext && datasetTag != 'tree') {
+    if (fulltext && datasetTag != 'tree' && searchParams.get('q')) {
         searchQuery.set('fulltext', 'on')
+    }
+    if (searchParams.get('datasetTag')) {
+        searchQuery.set('datasetTag', searchParams.get('datasetTag')!)
+    }
+
+    if (searchParams.get('radius') && searchParams.get('point')) {
+        searchQuery.set('radius', searchParams.get('radius')!)
+        searchQuery.set('point', searchParams.get('point')!)
     }
 
     const removeFilterParams = (key: string | string[], keep?: string[]) => {

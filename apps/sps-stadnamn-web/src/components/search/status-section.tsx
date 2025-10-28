@@ -1,13 +1,17 @@
 'use client'
 import { useContext } from 'react';
 import ActiveFilters from './form/active-filters';
-import { PiInfoFill, PiWarningFill } from 'react-icons/pi';
+import { PiFunnel, PiInfoFill, PiSlidersHorizontal, PiWarningFill } from 'react-icons/pi';
 import ModeSelector from '../tabs/mode-selector';
-import { GlobalContext } from '@/app/global-provider';
+import { GlobalContext } from '@/state/providers/global-provider';
 import SortSelector from './sort/sort-selector'
 import { useMode } from '@/lib/param-hooks';
 import { useSearchParams } from 'next/navigation';
 import useSearchData from '@/state/hooks/search-data';
+import Clickable from '../ui/clickable/clickable';
+import { useSearchQuery } from '@/lib/search-params';
+import { formatNumber } from '@/lib/utils';
+import { useSessionStore } from '@/state/zustand/session-store';
 
 export default function StatusSection() {
     const { searchBounds, searchLoading, searchError, totalHits } = useSearchData()
@@ -17,13 +21,18 @@ export default function StatusSection() {
     const doc = searchParams.get('doc')
     const group = searchParams.get('group')
     const datasetTag = searchParams.get('datasetTag')
+    const { facetFilters, datasetFilters } = useSearchQuery()
+    const fulltext = searchParams.get('fulltext')
 
-    return <div className={`flex flex-col gap-2 ${mode != 'map' ? 'bg-white shadow-lg rounded-md' : ''}`}> 
-    <div className={`flex gap-1 items-start ${(mode == 'map' && !isMobile) ? 'lg:mt-2' : 'items-center'}`}>
-    {datasetTag != 'base' && !isMobile && <ModeSelector/>}
+
+
+    return <div className={`flex flex-col gap-2 ${mode == 'map' ? '' : 'px-2 pt-4 pb-2'}`}> 
+    <div className={`flex gap-1 items-start`}>
     
     
-    { !isMobile && <div className={`flex flex-wrap ${datasetTag == 'base' ? 'm-2': 'p-1'} xl:flex-row h-full xl:py-0 gap-2`}><ActiveFilters/> </div> }
+    <div className={`flex flex-wrap  xl:flex-row h-full gap-2`}>
+      
+      {false &&!isMobile && <ActiveFilters/> }</div>
 
 
 
@@ -34,16 +43,25 @@ export default function StatusSection() {
     
 
 
-    {mode == 'map' && <div className="flex flex-wrap gap-2 mx-1.5 xl:mx-0">
-    { (!searchLoading && !searchBounds?.length && !searchError && totalHits?.value > 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff med koordinatar</div> : null}
-    { ( !searchLoading && !searchError && totalHits?.value == 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md p-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff</div> : null}
-    </div>}
-    { searchError && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">
+    {mode == 'map' && (!searchLoading && !searchBounds?.length && !searchError && totalHits?.value > 0) && 
+      <div
+        role="status"
+        aria-live="polite"
+        className="bg-neutral-900 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit"
+      >
+        <PiInfoFill className="inline text-xl"/> Ingen treff med koordinatar
+      </div>
+    }
+
+
+    { ( !searchLoading && !searchError && totalHits?.value == 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl"/> Ingen treff</div> : null}
+    
+    { searchError && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md h-12 px-4 text-white opacity-90 flex gap-4 items-center w-fit">
         <PiWarningFill className="inline text-xl"/> 
         <span>Kunne ikkje hente søkeresultat</span>
       </div>
     }
-    { !searchBounds && !searchError && !searchLoading && totalHits > 0 && mode == 'map' && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md p-4 text-white opacity-90 flex gap-4 items-center w-fit">
+    { !searchBounds && !searchError && !searchLoading && totalHits > 0 && mode == 'map' && <div role="status" aria-live="polite" className="bg-primary-700 h-12 px-4 rounded-md text-white opacity-90 flex gap-4 items-center w-fit">
       <PiWarningFill className="inline text-xl"/> 
       <span>Kunne ikkje hente koordinatar</span>
     </div>}

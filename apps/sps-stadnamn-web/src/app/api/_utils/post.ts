@@ -1,16 +1,16 @@
 
-export async function postQuery(dataset: string, query: any, search_type?: string, cacheTags: string[] = ['all']): Promise<any[]> {
+export async function postQuery(perspective: string, query: any, search_type?: string, cacheTags: string[] = ['all']): Promise<any[]> {
     
     // TODO: use the same variable name in prod and test
     const endpoint = process.env.STADNAMN_ES_ENDPOINT
     const token = process.env.STADNAMN_ES_TOKEN
     let res
 
+    const url = `${endpoint}search-stadnamn-${process.env.SN_ENV}-${perspective}/_search${search_type ? `?search_type=${search_type}` : ''}`
+
     
-
-
     try {
-        res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${dataset}/_search${search_type ? `?search_type=${search_type}` : ''}`, {
+        res = await fetch(url, {
             cache: 'force-cache', next: {tags: cacheTags},
             method: 'POST',
             headers: {

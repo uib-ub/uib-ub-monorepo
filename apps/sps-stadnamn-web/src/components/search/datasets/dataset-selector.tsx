@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Clickable from '@/components/ui/clickable/clickable';
 import { usePerspective } from '@/lib/param-hooks';
-import { GlobalContext } from '@/app/global-provider';
+import { GlobalContext } from '@/state/providers/global-provider';
 
 
 
@@ -57,7 +57,7 @@ export default function DatasetSelector() {
               value={searchTerm}
               onChange={handleSearchChange}
             />
-            <Link href="/info/datasets" className="ml-auto no-underline mt-1 flex items-center gap-1">Utforsk datasetta<PiCaretRight aria-hidden="true" className="text-primary-600 inline"/></Link>
+            <Link href="/info/datasets" className="ml-auto no-underline mt-1 flex items-center gap-1">Utforsk datasetta<PiCaretRight aria-hidden="true" className="text-primary-700 inline"/></Link>
         
 
           </div>

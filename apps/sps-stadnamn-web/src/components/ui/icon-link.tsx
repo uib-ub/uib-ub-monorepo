@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { GlobalContext } from "@/app/global-provider"
+import { GlobalContext } from "@/state/providers/global-provider"
 import {
     Tooltip,
     TooltipContent,

@@ -11,7 +11,7 @@ export default function InfoPopover({ children }: { children?: React.ReactNode }
             <button
                 popoverTarget={popoverId}
                 style={{ ['anchorName' as any]: anchorName }}
-                className="inline ml-1 text-primary-600"
+                className="inline ml-1 text-primary-700"
                 aria-label="Merknad"
             >
                 <PiQuestionFill />

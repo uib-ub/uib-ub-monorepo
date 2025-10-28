@@ -8,7 +8,7 @@ import {
 import { ParamProps } from "./param-types"
 import Clickable from './clickable'
 import { useContext } from "react"
-import { GlobalContext } from "@/app/global-provider"
+import { GlobalContext } from "@/state/providers/global-provider"
 
 type Props = ParamProps & {
     label: string
@@ -24,7 +24,7 @@ export default function ClickableIcon({
     const { isMobile } = useContext(GlobalContext)
 
     if (isMobile) {
-        return <Clickable aria-label={label} {...rest}><i aria-hidden='true'>{children}</i></Clickable>
+        return <Clickable aria-label={label} {...rest}><span aria-hidden='true'>{children}</span></Clickable>
     }
     else {
         return (
@@ -35,7 +35,7 @@ export default function ClickableIcon({
                         aria-label={label} 
                         {...rest}
                     >
-                        <i aria-hidden='true'>{children}</i>
+                        <span aria-hidden='true'>{children}</span>
                     </Clickable>
                 </TooltipTrigger>
                 <TooltipContent side={side}>

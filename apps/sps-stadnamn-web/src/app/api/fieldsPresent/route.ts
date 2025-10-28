@@ -19,22 +19,37 @@ export async function GET(request: Request) {
       )
     : facetConfig[perspective];
     
-  const query: Record<string,any> = {
+  // For each available facet, create a filter for existence, and then in each filter bucket, add a sub-aggregation for top 5 values
+  const query: Record<string, any> = {
     "track_scores": false,
-    "size":  0,
-      "aggs": {
-        "fields_present": {
-          "filters": {
-            "filters": availableFacets.reduce((acc, facetItem) => {
-              const addKeyword = !facetItem.type
-              const field = facetItem.key + (addKeyword ? ".keyword" : "")
-              acc[field] = { "exists": { "field": field } };
-              return acc;
-            }, {} as Record<string, any>)
-          }
-    }
-      },
+    "size": 0,
+    "aggs": {
+      "fields_present": {
+        "filters": {
+          "filters": availableFacets.reduce((acc, facetItem) => {
+            const addKeyword = !facetItem.type;
+            const field = facetItem.key + (addKeyword ? ".keyword" : "");
+            acc[field] = { "exists": { "field": field } };
+            return acc;
+          }, {} as Record<string, any>)
+        },
+        "aggs": {}
+      }
+    },
     "_source": false
+  };
+
+  // Add sub-aggregations for top 5 values for each filter bucket
+  for (const facetItem of availableFacets) {
+    const addKeyword = !facetItem.type;
+    const field = facetItem.key + (addKeyword ? ".keyword" : "");
+    // Each filter bucket gets a sub-aggregation with the same name as the field
+    query.aggs.fields_present.aggs[field] = {
+      "terms": {
+        "field": field,
+        "size": 5
+      }
+    };
   }
 
   if (simple_query_string && termFilters.length) {

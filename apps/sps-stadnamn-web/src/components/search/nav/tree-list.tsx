@@ -109,7 +109,7 @@ export default function TreeList() {
                                 className="flex items-center justify-between p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full aria-[current='page']:bg-accent-50"
                                 aria-current={isActive ? 'page' : undefined}
                             >
-                                <span className="flex-1 text-neutral-900">
+                                <span className="flex-1 text-black">
                                     {gnr && `${gnr}. `}{farmName}
                                 </span>
                             </Clickable>
@@ -142,7 +142,7 @@ export default function TreeList() {
                                 add={{ adm2: fields.adm2?.[0] }}
                                 className="flex items-center justify-between p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full"
                             >
-                                <span className="flex-1 text-neutral-900">
+                                <span className="flex-1 text-black">
                                     {settings.showNumber ? `${municipalityNumber} ` : ''}{municipalityName}
                                 </span>
                             </Clickable>
@@ -162,7 +162,7 @@ export default function TreeList() {
                             add={{ adm1: countyName }}
                             className="flex items-center justify-between p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full"
                         >
-                            <span className="flex-1 text-neutral-900">
+                            <span className="flex-1 text-black">
                                 {settings.showNumber ? `${countyNumber} ` : ''}{countyName}
                             </span>
                         </Clickable>

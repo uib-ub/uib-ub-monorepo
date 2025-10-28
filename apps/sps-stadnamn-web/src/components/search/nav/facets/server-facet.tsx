@@ -10,8 +10,9 @@ import FacetToolbar from './facet-toolbar';
 import { formatNumber, getSkeletonLength } from '@/lib/utils';
 import Clickable from '@/components/ui/clickable/clickable';
 import { usePerspective } from '@/lib/param-hooks';
-import Badge from '@/components/ui/badge';
+import { FacetBadge } from '@/components/ui/badge';
 import PercentageCircle from './percentage-circle';
+
 
 
 
@@ -87,6 +88,7 @@ export default function ServerFacet() {
     params.delete('center')
     params.delete('doc')
     params.delete('group')
+    params.delete('init')
     
     existingValues
       .filter(v => v !== value)
@@ -152,7 +154,7 @@ export default function ServerFacet() {
           aria-pressed={currentValue != '_true' && currentValue != '_false'}
           className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
         >
-          Alle <Badge count={allCount} />
+          Alle <FacetBadge count={allCount} />
         </button>
       </>
     )}
@@ -188,7 +190,7 @@ export default function ServerFacet() {
     {  (facetLoading || facetAggregation?.buckets.length) ?
     <fieldset>
       <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[perspective][facet].label}`}</legend>
-      <ul aria-live="polite" className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto inner-slate mb-2'>
+      <ul aria-live="polite" className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto mb-2'>
         {facetAggregation?.buckets.length ? facetAggregation?.buckets
           .map((item: any, index: number) => 
             (!clientSearch?.length || createSearchRegex(clientSearch)?.test(renderLabel(facet, item.key))) && (
@@ -202,7 +204,7 @@ export default function ServerFacet() {
                     value={item.key} 
                     onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
                   />
-                  {renderLabel(facet, item.key)} <Badge count={item.doc_count} />
+                  {renderLabel(facet, item.key)} <FacetBadge count={item.doc_count} />
                 </label>
               </li>
           ))

@@ -69,8 +69,8 @@ export default function NestedResource({ uri, children, parentUuid, childUuids =
         >
           {uri}
           {open ? 
-            <PiCaretUpBold className="w-4 h-4 text-primary-600" aria-hidden="true" /> : 
-            <PiCaretDownBold className="w-4 h-4 text-primary-600" aria-hidden="true" />
+            <PiCaretUpBold className="w-4 h-4 text-primary-700" aria-hidden="true" /> : 
+            <PiCaretDownBold className="w-4 h-4 text-primary-700" aria-hidden="true" />
           }
         </button>
       </div>

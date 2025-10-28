@@ -1,3 +1,4 @@
+'use client'
 import { useSearchParams } from "next/navigation"
 import { base64UrlToString } from "./param-utils"
 import { contentSettings } from "@/config/server-config"
@@ -13,6 +14,7 @@ export function usePerspective() {
     if (datasetParams.length == 1) {
         return datasetParams[0]
     }
+
     return 'all'
 }
 
@@ -24,9 +26,14 @@ export function useDocIndex(): number {
 
 export function useGroup() {
     const searchParams = useSearchParams()
-    const groupCode = searchParams.get('group')
+    const groupCode = searchParams.get('group') 
+    const initCode = searchParams.get('init')
+    const initValue = initCode ? base64UrlToString(initCode) : null
     const groupValue = groupCode ? base64UrlToString(groupCode) : null
-    return {groupCode, groupValue}
+    const activeGroupValue = groupValue || initValue
+    const activeGroupCode = groupCode || initCode
+
+    return {initCode, initValue, activeGroupValue, activeGroupCode}
 }
 
 

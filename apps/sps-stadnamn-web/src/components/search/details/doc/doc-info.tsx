@@ -1,3 +1,4 @@
+'use client'
 import { datasetTitles } from "@/config/metadata-config"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
@@ -7,12 +8,11 @@ import { infoPageRenderers } from "@/config/info-renderers"
 import { useContext, useMemo } from "react"
 import { treeSettings } from "@/config/server-config"
 import CadastreBreadcrumb from "./cadastre-breadcrumb"
-import { GlobalContext } from "@/app/global-provider"
+import { GlobalContext } from "@/state/providers/global-provider"
 import CollapsibleHeading from '@/components/doc/collapsible-heading';
 import ExternalLinkTooltip from "@/components/ui/clickable/external-link-tooltip"
 import IconLink from "@/components/ui/icon-link"
 import FacetsInfobox from "@/components/doc/facets-infobox"
-import SearchDocInfo from "@/components/doc/search-doc-info"
 import { facetConfig } from "@/config/search-config"
 import { getFieldValue, getValueByPath } from "@/lib/utils"
 import ErrorMessage from "@/components/error-message"
@@ -65,7 +65,7 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
         <IconLink label="Om datasettet" 
               href={ `/info/datasets/${docDataset.split('_')[0]}`}
               className="flex items-center">
-                <PiInfoFill aria-hidden="true" className="text-lg text-primary-600"/>
+                <PiInfoFill aria-hidden="true" className="text-lg text-primary-700"/>
         </IconLink>
         
         </div>}
@@ -130,7 +130,6 @@ export default function DocInfo({docParams}: {docParams?: {docData: Record<strin
        
             
       
-      { docDataset == 'search' && <SearchDocInfo docSource={docSource}/> }
 
       { docSource.attestations && <Timeline arr={docSource.attestations} parent={docSource.uuid}/> }
       

@@ -1,9 +1,16 @@
 import { getFieldValue } from "@/lib/utils";
+import { formatHighlight, createMarkup } from "@/lib/text-utils";
+import Link from "next/link";
+import SourceLink from "@/components/search/details/group/source-link";
+import { Fragment } from "react";
+import IconButton from "@/components/ui/icon-button";
+import { PiFileFill, PiInfoFill } from "react-icons/pi";
 
 interface Renderer {
   fields?: string[];
   title?: (hit: any, display: string) => any;
   details?: (hit: any, display: string) => any;
+  links?: (hit: any) => any;
   cadastre?: (hit: any) => any;
   snippet?: (hit: any) => any;
   sourceTitle?: (hit: any) => any;
@@ -13,6 +20,7 @@ interface Renderer {
 interface DefaultRenderer {
   title: (hit: any, display: string) => any;
   details: (hit: any, display: string) => any;
+  links?: (hit: any) => any;
   cadastre?: (hit: any) => any;
   snippet: (hit: any) => any;
   sourceTitle: (hit: any) => any;
@@ -24,71 +32,7 @@ interface ResultRenderers {
 }
 
 
-function createMarkup(htmlString: string) {
-  const decodedHtmlString = htmlString.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-  return {__html: decodedHtmlString};
-}
 
-const formatHighlight = (highlight: string) => {
-  // Clean up incomplete tags and auto-close unclosed tags
-  let cleanHighlight = createMarkup(highlight).__html
-    .replace(/<[^>]*$/, '')
-    .replace(/^[^<]*>/, '')
-    .replace(/<(?!\/?(?:mark|em|span)\b|span\s+class="font-phonetic")[^>]*>/g, '');
-    
-  // Auto-close unclosed tags
-  const openTags: string[] = [];
-  cleanHighlight = cleanHighlight.replace(/<(\/?)(\w+)([^>]*)>/g, (match, slash, tag, attrs) => {
-    if (slash) {
-      openTags.pop();
-    } else if (['mark', 'em', 'span'].includes(tag)) {
-      openTags.push(tag);
-    }
-    return match;
-  });
-  
-  // Close any remaining open tags
-  while (openTags.length > 0) {
-    cleanHighlight += `</${openTags.pop()}>`;
-  }
-    
-  // Modified regex to properly capture font-phonetic spans
-  const parts = cleanHighlight.split(/(<mark>|<\/mark>|<em>|<\/em>|<span class="font-phonetic">|<span class='font-phonetic'>|<\/span>)/);
-  
-  let markOpen = false;
-  let emOpen = false;
-  let fontPhoneticOpen = false;
-  
-  return (
-    <span>
-      {parts.map((part, i) => {
-        if (part === '<mark>') { markOpen = true; return null; }
-        if (part === '</mark>') { markOpen = false; return null; }
-        if (part === '<em>') { emOpen = true; return null; }
-        if (part === '</em>') { emOpen = false; return null; }
-        if (part === "<span class='font-phonetic'>") { 
-          fontPhoneticOpen = true; 
-          return null; 
-        }
-        if (part === '</span>' && fontPhoneticOpen) { 
-          fontPhoneticOpen = false; 
-          return null; 
-        }
-        
-        if (!part) return null;
-        
-        if (markOpen && emOpen && fontPhoneticOpen) return <mark key={i}><em><span className="font-phonetic">{part}</span></em></mark>;
-        if (markOpen && emOpen) return <mark key={i}><em>{part}</em></mark>;
-        if (markOpen && fontPhoneticOpen) return <mark key={i}><span className="font-phonetic">{part}</span></mark>;
-        if (emOpen && fontPhoneticOpen) return <em key={i}><span className="font-phonetic">{part}</span></em>;
-        if (markOpen) return <mark key={i}>{part}</mark>;
-        if (emOpen) return <em key={i}>{part}</em>;
-        if (fontPhoneticOpen) return <span key={i} className="font-phonetic">{part}</span>;
-        return part;
-      })}
-    </span>
-  );
-};
 
 const defaultTitle = (hit: any) => {
   return <strong className="font-semibold">{multivalue(getFieldValue(hit, 'label'))}</strong>
@@ -97,6 +41,7 @@ const defaultTitle = (hit: any) => {
 const loktypeDetails = (loktype: string, hit: any) => {
   return <>{loktype}{loktype && ' – '} {getFieldValue(hit, 'adm2')}{getFieldValue(hit, 'adm1') && ', ' + getFieldValue(hit, 'adm1')}  </>
 }
+
 
 
 
@@ -188,6 +133,9 @@ export const resultRenderers: ResultRenderers = {
         return defaultTitle(hit)
       }
     },
+    links: (hit: any) => {
+      return <SourceLink url={"https://stadnamn.fylkesarkivet.no/placename/" + hit.uuid} label="fylkesarkivet.no"/>
+    },
     details: (hit: any, display: string) => {
       return cadastreAdm(getFieldValue(hit, 'rawData.KommuneNr'), getFieldValue(hit, 'rawData.GardsNr'), getFieldValue(hit, 'rawData.BruksNr'), "/", hit, display)
     }
@@ -199,6 +147,12 @@ export const resultRenderers: ResultRenderers = {
     },
     snippet: (hit: any) => {
       return hit.highlight?.['content.html']?.[0] && formatHighlight(hit.highlight['content.html']?.[0])
+    },
+    links: (hit: any) => {
+      return <>
+      {hit.links?.map((link: any) => <Fragment key={link}><SourceLink   key={link} url={link} />
+      </Fragment>)}
+      </>
     },
     details: (hit: any, display: string) => {
       return cadastreAdm(getFieldValue(hit, 'misc.KNR'), getFieldValue(hit, 'misc.Gnr'), getFieldValue(hit, 'misc.Bnr'), "/", hit, display)
@@ -220,6 +174,11 @@ export const resultRenderers: ResultRenderers = {
     title: defaultTitle,
     snippet: (hit: any) => {
       return hit.highlight?.['content.text']?.[0] && formatHighlight(hit.highlight['content.text']?.[0])
+    },
+    links: (hit: any) => {
+      const link = "https://www.norskstadnamnleksikon.no/grunnord.aspx?grunnordCode=" + hit.label
+      return <> <SourceLink   label="norskstadnamnleksikon.no" url={link} /></>
+
     },
     details: (hit: any, display: string) => {
       return 
@@ -296,6 +255,19 @@ export const resultRenderers: ResultRenderers = {
     title: (hit: any, display: string) => {
       return <><strong>{getFieldValue(hit, 'label')}</strong> </>
     },
+    links: (hit: any) => {
+      // TODO: handle link texts in dataset script
+
+      return hit.links?.map((link: any, index: number) => {
+        let label = "nb.no"
+        if (hit.links.length > 1) label += ` (${index + 1})`
+        const url = link + "&searchText=" + getFieldValue(hit, 'label')
+
+
+      return <Fragment key={link}><SourceLink label={label}   key={link} url={url} />
+      </Fragment>
+      })
+    },  
     details: (hit: any, display: string) => {
       return <> {getFieldValue(hit, 'rawData.GNID')}{getFieldValue(hit, 'rawData.GNID') && ", "}{formatAdm(hit)}</>
     }
@@ -314,6 +286,9 @@ export const resultRenderers: ResultRenderers = {
   },
   ssr: {
     title: defaultTitle,
+    links: (hit: any) => {
+      return <SourceLink url={"https://stadnamn.kartverket.no/fakta/" + hit.ssr} label="kartverket.no"/>
+    },
     details: (hit: any, display: string) => {
       return <>{formatAdm(hit)}</>
     }
@@ -341,6 +316,21 @@ export const resultRenderers: ResultRenderers = {
 
 export const defaultResultRenderer: DefaultRenderer = {
   title: defaultTitle,
+  links: (hit: any) => {
+
+    // SHould be deprecated
+    if (hit.link) return <SourceLink url={hit.link} />
+    
+    if (!hit.links?.length) return null    
+    if (typeof hit.links === 'string') return <SourceLink url={hit.links} />
+    return <>
+    {hit.links?.map((link: any) => {
+      return <Fragment key={link}><SourceLink  key={link} url={link} />
+      </Fragment>
+    })}
+    </>
+
+  },
   snippet: (hit: any) => {
     return formatHighlight(
       Object.entries(hit.highlight)

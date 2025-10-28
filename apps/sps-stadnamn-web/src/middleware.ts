@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { datasetTitles } from './config/metadata-config'
+import { fetchIIFDocByIndex } from '@/app/api/_utils/actions'
 
 const baseUrl = process.env.VERCEL_ENV === 'production' ? 'https://stadnamnportalen.uib.no' : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
 
@@ -49,6 +50,23 @@ export async function middleware(request: NextRequest) {
             return Response.redirect(baseUrl + "/search", 302)
         }
         return
+    }
+
+    // Handle IIIF redirects for partOf/order format
+    if (path[1] == 'iiif' && path.length === 4) {
+        const partOf = path[2]  // 4238a470-68ac-309c-a7e8-0c72d99da0f8
+        const order = path[3]   // 3
+        
+        // You'll need to determine the dataset - how do you know which dataset to search?
+        
+        try {
+            const targetDoc = await fetchIIFDocByIndex({partOf, order})
+            if (targetDoc?._id) {
+                return Response.redirect(baseUrl + `/iiif/${targetDoc.fields.uuid[0]}`, 302)
+            }
+        } catch (error) {
+            return new Response('Not found', { status: 404 });
+        }
     }
 
     if (path[1] == 'view') {

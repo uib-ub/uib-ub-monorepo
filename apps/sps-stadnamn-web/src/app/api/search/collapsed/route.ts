@@ -3,42 +3,37 @@
 import { extractFacets } from '../../_utils/facets'
 import { getQueryString } from '../../_utils/query-string';
 import { postQuery } from '../../_utils/post';
-import { getSortArray } from '@/config/server-config';
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
+  const {size, from, initLocation } = await request.json()
   const {termFilters, reservedParams} = extractFacets(request)
-  const perspective = reservedParams.perspective || 'all'  
   const { highlight, simple_query_string } = getQueryString(reservedParams)
 
-  let sortArray: (string | object)[] = []
-    
-  if (!sortArray.length) {
-    sortArray = getSortArray(perspective)
-  }
-    
   const query: Record<string,any> = {
-    "size":  reservedParams.size  || 10,
-    ...reservedParams.from ? {from: reservedParams.from} : {},
+    "size":  size  || 10,
+    ...from ? {from} : {},
     ...highlight ? {highlight} : {},
     "track_scores": true,
-    "track_total_hits": false,
-    "fields": ["group.adm1", "group.adm2", "uuid", "boost"],
+    "fields": ["group.adm1", "group.adm2", "uuid", "boost", "label", "location"],
     "collapse": {
       "field": "group.id",
-      "inner_hits": {
-        "name": "group",
-        "size": 3,
-        "_source": false,
-        "fields": [ "label", "altLabels", "attestations.label"],
-      }
     },
     
     "sort": reservedParams.datasetTag == 'base' ?
     [{'group.id': "asc"}, {'label.keyword': "asc"}]
     : [
-      {
+      
+      
+      ...initLocation ? [{
+        _geo_distance: {
+          location: initLocation,
+          order: "asc"
+        }
+      }] : [],
+      ...reservedParams.q ? [{
         _score: "desc"
-      },
+      }] : [],
+      
       {
         boost: {
           order: "desc",
@@ -74,31 +69,77 @@ export async function GET(request: Request) {
       "match_all": {}
     }
   }
+
+  query.query = baseQuery;
+
+  /*
+
   
-  // Apply function score to properly balance text relevance with boost field
-  if (simple_query_string) {
+
+  if (simple_query_string || initGroup?.id) {
     query.query = {
       "function_score": {
         "query": baseQuery,
-        "functions": [
-          {
+        "functions": [],
+        "boost_mode": "multiply",
+        "score_mode": "multiply"
+      }
+    }
+  }
+  else {
+    query.query = baseQuery;
+  }
+  
+  // Apply function score to properly balance text relevance with boost field
+  if (simple_query_string) {
+    query.query.function_score?.functions.push({
             "field_value_factor": {
               "field": "boost",
               "factor": 1,
               "missing": 1
             }
-          }
-        ],
-        "boost_mode": "multiply",
-        "score_mode": "avg"
-      }
-    }
-  } else {
-    query.query = baseQuery;
-  }
+          })
 
-  // Only cache if no search string an no filters
-  const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
+          query.query.function_score?.functions?.push({
+            filter: { term: { "label": reservedParams.q } },
+            weight: 10
+          })
+    }
+
+    
+
+    if (initGroup?.id) {
+      query.query.function_score?.functions?.push({
+              filter: { term: { "group.id": initGroup.id } },
+              weight: 100       // boost the initial group very high
+            })
+      }
+      
+
+  
+  
+      // Bump items without location within same adm, or bump items within same adm if the init group has no location
+      if (simple_query_string && initGroup?.adm1) {
+        query.query.function_score.functions.push({
+          filter: { 
+  
+            bool: { 
+              must: [
+                { term: { "group.adm1.keyword": initGroup.adm1[0] } },
+                ...(initGroup.adm2 ? [{ term: { "group.adm2.keyword": initGroup.adm2[0] } }] : []),
+                ...(initLocation ? [{ bool: { must_not: { exists: { field: "location" } } } }] : [])
+                
+              ]
+            }
+          },
+          weight: 2
+        })
+      }
+      */
+  
+    
+ 
+  const [data, status] = await postQuery('all', query, "dfs_query_then_fetch")
   return Response.json(data, {status: status})
   
 }

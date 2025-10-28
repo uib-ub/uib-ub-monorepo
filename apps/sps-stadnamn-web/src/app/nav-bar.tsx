@@ -1,38 +1,21 @@
 'use client'
 import Link from "next/link"
-import { useEffect, useState } from "react"
-import { verifyAccess } from "./presentasjon/actions"
-import { usePresentationPage } from "./presentasjon/hooks/usePresentationPage"
-import { PiPresentation } from "react-icons/pi"
+import Clickable from "@/components/ui/clickable/clickable"
+import { usePathname } from "next/navigation"
 
 export default function NavBar({ handleBlur, ...props }: any) {
-    const [hasPresentationAccess, setHasPresentationAccess] = useState(false)
-    const { currentPage, goToLastPresentationPage } = usePresentationPage()
-
-    useEffect(() => {
-        const checkAccess = async () => {
-            const hasAccess = await verifyAccess('historiedagar2025')
-            setHasPresentationAccess(hasAccess)
-        }
-        checkAccess()
-    }, [])
+    const pathname = usePathname()
 
     return (
         <nav id="top" {...props}>
-            {hasPresentationAccess && (
-                <button 
-                    onBlur={handleBlur} 
-                    onClick={goToLastPresentationPage}
-                    className="py-3 mx-3 lg:py-1 lg:px-2 lg:mx-0" 
-                    title="Til presentasjon"
-                >
-                    <PiPresentation className="w-6 h-6" aria-hidden="true"/>
-                </button>
-            )}
-            <Link onBlur={handleBlur} scroll={false} className="py-3 mx-3 lg:py-1 lg:px-2 lg:mx-0 xl:hidden" href="/">Til forsiden</Link>
-            <Link onBlur={handleBlur} scroll={false} className="py-3 mx-3 lg:py-1 lg:px-2 lg:mx-0" href="/help">Søketips</Link>
-            <Link onBlur={handleBlur} scroll={false} className="py-3 mx-3 lg:py-1 lg:px-2 lg:mx-0 override-external-icon" href="https://skjemaker.app.uib.no/view.php?id=16665712">Tilbakemelding</Link>
-            <Link onBlur={handleBlur} scroll={false} className="py-3 mx-3 lg:py-1 lg:px-2 lg:mx-0" href="/info">Info</Link>
+            {pathname == "/search" && <Link onBlur={handleBlur} scroll={false} className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0" href="/">Til forsiden</Link>}
+            <Clickable onBlur={handleBlur} scroll={false} remove={['mode']} link href="/search" className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:pl-8 lg:mx-0">Kart</Clickable>
+            <Clickable onBlur={handleBlur} scroll={false} add={{mode: 'table'}} link href="/search" className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0">Tabell</Clickable>
+            <Clickable onBlur={handleBlur} scroll={false} add={{mode: 'list'}} link href="/search" className="py-3 lg:py-0 mb-4 justify-end lg:my-1 lg:px-4 lg:mx-0  xl:border-r-2 xl:border-primary-300">Liste</Clickable>
+            <Link onBlur={handleBlur} scroll={false} className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0" href="/iiif">Arkiv</Link>
+            <Link onBlur={handleBlur} scroll={false} className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0" href="/help">Søketips</Link>
+            <Link onBlur={handleBlur} scroll={false} className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0 override-external-icon" href="https://skjemaker.app.uib.no/view.php?id=16665712">Tilbakemelding</Link>
+            <Link onBlur={handleBlur} scroll={false} className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:pr-8 lg:mx-0" href="/info">Info</Link>
         </nav>
     )
 }

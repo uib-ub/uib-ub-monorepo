@@ -4,9 +4,13 @@ import { useSearchParams, useRouter} from "next/navigation"
 import { ParamProps } from "./param-types"
 
 
-export default function Clickable({ children, remove, add, only, link, href, replace, ...rest }: ParamProps) {
+export default function Clickable({ children, remove, add, only, link, href, replace, notClickable, ...rest }: ParamProps) {
     const searchParams = useSearchParams()
     const router = useRouter()
+    if (notClickable) {
+        return <div {...rest}>{children}</div>
+    }
+
     const newParams = new URLSearchParams(only ? undefined : searchParams)
     if (only) {
         Object.entries(only).forEach(([key, value]) => {

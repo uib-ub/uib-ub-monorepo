@@ -6,9 +6,12 @@ import { resolveLanguage } from "../iiif-utils";
 import Spinner from "@/components/svg/Spinner";
 import FileCard from "./file-card";
 import IIIFTypeCounts from "./iiif-type-counts";
-import { GlobalContext } from "@/app/global-provider";
-import IIIIFMobileInfoWrapper from "./iiiif-mobile-info-wrapper";
+import { GlobalContext } from "@/state/providers/global-provider";
 import { useQuery } from "@tanstack/react-query";
+import IconButton from "@/components/ui/icon-button";
+import { PiInfo } from "react-icons/pi";
+import { useSessionStore } from "@/state/zustand/session-store";
+import IIIFNeighbourNav from "./iiif-neighbour-nav";
 
 const iiifQuery = async (collectionUuid: string, searchQuery: string, size: number) => {
     const params = new URLSearchParams();
@@ -26,16 +29,18 @@ const iiifQuery = async (collectionUuid: string, searchQuery: string, size: numb
     return response.json();
 };
 
-export default function CollectionExplorer({manifest, neighbours, manifestDataset}: {manifest: any, neighbours: any, manifestDataset: string}) {
+export default function CollectionExplorer({manifest, isCollection}: {manifest: any, isCollection: boolean}) {
     const { inputValue } = useContext(GlobalContext);
     const [searchQuery, setSearchQuery] = useState('');
     const [size, setSize] = useState(50);
     const containerRef = useRef<HTMLDivElement>(null);
     const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
+    const { isMobile } = useContext(GlobalContext);
 
     const { data, isLoading, isFetching, error } = useQuery({
         queryKey: ['iiifSearch', manifest?.uuid, searchQuery, size],
         queryFn: () => iiifQuery(manifest?.uuid, searchQuery, size),
+        enabled: isCollection,
     });
 
     // Extract data from the query result
@@ -80,36 +85,46 @@ export default function CollectionExplorer({manifest, neighbours, manifestDatase
         }
     };
 
+    if (!isCollection && !isMobile) {
+        return <div className="absolute top-16 right-2 z-[6000]">
+             <IIIFNeighbourNav manifest={manifest} isMobile={isMobile}/>
+        </div>
+    }
+
+
+
+
     return (
-        <div ref={containerRef} className="flex flex-col lg:gap-4 py-4 lg:p-4 lg:overflow-y-auto lg:h-[calc(100svh-3rem)] stable-scrollbar">
-            <div className="flex flex-col lg:flex-row gap-2 px-4 pb-4 lg:px-0 lg:pb-0 border-b border-neutral-200 lg:border-b-0">
+        <div ref={containerRef} className="flex-1 min-w-0 flex flex-col lg:gap-4 lg:p-4 pb-48 overflow-y-auto lg:overflow-y-auto stable-scrollbar bg-neutral-200">
+            <div className="w-full z-[6000] flex flex-col xl:flex-row gap-2  sticky top-0 xl:top-auto">
             {/* Add fixed height and min-height to prevent squishing */}
-            {manifest && 
-                <div className="w-full flex items-center">
+            {manifest && !isMobile &&
+                <div className=" flex items-center px-2 justify-between w-full">
                     <Breadcrumbs
                         homeUrl="/iiif"
-                        homeLabel="Arkivressurser"
+                        homeLabel="Arkiv"
                         parentUrl={manifest.collections?.slice().reverse().map((item: any) => item.uuid)} 
                         parentName={manifest.collections?.slice().reverse().map((item: any) => resolveLanguage(item.label))} 
                         currentName={resolveLanguage(manifest.label)} 
                     />
+                    <IIIFNeighbourNav manifest={manifest} isMobile={isMobile}/>
                 </div>
             }
 
-            <div className="flex flex-col lg:flex-row items-center gap-4 lg:ml-auto">
-            {typeCounts && <div className="hidden lg:block"><IIIFTypeCounts typeCounts={typeCounts}/></div>}
+            <div className={`flex flex-col lg:flex-row items-center gap-4 lg:ml-auto xl:mr-2`}>
+            
 
-                <div className='flex w-full lg:w-80 items-center bg-white border-2 border-neutral-200 group px-2 rounded-md'>
-                    <PiMagnifyingGlass className="text-2xl shrink-0 ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
-                    <label htmlFor="search-input" className="sr-only">Søk</label>
+            <div className='flex w-full xl:w-80 items-center bg-white group px-3 xl:px-1 shadow-md border-y border-neutral-300 xl:border-none h-14 xl:h-auto xl:rounded-md'>
+                    <PiMagnifyingGlass className="text-3xl xl:text-2xl xl:shrink-0 xl:ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
                     <input
-                        id="search-input"
+                        id={"search-input-" + manifest?.uuid}
                         type="text"
+                        aria-label="Søk i arkivsamling"
                         name="query"
                         value={inputValue.current}
                         onChange={handleSearch}
                         onKeyDown={handleKeyDown}
-                        className="bg-transparent px-4 focus:outline-none w-full p-2"
+                        className="bg-transparent px-3 xl:px-2 focus:outline-none w-full p-2"
                     />
                     <div className="w-8 flex justify-center">
                         {inputValue.current && (
@@ -127,11 +142,10 @@ export default function CollectionExplorer({manifest, neighbours, manifestDatase
                     </div>
                 </div>
             </div>
-            {typeCounts && <div className="block lg:hidden"><IIIFTypeCounts typeCounts={typeCounts}/></div>}
+                    
             
 
             </div>
-            <IIIIFMobileInfoWrapper manifest={manifest} neighbours={neighbours} manifestDataset={manifestDataset} showOnMobile={true} />
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 lg:p-0">
                 { results.map((result: any, index: number) => {
@@ -141,9 +155,11 @@ export default function CollectionExplorer({manifest, neighbours, manifestDatase
                             <FileCard item={result._source} itemDataset={itemDataset}/>
                         </Fragment>
                     )})}
-                
-                
-               
+                {(!isLoading && results.length === 0) && (
+                    <div className="col-span-full text-center text-neutral-800 py-8">
+                        {searchQuery ? 'Ingen treff' : 'Samlinga manglar innhald'}
+                    </div>
+                )}
             </div>
             {(isLoading || isFetching) && (
                 <div className="flex w-full justify-center items-center">
@@ -153,3 +169,4 @@ export default function CollectionExplorer({manifest, neighbours, manifestDatase
         </div>
     )
 }
+

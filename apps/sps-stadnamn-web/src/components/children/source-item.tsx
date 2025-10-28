@@ -17,7 +17,7 @@ export default function SourceItem({hit, isMobile, selectedDoc, goToDoc}: {hit: 
                 
             >
                 <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current='page']:border-accent-800 border-2 border-transparent">
-                    {selectedDoc == hit._source.uuid ? <PiBookOpenFill className="text-primary-600 text-xl group-aria-[current='page']:text-accent-800" /> : <PiBookOpenLight className="text-primary-600 text-xl group-aria-[current='page']:text-accent-800" />}
+                    {selectedDoc == hit._source.uuid ? <PiBookOpenFill className="text-primary-700 text-xl group-aria-[current='page']:text-accent-800" /> : <PiBookOpenLight className="text-primary-700 text-xl group-aria-[current='page']:text-accent-800" />}
                 </div>
                 {sourceTitle(hit)}
             </button>

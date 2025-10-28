@@ -1,6 +1,10 @@
 // Helper function to calculate bounds from zoom level and center point
 export const EARTH_CIRCUMFERENCE = 40075016.686;
 
+export const MAP_DRAWER_BOTTOM_HEIGHT_REM = 8
+export const MAP_DRAWER_MAX_HEIGHT_SVH = 60
+export const MAP_DRAWER_TOP_SUBTRACT_REM = 4
+
 // Web-Mercator helpers (Leaflet's default CRS: EPSG:3857)
 const R = 6378137; // Earth radius used by Spherical Mercator (meters)
 const D2R = Math.PI / 180;
@@ -23,6 +27,8 @@ function unproject([x, y]: [number, number]): [number, number] {
   const lat = (2 * Math.atan(Math.exp(y / R)) - Math.PI / 2) * R2D;
   return [lat, lng];
 }
+
+
 
 /**
  * Calculate geographic bounds for a given container size, center and zoom,
@@ -215,6 +221,49 @@ export function addPadding(bounds: [[number, number], [number, number]], isMobil
 }
 
 
+export const getLabelBounds = (currentMap: any, label: string, lat: number, lon: number, remPx: number) => {
+  if (!currentMap) return undefined;
+
+  // Some wrappers/events expose the Leaflet map as `target`
+  const map = (typeof currentMap?.latLngToContainerPoint === 'function' && typeof currentMap?.containerPointToLatLng === 'function')
+    ? currentMap
+    : (typeof currentMap?.target?.latLngToContainerPoint === 'function' && typeof currentMap?.target?.containerPointToLatLng === 'function')
+      ? currentMap.target
+      : undefined;
+
+  if (!map) return undefined;
+
+  // Visual heuristics (kept in sync with markers.ts)
+  const textPx = remPx * 0.875;            // text-sm
+  const textRem = 0.875;                   // text-sm in rem
+  const avgCharWidthEm = 0.5;              // base glyph width in em
+  const letterSpacingEm = 0.025;           // tracking-wide
+  const xPadding = 0.25
+  const perCharEm = avgCharWidthEm + letterSpacingEm
+  const maxWidthRem = 8;                   // max-w-32
+  const paddingXRemTotal = 0.75;           // px-1.5 total (both sides)
+  const heightRem = 2;                   // text-sm line-height (1.25rem) + py-0.5 (0.25rem)
+  const anchorOffsetRem = 1.875;             // -top-6
+
+  // Estimate bubble width/height using rems (clamp text at max-w before padding)
+  const textWidthRem = Math.min(label.length * (perCharEm * textRem), maxWidthRem) + (xPadding * 2);
+  const widthRem = textWidthRem + paddingXRemTotal;
+  const widthPx = Math.ceil(widthRem * remPx);
+  const heightPx = Math.ceil(heightRem * remPx);
+  const anchorOffsetPx = Math.ceil(anchorOffsetRem * remPx);
+
+  // Screen-space rect relative to marker anchor
+  const center = map.latLngToContainerPoint([lat, lon]);
+  const x1 = center.x - (widthPx / 2);
+  const x2 = center.x + (widthPx / 2);
+  const y1 = center.y - anchorOffsetPx;   // bubble top positioned -top-6 above anchor
+  const y2 = y1 + heightPx;               // bubble bottom
+
+  // Convert to geographic bounds [[north, west], [south, east]]
+  const nw = map.containerPointToLatLng([x1, y1]);
+  const se = map.containerPointToLatLng([x2, y2]);
+  return [[nw.lat, nw.lng], [se.lat, se.lng]] as [[number, number], [number, number]];
+}
 
 export const yDistance = (currentMap: any, lat1: number, lat2: number) => {
     // Calculate vertical pixel distance between two latitude points using map projection
@@ -272,3 +321,79 @@ export const getValidDegree = (degrees: number, maxValue: number): string => {
     }
     return degrees.toString()
     }
+
+
+    export const getMyLocation = (setMyLocation: (location: [number, number]) => void) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const location: [number, number] = [latitude, longitude];
+            setMyLocation(location);
+            return location;
+          },
+          (error) => {
+            console.error("Error getting the location: ", error);
+            alert("Kunne ikkje finne din posisjon")
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+        alert("Nettlesaren din støttar ikkje posisjonsbestemming")
+      }
+    }
+
+// Utility to pan a point into view with container-based padding for both mobile and desktop
+export function panPointIntoView(
+  map: any,
+  point: [number, number],
+  isMobile: boolean,
+  maxDrawer?: boolean,
+  reset?: boolean
+) {
+  if (!map || !point) return false;
+
+  const [lat, lng] = point;
+  const size = map.getSize();
+  const zoom = map.getZoom();
+
+  // Hard-coded paddings based on platform and drawer state
+  let padLeft = 0, padRight = 0, padTop = 0, padBottom = 0;
+  if (isMobile) {
+    // Small top and x padding always on mobile
+    padTop = Math.round(size.y * 0.08); // ~8%
+    const xPadFrac = 0.05;              // 5% left/right
+    padLeft = Math.round(size.x * xPadFrac);
+    padRight = Math.round(size.x * xPadFrac);
+    // Bottom reserved only when drawer is at max height
+    padBottom = maxDrawer ? Math.round(size.y * (MAP_DRAWER_MAX_HEIGHT_SVH / 100)) : 0;
+  } else {
+    // Desktop: 25% left/right, small symmetric y padding
+    padLeft = Math.round(size.x * 0.25);
+    padRight = Math.round(size.x * 0.25);
+    const yPad = Math.round(Math.min(120, size.y * 0.1));
+    padTop = yPad;
+    padBottom = yPad;
+  }
+
+  // Check visibility within padded rectangle
+  const pt = map.latLngToContainerPoint([lat, lng]);
+  const insideHoriz = pt.x >= padLeft && pt.x <= (size.x - padRight);
+  const insideVert = pt.y >= padTop && pt.y <= (size.y - padBottom);
+
+  if (reset || !(insideHoriz && insideVert)) {
+    const eps = 1e-6;
+    map.fitBounds(
+      [[lat + eps, lng - eps], [lat - eps, lng + eps]],
+      {
+        paddingTopLeft: [padLeft, padTop],
+        paddingBottomRight: [padRight, padBottom],
+        maxZoom: zoom,
+        duration: 0.05
+      }
+    );
+    return true
+  }
+  return false
+}
+

@@ -33,7 +33,7 @@ export default function CollapsibleHeading(props: {
   return <div className="">
     <HeadingTag className="!mt-0 !py-0"><button className="text-left w-full text-black flex items-center border-y border-neutral-200 py-2 xl:border-none xl:py-0 gap-1" aria-expanded={open} aria-controls={props.title + '-collapsible'} onClick={() => setOpen(!open)}>
         
-        {props.title} {open ? <PiCaretUpBold className="inline self-center text-primary-600" /> : <PiCaretDownBold className="inline self-center text-primary-600" />}</button></HeadingTag>
+        {props.title} {open ? <PiCaretUpBold className="inline self-center text-primary-700" /> : <PiCaretDownBold className="inline self-center text-primary-700" />}</button></HeadingTag>
         
     <div id={props.title + '-collapsible'} className={`${open ? 'block py-2' : 'hidden'}`}>
         {props.children}

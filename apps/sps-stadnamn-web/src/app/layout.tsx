@@ -8,9 +8,12 @@ import PlausibleProvider from 'next-plausible'
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
 import SearchForm from "@/components/search/form/search-form";
-import GlobalProvider from "./global-provider";
+import GlobalProvider from "../state/providers/global-provider";
 import { fetchVocab } from "./api/_utils/actions";
 import QueryProvider from "@/state/providers/query-provider";
+import Link from "next/link";
+import SearchTitle from "@/components/layout/search-title";
+import ModeSelector from "@/components/tabs/mode-selector";
  
 const serif = Source_Serif_4({
   subsets: ['latin'],
@@ -29,8 +32,8 @@ const sans = Source_Sans_3  ({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s - Stadnamnportalen",
-    default: "Stadnamnportalen"
+    template: "%s - stadnamn.no",
+    default: "stadnamn.no"
   },
   description: "Søketjeneste for norske stedstnavn",
 };
@@ -55,22 +58,14 @@ export default async function RootLayout({
       <head>
         <PlausibleProvider domain="stadnamnportalen.uib.no" />
       </head>
-      <body className="bg-neutral-900 flex flex-col min-h-screen">
+      <body className="bg-neutral-900 flex flex-col min-h-[100svh] overflow-x-hidden">
         {/* Remove the Image component since we're using CSS background-image */}
 
         <GlobalProvider isMobile={isMobile} sosiVocab={sosiVocab || {}} coordinateVocab={coordinateVocab || {}}>
           <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[5001] focus:top-1 focus:py-3 focus:px-6 bg-primary-700 text-white no-underline self-center">
         Gå til hovudinnhald
       </a>
-        <header className="sticky top-0 left-0 right-0 flex lg:justify-between bg-neutral-50  shadow-md h-14 xl:h-12 flex-none items-center !z-[4000]">
-
-          <SearchForm/>
-          <Suspense>
-            <Menu/>
-          </Suspense>
-          <NavBar className={`hidden xl:flex lg:min-w-[calc(25svw+0.5rem)] text-lg font-semibold text-neutral-950 px-4 items-center shrink-0 gap-3 justify-end`}/>
-        </header>
-         <QueryProvider>
+      <QueryProvider>        
         {children}
         </QueryProvider>
         </GlobalProvider>

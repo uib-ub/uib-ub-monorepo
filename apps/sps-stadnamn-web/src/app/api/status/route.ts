@@ -53,7 +53,6 @@ export async function GET(request: Request) {
         const aliasResult = await aliasResponse.json();
         const statsResult = await statsResponse.json();
 
-        console.log("ALIAS RESULT", aliasResult)
         
         // Get individual counts for each index
         const indices = await Promise.all(

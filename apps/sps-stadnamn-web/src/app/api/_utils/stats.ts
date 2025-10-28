@@ -1,17 +1,16 @@
 import { datasetTitles } from '@/config/metadata-config';
 import { postQuery } from '../_utils/post';
 
-export async function fetchIIIFStats(manifestUuid?: string) {
+export async function fetchIIIFStats() {
   'use server'
   const [stats, status] = await postQuery('iiif_*', {
-    size: 0,
-    query: manifestUuid 
-      ? {
-          term: { "collections.uuid": manifestUuid }
-        }
-      : {
-          match_all: {}
-        },
+    size: 0,    query: {
+      bool: {
+        must_not: [
+          { exists: { field: "partOf" } }
+        ]
+      }
+    },
     aggs: {
       total_manifests: {
         sum: {

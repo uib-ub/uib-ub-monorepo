@@ -43,12 +43,12 @@ export default function IIIFMetadataPanel({ manifest, manifestDataset }: { manif
 
 
 
-    return <div className='flex flex-col pb-12 gap-4'>
+    return <div className='flex flex-col gap-4'>
         
         {manifest ?
                 <>
                 
-                {license && <Link href={license.url} className="flex items-center gap-1 text-neutral-900 font-semibold mb-2 no-underline">
+                {license && <Link href={license.url} className="flex items-center gap-1 text-neutral-900 font-semibold no-underline">
                     <PiCopyright aria-hidden="true" />
                     <span className="text-sm">Lisens: {license.name}</span>
                 </Link>}
@@ -57,7 +57,7 @@ export default function IIIFMetadataPanel({ manifest, manifestDataset }: { manif
         
                 
                         
-                        <ul className="text-base !px-0">
+                   { (manifest?.metadata?.length ||  manifest.alternativeManifests) &&   <ul className="text-base !px-0">
                     {manifest?.metadata?.map((item: Record<string, any>, index: number) => (
                         <li key={index} className='flex flex-col'>
                             <span className='font-semibold text-neutral-800'>
@@ -80,7 +80,7 @@ export default function IIIFMetadataPanel({ manifest, manifestDataset }: { manif
                         </li>
                     }
                 
-                </ul>
+                </ul>}
                 <Link href={`/iiif/${manifest.type.toLowerCase()}/${manifest.uuid}`} className="text-sm flex items-center gap-1 no-underline">
                 <Image src="https://iiif.io/favicon.ico" alt="IIIF" width={16} height={16} />
                     <span>

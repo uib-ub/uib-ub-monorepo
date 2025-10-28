@@ -15,6 +15,7 @@
   body {
     @apply text-black antialiased;
   }
+  
 
   html:has(.scroll-container), body:has(.scroll-container), .scroll-container  {
     @apply h-full overflow-hidden;
@@ -87,7 +88,11 @@
   }
 
   input[type='checkbox'], input[type='radio'] {
-    accent-color: theme('colors.accent.900');
+    accent-color: theme('colors.accent.800');
+  }
+
+  input[type='checkbox'] {
+    @apply !rounded-lg;
   }
 
   input[type='checkbox']:checked:hover, input[type='radio']:checked:hover {
@@ -108,6 +113,8 @@
     background-color: currentColor;
   }
 
+  
+
 
 
 
@@ -118,6 +125,7 @@
     @apply bg-[url('/Carta_Marina_compressed.webp')] bg-cover bg-no-repeat bg-[center_40%];
   }
 
+
   @screen md {
     .carta-marina::before {
       @apply bg-[center_25%];
@@ -125,9 +133,6 @@
   }
   
 
-  .mobile-interface {
-    z-index: 3999;
-  }
 
 
   
@@ -140,6 +145,11 @@
 }
 
 @layer components {
+  .drawer {
+    filter: drop-shadow(0 -0.5rem 1rem rgba(0, 0, 0, 0.18));
+  }
+
+
   .tabs {
     @apply flex gap-1;
   }
@@ -166,7 +176,7 @@
     @apply bg-neutral-50 border border-neutral-200 rounded-md shadow-inner;
   }
   .breadcrumb-link {
-    @apply no-underline text-lg text-accent-800 hover:underline !decoration-accent-800;
+    @apply no-underline text-accent-800 hover:underline !decoration-accent-800;
   }
   .card {
     @apply bg-white shadow-lg shadow-neutral-100 xl:border-2 xl:border-neutral-200 xl:rounded-sm;
@@ -217,7 +227,7 @@
   }
 
   .btn-primary {
-    @apply bg-primary-700 text-white border border-primary-600 hover:bg-primary-800 hover:border-primary-900
+    @apply bg-primary-700 text-white border border-primary-700 hover:bg-primary-800 hover:border-primary-900
            transition-all duration-200 focus:ring-primary-500;
   }
 
@@ -446,6 +456,7 @@
   strong {
     @apply font-semibold;
   }
+
 
 }
 
