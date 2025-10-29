@@ -10,6 +10,7 @@ export const blocks: Registry['items'] = [
       {
         path: 'uib-ub/items/iiif-image/components/iiif-image.tsx',
         type: 'registry:component',
+        target: 'components/ui/chc/iiif-image.tsx',
       },
     ],
     dependencies: [

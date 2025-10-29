@@ -10,7 +10,11 @@ export const blocks: Registry['items'] = [
       {
         path: 'uib-ub/items/iiif-manifest/components/iiif-manifest.tsx',
         type: 'registry:component',
+        target: 'components/ui/chc/iiif-manifest.tsx',
       },
+    ],
+    registryDependencies: [
+      'skeleton',
     ],
     dependencies: [
       '@samvera/clover-iiif',
