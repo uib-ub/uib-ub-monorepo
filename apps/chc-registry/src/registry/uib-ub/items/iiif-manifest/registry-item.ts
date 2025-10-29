@@ -13,6 +13,9 @@ export const blocks: Registry['items'] = [
         target: 'components/ui/chc/iiif-manifest.tsx',
       },
     ],
+    registryDependencies: [
+      'skeleton',
+    ],
     dependencies: [
       '@samvera/clover-iiif',
       'next',
