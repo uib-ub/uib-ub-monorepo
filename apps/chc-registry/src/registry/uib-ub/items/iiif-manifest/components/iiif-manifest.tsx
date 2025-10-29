@@ -59,7 +59,7 @@ const options = {
   ),
 };
 
-export const IIIFManifest = ({ iiifContent }: { iiifContent: string | Record<string, unknown> }) => {
+export const IIIFManifest = ({ iiifContent }: { iiifContent: string }) => {
   return (
     <div className='relative h-[70vh] w-full z-0'>
       <Viewer
