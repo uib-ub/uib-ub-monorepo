@@ -10,7 +10,7 @@ export const blocks: Registry['items'] = [
       {
         path: 'uib-ub/items/content-grid/components/content-grid.tsx',
         type: 'registry:component',
-        target: 'components/ui/chc/content-grid/content-grid.tsx',
+        target: 'components/ui/chc/content-grid.tsx',
       },
       {
         path: 'uib-ub/items/content-grid/components/styles/content-grid.css',
