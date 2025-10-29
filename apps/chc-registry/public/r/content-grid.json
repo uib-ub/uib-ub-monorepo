@@ -13,7 +13,7 @@
       "path": "src/registry/uib-ub/items/content-grid/components/content-grid.tsx",
       "content": "import { cn } from '@/lib/utils';\n\nexport function ContentGrid({ className, children }: { className?: string, children: React.ReactNode }) {\n  return <div className={cn('content-grid', className)} >{children}</div>;\n}",
       "type": "registry:component",
-      "target": "components/ui/chc/content-grid/content-grid.tsx"
+      "target": "components/ui/chc/content-grid.tsx"
     },
     {
       "path": "src/registry/uib-ub/items/content-grid/components/styles/content-grid.css",

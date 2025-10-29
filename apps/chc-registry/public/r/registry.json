@@ -32,7 +32,7 @@
         {
           "path": "src/registry/uib-ub/items/content-grid/components/content-grid.tsx",
           "type": "registry:component",
-          "target": "components/ui/chc/content-grid/content-grid.tsx"
+          "target": "components/ui/chc/content-grid.tsx"
         },
         {
           "path": "src/registry/uib-ub/items/content-grid/components/styles/content-grid.css",
@@ -55,7 +55,8 @@
       "files": [
         {
           "path": "src/registry/uib-ub/items/iiif-image/components/iiif-image.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/chc/iiif-image.tsx"
         }
       ]
     },
@@ -68,10 +69,14 @@
         "@samvera/clover-iiif",
         "next"
       ],
+      "registryDependencies": [
+        "skeleton"
+      ],
       "files": [
         {
           "path": "src/registry/uib-ub/items/iiif-manifest/components/iiif-manifest.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "components/ui/chc/iiif-manifest.tsx"
         }
       ]
     }

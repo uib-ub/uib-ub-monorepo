@@ -12,7 +12,8 @@
     {
       "path": "src/registry/uib-ub/items/iiif-image/components/iiif-image.tsx",
       "content": "'use client';\n\nimport dynamic from 'next/dynamic';\nimport { cn } from '@/lib/utils';\n\nconst Image = dynamic(\n  () => import('@samvera/clover-iiif/image').then((Clover) => Clover.default),\n  {\n    ssr: false,\n    loading: () => <div className=\"w-full aspect-video bg-gray-100 animate-pulse\" />,\n  },\n);\n\nconst customTheme = {\n  showNavigator: false,\n  showHomeControl: true,\n  showControlPanel: true,\n  showZoomControl: true,\n  showFullPageControl: true,\n  showNavigationControl: true,\n  showRotationControl: false,\n};\n\nexport const IIIFImage = ({ src, className }: { src: string, className?: string }) => {\n  return (\n    <div className={cn('iiif-image-wrapper block w-full', className)}>\n      <Image\n        src={src}\n        openSeadragonConfig={customTheme}\n      />\n    </div>\n  );\n};\n",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "components/ui/chc/iiif-image.tsx"
     }
   ]
 }
