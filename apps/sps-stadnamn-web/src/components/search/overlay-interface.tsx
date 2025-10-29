@@ -164,11 +164,11 @@ export default function OverlayInterface() {
                 >
                     {(!isMobile || ( !results && !mapSettings) || mode == 'table') && <LeftWindow>  
 
-                        {tableOptions && <TableOptions />}
+                        {(tableOptions && <TableOptions />)
 
 
 
-                        {facet ? <div className="w-full flex items-center px-2 xl:px-0 h-12 gap-2 xl:pl-2 flex">
+                        || (facet && <div className="w-full flex items-center px-2 xl:px-0 h-12 gap-2 xl:pl-2 flex">
                             <h1 className="text-lg xl:text-xl text-neutral-900 px-1">{fieldConfig[perspective][facet]?.label}</h1>
                             <div className="flex items-center gap-1 ml-auto">
                                     <Clickable className="flex items-center gap-1 px-2" label="Tilbake" remove={["facet"]}>
@@ -176,9 +176,9 @@ export default function OverlayInterface() {
                                     </Clickable>
                                 </div>
                             
-                        </div>
+                        </div>)
                         
-                        :<div  className="w-full flex items-center lg:h-12 px-2 xl:px-0 gap-2 xl:pl-2">
+                        || <div  className="w-full flex items-center lg:h-12 px-2 xl:px-0 gap-2 xl:pl-2">
                         <Clickable className="flex items-center gap-2" add={{options: (options && !isMobile) ? null : 'on'}} remove={["options"]}>
                         {
                             !isMobile && <>
