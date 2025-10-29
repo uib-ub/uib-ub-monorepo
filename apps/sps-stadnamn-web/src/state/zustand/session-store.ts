@@ -28,11 +28,11 @@ export const useSessionStore = create<{ menuOpen: boolean,
 	displayPoint: [number, number] | null,
 	setDisplayPoint: (point: [number, number] | null) => void,
 
-	prefTab: 'text' | 'sources' | 'locations',
-	setPrefTab: (tab: 'text' | 'sources' | 'locations') => void,
+	prefTab: 'sources' | 'names' | 'locations',
+	setPrefTab: (tab: 'sources' | 'names' | 'locations') => void,
 
-	openTabs: Record<string, 'text' | 'sources' | 'locations'>,
-	setOpenTabs: (id: string, tab: 'text' | 'sources' | 'locations') => void,
+	openTabs: Record<string, 'sources' | 'names' | 'locations'>,
+	setOpenTabs: (id: string, tab: 'sources' | 'names' | 'locations') => void,
 	
 	}>()((set) => ({
 		menuOpen: false,
@@ -60,10 +60,10 @@ export const useSessionStore = create<{ menuOpen: boolean,
 		displayPoint: null,
 		setDisplayPoint: (point: [number, number] | null) => set({ displayPoint: point }),
 
-		prefTab: 'text',
-		setPrefTab: (tab: 'text' | 'sources' | 'locations') => set({ prefTab: tab }),
+		prefTab: 'sources',
+		setPrefTab: (tab: 'sources' | 'names' | 'locations') => set({ prefTab: tab }),
 		openTabs: {},
-		setOpenTabs: (id: string, tab: 'text' | 'sources' | 'locations') => set((s) => ({ openTabs: { ...s.openTabs, [id]: tab } })),
+		setOpenTabs: (id: string, tab: 'sources' | 'names' | 'locations') => set((s) => ({ openTabs: { ...s.openTabs, [id]: tab } })),
 
 
 		autocompleteOpen: false,

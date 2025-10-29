@@ -70,7 +70,7 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
             {visibleItems.map((textItem) => {
                 const links = resultRenderers[textItem.dataset]?.links?.(textItem);
                 return (
-                    <div className="py-2" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
+                    <div className="py-2 px-3" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
                         {textItem.dataset === 'rygh' && (
                             <WarningMessage 
                                 message="Feil i digitaliseringa av Norske Gaardnavne gjer at nokon teikn ikkje stemmer med originalen, særleg i lydskrift. Sjå trykt utgåve på nb.no"
@@ -89,7 +89,7 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
             {textItems.length > 1 && (
                 <button
                     type="button"
-                    className="my-3 mr-2 flex items-center gap-1"
+                    className="mx-3 flex items-center gap-1"
                     aria-expanded={showAll}
                     aria-controls={`text-items-${textItems.length}`}
                     onClick={() => setShowAll(v => !v)}
@@ -103,6 +103,73 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
 
 
 const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
+    const [showMoreDatasets, setShowMoreDatasets] = useState<Record<string, boolean>>({})
+    const datasetKeys = useMemo(() => Object.keys(datasets), [datasets])
+
+    const toggleShowMore = (ds: string, next?: boolean) => setShowMoreDatasets((prev) => ({ ...prev, [ds]: typeof next === 'boolean' ? next : !prev[ds] }))
+
+    return (
+        <ul className="flex flex-col divide-y divide-neutral-200 w-full gap-4">
+            {datasetKeys.map((ds) => {
+                const items = datasets[ds] || []
+                if (items.length === 0) return null
+                const isExpanded = !!showMoreDatasets[ds]
+                const shouldCollapse = items.length > 2
+                const collapseCount = 1
+                const visibleItems = (isExpanded || !shouldCollapse) ? items : items.slice(0, collapseCount)
+                return (
+                    <li key={`sources-ds-${ds}`} className="flex flex-col w-full py-1">
+                        <div className="text-left flex items-center gap-3 py-2">
+                            <span className="text-neutral-900 uppercase tracking-wider">{datasetTitles[ds] || ds}</span>
+                        </div>
+                        <ul className="flex flex-col w-full -mx-2">
+                            {visibleItems.map((s: any) => {
+                                const additionalLabels = Array.from(
+                                    new Set([
+                                        ...(s.altLabels ?? []),
+                                        ...(s.attestations?.map((a: any) => a.label) ?? [])
+                                    ].filter((l: any) => l && l !== s.label))
+                                ).join(", ")
+
+                                return (
+                                    <li key={s.uuid} className="px-2 py-1">
+                                        <Link className="no-underline hover:underline" href={"/uuid/" + s.uuid}><strong>{s.label}</strong></Link>
+                                        {additionalLabels && <span className="text-neutral-900"> – {additionalLabels}</span>}
+                                        {resultRenderers[ds]?.links?.(s) || defaultResultRenderer?.links?.(s)}
+                                    </li>
+                                )
+                            })}
+                            {shouldCollapse && !isExpanded && (
+                                <li className="px-2 py-1">
+                                    <button
+                                        type="button"
+                                        className="text-sm text-neutral-800 flex items-center gap-1"
+                                        onClick={() => toggleShowMore(ds, true)}
+                                    >
+                                        <PiPlusBold aria-hidden="true" /> {`Vis fleire (${items.length - visibleItems.length})`}
+                                    </button>
+                                </li>
+                            )}
+                            {shouldCollapse && isExpanded && (
+                                <li className="px-2 py-1">
+                                    <button
+                                        type="button"
+                                        className="text-sm text-neutral-800 flex items-center gap-1"
+                                        onClick={() => toggleShowMore(ds, false)}
+                                    >
+                                        <PiMinusBold aria-hidden="true" /> Vis færre
+                                    </button>
+                                </li>
+                            )}
+                        </ul>
+                    </li>
+                )
+            })}
+        </ul>
+    )
+}
+
+const NamesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
     const [showMoreDatasets, setShowMoreDatasets] = useState<Record<string, boolean>>({})
     const [activeYear, setActiveYear] = useState<string | null>(null)
     const [activeName, setActiveName] = useState<string | null>(null)
@@ -190,8 +257,15 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
         return false
     }
 
+	const showFilters = (yearsOrdered.length > 1) || (namesWithoutYear.length > 0)
+
+	// If there are no filters to show, fall back to the SourcesTab (dataset grouping only)
+	if (!showFilters) {
+		return <SourcesTab datasets={itemsByDataset} />
+	}
+
 	return <>
-		{yearsOrdered.length > 1 && <>
+		{showFilters && <>
             {itemsByDataset['rygh']?.find((s: any) => s.attestations && s.attestations.length > 0) && (
                 <WarningMessage 
                     message="Uregelmessigheiter i digitaliseringa av Norske Gaardnavne gjer at det kan førekomme ord i tidslinja som ikkje er namneformer. Sjå teksten dei er basert på under «Tolkingar»."
@@ -253,73 +327,22 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
 			</div>
 		)}
 
-        <div className="pt-2">
-            {(activeYear || activeName) && (
-                <div className="flex items-center gap-2 pb-2 text-sm">
-                    <span className="text-neutral-700">Filter:</span>
-                    {activeYear && <span className="px-2 py-0.5 bg-neutral-100 rounded-full">År: {activeYear}</span>}
-                    {activeName && <span className="px-2 py-0.5 bg-neutral-100 rounded-full">Namn: {activeName}</span>}
-                    <button type="button" className="ml-auto underline underline-offset-4" onClick={() => { setActiveYear(null); setActiveName(null) }}>Nullstill</button>
-                </div>
-            )}
-            <ul className="flex flex-col divide-y divide-neutral-200 w-full gap-4">
-                {Object.keys(itemsByDataset).map((ds) => {
-                    const items = (itemsByDataset[ds] || []).filter((s: any) => matchesActiveYear(s) && matchesActiveName(s))
-                    if (items.length === 0) return null
-                    const hasFilter = !!(activeYear || activeName)
-                    const autoShowAll = hasFilter && items.length <= 5
-                    const isExpanded = autoShowAll || !!showMoreDatasets[ds]
-                    const shouldCollapse = hasFilter ? items.length > 5 : items.length > 2
-                    const collapseCount = hasFilter ? 4 : 1
-                    const visibleItems = (isExpanded || !shouldCollapse) ? items : items.slice(0, collapseCount)
-                    return (
-                        <li key={`ds-${ds}`} className="flex flex-col w-full py-1">
-                            <div className="text-left flex items-center gap-3 py-2">
-                                <span className="text-neutral-900 uppercase tracking-wider">{datasetTitles[ds] || ds}</span>
-                            </div>
-                            <ul className="flex flex-col w-full -mx-2">
-                                {visibleItems.map((s: any) => {
-                                    const additionalLabels = Array.from(
-                                        new Set([
-                                            ...(s.altLabels ?? []),
-                                            ...(s.attestations?.map((a: any) => a.label) ?? [])
-                                        ].filter(l => l && l !== s.label))
-                                    ).join(", ");
-
-                                    return <li key={s.uuid} className="px-2 py-1">
-                                        <Link className="no-underline hover:underline" href={"/uuid/" + s.uuid}><strong>{s.label}</strong></Link> 
-                                        {s.altLabels} {additionalLabels && <span className="text-neutral-900"> – {additionalLabels}</span>}
-                                        
-                                        {resultRenderers[ds]?.links?.(s) || defaultResultRenderer?.links?.(s)}
-                                    </li>
-                                })}
-                                {!autoShowAll && shouldCollapse && !isExpanded && (
-                                    <li className="px-2 py-1">
-                                        <button
-                                            type="button"
-                                            className="text-sm text-neutral-800 flex items-center gap-1"
-                                            onClick={() => toggleShowMore(ds, true)}
-                                        >
-                                            <PiPlusBold aria-hidden="true" /> {`Vis fleire (${items.length - visibleItems.length})`}
-                                        </button>
-                                    </li>
-                                )}
-                                {!autoShowAll && shouldCollapse && isExpanded && (
-                                    <li className="px-2 py-1">
-                                        <button
-                                            type="button"
-                                            className="text-sm text-neutral-800 flex items-center gap-1"
-                                            onClick={() => toggleShowMore(ds, false)}
-                                        >
-                                            <PiMinusBold aria-hidden="true" /> Vis færre
-                                        </button>
-                                    </li>
-                                )}
-                            </ul>
-                        </li>
-                    )
-				})}
-			</ul>
+		<div className="pt-2">
+			{(activeYear || activeName) && (
+				<div className="flex items-center gap-2 pb-2 text-sm">
+					<span className="text-neutral-700">Filter:</span>
+					{activeYear && <span className="px-2 py-0.5 bg-neutral-100 rounded-full">År: {activeYear}</span>}
+					{activeName && <span className="px-2 py-0.5 bg-neutral-100 rounded-full">Namn: {activeName}</span>}
+					<button type="button" className="ml-auto underline underline-offset-4" onClick={() => { setActiveYear(null); setActiveName(null) }}>Nullstill</button>
+				</div>
+			)}
+			{(() => {
+				const filtered: Record<string, any[]> = {}
+				Object.keys(itemsByDataset).forEach((ds) => {
+					filtered[ds] = (itemsByDataset[ds] || []).filter((s: any) => matchesActiveYear(s) && matchesActiveName(s))
+				})
+				return <SourcesTab datasets={filtered} />
+			})()}
 		</div>
 	</>
 }
@@ -364,7 +387,7 @@ const LocationsTab = ({ locations }: { locations: any[] }) => {
     );
 }
 
-const TabButton = ({ groupData, tab, label }: { groupData: any, tab: 'text' | 'sources' | 'locations', label: string }) => {
+const TabButton = ({ groupData, tab, label }: { groupData: any, tab: 'sources' | 'names' | 'locations', label: string }) => {
     
     const setPrefTab = useSessionStore(state => state.setPrefTab)
     const setOpenTabs = useSessionStore(state => state.setOpenTabs)
@@ -500,6 +523,49 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         return { iiifItems, textItems, audioItems, datasets, locations }
     }, [groupData, searchDatasets])
 
+    const showNamesTab = useMemo(() => {
+        // Replicate NamesTab's filter determinism: timeline or names without year
+        const nameToYears: Record<string, Set<string>> = {}
+        Object.values(datasets).forEach((sources: any[]) => {
+            sources.forEach((source: any) => {
+                const push = (name: string | undefined, year: any) => {
+                    if (!name) return
+                    const y = year != null ? String(year) : null
+                    if (!y) return
+                    nameToYears[name] = nameToYears[name] || new Set<string>()
+                    nameToYears[name].add(y)
+                }
+                if (source?.year) {
+                    push(source.label, source.year)
+                    if (Array.isArray(source?.altLabels)) {
+                        source.altLabels.forEach((alt: any) => push(typeof alt === 'string' ? alt : alt?.label, source.year))
+                    }
+                }
+                if (Array.isArray(source?.attestations)) {
+                    source.attestations.forEach((att: any) => push(att?.label, att?.year))
+                }
+            })
+        })
+        const namesByYear: Record<string, string[]> = {}
+        const namesWithoutYear: string[] = []
+        Object.entries(nameToYears).forEach(([name, yearsSet]) => {
+            const years = Array.from(yearsSet)
+            if (years.length === 0) {
+                namesWithoutYear.push(name)
+                return
+            }
+            const numeric = years
+                .map((y) => ({ raw: y, num: Number(y) }))
+                .filter((y) => !Number.isNaN(y.num))
+                .sort((a, b) => a.num - b.num)
+            const earliest = numeric.length ? numeric[0].raw : years.sort()[0]
+            namesByYear[earliest] = namesByYear[earliest] || []
+            namesByYear[earliest].push(name)
+        })
+        const yearsOrdered = Object.keys(namesByYear)
+        return (yearsOrdered.length > 1) || (namesWithoutYear.length > 0)
+    }, [datasets])
+
     useEffect(() => {
         if (!groupData?.group) {
             console.log("GROUP ISSUE", groupData);
@@ -512,24 +578,25 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             // 1. Check if there's already a value stored at the id in openTabs
             if (currentTab) {
                 // Verify the tab is still valid for this group
-                if (currentTab === 'text' && textItems.length > 0) {
+                if (currentTab === 'sources') {
                     return; // Keep the existing tab
                 }
-                if (currentTab === 'sources') {
+                if (currentTab === 'names' && showNamesTab) {
                     return; // Keep the existing tab
                 }
                 if (currentTab === 'locations' && locations.length > 0) {
                     return; // Keep the existing tab
                 }
+                // If current tab is names but not applicable, fall through to default below
             }
             
             // 2. Use prefTab if the group has the required content
-            if (prefTab === 'text' && textItems.length > 0) {
-                setOpenTabs(groupId, 'text');
-                return;
-            }
             if (prefTab === 'sources') {
                 setOpenTabs(groupId, 'sources');
+                return;
+            }
+            if (prefTab === 'names' && showNamesTab) {
+                setOpenTabs(groupId, 'names');
                 return;
             }
             if (prefTab === 'locations' && locations.length > 0) {
@@ -537,14 +604,11 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 return;
             }
             
-            // 3. Default fallback: text if available, otherwise sources
-            if (textItems.length > 0) {
-                setOpenTabs(groupId, 'text');
-            } else {
-                setOpenTabs(groupId, 'sources');
-            }
+            // 3. Default to sources
+            setOpenTabs(groupId, 'sources');
+            
         }
-    }, [groupData, textItems.length, locations.length, openTabs, prefTab, setOpenTabs])
+    }, [groupData, textItems.length, locations.length, openTabs, prefTab, setOpenTabs, showNamesTab])
 
 
     if (groupLoading) return (
@@ -596,13 +660,13 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 <Carousel items={iiifItems} />
             </>
             }
+            {textItems.length > 0 && <TextTab textItems={textItems}/>}
 
             <div className="w-full">
                 {(locations.length > 0 || Object.keys(datasets).length > 1) && !isGrunnord && <TabList>
-                    {textItems.length > 0 && (
-                        <TabButton groupData={groupData} tab="text" label="Tolkingar" />
-                    )}
-                    <TabButton groupData={groupData} tab="sources" label="Namn" />
+
+                    <TabButton groupData={groupData} tab="sources" label="Kjelder" />
+                    {showNamesTab && <TabButton groupData={groupData} tab="names" label="Namn" />}
                     {locations.length > 0 && <TabButton groupData={groupData} tab="locations" label="Lokalitetar" />}
                     
                 </TabList>}
@@ -610,8 +674,8 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
 
                     <div role="tabpanel" className="px-3" id={`tabpanel-${groupData.group.id}`} aria-labelledby={`tab-${openTabs[groupData.group.id]}`}>
-                        {openTabs[groupData.group.id] === 'text' && <TextTab textItems={textItems} />}
                         {openTabs[groupData.group.id] === 'sources' && <SourcesTab datasets={datasets} />}
+                        {openTabs[groupData.group.id] === 'names' && <NamesTab datasets={datasets} />}
                         {openTabs[groupData.group.id] === 'locations' && <LocationsTab locations={locations} />}
                     </div>
 
