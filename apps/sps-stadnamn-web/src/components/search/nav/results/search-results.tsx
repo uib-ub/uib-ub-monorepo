@@ -8,13 +8,15 @@ import GroupInfo from "../../details/group/group-info";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchParams } from "next/navigation";
 import { useGroup } from "@/lib/param-hooks";
-import { PiMapPinFill, PiPlusBold, PiXCircle, PiPencilSimple, PiCheck, PiX, PiPlayFill } from "react-icons/pi";
+import { PiMapPinFill, PiPlusBold, PiXCircle, PiPencilSimple, PiCheck, PiX, PiPlayFill, PiTilde, PiMagnifyingGlass } from "react-icons/pi";
 import useGroupData from "@/state/hooks/group-data";
 import Spinner from "@/components/svg/Spinner";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { datasetTitles } from "@/config/metadata-config";
+import Clickable from "@/components/ui/clickable/clickable";
+import SearchSuggestions from "./search-suggestions";
 
 
 
@@ -343,7 +345,7 @@ export default function SearchResults() {
       
       {/* Vis meir button */}
       {collapsedHasNextPage && (
-        <div className="flex justify-center my-4">
+        <div className="flex flex-col gap-2 justify-center my-4">
           <button
             type="button"
             onClick={() => !isFetchingNextPage && collapsedFetchNextPage()}
@@ -355,15 +357,18 @@ export default function SearchResults() {
               text-xl
 
               px-4 py-2 rounded-full xl:rounded-md
-              w-full mx-3
+               mx-3
               transition-colors
               ${isFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
             `}
           >
             {isFetchingNextPage ? <Spinner status="Lastar" /> : <PiPlusBold aria-hidden="true" />} {isFetchingNextPage ? 'Lastar...' : 'Vis fleire'}
           </button>
+          
+
         </div>
       )}
+      {(initGroupData || (searchParams.get('q') && /^\p{L}+$/u.test(searchParams.get('q')!))) && <SearchSuggestions initGroupData={initGroupData} />}
       {/* Error and empty states */}
       {searchError || collapsedError ? (
         <div className="flex justify-center">
