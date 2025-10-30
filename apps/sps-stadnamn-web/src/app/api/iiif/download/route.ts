@@ -8,6 +8,7 @@ export async function GET(request: Request) {
     const format = url.searchParams.get('format')?.toLowerCase();
     const page = url.searchParams.get('page');
 
+
     if (!uuid) {
         return Response.json({ error: 'uuid is required' }, { status: 400 });
     }
@@ -15,9 +16,10 @@ export async function GET(request: Request) {
     const data = await fetchDoc({ uuid: uuid as string });
     const manifestDataset = data._index.split('-')[2].split('_')[1];
     const outputFilename = resolveLanguage(data._source.label);
-    const canvases = data._source.canvases;
+    const canvases = data._source.images;
 
     if (!canvases || !canvases.length) {
+
         return Response.json({ error: data }, { status: 404 });
     }
 
@@ -40,10 +42,10 @@ export async function GET(request: Request) {
     if (wantsPDF) {
         // Function to load image and add to PDF
         const addImageToPdf = async (canvas: any, pageIndex: number, pdf: jsPDF) => {
-            const imageUrl = `https://iiif.test.ubbe.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${canvas.image}/full/max/0/default.jpg`;
+            const imageUrl = `https://iiif.test.ubbe.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${canvas.uuid}/full/max/0/default.jpg`;
             const response = await fetch(imageUrl);
             if (!response.ok) {
-                throw new Error(`Failed to fetch image: ${response.statusText}`);
+                throw new Error(`Failed to fetch image: ${response.statusText}\n${imageUrl}\n${JSON.stringify(canvas)}`);
             }
             const arrayBuffer = await response.arrayBuffer();
             const base64 = Buffer.from(arrayBuffer).toString('base64');
@@ -85,10 +87,10 @@ export async function GET(request: Request) {
         });
     } else {
         // Handle single image download as JPG
-        const imageUrl = `https://iiif.test.ubbe.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${selectedCanvases[0].image}/full/max/0/default.jpg`;
+        const imageUrl = `https://iiif.test.ubbe.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${selectedCanvases[0].uuid}/full/max/0/default.jpg`;
         const response = await fetch(imageUrl);
         if (!response.ok) {
-            return Response.json({ error: 'Failed to fetch image' }, { status: 500 });
+            return Response.json({ error: `Failed to fetch image: ${response.statusText}\n${imageUrl}` }, { status: 500 });
         }
         const imageBuffer = await response.arrayBuffer();
         
