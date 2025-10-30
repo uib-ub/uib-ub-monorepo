@@ -315,7 +315,7 @@ export default function SearchResults() {
         </li>
       ))}
 
-      <ul id="result_list" className='flex flex-col mb-8 xl:mb-2 divide-y divide-neutral-300 border-y border-neutral-200'>
+      <ul id="result_list" className='flex flex-col mb-8 xl:mb-0 divide-y divide-neutral-300 border-y border-neutral-200'>
       
 
       {(initGroupLoading || collapsedLoading && collapsedInitialPage === 1) ? Array.from({ length: collapsedInitialPage === 1 ? 6 : 40 }).map((_, i) => (
