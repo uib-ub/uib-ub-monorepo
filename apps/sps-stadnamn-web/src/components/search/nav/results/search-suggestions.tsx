@@ -2,7 +2,7 @@ import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchQuery } from "@/lib/search-params"
 import useGroupData from "@/state/hooks/group-data"
 import { useSearchParams } from "next/navigation"
-import { PiBroom, PiMagnifyingGlass } from "react-icons/pi"
+import { PiBroom, PiMagnifyingGlass, PiTilde } from "react-icons/pi"
 
 
 const Suggestion = ({q}: {q: string}) => {
@@ -13,7 +13,7 @@ const Suggestion = ({q}: {q: string}) => {
     cursor-pointer select-none
     flex items-center gap-2
     px-1 pr-2 py-1 rounded-md">
-      <PiMagnifyingGlass className="text-lg" aria-hidden="true"/> Omtrentleg søk
+      {q.includes("~") ? <><PiTilde className="text-lg" aria-hidden="true"/> Omtrentleg søk</> : <><PiMagnifyingGlass className="text-lg" aria-hidden="true"/> {q}</>}
     </Clickable>
 }
 
