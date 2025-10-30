@@ -5,26 +5,32 @@
     class="h-full border-gray-300 pr-1 xl:border-r xl:pt-11"
   >
     <div class="flex justify-between pb-2 pr-1 pt-1 text-2xl">
-      <div class="flex space-x-6">
+      <div class="flex space-x-4">
         <h2>{{ $t("searchFilter.filter") }}</h2>
         <UtilsTransitionOpacity>
-          <IconSpinner
+          <div
             v-if="searchDataPending.aggregate"
-            size="0.8em"
-            class="mt-0.5"
-          />
+            :aria-label="$t('spinnerIcon.srText')"
+            role="status"
+            class="mt-[1px]"
+          >
+            <IconSpinner size="0.8em" />
+          </div>
         </UtilsTransitionOpacity>
       </div>
       <button
         v-if="filterSelected"
-        class="cursor-pointer rounded-sm border border-transparent px-1 text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
+        class="cursor-pointer h-8 rounded-xs border border-transparent px-0.5 text-gray-800 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
+        :aria-label="$t('searchFilter.resetFilter')"
         @click="
           resetSearchFilterSelection(),
           useFetchSearchData(useGenSearchOptions('filter'))
         "
       >
-        <IconReset size="1em" />
-        <span class="sr-only">{{ $t("searchFilter.resetFilter") }}</span>
+        <IconReset
+          class="mt-[4px]"
+          size="1em"
+        />
       </button>
     </div>
     <div
