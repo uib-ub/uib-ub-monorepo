@@ -36,12 +36,12 @@ export default function MapToolbar() {
                 <div
                     role="status"
                     aria-live="polite"
-                    className="bg-neutral-900 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit absolute left-1 z-[3001] transition-opacity duration-300"
+                    className="bg-neutral-900 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit absolute left-2 lg:left-[25svw] z-[3001] transition-opacity duration-300"
                     style={{
                         top: isMobile ? 
                             currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM ? "4rem" : 
                             `${Math.max(0.25, 4 - currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM)}rem`
-                            : "0.25rem",
+                            : "0.5rem",
                         opacity: isMobile ? 
                             currentPosition > middleRem ? 0 : 1
                             : 1
