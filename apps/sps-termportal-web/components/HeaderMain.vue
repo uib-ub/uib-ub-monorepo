@@ -21,11 +21,11 @@
         <div class="flex justify-between">
           <HeaderSearchOptions />
           <button
-            class="ml-2 flex h-7 justify-center rounded-[4px] border border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800 cursor-pointer"
+            class="ml-2 flex h-6.5 justify-center rounded-xs border border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800 cursor-pointer"
+            aria-label="Close"
             @click="headerDisplayScope = headerSize.Default"
           >
             <IconClose class="text-lg" />
-            <span class="sr-only">Close</span>
           </button>
         </div>
         <HeaderSearchScope />
