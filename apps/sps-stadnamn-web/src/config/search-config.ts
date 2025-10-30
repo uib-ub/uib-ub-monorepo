@@ -292,6 +292,12 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       ...required, adm, adm1, adm2,
       ...identifiers,
     },
+    geonames: {
+      ...required, adm, adm1, adm2,
+      "lang": {label: "Språk", facet},
+      "placeType": {label: "Lokalitetstype", facet},
+      
+    },
     ft1900: {
       ...required, adm, adm1, adm2,
       ...identifiers,

@@ -307,6 +307,12 @@ export const resultRenderers: ResultRenderers = {
     details: (hit: any, display: string) => {
       return <>{formatAdm(hit)}</>
     }
+  },
+  geonames: {
+    title: defaultTitle,
+    details: (hit: any, display: string) => {
+      return <>{formatAdm(hit)}</>
+    }
   }
 
   

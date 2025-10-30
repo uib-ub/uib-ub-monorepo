@@ -172,6 +172,12 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
       cadastre: false,
       sort: ["_score", "label.keyword"]
     },
+    geonames: {
+      display: 'map',
+      adm: 2,
+      cadastre: false,
+      sort: ["_score", "label.keyword"]
+    },
     ft1900: {
       display: 'map',
       adm: 2,
