@@ -136,7 +136,7 @@ export default function ServerFacet() {
           aria-pressed={currentValue == '_true'}
           className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
         >
-          Med <PercentageCircle count={yesCount} total={allCount} /> {Math.round((yesCount / allCount) * 100)}%
+          Med {Math.round((yesCount / allCount) * 100)}%
         </Clickable>
 
         <Clickable
@@ -145,7 +145,7 @@ export default function ServerFacet() {
           aria-pressed={currentValue == '_false'}
           className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
         >
-          Utan <PercentageCircle count={noCount} total={allCount} /> {Math.round((noCount / allCount) * 100)}%
+          Utan {Math.round((noCount / allCount) * 100)}%
         </Clickable>
         <button
           onClick={() => {
