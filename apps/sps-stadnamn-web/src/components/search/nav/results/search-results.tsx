@@ -345,7 +345,7 @@ export default function SearchResults() {
       
       {/* Vis meir button */}
       {collapsedHasNextPage && (
-        <div className="flex flex-col gap-2 justify-center my-4">
+        <div className="flex flex-col gap-2 justify-center mt-4">
           <button
             type="button"
             onClick={() => !isFetchingNextPage && collapsedFetchNextPage()}
@@ -368,7 +368,7 @@ export default function SearchResults() {
 
         </div>
       )}
-      {(initGroupData || (searchParams.get('q') && /^\p{L}+$/u.test(searchParams.get('q')!))) && <SearchSuggestions initGroupData={initGroupData} />}
+      <SearchSuggestions initGroupData={initGroupData} />
       {/* Error and empty states */}
       {searchError || collapsedError ? (
         <div className="flex justify-center">
