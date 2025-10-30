@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { formatHtml } from "@/lib/text-utils";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
-import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiXCircle, PiMapPinFill, PiInfoFill, PiArchive } from "react-icons/pi";
+import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiXCircle, PiMapPinFill, PiInfoFill, PiArchive, PiInfo } from "react-icons/pi";
 import WarningMessage from "./warning-message";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Spinner from "@/components/svg/Spinner";
@@ -109,7 +109,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
     const toggleShowMore = (ds: string, next?: boolean) => setShowMoreDatasets((prev) => ({ ...prev, [ds]: typeof next === 'boolean' ? next : !prev[ds] }))
 
     return (
-        <ul className="flex flex-col divide-y divide-neutral-200 w-full gap-4">
+        <ul className="flex flex-col w-full gap-6 pt-6">
             {datasetKeys.map((ds) => {
                 const items = datasets[ds] || []
                 if (items.length === 0) return null
@@ -118,10 +118,10 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                 const collapseCount = 1
                 const visibleItems = (isExpanded || !shouldCollapse) ? items : items.slice(0, collapseCount)
                 return (
-                    <li key={`sources-ds-${ds}`} className="flex flex-col w-full py-1">
-                        <div className="text-left flex items-center gap-3 py-2">
-                            <span className="text-neutral-900 uppercase tracking-wider">{datasetTitles[ds] || ds}</span>
-                        </div>
+                    <li key={`sources-ds-${ds}`} className="flex flex-col w-full gap-2">
+                        <Link href={`/info/datasets/${ds}`} className="no-underline text-left flex items-center gap-3">
+                            <span className="text-neutral-900 flex gap-1 items-center">{datasetTitles[ds] || ds}<PiInfo aria-hidden="true"/></span>
+                        </Link>
                         <ul className="flex flex-col w-full -mx-2">
                             {visibleItems.map((s: any) => {
                                 const additionalLabels = Array.from(
