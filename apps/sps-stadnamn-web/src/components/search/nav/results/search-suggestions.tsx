@@ -2,7 +2,7 @@ import Clickable from "@/components/ui/clickable/clickable"
 import { useSearchQuery } from "@/lib/search-params"
 import useGroupData from "@/state/hooks/group-data"
 import { useSearchParams } from "next/navigation"
-import { PiBroom, PiMagnifyingGlass, PiTilde } from "react-icons/pi"
+import { PiBroom, PiMagnifyingGlass, PiTilde, PiTrash } from "react-icons/pi"
 
 
 const Suggestion = ({q}: {q: string}) => {
@@ -35,8 +35,8 @@ export default function SearchSuggestions({initGroupData}: {initGroupData: any})
             </>
             }
             { initLabel && initLabel !== searchQ && <Suggestion q={initLabel} /> }
-            { searchQ && <Clickable remove={['q']} add={{q: null}} className="flex items-center gap-2 cursor-pointer select-none px-1 pr-2 py-1 rounded-md"><PiBroom className="text-lg" aria-hidden="true"/> Fjern søkeord</Clickable>}
-            { filterCount > 0 && <Clickable remove={datasetFilters.map(filter => filter[0]).concat(facetFilters.map(filter => filter[0]))} className="flex items-center gap-2 bg-neutral-50 cursor-pointer select-none px-2 pr-1 py-1 rounded-md"><PiBroom className="text-lg" aria-hidden="true"/> Fjern filtrering</Clickable>}
+            { searchQ && <Clickable remove={['q']} add={{q: null}} className="flex items-center gap-2 cursor-pointer select-none px-1 pr-2 py-1 rounded-md"><PiTrash className="text-lg" aria-hidden="true"/> Fjern søkeord</Clickable>}
+            { filterCount > 0 && <Clickable remove={datasetFilters.map(filter => filter[0]).concat(facetFilters.map(filter => filter[0]))} className="flex items-center gap-2 bg-neutral-50 cursor-pointer select-none px-2 pr-1 py-1 rounded-md"><PiTrash className="text-lg" aria-hidden="true"/> Fjern filtrering</Clickable>}
 
         </div>
     )

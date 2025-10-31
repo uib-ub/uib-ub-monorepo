@@ -26,6 +26,7 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
   const [currentPage, setCurrentPage] = useState(0);
   const [error, setError] = useState<any>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
+	const [isDownloading, setIsDownloading] = useState(false);
   const currentPosition = useIIIFSessionStore((s) => s.currentPosition)
   const snappedPosition = useIIIFSessionStore((s) => s.snappedPosition)
   const drawerOpen = useIIIFSessionStore((s) => s.drawerOpen)
@@ -136,9 +137,10 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
     }
   };
 
-  const handleDownload = useCallback(async (format: string, allPages?: boolean) => {
+	const handleDownload = useCallback(async (format: string, allPages?: boolean) => {
     if (viewer.current && images[currentPage]) {
       try {
+				setIsDownloading(true);
         const params = new URLSearchParams({
           uuid: manifestId,
           format,
@@ -160,10 +162,12 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
         link.download = filename;
         link.click();
         
-        window.URL.revokeObjectURL(url);
+				window.URL.revokeObjectURL(url);
       } catch (error) {
         console.error('Error downloading:', error);
-      }
+			} finally {
+				setIsDownloading(false);
+			}
     }
   }, [currentPage, images, manifestId]);
 
@@ -196,7 +200,7 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
                 <PiDownloadSimpleBold className='text-xl xl:text-base'  />
             </RoundIconButton>
           </AlertDialogTrigger>
-          <AlertDialogContent>
+			<AlertDialogContent>
             <AlertDialogCancel className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
               <PiXBold className="text-xl" aria-hidden="true"/>
               <span className="sr-only">Close</span>
@@ -207,33 +211,39 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
                 Vel ønska format for nedlasting av bildet.
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter>
-              <div className="flex flex-row gap-2 justify-center w-full">
-                <AlertDialogCancel className="btn btn-outline">
-                  Avbryt
-                </AlertDialogCancel>
-                <AlertDialogAction 
-                  className="btn btn-outline"
-                  onClick={() => handleDownload('jpg', false)}
-                >
-                  JPG
-                </AlertDialogAction>
-                <AlertDialogAction 
-                  className="btn btn-outline"
-                  onClick={() => handleDownload('pdf', false)}
-                >
-                  PDF{numberOfPages > 1 ? ' - denne sida' : ''}
-                </AlertDialogAction>
-                {numberOfPages > 1 && (
-                  <AlertDialogAction 
-                    className="btn btn-outline"
-                    onClick={() => handleDownload('pdf', true)}
-                  >
-                    PDF - alle sider
-                  </AlertDialogAction>
-                )}
-              </div>
-            </AlertDialogFooter>
+				{isDownloading ? (
+					<div className="py-8 flex items-center justify-center">
+						<Spinner status="Lastar ned…" className='w-8 h-8' />
+					</div>
+				) : (
+					<AlertDialogFooter>
+						<div className="flex flex-row gap-2 justify-center w-full">
+							<AlertDialogCancel className="btn btn-outline">
+								Avbryt
+							</AlertDialogCancel>
+							<AlertDialogAction 
+								className="btn btn-outline"
+								onClick={() => handleDownload('jpg', false)}
+							>
+								JPG
+							</AlertDialogAction>
+							<AlertDialogAction 
+								className="btn btn-outline"
+								onClick={() => handleDownload('pdf', false)}
+							>
+								PDF{numberOfPages > 1 ? ' - denne sida' : ''}
+							</AlertDialogAction>
+							{numberOfPages > 1 && (
+								<AlertDialogAction 
+									className="btn btn-outline"
+									onClick={() => handleDownload('pdf', true)}
+								>
+									PDF - alle sider
+								</AlertDialogAction>
+							)}
+						</div>
+					</AlertDialogFooter>
+				)}
           </AlertDialogContent>
         </AlertDialog>
         <RoundIconButton 
