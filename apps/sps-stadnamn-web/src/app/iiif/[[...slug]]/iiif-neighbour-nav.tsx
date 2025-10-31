@@ -21,13 +21,15 @@ import {
 const IIIFDownloader = dynamic(() => import('@/components/download/iiif-downloader'), { ssr: false })
 
 export default function IIIFNeighbourNav({manifest, isMobile, manifestDataset}: {manifest: any, isMobile: boolean, manifestDataset?: string}) {
-    if (!manifest) return null
+    
 
 	const isCollection = manifest?.type === 'Collection'
     const [isDownloading, setIsDownloading] = useState(false)
     const [downloaderJob, setDownloaderJob] = useState<any | null>(null)
     const navOpen = useIIIFSessionStore((s) => s.navOpen)
     const setNavOpen = useIIIFSessionStore((s) => s.setNavOpen)
+
+    if (!manifest) return null
 
 	const handleDownload = async (format: string) => {
         try {
