@@ -1,10 +1,11 @@
 "use client"
-import { PiArrowElbowLeftUpBold, PiCaretLeftBold, PiCaretLineLeftBold, PiCaretLineRightBold, PiCaretRightBold, PiDownloadSimpleBold, PiXBold } from "react-icons/pi";
+import { PiArrowElbowLeftUpBold, PiCaretLeftBold, PiCaretLineLeftBold, PiCaretLineRightBold, PiCaretRightBold, PiDownloadSimpleBold, PiDotsThreeBold, PiX, PiXBold } from "react-icons/pi";
 import { RoundIconButton } from "@/components/ui/clickable/round-icon-button";
 import IconLink from "@/components/ui/icon-link";
 import { useState } from "react";
 import dynamic from 'next/dynamic';
 import { resolveLanguage } from '../iiif-utils';
+import { useIIIFSessionStore } from '@/state/zustand/iiif-session-store'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -25,6 +26,8 @@ export default function IIIFNeighbourNav({manifest, isMobile, manifestDataset}: 
 	const isCollection = manifest?.type === 'Collection'
     const [isDownloading, setIsDownloading] = useState(false)
     const [downloaderJob, setDownloaderJob] = useState<any | null>(null)
+    const navOpen = useIIIFSessionStore((s) => s.navOpen)
+    const setNavOpen = useIIIFSessionStore((s) => s.setNavOpen)
 
 	const handleDownload = async (format: string) => {
         try {
@@ -55,16 +58,23 @@ export default function IIIFNeighbourNav({manifest, isMobile, manifestDataset}: 
 
     return (
         <>
-        <nav className={`${isMobile ? 'fixed bottom-6 left-4 right-4 z-[4001]' : ''} flex items-center gap-2 ${manifest.type == 'Manifest' ? 'fixed top-14 left-[20svw] m-2' : ''}`}>
-                {/* Collection link */}
-                <RoundIconButton 
-                    href={`/iiif${manifest.partOf ? `/${manifest.partOf}` : ''}`} 
-                    label="Gå til overordna samling">
-                    <PiArrowElbowLeftUpBold className="text-xl xl:text-base"/>
-                </RoundIconButton>
+        <nav className={`flex items-center gap-2 ${manifest.type == 'Manifest' ? `absolute top-14 ${isMobile ? 'left-0' : 'left-[20svw]'} m-2` : ''}`}>
+			{/* Collection link (hidden on mobile when neighbour nav is open) */}
+				{(!isMobile || !navOpen) && (
+				<RoundIconButton 
+					href={`/iiif${manifest.partOf ? `/${manifest.partOf}` : ''}`} 
+					label="Gå til overordna samling">
+					<PiArrowElbowLeftUpBold className="text-xl xl:text-base"/>
+				</RoundIconButton>
+				)}
 
                 {(manifest.order && manifest.parentLength && manifest.partOf && manifest.parentLength > 1) ? (
-                    <div className="flex h-full items-center font-semibold bg-neutral-950/70 text-white rounded-full backdrop-blur-sm px-2">
+                    <>
+                    {(!isMobile || navOpen) && (
+                    <div
+                        id="iiif-neighbour-nav-bar"
+                        className={`${isMobile && navOpen ? 'mx-auto h-10 py-1 px-2 shadow-lg' : 'h-full px-2'} flex items-center font-semibold bg-neutral-950/70 text-white rounded-full backdrop-blur-sm`}
+                    >
                         {/* First button */}
                         {manifest.parentLength > 3 && <IconLink
                             label="Første element i samlinga"
@@ -108,10 +118,12 @@ export default function IIIFNeighbourNav({manifest, isMobile, manifestDataset}: 
                             <PiCaretLineRightBold className="text-xl xl:text-base"/>
                         </IconLink>}
 					</div>
+                    )}
+                    </>
                 ) : null}
 
-			{/* Download button */}
-			{((isCollection ? (manifest.childCount?.images && manifest.length == manifest.childCount?.manifests) : true)) && <AlertDialog>
+            {/* Download button (hidden on mobile when neighbour nav is open) */}
+            {(!isMobile || !navOpen) && ((isCollection ? (manifest.childCount?.images && manifest.length == manifest.childCount?.manifests) : true)) && <AlertDialog>
 				<AlertDialogTrigger asChild>
 					<RoundIconButton 
 						label="Last ned">
@@ -177,6 +189,22 @@ export default function IIIFNeighbourNav({manifest, isMobile, manifestDataset}: 
                         )}
 				</AlertDialogContent>
 			</AlertDialog>}
+
+            {/* Mobile toggle on the right side */}
+            {isMobile && (
+                <RoundIconButton
+                    onClick={() => setNavOpen(!navOpen)}
+                    aria-expanded={navOpen}
+                    aria-controls="iiif-neighbour-nav-bar"
+                    label={navOpen ? "Skjul navigasjon" : "Vis navigasjon"}
+                >
+                    {navOpen ? (
+                        <PiX className="text-xl xl:text-base"/>
+                    ) : (
+                        <PiDotsThreeBold className="text-xl xl:text-base"/>
+                    )}
+                </RoundIconButton>
+            )}
 
         </nav>
         {downloaderJob && 

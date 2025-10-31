@@ -38,7 +38,7 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
        
 
 <div className={`flex h-[calc(100svh-3.5rem)] min-h-0 w-full`}>
-                <div className={`hidden lg:block h-full w-[20svw] page-info bg-white break-words border-l-2 border-r border-neutral-200 lg:overflow-y-auto overflow-y-auto`}>
+                <div className={`${isMobile ? 'hidden lg:block' : ''} h-full w-[20svw] page-info bg-white break-words border-l-2 border-r border-neutral-200 lg:overflow-y-auto overflow-y-auto`}>
             
                {!isMobile && <div className="flex flex-col min-h-full w-full bg-white">   
                 <IIIFInfoSection manifest={manifest} manifestDataset={manifestDataset} stats={stats} />    
@@ -61,7 +61,7 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
                     </div>}
                 </div>
                 )}
-                {(!isMobile || isCollection) && <CollectionExplorer manifest={manifest} isCollection={isCollection} manifestDataset={manifestDataset}/>}
+                <CollectionExplorer manifest={manifest} isCollection={isCollection} manifestDataset={manifestDataset}/>
 
                 </div>
 

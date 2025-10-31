@@ -85,11 +85,8 @@ export default function CollectionExplorer({manifest, isCollection, manifestData
         }
     };
 
-    if (!isCollection && !isMobile) {
-        return <div className="absolute top-16 right-2 z-[6000]">
-             <IIIFNeighbourNav manifest={manifest} isMobile={isMobile} manifestDataset={manifestDataset}/>
-                    <IIIFNeighbourNav manifest={manifest} isMobile={isMobile} manifestDataset={manifestDataset}/>
-        </div>
+    if (!isCollection) {
+        return <IIIFNeighbourNav manifest={manifest} isMobile={isMobile} manifestDataset={manifestDataset}/>
     }
 
 
