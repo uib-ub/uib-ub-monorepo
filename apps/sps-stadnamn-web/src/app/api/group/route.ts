@@ -43,19 +43,9 @@ export async function GET(request: Request) {
     ],
     "track_total_hits": false,
     "_source": ["uuid", "label", "attestations", "year", "boost", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area", "misc.Enhetsnummer", "ssr"],
-    /*
-    "aggs": {
-      "viewport": {
-        "geo_bounds": {
-          "field": "location",
-          "wrap_longitude": true
-        },
-      }
-    } 
-    */
   }
 
-/* Todo - add option to filter group? - no, this can be done in the table view
+/* Todo - add option to filter group? - no, this can be done in the table view.
   if (termFilters.length) {
     query.query = {"bool": {
         "filter": termFilters
