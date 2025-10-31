@@ -19,15 +19,8 @@
               {{ getLaLo(termbase + "-3A" + termbase) }}
             </AppLink>
           </h1>
-          <!-- Only apply termbaseDescriptionHeight on larger screens -->
           <div
             class="flex overflow-hidden lg:block"
-            :style="
-              termbaseDescriptionHeight
-                && ['lg', 'xl', '2xl'].includes(breakpoint)
-                ? `max-height: ${termbaseDescriptionHeight}px`
-                : ''
-            "
           >
             <div
               ref="termbaseTextRef"
@@ -49,29 +42,6 @@
               />
             </div>
           </div>
-          <button
-            v-if="
-              ['lg', 'xl', '2xl'].includes(breakpoint)
-                && termbaseTextRef
-                && termbaseInfoBoxRef
-                && termbaseTextRef.clientHeight > termbaseInfoBoxRef.clientHeight
-            "
-            class="mt-1 w-full"
-            :class="{
-              'shadow-[0_-10px_7px_rgba(255,255,255,1)]': !expandTermbaseText,
-            }"
-            @click="expandTermbaseText = !expandTermbaseText"
-          >
-            <span
-              v-if="expandTermbaseText"
-              class="underline underline-offset-2 hover:decoration-2"
-            >{{ $t("global.readLess") }}</span>
-            <span
-              v-else
-              class="underline underline-offset-2 hover:decoration-2"
-            >
-              {{ $t("global.readMore") }}</span>
-          </button>
         </main>
         <TermbaseSearch
           v-if="data"
@@ -93,29 +63,10 @@ const bootstrapData = useBootstrapData();
 const route = useRoute();
 const termbase = computed(() => getTermbaseFromParam());
 const localeLangOrder = useLocaleLangOrder();
-const breakpoint = useBreakpoint();
 const { getLaLo } = useLazyLocale();
 
 const termbaseInfoBoxRef = ref<HTMLElement | null>(null);
 const termbaseTextRef = ref<HTMLElement | null>(null);
-const expandTermbaseText = ref(false);
-
-// Only picked up in larger screens. See check in template.
-const termbaseDescriptionHeight = computed(() => {
-  const baseHeight = 8;
-  if (
-    termbaseInfoBoxRef.value?.clientHeight
-    && termbaseTextRef.value?.clientHeight
-  ) {
-    if (expandTermbaseText.value) {
-      return termbaseTextRef.value.clientHeight + baseHeight;
-    }
-    else {
-      return termbaseInfoBoxRef.value.clientHeight + baseHeight;
-    }
-  }
-  return 750;
-});
 
 const { data } = await useLazyFetch<Termbase>(`/api/termbase/${termbase.value}`, {
   key: `termbase_${termbase.value}`,
