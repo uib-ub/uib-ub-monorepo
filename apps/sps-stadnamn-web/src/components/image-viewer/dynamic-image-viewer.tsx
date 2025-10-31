@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback, useContext } from 'react';
 import dynamic from 'next/dynamic';
+import { resolveLanguage } from '@/app/iiif/iiif-utils';
 import OpenSeadragon from 'openseadragon';
 import { PiMagnifyingGlassPlusFill, PiMagnifyingGlassMinusFill, PiCornersOut, PiCaretRightFill, PiCaretLeftFill, PiXBold, PiArrowClockwise, PiDownloadSimple, PiMagnifyingGlassMinusBold, PiMagnifyingGlassPlusBold, PiArrowClockwiseBold, PiDownloadSimpleBold, PiCornersOutBold } from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
@@ -146,6 +147,7 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
     if (!viewer.current || !images.length) return
     setIsDownloading(true)
     const pageIndex = allPages ? undefined : currentPage
+    const baseName = resolveLanguage(images[pageIndex ?? 0]?.label) || manifestId
     setDownloaderJob({
       kind: 'viewer',
       manifestId,
@@ -153,7 +155,7 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
       images,
       format,
       pageIndex,
-      filename: manifestId,
+      filename: baseName,
     })
   }, [currentPage, images, manifestDataset, manifestId]);
 
