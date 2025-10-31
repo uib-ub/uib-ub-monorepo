@@ -29,7 +29,7 @@ const iiifQuery = async (collectionUuid: string, searchQuery: string, size: numb
     return response.json();
 };
 
-export default function CollectionExplorer({manifest, isCollection}: {manifest: any, isCollection: boolean}) {
+export default function CollectionExplorer({manifest, isCollection, manifestDataset}: {manifest: any, isCollection: boolean, manifestDataset?: string}) {
     const { inputValue } = useContext(GlobalContext);
     const [searchQuery, setSearchQuery] = useState('');
     const [size, setSize] = useState(50);
@@ -87,7 +87,8 @@ export default function CollectionExplorer({manifest, isCollection}: {manifest: 
 
     if (!isCollection && !isMobile) {
         return <div className="absolute top-16 right-2 z-[6000]">
-             <IIIFNeighbourNav manifest={manifest} isMobile={isMobile}/>
+             <IIIFNeighbourNav manifest={manifest} isMobile={isMobile} manifestDataset={manifestDataset}/>
+                    <IIIFNeighbourNav manifest={manifest} isMobile={isMobile} manifestDataset={manifestDataset}/>
         </div>
     }
 
@@ -96,10 +97,10 @@ export default function CollectionExplorer({manifest, isCollection}: {manifest: 
 
     return (
         <div ref={containerRef} className="flex-1 min-w-0 flex flex-col lg:gap-4 lg:p-4 pb-48 overflow-y-auto lg:overflow-y-auto stable-scrollbar bg-neutral-200">
-            <div className="w-full z-[6000] flex flex-col xl:flex-row gap-2  sticky top-0 xl:top-auto">
+            <div className="w-full z-[6000] flex flex-col gap-4  sticky top-0 xl:top-auto">
             {/* Add fixed height and min-height to prevent squishing */}
             {manifest && !isMobile &&
-                <div className=" flex items-center px-2 justify-between w-full">
+                <div className=" flex items-center px-2 pt-2 justify-between w-full">
                     <Breadcrumbs
                         homeUrl="/iiif"
                         homeLabel="Arkiv"
@@ -107,14 +108,15 @@ export default function CollectionExplorer({manifest, isCollection}: {manifest: 
                         parentName={manifest.collections?.slice().reverse().map((item: any) => resolveLanguage(item.label))} 
                         currentName={resolveLanguage(manifest.label)} 
                     />
-                    <IIIFNeighbourNav manifest={manifest} isMobile={isMobile}/>
+                    
                 </div>
             }
-
-            <div className={`flex flex-col lg:flex-row items-center gap-4 lg:ml-auto xl:mr-2`}>
             
 
-            <div className='flex w-full xl:w-80 items-center bg-white group px-3 xl:px-1 shadow-md border-y border-neutral-300 xl:border-none h-14 xl:h-auto xl:rounded-md'>
+            <div className={`flex flex-col lg:flex-row items-center gap-4 xl:mr-2`}>
+            
+
+            <div className='flex w-full xl:w-80 items-center bg-white group px-3 xl:px-1 shadow-md border-y border-neutral-300 lg:border-none h-14 lg:h-12 lg:rounded-md'>
                     <PiMagnifyingGlass className="text-3xl xl:text-2xl xl:shrink-0 xl:ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true"/>
                     <input
                         id={"search-input-" + manifest?.uuid}
@@ -140,7 +142,9 @@ export default function CollectionExplorer({manifest, isCollection}: {manifest: 
                             </button>
                         )}
                     </div>
+                    
                 </div>
+                <IIIFNeighbourNav manifest={manifest} isMobile={isMobile}/>
             </div>
                     
             

@@ -61,7 +61,7 @@ export default async function IIIFPage({params}: {params: Promise<{slug: string[
                     </div>}
                 </div>
                 )}
-                {(!isMobile || isCollection) && <CollectionExplorer manifest={manifest} isCollection={isCollection}/>}
+                {(!isMobile || isCollection) && <CollectionExplorer manifest={manifest} isCollection={isCollection} manifestDataset={manifestDataset}/>}
 
                 </div>
 

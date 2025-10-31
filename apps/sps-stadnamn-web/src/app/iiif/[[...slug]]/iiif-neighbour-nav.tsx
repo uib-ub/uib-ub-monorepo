@@ -19,7 +19,7 @@ import {
 
 const IIIFDownloader = dynamic(() => import('@/components/download/iiif-downloader'), { ssr: false })
 
-export default function IIIFNeighbourNav({manifest, isMobile}: {manifest: any, isMobile: boolean}) {
+export default function IIIFNeighbourNav({manifest, isMobile, manifestDataset}: {manifest: any, isMobile: boolean, manifestDataset?: string}) {
     if (!manifest) return null
 
 	const isCollection = manifest?.type === 'Collection'
@@ -29,11 +29,20 @@ export default function IIIFNeighbourNav({manifest, isMobile}: {manifest: any, i
 	const handleDownload = async (format: string) => {
         try {
             setIsDownloading(true)
-            if (format === 'pdf' || format === 'multipdf' || format === 'jpgs') {
+			if (isCollection && (format === 'pdf' || format === 'multipdf' || format === 'jpgs')) {
                 setDownloaderJob({
                     kind: 'collection',
                     collectionUuid: manifest.uuid,
                     format: format === 'pdf' ? 'pdf' : (format === 'multipdf' ? 'multipdf' : 'jpgs'),
+                    filename: resolveLanguage(manifest.label) || manifest.uuid,
+                })
+			} else if (!isCollection && manifest.type === 'Manifest' && (format === 'jpg' || format === 'pdf')) {
+                setDownloaderJob({
+                    kind: 'viewer',
+                    manifestId: manifest.uuid,
+                    manifestDataset: manifestDataset || manifest.dataset || '',
+                    images: manifest.images || [],
+                    format: format,
                     filename: resolveLanguage(manifest.label) || manifest.uuid,
                 })
             }
@@ -46,7 +55,7 @@ export default function IIIFNeighbourNav({manifest, isMobile}: {manifest: any, i
 
     return (
         <>
-        <nav className={`${isMobile ? 'fixed bottom-6 left-4 right-4 z-[4001]' : ''} flex items-center gap-2`}>
+        <nav className={`${isMobile ? 'fixed bottom-6 left-4 right-4 z-[4001]' : ''} flex items-center gap-2 ${manifest.type == 'Manifest' ? 'fixed top-14 left-[20svw] m-2' : ''}`}>
                 {/* Collection link */}
                 <RoundIconButton 
                     href={`/iiif${manifest.partOf ? `/${manifest.partOf}` : ''}`} 
@@ -102,7 +111,7 @@ export default function IIIFNeighbourNav({manifest, isMobile}: {manifest: any, i
                 ) : null}
 
 			{/* Download button */}
-			{manifest.type == 'Collection' && manifest.childCount?.images && manifest.length == manifest.childCount?.manifests && <AlertDialog>
+			{((isCollection ? (manifest.childCount?.images && manifest.length == manifest.childCount?.manifests) : true)) && <AlertDialog>
 				<AlertDialogTrigger asChild>
 					<RoundIconButton 
 						label="Last ned">

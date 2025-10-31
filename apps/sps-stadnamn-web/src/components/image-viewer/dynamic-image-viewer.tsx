@@ -1,27 +1,12 @@
 import React, { useEffect, useRef, useState, useCallback, useContext } from 'react';
-import dynamic from 'next/dynamic';
-import { resolveLanguage } from '@/app/iiif/iiif-utils';
 import OpenSeadragon from 'openseadragon';
-import { PiMagnifyingGlassPlusFill, PiMagnifyingGlassMinusFill, PiCornersOut, PiCaretRightFill, PiCaretLeftFill, PiXBold, PiArrowClockwise, PiDownloadSimple, PiMagnifyingGlassMinusBold, PiMagnifyingGlassPlusBold, PiArrowClockwiseBold, PiDownloadSimpleBold, PiCornersOutBold } from 'react-icons/pi';
+import { PiMagnifyingGlassPlusFill, PiMagnifyingGlassMinusFill, PiCornersOut, PiCaretRightFill, PiCaretLeftFill, PiXBold, PiArrowClockwise, PiMagnifyingGlassMinusBold, PiMagnifyingGlassPlusBold, PiArrowClockwiseBold, PiCornersOutBold } from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
 import Spinner from '@/components/svg/Spinner';
 import ErrorMessage from '../error-message';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 import { RoundIconButton } from '../ui/clickable/round-icon-button';
 import { useIIIFSessionStore } from '@/state/zustand/iiif-session-store';
 import { GlobalContext } from '@/state/providers/global-provider';
-
-const IIIFDownloader = dynamic(() => import('../download/iiif-downloader'), { ssr: false })
 
 const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Record<string, any>[], manifestDataset: string, manifestId: string}) => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
@@ -30,7 +15,6 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
   const [currentPage, setCurrentPage] = useState(0);
   const [error, setError] = useState<any>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
-	const [isDownloading, setIsDownloading] = useState(false);
   const currentPosition = useIIIFSessionStore((s) => s.currentPosition)
   const snappedPosition = useIIIFSessionStore((s) => s.snappedPosition)
   const drawerOpen = useIIIFSessionStore((s) => s.drawerOpen)
@@ -141,23 +125,7 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
     }
   };
 
-  const [downloaderJob, setDownloaderJob] = useState<any | null>(null)
-
-  const handleDownload = useCallback(async (format: string, allPages?: boolean) => {
-    if (!viewer.current || !images.length) return
-    setIsDownloading(true)
-    const pageIndex = allPages ? undefined : currentPage
-    const baseName = resolveLanguage(images[pageIndex ?? 0]?.label) || manifestId
-    setDownloaderJob({
-      kind: 'viewer',
-      manifestId,
-      manifestDataset,
-      images,
-      format,
-      pageIndex,
-      filename: baseName,
-    })
-  }, [currentPage, images, manifestDataset, manifestId]);
+  
 
   return (
     <div className='w-full h-full relative'>
@@ -165,7 +133,7 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
       <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner status="Lastar inn bilde" className='w-20 h-20'/></div>
         : null
       }
-      {(!isMobile || snappedPosition != 'middle') && <div className={`absolute xl:bottom-auto xl:top-0 right-0 xl:right-auto xl:left-0 flex z-[1000] gap-2 p-2 text-white`}>
+      {(!isMobile || snappedPosition != 'middle') && <div className={`absolute right-0 flex z-[1000] gap-2 p-2 text-white`}>
         {!isMobile && <><RoundIconButton 
           onClick={() => viewer.current?.viewport.zoomBy(1.5)} 
           label="Zoom inn">
@@ -181,59 +149,6 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
           label="Nullstill zoom">
             <PiArrowClockwiseBold  className='text-xl xl:text-base' />
         </RoundIconButton>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <RoundIconButton 
-              label="Last ned">
-                <PiDownloadSimpleBold className='text-xl xl:text-base'  />
-            </RoundIconButton>
-          </AlertDialogTrigger>
-			<AlertDialogContent>
-            <AlertDialogCancel className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-              <PiXBold className="text-xl" aria-hidden="true"/>
-              <span className="sr-only">Close</span>
-            </AlertDialogCancel>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Last ned bilde</AlertDialogTitle>
-              <AlertDialogDescription>
-                Vel ønska format for nedlasting av bildet.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-				{isDownloading ? (
-					<div className="py-8 flex items-center justify-center">
-						<Spinner status="Lastar ned…" className='w-8 h-8' />
-					</div>
-				) : (
-					<AlertDialogFooter>
-						<div className="flex flex-row gap-2 justify-center w-full">
-							<AlertDialogCancel className="btn btn-outline">
-								Avbryt
-							</AlertDialogCancel>
-							<AlertDialogAction 
-								className="btn btn-outline"
-								onClick={() => handleDownload('jpg', false)}
-							>
-								JPG
-							</AlertDialogAction>
-							<AlertDialogAction 
-								className="btn btn-outline"
-								onClick={() => handleDownload('pdf', false)}
-							>
-								PDF{numberOfPages > 1 ? ' - denne sida' : ''}
-							</AlertDialogAction>
-							{numberOfPages > 1 && (
-								<AlertDialogAction 
-									className="btn btn-outline"
-									onClick={() => handleDownload('pdf', true)}
-								>
-									PDF - alle sider
-								</AlertDialogAction>
-							)}
-						</div>
-					</AlertDialogFooter>
-				)}
-          </AlertDialogContent>
-        </AlertDialog>
         <RoundIconButton 
           onClick={handleFullscreenClick} 
           label="Fullskjerm">
@@ -274,12 +189,7 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
           </div>
         )}
       </div>
-      {downloaderJob && (
-        <IIIFDownloader
-          job={downloaderJob}
-          onDone={() => { setIsDownloading(false); setDownloaderJob(null) }}
-        />
-      )}
+      
     </div>
   );
 };
