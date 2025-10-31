@@ -1,22 +1,22 @@
 "use client"
-import { PiArrowElbowLeftUpBold, PiCaretLeftBold, PiCaretLineLeftBold, PiCaretLineRightBold, PiCaretRightBold, PiDownloadSimpleBold, PiDotsThreeBold, PiX, PiXBold } from "react-icons/pi";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { RoundIconButton } from "@/components/ui/clickable/round-icon-button";
 import IconLink from "@/components/ui/icon-link";
-import { useState } from "react";
+import { useIIIFSessionStore } from '@/state/zustand/iiif-session-store';
 import dynamic from 'next/dynamic';
+import { useState } from "react";
+import { PiArrowElbowLeftUpBold, PiCaretLeftBold, PiCaretLineLeftBold, PiCaretLineRightBold, PiCaretRightBold, PiDotsThreeBold, PiDownloadSimpleBold, PiX, PiXBold } from "react-icons/pi";
 import { resolveLanguage } from '../iiif-utils';
-import { useIIIFSessionStore } from '@/state/zustand/iiif-session-store'
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 
 const IIIFDownloader = dynamic(() => import('@/components/download/iiif-downloader'), { ssr: false })
 
@@ -62,7 +62,7 @@ export default function IIIFNeighbourNav({manifest, isMobile, manifestDataset}: 
         <>
         <nav className={`flex items-center gap-2 ${manifest.type == 'Manifest' ? `absolute top-14 ${isMobile ? 'left-0' : 'left-[20svw]'} m-2` : ''}`}>
 			{/* Collection link (hidden on mobile when neighbour nav is open) */}
-				{(!isMobile || !navOpen) && (
+				{(!isMobile || !navOpen || isCollection) && (
 				<RoundIconButton 
 					href={`/iiif${manifest.partOf ? `/${manifest.partOf}` : ''}`} 
 					label="Gå til overordna samling">
@@ -72,7 +72,7 @@ export default function IIIFNeighbourNav({manifest, isMobile, manifestDataset}: 
 
                 {(manifest.order && manifest.parentLength && manifest.partOf && manifest.parentLength > 1) ? (
                     <>
-                    {(!isMobile || navOpen) && (
+                    {(!isMobile || navOpen || isCollection) && (
                     <div
                         id="iiif-neighbour-nav-bar"
                         className={`${isMobile && navOpen ? 'mx-auto h-10 py-1 px-2 shadow-lg' : 'h-full px-2'} flex items-center font-semibold bg-neutral-950/70 text-white rounded-full backdrop-blur-sm`}
@@ -125,7 +125,7 @@ export default function IIIFNeighbourNav({manifest, isMobile, manifestDataset}: 
                 ) : null}
 
             {/* Download button (hidden on mobile when neighbour nav is open) */}
-            {(!isMobile || !navOpen) && ((isCollection ? (manifest.childCount?.images && manifest.length == manifest.childCount?.manifests) : true)) && <AlertDialog>
+            {(!isMobile || !navOpen || isCollection) && ((isCollection ? (manifest.childCount?.images && manifest.length == manifest.childCount?.manifests) : true)) && <AlertDialog>
 				<AlertDialogTrigger asChild>
 					<RoundIconButton 
 						label="Last ned">
@@ -193,7 +193,7 @@ export default function IIIFNeighbourNav({manifest, isMobile, manifestDataset}: 
 			</AlertDialog>}
 
             {/* Mobile toggle on the right side */}
-            {isMobile && (
+            {isMobile && !isCollection && (
                 <RoundIconButton
                     onClick={() => setNavOpen(!navOpen)}
                     aria-expanded={navOpen}
