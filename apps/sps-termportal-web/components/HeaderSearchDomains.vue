@@ -73,21 +73,24 @@
         class="absolute z-20 mt-[6px] max-w-fit rounded-b-[7px] border border-gray-300 border-t-white bg-white shadow-lg"
         :style="{ width: `${topWrapper.offsetWidth}px` }"
       >
-        <div class="absolute right-0 top-0 mr-1 mt-1 flex space-x-2">
+        <div class="absolute right-0 top-0 flex justify-between h-8 mr-1 mt-1 space-x-2 text-xl">
           <button
             v-if="subdomainSpecified"
-            class="cursor-pointer rounded-xs border border-transparent p-0.5 text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
+            class="flex items-center justify-center w-8 cursor-pointer rounded-xs border border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
             :aria-label="$t('searchBar.resetDomainOptions')"
             @click="resetSubdomainOptions()"
           >
-            <IconReset size="1.3em" />
+            <IconReset
+              size="1.3em"
+              class="translate-y-[1px]"
+            />
           </button>
           <button
-            class="cursor-pointer flex justify-center rounded-xs border border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
+            class="cursor-pointer flex items-center w-8 justify-center rounded-xs border border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
             :aria-label="$t('searchBar.closeDomainMenu')"
             @click="panel = false"
           >
-            <IconClose class="translate-y-[1px]" />
+            <IconClose />
           </button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
