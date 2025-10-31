@@ -202,19 +202,14 @@
     <button
       id="clearDdBtn"
       class="tp-hover-focus flex w-10 items-center justify-center border-transparent text-gray-500 focus:text-gray-800"
+      :aria-label="$t('searchBar.clearTextLabel')"
       @click="onDropdownClick"
     >
-      <div
+      <IconClose
         v-if="searchterm.length"
-        class="flex items-center"
-      >
-        <Icon
-          name="ic:sharp-clear"
-          size="1.4em"
-          aria-hidden="true"
-        />
-        <span class="sr-only">{{ $t("searchBar.clearTextLabel") }}</span>
-      </div>
+        class="mt-0.5"
+        size="1.4em"
+      />
       <div v-else>
         <component
           :is="dropdownIcon ? 'span' : 'ChevronDownIcon'"
