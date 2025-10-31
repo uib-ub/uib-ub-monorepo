@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback, useContext } from 'react';
+import dynamic from 'next/dynamic';
 import OpenSeadragon from 'openseadragon';
 import { PiMagnifyingGlassPlusFill, PiMagnifyingGlassMinusFill, PiCornersOut, PiCaretRightFill, PiCaretLeftFill, PiXBold, PiArrowClockwise, PiDownloadSimple, PiMagnifyingGlassMinusBold, PiMagnifyingGlassPlusBold, PiArrowClockwiseBold, PiDownloadSimpleBold, PiCornersOutBold } from 'react-icons/pi';
 import IconButton from '../ui/icon-button';
@@ -18,6 +19,8 @@ import {
 import { RoundIconButton } from '../ui/clickable/round-icon-button';
 import { useIIIFSessionStore } from '@/state/zustand/iiif-session-store';
 import { GlobalContext } from '@/state/providers/global-provider';
+
+const IIIFDownloader = dynamic(() => import('../download/iiif-downloader'), { ssr: false })
 
 const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Record<string, any>[], manifestDataset: string, manifestId: string}) => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
@@ -137,39 +140,22 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
     }
   };
 
-	const handleDownload = useCallback(async (format: string, allPages?: boolean) => {
-    if (viewer.current && images[currentPage]) {
-      try {
-				setIsDownloading(true);
-        const params = new URLSearchParams({
-          uuid: manifestId,
-          format,
-          ...((!allPages && currentPage !== undefined) && { page: currentPage.toString() })
-        });
-        
-        const response = await fetch(`/api/iiif/download?${params.toString()}`);
-        if (!response.ok) throw new Error('Download failed');
+  const [downloaderJob, setDownloaderJob] = useState<any | null>(null)
 
-        const contentDisposition = response.headers.get('Content-Disposition');
-        const matches = contentDisposition?.match(/filename\*=UTF-8''([^;]+)/);
-        const filename = matches ? decodeURIComponent(matches[1]) : 'download';
-
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        link.click();
-        
-				window.URL.revokeObjectURL(url);
-      } catch (error) {
-        console.error('Error downloading:', error);
-			} finally {
-				setIsDownloading(false);
-			}
-    }
-  }, [currentPage, images, manifestId]);
+  const handleDownload = useCallback(async (format: string, allPages?: boolean) => {
+    if (!viewer.current || !images.length) return
+    setIsDownloading(true)
+    const pageIndex = allPages ? undefined : currentPage
+    setDownloaderJob({
+      kind: 'viewer',
+      manifestId,
+      manifestDataset,
+      images,
+      format,
+      pageIndex,
+      filename: manifestId,
+    })
+  }, [currentPage, images, manifestDataset, manifestId]);
 
   return (
     <div className='w-full h-full relative'>
@@ -286,6 +272,12 @@ const DynamicImageViewer = ({images, manifestDataset, manifestId}: {images: Reco
           </div>
         )}
       </div>
+      {downloaderJob && (
+        <IIIFDownloader
+          job={downloaderJob}
+          onDone={() => { setIsDownloading(false); setDownloaderJob(null) }}
+        />
+      )}
     </div>
   );
 };

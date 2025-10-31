@@ -3,6 +3,8 @@ import { PiArrowElbowLeftUpBold, PiCaretLeftBold, PiCaretLineLeftBold, PiCaretLi
 import { RoundIconButton } from "@/components/ui/clickable/round-icon-button";
 import IconLink from "@/components/ui/icon-link";
 import { useState } from "react";
+import dynamic from 'next/dynamic';
+import { resolveLanguage } from '../iiif-utils';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -15,41 +17,35 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+const IIIFDownloader = dynamic(() => import('@/components/download/iiif-downloader'), { ssr: false })
+
 export default function IIIFNeighbourNav({manifest, isMobile}: {manifest: any, isMobile: boolean}) {
     if (!manifest) return null
 
 	const isCollection = manifest?.type === 'Collection'
     const [isDownloading, setIsDownloading] = useState(false)
+    const [downloaderJob, setDownloaderJob] = useState<any | null>(null)
 
 	const handleDownload = async (format: string) => {
-		try {
+        try {
             setIsDownloading(true)
-			const params = new URLSearchParams({
-				uuid: manifest.uuid,
-				format,
-			});
-			const response = await fetch(`/api/iiif/download?${params.toString()}`);
-			if (!response.ok) throw new Error('Download failed');
-
-			const contentDisposition = response.headers.get('Content-Disposition');
-			const matches = contentDisposition?.match(/filename\*=UTF-8''([^;]+)/);
-			const filename = matches ? decodeURIComponent(matches[1]) : 'download';
-
-			const blob = await response.blob();
-			const url = window.URL.createObjectURL(blob);
-			const link = document.createElement('a');
-			link.href = url;
-			link.download = filename;
-			link.click();
-			window.URL.revokeObjectURL(url);
-		} catch (error) {
+            if (format === 'pdf' || format === 'multipdf' || format === 'jpgs') {
+                setDownloaderJob({
+                    kind: 'collection',
+                    collectionUuid: manifest.uuid,
+                    format: format === 'pdf' ? 'pdf' : (format === 'multipdf' ? 'multipdf' : 'jpgs'),
+                    filename: resolveLanguage(manifest.label) || manifest.uuid,
+                })
+            }
+        } catch (error) {
 			console.error('Error downloading:', error);
         } finally {
-            setIsDownloading(false)
+            // handled in onDone
 		}
 	};
 
     return (
+        <>
         <nav className={`${isMobile ? 'fixed bottom-6 left-4 right-4 z-[4001]' : ''} flex items-center gap-2`}>
                 {/* Collection link */}
                 <RoundIconButton 
@@ -127,7 +123,7 @@ export default function IIIFNeighbourNav({manifest, isMobile}: {manifest: any, i
                         {isDownloading ? (
                             <div className="py-8 text-center">Laster ned…</div>
                         ) : (
-                            <AlertDialogFooter>
+            <AlertDialogFooter>
                                 <div className="flex flex-row gap-2 justify-center w-full">
                                     <AlertDialogCancel className="btn btn-outline">Avbryt</AlertDialogCancel>
                                     {isCollection ? (
@@ -168,11 +164,18 @@ export default function IIIFNeighbourNav({manifest, isMobile}: {manifest: any, i
                                         </>
                                     )}
                                 </div>
-                            </AlertDialogFooter>
+            </AlertDialogFooter>
                         )}
 				</AlertDialogContent>
 			</AlertDialog>}
 
         </nav>
+        {downloaderJob && 
+            <IIIFDownloader
+                job={downloaderJob}
+                onDone={() => { setIsDownloading(false); setDownloaderJob(null) }}
+            />
+        }
+        </>
     )
 }
