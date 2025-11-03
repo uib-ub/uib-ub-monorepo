@@ -30,7 +30,7 @@ interface FacetConfigItem extends FieldConfigItem {
  
 const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, numeric, keyword, noInfobox, specialFacet] = Array(11).fill(true);
 
-const sosi = {label: "Stedstype (standardisert)", description: "SOSI-standarden", facet, table, result, noInfobox}
+const sosi = {label: "Stedstype (standardisert)", description: "SOSI-standarden", facet, table, result, noInfobox, keyword}
 const cadastre = {"within": {label: "Gard", result},
                   "cadastre__gnr": {label: "Gardsnummer", result, sort: "asc" as const, type: "integer" as const}, 
                   "cadastre__bnr": {label: "Bruksnummer", result, sort: "asc" as const, type: "integer" as const}
@@ -72,10 +72,11 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       ...identifiers
     },
     wikidata: {
-      ...required, adm, adm1, adm2,
+      ...required, adm, adm1, adm2, sosi,
       "misc.placeType": {label: "Lokalitetstype", table, facet},
       "misc.overordnetSted": {label: "Overordnet sted2", table, facet},
       "misc.adm": {label: "Overordnet sted", table, facet},
+      "misc.lokaltNavn": {label: "Lokalt navn", table, facet},
     },
     bsn: {
       ...required, adm, adm1, adm2,
@@ -288,14 +289,12 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.Kommunenummer": { label: "Kommunenummer", table, facet },
       "rawData.SistEndra": { label: "Sist endra", table }
     },
-    gn2019: {
-      ...required, adm, adm1, adm2,
-      ...identifiers,
-    },
     geonames: {
-      ...required, adm, adm1, adm2,
+      ...required, adm, adm1, adm2, sosi,
       "lang": {label: "Språk", facet},
       "placeType": {label: "Lokalitetstype", facet},
+      "misc.featureClass": {label: "Geonames feature class", facet},
+      "misc.featureCode": {label: "Geonames feature code", facet},
       
     },
     ft1900: {

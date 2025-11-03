@@ -362,7 +362,7 @@ export default function SearchResults() {
               ${isFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
             `}
           >
-            {isFetchingNextPage ? <Spinner status="Lastar" /> : <PiPlusBold aria-hidden="true" />} {isFetchingNextPage ? 'Lastar...' : 'Vis fleire'}
+            {isFetchingNextPage && <Spinner status="Lastar" />} {isFetchingNextPage ? 'Lastar...' : 'Vis fleire'}
           </button>
           
 

@@ -2,6 +2,7 @@
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';
+import { baseAllConfig } from '@/config/search-config';
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
   const { termFilters, reservedParams } = extractFacets(request)
@@ -38,7 +39,7 @@ export async function GET(request: Request) {
         : {
             [facets[i]]: {
               terms: {
-                field: facets[i] === 'dataset' ? '_index' : `${facets[i]}.keyword`,
+                field: facets[i] === 'dataset' ? '_index' : `${facets[i]}${(baseAllConfig[facets[i] as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}`,
                 missing: "_false",
                 size: params.facetSearch ? 10 : 100,
                 ...params.facetSort ? { order: { _key: params.facetSort } } : {},

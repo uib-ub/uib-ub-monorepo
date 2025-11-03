@@ -12,7 +12,7 @@ const Suggestion = ({q}: {q: string}) => {
     }} className="
     cursor-pointer select-none
     flex items-center gap-2
-    px-1 pr-2 py-1 rounded-md">
+    py-1 rounded-md">
       {q.includes("~") ? <><PiTilde className="text-lg" aria-hidden="true"/> Omtrentleg søk</> : <><PiMagnifyingGlass className="text-lg" aria-hidden="true"/> {q}</>}
     </Clickable>
 }
@@ -36,7 +36,7 @@ export default function SearchSuggestions({initGroupData}: {initGroupData: any})
             }
             { initLabel && initLabel !== searchQ && <Suggestion q={initLabel} /> }
             { searchQ && <Clickable remove={['q']} add={{q: null}} className="flex items-center gap-2 cursor-pointer select-none px-1 pr-2 py-1 rounded-md"><PiTrash className="text-lg" aria-hidden="true"/> Fjern søkeord</Clickable>}
-            { filterCount > 0 && <Clickable remove={datasetFilters.map(filter => filter[0]).concat(facetFilters.map(filter => filter[0]))} className="flex items-center gap-2 bg-neutral-50 cursor-pointer select-none px-2 pr-1 py-1 rounded-md"><PiTrash className="text-lg" aria-hidden="true"/> Fjern filtrering</Clickable>}
+            { filterCount > 0 && <Clickable remove={datasetFilters.map(filter => filter[0]).concat(facetFilters.map(filter => filter[0]))} className="flex items-center gap-2 cursor-pointer select-none py-1 rounded-md"><PiTrash className="text-lg" aria-hidden="true"/> Fjern filtrering</Clickable>}
 
         </div>
     )

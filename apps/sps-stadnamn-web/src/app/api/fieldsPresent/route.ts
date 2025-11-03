@@ -27,7 +27,7 @@ export async function GET(request: Request) {
       "fields_present": {
         "filters": {
           "filters": availableFacets.reduce((acc, facetItem) => {
-            const addKeyword = !facetItem.type;
+            const addKeyword = !(facetItem.type || facetItem.keyword);
             const field = facetItem.key + (addKeyword ? ".keyword" : "");
             acc[field] = { "exists": { "field": field } };
             return acc;

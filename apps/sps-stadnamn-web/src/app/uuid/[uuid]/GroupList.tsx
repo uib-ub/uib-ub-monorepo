@@ -122,10 +122,6 @@ export default function GroupList({docData}: {docData: Record<string, any>}) {
                 <span className="text-sm font-medium text-neutral-700">
                     Vis fleire ({data.total - size})
                 </span>
-                <PiPlusBold 
-                    aria-hidden="true" 
-                    className="text-neutral-600 text-lg font-bold" 
-                />
             </button>
         )}
     </div>}

@@ -50,7 +50,7 @@ const ExpandableContent = (
                     aria-expanded={expanded}
                     onClick={() => setExpanded(!expanded)}
                 >
-                    {expanded ? <><PiMinusBold aria-hidden="true" /> Vis mindre</> : <><PiPlusBold aria-hidden="true" /> Vis heile</>}
+                    {expanded ? 'Vis mindre' : 'Vis heile'}
                 </button>
             )}
         </>
@@ -94,7 +94,7 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
                     aria-controls={`text-items-${textItems.length}`}
                     onClick={() => setShowAll(v => !v)}
                 >
-                    {showAll ? <><PiMinusBold aria-hidden="true" /> Vis færre tolkingar</> : <><PiPlusBold aria-hidden="true" /> Vis fleire tolkingar ({textItems.length - 1})</>}
+                    {showAll ? <>Vis færre tolkingar</> : <>Vis fleire tolkingar ({textItems.length - 1})</>}
                 </button>
             )}
         </>
@@ -146,7 +146,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                                         className="text-sm text-neutral-800 flex items-center gap-1"
                                         onClick={() => toggleShowMore(ds, true)}
                                     >
-                                        <PiPlusBold aria-hidden="true" /> {`Vis fleire (${items.length - visibleItems.length})`}
+                                        {`Vis fleire (${items.length - visibleItems.length})`}
                                     </button>
                                 </li>
                             )}
@@ -157,7 +157,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                                         className="text-sm text-neutral-800 flex items-center gap-1"
                                         onClick={() => toggleShowMore(ds, false)}
                                     >
-                                        <PiMinusBold aria-hidden="true" /> Vis færre
+                                        Vis færre
                                     </button>
                                 </li>
                             )}
