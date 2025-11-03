@@ -2,7 +2,7 @@
 
 import { postQuery } from '../_utils/post';
 
-export async function fetchIIIFSearch(collection: string, q?: string, type?: string, size?: number) {
+export async function fetchIIIFSearch(collection: string, q?: string, type?: string, size?: number, from?: number) {
   
 
   // Build query conditions
@@ -69,6 +69,7 @@ export async function fetchIIIFSearch(collection: string, q?: string, type?: str
     },
     "sort": q ? ["_score"] : ["order"],
     "size": size || 1000,
+    "from": from || 0,
     "_source": ["uuid", "order", "images", "type", "label", "audio", "partOf"],
     "aggs": {
       "types": {

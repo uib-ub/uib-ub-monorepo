@@ -7,13 +7,15 @@ import Spinner from "@/components/svg/Spinner";
 import FileCard from "./file-card";
 import IIIFTypeCounts from "./iiif-type-counts";
 import { GlobalContext } from "@/state/providers/global-provider";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import IconButton from "@/components/ui/icon-button";
 import { PiInfo } from "react-icons/pi";
 import { useSessionStore } from "@/state/zustand/session-store";
 import IIIFNeighbourNav from "./iiif-neighbour-nav";
 
-const iiifQuery = async (collectionUuid: string, searchQuery: string, size: number) => {
+const PAGE_SIZE = 50;
+
+const iiifQuery = async (collectionUuid: string, searchQuery: string, from: number, size: number = PAGE_SIZE) => {
     const params = new URLSearchParams();
     
     if (collectionUuid) {
@@ -23,6 +25,7 @@ const iiifQuery = async (collectionUuid: string, searchQuery: string, size: numb
         params.set('q', searchQuery);
     }
     params.set('size', size.toString());
+    params.set('from', from.toString());
 
     const response = await fetch(`/api/iiif/search?${params.toString()}`);
     if (!response.ok) throw new Error('Failed to fetch results');
@@ -32,30 +35,51 @@ const iiifQuery = async (collectionUuid: string, searchQuery: string, size: numb
 export default function CollectionExplorer({manifest, isCollection, manifestDataset}: {manifest: any, isCollection: boolean, manifestDataset?: string}) {
     const { inputValue } = useContext(GlobalContext);
     const [searchQuery, setSearchQuery] = useState('');
-    const [size, setSize] = useState(50);
     const containerRef = useRef<HTMLDivElement>(null);
     const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
     const { isMobile } = useContext(GlobalContext);
 
-    const { data, isLoading, isFetching, error } = useQuery({
-        queryKey: ['iiifSearch', manifest?.uuid, searchQuery, size],
-        queryFn: () => iiifQuery(manifest?.uuid, searchQuery, size),
+    const {
+        data,
+        isLoading,
+        error,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = useInfiniteQuery({
+        queryKey: ['iiifSearch', manifest?.uuid, searchQuery],
+        queryFn: ({ pageParam = 0 }) => iiifQuery(manifest?.uuid, searchQuery, Number(pageParam), PAGE_SIZE),
         enabled: isCollection,
+        initialPageParam: 0,
+        getNextPageParam: (lastPage, allPages) => {
+            const lp: any = lastPage as any;
+            const total = lp?.hits?.total?.value || 0;
+            const loaded = (allPages as any[]).reduce((sum: number, p: any) => sum + (p?.hits?.hits?.length || 0), 0);
+            if (loaded < total) {
+                return loaded; // next offset
+            }
+            return undefined;
+        },
+        refetchOnWindowFocus: false,
+        staleTime: 30_000,
     });
 
     // Extract data from the query result
-    const results = data?.hits?.hits || [];
-    const total = data?.hits?.total?.value || 0;
-    const typeCounts = data?.aggregations?.types?.buckets || [];
+    const pages: any[] = (data as any)?.pages || [];
+    const results = pages.flatMap((p: any) => p?.hits?.hits || []);
+    const total = pages?.[0]?.hits?.total?.value || 0;
+    const typeCounts = pages?.[0]?.aggregations?.types?.buckets || [];
 
     const handleScroll = useCallback(() => {
-        if (!containerRef.current || isLoading || total <= size) return;
+        if (!containerRef.current || isLoading) return;
         
         const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
         if (scrollHeight - scrollTop <= clientHeight * 3) {
-            setSize(prev => prev + 100);
+            if (hasNextPage && !isFetchingNextPage) {
+                fetchNextPage();
+            }
         }
-    }, [isLoading, total, size]);
+    }, [isLoading, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     useEffect(() => {
         const container = containerRef.current;
@@ -68,7 +92,7 @@ export default function CollectionExplorer({manifest, isCollection, manifestData
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         inputValue.current = value;
-        setSize(20);
+        // reset happens via queryKey change
 
         if (searchTimeout.current) {
             clearTimeout(searchTimeout.current);
@@ -152,7 +176,7 @@ export default function CollectionExplorer({manifest, isCollection, manifestData
                 { results.map((result: any, index: number) => {
                     const itemDataset = result._index.split('-')[2].split('_')[1]
                     return (
-                        <Fragment key={index}>
+                        <Fragment key={result._id || index}>
                             <FileCard item={result._source} itemDataset={itemDataset}/>
                         </Fragment>
                     )})}
@@ -162,7 +186,7 @@ export default function CollectionExplorer({manifest, isCollection, manifestData
                     </div>
                 )}
             </div>
-            {(isLoading || isFetching) && (
+            {(isLoading || isFetchingNextPage) && (
                 <div className="flex w-full justify-center items-center">
                     <Spinner status="Laster mer innhold..." className="w-12 h-12 my-12"/>
                 </div>

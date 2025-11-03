@@ -12,8 +12,9 @@ export async function GET(request: Request) {
   const q = url.searchParams.get('q') || '';    
   const type = url.searchParams.get('type') || '';
   const size = url.searchParams.get('size') || '20';
+  const from = url.searchParams.get('from') || '0';
 
-  const {response, status} = await fetchIIIFSearch(collection, q, type, parseInt(size));
+  const {response, status} = await fetchIIIFSearch(collection, q, type, parseInt(size), parseInt(from));
 
   return Response.json(response, {status: status})
 }
