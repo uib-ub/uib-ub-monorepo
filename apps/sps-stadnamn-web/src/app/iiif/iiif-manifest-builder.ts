@@ -169,7 +169,7 @@ export async function buildManifest(request: Request, type: string) {
         const manifest: Record<string, any> = {
             "@context": "http://iiif.io/api/presentation/3/context.json",
             "id": `${baseUrl}/iiif/manifest/${doc._source.uuid}`,
-            "partOf": `${baseUrl}/iiif/collection/${doc._source.partOf}`,
+            "partOf": [{"id": `${baseUrl}/iiif/collection/${doc._source.partOf}`, "type": "Collection"}],
             "rights": license.url,
             "type": "Manifest",
             "label": source.label,
