@@ -48,8 +48,41 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
   const data = await res.json()
   //console.log(data)
 
-  return Array.isArray(uuid) ? data.hits.hits : data.hits.hits[0]
+  return Array.isArray(uuid) ? data.hits.hhits : data.hits.hits[0]
 
+  }
+
+  export async function fetchIIFSuppage(params: {suppageType: string, suppageId: string}) {
+    'use server'
+    const { suppageType, suppageId } = params
+
+    // Determine the correct field to query based on suppageType
+    let field;
+    if (suppageType === 'canvas') {
+      field = "images.canvasUuid";
+    } else if (suppageType === 'annotation') {
+      field = "images.annotationUuid";
+    } else if (suppageType === 'annotationPage') {
+      field = "images.annotationPageUuid";
+    } else {
+      throw new Error("Unknown suppageType: " + suppageType)
+    }
+
+    const query = {
+      size: 1,
+      fields: ['uuid'],
+      _source: false,
+      query: {
+        term: { [`${field}`]: suppageId }
+      }
+    };
+
+    // Query against the iiif* index pattern
+    const [res, status] = await postQuery("iiif_*", query)
+    if (status !== 200) {
+      return { error: "Failed to fetch IIIF suppage", status }
+    }
+    return res.hits.hits[0]
   }
 
   export async function fetchIIFDocByIndex(params: {partOf: string, order: string}) {

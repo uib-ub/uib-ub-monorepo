@@ -3,34 +3,41 @@ import { postQuery } from "@/app/api/_utils/post";
 import { datasetPresentation, licenses } from "@/config/metadata-config";
 import { ensureArrayValues } from "@/app/iiif/iiif-utils";
 
+function getBaseUrlFromRequest(request: Request): string {
+  try {
+    const { origin } = new URL(request.url)
+    if (origin) return origin
+  } catch {}
+  const proto = request.headers.get('x-forwarded-proto') || 'https'
+  const host = request.headers.get('x-forwarded-host') || request.headers.get('host')
+  if (host) return `${proto}://${host}`
+  return 'http://stadnamn.no'
+}
 
-
-
-
-function buildImageCanvas(image: any, manifestDataset: string) {
+function buildImageCanvas(image: any, manifestDataset: string, baseUrl: string) {
   return {
-    "id": `https://stadnamnportalen.uib.no/iiif/canvas/${image.canvasUuid}`,
+    "id": `${baseUrl}/iiif/canvas/${image.canvasUuid}`,
     "type": "Canvas",
     "height": image.height,
     "width": image.width,
-    "items": [buildAnnotationPage(image, manifestDataset)]
+    "items": [buildAnnotationPage(image, manifestDataset, baseUrl)]
   }
 }
 
-function buildAnnotationPage(image: any, manifestDataset: string) {
+function buildAnnotationPage(image: any, manifestDataset: string, baseUrl: string) {
   return {
-    "id": `https://stadnamnportalen.uib.no/iiif/annotationPage/${image.annotationPageUuid}`,
+    "id": `${baseUrl}/iiif/annotationPage/${image.annotationPageUuid}`,
     "type": "AnnotationPage",
-    "items": [buildAnnotation(image, manifestDataset)]
+    "items": [buildAnnotation(image, manifestDataset, baseUrl)]
   }
 }
 
-function buildAnnotation(image: any, manifestDataset: string) {
+function buildAnnotation(image: any, manifestDataset: string, baseUrl: string) {
   return {
-    "id": `https://stadnamnportalen.uib.no/iiif/annotation/${image.annotationUuid}`,
+    "id": `${baseUrl}/iiif/annotation/${image.annotationUuid}`,
     "type": "Annotation",
     "motivation": "painting",
-    "target": `https://stadnamnportalen.uib.no/iiif/canvas/${image.canvasUuid}`,
+    "target": `${baseUrl}/iiif/canvas/${image.canvasUuid}`,
     "body": {
       "id": `https://iiif.test.ube.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${image.uuid}/full/max/0/default.jpg`,
       "type": "Image",
@@ -48,35 +55,35 @@ function buildAnnotation(image: any, manifestDataset: string) {
   }
 }
 
-function buildAudioCanvas(audio: any, manifestDataset: string) {
+function buildAudioCanvas(audio: any, manifestDataset: string, baseUrl: string) {
   return {
-    "id": `https://stadnamnportalen.uib.no/iiif/canvas/${audio.canvasUuid}`,
+    "id": `${baseUrl}/iiif/canvas/${audio.canvasUuid}`,
     "type": "Canvas",
     "duration": audio.duration,
-    "items": [buildAudioAnnotationPage(audio, manifestDataset)]
+    "items": [buildAudioAnnotationPage(audio, manifestDataset, baseUrl)]
   }
 }
 
-function buildAudioAnnotationPage(audio: any, manifestDataset: string) {
+function buildAudioAnnotationPage(audio: any, manifestDataset: string, baseUrl: string) {
   return {
-    "id": `https://stadnamnportalen.uib.no/iiif/annotationPage/${audio.annotationPageUuid}`,
+    "id": `${baseUrl}/iiif/annotationPage/${audio.annotationPageUuid}`,
     "type": "AnnotationPage",
-    "items": [buildAudioAnnotation(audio, manifestDataset)]
+    "items": [buildAudioAnnotation(audio, manifestDataset, baseUrl)]
   }
 }
 
-function buildAudioAnnotation(audio: any, manifestDataset: string) {
+function buildAudioAnnotation(audio: any, manifestDataset: string, baseUrl: string) {
   return {
-    "id": `https://stadnamnportalen.uib.no/iiif/annotation/${audio.annotationUuid}`,
+    "id": `${baseUrl}/iiif/annotation/${audio.annotationUuid}`,
     "type": "Annotation",
     "motivation": "painting",
-    "target": `https://stadnamnportalen.uib.no/iiif/canvas/${audio.canvasUuid}`,
+    "target": `${baseUrl}/iiif/canvas/${audio.canvasUuid}`,
     "body": {
       "id": `https://iiif.test.ube.no/iiif/audio/stadnamn/${manifestDataset.toUpperCase()}/${audio.uuid}`,
       "type": "Sound",
       "format": "audio/" + audio.format,
       "duration": audio.duration,
-      "target": `https://stadnamnportalen.uib.no/iiif/canvas/${audio.canvasUuid}`,
+      "target": `${baseUrl}/iiif/canvas/${audio.canvasUuid}`,
     }
   }
 }
@@ -115,6 +122,7 @@ export async function buildManifest(request: Request, type: string) {
     const source = doc._source
     const manifestDataset = doc._index.split('-')[2].replace('iiif_', '')
     const license = datasetPresentation[manifestDataset]?.license || licenses.ccby4
+    const baseUrl = getBaseUrlFromRequest(request)
 
     if (type == 'collection') {
         const items_query = {
@@ -132,7 +140,7 @@ export async function buildManifest(request: Request, type: string) {
 
         const collection_manifest: Record<string, any> = {
         "@context": "http://iiif.io/api/presentation/3/context.json",
-        "id": `https://stadnamnportalen.uib.no/iiif/collection/${doc._source.uuid}`,
+        "id": `${baseUrl}/iiif/collection/${doc._source.uuid}`,
         "rights": license.url,
         "type": source.type,
         "label": source.label,
@@ -146,7 +154,7 @@ export async function buildManifest(request: Request, type: string) {
 
         collection_manifest["items"] = items.hits.hits.map((item: any) => {
         return {
-            "id": `https://stadnamnportalen.uib.no/iiif/${item._source.type.toLowerCase()}/${item._source.uuid}`,
+            "id": `${baseUrl}/iiif/${item._source.type.toLowerCase()}/${item._source.uuid}`,
             "type": item._source.type,
             "label": item._source.label,
         }
@@ -160,8 +168,8 @@ export async function buildManifest(request: Request, type: string) {
     if (type == 'manifest') {
         const manifest: Record<string, any> = {
             "@context": "http://iiif.io/api/presentation/3/context.json",
-            "id": `https://stadnamnportalen.uib.no/iiif/manifest/${doc._source.uuid}`,
-            "partOf": `https://stadnamnportalen.uib.no/iiif/collection/${doc._source.partOf}`,
+            "id": `${baseUrl}/iiif/manifest/${doc._source.uuid}`,
+            "partOf": `${baseUrl}/iiif/collection/${doc._source.partOf}`,
             "rights": license.url,
             "type": "Manifest",
             "label": source.label,
@@ -176,7 +184,7 @@ export async function buildManifest(request: Request, type: string) {
 
         if (source.alternativeManifests) {
             manifest["seeAlso"] = source.alternativeManifests.map((manifest: any) => ({
-                "id": `https://stadnamnportalen.uib.no/iiif/manifest/${manifest.uuid}`,
+                "id": `${baseUrl}/iiif/manifest/${manifest.uuid}`,
                 "type": "Dataset",
                 "label": manifest.label
             }))
@@ -187,11 +195,11 @@ export async function buildManifest(request: Request, type: string) {
             if (source.images.length > 1) {
                 manifest["behavior"] = ["paged"]
             }
-            manifest["items"] = source.images.map((image: any) => buildImageCanvas(image, manifestDataset))
+            manifest["items"] = source.images.map((image: any) => buildImageCanvas(image, manifestDataset, baseUrl))
         }
 
         if (source.audio) {
-            manifest["items"] = [buildAudioCanvas(source.audio, manifestDataset)]
+            manifest["items"] = [buildAudioCanvas(source.audio, manifestDataset, baseUrl)]
         }
 
         return Response.json(manifest, {status: 200})
@@ -203,27 +211,27 @@ export async function buildManifest(request: Request, type: string) {
     if (type == 'canvas') {
         if (source.images) {
             const canvas = source.images.find((image: any) => image.canvasUuid == uuid)
-            return Response.json(buildImageCanvas(canvas, manifestDataset))
+            return Response.json(buildImageCanvas(canvas, manifestDataset, baseUrl))
         } else if (source.audio) {
-            return Response.json(buildAudioCanvas(source.audio, manifestDataset))
+            return Response.json(buildAudioCanvas(source.audio, manifestDataset, baseUrl))
         }
     }
 
     if (type == 'annotationPage') {
         if (source.images) {
             const canvas = source.images.find((image: any) => image.annotationPageUuid == uuid)
-            return Response.json(buildAnnotationPage(canvas, manifestDataset))
+            return Response.json(buildAnnotationPage(canvas, manifestDataset, baseUrl))
         } else if (source.audio) {
-            return Response.json(buildAudioAnnotationPage(source.audio, manifestDataset))
+            return Response.json(buildAudioAnnotationPage(source.audio, manifestDataset, baseUrl))
         }
     }
 
     if (type == 'annotation') {
         if (source.images) {
             const canvas = source.images.find((image: any) => image.annotationUuid == uuid)
-            return Response.json(buildAnnotation(canvas, manifestDataset))
+            return Response.json(buildAnnotation(canvas, manifestDataset, baseUrl))
         } else if (source.audio) {
-            return Response.json(buildAudioAnnotation(source.audio, manifestDataset))
+            return Response.json(buildAudioAnnotation(source.audio, manifestDataset, baseUrl))
         }
 
     }
