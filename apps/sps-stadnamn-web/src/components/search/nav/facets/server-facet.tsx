@@ -136,7 +136,13 @@ export default function ServerFacet() {
           aria-pressed={currentValue == '_true'}
           className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
         >
-          Med {Math.round((yesCount / allCount) * 100)}%
+          Med {
+            yesCount === 0 ? 0 :
+            yesCount === allCount ? 100 :
+            yesCount / allCount < 0.01 ? "< 1" :
+            yesCount / allCount > 0.99 ? "> 99" :
+            Math.floor((yesCount / allCount) * 100)
+          }%
         </Clickable>
 
         <Clickable
@@ -145,7 +151,13 @@ export default function ServerFacet() {
           aria-pressed={currentValue == '_false'}
           className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
         >
-          Utan {Math.round((noCount / allCount) * 100)}%
+          Utan {
+            noCount === 0 ? 0 :
+            noCount === allCount ? 100 :
+            noCount / allCount < 0.01 ? "< 1" :
+            noCount / allCount > 0.99 ? "> 99" :
+            Math.floor((noCount / allCount) * 100)
+          }%
         </Clickable>
         <button
           onClick={() => {
