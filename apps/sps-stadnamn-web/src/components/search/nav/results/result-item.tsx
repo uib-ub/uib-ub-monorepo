@@ -143,7 +143,7 @@ remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
             <div className="p-3">
             {initValue && initValue == hit.fields["group.id"][0] && (
                         
-                        <ClickableIcon className="flex items-center justify-center" label="Lukk gruppe" remove={['init']}>
+                        <ClickableIcon className="flex items-center justify-center" label="Losne utganspunkt" remove={['init']}>
                             <PiXCircleFill className="text-neutral-700 group-aria-expanded:text-white text-2xl hover:text-neutral-800" />
                         </ClickableIcon>
                         
