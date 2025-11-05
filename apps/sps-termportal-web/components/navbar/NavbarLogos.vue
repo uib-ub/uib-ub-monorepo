@@ -1,6 +1,29 @@
 <template>
   <div>
-    <SideBar v-if="context !== 'minimal'" class="w-16">
+    <AppLink
+      v-if="headersize === headerSize.Minimal"
+      :hide-icon="true"
+      to="https://www.uib.no"
+      :aria-label="$t('navBar.uibHomepage')"
+      class=""
+    >
+      <LogoUiB
+        class="ml-5 mt-6 lg:hidden"
+        img-style="max-height: 60px"
+        logo-type="symbol"
+      />
+      <LogoUiB
+        class="ml-1 mt-6 hidden md:ml-3 md:mt-8 lg:block"
+        img-style="max-height: 85px"
+        logo-type="2lines"
+        :logo-language="locale == 'en' ? 'en' : 'no'"
+      />
+    </AppLink>
+
+    <SideBar
+      v-else
+      class="w-16"
+    >
       <AppLink
         id="anchor"
         to="/"
@@ -17,34 +40,17 @@
         />
       </AppLink>
     </SideBar>
-
-    <AppLink
-      v-else-if="context === 'minimal'"
-      :hide-icon="true"
-      to="https://www.uib.no"
-      class=""
-    >
-      <LogoUiB
-        class="mt-6 ml-5 lg:hidden"
-        img-style="max-height: 60px"
-        logo-type="symbol"
-      />
-      <LogoUiB
-        class="mt-6 md:mt-8 ml-1 md:ml-3 hidden lg:block"
-        img-style="max-height: 85px"
-        logo-type="2lines"
-        :logo-language="locale == 'en' ? 'en' : 'no'"
-      />
-    </AppLink>
   </div>
 </template>
 
 <script setup lang="ts">
 import AppLink from "termportal-ui/components/AppLink.vue";
+import { HeaderSize } from "~/types/enums";
 
 const locale = useLocale();
 
-const defProps = defineProps({
-  context: { type: String, required: true },
-});
+const headerSize = HeaderSize;
+defineProps<{
+  headersize: HeaderSize;
+}>();
 </script>

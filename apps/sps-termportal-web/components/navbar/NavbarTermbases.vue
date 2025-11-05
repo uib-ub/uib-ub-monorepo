@@ -16,12 +16,17 @@
     >
       <template #item="{ item, props }">
         <NuxtLink
+          v-if="item.label"
           class="p-menuitem-link"
           :href="item.route"
           v-bind="props.action"
-          ><span class="p-menuitem-text">
-            {{ lalof(item.label) }}
-          </span>
+        ><span class="p-menuitem-text">
+          {{
+            typeof item.label === "function"
+              ? getLaLo(item.label())
+              : getLaLo(item.label)
+          }}
+        </span>
         </NuxtLink>
       </template>
     </Menu>
@@ -29,14 +34,16 @@
 </template>
 
 <script setup lang="ts">
+const { getLaLo } = useLazyLocale();
+
 const orderedTermbases = useOrderedTermbases();
 const termbaseMenu = ref();
 const termbaseOptions = computed(() =>
   orderedTermbases.value.map((tb) => {
     return {
       label: `${tb}-3A${tb}`,
-      route: `/${tb}`,
+      route: `/tb/${tb}`,
     };
-  })
+  }),
 );
 </script>

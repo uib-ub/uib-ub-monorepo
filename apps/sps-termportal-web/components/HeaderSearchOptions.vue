@@ -5,7 +5,7 @@
         v-model="searchInterface.language"
         aria-labelledby="languageDropdownLabel"
         :options="optionsLanguage"
-        class="min-w-[11rem]"
+        class="min-w-44"
       />
     </SearchDropdownWrapper>
     <SearchDropdownWrapper target="translate">
@@ -13,21 +13,25 @@
         v-model="searchInterface.translate"
         aria-labelledby="translateDropdownLabel"
         :options="optionsTranslate"
-        class="min-w-[6rem]"
+        class="min-w-24"
       />
     </SearchDropdownWrapper>
+
     <button
-      class="rounded-[7px] flex space-x-2 px-2 pt-0.5 pb-1 tp-transition-shadow hover:cursor-pointer group border border-transparent hover:border-tpblue-300 focus:shadow-tphalo focus:border-tpblue-300 outline-none"
+      class="tp-transition-shadow group ml-[-0.6rem] flex space-x-2 rounded-[7px] border border-transparent px-2 pb-1 pt-0.5 outline-none hover:cursor-pointer hover:border-tpblue-300 focus:border-tpblue-300 focus:shadow-tphalo"
       @click="searchInterface.useDomain = !searchInterface.useDomain"
     >
-      <div>{{ $t("global.domain.domain") }}</div>
+      <div>{{ $t("global.domain.domainCap") }}</div>
       <div class="h-4 rotate-180 pb-6">
         <InputSwitch
           v-model="searchInterface.useDomain"
           aria-labelledby="domainSwitchLabel"
           @click.stop="false"
         />
-        <span id="domainSwitchLabel" class="sr-only">Use domain search.</span>
+        <span
+          id="domainSwitchLabel"
+          class="sr-only"
+        >Use domain search.</span>
       </div>
       <div>{{ $t("global.termbase", 0) }}</div>
     </button>
@@ -36,21 +40,23 @@
 
 <script setup>
 import { useI18n } from "vue-i18n";
+
+const appConfig = useAppConfig();
+const termpostViewOnlyLangs = appConfig.language.dataDisplayOnly;
+
 const i18n = useI18n();
 const searchInterface = useSearchInterface();
 const localeLangOrder = useLocaleLangOrder();
 const orderedTermbases = useOrderedTermbases();
+const bootstrapData = useBootstrapData();
 
-// Order of language is not relevant
-const languageInfo = deriveLanguageInfo(languageOrder.nb);
+const languageInfo = deriveLanguageInfo(localeLangOrder.value);
 
 const optionsLanguage = computed(() => {
   const filteredLangs = deriveSearchOptions("language", "all");
   const intersection = intersectUnique(
-    localeLangOrder.value.filter(
-      (lc) => !dataDisplayOnlyLanguages.includes(lc)
-    ),
-    filteredLangs
+    localeLangOrder.value.filter(lc => !termpostViewOnlyLangs.includes(lc)),
+    filteredLangs,
   );
   const options = [
     {
@@ -60,7 +66,7 @@ const optionsLanguage = computed(() => {
   ].concat(
     intersection.map((lang) => {
       return { label: i18n.t("global.lang." + lang), value: lang };
-    })
+    }),
   );
   return options;
 });
@@ -68,10 +74,8 @@ const optionsLanguage = computed(() => {
 const optionsTranslate = computed(() => {
   const filteredTranslate = deriveSearchOptions("translate", "none");
   const intersection = intersectUnique(
-    localeLangOrder.value.filter(
-      (lc) => !dataDisplayOnlyLanguages.includes(lc)
-    ),
-    filteredTranslate
+    localeLangOrder.value.filter(lc => !termpostViewOnlyLangs.includes(lc)),
+    filteredTranslate,
   );
   const options = [
     {
@@ -81,7 +85,7 @@ const optionsTranslate = computed(() => {
   ].concat(
     intersection.map((lang) => {
       return { label: i18n.t("global.lang." + lang), value: lang };
-    })
+    }),
   );
   return options;
 });
@@ -96,7 +100,7 @@ const optionsTermbase = computed(() => {
   ].concat(
     filteredTermbases.map((tb) => {
       return { label: i18n.t("global.samling." + tb), value: tb };
-    })
+    }),
   );
   return options;
 });
@@ -121,7 +125,7 @@ function deriveSearchOptions(searchOption, defaultValue) {
       termbases,
       languageInfo[searchInterface.value.language],
       "language",
-      "all"
+      "all",
     );
   }
 
@@ -130,7 +134,7 @@ function deriveSearchOptions(searchOption, defaultValue) {
       termbases,
       languageInfo[searchInterface.value.translate],
       "translate",
-      "none"
+      "none",
     );
   }
 
@@ -146,13 +150,19 @@ function deriveSearchOptions(searchOption, defaultValue) {
 
     if (termbases.length !== orderedTermbases.value.length) {
       const languages = [
-        ...new Set(termbases.map((tb) => termbaseInfo[tb]).flat()),
+        ...new Set(
+          termbases
+            .map(tb => bootstrapData.value.termbase[tb].language)
+            .flat(),
+        ),
       ];
       options = intersectUnique(localeLangOrder.value, languages);
-    } else {
+    }
+    else {
       options = localeLangOrder.value;
     }
-  } else {
+  }
+  else {
     options = termbases;
   }
 

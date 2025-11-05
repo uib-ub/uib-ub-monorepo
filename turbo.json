@@ -6,6 +6,8 @@
       "outputs": [
         "dist/**",
         ".next/**",
+        ".nuxt/**",
+        ".output/**",
         "storybook-static/**"
       ],
       "dependsOn": [
@@ -19,7 +21,7 @@
         ".env"
       ]
     },
-    "generate#sps-termportalen-web": {
+    "sps-termportal-web#generate": {
       "outputs": [
         "dist/**"
       ]
@@ -30,16 +32,26 @@
       ],
       "dependsOn": []
     },
-    "lint": {
-      "outputs": [
-        "dist/**",
-        "build/**"
-      ]
-    },
+    "lint": {},
     "dev": {
       "cache": false,
       "dependsOn": [
         "^build"
+      ]
+    },
+    "transit": {
+      "dependsOn": [
+        "^transit"
+      ]
+    },
+    "check-types": {
+      "dependsOn": [
+        "transit"
+      ]
+    },
+    "clean": {
+      "dependsOn": [
+        "transit"
       ]
     }
   }

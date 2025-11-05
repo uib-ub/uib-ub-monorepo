@@ -1,17 +1,14 @@
-import { SearchOptions } from "../../utils/vars";
 import { sanitizeTerm, getContextFilter } from "./genSearchEntryQuery";
-import { genTQLangArgument, genTQGraphValue } from "./genQueryUtils";
 
 export function genAutocompleteQuery(
   searchOptions: SearchOptions,
-  base: string
+  base: string,
 ): string {
   const term = searchOptions.term;
-  const sanitizedLit = term.replaceAll('"', '\\"');
+  const sanitizedLit = term.replaceAll("\"", "\\\"");
   const sanitizedIndex = sanitizeTerm(term);
   const multiIndex = sanitizedIndex.split(" ").join(" AND ");
-  const lang = genTQLangArgument(searchOptions.language)[0];
-  const graph = genTQGraphValue(searchOptions.termbase)[0];
+  const languageCode = searchOptions.language[0];
   const context = getContextFilter(searchOptions);
   const contextFilter = () => {
     if (context[0]) {
@@ -20,10 +17,22 @@ export function genAutocompleteQuery(
           ?c ${context[1]} ?con .
           ${context[0]}`;
       return data;
-    } else {
+    }
+    else {
       return "";
     }
   };
+  function languageFilter(languageCode: string) {
+    if (languageCode === "all") {
+      return "";
+    }
+    else if (languageCode === "en") {
+      return `FILTER ( lang(?lit) = "en" || lang(?lit) = "en-GB" || lang(?lit) = "en-US" )`;
+    }
+    else {
+      return `FILTER ( lang(?lit) = "${languageCode}")`;
+    }
+  }
 
   /**
    * Relevance
@@ -43,8 +52,9 @@ export function genAutocompleteQuery(
   GRAPH <urn:x-arq:UnionGraph> {
       {
         SELECT DISTINCT ?litstr {
-          ( ?l ?sc ?lit ) text:query ( "\\"${sanitizedIndex}\\"" ${lang} ) .
+          ( ?l ?sc ?lit ) text:query ( "\\"${sanitizedIndex}\\"" ) .
           ${contextFilter()}
+          ${languageFilter(languageCode)}
           BIND ( str(?lit) as ?litstr )
           FILTER ( ?litstr = "${sanitizedLit}" )
         }
@@ -52,8 +62,9 @@ export function genAutocompleteQuery(
       UNION
       {
         SELECT DISTINCT ?litstr {
-          ( ?l ?sc ?lit ) text:query ("\\"${sanitizedIndex}\\"" ${lang}) .
+          ( ?l ?sc ?lit ) text:query ("\\"${sanitizedIndex}\\"") .
           ${contextFilter()}
+          ${languageFilter(languageCode)}
           BIND ( str(?lit) as ?litstr )
           FILTER ( lcase(?litstr) = lcase("${sanitizedLit}")
                    && ?litstr != "${sanitizedLit}"
@@ -63,8 +74,9 @@ export function genAutocompleteQuery(
       UNION
       {
         SELECT DISTINCT ?litstr {
-          ( ?l ?sc ?lit ) text:query ("${multiIndex}*" ${lang}) .
+          ( ?l ?sc ?lit ) text:query ("${multiIndex}*") .
           ${contextFilter()}
+          ${languageFilter(languageCode)}
           BIND ( str(?lit) as ?litstr )
           FILTER ( strStarts( lcase(?litstr), lcase("${sanitizedLit}") ) &&
                    lcase(?litstr) != lcase("${sanitizedLit}")
@@ -76,8 +88,9 @@ export function genAutocompleteQuery(
       UNION
       {
         SELECT DISTINCT ?litstr {
-          ( ?l ?sc ?lit ) text:query ("${multiIndex}*" ${lang}) .
+          ( ?l ?sc ?lit ) text:query ("${multiIndex}*") .
           ${contextFilter()}
+          ${languageFilter(languageCode)}
           BIND ( str(?lit) as ?litstr )
           FILTER ( !strStarts( lcase(?litstr), lcase("${sanitizedLit}") )
                    && contains( ?litstr, lcase("${sanitizedLit}") )

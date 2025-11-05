@@ -1,5 +1,8 @@
 <template>
-  <div id="studio" ref="studioref"></div>
+  <div
+    id="studio"
+    ref="studioref"
+  />
 </template>
 
 <script setup lang="ts">

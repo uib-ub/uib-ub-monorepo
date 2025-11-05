@@ -10,6 +10,10 @@ app.get(
       url: '/openapi',
     },
     pageTitle: 'UiB-UB API',
+    defaultHttpClient: {
+      targetKey: 'node',
+      clientKey: 'fetch',
+    }
   }),
 )
 

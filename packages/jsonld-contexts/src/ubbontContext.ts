@@ -32,6 +32,7 @@ const ubbontContext = {
     "locah": "http://data.archiveshub.ac.uk/def/",
     "lexvo": "http://lexvo.org/ontology#",
     "cc": "http://creativecommons.org/ns#",
+    "la": "https://linked.art/ns/terms/",
     "id": "@id",
     "type": "@type",
     "none": "@none",
@@ -63,6 +64,9 @@ const ubbontContext = {
     "Production": {
       "@id": "crm:E12_Production"
     },
+    "Set": {
+      "@id": "la:Set"
+    },
     "producedBy": {
       "@id": "crm:P108i_was_produced_by",
       "@type": "@id",
@@ -81,7 +85,6 @@ const ubbontContext = {
     },
     "birthName": {
       "@id": "dbo:birthName",
-      "@type": "xsd:string"
     },
     "dateAccepted": {
       "@id": "dct:dateAccepted"
@@ -309,7 +312,8 @@ const ubbontContext = {
       "@id": "foaf:Organization"
     },
     "issued": {
-      "@id": "dct:issued"
+      "@id": "dct:issued",
+      "@container": "@set"
     },
     "secondarySupport": {
       "@id": "ubbont:secondarySupport",
@@ -341,7 +345,6 @@ const ubbontContext = {
       "@id": "dct:references",
       "@container": [
         "@set",
-        "@language"
       ]
     },
     "Room": {
@@ -359,7 +362,8 @@ const ubbontContext = {
     },
     "isSubjectOf": {
       "@id": "ubbont:isSubjectOf",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "height": {
       "@id": "ubbont:height"
@@ -513,7 +517,8 @@ const ubbontContext = {
     },
     "subOrganizationOf": {
       "@id": "org:subOrganizationOf",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "isPartOf": {
       "@id": "dct:isPartOf",
@@ -538,7 +543,8 @@ const ubbontContext = {
     },
     "children": {
       "@id": "schema:children",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "mbox": {
       "@id": "foaf:mbox",
@@ -702,7 +708,7 @@ const ubbontContext = {
       "@type": "xsd:integer"
     },
     "Person": {
-      "@id": "foaf:Person"
+      "@id": "crm:E21_Person"
     },
     "Group": {
       "@id": "crm:E74_Group"
@@ -809,6 +815,7 @@ const ubbontContext = {
     },
     "name": {
       "@id": "foaf:name",
+      "@container": "@set"
     },
     "postalCode": {
       "@id": "schema:postalCode",
@@ -1337,7 +1344,8 @@ const ubbontContext = {
       "@id": "ubbont:Brochure"
     },
     "extinctionYear": {
-      "@id": "dbo:extinctionYear"
+      "@id": "dbo:extinctionYear",
+      "@type": "xsd:gYear"
     },
     "Seal": {
       "@id": "ubbont:Seal"
@@ -1351,7 +1359,8 @@ const ubbontContext = {
     },
     "memberOf": {
       "@id": "org:memberOf",
-      "@type": "@id"
+      "@type": "@id",
+      "@container": "@set"
     },
     "extinctionDate": {
       "@id": "dbo:extinctionDate",
@@ -1419,7 +1428,8 @@ const ubbontContext = {
       "@container": "@set"
     },
     "formationYear": {
-      "@id": "dbo:formationYear"
+      "@id": "dbo:formationYear",
+      "@type": "xsd:gYear"
     },
     "isoSpeedRatings": {
       "@id": "exif:isoSpeedRatings"

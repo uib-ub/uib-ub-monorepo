@@ -1,19 +1,27 @@
-"use client";
-
+import React from 'react';
 import { Button } from '@/components/ui/button';
-import { signIn } from "next-auth/react";
+import { signIn } from '@/auth'
 
-const SignInButton = () => {
+export function SignIn({
+  size = 'sm', variant = 'outline', className
+}: {
+  size?: 'sm' | 'lg', variant?: 'outline' | 'default' | 'link' | 'destructive' | 'secondary' | 'ghost', className?: string
+}) {
   return (
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={() => signIn("dataporten")}
+    <form
+      action={async () => {
+        'use server'
+        await signIn('dataporten')
+      }}
     >
-      Logg inn
-    </Button>
-  );
-};
-
-export default SignInButton;
-
+      <Button
+        type='submit'
+        variant={variant}
+        size={size}
+        className={className}
+      >
+        Logg inn
+      </Button>
+    </form>
+  )
+} 

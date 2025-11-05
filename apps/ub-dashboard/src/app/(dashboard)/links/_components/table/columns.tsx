@@ -1,12 +1,12 @@
 "use client"
 
+import React, { Suspense } from "react"
 import { CheckHttpStatus } from '@/components/check-http-status'
 import { LoadingSpinner } from '@/components/loaders/loading-spinner'
 import { Button } from '@/components/ui/button'
 import { CaretSortIcon, ClockIcon, TrashIcon } from "@radix-ui/react-icons"
 import { ColumnDef } from "@tanstack/react-table"
 import Link from "next/link"
-import { Suspense } from 'react'
 import { GiFinishLine } from 'react-icons/gi'
 import { LinksProps } from '../links'
 

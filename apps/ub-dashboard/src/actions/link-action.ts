@@ -13,7 +13,9 @@ const generateQR = async (text: string) => {
   }
 }
 
-export async function createShortLink(prevState: any, formData: FormData) {
+type CreateShortLinkState = { message?: string } | string | null;
+
+export async function createShortLink(prevState: CreateShortLinkState, formData: FormData) {
   "use server";
 
   const schema = z.object({
@@ -47,7 +49,7 @@ export async function createShortLink(prevState: any, formData: FormData) {
 
     revalidatePath("/link-shortener");
     return { message: `Created short link and QR` }
-  } catch (error) {
+  } catch {
     return { message: "Failed to create short link!" };
   }
 }

@@ -1,5 +1,3 @@
-import { Matching, SearchOptions, SearchQueryType } from "../../utils/vars";
-
 import {
   getPredicateValues,
   getContextFilter,
@@ -37,23 +35,26 @@ function getTermData(term: string) {
 function getLanguageWhere(
   subqueries: any,
   match: Matching | "all" | "allPatterns",
-  lang: string
+  lang: string,
 ): string {
   if (match === "all") {
     if (!lang) {
       return subqueries("count", match).where.replace("{languageFilter}", "");
-    } else {
+    }
+    else {
       return subqueries("count", match).where.replace(
         "{languageFilter}",
-        `FILTER ( langmatches(lang(?lit), "${lang}") )`
+        `FILTER ( langmatches(lang(?lit), "${lang}") )`,
       );
     }
-  } else if (!lang) {
+  }
+  else if (!lang) {
     return subqueries("count", match).where.replace("{language}", "");
-  } else {
+  }
+  else {
     return subqueries("count", match).where.replace(
       "{language}",
-      `"lang:${lang}"`
+      `"lang:${lang}"`,
     );
   }
 }
@@ -69,18 +70,19 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
   const subqueries = (
     queryType: SearchQueryType | "count",
     subEntry: string,
-    aggregateMatch?: string
+    aggregateMatch?: string,
   ) => {
     const aggregatePredFilter = () => {
       if (searchOptions.matching[0] === "all") {
         return "";
-      } else {
+      }
+      else {
         return `?uri ${predFilter} ?label .`;
       }
     };
     const content = {
       count: {
-        all: {
+        "all": {
           where: `{ SELECT ?label ?lit ?uri
                     WHERE {
                        {
@@ -97,7 +99,7 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
                   }`,
           filter: "",
         },
-        allPatterns: {
+        "allPatterns": {
           where: `{ (?label ?sc ?lit) text:query ("${termData.doubleStarred()}" 100000 {language}).}`,
           filter: "",
         },
@@ -135,14 +137,14 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
         lang: `
                  ${aggregatePredFilter()}
                  ?uri ${
-                   searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf"
-                 } ?context.
+                    searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf"
+                  } ?context.
                 BIND ( lcase(lang(?lit)) as ?prop ).`,
         context: `
              ${aggregatePredFilter()}
              ?uri ${
-               searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf"
-             } ?context.
+                searchOptions.useDomain ? "skosp:domene" : "skosp:memberOf"
+              } ?context.
                     BIND (replace(str(?context), "${
                       runtimeConfig.public.base
                     }", "") as ?prop)`,
@@ -168,12 +170,13 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
     subqueries,
     category: string,
     match: Matching | "all" | "allPatterns",
-    where: string
+    where: string,
   ) => {
     const contextSubquery = () => {
       if (match === "all") {
         return "";
-      } else {
+      }
+      else {
         return `${context[0] ? "?uri " + context[1] + " ?con ." : ""}
                 ${context[0]}`;
       }
@@ -216,8 +219,8 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
     const subqueryArray: string[] = [];
     for (const match of searchOptions.matching) {
       const whereArray: string[] = [];
-      const matchOption =
-        searchOptions.matching.length === 6 && category !== "?matching"
+      const matchOption
+        = searchOptions.matching.length === 6 && category !== "?matching"
           ? "allPatterns"
           : match;
 
@@ -231,8 +234,8 @@ export function genSearchAggregateQuery(searchOptions: SearchOptions): string {
           subqueries,
           category.replace("?", ""),
           matchOption,
-          where
-        )
+          where,
+        ),
       );
       if (searchOptions.matching.length === 6 && category !== "?matching") {
         break;

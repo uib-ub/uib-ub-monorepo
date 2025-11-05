@@ -1,14 +1,19 @@
 <template>
-  <section>
-    <h2 class="mb-3 text-xl">Institutions responsible for termbases</h2>
-    <div class="space-y-3 max-w-3xl">
-      <div class="max-w-2xl">
-        <p>
-          List of institutions registered as responsible for one or more
-          termbases. Only termbases that have the status 'opprettet' or
-          'publisert' are included in the count.
-        </p>
-      </div>
+  <UtilsTableWrapper
+    heading-level="h2"
+    :pending="pending"
+  >
+    <template #header>
+      Institutions responsible for termbases
+    </template>
+    <template #description>
+      <p>
+        List of institutions registered as responsible for one or more
+        termbases. Only termbases that have the status 'opprettet' or
+        'publisert' are included in the count.
+      </p>
+    </template>
+    <div class="max-w-3xl">
       <DataTable
         ref="datatable"
         v-model:filters="filters"
@@ -21,15 +26,30 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData()"
+            />
           </div>
         </template>
-        <Column field="label" header="Navn" sortable></Column>
-        <Column field="count" header="Termbaser" sortable></Column>
+        <Column
+          field="label"
+          header="Navn"
+          sortable
+        />
+        <Column
+          field="count"
+          header="Termbaser"
+          sortable
+        />
       </DataTable>
     </div>
-  </section>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">
@@ -45,20 +65,22 @@ const query = `
         qualifiedAttribution[group._ref == ^.^._id]{...}
       }
     }
-  
     `;
-const { data } = useLazySanityQuery(query);
+const { data, pending } = useLazySanityQuery(query);
 
 const procdata = computed(() => {
   const mapped = data.value
     ?.map((orga) => {
       const map = {
         label: orga.label,
-        count: orga.termbases.filter((tb) => tb.qualifiedAttribution).length,
+        count: orga.termbases.filter(
+          tb =>
+            tb?.qualifiedAttribution && tb?.qualifiedAttribution?.length > 0,
+        ).length,
       };
       return map;
     })
-    .filter((orga) => orga.count > 0);
+    .filter(orga => orga.count > 0);
   return mapped;
 });
 

@@ -1,6 +1,8 @@
 {
+  "extends": "typescript-config/base.json",
   "compilerOptions": {
-    "esModuleInterop": true,
+    "baseUrl": ".",
+    "resolveJsonModule": true,
     "paths": {
       "@*": [
         "./src/*"
@@ -8,6 +10,9 @@
       "components/*": [
         "./components/*"
       ],
-    }
-  }
+    },
+  },
+  "exclude": [
+    "v1"
+  ]
 }

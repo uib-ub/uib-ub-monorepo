@@ -7,7 +7,7 @@ import PreviewGroups from '../_components/preview-groups-overview'
 import Link from 'next/link'
 
 export default async function GroupsPage() {
-  const data = await sanityFetch<any[]>({ query, revalidate: 7200 })
+  const data = await sanityFetch({ query, revalidate: 7200 })
 
   return (
     <MainShell>
@@ -22,7 +22,7 @@ export default async function GroupsPage() {
         </span>
       </div>
       <LiveQuery
-        enabled={draftMode().isEnabled}
+        enabled={(await draftMode()).isEnabled}
         query={query}
         initialData={data}
         as={PreviewGroups}
@@ -30,5 +30,5 @@ export default async function GroupsPage() {
         <GroupsOverview data={data} />
       </LiveQuery>
     </MainShell>
-  )
+  );
 }

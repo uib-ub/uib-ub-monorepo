@@ -25,13 +25,29 @@ npm run start -w api
 
 ## Deployment
 
-We use Docker to deploy the API. The Dockerfile is located in the root of the repository.
+CHC-API is currently automatically built and deployed at https://chc-api.testdu.uib.no on any build on any branch in uib-ub-monorepo, if changes are made in the api paths. [The action workflow job](https://github.com/uib-ub/uib-ub-monorepo/actions/workflows/cicd-publish-api-image.yaml) has two stages:
+it builds the image and then runs trivy to scan the image for security vulnerabilities. The person triggering the job will receive an error message on failed build if there are security issues, but the image will be built anyways, so this is a soft stopper currently.
 
-[[TODO: Add deployment instructions, is the stuff below correct?]]
+The built containers are found at https://github.com/orgs/uib-ub/packages where you can copy the image name (e.g. `test-2025-09-05T1246`) that will be comited into the rail repo in the file [ub-ufs-du/bgo1-prod/RAIL/api/fluxkustomization.yaml](https://git.app.uib.no/platform_public/rail/gitops/ub-ufs-du/-/blob/main/bgo1-prod/RAIL/api/fluxkustomization.yaml?ref_type=heads)
 
+Update this section:
+
+```yaml
+ postBuild:
+    substitute:
+...
+      api_image: "ghcr.io/uib-ub/uib-ub/uib-ub-monorepo-api:test-2025-09-03T0744"
+```
+and you are done.
+
+On updating here https://api.ub.uib.no will update with the new image.
+
+
+### Runnning locally
 ```bash
-docker build -t hono-api .
-docker run -p 3009:3009 hono-api
+# from uib-ub-monorepo base
+docker build -t chc-api-hono -f apps/api/Dockerfile .
+docker run -p 3009:3009 chc-api-hono
 ```
 
 ### Environment Variables

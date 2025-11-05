@@ -1,7 +1,12 @@
 <template>
-  <section>
-    <h2 class="mb-3 text-xl">Referansegrupper</h2>
-    <div class="max-w-7xl">
+  <UtilsTableWrapper
+    heading-level="h2"
+    :pending="pending"
+  >
+    <template #header>
+      Referansegrupper
+    </template>
+    <div class="max-w-6xl">
       <DataTable
         v-model:filters="filters"
         :value="procdata"
@@ -11,17 +16,40 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData()"
+            />
           </div>
         </template>
-        <Column field="label" header="Navn referansegruppe" sortable />
-        <Column field="count" header="Medlemmer" sortable />
-        <Column field="timespan" header="Tidsrom" sortable />
-        <Column field="termgroup" header="Termgruppe" sortable />
+        <Column
+          field="label"
+          header="Navn referansegruppe"
+          sortable
+        />
+        <Column
+          field="count"
+          header="Medlemmer"
+          sortable
+        />
+        <Column
+          field="timespan"
+          header="Tidsrom"
+          sortable
+        />
+        <Column
+          field="termgroup"
+          header="Termgruppe"
+          sortable
+        />
       </DataTable>
     </div>
-  </section>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">
@@ -41,12 +69,12 @@ const query = `
   }
 }
 `;
-const { data } = useLazySanityQuery(query);
+const { data, pending } = useLazySanityQuery(query);
 
 // TODO handle situation where one group consults multiple termgroups
 const procdata = computed(() => {
   const mapped = data.value
-    ?.filter((group) => group.termgroups.length > 0)
+    ?.filter(group => group.termgroups.length > 0)
     .map((group) => {
       const map = {
         label: group.label,

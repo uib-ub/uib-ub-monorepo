@@ -1,3 +1,4 @@
+import React from 'react'
 import { ItemContextMenu } from '@/components/edit-intent-button'
 import ImageBox from '@/components/image-box'
 import { Badge } from '@/components/ui/badge'
@@ -224,6 +225,8 @@ export type VolatileSoftware = {
   uses: {
     id: string
     label: string
+    type: string
+    logo?: SanityImageAssetDocument
   }[],
   runBy: SoftwareComputingEService[]
   hostedBy: {
@@ -271,10 +274,13 @@ export type SoftwareProps = SanityDocument & {
   uses: {
     id: string
     label: string
+    type: string
+    logo?: SanityImageAssetDocument
   }[]
   programmedWith: {
     id: string
     label: string
+    type: string
   }[]
   currentOrFormerManager: {
     assignedActor: {
@@ -307,8 +313,8 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
 
       <Tabs orientation='horizontal' defaultValue="general">
         <TabsList className='flex justify-start items-start h-fit mt-2 p-0 bg-transparent border-b w-full'>
-          <TabsTrigger value="general" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">Generelt</TabsTrigger>
-          <TabsTrigger value="data" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">Data</TabsTrigger>
+          <TabsTrigger value="general" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">Generelt</TabsTrigger>
+          <TabsTrigger value="data" className="inline-flex items-center justify-center whitespace-nowrap py-1 text-sm ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none">Data</TabsTrigger>
           <ItemContextMenu variant={'link'} id={data.id} className='p-0 m-0 pb-1 px-3 ml-auto text-muted-foreground text-sm font-medium' />
         </TabsList>
 
@@ -332,7 +338,7 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                     <div>
                       <dt className='text-muted-foreground'>Programmeringsspråk</dt>
                       <dd className='flex flex-wrap gap-3'>
-                        {data.programmedWith.map((s: any, i: number) => (
+                        {data.programmedWith.map((s: { id: string; label: string; type: string }) => (
                           <Link key={s.id} href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
                             {s.label}
                           </Link>
@@ -345,11 +351,11 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                     <div>
                       <dt className='text-muted-foreground'>Bruker programvare</dt>
                       <dd className='flex flex-wrap gap-3'>
-                        {data.uses.map((s: any, i: number) => (
+                        {data.uses.map((s: { id: string; label: string; type: string; logo?: SanityImageAssetDocument }) => (
                           <div key={s.id} className='flex gap-2'>
                             {s.logo ? (
                               <div className='w-[25px] h-[25px]'>
-                                <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-[1/1]' />
+                                <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-square' />
                               </div>
                             ) : null}
                             <Link href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
@@ -366,11 +372,11 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                     <div>
                       <dt className='text-muted-foreground'>Resultat av</dt>
                       <dd className='flex flex-wrap gap-3'>
-                        {data.resultOf.map((result: any, i: number) => (
+                        {data.resultOf.map((result: { id: string; label: string; type: string; logo?: SanityImageAssetDocument }) => (
                           <div key={result?.id} className='flex gap-2'>
                             {result?.logo ? (
                               <div className='w-[50px] h-[50px]'>
-                                <ImageBox image={result?.logo} width={50} height={50} alt="" classesWrapper='relative aspect-[1/1]' />
+                                <ImageBox image={result?.logo} width={50} height={50} alt="" classesWrapper='relative aspect-square' />
                               </div>
                             ) : null}
                             <Link href={`/${path[result?.type]}/${result?.id}`} className='underline underline-offset-2'>
@@ -397,11 +403,11 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                   </CardHeader>
                   <CardContent>
                     <div className='flex flex-col gap-3'>
-                      {data.usedIn.map((s: any, i: number) => (
+                      {data.usedIn.map((s: { id: string; label: string; type: string; logo?: SanityImageAssetDocument }) => (
                         <div key={s.id} className='flex gap-2'>
                           {s.logo ? (
                             <div className='w-[25px] h-[25px]'>
-                              <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-[1/1]' />
+                              <ImageBox image={s.logo} width={25} height={25} alt="" classesWrapper='relative aspect-square' />
                             </div>
                           ) : null}
                           <Link href={`/${path[s.type]}/${s.id}`} className='underline underline-offset-2'>
@@ -415,9 +421,6 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
               </div>
             ) : null}
 
-
-
-            {/* @ts-ignore */}
             {data.referredToBy?.[0]?.body ? (
               <Card className=''>
                 <CardHeader>
@@ -425,7 +428,7 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                 </CardHeader>
                 <CardContent>
                   <ScrollArea className="h-[250px] max-w-prose rounded-md border p-4 mt-2 mb-5">
-                    {/* @ts-ignore */}
+                    {/* @ts-expect-error - CustomPortableText expects different value type */}
                     <CustomPortableText value={data.referredToBy[0].body} paragraphClasses='py-2 max-w-xl' />
                   </ScrollArea>
                 </CardContent>
@@ -452,8 +455,8 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                   </CardHeader>
                   <CardContent>
                     <div className='grid grid-cols-2 gap-4'>
-                      {data.runBy.map((s: SoftwareComputingEService, i: number) => (
-                        <ComputingCard data={s} key={i} />
+                      {data.runBy.map((s: SoftwareComputingEService) => (
+                        <ComputingCard data={s} key={s.id} />
                       ))}
                     </div>
                   </CardContent>
@@ -470,8 +473,8 @@ const Software = ({ data = {} }: { data: Partial<SoftwareProps> }) => {
                   </CardHeader>
                   <CardContent>
                     <div className='grid auto-flow-dense grid-cols-1 md:grid-cols-2 gap-4'>
-                      {data?.hasSoftwarePart.map((s, i) => (
-                        <SoftwareCard data={s} key={i} />
+                      {data?.hasSoftwarePart.map((s) => (
+                        <SoftwareCard data={s} key={s.id || s.label} />
                       ))}
                     </div>
                   </CardContent>

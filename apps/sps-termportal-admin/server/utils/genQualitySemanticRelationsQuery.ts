@@ -11,7 +11,7 @@ export default function (termbase: string) {
     }
   }
   GROUP BY ?concept
-  LIMIT 1000
+  LIMIT 5000
   `;
   return query;
 }

@@ -1,7 +1,4 @@
 import { useI18n } from "vue-i18n";
-import { SemanticRelation } from "./vars";
-import { LangCode } from "~/composables/locale";
-import { SearchDataEntry } from "~/composables/states";
 
 /**
  * Return unique intersection of two Arrays, sorted by order of first.
@@ -10,10 +7,10 @@ import { SearchDataEntry } from "~/composables/states";
  * @param a - Array a
  * @param b - Array b
  */
-export function intersectUnique(a: any[], b: any[]): any[] {
+export function intersectUnique<T>(a: readonly T[], b: readonly T[]): T[] {
   const setA = new Set(a);
   const setB = new Set(b);
-  const intersection = new Set([...setA].filter((x) => setB.has(x)));
+  const intersection = new Set([...setA].filter(x => setB.has(x)));
   return Array.from(intersection);
 }
 
@@ -31,19 +28,17 @@ export function countSearchEntries(matches: SearchDataEntry[]): number {
     matches.map((entry) => {
       try {
         return entry.lang.length;
-      } catch (e) {
+      }
+      catch {
         return 1;
       }
-    })
+    }),
   );
 }
 
 export function langRtoL(languageCode: LangCode) {
-  if (languageRtoL.has(languageCode)) {
-    return true;
-  } else {
-    return false;
-  }
+  const appConfig = useAppConfig();
+  return appConfig.language.rightToleft.includes(languageCode);
 }
 
 /**
@@ -51,15 +46,18 @@ export function langRtoL(languageCode: LangCode) {
  * Precedence:
  * - prefLabel in local language
  * - altLabel in local language
- * Loop through prefLabel, altLabel of languages in local languageOrder
+ * Loop through prefLabel, altLabel of languages in local langOrder
  *
- * @param data - concept data with labels
+ * @param concept - concept data with labels
+ * @param langOrder - localized language order
  * @returns localized title or null
  */
-export function getConceptDisplaytitle(concept): string | null {
-  const localeLangOrder = useLocaleLangOrder();
+export function getConceptDisplaytitle(
+  concept,
+  langOrder: LangCode[],
+): string | null {
   let title = null;
-  for (const lang of localeLangOrder.value) {
+  for (const lang of langOrder) {
     for (const label of ["prefLabel", "altLabel"]) {
       if (concept?.[label]) {
         if (concept?.[label][lang]) {
@@ -87,8 +85,12 @@ export function getConceptDisplaytitle(concept): string | null {
 export function getRelationData(
   data: any,
   mainConceptId: string,
-  relationType: SemanticRelation
+  relationType: SemanticRelation,
+  langOrder: Array<LangCode>,
 ): Array<Array<string>> | null {
+  const appConfig = useAppConfig();
+  const semanticRelationTypes = appConfig.data.semanticRelations;
+
   let relationData = null;
   // Check if concept with id has relation of relationtype
   if (data[mainConceptId]?.[relationType]) {
@@ -96,11 +98,11 @@ export function getRelationData(
       (target: string) => {
         try {
           // Pass concept object
-          const label = getConceptDisplaytitle(data[target]);
+          const label = getConceptDisplaytitle(data[target], langOrder);
           // Slashes are allowed on Pagenames, should be escaped
           // TODO might break links between concepts of external tbs
           // Termbase is part of URI (seperated by '-3A')
-          const link = "/" + target.replace("/", "%2F").replace("-3A", "/");
+          const link = "/tb/" + target.replaceAll("/", "%2F").replaceAll("-3A", "/");
           // Don't return links with no label -> linked concept doesn't exist
           if (label) {
             let relation = { target: [label, link] };
@@ -112,9 +114,9 @@ export function getRelationData(
               const reifiedRelation = data[mainConceptId]?.[
                 toReifiedProp
               ].filter(
-                (relation) =>
-                  fromReifiedProp in relation &&
-                  relation[fromReifiedProp].includes(mainConceptId)
+                relation =>
+                  fromReifiedProp in relation
+                  && relation[fromReifiedProp].includes(mainConceptId),
               );
               if (reifiedRelation) {
                 relation = { ...relation, ...reifiedRelation[0] };
@@ -122,17 +124,19 @@ export function getRelationData(
             }
 
             return relation;
-          } else {
+          }
+          else {
             return null;
           }
-        } catch (error) {
+        }
+        catch {
           return null;
         }
-      }
+      },
     );
     // remove null entries
     const cleanedUp = tmpRelData.filter(
-      (entry: null | Array<Array<string>>) => entry
+      (entry: null | Array<Array<string>>) => entry,
     );
     if (cleanedUp.length > 0) {
       relationData = tmpRelData;
@@ -141,39 +145,9 @@ export function getRelationData(
   return relationData;
 }
 
-/**
- * Create nested dictionary with related ressources of starting entry.
- *
- * @param data - Nested dictionaries with concept data
- * @param startId - key for starting point in dict
- * @param relation - relation to follow
- * @param newKey - Key to nest related entries under
- */
-export function parseRelationsRecursively(
-  data: Object,
-  startId: string,
-  relation: string,
-  newKey: string
-) {
-  if (data?.[startId]?.[relation] && data[startId][relation].length > 0) {
-    const relations = data[startId][relation].slice().reverse();
-
-    return Object.assign(
-      {},
-      ...relations.map((startId: string) => ({
-        [startId]: {
-          [newKey]: parseRelationsRecursively(data, startId, relation, newKey),
-        },
-      }))
-    );
-  } else {
-    return null;
-  }
-}
-
 export function deleteValueFromList(
   arr: Array<string | number>,
-  value: string | number
+  value: string | number,
 ): boolean {
   const index = arr.indexOf(value);
   if (index > -1) {
@@ -182,7 +156,7 @@ export function deleteValueFromList(
   return index > -1;
 }
 
-export function getAllKeys(obj: Object): string[] {
+export function getAllKeys(obj: object): string[] {
   if (obj === null || typeof obj !== "object") {
     return [];
   }
@@ -195,71 +169,75 @@ export function getAllKeys(obj: Object): string[] {
   }, []);
 }
 
-/**
- * Lazy Localization function with fallback based on localized language order.
- *
- * @param key - key to localize
- * @returns Localized label or key if not label present
- */
-export function lalof(key: string): string {
-  const bootstrapData = useBootstrapData();
-  const locale = useLocale();
-  const label = languageOrder[locale.value]
-    .filter((lc) => Object.keys(languageOrder).includes(lc))
-    .map((lc) => bootstrapData.value?.lalo?.[lc]?.[key])
-    .find((value) => value !== undefined);
-  return label ?? key;
-}
-
 export function htmlify(data: string): string {
   try {
     const pars = data
       .split("\n\n")
-      .filter((p) => p)
-      .map((p) => `<p>${p}</p>`)
+      .filter(p => p)
+      .map(p => `<p>${p}</p>`)
       .join("");
     return pars;
-  } catch (e) {
+  }
+  catch {
     return data;
   }
 }
 
-function flattenDict(dict: Object, nestingKey: string, level = 0): string[] {
+export function flattenDict(dict: object, nestingKey: string, level = 0): string[] {
   let items: string[] = [];
   for (const key in dict) {
     items.push([key, level]);
     if (typeof dict[key][nestingKey] === "object") {
       items = items.concat(
-        flattenDict(dict[key][nestingKey], nestingKey, level + 1)
+        flattenDict(dict[key][nestingKey], nestingKey, level + 1),
       );
     }
   }
   return items;
 }
 
-export function flattenOrderDomains(domains?) {
-  const bootstrapData = useBootstrapData();
-  if (bootstrapData.value.domain) {
-    const flatDomains = flattenDict(bootstrapData.value.domain, "subdomains");
-    if (!domains) {
-      return flatDomains;
-    } else {
-      return flatDomains
-        .filter((entry) => domains.includes(entry[0]))
-        .map((entry) => entry[0]); // TODO should be removed and handled down the line
-    }
-  } else {
-    return [];
-  }
-}
-
 export const getLangOptions = () => {
-  const locales = useLocales();
+  const appConfig = useAppConfig();
+  const locales = appConfig.language.locale;
   const i18n = useI18n();
-  return locales.map((loc) => ({
+  return locales.map(loc => ({
     label: loc,
     command: () => {
       i18n.locale.value = loc;
     },
   }));
 };
+
+export function idOrUriToRoute(
+  termbaseId: TermbaseId,
+  idOrUri: string,
+): string | null {
+  const appConfig = useAppConfig();
+
+  if (
+    (appConfig.tb.base.specialUriTbs as readonly TermbaseId[]).includes(
+      termbaseId,
+    )
+  ) {
+    const tbId = termbaseId as SpecialUriTermbase & ConfiguredTermbase;
+    const patterns = appConfig.tb[tbId].uriPatterns;
+    for (const [key, uri] of Object.entries(patterns)) {
+      if (idOrUri.startsWith(uri)) {
+        const id = idOrUri.replace(uri, "");
+        return `/${termbaseId}/${key}/${id}`;
+      }
+    }
+  }
+  else {
+    const runtimeConfig = useRuntimeConfig();
+    return (
+      "/"
+      + idOrUri
+        .replace(runtimeConfig.public.base, "")
+        .replace("wiki:", "")
+        .replaceAll("/", "%2F") // Slashes are allowed in wiki pagenames, but cause problems with routing
+        .replace("-3A", "/")
+    );
+  }
+  return null;
+}

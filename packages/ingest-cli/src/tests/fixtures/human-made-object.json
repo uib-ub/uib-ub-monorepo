@@ -1,0 +1,516 @@
+{
+  "@context": [
+    "https://linked.art/ns/v1/linked-art.json",
+    "https://api.ub.uib.no/ns/ubbont/context.json"
+  ],
+  "id": "ubb-bokstav-d-box-35-01",
+  "type": "HumanMadeObject",
+  "_label": "Et kort Forsvars-Skrift fra de Norske Fielde mod Recensenterne i de lærde Aviser, deres i No. 38 haarde Critique",
+  "_available": "2023-03-07T00:00:00.000Z",
+  "_modified": "2023-03-07T11:29:26.000Z",
+  "identified_by": [
+    {
+      "type": "Name",
+      "language": [
+        {
+          "id": "https://vocab.getty.edu/aat/300443706",
+          "type": "Language",
+          "_label": "Norwegian"
+        }
+      ],
+      "classified_as": [
+        {
+          "id": "https://vocab.getty.edu/aat/300404670",
+          "type": "Type",
+          "_label": "Primary Name"
+        }
+      ],
+      "content": "Et kort Forsvars-Skrift fra de Norske Fielde mod Recensenterne i de lærde Aviser, deres i No. 38 haarde Critique"
+    },
+    {
+      "type": "Identifier",
+      "classified_as": [
+        {
+          "id": "https://vocab.getty.edu/aat/300404670",
+          "type": "Type",
+          "_label": "Preferred terms"
+        }
+      ],
+      "_label": "ubb-bokstav-d-box-35-01",
+      "content": "ubb-bokstav-d-box-35-01"
+    }
+  ],
+  "classified_as": [
+    {
+      "id": "http://vocab.getty.edu/aat/300033618",
+      "type": "Type",
+      "_label": "paintings"
+    }
+  ],
+  "referred_to_by": [
+    {
+      "type": "LinguisticObject",
+      "_label": "Description",
+      "content": "A comprehensive mock object with all possible fields",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300080091",
+          "type": "Type",
+          "_label": "Description"
+        }
+      ],
+      "language": [
+        {
+          "id": "http://vocab.getty.edu/aat/300388277",
+          "type": "Language",
+          "_label": "English"
+        }
+      ]
+    },
+    {
+      "type": "LinguisticObject",
+      "classified_as": [
+        {
+          "id": "http://vocab.getty.edu/aat/300028705",
+          "type": "Type",
+          "_label": "Signature",
+          "classified_as": [
+            {
+              "id": "http://vocab.getty.edu/aat/300418049",
+              "type": "Type",
+              "_label": "Brief Text"
+            }
+          ]
+        }
+      ],
+      "content": "signature and date: ‘Rembrandt f 1642’"
+    }
+  ],
+  "equivalent": [
+    {
+      "id": "https://another-library.org/objects/456",
+      "type": "HumanMadeObject",
+      "_label": "Same object, different system"
+    }
+  ],
+  "representation": [
+    {
+      "type": "VisualItem",
+      "digitally_shown_by": [
+        {
+          "access_point": [
+            {
+              "id": "https://data.ub.uib.no/files/manlib/ubb/ubb-bokstav/ubb-bokstav-d/ubb-bokstav-d-box/ubb-bokstav-d-box-35/ubb-bokstav-d-box-35-01/jpg/ubb-bokstav-d-box-35-01_p0001_th.jpg",
+              "type": "DigitalObject"
+            }
+          ],
+          "type": "DigitalObject",
+          "classified_as": [
+            {
+              "id": "https://vocab.getty.edu/aat/300215302",
+              "type": "Type",
+              "_label": "Digital Image"
+            },
+            {
+              "id": "https://fix.me",
+              "type": "Type",
+              "_label": "Thumbnails"
+            }
+          ],
+          "_label": {
+            "no": [
+              "Digitalt objekt"
+            ],
+            "en": [
+              "Digital object"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "VisualItem",
+      "digitally_shown_by": [
+        {
+          "access_point": [
+            {
+              "id": "https://data.ub.uib.no/files/manlib/ubb/ubb-bokstav/ubb-bokstav-d/ubb-bokstav-d-box/ubb-bokstav-d-box-35/ubb-bokstav-d-box-35-01/jpg/ubb-bokstav-d-box-35-01_p0001_md.jpg",
+              "type": "DigitalObject"
+            }
+          ],
+          "type": "DigitalObject",
+          "classified_as": [
+            {
+              "id": "https://vocab.getty.edu/aat/300215302",
+              "type": "Type",
+              "_label": "Digital Image"
+            }
+          ],
+          "_label": {
+            "no": [
+              "Digitalt objekt"
+            ],
+            "en": [
+              "Digital object"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "member_of": [
+    {
+      "id": "https://example.org/collections/main",
+      "type": "Set",
+      "_label": "Main Collection"
+    }
+  ],
+  "subject_of": [
+    {
+      "type": "LinguisticObject",
+      "_label": "Research Article",
+      "content": "Academic analysis of the mock object",
+      "language": [
+        {
+          "id": "http://vocab.getty.edu/aat/300388277",
+          "type": "Language",
+          "_label": "English"
+        }
+      ]
+    }
+  ],
+  "attributed_by": [
+    {
+      "type": "AttributeAssignment",
+      "classified_as": [
+        {
+          "id": "http://example.org/types/recommending",
+          "type": "Type",
+          "_label": "Recommendation"
+        }
+      ],
+      "identified_by": [
+        {
+          "type": "Name",
+          "classified_as": [
+            {
+              "id": "http://vocab.getty.edu/aat/300404669",
+              "type": "Type",
+              "_label": "Display Title"
+            }
+          ],
+          "content": "Related Object: Another Painting of a Fish"
+        }
+      ],
+      "carried_out_by": [
+        {
+          "id": "https://linked.art/example/person/1",
+          "type": "Person",
+          "_label": "Curator"
+        }
+      ],
+      "assigned": [
+        {
+          "id": "https://linked.art/example/object/6",
+          "type": "HumanMadeObject",
+          "_label": "Another Painting of a Fish"
+        }
+      ]
+    }
+  ],
+  "dimension": [
+    {
+      "type": "Dimension",
+      "unit": {
+        "id": "https://vocab.getty.edu/aat/300379098",
+        "type": "MeasurementUnit",
+        "_label": "Centimeters"
+      },
+      "classified_as": [
+        {
+          "id": "https://vocab.getty.edu/aat/300055644",
+          "type": "Type",
+          "_label": "Height"
+        }
+      ],
+      "value": 19
+    },
+    {
+      "type": "Dimension",
+      "unit": {
+        "id": "https://vocab.getty.edu/aat/300379098",
+        "type": "MeasurementUnit",
+        "_label": "Centimeters"
+      },
+      "classified_as": [
+        {
+          "id": "https://vocab.getty.edu/aat/300055647",
+          "type": "Type",
+          "_label": "Width"
+        }
+      ],
+      "value": 11
+    },
+    {
+      "type": "Dimension",
+      "unit": {
+        "id": "https://vocab.getty.edu/aat/300194222",
+        "type": "MeasurementUnit",
+        "_label": "Pages"
+      },
+      "classified_as": [
+        {
+          "id": "https://vocab.getty.edu/aat/300404433",
+          "type": "Type",
+          "_label": "Count Of"
+        }
+      ],
+      "value": 9,
+      "_label": {
+        "no": [
+          "Antall sider"
+        ],
+        "en": [
+          "Number of pages"
+        ]
+      }
+    }
+  ],
+  "made_of": [
+    {
+      "id": "http://vocab.getty.edu/aat/300015050",
+      "type": "Material",
+      "_label": "oil paint"
+    }
+  ],
+  "part_of": {
+    "id": "https://example.org/objects/parent123",
+    "type": "HumanMadeObject",
+    "_label": "Parent Object"
+  },
+  "current_owner": [
+    {
+      "id": "https://example.org/people/owner123",
+      "type": "Person",
+      "_label": "Current Owner"
+    }
+  ],
+  "current_custodian": [
+    {
+      "id": "https://example.org/groups/museum123",
+      "type": "Group",
+      "_label": "Museum Department"
+    }
+  ],
+  "current_permanent_custodian": [
+    {
+      "id": "https://example.org/groups/museum123",
+      "type": "Group",
+      "_label": "Museum"
+    }
+  ],
+  "current_location": {
+    "id": "https://data.ub.uib.no/place/storage",
+    "type": "Place",
+    "_label": {
+      "no": [
+        "Lager"
+      ],
+      "en": [
+        "Storage"
+      ]
+    }
+  },
+  "used_for": [
+    {
+      "type": "Activity",
+      "_label": "Exhibition Display",
+      "timespan": {
+        "type": "TimeSpan",
+        "begin_of_the_begin": "2023-06-01T00:00:00Z",
+        "end_of_the_end": "2023-12-31T23:59:59Z"
+      }
+    }
+  ],
+  "shows": [
+    {
+      "type": "VisualItem",
+      "_label": "Depicted Scene",
+      "represents": [
+        {
+          "id": "http://vocab.getty.edu/aat/300386957",
+          "type": "Type",
+          "_label": "Landscape"
+        }
+      ]
+    }
+  ],
+  "carries": [
+    {
+      "id": "https://linked.art/example/text/catalogtext",
+      "type": "LinguisticObject",
+      "_label": "Exhibition Catalog Text"
+    }
+  ],
+  "produced_by": {
+    "type": "Production",
+    "_label": "Production Event",
+    "carried_out_by": [
+      {
+        "id": "https://example.org/people/artist123",
+        "type": "Person",
+        "_label": "Artist"
+      }
+    ],
+    "technique": [
+      {
+        "id": "http://vocab.getty.edu/aat/300054216",
+        "type": "Type",
+        "_label": "Oil Painting"
+      }
+    ],
+    "timespan": {
+      "type": "TimeSpan",
+      "begin_of_the_begin": "2023-01-01T00:00:00Z",
+      "end_of_the_end": "2023-12-31T23:59:59Z"
+    },
+    "took_place_at": [
+      {
+        "id": "https://example.org/places/studio123",
+        "type": "Place",
+        "_label": "Artist's Studio"
+      }
+    ]
+  },
+  "destroyed_by": {
+    "type": "Destruction",
+    "_label": "Partial Damage Event",
+    "timespan": {
+      "type": "TimeSpan",
+      "begin_of_the_begin": "2023-07-01T00:00:00Z",
+      "end_of_the_end": "2023-07-01T23:59:59Z"
+    }
+  },
+  "removed_by": {
+    "type": "PartRemoval",
+    "_label": "Conservation Treatment",
+    "timespan": {
+      "type": "TimeSpan",
+      "begin_of_the_begin": "2023-08-01T00:00:00Z",
+      "end_of_the_end": "2023-08-02T23:59:59Z"
+    }
+  },
+  "encountered_by": [
+    {
+      "type": "Encounter",
+      "_label": "Discovery Event",
+      "timespan": {
+        "type": "TimeSpan",
+        "begin_of_the_begin": "2023-01-01T00:00:00Z",
+        "end_of_the_end": "2023-01-01T23:59:59Z"
+      },
+      "took_place_at": [
+        {
+          "id": "https://example.org/places/discovery123",
+          "type": "Place",
+          "_label": "Discovery Location"
+        }
+      ]
+    }
+  ],
+  "subject_to": [
+    {
+      "id": "ubb-bokstav-d-box-35-01",
+      "type": "Right",
+      "_label": "Rights statement for work",
+      "classified_as": [
+        {
+          "id": "https://vocab.getty.edu/aat/300417696",
+          "type": "Type",
+          "_label": "Rights (Legal Concept)"
+        },
+        {
+          "id": "http://creativecommons.org/publicdomain/mark/1.0",
+          "type": "Type",
+          "_label": "Public Domain Mark"
+        }
+      ],
+      "inherit_from": {
+        "id": "http://creativecommons.org/publicdomain/mark/1.0",
+        "type": "Type",
+        "_label": "Public Domain Mark"
+      },
+      "referred_to_by": [
+        {
+          "id": "https://data.ub.uib.no/????/licensing/description",
+          "type": "LinguisticObject",
+          "_label": "Rights Statement Description",
+          "classified_as": [
+            {
+              "id": "https://vocab.getty.edu/aat/300418049",
+              "type": "Type",
+              "_label": "Brief Text"
+            }
+          ],
+          "content": "Public Domain Mark"
+        }
+      ],
+      "possessed_by": [
+        {
+          "id": "http://localhost:3009/groups/79543723-f0e9-40a6-bfb9-4830f080e887",
+          "type": "Group",
+          "_label": {
+            "no": [
+              "Universitetet i Bergen"
+            ],
+            "en": [
+              "University of Bergen"
+            ]
+          }
+        }
+      ],
+      "subject_of": [
+        {
+          "id": "https://data.ub.uib.no/????/licensing/acknowledgements",
+          "type": "LinguisticObject",
+          "_label": "Acknowledgements for Work Rights",
+          "classified_as": [
+            {
+              "id": "https://vocab.getty.edu/aat/300026687",
+              "type": "Type",
+              "_label": "Acknowledgements"
+            }
+          ],
+          "language": [
+            {
+              "id": "https://vocab.getty.edu/aat/300388277",
+              "type": "Language",
+              "_label": "English"
+            }
+          ],
+          "content": "Works are provided by the University of Bergen. This work is marked with the Public Domain Mark."
+        },
+        {
+          "id": "https://data.ub.uib.no/????/licensing/acknowledgements",
+          "type": "LinguisticObject",
+          "_label": "Acknowledgements for Work Rights",
+          "classified_as": [
+            {
+              "id": "https://vocab.getty.edu/aat/300026687",
+              "type": "Type",
+              "_label": "Acknowledgements"
+            }
+          ],
+          "language": [
+            {
+              "id": "https://vocab.getty.edu/aat/300443706",
+              "type": "Language",
+              "_label": "Norwegian"
+            }
+          ],
+          "content": "Verket er tilgjengeliggjort av Universitetet i Bergen. Dette verket har falt i det fri og er er merket med Public Domain Mark."
+        }
+      ]
+    }
+  ]
+}

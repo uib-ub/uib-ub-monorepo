@@ -1,0 +1,20 @@
+# Note: please create .env file based on .env-template file for keys and tokens.
+services:
+  chc_api_hono:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: chc-api-hono
+    environment:
+      NODE_ENV: production
+      ES_HOST: https://search.ub.uib.no
+      PROD_URL: https://api.ub.uib.no
+      API_URL: http://localhost
+      OBSERVE_ES_HOST: https://observe.ub.uib.no
+      ES_APIKEY: ${ES_APIKEY}
+      OBSERVE_ES_APIKEY: ${OBSERVE_ES_APIKEY}
+      API_ES_WRITE_TOKEN: ${API_ES_WRITE_TOKEN}
+      PORT: "3009"  
+    ports:
+      - "3009:3009"
+      - "3000:3000"

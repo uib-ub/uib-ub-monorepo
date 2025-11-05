@@ -1,11 +1,27 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "extends": ["//"],
+  "extends": [
+    "//"
+  ],
   "tasks": {
     "build": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build"],
-      "env": ["SANITY_PROJECT_ID", "SANITY_API_TOKEN"]
+      "outputs": [
+        ".nuxt/**",
+        ".output/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
+      "env": [
+        "SANITY_PROJECT_ID",
+        "SANITY_API_TOKEN",
+        "NUXT_ELASTICSEARCH_URL",
+        "NUXT_ELASTICSEARCH_API_KEY",
+        "NUXT_ENDPOINT_URL",
+        "NUXT_ENDPOINT_USER",
+        "NUXT_ENDPOINT_URL_PASS",
+        "COMPATIBILITY_DATE"
+      ]
     }
   }
 }

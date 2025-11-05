@@ -1,17 +1,21 @@
 <template>
-  <section>
-    <h2 class="mb-3 text-xl">Institutions participating in termgroups</h2>
-    <div class="max-w-3xl space-y-3">
-      <div class="space-y-2 max-w-2xl">
-        <p>
-          List of insitutions with a count of associated people in termgroups
-          that have 'opprettet' or 'publisert' termbases.
-        </p>
-        <p>
-          The lookup follows the logic:
-          Organization->Person->Termgroup->Termbase
-        </p>
-      </div>
+  <UtilsTableWrapper
+    heading-level="h2"
+    :pending="pending"
+  >
+    <template #header>
+      Institutions participating in termgroups
+    </template>
+    <template #description>
+      <p>
+        List of insitutions with a count of associated people in termgroups that
+        have 'opprettet' or 'publisert' termbases.
+      </p>
+      <p>
+        The lookup follows the logic: Organization->Person->Termgroup->Termbase
+      </p>
+    </template>
+    <div class="max-w-3xl">
       <DataTable
         ref="datatable"
         v-model:filters="filters"
@@ -24,15 +28,32 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData($event)"
+            />
           </div>
         </template>
-        <Column field="label" header="Navn" sortable></Column>
-        <Column field="count" header="Personer" sortable></Column>
+        <Column
+          field="label"
+          header="Navn"
+          sortable
+        />
+        <Column
+          field="count"
+          header="Personer"
+          sortable
+        />
       </DataTable>
     </div>
-  </section>
+  </UtilsTableWrapper>
+
+  <section />
 </template>
 
 <script setup lang="ts">
@@ -51,39 +72,52 @@ const query = `
           *[_type == "group" && references(^._id)]
           {
             label,
-            qualifiedMembership[]{ timespan },
+            qualifiedMembership[person._ref == ^.^._id]{ timespan },
             "termbase": *[_type == "termbase" &&
                           references(^._id) &&
-                          (status == "opprettet" || status == "publisert")]{id}
+                          (status == "opprettet" || status == "publisert")]{ id }
           }
       }
   }
 
   `;
-const { data } = useLazySanityQuery(query);
+const { data, pending } = useLazySanityQuery(query);
 
 const procdata = computed(() => {
   const mapped = data.value
     ?.filter(
-      (orga) =>
+      orga =>
         !(
           (
-            orga.members.length <= 0 || // filter out organizations without members
-            orga._id === "00cde024-d1d6-4631-92b1-b497429a92d0"
+            orga.members.length <= 0 // filter out organizations without members
+            || orga._id === "00cde024-d1d6-4631-92b1-b497429a92d0"
           ) // filter out termportalen
-        )
+        ),
     )
     .map((orga) => {
       const map = {
         label: orga.label,
-        count: orga.members.filter(
-          (member) =>
-            member.termgroups.map((tg) => tg.termbase).flat().length > 0
-        ).length,
+        count: orga.members
+          .filter(
+            member =>
+              member.termgroups.map(tg => tg.termbase).flat().length > 0,
+          )
+          .filter(
+            member =>
+              member.termgroups
+                .map(tg =>
+                  tg.qualifiedMembership.filter(
+                    mbs =>
+                      !mbs?.timespan?.endOfTheEnd
+                      || isInFuture(mbs?.timespan?.endOfTheEnd),
+                  ),
+                )
+                .flat().length > 0,
+          ).length,
       };
       return map;
     })
-    .filter((orga) => orga.count > 0);
+    .filter(orga => orga.count > 0);
 
   return mapped;
 });

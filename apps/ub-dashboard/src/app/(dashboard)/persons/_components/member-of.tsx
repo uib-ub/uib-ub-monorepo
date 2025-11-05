@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { DataTable } from '@/components/data-table';
 import { ItemContextMenu } from '@/components/edit-intent-button';
 import { Alert, AlertTitle } from '@/components/ui/alert';

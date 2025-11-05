@@ -1,21 +1,23 @@
-import { H3Event } from "h3";
-import { cookieDefaultOptions } from "~/utils/vars";
+import type { H3Event } from "h3";
 
 /**
  * Set session cookie when not present or not up to date.
  *
- * @param event H3Event
+ * @param event - H3Event
  */
 function ensureToken(event: H3Event) {
+  const appConfig = useAppConfig();
+  const runtimeConfig = useRuntimeConfig();
+
   if (
-    !getCookie(event, "session") ||
-    getCookie(event, "session") !== useRuntimeConfig().apiKey
+    !getCookie(event, "session")
+    || getCookie(event, "session") !== runtimeConfig.apiKey
   ) {
     setCookie(
       event,
       "session",
-      useRuntimeConfig().apiKey,
-      cookieDefaultOptions
+      runtimeConfig.apiKey,
+      appConfig.cookie.defaultOptions,
     );
   }
 }

@@ -1,7 +1,7 @@
-import client from '@config/apis/esClient'
-import { env } from '@config/env'
+import client from '@shared/clients/es-client'
+import { env } from '@env'
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
-import { PaginationParamsSchema } from '@models'
+import { PaginationParamsSchema } from '@shared/models'
 
 const route = new OpenAPIHono()
 
@@ -47,9 +47,9 @@ route.openapi(getList, async (c) => {
   const limitInt = parseInt(limit)
 
   const data = await client.search({
-    index: `search-chc`,
+    index: `search-chc-items*`,
     ignore_unavailable: true,
-    from: pageInt,
+    from: pageInt * limitInt, // Multiply page by limit to get correct offset
     size: limitInt,
     // @TODO: Add sorting
     sort: [
@@ -59,14 +59,22 @@ route.openapi(getList, async (c) => {
         }
       },
     ],
-    _source: ["_label", "id"],
+    _source: ["_label", "id", "type", "_available", "_modified"],
   })
 
   return c.json(
     data.hits.hits.map((hit: any) => {
+      const sourceRec = hit._source as Record<string, unknown>
+      let srcId = ''
+      if (typeof sourceRec.id === 'string') {
+        srcId = sourceRec.id
+      } else if (typeof sourceRec['@id'] === 'string') {
+        srcId = sourceRec['@id']
+      }
       return {
         ...hit._source,
-        id: `${env.API_URL}/items/${hit._source.id}`,
+        identifier: sourceRec.id,
+        id: `${env.API_BASE_URL}/items/${srcId}`,
       }
     })
   )

@@ -1,6 +1,6 @@
 <template>
   <li>
-    <AppLink :to="`/${entryData.link}`">
+    <AppLink :to="`${entryData.link}`">
       <section
         class="px-2 py-1.5 hover:bg-gray-200 lg:flex lg:py-2"
         :class="{
@@ -9,11 +9,10 @@
       >
         <div class="grow justify-between sm:flex">
           <div
-            class="flex grow justify-between"
+            class="flex grow justify-between sm:justify-start lg:justify-between"
             :class="{
-              'sm:justify-start': searchInterface.translate !== 'none',
               'text-right': langRtoL(entryData.lang[0] as LangCode),
-              'sm:grow-0': searchInterface.translate !== 'none'
+              'sm:grow-0': searchInterface.translate !== 'none',
             }"
           >
             <SearchResultLabel
@@ -21,17 +20,17 @@
               :label-data="entryData.label"
               :label-lang="entryData.lang"
             />
-            <!-- Language information smaller screens-->
-            <div
-              class="pl-3 font-light lg:hidden"
+            <!-- Language information smaller screens -->
+            <span
+              class="pl-2 lg:pr-2 font-light"
               :class="{
-                hidden:
-                  searchInterface.translate === 'none' &&
-                  searchInterface.language !== 'all',
-                'md:hidden': searchInterface.translate === 'none',
+                'hidden':
+                  searchInterface.translate === 'none'
+                  && searchInterface.language !== 'all',
                 'sm:hidden':
-                  searchInterface.language !== 'all' &&
-                  searchInterface.language !== 'en',
+                  searchInterface.language !== 'all'
+                  && searchInterface.language !== 'en',
+                'lg:hidden': searchInterface.translate === 'none',
               }"
             >
               <span class="hidden sm:inline">
@@ -48,17 +47,20 @@
                     .join(", ")
                 }}
               </span>
-            </div>
+            </span>
           </div>
+
           <!-- Language information larger screens -->
           <div
             v-if="
-              ['all', 'en'].includes(searchInterface.language) ||
-              entryData.lang.includes('en-gb') ||
-              entryData.lang.includes('en-us')
+              ['all', 'en'].includes(searchInterface.language)
+                || entryData.lang.includes('en-gb')
+                || entryData.lang.includes('en-us')
             "
-            class="hidden px-2 sm:w-2/5 lg:block lg:max-w-[10rem]"
-            :class="{ 'md:block': searchInterface.translate === 'none' }"
+            class="hidden px-2 sm:w-2/5 lg:block lg:max-w-40"
+            :class="{
+              'lg:hidden': searchInterface.translate !== 'none',
+            }"
           >
             {{
               intersectUnique(localeLangOrder, entryData.lang)
@@ -66,6 +68,7 @@
                 .join(", ")
             }}
           </div>
+
           <!-- Target language information -->
           <div
             v-if="searchInterface.translate !== 'none'"
@@ -75,14 +78,19 @@
               'lg:w-5/12': searchInterface.language === 'all',
             }"
           >
-            <span v-html="entryData.translate"></span>
+            <span v-html="entryData.translate" />
             <div class="text-right font-light sm:hidden">
               {{ $t("global.lang." + searchInterface.translate) }}
             </div>
           </div>
         </div>
-        <div class="max-w-[20em] lg:w-[20em] lg:pl-2">
-          {{ lalof(entryData.context) }}
+
+        <!-- Context: domain or termbase -->
+        <div
+          class="lg:w-[22em] lg:pl-2 md:text-left font-light lg:font-normal"
+          :class="{ 'sm:text-right': searchInterface.translate === 'none' }"
+        >
+          {{ getLaLo(entryData.context) }}
         </div>
       </section>
     </AppLink>
@@ -90,7 +98,12 @@
 </template>
 
 <script setup lang="ts">
-import { LangCode } from "~/composables/locale";
+import { langRtoL, intersectUnique } from "#imports";
+
+const { getLaLo } = useLazyLocale();
+
+const breakpoint = useBreakpoint();
+
 const localeLangOrder = useLocaleLangOrder();
 
 const searchInterface = useSearchInterface();
@@ -105,7 +118,7 @@ interface Props {
   };
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 </script>
 
 <style scoped>

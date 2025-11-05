@@ -1,7 +1,12 @@
 <template>
-  <section>
-    <h2 class="mb-3 text-xl">Basic Analytics</h2>
-    <div class="space-y-4 max-w-4xl">
+  <UtilsTableWrapper
+    heading-level="h2"
+    :pending="pending"
+  >
+    <template #header>
+      Basic Analytics
+    </template>
+    <div class="max-w-3xl">
       <DataTable
         ref="datatable"
         :value="procdata"
@@ -9,20 +14,42 @@
         sort-field="date"
         :sort-order="-1"
         paginator
-        :rows="15"
+        :rows="12"
         table-style="min-width: 1rem"
       >
         <template #header>
           <div class="flex justify-between">
-            <Button class="h-10" label="Eksport" @click="exportData()" />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData()"
+            />
           </div>
         </template>
-        <Column field="date" header="Date" sortable></Column>
-        <Column field="visits" header="Visits" sortable></Column>
-        <Column field="pageviews" header="Pageviews" sortable></Column>
-        <Column field="searches" header="Searches" sortable></Column>
+        <Column
+          field="date"
+          header="Date"
+          sortable
+        />
+        <Column
+          field="visits"
+          header="Visits"
+          sortable
+        />
+        <Column
+          field="pageviews"
+          header="Pageviews"
+          sortable
+        />
+        <Column
+          field="searches"
+          header="Searches"
+          sortable
+        />
       </DataTable>
-      <div class="max-w-2xl space-y-2">
+    </div>
+    <template #legend>
+      <div class="space-y-1.5">
         <p>
           People who use an ad blocker are not included in the data. This means
           the "real" events are undercounted. Depending on demographic etc.
@@ -45,12 +72,12 @@
           events provide more detailed information regarding searches.
         </p>
       </div>
-    </div>
-  </section>
+    </template>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">
-const { data } = useFetch("/api/analytics/overview");
+const { data, pending } = useFetch("/api/analytics/overview");
 
 const procdata = computed(() => {
   const mapped = data.value?.map((e) => {

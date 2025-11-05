@@ -1,0 +1,51 @@
+{
+  "name": "ingest-cli",
+  "version": "0.0.0",
+  "description": "An example CLI tool",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": "./dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "start": "node dist/index.js",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "lint": "eslint --ext .ts",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.10.6",
+    "@types/pretty-time": "^1.1.5",
+    "@types/sparql-http-client": "^3.0.5",
+    "eslint-config": "*",
+    "type-fest": "^4.10.1",
+    "typescript": "^5.9.2",
+    "typescript-config": "*",
+    "vitest": "^1.2.1"
+  },
+  "dependencies": {
+    "@elastic/elasticsearch": "8.12.2",
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "date-fns": "^4.1.0",
+    "dotenv": "^16.5.0",
+    "edtf": "^4.6.0",
+    "fs-extra": "^11.2.0",
+    "ora": "^8.0.1",
+    "pretty-time": "^1.1.0",
+    "prompts": "^2.4.2",
+    "sparql-http-client": "^3.0.1",
+    "types": "*",
+    "utils": "*"
+  }
+}

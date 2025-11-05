@@ -2,7 +2,11 @@
   <div>
     <ul class="skip-links">
       <li>
-        <AppLink ref="skipLink" to="#main" class="skip-link">
+        <AppLink
+          ref="skipLink"
+          to="#main"
+          class="skip-link"
+        >
           {{ $t("global.skipLink") }}
         </AppLink>
       </li>
@@ -15,31 +19,27 @@
 
 <script setup>
 import { useI18n } from "vue-i18n";
+
 const i18n = useI18n();
 
 useHead({
   htmlAttrs: {
     lang: i18n.locale,
   },
+  script: [
+    {
+      src: "/mathjax-config.js",
+      type: "text/javascript",
+      defer: true,
+    },
+    {
+      id: "MathJax-script",
+      type: "text/javascript",
+      src: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
+      defer: true,
+    },
+  ],
 });
-
-if (process.client) {
-  useHead({
-    script: [
-      {
-        src: "/mathjax-config.js",
-        type: "text/javascript",
-        defer: true,
-      },
-      {
-        id: "MathJax-script",
-        type: "text/javascript",
-        src: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
-        defer: true,
-      },
-    ],
-  });
-}
 
 const route = useRoute();
 const searchBarWasFocused = useSearchBarWasFocused();
@@ -63,17 +63,20 @@ watch(
   () => {
     searchBarWasFocused.value = false;
     // skipLink.value.focus();
-  }
+  },
 );
 </script>
 
 <style>
+@reference "tailwindcss";
+@config "./tailwind.config.ts";
+
 body {
   overflow-y: scroll;
 }
 
 .tp-shighlight {
-  @apply bg-tpblue-100;
+  background-color: #e2efff;
 }
 
 .tp-search-dd {
@@ -108,14 +111,17 @@ body {
   z-index: 50;
 }
 
-.tp-hover-focus {
-  @apply tp-transition-shadow rounded-[7px] border outline-none hover:cursor-pointer hover:border hover:border-tpblue-300 focus:border-tpblue-300 focus:shadow-tphalo;
-}
-
 .tp-transition-shadow {
   transition-property: box-shadow;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 100ms;
+}
+
+.tp-hover-focus {
+  transition-property: box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 100ms;
+  @apply rounded-[7px] border outline-none hover:cursor-pointer hover:border hover:border-[#008aff] focus:border-[#008aff] focus:shadow-tphalo;
 }
 
 blockquote {

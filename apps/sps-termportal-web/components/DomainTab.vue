@@ -1,5 +1,8 @@
 <template>
-  <li class="shrink-0 hover:bg-gray-300" role="presentation">
+  <li
+    class="shrink-0 hover:bg-gray-300"
+    role="presentation"
+  >
     <button
       :id="`${tabId}Domains-tab`"
       class="rounded-t border border-b-0 border-gray-300 px-2 py-1 hover:bg-gray-300"
@@ -17,7 +20,7 @@
 <script setup>
 const searchInterface = useSearchInterface();
 
-const props = defineProps({
+defineProps({
   tabId: { type: String, required: true },
 });
 </script>

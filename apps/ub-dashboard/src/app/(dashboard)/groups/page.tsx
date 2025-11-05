@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react'
 import { draftMode } from 'next/headers'
 import { LiveQuery } from 'next-sanity/preview/live-query'
 import Groups, { query } from './_components/groups'
@@ -5,10 +6,9 @@ import { sanityFetch } from '@/sanity/lib/fetch'
 import { MainShell } from '@/components/shared/main-shell'
 import PreviewGroups from './_components/preview-groups'
 import Link from 'next/link'
-import { Suspense } from 'react'
 
 export default async function GroupsPage() {
-  const data = await sanityFetch<any[]>({ query, revalidate: 7200 })
+  const data = await sanityFetch({ query, revalidate: 7200 })
 
   return (
     <MainShell>
@@ -23,7 +23,7 @@ export default async function GroupsPage() {
         </Link>
       </div>
       <LiveQuery
-        enabled={draftMode().isEnabled}
+        enabled={(await draftMode()).isEnabled}
         query={query}
         initialData={data}
         as={PreviewGroups}
@@ -33,5 +33,5 @@ export default async function GroupsPage() {
         </Suspense>
       </LiveQuery>
     </MainShell>
-  )
+  );
 }

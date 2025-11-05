@@ -1,5 +1,6 @@
 import { label, note, responsibleStaff, tbstatus } from "./props";
 import attribution from "./qualifiedPattern/attribution";
+import { topDomains } from "~/utils/constants";
 
 export default {
   name: "termbase",
@@ -7,37 +8,36 @@ export default {
   liveEdit: true,
   fieldsets: [
     {
-      name: "status",
-      options: {
-        collapsible: true,
-        collapsed: false,
-        columns: 2,
-      },
-    },
-    {
       name: "basics",
+      title: "Generell informasjon",
       options: {
         columns: 2,
+        collapsible: true,
       },
     },
     {
       name: "unpublished",
       title: "Planleggingsdata",
       options: {
+        collapsible: true,
+        collapsed: true,
         columns: 2,
       },
-      hidden: ({ document }) => document?.status === "publisert",
     },
   ],
   fields: [
     label,
     {
       name: "id",
+      title: "ID",
       type: "string",
+      description:
+        "Minst tre bokstaver. Hovedsaklig brukt i teknisk sammenheng.",
     },
     {
       name: "type",
       type: "string",
+      title: "Termbasetype",
       options: {
         list: [
           { title: "Aktiv", value: "aktiv" },
@@ -49,53 +49,48 @@ export default {
     tbstatus,
     {
       name: "topdomain",
-      title: "Toppdomene",
+      title: "Domene",
       type: "string",
       fieldset: "unpublished",
       options: {
-        list: [
-          {
-            title: "Naturvitenskap og teknologi",
-            value: "NaturvitenskapTeknologi",
-          },
-          { title: "Humaniora", value: "Humaniora" },
-          {
-            title: "Okonomi og Administrasjon",
-            value: "OkonomiAdministrasjon",
-          },
-          { title: "Samfunnsfag", value: "Samfunnsfag" },
-          { title: "Helse og sosial", value: "Helse_og_sosial" },
-        ],
+        list: Object.entries(topDomains).map((domain) => {
+          return { value: domain[0], title: domain[1] };
+        }),
       },
     },
     {
       name: "domain",
-      title: "Domene",
+      title: "Subdomene",
       type: "string",
       fieldset: "unpublished",
     },
     {
       name: "size",
       title: "Antall begreper",
+      description: "Estimat",
       type: "number",
       fieldset: "unpublished",
     },
     {
       name: "labelsOk",
       type: "boolean",
+      title: "Termbasenavn gjennomgått",
       initialValue: false,
-      fieldset: "status",
+      fieldset: "basics",
     },
     {
       name: "descriptionsOk",
       type: "boolean",
+      title: "Termbasebeskrivelser gjennomgått",
       initialValue: false,
-      fieldset: "status",
+      fieldset: "basics",
     },
     {
       name: "licenseAgreementStatus",
       type: "string",
-      fieldset: "status",
+      title: "Lisensavtalestatus",
+      description: "mellom termportalen og leverandør",
+      fieldset: "basics",
       options: {
         list: [
           { title: "Ingen", value: "ingen" },
@@ -108,8 +103,9 @@ export default {
     {
       name: "reminderInterval",
       title: "Påminnelsesintervall",
+      description: "Intervall beskrevet i dager",
       type: "number",
-      fieldset: "status",
+      fieldset: "basics",
       initialValue: reportReminder.interval.reminder,
     },
     note,
@@ -130,6 +126,7 @@ export default {
       name: "qualifiedAttribution",
       type: "array",
       title: "Termgruppe eller organisasjon",
+      description: "Gruppe som er ansvarlig eller eier ressurs",
       of: [attribution],
     },
   ],

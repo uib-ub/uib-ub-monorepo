@@ -1,5 +1,5 @@
 {
-  "extends": "tsconfig/nextjs.json",
+  "extends": "typescript-config/nextjs.json",
   "compilerOptions": {
     "plugins": [
       {
@@ -7,12 +7,18 @@
       }
     ],
     "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "next.config.cjs"
   ],
   "exclude": [
     "node_modules",

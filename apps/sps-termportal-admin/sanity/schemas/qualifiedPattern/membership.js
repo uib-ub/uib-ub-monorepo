@@ -2,6 +2,7 @@ import { timespan } from "../props";
 
 export default {
   name: "membership",
+  title: "Medlemskap",
   type: "object",
 
   fields: [
@@ -12,12 +13,14 @@ export default {
     },
     {
       name: "role",
+      title: "Rolle",
       type: "string",
       options: {
         list: [
           { title: "Koordinator", value: "koordinator" },
           { title: "Medlem", value: "medlem" },
           { title: "Veileder", value: "veileder" },
+          { title: "Assistent", value: "assistent" },
         ],
       },
     },
@@ -33,9 +36,9 @@ export default {
     },
     prepare(selection) {
       return {
-        title: `${selection.title} ${
-          selection.role ? "(" + selection.role : ""
-        }, wiki: ${selection.wiki})`,
+        title: `${selection.title} (${
+          selection.role ? selection.role + ", " : ""
+        } wiki: ${selection.wiki})`,
         subtitle: selection.timespan,
       };
     },

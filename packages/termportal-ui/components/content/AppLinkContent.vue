@@ -1,12 +1,15 @@
 <template>
-  <AppLink class="underline hover:decoration-2" :to="to">
-    {{ desc }}
-  </AppLink>
+  <span>
+    <AppLink v-if="to" class="underline hover:decoration-2" :to="to">
+      {{ desc }}
+    </AppLink>
+    <span v-else>{{ desc }}</span>
+  </span>
 </template>
 
 <script setup lang="ts">
 const props = defineProps({
-  to: { type: String, required: true },
+  to: { type: String, default: null },
   desc: { type: String, required: true },
 });
 </script>

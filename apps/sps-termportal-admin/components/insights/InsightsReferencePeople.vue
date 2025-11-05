@@ -1,7 +1,12 @@
 <template>
-  <section>
-    <h2 class="mb-3 text-xl">People participating in Reference groups</h2>
-    <div class="max-w-7xl">
+  <UtilsTableWrapper
+    heading-level="h2"
+    :pending="pending"
+  >
+    <template #header>
+      People participating in Reference groups
+    </template>
+    <div class="max-w-6xl">
       <DataTable
         ref="datatable"
         v-model:filters="filters"
@@ -14,16 +19,35 @@
       >
         <template #header>
           <div class="flex justify-between">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
-            <Button class="h-10" label="Eksport" @click="exportData($event)" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
+            <Button
+              class="h-10"
+              label="Eksport"
+              @click="exportData()"
+            />
           </div>
         </template>
-        <Column field="label" header="Navn" sortable></Column>
-        <Column field="groups" header="Referansegruppe" sortable></Column>
-        <Column field="organization" header="Organisasjon" sortable></Column>
+        <Column
+          field="label"
+          header="Navn"
+          sortable
+        />
+        <Column
+          field="groups"
+          header="Referansegruppe"
+          sortable
+        />
+        <Column
+          field="organization"
+          header="Organisasjon"
+          sortable
+        />
       </DataTable>
     </div>
-  </section>
+  </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">
@@ -54,32 +78,32 @@ const query = `
 }
 `;
 
-const { data } = useLazySanityQuery(query);
+const { data, pending } = useLazySanityQuery(query);
 
 // TODO handle situation where a person leaves and rejoins a group etc.
 // currently defaults to first membership
 const procdata = computed(() => {
   const mapped = data.value
-    ?.filter((person) => person.groups.length > 0)
+    ?.filter(person => person.groups.length > 0)
     .map((person) => {
       const map = {
         label: person.label,
         groups: person.groups
-          .filter((group) => group.consulting.length > 0)
+          .filter(group => group.consulting.length > 0)
           .map(
-            (group) =>
-              group.label +
-              ` (${group.qualifiedMembership[0].timespan.edtf}, ${group.qualifiedMembership[0].role})`
+            group =>
+              group.label
+              + ` (${group.qualifiedMembership[0].timespan.edtf}, ${group.qualifiedMembership[0].role})`,
           )
           .join(", "),
         organization: person.qualifiedDelegation
-          ?.map((delegation) => delegation.organization.label)
+          ?.map(delegation => delegation.organization.label)
           .join(", "),
         consulting: person.groups,
       };
       return map;
     })
-    .filter((person) => person.groups);
+    .filter(person => person.groups);
   return mapped;
 });
 

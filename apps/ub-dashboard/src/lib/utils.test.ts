@@ -143,7 +143,7 @@ describe('pick', () => {
 
   it('should return an empty object if the specified properties do not exist in the object', () => {
     const obj = { name: 'John', age: 30, city: 'New York' };
-    /* @ts-ignore */
+    // @ts-expect-error - email and phone are not in the object
     const result = pick(obj, 'email', 'phone');
     expect(result).toEqual({});
   });

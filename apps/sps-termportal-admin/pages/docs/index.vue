@@ -3,16 +3,31 @@
     <!-- <SideBar /> -->
     <main class="content-page max-w-3xl pt-8 flex">
       <section id="content">
-        <h1 class="mb-2 text-2xl">Documentation</h1>
-        <ContentDoc path="arbeidsflyter" />
-        <ContentDoc path="system-behaviour" />
+        <h1 class="mb-2 text-2xl">
+          Documentation
+        </h1>
+        <ContentRenderer
+          v-if="data"
+          :value="data"
+        />
       </section>
     </main>
-    <ToC class="ml-10 mt-[5rem] hidden lg:block" content-selector="#content" />
+    <ToC
+      class="ml-10 mt-20 hidden lg:block"
+      content-selector="#content"
+    />
   </div>
 </template>
 
+<script setup lang="ts">
+const { data } = await useAsyncData("admin-docs", () => {
+  return queryCollection("docs").path(`/admin/system-behaviour`).first();
+});
+</script>
+
 <style>
+@reference "tailwindcss";
+
 .content-page h2 {
   @apply pt-3 text-xl font-semibold;
 }

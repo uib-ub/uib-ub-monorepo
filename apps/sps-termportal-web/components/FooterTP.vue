@@ -11,16 +11,15 @@
           to="mailto:termportalen@uib.no"
           class="group inline-block leading-snug hover:text-gray-200"
         >
-          <span>{{ $t("footer.contact") }}: </span><br />
-          <span class="group-hover:underline"
-            >termportalen@uib.no</span
-          ></AppLink
-        >
+          <span>{{ $t("footer.contact") }}: </span><br>
+          <span class="group-hover:underline">termportalen@uib.no</span>
+        </AppLink>
         <AppLink
           class="hover:text-gray-200 hover:underline"
           to="https://uustatus.no/nb/erklaringer/publisert/a139f9ba-80eb-4176-bb6d-b784efaf205a"
-          >{{ $t("footer.accDeclaration") }}</AppLink
         >
+          {{ $t("footer.accDeclaration") }}
+        </AppLink>
       </div>
     </div>
   </footer>
