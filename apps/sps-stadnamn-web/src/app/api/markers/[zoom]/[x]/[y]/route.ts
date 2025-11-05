@@ -1,14 +1,13 @@
 import { extractFacets } from '@/app/api/_utils/facets'
 import { getQueryString } from '@/app/api/_utils/query-string'
 import { postQuery } from '@/app/api/_utils/post'
-import { NextRequest } from 'next/server'
 
  
 export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ mode:string, zoom: string, x: string, y: string }> }
+  request: Request,
+  { params }: { params: Promise<{ zoom: string, x: string, y: string }> }
 ) {
-  const { mode, zoom: precision, x, y} = await params
+  const { zoom: precision, x, y} = await params
 
 
 
