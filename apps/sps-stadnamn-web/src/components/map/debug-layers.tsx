@@ -34,7 +34,7 @@ export default function DebugLayers({mapInstance,
     // Get top 5 groups by h3_count
     const top5Groups = debugGroups?.hits?.hits
       ?.filter((g: any) => g._id !== selectedGroup?._id)
-      ?.sort((a: any, b: any) => (b._source?.h3_count || 0) - (a._source?.h3_count || 0))
+      ?.sort((a: any, b: any) => (b._source?.misc?.h3_count || 0) - (a._source?.misc?.h3_count || 0))
       ?.slice(0, 3) || [];
 
     // Generate random colors for top 5 groups
@@ -45,7 +45,7 @@ export default function DebugLayers({mapInstance,
 
     const top3uuidGroups = debugGroups?.hits?.hits
       ?.filter((g: any) => g._id !== selectedGroup?._id)
-      ?.sort((a: any, b: any) => (b._source?.uuid_count || 0) - (a._source?.uuid_count || 0))
+      ?.sort((a: any, b: any) => (b._source?.misc?.child_count || 0) - (a._source?.misc?.child_count || 0))
       ?.slice(0, 3) || [];
 
 
@@ -122,7 +122,7 @@ export default function DebugLayers({mapInstance,
     {/* Top 5 groups H3 cells - behind markers */}
     {showTop3H3Counts && (debugGroups && Array.isArray(debugGroups.hits?.hits)) && debugGroups.hits.hits
       .filter((g: any) => g._id !== selectedGroup?._id) // Exclude selected group
-      .sort((a: any, b: any) => (b._source?.h3_count || 0) - (a._source?.h3_count || 0))
+      .sort((a: any, b: any) => (b._source?.misc?.h3_count || 0) - (a._source?.misc?.h3_count || 0))
       .slice(0, 5)
       .map((group: any, groupIndex: number) => {
         const groupColor = getRandomColor(groupIndex);
@@ -154,20 +154,10 @@ export default function DebugLayers({mapInstance,
       });
     })}
 
-    {/* Selected group merged_h3 cells - most prominent, behind markers */}
-    {selectedGroup?._source?.merged_cells?.map((hexId: string) => {
-      const boundary = h3.cellToBoundary(hexId);
-      return (
-        <Polygon
-          key={`debug-cell-selected-merged_h3-${hexId}`}
-          positions={boundary}
-          pathOptions={{ color: '#000000', weight: 3, opacity: 1, fillOpacity: 0.15 }}
-        />
-      );
-    })}
 
 
-    {selectedGroup?._source?.allCells.map((hexId: string) => {  
+
+    {[...new Set(selectedGroup?._source?.misc?.child_h3 || [])].map((hexId: string) => {  
       const boundary = h3.cellToBoundary(hexId);
       const isPortal = selectedGroup._source.portals?.includes(hexId);
       const isMain = selectedGroup._source.h3 === hexId;
@@ -233,10 +223,10 @@ export default function DebugLayers({mapInstance,
                       {isSelected && <span style={{ color: '#000000', fontWeight: 'bold' }}> (SELECTED)</span>}
                       <br />
                       <b>ID:</b> {group._id}
-                      {group._source?.uuid_count !== undefined && (
+                      {group._source?.misc?.child_count !== undefined && (
                         <>
                           <br />
-                          <b>UUID count:</b> {group._source.uuid_count}
+                          <b>UUID count:</b> {group._source.misc?.child_count}
                         </>
                       )}
                       {group._source?.gnidu?.length > 0 && (
@@ -245,10 +235,10 @@ export default function DebugLayers({mapInstance,
                           <b>GNIDU:</b> {group._source.gnidu.join(', ')}
                         </>
                       )}
-                      {group._source?.h3_count !== undefined && (
+                      {group._source?.misc?.h3_count !== undefined && (
                         <>
                           <br />
-                          <b>H3 count:</b> {group._source.h3_count}
+                          <b>H3 count:</b> {group._source.misc.h3_count}
                         </>
                       )}
                       {childList}
@@ -380,8 +370,8 @@ export default function DebugLayers({mapInstance,
                           #{index + 1} {group._source.label || group._id}
                         </div>
                         <div className="text-xs text-gray-600">
-                          H3: {group._source?.h3_count || 0} | 
-                          UUID: {group._source?.uuid_count || 0}
+                          H3: {group._source?.misc?.h3_count || 0} | 
+                          UUID: {group._source?.misc?.child_count || 0}
                         </div>
                       </div>
                       <div 
@@ -421,8 +411,8 @@ export default function DebugLayers({mapInstance,
                           #{index + 1} {group._source.label || group._id}
                         </div>
                         <div className="text-xs text-gray-600">
-                          H3: {group._source?.h3_count || 0} | 
-                          UUID: {group._source?.uuid_count || 0}
+                          H3: {group._source?.misc?.h3_count || 0} | 
+                          UUID: {group._source?.misc?.child_count || 0}
                         </div>
                       </div>
                       <div 

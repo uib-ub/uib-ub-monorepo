@@ -45,7 +45,7 @@ export function useGroupDebugData(selectedGroup?: any) {
     const q = searchParams.get('q')
     const debug = useDebugStore((s) => s.debug)
 
-    const children = selectedGroup?._source?.children || []
+    const children = selectedGroup?._source?.misc?.children || []
 
     
     // Get current map bounds from map instance
