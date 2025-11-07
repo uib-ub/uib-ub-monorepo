@@ -1,6 +1,7 @@
 'use client' // Error boundaries must be Client Components
 import Spinner from '@/components/svg/Spinner'
 import { usePlausible } from 'next-plausible'
+import getConfig from 'next/config'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -20,6 +21,8 @@ export default function Error({
   const searchParams = useSearchParams()
   const search = searchParams.toString()
   const fullUrl = `${pathname}${search ? `?${search}` : ''}`
+  const SN_ENV = process.env.NEXT_PUBLIC_SN_ENV;
+
 
   useEffect(() => {
     // Log the error to an error reporting service
@@ -64,9 +67,9 @@ export default function Error({
         </div>
 
         <div className="space-y-4">
-          {process.env.SN_ENV}
+
           {/* TODO: remove true */}
-          {(true ||process.env.NODE_ENV === 'development' || process.env.SN_ENV === 'dev') && <div className="inner-slate bg-white p-4 rounded-md">
+          {(SN_ENV === 'dev' || SN_ENV === 'local') && <div className="inner-slate bg-white p-4 rounded-md">
              Showing stack trace in development or preview environment
             <p className="font-mono text-sm text-neutral-700 break-words" lang="en">{error?.message}</p>
             <pre>
