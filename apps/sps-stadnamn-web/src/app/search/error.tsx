@@ -1,7 +1,6 @@
 'use client' // Error boundaries must be Client Components
 import Spinner from '@/components/svg/Spinner'
 import { usePlausible } from 'next-plausible'
-import getConfig from 'next/config'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
