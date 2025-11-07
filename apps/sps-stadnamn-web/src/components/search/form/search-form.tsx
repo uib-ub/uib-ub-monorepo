@@ -250,7 +250,7 @@ export default function SearchForm() {
                     aria-controls="autocomplete-results"
                     aria-activedescendant={autocompleteOpen && activeIndex >= 0 ? `autocomplete-option-${activeIndex}` : undefined}
                     aria-expanded={autocompleteOpen}
-                    maxLength={20}
+                    maxLength={200}
                     ref={input}
                     name="q"
                     defaultValue={searchParams.get('q') || inputValue.current || ''}
