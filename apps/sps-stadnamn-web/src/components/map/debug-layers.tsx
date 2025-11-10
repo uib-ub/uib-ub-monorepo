@@ -164,9 +164,9 @@ export default function DebugLayers({mapInstance,
 
               // Determine marker size: large for top groups, small for regular groups
               const isTopGroup = isTop5 || isTop3Uuid;
-              const radius = isSelected ? 5 : isTopGroup ? 4 : 2;
-              const weight = isSelected ? 25 : isTopGroup ? 15 : 10;
-              const fillOpacity = isSelected ? 0.4 : isTopGroup ? 0.3 : 0;
+              const radius = isSelected ? 5 : isTopGroup ? 5 : 2;
+              const weight = isSelected ? 3 : isTopGroup ? 3 : 2;
+              const fillOpacity = isSelected ? 0.1 : isTopGroup ? 0.8 : 0;
               const color = isSelected ? '#000000' : (isTop5 ? top5Color : isTop3Uuid ? top3UuidColor : '#666');
               
               // List child names in the popup if this is the selected group
@@ -262,8 +262,8 @@ export default function DebugLayers({mapInstance,
                 <CircleMarker
                   key={`debug-child-${item._id}`}
                   center={[item._source.location.coordinates[1], item._source.location.coordinates[0]]}
-                  radius={2}
-                  pathOptions={{ color: 'red', weight: 2, opacity: 1, fillOpacity: 0 }}
+                  radius={item._source.uuid == selectedGroup._source.misc.root ? 24 : 2}
+                  pathOptions={{ color: item._source.uuid == selectedGroup._source.misc.root ? 'red' : 'blue', weight: item._source.uuid == selectedGroup._source.misc.root ? 3 : 2, opacity: 1, fillOpacity: 0 }}
                 >
                   <Popup
                     maxWidth={180}
