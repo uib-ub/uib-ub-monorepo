@@ -364,7 +364,7 @@ export default function DebugLayers({mapInstance,
                                   <span>
                                     <span className="text-gray-500">SSR:</span>{" "}
                                     <a
-                                      href={`https://stadnamnregisteret.no/stadnamn/${item._source.ssr}`}
+                                      href={`https://stadnamn.kartverket.no/fakta/${item._source.ssr}`}
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       className="text-blue-600 hover:underline"
