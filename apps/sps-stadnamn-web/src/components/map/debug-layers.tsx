@@ -426,8 +426,8 @@ export default function DebugLayers({mapInstance,
                                   title={item._source.label || item._id}
                                   onClick={(e) => e.stopPropagation()}
                                 >
-                                  {item._source.label || item._id}
-                                </Link>
+                                  {item._source.label || item._id}  
+                                </Link>{item._index.split('-')[2]}
                               </div>
                               <div className="text-xs mt-0.5 pl-2 flex flex-wrap gap-x-2 gap-y-1">
                                 {/* SNID */}
