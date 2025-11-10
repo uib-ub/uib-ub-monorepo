@@ -158,9 +158,9 @@ export default function DebugLayers({mapInstance,
               const top3UuidIndexValue = showTop3UUIDCounts ? top3uuidGroupsMap.get(group._id) : undefined;
               const top3UuidIndex = top3UuidIndexValue !== undefined ? top3UuidIndexValue : -1;
               const isTop3Uuid = top3UuidIndex !== -1;
-              const top5Color = isTop5 ? getRandomColor(top5Index) : '#666';
-              const top3UuidColor = isTop3Uuid ? getRandomColor(top3UuidIndex) : '#666';
-              
+              const top5Color = isTop5 ? getRandomColor(typeof top5Index === 'number' ? top5Index : 0) : '#666';
+              const top3UuidColor = isTop3Uuid ? getRandomColor(typeof top3UuidIndex === 'number' ? top3UuidIndex : 0) : '#666';
+
               // Determine marker size: large for top groups, small for regular groups
               const isTopGroup = isTop5 || isTop3Uuid;
               const radius = isSelected ? 5 : isTopGroup ? 4 : 2;
@@ -210,8 +210,16 @@ export default function DebugLayers({mapInstance,
                   >
                     <div style={{ maxWidth: 220, maxHeight: 110, overflowY: 'auto', wordBreak: 'break-word' }}>
                       <b>Group:</b> {group._source.label || group._id}
-                      {isTop5 && !isSelected && <span style={{ color: top5Color, fontWeight: 'bold' }}> (Top 5 H3 #{top5Index + 1})</span>}
-                      {isTop3Uuid && !isSelected && !isTop5 && <span style={{ color: top3UuidColor, fontWeight: 'bold' }}> (Top 3 UUID #{top3UuidIndex + 1})</span>}
+                      {isTop5 && !isSelected && typeof top5Index === 'number' && (
+                        <span style={{ color: top5Color, fontWeight: 'bold' }}>
+                          {" "}(Top 5 H3 #{top5Index + 1})
+                        </span>
+                      )}
+                      {isTop3Uuid && !isSelected && !isTop5 && typeof top3UuidIndex === 'number' && (
+                        <span style={{ color: top3UuidColor, fontWeight: 'bold' }}>
+                          {" "}(Top 3 UUID #{top3UuidIndex + 1})
+                        </span>
+                      )}
                       {isSelected && <span style={{ color: '#000000', fontWeight: 'bold' }}> (SELECTED)</span>}
                       <br />
                       <b>ID:</b> {group._source.uuid}

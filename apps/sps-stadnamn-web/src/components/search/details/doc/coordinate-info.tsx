@@ -3,6 +3,7 @@ import { PiMapPin  } from 'react-icons/pi';
 
 import Link from 'next/link';
 import CoordinateType from './coordinate-type';
+import EmbeddedMap from '@/components/map/embedded-map';
 
 function convertDMS(lat: number, lon: number): string {
 
@@ -35,6 +36,7 @@ export default function CoordinateInfo({source}: {source: Record<string, any>}) 
             {source.coordinateType && 
                 <CoordinateType source={source}/> 
             }
+            <EmbeddedMap coordinate={[source.location.coordinates[1], source.location.coordinates[0]]} zoom={15} />
             
             </div>
             
