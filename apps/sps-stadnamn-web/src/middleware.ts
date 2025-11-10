@@ -109,8 +109,10 @@ export async function middleware(request: NextRequest) {
     
     if (path[1] == 'snid') {
         const snid = path[2]
-        const apiUrl = `${baseUrl}/api/snid?snid=${snid}`;
-        return handleApiRedirect(apiUrl, baseUrl, (data) => "/uuid/" + data.hits.hits[0].fields.uuid[0]);
+        //const apiUrl = `${baseUrl}/api/snid?snid=${snid}`;
+        const apiUrl = `${baseUrl}/search?snid=${snid}`;
+        return Response.redirect(apiUrl, 302)
+        //return handleApiRedirect(apiUrl, baseUrl, (data) => "/uuid/" + data.hits.hits[0].fields.uuid[0]);
     }
 
     if (path[1] == 'find-snid') {
