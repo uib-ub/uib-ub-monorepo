@@ -6,6 +6,7 @@ import { Fragment, useCallback, useState, useEffect, useRef } from "react";
 import * as wkt from "wellknown";
 import Clickable from "../ui/clickable/clickable";
 import { useSearchParams } from "next/navigation";
+import { PiX } from "react-icons/pi";
 
 
 export default function DebugLayers({mapInstance, 
@@ -23,6 +24,12 @@ export default function DebugLayers({mapInstance,
     const setHighlightTopGroups = useDebugStore(state => state.setHighlightTopGroups);
     const debugGroupsSortBy = useDebugStore(state => state.debugGroupsSortBy);
     const setDebugGroupsSortBy = useDebugStore(state => state.setDebugGroupsSortBy);
+    
+    // Get URL parameters for filtering children
+    const snidParam = searchParams.get('snid');
+    const wikidataParam = searchParams.get('wikidata');
+    const ssrParam = searchParams.get('ssr');
+    const geonamesParam = searchParams.get('geonames');
 
 
     const [selectedGroup, setSelectedGroup] = useState<any>(null);
@@ -46,6 +53,30 @@ export default function DebugLayers({mapInstance,
     const { data: debugChildren } = useGroupDebugData(preservedSelectedGroup);
     const { data: gniduData } = useGniduData(preservedSelectedGroup);
     const { data: topGroupsData } = useTopGroups();
+    
+    // Filter children based on URL parameters
+    const filteredChildren = debugChildren?.hits?.hits?.filter((item: any) => {
+        // If no filter params are set, show all children
+        if (!snidParam && !wikidataParam && !ssrParam && !geonamesParam) {
+            return true;
+        }
+        
+        // Check each parameter - child must match all specified parameters
+        if (snidParam && item._source.snid !== snidParam) {
+            return false;
+        }
+        if (wikidataParam && item._source.wikidata !== wikidataParam) {
+            return false;
+        }
+        if (ssrParam && item._source.ssr !== ssrParam) {
+            return false;
+        }
+        if (geonamesParam && item._source.geonames !== geonamesParam) {
+            return false;
+        }
+        
+        return true;
+    }) || [];
 
     // Disable map dragging when mouse is over overlay elements
     useEffect(() => {
@@ -183,10 +214,10 @@ export default function DebugLayers({mapInstance,
             ))}
 
     {/* H3 cells for selected group - from children data */}
-    {selectedGroup && selectedGroup._source?.misc?.children?.length > 0 && debugChildren?.hits?.hits && (() => {
+    {selectedGroup && selectedGroup._source?.misc?.children?.length > 0 && filteredChildren.length > 0 && (() => {
       // Collect all unique H3 cell IDs from children
       const h3Cells = new Set<string>();
-      debugChildren.hits.hits.forEach((child: any) => {
+      filteredChildren.forEach((child: any) => {
         if (child._source?.h3) {
           h3Cells.add(child._source.h3);
         }
@@ -291,7 +322,7 @@ export default function DebugLayers({mapInstance,
               );
             })}
 
-            {showDebugGroups && preservedSelectedGroup && preservedSelectedGroup._source?.misc?.children?.length > 0 && debugChildren?.hits?.hits?.map((item: any) => {
+            {showDebugGroups && preservedSelectedGroup && preservedSelectedGroup._source?.misc?.children?.length > 0 && filteredChildren.map((item: any) => {
               // Skip if location or coordinates are missing
               if (!item._source?.location?.coordinates) return null;
               
@@ -377,12 +408,56 @@ export default function DebugLayers({mapInstance,
                         </div>
                       )}
                     </div>
+                    {/* Filter Chips */}
+                    {(snidParam || wikidataParam || ssrParam || geonamesParam) && (
+                      <div className="mt-3 mb-2">
+                        <div className="text-xs text-gray-600 mb-1">Active filters:</div>
+                        <div className="flex flex-wrap gap-1">
+                          {snidParam && (
+                            <Clickable
+                              remove={['snid']}
+                              className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-xs hover:bg-blue-200 transition-colors"
+                            >
+                              <span>SNID: {snidParam}</span>
+                              <PiX className="text-sm" />
+                            </Clickable>
+                          )}
+                          {wikidataParam && (
+                            <Clickable
+                              remove={['wikidata']}
+                              className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-xs hover:bg-blue-200 transition-colors"
+                            >
+                              <span>Wikidata: {wikidataParam}</span>
+                              <PiX className="text-sm" />
+                            </Clickable>
+                          )}
+                          {ssrParam && (
+                            <Clickable
+                              remove={['ssr']}
+                              className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-xs hover:bg-blue-200 transition-colors"
+                            >
+                              <span>SSR: {ssrParam}</span>
+                              <PiX className="text-sm" />
+                            </Clickable>
+                          )}
+                          {geonamesParam && (
+                            <Clickable
+                              remove={['geonames']}
+                              className="flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-xs hover:bg-blue-200 transition-colors"
+                            >
+                              <span>Geonames: {geonamesParam}</span>
+                              <PiX className="text-sm" />
+                            </Clickable>
+                          )}
+                        </div>
+                      </div>
+                    )}
                     {/* Children List */}
-                    {preservedSelectedGroup._source?.misc?.children?.length > 0 && debugChildren?.hits?.hits?.length > 0 && (
+                    {preservedSelectedGroup._source?.misc?.children?.length > 0 && filteredChildren.length > 0 && (
                       <div className="mt-3">
                         <b>Children:</b>
                         <ul className="mt-1 max-h-48 overflow-y-auto pl-2 pr-2">
-                          {debugChildren.hits.hits.map((item: any) => {
+                          {filteredChildren.map((item: any) => {
                             const isRoot = item._source.uuid == preservedSelectedGroup._source.misc.root;
                             const isSelected = selectedChild === item._id;
                             
