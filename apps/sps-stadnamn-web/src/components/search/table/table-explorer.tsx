@@ -108,15 +108,8 @@ export default function TableExplorer() {
                                             <div className="flex gap-1 items-center">
                                                 <Clickable className="flex group items-center gap-2 p-2 no-underline"
                                                     link
-                                                    aria-current={doc == hit._source?.uuid}
-                                                    add={{
-                                                        doc: hit._source?.uuid,
-                                                        details: 'group'
-                                                    }}
+                                                    href={`/uuid/${hit._source?.uuid}`}
                                                 >
-                                                    <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current=true]:border-accent-800 border-2 border-transparent">
-                                                        <PiBookOpen aria-hidden="true" className="text-primary-700 group-aria-[current=true]:text-accent-800" />
-                                                    </div>
                                                     {hit._source?.label}
                                                 </Clickable>
                                                 {hit._source?.location?.coordinates && <ClickableIcon
