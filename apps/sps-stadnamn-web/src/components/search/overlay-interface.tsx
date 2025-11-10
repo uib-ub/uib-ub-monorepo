@@ -59,8 +59,6 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     const facet = useSearchParams().get('facet')
     const { totalHits } = useSearchData()
     const mode = useMode()
-    const showDebugGroups = useDebugStore((s: any) => s.showDebugGroups)
-
 
     useEffect(() => {
         if (!isMobile || mode == 'table' || !mapFunctionRef?.current) return
@@ -140,7 +138,7 @@ export default function OverlayInterface() {
     const tableOptions = searchParams.get('tableOptions') == 'on'
     const setDebug = useDebugStore((s) => s.setDebug)
     const debugParam = searchParams.get('debug')
-    const showDebugGroups = useDebugStore((s: any) => s.showDebugGroups)
+    const showDebugGroups = searchParams.get('debugGroups') == 'on'
 
     useEffect(() => {
         if (debugParam == 'on') {

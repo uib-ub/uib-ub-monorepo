@@ -78,7 +78,7 @@ export default function MapExplorer() {
   const locations = searchParams.get('locations') == 'on'
   const debug = useDebugStore((s) => s.debug)
   const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
-  const showDebugGroups = useDebugStore(state => state.showDebugGroups);
+  const showDebugGroups = searchParams.get('debugGroups') == 'on';
 
 
 

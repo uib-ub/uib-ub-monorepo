@@ -51,7 +51,7 @@ export function useGroupDebugData(selectedGroup?: any) {
     const searchParams = useSearchParams()
     const { mapFunctionRef } = useContext(GlobalContext)
     const q = searchParams.get('q')
-    const showDebugGroups = useDebugStore((s) => s.showDebugGroups)
+    const showDebugGroups = searchParams.get('debugGroups') == 'on'
 
     const children = selectedGroup?._source?.misc?.children || []
     const hasChildren = children.length > 0
@@ -109,7 +109,7 @@ export function useSortedGroups() {
     const searchParams = useSearchParams()
     const { mapFunctionRef } = useContext(GlobalContext)
     const q = searchParams.get('q')
-    const showDebugGroups = useDebugStore((s) => s.showDebugGroups)
+    const showDebugGroups = searchParams.get('debugGroups') == 'on'
     const debugGroupsSortBy = useDebugStore((s) => s.debugGroupsSortBy)
 
     // Get current map bounds from map instance
@@ -156,7 +156,7 @@ export function useTopGroups() {
     const searchParams = useSearchParams()
     const { mapFunctionRef } = useContext(GlobalContext)
     const q = searchParams.get('q')
-    const showDebugGroups = useDebugStore((s) => s.showDebugGroups)
+    const showDebugGroups = searchParams.get('debugGroups') == 'on'
     const debugGroupsSortBy = useDebugStore((s) => s.debugGroupsSortBy)
     const highlightTopGroups = useDebugStore((s) => s.highlightTopGroups)
 

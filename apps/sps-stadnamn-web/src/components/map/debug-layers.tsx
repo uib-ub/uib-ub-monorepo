@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Fragment, useCallback, useState, useEffect, useRef } from "react";
 import * as wkt from "wellknown";
 import Clickable from "../ui/clickable/clickable";
+import { useSearchParams } from "next/navigation";
 
 
 export default function DebugLayers({mapInstance, 
@@ -16,7 +17,8 @@ export default function DebugLayers({mapInstance,
     const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
     const h3Resolution = useDebugStore(state => state.h3Resolution);
     const showH3Grid = useDebugStore(state => state.showH3Grid);
-    const showDebugGroups = useDebugStore(state => state.showDebugGroups);
+    const searchParams = useSearchParams();
+    const showDebugGroups = searchParams.get('debugGroups') == 'on';
     const highlightTopGroups = useDebugStore(state => state.highlightTopGroups);
     const setHighlightTopGroups = useDebugStore(state => state.setHighlightTopGroups);
     const debugGroupsSortBy = useDebugStore(state => state.debugGroupsSortBy);
@@ -338,7 +340,7 @@ export default function DebugLayers({mapInstance,
             })}
 
             {/* Group Details & GNIDU Overlay */}
-            {(preservedSelectedGroup || (gniduData?.hits?.hits?.length > 0)) && (
+            {showDebugGroups && (preservedSelectedGroup || (gniduData?.hits?.hits?.length > 0)) && (
               <div 
                 className="absolute bottom-4 right-4 bg-white/95 border border-gray-300 rounded-lg p-3 max-w-md max-h-[calc(100svh-8rem)] overflow-y-auto shadow-lg z-[1000] text-xs font-sans flex flex-col"
                 data-debug-overlay

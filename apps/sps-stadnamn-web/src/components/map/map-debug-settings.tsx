@@ -17,9 +17,8 @@ export default function MapDebugSettings() {
   const showScore = useDebugStore((s: any) => s.showScore);
   const setShowScore = useDebugStore((s: any) => s.setShowScore)
   const router = useRouter();
-  const showDebugGroups = useDebugStore((s: any) => s.showDebugGroups);
-  const setShowDebugGroups = useDebugStore((s: any) => s.setShowDebugGroups);
   const searchParams = useSearchParams();
+  const showDebugGroups = searchParams.get('debugGroups') == 'on';
 
   return (
     <section>
@@ -102,7 +101,15 @@ export default function MapDebugSettings() {
                     <input
                       type="checkbox"
                       checked={showDebugGroups}
-                      onChange={() => setShowDebugGroups(!showDebugGroups)}
+                      onChange={() => {
+                        const newParams = new URLSearchParams(searchParams);
+                        if (showDebugGroups) {
+                          newParams.delete('debugGroups');
+                        } else {
+                          newParams.set('debugGroups', 'on');
+                        }
+                        router.push(`?${newParams.toString()}`);
+                      }}
                       className="accent-accent-800"
                     />
                     <span>Debugging av grupper</span>

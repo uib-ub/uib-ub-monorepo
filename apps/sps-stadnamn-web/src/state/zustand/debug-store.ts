@@ -25,8 +25,6 @@ export const useDebugStore = create<{
     debugChildren: any[],
     setDebugChildren: (children: any[]) => void,
     
-    showDebugGroups: boolean,
-    setShowDebugGroups: (show: boolean) => void,
     debugGroupsSortBy: 'uuid' | 'uuid_count' | 'h3_count',
     setDebugGroupsSortBy: (sortBy: 'uuid' | 'uuid_count' | 'h3_count') => void,
     highlightTopGroups: boolean,
@@ -56,8 +54,6 @@ export const useDebugStore = create<{
 
             debugChildren: [],
             setDebugChildren: (children) => set({ debugChildren: children }),
-            showDebugGroups: false,
-            setShowDebugGroups: (show) => set({ showDebugGroups: show }),
             debugGroupsSortBy: 'uuid' as 'uuid' | 'uuid_count' | 'h3_count',
             setDebugGroupsSortBy: (sortBy) => set({ debugGroupsSortBy: sortBy }),
             highlightTopGroups: false,
