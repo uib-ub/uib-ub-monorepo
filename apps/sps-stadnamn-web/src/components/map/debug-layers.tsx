@@ -4,6 +4,7 @@ import * as h3 from "h3-js";
 import Link from "next/link";
 import { Fragment, useCallback, useState, useEffect, useRef } from "react";
 import * as wkt from "wellknown";
+import Clickable from "../ui/clickable/clickable";
 
 
 export default function DebugLayers({mapInstance, 
@@ -25,10 +26,14 @@ export default function DebugLayers({mapInstance,
     const [selectedGroup, setSelectedGroup] = useState<any>(null);
     const selectedGroupRef = useRef<any>(null);
     const [selectedGnidu, setSelectedGnidu] = useState<any>(null);
+    const [selectedChild, setSelectedChild] = useState<string | null>(null);
+    const childListItemRefs = useRef<Map<string, HTMLLIElement>>(new Map());
     
     // Preserve selected group data even when queries update
     useEffect(() => {
       selectedGroupRef.current = selectedGroup;
+      // Clear selected child when group changes
+      setSelectedChild(null);
     }, [selectedGroup]);
     
     // Use ref value if state is cleared but we still have the ref
@@ -288,12 +293,46 @@ export default function DebugLayers({mapInstance,
               // Skip if location or coordinates are missing
               if (!item._source?.location?.coordinates) return null;
               
+              const isRoot = item._source.uuid == preservedSelectedGroup._source.misc.root;
+              const isSelected = selectedChild === item._id;
+              
+              const handleMarkerClick = () => {
+                setSelectedChild(isSelected ? null : item._id);
+                // Scroll to the corresponding list item
+                const listItem = childListItemRefs.current.get(item._id);
+                if (listItem) {
+                  listItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+              };
+              
+              // Determine marker styling: root is larger, selected is highlighted
+              let radius, color, weight, fillOpacity;
+              if (isRoot) {
+                radius = isSelected ? 8 : 6;
+                color = isSelected ? '#ff6600' : 'red';
+                weight = isSelected ? 4 : 3;
+                fillOpacity = isSelected ? 0.3 : 0.2;
+              } else {
+                radius = isSelected ? 6 : 2;
+                color = isSelected ? '#ff6600' : 'blue';
+                weight = isSelected ? 4 : 2;
+                fillOpacity = isSelected ? 0.3 : 0;
+              }
+              
               return (
                 <CircleMarker
                   key={`debug-child-${item._id}`}
                   center={[item._source.location.coordinates[1], item._source.location.coordinates[0]]}
-                  radius={item._source.uuid == preservedSelectedGroup._source.misc.root ? 24 : 2}
-                  pathOptions={{ color: item._source.uuid == preservedSelectedGroup._source.misc.root ? 'red' : 'blue', weight: item._source.uuid == preservedSelectedGroup._source.misc.root ? 3 : 2, opacity: 1, fillOpacity: 0 }}
+                  radius={radius}
+                  pathOptions={{ 
+                    color: color, 
+                    weight: weight, 
+                    opacity: 1, 
+                    fillOpacity: fillOpacity 
+                  }}
+                  eventHandlers={{
+                    click: handleMarkerClick
+                  }}
                 />
               );
             })}
@@ -341,23 +380,63 @@ export default function DebugLayers({mapInstance,
                       <div className="mt-3">
                         <b>Children:</b>
                         <ul className="mt-1 max-h-48 overflow-y-auto pl-2 pr-2">
-                          {debugChildren.hits.hits.map((item: any) => (
-                            <li key={item._id} className="truncate mb-1">
-                              <Link
-                                href={`/uuid/${item._source.uuid}`}
-                                className="text-blue-600 hover:underline font-semibold"
-                                title={item._source.label || item._id}
-                              >
-                                {item._source.label || item._id}
-                              </Link>
+                          {debugChildren.hits.hits.map((item: any) => {
+                            const isRoot = item._source.uuid == preservedSelectedGroup._source.misc.root;
+                            const isSelected = selectedChild === item._id;
+                            
+                            const handleListItemClick = (e: React.MouseEvent) => {
+                              e.preventDefault();
+                              setSelectedChild(isSelected ? null : item._id);
+                            };
+                            
+                            return (
+                            <li 
+                              key={item._id} 
+                              ref={(el) => {
+                                if (el) {
+                                  childListItemRefs.current.set(item._id, el);
+                                } else {
+                                  childListItemRefs.current.delete(item._id);
+                                }
+                              }}
+                              className={`truncate mb-1 cursor-pointer rounded px-1 py-0.5 transition-colors ${
+                                isSelected ? 'bg-orange-200' : 'hover:bg-gray-100'
+                              }`}
+                              onClick={handleListItemClick}
+                            >
+                              <div className="flex items-center gap-1">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedChild(isSelected ? null : item._id);
+                                  }}
+                                  className={`flex-shrink-0 w-4 h-4 rounded-full border-2 transition-colors ${
+                                    isSelected 
+                                      ? 'bg-orange-500 border-orange-700' 
+                                      : isRoot
+                                      ? 'bg-red-500 border-red-700 hover:bg-red-600'
+                                      : 'bg-blue-500 border-blue-700 hover:bg-blue-600'
+                                  }`}
+                                  title="Highlight marker on map"
+                                  aria-label="Highlight marker on map"
+                                />
+                                <Link
+                                  href={`/uuid/${item._source.uuid}`}
+                                  className={`${isSelected ? 'text-orange-800 font-bold' : 'text-blue-600'} hover:underline font-semibold flex-1`}
+                                  title={item._source.label || item._id}
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  {item._source.label || item._id}
+                                </Link>
+                              </div>
                               <div className="text-xs mt-0.5 pl-2 flex flex-wrap gap-x-2 gap-y-1">
                                 {/* SNID */}
                                 {item._source.snid && (
-                                  <span>
-                                    <Link href={`/snid/${item._source.snid}`} className="text-blue-600 hover:underline">
+                                  
+                                    <Clickable add={{snid: item._source.snid}} className="hover:underline">
                                       {item._source.snid}
-                                    </Link>
-                                  </span>
+                                    </Clickable>
+                                  
                                 )}
                                 {/* SSR */}
                                 {item._source.ssr && (
@@ -403,7 +482,8 @@ export default function DebugLayers({mapInstance,
                                 )}
                               </div>
                             </li>
-                          ))}
+                            );
+                          })}
                         </ul>
                       </div>
                     )}
