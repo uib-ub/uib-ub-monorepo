@@ -181,7 +181,7 @@ export function useTopUUIDGroups() {
 
 
 export function useGniduData(selectedGroup?: any) {
-    const gnidus = selectedGroup?._source?.gnidu
+    const gnidus = selectedGroup?._source?.gnidu || selectedGroup?._source?.misc?.gnidu
 
     return useQuery({
         queryKey: ['gnidu', selectedGroup?._id],

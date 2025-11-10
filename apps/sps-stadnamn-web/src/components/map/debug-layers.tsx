@@ -269,7 +269,7 @@ export default function DebugLayers({mapInstance,
                     autoPan={false}
                     closeButton={true}
                   >
-                    <div style={{ maxWidth: 220, maxHeight: 110, overflowY: 'auto', wordBreak: 'break-word' }}>
+                    <div style={{ maxWidth: 220, maxHeight: 110, overflowY: 'auto', wordBreak: 'break-word', userSelect: 'text' }}>
                       <div className="flex flex-col gap-1">
                         <span>
                           <b>Group:</b>
@@ -296,9 +296,9 @@ export default function DebugLayers({mapInstance,
                             <b>UUID count:</b> {group._source.misc?.child_count}
                           </span>
                         )}
-                        {group._source?.gnidu?.length > 0 && (
+                        {(group._source?.gnidu?.length > 0 || group._source?.misc?.gnidu?.length > 0) && (
                           <span>
-                            <b>GNIDU:</b> {group._source.gnidu.join(', ')}
+                            <b>GNIDU:</b> {group._source.gnidu?.length > 0 ? group._source.gnidu.join(', ') : group._source.misc.gnidu.join(', ')}
                           </span>
                         )}
                       </div>
@@ -331,7 +331,7 @@ export default function DebugLayers({mapInstance,
                     autoPan={false}
                     closeButton={true}
                   >
-                    <div style={{ maxWidth: 160, maxHeight: 80, overflowY: 'auto', wordBreak: 'break-word' }}>
+                    <div style={{ maxWidth: 160, maxHeight: 80, overflowY: 'auto', wordBreak: 'break-word', userSelect: 'text' }}>
                       <b>Name:</b> {item._source.label || item._id}
                       <br />
                       <b>Dataset:</b> {item._index.split('-')[2]}
@@ -458,6 +458,36 @@ export default function DebugLayers({mapInstance,
                 <div className="mt-3 text-xs text-gray-600 text-center italic">
                   Click to select group
                 </div>
+              </div>
+            )}
+
+            {/* Debug Results Menu */}
+            {showDebugGroups && debugGroups?.hits?.hits && debugGroups.hits.hits.length > 0 && (
+              <div className="absolute right-0 top-[25svh] bottom-1 bg-white/95 border border-gray-300 rounded-lg p-3 w-64 max-h-[calc(100svh-6rem)] overflow-y-auto shadow-lg z-[1000] text-xs font-sans">
+                <div className="font-bold mb-2 text-gray-800">
+                  Debug Groups ({debugGroups.hits.hits.length})
+                </div>
+                {debugGroups.hits.hits.map((group: any) => {
+                  const isSelected = group._id === selectedGroup?._id;
+                  return (
+                    <div
+                      key={`debug-result-${group._id}`}
+                      className={`p-2 my-1 rounded cursor-pointer transition-colors ${
+                        isSelected ? 'bg-black text-white' : 'bg-gray-50 hover:bg-blue-100'
+                      }`}
+                      onClick={() => setSelectedGroup(isSelected ? null : group)}
+                    >
+                      <div className="font-semibold truncate">
+                        {group._source?.label || group._id}
+                      </div>
+                      {group._source?.misc?.child_count !== undefined && (
+                        <div className={`text-xs ${isSelected ? 'text-gray-300' : 'text-gray-600'}`}>
+                          UUID: {group._source.misc.child_count} | H3: {group._source.misc.h3_count || 0}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
             </>

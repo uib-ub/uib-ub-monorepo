@@ -28,6 +28,7 @@ import { facetConfig, fieldConfig } from "@/config/search-config";
 import DatasetFacet from "./nav/facets/dataset-facet";
 import TableOptions from "./table/table-options";
 import { useDebugStore } from "@/state/zustand/debug-store";
+import DebugToggle from "./nav/results/debug-toggle";
 
 
 
@@ -58,6 +59,7 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     const facet = useSearchParams().get('facet')
     const { totalHits } = useSearchData()
     const mode = useMode()
+    const showDebugGroups = useDebugStore((s: any) => s.showDebugGroups)
 
 
     useEffect(() => {
@@ -138,6 +140,7 @@ export default function OverlayInterface() {
     const tableOptions = searchParams.get('tableOptions') == 'on'
     const setDebug = useDebugStore((s) => s.setDebug)
     const debugParam = searchParams.get('debug')
+    const showDebugGroups = useDebugStore((s: any) => s.showDebugGroups)
 
     useEffect(() => {
         if (debugParam == 'on') {
@@ -272,7 +275,7 @@ export default function OverlayInterface() {
                                 </div>
                             </div>
                         )}
-                        {(mapSettings ? <MapSettings/> : results && <SearchResults />)}                   
+                        {(mapSettings ? <MapSettings/> : results && (showDebugGroups ? <DebugToggle /> : <SearchResults />))}                   
                     </RightWindow>}
                 </DrawerWrapper>
 
