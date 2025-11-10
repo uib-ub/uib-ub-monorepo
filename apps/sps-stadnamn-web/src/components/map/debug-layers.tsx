@@ -3,7 +3,7 @@ import { GlobalContext } from "@/state/providers/global-provider";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import * as h3 from "h3-js";
 import Link from "next/link";
-import { Fragment, useCallback, useContext, useState } from "react";
+import { Fragment, useCallback, useContext, useState, useEffect } from "react";
 import * as wkt from "wellknown";
 
 
@@ -89,7 +89,16 @@ export default function DebugLayers({mapInstance,
     });
   }, [h3Resolution, mapInstance]);
 
-
+  // Create a custom pane for polygons/hexagons with lower z-index
+  useEffect(() => {
+    if (mapInstance.current) {
+      const map = mapInstance.current;
+      if (!map.getPane('polygonPane')) {
+        const polygonPane = map.createPane('polygonPane');
+        polygonPane.style.zIndex = '300'; // Lower than default overlayPane (400)
+      }
+    }
+  }, [mapInstance]);
 
     return <>
     {/* ALL HEXAGON POLYGONS - RENDERED FIRST TO APPEAR BEHIND MARKERS */}
@@ -102,6 +111,7 @@ export default function DebugLayers({mapInstance,
         return <Rectangle
         key={`cell-${cell.key}`}
         bounds={bounds}
+        pane="polygonPane"
         pathOptions={{
             color: '#0078ff',
             weight: 2,
@@ -116,6 +126,7 @@ export default function DebugLayers({mapInstance,
               <Polygon
                 key={`h3-${index}`}
                 positions={polygon}
+                pane="polygonPane"
                 pathOptions={{
                   color: '#666',
                   weight: 2,
@@ -140,9 +151,58 @@ export default function DebugLayers({mapInstance,
         const isPortal = selectedGroup._source?.portals?.includes(hexId);
         const isMain = selectedGroup._source?.h3 === hexId;
         const color = isPortal ? 'red' : isMain ? '#000000' : 'blue';
-        return <Polygon key={`debug-cell-selected-h3-${hexId}`} positions={boundary} pathOptions={{ color: color, weight: 3, opacity: 1, fillOpacity: 0.35 }} />;
+        return <Polygon key={`debug-cell-selected-h3-${hexId}`} positions={boundary} pane="polygonPane" pathOptions={{ color: color, weight: 3, opacity: 1, fillOpacity: 0.35 }} />;
       });
     })()}
+
+    {/* GNIDU polygons - rendered before markers to appear behind */}
+    { gniduData?.hits?.hits?.filter((item: any) => item._source?.area).map((item: any) => {
+            const areaWkt = item._source?.area;
+            const isSelected = selectedGnidu?._id === item._id;
+
+            try {
+
+                const geoJSON = wkt.parse(areaWkt);
+                if (!geoJSON) return null;
+
+                console.log("GEOJSON", geoJSON);
+
+                const pathOptions = isSelected 
+                    ? { color: 'red', weight: 3, opacity: 1, fillOpacity: 0.2 }
+                    : { color: 'silver', weight: 1, opacity: 0.8, fillOpacity: 0.05 };
+
+                switch (geoJSON.type) {
+                    case 'Polygon':
+                        return <Polygon
+                            key={`debug-gnidu-${item._id}`}
+                            positions={geoJSON.coordinates[0].map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
+                            pane="polygonPane"
+                            pathOptions={pathOptions}
+                        />;
+                    case 'MultiPolygon':
+                        return (
+                            <Fragment key={`debug-gnidu-${item._id}`}>
+                                {geoJSON.coordinates.map((polygonCoords, index) => (
+                                    <Polygon
+                                        key={`debug-gnidu-${item._id}-${index}`}
+                                        positions={polygonCoords[0].map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
+                                        pane="polygonPane"
+                                        pathOptions={pathOptions}
+                                    />
+                                ))}
+                            </Fragment>
+                        );
+
+                    default:
+                        return null;
+                }
+            } catch (error) {
+                console.error('Failed to parse WKT:', error);
+                return null;
+            }
+    }).filter((item: any) => item !== null)
+
+    }
 
 
     {/* ALL MARKERS - RENDERED AFTER HEXAGONS TO APPEAR ON TOP */}
@@ -164,9 +224,9 @@ export default function DebugLayers({mapInstance,
 
               // Determine marker size: large for top groups, small for regular groups
               const isTopGroup = isTop5 || isTop3Uuid;
-              const radius = isSelected ? 5 : isTopGroup ? 5 : 2;
+              const radius = isSelected ? 5 : isTopGroup ? 5 : 4;
               const weight = isSelected ? 3 : isTopGroup ? 3 : 2;
-              const fillOpacity = isSelected ? 0.1 : isTopGroup ? 0.8 : 0;
+              const fillOpacity = isSelected ? 0.1 : isTopGroup ? 0.8 : 0.2;
               const color = isSelected ? '#000000' : (isTop5 ? top5Color : isTop3Uuid ? top3UuidColor : '#666');
               
               // List child names in the popup if this is the selected group
@@ -287,52 +347,6 @@ export default function DebugLayers({mapInstance,
                 </CircleMarker>
               );
             })}
-
-            { gniduData?.hits?.hits?.filter((item: any) => item._source?.area).map((item: any) => {
-                    const areaWkt = item._source?.area;
-                    const isSelected = selectedGnidu?._id === item._id;
-
-                    try {
-
-                        const geoJSON = wkt.parse(areaWkt);
-                        if (!geoJSON) return null;
-
-                        console.log("GEOJSON", geoJSON);
-
-                        const pathOptions = isSelected 
-                            ? { color: 'red', weight: 3, opacity: 1, fillOpacity: 0.2 }
-                            : { color: 'silver', weight: 1, opacity: 0.8, fillOpacity: 0.05 };
-
-                        switch (geoJSON.type) {
-                            case 'Polygon':
-                                return <Polygon
-                                    key={`debug-gnidu-${item._id}`}
-                                    positions={geoJSON.coordinates[0].map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
-                                    pathOptions={pathOptions}
-                                />;
-                            case 'MultiPolygon':
-                                return (
-                                    <Fragment key={`debug-gnidu-${item._id}`}>
-                                        {geoJSON.coordinates.map((polygonCoords, index) => (
-                                            <Polygon
-                                                key={`debug-gnidu-${item._id}-${index}`}
-                                                positions={polygonCoords[0].map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
-                                                pathOptions={pathOptions}
-                                            />
-                                        ))}
-                                    </Fragment>
-                                );
-
-                            default:
-                                return null;
-                        }
-                    } catch (error) {
-                        console.error('Failed to parse WKT:', error);
-                        return null;
-                    }
-            }).filter((item: any) => item !== null)
-
-            }
 
             {/* GNIDU List Overlay */}
             {gniduData?.hits?.hits?.length > 0 && (
