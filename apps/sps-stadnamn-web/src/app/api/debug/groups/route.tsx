@@ -6,6 +6,12 @@ export async function GET(request: Request) {
   const { reservedParams } = extractFacets(request)
   const { simple_query_string } = getQueryString(reservedParams)
 
+  // Get sort parameter from query string, default to 'uuid'
+  const url = new URL(request.url)
+  const sortParam = url.searchParams.get('sort') || 'uuid'
+  const sizeParam = url.searchParams.get('size')
+  const size = sizeParam ? parseInt(sizeParam, 10) : 100
+
   // Use correct reserved params (from facets.ts)
   let filters: any[] = [];
   if (reservedParams.group) {
@@ -49,15 +55,28 @@ export async function GET(request: Request) {
     queryPart = { match_all: {} };
   }
 
+  // Determine sort based on parameter
+  let sort: any[] = [];
+  if (sortParam === 'h3') {
+    sort = [{ 'misc.h3_count': "desc" }];
+  } else if (sortParam === 'uuid') {
+    
+    sort = [{ 'misc.child_count': "desc" }];
+  } else {
+    // Default to UUID sorting
+    sort = [{ 'uuid': {order: 'asc'}}];
+    
+  }
+
   const query: Record<string, any> = {
-    "size": 300,
+    "size": size,
     "track_scores": false,
     "query": queryPart,
-    "sort": [{ 'misc.h3_count': "desc" }, { 'misc.child_count': "desc" }],
+    "sort": sort,
     "_source": true
   };
     
- 
+
   const [data, status] = await postQuery('core_group_debug', query)
   return Response.json(data, {status: status})
   

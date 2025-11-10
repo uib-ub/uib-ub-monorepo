@@ -1,4 +1,4 @@
-import {useGroupDebugData, useGniduData} from "@/state/hooks/group-debug-data";
+import {useGroupDebugData, useGniduData, useTopH3Groups, useTopUUIDGroups} from "@/state/hooks/group-debug-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import * as h3 from "h3-js";
@@ -30,12 +30,14 @@ export default function DebugLayers({mapInstance,
     const {data: debugGroups } = useGroupDebugData();
     const { data: debugChildren } = useGroupDebugData(selectedGroup);
     const { data: gniduData } = useGniduData(selectedGroup);
+    const { data: topH3Data } = useTopH3Groups();
+    const { data: topUUIDData } = useTopUUIDGroups();
 
-    // Get top 5 groups by h3_count
-    const top5Groups = debugGroups?.hits?.hits
-      ?.filter((g: any) => g._id !== selectedGroup?._id)
-      ?.sort((a: any, b: any) => (b._source?.misc?.h3_count || 0) - (a._source?.misc?.h3_count || 0))
-      ?.slice(0, 3) || [];
+    // Get top groups from API (already sorted and filtered)
+    // Only use data when the respective setting is enabled
+    const top5Groups = showTop3H3Counts && topH3Data?.hits?.hits
+      ? topH3Data.hits.hits.filter((g: any) => g._id !== selectedGroup?._id)
+      : [];
 
     // Generate random colors for top 5 groups
     const getRandomColor = (index: number) => {
@@ -43,10 +45,13 @@ export default function DebugLayers({mapInstance,
       return colors[index % colors.length];
     };
 
-    const top3uuidGroups = debugGroups?.hits?.hits
-      ?.filter((g: any) => g._id !== selectedGroup?._id)
-      ?.sort((a: any, b: any) => (b._source?.misc?.child_count || 0) - (a._source?.misc?.child_count || 0))
-      ?.slice(0, 3) || [];
+    const top3uuidGroups = showTop3UUIDCounts && topUUIDData?.hits?.hits
+      ? topUUIDData.hits.hits.filter((g: any) => g._id !== selectedGroup?._id)
+      : [];
+
+    // Create lookup maps for faster ID matching
+    const top5GroupsMap = new Map(top5Groups.map((g: any, idx: number) => [g._id, idx]));
+    const top3uuidGroupsMap = new Map(top3uuidGroups.map((g: any, idx: number) => [g._id, idx]));
 
 
       // Modify getH3Cells to use the resolution state
@@ -119,67 +124,54 @@ export default function DebugLayers({mapInstance,
               />
             ))}
 
-    {/* Top 5 groups H3 cells - behind markers */}
-    {showTop3H3Counts && (debugGroups && Array.isArray(debugGroups.hits?.hits)) && debugGroups.hits.hits
-      .filter((g: any) => g._id !== selectedGroup?._id) // Exclude selected group
-      .sort((a: any, b: any) => (b._source?.misc?.h3_count || 0) - (a._source?.misc?.h3_count || 0))
-      .slice(0, 5)
-      .map((group: any, groupIndex: number) => {
-        const groupColor = getRandomColor(groupIndex);
-        return group._source?.h3_cells?.map((hexId: string) => {
-          const boundary = h3.cellToBoundary(hexId);
-          return (
-            <Polygon
-              key={`debug-cell-top5-${group._id}-${hexId}`}
-              positions={boundary}
-              pathOptions={{ color: groupColor, weight: 1, opacity: 0.65, fillOpacity: 0.07 }}
-            />
-          );
-        });
-      })
-    }
-
-    {/* Top 3 groups UUID cells - behind markers */}
-    {showTop3UUIDCounts && top3uuidGroups.map((group: any, groupIndex: number) => {
-      const groupColor = getRandomColor(groupIndex);
-      return group._source?.h3_cells?.map((hexId: string) => {
-        const boundary = h3.cellToBoundary(hexId);
-        return (
-          <Polygon
-            key={`debug-cell-top3-uuid-${group._id}-${hexId}`}
-            positions={boundary}
-            pathOptions={{ color: groupColor, weight: 1, opacity: 0.8, fillOpacity: 0.1 }}
-          />
-        );
+    {/* H3 cells for selected group - from children data */}
+    {selectedGroup && selectedGroup._source?.misc?.children?.length > 0 && debugChildren?.hits?.hits && (() => {
+      // Collect all unique H3 cell IDs from children
+      const h3Cells = new Set<string>();
+      debugChildren.hits.hits.forEach((child: any) => {
+        if (child._source?.h3) {
+          h3Cells.add(child._source.h3);
+        }
       });
-    })}
-
-
-
-
-    {[...new Set(selectedGroup?._source?.misc?.child_h3 || [])].map((hexId: string) => {  
-      const boundary = h3.cellToBoundary(hexId);
-      const isPortal = selectedGroup._source.portals?.includes(hexId);
-      const isMain = selectedGroup._source.h3 === hexId;
-      const color = isPortal ? 'red' : isMain ? '#000000' : 'blue';
-      return <Polygon key={`debug-cell-selected-h3-${hexId}`} positions={boundary} pathOptions={{ color: color, weight: 3, opacity: 1, fillOpacity: 0.35 }} />;
-    })}
+      
+      return Array.from(h3Cells).map((hexId: string) => {
+        const boundary = h3.cellToBoundary(hexId);
+        const isPortal = selectedGroup._source?.portals?.includes(hexId);
+        const isMain = selectedGroup._source?.h3 === hexId;
+        const color = isPortal ? 'red' : isMain ? '#000000' : 'blue';
+        return <Polygon key={`debug-cell-selected-h3-${hexId}`} positions={boundary} pathOptions={{ color: color, weight: 3, opacity: 1, fillOpacity: 0.35 }} />;
+      });
+    })()}
 
 
     {/* ALL MARKERS - RENDERED AFTER HEXAGONS TO APPEAR ON TOP */}
 
             {showDebugGroups && debugGroups?.hits?.hits?.map((group: any) => {
+              // Skip if location or coordinates are missing
+              if (!group._source?.location?.coordinates) return null;
+              
               const isSelected = group._id === selectedGroup?._id;
-              const top5Index = top5Groups.findIndex((g: any) => g._id === group._id);
+              // Only check for top status when the respective setting is enabled, using lookup maps
+              const top5IndexValue = showTop3H3Counts ? top5GroupsMap.get(group._id) : undefined;
+              const top5Index = top5IndexValue !== undefined ? top5IndexValue : -1;
               const isTop5 = top5Index !== -1;
-              const top3UuidIndex = top3uuidGroups.findIndex((g: any) => g._id === group._id);
+              const top3UuidIndexValue = showTop3UUIDCounts ? top3uuidGroupsMap.get(group._id) : undefined;
+              const top3UuidIndex = top3UuidIndexValue !== undefined ? top3UuidIndexValue : -1;
               const isTop3Uuid = top3UuidIndex !== -1;
               const top5Color = isTop5 ? getRandomColor(top5Index) : '#666';
               const top3UuidColor = isTop3Uuid ? getRandomColor(top3UuidIndex) : '#666';
               
+              // Determine marker size: large for top groups, small for regular groups
+              const isTopGroup = isTop5 || isTop3Uuid;
+              const radius = isSelected ? 5 : isTopGroup ? 4 : 2;
+              const weight = isSelected ? 25 : isTopGroup ? 15 : 10;
+              const fillOpacity = isSelected ? 0.4 : isTopGroup ? 0.3 : 0;
+              const color = isSelected ? '#000000' : (isTop5 ? top5Color : isTop3Uuid ? top3UuidColor : '#666');
+              
               // List child names in the popup if this is the selected group
               let childList = null;
-              if (isSelected && debugChildren?.hits?.hits?.length > 0) {
+              const selectedGroupHasChildren = selectedGroup?._source?.misc?.children?.length > 0;
+              if (isSelected && selectedGroupHasChildren && debugChildren?.hits?.hits?.length > 0) {
                 childList = (
                   <>
                     <br />
@@ -199,12 +191,12 @@ export default function DebugLayers({mapInstance,
                 <CircleMarker
                   key={`debug-group-${group._id}`}
                   center={[group._source.location.coordinates[1], group._source.location.coordinates[0]]}
-                  radius={isSelected ? 5 : (isTop5 || isTop3Uuid) ? 4 : 2}
+                  radius={radius}
                   pathOptions={{
-                    color: isSelected ? '#000000' : (isTop5 ? top5Color : isTop3Uuid ? top3UuidColor : '#666'),
-                    weight: isSelected ? 25 : (isTop5 || isTop3Uuid) ? 15 : 10,
+                    color: color,
+                    weight: weight,
                     opacity: 1,
-                    fillOpacity: isSelected ? 0.4 : (isTop5 || isTop3Uuid) ? 0.3 : 0
+                    fillOpacity: fillOpacity
                   }}
                   eventHandlers={{
                     click: () => setSelectedGroup(group)
@@ -222,7 +214,7 @@ export default function DebugLayers({mapInstance,
                       {isTop3Uuid && !isSelected && !isTop5 && <span style={{ color: top3UuidColor, fontWeight: 'bold' }}> (Top 3 UUID #{top3UuidIndex + 1})</span>}
                       {isSelected && <span style={{ color: '#000000', fontWeight: 'bold' }}> (SELECTED)</span>}
                       <br />
-                      <b>ID:</b> {group._id}
+                      <b>ID:</b> {group._source.uuid}
                       {group._source?.misc?.child_count !== undefined && (
                         <>
                           <br />
@@ -248,7 +240,10 @@ export default function DebugLayers({mapInstance,
               );
             })}
 
-            {showDebugGroups && selectedGroup && debugChildren?.hits?.hits?.map((item: any) => {
+            {showDebugGroups && selectedGroup && selectedGroup._source?.misc?.children?.length > 0 && debugChildren?.hits?.hits?.map((item: any) => {
+              // Skip if location or coordinates are missing
+              if (!item._source?.location?.coordinates) return null;
+              
               return (
                 <CircleMarker
                   key={`debug-child-${item._id}`}
@@ -265,7 +260,14 @@ export default function DebugLayers({mapInstance,
                     <div style={{ maxWidth: 160, maxHeight: 80, overflowY: 'auto', wordBreak: 'break-word' }}>
                       <b>Name:</b> {item._source.label || item._id}
                       <br />
-                      <b>ID:</b> {item._id}
+                      <b>Dataset:</b> {item._index.split('-')[2]}
+                      {["snid", "gnidu", "ssr", "wikidata", "geonames"].filter(field => item._source[field]).map(
+                        (field) => <Fragment key={field}><br />
+                        <b>{field.charAt(0).toUpperCase() + field.slice(1)}:</b> {item._source[field]}
+                        </Fragment>
+                      )}
+                      <br />
+                      <b>ID:</b> {item._source.uuid}
                     </div>
                   </Popup>
                 </CircleMarker>
@@ -350,7 +352,7 @@ export default function DebugLayers({mapInstance,
             )}
 
             {/* Top 5 Groups List Overlay */}
-            {showDebugGroups && top5Groups.length > 0 && (
+            {showTop3H3Counts && top5Groups.length > 0 && (
               <div className="absolute bottom-4 left-4 bg-white/95 border border-gray-300 rounded-lg p-3 max-w-xs max-h-96 overflow-y-auto shadow-lg z-[1000] text-xs font-sans">
                 <div className="font-bold mb-2 text-gray-800">
                   Top 5 Groups (by H3 count)

@@ -21,6 +21,7 @@ import SearchSuggestions from "./search-suggestions";
 
 
 const CollapsibleResultItem = ({hit, activeGroupValue}: {hit: any, activeGroupValue: string | null}) => {
+
   const [expanded, setExpanded] = useState(activeGroupValue == hit.fields["group.id"][0])
   const groupCode = stringToBase64Url(hit.fields["group.id"][0])
   return (
@@ -330,6 +331,10 @@ export default function SearchResults() {
     <Fragment key={`page-${pageIndex}`}>
     {page.data?.map((item: any) => {
       if (initValue && item.fields["group.id"]?.[0] == initValue) return null;
+      if (!item.fields["group.id"]) {
+        console.log("No group ID", item);
+        return null
+      }
       return (
 
         <CollapsibleResultItem 
