@@ -2,6 +2,7 @@ import {useGroupDebugData, useGniduData, useTopH3Groups, useTopUUIDGroups} from 
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import * as h3 from "h3-js";
+import Link from "next/link";
 import { Fragment, useCallback, useContext, useState } from "react";
 import * as wkt from "wellknown";
 
@@ -179,7 +180,7 @@ export default function DebugLayers({mapInstance,
                     <ul style={{ maxHeight: 64, overflowY: 'auto', margin: 0, paddingLeft: '1em' }}>
                       {debugChildren.hits.hits.map((item: any) => (
                         <li key={item._id} style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', maxWidth: 150 }}>
-                          {item._source.label || item._id}
+                        <Link href={`/uuid/${item._source.uuid}`}> {item._source.label || item._id}</Link>
                         </li>
                       ))}
                     </ul>
@@ -209,37 +210,42 @@ export default function DebugLayers({mapInstance,
                     closeButton={true}
                   >
                     <div style={{ maxWidth: 220, maxHeight: 110, overflowY: 'auto', wordBreak: 'break-word' }}>
-                      <b>Group:</b> {group._source.label || group._id}
-                      {isTop5 && !isSelected && typeof top5Index === 'number' && (
-                        <span style={{ color: top5Color, fontWeight: 'bold' }}>
-                          {" "}(Top 5 H3 #{top5Index + 1})
+                      <div className="flex flex-col gap-1">
+                        <span>
+                          <b>Group:</b>
+                          <Link href={`/uuid/${group._source.uuid}`}> {group._source.label || group._id}</Link>
                         </span>
-                      )}
-                      {isTop3Uuid && !isSelected && !isTop5 && typeof top3UuidIndex === 'number' && (
-                        <span style={{ color: top3UuidColor, fontWeight: 'bold' }}>
-                          {" "}(Top 3 UUID #{top3UuidIndex + 1})
-                        </span>
-                      )}
-                      {isSelected && <span style={{ color: '#000000', fontWeight: 'bold' }}> (SELECTED)</span>}
-                      <br />
-                      <b>ID:</b> {group._source.uuid}
-                      {group._source?.misc?.child_count !== undefined && (
-                        <>
-                          <br />
-                          <b>UUID count:</b> {group._source.misc?.child_count}
-                        </>
-                      )}
-                      {group._source?.gnidu?.length > 0 && (
-                        <>
-                          <br />
-                          <b>GNIDU:</b> {group._source.gnidu.join(', ')}
-                        </>
-                      )}
+                        {group._source.misc?.root && (
+                          <span>
+                            <b>Root:</b>
+                            <Link href={`/uuid/${group._source.misc?.root}`}> {group._source.misc.root}</Link>
+                          </span>
+                        )}
+                        {(isTop5 && !isSelected && typeof top5Index === 'number') && (
+                          <span style={{ color: top5Color, fontWeight: 'bold' }}>
+                            {" "}(Top 5 H3 #{top5Index + 1})
+                          </span>
+                        )}
+                        {(isTop3Uuid && !isSelected && !isTop5 && typeof top3UuidIndex === 'number') && (
+                          <span style={{ color: top3UuidColor, fontWeight: 'bold' }}>
+                            {" "}(Top 3 UUID #{top3UuidIndex + 1})
+                          </span>
+                        )}
+                        {group._source?.misc?.child_count !== undefined && (
+                          <span>
+                            <b>UUID count:</b> {group._source.misc?.child_count}
+                          </span>
+                        )}
+                        {group._source?.gnidu?.length > 0 && (
+                          <span>
+                            <b>GNIDU:</b> {group._source.gnidu.join(', ')}
+                          </span>
+                        )}
+                      </div>
                       {group._source?.misc?.h3_count !== undefined && (
-                        <>
-                          <br />
+                        <span>
                           <b>H3 count:</b> {group._source.misc.h3_count}
-                        </>
+                        </span>
                       )}
                       {childList}
                     </div>
