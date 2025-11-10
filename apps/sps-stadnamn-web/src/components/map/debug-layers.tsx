@@ -1,58 +1,97 @@
-import {useGroupDebugData, useGniduData, useTopH3Groups, useTopUUIDGroups} from "@/state/hooks/group-debug-data";
-import { GlobalContext } from "@/state/providers/global-provider";
+import {useGroupDebugData, useGniduData, useTopGroups, useSortedGroups} from "@/state/hooks/group-debug-data";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import * as h3 from "h3-js";
 import Link from "next/link";
-import { Fragment, useCallback, useContext, useState, useEffect } from "react";
+import { Fragment, useCallback, useState, useEffect, useRef } from "react";
 import * as wkt from "wellknown";
 
 
 export default function DebugLayers({mapInstance, 
                                     Polygon, 
-                                    Polyline, 
                                     Rectangle, 
                                     CircleMarker, 
-                                    Popup, 
                                     geotileKeyToBounds, 
-                                    groupData, 
-                                    markerCells }: {mapInstance: any, Polygon: any, Polyline: any, Rectangle: any, CircleMarker: any, Popup: any, geotileKeyToBounds: any, groupData: any, markerCells: any}) {
+                                    markerCells }: {mapInstance: any, Polygon: any, Rectangle: any, CircleMarker: any, geotileKeyToBounds: any, markerCells: any}) {
     const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
     const h3Resolution = useDebugStore(state => state.h3Resolution);
-    const setH3Resolution = useDebugStore(state => state.setH3Resolution);
     const showH3Grid = useDebugStore(state => state.showH3Grid);
     const showDebugGroups = useDebugStore(state => state.showDebugGroups);
-    const showTop3H3Counts = useDebugStore(state => state.showTop3H3Counts);
-    const showTop3UUIDCounts = useDebugStore(state => state.showTop3UUIDCounts);
+    const highlightTopGroups = useDebugStore(state => state.highlightTopGroups);
+    const setHighlightTopGroups = useDebugStore(state => state.setHighlightTopGroups);
+    const debugGroupsSortBy = useDebugStore(state => state.debugGroupsSortBy);
+    const setDebugGroupsSortBy = useDebugStore(state => state.setDebugGroupsSortBy);
 
 
     const [selectedGroup, setSelectedGroup] = useState<any>(null);
+    const selectedGroupRef = useRef<any>(null);
     const [selectedGnidu, setSelectedGnidu] = useState<any>(null);
+    
+    // Preserve selected group data even when queries update
+    useEffect(() => {
+      selectedGroupRef.current = selectedGroup;
+    }, [selectedGroup]);
+    
+    // Use ref value if state is cleared but we still have the ref
+    const preservedSelectedGroup = selectedGroup || selectedGroupRef.current;
 
     const {data: debugGroups } = useGroupDebugData();
-    const { data: debugChildren } = useGroupDebugData(selectedGroup);
-    const { data: gniduData } = useGniduData(selectedGroup);
-    const { data: topH3Data } = useTopH3Groups();
-    const { data: topUUIDData } = useTopUUIDGroups();
+    const { data: sortedGroups } = useSortedGroups();
+    const { data: debugChildren } = useGroupDebugData(preservedSelectedGroup);
+    const { data: gniduData } = useGniduData(preservedSelectedGroup);
+    const { data: topGroupsData } = useTopGroups();
+
+    // Disable map dragging when mouse is over overlay elements
+    useEffect(() => {
+      if (!mapInstance.current) return;
+      
+      const map = mapInstance.current;
+      const overlays = document.querySelectorAll('[data-debug-overlay]');
+      
+      const handleMouseEnter = () => {
+        if (map.dragging) {
+          map.dragging.disable();
+        }
+        if (map.scrollWheelZoom) {
+          map.scrollWheelZoom.disable();
+        }
+      };
+      
+      const handleMouseLeave = () => {
+        if (map.dragging) {
+          map.dragging.enable();
+        }
+        if (map.scrollWheelZoom) {
+          map.scrollWheelZoom.enable();
+        }
+      };
+      
+      overlays.forEach(overlay => {
+        overlay.addEventListener('mouseenter', handleMouseEnter);
+        overlay.addEventListener('mouseleave', handleMouseLeave);
+      });
+      
+      return () => {
+        overlays.forEach(overlay => {
+          overlay.removeEventListener('mouseenter', handleMouseEnter);
+          overlay.removeEventListener('mouseleave', handleMouseLeave);
+        });
+      };
+    }, [mapInstance, preservedSelectedGroup, showDebugGroups, gniduData]);
 
     // Get top groups from API (already sorted and filtered)
-    // Only use data when the respective setting is enabled
-    const top5Groups = showTop3H3Counts && topH3Data?.hits?.hits
-      ? topH3Data.hits.hits.filter((g: any) => g._id !== selectedGroup?._id)
+    // Only use data when highlighting is enabled
+    const topGroups = highlightTopGroups && topGroupsData?.hits?.hits
+      ? topGroupsData.hits.hits.filter((g: any) => g._id !== selectedGroup?._id)
       : [];
 
-    // Generate random colors for top 5 groups
+    // Generate random colors for top groups
     const getRandomColor = (index: number) => {
       const colors = ['#ff6600', '#ff3366', '#33ff66', '#3366ff', '#ff33cc'];
       return colors[index % colors.length];
     };
 
-    const top3uuidGroups = showTop3UUIDCounts && topUUIDData?.hits?.hits
-      ? topUUIDData.hits.hits.filter((g: any) => g._id !== selectedGroup?._id)
-      : [];
-
-    // Create lookup maps for faster ID matching
-    const top5GroupsMap = new Map(top5Groups.map((g: any, idx: number) => [g._id, idx]));
-    const top3uuidGroupsMap = new Map(top3uuidGroups.map((g: any, idx: number) => [g._id, idx]));
+    // Create lookup map for faster ID matching
+    const topGroupsMap = new Map(topGroups.map((g: any, idx: number) => [g._id, idx]));
 
 
       // Modify getH3Cells to use the resolution state
@@ -212,41 +251,17 @@ export default function DebugLayers({mapInstance,
               if (!group._source?.location?.coordinates) return null;
               
               const isSelected = group._id === selectedGroup?._id;
-              // Only check for top status when the respective setting is enabled, using lookup maps
-              const top5IndexValue = showTop3H3Counts ? top5GroupsMap.get(group._id) : undefined;
-              const top5Index = top5IndexValue !== undefined ? top5IndexValue : -1;
-              const isTop5 = top5Index !== -1;
-              const top3UuidIndexValue = showTop3UUIDCounts ? top3uuidGroupsMap.get(group._id) : undefined;
-              const top3UuidIndex = top3UuidIndexValue !== undefined ? top3UuidIndexValue : -1;
-              const isTop3Uuid = top3UuidIndex !== -1;
-              const top5Color = isTop5 ? getRandomColor(typeof top5Index === 'number' ? top5Index : 0) : '#666';
-              const top3UuidColor = isTop3Uuid ? getRandomColor(typeof top3UuidIndex === 'number' ? top3UuidIndex : 0) : '#666';
+              // Check for top status when highlighting is enabled
+              const topIndexValue = highlightTopGroups ? topGroupsMap.get(group._id) : undefined;
+              const topIndex: number = (topIndexValue !== undefined && typeof topIndexValue === 'number') ? topIndexValue : -1;
+              const isTopGroup = topIndex !== -1;
+              const topColor = isTopGroup ? getRandomColor(topIndex) : '#666';
 
               // Determine marker size: large for top groups, small for regular groups
-              const isTopGroup = isTop5 || isTop3Uuid;
               const radius = isSelected ? 5 : isTopGroup ? 5 : 4;
               const weight = isSelected ? 3 : isTopGroup ? 3 : 2;
               const fillOpacity = isSelected ? 0.1 : isTopGroup ? 0.8 : 0.2;
-              const color = isSelected ? '#000000' : (isTop5 ? top5Color : isTop3Uuid ? top3UuidColor : '#666');
-              
-              // List child names in the popup if this is the selected group
-              let childList = null;
-              const selectedGroupHasChildren = selectedGroup?._source?.misc?.children?.length > 0;
-              if (isSelected && selectedGroupHasChildren && debugChildren?.hits?.hits?.length > 0) {
-                childList = (
-                  <>
-                    <br />
-                    <b>Children:</b>
-                    <ul style={{ maxHeight: 64, overflowY: 'auto', margin: 0, paddingLeft: '1em' }}>
-                      {debugChildren.hits.hits.map((item: any) => (
-                        <li key={item._id} style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', maxWidth: 150 }}>
-                        <Link href={`/uuid/${item._source.uuid}`}> {item._source.label || item._id}</Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                );
-              }
+              const color = isSelected ? '#000000' : (isTopGroup ? topColor : '#666');
 
               return (
                 <CircleMarker
@@ -260,61 +275,16 @@ export default function DebugLayers({mapInstance,
                     fillOpacity: fillOpacity
                   }}
                   eventHandlers={{
-                    click: () => setSelectedGroup(group)
+                    click: () => {
+                      setSelectedGroup(group);
+                      selectedGroupRef.current = group;
+                    }
                   }}
-                >
-                  <Popup 
-                    maxWidth={240}
-                    maxHeight={150}
-                    autoPan={false}
-                    closeButton={true}
-                  >
-                    <div style={{ maxWidth: 220, maxHeight: 110, overflowY: 'auto', wordBreak: 'break-word', userSelect: 'text' }}>
-                      <div className="flex flex-col gap-1">
-                        <span>
-                          <b>Group:</b>
-                          <Link href={`/uuid/${group._source.uuid}`}> {group._source.label || group._id}</Link>
-                        </span>
-                        {group._source.misc?.root && (
-                          <span>
-                            <b>Root:</b>
-                            <Link href={`/uuid/${group._source.misc?.root}`}> {group._source.misc.root}</Link>
-                          </span>
-                        )}
-                        {(isTop5 && !isSelected && typeof top5Index === 'number') && (
-                          <span style={{ color: top5Color, fontWeight: 'bold' }}>
-                            {" "}(Top 5 H3 #{top5Index + 1})
-                          </span>
-                        )}
-                        {(isTop3Uuid && !isSelected && !isTop5 && typeof top3UuidIndex === 'number') && (
-                          <span style={{ color: top3UuidColor, fontWeight: 'bold' }}>
-                            {" "}(Top 3 UUID #{top3UuidIndex + 1})
-                          </span>
-                        )}
-                        {group._source?.misc?.child_count !== undefined && (
-                          <span>
-                            <b>UUID count:</b> {group._source.misc?.child_count}
-                          </span>
-                        )}
-                        {(group._source?.gnidu?.length > 0 || group._source?.misc?.gnidu?.length > 0) && (
-                          <span>
-                            <b>GNIDU:</b> {group._source.gnidu?.length > 0 ? group._source.gnidu.join(', ') : group._source.misc.gnidu.join(', ')}
-                          </span>
-                        )}
-                      </div>
-                      {group._source?.misc?.h3_count !== undefined && (
-                        <span>
-                          <b>H3 count:</b> {group._source.misc.h3_count}
-                        </span>
-                      )}
-                      {childList}
-                    </div>
-                  </Popup>
-                </CircleMarker>
+                />
               );
             })}
 
-            {showDebugGroups && selectedGroup && selectedGroup._source?.misc?.children?.length > 0 && debugChildren?.hits?.hits?.map((item: any) => {
+            {showDebugGroups && preservedSelectedGroup && preservedSelectedGroup._source?.misc?.children?.length > 0 && debugChildren?.hits?.hits?.map((item: any) => {
               // Skip if location or coordinates are missing
               if (!item._source?.location?.coordinates) return null;
               
@@ -322,162 +292,220 @@ export default function DebugLayers({mapInstance,
                 <CircleMarker
                   key={`debug-child-${item._id}`}
                   center={[item._source.location.coordinates[1], item._source.location.coordinates[0]]}
-                  radius={item._source.uuid == selectedGroup._source.misc.root ? 24 : 2}
-                  pathOptions={{ color: item._source.uuid == selectedGroup._source.misc.root ? 'red' : 'blue', weight: item._source.uuid == selectedGroup._source.misc.root ? 3 : 2, opacity: 1, fillOpacity: 0 }}
-                >
-                  <Popup
-                    maxWidth={180}
-                    maxHeight={100}
-                    autoPan={false}
-                    closeButton={true}
-                  >
-                    <div style={{ maxWidth: 160, maxHeight: 80, overflowY: 'auto', wordBreak: 'break-word', userSelect: 'text' }}>
-                      <b>Name:</b> {item._source.label || item._id}
-                      <br />
-                      <b>Dataset:</b> {item._index.split('-')[2]}
-                      {["snid", "gnidu", "ssr", "wikidata", "geonames"].filter(field => item._source[field]).map(
-                        (field) => <Fragment key={field}><br />
-                        <b>{field.charAt(0).toUpperCase() + field.slice(1)}:</b> {item._source[field]}
-                        </Fragment>
-                      )}
-                      <br />
-                      <b>ID:</b> {item._source.uuid}
-                    </div>
-                  </Popup>
-                </CircleMarker>
+                  radius={item._source.uuid == preservedSelectedGroup._source.misc.root ? 24 : 2}
+                  pathOptions={{ color: item._source.uuid == preservedSelectedGroup._source.misc.root ? 'red' : 'blue', weight: item._source.uuid == preservedSelectedGroup._source.misc.root ? 3 : 2, opacity: 1, fillOpacity: 0 }}
+                />
               );
             })}
 
-            {/* GNIDU List Overlay */}
-            {gniduData?.hits?.hits?.length > 0 && (
-              <div className="absolute bottom-64 left-4 bg-white/95 border border-gray-300 rounded-lg p-3 max-w-xs max-h-96 overflow-y-auto shadow-lg z-[1000] text-xs font-sans">
-                <div className="font-bold mb-2 text-gray-800">
-                  GNIDU Items
-                </div>
-                {gniduData.hits.hits.map((item: any, index: number) => {
-                  const isSelected = selectedGnidu?._id === item._id;
-                  return (
-                    <div
-                      key={`gnidu-list-${item._id}`}
-                      className={`p-2 my-1 rounded cursor-pointer transition-colors ${
-                        isSelected ? 'bg-black text-white' : 'bg-gray-50 hover:bg-blue-100'
-                      }`}
-                      onClick={() => setSelectedGnidu(isSelected ? null : item)}
-                    >
-                      <div className="font-bold">
-                        {item._source?.label || item._id}
-                      </div>
-                      <div className="text-xs opacity-75">
-                        ID: {item._id}
-                      </div>
+            {/* Group Details & GNIDU Overlay */}
+            {(preservedSelectedGroup || (gniduData?.hits?.hits?.length > 0)) && (
+              <div 
+                className="absolute bottom-4 right-4 bg-white/95 border border-gray-300 rounded-lg p-3 max-w-md max-h-[calc(100svh-8rem)] overflow-y-auto shadow-lg z-[1000] text-xs font-sans flex flex-col"
+                data-debug-overlay
+              >
+                {/* Selected Group Details */}
+                {preservedSelectedGroup && (
+                  <div className="mb-4 pb-4 border-b border-gray-200">
+                    <div className="font-bold mb-2 text-gray-800">
+                      {preservedSelectedGroup._source.label || preservedSelectedGroup._id}
                     </div>
-                  );
-                })}
-                <div className="mt-3 text-xs text-gray-600 text-center italic">
-                  Click to select/deselect
-                </div>
-              </div>
-            )}
+                    <div className="flex flex-col gap-1">
+                      <div>
 
-            {/* Top 5 Groups List Overlay */}
-            {showTop3H3Counts && top5Groups.length > 0 && (
-              <div className="absolute bottom-4 left-4 bg-white/95 border border-gray-300 rounded-lg p-3 max-w-xs max-h-96 overflow-y-auto shadow-lg z-[1000] text-xs font-sans">
-                <div className="font-bold mb-2 text-gray-800">
-                  Top 5 Groups (by H3 count)
-                </div>
-                {top5Groups.map((group: any, index: number) => {
-                  const groupColor = getRandomColor(index);
-                  return (
-                    <div
-                      key={`top5-list-${group._id}`}
-                      className={`p-2 my-1 rounded cursor-pointer flex justify-between items-center transition-colors ${
-                        index === 0 ? 'bg-yellow-100' : 'bg-gray-50'
-                      } hover:bg-blue-100`}
-                      onClick={() => setSelectedGroup(group)}
-                    >
-                      <div className="flex-1 overflow-hidden">
-                        <div className="font-bold" style={{ color: groupColor }}>
-                          #{index + 1} {group._source.label || group._id}
-                        </div>
-                        <div className="text-xs text-gray-600">
-                          H3: {group._source?.misc?.h3_count || 0} | 
-                          UUID: {group._source?.misc?.child_count || 0}
-                        </div>
+                        <Link href={`/uuid/${preservedSelectedGroup._source.uuid}.json`} className="text-blue-600 hover:underline">
+                          Gruppedata
+                        </Link>
                       </div>
-                      <div 
-                        className="w-3 h-3 rounded-full border-2 border-white shadow-sm"
-                        style={{ 
-                          background: groupColor,
-                          boxShadow: `0 0 0 1px ${groupColor}`
-                        }}
-                      />
+                      {preservedSelectedGroup._source.misc?.root && (
+                        <div>
+                          
+                          <Link href={`/uuid/${preservedSelectedGroup._source.misc?.root}`} className="text-blue-600 hover:underline">
+                          Root
+                          </Link>
+                        </div>
+                      )}
+                      {preservedSelectedGroup._source?.misc?.child_count !== undefined && (
+                        <div>
+                          <b>UUID count:</b> {preservedSelectedGroup._source.misc?.child_count}
+                        </div>
+                      )}
+                      {preservedSelectedGroup._source?.misc?.h3_count !== undefined && (
+                        <div>
+                          <b>H3 count:</b> {preservedSelectedGroup._source.misc.h3_count}
+                        </div>
+                      )}
                     </div>
-                  );
-                })}
-                <div className="mt-3 text-xs text-gray-600 text-center italic">
-                  Click to select group
-                </div>
-              </div>
-            )}
-
-            {/* Top 3 UUID Groups List Overlay */}
-            {showTop3UUIDCounts && top3uuidGroups.length > 0 && (
-              <div className="absolute bottom-4 left-64 bg-white/95 border border-gray-300 rounded-lg p-3 max-w-xs max-h-96 overflow-y-auto shadow-lg z-[1000] text-xs font-sans">
-                <div className="font-bold mb-2 text-gray-800">
-                  Top 3 Groups (by UUID count)
-                </div>
-                {top3uuidGroups.map((group: any, index: number) => {
-                  const groupColor = getRandomColor(index);
-                  return (
-                    <div
-                      key={`top3-uuid-list-${group._id}`}
-                      className={`p-2 my-1 rounded cursor-pointer flex justify-between items-center transition-colors ${
-                        index === 0 ? 'bg-yellow-100' : 'bg-gray-50'
-                      } hover:bg-blue-100`}
-                      onClick={() => setSelectedGroup(group)}
-                    >
-                      <div className="flex-1 overflow-hidden">
-                        <div className="font-bold" style={{ color: groupColor }}>
-                          #{index + 1} {group._source.label || group._id}
-                        </div>
-                        <div className="text-xs text-gray-600">
-                          H3: {group._source?.misc?.h3_count || 0} | 
-                          UUID: {group._source?.misc?.child_count || 0}
-                        </div>
+                    {/* Children List */}
+                    {preservedSelectedGroup._source?.misc?.children?.length > 0 && debugChildren?.hits?.hits?.length > 0 && (
+                      <div className="mt-3">
+                        <b>Children:</b>
+                        <ul className="mt-1 max-h-48 overflow-y-auto pl-2 pr-2">
+                          {debugChildren.hits.hits.map((item: any) => (
+                            <li key={item._id} className="truncate mb-1">
+                              <Link
+                                href={`/uuid/${item._source.uuid}`}
+                                className="text-blue-600 hover:underline font-semibold"
+                                title={item._source.label || item._id}
+                              >
+                                {item._source.label || item._id}
+                              </Link>
+                              <div className="text-xs mt-0.5 pl-2 flex flex-wrap gap-x-2 gap-y-1">
+                                {/* SNID */}
+                                {item._source.snid && (
+                                  <span>
+                                    <Link href={`/snid/${item._source.snid}`} className="text-blue-600 hover:underline">
+                                      {item._source.snid}
+                                    </Link>
+                                  </span>
+                                )}
+                                {/* SSR */}
+                                {item._source.ssr && (
+                                  <span>
+                                    <span className="text-gray-500">SSR:</span>{" "}
+                                    <a
+                                      href={`https://stadnamnregisteret.no/stadnamn/${item._source.ssr}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-600 hover:underline"
+                                    >
+                                      {item._source.ssr}
+                                    </a>
+                                  </span>
+                                )}
+                                {/* Wikidata */}
+                                {item._source.wikidata && (
+                                  <span>
+                                    <span className="text-gray-500">Wikidata:</span>{" "}
+                                    <a
+                                      href={`https://www.wikidata.org/wiki/${item._source.wikidata}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-600 hover:underline"
+                                    >
+                                      {item._source.wikidata}
+                                    </a>
+                                  </span>
+                                )}
+                                {/* Geonames */}
+                                {item._source.geonames && (
+                                  <span>
+                                    <span className="text-gray-500">Geonames:</span>{" "}
+                                    <a
+                                      href={`https://www.geonames.org/${item._source.geonames}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-600 hover:underline"
+                                    >
+                                      {item._source.geonames}
+                                    </a>
+                                  </span>
+                                )}
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                      <div 
-                        className="w-3 h-3 rounded-full border-2 border-white shadow-sm"
-                        style={{ 
-                          background: groupColor,
-                          boxShadow: `0 0 0 1px ${groupColor}`
-                        }}
-                      />
+                    )}
+                  </div>
+                )}
+                {/* GNIDU List */}
+                {gniduData?.hits?.hits?.length > 0 && (
+                  <div>
+                    <div className="font-bold mb-2 text-gray-800">
+                      GNIDU
                     </div>
-                  );
-                })}
-                <div className="mt-3 text-xs text-gray-600 text-center italic">
-                  Click to select group
-                </div>
+                    {gniduData.hits.hits.map((item: any) => {
+                      const isSelected = selectedGnidu?._id === item._id;
+                      return (
+                        <div
+                          key={`gnidu-list-${item._id}`}
+                          className={`p-2 my-1 rounded cursor-pointer transition-colors ${
+                            isSelected ? 'bg-black text-white' : 'bg-gray-50 hover:bg-blue-100'
+                          }`}
+                          onClick={() => setSelectedGnidu(isSelected ? null : item)}
+                        >
+                          <div className="font-bold">
+                            {item._source?.label || item._id}
+                          </div>
+                          <div className="text-xs opacity-75">
+                            ID: {item._id}
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {!preservedSelectedGroup && (
+                      <div className="mt-3 text-xs text-gray-600 text-center italic">
+                        Click to select/deselect
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
             {/* Debug Results Menu */}
-            {showDebugGroups && debugGroups?.hits?.hits && debugGroups.hits.hits.length > 0 && (
-              <div className="absolute right-0 top-[25svh] bottom-1 bg-white/95 border border-gray-300 rounded-lg p-3 w-64 max-h-[calc(100svh-6rem)] overflow-y-auto shadow-lg z-[1000] text-xs font-sans">
+            {showDebugGroups && sortedGroups?.hits?.hits && sortedGroups.hits.hits.length > 0 && (
+              <div 
+                className="absolute left-4 top-[25svh] bottom-1 bg-white/95 border border-gray-300 rounded-lg p-3 w-64 max-h-[calc(100svh-6rem)] overflow-y-auto shadow-lg z-[1000] text-xs font-sans flex flex-col"
+                data-debug-overlay
+              >
                 <div className="font-bold mb-2 text-gray-800">
-                  Debug Groups ({debugGroups.hits.hits.length})
+                  Debug Groups ({sortedGroups.hits.hits.length})
                 </div>
-                {debugGroups.hits.hits.map((group: any) => {
-                  const isSelected = group._id === selectedGroup?._id;
+                <div className="flex flex-col gap-2 mb-3 pb-3 border-b border-gray-200">
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="debug-groups-sort" className="text-xs text-gray-700">
+                      Sorter etter:
+                    </label>
+                    <select
+                      id="debug-groups-sort"
+                      value={debugGroupsSortBy}
+                      onChange={(e) => setDebugGroupsSortBy(e.target.value as 'uuid' | 'uuid_count' | 'h3_count')}
+                      className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-accent-800"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <option value="uuid">UUID (tilfeldig fordeling)</option>
+                      <option value="uuid_count">UUID-antall (child count)</option>
+                      <option value="h3_count">H3-antall</option>
+                    </select>
+                  </div>
+                  <label className="flex items-center gap-2 cursor-pointer text-xs">
+                    <input
+                      type="checkbox"
+                      checked={highlightTopGroups}
+                      onChange={() => setHighlightTopGroups(!highlightTopGroups)}
+                      className="accent-accent-800"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <span>Fremhev topp i kart</span>
+                  </label>
+                </div>
+                <div className="flex-1 overflow-y-auto">
+                {sortedGroups.hits.hits.map((group: any) => {
+                  const isSelected = group._id === preservedSelectedGroup?._id;
+                  const topIndexValue = highlightTopGroups ? topGroupsMap.get(group._id) : undefined;
+                  const topIndex: number = (topIndexValue !== undefined && typeof topIndexValue === 'number') ? topIndexValue : -1;
+                  const isTopGroup = topIndex !== -1;
+                  const topColor = isTopGroup ? getRandomColor(topIndex) : undefined;
                   return (
                     <div
                       key={`debug-result-${group._id}`}
                       className={`p-2 my-1 rounded cursor-pointer transition-colors ${
-                        isSelected ? 'bg-black text-white' : 'bg-gray-50 hover:bg-blue-100'
+                        isSelected ? 'bg-black text-white' : isTopGroup ? 'bg-gray-100' : 'bg-gray-50 hover:bg-blue-100'
                       }`}
-                      onClick={() => setSelectedGroup(isSelected ? null : group)}
+                      onClick={() => {
+                        if (isSelected) {
+                          setSelectedGroup(null);
+                          selectedGroupRef.current = null;
+                        } else {
+                          setSelectedGroup(group);
+                          selectedGroupRef.current = group;
+                        }
+                      }}
                     >
-                      <div className="font-semibold truncate">
+                      <div className={`font-semibold truncate ${isTopGroup && !isSelected ? '' : ''}`} style={isTopGroup && !isSelected ? { color: topColor } : {}}>
+                        {isTopGroup && !isSelected && topIndex >= 0 && `#${topIndex + 1} `}
                         {group._source?.label || group._id}
                       </div>
                       {group._source?.misc?.child_count !== undefined && (
@@ -488,6 +516,7 @@ export default function DebugLayers({mapInstance,
                     </div>
                   );
                 })}
+                </div>
               </div>
             )}
             </>

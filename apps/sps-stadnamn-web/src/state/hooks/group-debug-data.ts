@@ -51,15 +51,16 @@ export function useGroupDebugData(selectedGroup?: any) {
     const searchParams = useSearchParams()
     const { mapFunctionRef } = useContext(GlobalContext)
     const q = searchParams.get('q')
-    const debug = useDebugStore((s) => s.debug)
+    const showDebugGroups = useDebugStore((s) => s.showDebugGroups)
 
     const children = selectedGroup?._source?.misc?.children || []
     const hasChildren = children.length > 0
+    const isFetchingChildren = !!selectedGroup && hasChildren
 
     
-    // Get current map bounds from map instance
+    // Get current map bounds from map instance (only when not fetching children)
     const getMapBounds = () => {
-        if (!mapFunctionRef?.current) return null
+        if (!mapFunctionRef?.current || isFetchingChildren) return null
         
         try {
             const mapBounds = mapFunctionRef.current.getBounds()
@@ -87,23 +88,29 @@ export function useGroupDebugData(selectedGroup?: any) {
 
     
     return useQuery({
-        queryKey: ['group-debug', q, selectedGroup?._id, hasChildren, children.length, bounds?.topLeftLat, bounds?.topLeftLng, bounds?.bottomRightLat, bounds?.bottomRightLng],
+        // When fetching children, don't include bounds in query key to prevent refetching on pan
+        queryKey: isFetchingChildren 
+            ? ['group-debug-children', selectedGroup?._id, children.length]
+            : ['group-debug', q, selectedGroup?._id, hasChildren, children.length, bounds?.topLeftLat, bounds?.topLeftLng, bounds?.bottomRightLat, bounds?.bottomRightLng],
         queryFn: () => {
             // If a group is selected but has no children, return empty result immediately
             if (selectedGroup && !hasChildren) {
                 return Promise.resolve({ hits: { hits: [] } })
             }
-            return groupDebugDataQuery(q, bounds || { topLeftLat: null, topLeftLng: null, bottomRightLat: null, bottomRightLng: null }, children, 'uuid', 100)
+            // When fetching children, don't use bounds - just fetch by children IDs
+            // Always sort by uuid (no sort param) for even distribution of markers
+            return groupDebugDataQuery(q, isFetchingChildren ? { topLeftLat: null, topLeftLng: null, bottomRightLat: null, bottomRightLng: null } : bounds || { topLeftLat: null, topLeftLng: null, bottomRightLat: null, bottomRightLng: null }, children, undefined, 100)
         },
-        enabled: !!mapFunctionRef?.current && debug // Only run query when map is available and debug groups is enabled
+        enabled: !!mapFunctionRef?.current && showDebugGroups // Only run query when map is available and debug groups is enabled
     })
 }
 
-export function useTopH3Groups() {
+export function useSortedGroups() {
     const searchParams = useSearchParams()
     const { mapFunctionRef } = useContext(GlobalContext)
     const q = searchParams.get('q')
-    const showTop3H3Counts = useDebugStore((s) => s.showTop3H3Counts)
+    const showDebugGroups = useDebugStore((s) => s.showDebugGroups)
+    const debugGroupsSortBy = useDebugStore((s) => s.debugGroupsSortBy)
 
     // Get current map bounds from map instance
     const getMapBounds = () => {
@@ -132,18 +139,26 @@ export function useTopH3Groups() {
     
     const bounds = getMapBounds()
 
+    // Map sortBy to API sort parameter
+    // uuid -> undefined (sorts by uuid asc for random distribution)
+    // uuid_count -> 'uuid' (sorts by child_count desc)
+    // h3_count -> 'h3' (sorts by h3_count desc)
+    const apiSortParam = debugGroupsSortBy === 'uuid_count' ? 'uuid' : debugGroupsSortBy === 'h3_count' ? 'h3' : undefined
+
     return useQuery({
-        queryKey: ['top-h3-groups', q, bounds?.topLeftLat, bounds?.topLeftLng, bounds?.bottomRightLat, bounds?.bottomRightLng],
-        queryFn: () => groupDebugDataQuery(q, bounds || { topLeftLat: null, topLeftLng: null, bottomRightLat: null, bottomRightLng: null }, undefined, 'h3', 3),
-        enabled: !!mapFunctionRef?.current && showTop3H3Counts
+        queryKey: ['sorted-groups', q, debugGroupsSortBy, bounds?.topLeftLat, bounds?.topLeftLng, bounds?.bottomRightLat, bounds?.bottomRightLng],
+        queryFn: () => groupDebugDataQuery(q, bounds || { topLeftLat: null, topLeftLng: null, bottomRightLat: null, bottomRightLng: null }, undefined, apiSortParam, 100),
+        enabled: !!mapFunctionRef?.current && showDebugGroups
     })
 }
 
-export function useTopUUIDGroups() {
+export function useTopGroups() {
     const searchParams = useSearchParams()
     const { mapFunctionRef } = useContext(GlobalContext)
     const q = searchParams.get('q')
-    const showTop3UUIDCounts = useDebugStore((s) => s.showTop3UUIDCounts)
+    const showDebugGroups = useDebugStore((s) => s.showDebugGroups)
+    const debugGroupsSortBy = useDebugStore((s) => s.debugGroupsSortBy)
+    const highlightTopGroups = useDebugStore((s) => s.highlightTopGroups)
 
     // Get current map bounds from map instance
     const getMapBounds = () => {
@@ -172,10 +187,18 @@ export function useTopUUIDGroups() {
     
     const bounds = getMapBounds()
 
+    // Only fetch top groups if highlighting is enabled and sort is not 'uuid' (which is for random distribution)
+    const shouldFetch = highlightTopGroups && debugGroupsSortBy !== 'uuid'
+    
+    // Map sortBy to API sort parameter
+    // uuid_count -> 'uuid' (sorts by child_count desc)
+    // h3_count -> 'h3' (sorts by h3_count desc)
+    const apiSortParam = debugGroupsSortBy === 'uuid_count' ? 'uuid' : debugGroupsSortBy === 'h3_count' ? 'h3' : undefined
+
     return useQuery({
-        queryKey: ['top-uuid-groups', q, bounds?.topLeftLat, bounds?.topLeftLng, bounds?.bottomRightLat, bounds?.bottomRightLng],
-        queryFn: () => groupDebugDataQuery(q, bounds || { topLeftLat: null, topLeftLng: null, bottomRightLat: null, bottomRightLng: null }, undefined, 'uuid', 3),
-        enabled: !!mapFunctionRef?.current && showTop3UUIDCounts
+        queryKey: ['top-groups', q, debugGroupsSortBy, bounds?.topLeftLat, bounds?.topLeftLng, bounds?.bottomRightLat, bounds?.bottomRightLng],
+        queryFn: () => groupDebugDataQuery(q, bounds || { topLeftLat: null, topLeftLng: null, bottomRightLat: null, bottomRightLng: null }, undefined, apiSortParam, 5),
+        enabled: !!mapFunctionRef?.current && showDebugGroups && shouldFetch
     })
 }
 

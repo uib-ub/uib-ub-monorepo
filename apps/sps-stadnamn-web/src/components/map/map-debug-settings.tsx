@@ -19,10 +19,6 @@ export default function MapDebugSettings() {
   const router = useRouter();
   const showDebugGroups = useDebugStore((s: any) => s.showDebugGroups);
   const setShowDebugGroups = useDebugStore((s: any) => s.setShowDebugGroups);
-  const showTop3H3Counts = useDebugStore((s: any) => s.showTop3H3Counts);
-  const setShowTop3H3Counts = useDebugStore((s: any) => s.setShowTop3H3Counts);
-  const showTop3UUIDCounts = useDebugStore((s: any) => s.showTop3UUIDCounts);
-  const setShowTop3UUIDCounts = useDebugStore((s: any) => s.setShowTop3UUIDCounts);
   const searchParams = useSearchParams();
 
   return (
@@ -110,26 +106,6 @@ export default function MapDebugSettings() {
                       className="accent-accent-800"
                     />
                     <span>Debugging av grupper</span>
-                  </label>
-                </div>
-                <div className="flex flex-col gap-2 px-2 py-1">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={showTop3H3Counts}
-                      onChange={() => setShowTop3H3Counts(!showTop3H3Counts)}
-                      className="accent-accent-800"
-                    />
-                    <span>Vis top 3 H3-antall</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={showTop3UUIDCounts}
-                      onChange={() => setShowTop3UUIDCounts(!showTop3UUIDCounts)}
-                      className="accent-accent-800"
-                    />
-                    <span>Vis top 3 UUID-antall</span>
                   </label>
                 </div>
               </fieldset>
