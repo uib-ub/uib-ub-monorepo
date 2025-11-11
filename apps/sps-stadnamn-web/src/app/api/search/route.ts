@@ -1,75 +1,29 @@
-export const runtime = 'edge'
+//export const runtime = 'edge'
 
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';
-import { getSortArray } from '@/config/server-config';
+
 export async function GET(request: Request) {
-  const {termFilters, filteredParams} = extractFacets(request)
-  const dataset = filteredParams.dataset // == 'search' ? '*' : filteredParams.dataset;
-  const { highlight, simple_query_string } = getQueryString(filteredParams)
-
-  let sortArray: (string | object)[] = []
-    
-    // Existing sorting logic
-  if (filteredParams.display == 'table') {
-    if (filteredParams.asc) {
-      filteredParams.asc.split(',').forEach((field: string) => {
-      if (field.includes('__')) {
-        // Handle nested sorting for ascending order
-        sortArray.push({
-          [field.replace("__", ".")]: {
-            "order": "asc",
-            "nested": { path: field.split('__')[0] }
-          }
-        });
-      } else {
-        // Non-nested sorting
-        sortArray.push({[field]: 'asc'});
-      }
-    });
-    }
-    if (filteredParams.desc) {
-      filteredParams.desc.split(',').forEach((field: string) => {
-      if (field.includes('__')) {
-        // Handle nested sorting for descending order
-        sortArray.push({
-          [field.replace("__", ".")]: {
-            "order": "desc",
-            "nested": { path: field.split('__')[0] }
-          }
-
-      
-        });
-      } else {
-        // Non-nested sorting
-        sortArray.push({[field]: 'desc'});
-      }
-    });
-
-    }
-  }
-
-  if (!sortArray.length) {
-    sortArray = getSortArray(dataset)
-  }
-
+  const {termFilters, reservedParams} = extractFacets(request)
+  const perspective = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
+  const { simple_query_string } = getQueryString(reservedParams)
     
   const query: Record<string,any> = {
-    "from": filteredParams.page ? (parseInt(filteredParams.page) - 1) * parseInt(filteredParams.size || '10') : 0,
-    "size":  termFilters.length == 0 && !simple_query_string ? 0 : filteredParams.size  || 10,
-    ...highlight ? {highlight} : {},
-    "aggs": {
-      "viewport": {
-        "geo_bounds": {
-          "field": "location",
-          "wrap_longitude": true
-        },
-
-      }
-    },
-    "sort": sortArray
+    "track_total_hits": 10000000,
+    "track_scores": false,
+    "size":  0,
+      "aggs": {
+        "viewport": {
+          "geo_bounds": {
+            "field": "location",
+            "wrap_longitude": true
+          },
+        }
+      },
+    "_source": false
   }
+
 
   if (simple_query_string && termFilters.length) {
     query.query = {
@@ -89,9 +43,7 @@ export async function GET(request: Request) {
     }
   }
 
-  //console.log("QUERY", JSON.stringify(query, null, 2))
-
-  const data = await postQuery(dataset, query)
-
-  return Response.json(data);
+  const [data, status] = await postQuery(perspective, query)
+  return Response.json(data, {status: status})
+  
 }

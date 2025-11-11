@@ -1,83 +1,83 @@
 'use client'
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeft, PiCaretRight } from 'react-icons/pi';
-import IconButton from '@/components/ui/icon-button';
+import { useRouter, useSearchParams } from 'next/navigation';
+import ClickableIcon from '../ui/clickable/clickable-icon';
+import useSearchData from '@/state/hooks/search-data';
 
-export default function Pagination({ totalPages, currentPage = 1, setCurrentPage}: { totalPages: number, currentPage?: number, setCurrentPage?: (page: number) => void }) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const isClient = setCurrentPage !== undefined
-  currentPage = isClient ? currentPage : Number(searchParams.get('page')) || 1;
+export default function Pagination() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   
-  
+  // Get current values from URL or use defaults
+  const perPage = Number(searchParams.get('perPage')) || 10
+  const page = Number(searchParams.get('page')) || 1
+  const { totalHits } = useSearchData()
+  const totalPages = Math.ceil(totalHits?.value / perPage)
+  const cappedTotalPages = Math.min(totalPages, Math.ceil(10000 / perPage))
 
-  const paginationUrl = (page: number) => {
-    const params = new URLSearchParams(searchParams)
-    params.set('page', String(page))
-    return pathname + "?" + params.toString()
+  const setPerPage = (newPerPage: number) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('perPage', newPerPage.toString())
+    params.set('page', '1') // Reset to first page when changing items per page
+    router.push(`?${params.toString()}`)
   }
 
-  const perPageUrl = (size: string) => {
-    const params = new URLSearchParams(searchParams)
-    params.set('size', String(size))
-    if (params.has('page')) {
-      params.set('page', '1')
-    }
-    return pathname + "?" + params.toString()
-  }
+  return  (
+    <nav className='flex gap-8 flex-col md:flex-wrap md:flex-row content-center'>
+      <div className='flex gap-2 justify-between items-center'>
+        
+        {totalPages > 2 && <ClickableIcon 
+          disabled={page == 1} 
+          add={{page: '1'}}
+          label="Første side" 
+          className='btn btn-outline btn-compact grow md:grow-0 aspect-square'>
+            <PiCaretDoubleLeft/>
+        </ClickableIcon>}
+        
+        <ClickableIcon 
+          disabled={page == 1} 
+          add={{page: (page - 1).toString()}}
+          label="Forrige side" 
+          className='btn btn-outline btn-compact grow md:grow-0 aspect-square'>
+            <PiCaretLeft/>
+        </ClickableIcon>
 
-  const firstAction = isClient ? {onClick: () => setCurrentPage(1)} : {href: paginationUrl(1)}
-  const lastAction = isClient ? {onClick: () => setCurrentPage(totalPages)} : {href: paginationUrl(totalPages)}
-  const nextAction = isClient ? {onClick: () => setCurrentPage(currentPage + 1)} : {href: paginationUrl(currentPage + 1)}
-  const prevAction = isClient ? {onClick: () => setCurrentPage(currentPage - 1)} : {href: paginationUrl(currentPage - 1)}
+        <span role="status" aria-live="polite" className='px-3 py-1 rounded-sm border-neutral-400 flex text-center'>
+          {(page -1) * perPage + 1}-{page * perPage} av {totalHits?.value?.toLocaleString('no-NO')}{totalHits?.relation != 'eq' ? '+' : ''}
+        </span>
+        
+        <ClickableIcon 
+          disabled={page == cappedTotalPages} 
+          add={{page: (page + 1).toString()}}
+          label="Neste side" 
+          className='btn btn-outline btn-compact grow md:grow-0 aspect-square'>
+            <PiCaretRight/>
+        </ClickableIcon>
 
+        {totalPages > 2 && <ClickableIcon 
+          disabled={page == cappedTotalPages} 
+          add={{page: cappedTotalPages.toString()}}
+          label="Siste side (Inntil 10 000 treff)" 
+          className='btn btn-outline btn-compact grow md:grow-0 aspect-square'>
+            <PiCaretDoubleRight/>
+        </ClickableIcon>}
+      </div>
 
- return  (
-  <div className='flex gap-8 flex-col md:flex-wrap md:flex-row content-center'>
-  
-  <div className='flex gap-2 justify-even'>
-  
-  {totalPages > 2 && <IconButton disabled={currentPage == 1} label="Første side" className='btn btn-outline btn-compact grow md:grow-0' textIcon {...firstAction}><PiCaretDoubleLeft/></IconButton>
-  
-}
-  { <IconButton disabled={currentPage == 1} label="Forrige side" className='btn btn-outline btn-compact grow md:grow-0' textIcon {...prevAction}><PiCaretLeft/></IconButton>
-  
-  }
-
-  { currentPage > 1 ? <span role="status" aria-live="polite" className='px-3 py-1 rounded-sm border-neutral-400'>Side {currentPage} av {totalPages}</span>
-   : <span className='px-3 py-1 rounded-sm border-neutral-400'>Side {currentPage} av {totalPages}</span>
-  }
-  
-
-  
-
-  
-  { 
-    <IconButton disabled={currentPage == totalPages} label="Neste side" className='btn btn-outline btn-compact grow md:grow-0' textIcon {...nextAction}><PiCaretRight/></IconButton>
-  }
-  { totalPages > 2 &&
-    <IconButton disabled={currentPage == totalPages} label="Siste side" className='btn btn-outline btn-compact grow md:grow-0' textIcon {...lastAction}><PiCaretDoubleRight/></IconButton>
-  }
-  </div>
-  {!isClient && <div className="self-center">
-  <label htmlFor="per_page_select">Treff per side: </label>
-  <select id="per_page_select" name="size" value={parseInt(searchParams.get('size') || '10')} onChange={
-      (event) => {
-          router.push(perPageUrl(event.target.value))
-      }
-  }>
-{[10, 20, 50, 100].map((value) => (
-  <option key={value} value={value}>
-    {value}
-  </option>
-))}
-
-</select>
-</div>}
-  
-</div>
-    
+      <div className="self-center">
+        <label htmlFor="per_page_select">Treff per side: </label>
+        <select 
+          id="per_page_select" 
+          name="size" 
+          value={perPage} 
+          onChange={(event) => setPerPage(parseInt(event.target.value))}>
+          {[10, 20, 50, 100].map((value) => (
+            <option key={value} value={value}>
+              {value}
+            </option>
+          ))}
+        </select>
+      </div>
+    </nav>
   )
-  }
+}
   

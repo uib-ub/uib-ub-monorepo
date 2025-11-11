@@ -1,13 +1,14 @@
-export const runtime = 'edge'
+//export const runtime = 'edge'
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';
+import { baseAllConfig } from '@/config/search-config';
 export async function GET(request: Request) {
   const params = Object.fromEntries(new URLSearchParams(new URL(request.url).search));
-  const { termFilters, filteredParams } = extractFacets(request)
-  const dataset = params.dataset// == 'search' ? '*' : params.dataset;
+  const { termFilters, reservedParams } = extractFacets(request)
+  const perspective = params.perspective || 'all'// == 'search' ? '*' : params.dataset;
   const facets = params.facets?.split(',')
-  const { simple_query_string } = getQueryString(filteredParams)
+  const { simple_query_string } = getQueryString(reservedParams)
 
  let aggs;
  if (facets) {
@@ -38,9 +39,9 @@ export async function GET(request: Request) {
         : {
             [facets[i]]: {
               terms: {
-                field: `${facets[i]}.keyword`,
+                field: facets[i] === 'dataset' ? '_index' : `${facets[i]}${(baseAllConfig[facets[i] as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}`,
                 missing: "_false",
-                size: params.facetSearch ? 10 : 50,
+                size: params.facetSearch ? 10 : 100,
                 ...params.facetSort ? { order: { _key: params.facetSort } } : {},
               },
               ...(i < facets.length - 1 ? { aggs } : {})
@@ -69,7 +70,7 @@ export async function GET(request: Request) {
     }
   }
 
-  const data = await postQuery(dataset, query)
+  const [data, status] = await postQuery(perspective, query)
 
-  return Response.json(data);
+  return Response.json(data, { status: status })
 }

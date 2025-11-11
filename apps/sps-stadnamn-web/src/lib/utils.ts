@@ -1,8 +1,19 @@
+import { treeSettings } from "@/config/server-config"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
  
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export function formatNumber(num: number): string {
+  if (num >= 1000000) {
+      return `${Math.round(num / 1000000)}M`;
+  }
+  if (num >= 1000) {
+      return `${Math.round(num / 1000)}k`;
+  }
+  return num.toString();
 }
 
 // Repeat search params instead of comma separated values
@@ -22,6 +33,9 @@ export function getValueByPath (obj: any, path: string | undefined): any {
   
   if (obj[path]) {
     return obj[path]
+  }
+  else if (path == "adm") {
+    return [obj.adm1, obj.adm2, obj.adm3].filter(Boolean).join('__')
   }
   else {
     // Needed for nested fields in both field and _source
@@ -53,4 +67,52 @@ export function getSkeletonLength(index: number, min: number, max: number): numb
 
   return Math.floor(baseSkeletonLengths[wrappedIndex] * (max - min) / 16 + min);
 }
+
+
+export function getFieldValue(hit: any, field: string) {
+  // If we have a hit with fields, use that
+  if (hit.fields?.[field]) {
+    return hit.fields[field];
+  }
+  
+  // If we have a hit with _source, use getValueByPath on the _source
+  if (hit._source) {
+    const sourceValue = hit._source[field] || getValueByPath(hit._source, field);
+    return sourceValue ? (Array.isArray(sourceValue) ? sourceValue : [sourceValue]) : null;
+  }
+  
+  // Otherwise treat the hit itself as the source object
+  const sourceValue = hit[field] || getValueByPath(hit, field);
+  return sourceValue ? (Array.isArray(sourceValue) ? sourceValue : [sourceValue]) : null;
+}
+
+export function getGnr(hit: any, dataset: string) {
+  const data = hit?._source || hit?.fields
+  if (!treeSettings[dataset] || !data) {
+    return null
+  }
+  const gnr = getFieldValue(hit, treeSettings[dataset]?.subunit) || data?.cadastre?.[0]?.gnr
+  if (Array.isArray(gnr)) {
+    return gnr.join(",")
+  }
+  return gnr
+}
+
+export function getBnr(hit: any, dataset: string) {
+  const data = hit?._source || hit?.fields
+  if (!treeSettings[dataset] || !data) {
+      return null
+    }
+  const bnr = getFieldValue(hit, treeSettings[dataset]?.leaf) || data?.cadastre?.[0]?.bnr
+  if (Array.isArray(bnr)) {
+    return bnr.join(",")
+  }
+  return bnr
+}
+
+
+export function indexToCode(index: string) {
+    return [index.split("-")[2]];
+}
+
 

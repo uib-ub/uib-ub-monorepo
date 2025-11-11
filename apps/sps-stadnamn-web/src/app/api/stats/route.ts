@@ -1,9 +1,10 @@
-export const runtime = 'edge'
-import { fetchStats } from '../_utils/actions';
+//export const runtime = 'edge'
+import { fetchStats } from '../_utils/stats';
 
 export async function GET() {
 
-    const data = await fetchStats();
+    const { groupCount, datasets, subdatasets, iiifStats } = await fetchStats()
 
-  return Response.json(data);
+
+    return Response.json({groupCount, datasets, subdatasets, iiifStats})
 }

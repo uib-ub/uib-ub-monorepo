@@ -1,4 +1,4 @@
-export const runtime = 'edge'
+//export const runtime = 'edge'
 import { fetchDoc } from '../../_utils/actions';
 
 export async function GET(request: Request) {

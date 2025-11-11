@@ -1,33 +1,28 @@
-export const metadata = { title: 'Søkeveiledning' }
+export const metadata = { title: 'Søketips' }
 
 
-# Søkeveiledning
-Stadnamnportalen har et [overordnet søk](/view/search) og [søkevisninger for enkelte datasett](/datasets). I førstnevnte skal vi på sikt slå sammen alle treff som er tildelt en stadnamn-ID i språksamlingenes
-database (SNID). I datasettvisningene vil man kunne bruke søkefiltre som er spesifikke for hvert datasett.
+# Søketips
+Stadnamportalen samlar data frå ei rekke kjelder, presenterte som [datasett](/datasets). Treff som ligg nær kvarandre geografisk, blir slått saman i grupper dersom dei har same oppsalgsord, og prioriterte datasett blir
+viste øvst. Du kan navigere til neste treff ved å trykke på navigasjonsknappane, eller ved å trykke **ctrl** og høgre eller venstre piltast.  Du kan òg velje «Liknande namn» for å få ei oversikt over liknande namn i nærleiken, namn som ikkje naudsynlegvis
+er med i søket.
 
 ## Søkefeltet
-Hovedsøkefeltet øverst i søkeseksjonen søker på stedsnavn som inneholder alle ordene du skriver inn, men ikke nødvendigvis i samme rekkefølge - **Berg Nordre** vil også gi treff på "Nordre Berg".
-Hvis søkevisningen har en knapp for å søke i annet enn stedsnavn, kan søket gi treff som inneholder bare ett av ordene du skriver inn.
+
+Med hovudsøkjefeltet øvst i søkjeseksjonen søkjer du på stadnamn som inneheld alle orda du skriv inn, men ikkje nødvendigvis i same rekkefølgje – **Berg Nordre** vil òg gje treff på «Nordre Berg». Dersom søkjevisninga har ein knapp for å søkje i anna enn stadnamn, kan søket gje treff som inneheld berre eitt av orda du skriv inn.
 
 ### Frasesøk
-Sett anførselstegn rundt søket for å søke etter en frase eller et navn bestående av flere ord. "Berg Nordre" gir for eksempel ikke treff på "Nordre Berg", men du vil få treff på dette hvis du søker uten anførselstegn.
+Set hermeteikn rundt søket for å søkje etter ein frase eller eit namn som består av fleire ord. "Berg Nordre" gjev til dømes ikkje treff på «Nordre Berg», men du vil få treff på dette om du søkjer utan hermeteikn.
 
 ### Søk med jokertegn
-Tegnet **\*** kan brukes til trunkering av ett eller flere tegn. For eksempel vil søket **berg\*** gi treff på "Berg", "Bergen", "Bergheim". Tegnet kan plasseres hvor som helst og flere ganger i søkeordet.
-Bruk **?** for å søke etter ett tegn. For eksempel vil søket **b?rg** gi treff på "Berg", men ikke "Bratsberg".
+Teiknet **\*** kan brukast til trunkering (forkorting) av eitt eller fleire teikn. Til dømes vil søket **berg\*** gje treff på «Berg», «Bergen», «Bergheim». Teiknet kan plasserast kvar som helst og fleire gonger i søkjeordet. 
+Bruk **?** for å søkje etter eitt teikn. Til dømes vil søket **b?rg** gje treff på «Berg», men ikkje «Bratsberg».
 
-### Fuzzy søk
-Fuzzy søk gir treff på ord som ligner det du søker på. For eksempel vil søket **berg~** gi treff på "Bergen", "Berga" og "Bergheim".
+### Omtrentleg
+Omtrentleg søk gjev treff på ord som liknar det du søkjer på. Til dømes vil søket **berg~** gje treff på «Bergen», «Berga» og «Bergheim».
 
-### Utelat ord fra søket
-For å utelate ord fra søket, bruk **-** foran ordet. For eksempel vil søket **berg -nordre** gi treff på alle stedsnavn som inneholder "berg", men ikke "nordre".
+### Utelat ord frå søket
+For å utelate ord frå søket, bruk - føre ordet. Til dømes vil søket **berg -nordre** gje treff på alle stadnamn som inneheld «berg», men ikkje «nordre».
 
-### Nærhetssøk
-For å søke etter to ord som er nær hverandre kan du sette anførselstegn rundt dem og legget til **~** og et tall som angir hvor mange ord som kan være mellom de to ordene. For eksempel vil søket **"berg  nordre"~2** gi treff på "Berg Søndre og Nordre".
-
-## Distrikt
-Distrikt er et hierarkisk filter som i hovedsak deles inn etter administrativ inndeling på kommune og fylke.
-
-## Andre filtre
-Denne filterfunksjonen er ikke hierarkisk, men kan søke i felt med større variasjon i verdiene. Av hensyn til ytelse er det lagt inn en maksgrense på 50 verdier i listen.
+### Nærleikssøk
+For å søkje etter to ord som er nær kvarandre, kan du setje hermeteikn rundt dei og leggje til **~** og eit tal som seier kor mange ord som kan stå mellom dei to orda. Til dømes vil søket **"berg nordre"~2** gje treff på «Berg Søndre og Nordre».
 
