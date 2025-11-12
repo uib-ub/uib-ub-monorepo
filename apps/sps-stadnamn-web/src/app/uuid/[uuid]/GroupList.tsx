@@ -90,7 +90,7 @@ export default function GroupList({docData}: {docData: Record<string, any>}) {
     }
 
     return <aside className="bg-neutral-50 shadow-md !text-neutral-950 px-4 pb-4 pt-0 rounded-md">
-    <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Grupperte stadnamn</h2>
+    <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Namnegruppe</h2>
     {data && <div className="flex flex-col gap-2">
         {Object.entries(data.groupedByDataset).map(([docDataset, hits]) => {
             const sourceTitle = resultRenderers[docDataset]?.sourceTitle || defaultResultRenderer.sourceTitle
