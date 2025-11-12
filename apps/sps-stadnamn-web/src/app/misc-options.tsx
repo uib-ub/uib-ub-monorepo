@@ -44,7 +44,7 @@ export default function MiscOptions() {
           }
           router.push(`?${newUrl.toString()}`);
         }}/>
-  Djupinnsamlingar
+  Vis berre djupinnsamlingar
 </label>
 </div>
 }

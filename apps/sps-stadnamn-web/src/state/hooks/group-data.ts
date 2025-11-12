@@ -40,7 +40,7 @@ export default function useGroupData(overrideGroupCode?: string | null) {
         isFetching: groupFetching,
         status,
     } = useQuery({
-        queryKey: ['group', groupCode, searchQueryString],
+        queryKey: ['group', groupCode, overrideGroupCode ? undefined : searchQueryString],
         queryFn: async () =>
             groupCode ? groupDataQuery(groupCode, debug ? debugChildren : []) : null,
         placeholderData: (overrideGroupCode || initCode == groupCode) ? undefined : (prevData: any) => prevData,

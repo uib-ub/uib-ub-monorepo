@@ -210,7 +210,7 @@ export default function OverlayInterface() {
                         </div>
                             </div>}
                         {(options || isMobile) && !facet && <>
-                        <ActiveFilters />
+                        {!isMobile && <ActiveFilters />}
                         
                         
 
@@ -256,7 +256,7 @@ export default function OverlayInterface() {
                                 
                                    <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={totalHits?.value || 0} />
                                 </Clickable>
-                                <div className="flex items-center gap-1 ml-auto">
+                                {isMobile && <div className="flex items-center gap-1 ml-auto">
                                     <ClickableIcon 
                                         add={{mode: 'table'}} 
                                         className="flex items-center btn btn-outline rounded-full p-1 px-2 h-7 xl:h-10 xl:text-lg xl:w-10 justify-center text-sm"
@@ -264,7 +264,7 @@ export default function OverlayInterface() {
                                     >
                                         <PiTableFill className="text-neutral-900" />
                                     </ClickableIcon>
-                                </div>
+                                </div>}
                             </div>
                         )}
                         {(mapSettings ? <MapSettings/> : results && (showDebugGroups ? <DebugToggle /> : <SearchResults />))}                   

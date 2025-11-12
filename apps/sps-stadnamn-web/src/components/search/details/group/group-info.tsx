@@ -1,16 +1,21 @@
 import useGroupData from "@/state/hooks/group-data";
 import Carousel from "../../nav/results/carousel";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, useContext, type ReactNode } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { formatHtml } from "@/lib/text-utils";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
-import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiXCircle, PiMapPinFill, PiInfoFill, PiArchive, PiInfo } from "react-icons/pi";
+import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiMapPinFill, PiInfoFill, PiArchive, PiInfo, PiPushPinBold, PiPushPinFill } from "react-icons/pi";
 import WarningMessage from "./warning-message";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Spinner from "@/components/svg/Spinner";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import AudioExplorer from "@/components/doc/audio-explorer";
+import ClickableIcon from "@/components/ui/clickable/clickable-icon";
+import Clickable from "@/components/ui/clickable/clickable";
+import { GlobalContext } from "@/state/providers/global-provider";
+import { stringToBase64Url } from "@/lib/param-utils";
+import { useGroup } from "@/lib/param-hooks";
 
 // Collapses long HTML to a few lines with a toggle
 const ExpandableContent = (
@@ -121,12 +126,13 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                     <li key={`sources-ds-${ds}`} className="flex flex-col w-full gap-1">
                         <div className="flex items-center gap-1 text-neutral-700">
                             <span className="text-sm">{datasetTitles[ds] || ds}</span>
-                            <Link
+                            <ClickableIcon
                                 href={`/info/datasets/${ds}`}
                                 className="flex items-center"
+                            label="Om datasettet"
                             >
                                 <PiInfoFill className="text-primary-700 text-sm align-middle" aria-hidden="true" />
-                            </Link>
+                            </ClickableIcon>
                         </div>
                         <ul className="flex flex-col w-full -mx-2">
                             {visibleItems.map((s: any) => {
@@ -464,6 +470,8 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     const setOpenTabs = useSessionStore(state => state.setOpenTabs)
     const searchParams = useSearchParams()
     const searchDatasets = searchParams.getAll('dataset')
+    const { mapFunctionRef } = useContext(GlobalContext)
+    const { initValue } = useGroup()
 
     
     
@@ -639,7 +647,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
 
     return (
-        <div id={id} className="w-full flex flex-col gap-2 pb-8">
+        <div id={id} className="w-full flex flex-col gap-2 pb-8 relative">
 
             {
                 audioItems?.map((audioItem) => (
@@ -688,6 +696,26 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
             </div>
 
+            {locations.length > 0 && locations[0]?.location?.coordinates && initValue !== groupData.group.id && (
+                <div className="absolute bottom-0 right-0 p-3">
+                    <ClickableIcon 
+                        onClick={() => {
+                            const coords = locations[0].location.coordinates;
+                            mapFunctionRef.current?.panTo([coords[1], coords[0]])
+                        }}
+                        remove={['group']}
+                        add={{
+                            point: `${locations[0].location.coordinates[1]},${locations[0].location.coordinates[0]}`,
+                            init: stringToBase64Url(groupData.group.id)
+                        }}
+                        className="h-6 w-6 rounded-full border border-neutral-700 text-neutral-700 flex items-center justify-center text-nowrap flex items-center gap-1 hover:border-neutral-800 hover:text-neutral-800"
+                        label="Fest til toppen"
+                    > 
+                        
+                        <PiPushPinFill />
+                    </ClickableIcon>
+                </div>
+            )}
 
         </div>
     );

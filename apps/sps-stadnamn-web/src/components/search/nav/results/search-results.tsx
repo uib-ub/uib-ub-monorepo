@@ -8,7 +8,7 @@ import GroupInfo from "../../details/group/group-info";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchParams } from "next/navigation";
 import { useGroup } from "@/lib/param-hooks";
-import { PiMapPinFill, PiPlusBold, PiXCircle, PiPencilSimple, PiCheck, PiX, PiPlayFill, PiTilde, PiMagnifyingGlass, PiSliders, PiListBullets, PiTableFill } from "react-icons/pi";
+import { PiMapPinFill, PiPlusBold, PiPencilSimple, PiCheck, PiX, PiPlayFill, PiTilde, PiMagnifyingGlass, PiSliders, PiListBullets, PiTableFill } from "react-icons/pi";
 import useGroupData from "@/state/hooks/group-data";
 import Spinner from "@/components/svg/Spinner";
 import { useSessionStore } from "@/state/zustand/session-store";
@@ -319,7 +319,9 @@ export default function SearchResults() {
                     <PiPencilSimple className="text-lg" aria-hidden="true" />
                   </button>
                 )}
-                <ClickableIcon label="Fjern startpunkt" remove={['point', 'radius']}><PiXCircle className="text-neutral-700 group-aria-expanded:text-white text-2xl" /></ClickableIcon>
+                <ClickableIcon className="h-6 w-6 rounded-full border-2 border-neutral-700 text-neutral-700 flex items-center justify-center hover:border-neutral-800 hover:text-neutral-800" label="Fjern startpunkt" remove={['point', 'radius']}>
+                  <PiX />
+                </ClickableIcon>
               </div>
             </div>
             {isEditingCoordinates && (
@@ -402,23 +404,7 @@ export default function SearchResults() {
         </div>
       )}
 
-{isMobile && <div className="flex flex-col gap-2 justify-center pb-4">
 
-            <Clickable
-              add={{mode: 'table'}}
-              className={`
-              flex items-center gap-2
-              btn-outline btn
-              justify-center
-              text-xl
-
-              px-4 py-2 rounded-full xl:rounded-md
-               mx-3
-              `}
-            >
-              Kjeldetabell
-            </Clickable>
-          </div>}
 
       {isMobile && filterCount > 0 && <div className="mx-2 pb-12 pt-4">
         <h2 className="text-lg font-semibold text-neutral-900 mx-2">Aktive filter</h2>
@@ -433,7 +419,7 @@ export default function SearchResults() {
                 onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null} 
                 className={`
                   flex items-center gap-2
-                  btn-primary btn
+                  btn-neutral btn
                   justify-center
                   text-xl
                   px-4 py-2 rounded-full xl:rounded-md
@@ -445,6 +431,24 @@ export default function SearchResults() {
             </Clickable>
           </div>
       )}
+
+{isMobile && <div className="flex flex-col gap-2 justify-center pb-4">
+
+<Clickable
+  add={{mode: 'table'}}
+  className={`
+  flex items-center gap-2
+  btn-outline btn
+  justify-center
+  text-xl
+
+  px-4 py-2 rounded-full xl:rounded-md
+   mx-3
+  `}
+>
+  Kjeldetabell
+</Clickable>
+</div>}
 
 
       {/* Error and empty states */}

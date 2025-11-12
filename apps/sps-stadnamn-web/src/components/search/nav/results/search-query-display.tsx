@@ -1,6 +1,6 @@
 'use client'
 import { useSearchParams, useRouter } from "next/navigation"
-import { PiMagnifyingGlass, PiXCircle } from "react-icons/pi"
+import { PiMagnifyingGlass, PiX, PiXBold } from "react-icons/pi"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 
 export default function SearchQueryDisplay() {
@@ -49,8 +49,8 @@ export default function SearchQueryDisplay() {
       <div className="flex items-center gap-2">
         <PiMagnifyingGlass className="text-neutral-800" aria-hidden="true" />
         <strong>{searchQ}</strong>
-        <ClickableIcon label="Fjern søkeord" remove={['q']} className="ml-auto">
-          <PiXCircle className="text-neutral-700 text-2xl" />
+        <ClickableIcon label="Fjern søkeord" remove={['q']} className="ml-auto h-6 w-6 rounded-full border border-neutral-700 text-neutral-700 flex items-center justify-center hover:border-neutral-800 hover:text-neutral-800">
+          <PiXBold />
         </ClickableIcon>
       </div>
       <div className="flex items-center gap-4 mt-1 text-sm">
