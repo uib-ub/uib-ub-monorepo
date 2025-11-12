@@ -355,50 +355,50 @@ export default function SearchResults() {
             <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 10, 16)}rem`}}></div>
           </div>
         )) :       
-      collapsedData?.pages.map((page: any, pageIndex: number) => (
-    <Fragment key={`page-${pageIndex}`}>
-    {page.data?.map((item: any) => {
-      if (initValue && item.fields["group.id"]?.[0] == initValue) return null;
-      if (!item.fields["group.id"]) {
-        console.log("No group ID", item);
-        return null
-      }
-      return (
+      collapsedData?.pages.map((page: any, pageIndex: number) => {
+        const isLastPage = pageIndex === (collapsedData?.pages.length || 0) - 1
+        return (
+          <Fragment key={`page-${pageIndex}`}>
+            {page.data?.map((item: any) => {
+              if (initValue && item.fields["group.id"]?.[0] == initValue) return null;
+              if (!item.fields["group.id"]) {
+                console.log("No group ID", item);
+                return null
+              }
+              return (
+                <CollapsibleResultItem 
+                  key={item.fields["group.id"]?.[0]}
+                  hit={item}
+                  activeGroupValue={activeGroupValue}
+                />
+              )
+            })}
+            {/* Vis meir button at the end of each page */}
+            {isLastPage && collapsedHasNextPage && (
+              <li className="flex flex-col gap-2 justify-center py-4">
+                <button
+                  type="button"
+                  onClick={() => !isFetchingNextPage && collapsedFetchNextPage()}
+                  className={`
+                    flex items-center gap-2
+                    btn-neutral btn
+                    justify-center
+                    text-xl
 
-        <CollapsibleResultItem 
-          key={item.fields["group.id"]?.[0]}
-          hit={item}
-          activeGroupValue={activeGroupValue}
-        />
-
-      )})}
-    </Fragment>
-))}
+                    px-4 py-2 rounded-full xl:rounded-md
+                     mx-3
+                    transition-colors
+                    ${isFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
+                  `}
+                >
+                  {isFetchingNextPage && <Spinner status="Lastar" />} {isFetchingNextPage ? 'Lastar...' : 'Vis fleire'}
+                </button>
+              </li>
+            )}
+          </Fragment>
+        )
+      })}
       </ul>
-      
-      {/* Vis meir button */}
-      {collapsedHasNextPage && (
-        <div className="flex flex-col gap-2 justify-center py-4">
-          <button
-            type="button"
-            onClick={() => !isFetchingNextPage && collapsedFetchNextPage()}
-            className={`
-              flex items-center gap-2
-              btn-neutral btn
-              justify-center
-              text-xl
-
-              px-4 py-2 rounded-full xl:rounded-md
-               mx-3
-              transition-colors
-              ${isFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
-            `}
-          >
-            {isFetchingNextPage && <Spinner status="Lastar" />} {isFetchingNextPage ? 'Lastar...' : 'Vis fleire'}
-          </button>
-
-        </div>
-      )}
 
 
 
