@@ -254,7 +254,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.Informant": {label: "Informant", result, table, facet},
     },
     ssr2016: {
-      ...required, adm, adm1, adm2, sosi,
+      ...required, adm, adm1, adm2, sosi, ssr,
       "misc.Stedsnavn_lokalId": {label: "SSR-nummer", facet},
       "misc.ENH_SSR_ID": {label: "Gammelt SSR-nummer", facet},
       "misc.language": {label: "Språk", facet},
