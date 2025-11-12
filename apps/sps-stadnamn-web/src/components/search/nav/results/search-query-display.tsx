@@ -46,8 +46,8 @@ export default function SearchQueryDisplay() {
 
   return (
     <div className="p-3 flex flex-col gap-2 border-t border-neutral-200">
-      <div className="flex items-center gap-2">
-        <PiMagnifyingGlass className="text-neutral-800" aria-hidden="true" />
+      <div className="flex items-center gap-2 text-neutral-900 text-lg">
+        Søkeord:
         <strong>{searchQ}</strong>
         <ClickableIcon label="Fjern søkeord" remove={['q']} className="ml-auto h-6 w-6 rounded-full border border-neutral-700 text-neutral-700 flex items-center justify-center hover:border-neutral-800 hover:text-neutral-800">
           <PiXBold />

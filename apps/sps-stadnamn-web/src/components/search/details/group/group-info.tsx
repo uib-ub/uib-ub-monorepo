@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, useContext, type ReactNode } from "react"
 import { datasetTitles } from "@/config/metadata-config";
 import { formatHtml } from "@/lib/text-utils";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
-import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiMapPinFill, PiInfoFill, PiArchive, PiInfo, PiPushPinBold, PiPushPinFill } from "react-icons/pi";
+import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiMapPinFill, PiInfoFill, PiArchive, PiInfo, PiPushPinBold, PiPushPinFill, PiMagnifyingGlass, PiPushPin } from "react-icons/pi";
 import WarningMessage from "./warning-message";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Spinner from "@/components/svg/Spinner";
@@ -696,6 +696,17 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
             </div>
 
+            { initValue === groupData.group.id && groupData.fields?.label?.[0] && searchParams.get('q') !== groupData.fields.label[0] && (
+                <div className="absolute bottom-0 right-0 p-3">
+                    <Clickable 
+
+                        add={{q: groupData.fields.label[0]}} 
+                        className="h-6 btn btn-outline flex items-center gap-1 pl-1 pr-2 rounded-full flex items-center justify-center text-nowrap flex items-center gap-1"
+                    >
+                        <PiMagnifyingGlass className="text-neutral-700" /> {groupData.fields.label[0]}
+                    </Clickable>
+                </div>
+            )}
             {locations.length > 0 && locations[0]?.location?.coordinates && initValue !== groupData.group.id && (
                 <div className="absolute bottom-0 right-0 p-3">
                     <ClickableIcon 
@@ -708,11 +719,10 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                             point: `${locations[0].location.coordinates[1]},${locations[0].location.coordinates[0]}`,
                             init: stringToBase64Url(groupData.group.id)
                         }}
-                        className="h-6 w-6 rounded-full border border-neutral-700 text-neutral-700 flex items-center justify-center text-nowrap flex items-center gap-1 hover:border-neutral-800 hover:text-neutral-800"
+                        className="h-6 w-6 p-0 btn btn-outline rounded-full text-nowrap flex items-center gap-1"
                         label="Fest til toppen"
                     > 
-                        
-                        <PiPushPinFill />
+                        <PiPushPinBold className="text-neutral-900" />
                     </ClickableIcon>
                 </div>
             )}

@@ -8,7 +8,7 @@ import GroupInfo from "../../details/group/group-info";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchParams } from "next/navigation";
 import { useGroup } from "@/lib/param-hooks";
-import { PiMapPinFill, PiPlusBold, PiPencilSimple, PiCheck, PiX, PiPlayFill, PiTilde, PiMagnifyingGlass, PiSliders, PiListBullets, PiTableFill } from "react-icons/pi";
+import { PiMapPinFill, PiPlusBold, PiPencilSimple, PiCheck, PiX, PiPlayFill, PiTilde, PiMagnifyingGlass, PiSliders, PiListBullets, PiTableFill, PiXBold, PiPencilSimpleBold } from "react-icons/pi";
 import useGroupData from "@/state/hooks/group-data";
 import Spinner from "@/components/svg/Spinner";
 import { useSessionStore } from "@/state/zustand/session-store";
@@ -302,30 +302,26 @@ export default function SearchResults() {
                 </div>
               ) : (
                 <span className="flex-1">
-                  Startpunkt: {point ? (
+                  {point ? (
                     <>
                       {`${Math.round(Math.abs(point[0]))}°${point[0] >= 0 ? 'Ø' : 'V'}, ${Math.round(Math.abs(point[1]))}°${point[1] >= 0 ? 'N' : 'S'}`}
                     </>
                   ) : 'Ukjent'}
                 </span>
               )}
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2">
                 {!isEditingCoordinates && (
-                  <button
-                    onClick={startEditingCoordinates}
-                    className="p-1 text-neutral-700 hover:text-neutral-800"
-                    aria-label="Rediger koordinater"
-                  >
-                    <PiPencilSimple className="text-lg" aria-hidden="true" />
-                  </button>
+                      <ClickableIcon className="btn btn-outline h-6 w-6 btn-compact rounded-full text-neutral-900" label="Rediger startpunkt" onClick={startEditingCoordinates}>
+                        <PiPencilSimpleBold />
+                      </ClickableIcon>
                 )}
-                <ClickableIcon className="h-6 w-6 rounded-full border-2 border-neutral-700 text-neutral-700 flex items-center justify-center hover:border-neutral-800 hover:text-neutral-800" label="Fjern startpunkt" remove={['point', 'radius']}>
-                  <PiX />
+                <ClickableIcon className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900" label="Fjern startpunkt" remove={['point', 'radius']}>
+                  <PiXBold />
                 </ClickableIcon>
               </div>
             </div>
             {isEditingCoordinates && (
-              <span className="text-sm text-neutral-800">{isMobile ? "Trykk og hald i kartet for å endre" : "Høgreklikk i kartet for å endre"}</span>
+              <span className="text-sm text-neutral-800">{isMobile ? "Trykk og hald for å hente startpnk i kartet" : "Høgreklikk for å hente startpunkt i kartet"}</span>
             )}
           </div>
         )
