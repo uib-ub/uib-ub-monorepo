@@ -170,7 +170,7 @@ export default function OverlayInterface() {
 
 
                         || (facet && <div className="w-full flex items-center px-2 xl:px-0 h-12 gap-2 xl:pl-2 flex">
-                            <h1 className="text-lg xl:text-xl text-neutral-900 px-1">{fieldConfig[perspective][facet]?.label}</h1>
+                            <h1 className="text-lg text-neutral-900 px-1">{fieldConfig[perspective][facet]?.label}</h1>
                             <div className="flex items-center gap-1 ml-auto">
                                     <Clickable className="flex items-center gap-1 px-2" label="Tilbake" remove={["facet"]}>
                                         <PiCaretLeftBold className="text-black text-lg" />Tilbake
@@ -180,13 +180,13 @@ export default function OverlayInterface() {
                         </div>)
                         
                         || <div  className="w-full flex items-center lg:h-12 px-2 xl:px-0 gap-2 xl:pl-2">
-                        <Clickable className="flex items-center gap-2" add={{options: (options && !isMobile) ? null : 'on'}} remove={["options"]}>
+                        <Clickable className="flex items-center gap-2 xl:px-2" add={{options: (options && !isMobile) ? null : 'on'}} remove={["options"]}>
                         {
                             !isMobile && <>
-                                {options ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
+                                {options ? <PiCaretUpBold className="text-lg" aria-hidden="true"/> : <PiCaretDownBold className="text-lg" aria-hidden="true"/>}
                             </>
                         }
-                        <h1 className="text-base xl:text-xl text-neutral-900 font-sans">Alternativ</h1>
+                        <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Alternativ</h1>
                             
                                 
                             
@@ -194,7 +194,7 @@ export default function OverlayInterface() {
                             { filterCount && !isMobile ? <TitleBadge className="bg-primary-200 text-primary-800 font-bold" count={filterCount} /> : null}
                                 
                             </Clickable>
-                            <div className="flex items-center gap- ml-auto mt-1">
+                            <div className="flex items-center ml-auto mt-1">
                             {mode == 'map' && isMobile && totalHits?.value > 0 && <Clickable onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null}  className={`btn btn-outline rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 xl:text-base`} add={{results: 'on'}} remove={["options"]}>
                             <span className="px-1 text-semibold">Resultat</span>{totalHits?.value > 0 && <Badge className="bg-primary-700 text-white" count={totalHits.value} />}
                         </Clickable>}
@@ -230,7 +230,7 @@ export default function OverlayInterface() {
                         {/* Map Settings Header (separate, only when mapSettings is on) */}
                         {mapSettings ? (
                             <div className="w-full flex items-center xl:h-12 px-2 xl:px-0 gap-2">
-                                <h1 className="text-base xl:text-xl text-neutral-900 xl:px-4">Kartinnstillingar</h1>
+                                <h1 className="text-base xl:text-lg text-neutral-900 xl:px-4">Kartinnstillingar</h1>
                                 <div className="flex items-center gap-1 ml-auto">
                                     <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings"]}>
                                         <PiX className="text-black text-3xl" />
@@ -242,10 +242,10 @@ export default function OverlayInterface() {
                                 <Clickable className="flex items-center gap-2 xl:px-2" add={{results: (results && !isMobile) ? null : 'on'}} remove={["results"]}>
                                 {!isMobile && (
                                         <>
-                                            {results ? <PiCaretUpBold className="text-xl" /> : <PiCaretDownBold className="text-xl" />}
+                                            {results ? <PiCaretUpBold className="text-lg" /> : <PiCaretDownBold className="text-lg" />}
                                         </>
                                     )}
-                                <h1 className="text-base xl:text-xl text-neutral-900 font-sans">Resultat</h1>
+                                <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Resultat</h1>
                                 
                                    <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={totalHits?.value || 0} />
                                 </Clickable>
