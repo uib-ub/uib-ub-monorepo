@@ -120,10 +120,13 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                 return (
                     <li key={`sources-ds-${ds}`} className="flex flex-col w-full gap-1">
                         <div className="flex items-center gap-1 text-neutral-700">
-                        {datasetTitles[ds] || ds}
-                        <Link href={`/info/datasets/${ds}`} className="text-md">
-                             <PiInfoFill className="text-primary-700" aria-hidden="true"/>
-                        </Link>
+                            <span className="text-sm">{datasetTitles[ds] || ds}</span>
+                            <Link
+                                href={`/info/datasets/${ds}`}
+                                className="flex items-center"
+                            >
+                                <PiInfoFill className="text-primary-700 text-sm align-middle" aria-hidden="true" />
+                            </Link>
                         </div>
                         <ul className="flex flex-col w-full -mx-2">
                             {visibleItems.map((s: any) => {
