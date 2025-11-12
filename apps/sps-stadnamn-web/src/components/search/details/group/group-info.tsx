@@ -118,10 +118,13 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                 const collapseCount = 1
                 const visibleItems = (isExpanded || !shouldCollapse) ? items : items.slice(0, collapseCount)
                 return (
-                    <li key={`sources-ds-${ds}`} className="flex flex-col w-full gap-2">
-                        <Link href={`/info/datasets/${ds}`} className="no-underline text-neutral-700 text-md flex items-center gap-1">
-                            {datasetTitles[ds] || ds} <PiInfoFill className="text-primary-700" aria-hidden="true"/>
+                    <li key={`sources-ds-${ds}`} className="flex flex-col w-full gap-1">
+                        <div className="flex items-center gap-1 text-neutral-700">
+                        {datasetTitles[ds] || ds}
+                        <Link href={`/info/datasets/${ds}`} className="text-md">
+                             <PiInfoFill className="text-primary-700" aria-hidden="true"/>
                         </Link>
+                        </div>
                         <ul className="flex flex-col w-full -mx-2">
                             {visibleItems.map((s: any) => {
                                 const additionalLabels = Array.from(
