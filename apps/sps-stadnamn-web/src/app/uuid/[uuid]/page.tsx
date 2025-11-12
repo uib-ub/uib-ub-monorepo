@@ -62,7 +62,8 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
         <div className="page-info lg:grid lg:grid-cols-[1fr_24rem] lg:gap-12">
           <div className="flex flex-col gap-6">
           {  docData?._source?.within && docDataset && <ServerCadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
-            <span>
+            <div>
+            <div className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans pb-4"> {datasetTitles[docDataset]}</div>
               <h1>{docData?._source?.label || docData?._source.uuid}</h1>
               <div className="flex flex-wrap gap-6">
 
@@ -87,7 +88,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
 
       </div>
       
-      </span>
+      </div>
             { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](docData?._source) : null }
 
 
