@@ -36,7 +36,7 @@ const cadastre = {"within": {label: "Gard", result},
                   "cadastre__bnr": {label: "Bruksnummer", result, sort: "asc" as const, type: "integer" as const}
                 }
 const uuid = {label: "UUID", result}
-const label = {label: "Namn", result}
+const label = {label: "Namn", result, facet}
 const adm = {label: "Områdeinndeling", facet, specialFacet, noInfobox}
 const adm1 = {label: "Fylke", result} // Necessary for it to be included in fields
 const adm2 = {label: "Kommune", result} // Necessary for it to be included in fields
@@ -298,11 +298,11 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       
     },
     ft1900: {
-      ...required, adm, adm1, adm2,
+      ...required, adm, adm1, adm2, sosi,
       ...identifiers,
     },
     ft1910: {
-      ...required, adm, adm1, adm2,
+      ...required, adm, adm1, adm2, sosi,
       ...identifiers,
     },
     m2010: {

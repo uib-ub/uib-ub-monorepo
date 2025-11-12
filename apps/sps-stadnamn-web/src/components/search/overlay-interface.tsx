@@ -1,6 +1,6 @@
 'use client'
 
-import { PiBookOpen, PiCaretDown, PiCaretDownBold, PiCaretLeftBold, PiCaretUpBold, PiCrop, PiEye, PiEyeSlash, PiFunnel, PiInfoFill, PiMapPin, PiSliders, PiTableFill, PiX } from "react-icons/pi";
+import { PiBookOpen, PiCaretDown, PiCaretDownBold, PiCaretLeftBold, PiCaretUpBold, PiCrop, PiEye, PiEyeSlash, PiFunnel, PiInfoFill, PiListBullets, PiMapPin, PiSliders, PiTableFill, PiX } from "react-icons/pi";
 import { RoundClickable } from "../ui/clickable/round-icon-button";
 import dynamic from "next/dynamic";
 import { formatNumber } from "@/lib/utils";
@@ -29,6 +29,7 @@ import DatasetFacet from "./nav/facets/dataset-facet";
 import TableOptions from "./table/table-options";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import DebugToggle from "./nav/results/debug-toggle";
+import SearchQueryDisplay from "./nav/results/search-query-display";
 
 
 
@@ -52,12 +53,24 @@ export interface DrawerProps {
     groupData?: any
 }
 
+function ShowResultsButton() {
+    const { totalHits } = useSearchData()
+    const { snappedPosition } = useSessionStore()
+    if (snappedPosition == 'bottom') return null
+    return <div className="bg-neutral-200 p-2 fixed bottom-2 left-0 right-0">
+        <Clickable remove={["facet"]} 
+                   add={{results: 'on'}} 
+                   className="w-full h-12 btn-primary btn text-xl relative">
+                    Vis resultat <Badge className="bg-primary-50 text-primary-800 font-semibold px-2 absolute right-4" count={totalHits?.value || 0} /></Clickable></div>
+
+}
+
 function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const resetEnabled = useRef<boolean>(false);
     const facet = useSearchParams().get('facet')
-    const { totalHits } = useSearchData()
+    
     const mode = useMode()
 
     useEffect(() => {
@@ -77,8 +90,7 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     }
     
     if (isMobile && facet) {
-        return <div className="fixed top-0 left-0 w-full h-full z-[3001] bg-white"><div className="h-[calc(100svh-4rem)] overflow-y-auto stable-scrollbar">{children}</div>
-        <div className="bg-neutral-200 p-2"><Clickable remove={["facet"]} add={{results: 'on'}} className="w-full h-12 text-xl rounded-md flex items-center justify-center items-center bg-primary-800 text-white relative">Vis resultat <Badge className="bg-primary-50 text-primary-800 font-semibold px-2 absolute right-4" count={totalHits?.value || 0} /></Clickable></div>
+        return <div className="fixed top-0 left-0 w-full h-full z-[10001] bg-white"><div className="h-[calc(100svh-4rem)] overflow-y-auto stable-scrollbar">{children}</div>
         </div>
     }
     if (mode == 'list') {
@@ -179,32 +191,26 @@ export default function OverlayInterface() {
                             
                         </div>)
                         
-                        || <div  className="w-full flex items-center lg:h-12 px-2 xl:px-0 gap-2 xl:pl-2">
+                        || <div  className="w-full flex items-center xl:h-12 px-2 py-1 xl:px-0 gap-2 xl:pl-2">
                         <Clickable className="flex items-center gap-2 xl:px-2" add={{options: (options && !isMobile) ? null : 'on'}} remove={["options"]}>
                         {
                             !isMobile && <>
                                 {options ? <PiCaretUpBold className="text-lg" aria-hidden="true"/> : <PiCaretDownBold className="text-lg" aria-hidden="true"/>}
                             </>
                         }
-                        <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Alternativ</h1>
+                        <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Filter</h1>
                             
-                                
-                            
-                            
-                            { filterCount && !isMobile ? <TitleBadge className="bg-primary-200 text-primary-800 font-bold" count={filterCount} /> : null}
-                                
+                            { filterCount ? <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} /> : null}
                             </Clickable>
-                            <div className="flex items-center ml-auto mt-1">
-                            {mode == 'map' && isMobile && totalHits?.value > 0 && <Clickable onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null}  className={`btn btn-outline rounded-full px-2 ${totalHits.value > 0 ? 'pr-1' : ''} py-1 flex items-center gap-1 xl:text-base`} add={{results: 'on'}} remove={["options"]}>
-                            <span className="px-1 text-semibold">Resultat</span>{totalHits?.value > 0 && <Badge className="bg-primary-700 text-white" count={totalHits.value} />}
-                        </Clickable>}
+                            <div className="flex items-center gap-1 ml-auto">
                         {mode == 'table' && <Clickable add={{tableOptions: 'on'}} remove={["tableOptions"]} className="btn btn-outline rounded-full px-2 py-1 pr-3 flex items-center gap-2 text-sm xl:text-base">
                             <PiTableFill className="text-neutral-900" /> Kolonner
                         </Clickable>}
                         {!totalHits?.value && isMobile && <span className="text-sm xl:text-bas px-2">Ingen resultat</span>}
                         </div>
                             </div>}
-                        {(options || isMobile) && !facet && <><ActiveFilters />
+                        {(options || isMobile) && !facet && <>
+                        <ActiveFilters />
                         
                         
 
@@ -212,7 +218,7 @@ export default function OverlayInterface() {
 
 
 
-                               <FacetSection /></>}
+                               <FacetSection />{isMobile && <ShowResultsButton />}</>}
                         {facet && <div className="flex flex-col gap-2"> 
                         {facet == 'adm' ? (
                             <ClientFacet facetName={facet} />
@@ -223,6 +229,7 @@ export default function OverlayInterface() {
                         ) : (
                             <ServerFacet />
                         )}
+                        {isMobile && <ShowResultsButton />}
                         </div>}
                     </LeftWindow>}
                     
@@ -249,7 +256,7 @@ export default function OverlayInterface() {
                                 
                                    <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={totalHits?.value || 0} />
                                 </Clickable>
-                                <div className="flex items-center gap-2 ml-auto">
+                                <div className="flex items-center gap-1 ml-auto">
                                     <ClickableIcon 
                                         add={{mode: 'table'}} 
                                         className="flex items-center btn btn-outline rounded-full p-1 px-2 h-7 xl:h-10 xl:text-lg xl:w-10 justify-center text-sm"
@@ -257,19 +264,6 @@ export default function OverlayInterface() {
                                     >
                                         <PiTableFill className="text-neutral-900" />
                                     </ClickableIcon>
-                                    {isMobile && (
-                                        <Clickable 
-                                            remove={["results"]} 
-                                            onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null} 
-                                            className={`btn btn-outline rounded-full px-2 py-1 pr-3 flex items-center gap-2 text-sm xl:text-base h-7 xl:h-10 ${filterCount > 0 ? 'pl-1' : ''}`}
-                                        >
-                                            {filterCount > 0 
-                                                ? <Badge className="bg-neutral-800 text-white font-bold" count={filterCount} />
-                                                :  <PiSliders className="text-lg" aria-hidden="true" />
-                                            }
-                                            Filtre
-                                        </Clickable>
-                                    )}
                                 </div>
                             </div>
                         )}

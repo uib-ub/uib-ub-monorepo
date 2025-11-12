@@ -93,7 +93,7 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
     
 
     
-    return  <div  {...rest} className={`w-full h-full bg-neutral-50 aria-expanded:border-b aria-expanded:borderneutral-100 flex items-center group no-underline ${initValue == hit.fields["group.id"][0] ? 'pb-0' : ''}`}>
+    return  <div  {...rest} className={`w-full h-full ${initValue && initValue == hit.fields["group.id"][0] ? '' : 'bg-neutral-50'} aria-expanded:border-b aria-expanded:borderneutral-100 flex items-center group no-underline ${initValue == hit.fields["group.id"][0] ? 'pb-0' : ''}`}>
                        
             <Clickable ref={itemRef}
 
@@ -143,7 +143,7 @@ remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
             <div className="p-3">
             {initValue && initValue == hit.fields["group.id"][0] && (
                         
-                        <ClickableIcon className="flex items-center justify-center" label="Losne utganspunkt" remove={['init']}>
+                        <ClickableIcon className="flex items-center justify-center" label="Fjern valt oppslag" remove={['init']}>
                             <PiXCircleFill className="text-neutral-700 group-aria-expanded:text-white text-2xl hover:text-neutral-800" />
                         </ClickableIcon>
                         

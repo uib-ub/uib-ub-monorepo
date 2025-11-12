@@ -31,7 +31,7 @@ export default function SearchSuggestions({initGroupData}: {initGroupData: any})
     if (!searchQ && !initGroupData && (filterCount === 0 || !isMobile)) return <div className="h-4"></div>;
 
     return (
-    <div className="flex flex-wrap gap-2 p-3 px-4 text-neutral-950">
+    <div className="flex flex-wrap gap-3 p-3 px-4 text-neutral-950">
             {(!searchQ || !searchQ?.includes("~")) && <>
             {initGroupData?.label?.[0] }
             { searchQ && /^\p{L}+$/u.test(searchQ) && <Suggestion q={searchQ + "~"} /> }
@@ -39,7 +39,6 @@ export default function SearchSuggestions({initGroupData}: {initGroupData: any})
             }
             { initLabel && initLabel !== searchQ && <Suggestion q={initLabel} /> }
             { searchQ && <Clickable remove={['q']} add={{q: null}} className="flex items-center gap-2 cursor-pointer select-none px-1 pr-2 py-1 rounded-md"><PiTrash className="text-lg" aria-hidden="true"/> Fjern søkeord</Clickable>}
-            { filterCount > 0 && isMobile && <Clickable remove={datasetFilters.map(filter => filter[0]).concat(facetFilters.map(filter => filter[0]))} className="flex items-center gap-2 cursor-pointer select-none py-1 rounded-md"><PiTrash className="text-lg" aria-hidden="true"/> Fjern filtrering</Clickable>}
 
         </div>
     )

@@ -78,7 +78,7 @@ export default function ActiveFilters() {
         newSearchParams.delete(key)
 
         // Add back mode, nav and facet params if they exist
-        const keptParams = ['mode', 'nav', 'facet']
+        const keptParams = ['mode', 'nav', 'facet', 'options', 'results']
         keptParams.forEach((param: string) => {
           const value = searchParams.get(param)
           if (value) newSearchParams.set(param, value)
@@ -160,7 +160,6 @@ export default function ActiveFilters() {
         className="flex w-full items-center py-2 px-4 hover:bg-neutral-100 rounded cursor-pointer text-accent-700 px-3 py-1.5"
       >
         Tøm
-        <PiTrash className="ml-auto text-lg" aria-hidden="true"/>
       </button>
     </div>}
   </>
@@ -224,7 +223,6 @@ export default function ActiveFilters() {
                   className="flex w-full items-center py-2 px-4 hover:bg-neutral-100 rounded cursor-pointer text-accent-700"
                 >
                   Tøm alle
-                  <PiTrash className="ml-auto text-lg" aria-hidden="true"/>
                 </button>
               </div>
             )}
@@ -234,7 +232,6 @@ export default function ActiveFilters() {
         {showClearButton && <Clickable remove={['q', ...facetFilters.map(([key, value]) => key), ...datasetFilters.map(([key, value]) => key)]}
         className={`px-3 py-1.5 flex items-center`}>
           Tøm
-          <PiTrash className="inline text-lg" aria-hidden="true"/>
         </Clickable>}
 
 

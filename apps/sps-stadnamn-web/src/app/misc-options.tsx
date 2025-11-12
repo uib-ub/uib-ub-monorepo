@@ -5,7 +5,7 @@ export default function MiscOptions() {
     const searchParams = useSearchParams()
     const fulltext = searchParams.get('fulltext')
     const router = useRouter()
-    return <div className="flex flex-wrap gap-4"><label className="flex items-center gap-3 text-lg">
+    return <div className="flex flex-wrap gap-4">{false &&<label className="flex items-center gap-3 text-lg">
     <input form="search-form"
            type="checkbox" 
            id="menu_navbar_checkbox" 
@@ -28,7 +28,7 @@ export default function MiscOptions() {
 
             }} />
     Fulltekstsøk
-</label>
+</label>}
 <label className="flex items-center gap-3 text-lg">
   <input type="checkbox" 
         name="datasetTag" value="deep"
