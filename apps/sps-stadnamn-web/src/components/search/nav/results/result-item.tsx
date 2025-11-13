@@ -11,7 +11,7 @@ import { useSessionStore } from '@/state/zustand/session-store';
 import { useDebugStore } from '@/state/zustand/debug-store';
 import { MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from '@/lib/map-utils';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
-import { PiX, PiXBold } from 'react-icons/pi';
+import { PiPushPinSlash, PiPushPinSlashBold, PiX, PiXBold } from 'react-icons/pi';
 import { formatHighlight } from '@/lib/text-utils';
 
 const uniqueLabels = (hit: any) => {
@@ -149,7 +149,7 @@ remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
             {(initValue && initValue == hit.fields["group.id"][0]) && (
                 <div className="p-3">
                     <ClickableIcon className="h-6 w-6 p-0 rounded-full btn btn-outline text-neutral-700" label="Fjern som utgangspunkt" remove={['init']}>
-                        <PiXBold />
+                        <PiPushPinSlashBold />
                     </ClickableIcon>
                 </div>
             )}
