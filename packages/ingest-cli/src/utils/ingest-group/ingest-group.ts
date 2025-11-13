@@ -6,10 +6,10 @@ import { fetchAndProcessGroup } from './fetch-group'
 export const ingestGroup = async (id: string) => {
   // Finds the current index name in alias and based on the given indicesInAlias object find the latest index.
   const indicesInAlias = await client.indices.getAlias({ name: CHC_SEARCH_ALIAS })
-  const currentIndex = Object.keys(indicesInAlias).find(k => k.startsWith(CHC_INDICIES.groups))
+  const currentIndex = Object.keys(indicesInAlias).find(k => k.startsWith(CHC_INDICIES.group))
 
   if (!currentIndex) {
-    throw new Error(`No index found for ${CHC_INDICIES.groups}`)
+    throw new Error(`No index found for ${CHC_INDICIES.group}`)
   }
 
   const response = await fetchAndProcessGroup(id)

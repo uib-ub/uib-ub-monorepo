@@ -15,7 +15,7 @@ export const constructMembership = (data: any) => {
     ...data,
     current_or_former_member_of: memberOf.map((group: any) => {
       return {
-        id: `${env.API_URL}/groups/${group.identifier}`,
+        id: `${env.API_URL}/group/${group.identifier}`,
         type: 'Group',
         _label: coalesceLabel(group._label),
       }

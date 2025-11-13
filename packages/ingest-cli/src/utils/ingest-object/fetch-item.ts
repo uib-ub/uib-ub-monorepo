@@ -162,7 +162,7 @@ export const mapItemToLinkedArt = async (data: UbbontItem): Promise<JsonLdDocume
     dto = removeStringsFromArray(dto);
 
     // Remove the inline context and add the url to the context
-    dto['@context'] = [`${env.API_URL}/ns/ubbont/context.json`];
+    dto['@context'] = [`${env.API_BASE_URL}/ns/ubbont/context.json`];
     // Add provenance as a string, since some are strings and some are objects
     dto.provenance = typeof dto.provenance === 'string' ? dto.provenance : dto.provenance?._label ?? undefined;
     // License is an object, but we only need the label.no

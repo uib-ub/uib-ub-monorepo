@@ -102,7 +102,7 @@ export const constructIdentifiers = (data: any) => {
           type: "AttributeAssignment",
           influenced_by: [
             {
-              id: `${env.PROD_URL}/sets/${isPartOf[0].identifier}`,
+              id: `${env.API_BASE_URL}/set/${isPartOf[0].identifier}`,
               type: "Set",
               _label: coalesceLabel(isPartOf[0]._label),
             }

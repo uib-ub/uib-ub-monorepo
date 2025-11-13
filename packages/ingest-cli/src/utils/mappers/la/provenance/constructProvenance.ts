@@ -3,7 +3,7 @@ import { coalesceLabel } from 'utils';
 import { aatProvenanceActivityType, institutions } from '../staticMapping';
 import omitEmptyEs from 'omit-empty-es';
 import { getLAApiType } from '../mapToGeneralClass';
-import { TBaseMetadata } from '@/utils/ingest-items/fetch-item';
+import { TBaseMetadata } from '@/utils/ingest-object/fetch-item';
 
 export const constructProvenance = (base: TBaseMetadata, data: any) => {
   const {
@@ -39,14 +39,14 @@ export const constructProvenance = (base: TBaseMetadata, data: any) => {
             },
             transferred_title_of: [
               {
-                id: `${env.PROD_URL}/items/${base.identifier}`,
+                id: `${env.API_BASE_URL}/object/${base.identifier}`,
                 type: data.type,
                 _label: data._label
               }
             ],
             transferred_title_from: [
               {
-                id: `${env.PROD_URL}/${path}/${actor.identifier}`,
+                id: `${env.API_BASE_URL}/${path}/${actor.identifier}`,
                 type,
                 _label: actor._label
               }
@@ -65,7 +65,7 @@ export const constructProvenance = (base: TBaseMetadata, data: any) => {
       const { path, type } = getLAApiType(actor.type);
       return {
         '@context': ['https://linked.art/ns/v1/linked-art.json', 'https://api.ub.uib.no/ns/ubbont/context.json'],
-        id: `${env.PROD_URL}/provenance/${base.identifier}`,
+        id: `${env.API_BASE_URL}/provenance/${base.identifier}`,
         type: 'Activity',
         classified_as: [
           aatProvenanceActivityType,
@@ -75,14 +75,14 @@ export const constructProvenance = (base: TBaseMetadata, data: any) => {
           type: 'Transfer',
           transferred: [
             {
-              id: `${env.PROD_URL}/items/${base.identifier}`,
+              id: `${env.API_BASE_URL}/object/${base.identifier}`,
               type: data.type,
               _label: data._label
             }
           ],
           transferred_from: [
             {
-              id: `${env.PROD_URL}/${path}/${actor.identifier}`,
+              id: `${env.API_BASE_URL}/${path}/${actor.identifier}`,
               type,
               _label: coalesceLabel(actor._label),
             }

@@ -66,7 +66,7 @@ export const constructLifetimeTimeSpan = (data: any) => {
           ubbFriendshipType,
         ],
         involves_partner: [{
-          id: `${env.API_URL}/person/${know.identifier}`,
+          id: `${env.API_BASE_URL}/person/${know.identifier}`,
           type: 'Person',
           _label: coalesceLabel(know._label),
         }]
@@ -83,7 +83,7 @@ export const constructLifetimeTimeSpan = (data: any) => {
       ],
       involves_partner: sibling.map((sibling: any) => {
         return {
-          id: `${env.API_URL}/person/${sibling.identifier}`,
+          id: `${env.API_BASE_URL}/person/${sibling.identifier}`,
           type: 'Person',
           _label: coalesceLabel(sibling._label),
         }
@@ -100,7 +100,7 @@ export const constructLifetimeTimeSpan = (data: any) => {
       ],
       involves_partner: children.map((child: any) => {
         return {
-          id: `${env.API_URL}/person/${child.identifier}`,
+          id: `${env.API_BASE_URL}/person/${child.identifier}`,
           type: 'Person',
           _label: coalesceLabel(child._label),
         }
@@ -111,7 +111,7 @@ export const constructLifetimeTimeSpan = (data: any) => {
   if (based_near) {
     basedNearArray = based_near.map((place: any) => {
       return {
-        id: `${env.API_URL}/places/${place.identifier}`,
+        id: `${env.API_BASE_URL}/places/${place.identifier}`,
         type: 'Place',
         _label: coalesceLabel(place._label),
       }
@@ -139,7 +139,7 @@ export const constructLifetimeTimeSpan = (data: any) => {
             return {
               ...acc,
               by_mother: {
-                id: `${env.PROD_URL}/person/${parent.identifier}`,
+                id: `${env.API_BASE_URL}/person/${parent.identifier}`,
                 type: 'Person',
                 _label: coalesceLabel(parent._label)
               }
@@ -149,7 +149,7 @@ export const constructLifetimeTimeSpan = (data: any) => {
             return {
               ...acc,
               from_father: {
-                id: `${env.PROD_URL}/person/${parent.identifier}`,
+                id: `${env.API_BASE_URL}/person/${parent.identifier}`,
                 type: 'Person',
                 _label: coalesceLabel(parent._label)
               }

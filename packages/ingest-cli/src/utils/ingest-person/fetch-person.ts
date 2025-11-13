@@ -12,7 +12,7 @@ import { constructAssertions } from '../mappers/la/shared/constructAssertions';
 import { constructSubjectTo } from '../mappers/la/shared/constructSubjectTo';
 import { constructCoreMetadata } from '../mappers/la/person/constructCoreMetadata';
 import { getTimeSpan } from '../mappers/la/shared/constructTimeSpan';
-import { TBaseMetadata } from '../ingest-items/fetch-item';
+import { TBaseMetadata } from '../ingest-object/fetch-item';
 import { removeStringsFromArray } from '../mappers/la/removeStringsFromArray';
 import { env } from '@/env';
 import omitEmptyEs from 'omit-empty-es';
@@ -127,7 +127,7 @@ export const mapPersonToLinkedArt = async (data: UbbontItem): Promise<JsonLdDocu
     dto = removeStringsFromArray(dto);
 
     // Remove the inline context and add the url to the context
-    dto['@context'] = [`${env.API_URL}/ns/ubbont/context.json`];
+    dto['@context'] = [`${env.API_BASE_URL}/ns/ubbont/context.json`];
 
     dto._modified = Array.isArray(dto._modified) ? dto._modified.sort((a: string, b: string) => new Date(a).getTime() - new Date(b).getTime())[0] : dto._modified ?? DEFAULT_MODIFIED_DATE;
     // @TODO: Remove this when we have dct:modified on all items in the dataset

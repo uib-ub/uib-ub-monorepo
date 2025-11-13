@@ -380,7 +380,7 @@ export const constructAboutness = async (data: any) => {
   if (producedIn) {
     producedInArray = producedIn.map((event: any) => {
       return {
-        id: `${env.PROD_URL}/events/${event.identifier}`,
+        id: `${env.API_BASE_URL}/events/${event.identifier}`,
         type: event.type,
         _label: coalesceLabel(event._label),
       }
@@ -402,7 +402,7 @@ export const constructAboutness = async (data: any) => {
   if (spatial && type !== "Text") {
     representsSpatialArray = spatial.map((concept: any) => {
       return {
-        id: `${env.PROD_URL}/places/${concept.identifier}`,
+        id: `${env.API_BASE_URL}/place/${concept.identifier}`,
         type: "Place",
         _label: coalesceLabel(concept._label),
       }
@@ -412,7 +412,7 @@ export const constructAboutness = async (data: any) => {
   if (subject && type !== "Text") {
     representsTypeConceptArray = subject.map((concept: any) => {
       return {
-        id: `${env.PROD_URL}/concepts/${concept.identifier}`,
+        id: `${env.API_BASE_URL}/concepts/${concept.identifier}`,
         type: "Type",
         _label: coalesceLabel(concept._label),
       }
@@ -423,7 +423,7 @@ export const constructAboutness = async (data: any) => {
     representsDepictionArray = depicts.map((actor: any) => {
       const { path, type } = getLAApiType(actor.type);
       return {
-        id: `${env.PROD_URL}/${path}/${actor.identifier}`,
+        id: `${env.API_BASE_URL}/${path}/${actor.identifier}`,
         type,
         _label: coalesceLabel(actor._label),
         content: JSON.stringify(actor),
@@ -433,7 +433,7 @@ export const constructAboutness = async (data: any) => {
 
   if (type === "Image") {
     showsArray = [{
-      id: `${env.PROD_URL}/visualitem/${visualItemVersionId ?? crypto.randomUUID()}`,
+      id: `${env.API_BASE_URL}/visualitem/${visualItemVersionId ?? crypto.randomUUID()}`,
       type: "VisualItem",
       creation: originalCreator ? {
         type: "Creation",
@@ -455,7 +455,7 @@ export const constructAboutness = async (data: any) => {
       ],
       shown_by: hasVersion ? hasVersion.map((version: any) => {
         return {
-          id: `${env.PROD_URL}/items/${version.identifier}`,
+          id: `${env.API_BASE_URL}/object/${version.identifier}`,
           type: version.type,
           _label: version._label,
         }
@@ -469,7 +469,7 @@ export const constructAboutness = async (data: any) => {
     aboutSubjectArray = subject.map((concept: any) => {
       const { path, type } = getLAApiType(concept.type);
       return {
-        id: `${env.PROD_URL}/${path}/${concept.identifier}`,
+        id: `${env.API_BASE_URL}/${path}/${concept.identifier}`,
         type,
         _label: coalesceLabel(concept._label),
       }
@@ -480,7 +480,7 @@ export const constructAboutness = async (data: any) => {
   if (spatial && type === "Text") {
     aboutSpatialArray = spatial.map((place: any) => {
       return {
-        id: `${env.PROD_URL}/places/${place.identifier}`,
+        id: `${env.API_BASE_URL}/place/${place.identifier}`,
         type: "Place",
         _label: coalesceLabel(place._label),
       }
@@ -491,7 +491,7 @@ export const constructAboutness = async (data: any) => {
   if (locationFor && type === "Text") {
     aboutLocationArray = locationFor.map((place: any) => {
       return {
-        id: `${env.PROD_URL}/places/${place.identifier}`,
+        id: `${env.API_BASE_URL}/place/${place.identifier}`,
         type: "Place",
         _label: coalesceLabel(place._label),
       }
@@ -500,12 +500,12 @@ export const constructAboutness = async (data: any) => {
 
   if (type === "Text") {
     carriesArray = [{
-      id: `${env.PROD_URL}/texts/${crypto.randomUUID()}`, // TODO: use an id that we can use to create this LinguisticObject
+      id: `${env.API_BASE_URL}/text/${crypto.randomUUID()}`, // TODO: use an id that we can use to create this LinguisticObject
       type: "LinguisticObject",
       _label: `Tekstlig innhold`,
       carried_out_by: editor ? editor.map((editor: any) => {
         return {
-          id: `${env.PROD_URL}/persons/${editor.identifier}`,
+          id: `${env.API_BASE_URL}/persons/${editor.identifier}`,
           type: "Person",
           _label: coalesceLabel(editor._label),
         }
@@ -521,21 +521,21 @@ export const constructAboutness = async (data: any) => {
       language: language ? [getLanguage(language.identifier)] : [],
       used_for: isPublication ? [{
         type: "Activity",
-        _label: `Publiseringen av "${coalesceLabel(data?.label)}"`,
+        _label: `Publiseringen av "${coalesceLabel(data?.identifier)}"`,
         classified_as: [
           aatPublishingType,
         ],
         timespan: getTimeSpan(publishedYear?.['@value'] ?? publishedYear ?? issued?.[0]?.['@value'] ?? issued?.[0], undefined, undefined),
         took_place_at: placeOfPublication ? placeOfPublication.map((place: any) => {
           return {
-            id: `${env.PROD_URL}/places/${place.identifier}`,
+            id: `${env.API_BASE_URL}/place/${place.identifier}`,
             type: 'Place',
             _label: coalesceLabel(place._label),
           }
         }) : [],
         carried_out_by: publisher ? publisher.map((publisher: any) => {
           return {
-            id: `${env.PROD_URL}/groups/${publisher.identifier}`,
+            id: `${env.API_BASE_URL}/group/${publisher.identifier}`,
             type: "Group",
             _label: coalesceLabel(publisher._label),
           }

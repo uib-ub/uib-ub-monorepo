@@ -32,7 +32,7 @@ export const constructCreation = (data: any) => {
       timespan: createdTimeSpan,
       created_by: maker.map((m: any) => ({
         type: "Person",
-        id: `${env.PROD_URL}/person/${m.identifier}`,
+        id: `${env.API_BASE_URL}/person/${m.identifier}`,
         _label: m.name,
       })),
     },

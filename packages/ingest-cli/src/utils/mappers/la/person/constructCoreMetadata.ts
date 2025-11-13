@@ -1,5 +1,5 @@
 import { aatFemaleType, aatMaleType } from '../staticMapping';
-import { TBaseMetadata } from '../../../ingest-items/fetch-item';
+import { TBaseMetadata } from '../../../ingest-object/fetch-item';
 import omitEmptyEs from 'omit-empty-es';
 import { coalesceLabel } from 'utils';
 

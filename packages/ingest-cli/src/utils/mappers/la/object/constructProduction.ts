@@ -51,7 +51,7 @@ export const constructProduction = (data: any) => {
     makerArray = maker.map((actor: any) => {
       const { path, type } = getLAApiType(actor.type);
       return {
-        id: `${env.PROD_URL}/${path}/${actor.identifier}`,
+        id: `${env.API_BASE_URL}/${path}/${actor.identifier}`,
         type,
         _label: coalesceLabel(actor._label),
       }
@@ -62,7 +62,7 @@ export const constructProduction = (data: any) => {
     reproducedByArray = reproducedBy.map((actor: any) => {
       const { path, type } = getLAApiType(actor.type);
       return {
-        id: `${env.PROD_URL}/${path}/${actor.identifier}`,
+        id: `${env.API_BASE_URL}/${path}/${actor.identifier}`,
         type,
         _label: coalesceLabel(actor._label),
       }
@@ -73,7 +73,7 @@ export const constructProduction = (data: any) => {
     reproducedByArray = [reproducedBy].map((actor: any) => {
       const { path, type } = getLAApiType(actor.type);
       return {
-        id: `${env.PROD_URL}/${path}/${actor.identifier}`,
+        id: `${env.API_BASE_URL}/${path}/${actor.identifier}`,
         type,
         _label: coalesceLabel(actor._label),
       }
@@ -82,7 +82,7 @@ export const constructProduction = (data: any) => {
 
   if (long && lat) {
     tookPlaceAt = [{
-      id: `${env.PROD_URL}/places/${long}/${lat}`,
+      id: `${env.API_BASE_URL}/places/${long}/${lat}`,
       type: 'Place',
       _label: `${long}, ${lat}`,
       defined_by_geojson: `{"type":"Feature","geometry":{"type":"Point","coordinates":[-${lat},${long}]}}`
@@ -99,7 +99,7 @@ export const constructProduction = (data: any) => {
       ],
       technique: technique?.map((technique: any) => {
         return {
-          id: `${env.PROD_URL}/concepts/${technique.identifier}`,
+          id: `${env.API_BASE_URL}/concepts/${technique.identifier}`,
           type: 'Type',
           _label: coalesceLabel(technique._label),
         }
@@ -107,7 +107,7 @@ export const constructProduction = (data: any) => {
       commissioner: commissionedBy?.map((actor: any) => {
         const { path, type } = getLAApiType(actor.type);
         return {
-          id: `${env.PROD_URL}/${path}/${actor.identifier}`,
+          id: `${env.API_BASE_URL}/${path}/${actor.identifier}`,
           type,
           _label: coalesceLabel(actor._label),
         }
