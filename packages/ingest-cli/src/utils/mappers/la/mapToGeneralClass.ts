@@ -167,12 +167,12 @@ export const getLAApiType = (type: string): { path: string, type: string } => {
 
   switch (true) {
     case isItem:
-      return { path: "items", type: "HumanMadeObject" };
+      return { path: "object", type: "HumanMadeObject" };
     case isPerson:
       return { path: "person", type: "Person" };
     case isGroup:
-      return { path: "groups", type: "Group" };
+      return { path: "group", type: "Group" };
     default:
-      return { path: "groups", type: "Group" };
+      return { path: "group", type: "Group" };
   }
 }

@@ -6,10 +6,10 @@ import { fetchAndProcessItem } from './fetch-item'
 export const ingestItem = async (id: string) => {
   // Finds the current index name in alias and based on the given indicesInAlias object find the latest index.
   const indicesInAlias = await client.indices.getAlias({ name: CHC_SEARCH_ALIAS })
-  const currentIndex = Object.keys(indicesInAlias).find(k => k.startsWith(CHC_INDICIES.items))
+  const currentIndex = Object.keys(indicesInAlias).find(k => k.startsWith(CHC_INDICIES.object))
 
   if (!currentIndex) {
-    throw new Error(`No index found for ${CHC_INDICIES.items}`)
+    throw new Error(`No index found for ${CHC_INDICIES.object}`)
   }
 
   const response = await fetchAndProcessItem(id)

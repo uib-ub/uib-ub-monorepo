@@ -6,15 +6,14 @@ export const withDevDefault = <T extends z.ZodTypeAny>(
 ) => (process.env["NODE_ENV"] !== "production" ? schema.default(val) : schema);
 
 const schema = z.object({
-  PROD_URL: z.string().url(),
-  API_URL: withDevDefault(z.string().url(), 'http://localhost'),
-  PORT: withDevDefault(z.string(), '3009').transform(Number),
-  ES_HOST: z.string().url(),
-  ES_APIKEY: z.string(),
-  API_ES_WRITE_TOKEN: z.string(),
-  OBSERVE_ES_HOST: z.string().url(),
-  OBSERVE_ES_APIKEY: z.string(),
-  SPARQL_CHC_ENDPOINT: z.string().url(),
+  API_BASE_URL: z.url(),
+  API_DEVELOPMENT_PORT: withDevDefault(z.string(), '3009').transform(Number),
+  API_SEARCH_HOST: z.url(),
+  API_SEARCH_API_KEY: z.string(),
+  API_SEARCH_WRITE_API_KEY: z.string(),
+  API_OBSERVE_HOST: z.string().url(),
+  API_OBSERVE_API_KEY: z.string(),
+  SPARQL_CHC_ENDPOINT: z.url(),
 });
 
 const parsed = schema.safeParse(process.env);

@@ -52,7 +52,7 @@ export const constructGroupTimeSpan = (data: any) => {
   if (based_near) {
     basedNearArray = based_near.map((place: any) => {
       return {
-        id: `${env.API_URL}/place/${place.identifier}`,
+        id: `${env.API_BASE_URL}/place/${place.identifier}`,
         type: 'Place',
         _label: coalesceLabel(place._label),
       }
@@ -64,7 +64,7 @@ export const constructGroupTimeSpan = (data: any) => {
     ...data,
     ...(formationTimeSpan ? {
       formed_by: {
-        id: `${env.PROD_URL}/event/${crypto.randomUUID()}`,
+        id: `${env.API_BASE_URL}/event/${crypto.randomUUID()}`,
         _type: 'Formation',
         _label: `Formation of ${data._label}`,
         timespan: formationTimeSpan ?? undefined,
@@ -72,7 +72,7 @@ export const constructGroupTimeSpan = (data: any) => {
     } : null),
     ...(extinctionTimeSpan ? {
       dissolved_by: {
-        id: `${env.PROD_URL}/event/${crypto.randomUUID()}`,
+        id: `${env.API_BASE_URL}/event/${crypto.randomUUID()}`,
         _type: 'Dissolution',
         _label: `Dissolution of ${data._label}`,
         timespan: extinctionTimeSpan ?? undefined,

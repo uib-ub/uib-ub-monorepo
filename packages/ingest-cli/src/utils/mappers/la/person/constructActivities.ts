@@ -15,17 +15,17 @@ export const constructActivities = (base: any, data: any) => {
     ...data,
     participated_in: spouse ? spouse.map((spouse: any) => {
       return {
-        id: `${env.PROD_URL}/activities/${crypto.randomUUID()}`,
+        id: `${env.API_BASE_URL}/activities/${crypto.randomUUID()}`,
         type: 'Activity',
         _label: 'Marriage',
         carried_out_by: [
           {
-            id: `${env.PROD_URL}/person/${spouse.identifier}`,
+            id: `${env.API_BASE_URL}/person/${spouse.identifier}`,
             type: 'Person',
             _label: spouse._label,
           },
           {
-            id: `${env.PROD_URL}/person/${base.identifier}`,
+            id: `${env.API_BASE_URL}/person/${base.identifier}`,
             type: 'Person',
             _label: data._label,
           }
