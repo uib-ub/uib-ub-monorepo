@@ -12,6 +12,7 @@ import { useDebugStore } from '@/state/zustand/debug-store';
 import { MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from '@/lib/map-utils';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { PiX, PiXBold } from 'react-icons/pi';
+import { formatHighlight } from '@/lib/text-utils';
 
 const uniqueLabels = (hit: any) => {
     const labels = new Set<string>();
@@ -143,7 +144,7 @@ remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
                         </span>
                     )}
                 </div>
-                {hit.highlight && snippetRenderer && <>{snippetRenderer(hit)}</>}
+                {hit.highlight && <>{formatHighlight(hit.highlight['content.html']?.[0] || hit.highlight['content.text']?.[0])}</>}
             </Clickable>
             {(initValue && initValue == hit.fields["group.id"][0]) && (
                 <div className="p-3">
