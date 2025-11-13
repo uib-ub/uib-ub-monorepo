@@ -20,30 +20,24 @@ export function constructIIIFStructure(item: any, fileset: any) {
   console.log("🚀 ~ constructIIIFStructure ~ filesetID:", filesetID)
 
   const thumbnail = getThumbnailVisualItem(item)
-  const manifestID = `${env.API_BASE_URL}/items/${filesetID}?as=iiif`
-  const homepage = `https://marcus.uib.no/items/${filesetID}`
+  const manifestID = `${env.API_BASE_URL}/object/${filesetID}?as=iiif`
+  // Find the first "Web Page" with an access_point hosted on marcus.uib.no
+  // Find the Marcus web page URL directly
+  const homepage = item.subject_of?.flatMap((subject: any) =>
+    subject?.digitally_carried_by ?? []
+  )
+    .find(
+      (digital: any) =>
+        digital.classified_as?.some((cls: any) => cls._label === "Web Page") &&
+        digital.access_point?.some(
+          (ap: any) => typeof ap.id === "string" && ap.id.includes("marcus.uib.no")
+        )
+    )
+    ?.access_point?.find(
+      (ap: any) => typeof ap.id === "string" && ap.id.includes("marcus.uib.no")
+    )?.id;
 
-  //const mainType = get
-  const getLabel = (item: any): { [key: string]: string[] } => {
-    const names = item.identified_by?.filter((name: any) =>
-      name.type === 'Name' &&
-      name.classified_as?.some((type: any) =>
-        type._label === 'Primary Name' || type._label === 'Translated Name'
-      )
-    ) ?? [];
-
-    const label: { [key: string]: string[] } = {};
-
-    if (names.length > 0) {
-      names.forEach((name: any) => {
-        const lang = name.language?.[0]?._label === 'Norwegian' ? 'no' : 'en';
-        if (!label[lang]) label[lang] = [];
-        label[lang].push(name.content);
-      });
-    }
-
-    return label;
-  }
+  console.log("🚀 ~ constructIIIFStructure ~ homepage:", homepage)
 
   type PreziMetadata = {
     label: Record<string, string[]>
@@ -71,13 +65,14 @@ export function constructIIIFStructure(item: any, fileset: any) {
 
     // If no titles were found, default to empty arrays
     if (Object.keys(value).length === 0) {
-      value.no = []
+      value.nb = []
       value.en = []
     }
 
     return {
       label: {
-        no: ['Tittel'],
+        nb: ['Tittel'],
+        nn: ['Tittel'],
         en: ['Title']
       },
       value
@@ -89,11 +84,24 @@ export function constructIIIFStructure(item: any, fileset: any) {
 
     return {
       label: {
-        no: ['Identifikator'],
+        nb: ['Identifikator'],
+        nn: ['Identifikator'],
         en: ['Identifier'],
       },
       value: {
         none: identifiers.map((identifier: any) => identifier.content)
+      }
+    }
+  }
+  const getConcepts = (shows: any): PreziMetadata => {
+    const concepts = shows.flatMap((show: any) => show.represents_instance_of_type)
+
+    return {
+      label: {
+        nb: ['Emner'],
+      },
+      value: {
+        nb: concepts.map((concept: any) => concept._label)
       }
     }
   }
@@ -103,10 +111,11 @@ export function constructIIIFStructure(item: any, fileset: any) {
     manifestID,
     (manifest: any) => {
 
-      const label = getLabel(item);
+      const { value: label } = getTitles(item.identified_by);
 
       manifest.setLabel(Object.keys(label).length > 0 ? label : {
-        "no": ["Mangler tittel"],
+        "nb": ["Mangler tittel"],
+        "nn": ["Manglar tittel"],
         "en": ["Missing title"]
       });
       if (thumbnail) {
@@ -123,54 +132,60 @@ export function constructIIIFStructure(item: any, fileset: any) {
         id: homepage,
         type: "Text",
         label: {
-          no: ['Hjemmeside til objektet'],
+          nb: ['Hjemmeside til objektet'],
+          nn: ['Heimeside til objektet'],
           en: ['Homepage for the object'],
         },
         format: "text/html"
       });
       manifest.setSeeAlso([
         {
-          id: `${env.API_BASE_URL}/items/${filesetID}`,
+          id: `${env.API_BASE_URL}/object/${filesetID}`,
           type: "Dataset",
           label: {
+            nb: ["Objektbeskrivelse i JSON format"],
+            nn: ["Objektskildring i JSON format"],
             en: ["Object description in JSON format"],
-            no: ["Objekt beskrivelse i JSON format"]
           },
           format: "application/ld+json"
         },
         {
-          id: `${env.API_BASE_URL}/items/${filesetID}?as=ubbont`,
+          id: `${env.API_BASE_URL}/object/${filesetID}?as=ubbont`,
           type: "Dataset",
           label: {
+            nb: ["Objekt beskrivelse i RDF"],
+            nn: ["Objektskildring i RDF"],
             en: ["Object description in RDF"],
-            no: ["Objekt beskrivelse i RDF"]
           }
         }
       ]);
       manifest.setRequiredStatement({
         label: {
-          no: ["Kreditering"],
+          nb: ["Attribusjon"],
           en: ["Attribution"]
         },
         value: {
-          no: ["Tilgjengeliggjort av Universitetsbiblioteket i Bergen"],
+          nb: ["Tilgjengeliggjort av Universitetsbiblioteket i Bergen"],
+          nn: ["Tilgjengeleggjort av Universitetsbiblioteket i Bergen"],
           en: ["Provided by University of Bergen Library"]
         }
       });
       manifest.setRights(getCopyright(item, filesetID));
       manifest.setMetadata([
-        getTitles(item.identified_by),
         getIdentifiers(item.identified_by),
+        getConcepts(item.shows),
       ]);
 
       if (fileset) {
         (fileset.data.hasPart).map((item: any) => {
-          const root = `${env.API_BASE_URL}/items/${filesetID}`
+          const root = `${env.API_BASE_URL}/object/${filesetID}`
           const canvasID = `${root}/canvas/${item.sequenceNr}`
           const annotationPageID = `${root}/canvas/${item.sequenceNr}/annotation-page/1`;
           const annotationID = `${root}/canvas/${item.sequenceNr}/annotation/1`;
           manifest.createCanvas(canvasID, (canvas: any) => {
-            canvas.setLabel({ no: [item._label.none[0] ?? "Mangler tittel"] });
+            canvas.setLabel({
+              nb: [item._label.none[0] ?? "Mangler tittel"],
+            });
             canvas.setWidth(1024);
             canvas.setHeight(1024);
             canvas.addThumbnail({
