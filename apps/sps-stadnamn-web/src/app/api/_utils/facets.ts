@@ -32,6 +32,8 @@ export const RESERVED_PARAMS = [
   'mode',
   'geotile',
 
+  'filterSources',
+
   'init',
   'group',
   'options',
