@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { Fragment } from 'react';
+import React, { Fragment, ReactElement } from 'react';
 import parse from 'html-react-parser';
 import { PiCodeSimple, PiInfoFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi';
 import Clickable from '@/components/ui/clickable/clickable';
@@ -7,43 +7,43 @@ import InfoPopover from '@/components/ui/info-popover';
 import SourceLink from '@/components/search/details/group/source-link';
 
 const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string[]) => {
-    const altLabels = altLabelKeys.map((key) => source[key]).filter((label: string) => label !== prefLabel && label);
-    return [...new Set(altLabels)].join(', ')
-  }
+  const altLabels = altLabelKeys.map((key) => source[key]).filter((label: string) => label !== prefLabel && label);
+  return [...new Set(altLabels)].join(', ')
+}
 
 
 
-export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Element)> = {
+export const infoPageRenderers: Record<string, null | ((source: any) => ReactElement)> = {
   search: null,
   sof: null,
   rygh: (source: any) => {
-    
+
     return <>
-    { source.cadastre?.length > 0 &&
- <div className='flex flex-wrap gap-2'>
- 
-  <h3 className="font-semibold !text-base !m-0 !p-0 !font-sans">Matrikkel:</h3>
-   {source.cadastre?.map((item: any, index: number) => {
-    const dataset = "rygh"
-    return <Fragment key={index}>
-    
-      <Clickable link className="no-underline flex items-center" href="/search" only={{dataset, "misc.KNR": source.misc.KNR}}>{source.misc.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-700' /></Clickable>
-      { item.gnr && <>- <Clickable link className="no-underline flex items-center" href="/search" only={{dataset, "misc.Gnr": item.gnr.toString(), "misc.KNR": source.misc.KNR}}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-700' /></Clickable> </>}
-      { item.bnr && <>{"/"} <Clickable link className="no-underline flex items-center" href="/search" only={{dataset, "misc.Bnr": item.bnr.toString(), "misc.KNR": source.misc.KNR}}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-700' /></Clickable> </>}
-      
+      {source.cadastre?.length > 0 &&
+        <div className='flex flex-wrap gap-2'>
 
-   </Fragment>
-   })}
-   </div>   
-    }
+          <h3 className="font-semibold !text-base !m-0 !p-0 !font-sans">Matrikkel:</h3>
+          {source.cadastre?.map((item: any, index: number) => {
+            const dataset = "rygh"
+            return <Fragment key={index}>
 
-    {source.content?.html && <div className="inline-flex flex-col inner-slate">
-     <div className='border-b border-neutral-200 p-4 flex gap-2'>Bind {source.misc.Bind}, s. {source.misc.Side}{source.links?.map((link: any) => <div key={link}><SourceLink url={link} /></div>)}
-     {source.content.html.includes("font-phonetic") && <span className='text-sm'><PiWarningFill className='inline mr-1 text-primary-700' />Transkriberinga kan innehalde feil teikn, særleg i lydskrift</span>}</div>
-    <div className='space-y-2 inline p-4'>{parse(source.content.html)}</div>
+              <Clickable link className="no-underline flex items-center" href="/search" only={{ dataset, "misc.KNR": source.misc.KNR }}>{source.misc.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-700' /></Clickable>
+              {item.gnr && <>- <Clickable link className="no-underline flex items-center" href="/search" only={{ dataset, "misc.Gnr": item.gnr.toString(), "misc.KNR": source.misc.KNR }}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-700' /></Clickable> </>}
+              {item.bnr && <>{"/"} <Clickable link className="no-underline flex items-center" href="/search" only={{ dataset, "misc.Bnr": item.bnr.toString(), "misc.KNR": source.misc.KNR }}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-700' /></Clickable> </>}
 
-    </div>
-    }
+
+            </Fragment>
+          })}
+        </div>
+      }
+
+      {source.content?.html && <div className="inline-flex flex-col inner-slate">
+        <div className='border-b border-neutral-200 p-4 flex gap-2'>Bind {source.misc.Bind}, s. {source.misc.Side}{source.links?.map((link: any) => <div key={link}><SourceLink url={link} /></div>)}
+          {source.content.html.includes("font-phonetic") && <span className='text-sm'><PiWarningFill className='inline mr-1 text-primary-700' />Transkriberinga kan innehalde feil teikn, særleg i lydskrift</span>}</div>
+        <div className='space-y-2 inline p-4'>{parse(source.content.html)}</div>
+
+      </div>
+      }
 
     </>
   },
@@ -67,37 +67,37 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
       {title: 'N50 Kartid', value: source.rawData.N50_kartid}
     ]}/>
 
-    */ 
+    */
     return <>
-    {source.content?.html && <div className="inline-flex flex-col gap-4 inner-slate">
-      <div className='border-b border-neutral-200 p-4'><Link href="https://urn.nb.no/URN:NBN:no-nb_digibok_2008121704022" className='whitespace-nowrap inline'>norskstadnamnleksikon.no</Link></div>
-    <div className='space-y-2 inline px-4 pb-4'>{parse(source.content.html.replace("/view/leks/doc/", "/search?dataset=leks&doc="))}</div>
+      {source.content?.html && <div className="inline-flex flex-col gap-4 inner-slate">
+        <div className='border-b border-neutral-200 p-4'><Link href="https://urn.nb.no/URN:NBN:no-nb_digibok_2008121704022" className='whitespace-nowrap inline'>norskstadnamnleksikon.no</Link></div>
+        <div className='space-y-2 inline px-4 pb-4'>{parse(source.content.html.replace("/view/leks/doc/", "/search?dataset=leks&doc="))}</div>
 
-    </div>
-    }
-  </>
+      </div>
+      }
+    </>
   },
   leks_g: (source: any) => {
     return <>
-    {source["note"] && <span className='flex items-center gap-1'><PiInfoFill className='inline mr-1 text-neutral-600' />{source["note"]}</span>}
-    {source.content?.html && <div className='space-y-2'>{parse(source.content?.html)}</div>}
+      {source["note"] && <span className='flex items-center gap-1'><PiInfoFill className='inline mr-1 text-neutral-600' />{source["note"]}</span>}
+      {source.content?.html && <div className='space-y-2'>{parse(source.content?.html)}</div>}
     </>
   },
   rygh_g: (source: any) => {
     return <>
-    
-    {source.content?.html && <div className='space-y-2'>{parse(source.content?.html)}</div>}
+
+      {source.content?.html && <div className='space-y-2'>{parse(source.content?.html)}</div>}
     </>
   },
 
-  bsn:  (source: any) => {
+  bsn: (source: any) => {
     return <>
-    <div className='space-y-2'>
-    {source.rawData?.original?.stnavn?.komm ?
-     <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData.stnavn?.komm}</div>
-     : source.rawData?.supplemented?.merknad && <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.supplemented?.merknad}</div>
-    }
-    </div>
+      <div className='space-y-2'>
+        {source.rawData?.original?.stnavn?.komm ?
+          <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData.stnavn?.komm}</div>
+          : source.rawData?.supplemented?.merknad && <div><strong className="text-neutral-900">Merknad: </strong>{source.rawData?.supplemented?.merknad}</div>
+        }
+      </div>
     </>
   },
   hord: (source: any) => {
@@ -127,27 +127,27 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
     ]}/>
     */
     return <>
-    <div className='space-y-2'>
-    { altLabels && <div><strong className="text-neutral-900">Andre namneformer</strong><InfoPopover>Felta for fonemisk skrift (uttale) og namneformer var samanblanda i den opphavlege databasen. Vi har derfor slått dei saman under fellesnemninga «andre namneformer».</InfoPopover> {altLabels}</div>} 
-    {source.rawData.merknader && <div><strong className="text-neutral-900">Merknader: </strong>{source.rawData.merknader}</div>}
+      <div className='space-y-2'>
+        {altLabels && <div><strong className="text-neutral-900">Andre namneformer</strong><InfoPopover>Felta for fonemisk skrift (uttale) og namneformer var samanblanda i den opphavlege databasen. Vi har derfor slått dei saman under fellesnemninga «andre namneformer».</InfoPopover> {altLabels}</div>}
+        {source.rawData.merknader && <div><strong className="text-neutral-900">Merknader: </strong>{source.rawData.merknader}</div>}
 
-    </div>
-    {source.audio && <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/hord/${source.audio.file}`}></audio>}
+      </div>
+      {source.audio && <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/hord/${source.audio.file}`}></audio>}
     </>
   },
   nbas: null,
   nbas_reykjavik: (source: any) => {
     return <>
-    <p lang="en">Legacy data from the Nordic Spatial Humanities project, and a preliminary transformation of the <Link href="/search?dataset=nbas">National Place Name Database</Link>.</p>
+      <p lang="en">Legacy data from the Nordic Spatial Humanities project, and a preliminary transformation of the <Link href="/search?dataset=nbas">National Place Name Database</Link>.</p>
     </>
   },
   m1838: (source: any) => {
     return <>
-    {source.misc?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.misc?.merknad}</>}
-    <div className="flex flex-wrap mt-3 gap-2">
-    <Link href={source.link} className='rectangular-external-link'>Skanna</Link>
-    <Link href={source.misc.Lenke_til_digital_matrikkel} className='rectangular-external-link'>Digitalisert</Link>
-    </div>
+      {source.misc?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.misc?.merknad}</>}
+      <div className="flex flex-wrap mt-3 gap-2">
+        <Link href={source.link} className='rectangular-external-link'>Skanna</Link>
+        <Link href={source.misc.Lenke_til_digital_matrikkel} className='rectangular-external-link'>Digitalisert</Link>
+      </div>
 
     </>
 
@@ -155,15 +155,15 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
   mu1950: (source: any) => <></>,
   m1886: (source: any) => {
     return <>
-    {source.misc?.merknader && <><strong className="text-neutral-900">Merknad: </strong>{source.misc?.merknader}</>}
+      {source.misc?.merknader && <><strong className="text-neutral-900">Merknad: </strong>{source.misc?.merknader}</>}
 
-    {source.misc?.lenke_til_digital_matrikkel && <div className="flex flex-wrap mt-3 gap-4">
-    <Link href={source.misc.lenke_til_digital_matrikkel} className='rectangular-external-link'>Digital matrikkel</Link>
-    </div> }
+      {source.misc?.lenke_til_digital_matrikkel && <div className="flex flex-wrap mt-3 gap-4">
+        <Link href={source.misc.lenke_til_digital_matrikkel} className='rectangular-external-link'>Digital matrikkel</Link>
+      </div>}
 
 
     </>
-  },    
+  },
   ostf: (source: any) => {
     /*
     <InfoBox dataset={'ostf'} 
@@ -180,75 +180,75 @@ export const infoPageRenderers: Record<string, null | ((source: any) => JSX.Elem
         {title: 'Unikt matrikkelnummer', items: source.gnidu?.map((gnidu: string) => ({value: gnidu, href: `/view/ostf?gnidu=${encodeURIComponent(gnidu)}`}))},
       ]}/>
     */
-      return <>
-      { source.links?.length &&
-      <div>
-      <h3>Lenker</h3>
-      <ul className='!mt-0 !list-none !pl-0 !pt-0'>
-        {source.links.map((link: any, index: number) => (
-          <li key={index}><Link href={link} className=''>{link}</Link></li>
-        ))}
+    return <>
+      {source.links?.length &&
+        <div>
+          <h3>Lenker</h3>
+          <ul className='!mt-0 !list-none !pl-0 !pt-0'>
+            {source.links.map((link: any, index: number) => (
+              <li key={index}><Link href={link} className=''>{link}</Link></li>
+            ))}
 
-      </ul>
-      </div>
-      }      
-      </>
-    },
-    tot: (source: any) => {
-      return <>
+          </ul>
+        </div>
+      }
+    </>
+  },
+  tot: (source: any) => {
+    return <>
       {source.misc?.merknader && <><strong className="text-neutral-900">Merknad: </strong>{source.misc?.Kommentar}</>}
-      </>
-    },
-    ssr2016: null,
-    ssr: (source: any) => {
-      return <><div><PiWarningFill className="inline-block mr-1 text-neutral-600 text-lg" />Sjå normeringsstatus på kartverket.no</div>
+    </>
+  },
+  ssr2016: null,
+  ssr: (source: any) => {
+    return <><div><PiWarningFill className="inline-block mr-1 text-neutral-600 text-lg" />Sjå normeringsstatus på kartverket.no</div>
       {source.ssr && <div className="flex flex-wrap gap-2"><Link className="rectangular-external-link" href={`https://stadnamn.kartverket.no/fakta/${source.ssr}`}>kartverket.no</Link>
-      <Link className="rectangular-external-link" href={`http://wfs.geonorge.no/skwms1/wfs.stedsnavn50?service=WFS&version=2.0.0&request=GetFeature&STOREDQUERY_ID=urn:ogc:def:storedQuery:OGC-WFS::Stedsnummer&stedsnummer=${source.ssr}`}>Rådata (WFS)</Link>
+        <Link className="rectangular-external-link" href={`http://wfs.geonorge.no/skwms1/wfs.stedsnavn50?service=WFS&version=2.0.0&request=GetFeature&STOREDQUERY_ID=urn:ogc:def:storedQuery:OGC-WFS::Stedsnummer&stedsnummer=${source.ssr}`}>Rådata (WFS)</Link>
       </div>}
-  
-      
-      </>
-    },
-    nrk: (source: any) => {
-      return <>
-      {(source.rawData.Uttale2 || source.rawData.Uttale1) && 
-      <div>
-      <h3 className='!m-0 !p-0'>Uttale</h3>
-      {source.rawData.Uttale2 && <div>{parse(source.rawData.Uttale2)}</div>}
-      {source.rawData.Uttale1 && <div>{parse(source.rawData.Uttale1)}</div>}
-      {source.rawData.UttaleNy && <div>{parse(source.rawData.UttaleNy)} (Ny uttale)</div>}
-      {source.rawData.Uttalemerknad && <div><strong>Uttalemerknad:</strong> {parse(source.rawData.Uttalemerknad)}</div>}
-      </div>
+
+
+    </>
+  },
+  nrk: (source: any) => {
+    return <>
+      {(source.rawData.Uttale2 || source.rawData.Uttale1) &&
+        <div>
+          <h3 className='!m-0 !p-0'>Uttale</h3>
+          {source.rawData.Uttale2 && <div>{parse(source.rawData.Uttale2)}</div>}
+          {source.rawData.Uttale1 && <div>{parse(source.rawData.Uttale1)}</div>}
+          {source.rawData.UttaleNy && <div>{parse(source.rawData.UttaleNy)} (Ny uttale)</div>}
+          {source.rawData.Uttalemerknad && <div><strong>Uttalemerknad:</strong> {parse(source.rawData.Uttalemerknad)}</div>}
+        </div>
       }
 
 
- 
-     </>
-    },
-    ft1900: null,
-    ft1910: null,
-    m2010: (source: any) => {
-      return <>
+
+    </>
+  },
+  ft1900: null,
+  ft1910: null,
+  m2010: (source: any) => {
+    return <>
       <div className='space-y-2'>
         <strong>Opphavleg:</strong><InfoPopover>Oppslagsorda i GAB-registeret hadde alle store bokstavar, og fleire av dei inneheldt romartal. Tilpassingane Språksamlingane har gjort kan innehalde feil. </InfoPopover>&nbsp;&nbsp;
         {source.sosi == 'gard' ? source.misc.Gardsnamn : source.misc.Bruksnamn}
       </div>
-      </>
-    },
-    frogn: (source: any) => {
-      return <>
+    </>
+  },
+  frogn: (source: any) => {
+    return <>
       {source.rawData.KOMMENTAR && <><strong className="text-neutral-900">Kommentar: </strong>{source.rawData.KOMMENTAR}</>}
-      </>
-    },
-    gjerd: (source: any) => {
-      return <>
+    </>
+  },
+  gjerd: (source: any) => {
+    return <>
       {source.rawData.KOMMENTAR && <><strong className="text-neutral-900">Kommentar: </strong>{source.rawData.KOMMENTAR}</>}
-      </>
-    },
-    sorum: (source: any) => {
-      return <>
+    </>
+  },
+  sorum: (source: any) => {
+    return <>
       {source.rawData.KOMMENTAR && <><strong className="text-neutral-900">Kommentar: </strong>{source.rawData.KOMMENTAR}</>}
-      </>
-    }
-    
+    </>
   }
+
+}
