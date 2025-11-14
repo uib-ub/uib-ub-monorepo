@@ -172,59 +172,54 @@ export default function ServerFacet() {
     )}
   </div>
 )}
-</div>
-  <div className='flex gap-2'>
     
-      
-   
-  
-
     {currentValue != '_true' && currentValue != '_false' && 
-    <div className='flex gap-2 flex-col w-full'>
-      <div className='flex gap-2'>
-      <div className='relative flex-1 min-w-0'> {/* flex-1 to take remaining space, min-w-0 allows shrinking below content size */}
-    <input 
-      aria-label="Søk i fasett" 
-      onChange={(e) => facet == 'datasets' ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
-      className="pl-8 w-full h-full border rounded-md border-neutral-300"
-    />
-    <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-      <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl'/>
-    </span>
-  </div>
-
-
-  <div className="flex-shrink-0"> {/* Keep toolbar buttons from shrinking */}
-    <FacetToolbar/>
-  </div>
-  </div>
+    <div className='flex flex-col gap-2'>
+      <div className='flex gap-2 px-2 pt-1'>
+        <div className='w-full h-10 relative'>
+          <input 
+            aria-label="Søk i fasett" 
+            onChange={(e) => facet == 'datasets' ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
+            className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"
+          />
+          <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
+            <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-2xl'/>
+          </span>
+        </div>
+      </div>
+      
+      <FacetToolbar/>
     
     {  (facetLoading || facetAggregation?.buckets.length) ?
     <fieldset>
       <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[perspective][facet].label}`}</legend>
-      <ul aria-live="polite" className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto mb-2'>
+      <ul aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200'>
         {facetAggregation?.buckets.length ? facetAggregation?.buckets
           .map((item: any, index: number) => 
             (!clientSearch?.length || createSearchRegex(clientSearch)?.test(renderLabel(facet, item.key))) && (
-              <li key={index}>
-                <label>
+              <li key={index} className='py-3'>
+                <label className="flex items-center gap-2 lg:gap-1 xl:gap-2 px-2 flex-1 min-w-0">
                   <input 
                     type="checkbox" 
                     checked={isChecked(facet, item.key)} 
-                    className='mr-2' 
+                    className="mr-2 flex-shrink-0" 
                     name={facet} 
                     value={item.key} 
                     onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
                   />
-                  {renderLabel(facet, item.key)} <FacetBadge count={item.doc_count} />
+                  <span className="text-neutral-950 break-words lg:text-sm xl:text-base min-w-0">
+                    {renderLabel(facet, item.key)} <FacetBadge count={item.doc_count} />
+                  </span>
                 </label>
               </li>
           ))
           : <li>
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-6 my-3">
                 {Array.from({length: 6}).map((_, index) => (
                   <div key={index} className="flex items-center gap-2">
-                    <div style={{width: getSkeletonLength(index, 8, 16) + 'rem'}} className="h-4 bg-neutral-200 rounded-full animate-pulse"></div>
+                    <div className="w-4 h-4 bg-neutral-900/10 rounded-md animate-pulse"></div>
+                    <div style={{width: getSkeletonLength(index, 8, 16) + 'rem'}} className="h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
+                    <div className="w-6 h-6 ml-auto bg-neutral-900/10 rounded-full animate-pulse"></div>
                   </div>
                 ))}
               </div>
@@ -232,7 +227,7 @@ export default function ServerFacet() {
         }
       </ul>
     </fieldset>
-    : <div role="status" aria-live="polite" className='px-2 p-2 rounded-sm bg-neutral-50 border border-neutral-300'>Ingen treff</div>
+    : <div role="status" aria-live="polite" className='px-2 p-2'>Ingen treff</div>
     }
     </div>}
     </div>

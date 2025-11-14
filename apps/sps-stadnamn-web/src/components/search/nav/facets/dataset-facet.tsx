@@ -132,17 +132,20 @@ export default function DatasetFacet() {
     <div id="dataset-facet-content" className='flex flex-col gap-2'>
 
     {datasetTag != 'tree' && <div className='flex gap-2 px-2 pt-1'>
-     <div className='relative grow'>
+     <div className='w-full h-10 relative'>
       <input aria-label="Søk i fasett" onChange={(e) => setClientSearch(e.target.value)}
           className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"/>
       <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-        <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl'/>
+        <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-2xl'/>
       </span>
     </div>
 
-    <FacetToolbar/>
+    
     </div>}
+    
     </div>
+    <FacetToolbar/>
+    
     
 
     { (facetLoading || facetAggregation?.buckets.length) ?
@@ -178,14 +181,13 @@ export default function DatasetFacet() {
             if (!clientSearch?.length || descriptionMatch || titleMatch) {
                 const isExpanded = expandedDescriptions.has(item.key);
                 return  (
-              <li key={index} className='py-2'>
-                <div className='flex items-start gap-2 lg:gap-1 xl:gap-2'>
-                  {isCadastral ? 
+              <li key={index} className='py-3 relative'>
+                {isCadastral ? 
                   <Clickable link only={{datasetTag: 'tree', dataset: item.key.split('-')[2]}} className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0 no-underline">
                   {renderLabel(item.key)}<PiCaretRightBold className="text-primary-700" aria-hidden="true"/>
                   </Clickable>
                   
-                  :<label className="flex items-center gap-2 lg:gap-1 xl:gap-2 px-2 flex-1 min-w-0">
+                  :<label className="flex items-center gap-2 lg:gap-1 xl:gap-2 px-2 flex-1 min-w-0 pr-10">
                     <input 
                       type="checkbox"
                       checked={isChecked(item.key)} 
@@ -225,14 +227,13 @@ export default function DatasetFacet() {
                   <IconButton
                     label={`${isExpanded ? 'Skjul' : 'Vis'} beskrivelse`}
                     onClick={() => toggleDescription(item.key)}
-                    className="rounded-full btn btn-outline btn-compact p-1 flex-shrink-0"
+                    className="absolute right-2 top-3 rounded-full btn btn-outline btn-compact p-1 flex-shrink-0"
                     aria-label={`${isExpanded ? 'Skjul' : 'Vis'} beskrivelse`}
                   >
                     {isExpanded ? <PiCaretUpBold className="w-4 h-4" /> : <PiCaretDownBold className="w-4 h-4" />}
                   </IconButton>
-                </div>
                 {isExpanded && (
-                  <div className='mt-2 ml-6 mb-2'>
+                  <div className='mt-2 ml-6 mb-2 pr-10'>
                     {datasetShortDescriptions[item.key.split('-')[2]]}
                     <div className="flex mt-2">
                       <Link
