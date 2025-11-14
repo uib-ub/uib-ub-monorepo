@@ -30,6 +30,7 @@ import TableOptions from "./table/table-options";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import DebugToggle from "./nav/results/debug-toggle";
 import SearchQueryDisplay from "./nav/results/search-query-display";
+import { datasetTitles } from "@/config/metadata-config";
 
 
 
@@ -111,7 +112,7 @@ function LeftWindow({children}: {children: React.ReactNode}) {
         if (mapSettings && results) return null
         return <>{children}</>
     }
-    return <div className="bg-white shadow-lg absolute left-2 top-[4rem] w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-auto overflow-x-hidden stable-scrollbar">{children}</div>
+    return <div className="bg-white shadow-lg flex flex-col absolute left-2 top-[4rem] w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-auto overflow-x-hidden stable-scrollbar">{children}</div>
 }
 
 function RightWindow({children}: {children: React.ReactNode}) {
@@ -191,8 +192,8 @@ export default function OverlayInterface() {
                             
                         </div>)
                         
-                        || <div  className="w-full flex items-center xl:h-12 px-2 py-1 xl:px-0 gap-2 xl:pl-2">
-                        <Clickable className="flex items-center gap-2 xl:px-2" add={{options: (options && !isMobile) ? null : 'on'}} remove={["options"]}>
+                        || <div  className="w-full flex items-center h-12 px-2 xl:px-0 gap-2 xl:pl-2 shrink-0">
+                        <Clickable aria-expanded={options} aria-controls="options-panel" className="flex items-center gap-2 xl:px-2" add={{options: (options && !isMobile) ? null : 'on'}} remove={["options"]}>
                         {
                             !isMobile && <>
                                 {options ? <PiCaretUpBold className="text-lg" aria-hidden="true"/> : <PiCaretDownBold className="text-lg" aria-hidden="true"/>}
@@ -206,10 +207,11 @@ export default function OverlayInterface() {
                         {mode == 'table' && <Clickable add={{tableOptions: 'on'}} remove={["tableOptions"]} className="btn btn-outline rounded-full px-2 py-1 pr-3 flex items-center gap-2 text-sm xl:text-base">
                             <PiTableFill className="text-neutral-900" /> Kolonner
                         </Clickable>}
+                        
                         {!totalHits?.value && isMobile && <span className="text-sm xl:text-bas px-2">Ingen resultat</span>}
                         </div>
                             </div>}
-                        {(options || isMobile) && !facet && <>
+                        {(options || isMobile) && !facet && <div id="options-panel" className="flex flex-col gap-2">
                         {!isMobile && <ActiveFilters />}
                         
                         
@@ -218,7 +220,8 @@ export default function OverlayInterface() {
 
 
 
-                               <FacetSection />{isMobile && <ShowResultsButton />}</>}
+                               <FacetSection />{isMobile && <ShowResultsButton />}
+                        </div>}
                         {facet && <div className="flex flex-col gap-2"> 
                         {facet == 'adm' ? (
                             <ClientFacet facetName={facet} />
@@ -246,7 +249,7 @@ export default function OverlayInterface() {
                             </div>
                         ) : (
                             <div  className="w-full flex items-center xl:h-12 px-2 py-1 xl:px-0 gap-2 xl:pl-2">
-                                <Clickable className="flex items-center gap-2 xl:px-2" add={{results: (results && !isMobile) ? null : 'on'}} remove={["results"]}>
+                                <Clickable aria-expanded={results} aria-controls="results-panel" className="flex items-center gap-2 xl:px-2" add={{results: (results && !isMobile) ? null : 'on'}} remove={["results"]}>
                                 {!isMobile && (
                                         <>
                                             {results ? <PiCaretUpBold className="text-lg" /> : <PiCaretDownBold className="text-lg" />}
@@ -256,7 +259,7 @@ export default function OverlayInterface() {
                                 
                                    <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={totalHits?.value || 0} />
                                 </Clickable>
-                                {isMobile && <div className="flex items-center gap-1 ml-auto">
+                                <div className="flex items-center gap-1 ml-auto">
                                     <ClickableIcon 
                                         add={{mode: 'table'}} 
                                         className="flex items-center btn btn-outline rounded-full p-1 px-2 h-7 xl:h-10 xl:text-lg xl:w-10 justify-center text-sm"
@@ -264,10 +267,10 @@ export default function OverlayInterface() {
                                     >
                                         <PiTableFill className="text-neutral-900" />
                                     </ClickableIcon>
-                                </div>}
+                                </div>
                             </div>
                         )}
-                        {(mapSettings ? <MapSettings/> : results && (showDebugGroups ? <DebugToggle /> : <SearchResults />))}                   
+                        {mapSettings ? <MapSettings/> : results && <div id="results-panel">{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}                   
                     </RightWindow>}
                 </DrawerWrapper>
 
