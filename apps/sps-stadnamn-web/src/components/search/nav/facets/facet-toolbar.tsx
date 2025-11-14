@@ -21,13 +21,15 @@ export default function FacetToolbar() {
     const currentFacet = facet || facetConfig[perspective][0]?.key
 
     const sortMode = facetSort[currentFacet] || facetOptions[perspective]?.[currentFacet]?.sort
+
+    const hasValues = searchParams.get(currentFacet)
     
 
     
 
 
     return (
-        <div className="flex items-center text-neutral-950 gap-2">
+        <div className="flex items-center text-neutral-950 gap-2 px-2">
 
         {false && <>{sortMode == 'doc_count' ?
             <IconButton className="text-xl aspect-square btn btn-outline btn-compact h-full px-2" label="Sorter stigende" onClick={() => setFacetSort(currentFacet, 'asc')}><PiSortAscending/></IconButton>
@@ -38,12 +40,12 @@ export default function FacetToolbar() {
             }</>}
 
 
-        <IconButton className="text-xl aspect-square btn btn-outline btn-compact h-full px-2" label="Nullstill filter" onClick={() => {
+        { hasValues && <button className="align-text-bottom leading-none pt-1 px-1" onClick={() => {
 
             router.push(`?${new URLSearchParams(Array.from(searchParams.entries()).filter(([key, value]) => key != currentFacet))}`)
         }}>
-            <PiTrash/>
-        </IconButton>
+            Avmerk alle
+        </button>}
         </div>
     )
 
