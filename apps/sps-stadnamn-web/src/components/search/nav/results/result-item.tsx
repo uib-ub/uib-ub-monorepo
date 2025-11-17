@@ -148,7 +148,7 @@ remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
             {(initValue && initValue == hit.fields["group.id"][0]) && (
                 <div className="p-3">
                     <ClickableIcon className="h-6 w-6 p-0 rounded-full btn btn-outline text-neutral-700" label="Fjern som utgangspunkt" remove={['init']}>
-                        <PiPushPinSlashBold />
+                        <PiXBold />
                     </ClickableIcon>
                 </div>
             )}
