@@ -181,11 +181,8 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
     )
 }
 
-const NamesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
-    const [showMoreDatasets, setShowMoreDatasets] = useState<Record<string, boolean>>({})
-    const [activeYear, setActiveYear] = useState<string | null>(null)
-    const [activeName, setActiveName] = useState<string | null>(null)
-    const [showTimelineDescription, setShowTimelineDescription] = useState(false)
+const NamesSection = ({ datasets, locations, activeYear, activeName, activeCoordinate, setActiveYear, setActiveName, setActiveCoordinate }: { datasets: Record<string, any[]>, locations: any[], activeYear: string | null, activeName: string | null, activeCoordinate: string | null, setActiveYear: (year: string | null) => void, setActiveName: (name: string | null) => void, setActiveCoordinate: (coord: string | null) => void }) => {
+    const [showAll, setShowAll] = useState(false)
 
 	const { yearsOrdered, namesByYear, namesWithoutYear, nameCounts, itemsByDataset } = useMemo(() => {
 		// 1) Empty structures
@@ -247,8 +244,6 @@ const NamesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
 		return { yearsOrdered, namesByYear, namesWithoutYear, nameCounts, itemsByDataset }
 	}, [datasets])
 
-    const toggleShowMore = (ds: string, next?: boolean) => setShowMoreDatasets((prev) => ({ ...prev, [ds]: typeof next === 'boolean' ? next : !prev[ds] }))
-
     const matchesActiveYear = (s: any) => {
         if (!activeYear) return true
         if (String(s?.year) === activeYear) return true
@@ -269,97 +264,89 @@ const NamesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
         return false
     }
 
-	const showFilters = (yearsOrdered.length > 1) || (namesWithoutYear.length > 0)
+	const allItems = [...yearsOrdered.map(y => ({ type: 'year' as const, year: y, names: namesByYear[y] || [] })), ...namesWithoutYear.map(n => ({ type: 'noYear' as const, name: n, count: nameCounts[n] || 0 }))]
+	const hasMore = allItems.length > 3
+	const visibleItems = showAll ? allItems : allItems.slice(0, hasMore ? 2 : Math.min(3, allItems.length))
 
-	// If there are no filters to show, fall back to the SourcesTab (dataset grouping only)
-	if (!showFilters) {
-		return <SourcesTab datasets={itemsByDataset} />
-	}
+	if (allItems.length === 0) return null
 
-	return <>
-		{showFilters && <>
-            {itemsByDataset['rygh']?.find((s: any) => s.attestations && s.attestations.length > 0) && (
-                <WarningMessage 
-                    message="Uregelmessigheiter i digitaliseringa av Norske Gaardnavne gjer at det kan førekomme ord i tidslinja som ikkje er namneformer. Sjå teksten dei er basert på under «Tolkingar»."
-                    messageId="rygh-namnform-warning"
-                />
-            )}
-        <ul className="relative mt-2 px-2">
-           
-            { yearsOrdered.map((year, idx) => {
-				const isLast = idx === yearsOrdered.length - 1
-				const nameKeys = namesByYear[year] || []
-				return (
-					<li key={year} className="flex items-center !pb-2 !pt-0 relative w-full">
-						<div className={`bg-primary-300 absolute w-1 left-0 top-1 ${isLast ? 'h-4' : 'h-full'} ${idx === 0 ? 'mt-2' : ''}`}></div>
-						<div className="w-3 h-3 rounded-full bg-primary-500 absolute -left-1 top-2"></div>
-                        <div className="ml-5 flex w-full items-start">
-                            <button
-                                type="button"
-                                onClick={() => { setActiveYear(activeYear === year ? null : year); setActiveName(null) }}
-                                className={`mr-2 flex my-0 mt-0 font-medium ${activeYear === year ? 'text-primary-700' : 'text-neutral-700'} underline-offset-4 hover:underline text-base`}
-                                aria-pressed={activeYear === year}
-                            >
-                                {year}
-                            </button>
-                            <ul className="flex flex-col gap-0.5">
-                                {nameKeys.map((nameKey) => (
-                                    <li key={`${year}__${nameKey}`} className="flex w-full py-1 first:pt-0">
-                                        <button
-                                            type="button"
-                                            onClick={() => { setActiveName(activeName === nameKey ? null : nameKey); setActiveYear(null) }}
-                                            className={`text-left flex items-center gap-2 ${activeName === nameKey ? 'text-primary-700' : ''} hover:underline underline-offset-4`}
-                                            aria-pressed={activeName === nameKey}
-                                        >
-                                            <span className="font-medium">{nameKey}</span>
-                                        </button>
-                                    </li>
-                                ))}
-							</ul>
-						</div>
-					</li>
-				)
-			})}
-		</ul>
-        </>}
-
-		{namesWithoutYear.length > 0 && (
-			<div className="px-2">
-				<span className="mr-2 my-1 mt-1 font-medium text-neutral-700">Utan årstal</span>
-				<ul className="flex flex-col gap-1">
-					{namesWithoutYear.sort().map((nameKey) => (
-						<li key={`noYear__${nameKey}`} className="flex flex-col w-full">
-							<div className="text-left flex items-center gap-3 py-2">
-								<span className="font-medium">{nameKey}</span>
-								<span className="text-sm text-neutral-700">({nameCounts[nameKey] || 0})</span>
-							</div>
-						</li>
-					))}
-				</ul>
-			</div>
-		)}
-
-		<div className="pt-2">
-			{(activeYear || activeName) && (
-				<div className="flex items-center gap-2 pb-2 text-sm">
-					<span className="text-neutral-700">Filter:</span>
-					{activeYear && <span className="px-2 py-0.5 bg-neutral-100 rounded-full">År: {activeYear}</span>}
-					{activeName && <span className="px-2 py-0.5 bg-neutral-100 rounded-full">Namn: {activeName}</span>}
-					<button type="button" className="ml-auto underline underline-offset-4" onClick={() => { setActiveYear(null); setActiveName(null) }}>Nullstill</button>
+	return (
+		<div className="flex flex-col gap-2 py-2">
+			{itemsByDataset['rygh']?.find((s: any) => s.attestations && s.attestations.length > 0) && (
+				<WarningMessage 
+					message="Uregelmessigheiter i digitaliseringa av Norske Gaardnavne gjer at det kan førekomme ord i tidslinja som ikkje er namneformer. Sjå teksten dei er basert på under «Tolkingar»."
+					messageId="rygh-namnform-warning"
+				/>
+			)}
+			<ul className="relative mt-2 px-2">
+				{visibleItems.map((item, idx) => {
+					if (item.type === 'year') {
+						const isLast = idx === visibleItems.length - 1
+						const nameKeys = item.names
+						return (
+							<li key={item.year} className="flex items-center !pb-2 !pt-0 relative w-full">
+								<div className={`bg-primary-300 absolute w-1 left-0 top-1 ${isLast ? 'h-4' : 'h-full'} ${idx === 0 ? 'mt-2' : ''}`}></div>
+								<div className="w-3 h-3 rounded-full bg-primary-500 absolute -left-1 top-2"></div>
+								<div className="ml-5 flex w-full items-start">
+									<button
+										type="button"
+										onClick={() => { setActiveYear(activeYear === item.year ? null : item.year); setActiveName(null) }}
+										className={`mr-2 flex my-0 mt-0 font-medium ${activeYear === item.year ? 'text-primary-700' : 'text-neutral-700'} underline-offset-4 hover:underline text-base`}
+										aria-pressed={activeYear === item.year}
+									>
+										{item.year}
+									</button>
+									<ul className="flex flex-col gap-0.5">
+										{nameKeys.map((nameKey) => (
+											<li key={`${item.year}__${nameKey}`} className="flex w-full py-1 first:pt-0">
+												<button
+													type="button"
+													onClick={() => { setActiveName(activeName === nameKey ? null : nameKey); setActiveYear(null) }}
+													className={`text-left flex items-center gap-2 ${activeName === nameKey ? 'text-primary-700' : ''} hover:underline underline-offset-4`}
+													aria-pressed={activeName === nameKey}
+												>
+													<span className="font-medium">{nameKey}</span>
+												</button>
+											</li>
+										))}
+									</ul>
+								</div>
+							</li>
+						)
+					} else {
+						return (
+							<li key={`noYear__${item.name}`} className="flex flex-col w-full px-2">
+								<div className="text-left flex items-center gap-3 py-2">
+									<span className="font-medium">{item.name}</span>
+									<span className="text-sm text-neutral-700">({item.count})</span>
+								</div>
+							</li>
+						)
+					}
+				})}
+			</ul>
+			{hasMore && (
+				<button
+					type="button"
+					className="text-sm text-neutral-800 flex items-center gap-1 px-2 py-1"
+					onClick={() => setShowAll(!showAll)}
+				>
+					{showAll ? 'Vis færre' : `Vis fleire (${allItems.length - visibleItems.length})`}
+				</button>
+			)}
+			{/* Coordinates below timeline */}
+			{locations.length > 0 && (
+				<div className="pt-4">
+					<LocationsSection locations={locations} activeCoordinate={activeCoordinate} setActiveCoordinate={setActiveCoordinate} />
 				</div>
 			)}
-			{(() => {
-				const filtered: Record<string, any[]> = {}
-				Object.keys(itemsByDataset).forEach((ds) => {
-					filtered[ds] = (itemsByDataset[ds] || []).filter((s: any) => matchesActiveYear(s) && matchesActiveName(s))
-				})
-				return <SourcesTab datasets={filtered} />
-			})()}
 		</div>
-	</>
+	)
 }
 
-const LocationsTab = ({ locations }: { locations: any[] }) => {
+const LocationsSection = ({ locations, activeCoordinate, setActiveCoordinate }: { locations: any[], activeCoordinate: string | null, setActiveCoordinate: (coord: string | null) => void }) => {
+    const [showAll, setShowAll] = useState(false)
+    
     if (!locations || locations.length === 0) return null;
 
     // Group locations by coordinates (lat, lon as key)
@@ -372,29 +359,38 @@ const LocationsTab = ({ locations }: { locations: any[] }) => {
         groupedByCoords[key].push(location);
     });
 
+    const coordEntries = Object.entries(groupedByCoords)
+    const hasMore = coordEntries.length > 3
+    const visibleCoords = showAll ? coordEntries : coordEntries.slice(0, hasMore ? 2 : Math.min(3, coordEntries.length))
+
     return (
         <div className="flex flex-col gap-4 py-2">
-            {Object.entries(groupedByCoords).map(([coords, group]) => {
+            {visibleCoords.map(([coords]) => {
                 const [lat, lon] = coords.split(',');
                 
                 return (
-                    <div key={coords} className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2">
-                            <ClickableIcon add={{point: coords}} label="Vis på kart"><PiMapPinFill aria-hidden="true" className="text-primary-700 flex-shrink-0 text-lg" /></ClickableIcon>
-                            <span className="text-neutral-900">
-                                {lat}, {lon}
-                            </span>
-                        </div>
-                        <div className="ml-6 flex flex-col gap-1">
-                            {group.map((location, index) => (
-                                <div key={location.uuid || index} className=" text-neutral-800">
-                                    {location.label}
-                                </div>
-                            ))}
-                        </div>
+                    <div key={coords} className="flex items-center gap-2">
+                        
+                        <ClickableIcon add={{point: coords}} label="Vis på kart"><PiMapPinFill aria-hidden="true" className="text-primary-700 flex-shrink-0 text-lg" /></ClickableIcon>
+                        <button
+                            type="button"
+                            onClick={() => setActiveCoordinate(activeCoordinate === coords ? null : coords)}
+                            className={`text-neutral-900 hover:underline underline-offset-4 ${activeCoordinate === coords ? 'text-primary-700' : ''}`}
+                        >
+                            {lat}, {lon}
+                        </button>
                     </div>
                 )
             })}
+            {hasMore && (
+                <button
+                    type="button"
+                    className="text-sm text-neutral-800 flex items-center gap-1 px-2 py-1"
+                    onClick={() => setShowAll(!showAll)}
+                >
+                    {showAll ? 'Vis færre' : `Vis fleire (${coordEntries.length - visibleCoords.length})`}
+                </button>
+            )}
         </div>
     );
 }
@@ -472,6 +468,9 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     const searchDatasets = searchParams.getAll('dataset')
     const { mapFunctionRef } = useContext(GlobalContext)
     const { initValue } = useGroup()
+    const [activeYear, setActiveYear] = useState<string | null>(null)
+    const [activeName, setActiveName] = useState<string | null>(null)
+    const [activeCoordinate, setActiveCoordinate] = useState<string | null>(null)
 
     
     
@@ -676,24 +675,88 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             }
             {textItems.length > 0 && <TextTab textItems={textItems}/>}
 
-            <div className="w-full">
-                {(locations.length > 0 || Object.keys(datasets).length > 1) && !isGrunnord && <TabList>
-
-                    <TabButton groupData={groupData} tab="sources" label="Kjelder" />
-                    {showNamesTab && <TabButton groupData={groupData} tab="names" label="Namn" />}
-                    {locations.length > 0 && <TabButton groupData={groupData} tab="locations" label="Lokalitetar" />}
-                    
-                </TabList>}
-
-
-
-                    <div role="tabpanel" className="px-3" id={`tabpanel-${groupData.group.id}`} aria-labelledby={`tab-${openTabs[groupData.group.id]}`}>
-                        {openTabs[groupData.group.id] === 'sources' && <SourcesTab datasets={datasets} />}
-                        {openTabs[groupData.group.id] === 'names' && <NamesTab datasets={datasets} />}
-                        {openTabs[groupData.group.id] === 'locations' && <LocationsTab locations={locations} />}
+            <div className="w-full border-t border-neutral-200">
+                {/* Names section (includes timeline and coordinates) */}
+                {showNamesTab && (
+                    <div className="px-3 pb-4">
+                        <NamesSection datasets={datasets} locations={locations} activeYear={activeYear} activeName={activeName} activeCoordinate={activeCoordinate} setActiveYear={setActiveYear} setActiveName={setActiveName} setActiveCoordinate={setActiveCoordinate} />
                     </div>
+                )}
 
+                {/* Locations section (only if names section is not shown) */}
+                {!showNamesTab && locations.length > 0 && (
+                    <div className="px-3 pb-4">
+                        <LocationsSection locations={locations} activeCoordinate={activeCoordinate} setActiveCoordinate={setActiveCoordinate} />
+                    </div>
+                )}
 
+                {/* Active filters above sources */}
+                {(activeYear || activeName || activeCoordinate) && (
+                    <div className="px-3 pb-2">
+                        <div className="flex items-center gap-2 text-sm">
+                            <span className="text-neutral-700">Filter:</span>
+                            {activeYear && <span className="px-2 py-0.5 bg-neutral-100 rounded-full">År: {activeYear}</span>}
+                            {activeName && <span className="px-2 py-0.5 bg-neutral-100 rounded-full">Namn: {activeName}</span>}
+                            {activeCoordinate && (
+                                <span className="px-2 py-0.5 bg-neutral-100 rounded-full">
+                                    Koordinat: {activeCoordinate.split(',')[0]}, {activeCoordinate.split(',')[1]}
+                                </span>
+                            )}
+                            <button 
+                                type="button" 
+                                className="ml-auto underline underline-offset-4" 
+                                onClick={() => { 
+                                    setActiveYear(null); 
+                                    setActiveName(null); 
+                                    setActiveCoordinate(null);
+                                }}
+                            >
+                                Nullstill
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Sources always shown */}
+                <div className="px-3">
+                    {(() => {
+                        // Apply filters to datasets
+                        const matchesActiveYear = (s: any) => {
+                            if (!activeYear) return true
+                            if (String(s?.year) === activeYear) return true
+                            if (Array.isArray(s?.attestations)) {
+                                if (s.attestations.some((a: any) => String(a?.year) === activeYear)) return true
+                            }
+                            return false
+                        }
+                        const matchesActiveName = (s: any) => {
+                            if (!activeName) return true
+                            if (s?.label && String(s.label) === activeName) return true
+                            if (Array.isArray(s?.altLabels)) {
+                                if (s.altLabels.some((al: any) => String(typeof al === 'string' ? al : al?.label) === activeName)) return true
+                            }
+                            if (Array.isArray(s?.attestations)) {
+                                if (s.attestations.some((a: any) => String(a?.label) === activeName)) return true
+                            }
+                            return false
+                        }
+                        const matchesActiveCoordinate = (s: any) => {
+                            if (!activeCoordinate) return true
+                            if (!s.location?.coordinates || s.location.coordinates.length < 2) return false
+                            const [lon, lat] = s.location.coordinates
+                            const key = `${Number(lat).toFixed(6)},${Number(lon).toFixed(6)}`
+                            return key === activeCoordinate
+                        }
+
+                        const filtered: Record<string, any[]> = {}
+                        Object.keys(datasets).forEach((ds) => {
+                            filtered[ds] = (datasets[ds] || []).filter((s: any) => 
+                                matchesActiveYear(s) && matchesActiveName(s) && matchesActiveCoordinate(s)
+                            )
+                        })
+                        return <SourcesTab datasets={filtered} />
+                    })()}
+                </div>
             </div>
 
             { initValue === groupData.group.id && groupData.fields?.label?.[0] && searchParams.get('q') !== groupData.fields.label[0] && (
