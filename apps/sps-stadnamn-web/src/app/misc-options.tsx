@@ -9,7 +9,7 @@ export default function MiscOptions() {
     const mode = useMode()
     const { datasetFilters } = useSearchQuery()
     const router = useRouter()
-    return <div className="flex flex-wrap gap-4">{false &&<label className="flex items-center gap-3 text-lg">
+    return <div className="flex flex-wrap gap-4 px-4 pb-6 pt-2">{false &&<label className="flex items-center gap-3 text-lg">
     <input form="search-form"
            type="checkbox" 
            id="menu_navbar_checkbox" 

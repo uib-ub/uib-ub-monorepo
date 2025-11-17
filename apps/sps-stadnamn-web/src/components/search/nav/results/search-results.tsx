@@ -47,12 +47,11 @@ export default function SearchResults() {
   const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
   const { groupData: activeGroupData } = useGroupData()
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
-  const { isMobile, sosiVocab } = useContext(GlobalContext)
+  const { isMobile, sosiVocab, mapFunctionRef } = useContext(GlobalContext)
   const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
   const { facetFilters, datasetFilters } = useSearchQuery()
   const filterCount = facetFilters.length + datasetFilters.length
   const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
-  
   // State for inline coordinate editing
   const [isEditingCoordinates, setIsEditingCoordinates] = useState(false)
   const [editLat, setEditLat] = useState('')
@@ -264,7 +263,7 @@ export default function SearchResults() {
         (point && !init) && (
           <div className="p-3 flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <PiMapPinFill className="text-primary-700" />
+              <button onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><PiMapPinFill className="text-primary-700" /></button>
               {isEditingCoordinates ? (
                 <div className="flex items-center gap-2 flex-1">
                                     <input
@@ -304,7 +303,7 @@ export default function SearchResults() {
                 <span className="flex-1">
                   {point ? (
                     <>
-                      {`${Math.round(Math.abs(point[0]))}°${point[0] >= 0 ? 'Ø' : 'V'}, ${Math.round(Math.abs(point[1]))}°${point[1] >= 0 ? 'N' : 'S'}`}
+                      {`${Math.round(Math.abs(point[0]))}°${point[0] >= 0 ? 'N' : 'S'}, ${Math.round(Math.abs(point[1]))}°${point[1] >= 0 ? 'Ø' : 'V'}`}
                     </>
                   ) : 'Ukjent'}
                 </span>
@@ -391,7 +390,7 @@ export default function SearchResults() {
                     ${isFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
                   `}
                 >
-                  {isFetchingNextPage && <Spinner status="Lastar" />} {isFetchingNextPage ? 'Lastar...' : 'Vis fleire'}
+                  {isFetchingNextPage && <Spinner className="text-white" status="Lastar" />} {isFetchingNextPage ? 'Lastar...' : 'Vis fleire'}
                 </button>
               </li>
             )}
@@ -401,21 +400,20 @@ export default function SearchResults() {
       </ul>
 
 
-
-      {isMobile && filterCount > 0 && <div className="mx-2 pb-12 pt-4">
+      <div className="flex flex-col gap-4 py-4">
+      {isMobile && filterCount > 0 && <div className="mx-2">
         <h2 className="text-lg font-semibold text-neutral-900 mx-2">Aktive filter</h2>
         
         <ActiveFilters /></div>}
-      {isMobile && false && <SearchSuggestions initGroupData={initGroupData} />}
 
       {isMobile && (
-          <div className="flex flex-col gap-2 justify-center pb-4">
+          <div className="flex flex-col gap-2 justify-center">
             <Clickable 
                 remove={["results"]} 
                 onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null} 
                 className={`
                   flex items-center gap-2
-                  btn-neutral btn
+                  btn-outline btn
                   justify-center
                   text-xl
                   px-4 py-2 rounded-full xl:rounded-md
@@ -423,15 +421,16 @@ export default function SearchResults() {
                   relative
                 `}
             >
-                Filtrer
+                Legg til filter
             </Clickable>
           </div>
       )}
 
-{isMobile && <div className="flex flex-col gap-2 justify-center pb-4">
+{ <div className="flex flex-col gap-2 justify-center">
 
 <Clickable
   add={{mode: 'table'}}
+  onClick={() => setSnappedPosition('bottom')}
   className={`
   flex items-center gap-2
   btn-outline btn
@@ -461,6 +460,7 @@ export default function SearchResults() {
           </div>
         </div>
       )}
+    </div>
     </div>
   )
 }

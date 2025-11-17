@@ -127,7 +127,7 @@ export default function ServerFacet() {
     <>
     <div className="flex flex-col gap-2">
     { yesCount < allCount && (
-  <div className="flex bg-white rounded-lg tabs pb-2">
+  <div className="flex bg-white rounded-lg tabs pb-2 px-2">
     {!facetLoading &&  (
       <>
         <Clickable

@@ -380,7 +380,7 @@ const LocationsTab = ({ locations }: { locations: any[] }) => {
                 return (
                     <div key={coords} className="flex flex-col gap-2">
                         <div className="flex items-center gap-2">
-                            <PiMapPinFill aria-hidden="true" className="text-primary-700 flex-shrink-0 text-lg" />
+                            <ClickableIcon add={{point: coords}} label="Vis på kart"><PiMapPinFill aria-hidden="true" className="text-primary-700 flex-shrink-0 text-lg" /></ClickableIcon>
                             <span className="text-neutral-900">
                                 {lat}, {lon}
                             </span>

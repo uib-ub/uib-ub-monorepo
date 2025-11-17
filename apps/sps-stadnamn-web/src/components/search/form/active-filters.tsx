@@ -127,7 +127,7 @@ export default function ActiveFilters() {
 
 
     return (
-      <div className="flex flex-wrap gap-2 px-2 pt-2">
+      <div className="flex flex-wrap gap-2 px-2">
 
 { datasetFilters.length > 1 && datasetFilters.length + facetFilters.length > 2 ?
   <>

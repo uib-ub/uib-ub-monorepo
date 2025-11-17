@@ -57,12 +57,15 @@ export interface DrawerProps {
 function ShowResultsButton() {
     const { totalHits } = useSearchData()
     const { snappedPosition } = useSessionStore()
+    const mode = useMode()
+    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
     if (snappedPosition == 'bottom') return null
-    return <div className="bg-neutral-200 p-2 fixed bottom-2 left-0 right-0">
+    return <div className="p-2 fixed bottom-2 left-0 right-0">
         <Clickable remove={["facet"]} 
                    add={{results: 'on'}} 
-                   className="w-full h-12 btn-primary btn text-xl relative">
-                    Vis resultat <Badge className="bg-primary-50 text-primary-800 font-semibold px-2 absolute right-4" count={totalHits?.value || 0} /></Clickable></div>
+                   onClick={() => mode == 'table' ? setSnappedPosition('bottom') : null}
+                   className="w-full h-12 btn text-xl relative rounded-full">
+                    Vis resultat <Badge className="bg-primary-50 text-neutral-800 font-semibold px-2 absolute right-4" count={totalHits?.value || 0} /></Clickable></div>
 
 }
 
@@ -91,7 +94,7 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     }
     
     if (isMobile && facet) {
-        return <div className="fixed top-0 left-0 w-full h-full z-[10001] bg-white"><div className="h-[calc(100svh-4rem)] overflow-y-auto stable-scrollbar">{children}</div>
+        return <div className="fixed top-0 left-0 w-full h-full z-[10001] bg-white"><div className="h-[100vh] overflow-y-auto stable-scrollbar">{children}</div>
         </div>
     }
     if (mode == 'list') {
@@ -182,7 +185,7 @@ export default function OverlayInterface() {
 
 
 
-                        || (facet && <div className="w-full flex items-center px-2 xl:px-0 h-12 gap-2 xl:pl-2 flex">
+                        || (facet && <div className="w-full flex items-center h-12 px-2 xl:px-0 gap-2 xl:pl-2 shrink-0">
                             <h1 className="text-lg text-neutral-900 px-1">{fieldConfig[perspective][facet]?.label}</h1>
                             <div className="flex items-center gap-1 ml-auto">
                                     <Clickable className="flex items-center gap-1 px-2" label="Tilbake" remove={["facet"]}>
@@ -204,9 +207,6 @@ export default function OverlayInterface() {
                             { filterCount ? <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} /> : null}
                             </Clickable>
                             <div className="flex items-center gap-1 ml-auto">
-                        {mode == 'table' && <Clickable add={{tableOptions: 'on'}} remove={["tableOptions"]} className="btn btn-outline rounded-full px-2 py-1 pr-3 flex items-center gap-2 text-sm xl:text-base">
-                            <PiTableFill className="text-neutral-900" /> Kolonner
-                        </Clickable>}
                         
                         {!totalHits?.value && isMobile && <span className="text-sm xl:text-bas px-2">Ingen resultat</span>}
                         </div>
@@ -222,7 +222,7 @@ export default function OverlayInterface() {
 
                                <FacetSection />{isMobile && <ShowResultsButton />}
                         </div>}
-                        {facet && <div className="flex flex-col gap-2"> 
+                        {facet && <div className="flex flex-col gap-2 pb-20"> 
                         {facet == 'adm' ? (
                             <ClientFacet facetName={facet} />
                         ) : facet == 'wikiAdm' ? (
@@ -259,15 +259,6 @@ export default function OverlayInterface() {
                                 
                                    <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={totalHits?.value || 0} />
                                 </Clickable>
-                                <div className="flex items-center gap-1 ml-auto">
-                                    <ClickableIcon 
-                                        add={{mode: 'table'}} 
-                                        className="flex items-center btn btn-outline rounded-full p-1 px-2 h-7 xl:h-10 xl:text-lg xl:w-10 justify-center text-sm"
-                                        label="Vis kjeldetabell"
-                                    >
-                                        <PiTableFill className="text-neutral-900" />
-                                    </ClickableIcon>
-                                </div>
                             </div>
                         )}
                         {mapSettings ? <MapSettings/> : results && <div id="results-panel">{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}                   

@@ -57,7 +57,7 @@ export const datasetTitles: DatasetTitles = {
     sof: "Fylkesarkivet i Sogn og Fjordane",
     tot: "Totennavn",
     ssr2016: "Sentralt stadnamnregister 2016",
-    ssr: "Sentralt stadnamnregister",
+    ssr: "Sentralt stadnamnregister 2025",
     nrk: "NRKs gamle stadnamnarkiv",
     gn2019: "Geonames 2019",
     ft1900: "Folketeljinga 1900",

@@ -49,7 +49,7 @@ export default function SearchQueryDisplay() {
       <div className="flex items-center gap-2 text-neutral-900 text-lg">
         Søkeord:
         <strong>{searchQ}</strong>
-        <ClickableIcon label="Fjern søkeord" remove={['q']} className="ml-auto h-6 w-6 rounded-full border border-neutral-700 text-neutral-700 flex items-center justify-center hover:border-neutral-800 hover:text-neutral-800">
+        <ClickableIcon label="Fjern søkeord" remove={['q']} className="ml-auto h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900">
           <PiXBold />
         </ClickableIcon>
       </div>

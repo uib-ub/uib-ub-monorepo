@@ -126,9 +126,7 @@ export default function DatasetFacet() {
 
 
   return (
-    <>
-    <div className="flex flex-col gap-2">            
-    
+    <>     
     <div id="dataset-facet-content" className='flex flex-col gap-2'>
 
     {datasetTag != 'tree' && <div className='flex gap-2 px-2 pt-1'>
@@ -265,7 +263,6 @@ export default function DatasetFacet() {
     </fieldset>
     : <div role="status" aria-live="polite" className='px-2 p-2'>Ingen treff</div>
     }
-    </div>
    </>)
 
 }

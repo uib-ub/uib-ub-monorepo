@@ -64,7 +64,6 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
     const detailsRenderer = (hit: any) => {
         const adm1 = hit.fields["group.adm1"]
         const adm2 = hit.fields["group.adm2"]
-        const adm3 = hit.fields["group.adm3"]
         return <>{adm2 ? adm2 + ', ' : ''}{adm1}</>
     }
     const snippetRenderer = resultRenderers[docDataset]?.snippet || defaultResultRenderer.snippet
