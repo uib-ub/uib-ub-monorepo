@@ -355,7 +355,16 @@ export default function Drawer({
 
     return (
         <>
-        {snappedPosition == 'top' && <div className="absolute top-14 left-0 w-full h-full bg-black/50 z-[3001]"></div>}
+        <div
+            className={`
+                absolute top-14 left-0 w-full h-full z-[3001]
+                bg-black/50
+                pointer-events-none
+                transition-opacity duration-300
+                ${snappedPosition == 'top' ? 'opacity-100' : 'opacity-0'}
+            `}
+            aria-hidden="true"
+        ></div>
         <div
             ref={outerRef}
             className={`fixed w-full left-0 drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''} flex flex-col`}
