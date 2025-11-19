@@ -17,6 +17,15 @@ import { GlobalContext } from "@/state/providers/global-provider";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { useGroup } from "@/lib/param-hooks";
 
+// Helper function to process HTML content
+const processHtmlContent = (html: string, expanded: boolean): ReactNode => {
+    // Remove <p> tags
+    let htmlNoP = html.replace(/<\/?p>/g, '');
+    // Remove a single wrapping tag (e.g., <div>...</div> or <span>...</span>)
+    htmlNoP = htmlNoP.trim().replace(/^<([a-zA-Z0-9]+)[^>]*>([\s\S]*)<\/\1>$/i, '$2');
+    return formatHtml(expanded ? html : htmlNoP);
+}
+
 // Collapses long HTML to a few lines with a toggle
 const ExpandableContent = (
     { html, text, clampLines = 4, leading }: { html: string, text: string, clampLines?: number, leading?: ReactNode }
@@ -32,21 +41,13 @@ const ExpandableContent = (
     }
     if (!html && !text) return null;
 
+    const processedHtml = html ? processHtmlContent(html, expanded) : null;
 
     return (
         <>
             <span style={clampStyle}>
                 {leading}
-                { html ? 
-                    (() => {
-                        // Remove <p> tags
-                            let htmlNoP = html.replace(/<\/?p>/g, '');
-                            // Remove a single wrapping tag (e.g., <div>...</div> or <span>...</span>)
-                            htmlNoP = htmlNoP.trim().replace(/^<([a-zA-Z0-9]+)[^>]*>([\s\S]*)<\/\1>$/i, '$2');
-                            return formatHtml(expanded ? html : htmlNoP);
-                        })()
-                    : text
-                }
+                {processedHtml || text}
             </span>
             {isLong && (
                 <button
@@ -486,6 +487,65 @@ const TabList = ({ children }: { children: ReactNode }) => {
     )
 }
 
+// Helper functions for filtering sources
+const matchesActiveYear = (s: any, activeYear: string | null) => {
+    if (!activeYear) return true
+    if (String(s?.year) === activeYear) return true
+    if (Array.isArray(s?.attestations)) {
+        if (s.attestations.some((a: any) => String(a?.year) === activeYear)) return true
+    }
+    return false
+}
+
+const matchesActiveName = (s: any, activeName: string | null) => {
+    if (!activeName) return true
+    if (s?.label && String(s.label) === activeName) return true
+    if (Array.isArray(s?.altLabels)) {
+        if (s.altLabels.some((al: any) => String(typeof al === 'string' ? al : al?.label) === activeName)) return true
+    }
+    if (Array.isArray(s?.attestations)) {
+        if (s.attestations.some((a: any) => String(a?.label) === activeName)) return true
+    }
+    return false
+}
+
+const matchesActiveCoordinate = (s: any, activeCoordinate: string | null) => {
+    if (!activeCoordinate) return true
+    if (!s.location?.coordinates || s.location.coordinates.length < 2) return false
+    const [lon, lat] = s.location.coordinates
+    const key = `${Number(lat).toFixed(6)},${Number(lon).toFixed(6)}`
+    return key === activeCoordinate
+}
+
+// Component that filters datasets and renders SourcesTab
+const FilteredSourcesTab = ({ 
+    datasets, 
+    activeYear, 
+    activeName, 
+    activeCoordinate 
+}: { 
+    datasets: Record<string, any[]>, 
+    activeYear: string | null, 
+    activeName: string | null, 
+    activeCoordinate: string | null 
+}) => {
+    const filtered = useMemo(() => {
+        const result: Record<string, any[]> = {}
+        Object.keys(datasets).forEach((ds) => {
+            result[ds] = (datasets[ds] || []).filter((s: any) => 
+                matchesActiveYear(s, activeYear) && 
+                matchesActiveName(s, activeName) && 
+                matchesActiveCoordinate(s, activeCoordinate)
+            )
+        })
+        return result
+    }, [datasets, activeYear, activeName, activeCoordinate])
+
+    const isFiltered = !!(activeYear || activeName || activeCoordinate)
+
+    return <SourcesTab datasets={filtered} isFiltered={isFiltered} />
+}
+
 
 export default function GroupInfo({ id, overrideGroupCode }: { id: string, overrideGroupCode?: string }) {
     const { groupData, groupLoading } = useGroupData(overrideGroupCode)
@@ -565,26 +625,28 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         return { iiifItems, textItems, audioItems, datasets, locations }
     }, [groupData, searchDatasets])
 
+    // Helper function to push name-year pairs
+    const pushNameYear = (nameToYears: Record<string, Set<string>>, name: string | undefined, year: any) => {
+        if (!name) return
+        const y = year != null ? String(year) : null
+        if (!y) return
+        nameToYears[name] = nameToYears[name] || new Set<string>()
+        nameToYears[name].add(y)
+    }
+
     const showNamesTab = useMemo(() => {
         // Replicate NamesTab's filter determinism: timeline or names without year
         const nameToYears: Record<string, Set<string>> = {}
         Object.values(datasets).forEach((sources: any[]) => {
             sources.forEach((source: any) => {
-                const push = (name: string | undefined, year: any) => {
-                    if (!name) return
-                    const y = year != null ? String(year) : null
-                    if (!y) return
-                    nameToYears[name] = nameToYears[name] || new Set<string>()
-                    nameToYears[name].add(y)
-                }
                 if (source?.year) {
-                    push(source.label, source.year)
+                    pushNameYear(nameToYears, source.label, source.year)
                     if (Array.isArray(source?.altLabels)) {
-                        source.altLabels.forEach((alt: any) => push(typeof alt === 'string' ? alt : alt?.label, source.year))
+                        source.altLabels.forEach((alt: any) => pushNameYear(nameToYears, typeof alt === 'string' ? alt : alt?.label, source.year))
                     }
                 }
                 if (Array.isArray(source?.attestations)) {
-                    source.attestations.forEach((att: any) => push(att?.label, att?.year))
+                    source.attestations.forEach((att: any) => pushNameYear(nameToYears, att?.label, att?.year))
                 }
             })
         })
@@ -748,44 +810,12 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
                 {/* Sources always shown */}
                 <div className="px-3">
-                    {(() => {
-                        // Apply filters to datasets
-                        const matchesActiveYear = (s: any) => {
-                            if (!activeYear) return true
-                            if (String(s?.year) === activeYear) return true
-                            if (Array.isArray(s?.attestations)) {
-                                if (s.attestations.some((a: any) => String(a?.year) === activeYear)) return true
-                            }
-                            return false
-                        }
-                        const matchesActiveName = (s: any) => {
-                            if (!activeName) return true
-                            if (s?.label && String(s.label) === activeName) return true
-                            if (Array.isArray(s?.altLabels)) {
-                                if (s.altLabels.some((al: any) => String(typeof al === 'string' ? al : al?.label) === activeName)) return true
-                            }
-                            if (Array.isArray(s?.attestations)) {
-                                if (s.attestations.some((a: any) => String(a?.label) === activeName)) return true
-                            }
-                            return false
-                        }
-                        const matchesActiveCoordinate = (s: any) => {
-                            if (!activeCoordinate) return true
-                            if (!s.location?.coordinates || s.location.coordinates.length < 2) return false
-                            const [lon, lat] = s.location.coordinates
-                            const key = `${Number(lat).toFixed(6)},${Number(lon).toFixed(6)}`
-                            return key === activeCoordinate
-                        }
-
-                        const filtered: Record<string, any[]> = {}
-                        Object.keys(datasets).forEach((ds) => {
-                            filtered[ds] = (datasets[ds] || []).filter((s: any) => 
-                                matchesActiveYear(s) && matchesActiveName(s) && matchesActiveCoordinate(s)
-                            )
-                        })
-                        const isFiltered = !!(activeYear || activeName || activeCoordinate)
-                        return <SourcesTab datasets={filtered} isFiltered={isFiltered} />
-                    })()}
+                    <FilteredSourcesTab 
+                        datasets={datasets} 
+                        activeYear={activeYear}
+                        activeName={activeName}
+                        activeCoordinate={activeCoordinate}
+                    />
                 </div>
             </div>
 
