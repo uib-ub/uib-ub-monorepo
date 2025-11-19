@@ -400,8 +400,8 @@ export default function SearchResults() {
       </ul>
 
 
-      <div className="flex flex-col gap-4 py-4">
-      {isMobile && filterCount > 0 && <div className="mx-2">
+      <div className="flex flex-col gap-4 py-4 pb-8">
+      { filterCount > 0 && <div className="mx-2">
         <h2 className="text-lg font-semibold text-neutral-900 mx-2">Aktive filter</h2>
         
         <ActiveFilters /></div>}
@@ -410,6 +410,7 @@ export default function SearchResults() {
           <div className="flex flex-col gap-2 justify-center">
             <Clickable 
                 remove={["results"]} 
+                link
                 onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null} 
                 className={`
                   flex items-center gap-2
@@ -426,7 +427,7 @@ export default function SearchResults() {
           </div>
       )}
 
-{ <div className="flex flex-col gap-2 justify-center">
+{!hasNoResults && <div className="flex flex-col gap-2 justify-center">
 
 <Clickable
   add={{mode: 'table'}}

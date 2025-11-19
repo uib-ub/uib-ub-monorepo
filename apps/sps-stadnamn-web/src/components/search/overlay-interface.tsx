@@ -185,7 +185,7 @@ export default function OverlayInterface() {
 
 
 
-                        || (facet && <div className="w-full flex items-center h-12 px-2 xl:px-0 gap-2 xl:pl-2 shrink-0">
+                        || (facet && <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2 shrink-0">
                             <h1 className="text-lg text-neutral-900 px-1">{fieldConfig[perspective][facet]?.label}</h1>
                             <div className="flex items-center gap-1 ml-auto">
                                     <Clickable className="flex items-center gap-1 px-2" label="Tilbake" remove={["facet"]}>
@@ -195,7 +195,7 @@ export default function OverlayInterface() {
                             
                         </div>)
                         
-                        || <div  className="w-full flex items-center h-12 px-2 xl:px-0 gap-2 xl:pl-2 shrink-0">
+                        || <div  className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2 shrink-0">
                         <Clickable aria-expanded={options} aria-controls="options-panel" className="flex items-center gap-2 xl:px-2" add={{options: (options && !isMobile) ? null : 'on'}} remove={["options"]}>
                         {
                             !isMobile && <>
@@ -212,7 +212,7 @@ export default function OverlayInterface() {
                         </div>
                             </div>}
                         {(options || isMobile) && !facet && <div id="options-panel" className="flex flex-col gap-2">
-                        {!isMobile && <ActiveFilters />}
+                       
                         
                         
 

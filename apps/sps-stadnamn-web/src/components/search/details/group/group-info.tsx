@@ -190,9 +190,20 @@ const NamesSection = ({ datasets, locations, activeYear, activeName, activeCoord
 		const nameCounts: Record<string, number> = {}
 		const itemsByDataset: Record<string, any[]> = {}
 
+		// Helper to check if source matches coordinate filter
+		const matchesCoordinate = (source: any) => {
+			if (!activeCoordinate) return true
+			if (!source.location?.coordinates || source.location.coordinates.length < 2) return false
+			const [lon, lat] = source.location.coordinates
+			const key = `${Number(lat).toFixed(6)},${Number(lon).toFixed(6)}`
+			return key === activeCoordinate
+		}
+
 		// 2) Build lookup from labels/altLabels (using source.year) and attestations (using att.year)
-		const pushNameYear = (name: string | undefined, year: any) => {
+		const pushNameYear = (name: string | undefined, year: any, source: any) => {
 			if (!name) return
+			// Only include if source matches coordinate filter
+			if (!matchesCoordinate(source)) return
 			const y = year != null ? String(year) : null
 			if (!y) return
 			nameToYears[name] = nameToYears[name] || new Set<string>()
@@ -206,14 +217,14 @@ const NamesSection = ({ datasets, locations, activeYear, activeName, activeCoord
 				itemsByDataset[ds].push(source)
 				// Labels and altLabels only when source.year exists
 				if (source?.year) {
-					pushNameYear(source.label, source.year)
+					pushNameYear(source.label, source.year, source)
 					if (Array.isArray(source?.altLabels)) {
-						source.altLabels.forEach((alt: any) => pushNameYear(typeof alt === 'string' ? alt : alt?.label, source.year))
+						source.altLabels.forEach((alt: any) => pushNameYear(typeof alt === 'string' ? alt : alt?.label, source.year, source))
 					}
 				}
 				// Attestations: use their own year
 				if (Array.isArray(source?.attestations)) {
-					source.attestations.forEach((att: any) => pushNameYear(att?.label, att?.year))
+					source.attestations.forEach((att: any) => pushNameYear(att?.label, att?.year, source))
 				}
 			})
 		})
@@ -242,7 +253,7 @@ const NamesSection = ({ datasets, locations, activeYear, activeName, activeCoord
 			.map(String)
 
 		return { yearsOrdered, namesByYear, namesWithoutYear, nameCounts, itemsByDataset }
-	}, [datasets])
+	}, [datasets, activeCoordinate])
 
     const matchesActiveYear = (s: any) => {
         if (!activeYear) return true
@@ -337,22 +348,50 @@ const NamesSection = ({ datasets, locations, activeYear, activeName, activeCoord
 			{/* Coordinates below timeline */}
 			{locations.length > 0 && (
 				<div className="pt-4">
-					<LocationsSection locations={locations} activeCoordinate={activeCoordinate} setActiveCoordinate={setActiveCoordinate} />
+					<LocationsSection locations={locations} datasets={datasets} activeCoordinate={activeCoordinate} activeYear={activeYear} activeName={activeName} setActiveCoordinate={setActiveCoordinate} />
 				</div>
 			)}
 		</div>
 	)
 }
 
-const LocationsSection = ({ locations, activeCoordinate, setActiveCoordinate }: { locations: any[], activeCoordinate: string | null, setActiveCoordinate: (coord: string | null) => void }) => {
+const LocationsSection = ({ locations, datasets, activeCoordinate, activeYear, activeName, setActiveCoordinate }: { locations: any[], datasets: Record<string, any[]>, activeCoordinate: string | null, activeYear: string | null, activeName: string | null, setActiveCoordinate: (coord: string | null) => void }) => {
     const [showAll, setShowAll] = useState(false)
     
     if (!locations || locations.length === 0) return null;
 
-    // Group locations by coordinates (lat, lon as key)
+    // Helper functions to check if source matches filters
+    const matchesActiveYear = (s: any) => {
+        if (!activeYear) return true
+        if (String(s?.year) === activeYear) return true
+        if (Array.isArray(s?.attestations)) {
+            if (s.attestations.some((a: any) => String(a?.year) === activeYear)) return true
+        }
+        return false
+    }
+    const matchesActiveName = (s: any) => {
+        if (!activeName) return true
+        if (s?.label && String(s.label) === activeName) return true
+        if (Array.isArray(s?.altLabels)) {
+            if (s.altLabels.some((al: any) => String(typeof al === 'string' ? al : al?.label) === activeName)) return true
+        }
+        if (Array.isArray(s?.attestations)) {
+            if (s.attestations.some((a: any) => String(a?.label) === activeName)) return true
+        }
+        return false
+    }
+
+    // Group locations by coordinates and filter based on activeYear/activeName
     const groupedByCoords: Record<string, any[]> = {};
+    const allSources = Object.values(datasets).flat()
+    
     locations.forEach(location => {
         if (!location.location?.coordinates || location.location.coordinates.length < 2) return;
+        // Check if this location's source matches the year/name filters
+        const source = allSources.find(s => s.uuid === location.uuid)
+        if (source && !matchesActiveYear(source)) return
+        if (source && !matchesActiveName(source)) return
+        
         const [lon, lat] = location.location.coordinates;
         const key = `${Number(lat).toFixed(6)},${Number(lon).toFixed(6)}`;
         groupedByCoords[key] = groupedByCoords[key] || [];
@@ -675,18 +714,18 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             }
             {textItems.length > 0 && <TextTab textItems={textItems}/>}
 
-            <div className="w-full border-t border-neutral-200">
+            <div className="w-full border-t border-neutral-200 py-4 gap-2 flex flex-col">
                 {/* Names section (includes timeline and coordinates) */}
                 {showNamesTab && (
-                    <div className="px-3 pb-4">
+                    <div className="px-3">
                         <NamesSection datasets={datasets} locations={locations} activeYear={activeYear} activeName={activeName} activeCoordinate={activeCoordinate} setActiveYear={setActiveYear} setActiveName={setActiveName} setActiveCoordinate={setActiveCoordinate} />
                     </div>
                 )}
 
                 {/* Locations section (only if names section is not shown) */}
                 {!showNamesTab && locations.length > 0 && (
-                    <div className="px-3 pb-4">
-                        <LocationsSection locations={locations} activeCoordinate={activeCoordinate} setActiveCoordinate={setActiveCoordinate} />
+                    <div className="px-3">
+                        <LocationsSection locations={locations} datasets={datasets} activeCoordinate={activeCoordinate} activeYear={activeYear} activeName={activeName} setActiveCoordinate={setActiveCoordinate} />
                     </div>
                 )}
 

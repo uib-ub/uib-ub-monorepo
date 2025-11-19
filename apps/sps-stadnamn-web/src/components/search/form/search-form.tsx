@@ -337,10 +337,11 @@ export default function SearchForm() {
                         ) : null}
                         {hit._index.split('-')[2].endsWith('_g') && <PiWall aria-hidden="true" className="flex-shrink-0 mt-1 mr-2" />}
                         <div>
-                            <strong>{hit.fields.label[0]}</strong>{' '}
+                            <strong>{hit.fields["group.label"]?.[0] || hit.fields.label[0]}</strong>{' '}
                             <span className="text-neutral-900">
                             {hit.fields["group.adm2"]?.[0] ? hit.fields["group.adm2"]?.[0] + ', ' : ''}
                             {hit.fields["group.adm1"]?.[0]}
+                            {!hit.fields["group.adm1"] && <em>{hit.fields.adm1?.[0]}</em>}
                             </span>
                         </div>
                     </li>
