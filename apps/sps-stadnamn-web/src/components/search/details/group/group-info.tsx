@@ -107,21 +107,22 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
 }
 
 
-const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
-    const [showMoreDatasets, setShowMoreDatasets] = useState<Record<string, boolean>>({})
-    const datasetKeys = useMemo(() => Object.keys(datasets), [datasets])
+const SourcesTab = ({ datasets, isFiltered }: { datasets: Record<string, any[]>, isFiltered: boolean }) => {
+    const [showAll, setShowAll] = useState(false)
+    const datasetKeys = useMemo(() => Object.keys(datasets).filter(ds => datasets[ds] && datasets[ds].length > 0), [datasets])
 
-    const toggleShowMore = (ds: string, next?: boolean) => setShowMoreDatasets((prev) => ({ ...prev, [ds]: typeof next === 'boolean' ? next : !prev[ds] }))
+    // If not filtered: show 2 if more than 3, otherwise show all
+    // If filtered: show 4 if more than 5, otherwise show all
+    const hasMore = isFiltered ? datasetKeys.length > 5 : datasetKeys.length > 3
+    const visibleCount = isFiltered ? (hasMore ? 4 : datasetKeys.length) : (hasMore ? 2 : datasetKeys.length)
+    const visibleDatasets = showAll ? datasetKeys : datasetKeys.slice(0, visibleCount)
 
     return (
         <ul className="flex flex-col w-full gap-6 pt-6">
-            {datasetKeys.map((ds) => {
+            {visibleDatasets.map((ds) => {
                 const items = datasets[ds] || []
                 if (items.length === 0) return null
-                const isExpanded = !!showMoreDatasets[ds]
-                const shouldCollapse = items.length > 2
-                const collapseCount = 1
-                const visibleItems = (isExpanded || !shouldCollapse) ? items : items.slice(0, collapseCount)
+                
                 return (
                     <li key={`sources-ds-${ds}`} className="flex flex-col w-full gap-1">
                         <div className="flex items-center gap-1 text-neutral-700">
@@ -135,7 +136,7 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                             </ClickableIcon>
                         </div>
                         <ul className="flex flex-col w-full -mx-2">
-                            {visibleItems.map((s: any) => {
+                            {items.map((s: any) => {
                                 const additionalLabels = Array.from(
                                     new Set([
                                         ...(s.altLabels ?? []),
@@ -151,32 +152,21 @@ const SourcesTab = ({ datasets }: { datasets: Record<string, any[]> }) => {
                                     </li>
                                 )
                             })}
-                            {shouldCollapse && !isExpanded && (
-                                <li className="px-2 py-1">
-                                    <button
-                                        type="button"
-                                        className="text-sm text-neutral-800 flex items-center gap-1"
-                                        onClick={() => toggleShowMore(ds, true)}
-                                    >
-                                        {`Vis fleire (${items.length - visibleItems.length})`}
-                                    </button>
-                                </li>
-                            )}
-                            {shouldCollapse && isExpanded && (
-                                <li className="px-2 py-1">
-                                    <button
-                                        type="button"
-                                        className="text-sm text-neutral-800 flex items-center gap-1"
-                                        onClick={() => toggleShowMore(ds, false)}
-                                    >
-                                        Vis færre
-                                    </button>
-                                </li>
-                            )}
                         </ul>
                     </li>
                 )
             })}
+            {hasMore && (
+                <li>
+                    <button
+                        type="button"
+                        className="text-sm text-neutral-800 flex items-center gap-1"
+                        onClick={() => setShowAll(!showAll)}
+                    >
+                        {showAll ? 'Vis færre' : `Vis fleire kjelder (${datasetKeys.length - visibleCount})`}
+                    </button>
+                </li>
+            )}
         </ul>
     )
 }
@@ -342,7 +332,7 @@ const NamesSection = ({ datasets, locations, activeYear, activeName, activeCoord
 					className="text-sm text-neutral-800 flex items-center gap-1 px-2 py-1"
 					onClick={() => setShowAll(!showAll)}
 				>
-					{showAll ? 'Vis færre' : `Vis fleire (${allItems.length - visibleItems.length})`}
+					{showAll ? 'Vis færre' : `Vis fleire namneformer (${allItems.length - visibleItems.length})`}
 				</button>
 			)}
 			{/* Coordinates below timeline */}
@@ -427,7 +417,7 @@ const LocationsSection = ({ locations, datasets, activeCoordinate, activeYear, a
                     className="text-sm text-neutral-800 flex items-center gap-1 px-2 py-1"
                     onClick={() => setShowAll(!showAll)}
                 >
-                    {showAll ? 'Vis færre' : `Vis fleire (${coordEntries.length - visibleCoords.length})`}
+                    {showAll ? 'Vis færre' : `Vis fleire lokalitetar (${coordEntries.length - visibleCoords.length})`}
                 </button>
             )}
         </div>
@@ -793,7 +783,8 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                 matchesActiveYear(s) && matchesActiveName(s) && matchesActiveCoordinate(s)
                             )
                         })
-                        return <SourcesTab datasets={filtered} />
+                        const isFiltered = !!(activeYear || activeName || activeCoordinate)
+                        return <SourcesTab datasets={filtered} isFiltered={isFiltered} />
                     })()}
                 </div>
             </div>

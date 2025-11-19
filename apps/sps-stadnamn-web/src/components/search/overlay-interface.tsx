@@ -196,20 +196,22 @@ export default function OverlayInterface() {
                         </div>)
                         
                         || <div  className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2 shrink-0">
-                        <Clickable aria-expanded={options} aria-controls="options-panel" className="flex items-center gap-2 xl:px-2" add={{options: (options && !isMobile) ? null : 'on'}} remove={["options"]}>
-                        {
-                            !isMobile && <>
-                                {options ? <PiCaretUpBold className="text-lg" aria-hidden="true"/> : <PiCaretDownBold className="text-lg" aria-hidden="true"/>}
-                            </>
-                        }
+                        <Clickable aria-expanded={options} aria-controls="options-panel" className="flex items-center gap-2 xl:px-1 w-full" add={{options: (options && !isMobile) ? null : 'on'}} remove={["options"]}>
+                        
                         <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Filter</h1>
                             
                             { filterCount ? <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} /> : null}
+                            {
+                            !isMobile && <>
+                                {options ? <PiCaretUpBold className="text-lg ml-auto" aria-hidden="true"/> : <PiCaretDownBold className="text-lg ml-auto" aria-hidden="true"/>}
+                            </>
+                        }
                             </Clickable>
                             <div className="flex items-center gap-1 ml-auto">
                         
                         {!totalHits?.value && isMobile && <span className="text-sm xl:text-bas px-2">Ingen resultat</span>}
                         </div>
+                        
                             </div>}
                         {(options || isMobile) && !facet && <div id="options-panel" className="flex flex-col gap-2">
                        
@@ -249,15 +251,16 @@ export default function OverlayInterface() {
                             </div>
                         ) : (
                             <div  className="w-full flex items-center xl:h-12 px-2 py-1 xl:px-0 gap-2 xl:pl-2">
-                                <Clickable aria-expanded={results} aria-controls="results-panel" className="flex items-center gap-2 xl:px-2" add={{results: (results && !isMobile) ? null : 'on'}} remove={["results"]}>
-                                {!isMobile && (
-                                        <>
-                                            {results ? <PiCaretUpBold className="text-lg" /> : <PiCaretDownBold className="text-lg" />}
-                                        </>
-                                    )}
+                                <Clickable aria-expanded={results} aria-controls="results-panel" className="flex items-center gap-2 xl:px-1 w-full" add={{results: (results && !isMobile) ? null : 'on'}} remove={["results"]}>
+                                
                                 <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Resultat</h1>
                                 
                                    <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={totalHits?.value || 0} />
+                                   {!isMobile && (
+                                        <>
+                                            {results ? <PiCaretUpBold className="text-lg mr-1 ml-auto" /> : <PiCaretDownBold className="text-lg ml-auto" />}
+                                        </>
+                                    )}
                                 </Clickable>
                             </div>
                         )}

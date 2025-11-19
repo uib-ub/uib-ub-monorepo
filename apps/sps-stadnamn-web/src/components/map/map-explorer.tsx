@@ -467,9 +467,9 @@ export default function MapExplorer() {
         newQueryParams.set('init', stringToBase64Url(fields["group.id"][0]))
         newQueryParams.delete('group')
 
-        if (datasetTag == 'tree') {
-          newQueryParams.set('doc', fields.uuid[0])
-        }
+
+        newQueryParams.set('doc', fields.uuid[0])
+
         router.push(`?${newQueryParams.toString()}`)
           
 
