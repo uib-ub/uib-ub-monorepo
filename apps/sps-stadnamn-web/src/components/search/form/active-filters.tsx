@@ -22,7 +22,7 @@ export default function ActiveFilters() {
     const nav = searchParams.get('nav')
     const datasetTag = searchParams.get('datasetTag')
     const dataset = searchParams.get('dataset')
-    const [expandedActiveFilters, setExpandedActiveFilters] = useState<string | null>(null)
+    const [expandedActiveFilters, setExpandedActiveFilters] = useState<Set<string>>(new Set())
 
     const {isMobile } = useContext(GlobalContext)
     const fulltext = searchParams.get('fulltext')
@@ -32,6 +32,47 @@ export default function ActiveFilters() {
     const cadastralIndex = searchParams.get('cadastralIndex')
     const showClearButton = (Number(facetFilters.length > 0) + Number(datasetFilters.length > 0) + Number(fulltext == 'on') + Number(searchParams.get('q') != null)) > 1
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
+    
+    // Combine and group all filters by field name
+    const allFilters = [...datasetFilters, ...facetFilters]
+    const groupedFilters = allFilters.reduce((acc, [key, value]) => {
+      if (!acc[key]) {
+        acc[key] = []
+      }
+      acc[key].push([key, value])
+      return acc
+    }, {} as Record<string, Array<[string, string]>>)
+
+    // Get field label for grouping
+    const getFieldGroupLabel = (fieldName: string) => {
+      if (fieldName == 'datasetTag' || fieldName == 'dataset' || fieldName == 'datasets') {
+        return 'Datasett'
+      }
+      const fieldSettings = fieldConfig[perspective]?.[fieldName]
+      return fieldSettings?.label || fieldName
+    }
+
+    const toggleFieldGroup = (fieldName: string) => {
+      setExpandedActiveFilters(prev => {
+        const newSet = new Set(prev)
+        if (newSet.has(fieldName)) {
+          newSet.delete(fieldName)
+        } else {
+          newSet.add(fieldName)
+        }
+        return newSet
+      })
+      setSnappedPosition('middle')
+    }
+
+    const clearFieldGroupFilters = (fieldName: string) => {
+      const newSearchParams = new URLSearchParams(searchParams)
+      const filters = groupedFilters[fieldName] || []
+      filters.forEach(([key, value]) => {
+        newSearchParams.delete(key)
+      })
+      router.push(`?${newSearchParams.toString()}`)
+    }
 
 
 
@@ -91,23 +132,6 @@ export default function ActiveFilters() {
         router.push(`?${newSearchParams.toString()}`)
     }
 
-    const clearDatasetFilters = () => {
-      const newSearchParams = new URLSearchParams(searchParams)
-      datasetFilters.forEach(([key, value]) => {
-        newSearchParams.delete(key)
-      })
-      router.push(`?${newSearchParams.toString()}`)
-    }
-
-    const clearFilters = () => {
-      const newSearchParams = new URLSearchParams(searchParams)
-      facetFilters.forEach(([key, value]) => {
-
-          newSearchParams.delete(key)
-        
-      })
-      router.push(`?${newSearchParams.toString()}`)
-    }
 
 
 
@@ -126,116 +150,103 @@ export default function ActiveFilters() {
 
 
 
+    const clearAllFilters = () => {
+      const newSearchParams = new URLSearchParams(searchParams)
+      datasetFilters.forEach(([key, value]) => {
+        newSearchParams.delete(key)
+      })
+      facetFilters.forEach(([key, value]) => {
+        newSearchParams.delete(key)
+      })
+      router.push(`?${newSearchParams.toString()}`)
+    }
+
     return (
-      <div className="flex flex-wrap gap-2 px-1">
-
-{ datasetFilters.length > 1 && datasetFilters.length + facetFilters.length > 2 ?
-  <>
-    <button 
-      className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1"
-      aria-expanded={expandedActiveFilters == 'datasets'}
-      aria-controls="dataset-filters"
-      onClick={() => { setExpandedActiveFilters(prev => prev == 'datasets' ? null : 'datasets'); setSnappedPosition('middle')}}
-    >
-      {datasetFilters.length} datasett
-      {expandedActiveFilters == 'datasets' ? <PiCaretUpBold className="inline text-lg" aria-hidden="true"/> : <PiCaretDownBold className="inline text-lg" aria-hidden="true"/>}
-    </button>
-    {expandedActiveFilters == 'datasets' && <div 
-      id="dataset-filters" 
-      className="z-[4000] bg-white rounded-md w-full p-1 border border-neutral-200"
-    >
-      {datasetFilters.map(([key, value]) => (
-        <button
-          key={`${key}__${value}`}
-          onClick={() => removeFilter(key, value)}
-          className="flex w-full items-center py-2 px-4 hover:bg-neutral-100 rounded cursor-pointer"
-        >
-          {datasetTitles[value]}
-          <PiX className="ml-auto text-lg" aria-hidden="true"/>
-        </button>
-      ))}
-      <div className="bg-neutral-200 my-1" />
-      <button
-        onClick={clearDatasetFilters}
-        className="flex w-full items-center py-2 px-4 hover:bg-neutral-100 rounded cursor-pointer text-accent-700 px-3 py-1.5"
-      >
-        Tøm
-      </button>
-    </div>}
-  </>
-  : datasetFilters.map(([key, value]) => (
-          <button 
-              key={`${key}__${value}`} 
-              onClick={() => removeFilter(key, value)} 
-              className={`px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1`}
-          >
-            {datasetTitles[value]} <PiX className="inline text-lg" aria-hidden="true"/>
-          </button>
-        ))}
-        
-        {false && fulltext == 'on' && !isMobile && <Clickable remove={['fulltext']}
-      className={`text-neutral-950 xl:h-10  rounded-md gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none`} onClick={() => removeFilter('fulltext', 'on')}>
-        <span className="flex items-center">Fulltekstsøk</span>
-        <PiX className="inline text-lg" aria-hidden="true"/>
-      </Clickable>}
-
-        {facetFilters.length > 0 && facetFilters.length < 2 && facetFilters.map(([key, value]) => (
-            <button 
-                key={`${key}__${value}`} 
-                onClick={() => removeFilter(key, value)} 
-                className={`px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-2`}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2 px-1">
+          <h2 className="text-lg font-semibold text-neutral-900 flex-1 mx-1 my-2">Aktive filter</h2>
+          {showClearButton && (
+            <Clickable 
+              remove={['q', ...facetFilters.map(([key]) => key), ...datasetFilters.map(([key]) => key)]}
+              className="py-1.5 flex items-center"
             >
-              {getFieldLabel(key, value)} <PiX className="inline text-lg" aria-hidden="true"/>
-            </button>
-        ))}
+              Nullstill
+            </Clickable>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-2 px-1">
+          {Object.entries(groupedFilters).map(([fieldName, filters]) => {
+            const isExpanded = expandedActiveFilters.has(fieldName)
+            const filterCount = filters.length
+            const groupLabel = getFieldGroupLabel(fieldName)
 
-        {facetFilters.length >= 2 && (
-          <>
-            <button 
-              className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1"
-              aria-expanded={expandedActiveFilters == 'facets'}
-              aria-controls="facet-filters"
-              onClick={() => setExpandedActiveFilters(prev => prev == 'facets' ? null : 'facets')}
-            >
-              {facetFilters.length} filter
-              {expandedActiveFilters == 'facets' 
-                ? <PiCaretUpBold className="inline text-lg" aria-hidden="true"/> 
-                : <PiCaretDownBold className="inline text-lg" aria-hidden="true"/>}
-            </button>
-            {expandedActiveFilters == 'facets' && (
-              <div 
-                id="facet-filters"
-                className="z-[4000] bg-white rounded-md w-full p-1 border border-neutral-200"
-              >
-                {facetFilters.map(([key, value]) => (
-                  <button
-                    key={`${key}__${value}`}
-                    onClick={() => removeFilter(key, value)}
-                    className="flex w-full items-center py-2 px-4 hover:bg-neutral-100 rounded cursor-pointer"
+            // If only one filter, show it directly without collapsing
+            if (filterCount === 1) {
+              const [key, value] = filters[0]
+              return (
+                <div key={`${fieldName}__single`} className="w-full flex gap-2">
+                  <button 
+                    onClick={() => removeFilter(key, value)} 
+                    className="flex-1 px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1"
                   >
-                    {getFieldLabel(key, value)}
+                    {(key == 'datasetTag' || key == 'dataset' || key == 'datasets') 
+                      ? datasetTitles[value] 
+                      : getFieldLabel(key, value)}
                     <PiX className="ml-auto text-lg" aria-hidden="true"/>
                   </button>
-                ))}
-                <div className="bg-neutral-200 my-1" />
-                <button
-                  onClick={clearFilters}
-                  className="flex w-full items-center py-2 px-4 hover:bg-neutral-100 rounded cursor-pointer text-accent-700"
+                </div>
+              )
+            }
+
+          // Multiple filters - show collapsed button
+          return (
+            <div key={fieldName} className="contents">
+              <div className="w-full flex gap-2">
+                <button 
+                  className="flex-1 px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1"
+                  aria-expanded={isExpanded}
+                  aria-controls={`filter-group-${fieldName}`}
+                  onClick={() => toggleFieldGroup(fieldName)}
                 >
-                  Tøm alle
+                  {filterCount} {(fieldName == 'datasetTag' || fieldName == 'dataset' || fieldName == 'datasets') ? 'datasett' : groupLabel.toLowerCase()}
+                  {isExpanded ? <PiCaretUpBold className="inline text-lg ml-auto" aria-hidden="true"/> : <PiCaretDownBold className="inline text-lg ml-auto" aria-hidden="true"/>}
+                </button>
+                <button
+                  onClick={() => clearFieldGroupFilters(fieldName)}
+                  className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center"
+                >
+                  Tøm
                 </button>
               </div>
-            )}
-          </>
-        )}
-
-        {showClearButton && <Clickable remove={['q', ...facetFilters.map(([key, value]) => key), ...datasetFilters.map(([key, value]) => key)]}
-        className={`px-3 py-1.5 flex items-center`}>
-          Tøm
+              {isExpanded && (
+                <div 
+                  id={`filter-group-${fieldName}`}
+                  className="z-[4000] bg-white rounded-md w-full p-1 border border-neutral-200"
+                >
+                  {filters.map(([key, value]) => (
+                    <button
+                      key={`${key}__${value}`}
+                      onClick={() => removeFilter(key, value)}
+                      className="flex w-full items-center py-2 px-4 hover:bg-neutral-100 rounded cursor-pointer"
+                    >
+                      {(key == 'datasetTag' || key == 'dataset' || key == 'datasets') 
+                        ? datasetTitles[value] 
+                        : getFieldLabel(key, value)}
+                      <PiX className="ml-auto text-lg" aria-hidden="true"/>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )
+          })}
+          
+          {false && fulltext == 'on' && !isMobile && <Clickable remove={['fulltext']}
+        className={`text-neutral-950 xl:h-10  rounded-md gap-2 pl-3 pr-2 xl:pl-4 xl:pr-3 py-1 flex items-center bg-white xl:shadow-md border bg-neutral-50 border-neutral-200 box-content xl:border-none`} onClick={() => removeFilter('fulltext', 'on')}>
+          <span className="flex items-center">Fulltekstsøk</span>
+          <PiX className="inline text-lg" aria-hidden="true"/>
         </Clickable>}
-
-
-
+        </div>
       </div>
   )
 
