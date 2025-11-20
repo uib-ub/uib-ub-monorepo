@@ -1,5 +1,6 @@
-import { useState, useEffect, useContext, useMemo } from 'react';
+import { useState, useContext, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { useSearchQuery } from '@/lib/search-params';
 
 import { PiFunnel } from 'react-icons/pi';
@@ -16,9 +17,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   const { removeFilterParams, facetFilters } = useSearchQuery()
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
   const paramsExceptFacet = useMemo(() => removeFilterParams(facetName), [removeFilterParams, facetName])
-  const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const searchParams = useSearchParams()
-  const [facetIsLoading, setFacetIsLoading] = useState<boolean>(true);
   const {facetOptions } = useContext(GlobalContext)
   const currentFacet = searchParams.get('facet') || 'adm'
 
@@ -32,13 +31,16 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     }
   }
 
-  useEffect(() => {
-    fetch(`/api/facet?perspective=${perspective}&facets=group.adm1,group.adm2,group.adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
-      setFacetAggregation(es_data.aggregations?.["group.adm1"])
-      setFacetIsLoading(false);
-    })
-    }, [paramsExceptFacet, perspective]
-    )
+  const { data: facetData, isLoading: facetIsLoading } = useQuery({
+    queryKey: ['facet', perspective, paramsExceptFacet],
+    queryFn: async () => {
+      const response = await fetch(`/api/facet?perspective=${perspective}&facets=group.adm1,group.adm2,group.adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`)
+      const es_data = await response.json()
+      return es_data.aggregations?.["group.adm1"]
+    }
+  })
+
+  const facetAggregation = facetData
 
 
 
@@ -193,7 +195,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
         
       </div>
       <FacetToolbar/>
-      { facetAggregation?.buckets ?
+      { facetAggregation?.buckets && !facetIsLoading ?
       <fieldset>
         <legend className="sr-only">{`Filtreringsalternativer for områdeinndeling`}</legend>
         <ul aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200'>

@@ -44,6 +44,8 @@ export default function MiscOptions() {
       const newUrl = new URLSearchParams(searchParams);
       if (event.target.checked) {
         newUrl.set('datasetTag', 'deep');
+        newUrl.delete('init')
+        newUrl.delete('group')
       }
       else {
         newUrl.delete('datasetTag');

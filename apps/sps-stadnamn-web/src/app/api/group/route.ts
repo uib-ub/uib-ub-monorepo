@@ -24,7 +24,7 @@ export async function GET(request: Request) {
     
   const query: Record<string,any> = {
     "size": 1000,
-    "fields": ["group.adm1", "group.adm2", "group.id", "uuid", "boost", "label", "location"],
+    "fields": ["group.adm1", "group.adm2", "adm1", "adm2", "group.label", "label", "group.id", "uuid", "boost", "location"],
 
      "query": {
       "bool": {

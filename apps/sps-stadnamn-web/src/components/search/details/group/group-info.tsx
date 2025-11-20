@@ -164,7 +164,7 @@ const SourcesTab = ({ datasets, isFiltered }: { datasets: Record<string, any[]>,
                         className="text-sm text-neutral-800 flex items-center gap-1"
                         onClick={() => setShowAll(!showAll)}
                     >
-                        {showAll ? 'Vis færre' : `Vis fleire kjelder (${datasetKeys.length - visibleCount})`}
+                        {showAll ? 'Vis færre kjelder' : `Vis fleire kjelder (${datasetKeys.length - visibleCount})`}
                     </button>
                 </li>
             )}
@@ -330,10 +330,10 @@ const NamesSection = ({ datasets, locations, activeYear, activeName, activeCoord
 			{hasMore && (
 				<button
 					type="button"
-					className="text-sm text-neutral-800 flex items-center gap-1 px-2 py-1"
+					className="text-sm text-neutral-800 flex items-center gap-1 py-1"
 					onClick={() => setShowAll(!showAll)}
 				>
-					{showAll ? 'Vis færre' : `Vis fleire namneformer (${allItems.length - visibleItems.length})`}
+					{showAll ? 'Vis færre namneformer' : `Vis fleire namneformer (${allItems.length - visibleItems.length})`}
 				</button>
 			)}
 			{/* Coordinates below timeline */}
@@ -415,10 +415,10 @@ const LocationsSection = ({ locations, datasets, activeCoordinate, activeYear, a
             {hasMore && (
                 <button
                     type="button"
-                    className="text-sm text-neutral-800 flex items-center gap-1 px-2 py-1"
+                    className="text-sm text-neutral-800 flex items-center gap-1 py-1"
                     onClick={() => setShowAll(!showAll)}
                 >
-                    {showAll ? 'Vis færre' : `Vis fleire lokalitetar (${coordEntries.length - visibleCoords.length})`}
+                    {showAll ? 'Vis færre lokalitetar' : `Vis fleire lokalitetar (${coordEntries.length - visibleCoords.length})`}
                 </button>
             )}
         </div>

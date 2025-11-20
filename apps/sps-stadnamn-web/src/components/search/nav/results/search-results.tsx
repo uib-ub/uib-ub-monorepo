@@ -382,7 +382,6 @@ export default function SearchResults() {
                     flex items-center gap-2
                     btn-neutral btn
                     justify-center
-                    text-xl
 
                     px-4 py-2 rounded-full xl:rounded-md
                      mx-3
@@ -401,8 +400,7 @@ export default function SearchResults() {
 
 
       <div className="flex flex-col gap-4 py-4 pb-8">
-      { filterCount > 0 && <div className="mx-2">
-        <h2 className="text-lg font-semibold text-neutral-900 mx-2">Aktive filter</h2>
+      { filterCount > 0 && <div className="mx-2 mb-4">
         
         <ActiveFilters /></div>}
 
@@ -436,7 +434,6 @@ export default function SearchResults() {
   flex items-center gap-2
   btn-outline btn
   justify-center
-  text-xl
 
   px-4 py-2 rounded-full xl:rounded-md
    mx-3
