@@ -3,7 +3,7 @@ import { fieldConfig } from "@/config/search-config"
 import { datasetTitles } from "@/config/metadata-config"
 import { useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
-import { PiCaretDownBold, PiCaretUpBold, PiFunnel, PiMagnifyingGlass, PiTrash, PiX } from "react-icons/pi"
+import { PiCaretDownBold, PiCaretUpBold, PiFunnel, PiMagnifyingGlass, PiPlusBold, PiTrash, PiX } from "react-icons/pi"
 import { useContext, useRef, useState } from "react"
 import { GlobalContext } from "@/state/providers/global-provider"
 import Clickable from "@/components/ui/clickable/clickable"
@@ -30,7 +30,7 @@ export default function ActiveFilters() {
     // Get boost_gt parameter for djupinnsamlingar filter
     const boostGt = searchParams.get('boost_gt')
     const cadastralIndex = searchParams.get('cadastralIndex')
-    const showClearButton = (Number(facetFilters.length > 0) + Number(datasetFilters.length > 0) + Number(fulltext == 'on') + Number(searchParams.get('q') != null)) > 1
+    const showClearButton = (facetFilters.length + datasetFilters.length + Number(fulltext == 'on') + Number(searchParams.get('q') != null)) > 0
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
     
     // Combine and group all filters by field name
@@ -194,6 +194,18 @@ export default function ActiveFilters() {
                       : getFieldLabel(key, value)}
                     <PiX className="ml-auto text-lg" aria-hidden="true"/>
                   </button>
+                  <Clickable
+                  add={{facet: fieldName}}
+                  label="Legg til fleire"
+                    onClick={() => {
+                      const newSearchParams = new URLSearchParams(searchParams)
+                      newSearchParams.set('facet', fieldName)
+                      router.push(`?${newSearchParams.toString()}`)
+                    }}
+                    className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center"
+                  >
+                    <PiPlusBold className="inline text-lg" aria-hidden="true"/>
+                  </Clickable>
                 </div>
               )
             }
@@ -203,7 +215,7 @@ export default function ActiveFilters() {
             <div key={fieldName} className="contents">
               <div className="w-full flex gap-2">
                 <button 
-                  className="flex-1 px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1"
+                  className="flex-1 rounded-md border border-neutral-200 flex items-center gap-1"
                   aria-expanded={isExpanded}
                   aria-controls={`filter-group-${fieldName}`}
                   onClick={() => toggleFieldGroup(fieldName)}
@@ -211,12 +223,14 @@ export default function ActiveFilters() {
                   {filterCount} {(fieldName == 'datasetTag' || fieldName == 'dataset' || fieldName == 'datasets') ? 'datasett' : groupLabel.toLowerCase()}
                   {isExpanded ? <PiCaretUpBold className="inline text-lg ml-auto" aria-hidden="true"/> : <PiCaretDownBold className="inline text-lg ml-auto" aria-hidden="true"/>}
                 </button>
-                <button
-                  onClick={() => clearFieldGroupFilters(fieldName)}
+                <Clickable
+                add={{facet: fieldName}}
+                label="Legg til fleire"
                   className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center"
                 >
-                  Tøm
-                </button>
+
+                  <PiPlusBold className="inline text-lg" aria-hidden="true"/>
+                </Clickable>
               </div>
               {isExpanded && (
                 <div 
@@ -235,6 +249,13 @@ export default function ActiveFilters() {
                       <PiX className="ml-auto text-lg" aria-hidden="true"/>
                     </button>
                   ))}
+                  <Clickable
+                  remove={[fieldName]}
+                    onClick={() => clearFieldGroupFilters(fieldName)}
+                    className="flex w-full items-center py-2 px-4 hover:bg-neutral-100 rounded cursor-pointer border-t border-neutral-200 mt-1 pt-2"
+                  >
+                    Tøm
+                  </Clickable>
                 </div>
               )}
             </div>
