@@ -323,7 +323,9 @@ export default function SearchForm() {
                         <PiMagnifyingGlass className="flex-shrink-0 mr-2 text-neutral-700" aria-hidden="true" /> { data.hits.hits[0].fields.label[0] }
                 
                 </li>
-                {data?.hits?.hits?.map((hit: any) => (
+                {data?.hits?.hits?.map((hit: any) => {
+                    console.log(hit.fields)
+                    return (
                     <li key={hit._id} 
                         tabIndex={-1} 
                         role="option" 
@@ -337,14 +339,18 @@ export default function SearchForm() {
                         ) : null}
                         {hit._index.split('-')[2].endsWith('_g') && <PiWall aria-hidden="true" className="flex-shrink-0 mt-1 mr-2" />}
                         <div>
-                            <strong>{hit.fields.label[0]}</strong>{' '}
+                            <strong>{hit.fields.label[0]} {hit.fields["group.label"] && hit.fields["group.label"]?.[0] != hit.fields.label[0] &&  `(${hit.fields["group.label"]?.[0]})`} </strong>{' '}
                             <span className="text-neutral-900">
-                            {hit.fields["group.adm2"]?.[0] ? hit.fields["group.adm2"]?.[0] + ', ' : ''}
-                            {hit.fields["group.adm1"]?.[0]}
+                            {hit.fields["group.adm2"]?.[0] ? hit.fields["group.adm2"]?.[0] + ', ' : 
+                            hit.fields.adm2 ? <><em>{hit.fields.adm2?.[0]}</em>, </> : ''}
+                            {hit.fields["group.adm1"]?.[0] || hit.fields.adm1 && <em>{hit.fields.adm1?.[0]}</em>}
+
+
                             </span>
                         </div>
                     </li>
-                ))}
+                )
+                })}
             </ul>}
         </Form>
 

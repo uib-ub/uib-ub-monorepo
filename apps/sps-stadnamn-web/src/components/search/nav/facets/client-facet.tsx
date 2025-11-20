@@ -1,5 +1,6 @@
-import { useState, useEffect, useContext, useMemo } from 'react';
+import { useState, useContext, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { useSearchQuery } from '@/lib/search-params';
 
 import { PiFunnel } from 'react-icons/pi';
@@ -16,9 +17,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   const { removeFilterParams, facetFilters } = useSearchQuery()
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
   const paramsExceptFacet = useMemo(() => removeFilterParams(facetName), [removeFilterParams, facetName])
-  const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const searchParams = useSearchParams()
-  const [facetIsLoading, setFacetIsLoading] = useState<boolean>(true);
   const {facetOptions } = useContext(GlobalContext)
   const currentFacet = searchParams.get('facet') || 'adm'
 
@@ -32,13 +31,16 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     }
   }
 
-  useEffect(() => {
-    fetch(`/api/facet?perspective=${perspective}&facets=group.adm1,group.adm2,group.adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`).then(response => response.json()).then(es_data => {
-      setFacetAggregation(es_data.aggregations?.["group.adm1"])
-      setFacetIsLoading(false);
-    })
-    }, [paramsExceptFacet, perspective]
-    )
+  const { data: facetData, isLoading: facetIsLoading } = useQuery({
+    queryKey: ['facet', perspective, paramsExceptFacet],
+    queryFn: async () => {
+      const response = await fetch(`/api/facet?perspective=${perspective}&facets=group.adm1,group.adm2,group.adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`)
+      const es_data = await response.json()
+      return es_data.aggregations?.["group.adm1"]
+    }
+  })
+
+  const facetAggregation = facetData
 
 
 
@@ -148,14 +150,21 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
  
 
     return (
-      <li key={item.key} className="my-0">
-        <label className="flex items-baseline">
-          <input type="checkbox" checked={checked} onChange={(e) => { toggleAdm(e.target.checked, baseName, path)}} className='mr-2' />
-         <span className="text-pretty block">{label} <FacetBadge count={item.doc_count} /></span>
+      <li key={item.key} className="py-3">
+        <label className="flex items-center gap-2 lg:gap-1 xl:gap-2 px-2 flex-1 min-w-0">
+          <input 
+            type="checkbox" 
+            checked={checked} 
+            onChange={(e) => { toggleAdm(e.target.checked, baseName, path)}} 
+            className="mr-2 flex-shrink-0" 
+          />
+          <span className="text-neutral-950 break-words lg:text-sm xl:text-base min-w-0">
+            {label} <FacetBadge count={item.doc_count} />
+          </span>
         </label>
 
       {children?.length && (checked || filteredChildren) ? 
-      <ul className="flex flex-col ml-6 my-2 gap-2">
+      <ul className="flex flex-col ml-6 my-2 divide-y divide-neutral-200">
         {sortBuckets(filteredChildren || children).map((subitem, subindex) => {
           return listItem(subitem, subindex, baseName, [subitem.key, ...path], checked || parentChecked)
         })} 
@@ -173,22 +182,23 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   return (
     <>
     { true &&
-    <div className="flex flex-col gap-2 pb-2">
-      <div className='flex gap-2'>
-        <div className='relative grow'>
+    <div className="flex flex-col gap-2 pb-2 ">
+      <div className='flex gap-2 px-2 pt-1'>
+        <div className='relative w-full h-10'>
           <input aria-label="Søk i områdefilter" onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())} 
-              className="pl-8 w-full border rounded-md border-neutral-300 p-1"/>
+              className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"/>
           <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-            <PiFunnel aria-hidden={true} className='text-neutral-500 text-xl'/>
+            <PiFunnel aria-hidden={true} className='text-neutral-500 text-2xl'/>
           </span>
         </div>
         
-        <FacetToolbar/>
+        
       </div>
-      { facetAggregation?.buckets ?
+      <FacetToolbar/>
+      { facetAggregation?.buckets && !facetIsLoading ?
       <fieldset>
         <legend className="sr-only">{`Filtreringsalternativer for områdeinndeling`}</legend>
-        <ul className='flex flex-col gap-2 p-2 stable-scrollbar xl:overflow-y-auto mb-2'>
+        <ul aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200'>
           {sortBuckets(facetAggregation?.buckets).filter(item => facetSearch(item, facetName, 1)).map((item, index) => (
             listItem(item, index, facetName, [item.key], false)
           ))}

@@ -11,7 +11,8 @@ import { useSessionStore } from '@/state/zustand/session-store';
 import { useDebugStore } from '@/state/zustand/debug-store';
 import { MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from '@/lib/map-utils';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
-import { PiPushPinSlashBold, PiXBold, PiXCircle, PiXCircleFill } from 'react-icons/pi';
+import { PiPushPinSlash, PiPushPinSlashBold, PiX, PiXBold } from 'react-icons/pi';
+import { formatHighlight } from '@/lib/text-utils';
 
 const uniqueLabels = (hit: any) => {
     const labels = new Set<string>();
@@ -63,7 +64,6 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
     const detailsRenderer = (hit: any) => {
         const adm1 = hit.fields["group.adm1"]
         const adm2 = hit.fields["group.adm2"]
-        const adm3 = hit.fields["group.adm3"]
         return <>{adm2 ? adm2 + ', ' : ''}{adm1}</>
     }
     const snippetRenderer = resultRenderers[docDataset]?.snippet || defaultResultRenderer.snippet
@@ -93,7 +93,7 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
     
 
     
-    return  <div  {...rest} className={`w-full h-full bg-neutral-50 aria-expanded:border-b aria-expanded:borderneutral-100 flex items-center group no-underline ${initValue == hit.fields["group.id"][0] ? 'pb-0' : ''}`}>
+    return  <div  {...rest} className={`w-full h-full ${initValue && initValue == hit.fields["group.id"][0] ? '' : 'bg-neutral-50'} aria-expanded:border-b aria-expanded:borderneutral-100 flex items-center group no-underline ${initValue == hit.fields["group.id"][0] ? 'pb-0' : ''}`}>
                        
             <Clickable ref={itemRef}
 
@@ -113,53 +113,45 @@ remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
             
             
             className="w-full text-left p-3">
-                <span className="inline-flex items-center flex-wrap gap-x-2 whitespace-normal w-full text-xl">
-                    {isGrunnord && (
-                        <h2 className="inline-flex items-center gap-x-2">
-                            {!perspectiveIsGrunnord && (
-                                <span className="text-neutral-800">
-                                    Grunnord:
-                                </span>
-                            )}
-                            
-                                <span className="font-semibold">
-                                    {hit.fields.label?.[0]}
-                                </span>
-                            
-                        </h2>
-                    )}
-                    {showScore && hit._score}
-                    {!isGrunnord && (
-                        <h2 className="font-semibold">
-                            {label}
-                        </h2>
-                    )}
-                    <span className="text-neutral-900">{detailsRenderer(hit)}</span>
-                   
-                   
-                </span>
-                {hit.highlight && snippetRenderer && <>{snippetRenderer(hit)}</>}
-            </Clickable>
-            <div className="p-3">
-            {initValue && initValue == hit.fields["group.id"][0] && (
-                        
-                        <ClickableIcon className="flex items-center justify-center" label="Losne utganspunkt" remove={['init']}>
-                            <PiXCircleFill className="text-neutral-700 group-aria-expanded:text-white text-2xl hover:text-neutral-800" />
-                        </ClickableIcon>
-                        
-                    )}
-             {typeof hit.distance === 'number' && (
-                        <Clickable 
-                        onClick={() => {
-                            mapFunctionRef.current?.panTo([hit.fields.location[0].coordinates[1], hit.fields.location[0].coordinates[0]])
-                        }}
-                        remove={['group']}
-                        add={{point: `${hit.fields.location[0].coordinates[1]},${hit.fields.location[0].coordinates[0]}`, init: stringToBase64Url(hit.fields["group.id"][0])}} className="bg-neutral-700 text-white px-2 rounded-full hover:bg-neutral-800 text-nowrap">
+                <div className="flex items-center justify-between gap-x-2 whitespace-normal w-full text-xl">
+                    <div className="inline-flex items-center flex-wrap gap-x-2">
+                        {isGrunnord && (
+                            <h2 className="inline-flex items-center gap-x-2">
+                                {!perspectiveIsGrunnord && (
+                                    <span className="text-neutral-800">
+                                        Grunnord:
+                                    </span>
+                                )}
+                                
+                                    <span className="font-semibold">
+                                        {hit.fields.label?.[0]}
+                                    </span>
+                                
+                            </h2>
+                        )}
+                        {showScore && hit._score}
+                        {!isGrunnord && (
+                            <h2 className="font-semibold">
+                                {label}
+                            </h2>
+                        )}
+                        <span className="text-neutral-900">{detailsRenderer(hit)}</span>
+                    </div>
+                    {typeof hit.distance === 'number' && (
+                        <span className="bg-neutral-200 text-neutral-900 px-2 rounded-full text-nowrap shrink-0 text-base">
                             {formatDistance(hit.distance)}
-                        
-                        </Clickable>
+                        </span>
                     )}
-            </div>
+                </div>
+                {hit.highlight && <>{formatHighlight(hit.highlight['content.html']?.[0] || hit.highlight['content.text']?.[0])}</>}
+            </Clickable>
+            {(initValue && initValue == hit.fields["group.id"][0]) && (
+                <div className="p-3">
+                    <ClickableIcon className="h-6 w-6 p-0 rounded-full btn btn-outline text-neutral-700" label="Fjern som utgangspunkt" remove={['init']}>
+                        <PiXBold />
+                    </ClickableIcon>
+                </div>
+            )}
             {/*TODO: use for dataset count*/}
             {false && hit.inner_hits?.group?.hits?.total?.value > 1 && (
                 <div className={`ml-auto flex items-center rounded-full text-sm px-2.5 py-1 bg-neutral-100 text-neutral-950 group-aria-expanded:bg-accent-800 group-aria-expanded:text-white`}>

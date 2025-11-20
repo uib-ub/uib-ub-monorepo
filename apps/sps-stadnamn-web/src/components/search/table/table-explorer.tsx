@@ -4,7 +4,7 @@ import { contentSettings, treeSettings } from "@/config/server-config"
 import { usePerspective } from "@/lib/param-hooks"
 import { useSearchParams } from "next/navigation"
 import { Fragment, useContext } from "react"
-import { PiBookOpen, PiMapPinFill, PiMapTrifold } from "react-icons/pi"
+import { PiBookOpen, PiMapPinFill, PiMapTrifold, PiSliders, PiSlidersBold, PiTableFill } from "react-icons/pi"
 import SortHeader from "./sort-header"
 import Pagination from "@/components/results/pagination"
 import { formatCadastre } from "@/config/result-renderers"
@@ -60,7 +60,14 @@ export default function TableExplorer() {
 
 
 
-    return <><div className="flex items-baseline gap-4 px-4 p-2"><h2 className="text-xl !m-0 !p-0">Kjeldetabell</h2><Clickable className="flex items-center gap-1 ml-auto" remove={['mode', 'tableOptions']}><PiMapTrifold /> Kartvisning</Clickable></div>
+    return <><div className="flex items-baseline gap-4 px-4 p-2"><h2 className="text-xl !m-0 !p-0">Kjeldetabell</h2>
+
+ <Clickable add={{tableOptions: 'on'}} remove={["tableOptions"]} className="flex items-center gap-2 ml-auto btn btn-outline">
+                            <PiSliders className="text-lg" aria-hidden="true" /><span className="sr-only lg:not-sr-only">Tilpass kolonner</span>
+                        </Clickable>
+    
+    
+    <Clickable className="flex items-center gap-2 btn btn-neutral" remove={['mode', 'tableOptions']}><PiMapTrifold className="text-lg" aria-hidden="true" /><span className="sr-only lg:not-sr-only">Kartvisning</span></Clickable></div>
     <div className='flex flex-col py-2 gap-y-4 h-full bg-white'>
         <div className='flex  flex-col gap-4 xl:gap-2 !mx-2'>
             {datasetTag == 'tree' && doc && tableData?.[0]?._source && treeSettings[perspective] && <h2 className="text-xl px-1">{`${getGnr(tableData?.[0], perspective) || getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.subunit) || ""} ${getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.parentName) || tableData?.[0]?._source?.label || ""}`}</h2>}
@@ -108,15 +115,8 @@ export default function TableExplorer() {
                                             <div className="flex gap-1 items-center">
                                                 <Clickable className="flex group items-center gap-2 p-2 no-underline"
                                                     link
-                                                    aria-current={doc == hit._source?.uuid}
-                                                    add={{
-                                                        doc: hit._source?.uuid,
-                                                        details: 'group'
-                                                    }}
+                                                    href={`/uuid/${hit._source?.uuid}`}
                                                 >
-                                                    <div className="group-hover:bg-neutral-100 p-1 rounded-full group-aria-[current=true]:border-accent-800 border-2 border-transparent">
-                                                        <PiBookOpen aria-hidden="true" className="text-primary-700 group-aria-[current=true]:text-accent-800" />
-                                                    </div>
                                                     {hit._source?.label}
                                                 </Clickable>
                                                 {hit._source?.location?.coordinates && <ClickableIcon

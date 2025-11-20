@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     ...from ? {from} : {},
     ...highlight ? {highlight} : {},
     "track_scores": true,
-    "fields": ["group.adm1", "group.adm2", "uuid", "boost", "label", "location"],
+    "fields": ["group.adm1", "group.adm2", "adm1", "adm2", "group.label", "uuid", "boost", "label", "location"],
     "collapse": {
       "field": "group.id",
     },
@@ -47,26 +47,42 @@ export async function POST(request: Request) {
   // Construct the query part
   let baseQuery: any;
   
+  const suppressedExclusion = {
+    "term": {
+      "group.id": "suppressed"
+    }
+  };
+  
   if (simple_query_string && termFilters.length) {
     baseQuery = {
       "bool": {
         "must": simple_query_string,              
-        "filter": termFilters
+        "filter": termFilters,
+        "must_not": [suppressedExclusion]
       }
     }
   }
   else if (simple_query_string) {
-    baseQuery = simple_query_string
+    baseQuery = {
+      "bool": {
+        "must": simple_query_string,
+        "must_not": [suppressedExclusion]
+      }
+    }
   }
   else if (termFilters.length) {
     baseQuery = {"bool": {
-        "filter": termFilters
+        "filter": termFilters,
+        "must_not": [suppressedExclusion]
       }
     }
   }
   else {
     baseQuery = {
-      "match_all": {}
+      "bool": {
+        "must": { "match_all": {} },
+        "must_not": [suppressedExclusion]
+      }
     }
   }
 
@@ -136,9 +152,7 @@ export async function POST(request: Request) {
         })
       }
       */
-  
-    
- 
+
   const [data, status] = await postQuery('all', query, "dfs_query_then_fetch")
   return Response.json(data, {status: status})
   

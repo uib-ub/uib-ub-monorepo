@@ -355,7 +355,16 @@ export default function Drawer({
 
     return (
         <>
-        {snappedPosition == 'top' && <div className="absolute top-14 left-0 w-full h-full bg-black/50 z-[3001]"></div>}
+        <div
+            className={`
+                absolute top-14 left-0 w-full h-full z-[3001]
+                bg-black/50
+                pointer-events-none
+                transition-opacity duration-300
+                ${snappedPosition == 'top' ? 'opacity-100' : 'opacity-0'}
+            `}
+            aria-hidden="true"
+        ></div>
         <div
             ref={outerRef}
             className={`fixed w-full left-0 drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''} flex flex-col`}
@@ -366,7 +375,7 @@ export default function Drawer({
         >
             {/* Grip */}
             <div
-                className={`absolute top-0 left-1/2 -translate-x-1/2 order-b border-none border-primary-600 flex z-[6001] pb-5 px-4  rounded-b-full  bg-gradient-to-b from-white via-white/75 to-transparent`}
+                className={`absolute top-0 left-1/2 -translate-x-1/2 order-b border-none border-primary-600 flex z-[6001] pb-2 px-4  rounded-b-lg  bg-white`}
             >
            
                 <div  className={`${scrolled ? 'bg-neutral-600' : 'bg-neutral-300'} w-16 h-1.5 rounded-full m-1`}></div>
@@ -387,7 +396,7 @@ export default function Drawer({
             {showScrollToTop && (
                 <RoundIconButton
                     type="button"
-                    className="absolute right-6 bottom-10 z-[6001] rounded-full"
+                    className="absolute right-6 bottom-20 z-[6001] rounded-full"
                     onClick={scrollToTop}
                     label="Til toppen"
                 ><PiCaretUpBold className="text-xl xl:text-base"/></RoundIconButton>

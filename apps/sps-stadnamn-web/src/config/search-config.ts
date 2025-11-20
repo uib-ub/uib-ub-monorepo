@@ -36,7 +36,7 @@ const cadastre = {"within": {label: "Gard", result},
                   "cadastre__bnr": {label: "Bruksnummer", result, sort: "asc" as const, type: "integer" as const}
                 }
 const uuid = {label: "UUID", result}
-const label = {label: "Namn", result}
+const label = {label: "Namn", result, facet}
 const adm = {label: "Områdeinndeling", facet, specialFacet, noInfobox}
 const adm1 = {label: "Fylke", result} // Necessary for it to be included in fields
 const adm2 = {label: "Kommune", result} // Necessary for it to be included in fields
@@ -254,7 +254,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.Informant": {label: "Informant", result, table, facet},
     },
     ssr2016: {
-      ...required, adm, adm1, adm2, sosi,
+      ...required, adm, adm1, adm2, sosi, ssr,
       "misc.Stedsnavn_lokalId": {label: "SSR-nummer", facet},
       "misc.ENH_SSR_ID": {label: "Gammelt SSR-nummer", facet},
       "misc.language": {label: "Språk", facet},
@@ -269,6 +269,11 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       coordinateType,
       "misc.navnesakstatus": {label: "Navnesakstatus", facet},
       "misc.navnestatus": {label: "Navnestatus", facet},
+      "misc.stedstype": {label: "Stedstype", facet, keyword},
+      "misc.språk": {label: "Språk", facet},
+      "misc.opphavsspråk": {label: "Opphavsspråk", facet},
+      "misc.språkprioritering": {label: "Språkprioritering", facet},
+      "misc.stedstatus": {label: "Stedstatus", facet},
       "coreNames": {label: "Kjernenamn", facet},
       ...labelDefaults,
     },
@@ -298,11 +303,11 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       
     },
     ft1900: {
-      ...required, adm, adm1, adm2,
+      ...required, adm, adm1, adm2, sosi,
       ...identifiers,
     },
     ft1910: {
-      ...required, adm, adm1, adm2,
+      ...required, adm, adm1, adm2, sosi,
       ...identifiers,
     },
     m2010: {

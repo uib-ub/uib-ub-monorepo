@@ -3,17 +3,17 @@ import { useQuery } from '@tanstack/react-query'
 import { useSearchQuery } from '@/lib/search-params';
 import { useGroup } from '@/lib/param-hooks';
 import { useDebugStore } from '../zustand/debug-store';
+import { useSearchParams } from 'next/navigation';
+import { base64UrlToString } from '@/lib/param-utils';
 
 const groupDataQuery = async (
     group: string,
+    sourcesQuery: string,
     debugChildren?: any[]
 ) => {
-    const newParams= new URLSearchParams();
+    const newParams= new URLSearchParams(sourcesQuery);
     newParams.set('group', group);
 
-
-
-    console.log("DEBUG CHILDREN NOT USED", debugChildren)
     const res = await fetch(`/api/group?${newParams.toString()}`)
 
     if (!res.ok) {
@@ -25,12 +25,25 @@ const groupDataQuery = async (
 }
 
 export default function useGroupData(overrideGroupCode?: string | null) {
-    const { searchQueryString } = useSearchQuery()
+    const { searchQueryString  } = useSearchQuery()
     const { activeGroupCode, initCode } = useGroup()
     const groupCode = overrideGroupCode || activeGroupCode
+    const groupValue = groupCode ? base64UrlToString(groupCode) : null
+    const searchParams = useSearchParams()
 
     const debugChildren = useDebugStore((s) => s.debugChildren)
     const debug = useDebugStore((s) => s.debug);
+    const filterSources = searchParams.get('filterSources') == 'on'
+    const searchQ = searchParams.get('q') || ""
+    let sourcesQuery = ""
+    if (filterSources) {
+        console.log("FILTER SOURCES", searchQueryString)
+        sourcesQuery = searchQueryString
+    }
+    
+    else if (groupValue && base64UrlToString(groupValue).startsWith('grunnord_')) {
+        sourcesQuery = searchQ
+    }
 
     const {
         data: processedData,
@@ -40,9 +53,9 @@ export default function useGroupData(overrideGroupCode?: string | null) {
         isFetching: groupFetching,
         status,
     } = useQuery({
-        queryKey: ['group', groupCode, searchQueryString],
+        queryKey: ['group', sourcesQuery, groupCode, overrideGroupCode ? undefined : searchQueryString],
         queryFn: async () =>
-            groupCode ? groupDataQuery(groupCode, debug ? debugChildren : []) : null,
+            groupCode ? groupDataQuery(groupCode, sourcesQuery, debug ? debugChildren : []) : null,
         placeholderData: (overrideGroupCode || initCode == groupCode) ? undefined : (prevData: any) => prevData,
 
     })

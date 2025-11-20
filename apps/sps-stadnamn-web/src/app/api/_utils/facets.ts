@@ -32,12 +32,15 @@ export const RESERVED_PARAMS = [
   'mode',
   'geotile',
 
+  'filterSources',
+
   'init',
   'group',
   'options',
   'results',
   'mapSettings',
   'debug',
+  'debugGroups',
   'locations' // Lokaliteter - tab that enables nested markers
   
 ] as const;

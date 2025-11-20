@@ -21,7 +21,7 @@ export function TitleBadge({ count, className }: { count: number, className?: st
 
 export function FacetBadge({ count }: { count: number }) {
     return (
-      <span className="inline-flex items-center justify-center min-w-[1.75rem] bg-white group-aria-pressed:bg-accent-800 group-aria-pressed:text-white text-black ml-2 border border-neutral-300 shadow-sm text-xs px-2 py-[1px] rounded-full">
+      <span className="inline-flex items-center justify-center min-w-[1.75rem] bg-neutral-50 text-neutral-800 group-aria-pressed:bg-accent-800 group-aria-pressed:text-white text-black ml-2  text-xs px-2 py-[1px] rounded-full">
       {formatNumber(count)}
     </span>
     );

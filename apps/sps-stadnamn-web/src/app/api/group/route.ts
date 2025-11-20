@@ -24,14 +24,18 @@ export async function GET(request: Request) {
     
   const query: Record<string,any> = {
     "size": 1000,
-    "fields": ["group.adm1", "group.adm2", "group.id", "uuid", "boost", "label", "location"],
-    "query": groupValue?.startsWith('grunnord_') && reservedParams.q?.length
-      ? simple_query_string
-      : {
+    "fields": ["group.adm1", "group.adm2", "adm1", "adm2", "group.label", "label", "group.id", "uuid", "boost", "location"],
+
+     "query": {
+      "bool": {
+        "must": simple_query_string || { "match_all": {} },
+        "filter": [{
           "term": {
             "group.id": groupValue
           }
-        },
+        }, ...termFilters]
+      }
+    },
     "track_scores": false,
     "sort": [
       {
@@ -44,15 +48,6 @@ export async function GET(request: Request) {
     "track_total_hits": false,
     "_source": ["uuid", "label", "attestations", "year", "boost", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area", "misc.Enhetsnummer", "ssr"],
   }
-
-/* Todo - add option to filter group? - no, this can be done in the table view.
-  if (termFilters.length) {
-    query.query = {"bool": {
-        "filter": termFilters
-      }
-    }
-  }
-    */
 
 
   

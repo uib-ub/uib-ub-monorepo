@@ -1,5 +1,5 @@
 'use client'
-import { Fragment, useContext, useRef, useState } from "react"
+import { Fragment, useContext, useRef, useState, useEffect } from "react"
 import ResultItem from "./result-item";
 import { getSkeletonLength } from "@/lib/utils";
 import useCollapsedData from "@/state/hooks/collapsed-data";
@@ -8,7 +8,7 @@ import GroupInfo from "../../details/group/group-info";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchParams } from "next/navigation";
 import { useGroup } from "@/lib/param-hooks";
-import { PiMapPinFill, PiPlusBold, PiXCircle, PiPencilSimple, PiCheck, PiX, PiPlayFill, PiTilde, PiMagnifyingGlass } from "react-icons/pi";
+import { PiMapPinFill, PiPlusBold, PiPencilSimple, PiCheck, PiX, PiPlayFill, PiTilde, PiMagnifyingGlass, PiSliders, PiListBullets, PiTableFill, PiXBold, PiPencilSimpleBold } from "react-icons/pi";
 import useGroupData from "@/state/hooks/group-data";
 import Spinner from "@/components/svg/Spinner";
 import { useSessionStore } from "@/state/zustand/session-store";
@@ -17,6 +17,11 @@ import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { datasetTitles } from "@/config/metadata-config";
 import Clickable from "@/components/ui/clickable/clickable";
 import SearchSuggestions from "./search-suggestions";
+import { useSearchQuery } from "@/lib/search-params";
+import { Badge } from "@/components/ui/badge";
+import ActiveFilters from "../../form/active-filters";
+import MiscOptions from "@/app/misc-options";
+import SearchQueryDisplay from "./search-query-display";
 
 
 
@@ -42,13 +47,39 @@ export default function SearchResults() {
   const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
   const { groupData: activeGroupData } = useGroupData()
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
-  const { isMobile, sosiVocab } = useContext(GlobalContext)
+  const { isMobile, sosiVocab, mapFunctionRef } = useContext(GlobalContext)
   const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
-  
+  const { facetFilters, datasetFilters } = useSearchQuery()
+  const filterCount = facetFilters.length + datasetFilters.length
+  const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
   // State for inline coordinate editing
   const [isEditingCoordinates, setIsEditingCoordinates] = useState(false)
   const [editLat, setEditLat] = useState('')
   const [editLon, setEditLon] = useState('')
+  const previousPointRef = useRef<string | null>(null)
+  
+  // Unified function to stop editing
+  const stopEditingCoordinates = () => {
+    setIsEditingCoordinates(false)
+    setEditLat('')
+    setEditLon('')
+  }
+  
+  // Stop editing when coordinates change from external sources (e.g., map interaction)
+  useEffect(() => {
+    const currentPointString = point ? `${point[0]},${point[1]}` : null
+    
+    // Only stop editing if:
+    // 1. We're currently editing
+    // 2. The point exists
+    // 3. The point actually changed (not just initial render)
+    if (isEditingCoordinates && point && previousPointRef.current !== null && previousPointRef.current !== currentPointString) {
+      stopEditingCoordinates()
+    }
+    
+    // Update the ref to track the current point
+    previousPointRef.current = currentPointString
+  }, [point, isEditingCoordinates])
   
   // Functions for coordinate editing
   const startEditingCoordinates = () => {
@@ -70,9 +101,7 @@ export default function SearchResults() {
   }
   
   const cancelEditingCoordinates = () => {
-    setIsEditingCoordinates(false)
-    setEditLat('')
-    setEditLon('')
+    stopEditingCoordinates()
   }
   
   const saveCoordinates = () => {
@@ -84,7 +113,7 @@ export default function SearchResults() {
       const newParams = new URLSearchParams(searchParams)
       newParams.set('point', `${lon},${lat}`)
       window.history.pushState({}, '', `${window.location.pathname}?${newParams.toString()}`)
-      setIsEditingCoordinates(false)
+      stopEditingCoordinates()
     }
   }
   
@@ -232,12 +261,11 @@ export default function SearchResults() {
     <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
       {
         (point && !init) && (
-          <div className="p-3 flex items-center gap-2">
-            <PiMapPinFill className="text-primary-700" />
-            <span>
-              {"Startpunkt: "}
+          <div className="p-3 flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <button onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><PiMapPinFill className="text-primary-700" /></button>
               {isEditingCoordinates ? (
-                <div className="inline-flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-1">
                                     <input
                     type="number"
                     value={editLon}
@@ -259,46 +287,41 @@ export default function SearchResults() {
                   <button
                     onClick={saveCoordinates}
                     className="p-1 text-green-600 hover:text-green-800"
-                    title="Lagre koordinater"
+                    aria-label="Lagre koordinater"
                   >
-                    <PiCheck className="text-lg" />
+                    <PiCheck className="text-lg" aria-hidden="true" />
                   </button>
                   <button
                     onClick={cancelEditingCoordinates}
                     className="p-1 text-red-600 hover:text-red-800"
-                    title="Avbryt"
+                    aria-label="Avbryt"
                   >
-                    <PiX className="text-lg" />
+                    <PiX className="text-lg" aria-hidden="true" />
                   </button>
                 </div>
               ) : (
-                <strong className="select">
-                  {point ? 
-                    point.map(coord => coord.toFixed(5)).join(', ') :
-                    (() => {
-                      const sourceWithLocation = activeGroupData?.sources?.find((source: any) => source.location?.coordinates)
-                      if (sourceWithLocation?.location?.coordinates) {
-                        const [lon, lat] = sourceWithLocation.location.coordinates
-                        return `${lat.toFixed(5)}, ${lon.toFixed(5)}`
-                      }
-                      return 'Ukjent lokasjon'
-                    })()
-                  }
-                </strong>
+                <span className="flex-1">
+                  {point ? (
+                    <>
+                      {`${Math.round(Math.abs(point[0]))}°${point[0] >= 0 ? 'N' : 'S'}, ${Math.round(Math.abs(point[1]))}°${point[1] >= 0 ? 'Ø' : 'V'}`}
+                    </>
+                  ) : 'Ukjent'}
+                </span>
               )}
-            </span>
-            <div className="ml-auto flex items-center gap-1">
-              {!isEditingCoordinates && (
-                <button
-                  onClick={startEditingCoordinates}
-                  className="p-1 text-neutral-700 hover:text-neutral-800"
-                  title="Rediger koordinater"
-                >
-                  <PiPencilSimple className="text-lg" />
-                </button>
-              )}
-              <ClickableIcon label="Fjern startpunkt" remove={['point', 'radius']}><PiXCircle className="text-neutral-700 group-aria-expanded:text-white text-2xl" /></ClickableIcon>
+              <div className="flex items-center gap-2">
+                {!isEditingCoordinates && (
+                      <ClickableIcon className="btn btn-outline h-6 w-6 btn-compact rounded-full text-neutral-900" label="Rediger startpunkt" onClick={startEditingCoordinates}>
+                        <PiPencilSimpleBold />
+                      </ClickableIcon>
+                )}
+                <ClickableIcon className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900" label="Fjern startpunkt" remove={['point', 'radius']}>
+                  <PiXBold />
+                </ClickableIcon>
+              </div>
             </div>
+            {isEditingCoordinates && (
+              <span className="text-sm text-neutral-800">{isMobile ? "Trykk og hald for å hente startpnk i kartet" : "Høgreklikk for å hente startpunkt i kartet"}</span>
+            )}
           </div>
         )
       }
@@ -308,17 +331,21 @@ export default function SearchResults() {
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `16rem`}}></div>
         </div>
       ) : initGroupData && (
-        <li className="relative" key={`init-${initValue}`}>
+        <div className="relative" key={`init-${initValue}`}>
           <ResultItem 
             hit={initGroupData}
           />
-          { initGroupData.fields?.["group.id"] ?
+          { initGroupData.fields?.["group.id"] ? <>
          <GroupInfo id={`group-info-${initGroupData.fields["group.id"]}`} overrideGroupCode={init || undefined}/>
+         
+         </>
          : <div className="p-2">Det har oppstått ein feil</div>}
-        </li>
+        </div>
       ))}
 
-      <ul id="result_list" className='flex flex-col mb-8 xl:mb-0 divide-y divide-neutral-300 border-y border-neutral-200'>
+      <SearchQueryDisplay />
+
+      <ul id="result_list" className='flex flex-col divide-y divide-neutral-300 border-y border-neutral-200'>
       
 
       {(initGroupLoading || collapsedLoading && collapsedInitialPage === 1) ? Array.from({ length: collapsedInitialPage === 1 ? 6 : 40 }).map((_, i) => (
@@ -327,53 +354,96 @@ export default function SearchResults() {
             <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{width: `${getSkeletonLength(i, 10, 16)}rem`}}></div>
           </div>
         )) :       
-      collapsedData?.pages.map((page: any, pageIndex: number) => (
-    <Fragment key={`page-${pageIndex}`}>
-    {page.data?.map((item: any) => {
-      if (initValue && item.fields["group.id"]?.[0] == initValue) return null;
-      if (!item.fields["group.id"]) {
-        console.log("No group ID", item);
-        return null
-      }
-      return (
+      collapsedData?.pages.map((page: any, pageIndex: number) => {
+        const isLastPage = pageIndex === (collapsedData?.pages.length || 0) - 1
+        return (
+          <Fragment key={`page-${pageIndex}`}>
+            {page.data?.map((item: any) => {
+              if (initValue && item.fields["group.id"]?.[0] == initValue) return null;
+              if (!item.fields["group.id"]) {
+                console.log("No group ID", item);
+                return null
+              }
+              return (
+                <CollapsibleResultItem 
+                  key={item.fields["group.id"]?.[0]}
+                  hit={item}
+                  activeGroupValue={activeGroupValue}
+                />
+              )
+            })}
+            {/* Vis meir button at the end of each page */}
+            {isLastPage && collapsedHasNextPage && (
+              <li className="flex flex-col gap-2 justify-center py-4">
+                <button
+                  type="button"
+                  onClick={() => !isFetchingNextPage && collapsedFetchNextPage()}
+                  className={`
+                    flex items-center gap-2
+                    btn-neutral btn
+                    justify-center
 
-        <CollapsibleResultItem 
-          key={item.fields["group.id"]?.[0]}
-          hit={item}
-          activeGroupValue={activeGroupValue}
-        />
-
-      )})}
-    </Fragment>
-))}
+                    px-4 py-2 rounded-full xl:rounded-md
+                     mx-3
+                    transition-colors
+                    ${isFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
+                  `}
+                >
+                  {isFetchingNextPage && <Spinner className="text-white" status="Lastar" />} {isFetchingNextPage ? 'Lastar...' : 'Vis fleire'}
+                </button>
+              </li>
+            )}
+          </Fragment>
+        )
+      })}
       </ul>
-      
-      {/* Vis meir button */}
-      {collapsedHasNextPage && (
-        <div className="flex flex-col gap-2 justify-center mt-4">
-          <button
-            type="button"
-            onClick={() => !isFetchingNextPage && collapsedFetchNextPage()}
-            className={`
-              text-neutral-950 cursor-pointer select-none
-              flex items-center gap-2
-              btn-outline btn
-              justify-center
-              text-xl
 
-              px-4 py-2 rounded-full xl:rounded-md
-               mx-3
-              transition-colors
-              ${isFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
-            `}
-          >
-            {isFetchingNextPage && <Spinner status="Lastar" />} {isFetchingNextPage ? 'Lastar...' : 'Vis fleire'}
-          </button>
-          
 
-        </div>
+      <div className="flex flex-col gap-4 py-4 pb-8">
+      { filterCount > 0 && <div className="mx-2 mb-4">
+        
+        <ActiveFilters /></div>}
+
+      {isMobile && (
+          <div className="flex flex-col gap-2 justify-center">
+            <Clickable 
+                remove={["results"]} 
+                link
+                onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null} 
+                className={`
+                  flex items-center gap-2
+                  btn-outline btn
+                  justify-center
+                  text-xl
+                  px-4 py-2 rounded-full xl:rounded-md
+                  mx-3
+                  relative
+                `}
+            >
+                Legg til filter
+            </Clickable>
+          </div>
       )}
-      <SearchSuggestions initGroupData={initGroupData} />
+
+{!hasNoResults && <div className="flex flex-col gap-2 justify-center">
+
+<Clickable
+  add={{mode: 'table'}}
+  onClick={() => setSnappedPosition('bottom')}
+  className={`
+  flex items-center gap-2
+  btn-outline btn
+  justify-center
+
+  px-4 py-2 rounded-full xl:rounded-md
+   mx-3
+  `}
+>
+  Kjeldetabell
+</Clickable>
+</div>}
+
+
       {/* Error and empty states */}
       {searchError || collapsedError ? (
         <div className="flex justify-center">
@@ -388,6 +458,7 @@ export default function SearchResults() {
           </div>
         </div>
       )}
+    </div>
     </div>
   )
 }

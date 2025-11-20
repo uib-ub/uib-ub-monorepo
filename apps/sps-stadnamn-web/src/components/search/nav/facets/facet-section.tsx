@@ -198,10 +198,9 @@ export default function FacetSection() {
     return (
         
         
-        <div className="flex flex-col divide-y divide-neutral-200 border-b border-neutral-200 w-full pb-10">
-          <div className="flex flex-col gap-4 px-4 my-4">
+        <div className="flex flex-col divide-y divide-neutral-200 border-b border-neutral-200 w-full pb-20">
            <MiscOptions/>
-           </div>
+
           {false && <RadiusFilter />}
           <Clickable 
                        className="w-full flex justify-between p-3"

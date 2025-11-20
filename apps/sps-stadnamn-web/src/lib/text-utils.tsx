@@ -25,7 +25,7 @@ export const createMarkup = (htmlString: string) => {
   
 export const formatHighlight = (highlight: string) => {
     // Clean up incomplete tags and auto-close unclosed tags
-    let cleanHighlight = highlight.replace(/<[^>]*$/, '')
+    let cleanHighlight = highlight?.replace(/<[^>]*$/, '')
       .replace(/^[^<]*>/, '')
       .replace(/<(?!\/?(?:mark|em|span)\b|span\s+class="font-phonetic")[^>]*>/g, '');
       
@@ -47,7 +47,7 @@ export const formatHighlight = (highlight: string) => {
 
     const sanitized = sanitizeHtml(cleanHighlight,
       {
-        allowedTags: ['b', 'i', 'em', "strong", "p", "br", "span", "a", "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6"],
+        allowedTags: ['b', 'i', 'em', "strong", "mark", "p", "br", "span", "a", "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6"],
         allowedAttributes: {
           a: ['href'],
         },

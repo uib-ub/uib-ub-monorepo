@@ -62,7 +62,8 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
         <div className="page-info lg:grid lg:grid-cols-[1fr_24rem] lg:gap-12">
           <div className="flex flex-col gap-6">
           {  docData?._source?.within && docDataset && <ServerCadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
-            <span>
+            <div>
+            <div className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans pb-4"> {datasetTitles[docDataset]}</div>
               <h1>{docData?._source?.label || docData?._source.uuid}</h1>
               <div className="flex flex-wrap gap-6">
 
@@ -87,7 +88,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
 
       </div>
       
-      </span>
+      </div>
             { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](docData?._source) : null }
 
 
@@ -185,9 +186,9 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
     
     
      {datasetPresentation[docDataset] && <div className="flex flex-col lg:h-fit gap-4 my-4 lg:my-0">
-    <aside className="bg-neutral-50 shadow-md !text-neutral-950 px-4 pb-4 pt-0 rounded-md">
-      <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Datasett</h2>
-      <h3 className="!m-0 !p-0 font-serif !text-xl !font-normal">{datasetTitles[docDataset]}</h3>
+    <aside className="bg-neutral-50 shadow-md !text-neutral-950 p-4 rounded-md">
+
+      <h2 className="!m-0 !p-0 font-serif !text-xl !font-normal">{datasetTitles[docDataset]}</h2>
       <div className="text-sm text-neutral-800">{datasetShortDescriptions[docDataset]}</div>
 
       <div className="flex gap-2 mt-4 w-full">

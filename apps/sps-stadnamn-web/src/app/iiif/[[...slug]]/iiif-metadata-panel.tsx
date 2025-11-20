@@ -4,6 +4,7 @@ import { PiCopyright } from "react-icons/pi"
 import { resolveLanguage } from "../iiif-utils"
 import { datasetPresentation, licenses } from "@/config/metadata-config"
 import Image from "next/image"
+import IIIFMapLinks from "./iiif-map-links"
 
 
 const addLinks = (text: string | any) => {
@@ -87,6 +88,8 @@ export default function IIIFMetadataPanel({ manifest, manifestDataset }: { manif
                         Standardiserte metadata (IIIF)
                     </span>
                 </Link>
+
+                <IIIFMapLinks />
 
 
 

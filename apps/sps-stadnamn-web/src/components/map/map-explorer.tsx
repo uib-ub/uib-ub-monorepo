@@ -78,7 +78,7 @@ export default function MapExplorer() {
   const locations = searchParams.get('locations') == 'on'
   const debug = useDebugStore((s) => s.debug)
   const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
-  const showDebugGroups = useDebugStore(state => state.showDebugGroups);
+  const showDebugGroups = searchParams.get('debugGroups') == 'on';
 
 
 
@@ -467,9 +467,9 @@ export default function MapExplorer() {
         newQueryParams.set('init', stringToBase64Url(fields["group.id"][0]))
         newQueryParams.delete('group')
 
-        if (datasetTag == 'tree') {
-          newQueryParams.set('doc', fields.uuid[0])
-        }
+
+        newQueryParams.set('doc', fields.uuid[0])
+
         router.push(`?${newQueryParams.toString()}`)
           
 
@@ -803,22 +803,51 @@ export default function MapExplorer() {
               zIndexOffset={2000}
               icon={new leaflet.DivIcon(getLabelMarkerIcon(groupData.fields.label[0] || '[utan namn]', 'accent', undefined, true, false, true))}
               position={[groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]}
-            />
+              eventHandlers={{
+                click: () => {
+                  // Calculate bounds if there are enough sources (>1), otherwise zoom to single point
+                  const sourcesWithCoords = groupData.sources.filter((source: Record<string, any>) => source?.location?.coordinates?.length === 2);
+                  if (sourcesWithCoords.length > 1) {
+                    // Find bounds: southwest and northeast corners
+                    let minLat = Infinity, minLng = Infinity, maxLat = -Infinity, maxLng = -Infinity;
+                    sourcesWithCoords.forEach((source: Record<string, any>) => {
+                      const [lng, lat] = source.location.coordinates;
+                      if (lat < minLat) minLat = lat;
+                      if (lat > maxLat) maxLat = lat;
+                      if (lng < minLng) minLng = lng;
+                      if (lng > maxLng) maxLng = lng;
+                    });
+                    // Fly to bounds with a bit of padding
+                    mapInstance.current?.flyToBounds(
+                      [
+                        [minLat, minLng],
+                        [maxLat, maxLng]
+                      ],
+                      { duration: 0.25, padding: [50, 50], maxZoom: 18 }
+                    );
+                  } else {
+                    // Default: fly to group location at zoom 15
+                    mapInstance.current?.flyTo([groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]], 15, { duration: 0.25 });
+                  }
+                }
+              }}
+            >
+            </Marker>
             }
 
             {
-              locations && groupData?.sources.map((source: Record<string, any>, index: number) => {
+              groupData?.sources.map((source: Record<string, any>, index: number) => {
                 if (!source?.location?.coordinates?.length) {
                   console.log("NO MARKERS", source?.location)
                   return null;
                 }
                 const lat = source.location.coordinates[1];
                 const lng = source.location.coordinates[0];
-                return <CircleMarker key={`location-marker-${index}`} center={[lat, lng]} radius={6} color="black" />
+                return <CircleMarker key={`location-marker-${index}`} center={[lat, lng]} radius={4} weight={1} opacity={0.8} fillOpacity={0.05} color="#0061ab" />
               })
             }
 
-            {debug && <DynamicDebugLayers mapInstance={mapInstance} Polygon={Polygon} Polyline={Polyline} Rectangle={Rectangle} CircleMarker={CircleMarker} Popup={Popup} geotileKeyToBounds={geotileKeyToBounds} groupData={groupData} markerCells={markerCells} />}
+            {debug && <DynamicDebugLayers mapInstance={mapInstance} Polygon={Polygon} Rectangle={Rectangle} CircleMarker={CircleMarker} geotileKeyToBounds={geotileKeyToBounds} markerCells={markerCells} />}
 
 
 

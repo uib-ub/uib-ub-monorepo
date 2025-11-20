@@ -25,12 +25,10 @@ export const useDebugStore = create<{
     debugChildren: any[],
     setDebugChildren: (children: any[]) => void,
     
-    showDebugGroups: boolean,
-    setShowDebugGroups: (show: boolean) => void,
-    showTop3H3Counts: boolean,
-    setShowTop3H3Counts: (show: boolean) => void,
-    showTop3UUIDCounts: boolean,
-    setShowTop3UUIDCounts: (show: boolean) => void,
+    debugGroupsSortBy: 'uuid' | 'uuid_count' | 'h3_count',
+    setDebugGroupsSortBy: (sortBy: 'uuid' | 'uuid_count' | 'h3_count') => void,
+    highlightTopGroups: boolean,
+    setHighlightTopGroups: (highlight: boolean) => void,
 
 }>()(
     persist(
@@ -56,12 +54,10 @@ export const useDebugStore = create<{
 
             debugChildren: [],
             setDebugChildren: (children) => set({ debugChildren: children }),
-            showDebugGroups: false,
-            setShowDebugGroups: (show) => set({ showDebugGroups: show }),
-            showTop3H3Counts: false,
-            setShowTop3H3Counts: (show) => set({ showTop3H3Counts: show }),
-            showTop3UUIDCounts: false,
-            setShowTop3UUIDCounts: (show) => set({ showTop3UUIDCounts: show }),
+            debugGroupsSortBy: 'uuid' as 'uuid' | 'uuid_count' | 'h3_count',
+            setDebugGroupsSortBy: (sortBy) => set({ debugGroupsSortBy: sortBy }),
+            highlightTopGroups: false,
+            setHighlightTopGroups: (highlight) => set({ highlightTopGroups: highlight }),
         }),
         {
             name: 'debug'
