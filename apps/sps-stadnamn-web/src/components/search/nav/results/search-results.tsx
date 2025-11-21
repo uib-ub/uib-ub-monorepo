@@ -59,6 +59,7 @@ export default function SearchResults() {
   const [editLat, setEditLat] = useState('')
   const [editLon, setEditLon] = useState('')
   const previousPointRef = useRef<string | null>(null)
+  const { totalHits } = useSearchData()
   
   // Unified function to stop editing
   const stopEditingCoordinates = () => {
@@ -345,7 +346,7 @@ export default function SearchResults() {
         </div>
       ))}
 
-      {init && (initGroupLoading ? (
+      {init && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
         <div className="w-full border-y border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{width: '10rem'}}></div>
@@ -356,10 +357,10 @@ export default function SearchResults() {
           className="w-full text-left border-y border-neutral-200 py-2 px-3 hover:bg-neutral-50 transition-colors flex items-center gap-2 text-neutral-950"
           aria-expanded={showOtherResults}
         >
-          {showOtherResults ? <PiCaretUpBold className="inline self-center text-xl text-primary-700" /> : <PiCaretDownBold className="inline self-center text-primary-700 text-xl" />}
-          <span className="text-lg">Fleire namnegrupper</span>
+          {showOtherResults ? <PiCaretUpBold className="inline self-center text-lg text-primary-700" /> : <PiCaretDownBold className="inline self-center text-primary-700 text-lg" />}
+          <span className="text-lg">Andre treff</span>
         </button>
-      ))}
+      )) : null}
 
       {(!init || showOtherResults) && (
         <>
