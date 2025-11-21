@@ -8,7 +8,7 @@ import GroupInfo from "../../details/group/group-info";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchParams } from "next/navigation";
 import { useGroup } from "@/lib/param-hooks";
-import { PiMapPinFill, PiPlusBold, PiPencilSimple, PiCheck, PiX, PiPlayFill, PiTilde, PiMagnifyingGlass, PiSliders, PiListBullets, PiTableFill, PiXBold, PiPencilSimpleBold } from "react-icons/pi";
+import { PiMapPinFill, PiPlusBold, PiPencilSimple, PiCheck, PiX, PiPlayFill, PiTilde, PiMagnifyingGlass, PiSliders, PiListBullets, PiTableFill, PiXBold, PiPencilSimpleBold, PiCaretDownBold, PiCaretUpBold } from "react-icons/pi";
 import useGroupData from "@/state/hooks/group-data";
 import Spinner from "@/components/svg/Spinner";
 import { useSessionStore } from "@/state/zustand/session-store";
@@ -43,7 +43,9 @@ export default function SearchResults() {
   const { activeGroupValue } = useGroup()
   const searchParams = useSearchParams()
   const init = searchParams.get('init')
+  const group = searchParams.get('group')
   const initValue = init ? base64UrlToString(init) : null
+  const [showOtherResults, setShowOtherResults] = useState(!!group)
   const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
   const { groupData: activeGroupData } = useGroupData()
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
@@ -343,9 +345,27 @@ export default function SearchResults() {
         </div>
       ))}
 
-      <SearchQueryDisplay />
+      {init && (initGroupLoading ? (
+        <div className="w-full border-y border-neutral-200 py-2 px-3 flex items-center gap-2">
+          <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
+          <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{width: '10rem'}}></div>
+        </div>
+      ) : (
+        <button
+          onClick={() => setShowOtherResults(!showOtherResults)}
+          className="w-full text-left border-y border-neutral-200 py-2 px-3 hover:bg-neutral-50 transition-colors flex items-center gap-2 text-neutral-950"
+          aria-expanded={showOtherResults}
+        >
+          {showOtherResults ? <PiCaretUpBold className="inline self-center text-xl text-primary-700" /> : <PiCaretDownBold className="inline self-center text-primary-700 text-xl" />}
+          <span className="text-lg">Fleire namnegrupper</span>
+        </button>
+      ))}
 
-      <ul id="result_list" className='flex flex-col divide-y divide-neutral-300 border-y border-neutral-200'>
+      {(!init || showOtherResults) && (
+        <>
+          <SearchQueryDisplay />
+
+          <ul id="result_list" className='flex flex-col divide-y divide-neutral-300 border-y border-neutral-200'>
       
 
       {(initGroupLoading || collapsedLoading && collapsedInitialPage === 1) ? Array.from({ length: collapsedInitialPage === 1 ? 6 : 40 }).map((_, i) => (
@@ -398,6 +418,8 @@ export default function SearchResults() {
         )
       })}
       </ul>
+        </>
+      )}
 
 
       {(filterCount > 0 || isMobile || searchError || collapsedError ) && <div className="flex flex-col gap-4 py-4 pb-8 xl:pb-4">

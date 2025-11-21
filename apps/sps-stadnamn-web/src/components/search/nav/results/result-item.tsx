@@ -83,7 +83,7 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
     const label = hit.fields?.label?.[0] || ''
 
 
-    if (!hit._index) return <div className="p-2">Det har oppstått ein feil: Kunne ikkje hente kjelder {JSON.stringify(hit)}</div>
+    if (!hit._index) return <div className="p-2">Det har oppstått ein feil: Kunne ikkje hente kjelder</div>
 
     
 
