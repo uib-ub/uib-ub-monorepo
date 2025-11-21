@@ -56,34 +56,10 @@ export default function MiscOptions() {
   <div className="flex flex-col">
     <span className="text-lg">Stadnamnsamlingar</span>
     <span className="text-sm text-neutral-700">
-      Oppslagsverk og innsamla stadnamn
+      Vis berre kjeldeoppslag frå oppslagsverk og stadnamninnsamlingar
     </span>
   </div>
 </label>
-{mode == 'map' && (
-  <label className="flex gap-3 items-start text-lg">
-    <input
-      type="checkbox"
-      name="filterSources"
-      value="on"
-      checked={searchParams.get('filterSources') == 'on'}
-      className="mt-1 h-3 w-3 xl:h-4 xl:w-4"
-      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-        const newUrl = new URLSearchParams(searchParams);
-        if (event.target.checked) {
-          newUrl.set('filterSources', 'on');
-        } else {
-          newUrl.delete('filterSources');
-        }
-        router.push(`?${newUrl.toString()}`);
-      }}
-    />
-    <div className="flex flex-col">
-      <span className="text-lg">Avgrens namnegruppene</span>
-      <span className="text-sm text-neutral-700">Vis berre underoppslag som passar med søket</span>
-    </div>
-  </label>
-)}
 
 </div>
 }

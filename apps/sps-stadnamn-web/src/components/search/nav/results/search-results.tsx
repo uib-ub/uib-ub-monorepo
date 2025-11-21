@@ -382,6 +382,7 @@ export default function SearchResults() {
                     flex items-center gap-2
                     btn-neutral btn
                     justify-center
+                    text-lg
 
                     px-4 py-2 rounded-full xl:rounded-md
                      mx-3
@@ -399,7 +400,7 @@ export default function SearchResults() {
       </ul>
 
 
-      <div className="flex flex-col gap-4 py-4 pb-8">
+      {(filterCount > 0 || isMobile || searchError || collapsedError ) && <div className="flex flex-col gap-4 py-4 pb-8 xl:pb-4">
       { filterCount > 0 && <div className="mx-2 mb-4">
         
         <ActiveFilters /></div>}
@@ -414,34 +415,16 @@ export default function SearchResults() {
                   flex items-center gap-2
                   btn-outline btn
                   justify-center
-                  text-xl
+                  text-lg
                   px-4 py-2 rounded-full xl:rounded-md
                   mx-3
                   relative
                 `}
             >
-                Legg til filter
+                Filtrer søket
             </Clickable>
           </div>
       )}
-
-{!hasNoResults && <div className="flex flex-col gap-2 justify-center">
-
-<Clickable
-  add={{mode: 'table'}}
-  onClick={() => setSnappedPosition('bottom')}
-  className={`
-  flex items-center gap-2
-  btn-outline btn
-  justify-center
-
-  px-4 py-2 rounded-full xl:rounded-md
-   mx-3
-  `}
->
-  Kjeldetabell
-</Clickable>
-</div>}
 
 
       {/* Error and empty states */}
@@ -458,7 +441,7 @@ export default function SearchResults() {
           </div>
         </div>
       )}
-    </div>
+    </div>}
     </div>
   )
 }

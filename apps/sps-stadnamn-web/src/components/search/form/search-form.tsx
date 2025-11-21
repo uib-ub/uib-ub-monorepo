@@ -13,6 +13,7 @@ import Menu from '@/app/menu';
 import { useSessionStore } from '@/state/zustand/session-store';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { formatNumber } from '@/lib/utils';
+import { detailsRenderer } from '@/lib/text-utils';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { stringToBase64Url } from '@/lib/param-utils';
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
@@ -324,7 +325,6 @@ export default function SearchForm() {
                 
                 </li>
                 {data?.hits?.hits?.map((hit: any) => {
-                    console.log(hit.fields)
                     return (
                     <li key={hit._id} 
                         tabIndex={-1} 
@@ -341,9 +341,7 @@ export default function SearchForm() {
                         <div>
                             <strong>{hit.fields.label[0]} {hit.fields["group.label"] && hit.fields["group.label"]?.[0] != hit.fields.label[0] &&  `(${hit.fields["group.label"]?.[0]})`} </strong>{' '}
                             <span className="text-neutral-900">
-                            {hit.fields["group.adm2"]?.[0] ? hit.fields["group.adm2"]?.[0] + ', ' : 
-                            hit.fields.adm2 ? <><em>{hit.fields.adm2?.[0]}</em>, </> : ''}
-                            {hit.fields["group.adm1"]?.[0] || hit.fields.adm1 && <em>{hit.fields.adm1?.[0]}</em>}
+                            {detailsRenderer(hit)}
 
 
                             </span>

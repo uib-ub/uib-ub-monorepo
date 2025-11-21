@@ -12,7 +12,7 @@ import { useDebugStore } from '@/state/zustand/debug-store';
 import { MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from '@/lib/map-utils';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { PiPushPinSlash, PiPushPinSlashBold, PiX, PiXBold } from 'react-icons/pi';
-import { formatHighlight } from '@/lib/text-utils';
+import { formatHighlight, detailsRenderer } from '@/lib/text-utils';
 
 const uniqueLabels = (hit: any) => {
     const labels = new Set<string>();
@@ -61,11 +61,6 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
     const showScore = useDebugStore((s: any) => s.showScore)
 
     const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
-    const detailsRenderer = (hit: any) => {
-        const adm1 = hit.fields["group.adm1"]
-        const adm2 = hit.fields["group.adm2"]
-        return <>{adm2 ? adm2 + ', ' : ''}{adm1}</>
-    }
     const snippetRenderer = resultRenderers[docDataset]?.snippet || defaultResultRenderer.snippet
 
     const isGrunnord = docDataset?.includes('_g')

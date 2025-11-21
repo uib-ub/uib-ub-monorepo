@@ -33,16 +33,17 @@ export default function useGroupData(overrideGroupCode?: string | null) {
 
     const debugChildren = useDebugStore((s) => s.debugChildren)
     const debug = useDebugStore((s) => s.debug);
-    const filterSources = searchParams.get('filterSources') == 'on'
     const searchQ = searchParams.get('q') || ""
     let sourcesQuery = ""
-    if (filterSources) {
-        console.log("FILTER SOURCES", searchQueryString)
-        sourcesQuery = searchQueryString
-    }
-    
-    else if (groupValue && base64UrlToString(groupValue).startsWith('grunnord_')) {
+
+    if (groupValue && base64UrlToString(groupValue).startsWith('grunnord_')) {
         sourcesQuery = searchQ
+    }
+    else {
+        const newQuery = new URLSearchParams(searchQueryString)
+        newQuery.delete('q')
+        sourcesQuery = newQuery.toString()
+
     }
 
     const {

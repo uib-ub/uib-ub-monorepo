@@ -1,3 +1,4 @@
+import React from 'react';
 import sanitizeHtml from 'sanitize-html';
 import parse from 'html-react-parser';
 
@@ -31,7 +32,7 @@ export const formatHighlight = (highlight: string) => {
       
     // Auto-close unclosed tags
     const openTags: string[] = [];
-    cleanHighlight = cleanHighlight.replace(/<(\/?)(\w+)([^>]*)>/g, (match, slash, tag, attrs) => {
+    cleanHighlight = cleanHighlight?.replace(/<(\/?)(\w+)([^>]*)>/g, (match, slash, tag, attrs) => {
       if (slash) {
         openTags.pop();
       } else if (['mark', 'em', 'span'].includes(tag)) {
@@ -57,3 +58,10 @@ export const formatHighlight = (highlight: string) => {
       
 
   };
+
+export const detailsRenderer = (hit: any) => {
+    const adm1 = hit.fields["group.adm1"]?.[0] || hit.fields?.group?.adm1?.[0] || hit.fields?.adm1?.[0] || hit.adm1?.[0] 
+    let adm2 = hit.fields["group.adm2"]?.[0] || hit.fields?.group?.adm2?.[0] || hit.fields?.adm2?.[0] || hit.adm2?.[0]
+    if (adm2 == adm1) adm2 = undefined
+    return <>{adm2 ? adm2 + ', ' : ''}{adm1}</>
+}

@@ -7,6 +7,7 @@ export default function SearchQueryDisplay() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const searchQ = searchParams.get('q')
+  const init = searchParams.get('init')
 
   const handleEdit = () => {
     const input = document.getElementById('search-input') as HTMLInputElement
@@ -45,14 +46,14 @@ export default function SearchQueryDisplay() {
   if (!searchQ) return null
 
   return (
-    <div className="p-3 flex flex-col gap-2 border-t border-neutral-200">
-      <div className="flex items-center gap-2 text-neutral-900 text-lg">
-        Søkeord:
+    <div className={`p-3 flex flex-col gap-2 border-t border-neutral-200 ${init ? 'bg-neutral-50' : ''}`}>
+      <h2 className="flex items-center gap-2 text-neutral-950 text-xl">
+        {init ? "Andre treff: " : "Søkeord: "} 
         <strong>{searchQ}</strong>
         <ClickableIcon label="Fjern søkeord" remove={['q']} className="ml-auto h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900">
           <PiXBold />
         </ClickableIcon>
-      </div>
+      </h2>
       <div className="flex items-center gap-4 mt-1 text-sm">
         {isSingleWord && (
           <label className="flex items-center gap-2">

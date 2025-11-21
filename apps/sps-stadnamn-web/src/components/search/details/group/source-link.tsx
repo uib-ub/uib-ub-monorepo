@@ -8,6 +8,6 @@ export default function SourceLink({ url, label, suffix }: { url: string, label?
         label = hostname
     }
     return (
-      <Link className="bg-neutral-200 px-1 rounded-md override-external-icon ml-2 no-underline" href={url}>{label}{suffix}</Link>
+      <Link className="px-1 rounded-md override-external-icon ml-2" href={url}>{label}{suffix}</Link>
     )
 }
