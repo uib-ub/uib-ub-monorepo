@@ -626,6 +626,40 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         return (yearsOrdered.length > 1) || (namesWithoutYear.length > 0)
     }, [datasets])
 
+    // Check if label filter should be shown
+    const shouldShowLabelFilter = useMemo(() => {
+        // Count total sources across all datasets
+        const totalSources = Object.values(datasets).reduce((sum, sources) => sum + sources.length, 0)
+        
+        // If there's only one result, don't show the filter
+        if (totalSources <= 1) {
+            return false
+        }
+
+        // Check if all sources match all active filters
+        const hasActiveFilters = !!(activeYear || activeName)
+        if (!hasActiveFilters) {
+            return showNamesTab // Show if there are multiple names/years to filter by
+        }
+
+        // Count how many sources match the active filters
+        let matchingCount = 0
+        Object.values(datasets).forEach((sources: any[]) => {
+            sources.forEach((source: any) => {
+                if (matchesActiveYear(source, activeYear) && matchesActiveName(source, activeName)) {
+                    matchingCount++
+                }
+            })
+        })
+
+        // If all sources match all filters, don't show the filter
+        if (matchingCount === totalSources) {
+            return false
+        }
+
+        return showNamesTab
+    }, [datasets, activeYear, activeName, showNamesTab])
+
     useEffect(() => {
         if (!groupData?.group) {
             console.log("GROUP ISSUE", groupData);
@@ -724,7 +758,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
             <div className="w-full pb-4 flex flex-col">
                 {/* Names section (includes timeline) - only show when no filter is active */}
-                {showNamesTab &&
+                {shouldShowLabelFilter &&
                     <div className="px-3 pt-2">
                         <NamesSection datasets={datasets} activeYear={activeYear} activeName={activeName} setActiveYear={setActiveYear} setActiveName={setActiveName} />
                     </div>
