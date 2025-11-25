@@ -12,7 +12,7 @@ export function Badge({ count, className }: { count: number, className?: string 
 
 export function TitleBadge({ count, className }: { count: number, className?: string }) {
   return (
-    <span className={twMerge(`flex ${count < 10 ? 'px-2' : 'px-1.5'} rounded-full`, className)}>
+    <span className={twMerge(`flex ${count < 10 ? 'px-[0.4em] xl:px-[0.5em]' : 'px-[0.5em]'} rounded-full shadow-md`, className)}>
     {formatNumber(count)}
   </span>
   );

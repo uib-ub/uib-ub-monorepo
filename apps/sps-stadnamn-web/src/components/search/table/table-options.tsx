@@ -66,7 +66,6 @@ export default function TableOptions() {
 
     <div className="flex items-center gap-2">
     <h3 className="text-lg">Kolonner</h3>
-    <Clickable className="ml-auto" remove={["tableOptions"]}><PiX className="text-xl" aria-hidden="true"/></Clickable>
     </div>
     <div className='relative'>
         <input 

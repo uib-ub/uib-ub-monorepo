@@ -346,7 +346,7 @@ export default function SearchResults() {
         </div>
       ))}
 
-      {init && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
+      {init && !isMobile && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
         <div className="w-full border-y border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{width: '10rem'}}></div>
@@ -358,11 +358,11 @@ export default function SearchResults() {
           aria-expanded={showOtherResults}
         >
           {showOtherResults ? <PiCaretUpBold className="inline self-center text-lg text-primary-700" /> : <PiCaretDownBold className="inline self-center text-primary-700 text-lg" />}
-          <span className="text-lg">Andre treff</span>
+          <span className="text-lg">Fleire treff</span>
         </button>
       )) : null}
 
-      {(!init || showOtherResults) && (
+      {(!init || showOtherResults || isMobile) && (
         <>
           <SearchQueryDisplay />
 
@@ -432,6 +432,7 @@ export default function SearchResults() {
           <div className="flex flex-col gap-2 justify-center">
             <Clickable 
                 remove={["results"]} 
+                add={{options: 'on'}}
                 link
                 onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null} 
                 className={`

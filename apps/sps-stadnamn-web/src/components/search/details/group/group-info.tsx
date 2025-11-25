@@ -775,17 +775,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 </div>
             </div>
 
-            { initValue === groupData.group.id && groupData.fields?.label?.[0] && searchParams.get('q') !== groupData.fields.label[0] && (
-                <div className="absolute bottom-0 right-0 p-3">
-                    <Clickable 
 
-                        add={{q: groupData.fields.label[0]}} 
-                        className="h-6 btn btn-outline flex items-center gap-1 pl-1 pr-2 rounded-full flex items-center justify-center text-nowrap flex items-center gap-1"
-                    >
-                        <PiMagnifyingGlass className="text-neutral-700" /> {groupData.fields.label[0]}
-                    </Clickable>
-                </div>
-            )}
             {locations.length > 0 && locations[0]?.location?.coordinates && initValue !== groupData.group.id && (
                 <div className="absolute bottom-0 right-0 p-3">
                     <ClickableIcon 

@@ -1,37 +1,33 @@
 'use client'
 
-import { PiBookOpen, PiCaretDown, PiCaretDownBold, PiCaretLeftBold, PiCaretUpBold, PiCrop, PiEye, PiEyeSlash, PiFunnel, PiInfoFill, PiListBullets, PiMapPin, PiSliders, PiTableFill, PiX } from "react-icons/pi";
-import { RoundClickable } from "../ui/clickable/round-icon-button";
+import { PiCaretDownBold, PiCaretLeftBold, PiCaretUpBold, PiFunnel, PiFunnelBold, PiFunnelFill, PiX } from "react-icons/pi";
 import dynamic from "next/dynamic";
-import { formatNumber } from "@/lib/utils";
 import SearchResults from "./nav/results/search-results";
 import MapSettings from "../map/map-settings";
 import { useSessionStore } from "@/state/zustand/session-store";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import useGroupData from "@/state/hooks/group-data";
 import { useSearchQuery } from "@/lib/search-params";
 import { GlobalContext } from "@/state/providers/global-provider";
 import useSearchData from "@/state/hooks/search-data";
 import { useSearchParams } from "next/navigation";
-import OptionsWindow from "./nav/options-window";
 import Clickable from "../ui/clickable/clickable";
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { Badge, TitleBadge } from "../ui/badge";
-import { useGroup, useMode, usePerspective } from "@/lib/param-hooks";
+import { useMode, useOverlayParams, usePerspective } from "@/lib/param-hooks";
 import FacetSection from "./nav/facets/facet-section";
-import ActiveFilters from "./form/active-filters";
+
 import ServerFacet from "./nav/facets/server-facet";
 import ClientFacet from "./nav/facets/client-facet";
 import WikiAdmFacet from "./nav/facets/wikiAdm-facet";
-import { facetConfig, fieldConfig } from "@/config/search-config";
+import { fieldConfig } from "@/config/search-config";
 import DatasetFacet from "./nav/facets/dataset-facet";
 import TableOptions from "./table/table-options";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import DebugToggle from "./nav/results/debug-toggle";
-import SearchQueryDisplay from "./nav/results/search-query-display";
-import { datasetTitles } from "@/config/metadata-config";
-
+import ActiveFilters from "./form/active-filters";
+import { RoundIconClickable } from "../ui/clickable/round-icon-button";
 
 
 
@@ -60,8 +56,8 @@ function ShowResultsButton() {
     const mode = useMode()
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
     if (snappedPosition == 'bottom') return null
-    return <div className="p-2 fixed bottom-2 left-0 right-0">
-        <Clickable remove={["facet"]} 
+    return <div className="p-2 fixed bottom-2 left-0 right-0 z-[3001]">
+        <Clickable remove={["facet", "options"]} 
                    add={{results: 'on'}} 
                    onClick={() => mode == 'table' ? setSnappedPosition('bottom') : null}
                    className="w-full h-12 btn text-xl relative rounded-full">
@@ -109,8 +105,9 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
 function LeftWindow({children}: {children: React.ReactNode}) {
     const { isMobile } = useContext(GlobalContext)
     const searchParams = useSearchParams()
-    const results = searchParams.get('results') == 'on'
+    
     const mapSettings = searchParams.get('mapSettings') == 'on'
+    const results = searchParams.get('results') == 'on' || (!mapSettings) 
     if (isMobile) {
         if (mapSettings && results) return null
         return <>{children}</>
@@ -120,11 +117,7 @@ function LeftWindow({children}: {children: React.ReactNode}) {
 
 function RightWindow({children}: {children: React.ReactNode}) {
     const { isMobile } = useContext(GlobalContext)
-    const searchParams = useSearchParams()
-    const results = searchParams.get('results') == 'on'
-    const mapSettings = searchParams.get('mapSettings') == 'on'
     if (isMobile) {
-        if (!mapSettings && !results) return null
         return <>{children}</>
     }
     return <div className="bg-white shadow-lg absolute right-0 top-[0.5rem] w-[25svw] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-auto overflow-x-hidden stable-scrollbar">{children}</div>
@@ -143,15 +136,12 @@ export default function OverlayInterface() {
 
     const drawerRef = useRef<HTMLDivElement>(null)
     const scrollableContent = useRef<HTMLDivElement>(null);
-    const results = searchParams.get('results') == 'on'
-    const options = searchParams.get('options') == 'on'
-    const mapSettings = searchParams.get('mapSettings') == 'on'
+
+    const { showLeftPanel, showRightPanel, options, mapSettings, facet, showResults, tableOptions } = useOverlayParams()
     const { facetFilters, datasetFilters } = useSearchQuery()
     const filterCount = facetFilters.length + datasetFilters.length
-    const facet = searchParams.get('facet')
     const perspective = usePerspective()
     const mode = useMode()
-    const tableOptions = searchParams.get('tableOptions') == 'on'
     const setDebug = useDebugStore((s) => s.setDebug)
     const debugParam = searchParams.get('debug')
     const showDebugGroups = searchParams.get('debugGroups') == 'on'
@@ -179,13 +169,13 @@ export default function OverlayInterface() {
                     setCurrentPosition={setCurrentPosition}
                     scrollContainerRef={scrollableContent}
                 >
-                    {(!isMobile || ( !results && !mapSettings) || mode == 'table') && <LeftWindow>  
+                    {showLeftPanel && <LeftWindow>  
 
                         {(tableOptions && <TableOptions />)
 
 
 
-                        || (facet && <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2 shrink-0">
+                        || (facet && <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
                             <h1 className="text-lg text-neutral-900 px-1">{fieldConfig[perspective][facet]?.label}</h1>
                             <div className="flex items-center gap-1 ml-auto">
                                     <Clickable className="flex items-center gap-1 px-2" label="Tilbake" remove={["facet"]}>
@@ -195,40 +185,28 @@ export default function OverlayInterface() {
                             
                         </div>)
                         
-                        || <div  className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2 shrink-0">
-                        <Clickable aria-expanded={options} aria-controls="options-panel" className="flex items-center gap-2 xl:px-1 w-full" add={{options: (options && !isMobile) ? null : 'on'}} remove={["options"]}>
+                        || ((options && !facet) ? <><div  className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
+                        <div className="flex items-center gap-2 xl:px-1 w-full">
                         
-                        <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Filter</h1>
+                        <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Filter</h1> 
                             
                             { filterCount ? <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} /> : null}
-                            {
-                            !isMobile && <>
-                                {options ? <PiCaretUpBold className="text-lg ml-auto" aria-hidden="true"/> : <PiCaretDownBold className="text-lg ml-auto" aria-hidden="true"/>}
-                            </>
-                        }
-                            </Clickable>
-                            <div className="flex items-center gap-1 ml-auto">
+                            <ClickableIcon className="ml-auto" label="Lukk" remove={["options"]}><PiX className="text-black text-3xl" /></ClickableIcon>
                         
-                        {!totalHits?.value && isMobile && <span className="text-sm xl:text-bas px-2">Ingen resultat</span>}
-                        </div>
+                            </div>
+
                         
-                            </div>}
-                        {(options || isMobile) && !facet && <div id="options-panel" className="flex flex-col gap-2">
+                            </div>
+                        <div id="options-panel" className="flex flex-col gap-2">
                        
-                        
-                        
-
-                        
-
-
-
                                <FacetSection />{isMobile && <ShowResultsButton />}
-                        </div>}
+                        </div></> :  null)
+                        }
                         {facet && <div className="flex flex-col gap-2 pb-20"> 
                         {facet == 'adm' ? (
                             <ClientFacet facetName={facet} />
                         ) : facet == 'wikiAdm' ? (
-                            <WikiAdmFacet />
+                            <WikiAdmFacet /> 
                         ) : facet == 'dataset' ? (
                             <DatasetFacet />
                         ) : (
@@ -237,12 +215,29 @@ export default function OverlayInterface() {
                         {isMobile && <ShowResultsButton />}
                         </div>}
                     </LeftWindow>}
+
+                    {!isMobile && <div className=" flex flex-wrap absolute lg:top-2 left-[25svw] pb-1 px-1 z-[3001] overflow-x-hidden stable-scrollbar">
+
+                        <RoundIconClickable
+                        className="relative"
+                            label="Filter"
+                            add={{ options: 'on' }}
+                            onClick={() => setSnappedPosition('middle')}
+                        >
+                            {options ? <PiFunnelFill className="text-2xl" /> : <PiFunnel className="text-2xl" />}
+                            {filterCount > 0 && (
+                                <TitleBadge className={`absolute bottom-1.5 right-1.5 text-xs ${options ? 'bg-accent-100 text-accent-900' : 'bg-primary-700 text-white'}`} count={filterCount} />
+                            )}
+                        </RoundIconClickable>
+                        
+                        </div>}
                     
-                    {mode == 'map' && <RightWindow>
+                    
+                    {showRightPanel && <RightWindow>
                         {/* Map Settings Header (separate, only when mapSettings is on) */}
                         {mapSettings ? (
-                            <div className="w-full flex items-center xl:h-12 px-2 xl:px-0 gap-2">
-                                <h1 className="text-base xl:text-lg text-neutral-900 xl:px-4">Kartinnstillingar</h1>
+                            <div className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 xl:px-0 gap-2`}>
+                                <h1 className="text-base xl:text-xl text-neutral-900 xl:px-4">Kartinnstillingar</h1>
                                 <div className="flex items-center gap-1 ml-auto">
                                     <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings"]}>
                                         <PiX className="text-black text-3xl" />
@@ -250,21 +245,21 @@ export default function OverlayInterface() {
                                 </div>
                             </div>
                         ) : (
-                            <div  className="w-full flex items-center xl:h-12 px-2 py-1 xl:px-0 gap-2 xl:pl-2">
-                                <Clickable aria-expanded={results} aria-controls="results-panel" className="flex items-center gap-2 xl:px-1 w-full" add={{results: (results && !isMobile) ? null : 'on'}} remove={["results"]}>
+                            <div  className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 py-1 xl:px-0 gap-2 xl:pl-2`}>
+                                <Clickable aria-expanded={showResults} aria-controls="results-panel" className="flex items-center gap-2 xl:px-1 w-full" add={{results: showResults ? null : 'on'}} remove={["results", ...(isMobile ? ['options'] : [])]}>
                                 
                                 <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Resultat</h1>
                                 
-                                   <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={totalHits?.value || 0} />
+                                   <TitleBadge className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`} count={totalHits?.value || 0} />
                                    {!isMobile && (
                                         <>
-                                            {results ? <PiCaretUpBold className="text-lg mr-1 ml-auto" /> : <PiCaretDownBold className="text-lg ml-auto" />}
+                                            {showResults ? <PiCaretUpBold className="text-lg mr-1 ml-auto" /> : <PiCaretDownBold className="text-lg ml-auto" />}
                                         </>
                                     )}
                                 </Clickable>
                             </div>
                         )}
-                        {mapSettings ? <MapSettings/> : results && <div id="results-panel">{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}                   
+                        {mapSettings ? <MapSettings/> : showResults && <div id="results-panel">{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}                   
                     </RightWindow>}
                 </DrawerWrapper>
 

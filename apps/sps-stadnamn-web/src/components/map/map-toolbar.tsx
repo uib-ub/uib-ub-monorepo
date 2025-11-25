@@ -1,4 +1,4 @@
-import { PiGpsFix, PiInfoFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus } from "react-icons/pi"
+import { PiFunnel, PiGpsFix, PiInfoFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus } from "react-icons/pi"
 import { RoundIconButton, RoundIconClickable } from "../ui/clickable/round-icon-button"
 import { getMyLocation } from "@/lib/map-utils"
 import { useSessionStore } from "@/state/zustand/session-store"
@@ -7,6 +7,35 @@ import { GlobalContext } from "@/state/providers/global-provider"
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH } from "@/lib/map-utils"
 import useSearchData from "@/state/hooks/search-data"
 
+
+import { Badge, TitleBadge } from "../ui/badge"
+import { useSearchQuery } from "@/lib/search-params"
+import { useOverlayParams } from "@/lib/param-hooks"
+
+export function FilterButton() {
+    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
+    const { facetFilters, datasetFilters } = useSearchQuery()
+    const filterCount = facetFilters.length + datasetFilters.length
+    const { options } = useOverlayParams()
+
+    return (
+        <RoundIconClickable
+            className="relative"
+            label="Filter"
+            add={{ options: 'on' }}
+            onClick={() => setSnappedPosition('middle')}
+        >
+            <PiFunnel className="text-2xl" />
+            {filterCount > 0 && (
+                <TitleBadge
+                    count={filterCount}
+                    className={`text-xs absolute bottom-1.5 right-1.5 xl:text-base ${options ? 'bg-accent-100 text-accent-900' : 'bg-primary-700 text-white'}`}
+                />
+            )}
+        </RoundIconClickable>
+    )
+}
+
 export default function MapToolbar() {
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
     const currentPosition = useSessionStore((s) => s.currentPosition)
@@ -14,6 +43,7 @@ export default function MapToolbar() {
     const setMyLocation = useSessionStore((s) => s.setMyLocation)
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const { totalHits, searchBounds, searchLoading, searchError } = useSearchData()
+    const { options } = useOverlayParams()
     
     const svhToRem = (svh: number) => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return 0
@@ -83,6 +113,7 @@ export default function MapToolbar() {
                         <PiMagnifyingGlassMinusFill className="text-2xl" />
                     </RoundIconButton>
                 </>
+
             )}
 
             <RoundIconButton
@@ -97,6 +128,9 @@ export default function MapToolbar() {
             >
                 <PiGpsFix className="text-2xl" />
             </RoundIconButton>
+            { isMobile && !options && (
+                <FilterButton />
+            )}
         </div>
         </>
     )

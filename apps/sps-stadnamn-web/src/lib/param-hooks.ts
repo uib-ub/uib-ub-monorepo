@@ -2,6 +2,8 @@
 import { useSearchParams } from "next/navigation"
 import { base64UrlToString } from "./param-utils"
 import { contentSettings } from "@/config/server-config"
+import { useContext } from "react"
+import { GlobalContext } from "@/state/providers/global-provider"
 
 
 export function usePerspective() {
@@ -48,4 +50,27 @@ export function useMode() {
 
 
     return searchParams?.get('mode') || contentSettings[perspective]?.display || 'map'
+}
+
+
+export function useOverlayParams() {
+    const searchParams = useSearchParams()
+    const options = searchParams.get('options') == 'on'
+    const mapSettings = searchParams.get('mapSettings') == 'on'
+    const facet = searchParams.get('facet')
+    const { isMobile } = useContext(GlobalContext)
+    const mode = useMode()
+    const results = searchParams.get('results') == 'on'
+
+    const tableOptions =  mode=='table' && !options
+    
+
+
+    const showLeftPanel = options || facet || tableOptions || !isMobile
+    
+    const showResults = mode != 'table' && (results || (isMobile && !showLeftPanel))
+    const showRightPanel = isMobile ? !showLeftPanel : true
+    
+    return { showLeftPanel, showRightPanel, options, mapSettings, facet, showResults, tableOptions }
+
 }
