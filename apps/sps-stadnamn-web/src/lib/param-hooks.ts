@@ -69,7 +69,7 @@ export function useOverlayParams() {
     const showLeftPanel = options || facet || tableOptions || !isMobile
     
     const showResults = mode != 'table' && (results || (isMobile && !showLeftPanel))
-    const showRightPanel = isMobile ? !showLeftPanel : true
+    const showRightPanel = mode != 'table' && (isMobile ? !showLeftPanel : true)
     
     return { showLeftPanel, showRightPanel, options, mapSettings, facet, showResults, tableOptions }
 

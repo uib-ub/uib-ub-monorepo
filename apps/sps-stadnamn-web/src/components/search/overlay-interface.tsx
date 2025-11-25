@@ -216,7 +216,7 @@ export default function OverlayInterface() {
                         </div>}
                     </LeftWindow>}
 
-                    {!isMobile && <div className=" flex flex-wrap absolute lg:top-2 left-[25svw] pb-1 px-1 z-[3001] overflow-x-hidden stable-scrollbar">
+                    {!isMobile && mode != 'table' && <div className=" flex flex-wrap absolute lg:top-2 left-[25svw] pb-1 px-1 z-[3001] overflow-x-hidden stable-scrollbar">
 
                         <RoundIconClickable
                         className="relative"

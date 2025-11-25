@@ -4,7 +4,7 @@ import { contentSettings, treeSettings } from "@/config/server-config"
 import { usePerspective } from "@/lib/param-hooks"
 import { useSearchParams } from "next/navigation"
 import { Fragment, useContext } from "react"
-import { PiBookOpen, PiMapPinFill, PiMapTrifold, PiSliders, PiSlidersBold, PiTableFill } from "react-icons/pi"
+import { PiBookOpen, PiFunnel, PiMapPinFill, PiMapTrifold, PiSliders, PiSlidersBold, PiTableFill } from "react-icons/pi"
 import SortHeader from "./sort-header"
 import Pagination from "@/components/results/pagination"
 import { formatCadastre } from "@/config/result-renderers"
@@ -18,6 +18,9 @@ import { stringToBase64Url } from "@/lib/param-utils"
 import { DownloadButton } from "./download-button"
 import StatusSection from "../status-section"
 import { useSessionStore } from "@/state/zustand/session-store"
+import { TitleBadge } from "@/components/ui/badge"
+import { useSearchQuery } from "@/lib/search-params"
+import ActiveFilters from "../form/active-filters"
 
 export default function TableExplorer() {
     const perspective = usePerspective()
@@ -31,6 +34,9 @@ export default function TableExplorer() {
 
     const { tableData, tableLoading } = useTableData()
     const currentPosition = useSessionStore((s) => s.currentPosition)
+
+    const { facetFilters, datasetFilters } = useSearchQuery()
+    const filterCount = facetFilters.length + datasetFilters.length
 
 
 
@@ -60,11 +66,11 @@ export default function TableExplorer() {
 
 
 
-    return <><div className="flex items-baseline gap-4 px-4 p-2"><h2 className="text-xl !m-0 !p-0">Kjeldetabell</h2>
+    return <><div className="flex items-baseline gap-2 px-4 p-2"><h2 className="text-xl !m-0 !p-0">Kjeldetabell</h2>
 
     
-    
-    <Clickable className="flex items-center gap-2 btn btn-neutral ml-auto" remove={['mode', 'tableOptions']}><PiMapTrifold className="text-lg" aria-hidden="true" /><span className="sr-only lg:not-sr-only">Kartvisning</span></Clickable></div>
+    <Clickable className="flex items-center gap-2 btn btn-outline ml-auto" add={{options: 'on'}}><PiFunnel className="text-lg" aria-hidden="true" /><span className="sr-only lg:not-sr-only">Filter</span>{filterCount > 0 && <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} />}</Clickable>
+    <Clickable className="flex items-center gap-2 btn btn-neutral" remove={['mode', 'tableOptions']}><PiMapTrifold className="text-lg" aria-hidden="true" /><span className="sr-only lg:not-sr-only">Kartvisning</span></Clickable></div>
     <div className='flex flex-col py-2 gap-y-4 h-full bg-white'>
         <div className='flex  flex-col gap-4 xl:gap-2 !mx-2'>
             {datasetTag == 'tree' && doc && tableData?.[0]?._source && treeSettings[perspective] && <h2 className="text-xl px-1">{`${getGnr(tableData?.[0], perspective) || getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.subunit) || ""} ${getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.parentName) || tableData?.[0]?._source?.label || ""}`}</h2>}
