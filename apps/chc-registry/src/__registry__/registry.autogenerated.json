@@ -1,0 +1,84 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "chc-registry",
+  "homepage": "https://chc-registry.vercel.app",
+  "items": [
+    {
+      "name": "button",
+      "type": "registry:block",
+      "title": "Button",
+      "description": "Button",
+      "dependencies": [
+        "@radix-ui/react-slot",
+        "next"
+      ],
+      "files": [
+        {
+          "path": "src/registry/uib-ub/items/button/components/button.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "content-grid",
+      "type": "registry:block",
+      "title": "Content Grid",
+      "description": "Content Grid",
+      "dependencies": [
+        "@radix-ui/react-slot",
+        "next"
+      ],
+      "files": [
+        {
+          "path": "src/registry/uib-ub/items/content-grid/components/content-grid.tsx",
+          "type": "registry:component",
+          "target": "components/ui/chc/content-grid.tsx"
+        },
+        {
+          "path": "src/registry/uib-ub/items/content-grid/components/styles/content-grid.css",
+          "type": "registry:style"
+        }
+      ],
+      "css": {
+        "@import \"../components/styles/content-grid.css\"": {}
+      }
+    },
+    {
+      "name": "iiif-image",
+      "type": "registry:block",
+      "title": "IIIF Image",
+      "description": "IIIF Image",
+      "dependencies": [
+        "@samvera/clover-iiif",
+        "next"
+      ],
+      "files": [
+        {
+          "path": "src/registry/uib-ub/items/iiif-image/components/iiif-image.tsx",
+          "type": "registry:component",
+          "target": "components/ui/chc/iiif-image.tsx"
+        }
+      ]
+    },
+    {
+      "name": "iiif-manifest",
+      "type": "registry:block",
+      "title": "IIIF Manifest",
+      "description": "IIIF Manifest",
+      "dependencies": [
+        "@samvera/clover-iiif",
+        "next"
+      ],
+      "registryDependencies": [
+        "skeleton"
+      ],
+      "files": [
+        {
+          "path": "src/registry/uib-ub/items/iiif-manifest/components/iiif-manifest.tsx",
+          "type": "registry:component",
+          "target": "components/ui/chc/iiif-manifest.tsx"
+        }
+      ]
+    }
+  ]
+}

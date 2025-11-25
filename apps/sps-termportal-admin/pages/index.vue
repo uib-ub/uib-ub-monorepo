@@ -1,9 +1,8 @@
 <template>
   <div class="flex">
-    <SideBar />
-    <main class="">
+    <main class="ml-[12em]">
       <header>
-        <h1 class="pb-12">
+        <h1 class="mt-4 mb-8">
           <LogoTermportalen img-style="width: 450px" />
           <div class="font-base ml-[133px] mt-[-25px] text-xl text-gray-500">
             admin
@@ -20,7 +19,7 @@
               <DashboardScheduledMemberUpdate />
             </DashboardScheduledActivities>
           </div>
-          <DashboardRecentActivities class="min-w-[32em]"/>
+          <DashboardRecentActivities class="min-w-[32em]" />
         </div>
       </div>
     </main>

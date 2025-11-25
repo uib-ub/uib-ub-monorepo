@@ -12,10 +12,14 @@
         "^build"
       ],
       "env": [
-        "API_URL",
-        "ES_HOST",
-        "ES_APIKEY",
-        "PORT"
+        "API_BASE_URL",
+        "API_DEVELOPMENT_PORT",
+        "API_BASE_PATH",
+        "API_SEARCH_HOST",
+        "API_SEARCH_API_KEY",
+        "API_OBSERVE_HOST",
+        "API_OBSERVE_API_KEY",
+        "NODE_ENV"
       ]
     }
   }

@@ -32,7 +32,7 @@ export default function Drawer({
     bottomHeightRem?: number
     middleHeightSvh?: number,
     topSubtractRem?: number,
-    scrollContainerRef?: React.RefObject<HTMLDivElement>
+    scrollContainerRef?: React.RefObject<HTMLDivElement | null>
 }) {
 
     const [snapped, setSnapped] = useState(false)

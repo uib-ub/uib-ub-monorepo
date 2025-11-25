@@ -6,13 +6,13 @@ import { sanityFetch } from '@/sanity/lib/fetch'
 import { MainShell } from '@/components/shared/main-shell'
 
 export default async function SoftwarePage() {
-  const data = await sanityFetch<any[]>({ query, revalidate: 7200 })
+  const data = await sanityFetch({ query, revalidate: 7200 })
 
   return (
     <MainShell>
       <h1 className='mb-2'>Programvare</h1>
       <LiveQuery
-        enabled={draftMode().isEnabled}
+        enabled={(await draftMode()).isEnabled}
         query={query}
         initialData={data}
         as={PreviewSoftware}
@@ -20,5 +20,5 @@ export default async function SoftwarePage() {
         <Software data={data} />
       </LiveQuery>
     </MainShell>
-  )
+  );
 }

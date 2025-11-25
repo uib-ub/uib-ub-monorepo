@@ -1,6 +1,7 @@
 import { IBM_Plex_Mono, Inter, PT_Serif, MedievalSharp } from 'next/font/google'
 import type { Metadata } from 'next'
 import '@/app/globals.css'
+import { ThemeProvider } from '@/components/providers/theme-provider'
 
 
 export const metadata: Metadata = {
@@ -37,9 +38,16 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="no" className={`${mono.variable} ${sans.variable} ${serif.variable} ${fantasy.variable}`}>
+    <html lang="no" className={`${mono.variable} ${sans.variable} ${serif.variable} ${fantasy.variable}`} suppressHydrationWarning>
       <body>
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )

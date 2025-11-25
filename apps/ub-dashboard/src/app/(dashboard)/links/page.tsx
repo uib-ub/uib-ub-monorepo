@@ -6,7 +6,7 @@ import { MainShell } from '@/components/shared/main-shell'
 import PreviewLinks from './_components/preview-links'
 
 export default async function LinksPage() {
-  const data = await sanityFetch<any[]>({ query, revalidate: 7200 })
+  const data = await sanityFetch({ query, revalidate: 7200 })
 
   return (
     <MainShell>
@@ -15,7 +15,7 @@ export default async function LinksPage() {
       </div>
       {/* <pre className='text-xs'>{JSON.stringify(data, null, 2)}</pre> */}
       <LiveQuery
-        enabled={draftMode().isEnabled}
+        enabled={(await draftMode()).isEnabled}
         query={query}
         initialData={data}
         as={PreviewLinks}
@@ -23,5 +23,5 @@ export default async function LinksPage() {
         <Links data={data} />
       </LiveQuery>
     </MainShell>
-  )
+  );
 }

@@ -1,5 +1,7 @@
 "use client"
-import { CaretSortIcon, CheckCircledIcon, CheckboxIcon, CrossCircledIcon } from "@radix-ui/react-icons"
+
+import React from "react"
+import { CaretSortIcon, CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons"
 import { ColumnDef } from "@tanstack/react-table"
 import { SoftwareListProps } from '../software-list'
 import Link from "next/link"
@@ -27,7 +29,7 @@ export const columns: ColumnDef<SoftwareListProps>[] = [
       <div className='w-[200px] flex gap-1'>
         {row.original.logo ? (
           <div className='w-[20px] h-[20px]'>
-            <ImageBox image={row.original.logo} width={20} height={20} alt="" classesWrapper='relative aspect-[1/1] rounded-full' />
+            <ImageBox image={row.original.logo} width={20} height={20} alt="" classesWrapper='relative aspect-square rounded-full' />
           </div>
         ) : null}
         <Link href={`/${path[row.original.type]}/${row.getValue('id')}`} className='font-bold'>
@@ -45,7 +47,7 @@ export const columns: ColumnDef<SoftwareListProps>[] = [
     accessorKey: "hasType",
     cell: ({ row }) => (
       <div className='flex flex-wrap gap-2'>
-        {(row.getValue('hasType') as any[])?.map((t: any, i: number) => (
+        {(row.getValue('hasType') as Array<{ id: string; label: string }> | undefined)?.map((t) => (
           <Badge variant="secondary" className='grow-0' key={t.id}>
             {t.label}
           </Badge>
@@ -69,7 +71,7 @@ export const columns: ColumnDef<SoftwareListProps>[] = [
       const hostedBy = uniqueStringArray(row.original.hostedBy)
       return (
         <div className='flex flex-wrap gap-2'>
-          {hostedBy.map((t: any) => (
+          {hostedBy.map((t: string) => (
             <Badge variant="secondary" className='grow-0' key={t}>
               {t}
             </Badge>
@@ -85,7 +87,7 @@ export const columns: ColumnDef<SoftwareListProps>[] = [
       const runBy = uniqueStringArray(row.original.runBy)
       return (
         <div className='flex flex-wrap gap-2'>
-          {runBy.map((t: any) => (
+          {runBy.map((t: string) => (
             <Badge variant="secondary" className='grow-0' key={t}>
               {t}
             </Badge>
@@ -101,7 +103,7 @@ export const columns: ColumnDef<SoftwareListProps>[] = [
       const programmedWith = uniqueStringArray(row.original.programmedWith)
       return (
         <div className='flex flex-wrap gap-2'>
-          {programmedWith.map((t: any) => (
+          {programmedWith.map((t: string) => (
             <Badge variant="secondary" className='grow-0' key={t}>
               {t}
             </Badge>
@@ -117,7 +119,7 @@ export const columns: ColumnDef<SoftwareListProps>[] = [
       const uses = uniqueStringArray(row.original.uses)
       return (
         <div className='flex flex-wrap gap-2'>
-          {uses.map((t: any) => (
+          {uses.map((t: string) => (
             <Badge variant="secondary" className='grow-0' key={t}>
               {t}
             </Badge>

@@ -1,9 +1,9 @@
 "use client"
 
-import { CaretSortIcon, CheckCircledIcon, ClockIcon, CrossCircledIcon, QuestionMarkCircledIcon } from "@radix-ui/react-icons"
+import React from "react"
+import { CaretSortIcon } from "@radix-ui/react-icons"
 import { ColumnDef } from "@tanstack/react-table"
 import { DeprecatedProps } from '../deprecated'
-import Link from "next/link"
 import { Button } from '@/components/ui/button'
 import { ItemContextMenu } from '@/components/edit-intent-button'
 
@@ -39,7 +39,7 @@ export const columns: ColumnDef<DeprecatedProps>[] = [
   {
     header: "Periode",
     accessorKey: "period",
-    cell: ({ row }: { row: any }) => (
+    cell: ({ row }) => (
       <span className='whitespace-nowrap'>
         {row.getValue('period')}
       </span>
@@ -48,7 +48,7 @@ export const columns: ColumnDef<DeprecatedProps>[] = [
   {
     header: "",
     accessorKey: "id",
-    cell: ({ row }: { row: any }) => (
+    cell: ({ row }) => (
       <ItemContextMenu
         variant={'secondary'}
         className='text-xs px-2 py-0'

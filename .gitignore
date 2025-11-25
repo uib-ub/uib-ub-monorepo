@@ -28,11 +28,15 @@ build
 .swc/
 next-env.d.ts
 
+# Fumadocs
+.source
+
 # sanity
 /studio/dist
 
 # nuxt.js
 .nuxt/
+.data/
 .nitro
 
 # misc
@@ -108,11 +112,11 @@ yalc.lock
 
 # tsconfig
 tsconfig.tsbuildinfo
+tsconfig.build.tsbuildinfo
 
 # Temporary ignore
 /apps/ub-dashboard/v1
-/apps/sps-stadnamn-web/src/app/.view
+/apps/api/v1
 
-# Cursor
+# Ignored since it's app specific
 .cursorignore
-

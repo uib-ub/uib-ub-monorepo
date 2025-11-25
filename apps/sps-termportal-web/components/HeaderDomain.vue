@@ -1,9 +1,12 @@
 <template>
-  <li class="shrink-0 hover:bg-gray-200 rounded" role="presentation">
+  <li
+    class="shrink-0 hover:bg-gray-200 rounded"
+    role="presentation"
+  >
     <button
       :id="`${tabId}Domains-tab`"
       class="px-2 pt-1"
-      :class="{ 'border-b-[2px] border-black': searchInterface.domain[0] == tabId }"
+      :class="{ 'border-b-2 border-black': searchInterface.domain[0] == tabId }"
       :aria-current="searchInterface.domain[0] == tabId"
       type="button"
       @click="searchInterface.domain = [tabId]"
@@ -16,8 +19,9 @@
 <script setup>
 const searchInterface = useSearchInterface();
 
-const props = defineProps({
+defineProps({
   tabId: { type: String, required: true },
 });
 </script>
+
 <style scoped></style>

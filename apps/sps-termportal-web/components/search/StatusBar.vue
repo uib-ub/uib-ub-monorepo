@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!--Filter-->
+    <!-- Filter -->
     <div class="flex h-9 justify-between text-lg">
       <div class="flex gap-x-4 items-center">
         <button

@@ -1,19 +1,22 @@
-"use client";
+import React from 'react'
+import { Button } from "@/components/ui/button"
+import { signOut } from "@/auth"
 
-import { signOut } from "next-auth/react";
-
-import type { ClientSafeProvider } from "next-auth/react";
-import { Button } from '@/components/ui/button';
-
-export function LogoutButton({ className, auth }: { className?: string, readonly auth?: ClientSafeProvider }) {
+export function SignOut() {
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      className={className}
-      onClick={() => signOut()}
+    <form
+      action={async () => {
+        "use server"
+        await signOut()
+      }}
     >
-      Logout
-    </Button>
-  );
+      <Button
+        type="submit"
+        variant="ghost"
+        size="sm"
+      >
+        Logg ut
+      </Button>
+    </form>
+  )
 }

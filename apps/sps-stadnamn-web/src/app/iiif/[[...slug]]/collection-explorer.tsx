@@ -36,7 +36,7 @@ export default function CollectionExplorer({manifest, isCollection, manifestData
     const { inputValue } = useContext(GlobalContext);
     const [searchQuery, setSearchQuery] = useState('');
     const containerRef = useRef<HTMLDivElement>(null);
-    const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
+    const searchTimeout = useRef<ReturnType<typeof setTimeout>>(null);
     const { isMobile } = useContext(GlobalContext);
 
     const {

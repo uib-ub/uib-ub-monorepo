@@ -1,35 +1,3 @@
-import { LangCode } from "./locale";
-import { LabelPredicate, Matching, uiConfig } from "~~/utils/vars";
-import { Samling } from "~~/utils/vars-termbase";
-
-export interface SearchDataEntry {
-  predicate: string;
-  label: string;
-  link: string;
-  lang: string[];
-  samling: string;
-  matching: string;
-  translate?: string;
-  score?: string;
-}
-
-export interface SearchDataStats {
-  lang?: { [key in LangCode]: number };
-  samling?: { [key in Samling]: number };
-  predicate?: { [key in LabelPredicate]: number };
-  matching?: { [key in Matching]: number };
-  context?: { string: number };
-}
-
-export interface SearchInterface {
-  term: string | null;
-  language: LangCode | "all";
-  translate: LangCode | "none";
-  domain: Object;
-  termbase: Samling[];
-  useDomain: boolean;
-}
-
 export const useSearchInterface = () =>
   useState<SearchInterface>("searchinterface", () => ({
     term: null,
@@ -45,8 +13,15 @@ export const useAllowSearchFetch = () =>
 export const useSearchBarWasFocused = () =>
   useState<boolean>("searchBarWasFocused", () => false);
 export const useSearchterm = () => useState<string>("searchterm", () => "");
+export const useSearchtermTermbase = () =>
+  useState<string>("searchtermTermbase", () => "");
 export const useSearchLanguage = () =>
   useState<string>("searchLanguage", () => "");
+export const useSearchLanguageTermbase = () =>
+  useState<string>("searchLanguageTermbase", () => "all");
+export const useSearchTranslateTermbase = () =>
+  useState<string>("searchTranslateTermbase", () => "none");
+
 export const useSearchTermbase = () =>
   useState<Array<string>>("searchTermbase", () => []);
 export const useSearchData = () =>
@@ -67,16 +42,9 @@ export const useSearchDataStats = () =>
 
 export const useShowSearchFilter = () =>
   useState<boolean>("showSearchFilter", () =>
-    uiConfig.wideUiBreakpoints.includes(useBreakpoint().value)
+    useAppConfig().ui.wideBreakpoints.includes(useBreakpoint().value),
   );
 
-export interface SearchFilterData {
-  lang: LangCode[];
-  samling: string[];
-  predicate: LabelPredicate[];
-  matching: Matching[];
-  context: string[];
-}
 export const useSearchFilterSelection = () =>
   useState<SearchFilterData>("searchFilterSelection", () => ({
     lang: [],
@@ -114,16 +82,7 @@ export const useConceptViewToggle = () =>
 export const useNavMenuExpanded = () =>
   useState<boolean>("navMenuExpanded", () => false);
 
+export const useTermpostContext = () => useState("termpostContext", () => true);
+
 export const useBootstrapData = () =>
-  useState<Object>("lazyLocales", () => ({
-    lalo: { nb: {}, nn: {}, en: {} },
-    termbase: {},
-    domain: {
-      "DOMENE-3ANaturvitenskapTeknologi": {},
-      "DOMENE-3AHumaniora": {},
-      "DOMENE-3ASamfunnsfag": {},
-      // "DOMENE-3AHelse_og_sosial": {},
-      "DOMENE-3AOkonomiAdministrasjon": {},
-    },
-    loaded: false,
-  }));
+  useState<BootstrapData | null>("bootstrapData", () => (null));

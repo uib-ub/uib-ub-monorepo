@@ -3,11 +3,10 @@
  */
 
 import { type DocumentDefinition } from 'sanity'
-import { type StructureResolver } from 'sanity/desk'
-import { Iframe } from 'sanity-plugin-iframe-pane'
-
-import { iframeOptions } from '../../../sanity.config'
-import { PREVIEWABLE_DOCUMENT_TYPES } from '@/sanity/schemas'
+import { type StructureResolver } from 'sanity/structure'
+/* import { Iframe } from 'sanity-plugin-iframe-pane' */
+/* import { iframeOptions } from '../../../sanity.config' */
+/* import { PREVIEWABLE_DOCUMENT_TYPES } from '@/sanity/schemas' */
 
 export const singletonPlugin = (types: string[]) => {
   return {
@@ -47,7 +46,7 @@ export const pageStructure = (
     const singletonItems = typeDefArray.map((typeDef) => {
       return S.listItem()
         .title(typeDef.title!)
-        .icon(typeDef.icon)
+        .icon(typeDef.icon as any)
         .child(
           S.editor()
             .id(typeDef.name)
@@ -57,14 +56,14 @@ export const pageStructure = (
               // Default form view
               S.view.form(),
               // Preview
-              ...(PREVIEWABLE_DOCUMENT_TYPES.includes(typeDef.name as any)
+              /* ...(PREVIEWABLE_DOCUMENT_TYPES.includes(typeDef.name as any)
                 ? [
                   S.view
                     .component(Iframe)
                     .options(iframeOptions)
                     .title('Preview'),
                 ]
-                : []),
+                : []), */
             ]),
         )
     })

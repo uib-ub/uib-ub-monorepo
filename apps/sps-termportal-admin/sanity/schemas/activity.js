@@ -31,13 +31,13 @@ export default {
     },
     {
       name: "usage",
-      title: "Gjør bruk av",
+      title: "Gjør bruk av ressurs",
       type: "array",
       of: [simpleUsage],
     },
     {
       name: "qualifiedAssociation",
-      title: "Utført av",
+      title: "Utført av person, gruppe eller organisasjon",
       type: "array",
       of: [association],
     },

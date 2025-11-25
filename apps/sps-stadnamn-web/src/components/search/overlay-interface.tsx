@@ -46,7 +46,7 @@ export interface DrawerProps {
     setCurrentPosition: (position: number) => void
     bottomHeightRem?: number
     middleHeightSvh?: number,
-    scrollContainerRef?: React.RefObject<HTMLDivElement>,
+    scrollContainerRef?: React.RefObject<HTMLDivElement | null>,
     groupData?: any
 }
 

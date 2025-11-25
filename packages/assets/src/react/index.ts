@@ -1,6 +1,7 @@
 export { default as CmiEn } from "./cmi-en";
 export { default as FrittOrdCentered } from "./fritt-ord-centered";
-export { default as FrittOrdLogo } from "./fritt-ord-logo";
+export { default as FrittOrdLogo } from "./fritt-ord-icon";
+export { default as FrittOrd } from "./fritt-ord";
 export { default as HvlEn } from "./hvl-en";
 export { default as HvlIcon } from "./hvl-icon";
 export { default as Iiif } from "./iiif";
@@ -13,3 +14,4 @@ export { default as UibUbEn } from "./uib-ub-en";
 export { default as UibUbNo } from "./uib-ub-no";
 export { default as UioIcon } from "./uio-icon";
 export { default as UisIcon } from "./uis-icon";
+export { default as UiBUBMarcusLogo } from "./uib-ub-marcus-logo";

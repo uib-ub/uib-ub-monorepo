@@ -1,10 +1,18 @@
 <template>
   <div class="news-item max-w-md">
-    <dt class="font-semibold">
+    <dt
+      class="font-semibold"
+      :lang="locale !== titleLang ? titleLang : undefined"
+    >
       {{ title }}
     </dt>
-    <dd class="text-sm text-gray-600">{{ prettyDate }}</dd>
-    <dd class="space-y-1 pt-1">
+    <dd class="text-sm text-gray-600">
+      {{ prettyDate }}
+    </dd>
+    <dd
+      class="space-y-1 pt-1"
+      :lang="locale !== contentLang ? contentLang : undefined"
+    >
       <slot />
     </dd>
   </div>
@@ -15,6 +23,8 @@ const locale = useLocale();
 
 const props = defineProps({
   title: { type: String, required: true },
+  titleLang: { type: String, required: true },
+  contentLang: { type: String, required: true },
   date: { type: String, required: true },
 });
 

@@ -1,9 +1,12 @@
 <template>
   <div class="max-w-prose lg:mx-2">
-    <h3 id="vis" class="pb-1 text-xl sr-only">
+    <h3
+      id="vis"
+      class="sr-only pb-1 text-xl"
+    >
       {{ $t("id.visualization") }}
     </h3>
-    <figure class="rounded-sm space-y-2">
+    <figure class="space-y-2 rounded-sm">
       <AppLink
         :to="displayInfo.image[0]?.value['@id']"
         :hide-icon="true"
@@ -12,10 +15,13 @@
         <ImgBase
           :img-src="displayInfo.image[0]?.value['@id']"
           :img-alt="`${$t('id.imageAltLabel')} '${pagetitle}'`"
-          class="border-solid border lg:p-2 p-1 justify-center max-h-[17em] lg:min-w-[22em] lg:max-w-[30em]"
-          img-style="width: 100%"
-        ></ImgBase>
-        <figcaption v-if="caption" class="pt-2">
+          class="max-h-[17em] justify-center border border-solid p-1 lg:max-h-[22em] lg:min-w-[22em] lg:max-w-[30em] lg:p-2"
+          img-style="width: 100%; object-fit: contain"
+        />
+        <figcaption
+          v-if="caption"
+          class="pt-2"
+        >
           {{ caption }}
         </figcaption>
       </AppLink>
@@ -24,6 +30,11 @@
 </template>
 
 <script setup lang="ts">
+const appConfig = useAppConfig();
+const termpostViewOnlyLangs = appConfig.language.dataDisplayOnly;
+
+const localeLangOrder = useLocaleLangOrder();
+
 const props = defineProps({
   displayInfo: { type: Object, required: true },
   pagetitle: { type: String, required: true },
@@ -36,7 +47,9 @@ const caption = computed(() => {
     return acc;
   }, {});
 
-  for (const lang in languageOrder) {
+  for (const lang of localeLangOrder.value
+    .filter(lc => !termpostViewOnlyLangs.includes(lc))
+    .slice(0, 3)) {
     if (Object.keys(captions).includes(lang)) {
       caption = captions[lang];
       break;

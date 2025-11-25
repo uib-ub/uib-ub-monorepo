@@ -5,10 +5,12 @@
     "concept": "Omgrep | omgrep | Omgrep | omgrep",
     "skipLink": "Gå til hovudinnhald",
     "collaborators": "Samarbeidspartnarane våre",
-    "readMore": "Les meir...",
-    "readLess": "Les mindre...",
+    "readMore": "Les meir",
+    "readLess": "Les mindre",
+    "all": "alle",
     "domain": {
-      "domain": "Domene | domene",
+      "domain": "domene | domene",
+      "domainCap": "Domene | Domene",
       "DOMENE-3AHumaniora": "Humaniora",
       "DOMENE-3ANaturvitenskapTeknologi": "Naturvitskap og teknologi",
       "DOMENE-3ASamfunnsfag": "Samfunnsfag",
@@ -93,24 +95,34 @@
       "delvis": "delvis ekvivalens til",
       "bredere": "breiare intensjon enn",
       "smalere": "smalare intensjon enn"
+    },
+    "audience": {
+      "termportalen:gp:prefLabel": "Anbefalt for allmennlege",
+      "termportalen:gp:altLabel": "Tillatt for allmennlege"
     }
   },
   "domainOverview": { "domainsAndBases": "Domene og termbasar" },
   "navBar": {
+    "hjelp": "Hjelp",
     "om": "Om Termportalen",
     "innstillinger": "Innstillingar",
     "menuButtonShow": "Utvid menyen",
     "menuButtonHide": "Skjul menyen",
     "language": "Visningsspråk",
-    "navigation": "Navigasjon" // TODO Check translation
+    "navigation": "Navigasjon", // TODO Check translation
+    "uibHomepage": "Universitetet i Bergen heimeside"
   },
   "news": {
     "heading": "Nyhende"
   },
   "searchBar": {
     "search": "Søk",
-    "inDomain": "i",
+    "in": "i",
     "inLanguage": "på",
+    "inOneDomain": "i domenet",
+    "inDomains": "i domena",
+    "inAllDomains": "i alle domene",
+    "inAllTermbases": "i alle termbasar",
     "language": "Søkespråk",
     "translate": "Målspråk",
     "termbase": "Termbase",
@@ -121,7 +133,13 @@
     "expandSubdomains": "Vis underdomene",
     "closeSubdomains": "Skjul underdomene",
     "expandTermbases": "Vis termbasar",
-    "closeTermbases": "Skjul termbasar"
+    "closeTermbases": "Skjul termbasar",
+    "expandDomainMenu": "Utvid domenemeny",
+    "closeDomainMenu": "Skjul domenemeny",
+    "resetDomainOptions": "Tilbakestill domeneval",
+    "expandTermbaseMenu": "Utvid termbasemeny",
+    "closeTermbaseMenu": "Skjul termbasemeny",
+    "resetTermbaseOptions": "Tilbakestill termbaseval"
   },
   "searchFilter": {
     "results": "treff",
@@ -130,7 +148,8 @@
     "filterTitleShow": "Vis filter",
     "filterTitleHide": "Skjul filter",
     "termproperty": "Termstatus",
-    "matching": "Treffmønster"
+    "matching": "Treffmønster",
+    "resetFilter": "Tilbakestill filter"
   },
   "footer": {
     "contact": "Kontakt oss",
@@ -193,7 +212,11 @@
     "visualization": "Visualisering",
     "imageAltLabel": "Visualisering av omgrepet",
     "version": "Versjon",
-    "browser": "Ekstern nettlesar"
+    "browser": "Ekstern nettlesar",
+    "audience": "Målgruppemerknad",
+    "icsCode": "ICS-kode",
+    "source": "Kjelde",
+    "example": "Eksempel"
   },
   "index": { "title": "Termportalen" },
   "search": {
@@ -201,6 +224,12 @@
     "term": "Term",
     "language": "Språk",
     "termbase": "Termbase"
+  },
+  "hjelp": {
+    "title": "Hjelp",
+    "search": "Søk",
+    "termpost": "Termposten",
+    "data": "Opne data"
   },
   "om": {
     "title": "Om Termportalen",

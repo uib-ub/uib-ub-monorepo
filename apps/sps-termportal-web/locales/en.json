@@ -5,10 +5,12 @@
     "concept": "Concept | concept | Concepts | concepts",
     "skipLink": "Go to  main content",
     "collaborators": "Our collaborators",
-    "readMore": "Read more...",
-    "readLess": "Read less...",
+    "readMore": "Read more",
+    "readLess": "Read less",
+    "all": "all",
     "domain": {
-      "domain": "Domain | domain",
+      "domain": "domain | domains",
+      "domainCap": "Domain | Domains",
       "DOMENE-3AHumaniora": "Humanities",
       "DOMENE-3ANaturvitenskapTeknologi": "Natural sciences & technology",
       "DOMENE-3ASamfunnsfag": "Social studies",
@@ -92,24 +94,34 @@
       "delvis": "partial equivalence to",
       "bredere": "Broader intension than",
       "smalere": "Narrower intension than"
+    },
+    "audience": {
+      "termportalen:gp:prefLabel": "Recommended for general practitioner",
+      "termportalen:gp:altLabel": "Allowed for general practitioner"
     }
   },
   "domainOverview": { "domainsAndBases": "Domains & Termbases" },
   "navBar": {
+    "hjelp": "Help",
     "om": "About Termportalen",
     "innstillinger": "Settings",
     "menuButtonShow": "Extend menu",
     "menuButtonHide": "Hide menu",
     "language": "Display language",
-    "navigation": "Navigation"
+    "navigation": "Navigation",
+    "uibHomepage": "University of Bergen homepage"
   },
   "news": {
     "heading": "News"
   },
   "searchBar": {
     "search": "Search",
-    "inDomain": "in",
+    "in": "in",
     "inLanguage": "in",
+    "inOneDomain": "in the domain",
+    "inDomains": "in the domains",
+    "inAllDomains": "in all domains",
+    "inAllTermbases": "in all termbases",
     "language": "Search language",
     "translate": "Target language",
     "termbase": "Termbase",
@@ -120,7 +132,13 @@
     "expandSubdomains": "Show subdomains",
     "closeSubdomains": "Hide subdomains",
     "expandTermbases": "Show termbases",
-    "closeTermbases": "Hide termbases"
+    "closeTermbases": "Hide termbases",
+    "expandDomainMenu": "Extend domain menu",
+    "closeDomainMenu": "Hide domain menu",
+    "resetDomainOptions": "Reset domain selection",
+    "expandTermbaseMenu": "Extend termbase menu",
+    "closeTermbaseMenu": "Close termbase menu",
+    "resetTermbaseOptions": "Reset termbase selection"
   },
   "searchFilter": {
     "results": "results",
@@ -129,7 +147,8 @@
     "filterTitleShow": "Show filter",
     "filterTitleHide": "Hide filter",
     "termproperty": "Acceptability rating",
-    "matching": "Matching pattern"
+    "matching": "Matching pattern",
+    "resetFilter": "Reset filter"
   },
   "footer": {
     "contact": "Contact us",
@@ -192,7 +211,11 @@
     "visualization": "Visualization",
     "imageAltLabel": "Visualization of the concept",
     "version": "Version",
-    "browser": "External browser"
+    "browser": "External browser",
+    "audience": "Audience note",
+    "icsCode": "ICS code",
+    "source": "Source",
+    "example": "Example"
   },
   "index": { "title": "Termportalen" },
   "search": {
@@ -200,6 +223,12 @@
     "term": "Term",
     "language": "Language",
     "termbase": "Termbase"
+  },
+  "hjelp": {
+    "title": "Help",
+    "search": "Searching",
+    "termpost": "Terminological entries",
+    "data": "Open data"
   },
   "om": {
     "title": "About Termportalen",

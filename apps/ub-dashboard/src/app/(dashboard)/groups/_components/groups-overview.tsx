@@ -55,8 +55,8 @@ export const query = groq`*[_type in ['Group'] && !references('dd4c1492-5e15-4d1
 const Groups = ({ data }: { data: GroupsOverviewProps[] }) => {
   const nestedData = arrayToTree(data, { parentId: 'subGroupOf', dataField: null })
   const groupedByType = groupBy(nestedData, function (item) {
-    if (!item.hasType?.[0].label) return 'Uklassifisert'
-    return item.hasType[0].label
+    if (!item || !Array.isArray(item.hasType) || !item.hasType[0]) return 'Uklassifisert'
+    return item.hasType[0]?.label ?? 'Uklassifisert'
   })
 
   return (
@@ -65,7 +65,7 @@ const Groups = ({ data }: { data: GroupsOverviewProps[] }) => {
         <div className='sticky top-2'>
           <div className='font-bold'>Kategorier</div>
           <div className='flex flex-col gap-2 mt-0 '>
-            {groupedByType && Object.entries(groupedByType).map(([key, value]: [string, any]) => (
+            {groupedByType && Object.entries(groupedByType).map(([key]) => (
               <Link href={`#${key}`} key={key} className='text-zinc-500 dark:text-zinc-400'>{key}</Link>
             ))}
           </div>

@@ -1,4 +1,5 @@
 import { NuxtAuthHandler } from "#auth";
+
 const runtimeConfig = useRuntimeConfig();
 
 export default NuxtAuthHandler({

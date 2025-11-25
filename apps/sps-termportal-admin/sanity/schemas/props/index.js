@@ -33,8 +33,8 @@ export const blockContent = {
                   href: props.value.href,
                   target: "_blank",
                 },
-                props.renderDefault(props)
-              )
+                props.renderDefault(props),
+              ),
             );
           },
         },
@@ -50,15 +50,17 @@ export const note = {
   of: [blockContent],
 };
 
-export const label = { name: "label", type: "string" };
+export const label = { name: "label", type: "string", title: "Tittel" };
 
-export const email = { name: "email", type: "string" };
+export const email = { name: "email", type: "string", title: "E-post" };
 
 export const tbstatus = {
   name: "status",
   type: "string",
+  title: "Termbasestatus",
   options: {
     list: [
+      { title: "Uaktuell", value: "uaktuell" },
       { title: "Kjent", value: "kjent" },
       { title: "Planlagt", value: "planlagt" },
       { title: "Initialisert", value: "initialisert" },
@@ -73,10 +75,12 @@ export const tbstatus = {
 export const timespan = {
   name: "timespan",
   type: "Timespan",
+  title: "Tidsrom",
 };
 
 export const responsibleStaff = {
   name: "responsibleStaff",
   type: "reference",
+  title: "Ansvarlig ansatt",
   to: [{ type: "person" }],
 };

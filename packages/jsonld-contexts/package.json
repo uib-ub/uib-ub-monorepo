@@ -2,5 +2,8 @@
   "name": "jsonld-contexts",
   "version": "1.0.0",
   "license": "MIT",
-  "main": "src/index.ts"
+  "main": "src/index.ts",
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
 }

@@ -1,20 +1,20 @@
 import { genSearchEntryQuery } from "~/server/utils/genSearchEntryQuery";
+import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
-
-  const url = runtimeConfig.endpointUrl;
   const body = await readBody(event);
   const query = genSearchEntryQuery(body);
+  const instance = getFusekiInstanceInfo(runtimeConfig);
 
-  const data = await $fetch(url, {
+  const data = await $fetch(instance.url, {
     method: "post",
     body: query,
     headers: {
       "Content-type": "application/sparql-query",
-      Referer: "termportalen.no", // TODO Referer problem
-      Accept: "application/json",
+      "Accept": "application/json",
+      "Authorization": `Basic ${instance.authHeader}`,
     },
   });
-  return data.results.bindings.map(processBinding);
+  return data.results.bindings.map(binding => processBinding(binding, body));
 });

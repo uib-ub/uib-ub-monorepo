@@ -1,10 +1,13 @@
 <template>
-  <div ref="wrapper" class="w-full">
-    <div class="flex gap-x-2 items-center flex-wrap gap-y-1">
+  <div
+    ref="wrapper"
+    class="w-full"
+  >
+    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
       <!-- All termbases + expand -->
       <button
         v-if="searchInterface.termbase.length == 0"
-        class="border py-1 px-3 rounded-md border-gray-300 min-h-[2.3em]"
+        class="min-h-[2.3em] rounded-md border border-gray-300 px-3 py-1"
         @click="panel = !panel"
       >
         {{ $t("global.samling.all") }}
@@ -14,97 +17,107 @@
       <button
         v-for="tb in searchInterface.termbase"
         :key="tb"
-        class="flex justify-center items-center space-x-1.5 border py-1 pl-3 pr-2 rounded-md border-gray-300 min-h-[2.3em] group"
+        class="group flex min-h-[2.3em] items-center justify-center space-x-1.5 rounded-md border border-gray-300 py-1 pl-3 pr-2"
         @click="
           searchInterface.termbase = searchInterface.termbase.filter(
-            (item) => item !== tb
+            (item) => item !== tb,
           )
         "
       >
-        <span>{{ lalof(`${tb}-3A${tb}`) }}</span>
+        <span>{{ getLaLo(`${tb}-3A${tb}`) }}</span>
         <Icon
           name="material-symbols:close"
           size="1.2rem"
-          class="text-gray-600 mt-0.5 border border-white group-hover:border-gray-300 rounded-sm group-hover:bg-gray-100"
+          class="mt-0.5 rounded-sm border border-white text-gray-600 group-hover:border-gray-300 group-hover:bg-gray-100"
         />
       </button>
     </div>
     <div class="flex justify-center">
       <!-- Expand all termbases panel -->
       <button
-        class="absolute border border-t-white border-gray-300 rounded-b-md bg-white h-[1.1em] mt-[6px] flex justify-center w-16"
+        class="absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border-2 border-gray-200 border-t-white bg-white"
         @click="panel = !panel"
       >
         <Icon
           name="mdi:chevron-down"
           size="1.6em"
-          class="text-gray-600 mt-[-7px]"
+          class="mt-[-7px] text-gray-600"
           aria-hidden="true"
         />
+        <span class="sr-only">{{ $t("searchBar.expandTermbaseMenu") }}</span>
       </button>
     </div>
     <div
       v-if="panel"
-      class="absolute z-10 mt-[6px] rounded-b-[7px] border border-gray-300 bg-white border-t-white p-2 shadow-lg"
+      class="absolute z-20 mt-[6px] rounded-b-[7px] border border-gray-300 border-t-white bg-white p-2 shadow-lg"
     >
-      <div class="absolute top-0 right-0 flex mr-1 mt-1 space-x-2">
+      <div class="absolute right-0 top-0 mr-1 mt-1 flex space-x-2">
         <button
           v-if="searchInterface.termbase.length > 0"
-          class="p-0.5 text-gray-600 border border-transparent rounded-sm hover:text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+          class="rounded-sm border border-transparent p-0.5 text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
           @click="searchInterface.termbase = []"
         >
-          <IconReset class="text-lg" size="1.35em" />
-          <span class="sr-only">Reset termbase options</span>
+          <IconReset
+            class="text-lg"
+            size="1.35em"
+          />
+          <span class="sr-only">{{
+            $t("searchBar.resetTermbaseOptions")
+          }}</span>
         </button>
         <button
-          class="border hover:border-gray-300 border-transparent rounded-sm hover:bg-gray-100 text-gray-600 flex justify-center"
+          class="flex justify-center rounded-sm border border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-100"
           @click="panel = false"
         >
           <IconClose class="text-lg" />
-          <span class="sr-only">Close</span>
+          <span class="sr-only">{{ $t("searchBar.closeTermbaseMenu") }}</span>
         </button>
       </div>
-      <div class="text-lg px-2">
+      <div class="px-2 text-lg">
         {{ $t("global.termbase", 2) }}
       </div>
       <div
-        class="grid grid-flow-row grid-cols-1 gap-x-8 gap-y-0 md:grid-cols-2"
+        class="grid grid-flow-row grid-cols-1 grid-rows-15 gap-x-2 gap-y-0 lg:grid-flow-col"
       >
-        <div v-for="tb of orderedTermbases" :key="tb" class="flex max-w-md">
+        <div
+          v-for="tb of orderedTermbases"
+          :key="tb"
+          class="flex max-w-md"
+        >
           <input
             :id="tb"
             v-model="searchInterface.termbase"
             :value="tb"
             type="checkbox"
             class="peer outline-none"
-          />
+          >
           <label
             :for="tb"
             class="tp-transition-shadow flex w-fit cursor-pointer rounded-[7px] border border-transparent px-2 py-1 group-hover:border-tpblue-300 peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
             :class="{
               'bg-tpblue-400 text-white': Object.keys(
-                searchInterface.termbase
+                searchInterface.termbase,
               ).includes(tb),
             }"
           >
-            <div class="-mt-[1px] w-6">
+            <div class="flex items-start w-6">
               <Icon
                 v-if="searchInterface.termbase.includes(tb)"
                 name="mdi:checkbox-marked-outline"
                 size="1.4em"
-                class="text-tpblue-400"
+                class="text-tpblue-400 mt-0.5"
                 aria-hidden="true"
               />
               <Icon
                 v-else
                 name="mdi:checkbox-blank-outline"
                 size="1.4em"
-                class="text-tpblue-400"
+                class="text-tpblue-400 mt-0.5"
                 aria-hidden="true"
               />
             </div>
             <div class="flex-wrap pl-1.5">
-              {{ lalof(`${tb}-3A${tb}`) }}
+              {{ getLaLo(`${tb}-3A${tb}`) }}
             </div>
           </label>
         </div>
@@ -112,9 +125,12 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 const searchInterface = useSearchInterface();
 const orderedTermbases = useOrderedTermbases();
+const { getLaLo } = useLazyLocale();
+
 const panel = ref();
 const wrapper = ref(null);
 

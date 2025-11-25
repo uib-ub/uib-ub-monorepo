@@ -7,7 +7,6 @@
  * @example getSegmentFromUrl('https://example.com/segment1/segment2', -2)
  */
 
-
 export const pickSegmentFromEndOfUrl = (url: string, segment?: number): string | undefined => {
   if (!url) return undefined;
 

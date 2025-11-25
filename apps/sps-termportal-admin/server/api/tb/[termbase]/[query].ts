@@ -1,20 +1,27 @@
-import { checkEsCache } from "~/server/utils/elsaticSearchUtils";
-import genExploreDefinitionsQuery from "~/server/utils/genExploreDefinitionsQuery";
+import { checkEsCache } from "~/server/utils/elasticSearchUtils";
+import genTermbaseDefinitions from "~/server/utils/genTermbaseDefinitions";
 import genInsightTermbaseQuery from "~/server/utils/genInsightTermbaseQuery";
 import genOverviewQuery from "~/server/utils/genOverviewQuery";
+import genTermbaseDefinitionsMissing from "~/server/utils/genTermbaseDefinitionsMissing";
 import genQualitySemanticRelationsQuery from "~/server/utils/genQualitySemanticRelationsQuery";
+import genTermbaseSubjectValues from "~/server/utils/genTermbaseSubjectValues";
+import { getFusekiInstanceInfo } from "~/server/utils/fusekiUtils";
+import genTermbaseDomains from "~/server/utils/genTermbaseDomains";
+import genTermbaseSubjectTermposts from "~/server/utils/genTermbaseSubjectTermposts";
+import genTermbaseTerms from "~/server/utils/genTermbaseTerms";
+import genTermbaseRelations from "~/server/utils/genTermbaseRelations";
+import genTermbaseNotes from "~/server/utils/genTermbaseNotes";
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
-  let url = runtimeConfig.endpointUrl;
   const queryParams = getQuery(event);
+  const instance = getFusekiInstanceInfo(
+    runtimeConfig,
+    queryParams?.internal ? "internal" : "default",
+  );
 
-  if (queryParams?.internal) {
-    url = runtimeConfig.endpointUrlInternal;
-  }
-
-  const termbase = event.context.params?.termbase;
   const queryType = event.context.params?.query;
+  const termbase = event.context.params?.termbase;
 
   // Check escache for certain keys
   const cachedData = await checkEsCache(queryType);
@@ -26,26 +33,40 @@ export default defineEventHandler(async (event) => {
     switch (queryType) {
       case "qualitySemanticRelations":
         return genQualitySemanticRelationsQuery(termbase);
-      case "exploreDefinitions":
-        return genExploreDefinitionsQuery(termbase);
       case "termbase_overview":
         return genOverviewQuery();
+      case "definitions":
+        return genTermbaseDefinitions(termbase);
+      case "definitionsMissing":
+        return genTermbaseDefinitionsMissing(termbase);
       case "termbase_language_coverage":
         return genInsightTermbaseQuery();
+      case "subjectValues":
+        return genTermbaseSubjectValues(termbase);
+      case "subjectsTermposts":
+        return genTermbaseSubjectTermposts(termbase);
+      case "domains":
+        return genTermbaseDomains(termbase);
+      case "terms":
+        return genTermbaseTerms(termbase);
+      case "relations":
+        return genTermbaseRelations(termbase);
+      case "notes":
+        return genTermbaseNotes(termbase);
       default:
         break;
     }
   };
 
-  const data = await $fetch(url, {
+  const data = await $fetch(instance.url, {
     method: "post",
     body: query(),
     headers: {
       "Content-type": "application/sparql-query",
-      Referer: "termportalen.no", // TODO Referer problem
-      Accept: "application/json",
+      "Accept": "application/json",
+      "Authorization": `Basic ${instance.authHeader}`,
     },
   });
 
-  return data.value?.results?.bindings;
+  return data?.results?.bindings;
 });

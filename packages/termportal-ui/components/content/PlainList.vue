@@ -1,16 +1,23 @@
 <template>
-  <ul class="plain-list">
-    <ContentSlot :use="$slots.default" unwrap="p ul" />
+  <ul class="plain-list space-y-0.5" :class="indent == 'true' ? 'plain-list-indent' : ''">
+    <slot mdc-unwrap="p ul" />
   </ul>
 </template>
 
-<style>
-.plain-list ul {
-  @apply space-y-1;
-}
+<script setup lang="ts">
+const props = defineProps({
+  indent: { type: String, default: "false" },
+});
 
-.plain-list-indent ul {
+</script>
+
+<style>
+.plain-list {
+  margin-top: 0.25rem;
+  }
+
+.plain-list-indent {
   margin-left: 2em;
-  @apply space-y-2;
+  margin-top: 0.55rem;
 }
 </style>

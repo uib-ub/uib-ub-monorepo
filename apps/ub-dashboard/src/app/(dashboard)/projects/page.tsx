@@ -6,13 +6,13 @@ import { sanityFetch } from '@/sanity/lib/fetch'
 import { MainShell } from '@/components/shared/main-shell'
 
 export default async function ProjectsPage() {
-  const data = await sanityFetch<any[]>({ query, revalidate: 7200 })
+  const data = await sanityFetch({ query, revalidate: 7200 })
 
   return (
     <MainShell>
       <h1>Prosjekt</h1>
       <LiveQuery
-        enabled={draftMode().isEnabled}
+        enabled={(await draftMode()).isEnabled}
         query={query}
         initialData={data}
         as={PreviewProjects}
@@ -20,5 +20,5 @@ export default async function ProjectsPage() {
         <Projects data={data} />
       </LiveQuery>
     </MainShell>
-  )
+  );
 }

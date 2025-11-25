@@ -1,26 +1,25 @@
-import { SearchOptions } from "~/utils/vars";
-
 export function genSearchQueryAll(
   searchOptions: SearchOptions,
   language,
   predFilter,
-  context
+  context,
 ) {
   const runtimeConfig = useRuntimeConfig();
 
   let languageFilter: string;
   if (language[0] === "") {
     languageFilter = "";
-  } else {
+  }
+  else {
     const languageFilterExp = language
-      .map((lang) => `langmatches(lang(?lit), '${lang}')`)
+      .map(lang => `langmatches(lang(?lit), '${lang}')`)
       .join("     \n || ");
     languageFilter = `FILTER ( ${languageFilterExp} )`;
   }
 
   const translate = searchOptions.translate !== "none" ? "?translate" : "";
-  const translateOptional =
-    searchOptions.translate !== "none"
+  const translateOptional
+    = searchOptions.translate !== "none"
       ? `OPTIONAL { ?uri skosxl:prefLabel ?label2 .
                      ?label2 skosxl:literalForm ?translate .
                      FILTER ( langmatches(lang(?translate), '${searchOptions.translate}') ) }`
@@ -64,12 +63,8 @@ export function genSearchQueryAll(
           ${innerQuery}
           ?uri skosp:memberOf ?s .
           ?uri ?predicate ?label .
-          BIND ( replace(str(?s), "${
-            runtimeConfig.public.base
-          }", "") as ?samling).
-          BIND ( replace(str(?con), "${
-            runtimeConfig.public.base
-          }", "") as ?context).
+          BIND ( replace(str(?s), "${runtimeConfig.public.base}", "") as ?samling).
+          BIND ( replace(str(?con), "${runtimeConfig.public.base}", "") as ?context).
           BIND ( lang(?lit) as ?l)
           Bind ( str(?lit) as ?literal)
         }

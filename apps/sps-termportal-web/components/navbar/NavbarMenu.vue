@@ -8,18 +8,27 @@
       :title="$t('navBar.menuButtonShow')"
       @click="menu.toggle"
     >
-      <Icon name="tabler:menu-2" aria-hidden="true" size="2em" />
+      <Icon
+        name="tabler:menu-2"
+        aria-hidden="true"
+        size="2em"
+      />
     </button>
-    <Menu id="overlayMenu" ref="menu" :model="menuOptions" :popup="true">
+    <Menu
+      id="overlayMenu"
+      ref="menu"
+      :model="menuOptions"
+      :popup="true"
+    >
       <template #item="{ item, props }">
         <NuxtLink
           v-if="item.to"
           class="p-menuitem-link"
           :to="item.to"
           v-bind="props.action"
-          ><span class="p-menuitem-text">
-            {{ item.label }}
-          </span>
+        ><span class="p-menuitem-text">
+          {{ item.label }}
+        </span>
         </NuxtLink>
         <a
           v-else
@@ -59,6 +68,7 @@ const menuOptions = computed(() => [
     label: `${i18n.t("navBar.navigation")}`,
     items: [
       { label: `${i18n.t("global.termbase", 2)}`, to: "/termbaser" },
+      { label: `${i18n.t("navBar.hjelp")}`, to: "/hjelp" },
       { label: `${i18n.t("navBar.om")}`, to: "/om" },
       { label: `${i18n.t("navBar.innstillinger")}`, to: "/innstillinger" },
     ],

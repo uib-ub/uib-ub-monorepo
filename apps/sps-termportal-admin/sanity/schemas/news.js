@@ -27,9 +27,16 @@ export default {
       options: { collapsible: true, collapsed: true },
     },
   ],
-  fields: [{ name: "date", title: "Dato", type: "datetime" }].concat(
+  fields: [
+    {
+      name: "date",
+      title: "Dato",
+      description: "Vises på forsiden og brukes til å sortere innlegg",
+      type: "datetime",
+    },
+  ].concat(
     languages
-      .map((lang) => [
+      .map(lang => [
         {
           name: "title" + lang.value,
           type: "string",
@@ -44,7 +51,7 @@ export default {
           fieldset: lang.value,
         },
       ])
-      .flat()
+      .flat(),
   ),
   preview: {
     select: {

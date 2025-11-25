@@ -1,9 +1,11 @@
 <template>
   <main class="pt-8">
-    <h1 class="mb-6 text-2xl">Activities</h1>
+    <h1 class="mb-6 text-2xl">
+      Activities
+    </h1>
     <DataTable
       v-model:filters="filters"
-      v-model:expandedRows="expandedRows"
+      v-model:expanded-rows="expandedRows"
       :value="procdata"
       removable-sort
       paginator
@@ -15,10 +17,18 @@
       <template #header>
         <div class="flex flex-wrap justify-between gap-2">
           <div class="flex">
-            <InputText v-model="filters['global'].value" placeholder="Søk" />
+            <InputText
+              v-model="filters['global'].value"
+              placeholder="Søk"
+            />
           </div>
           <div>
-            <Button class="h-10" text label="Expand All" @click="expandAll" />
+            <Button
+              class="h-10"
+              text
+              label="Expand All"
+              @click="expandAll"
+            />
             <Button
               class="h-10"
               text
@@ -29,16 +39,35 @@
         </div>
       </template>
 
-      <Column expander style="width: 5rem" />
-      <Column field="label" header="Label" sortable />
-      <Column field="type" header="Type" sortable />
+      <Column
+        expander
+        style="width: 5rem"
+      />
+      <Column
+        field="label"
+        header="Label"
+        sortable
+      />
+      <Column
+        field="type"
+        header="Type"
+        sortable
+      />
 
-      <Column field="start" header="Start" sortable>
+      <Column
+        field="start"
+        header="Start"
+        sortable
+      >
         <template #body="slotProps">
           {{ prettyPrintDate(slotProps.data.start) }}
         </template>
       </Column>
-      <Column field="end" header="Slutt" sortable>
+      <Column
+        field="end"
+        header="Slutt"
+        sortable
+      >
         <template #body="slotProps">
           {{ prettyPrintDate(slotProps.data.end) }}
         </template>
@@ -55,15 +84,30 @@
       </Column>
       <template #expansion="slotProps">
         <div class="p-4 space-y-3 max-w-3xl">
-          <div v-if="slotProps.data.note" class="content-page">
-            <h2 class="text-lg py-1 font-semibold">Merknad</h2>
+          <div
+            v-if="slotProps.data.note"
+            class="content-page"
+          >
+            <h2 class="text-lg py-1 font-semibold">
+              Merknad
+            </h2>
             <TpSanityContent :blocks="slotProps.data.note" />
           </div>
           <div v-if="slotProps.data.scope">
-            <h2 class="text-lg py-1 font-semibold">Scope</h2>
+            <h2 class="text-lg py-1 font-semibold">
+              Scope
+            </h2>
             <DataTable :value="slotProps.data.scope">
-              <Column field="scope" header="Scope" sortable />
-              <Column field="subscope" header="Subscope" sortable />
+              <Column
+                field="scope"
+                header="Scope"
+                sortable
+              />
+              <Column
+                field="subscope"
+                header="Subscope"
+                sortable
+              />
             </DataTable>
           </div>
         </div>
@@ -115,9 +159,11 @@ const procdata = computed(() =>
       scope: a.qualifiedUsage?.map((usage) => {
         if (usage.scope === "Termbase") {
           return { scope: usage.scope, subscope: usage.termbase };
-        } else if (usage.scope === "Gruppe") {
+        }
+        else if (usage.scope === "Gruppe") {
           return { scope: usage.scope, subscope: usage.group };
-        } else {
+        }
+        else {
           return { scope: usage.scope, subscope: usage.subscope };
         }
       }),
@@ -126,6 +172,6 @@ const procdata = computed(() =>
       end: a.end?.substring(0, 10),
     };
     return tmp;
-  })
+  }),
 );
 </script>

@@ -5,9 +5,9 @@ import { postQuery } from '@/app/api/_utils/post'
  
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ mode:string, zoom: string, x: string, y: string }> }
+  { params }: { params: Promise<{ zoom: string, x: string, y: string }> }
 ) {
-  const { mode, zoom: precision, x, y} = await params
+  const { zoom: precision, x, y} = await params
 
 
 

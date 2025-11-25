@@ -38,7 +38,7 @@ export type Specific = "Type" | "Currency" | "Material" | "Language" | "Measurem
 /**
  * A human readable name or label for the entity, intended for developers
  */
-export type RdfsLabel = Partial<string | Record<string, string[]> | undefined>;
+export type RdfsLabel = string;
 /**
  * The class of the entity
  */
@@ -669,6 +669,7 @@ export type CrmP9ConsistsOf = (
   | SciS19_Encounter_Event1
   | CrmE9_Move
   | CrmE7_Activity2
+  | { type: "Transfer" }
 )[];
 /**
  * The class of the entity

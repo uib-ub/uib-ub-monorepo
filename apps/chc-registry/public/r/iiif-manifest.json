@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "iiif-manifest",
+  "type": "registry:block",
+  "title": "IIIF Manifest",
+  "description": "IIIF Manifest",
+  "dependencies": [
+    "@samvera/clover-iiif",
+    "next"
+  ],
+  "registryDependencies": [
+    "skeleton"
+  ],
+  "files": [
+    {
+      "path": "src/registry/uib-ub/items/iiif-manifest/components/iiif-manifest.tsx",
+      "content": "'use client';\n\nimport dynamic from 'next/dynamic';\nimport { Skeleton } from '@/components/ui/skeleton';\n\nexport const IIIFManifestSkeleton = () => (\n  <div className='absolute inset-0 flex items-center justify-center'>\n    <Skeleton className='flex items-center justify-center w-full h-full fade-in'>\n      Loading...\n    </Skeleton>\n  </div>\n);\n\nconst Viewer = dynamic(\n  () => import('@samvera/clover-iiif/viewer').then((Clover) => Clover.default),\n  {\n    ssr: false,\n    loading: IIIFManifestSkeleton,\n  },\n);\n\nconst customTheme = {\n  colors: {\n    /**\n     * Black and dark grays in a light theme.\n     * All must contrast to 4.5 or greater with `secondary`.\n     */\n    primary: \"var(--color-neutral-800)\",\n    primaryMuted: \"var(--color-neutral-600)\",\n    primaryAlt: \"var(--color-neutral-700)\",\n\n    /**\n     * Key brand color(s).\n     * `accent` must contrast to 4.5 or greater with `secondary`.\n     */\n    accent: \"var(--color-red-600)\",\n    accentMuted: \"var(--color-red-400)\",\n    accentAlt: \"var(--color-red-500)\",\n\n    /**\n     * White and light grays in a light theme.\n     * All must must contrast to 4.5 or greater with `primary` and  `accent`.\n     */\n    secondary: \"var(--color-neutral-100)\",\n    secondaryMuted: \"var(--color-neutral-200)\",\n    secondaryAlt: \"var(--color-neutral-300)\",\n  },\n  fonts: {\n    sans: \"'Open Sans', sans-serif\",\n    display: \"Optima, Georgia, Arial, sans-serif\",\n  },\n};\n\nconst options = {\n  canvasHeight: 'auto',\n  showIIIFBadge: false,\n  customLoadingComponent: () => (\n    <IIIFManifestSkeleton />\n  ),\n};\n\nexport const IIIFManifest = ({ iiifContent }: { iiifContent: string }) => {\n  return (\n    <div className='relative h-[70vh] w-full z-0'>\n      <Viewer\n        iiifContent={iiifContent}\n        customTheme={customTheme}\n        options={options}\n      />\n    </div>\n  );\n};",
+      "type": "registry:component",
+      "target": "components/ui/chc/iiif-manifest.tsx"
+    }
+  ]
+}

@@ -3,8 +3,10 @@
     <!-- <SideBar /> -->
     <main class="space-y-4 pt-8">
       <section>
-        <h1 class="mb-6 text-2xl">Termbase Exploration</h1>
-        <SimpleOverview v-model:modelValue="selectedTermbase" />
+        <h1 class="mb-6 text-2xl">
+          Termbase Exploration
+        </h1>
+        <SimpleOverview v-model:model-value="selectedTermbase" />
       </section>
       <ExploreTermbaseDefinitions
         v-if="selectedTermbase?.id"

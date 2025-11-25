@@ -1,5 +1,3 @@
-import { Matching, LabelPredicate, SearchOptions } from "../../utils/vars";
-
 export function sanitizeTerm(term: string) {
   return term
     .replace(/-|\(|\)|<|>|\[|\]|\/|,\s*$|\*|~|'|"|_/g, " ")
@@ -34,17 +32,21 @@ export function getLanguageData(searchOptions: SearchOptions): string[] {
       const tmplcs = searchOptions.language.map((lc) => {
         if (lc === "en-gb") {
           return "en-GB";
-        } else if (lc === "en-us") {
+        }
+        else if (lc === "en-us") {
           return "en-US";
-        } else {
+        }
+        else {
           return lc;
         }
       });
       return tmplcs;
-    } else {
+    }
+    else {
       return searchOptions.language;
     }
-  } else {
+  }
+  else {
     return [""];
   }
 }
@@ -52,26 +54,29 @@ export function getLanguageData(searchOptions: SearchOptions): string[] {
 function getLanguageWhere(
   subqueries: any,
   match: Matching | "all" | "allPatterns",
-  lang: string
+  lang: string,
 ): string {
   if (match === "all") {
     if (!lang) {
       return subqueries(match).where.replace("{languageFilter}", "");
-    } else {
+    }
+    else {
       return subqueries(match).where.replace(
         "{languageFilter}",
-        `FILTER ( langmatches(lang(?lit), "${lang}") )`
+        `FILTER ( langmatches(lang(?lit), "${lang}") )`,
       );
     }
-  } else if (!lang) {
+  }
+  else if (!lang) {
     return subqueries(match).where.replace("{language}", "");
-  } else {
+  }
+  else {
     return subqueries(match).where.replace("{language}", `"lang:${lang}"`);
   }
 }
 
 export function getPredicateValues(predicates: LabelPredicate[]): string {
-  return predicates.map((p) => `skosxl:${p}`).join("|");
+  return predicates.map(p => `skosxl:${p}`).join("|");
 }
 
 export function getContextFilter(searchOptions) {
@@ -84,13 +89,15 @@ export function getContextFilter(searchOptions) {
       .map((d: string) => {
         if (searchOptions.useDomain) {
           return `base:${d}`;
-        } else {
+        }
+        else {
           return `base:${d}-3A${d}`;
         }
       })
       .join(", ");
     return [`FILTER ( ?con IN ( ${values} ) )`, pred];
-  } else {
+  }
+  else {
     return ["", pred];
   }
 }
@@ -147,24 +154,24 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
   };
 
   const translate = searchOptions.translate !== "none" ? "?translate" : "";
-  // handles situation where 'en' is selected as target language and en-gb should
-  // works under the assumption that there are not 'en' AND 'en-gb'/'en-us' in same tb
-  const translateOptional =
-    searchOptions.translate !== "none"
+  // handles situation where 'en' is selected as target language and en-gb should be picked up
+  // works under the assumption that there are not 'en' AND 'en-gb' in same concept
+  const translateOptional
+    = searchOptions.translate !== "none"
       ? `OPTIONAL { ?uri skosxl:prefLabel ?label2 .
     ?label2 skosxl:literalForm ?translate .
     FILTER ( lang(?translate) = "${searchOptions.translate}" ${
-          searchOptions.translate === "en"
-            ? "|| lang(?translate) = 'en-gb'"
-            : ""
-        })
+      searchOptions.translate === "en"
+        ? "|| lang(?translate) = 'en-GB'"
+        : ""
+    })
     }`
       : "";
 
   const subqueryTemplate = (
     subqueries,
     match: Matching | "all" | "allPatterns",
-    where: string
+    where: string,
   ) => {
     const subquery = `
         {
@@ -181,7 +188,7 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
                 ${context[0]}
                 ${translateOptional}
               }
-              ORDER BY DESC(?score) lcase(?literal)
+              ORDER BY lcase(str(?lit)) DESC(?score)
               LIMIT ${searchOptions.limit}
               OFFSET ${searchOptions.offset?.[match as Matching] || 0}
             }

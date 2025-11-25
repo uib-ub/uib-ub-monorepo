@@ -1,10 +1,7 @@
-import { SearchDataStats } from "./states";
-import { Matching, SearchOptions } from "~~/utils/vars";
-
 export async function fetchSearchDataMatching(
   searchOptions: SearchOptions,
   append: boolean,
-  currentFetch: number
+  currentFetch: number,
 ) {
   const searchData = useSearchData();
   const searchFetchLatest = useSearchFetchLatest();
@@ -17,7 +14,8 @@ export async function fetchSearchDataMatching(
   if (currentFetch === searchFetchLatest.value) {
     if (append) {
       searchData.value = searchData.value.concat(data);
-    } else {
+    }
+    else {
       searchData.value = data;
     }
   }
@@ -34,10 +32,9 @@ export function resetSearchFilterSelection() {
   };
 }
 
-export type FetchType = "initial" | "options" | "filter" | "further";
 async function fetchSearchDataAggregate(
   searchOptions: SearchOptions,
-  currentFetch: number
+  currentFetch: number,
 ) {
   const situation = searchOptions.situation;
 
@@ -58,7 +55,8 @@ async function fetchSearchDataAggregate(
   if (currentFetch === searchFetchLatest.value) {
     if (["initial", "options"].includes(situation)) {
       searchDataStats.value = aggregate;
-    } else if (situation === "filter") {
+    }
+    else if (situation === "filter") {
       const zeroedStats = resetStats(searchDataStats.value, false);
       for (const category of Object.keys(zeroedStats)) {
         searchDataStats.value[category as keyof SearchDataStats] = {
@@ -90,9 +88,9 @@ export async function useFetchSearchData(options: SearchOptions) {
   }
 
   if (
-    situation === "initial" ||
-    situation === "filter" ||
-    situation === "options"
+    situation === "initial"
+    || situation === "filter"
+    || situation === "options"
   ) {
     searchDataPending.value.aggregate = true;
     fetchSearchDataAggregate(
@@ -100,7 +98,7 @@ export async function useFetchSearchData(options: SearchOptions) {
         ...options,
         ...{ subtype: "aggregate", matching: options.matching.flat() },
       },
-      fetchTime
+      fetchTime,
     );
   }
 
@@ -123,7 +121,7 @@ export async function useFetchSearchData(options: SearchOptions) {
         },
       },
       append,
-      fetchTime
+      fetchTime,
     );
 
     append = true;
