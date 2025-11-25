@@ -1,6 +1,6 @@
 import { aatAcknowledgementsType, aatBriefTextType, aatRightsType, attributionNoDerivsType, attributionNonCommercialNoDerivsType, attributionNonCommercialType, attributionShareAlikeType, attributionType, ccPublicDomainMarkType, institutions, publicDomainType, rsCopyrightUndeterminedType, rsInCopyrighttype } from '../staticMapping';
 import { getLanguage } from '../getLanguage';
-import { TBaseMetadata } from '../../../ingest-items/fetch-item';
+import { TBaseMetadata } from '../../../ingest-object/fetch-item';
 import omitEmptyEs from 'omit-empty-es';
 import { env } from '../../../../env';
 
@@ -116,7 +116,7 @@ export const constructSubjectTo = async (base: TBaseMetadata, data: any) => {
   const { identified_by: rightsName, subject_of: rightsStatement, ...rightsAssertion } = getLicenseMapping(isPublicDomainCheckResult?.['dct:license'] || license || 'default')
 
   const workRightsStatement = {
-    id: `${env.PROD_URL}/items/${base.newId}/licensing`,
+    id: `${env.API_BASE_URL}/object/${base.newId}/licensing`,
     type: "Right",
     _label: "Rights statement for work",
     classified_as: [
@@ -126,7 +126,7 @@ export const constructSubjectTo = async (base: TBaseMetadata, data: any) => {
     inherit_from: rightsAssertion,
     referred_to_by: [
       {
-        id: `${env.PROD_URL}/items/${base.newId}/licensing/description`,
+        id: `${env.API_BASE_URL}/object/${base.newId}/licensing/description`,
         type: "LinguisticObject",
         _label: "Rights Statement Description",
         classified_as: [
@@ -138,7 +138,7 @@ export const constructSubjectTo = async (base: TBaseMetadata, data: any) => {
     possessed_by: current_owner,
     subject_of: [
       {
-        id: "https://api.ub.uib.no/????/licensing/acknowledgements",
+        id: `${env.API_BASE_URL}/licensing/acknowledgements`,
         type: "LinguisticObject",
         _label: "Acknowledgements for Work Rights",
         classified_as: [
@@ -148,7 +148,7 @@ export const constructSubjectTo = async (base: TBaseMetadata, data: any) => {
         content: `Works are provided by the University of Bergen.`
       },
       {
-        id: "https://api.ub.uib.no/????/licensing/acknowledgements",
+        id: `${env.API_BASE_URL}/licensing/acknowledgements`,
         type: "LinguisticObject",
         _label: "Acknowledgements for Work Rights",
         classified_as: [
@@ -184,7 +184,7 @@ export const constructSubjectTo = async (base: TBaseMetadata, data: any) => {
     ],
     subject_of: [
       {
-        id: "https://data.ub.uib.no/???/licensing/acknowledgements",
+        id: `${env.API_BASE_URL}/licensing/acknowledgements`,
         type: "LinguisticObject",
         _label: "Acknowledgements for Collection Metadata",
         classified_as: [
@@ -194,7 +194,7 @@ export const constructSubjectTo = async (base: TBaseMetadata, data: any) => {
         content: "Collection metadata provided by the University of Bergen Library. All metadata are licensed under CC0 1.0 (http://creativecommons.org/publicdomain/zero/1.0/). The works themselves are licensed or marked under the respective rights statements."
       },
       {
-        id: "https://data.ub.uib.no/???/licensing/acknowledgements",
+        id: `${env.API_BASE_URL}/licensing/acknowledgements`,
         type: "LinguisticObject",
         _label: "Kreditering for samlingens metadata",
         classified_as: [

@@ -3,27 +3,27 @@ import { getLanguage } from './getLanguage';
 
 export const institutions: { [key: string]: { id: string; type: string; _label: string } } = {
   uib: {
-    id: `${env.PROD_URL}/groups/79543723-f0e9-40a6-bfb9-4830f080e887`,
+    id: `${env.API_BASE_URL}/group/79543723-f0e9-40a6-bfb9-4830f080e887`,
     type: 'Group',
     _label: 'Universitetet i Bergen',
   },
   ubb: {
-    id: `${env.PROD_URL}/groups/0f4d957a-5476-4e88-b2b6-71a06c1ecf9c`,
+    id: `${env.API_BASE_URL}/group/0f4d957a-5476-4e88-b2b6-71a06c1ecf9c`,
     type: "Group",
     _label: "Universitetsbiblioteket i Bergen",
   },
   spes: {
-    id: `${env.PROD_URL}/groups/de88f626-4b67-4fef-9d88-6930e8b5c645`,
+    id: `${env.API_BASE_URL}/group/de88f626-4b67-4fef-9d88-6930e8b5c645`,
     type: "Group",
     _label: "Spesialsamlingene ved Universitetsbiblioteket i Bergen",
   },
   sab: {
-    id: `${env.PROD_URL}/groups/statsarkivet-i-bergen`,
+    id: `${env.API_BASE_URL}/group/statsarkivet-i-bergen`,
     type: 'Group',
     _label: "Statsarkivet i Bergen",
   },
   bba: {
-    id: `${env.PROD_URL}/groups/3f0ed65b-8e5c-484e-8805-89619ee56a77`,
+    id: `${env.API_BASE_URL}/group/3f0ed65b-8e5c-484e-8805-89619ee56a77`,
     type: 'Group',
     _label: "Bergen byarkiv",
   }

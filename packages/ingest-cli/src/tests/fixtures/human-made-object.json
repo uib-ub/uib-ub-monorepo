@@ -284,27 +284,27 @@
     }
   ],
   "part_of": {
-    "id": "https://example.org/objects/parent123",
+    "id": "https://example.org/object/parent123",
     "type": "HumanMadeObject",
     "_label": "Parent Object"
   },
   "current_owner": [
     {
-      "id": "https://example.org/people/owner123",
+      "id": "https://example.org/person/owner123",
       "type": "Person",
       "_label": "Current Owner"
     }
   ],
   "current_custodian": [
     {
-      "id": "https://example.org/groups/museum123",
+      "id": "https://example.org/group/museum123",
       "type": "Group",
       "_label": "Museum Department"
     }
   ],
   "current_permanent_custodian": [
     {
-      "id": "https://example.org/groups/museum123",
+      "id": "https://example.org/group/museum123",
       "type": "Group",
       "_label": "Museum"
     }
@@ -357,7 +357,7 @@
     "_label": "Production Event",
     "carried_out_by": [
       {
-        "id": "https://example.org/people/artist123",
+        "id": "https://example.org/person/artist123",
         "type": "Person",
         "_label": "Artist"
       }
@@ -376,7 +376,7 @@
     },
     "took_place_at": [
       {
-        "id": "https://example.org/places/studio123",
+        "id": "https://example.org/place/studio123",
         "type": "Place",
         "_label": "Artist's Studio"
       }
@@ -411,7 +411,7 @@
       },
       "took_place_at": [
         {
-          "id": "https://example.org/places/discovery123",
+          "id": "https://example.org/place/discovery123",
           "type": "Place",
           "_label": "Discovery Location"
         }
@@ -457,7 +457,7 @@
       ],
       "possessed_by": [
         {
-          "id": "http://localhost:3009/groups/79543723-f0e9-40a6-bfb9-4830f080e887",
+          "id": "http://localhost:3009/group/79543723-f0e9-40a6-bfb9-4830f080e887",
           "type": "Group",
           "_label": {
             "no": [

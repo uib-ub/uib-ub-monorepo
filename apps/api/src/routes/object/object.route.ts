@@ -5,7 +5,7 @@ import { FailureSchema, IdParamsSchema, ItemParamsSchema } from '@shared/models'
 import { constructIIIFStructure } from '@shared/mappers/iiif/constructIIIFStructure'
 import { reorderDocument, sqb, useFrame } from 'utils'
 import { endpointUrl } from '@shared/clients/sparql-chc-client'
-import { itemQuery } from './item-query'
+import { itemQuery } from './object-query'
 import ubbontContext from 'jsonld-contexts/src/ubbontContext'
 import { ContextDefinition } from 'jsonld'
 import { JsonLdObj } from 'jsonld/jsonld-spec'
@@ -14,9 +14,9 @@ const route = new OpenAPIHono()
 
 const desiredOrder: string[] = ['@context', 'id', 'type', '_label', '_available', '_modified', 'identified_by']
 
-const ItemSchema = z.any().openapi('Item')
+const ObjectSchema = z.any().openapi('Object')
 
-export const getItem = createRoute({
+export const getObject = createRoute({
   method: 'get',
   path: '/{id}',
   request: {
@@ -27,10 +27,10 @@ export const getItem = createRoute({
     200: {
       content: {
         'application/json': {
-          schema: ItemSchema,
+          schema: ObjectSchema,
         },
       },
-      description: 'Retrieve a item.',
+      description: 'Retrieve a object.',
     },
     404: {
       content: {
@@ -41,10 +41,10 @@ export const getItem = createRoute({
       description: 'Failure message.',
     },
   },
-  tags: ['Items'],
+  tags: ['Object'],
 })
 
-route.openapi(getItem, async (c) => {
+route.openapi(getObject, async (c) => {
   const id = c.req.param('id')
   const as = c.req.query('as')
 
@@ -52,7 +52,7 @@ route.openapi(getItem, async (c) => {
     try {
       const response = await fetch(`${endpointUrl}?query=${encodeURIComponent(sqb(itemQuery, { id }))}&output=json`);
       if (!response.ok) {
-        throw new Error(`Failed to fetch item: ${response.statusText}`);
+        throw new Error(`Failed to fetch object: ${response.statusText}`);
       }
       const data = await response.json();
       // Check if data is empty by checking if it's falsy, has no keys, or is an empty object
@@ -63,9 +63,9 @@ route.openapi(getItem, async (c) => {
       const framed = await useFrame({ data, context: ubbontContext as ContextDefinition, type: 'HumanMadeObject' });
       // Cast to JsonLdObj which allows @context property
       (framed as JsonLdObj)['@context'] = ["https://api.ub.uib.no/ns/ubbont/context.json"]
-      return c.json(framed as z.infer<typeof ItemSchema>);
+      return c.json(framed as z.infer<typeof ObjectSchema>);
     } catch (error) {
-      throw new Error(`Error fetching item ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Error fetching object ${id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -88,16 +88,16 @@ route.openapi(getItem, async (c) => {
       const fileset = data?.hits?.hits?.find((hit) => hit._index?.startsWith('search-chc-fileset'))?._source as { data?: unknown }
 
       if (!fileset) {
-        return c.json({ error: true, message: 'Item has not been digitized' }, 404)
+        return c.json({ error: true, message: 'Object has not been digitized' }, 404)
       }
 
-      const item = data?.hits?.hits?.find((hit) => hit._index?.startsWith('search-chc-items'))?._source
+      const object = data?.hits?.hits?.find((hit) => hit._index?.startsWith('search-chc-items'))?._source
 
-      if (!item) {
-        return c.json({ error: true, message: 'Item has not been catalogued' }, 404)
+      if (!object) {
+        return c.json({ error: true, message: 'Object has not been catalogued' }, 404)
       }
 
-      const manifest = constructIIIFStructure(item, fileset)
+      const manifest = constructIIIFStructure(object, fileset)
       return c.json(manifest)
     } catch (error) {
       console.error(error)
@@ -119,20 +119,20 @@ route.openapi(getItem, async (c) => {
       return c.json({ error: true, message: 'Not found' }, 404)
     }
 
-    const item = data?.hits?.hits?.find((hit) => hit._index?.startsWith('search-chc-items'))?._source as JsonLdObj
+    const object = data?.hits?.hits?.find((hit) => hit._index?.startsWith('search-chc-items'))?._source as JsonLdObj
 
-    if (!item) {
-      return c.json({ error: true, message: 'Item has not been catalogued' }, 404)
+    if (!object) {
+      return c.json({ error: true, message: 'Object has not been catalogued' }, 404)
     }
 
-    if (Array.isArray(item) && item.length > 1) {
+    if (Array.isArray(object) && object.length > 1) {
       return c.json({ error: true, message: 'Ops, found duplicates!' }, 404)
     }
 
     // Rewrite _id to use the id from the URL parameter
     const itemWithNewId = {
-      ...item,
-      id: `${env.API_BASE_URL}/items/${String(item.id)}`
+      ...object,
+      id: `${env.API_BASE_URL}/object/${String(object.id)}`
     }
 
     return c.json(reorderDocument(itemWithNewId, desiredOrder))
@@ -149,7 +149,7 @@ route.openapi(getItem, async (c) => {
  */
 route.get('/:id/manifest', (c) => {
   const id = c.req.param('id')
-  return c.redirect(`/items/${id}?as=iiif`, 301)
+  return c.redirect(`/object/${id}?as=iiif`, 301)
 })
 
 
@@ -159,7 +159,7 @@ route.get('/:id/manifest', (c) => {
  */
 route.get('/:id/manifest.json', (c) => {
   const id = c.req.param('id')
-  return c.redirect(`/items/${id}?as=iiif`, 301)
+  return c.redirect(`/object/${id}?as=iiif`, 301)
 })
 
 

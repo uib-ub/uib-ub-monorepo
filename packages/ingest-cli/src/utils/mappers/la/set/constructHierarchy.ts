@@ -14,7 +14,7 @@ export const constructHierarchy = (data: any) => {
     ...data,
     member_of: isPartOf.map((o: any) => {
       return {
-        id: `${env.PROD_URL}/sets/${o.identifier}`,
+        id: `${env.API_BASE_URL}/set/${o.identifier}`,
         type: 'Set',
         _label: coalesceLabel(o._label),
       }

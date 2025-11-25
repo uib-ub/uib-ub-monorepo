@@ -1,6 +1,6 @@
 import { institutions } from '../staticMapping';
 import { env } from '../../../../env';
-import { TBaseMetadata } from '../../../ingest-items/fetch-item';
+import { TBaseMetadata } from '../../../ingest-object/fetch-item';
 import omitEmptyEs from 'omit-empty-es';
 import { coalesceLabel } from 'utils';
 
@@ -46,7 +46,7 @@ export const constructOwnership = (base: TBaseMetadata, data: any) => {
   } : undefined;
 
   const current_permanent_location = [{
-    id: storedAt?.identifier ? `${env.PROD_URL}/places/${storedAt?.identifier}` : `${env.PROD_URL}/place/storage`,
+    id: storedAt?.identifier ? `${env.API_BASE_URL}/places/${storedAt?.identifier}` : `${env.API_BASE_URL}/place/storage`,
     type: 'Place',
     _label: coalesceLabel(storedAt?._label) ?? 'Storage',
   }];

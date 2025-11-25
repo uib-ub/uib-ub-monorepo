@@ -49,7 +49,7 @@ export const constructCorrespondance = (data: any) => {
     carried_out_by: sourceArray?.map((source: any) => {
       const { path, type } = getLAApiType(source.type);
       return {
-        id: `${env.PROD_URL}/${path}/${source.identifier}`,
+        id: `${env.API_BASE_URL}/${path}/${source.identifier}`,
         type,
         _label: coalesceLabel(source._label),
       }
@@ -57,7 +57,7 @@ export const constructCorrespondance = (data: any) => {
     recipient: targetArray?.map((source: any) => {
       const { path, type } = getLAApiType(source.type);
       return {
-        id: `${env.PROD_URL}/${path}/${source.identifier}`,
+        id: `${env.API_BASE_URL}/${path}/${source.identifier}`,
         type,
         _label: coalesceLabel(source._label),
       }
@@ -71,13 +71,13 @@ export const constructCorrespondance = (data: any) => {
         },
         moved: [
           {
-            id: `${env.PROD_URL}/items/${data.identifier}`,
+            id: `${env.API_BASE_URL}/object/${data.identifier}`,
             type: data.type,
             _label: coalesceLabel(data._label),
           }
         ],
         moved_from: originPlace?.map((place: any) => {
-          const id = `${env.PROD_URL}/places/${place.identifier}`
+          const id = `${env.API_BASE_URL}/places/${place.identifier}`
           return {
             id: id,
             type: 'Place',
@@ -85,7 +85,7 @@ export const constructCorrespondance = (data: any) => {
           }
         }),
         moved_to: placeDelivery?.map((place: any) => {
-          const id = `${env.PROD_URL}/places/${place.identifier}`
+          const id = `${env.API_BASE_URL}/places/${place.identifier}`
           return {
             id: id,
             type: 'Place',

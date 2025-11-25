@@ -5,7 +5,7 @@ import { PaginationParamsSchema } from '@shared/models'
 
 const route = new OpenAPIHono()
 
-const ItemsSchema = z.array(
+const ObjectsSchema = z.array(
   z.object({
     'id': z.string().openapi({
       example: 'ubb-1596-10-23',
@@ -18,7 +18,7 @@ const ItemsSchema = z.array(
       example: '2021-02-12T14:03:43.000Z',
     }),
   })
-).openapi('Items')
+).openapi('Object')
 
 
 export const getList = createRoute({
@@ -31,14 +31,14 @@ export const getList = createRoute({
     200: {
       content: {
         'application/json': {
-          schema: ItemsSchema,
+          schema: ObjectsSchema,
         },
       },
-      description: 'Retrieve a list of items.',
+      description: 'Retrieve a list of objects.',
     },
   },
-  description: 'Retrieve a list of items. These are physical or born-digital items in the library collection.',
-  tags: ['Items'],
+  description: 'Retrieve a list of objects. These are physical or born-digital objects in the library collection.',
+  tags: ['Object'],
 })
 
 route.openapi(getList, async (c) => {
@@ -74,7 +74,7 @@ route.openapi(getList, async (c) => {
       return {
         ...hit._source,
         identifier: sourceRec.id,
-        id: `${env.API_BASE_URL}/items/${srcId}`,
+        id: `${env.API_BASE_URL}/object/${srcId}`,
       }
     })
   )

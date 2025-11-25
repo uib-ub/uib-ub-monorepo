@@ -11,7 +11,7 @@ export const constructCollection = (data: any) => {
   delete data.isPartOf
 
   const sets = isPartOf.map((collection: any) => {
-    const id = `${env.PROD_URL}/sets/${collection.identifier}`
+    const id = `${env.API_BASE_URL}/set/${collection.identifier}`
     return {
       id: id,
       type: 'Set',

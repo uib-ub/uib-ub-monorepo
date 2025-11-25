@@ -13,7 +13,7 @@ export const constructHierarchy = (data: any) => {
     ...data,
     member_of: subOrganizationOf.map((o: any) => {
       return {
-        id: `${env.PROD_URL}/group/${o.identifier}`,
+        id: `${env.API_BASE_URL}/group/${o.identifier}`,
         type: 'Group',
         _label: coalesceLabel(o.label),
       }

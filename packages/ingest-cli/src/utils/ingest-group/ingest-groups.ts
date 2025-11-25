@@ -4,17 +4,16 @@ import { bulkIndexData } from '../indexers/utils/bulkIndexData'
 import { flatMapDataForBulkIndexing } from '../indexers/utils/flatMapDataForBulkIndexing'
 import pretty from 'pretty-time'
 import { getIndexFromAlias } from '../indexers/utils/getIndexFromAlias'
-import { fetchAndProcessSet } from './fetch-set'
-import { InputItem, fetchSetsList } from './fetch-sets-list'
-import { fetchSetsCount } from './fetch-sets-count'
-import { putTemplates } from '../tempates/es_templates'
-import { logger } from '../logger'
+import { fetchAndProcessGroup } from './fetch-group'
+import { InputItem, fetchGroupsList } from './fetch-groups-list'
+import { fetchGroupsCount } from './fetch-groups-count'
 import { ensureIndexAndTemplatesReady } from '../indexers/utils/ensureIndexAndTemplatesReady'
+import { putTemplates } from '../tempates/es_templates'
 
 export const resolveItems = async (items: InputItem[]) => {
   try {
     const promises = items
-      .map(item => fetchAndProcessSet(item.identifier))
+      .map(item => fetchAndProcessGroup(item.identifier))
       .filter(Boolean)
     return await Promise.all(promises)
   } catch (error) {
@@ -22,12 +21,12 @@ export const resolveItems = async (items: InputItem[]) => {
   }
 }
 
-export const ingestSets = async (limit = 100, page = 0, overwrite = false) => {
-  const count = await fetchSetsCount()
+export const ingestGroups = async (limit = 100, page = 0, overwrite = false) => {
+  const count = await fetchGroupsCount()
 
   // Get the index name
-  const useIndex = await getIndexFromAlias(CHC_SEARCH_ALIAS, CHC_INDICIES.sets, overwrite)
-  // Ensure index and Elasticsearch are ready
+  const useIndex = await getIndexFromAlias(CHC_SEARCH_ALIAS, CHC_INDICIES.group, overwrite)
+  // Ensure index exists
   await ensureIndexAndTemplatesReady({ index: useIndex, putTemplates })
 
   // Set initial values
@@ -38,7 +37,7 @@ export const ingestSets = async (limit = 100, page = 0, overwrite = false) => {
     indexed: page * limit,    // Assume all previous pages were indexed
     runtime: BigInt(0),
   }
-  console.log("🚀 ~ ingestSets ~ status:", status)
+  console.log("🚀 ~ ingestGroups ~ status:", status)
 
   console.log(`Starting ingester using the index ${useIndex} (with ${CHC_SEARCH_ALIAS} as alias)`)
 
@@ -46,7 +45,7 @@ export const ingestSets = async (limit = 100, page = 0, overwrite = false) => {
     console.log('Fetching page', status.currentPage);
     // Fetch ids
     const t0 = process.hrtime.bigint();
-    const data = await fetchSetsList(status.currentPage * limit, limit);
+    const data = await fetchGroupsList(status.currentPage * limit, limit);
     const t1 = process.hrtime.bigint();
     console.log('├── Fetched', data.length, 'ids in', pretty(Number(t1) - Number(t0)));
 
@@ -58,14 +57,6 @@ export const ingestSets = async (limit = 100, page = 0, overwrite = false) => {
       const resolved = await resolveItems(data);
       const t3 = process.hrtime.bigint();
       console.log('├── Resolved', resolved?.length ?? 0, 'items in', pretty(Number(t3) - Number(t2)));
-
-      // Identify missing sets
-      /* const dataIdentifiers = data.map(item => item.id.split('/').pop());
-      const resolvedIdentifiers = (resolved ?? []).map(item => item?.id).filter(Boolean);
-      const missingIdentifiers = dataIdentifiers.filter(id => !resolvedIdentifiers.includes(id));
-      if (missingIdentifiers.length > 0) {
-        console.warn('⚠️ Missing sets (not resolved):', missingIdentifiers);
-      } */
 
       // Prepare bulk payload
       const t6 = process.hrtime.bigint();
@@ -92,9 +83,9 @@ export const ingestSets = async (limit = 100, page = 0, overwrite = false) => {
     // If no more items to fetch, break the loop
     if (data.length < limit || (status.fetched >= status.totalCount)) {
       console.log(`Finished ingesting in ${pretty(Number(status.runtime))}`);
-      console.log(`Indexed ${status.indexed} sets of ${status.totalCount}`);
+      console.log(`Indexed ${status.indexed} groups of ${status.totalCount}`);
       if (status.fetched - status.indexed > 0) {
-        console.log(`Failed to index ${status.fetched - status.indexed} sets`);
+        console.log(`Failed to index ${status.fetched - status.indexed} groups`);
       }
 
       // Update aliases
@@ -105,7 +96,7 @@ export const ingestSets = async (limit = 100, page = 0, overwrite = false) => {
               actions: [
                 {
                   remove: {
-                    index: `${CHC_INDICIES.sets}_*`,
+                    index: `${CHC_INDICIES.group}_*`,
                     alias: CHC_SEARCH_ALIAS,
                   },
                 },
