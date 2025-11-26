@@ -59,7 +59,7 @@ export async function GET(
                 "top_hits": {
                   "size": 1,
                   "_source": false,
-                  "fields": ["label", "location", "group.id", "uuid"],
+                  "fields": ["label", "location", "group.id", "uuid", "group.label"],
                 }
               },
             }

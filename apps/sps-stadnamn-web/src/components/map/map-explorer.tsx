@@ -210,7 +210,7 @@ export default function MapExplorer() {
 
           const selfLat = self.fields.location[0].coordinates[1]
           const selfLon = self.fields.location[0].coordinates[0]
-          const selfLabel: string = self.fields.label?.[0] ?? ''
+          const selfLabel: string = self.fields["group.label"]?.[0] || self.fields.label?.[0] || ''
           self.labelBounds = self.labelBounds || getLabelBounds(mapInstance.current, selfLabel, selfLat, selfLon, rootFontSize)
           const selfBounds = self.labelBounds
 
@@ -740,7 +740,7 @@ export default function MapExplorer() {
                 if (selected) return null
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
-                const icon = getLabelMarkerIcon(item.fields.label?.[0] || '[utan namn]', selected ? 'accent' : 'white', childCount, false, false, !!(selected))
+                const icon = getLabelMarkerIcon(item.fields["group.label"]?.[0] || item.fields.label?.[0] || '[utan namn]', selected ? 'accent' : 'white', childCount, false, false, !!(selected))
 
 
                 return (
@@ -801,7 +801,7 @@ export default function MapExplorer() {
 
             {groupData && groupData.fields?.location?.[0]?.coordinates && <Marker
               zIndexOffset={2000}
-              icon={new leaflet.DivIcon(getLabelMarkerIcon(groupData.fields.label[0] || '[utan namn]', 'accent', undefined, true, false, true))}
+              icon={new leaflet.DivIcon(getLabelMarkerIcon(groupData.fields["group.label"]?.[0] || groupData.fields.label?.[0] || '[utan namn]', 'accent', undefined, true, false, true))}
               position={[groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]}
               eventHandlers={{
                 click: () => {
