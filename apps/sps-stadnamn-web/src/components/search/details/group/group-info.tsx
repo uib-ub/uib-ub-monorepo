@@ -102,9 +102,18 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
                     <div className="py-3 px-3" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
                         {textItem.dataset === 'rygh' && (
                             <WarningMessage 
-                                message="Feil i digitaliseringa av Norske Gaardnavne gjer at nokon teikn ikkje stemmer med originalen, særleg i lydskrift. Sjå trykt utgåve på nb.no"
+                                message="Feil i Norske Gaardnavne"
                                 messageId="rygh-phonetic-warning"
-                            />
+                            >
+                                <div>
+                                    Den digitale utgåva av Norske Gaardnavne frå dokumentasjonsprosjektet kan innehalde avvik fra originalen. Sjå trykt utgåve på nb.no.
+                                    <ul className="list-disc pl-6 py-2 space-y-2">
+                                        <li className="break-words">Feil i lydskrift</li>
+                                        <li className="break-words">Inkonsekvent koding av namneformer – ord som ikkje er namn kan førekoma i tidslinjene Språksamlingane har henta ut</li>
+                                    </ul>
+
+                                </div>
+                                </WarningMessage>
                         )}
                         <ExpandableContent
                             leading={<><strong className="text-neutral-950">{datasetTitles[textItem.dataset]}</strong> | </>}
