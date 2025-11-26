@@ -1,83 +1,116 @@
 import UiBLogo from "@/components/svg/UiBLogo"
-import { PiMapTrifold } from 'react-icons/pi';
-import Link from 'next/link';
+import { PiMapTrifold, PiMapTrifoldFill } from 'react-icons/pi';
 import { PiMagnifyingGlass } from 'react-icons/pi';
-import IconButton from '@/components/ui/icon-button';
 import Image from 'next/image';
-import { datasetTitles, datasetPresentation, datasetDescriptions, publishDates } from '@/config/metadata-config';
-import Footer from '../components/layout/Footer';
-import { fetchStats } from '@/app/api/_utils/actions';
-import { redirect } from "next/navigation";
+import Link from 'next/link';
+import { datasetTitles, datasetPresentation, publishDates, datasetShortDescriptions } from '@/config/metadata-config';
+import Footer from '../components/layout/footer';
+import Form from "next/form";
+import React from 'react';
+import HomeNavCards from "./home-nav-cards";
+import { fetchStats } from "./api/_utils/stats";
+import { userAgent } from "next/server";
+import { headers } from "next/headers";
+import { Metadata } from "next";
+import Header from "./header";
 
-
-export default async function Home({ searchParams } : { searchParams?: {q: string, d: string} }) {
-
-  // Redirect legacy search params from Toponymi
-  if (searchParams?.q) {''
-    const newSearchParams: Record<string,string> = { q: searchParams.q }
-    if (searchParams.d) {
-      newSearchParams['datasets'] = searchParams.d
-    }
-    redirect('/view/search?' + new URLSearchParams(newSearchParams).toString())
-    
-  }
-
-
+export default async function Home() {
+  const { iiifStats, datasets, totalHits, groupCount } = await fetchStats()
+  const headersList = await headers()
+  const device = userAgent({headers: headersList}).device
+  const isMobile = device.type === 'mobile'
   const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
     const info = datasetPresentation[code]
-    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: datasetDescriptions[code], subindices: info.subindices, initPage: info.initPage }
+    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: datasetShortDescriptions[code], subindices: info.subindices, initMode: info.initMode }
   }
   )
-
 
   const newest = Object.entries(publishDates).sort((a, b) => b[1].localeCompare(a[1])).slice(0, 2).map(entry => entry[0]).map(code => {
     const info = datasetPresentation[code]
-    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: datasetDescriptions[code], subindices: info.subindices, initPage: info.initPage }
+    return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: datasetShortDescriptions[code], subindices: info.subindices, initMode: info.initMode }
   }
   )
 
-  const stats = await fetchStats()
-
-
   return (
     <>
-<main id="main" tabIndex={-1} className="flex flex-col grow-1 gap-48 items-center justify-center pb-24 lg:pt-32 md:pt-16 sm:pt-8 px-4 w-full flex-grow">
-  <div className="flex flex-col gap-24 w-full">
-  <div className="flex flex-col gap-12 w-full">
-  <div className="flex flex-col gap-8 ">
-  <h1 className="text-2xl sr-only md:not-sr-only sm:text-3xl self-center md:text-4xl lg:text-5xl">Stadnamnportalen</h1>
+    <Header/>
+<main 
+  id="main" 
+  tabIndex={-1} 
+  className="flex flex-col grow-1 items-center justify-center carta-marina  w-full flex-grow relative ">
   
-  <form className="grid grid-cols-5 md:grid-cols-7 items-center justify-center md:max-w-2xl md:mx-auto gap-3" action="view/search">
+  <div className={`bg-neutral-50/75 w-full pt-4 md:pt-8 pb-24`}>
+  <div className={`flex flex-col gap-3 relative z-20 px-4`}>
+  <div className="flex flex-col w-full lg:w-auto gap-8 md:p-8 lg:py-8 self-center md:bg-neutral-50/90 md:rounded-full md:aspect-square my-0 md:my-16 lg:my-0 md:shadow-lg self align-middle justify-center">
+  <div className="flex flex-col gap-8 md:px-8">
+  <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6 lg:mt-32">
+  <h1 className="self-center text-5xl text-neutral-950 sr-only md:not-sr-only !px-2 font-serif">Stadnamnsøk</h1>
+  
+  <Form id="search-form" className="flex items-center justify-center gap-2 w-full" action="search">
+   
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
-    <input id="search_input" className="col-span-4 rounded-sm h-12 border border-gray-400 text-base px-2" name="q" type="text"/>
-    <IconButton className="btn btn-primary col-span-1 text-base h-full" type="submit" label="Søk"><PiMagnifyingGlass className="text-xl"/></IconButton>
-    <Link href="/view/search" className="btn no-underline text-base col-span-5 md:col-span-2 whitespace-nowrap h-12 "><PiMapTrifold aria-hidden="true" className="mr-2"/>Utforsk kartet</Link>
-  </form>
+    <input 
+      id="search_input" 
+      className="flex-1 rounded-lg h-14 lg:h-12 border border-gray-300 text-lg lg:text-base px-4 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all" 
+      name="q" 
+      type="text"
+    />
+    <input type="hidden" name="nav" value="results"/>
+    <button 
+      className="bg-red-700 hover:bg-red-800 text-white rounded-lg h-14 lg:h-12 w-14 lg:w-12 flex items-center justify-center transition-colors duration-200 flex-shrink-0" 
+      type="submit" 
+      aria-label="Søk"
+    >
+      <PiMagnifyingGlass className="text-3xl lg:text-2xl"/>
+    </button>
+  </Form>
+  </div>
+
+
+
+  <div className="flex flex-col items-center gap-3 lg:gap-6 bg-neutral-50/90 p-4 py-8 rounded-lg lg:bg-transparent lg:p-0">
+  <div className="flex flex-col lg:flex-row items-end justify-center lg:gap-12 gap-3">
+  <div className="flex flex-col items-center gap-2">
+    <span className="uppercase tracking-widest text-neutral-950 lg:text-sm font-semibold">Namnegrupper</span>
+    <span className="lg:text-3xl text-4xl text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
+      {groupCount?.toLocaleString('nb-NO')}
+    </span>
+  </div>
+  <div className="flex flex-col items-center gap-2">
+    <span className="uppercase tracking-widest text-neutral-900 lg:text-sm font-semibold">Kjeldeoppslag</span>
+    <span className="lg:text-3xl text-4xl text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
+      {totalHits?.toLocaleString('nb-NO')}
+    </span>
+  </div>
+</div>
+    <div className="flex w-full justify-center">
+      <Link
+        href="/search"
+        className="text-neutral-950 no-underline lg:mb-16 mt-6 lg:mt-2 w-full lg:w-auto h-14 lg:h-auto text-3xl pr-12 pl-8 py-4 lg:py-2 lg:pr-8 lg:pl-6 rounded-lg md:rounded-full flex items-center gap-3 transition-colors duration-200 justify-center"
+      >
+        <PiMapTrifoldFill className="text-4xl" />
+        Kart
+      </Link>
+    </div>
+  </div>
   
 
-  { stats && <ul className="text-neutral-900 font-serif small-caps flex items-center justify-center flex-col lg:flex-row gap-6 lg:gap-12">
-  <li className="flex flex-col items-center text-lg">
-      Stadnamnoppslag
-      <span className="text-4xl">{stats?.snidCount?.toLocaleString('nb-NO')}</span>
-    </li>
-    
-    <li className="flex flex-col items-center text-lg">
-      Datasett
-      <span className="text-4xl">{stats?.datasetCount?.toLocaleString('nb-NO')}</span>
-    </li>
-    <li className="flex flex-col items-center text-lg">
-      Oppslag i datasetta
-      <span className="text-4xl">{stats?.datasetDocs?.toLocaleString('nb-NO')}</span>
-    </li>
-    
-  </ul> }
-
+  </div>
   </div>
 
-  </div>
 
-  <div className="flex items-center justify-center flex-col lg:flex-row gap-12">
-  <div className="flex flex-col md:flex-row items-center gap-6 text-neutral-950 "><UiBLogo/><div className="flex flex-col gap-1 text-center md:text-left"><h2 className="tracking-widest font-serif">UNIVERSITETET I BERGEN</h2><em className="font-serif">Universitetsbiblioteket</em></div>
+
+</div>
+
+  <HomeNavCards iiifStats={iiifStats} datasets={datasets}/>
+    </div>
+    </div>
+
+
+
+<div className="flex items-center self-center justify-center flex-col lg:flex-row gap-12 relative z-20 bg-neutral-950/80 w-full py-16 text-white">
+  <div className="flex flex-col md:flex-row items-center gap-6 text-white "><UiBLogo/><div className="flex flex-col gap-1 text-center md:text-left"><h2 className="tracking-widest font-serif uppercase">Universitetet i Bergen</h2><em className="font-serif">Universitetsbiblioteket</em></div>
   </div>
   <div className="flex flex-col md:flex-row gap-6 jusitfy-between text-center">
   <div className="flex flex-col"><span className="font-semibold">Språksamlingane</span>
@@ -87,62 +120,74 @@ export default async function Home({ searchParams } : { searchParams?: {q: strin
 
   </div>
   </div>
-  
-
-
-  </div>
-  <div className="flex flex-col items-center container gap-24">
-  <section className="flex flex-col items-center gap-12" aria-labelledby="dataset_showcase">
-    <h2 id="dataset_showcase" className="font-serif text-3xl">Sist lagt til:</h2>
-    <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
+  <div className="flex flex-col items-center gap-24 relative z-20 px-4 py-24 bg-neutral-50/75 w-full">
+  <section className="flex flex-col container gap-6" aria-labelledby="recently_added">
+    <h2 id="recently_added" className="font-semibold font-serif text-3xl text-neutral-950 text-center">Sist lagt til</h2>
+    <ul className="flex flex-col gap-6 lg:grid lg:grid-cols-2">
       {newest.map((card, index) => (
-        <li key={index} className="card p-1 xl:col-span-1 items-start">
-          <Link className=" no-underline group flex flex-col md:flex-row xl:flex-row" href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')}>
-          <div className="">
-            <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square">
-            <Image src={card.img} alt="Illustrasjon" aria-describedby={card.code + "_attribution"} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
+        <li key={index} className="bg-white shadow-lg p-4 lg:col-span-1 items-start rounded-lg">
+          <Link className="no-underline group flex flex-col md:flex-row lg:flex-row" href={`search?dataset=${card.code}`}>
+            <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-md">
+              <div className={`h-full ${card.img.endsWith('.svg') ? 'bg-neutral-100' : ''}`}>
+                <Image 
+                  src={card.img} 
+                  alt="Illustrasjon" 
+                  aria-describedby={card.code + "_attribution"} 
+                  height="512" 
+                  width="512" 
+                  className={`w-full h-full sepia-[25%] grayscale-[50%] border-2 border-neutral-200 rounded-md ${
+                    card.img.endsWith('.svg') 
+                      ? 'object-contain p-4' 
+                      : 'object-cover'
+                  }`}
+                />
+              </div>
             </div>
-            <div id={card.code + "_attribution"} className="text-xs text-neutral-700 w-full mt-1">{card.imageAttribution}</div>
-          </div>
-
-            <div className=" py-4 px-6">
-              <h3 className="text-2xl group-hover:underline decoration-1 decoration-primary-600 underline-offset-4">{card.title}</h3>
+            <div className="py-4 md:px-6 pb-0 flex flex-col">
+              <h3 className="text-2xl group-hover:underline decoration-2 decoration-primary-400 underline-offset-4">{card.title}</h3>
               <p className="pt-2 text-small">{card.description}</p>
-              
+              <div id={card.code + "_attribution"} className="text-xs text-neutral-700 mt-auto">Illustrasjon: {card.imageAttribution}</div>
             </div>
           </Link>
         </li>
       ))}
     </ul>
-  </section>
-  <section className="flex flex-col items-center gap-12" aria-labelledby="dataset_showcase">
-    <h2 id="dataset_showcase" className="font-serif text-3xl">Utvalde datasett</h2>
-    <ul className="flex flex-col gap-6 xl:grid xl:grid-cols-2">
+</section>
+  <section className="flex flex-col container gap-6" aria-labelledby="dataset_showcase">
+    <h2 id="dataset_showcase" className="font-semibold font-serif text-3xl text-neutral-950 text-center">Utvalde datasett</h2>
+    <ul className="flex flex-col gap-6 lg:grid lg:grid-cols-2">
       {cards.map((card, index) => (
-        <li key={index} className="card p-1 xl:col-span-1 items-start">
-          <Link className=" no-underline group flex flex-col md:flex-row xl:flex-row" href={'view/' + card.code + (card.subindices?.length || card.initPage == 'info' ? '/info' : '')}>
-          <div className="">
-            <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square">
-            <Image src={card.img} alt="Illustrasjon" aria-describedby={card.code + "_attribution"} height="512" width="512" className="sepia-[25%] grayscale-[50%] object-cover !h-full !w-full"/>
+        <li key={index} className="bg-white shadow-lg p-4 lg:col-span-1 items-start rounded-lg">
+          <Link className="no-underline group flex flex-col md:flex-row lg:flex-row" href={`search?dataset=${card.code}`}>
+            <div className="overflow-hidden w-full md:h-[18rem] md:w-[18rem] shrink-0 aspect-square rounded-md">
+              <div className={`h-full ${card.img.endsWith('.svg') ? 'bg-neutral-100' : ''}`}>
+                <Image 
+                  src={card.img} 
+                  alt="Illustrasjon" 
+                  aria-describedby={card.code + "_attribution"} 
+                  height="512" 
+                  width="512" 
+                  className={`w-full h-full sepia-[25%] grayscale-[50%] border-2 border-neutral-200 rounded-md ${
+                    card.img.endsWith('.svg') 
+                      ? 'object-contain p-4' 
+                      : 'object-cover'
+                  }`}
+                />
+              </div>
             </div>
-            <div id={card.code + "_attribution"} className="text-xs text-neutral-700 w-full mt-1">{card.imageAttribution}</div>
-          </div>
-
-            <div className=" py-4 px-6">
-              <h3 className="text-2xl group-hover:underline decoration-1 decoration-primary-600 underline-offset-4">{card.title}</h3>
+            <div className="py-4 md:px-6 pb-0 flex flex-col">
+              <h3 className="text-2xl group-hover:underline decoration-2 decoration-primary-400 underline-offset-4">{card.title}</h3>
               <p className="pt-2 text-small">{card.description}</p>
-              
+              <div id={card.code + "_attribution"} className="text-xs text-neutral-700 mt-auto">Illustrasjon: {card.imageAttribution}</div>
             </div>
           </Link>
         </li>
       ))}
     </ul>
-
-    </section>
-    <Link className="btn btn-outline text-xl flex gap-2 no-underline" href="/datasets"><PiMagnifyingGlass aria-hidden="true" className="text-2xl"/>Alle datasett</Link>
+</section>
     </div>
   
-
+    
 </main>
       <Footer/>
       </>

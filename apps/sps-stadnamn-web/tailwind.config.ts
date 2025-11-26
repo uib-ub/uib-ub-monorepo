@@ -13,7 +13,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        garamond: ["EB Garamond"],
+        serif: ["var(--font-serif)"],
         phonetic: ["PhoneticFont"],
 
       },

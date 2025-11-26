@@ -1,29 +1,32 @@
-import { contentSettings } from '@/config/server-config'
+import { getSortArray, treeSettings } from '@/config/server-config'
 import { postQuery } from './post'
+import { fieldConfig } from '@/config/search-config'
+import { datasetTitles } from '@/config/metadata-config'
 
-const detectEnv = (retry: boolean) => {
-    const endpoint = (process.env.SN_ENV == 'prod' ? retry : !retry) ? process.env.ES_ENDPOINT : process.env.ES_ENDPOINT_TEST
-    const token = endpoint == process.env.ES_ENDPOINT ? process.env.ES_TOKEN : process.env.ES_TOKEN_TEST
-    return { endpoint, token }
-}
-
-
-export async function fetchDoc(params: any, retry: boolean = true) {
+export async function fetchDoc(params: {uuid: string | string[], dataset?: string}) {
     'use server'
-    const { endpoint, token } = detectEnv(retry)
+    const { uuid, dataset } = params
+    // TODO: use the same variable name in prod and test
+    const endpoint = process.env.STADNAMN_ES_ENDPOINT
+    const token = process.env.STADNAMN_ES_TOKEN
 
-    let res
     // Post a search query for the document
     const query = {
         query: {
-            terms: {
-                "uuid": [params.uuid]
+            bool: {
+                should: [
+                    Array.isArray(uuid) ? { terms: { uuid: uuid } } : { term: { uuid: uuid } },
+                    Array.isArray(uuid) ? { terms: { redirects: uuid } } : { term: { redirects: uuid } }
+                ]
             }
         }
     }
 
-
-    res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-*/_search`, {
+    const res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${dataset ? dataset : '*'}/_search`, {
+        cache: 'force-cache',
+        next: {
+            tags: ['all']
+        },
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -35,10 +38,6 @@ export async function fetchDoc(params: any, retry: boolean = true) {
 
     if (!res.ok) {
         const errorResponse = await res.json();
-        if (retry) {
-            console.log("RETRYING WITH FALLBACK")
-            return fetchDoc(params, retry = false);
-        }
         if (errorResponse.error) {
             return {error: errorResponse.error.type.toUpperCase(), status: errorResponse.status};
         }
@@ -47,151 +46,117 @@ export async function fetchDoc(params: any, retry: boolean = true) {
         }
     }
   const data = await res.json()
+  //console.log(data)
 
-  return data.hits.hits[0]
+  return Array.isArray(uuid) ? data.hits.hhits : data.hits.hits[0]
 
   }
 
-
-export async function fetchSOSI(sosiCode: string) {
+  export async function fetchIIFSuppage(params: {suppageType: string, suppageId: string}) {
     'use server'
-    const res = await fetch("https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype/" + sosiCode + ".json", {
-        method: 'GET'
+    const { suppageType, suppageId } = params
+
+    // Determine the correct field to query based on suppageType
+    let field;
+    if (suppageType === 'canvas') {
+      field = "images.canvasUuid";
+    } else if (suppageType === 'annotation') {
+      field = "images.annotationUuid";
+    } else if (suppageType === 'annotationPage') {
+      field = "images.annotationPageUuid";
+    } else {
+      throw new Error("Unknown suppageType: " + suppageType)
+    }
+
+    const query = {
+      size: 1,
+      fields: ['uuid'],
+      _source: false,
+      query: {
+        term: { [`${field}`]: suppageId }
+      }
+    };
+
+    // Query against the iiif* index pattern
+    const [res, status] = await postQuery("iiif_*", query)
+    if (status !== 200) {
+      return { error: "Failed to fetch IIIF suppage", status }
+    }
+    return res.hits.hits[0]
+  }
+
+  export async function fetchIIFDocByIndex(params: {partOf: string, order: string}) {
+    'use server'
+    const { partOf, order } = params
+    const query = {
+        size: 1,
+        fields: ['uuid'],
+        _source: false,
+        query: {
+            bool: {
+                must: [
+                    { term: { partOf: partOf } },
+                    { term: { order: parseInt(order) } }
+                ]
+            }
+        }
+    }
+    const [res, status] = await postQuery("iiif_*", query)
+    if (status !== 200) {
+        return { error: "Failed to fetch IIIF document", status: status }
+    }
+
+    return res.hits.hits[0]
+  }
+
+  export async function fetchSOSI(params: {sosiCode: string}) {
+    'use server'
+    const { sosiCode } = params
+
+    const query = {
+        query: {
+            term: {
+                "sosiCode": sosiCode
+            }
+        }
+    }
+
+    const [res, status] = await postQuery('vocab_sosi', query)
+    if (status !== 200) {
+        return { error: "Failed to fetch sosi", status: status }
+    }
+
+    return res.hits.hits[0]  // Return the first match
+}
+
+  export async function fetchVocab() {
+    'use server'
+    const query = {
+        query: {
+            match_all: {}
+        },
+        _source: true,
+        size: 10000 // Adjust size as needed
+    }
+
+    const [res, status] = await postQuery('vocab_*', query)
+    if (status !== 200) {
+        return { error: "Failed to fetch vocab", status: status }
+    }
+
+    const coordinateVocab: Record<string, any> = {}
+    const sosiVocab: Record<string, any> = {}
+    res.hits.hits.forEach((hit: any) => {
+        if (hit._source.sosiCode) {
+            sosiVocab[hit._source.sosiCode] = hit._source
+        }
+        else {
+            coordinateVocab[hit._source.uuid] = hit._source
+        }
     })
 
-    if (!res.ok) {
-        // TODO: load backup json of all navneobjekttype
-        return {};
-    }
-  const data = await res.json()
-  return data
-
-  }
-
-
-  export async function fetchStats() {
-    'use server'
-    const query = {
-    "size": 0,
-    "aggs": {
-        "snid": {
-            "filter": {
-                "bool": {
-                    "must": [
-                        {
-                            "term": {
-                                "_index": `search-stadnamn-${process.env.SN_ENV}-search`
-                            }
-                        },
-                        {
-                            "exists": {
-                                "field": "snid"
-                            }
-                        }
-                    ]
-                }
-            },
-            "aggs": {
-                "indices": {
-                    "terms": {
-                        "field": "_index"
-                    }
-                }
-            }
-        },
-        "datasets": {
-            "filter": {
-                "bool": {
-                    "must_not": [
-                        {
-                            "term": {
-                                "_index": `search-stadnamn-${process.env.SN_ENV}-search`
-                            }
-                        }
-                    ]
-                }
-            },
-            "aggs": {
-                "indices": {
-                    "terms": {
-                        "field": "_index",
-                        "size": 100
-                    }
-                }
-            }
-        }
-    }
+    return {coordinateVocab, sosiVocab}
 }
-
-    const res = await postQuery(`*,-search-stadnamn-${process.env.SN_ENV}-vocab`, query)
-
-    //  Split the datasets into datasets amd subdatasets (the latter contain underscores)
-    const datasets = res.aggregations.datasets.indices.buckets.reduce((acc: any, bucket: any) => {
-        if (!bucket.key.includes('_')) {
-            const [ code, timestamp] = bucket.key.split('-').slice(2)
-            acc[code] = {doc_count: bucket.doc_count, timestamp: timestamp}
-        }
-        return acc
-    }, {})
-
-    const subdatasets = res.aggregations.datasets.indices.buckets.reduce((acc: any, bucket: any) => {
-        if (bucket.key.includes('_')) {
-            acc[bucket.key] = bucket.doc_count
-        }
-        return acc
-    }, {})
-    
-       
-    const snidCount = res.aggregations.snid.doc_count
-
-    // Sum of documents in datasets
-    const datasetDocs = Object.values(datasets).reduce((acc: number, dataset: any) => acc + dataset.doc_count, 0)
-    const datasetCount = Object.keys(datasets).length
-
-
-
-    return {datasetDocs, datasetCount, snidCount, datasets, subdatasets}
-}
-
-
-export async function fetchSNID(snid: string) {
-    'use server'
-    const query = {
-        query: {
-            term: {
-                "snid.keyword": snid,
-            }
-        },
-        fields: ["uuid"],
-        _source: false
-    }
-
-    const res = await postQuery('search', query)
-
-    return res.hits?.hits?.[0] || res
-
-}
-
-
-// Fetch snid when you have the uuid of a child
-export async function fetchSNIDParent(uuid: string) {
-    'use server'
-    const query = {
-        query: {
-            term: {
-                "children.keyword": uuid,
-            }
-        },
-        fields: ["uuid", "snid"],
-        _source: false
-    }
-
-    const res = await postQuery('search', query)
-
-    return res.hits?.hits?.[0] || res
-
-}
-
 
 // Fetch children of a document in the same index (documents that have the uuid as the value in "within" field)
 export async function fetchCadastralSubunits(dataset: string, uuid: string, fields: string[], sortFields: string[]) {
@@ -221,6 +186,11 @@ export async function fetchCadastralSubunits(dataset: string, uuid: string, fiel
         _source: false
 
     }
-    return await postQuery(dataset, query)
+    const [res, status] = await postQuery(dataset, query)
+    if (status != 200) {
+        return {error: "Failed to fetch children", status: status}
+    }
+    return res
     
 }
+

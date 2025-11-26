@@ -1,58 +1,75 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Link from "next/link";
-import Menu from "./Menu";
-import NavBar from "./NavBar";
-import { Open_Sans, Cormorant_Garamond } from 'next/font/google'
+import Menu from "./menu";
+import NavBar from "./nav-bar";
+import { Source_Sans_3, Source_Serif_4 } from 'next/font/google'
 import { Suspense } from "react";
 import PlausibleProvider from 'next-plausible'
+import { userAgent } from "next/server";
+import { headers } from "next/headers";
+import SearchForm from "@/components/search/form/search-form";
+import GlobalProvider from "../state/providers/global-provider";
+import { fetchVocab } from "./api/_utils/actions";
+import QueryProvider from "@/state/providers/query-provider";
+import Link from "next/link";
+import SearchTitle from "@/components/layout/search-title";
+import ModeSelector from "@/components/tabs/mode-selector";
  
-const garamond = Cormorant_Garamond({
+const serif = Source_Serif_4({
   subsets: ['latin'],
-  weight: ["400", "600", "700"],
+  weight: ["400", "700"],
   display: 'swap',
-  variable: '--font-garamond',
+  variable: '--font-serif',
 })
 
-const opensans = Open_Sans({
+const sans = Source_Sans_3  ({
+  weight: ["400", "600", "700"],
   subsets: ['latin'],
-  display: 'swap',
+  display: 'swap'
+  
 })
  
 
 export const metadata: Metadata = {
   title: {
-    template: "%s - Stadnamnportalen",
-    default: "Stadnamnportalen"
+    template: "%s - stadnamn.no",
+    default: "stadnamn.no"
   },
   description: "Søketjeneste for norske stedstnavn",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const device = userAgent({ headers: headersList }).device;
+  const isMobile = device.type === 'mobile'
+
+
+  const { coordinateVocab, sosiVocab } = await fetchVocab();
+
   return (
-    <html lang="no" className={`${garamond.variable} ${opensans.className} h-full w-full`}>
+    <html 
+      lang="no" 
+      className={`${serif.variable} ${sans.className}`}
+    >
       <head>
         <PlausibleProvider domain="stadnamnportalen.uib.no" />
       </head>
-      <body className="flex flex-col w-full h-full relative">
-      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[3001] focus:top-1 focus:py-3 focus:px-6 focus:bg-primary-700 text-white no-underline self-center">
+      <body className="bg-neutral-900 flex flex-col min-h-[100svh] overflow-x-hidden">
+        {/* Remove the Image component since we're using CSS background-image */}
+
+        <GlobalProvider isMobile={isMobile} sosiVocab={sosiVocab || {}} coordinateVocab={coordinateVocab || {}}>
+          <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[5001] focus:top-1 focus:py-3 focus:px-6 bg-primary-700 text-white no-underline self-center">
         Gå til hovudinnhald
       </a>
-        <header className="flex flex-col lg:flex-row lg:gap-6 py-2 px-1 lg:p-3 lg:px-4 text-neutral-900 w-full relative">
-          <div className="flex flex-wrap pl-3 md:justify-between h-full items-center">
-          
-          <Link href="/" className="text-2xl pt-1 small-caps font-serif h-full lg:pt-0">Stadnamnportalen</Link>
-          <Suspense>
-            <Menu/>
-          </Suspense>
-          </div>
-          <NavBar className={`hidden text-lg xl:text-xl mx-4 align-text-middle lg:flex small-caps gap-3 font-semibold ml-auto`}/>
-        </header>
+      <QueryProvider>        
         {children}
+        </QueryProvider>
+        </GlobalProvider>
+        
       </body>
     </html>
   );

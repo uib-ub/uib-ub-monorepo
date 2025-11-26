@@ -1,33 +1,53 @@
-
 import { fetchDoc } from '@/app/api/_utils/actions'
-import ErrorMessage from '@/components/ErrorMessage'
-import { datasetTitles } from '@/config/metadata-config'
+import ErrorMessage from '@/components/error-message'
+import { datasetPresentation, datasetShortDescriptions, datasetTitles } from '@/config/metadata-config'
 import { infoPageRenderers } from '@/config/info-renderers'
-import OriginalData from '@/app/view/[dataset]/doc/[uuid]/original-data'
+import OriginalData from './original-data'
 import Link from 'next/link'
-import { PiDatabaseFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi'
-import GroupedChildren from '@/components/results/grouped-children'
-import ThumbnailLink from '@/components/ImageViewer/thumbnail-link'
-import CopyLink from '@/app/view/[dataset]/doc/[uuid]/CopyLink'
+import { PiBracketsCurlyBold } from 'react-icons/pi'
+import Thumbnail from '@/components/image-viewer/thumbnail'
+import CollapsibleHeading from '@/components/doc/collapsible-heading'
+import CoordinateInfo from '@/components/search/details/doc/coordinate-info'
+import { treeSettings } from '@/config/server-config'
+import ServerCadastreBreadcrumb from './server-cadastre-breadcrumb'
+import { getValueByPath } from '@/lib/utils'
+import { facetConfig } from '@/config/search-config'
+import { redirect, notFound } from 'next/navigation'
+import CadastralSubdivisions from '@/components/children/cadastral-subdivisions'
+import GroupList from './GroupList'
 
-export async function generateMetadata( { params }: { params: { uuid: string } }) {
-    const doc = await fetchDoc(params)
+export async function generateMetadata( { params }: { params: Promise<{ uuid: string }> }) {
+    const { uuid } = await params
+    const docData = await fetchDoc({uuid})
 
     return {
-        title: doc?._source.label,
-        description: doc?._source.description
+        title: docData?._source?.label || docData?._source.uuid,
+        ...(docData?._source?.description && {
+            description: docData._source.description
+        })
     }
 }
 
-export default async function LandingPage({ params }: { params: { uuid: string }}) {
+export default async function LandingPage({ params }: { params: Promise<{ uuid: string }>}) {
+    const { uuid } = await params
+    const docData = await fetchDoc({uuid})
+    const docDataset = docData._index.split('-')[2]
+    
+    if (!docData || !docData._source) {
+        notFound()
+    }
+    
 
-    const doc = await fetchDoc({uuid: params.uuid})
 
-    if (doc.error) {
-        return <ErrorMessage error={doc} message="Kunne ikke hente dokumentet"/>
-      }
+    if (docData.error) {
+        return <ErrorMessage error={docData} message="Kunne ikke hente dokumentet"/>
+    }
 
-    const docDataset = doc._index.split('-')[2]
+    if (docData._source.uuid != uuid && docData._source.redirects.includes(uuid)) {
+        redirect(`/uuid/${docData._source.uuid}#${uuid}`)
+    }
+
+    
 
     const multivalue = (value: string|string[]) => {
       return Array.isArray(value) ? value.join("/") : value
@@ -39,62 +59,156 @@ export default async function LandingPage({ params }: { params: { uuid: string }
     // TODO: create shared component for uuid/ and view/doc/
     // TODO: create tabs for info, json, geojson and jsonld
     return (
-        <div className="instance-info flex flex-col flex-grow space-y-6">
-          <span>
-            <h1>{doc._source.label}</h1>
-            <div className="flex flex-wrap gap-4">
+        <div className="page-info lg:grid lg:grid-cols-[1fr_24rem] lg:gap-12">
+          <div className="flex flex-col gap-6">
+          {  docData?._source?.within && docDataset && <ServerCadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName}/>}
+            <div>
+            <div className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans pb-4"> {datasetTitles[docDataset]}</div>
+              <h1>{docData?._source?.label || docData?._source.uuid}</h1>
+              <div className="flex flex-wrap gap-6">
 
-      {Array.isArray(doc._source.wikiAdm) && doc._source.wikiAdm?.length > 1 && 
+      {Array.isArray(docData?._source.wikiAdm) && docData?._source.wikiAdm?.length > 1 && 
         <>
-        {[doc._source.adm1, doc._source.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
-        {[doc._source.adm1, doc._source.adm2, doc._source.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link key={index} href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm[index]}>{item}</Link>)}
+        {[docData?._source.adm1, docData?._source.adm2].filter(item => typeof item == 'string').map((item, index) => <span key={index} className="inline whitespace-nowrap pr-1">{item}, </span>)}
+        {[docData?._source.adm1, docData?._source.adm2, docData?._source.adm3].find(item => Array.isArray(item))?.map((item: any, index: number) => <Link key={index} href={'http://www.wikidata.org/entity/' + docData?._source.wikiAdm[index]}>{item}</Link>)}
         </>
       
-        || doc._source.wikiAdm &&  <span className="inline whitespace-nowrap"><Link  href={'http://www.wikidata.org/entity/' + doc._source.wikiAdm}>
-          {doc._source.adm3 && multivalue(doc._source.adm3) + " – "}
-          {doc._source.adm2 && multivalue(doc._source.adm2) + ", "}
-          {multivalue(doc._source.adm1)}</Link> </span>
-        || doc._source.adm1 && <span className="inline whitespace-nowrap">
-          {doc._source.adm3 && multivalue(doc._source.adm3) + " – "}
-          {doc._source.adm2 && multivalue(doc._source.adm2) + ", "}
-          {multivalue(doc._source.adm1)}
+        || docData?._source.wikiAdm &&  <span className="inline whitespace-nowrap"><Link  href={'http://www.wikidata.org/entity/' + docData?._source.wikiAdm}>
+          {docData?._source.adm3 && multivalue(docData?._source.adm3) + " – "}
+          {docData?._source.adm2 && multivalue(docData?._source.adm2) + ", "}
+          {multivalue(docData?._source.adm1)}</Link> </span>
+        || docData?._source.adm1 && <span className="inline whitespace-nowrap">
+          {docData?._source.adm3 && multivalue(docData?._source.adm3) + " – "}
+          {docData?._source.adm2 && multivalue(docData?._source.adm2) + ", "}
+          {multivalue(docData?._source.adm1)}
         </span>
       
       }
-      { docDataset != 'nbas' && (doc._source.datasets?.length > 1 || doc._source.datasets?.[0] != 'nbas') ? 
-          <CopyLink uuid={doc._source.uuid}/> 
-          : <div className="flex gap-1 items-center w-full"><PiWarningFill className="inline text-primary-600 text-lg"/>Datasettet  er under utvikling. Denne siden kan derfor bli slettet</div> // NBAS uris aren't stable until we've fixed errors in the dataset
-      }
+
 
       </div>
       
-      </span>
-            { docDataset != 'search' ?
-            <div className='self-start'><Link className="btn btn-outline text-xl flex gap-2 no-underline" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiDatabaseFill aria-hidden="true" className="text-2xl"/>{ datasetTitles[docDataset]}</Link></div>
-            :
-            <div className='self-start'><Link className="btn btn-outline text-xl flex gap-2 no-underline" href={"/view/" + docDataset + "?docs=" + params.uuid}><PiMagnifyingGlass aria-hidden="true" className="text-2xl"/>Vis i stadnamnsøket</Link></div>
-}
-            { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](doc._source) : null }
+      </div>
+            { infoPageRenderers[docDataset]? infoPageRenderers[docDataset](docData?._source) : null }
+
+
+           {facetConfig[docDataset] && (docDataset != 'mu1950' || docData._source.sosi != 'gard') && <div className="flex flex-wrap gap-8">
+        {facetConfig[docDataset]
+          ?.filter(item => item.key && !['sosi', 'datasets', 'adm'].includes(item.key))
+          .map((facet) => {
+            const value = getValueByPath(docData._source, facet.key);
+            if (!value || (Array.isArray(value) && value.length === 0)) return null;
+            
+            return (
+              <div key={facet.key} className="flex flex-col !p-0">
+                <strong className="text-neutral-800">{facet.label}</strong>
+                {Array.isArray(value) ? (
+                  <ul className="!list-none flex flex-wrap gap-x-2 !m-0 !p-0">
+                    {value.map((item, idx) => (
+                      <li className="!p-0" key={idx}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="!p-0">{value}</p>
+                )}
+              </div>
+            );
+        })}
+      </div>}
+
+          { docData?._source.location && <div>
+          <CollapsibleHeading headingLevel="h2" title="Koordinatinformasjon">
+            <CoordinateInfo source={docData?._source}/>
+          </CollapsibleHeading>
+        </div>}
+
+
+        
+
+
 
       
-      {doc._source.image?.manifest && <div>
-        <h2>Seddel</h2>
-        <ThumbnailLink doc={doc}/>
+      {docData?._source.images?.length > 0 && <div><h2>Sedler</h2><div className="flex flex-wrap gap-4">{docData?._source.images?.map((image: {manifest: string, dataset: string}) => {
+        return <div key={image.manifest}>
+        <Link href={"/iiif/" + image.manifest} className="text-sm text-neutral-800 no-underline">
+        <Thumbnail manifestId={image.manifest} dataset={image.dataset}/>
+              
+        <div>{datasetTitles[image.dataset]}</div>
+        </Link>
+        </div>
 
-        </div>}
-        { doc._source.rawData ?
+        
+      })}</div></div>}
+        
+      
+
+    
+
+      { docData?._source.rawData ?
         <div>
-        <OriginalData rawData={doc._source.rawData}/>
+        <OriginalData rawData={docData?._source.rawData}/>
         </div>
       : null}
+
       
-      { docDataset == 'search' &&
-
-        <GroupedChildren snid={doc._source.snid} uuid={doc._source.uuid} childList={doc._source.children} landingPage/>
-
-
+      {treeSettings[docDataset] && docData._source.sosi == 'gard' &&
+      <div className="mt-4"> 
+      <h2 className="">Underordna bruk</h2>
+      <CadastralSubdivisions dataset={docDataset} doc={uuid} childrenData={docData._source.children} landingPage={true}/>
+      </div>
       }
+
+<CollapsibleHeading alwaysOpen={true} headingLevel="h2" title="Data">
+
+<div className="flex gap-4 flex-wrap my-2 mb-8 text-neutral-950">
+  <Link href={"/uuid/" + docData._source.uuid + ".json"} className="flex whitespace-nowrap items-center gap-1 no-underline">
+        <PiBracketsCurlyBold aria-hidden="true"/>
+        JSON
+  </Link>
+  <Link href={"/uuid/" + docData._source.uuid + ".jsonld"} className="flex whitespace-nowrap items-center gap-1 no-underline">
+        <PiBracketsCurlyBold aria-hidden="true"/>
+        JSON-LD
+  </Link>
+  {docData._source.location && <Link href={"/uuid/" + docData._source.uuid + ".geojson"} className="flex whitespace-nowrap items-center gap-1 no-underline">
+        <PiBracketsCurlyBold aria-hidden="true"/>
+        GeoJSON
+  </Link>}
+  </div>
+
+
+
+
+</CollapsibleHeading>
+
+
     </div>
+
+    
+    
+     {datasetPresentation[docDataset] && <div className="flex flex-col lg:h-fit gap-4 my-4 lg:my-0">
+    <aside className="bg-neutral-50 shadow-md !text-neutral-950 p-4 rounded-md">
+
+      <h2 className="!m-0 !p-0 font-serif !text-xl !font-normal">{datasetTitles[docDataset]}</h2>
+      <div className="text-sm text-neutral-800">{datasetShortDescriptions[docDataset]}</div>
+
+      <div className="flex gap-2 mt-4 w-full">
+        <Link href={"/info/datasets/" + docDataset } className="btn btn-outline">Les meir</Link>
+      </div>
+    </aside>
+
+     
+
+      <GroupList docData={docData}/>
+     
+     
+
+
+     
+    </div>}
+
+    
+
+  </div>
     )
 
 

@@ -1,32 +1,36 @@
 'use client'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { GlobalContext } from "@/state/providers/global-provider"
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
-  } from "@/components/ui/tooltip"
-import Link from 'next/link';
+} from "@/components/ui/tooltip"
+import { useContext } from "react"
 
+// Icon link with tooltip that only requires href
 
-export default function IconLink({ children, textClass, textIcon, label, type, href, ...rest }: 
-    { children: React.ReactNode, textClass?: string, textIcon?: boolean, label: string, href: string, [x: string]: any }) {
+export default function IconLink({ children, label, href, side = 'bottom', ...rest }: 
+    { children: React.ReactNode, label: string, href: string, side?: "bottom" | "left" | "right" | "top", [x: string]: any }) {
+    const { isMobile } = useContext(GlobalContext)
+
+    if (isMobile) {
+        return <Link href={href} aria-label={label} {...rest}><i aria-hidden='true'>{children}</i></Link>
+    }
     
     return (
-
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Link aria-label={label} href={href} {...rest}>
-                    {textClass ? <span aria-hidden="true" className={textClass}>{label}</span> : null}
-                    {textIcon ? <span aria-hidden="true" className='flex'>{children}</span> : <i  aria-hidden='true'>{children}</i>}
+                    <Link href={href} aria-label={label} {...rest}>
+                        <i aria-hidden='true'>{children}</i>
                     </Link>
                 </TooltipTrigger>
-                <TooltipContent>
-                {label}
+                <TooltipContent side={side}>
+                    {label}
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
-
-    );
+    )
 }

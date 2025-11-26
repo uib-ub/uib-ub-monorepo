@@ -1,27 +1,46 @@
-export async function postQuery(dataset: string, query: any, retry: boolean = true) {
-    const endpoint = (process.env.SN_ENV == 'prod' ? retry : !retry) ? process.env.ES_ENDPOINT : process.env.ES_ENDPOINT_TEST
-    const token = endpoint == process.env.ES_ENDPOINT ? process.env.ES_TOKEN : process.env.ES_TOKEN_TEST
+
+export async function postQuery(perspective: string, query: any, search_type?: string, cacheTags: string[] = ['all']): Promise<any[]> {
     
-    const res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${dataset}/_search`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `ApiKey ${token}`,
-        },
-        body: JSON.stringify(query)
-    });
+    // TODO: use the same variable name in prod and test
+    const endpoint = process.env.STADNAMN_ES_ENDPOINT
+    const token = process.env.STADNAMN_ES_TOKEN
+    let res
+
+    const url = `${endpoint}search-stadnamn-${process.env.SN_ENV}-${perspective}/_search${search_type ? `?search_type=${search_type}` : ''}`
 
     
-    if (!res.ok) {
-        const errorResponse = await res.json();
-        if (retry) {
-            return postQuery(dataset, query, false);
-        } else {
-            console.log("ERROR", JSON.stringify(errorResponse, null, 2));
-            return {error: errorResponse.error.type.toUpperCase(), status: errorResponse.status};
-        }
+    try {
+        res = await fetch(url, {
+            cache: 'force-cache', next: {tags: cacheTags},
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `ApiKey ${token}`,
+            },
+            body: JSON.stringify(query)
+    });
+    }
+    catch (e) {
+        console.error(e)
+        return [{error: e}, 500]
     }
 
-    const responseData = await res.json();
-    return responseData;
+    if (!res.ok) {
+        const contentType = res.headers.get('Content-Type');
+        if (contentType && contentType.includes('application/json')) {
+            const errorResponse = await res.json();
+            console.error(errorResponse);
+            return [errorResponse, res.status];
+
+        } else {
+            // Handle non-JSON responses
+            const textResponse = await res.text();
+            console.error(textResponse);
+            return [{error: textResponse}, res.status];
+        }
+    }
+    else {
+        const responseData = await res.json();
+        return [responseData, 200]
+    }
 }

@@ -1,24 +1,32 @@
-import remarkGfm from 'remark-gfm'
+
 import createMDX from '@next/mdx'
  
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  transpilePackages: ['next-mdx-remote'],
+  env: {
+    NEXT_PUBLIC_SN_ENV: process.env.SN_ENV,
+  },
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: '**.ubbe.no',
+
+      },
+      {
+        protocol: 'https',
+        hostname: 'iiif.io',
       }
     ],
   },
-  
 }
  
 const withMDX = createMDX({
   // Add markdown plugins here, as desired
   options: {
-    remarkPlugins: [remarkGfm],
+    remarkPlugins: [],
     rehypePlugins: [],
   },
 })
