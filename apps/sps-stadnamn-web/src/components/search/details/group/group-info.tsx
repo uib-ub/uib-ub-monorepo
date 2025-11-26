@@ -106,7 +106,7 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
                                 messageId="rygh-phonetic-warning"
                             >
                                 <div>
-                                    Den digitale utgåva av Norske Gaardnavne frå dokumentasjonsprosjektet kan innehalde avvik fra originalen. Sjå trykt utgåve på nb.no.
+                                    Den digitale utgåva av Norske Gaardnavne frå dokumentasjonsprosjektet kan innehalde avvik frå originalen. Sjå trykt utgåve på nb.no.
                                     <ul className="list-disc pl-6 py-2 space-y-2">
                                         <li className="break-words">Feil i lydskrift</li>
                                         <li className="break-words">Inkonsekvent koding av namneformer – ord som ikkje er namn kan førekoma i tidslinjene Språksamlingane har henta ut</li>
@@ -451,12 +451,6 @@ const NamesSection = ({ datasets, activeYear, activeName, setActiveYear, setActi
 
 	return (
 		<div className="flex flex-col gap-3 py-2">
-			{itemsByDataset['rygh']?.find((s: any) => s.attestations && s.attestations.length > 0) && (
-				<WarningMessage 
-					message="Uregelmessigheiter i digitaliseringa av Norske Gaardnavne gjer at det kan førekomme ord i tidslinja som ikkje er namneformer. Sjå teksten dei er basert på under «Tolkingar»."
-					messageId="rygh-namnform-warning"
-				/>
-			)}
 			
 			<div role="group" aria-label="Filtrer på år og namneformer">
 				{/* Vertical Timeline */}
