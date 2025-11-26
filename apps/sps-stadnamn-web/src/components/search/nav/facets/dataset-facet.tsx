@@ -134,7 +134,7 @@ export default function DatasetFacet() {
       <input aria-label="Søk i fasett" onChange={(e) => setClientSearch(e.target.value)}
           className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"/>
       <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-        <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-2xl'/>
+        <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl'/>
       </span>
     </div>
 

@@ -1,10 +1,10 @@
 import useGroupData from "@/state/hooks/group-data";
 import Carousel from "../../nav/results/carousel";
-import { useEffect, useMemo, useState, useContext, type ReactNode } from "react";
+import { useEffect, useMemo, useState, useContext, Fragment, type ReactNode } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { formatHtml } from "@/lib/text-utils";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
-import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiMapPinFill, PiInfoFill, PiArchive, PiInfo, PiPushPinBold, PiPushPinFill, PiMagnifyingGlass, PiPushPin, PiX } from "react-icons/pi";
+import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiMapPinFill, PiInfoFill, PiArchive, PiInfo, PiPushPinBold, PiPushPinFill, PiMagnifyingGlass, PiPushPin, PiX, PiFunnel } from "react-icons/pi";
 import WarningMessage from "./warning-message";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Spinner from "@/components/svg/Spinner";
@@ -13,6 +13,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import AudioExplorer from "@/components/doc/audio-explorer";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import Clickable from "@/components/ui/clickable/clickable";
+import ToggleButton from "@/components/ui/toggle-button";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { useGroup } from "@/lib/param-hooks";
@@ -297,9 +298,145 @@ const NamesSection = ({ datasets, activeYear, activeName, setActiveYear, setActi
 		return { yearsOrdered, namesByYear, namesWithoutYear, nameCounts, itemsByDataset }
 	}, [datasets, activeYear, activeName])
 
+	// Rebuild filtered data based on active filters
+	const { filteredYearsOrdered, filteredNamesByYear, filteredNamesWithoutYear } = useMemo(() => {
+		if (!activeYear && !activeName) {
+			// No filter: show everything
+			return {
+				filteredYearsOrdered: yearsOrdered,
+				filteredNamesByYear: namesByYear,
+				filteredNamesWithoutYear: namesWithoutYear
+			}
+		}
+
+		// Helper to check if source matches current filters
+		const sourceMatchesFilter = (source: any) => {
+			if (activeYear) {
+				if (String(source?.year) === activeYear) return true
+				if (Array.isArray(source?.attestations)) {
+					if (source.attestations.some((a: any) => String(a?.year) === activeYear)) return true
+				}
+			}
+			if (activeName) {
+				if (source?.label && String(source.label) === activeName) return true
+				if (Array.isArray(source?.altLabels)) {
+					if (source.altLabels.some((al: any) => String(typeof al === 'string' ? al : al?.label) === activeName)) return true
+				}
+				if (Array.isArray(source?.attestations)) {
+					if (source.attestations.some((a: any) => String(a?.label) === activeName)) return true
+				}
+			}
+			return false
+		}
+
+		// Build filtered name-to-years mapping
+		const filteredNameToYears: Record<string, Set<string>> = {}
+		const filteredNameCounts: Record<string, number> = {}
+
+		Object.entries(datasets).forEach(([_ds, sources]) => {
+			sources.forEach((source: any) => {
+				if (!sourceMatchesFilter(source)) return
+
+				// Process labels and altLabels with source.year
+				if (source?.year) {
+					const pushName = (name: string | undefined) => {
+						if (!name) return
+						const y = String(source.year)
+						filteredNameToYears[name] = filteredNameToYears[name] || new Set<string>()
+						filteredNameToYears[name].add(y)
+						filteredNameCounts[name] = (filteredNameCounts[name] || 0) + 1
+					}
+					pushName(source.label)
+					if (Array.isArray(source?.altLabels)) {
+						source.altLabels.forEach((alt: any) => pushName(typeof alt === 'string' ? alt : alt?.label))
+					}
+				}
+
+				// Process attestations with their own year
+				if (Array.isArray(source?.attestations)) {
+					source.attestations.forEach((att: any) => {
+						if (!att?.label) return
+						const y = att?.year != null ? String(att.year) : null
+						if (!y) return
+						filteredNameToYears[att.label] = filteredNameToYears[att.label] || new Set<string>()
+						filteredNameToYears[att.label].add(y)
+						filteredNameCounts[att.label] = (filteredNameCounts[att.label] || 0) + 1
+					})
+				}
+			})
+		})
+
+		// Build filtered namesByYear
+		const filteredNamesByYear: Record<string, string[]> = {}
+		const filteredNamesWithoutYear: string[] = []
+
+		Object.entries(filteredNameToYears).forEach(([name, yearsSet]) => {
+			const years = Array.from(yearsSet)
+			if (years.length === 0) {
+				filteredNamesWithoutYear.push(name)
+				return
+			}
+			
+			// If this is the active name filter, show it in ALL years where it appears
+			if (activeName && name === activeName) {
+				years.forEach((year) => {
+					filteredNamesByYear[year] = filteredNamesByYear[year] || []
+					if (!filteredNamesByYear[year].includes(name)) {
+						filteredNamesByYear[year].push(name)
+					}
+				})
+			} else {
+				// For other names, group by earliest year (normal behavior)
+				const numeric = years
+					.map((y) => ({ raw: y, num: Number(y) }))
+					.filter((y) => !Number.isNaN(y.num))
+					.sort((a, b) => a.num - b.num)
+				const earliest = numeric.length ? numeric[0].raw : years.sort()[0]
+				filteredNamesByYear[earliest] = filteredNamesByYear[earliest] || []
+				filteredNamesByYear[earliest].push(name)
+			}
+		})
+
+		Object.keys(filteredNamesByYear).forEach((y) => filteredNamesByYear[y].sort())
+		const filteredYearsOrdered = Object.keys(filteredNamesByYear)
+			.map((y) => Number.isNaN(Number(y)) ? y : Number(y))
+			.sort((a: any, b: any) => (a > b ? 1 : a < b ? -1 : 0))
+			.map(String)
+
+		return {
+			filteredYearsOrdered,
+			filteredNamesByYear,
+			filteredNamesWithoutYear
+		}
+	}, [datasets, activeYear, activeName, yearsOrdered, namesByYear, namesWithoutYear])
+
+	// Build filtered items list
+	const filteredItems = useMemo(() => {
+		return [
+			...filteredYearsOrdered.map(y => ({ type: 'year' as const, year: y, names: filteredNamesByYear[y] || [] })),
+			...filteredNamesWithoutYear.map(n => ({ type: 'noYear' as const, name: n, count: nameCounts[n] || 0 }))
+		]
+	}, [filteredYearsOrdered, filteredNamesByYear, filteredNamesWithoutYear, nameCounts])
+
+	const hasActiveFilter = !!(activeYear || activeName)
+
 	const allItems = [...yearsOrdered.map(y => ({ type: 'year' as const, year: y, names: namesByYear[y] || [] })), ...namesWithoutYear.map(n => ({ type: 'noYear' as const, name: n, count: nameCounts[n] || 0 }))]
-	const hasMore = allItems.length > 3
-	const visibleItems = showAll ? allItems : allItems.slice(0, hasMore ? 2 : Math.min(3, allItems.length))
+	const hasMore = !hasActiveFilter && filteredItems.length > 3
+	const allYearItems = filteredItems.filter(item => item.type === 'year')
+	const allNoYearItems = filteredItems.filter(item => item.type === 'noYear')
+	
+	// When collapsed and hasMore: show first year item and last year item (collapse in the middle)
+	// Otherwise: show all items
+	const visibleYearItems = showAll || hasActiveFilter ? allYearItems : (
+		hasMore && allYearItems.length > 1
+			? [allYearItems[0], allYearItems[allYearItems.length - 1]]
+			: allYearItems.slice(0, Math.min(3, allYearItems.length))
+	)
+	// Items without year are always shown (they're handled separately in the UI)
+	const visibleNoYearItems = allNoYearItems
+	const visibleItems = [...visibleYearItems, ...visibleNoYearItems]
+	const isCollapsed = hasMore && !showAll && !hasActiveFilter && allYearItems.length > 1
+	const hiddenYearItemsCount = allYearItems.length - visibleYearItems.length
 
 	if (allItems.length === 0) return null
 
@@ -311,76 +448,173 @@ const NamesSection = ({ datasets, activeYear, activeName, setActiveYear, setActi
 					messageId="rygh-namnform-warning"
 				/>
 			)}
-			<ul className="relative mt-1 px-2">
-				{visibleItems.map((item, idx) => {
-					if (item.type === 'year') {
-						const isLast = idx === visibleItems.length - 1
-						const nameKeys = item.names
-						return (
-							<li key={item.year} className="flex items-center !pb-2 !pt-0 relative w-full">
-								<div className={`bg-primary-300 absolute w-1 left-0 top-1 ${isLast ? 'h-4' : 'h-full'} ${idx === 0 ? 'mt-2' : ''}`}></div>
-								<div className="w-3 h-3 rounded-full bg-primary-500 absolute -left-1 top-2"></div>
-								<div className="ml-5 flex w-full items-start">
-									<button
-										type="button"
-										onClick={() => {
-											if (activeYear === item.year) {
-												setActiveYear(null)
-											} else {
-												setActiveYear(item.year)
-												setActiveName(null)
-											}
-										}}
-										className={`mr-2 flex my-0 mt-0 font-medium px-2 py-1 rounded ${activeYear === item.year ? 'bg-accent-800 text-white' : 'bg-neutral-100 text-black'} underline-offset-4 hover:underline text-base`}
-										aria-pressed={activeYear === item.year}
-									>
-										{item.year}
-									</button>
-									<ul className="flex flex-col gap-0.5">
-										{nameKeys.map((nameKey) => (
-											<li key={`${item.year}__${nameKey}`} className="flex w-full py-1 first:pt-0">
+			
+			<div role="group" aria-label="Filtrer på år og namneformer">
+				{/* Vertical Timeline */}
+				{visibleYearItems.length > 0 && (
+					<ul className="relative !mx-2 !px-0 p-2" role="list">
+						{visibleYearItems.map((item, index) => {
+							const isYearSelected = activeYear === item.year
+							const isLast = index === visibleYearItems.length - 1
+							const isFirst = index === 0
+							const showCollapseIndicator = isCollapsed && isFirst && visibleYearItems.length > 1
+							
+							return (
+								<Fragment key={item.year}>
+									<li className="flex items-center !pb-4 !pt-0 relative">
+										{/* Timeline line segment */}
+										<div 
+											className={`bg-primary-300 absolute w-1 left-0 ${
+												showCollapseIndicator && isFirst 
+													? 'top-1 bottom-0' 
+													: showCollapseIndicator && isLast 
+														? 'top-0 h-2' 
+														: isLast 
+															? 'top-1 h-2' 
+															: 'top-1 h-full'
+											} ${index === 0 ? 'mt-2' : ''}`}
+											aria-hidden="true"
+										/>
+										
+										{/* Timeline marker dot */}
+										<div 
+											className={`w-4 h-4 rounded-full absolute -left-1.5 top-2 transition-colors ${
+												isYearSelected 
+													? 'bg-accent-800' 
+													: 'bg-primary-500'
+											}`}
+											aria-hidden="true"
+										/>
+										
+										{/* Year and name variants on same line */}
+										<div className="ml-6 flex items-center gap-2 flex-wrap">
+											{/* Year button */}
+											<ToggleButton
+												isSelected={isYearSelected}
+												onClick={() => {
+													setActiveYear(item.year)
+													setActiveName(null)
+												}}
+											>
+												{item.year}
+											</ToggleButton>
+
+											{/* Name variants for this year - on same line */}
+											{item.names.length > 0 && (
+												<>
+													{item.names.map((nameKey) => {
+														const isNameSelected = activeName === nameKey
+														
+														return (
+															<ToggleButton
+																key={nameKey}
+																isSelected={isNameSelected}
+																onClick={() => {
+																	setActiveName(nameKey)
+																	setActiveYear(null)
+																}}
+															>
+																{nameKey}
+															</ToggleButton>
+														)
+													})}
+												</>
+											)}
+										</div>
+									</li>
+									{/* Collapse indicator in the middle - transit app style */}
+									{showCollapseIndicator && (
+										<li className="flex items-center !pb-4 !pt-0 relative" key={`${item.year}-collapse-indicator`}>
+											{/* Dashed timeline line segment - extends into padding to connect seamlessly */}
+											<div 
+												className="absolute left-0 -top-4 -bottom-4 w-1 [background:repeating-linear-gradient(to_bottom,theme(colors.primary.300)_0px,theme(colors.primary.300)_4px,transparent_4px,transparent_8px)] [background-size:4px_8px]"
+												aria-hidden="true"
+											/>
+											
+											{/* Collapse button */}
+											<div className="ml-6 flex items-center">
 												<button
 													type="button"
-													onClick={() => {
-														if (activeName === nameKey) {
-															setActiveName(null)
-														} else {
-															setActiveName(nameKey)
-															setActiveYear(null)
-														}
-													}}
-													className={`text-left flex items-center gap-2 px-2 py-1 rounded ${activeName === nameKey ? 'bg-accent-800 text-white' : 'bg-neutral-100 text-black'} hover:underline underline-offset-4`}
-													aria-pressed={activeName === nameKey}
+													className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
+													onClick={() => setShowAll(true)}
+													aria-expanded={false}
 												>
-													<span className="font-medium">{nameKey}</span>
+													Vis fleire ({hiddenYearItemsCount})
 												</button>
-											</li>
-										))}
-									</ul>
+											</div>
+										</li>
+									)}
+								</Fragment>
+							)
+						})}
+						{/* Show fewer button at end when expanded */}
+						{hasMore && !hasActiveFilter && showAll && (
+							<li className="flex items-center !pt-2" key="show-fewer">
+								<div className="ml-6 flex items-center">
+									<button
+										type="button"
+										className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
+										onClick={() => setShowAll(false)}
+										aria-expanded={true}
+									>
+										Vis færre
+									</button>
 								</div>
 							</li>
-						)
-					} else {
-						return (
-							<li key={`noYear__${item.name}`} className="flex flex-col w-full px-2">
-								<div className="text-left flex items-center gap-3 py-2">
-									<span className="font-medium">{item.name}</span>
-									<span className="text-sm text-neutral-700">({item.count})</span>
-								</div>
-							</li>
-						)
-					}
-				})}
-			</ul>
-			{hasMore && (
-				<button
-					type="button"
-					className="text-neutral-900 flex items-center gap-1"
-					onClick={() => setShowAll(!showAll)}
-				>
-					{showAll ? 'Vis færre namnefilter' : `Vis fleire namnefilter (${allItems.length - visibleItems.length})`}
-				</button>
+						)}
+					</ul>
+				)}
+
+				{/* Names without year */}
+				{visibleItems.filter(item => item.type === 'noYear').length > 0 && (
+					<div className="mt-4 pt-4 border-t border-neutral-200">
+						<div className="text-sm font-medium text-neutral-700 mb-2">Namneformer utan år</div>
+						<div className="flex flex-wrap gap-2">
+							{visibleItems
+								.filter(item => item.type === 'noYear')
+								.map((item) => {
+									const isNameSelected = activeName === item.name
+									
+									return (
+										<ToggleButton
+											key={item.name}
+											isSelected={isNameSelected}
+											onClick={() => {
+												setActiveName(item.name)
+												setActiveYear(null)
+											}}
+										>
+											<span>{item.name}</span>
+											<span className="text-sm opacity-75 ml-1">({item.count})</span>
+										</ToggleButton>
+									)
+								})}
+						</div>
+					</div>
+				)}
+			</div>
+
+			{/* Active filter display */}
+			{hasActiveFilter && (
+					<div className="flex items-center gap-3 px-4 py-3 bg-accent-50 border border-accent-200 rounded-lg shadow-sm">
+						<PiFunnel className="text-accent-800 flex-shrink-0" aria-hidden="true" />
+						<strong className="text-neutral-900 text-base">
+							{activeYear ? `År: ${activeYear}` : activeName ? `Namneform: ${activeName}` : ''}
+						</strong>
+						<button
+							type="button"
+							onClick={() => {
+								setActiveYear(null)
+								setActiveName(null)
+							}}
+							className="ml-auto text-accent-800 hover:text-accent-900 underline underline-offset-2 font-medium transition-colors"
+							aria-label="Fjern filter"
+						>
+							Fjern filter
+						</button>
+					</div>
 			)}
+
 		</div>
 	)
 }

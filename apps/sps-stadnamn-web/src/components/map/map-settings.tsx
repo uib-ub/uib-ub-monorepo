@@ -1,12 +1,9 @@
 'use client'
-import { useContext, useState } from "react";
 import { baseMaps } from "@/config/basemap-config";
 import { useMapSettings } from "@/state/zustand/persistent-map-settings";
-import { PiCheckCircleFill } from "react-icons/pi";
-import Clickable from "../ui/clickable/clickable";
+import ToggleButton from "@/components/ui/toggle-button";
 import { usePerspective } from "@/lib/param-hooks";
 import dynamic from "next/dynamic";
-import { GlobalContext } from "@/state/providers/global-provider";
 import { useDebugStore } from "@/state/zustand/debug-store";
 
 const MapDebugSettings = dynamic(() => import("./map-debug-settings"), { ssr: false });
@@ -34,15 +31,13 @@ export default function MapSettings() {
             {baseMaps.map((item) => {
               const selected = baseMap[perspective] === item.key;
               return (
-                <Clickable
+                <ToggleButton
                   key={item.key}
+                  isSelected={selected}
                   onClick={() => setBaseMap(perspective, item.key)}
                   role="radio"
-                  aria-checked={selected}
-                  aria-labelledby={`basemap-label-${item.key}`}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors
-                    ${selected ? "bg-accent-800 text-white" : "bg-neutral-100 text-neutral-900 hover:bg-neutral-200"}
-                    min-w-[2.5rem]`}
+                  ariaChecked={selected}
+                  ariaLabelledBy={`basemap-label-${item.key}`}
                 >
                   <span
                     id={`basemap-label-${item.key}`}
@@ -50,7 +45,7 @@ export default function MapSettings() {
                   >
                     {item.name}
                   </span>
-                </Clickable>
+                </ToggleButton>
               );
             })}
           </div>
@@ -65,15 +60,13 @@ export default function MapSettings() {
             {markerModes.map((mode) => {
               const selected = markerMode === mode.key;
               return (
-                <Clickable
+                <ToggleButton
                   key={mode.key}
+                  isSelected={selected}
                   onClick={() => setMarkerMode(mode.key)}
                   role="radio"
-                  aria-checked={selected}
-                  aria-labelledby={`markermode-label-${mode.key}`}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors
-                    ${selected ? "bg-accent-800 text-white" : "bg-neutral-100 text-neutral-900 hover:bg-neutral-200"}
-                    min-w-[2.5rem]`}
+                  ariaChecked={selected}
+                  ariaLabelledBy={`markermode-label-${mode.key}`}
                 >
                   <span
                     id={`markermode-label-${mode.key}`}
@@ -81,7 +74,7 @@ export default function MapSettings() {
                   >
                     {mode.label}
                   </span>
-                </Clickable>
+                </ToggleButton>
               );
             })}
           </div>

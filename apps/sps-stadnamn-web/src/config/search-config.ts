@@ -31,6 +31,7 @@ interface FacetConfigItem extends FieldConfigItem {
 const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, numeric, keyword, noInfobox, specialFacet] = Array(11).fill(true);
 
 const sosi = {label: "Stedstype (standardisert)", description: "SOSI-standarden", facet, table, result, noInfobox, keyword}
+const placeType = {label: "Lokalitetstype", table, facet, result, noInfobox}
 const cadastre = {"within": {label: "Gard", result},
                   "cadastre__gnr": {label: "Gardsnummer", result, sort: "asc" as const, type: "integer" as const}, 
                   "cadastre__bnr": {label: "Bruksnummer", result, sort: "asc" as const, type: "integer" as const}
@@ -295,9 +296,8 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
       "rawData.SistEndra": { label: "Sist endra", table }
     },
     geonames: {
-      ...required, adm, adm1, adm2, sosi,
+      ...required, adm, adm1, adm2, sosi, placeType,
       "lang": {label: "Språk", facet},
-      "placeType": {label: "Lokalitetstype", facet},
       "misc.featureClass": {label: "Geonames feature class", facet},
       "misc.featureCode": {label: "Geonames feature code", facet},
       
