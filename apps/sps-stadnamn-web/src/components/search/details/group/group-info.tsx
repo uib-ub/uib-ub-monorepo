@@ -176,7 +176,7 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
                                 <PiInfoFill className="text-primary-700 text-sm align-middle" aria-hidden="true" />
                             </ClickableIcon>
                         </div>}
-                        <ul className="flex flex-col w-full -mx-2 gap-1">
+                        <ul className="flex flex-col w-full gap-1">
                             {items.map((s: any) => {
                                 const additionalLabels = Array.from(
                                     new Set([
@@ -195,10 +195,10 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
                                 const lat = s.location?.coordinates?.[1];
                                 const lng = s.location?.coordinates?.[0];
                                 const isActive = activePoint && lat && lng && activePoint === `${lat},${lng}`;
-                                const coordinateTypeLabel = s.coordinateType && coordinateVocab?.[s.coordinateType]?.label;
+                                const coordinateTypeLabel = s.coordinateType && coordinateVocab?.[s.coordinateType]?.label || "Opphavleg koordinat i " + datasetTitles[ds];
 
                                 return (
-                                    <li key={s.uuid} className="px-2 py-1 flex items-center gap-2">
+                                    <li key={s.uuid} className="py-1 flex items-center gap-2">
                                         {isInitGroup && !activePoint && s.location?.coordinates?.length === 2 && (
                                             <ClickableIcon
                                             label="Vis på kart"
@@ -221,8 +221,8 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
                                                 {additionalLabels && <span className="text-neutral-900"> – {additionalLabels}</span>}
                                                 {resultRenderers[ds]?.links?.(s) || defaultResultRenderer?.links?.(s)}
                                             </div>
-                                            {isInitGroup && activePoint && coordinateTypeLabel && (
-                                                <div className="text-neutral-600 text-sm mt-0.5">{coordinateTypeLabel}</div>
+                                            {isInitGroup && activePoint && lat && lng && (
+                                                <div className="bg-accent-50 border border-accent-200 rounded-md px-2 py-1 mt-0.5 w-full">{coordinateTypeLabel} </div>
                                             )}
                                         </div>
                                     </li>
@@ -640,18 +640,18 @@ const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
 			{/* Active filter display */}
 			{hasActiveFilter && (
 					<div className="flex items-center gap-3 px-4 py-3 bg-accent-50 border border-accent-200 rounded-lg shadow-sm">
-						<PiFunnel className="text-accent-800 flex-shrink-0" aria-hidden="true" />
 						<strong className="text-neutral-900 text-base">
 							{activeYear ? `År: ${activeYear}` : activeName ? `Namneform: ${activeName}` : ''}
 						</strong>
-						<Clickable
+						<ClickableIcon
+							label="Fjern filter"
 							replace
 							remove={['activeYear', 'activeName']}
 							className="ml-auto text-accent-800 hover:text-accent-900 underline underline-offset-2 font-medium transition-colors"
 							aria-label="Fjern filter"
 						>
-							Fjern filter
-						</Clickable>
+							<PiX className="text-accent-800"/>
+						</ClickableIcon>
 					</div>
 			)}
 
@@ -1004,17 +1004,20 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 {/* Active point filter display - only in init group */}
                 {searchParams.get('activePoint') && initValue === groupData.group.id && (
                     <div className="px-3 pt-2">
-                        <div className="flex items-center gap-3 px-4 py-3 bg-accent-50 border border-accent-200 rounded-lg shadow-sm">
-                            <PiFunnel className="text-accent-800 flex-shrink-0" aria-hidden="true" />
+                        <div className="flex items-center gap-2 px-4 py-3 bg-accent-50 border border-accent-200 rounded-lg shadow-sm">
+                            <PiMapPinFill className="text-accent-800 flex-shrink-0" aria-hidden="true" />
                             <strong className="text-neutral-900 text-base">
-                                Koordinat: {searchParams.get('activePoint')?.split(',').map((coord: string) => parseFloat(coord).toFixed(4)).join(', ')}
+                                {searchParams.get('activePoint')?.split(',').map((coord: string, index: number) => {
+                                    const value = parseFloat(coord);
+                                    return `${index === 0 ? 'N' : 'Ø'} ${value.toFixed(4)}°`;
+                                }).join(', ')}
                             </strong>
                             <ClickableIcon
-                                remove={['activePoint']}
-                                className="ml-auto text-accent-800 hover:text-accent-900 underline underline-offset-2 font-medium transition-colors"
                                 label="Fjern filter"
+                                remove={['activePoint']}
+                                className="ml-auto text-accent-800 hover:text-accent-900"
                             >
-                                Fjern filter
+                                <PiX className="text-accent-800"/>
                             </ClickableIcon>
                         </div>
                     </div>
@@ -1041,13 +1044,13 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                         }}
                         remove={['group', 'activePoint', 'activeYear', 'activeName']}
                         add={{
-                            point: `${locations[0].location.coordinates[1]},${locations[0].location.coordinates[0]}`,
+                            
                             init: stringToBase64Url(groupData.group.id)
                         }}
-                        className="btn btn-outline rounded-md flex items-center justify-center text-lg gap-2 font-semibold"
+                        className="btn btn-neutral rounded-full lg:rounded-md flex items-center justify-center text-lg gap-2 font-semibold"
                         label="Fest til toppen"
                     > 
-                        <PiPushPinBold aria-hidden="true" />vel 
+                        <PiPushPinFill aria-hidden="true" />vel 
                     </Clickable>
                 </div>
             )}
