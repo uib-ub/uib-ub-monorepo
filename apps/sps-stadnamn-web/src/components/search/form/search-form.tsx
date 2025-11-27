@@ -62,8 +62,9 @@ export default function SearchForm() {
 
     const mode = useMode()
    
-
-    const [inputState, setInputState] = useState<string>(inputValue.current || '') // Ensure updates within the component
+    // Initialize from URL params - this is the source of truth
+    const urlQuery = searchParams.get('q') || ''
+    const [inputState, setInputState] = useState<string>(urlQuery)
     const [point, setPoint] = useState<string>()
     const [autocompleteFacetFilters, setAutocompleteFacetFilters] = useState<[string, string][]>(facetFilters)
     const [autocompleteDatasetFilters, setAutocompleteDatasetFilters] = useState<[string, string][]>(datasetFilters)
@@ -255,7 +256,8 @@ export default function SearchForm() {
                     maxLength={200}
                     ref={input}
                     name="q"
-                    defaultValue={searchParams.get('q') || inputValue.current || ''}
+                    key={urlQuery}
+                    defaultValue={urlQuery}
                     autoComplete="off"
                     autoFocus={!isMobile && pathname == '/search'}
                     onFocus={() => { 
@@ -299,8 +301,8 @@ export default function SearchForm() {
                 {point && <input type="hidden" name="point" value={point} />}
                 {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''} />}
 
-                {(inputState || searchFilterParamsString?.length > 0) && !menuOpen &&
-                    <ClickableIcon label="Tøm" remove={['q']} onClick={() => { clearQuery() }}>
+                {inputState && !menuOpen &&
+                    <ClickableIcon label="Tøm" onClick={() => { clearQuery() }}>
                         <PiX className="text-3xl lg:text-2xl text-neutral-800 group-focus-within:text-neutral-800 m-1" /></ClickableIcon>}
                 <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800" aria-hidden="true" /></button>
             </div>
