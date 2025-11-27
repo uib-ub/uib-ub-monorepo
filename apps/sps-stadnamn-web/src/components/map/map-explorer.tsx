@@ -799,9 +799,9 @@ export default function MapExplorer() {
 
 
 
-            {groupData && groupData.fields?.location?.[0]?.coordinates && <Marker
+            {groupData && false && groupData.fields?.location?.[0]?.coordinates && <Marker
               zIndexOffset={2000}
-              icon={new leaflet.DivIcon(getLabelMarkerIcon(groupData.fields["group.label"]?.[0] || groupData.fields.label?.[0] || '[utan namn]', 'accent', undefined, true, false, true))}
+              icon={new leaflet.DivIcon(getLabelMarkerIcon(groupData.fields["group.label"]?.[0] || groupData.fields.label?.[0] || '[utan namn]', 'primary', undefined, true, false, true))}
               position={[groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]}
               eventHandlers={{
                 click: () => {
@@ -927,7 +927,7 @@ export default function MapExplorer() {
 
 
 
-            {doc && docData?._source?.within && <Marker 
+            {doc && false && docData?._source?.within && <Marker 
               zIndexOffset={1000}
               icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))}
               position={[docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]}
