@@ -142,6 +142,7 @@ export default function SearchResults() {
 
   // Check if there are no results
   const hasNoResults = collapsedStatus === 'success' && (!collapsedData?.pages || collapsedData.pages.length === 0 || collapsedData.pages[0].data?.length === 0);
+  const hasOneResult = collapsedStatus === 'success' && collapsedData?.pages && collapsedData.pages.length === 1 && collapsedData.pages[0].data?.length === 1;
 
 
   if (isMobile && activeGroupValue && snappedPosition == 'bottom') {
@@ -368,7 +369,7 @@ export default function SearchResults() {
         </button>
       )) : null}
 
-      {(!init || showOtherResults || isMobile) && (
+      {(!init || showOtherResults || isMobile || hasOneResult) && (
         <>
           <SearchQueryDisplay />
 
