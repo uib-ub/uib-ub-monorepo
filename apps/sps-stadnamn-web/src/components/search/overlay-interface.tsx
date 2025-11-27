@@ -216,21 +216,6 @@ export default function OverlayInterface() {
                         </div>}
                     </LeftWindow>}
 
-                    {!isMobile && mode != 'table' && <div className=" flex flex-wrap absolute lg:top-2 left-[25svw] pb-1 px-1 z-[3001] overflow-x-hidden stable-scrollbar">
-
-                        <RoundIconClickable
-                        className="relative"
-                            label="Filter"
-                            add={{ options: 'on' }}
-                            onClick={() => setSnappedPosition('middle')}
-                        >
-                            {options ? <PiFunnelFill className="text-2xl" /> : <PiFunnel className="text-2xl" />}
-                            {filterCount > 0 && (
-                                <TitleBadge className={`absolute bottom-1.5 right-1.5 text-xs ${options ? 'bg-accent-100 text-accent-900' : 'bg-primary-700 text-white'}`} count={filterCount} />
-                            )}
-                        </RoundIconClickable>
-                        
-                        </div>}
                     
                     
                     {showRightPanel && <RightWindow>

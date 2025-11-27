@@ -1,4 +1,4 @@
-import { PiFunnel, PiGpsFix, PiInfoFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus } from "react-icons/pi"
+import { PiFunnel, PiFunnelFill, PiGpsFix, PiInfoFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus } from "react-icons/pi"
 import { RoundIconButton, RoundIconClickable } from "../ui/clickable/round-icon-button"
 import { getMyLocation } from "@/lib/map-utils"
 import { useSessionStore } from "@/state/zustand/session-store"
@@ -20,16 +20,18 @@ export function FilterButton() {
 
     return (
         <RoundIconClickable
-            className="relative"
+            className={`relative ${options ? 'bg-accent-800 text-white' : ''}`}
             label="Filter"
             add={{ options: 'on' }}
+            aria-controls="options-panel"
+            aria-expanded={options}
             onClick={() => setSnappedPosition('middle')}
         >
-            <PiFunnel className="text-2xl" />
+            {options ? <PiFunnelFill className="text-2xl" /> : <PiFunnel className="text-2xl" />}
             {filterCount > 0 && (
                 <TitleBadge
                     count={filterCount}
-                    className={`text-xs absolute bottom-1.5 right-1.5 xl:text-base ${options ? 'bg-accent-100 text-accent-900' : 'bg-primary-700 text-white'}`}
+                    className={`text-xs absolute bottom-1.5 right-1.5 ${options ? 'bg-white border border-accent-800 text-accent-800' : 'bg-primary-700 text-white'}`}
                 />
             )}
         </RoundIconClickable>
@@ -44,6 +46,7 @@ export default function MapToolbar() {
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const { totalHits, searchBounds, searchLoading, searchError } = useSearchData()
     const { options } = useOverlayParams()
+    const { mapSettings } = useOverlayParams()
     
     const svhToRem = (svh: number) => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return 0
@@ -82,13 +85,18 @@ export default function MapToolbar() {
             
         }
         <div
-            className="flex gap-2 flex-col lg:flex-row absolute right-3 lg:right-[calc(25svw+1rem)] z-[5000]"
+            className={`flex gap-2 absolute lg: z-[5000] ${isMobile ? 'right-3 flex-col' : 'right-[calc(25svw+1rem)]'}`}
             style={{
                 top: isMobile ?  currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM ? "4rem" : `${4-currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem` : "0.5rem",
             }}
         >
+            { !isMobile && (
+                <FilterButton />
+            )}
             <RoundIconClickable
-
+            className={`${mapSettings ? 'bg-accent-800 text-white' : ''}`}
+            aria-controls="map-settings-panel"
+            aria-expanded={mapSettings}
                 label="Kartinnstillingar"
                 add={{ mapSettings: 'on' }}
                 onClick={() => setSnappedPosition('middle')}
@@ -128,7 +136,7 @@ export default function MapToolbar() {
             >
                 <PiGpsFix className="text-2xl" />
             </RoundIconButton>
-            { isMobile && !options && (
+            { isMobile && (
                 <FilterButton />
             )}
         </div>
