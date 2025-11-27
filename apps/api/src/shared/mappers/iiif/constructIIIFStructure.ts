@@ -80,7 +80,7 @@ export function constructIIIFStructure(item: any, fileset: any) {
   }
 
   const getIdentifiers = (identifiedBy: any): PreziMetadata => {
-    const identifiers = identifiedBy?.filter((name: any) => name.type === 'Identifier')
+    const identifiers = identifiedBy?.filter((name: any) => name.type === 'Identifier') ?? []
 
     return {
       label: {
@@ -94,7 +94,7 @@ export function constructIIIFStructure(item: any, fileset: any) {
     }
   }
   const getConcepts = (shows: any): PreziMetadata => {
-    const concepts = shows?.flatMap((show: any) => show.represents_instance_of_type)
+    const concepts = shows?.flatMap((show: any) => show.represents_instance_of_type) ?? []
 
     return {
       label: {
