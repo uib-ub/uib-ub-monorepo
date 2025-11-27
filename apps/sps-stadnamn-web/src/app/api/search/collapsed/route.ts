@@ -48,8 +48,8 @@ export async function POST(request: Request) {
   let baseQuery: any;
   
   const suppressedExclusion = {
-    "term": {
-      "group.id": "suppressed"
+    "terms": {
+      "group.id": ["suppressed", "noname"]
     }
   };
   

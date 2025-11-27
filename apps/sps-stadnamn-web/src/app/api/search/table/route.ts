@@ -43,6 +43,12 @@ export async function GET(request: Request) {
   }
 
     
+  const suppressedExclusion = {
+    "terms": {
+      "group.id": ["suppressed", "noname"]
+    }
+  };
+
   const query: Record<string,any> = {
     "size":  parseInt(reservedParams.size || "10"),
     "from": parseInt(reservedParams.from || "0"),
@@ -55,16 +61,31 @@ export async function GET(request: Request) {
     query.query = {
       "bool": {
         "must": simple_query_string,              
-        "filter": termFilters
+        "filter": termFilters,
+        "must_not": [suppressedExclusion]
       }
     }
   }
   else if (simple_query_string) {
-    query.query = simple_query_string
+    query.query = {
+      "bool": {
+        "must": simple_query_string,
+        "must_not": [suppressedExclusion]
+      }
+    }
   }
   else if (termFilters.length) {
     query.query = {"bool": {
-        "filter": termFilters
+        "filter": termFilters,
+        "must_not": [suppressedExclusion]
+      }
+    }
+  }
+  else {
+    query.query = {
+      "bool": {
+        "must": { "match_all": {} },
+        "must_not": [suppressedExclusion]
       }
     }
   }
