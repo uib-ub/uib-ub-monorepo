@@ -429,7 +429,7 @@ export default function SearchResults() {
       )}
 
 
-      {(filterCount > 0 || isMobile || searchError || collapsedError ) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
+      {(filterCount > 0 || isMobile || searchError || collapsedError || hasNoResults) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
       { filterCount > 0 && showOtherResults && <div className="mx-2 mb-4">
         
         <ActiveFilters /></div>}
