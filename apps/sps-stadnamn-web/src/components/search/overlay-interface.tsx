@@ -216,21 +216,6 @@ export default function OverlayInterface() {
                         </div>}
                     </LeftWindow>}
 
-                    {!isMobile && mode != 'table' && <div className=" flex flex-wrap absolute lg:top-2 left-[25svw] pb-1 px-1 z-[3001] overflow-x-hidden stable-scrollbar">
-
-                        <RoundIconClickable
-                        className="relative"
-                            label="Filter"
-                            add={{ options: 'on' }}
-                            onClick={() => setSnappedPosition('middle')}
-                        >
-                            {options ? <PiFunnelFill className="text-2xl" /> : <PiFunnel className="text-2xl" />}
-                            {filterCount > 0 && (
-                                <TitleBadge className={`absolute bottom-1.5 right-1.5 text-xs ${options ? 'bg-accent-100 text-accent-900' : 'bg-primary-700 text-white'}`} count={filterCount} />
-                            )}
-                        </RoundIconClickable>
-                        
-                        </div>}
                     
                     
                     {showRightPanel && <RightWindow>
@@ -248,7 +233,7 @@ export default function OverlayInterface() {
                             <div  className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 py-1 xl:px-0 gap-2 xl:pl-2`}>
                                 <Clickable aria-expanded={showResults} aria-controls="results-panel" className="flex items-center gap-2 xl:px-1 w-full" add={{results: showResults ? null : 'on'}} remove={["results", ...(isMobile ? ['options'] : [])]}>
                                 
-                                <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Resultat</h1>
+                                <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Kjelder</h1>
                                 
                                    {searchLoading ? <Spinner status="Laster resultat" className="text-lg" /> : <TitleBadge className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`} count={totalHits?.value || 0} />}
                                    {!isMobile && (

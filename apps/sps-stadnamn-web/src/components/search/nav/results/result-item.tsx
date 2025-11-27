@@ -52,21 +52,13 @@ export default function ResultItem({hit, onClick, notClickable, ...rest}: {hit: 
     const nav = searchParams.get('nav')
     const itemRef = useRef<HTMLAnchorElement>(null) 
     const docDataset = hit._index?.split('-')?.[2]
-    const { isMobile } = useContext(GlobalContext)
-    const mode = useMode()
-    const { mapFunctionRef } = useContext(GlobalContext)
-    const { searchFilterParamsString } = useSearchQuery()
-    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
+    const { isMobile, mapFunctionRef } = useContext(GlobalContext)
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const showScore = useDebugStore((s: any) => s.showScore)
-
-    const titleRenderer = resultRenderers[docDataset]?.title || defaultResultRenderer.title
-    const snippetRenderer = resultRenderers[docDataset]?.snippet || defaultResultRenderer.snippet
-
     const isGrunnord = docDataset?.includes('_g')
 
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
-    const {activeGroupCode, activeGroupValue, initValue } = useGroup()
+    const { activeGroupValue, initValue } = useGroup()
     
 
 
@@ -142,7 +134,7 @@ remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
             </Clickable>
             {(initValue && initValue == hit.fields["group.id"][0]) && (
                 <div className="p-3">
-                    <ClickableIcon className="h-6 w-6 p-0 rounded-full btn btn-outline text-neutral-700" label="Fjern som utgangspunkt" remove={['init']}>
+                    <ClickableIcon className="h-6 w-6 p-0 rounded-full btn btn-outline text-neutral-700" label="Lukk namnegruppe" remove={['init', ]}>
                         <PiXBold />
                     </ClickableIcon>
                 </div>

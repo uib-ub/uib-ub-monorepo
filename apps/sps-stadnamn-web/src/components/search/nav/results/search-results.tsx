@@ -8,7 +8,7 @@ import GroupInfo from "../../details/group/group-info";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchParams } from "next/navigation";
 import { useGroup } from "@/lib/param-hooks";
-import { PiMapPinFill, PiPlusBold, PiPencilSimple, PiCheck, PiX, PiPlayFill, PiTilde, PiMagnifyingGlass, PiSliders, PiListBullets, PiTableFill, PiXBold, PiPencilSimpleBold, PiCaretDownBold, PiCaretUpBold } from "react-icons/pi";
+import { PiMapPinFill, PiPlusBold, PiPencilSimple, PiCheck, PiX, PiPlayFill, PiTilde, PiMagnifyingGlass, PiSliders, PiListBullets, PiTableFill, PiXBold, PiPencilSimpleBold, PiCaretDownBold, PiCaretUpBold, PiMinusBold } from "react-icons/pi";
 import useGroupData from "@/state/hooks/group-data";
 import Spinner from "@/components/svg/Spinner";
 import { useSessionStore } from "@/state/zustand/session-store";
@@ -142,6 +142,7 @@ export default function SearchResults() {
 
   // Check if there are no results
   const hasNoResults = collapsedStatus === 'success' && (!collapsedData?.pages || collapsedData.pages.length === 0 || collapsedData.pages[0].data?.length === 0);
+  const hasOneResult = collapsedStatus === 'success' && collapsedData?.pages && collapsedData.pages.length === 1 && collapsedData.pages[0].data?.length === 1;
 
 
   if (isMobile && activeGroupValue && snappedPosition == 'bottom') {
@@ -353,26 +354,26 @@ export default function SearchResults() {
       ))}
 
       {init && !isMobile && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
-        <div className="w-full border-y border-neutral-200 py-2 px-3 flex items-center gap-2">
+        <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{width: '10rem'}}></div>
         </div>
       ) : (
         <button
           onClick={() => setShowOtherResults(!showOtherResults)}
-          className="w-full text-left border-y border-neutral-200 py-2 px-3 hover:bg-neutral-50 transition-colors flex items-center gap-2 text-neutral-950"
+          className="w-full text-left border-t border-neutral-200 py-2 px-3 hover:bg-neutral-50 transition-colors flex items-center gap-2 text-neutral-950"
           aria-expanded={showOtherResults}
         >
-          {showOtherResults ? <PiCaretUpBold className="inline self-center text-lg text-primary-700" /> : <PiCaretDownBold className="inline self-center text-primary-700 text-lg" />}
-          <span className="text-lg">Fleire treff</span>
+          {showOtherResults ? <PiMinusBold className="inline self-center text-lg text-primary-700" /> : <PiPlusBold className="inline self-center text-primary-700 text-lg" />}
+          <span className="text-lg">Fleire namnegrupper</span>
         </button>
       )) : null}
 
-      {(!init || showOtherResults || isMobile) && (
+      {(!init || showOtherResults || isMobile || hasOneResult) && (
         <>
           <SearchQueryDisplay />
 
-          <ul id="result_list" className='flex flex-col divide-y divide-neutral-300 border-y border-neutral-200'>
+          <ul id="result_list" className={`flex flex-col divide-y divide-neutral-300 ${init && !isMobile && showOtherResults ? 'border-b' : 'border-y'} border-neutral-200`}>
       
 
       {(initGroupLoading || collapsedLoading && collapsedInitialPage === 1) ? Array.from({ length: collapsedInitialPage === 1 ? 6 : 40 }).map((_, i) => (
@@ -429,8 +430,8 @@ export default function SearchResults() {
       )}
 
 
-      {(filterCount > 0 || isMobile || searchError || collapsedError ) && <div className="flex flex-col gap-4 py-4 pb-8 xl:pb-4">
-      { filterCount > 0 && <div className="mx-2 mb-4">
+      {(filterCount > 0 || isMobile || searchError || collapsedError || hasNoResults) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
+      { filterCount > 0 && showOtherResults && <div className="mx-2 mb-4">
         
         <ActiveFilters /></div>}
 
