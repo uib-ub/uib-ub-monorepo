@@ -51,7 +51,12 @@ app.get('/', (c) => {
  */
 app.get('/items/:id', (c) => {
   const id = c.req.param('id')
-  return c.redirect(`/object/${id}`, 301)
+  // Preserve query params in the redirect
+  const queryParams = c.req.query();
+  const queryString = Object.keys(queryParams).length > 0
+    ? '?' + new URLSearchParams(queryParams).toString()
+    : '';
+  return c.redirect(`/object/${id}${queryString}`, 301);
 })
 app.route('/object', items)
 app.route('/object', item)
