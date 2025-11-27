@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, useContext, Fragment, type ReactNode } fr
 import { datasetTitles } from "@/config/metadata-config";
 import { formatHtml } from "@/lib/text-utils";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
-import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiMapPinFill, PiInfoFill, PiArchive, PiInfo, PiPushPinBold, PiPushPinFill, PiMagnifyingGlass, PiPushPin, PiX, PiFunnel } from "react-icons/pi";
+import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiMapPinFill, PiInfoFill, PiArchive, PiInfo, PiPushPinBold, PiPushPinFill, PiMagnifyingGlass, PiPushPin, PiX, PiFunnel, PiMapPinPlusFill } from "react-icons/pi";
 import WarningMessage from "./warning-message";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Spinner from "@/components/svg/Spinner";
@@ -195,13 +195,13 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
                                 const lat = s.location?.coordinates?.[1];
                                 const lng = s.location?.coordinates?.[0];
                                 const isActive = activePoint && lat && lng && activePoint === `${lat},${lng}`;
-                                const coordinateTypeLabel = s.coordinateType && coordinateVocab?.[s.coordinateType]?.label || "Opphavleg koordinat i " + datasetTitles[ds];
+                                const coordinateTypeLabel = s.coordinateType && coordinateVocab?.[s.coordinateType]?.label;
 
                                 return (
                                     <li key={s.uuid} className="py-1 flex items-center gap-2">
                                         {isInitGroup && !activePoint && s.location?.coordinates?.length === 2 && (
                                             <ClickableIcon
-                                            label="Vis på kart"
+                                            label="Koordinatdetaljar"
                                             onClick={() => {
                                                 mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
                                             }}
@@ -211,7 +211,7 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
                                             }}
                                                 className={`flex-shrink-0 p-1 rounded-full ${isActive ? 'text-accent-700 outline outline-1 outline-accent-700 bg-accent-50' : 'text-neutral-700 hover:bg-neutral-100'}`}
                                             >
-                                                <PiMapPinFill className="text-base" />
+                                                {coordinateTypeLabel ? <PiMapPinPlusFill className="text-base" /> : <PiMapPinFill className="text-base" />}
                                             </ClickableIcon>
                                         )}
                                         <div className="flex-1 min-w-0">
@@ -222,7 +222,7 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
                                                 {resultRenderers[ds]?.links?.(s) || defaultResultRenderer?.links?.(s)}
                                             </div>
                                             {isInitGroup && activePoint && lat && lng && (
-                                                <div className="bg-accent-50 border border-accent-200 rounded-md px-2 py-1 mt-0.5 w-full">{coordinateTypeLabel} </div>
+                                                <div className="bg-neutral-50 border border-neutral-200 rounded-md px-2 py-1 mt-0.5 w-full">{coordinateTypeLabel || "Opphavleg koordinat i " + datasetTitles[ds]} </div>
                                             )}
                                         </div>
                                     </li>
@@ -644,11 +644,10 @@ const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
 							{activeYear ? `År: ${activeYear}` : activeName ? `Namneform: ${activeName}` : ''}
 						</strong>
 						<ClickableIcon
-							label="Fjern filter"
+							label="Fjern kjeldeavgrensing"
 							replace
 							remove={['activeYear', 'activeName']}
 							className="ml-auto text-accent-800 hover:text-accent-900 underline underline-offset-2 font-medium transition-colors"
-							aria-label="Fjern filter"
 						>
 							<PiX className="text-accent-800"/>
 						</ClickableIcon>
@@ -1013,7 +1012,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                 }).join(', ')}
                             </strong>
                             <ClickableIcon
-                                label="Fjern filter"
+                                label="Fjern kjeldeavgrensing"
                                 remove={['activePoint']}
                                 className="ml-auto text-accent-800 hover:text-accent-900"
                             >
