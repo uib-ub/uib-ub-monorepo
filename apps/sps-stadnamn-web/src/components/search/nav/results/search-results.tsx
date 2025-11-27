@@ -364,7 +364,7 @@ export default function SearchResults() {
           aria-expanded={showOtherResults}
         >
           {showOtherResults ? <PiMinusBold className="inline self-center text-lg text-primary-700" /> : <PiPlusBold className="inline self-center text-primary-700 text-lg" />}
-          <span className="text-lg">Fleire treff</span>
+          <span className="text-lg">Fleire namnegrupper</span>
         </button>
       )) : null}
 
