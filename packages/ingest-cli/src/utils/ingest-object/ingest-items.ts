@@ -26,7 +26,7 @@ export const ingestItems = async (limit = 100, page = 0, overwrite = false) => {
   console.log("🚀 ~ ingestItems ~ count:", count)
 
   // Get the index name
-  const useIndex = await getIndexFromAlias(CHC_SEARCH_ALIAS, CHC_INDICIES.items, overwrite)
+  const useIndex = await getIndexFromAlias(CHC_SEARCH_ALIAS, CHC_INDICIES.object, overwrite)
 
   // Ensure index exists
   await ensureIndexAndTemplatesReady({ index: useIndex, putTemplates })
@@ -98,7 +98,7 @@ export const ingestItems = async (limit = 100, page = 0, overwrite = false) => {
               actions: [
                 {
                   remove: {
-                    index: `${CHC_INDICIES.items}_*`,
+                    index: `${CHC_INDICIES.object}_*`,
                     alias: CHC_SEARCH_ALIAS,
                   },
                 },

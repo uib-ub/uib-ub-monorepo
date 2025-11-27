@@ -6,6 +6,7 @@ dotenv.config();
 import { Command } from 'commander';
 import { ingestItems } from './utils/ingest-object/ingest-items';
 import { ingestFilesets } from './utils/ingest-fileset/ingest-filesets';
+import { fetchFileset } from './utils/ingest-fileset/fetch-fileset';
 import { ingestWab } from './utils/ingest-wab/ingest-wab';
 import { ingestSka } from './utils/ingest-ska/ingest-ska';
 import { putTemplates } from './utils/tempates/es_templates';
@@ -85,6 +86,23 @@ program
       console.log(`Successfully ingested object with ID: ${id}`);
     } catch (error) {
       console.error(`Error ingesting object with ID ${id}:`, error);
+      process.exit(1);
+    }
+  });
+
+// Single fileset ingestion command
+program
+  .command('ingest-fileset')
+  .description('Ingest a single fileset by ID')
+  .argument('<id>', 'ID of the fileset to ingest')
+  .action(async (id) => {
+    console.log(`Ingesting fileset with ID: ${id}`);
+
+    try {
+      await fetchFileset(id);
+      console.log(`Successfully ingested fileset with ID: ${id}`);
+    } catch (error) {
+      console.error(`Error ingesting fileset with ID ${id}:`, error);
       process.exit(1);
     }
   });
