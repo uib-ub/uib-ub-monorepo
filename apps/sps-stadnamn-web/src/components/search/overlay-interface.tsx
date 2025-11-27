@@ -28,6 +28,7 @@ import { useDebugStore } from "@/state/zustand/debug-store";
 import DebugToggle from "./nav/results/debug-toggle";
 import ActiveFilters from "./form/active-filters";
 import { RoundIconClickable } from "../ui/clickable/round-icon-button";
+import Spinner from "../svg/Spinner";
 
 
 
@@ -129,13 +130,12 @@ export default function OverlayInterface() {
     const currentPosition = useSessionStore((s) => s.currentPosition);
     const setCurrentPosition = useSessionStore((s) => s.setCurrentPosition);
     const setDrawerOpen = useSessionStore((s) => s.setDrawerOpen);
-    const { isMobile } = useContext(GlobalContext)
+    const { isMobile, scrollableContentRef } = useContext(GlobalContext)
     const searchParams = useSearchParams()
     const { totalHits, searchBounds, searchLoading, searchError } = useSearchData()
     const { groupData } = useGroupData()
 
     const drawerRef = useRef<HTMLDivElement>(null)
-    const scrollableContent = useRef<HTMLDivElement>(null);
 
     const { showLeftPanel, showRightPanel, options, mapSettings, facet, showResults, tableOptions } = useOverlayParams()
     const { facetFilters, datasetFilters } = useSearchQuery()
@@ -167,7 +167,7 @@ export default function OverlayInterface() {
                     setSnappedPosition={setSnappedPosition}
                     currentPosition={currentPosition}
                     setCurrentPosition={setCurrentPosition}
-                    scrollContainerRef={scrollableContent}
+                    scrollContainerRef={scrollableContentRef}
                 >
                     {showLeftPanel && <LeftWindow>  
 
@@ -250,7 +250,7 @@ export default function OverlayInterface() {
                                 
                                 <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Resultat</h1>
                                 
-                                   <TitleBadge className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`} count={totalHits?.value || 0} />
+                                   {searchLoading ? <Spinner status="Laster resultat" className="text-lg" /> : <TitleBadge className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`} count={totalHits?.value || 0} />}
                                    {!isMobile && (
                                         <>
                                             {showResults ? <PiCaretUpBold className="text-lg mr-1 ml-auto" /> : <PiCaretDownBold className="text-lg ml-auto" />}

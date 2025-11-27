@@ -13,11 +13,11 @@ import { useSearchParams, useRouter } from "next/navigation";
 import AudioExplorer from "@/components/doc/audio-explorer";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import Clickable from "@/components/ui/clickable/clickable";
-import ToggleButton from "@/components/ui/toggle-button";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { useGroup } from "@/lib/param-hooks";
 import { SearchParamsContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
+import { fitBoundsToGroupSources } from "@/lib/map-utils";
 
 // Helper function to process HTML content
 const processHtmlContent = (html: string, expanded: boolean): ReactNode => {
@@ -145,10 +145,10 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
 }
 
 
-const SourcesTab = ({ datasets, isFiltered }: { datasets: Record<string, any[]>, isFiltered: boolean }) => {
+const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<string, any[]>, isFiltered: boolean, isInitGroup: boolean }) => {
     const [showAll, setShowAll] = useState(false)
     const datasetKeys = useMemo(() => Object.keys(datasets).filter(ds => datasets[ds] && datasets[ds].length > 0), [datasets])
-    const { sosiVocab } = useContext(GlobalContext)
+    const { sosiVocab, coordinateVocab, mapFunctionRef} = useContext(GlobalContext)
 
     // If not filtered: show 2 if more than 3, otherwise show all
     // If filtered: show 4 if more than 5, otherwise show all
@@ -156,6 +156,7 @@ const SourcesTab = ({ datasets, isFiltered }: { datasets: Record<string, any[]>,
     const visibleCount = isFiltered ? (hasMore ? 4 : datasetKeys.length) : (hasMore ? 2 : datasetKeys.length)
     const visibleDatasets = showAll ? datasetKeys : datasetKeys.slice(0, visibleCount)
     const searchParams = useSearchParams()
+    const activePoint = searchParams.get('activePoint')
 
     return (
         <ul className="flex flex-col w-full gap-4 pt-4">
@@ -191,12 +192,39 @@ const SourcesTab = ({ datasets, isFiltered }: { datasets: Record<string, any[]>,
                                 const sosiTypes = sosiTypesRaw.map((type: string) => sosiVocab?.[type]?.label || type)
                                 const sosiTypesDisplay = sosiTypes.length > 0 ? ` (${sosiTypes.join(', ')})` : ''
 
+                                const lat = s.location?.coordinates?.[1];
+                                const lng = s.location?.coordinates?.[0];
+                                const isActive = activePoint && lat && lng && activePoint === `${lat},${lng}`;
+                                const coordinateTypeLabel = s.coordinateType && coordinateVocab?.[s.coordinateType]?.label;
+
                                 return (
-                                    <li key={s.uuid} className="px-2 py-1">
-                                        <Link className="no-underline hover:underline" href={"/uuid/" + s.uuid}><strong>{s.label}</strong></Link>
-                                        {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
-                                        {additionalLabels && <span className="text-neutral-900"> – {additionalLabels}</span>}
-                                        {resultRenderers[ds]?.links?.(s) || defaultResultRenderer?.links?.(s)}
+                                    <li key={s.uuid} className="px-2 py-1 flex items-center gap-2">
+                                        {isInitGroup && !activePoint && s.location?.coordinates?.length === 2 && (
+                                            <ClickableIcon
+                                            label="Vis på kart"
+                                            onClick={() => {
+                                                mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+                                            }}
+                                            add={{
+                                                activePoint: `${lat},${lng}`,
+
+                                            }}
+                                                className={`flex-shrink-0 p-1 rounded-full ${isActive ? 'text-accent-700 outline outline-1 outline-accent-700 bg-accent-50' : 'text-neutral-700 hover:bg-neutral-100'}`}
+                                            >
+                                                <PiMapPinFill className="text-base" />
+                                            </ClickableIcon>
+                                        )}
+                                        <div className="flex-1 min-w-0">
+                                            <div>
+                                                <Link className="no-underline hover:underline" href={"/uuid/" + s.uuid}><strong>{s.label}</strong></Link>
+                                                {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
+                                                {additionalLabels && <span className="text-neutral-900"> – {additionalLabels}</span>}
+                                                {resultRenderers[ds]?.links?.(s) || defaultResultRenderer?.links?.(s)}
+                                            </div>
+                                            {isInitGroup && activePoint && coordinateTypeLabel && (
+                                                <div className="text-neutral-600 text-sm mt-0.5">{coordinateTypeLabel}</div>
+                                            )}
+                                        </div>
                                     </li>
                                 )
                             })}
@@ -219,8 +247,11 @@ const SourcesTab = ({ datasets, isFiltered }: { datasets: Record<string, any[]>,
     )
 }
 
-const NamesSection = ({ datasets, activeYear, activeName, setActiveYear, setActiveName }: { datasets: Record<string, any[]>, activeYear: string | null, activeName: string | null, setActiveYear: (year: string | null) => void, setActiveName: (name: string | null) => void }) => {
+const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
     const [showAll, setShowAll] = useState(false)
+	const searchParams = useSearchParams()
+	const activeYear = searchParams.get('activeYear')
+	const activeName = searchParams.get('activeName')
 
 	const { yearsOrdered, namesByYear, namesWithoutYear, nameCounts, itemsByDataset } = useMemo(() => {
 		// Helper functions to check if source matches filters
@@ -492,15 +523,18 @@ const NamesSection = ({ datasets, activeYear, activeName, setActiveYear, setActi
 										{/* Year and name variants on same line */}
 										<div className="ml-6 flex items-center gap-2 flex-wrap">
 											{/* Year button */}
-											<ToggleButton
-												isSelected={isYearSelected}
-												onClick={() => {
-													setActiveYear(item.year)
-													setActiveName(null)
-												}}
+											<Clickable
+												replace
+												add={isYearSelected ? undefined : { activeYear: item.year }}
+												remove={isYearSelected ? ['activeYear'] : ['activeName']}
+												className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${
+													isYearSelected
+														? 'bg-accent-800 text-white'
+														: 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
+												}`}
 											>
 												{item.year}
-											</ToggleButton>
+											</Clickable>
 
 											{/* Name variants for this year - on same line */}
 											{item.names.length > 0 && (
@@ -509,16 +543,19 @@ const NamesSection = ({ datasets, activeYear, activeName, setActiveYear, setActi
 														const isNameSelected = activeName === nameKey
 														
 														return (
-															<ToggleButton
+															<Clickable
 																key={nameKey}
-																isSelected={isNameSelected}
-																onClick={() => {
-																	setActiveName(nameKey)
-																	setActiveYear(null)
-																}}
+																replace
+																add={isNameSelected ? undefined : { activeName: nameKey }}
+																remove={isNameSelected ? ['activeName'] : ['activeYear']}
+																className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${
+																	isNameSelected
+																		? 'bg-accent-800 text-white'
+																		: 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
+																}`}
 															>
 																{nameKey}
-															</ToggleButton>
+															</Clickable>
 														)
 													})}
 												</>
@@ -579,17 +616,20 @@ const NamesSection = ({ datasets, activeYear, activeName, setActiveYear, setActi
 									const isNameSelected = activeName === item.name
 									
 									return (
-										<ToggleButton
+										<Clickable
 											key={item.name}
-											isSelected={isNameSelected}
-											onClick={() => {
-												setActiveName(item.name)
-												setActiveYear(null)
-											}}
+											replace
+											add={isNameSelected ? undefined : { activeName: item.name }}
+											remove={isNameSelected ? ['activeName'] : ['activeYear']}
+											className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${
+												isNameSelected
+													? 'bg-accent-800 text-white'
+													: 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
+											}`}
 										>
 											<span>{item.name}</span>
 											<span className="text-sm opacity-75 ml-1">({item.count})</span>
-										</ToggleButton>
+										</Clickable>
 									)
 								})}
 						</div>
@@ -604,17 +644,14 @@ const NamesSection = ({ datasets, activeYear, activeName, setActiveYear, setActi
 						<strong className="text-neutral-900 text-base">
 							{activeYear ? `År: ${activeYear}` : activeName ? `Namneform: ${activeName}` : ''}
 						</strong>
-						<button
-							type="button"
-							onClick={() => {
-								setActiveYear(null)
-								setActiveName(null)
-							}}
+						<Clickable
+							replace
+							remove={['activeYear', 'activeName']}
 							className="ml-auto text-accent-800 hover:text-accent-900 underline underline-offset-2 font-medium transition-colors"
 							aria-label="Fjern filter"
 						>
 							Fjern filter
-						</button>
+						</Clickable>
 					</div>
 			)}
 
@@ -623,67 +660,10 @@ const NamesSection = ({ datasets, activeYear, activeName, setActiveYear, setActi
 }
 
 
-const TabButton = ({ groupData, tab, label }: { groupData: any, tab: 'sources' | 'names' | 'locations', label: string }) => {
-    
-    const setPrefTab = useSessionStore(state => state.setPrefTab)
-    const setOpenTabs = useSessionStore(state => state.setOpenTabs)
-    const openTabs = useSessionStore(state => state.openTabs)
-    const isActive = openTabs[groupData.group.id] === tab
-    const searchParams = useSearchParams()
-    const router = useRouter();
-
-    const handleClick = () => {
-        setOpenTabs(groupData.group.id, tab);
-        setPrefTab(tab);
-        if (tab == 'locations') {
-            const newParams = new URLSearchParams(searchParams);
-            newParams.set('locations', 'on');
-            router.replace(`?${newParams.toString()}`);
-        }
-        else if (searchParams.get('locations')) {
-            const newParams = new URLSearchParams(searchParams);
-            newParams.delete('locations');
-            router.replace(`?${newParams.toString()}`);
-        }
-
-    }
-    
-    return (
-        <button
-            role="tab"
-            aria-selected={isActive}
-            tabIndex={isActive ? 0 : -1}
-            className="py-2 px-3"
-            onClick={handleClick}
-            id={`tab-${tab}`}
-            aria-controls={`tabpanel-${tab}`}
-            type="button"
-        >
-            <span className={`font-semibold border-b-2 transition-colors duration-150 uppercase tracking-wider
-                            ${isActive
-                    ? 'border-accent-800 text-accent-800'
-                    : 'border-transparent text-neutral-800'
-                }
-                        `}>
-                {label}
-            </span>
-        </button>
-    )
-}
 
 
 
-const TabList = ({ children }: { children: ReactNode }) => {
-    return (
-        <div
-            role="tablist"
-            aria-label="Gruppefaner"
-            className={`flex`}
-        >
-            {children}
-        </div>
-    )
-}
+
 
 // Helper functions for filtering sources
 const matchesActiveYear = (s: any, activeYear: string | null) => {
@@ -707,31 +687,45 @@ const matchesActiveName = (s: any, activeName: string | null) => {
     return false
 }
 
+const matchesActivePoint = (s: any, activePoint: string | null) => {
+    if (!activePoint) return true
+    const lat = s.location?.coordinates?.[1]
+    const lng = s.location?.coordinates?.[0]
+    if (!lat || !lng) return false
+    return activePoint === `${lat},${lng}`
+}
 
 // Component that filters datasets and renders SourcesTab
 const FilteredSourcesTab = ({ 
     datasets, 
     activeYear, 
-    activeName
+    activeName,
+    isInitGroup
 }: { 
     datasets: Record<string, any[]>, 
     activeYear: string | null, 
-    activeName: string | null
+    activeName: string | null,
+    isInitGroup: boolean
 }) => {
+    const searchParams = useSearchParams()
+    const activePoint = searchParams.get('activePoint')
+    
     const filtered = useMemo(() => {
         const result: Record<string, any[]> = {}
         Object.keys(datasets).forEach((ds) => {
             result[ds] = (datasets[ds] || []).filter((s: any) => 
-                matchesActiveYear(s, activeYear) && 
-                matchesActiveName(s, activeName)
+                // Only filter by activeYear, activeName, and activePoint if this is the init group
+                (isInitGroup ? matchesActiveYear(s, activeYear) : true) && 
+                (isInitGroup ? matchesActiveName(s, activeName) : true) &&
+                (isInitGroup ? matchesActivePoint(s, activePoint) : true)
             )
         })
         return result
-    }, [datasets, activeYear, activeName])
+    }, [datasets, activeYear, activeName, activePoint, isInitGroup])
 
-    const isFiltered = !!(activeYear || activeName)
+    const isFiltered = !!(activeYear || activeName || (isInitGroup && activePoint))
 
-    return <SourcesTab datasets={filtered} isFiltered={isFiltered} />
+    return <SourcesTab datasets={filtered} isFiltered={isFiltered} isInitGroup={isInitGroup} />
 }
 
 
@@ -743,19 +737,25 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     const setOpenTabs = useSessionStore(state => state.setOpenTabs)
     const searchParams = useSearchParams()
     const searchDatasets = searchParams.getAll('dataset')
-    const { mapFunctionRef } = useContext(GlobalContext)
+    const { mapFunctionRef, scrollableContentRef } = useContext(GlobalContext)
     const { initValue } = useGroup()
-    const [activeYear, setActiveYear] = useState<string | null>(null)
-    const [activeName, setActiveName] = useState<string | null>(null)
-
-    // Helper function to clear all filters
-    const clearAllFilters = () => {
-        setActiveYear(null)
-        setActiveName(null)
-    }
-
     
-    
+    // Read activeYear and activeName from URL params
+    const activeYear = searchParams.get('activeYear')
+    const activeName = searchParams.get('activeName')
+
+    // Scroll to top when init group changes (when clicking "vel" button)
+    useEffect(() => {
+        if (groupData?.group?.id && initValue === groupData.group.id && scrollableContentRef.current) {
+            // Use requestAnimationFrame to ensure scroll happens after render
+            requestAnimationFrame(() => {
+                scrollableContentRef.current?.scrollTo({
+                    top: 0,
+                    behavior: 'auto'
+                });
+            });
+        }
+    }, [initValue, groupData?.group?.id, scrollableContentRef]);
 
     const { iiifItems, textItems, audioItems, datasets, locations } = useMemo(() => {
         const iiifItems: any[] = []
@@ -994,13 +994,31 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             {textItems.length > 0 && <TextTab textItems={textItems}/>}
 
             <div className="w-full pb-4 flex flex-col">
-                {/* Names section (includes timeline) - only show when no filter is active */}
-                {shouldShowLabelFilter &&
+                {/* Names section (includes timeline) - only show in init group when no activePoint filter is active */}
+                {shouldShowLabelFilter && initValue === groupData.group.id && !searchParams.get('activePoint') &&
                     <div className="px-3 pt-2">
-                        <NamesSection datasets={datasets} activeYear={activeYear} activeName={activeName} setActiveYear={setActiveYear} setActiveName={setActiveName} />
+                        <NamesSection datasets={datasets} />
                     </div>
                 }
 
+                {/* Active point filter display - only in init group */}
+                {searchParams.get('activePoint') && initValue === groupData.group.id && (
+                    <div className="px-3 pt-2">
+                        <div className="flex items-center gap-3 px-4 py-3 bg-accent-50 border border-accent-200 rounded-lg shadow-sm">
+                            <PiFunnel className="text-accent-800 flex-shrink-0" aria-hidden="true" />
+                            <strong className="text-neutral-900 text-base">
+                                Koordinat: {searchParams.get('activePoint')?.split(',').map((coord: string) => parseFloat(coord).toFixed(4)).join(', ')}
+                            </strong>
+                            <ClickableIcon
+                                remove={['activePoint']}
+                                className="ml-auto text-accent-800 hover:text-accent-900 underline underline-offset-2 font-medium transition-colors"
+                                label="Fjern filter"
+                            >
+                                Fjern filter
+                            </ClickableIcon>
+                        </div>
+                    </div>
+                )}
 
                 {/* Sources always shown */}
                 <div className="px-3">
@@ -1008,6 +1026,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                         datasets={datasets} 
                         activeYear={activeYear}
                         activeName={activeName}
+                        isInitGroup={initValue === groupData.group.id}
                     />
                 </div>
             </div>
@@ -1015,21 +1034,21 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
             {locations.length > 0 && locations[0]?.location?.coordinates && initValue !== groupData.group.id && (
                 <div className="absolute bottom-0 right-0 p-3">
-                    <ClickableIcon 
+                    <Clickable 
                         onClick={() => {
-                            const coords = locations[0].location.coordinates;
-                            mapFunctionRef.current?.panTo([coords[1], coords[0]])
+                            // Fit bounds to group sources
+                            fitBoundsToGroupSources(mapFunctionRef.current, groupData);
                         }}
-                        remove={['group']}
+                        remove={['group', 'activePoint', 'activeYear', 'activeName']}
                         add={{
                             point: `${locations[0].location.coordinates[1]},${locations[0].location.coordinates[0]}`,
                             init: stringToBase64Url(groupData.group.id)
                         }}
-                        className="h-6 w-6 p-0 btn btn-outline rounded-full text-nowrap flex items-center gap-1"
+                        className="btn btn-outline rounded-md flex items-center justify-center text-lg gap-2 font-semibold"
                         label="Fest til toppen"
                     > 
-                        <PiPushPinBold className="text-neutral-900" />
-                    </ClickableIcon>
+                        <PiPushPinBold aria-hidden="true" />vel 
+                    </Clickable>
                 </div>
             )}
 
