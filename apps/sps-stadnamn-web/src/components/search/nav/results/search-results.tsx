@@ -67,6 +67,12 @@ export default function SearchResults() {
     setEditLat('')
     setEditLon('')
   }
+
+  useEffect(() => {
+    if (init) {
+      setShowOtherResults(false)
+    }
+  }, [init])
   
   // Stop editing when coordinates change from external sources (e.g., map interaction)
   useEffect(() => {
