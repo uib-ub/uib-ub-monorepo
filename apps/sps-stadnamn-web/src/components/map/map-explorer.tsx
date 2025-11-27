@@ -12,7 +12,7 @@ import wkt from 'wellknown';
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import useDocData from "@/state/hooks/doc-data";
 import { useQueries } from "@tanstack/react-query";
-import { boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius, getMyLocation, MAP_DRAWER_BOTTOM_HEIGHT_REM, getLabelBounds, panPointIntoView } from "@/lib/map-utils";
+import { boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius, getMyLocation, MAP_DRAWER_BOTTOM_HEIGHT_REM, getLabelBounds, panPointIntoView, fitBoundsToGroupSources } from "@/lib/map-utils";
 import useSearchData from "@/state/hooks/search-data";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
 import { GlobalContext } from "@/state/providers/global-provider";
@@ -69,6 +69,7 @@ export default function MapExplorer() {
   const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
   const mapSettings = searchParams.get('mapSettings') == 'on'
   const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
+  const activePoint = searchParams.get('activePoint') ? (searchParams.get('activePoint')!.split(',').map(parseFloat) as [number, number]) : null
   const urlRadius = searchParams.get('radius') ? parseInt(searchParams.get('radius')!) : null
   const displayRadius = useSessionStore((s) => s.displayRadius)
   const displayPoint = useSessionStore((s) => s.displayPoint)
@@ -461,14 +462,17 @@ export default function MapExplorer() {
           newQueryParams.set('results', 'on')
         }
         newQueryParams.delete('mapSettings')
-        newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
+        //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
         newQueryParams.delete('doc')
 
         newQueryParams.set('init', stringToBase64Url(fields["group.id"][0]))
         newQueryParams.delete('group')
+        newQueryParams.delete('activePoint')
+        newQueryParams.delete('activeYear')
+        newQueryParams.delete('activeName')
+        newQueryParams.delete('point')
 
 
-        newQueryParams.set('doc', fields.uuid[0])
 
         router.push(`?${newQueryParams.toString()}`)
           
@@ -739,8 +743,11 @@ export default function MapExplorer() {
                 const selected = activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue && !groupLoading
                 if (selected) return null
 
+                const isInit = initValue && item.fields?.["group.id"]?.[0] == initValue
+                const markerColor = isInit ? 'primary' : 'white'
+
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
-                const icon = getLabelMarkerIcon(item.fields["group.label"]?.[0] || item.fields.label?.[0] || '[utan namn]', selected ? 'accent' : 'white', childCount, false, false, !!(selected))
+                const icon = getLabelMarkerIcon(item.fields["group.label"]?.[0] || item.fields.label?.[0] || '[utan namn]', markerColor, childCount, false, false, false)
 
 
                 return (
@@ -805,30 +812,7 @@ export default function MapExplorer() {
               position={[groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]}
               eventHandlers={{
                 click: () => {
-                  // Calculate bounds if there are enough sources (>1), otherwise zoom to single point
-                  const sourcesWithCoords = groupData.sources.filter((source: Record<string, any>) => source?.location?.coordinates?.length === 2);
-                  if (sourcesWithCoords.length > 1) {
-                    // Find bounds: southwest and northeast corners
-                    let minLat = Infinity, minLng = Infinity, maxLat = -Infinity, maxLng = -Infinity;
-                    sourcesWithCoords.forEach((source: Record<string, any>) => {
-                      const [lng, lat] = source.location.coordinates;
-                      if (lat < minLat) minLat = lat;
-                      if (lat > maxLat) maxLat = lat;
-                      if (lng < minLng) minLng = lng;
-                      if (lng > maxLng) maxLng = lng;
-                    });
-                    // Fly to bounds with a bit of padding
-                    mapInstance.current?.flyToBounds(
-                      [
-                        [minLat, minLng],
-                        [maxLat, maxLng]
-                      ],
-                      { duration: 0.25, padding: [50, 50], maxZoom: 18 }
-                    );
-                  } else {
-                    // Default: fly to group location at zoom 15
-                    mapInstance.current?.flyTo([groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]], 15, { duration: 0.25 });
-                  }
+                  fitBoundsToGroupSources(mapInstance.current, groupData);
                 }
               }}
             >
@@ -836,15 +820,84 @@ export default function MapExplorer() {
             }
 
             {
-              groupData?.sources.map((source: Record<string, any>, index: number) => {
-                if (!source?.location?.coordinates?.length) {
-                  console.log("NO MARKERS", source?.location)
-                  return null;
-                }
-                const lat = source.location.coordinates[1];
-                const lng = source.location.coordinates[0];
-                return <CircleMarker key={`location-marker-${index}`} center={[lat, lng]} radius={4} weight={1} opacity={0.8} fillOpacity={0.05} color="#0061ab" />
-              })
+              (() => {
+                // Only show lines and dots for the init group
+                if (!groupData?.sources || activeGroupValue !== initValue) return null;
+                
+                // Find the first source with coordinates - this is the central coordinate
+                const centralSource = groupData.sources.find((source: Record<string, any>) => 
+                  source?.location?.coordinates?.length === 2
+                );
+                
+                if (!centralSource) return null;
+                
+                const centralLat = centralSource.location.coordinates[1];
+                const centralLng = centralSource.location.coordinates[0];
+                
+                // Track unique coordinates to avoid duplicates
+                const seenCoordinates = new Set<string>();
+                
+                return (
+                  <>
+                    {/* Other source markers and connecting lines */}
+                    {groupData.sources.map((source: Record<string, any>, index: number) => {
+                      if (!source?.location?.coordinates?.length) {
+                        console.log("NO MARKERS", source?.location)
+                        return null;
+                      }
+                      const lat = source.location.coordinates[1];
+                      const lng = source.location.coordinates[0];
+                      
+                      // Skip if this is the central coordinate (no duplicate)
+                      if (centralLat === lat && centralLng === lng) {
+                        return null;
+                      }
+                      
+                      // Create a unique key for this coordinate
+                      const coordKey = `${lat},${lng}`;
+                      
+                      // Skip if we've already seen this coordinate
+                      if (seenCoordinates.has(coordKey)) {
+                        return null;
+                      }
+                      
+                      // Mark this coordinate as seen
+                      seenCoordinates.add(coordKey);
+                      
+                      return (
+                        <Fragment key={`location-marker-${index}`}>
+                          {/* Line connecting source to central coordinate */}
+                          <Polyline
+                            positions={[[lat, lng], [centralLat, centralLng]]}
+                            pathOptions={{
+                              color: '#000000',
+                              weight: 3,
+                              opacity: 0.25
+                            }}
+                          />
+                          {/* Source marker */}
+                          <CircleMarker 
+                            center={[lat, lng]} 
+                            radius={6} 
+                            weight={1} 
+                            opacity={1} 
+                            fillOpacity={1} 
+                            color="#000000" 
+                            fillColor="#000000"
+                            eventHandlers={{
+                              click: () => {
+                                const newParams = new URLSearchParams(searchParams);
+                                newParams.set('activePoint', `${lat},${lng}`);
+                                router.push(`?${newParams.toString()}`);
+                              }
+                            }}
+                          />
+                        </Fragment>
+                      );
+                    })}
+                  </>
+                );
+              })()
             }
 
             {debug && <DynamicDebugLayers mapInstance={mapInstance} Polygon={Polygon} Rectangle={Rectangle} CircleMarker={CircleMarker} geotileKeyToBounds={geotileKeyToBounds} markerCells={markerCells} />}
@@ -922,12 +975,13 @@ export default function MapExplorer() {
             { urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" />}
             { displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" />}
             { point && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point} />}
+            { activePoint && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} />}
 
 
 
 
 
-            {doc && docData?._source?.within && <Marker 
+            {doc && false && docData?._source?.within && <Marker 
               zIndexOffset={1000}
               icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))}
               position={[docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]}

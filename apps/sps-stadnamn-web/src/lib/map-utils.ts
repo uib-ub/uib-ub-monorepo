@@ -397,3 +397,54 @@ export function panPointIntoView(
   return false
 }
 
+/**
+ * Fit map bounds to group sources
+ * If there are multiple sources with coordinates, fits to bounds
+ * Otherwise, flies to single point at zoom 15
+ */
+export function fitBoundsToGroupSources(
+  mapInstance: any,
+  groupData: any,
+  options?: {
+    duration?: number;
+    padding?: [number, number];
+    maxZoom?: number;
+  }
+) {
+  if (!mapInstance || !groupData) return;
+
+  const { duration = 0.25, padding = [50, 50], maxZoom = 18 } = options || {};
+
+  // Filter sources with valid coordinates
+  const sourcesWithCoords = groupData.sources.filter(
+    (source: Record<string, any>) => source?.location?.coordinates?.length === 2
+  );
+
+  if (sourcesWithCoords.length > 1) {
+    // Find bounds: southwest and northeast corners
+    let minLat = Infinity, minLng = Infinity, maxLat = -Infinity, maxLng = -Infinity;
+    sourcesWithCoords.forEach((source: Record<string, any>) => {
+      const [lng, lat] = source.location.coordinates;
+      if (lat < minLat) minLat = lat;
+      if (lat > maxLat) maxLat = lat;
+      if (lng < minLng) minLng = lng;
+      if (lng > maxLng) maxLng = lng;
+    });
+    
+    // Fly to bounds with padding
+    mapInstance.flyToBounds(
+      [
+        [minLat, minLng],
+        [maxLat, maxLng]
+      ],
+      { duration, padding, maxZoom }
+    );
+  } else if (sourcesWithCoords.length === 1 || groupData.fields?.location?.[0]?.coordinates) {
+    // Default: fly to group location at zoom 15
+    const coords = sourcesWithCoords.length === 1 
+      ? sourcesWithCoords[0].location.coordinates
+      : groupData.fields.location[0].coordinates;
+    mapInstance.flyTo([coords[1], coords[0]], 15, { duration });
+  }
+}
+

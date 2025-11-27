@@ -45,7 +45,7 @@ const formatDistance = (meters: number) => {
     }
 };
 
-export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?: () => void} & Record<string, any>) {
+export default function ResultItem({hit, onClick, notClickable, ...rest}: {hit: any, onClick?: () => void, notClickable?: boolean} & Record<string, any>) {
     const perspective = usePerspective()
     const searchParams = useSearchParams()
     const doc = searchParams.get('doc')
@@ -91,7 +91,7 @@ export default function ResultItem({hit, onClick, ...rest}: {hit: any, onClick?:
     return  <div  {...rest} className={`w-full h-full ${initValue && initValue == hit.fields["group.id"][0] ? '' : 'bg-neutral-50'} aria-expanded:border-b aria-expanded:borderneutral-100 flex items-center group no-underline ${initValue == hit.fields["group.id"][0] ? 'pb-0' : ''}`}>
                        
             <Clickable ref={itemRef}
-
+notClickable={notClickable}
 onClick={() => {
     onClick?.()
     if (!hit.fields?.location?.[0].coordinates) return;
