@@ -214,9 +214,9 @@ export default function SearchForm() {
                     ? (snappedPosition === 'top' ? 1 : 0)
                     : 1)
         }}>
-        <header className={`${isMobile && autocompleteOpen ? 'sr-only' : 'flex flex-none lg:absolute lg:top-2 lg:left-2 w-14 h-14 lg:h-12 lg:w-auto'} ${(autocompleteOpen || menuOpen) ? 'lg:!rounded-b-none' : 'shadow-lg'} bg-neutral-50 lg:rounded-l-md`}><Menu shadow/></header>
+        <header className={`${isMobile && autocompleteOpen ? 'sr-only' : `flex flex-none ${isMobile ? 'w-14 h-14' : 'absolute top-2 left-2 h-12 w-auto'}`} ${(autocompleteOpen || menuOpen) ? `${!isMobile && '!rounded-b-none'}` : 'shadow-lg'} bg-neutral-50 ${!isMobile && 'rounded-l-md'}`}><Menu shadow/></header>
         <Form ref={form} onSubmitCapture={() => setSelectedGroup(null)} action="/search" id="search-form" aria-label="Stadnamnsøk"
-                className={`h-14 lg:h-12 ${isMobile && autocompleteOpen ? 'w-[100svw]' : 'w-[calc(100svw-3.5rem)] lg:w-[calc(25svw-4rem)] lg:absolute lg:top-2 lg:left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? 'z-[7000] lg:!rounded-b-none' : 'z-[3001]'}`}
+                className={`${isMobile ? 'h-14' : 'h-12'} ${isMobile && autocompleteOpen ? 'w-[100svw]' : isMobile ? 'w-[calc(100svw-3.5rem)]' : 'w-[calc(30svw-4rem)] lg:w-[calc(25svw-4rem)] absolute top-2 left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? `z-[7000] ${!isMobile && '!rounded-b-none'}` : 'z-[3001]'}`}
             
 
             onSubmit={() => {
@@ -232,7 +232,7 @@ export default function SearchForm() {
 
             }}>
 
-            <div className='flex w-full h-full pr-1 bg-white shadow-lg lg:shadow-l-none lg:rounded-l-none lg:rounded-md items-center relative group'>
+            <div className={`flex w-full h-full pr-1 bg-white ${isMobile ? 'shadow-lg' : 'shadow-l-none rounded-l-none rounded-md'} items-center relative group`}>
                 
                 <label htmlFor="search-input" className="sr-only">Søk</label>
             { false && datasetTag != 'tree' && !(isMobile && autocompleteOpen) && <ClickableIcon onClick={() => { setSnappedPosition('middle')}} add={{options: options ? null : 'on'}} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
@@ -312,8 +312,8 @@ export default function SearchForm() {
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
             {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''} />}
-            {autocompleteOpen && data?.hits?.hits?.length > 0 && <ul id="autocomplete-results" ref={listRef} role="listbox" className="absolute top-[3.5rem] lg:top-[3rem] lg:-left-12 border-t border-neutral-200 w-full max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 lg:shadow-lg overflow-y-auto overscroll-none lg:w-[calc(25svw-1rem)] left-0 xl-p-2 xl lg:rounded-lg lg:rounded-t-none divide-y divide-neutral-300">
-                <li id={`autocomplete-option-0`} className={`cursor-pointer flex items-center h-12 px-2 hover:bg-neutral-100 ${activeIndex === 0 ? 'bg-neutral-100' : ''}`}
+            {autocompleteOpen && data?.hits?.hits?.length > 0 && <ul id="autocomplete-results" ref={listRef} role="listbox" className={`absolute ${isMobile ? 'top-[3.5rem] left-0 w-full' : 'top-[3rem] -left-12 x-[30svw] lg:w-[calc(25svw-1rem)] shadow-lg rounded-lg rounded-t-none'} border-t border-neutral-200 max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 overflow-y-auto overscroll-none xl-p-2 xl divide-y divide-neutral-300`}>
+                <li id={`autocomplete-option-0`} className={`cursor-pointer flex items-start gap-2 min-h-12 py-3 px-2 hover:bg-neutral-100 ${activeIndex === 0 ? 'bg-neutral-100' : ''}`}
                     tabIndex={-1} 
                     role="option" 
                     onMouseDown={(event) => { dropdownSelect(event, data.hits.hits[0].fields.label[0]) }}
@@ -321,7 +321,10 @@ export default function SearchForm() {
                     aria-selected={activeIndex === 0}
                 >
                     
-                        <PiMagnifyingGlass className="flex-shrink-0 mr-2 text-neutral-700" aria-hidden="true" /> { data.hits.hits[0].fields.label[0] }
+                        <span className="flex items-center h-6 flex-shrink-0">
+                            <PiMagnifyingGlass className="text-neutral-700" aria-hidden="true" />
+                        </span>
+                        <span className="flex-1 leading-6">{ data.hits.hits[0].fields.label[0] }</span>
                 
                 </li>
                 {data?.hits?.hits?.map((hit: any) => {
@@ -331,14 +334,20 @@ export default function SearchForm() {
                         role="option" 
                         data-autocomplete-option 
                         id={`autocomplete-option-${1 + data.hits.hits.findIndex((x: any) => x._id === hit._id)}`}
-                        className={`cursor-pointer flex items-center h-12 px-2 hover:bg-neutral-100 ${activeIndex === 1 + data.hits.hits.findIndex((x: any) => x._id === hit._id) ? 'bg-neutral-100' : ''}`}
+                        className={`cursor-pointer flex items-start gap-2 min-h-12 py-3 px-2 hover:bg-neutral-100 ${activeIndex === 1 + data.hits.hits.findIndex((x: any) => x._id === hit._id) ? 'bg-neutral-100' : ''}`}
                         onMouseDown={(event) => { dropdownSelect(event, hit.fields.label[0], stringToBase64Url(hit.fields["group.id"][0]), hit.fields.location?.[0].coordinates) }}
                         aria-selected={activeIndex === 1 + data.hits.hits.findIndex((x: any) => x._id === hit._id)}>
                         {hit.fields.location?.length ? (
-                            <PiMapPinFill aria-hidden="true" className="flex-shrink-0 mr-2 text-neutral-700" />
+                            <span className="flex items-center h-6 flex-shrink-0">
+                                <PiMapPinFill aria-hidden="true" className="text-neutral-700" />
+                            </span>
                         ) : null}
-                        {hit._index.split('-')[2].endsWith('_g') && <PiWall aria-hidden="true" className="flex-shrink-0 mt-1 mr-2" />}
-                        <div>
+                        {hit._index.split('-')[2].endsWith('_g') && (
+                            <span className="flex items-center h-6 flex-shrink-0">
+                                <PiWall aria-hidden="true" />
+                            </span>
+                        )}
+                        <div className="flex-1 leading-6">
                             <strong>{hit.fields.label[0]} {hit.fields["group.label"] && hit.fields["group.label"]?.[0] != hit.fields.label[0] &&  `(${hit.fields["group.label"]?.[0]})`} </strong>{' '}
                             <span className="text-neutral-900">
                             {detailsRenderer(hit)}
