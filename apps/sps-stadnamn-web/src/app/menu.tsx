@@ -9,7 +9,7 @@ import { useMode } from "@/lib/param-hooks";
 import { useSessionStore } from "../state/zustand/session-store";
 import { infoPages } from "./info/info-pages";
 
-export default function Menu( { shadow }: { shadow?: boolean } ) {
+export default function Menu( { shadow, autocompleteShowing }: { shadow?: boolean, autocompleteShowing?: boolean } ) {
     const menuOpen = useSessionStore((s) => s.menuOpen)
     const setMenuOpen = useSessionStore((s) => s.setMenuOpen)
     const menuRef = useRef<HTMLDivElement>(null);
@@ -67,7 +67,7 @@ export default function Menu( { shadow }: { shadow?: boolean } ) {
             <button id="menu-button" aria-controls="menu_navbar" 
                         aria-label="Meny"
                         aria-expanded={menuOpen} 
-                        className={`items-center justify-center flex aspect-square bg-neutral-50 z-[6000] ${menuOpen ? 'fixed top-0 left-0 w-14 h-14 ' : 'h-full w-full lg:rounded-l-md'}${(shadow && !menuOpen) ? ' shadow-lg border-r border-neutral-200' : ''}`}
+                        className={`items-center justify-center flex aspect-square bg-neutral-50 z-[6000] ${menuOpen ? 'fixed top-0 left-0 w-14 h-14' : `h-full w-full ${!isMobile && (autocompleteShowing ? 'rounded-tl-md' : 'rounded-l-md')}`}${(shadow && !menuOpen) ? ' shadow-lg border-r border-neutral-200' : ''}`}
                         onClick={() => setMenuOpen(!menuOpen)}>
                 {menuOpen ? <PiX className="text-3xl xl:text-2xl" aria-hidden="true"/> : <PiList className="text-3xl xl:text-2xl" aria-hidden="true"/>}</button>
  

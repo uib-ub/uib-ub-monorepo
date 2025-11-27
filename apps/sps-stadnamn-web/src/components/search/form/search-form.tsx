@@ -17,6 +17,7 @@ import { detailsRenderer } from '@/lib/text-utils';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { stringToBase64Url } from '@/lib/param-utils';
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
+import { roundButtonStyling } from '@/components/ui/clickable/round-icon-button';
 
 export async function autocompleteQuery(searchFilterParamsString: string, inputState: string, isMobile: boolean) {
     if (!inputState) return null
@@ -214,7 +215,7 @@ export default function SearchForm() {
                     ? (snappedPosition === 'top' ? 1 : 0)
                     : 1)
         }}>
-        <header className={`${isMobile && autocompleteOpen ? 'sr-only' : `flex flex-none ${isMobile ? 'w-14 h-14' : 'absolute top-2 left-2 h-12 w-auto'}`} ${(autocompleteOpen || menuOpen) ? `${!isMobile && '!rounded-b-none'}` : 'shadow-lg'} bg-neutral-50 ${!isMobile && 'rounded-l-md'}`}><Menu shadow/></header>
+        <header className={`${isMobile && autocompleteOpen ? 'sr-only' : `flex flex-none ${isMobile ? 'w-14 h-14' : 'absolute top-2 left-2 h-12 w-auto'}`} ${(autocompleteOpen || menuOpen) ? '' : 'shadow-lg'} bg-neutral-50`}><Menu shadow autocompleteShowing={autocompleteOpen && data?.hits?.hits?.length > 0}/></header>
         <Form ref={form} onSubmitCapture={() => setSelectedGroup(null)} action="/search" id="search-form" aria-label="Stadnamnsøk"
                 className={`${isMobile ? 'h-14' : 'h-12'} ${isMobile && autocompleteOpen ? 'w-[100svw]' : isMobile ? 'w-[calc(100svw-3.5rem)]' : 'w-[calc(30svw-4rem)] lg:w-[calc(25svw-4rem)] absolute top-2 left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? `z-[7000] ${!isMobile && '!rounded-b-none'}` : 'z-[3001]'}`}
             
@@ -232,7 +233,7 @@ export default function SearchForm() {
 
             }}>
 
-            <div className={`flex w-full h-full pr-1 bg-white ${isMobile ? 'shadow-lg' : 'shadow-l-none rounded-l-none rounded-md'} items-center relative group`}>
+            <div className={`flex w-full h-full pr-1 bg-white ${isMobile ? 'shadow-lg' : `shadow-l-none rounded-l-none ${autocompleteOpen && data?.hits?.hits?.length > 0 ? 'rounded-tr-md' : 'rounded-r-md'} shadow-lg`} items-center relative group`}>
                 
                 <label htmlFor="search-input" className="sr-only">Søk</label>
             { false && datasetTag != 'tree' && !(isMobile && autocompleteOpen) && <ClickableIcon onClick={() => { setSnappedPosition('middle')}} add={{options: options ? null : 'on'}} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
