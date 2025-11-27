@@ -1,19 +1,27 @@
 'use client'
 import { useSearchParams, useRouter } from "next/navigation"
-import { PiMagnifyingGlass, PiX, PiXBold } from "react-icons/pi"
+import { PiMagnifyingGlass, PiXBold } from "react-icons/pi"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
+import { useSessionStore } from "@/state/zustand/session-store"
 
 export default function SearchQueryDisplay() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const searchQ = searchParams.get('q')
   const init = searchParams.get('init')
+  const snappedPosition = useSessionStore((s) => s.snappedPosition)
+  const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
 
   const handleEdit = () => {
     const input = document.getElementById('search-input') as HTMLInputElement
     if (input) {
       input.focus()
       input.select()
+    }
+    
+    // Change drawer position to bottom if it's middle
+    if (snappedPosition === 'middle') {
+      setSnappedPosition('bottom')
     }
   }
 
@@ -47,7 +55,7 @@ export default function SearchQueryDisplay() {
 
   return (
     <div className={`p-3 flex flex-col gap-2 border-t border-neutral-200 ${init ? 'bg-neutral-50' : ''}`}>
-      <h2 className="flex items-center gap-2 text-neutral-950 text-xl">
+      <h2 className="flex items-center gap-2 text-neutral-950 text-xl cursor-pointer" onClick={handleEdit}>
         <PiMagnifyingGlass className="text-lg" aria-hidden="true"/>
         <strong>{searchQ}</strong>
         <ClickableIcon label="Fjern søkeord" remove={['q']} className="ml-auto h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900">
