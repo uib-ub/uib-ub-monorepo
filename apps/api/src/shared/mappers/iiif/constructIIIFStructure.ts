@@ -45,7 +45,7 @@ export function constructIIIFStructure(item: any, fileset: any) {
   }
 
   const getTitles = (identifiedBy: any): PreziMetadata => {
-    const titles = identifiedBy.filter((name: any) => name.type === 'Name' &&
+    const titles = identifiedBy?.filter((name: any) => name.type === 'Name' &&
       name.classified_as?.some((type: any) =>
         type._label === 'Primary Name' || type._label === 'Translated Name'
       )
@@ -80,7 +80,7 @@ export function constructIIIFStructure(item: any, fileset: any) {
   }
 
   const getIdentifiers = (identifiedBy: any): PreziMetadata => {
-    const identifiers = identifiedBy.filter((name: any) => name.type === 'Identifier')
+    const identifiers = identifiedBy?.filter((name: any) => name.type === 'Identifier')
 
     return {
       label: {
@@ -94,7 +94,7 @@ export function constructIIIFStructure(item: any, fileset: any) {
     }
   }
   const getConcepts = (shows: any): PreziMetadata => {
-    const concepts = shows.flatMap((show: any) => show.represents_instance_of_type)
+    const concepts = shows?.flatMap((show: any) => show.represents_instance_of_type)
 
     return {
       label: {
@@ -172,8 +172,8 @@ export function constructIIIFStructure(item: any, fileset: any) {
       });
       manifest.setRights(getCopyright(item, filesetID));
       manifest.setMetadata([
-        getIdentifiers(item.identified_by),
-        getConcepts(item.shows),
+        ...(item.identified_by ? [getIdentifiers(item.identified_by)] : []),
+        ...(item.shows ? [getConcepts(item.shows)] : []),
       ]);
 
       if (fileset) {
