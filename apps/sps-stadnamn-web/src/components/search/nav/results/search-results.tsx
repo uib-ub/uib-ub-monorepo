@@ -18,10 +18,9 @@ import { datasetTitles } from "@/config/metadata-config";
 import Clickable from "@/components/ui/clickable/clickable";
 import SearchSuggestions from "./search-suggestions";
 import { useSearchQuery } from "@/lib/search-params";
-import { Badge } from "@/components/ui/badge";
 import ActiveFilters from "../../form/active-filters";
-import MiscOptions from "@/app/misc-options";
 import SearchQueryDisplay from "./search-query-display";
+import { useRouter } from "next/navigation";
 
 
 
@@ -60,6 +59,7 @@ export default function SearchResults() {
   const [editLon, setEditLon] = useState('')
   const previousPointRef = useRef<string | null>(null)
   const { totalHits } = useSearchData()
+  const router = useRouter()
   
   // Unified function to stop editing
   const stopEditingCoordinates = () => {
@@ -120,8 +120,8 @@ export default function SearchResults() {
     if (!isNaN(lat) && !isNaN(lon)) {
       // Update URL with new coordinates
       const newParams = new URLSearchParams(searchParams)
-      newParams.set('point', `${lon},${lat}`)
-      window.history.pushState({}, '', `${window.location.pathname}?${newParams.toString()}`)
+      //newParams.set('point', `${lon},${lat}`)
+      router.push(`?${newParams.toString()}`)
       stopEditingCoordinates()
     }
   }
