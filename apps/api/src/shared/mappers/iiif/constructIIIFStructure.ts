@@ -17,7 +17,6 @@ export function constructIIIFStructure(item: any, fileset: any) {
   const builder = new IIIFBuilder();
 
   const filesetID = fileset.id.split('/').pop()
-  console.log("🚀 ~ constructIIIFStructure ~ filesetID:", filesetID)
 
   const thumbnail = getThumbnailVisualItem(item)
   const manifestID = `${env.API_BASE_URL}/object/${filesetID}?as=iiif`
@@ -36,8 +35,6 @@ export function constructIIIFStructure(item: any, fileset: any) {
     ?.access_point?.find(
       (ap: any) => typeof ap.id === "string" && ap.id.includes("marcus.uib.no")
     )?.id;
-
-  console.log("🚀 ~ constructIIIFStructure ~ homepage:", homepage)
 
   type PreziMetadata = {
     label: Record<string, string[]>
@@ -203,10 +200,7 @@ export function constructIIIFStructure(item: any, fileset: any) {
                   motivation: "painting",
                   target: canvasID,
                   body: {
-                    id: item.hasResource[0].hasXLView
-                      || item.hasResource[0].hasMDView
-                      || item.hasResource[0].hasSMView
-                      || `http://error.io/${crypto.randomUUID()}`,
+                    id: item.hasResource[0].hasMDView ?? item.hasResource[0].hasSMView,
                     type: "Image",
                     format: "image/jpeg",
                     width: 1024,
