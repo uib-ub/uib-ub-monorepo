@@ -28,7 +28,7 @@ export default async function IIIFPage({ params }: { params: Promise<{ slug: str
 
     const headersList = await headers()
     const device = userAgent({ headers: headersList }).device
-    const isMobile = device.type === 'mobile'
+    const isMobile = device.type === 'mobile' || device.type === 'tablet'
 
 
 

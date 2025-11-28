@@ -32,7 +32,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const { mode } = params
   const headersList = await headers()
   const device = userAgent({ headers: headersList }).device
-  const isMobile = device.type === 'mobile'
+  const isMobile = device.type === 'mobile' || device.type === 'tablet'
 
 
 

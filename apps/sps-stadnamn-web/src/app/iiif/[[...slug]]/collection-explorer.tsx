@@ -7,7 +7,9 @@ import { Fragment, useCallback, useContext, useEffect, useRef, useState } from "
 import { PiMagnifyingGlass, PiX } from "react-icons/pi";
 import { resolveLanguage } from "../iiif-utils";
 import FileCard from "./file-card";
-import IIIFNeighbourNav from "./iiif-neighbour-nav";
+import dynamic from "next/dynamic"; 
+
+const IIIFNeighbourNav = dynamic(() => import('./iiif-neighbour-nav'), { ssr: false })
 
 const PAGE_SIZE = 50;
 
