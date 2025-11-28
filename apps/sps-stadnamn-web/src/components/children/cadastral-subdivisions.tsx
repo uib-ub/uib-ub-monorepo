@@ -1,9 +1,9 @@
 'use client'
 import { fieldConfig } from "@/config/search-config"
-import { PiBookOpen } from "react-icons/pi"
-import Clickable from "../ui/clickable/clickable"
 import { getBnr, getFieldValue } from "@/lib/utils"
 import Link from 'next/link'
+import { PiBookOpen } from "react-icons/pi"
+import Clickable from "../ui/clickable/clickable"
 
 
 
@@ -48,7 +48,7 @@ export default function CadastralSubdivisions({ dataset, doc, childrenData, land
 
 
     return (
-    <>
+        <>
             {fields.length === 0 ? (
                 <div className="instance-info">
                     <ul className="!p-0 !pb-8 divide-y divide-neutral-200 gap-2 !list-none">
@@ -99,6 +99,6 @@ export default function CadastralSubdivisions({ dataset, doc, childrenData, land
                     </table>
                 </div>
             )}
-    </>
+        </>
     )
 }

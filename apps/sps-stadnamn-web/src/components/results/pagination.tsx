@@ -1,13 +1,13 @@
 'use client'
-import { PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeft, PiCaretRight } from 'react-icons/pi';
-import { useRouter, useSearchParams } from 'next/navigation';
-import ClickableIcon from '../ui/clickable/clickable-icon';
 import useSearchData from '@/state/hooks/search-data';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeft, PiCaretRight } from 'react-icons/pi';
+import ClickableIcon from '../ui/clickable/clickable-icon';
 
 export default function Pagination() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  
+
   // Get current values from URL or use defaults
   const perPage = Number(searchParams.get('perPage')) || 10
   const page = Number(searchParams.get('page')) || 1
@@ -22,53 +22,53 @@ export default function Pagination() {
     router.push(`?${params.toString()}`)
   }
 
-  return  (
+  return (
     <nav className='flex gap-8 flex-col md:flex-wrap md:flex-row content-center'>
       <div className='flex gap-2 justify-between items-center'>
-        
-        {totalPages > 2 && <ClickableIcon 
-          disabled={page == 1} 
-          add={{page: '1'}}
-          label="Første side" 
+
+        {totalPages > 2 && <ClickableIcon
+          disabled={page == 1}
+          add={{ page: '1' }}
+          label="Første side"
           className='btn btn-outline btn-compact grow md:grow-0 aspect-square'>
-            <PiCaretDoubleLeft/>
+          <PiCaretDoubleLeft />
         </ClickableIcon>}
-        
-        <ClickableIcon 
-          disabled={page == 1} 
-          add={{page: (page - 1).toString()}}
-          label="Forrige side" 
+
+        <ClickableIcon
+          disabled={page == 1}
+          add={{ page: (page - 1).toString() }}
+          label="Forrige side"
           className='btn btn-outline btn-compact grow md:grow-0 aspect-square'>
-            <PiCaretLeft/>
+          <PiCaretLeft />
         </ClickableIcon>
 
         <span role="status" aria-live="polite" className='px-3 py-1 rounded-sm border-neutral-400 flex text-center'>
-          {(page -1) * perPage + 1}-{page * perPage} av {totalHits?.value?.toLocaleString('no-NO')}{totalHits?.relation != 'eq' ? '+' : ''}
+          {(page - 1) * perPage + 1}-{page * perPage} av {totalHits?.value?.toLocaleString('no-NO')}{totalHits?.relation != 'eq' ? '+' : ''}
         </span>
-        
-        <ClickableIcon 
-          disabled={page == cappedTotalPages} 
-          add={{page: (page + 1).toString()}}
-          label="Neste side" 
+
+        <ClickableIcon
+          disabled={page == cappedTotalPages}
+          add={{ page: (page + 1).toString() }}
+          label="Neste side"
           className='btn btn-outline btn-compact grow md:grow-0 aspect-square'>
-            <PiCaretRight/>
+          <PiCaretRight />
         </ClickableIcon>
 
-        {totalPages > 2 && <ClickableIcon 
-          disabled={page == cappedTotalPages} 
-          add={{page: cappedTotalPages.toString()}}
-          label="Siste side (Inntil 10 000 treff)" 
+        {totalPages > 2 && <ClickableIcon
+          disabled={page == cappedTotalPages}
+          add={{ page: cappedTotalPages.toString() }}
+          label="Siste side (Inntil 10 000 treff)"
           className='btn btn-outline btn-compact grow md:grow-0 aspect-square'>
-            <PiCaretDoubleRight/>
+          <PiCaretDoubleRight />
         </ClickableIcon>}
       </div>
 
       <div className="self-center">
         <label htmlFor="per_page_select">Treff per side: </label>
-        <select 
-          id="per_page_select" 
-          name="size" 
-          value={perPage} 
+        <select
+          id="per_page_select"
+          name="size"
+          value={perPage}
           onChange={(event) => setPerPage(parseInt(event.target.value))}>
           {[10, 20, 50, 100].map((value) => (
             <option key={value} value={value}>
@@ -80,4 +80,3 @@ export default function Pagination() {
     </nav>
   )
 }
-  

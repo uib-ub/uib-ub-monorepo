@@ -4,21 +4,21 @@ import {
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
-} from "@/components/ui/tooltip"
-import Link from "next/link"
+} from "@/components/ui/tooltip";
+import Link from "next/link";
 
 
 
-export default function ExternalLinkTooltip({ 
-    children, 
+export default function ExternalLinkTooltip({
+    children,
     description,
     href,
     side = "bottom",
-    ...rest 
+    ...rest
 }: {
-    children: React.ReactNode, 
-    description: string, 
-    href: string, 
+    children: React.ReactNode,
+    description: string,
+    href: string,
     side?: "bottom" | "left" | "right" | "top"
 } & React.ComponentPropsWithoutRef<typeof Link>) {
 
@@ -33,6 +33,6 @@ export default function ExternalLinkTooltip({
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
-        );
-    
+    );
+
 }

@@ -9,16 +9,11 @@ import Form from "next/form";
 import React from 'react';
 import HomeNavCards from "./home-nav-cards";
 import { fetchStats } from "./api/_utils/stats";
-import { userAgent } from "next/server";
 import { headers } from "next/headers";
-import { Metadata } from "next";
 import Header from "./header";
 
 export default async function Home() {
   const { iiifStats, datasets, totalHits, groupCount } = await fetchStats()
-  const headersList = await headers()
-  const device = userAgent({headers: headersList}).device
-  const isMobile = device.type === 'mobile'
   const cards = [ 'bsn', 'hord', 'rygh', 'leks'].map(code => {
     const info = datasetPresentation[code]
     return { img: info.img, alt: info.alt, imageAttribution: info.imageAttribution, title: datasetTitles[code], code: code, description: datasetShortDescriptions[code], subindices: info.subindices, initMode: info.initMode }

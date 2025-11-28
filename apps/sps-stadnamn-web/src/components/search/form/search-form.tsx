@@ -1,31 +1,28 @@
 'use client'
+import Menu from '@/app/menu';
+import ClickableIcon from '@/components/ui/clickable/clickable-icon';
+import { MAP_DRAWER_BOTTOM_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
+import { useMode, usePerspective } from '@/lib/param-hooks';
+import { stringToBase64Url } from '@/lib/param-utils';
+import { useSearchQuery } from '@/lib/search-params';
+import { detailsRenderer } from '@/lib/text-utils';
+import { formatNumber } from '@/lib/utils';
+import { GlobalContext } from '@/state/providers/global-provider';
+import { useSessionStore } from '@/state/zustand/session-store';
+import { useQuery } from '@tanstack/react-query';
+import Form from 'next/form';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { PiCaretLeftBold, PiMagnifyingGlass, PiMapPinFill, PiSliders, PiWall, PiX } from 'react-icons/pi';
-import { useSearchQuery } from '@/lib/search-params';
-import Form from 'next/form'
-import { GlobalContext } from '@/state/providers/global-provider';
-import IconButton from '@/components/ui/icon-button';
-import { usePerspective } from '@/lib/param-hooks';
-import { useMode } from '@/lib/param-hooks';
-import { useQuery } from '@tanstack/react-query';
-import Menu from '@/app/menu';
-import { useSessionStore } from '@/state/zustand/session-store';
-import ClickableIcon from '@/components/ui/clickable/clickable-icon';
-import { formatNumber } from '@/lib/utils';
-import { detailsRenderer } from '@/lib/text-utils';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { stringToBase64Url } from '@/lib/param-utils';
-import { MAP_DRAWER_BOTTOM_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
-import { roundButtonStyling } from '@/components/ui/clickable/round-icon-button';
+import { PiCaretLeftBold, PiMagnifyingGlass, PiMapPinFill, PiSliders, PiWall, PiX } from 'react-icons/pi';
 
 export async function autocompleteQuery(searchFilterParamsString: string, inputState: string, isMobile: boolean) {
     if (!inputState) return null
     const newQuery = new URLSearchParams(searchFilterParamsString)
     newQuery.set('q', inputState)
     const autocompleteQuery = newQuery.toString()
-    
-    
+
+
     const res = await fetch(`/api/autocomplete?${autocompleteQuery}&size=20`)
     if (!res.ok) {
         throw new Error(res.status.toString())
@@ -61,7 +58,7 @@ export default function SearchForm() {
 
 
     const mode = useMode()
-   
+
     // Initialize from URL params - this is the source of truth
     const urlQuery = searchParams.get('q') || ''
     const [inputState, setInputState] = useState<string>(urlQuery)
@@ -85,7 +82,7 @@ export default function SearchForm() {
             setInputState(inputString)
             if (coordinates?.length == 2) {
                 panPointIntoView(mapFunctionRef.current, [coordinates[1], coordinates[0]], isMobile, false)
-            } 
+            }
         }
 
         if (input.current) {
@@ -108,7 +105,7 @@ export default function SearchForm() {
             }
 
         }
-        
+
     }
 
     // Keep the active option scrolled into view
@@ -206,7 +203,7 @@ export default function SearchForm() {
     return <div
         className="flex"
         style={{
-            position: (!isMobile || currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM)    ? undefined : 'absolute',
+            position: (!isMobile || currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM) ? undefined : 'absolute',
             top: (!isMobile || currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM) ? undefined : (snappedPosition === 'top' ? '0rem' : `calc(${-currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem * (1 - max(0, min(1, (${currentPosition}rem - 60svh) / (100svh - 60svh - 8rem)))))`),
             left: (!isMobile || currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM) ? undefined : `0`,
             // Fade only between 'middle' and 'top' on mobile when above bottom threshold
@@ -216,10 +213,10 @@ export default function SearchForm() {
                     ? (snappedPosition === 'top' ? 1 : 0)
                     : 1)
         }}>
-        <header className={`${isMobile && autocompleteOpen ? 'sr-only' : `flex flex-none ${isMobile ? 'w-14 h-14' : 'absolute top-2 left-2 h-12 w-auto'}`} ${(autocompleteOpen || menuOpen) ? '' : 'shadow-lg'} bg-neutral-50`}><Menu shadow autocompleteShowing={autocompleteOpen && data?.hits?.hits?.length > 0}/></header>
+        <header className={`${isMobile && autocompleteOpen ? 'sr-only' : `flex flex-none ${isMobile ? 'w-14 h-14' : 'absolute top-2 left-2 h-12 w-auto'}`} ${(autocompleteOpen || menuOpen) ? '' : 'shadow-lg'} bg-neutral-50`}><Menu shadow autocompleteShowing={autocompleteOpen && data?.hits?.hits?.length > 0} /></header>
         <Form ref={form} onSubmitCapture={() => setSelectedGroup(null)} action="/search" id="search-form" aria-label="Stadnamnsøk"
-                className={`${isMobile ? 'h-14' : 'h-12'} ${isMobile && autocompleteOpen ? 'w-[100svw]' : isMobile ? 'w-[calc(100svw-3.5rem)]' : 'w-[calc(30svw-4rem)] lg:w-[calc(25svw-4rem)] absolute top-2 left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? `z-[7000] ${!isMobile && '!rounded-b-none'}` : 'z-[3001]'}`}
-            
+            className={`${isMobile ? 'h-14' : 'h-12'} ${isMobile && autocompleteOpen ? 'w-[100svw]' : isMobile ? 'w-[calc(100svw-3.5rem)]' : 'w-[calc(30svw-4rem)] lg:w-[calc(25svw-4rem)] absolute top-2 left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? `z-[7000] ${!isMobile && '!rounded-b-none'}` : 'z-[3001]'}`}
+
 
             onSubmit={() => {
                 if (!input.current) return;
@@ -235,17 +232,17 @@ export default function SearchForm() {
             }}>
 
             <div className={`flex w-full h-full pr-1 bg-white ${isMobile ? 'shadow-lg' : `shadow-l-none rounded-l-none ${autocompleteOpen && data?.hits?.hits?.length > 0 ? 'rounded-tr-md' : 'rounded-r-md'} shadow-lg`} items-center relative group`}>
-                
+
                 <label htmlFor="search-input" className="sr-only">Søk</label>
-            { false && datasetTag != 'tree' && !(isMobile && autocompleteOpen) && <ClickableIcon onClick={() => { setSnappedPosition('middle')}} add={{options: options ? null : 'on'}} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
-            <PiSliders className="text-3xl xl:text-2xl" aria-hidden="true"/>
-            {filterCount > 0 && <span className={`results-badge bg-primary-500 absolute top-1 left-1 rounded-full text-white text-xs ${filterCount < 10 ? 'px-1.5' : 'px-1'}`}>
+                {false && datasetTag != 'tree' && !(isMobile && autocompleteOpen) && <ClickableIcon onClick={() => { setSnappedPosition('middle') }} add={{ options: options ? null : 'on' }} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
+                    <PiSliders className="text-3xl xl:text-2xl" aria-hidden="true" />
+                    {filterCount > 0 && <span className={`results-badge bg-primary-500 absolute top-1 left-1 rounded-full text-white text-xs ${filterCount < 10 ? 'px-1.5' : 'px-1'}`}>
                         {formatNumber(filterCount)}
                     </span>}
-            </ClickableIcon>}
-            {isMobile && autocompleteOpen && <ClickableIcon label="Tilbake" onClick={() => setAutocompleteOpen(false)} className={`flex items-center justify-center relative py-2 px-3`}><PiCaretLeftBold className="text-3xl xl:text-2xl" aria-hidden="true"/></ClickableIcon>}
-                
-                
+                </ClickableIcon>}
+                {isMobile && autocompleteOpen && <ClickableIcon label="Tilbake" onClick={() => setAutocompleteOpen(false)} className={`flex items-center justify-center relative py-2 px-3`}><PiCaretLeftBold className="text-3xl xl:text-2xl" aria-hidden="true" /></ClickableIcon>}
+
+
                 <input
                     id="search-input"
                     type="text"
@@ -260,7 +257,7 @@ export default function SearchForm() {
                     defaultValue={urlQuery}
                     autoComplete="off"
                     autoFocus={!isMobile && pathname == '/search'}
-                    onFocus={() => { 
+                    onFocus={() => {
                         if (!input.current?.value) return; setInputState(input.current?.value || ''); setAutocompleteOpen(true);
                     }}
                     onBlur={() => setAutocompleteOpen(false)}
@@ -317,49 +314,49 @@ export default function SearchForm() {
             {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''} />}
             {autocompleteOpen && data?.hits?.hits?.length > 0 && <ul id="autocomplete-results" ref={listRef} role="listbox" className={`absolute ${isMobile ? 'top-[3.5rem] left-0 w-full' : 'top-[3rem] -left-12 x-[30svw] lg:w-[calc(25svw-1rem)] shadow-lg rounded-lg rounded-t-none'} border-t border-neutral-200 max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 overflow-y-auto overscroll-none xl-p-2 xl divide-y divide-neutral-300`}>
                 <li id={`autocomplete-option-0`} className={`cursor-pointer flex items-start gap-2 min-h-12 py-3 px-2 hover:bg-neutral-100 ${activeIndex === 0 ? 'bg-neutral-100' : ''}`}
-                    tabIndex={-1} 
-                    role="option" 
+                    tabIndex={-1}
+                    role="option"
                     onMouseDown={(event) => { dropdownSelect(event, data.hits.hits[0].fields.label[0]) }}
-                    data-autocomplete-option 
+                    data-autocomplete-option
                     aria-selected={activeIndex === 0}
                 >
-                    
-                        <span className="flex items-center h-6 flex-shrink-0">
-                            <PiMagnifyingGlass className="text-neutral-700" aria-hidden="true" />
-                        </span>
-                        <span className="flex-1 leading-6">{ data.hits.hits[0].fields.label[0] }</span>
-                
+
+                    <span className="flex items-center h-6 flex-shrink-0">
+                        <PiMagnifyingGlass className="text-neutral-700" aria-hidden="true" />
+                    </span>
+                    <span className="flex-1 leading-6">{data.hits.hits[0].fields.label[0]}</span>
+
                 </li>
                 {data?.hits?.hits?.map((hit: any) => {
                     return (
-                    <li key={hit._id} 
-                        tabIndex={-1} 
-                        role="option" 
-                        data-autocomplete-option 
-                        id={`autocomplete-option-${1 + data.hits.hits.findIndex((x: any) => x._id === hit._id)}`}
-                        className={`cursor-pointer flex items-start gap-2 min-h-12 py-3 px-2 hover:bg-neutral-100 ${activeIndex === 1 + data.hits.hits.findIndex((x: any) => x._id === hit._id) ? 'bg-neutral-100' : ''}`}
-                        onMouseDown={(event) => { dropdownSelect(event, hit.fields.label[0], stringToBase64Url(hit.fields["group.id"][0]), hit.fields.location?.[0].coordinates) }}
-                        aria-selected={activeIndex === 1 + data.hits.hits.findIndex((x: any) => x._id === hit._id)}>
-                        {hit.fields.location?.length ? (
-                            <span className="flex items-center h-6 flex-shrink-0">
-                                <PiMapPinFill aria-hidden="true" className="text-neutral-700" />
-                            </span>
-                        ) : null}
-                        {hit._index.split('-')[2].endsWith('_g') && (
-                            <span className="flex items-center h-6 flex-shrink-0">
-                                <PiWall aria-hidden="true" />
-                            </span>
-                        )}
-                        <div className="flex-1 leading-6">
-                            <strong>{hit.fields.label[0]} {hit.fields["group.label"] && hit.fields["group.label"]?.[0] != hit.fields.label[0] &&  `(${hit.fields["group.label"]?.[0]})`} </strong>{' '}
-                            <span className="text-neutral-900">
-                            {detailsRenderer(hit)}
+                        <li key={hit._id}
+                            tabIndex={-1}
+                            role="option"
+                            data-autocomplete-option
+                            id={`autocomplete-option-${1 + data.hits.hits.findIndex((x: any) => x._id === hit._id)}`}
+                            className={`cursor-pointer flex items-start gap-2 min-h-12 py-3 px-2 hover:bg-neutral-100 ${activeIndex === 1 + data.hits.hits.findIndex((x: any) => x._id === hit._id) ? 'bg-neutral-100' : ''}`}
+                            onMouseDown={(event) => { dropdownSelect(event, hit.fields.label[0], stringToBase64Url(hit.fields["group.id"][0]), hit.fields.location?.[0].coordinates) }}
+                            aria-selected={activeIndex === 1 + data.hits.hits.findIndex((x: any) => x._id === hit._id)}>
+                            {hit.fields.location?.length ? (
+                                <span className="flex items-center h-6 flex-shrink-0">
+                                    <PiMapPinFill aria-hidden="true" className="text-neutral-700" />
+                                </span>
+                            ) : null}
+                            {hit._index.split('-')[2].endsWith('_g') && (
+                                <span className="flex items-center h-6 flex-shrink-0">
+                                    <PiWall aria-hidden="true" />
+                                </span>
+                            )}
+                            <div className="flex-1 leading-6">
+                                <strong>{hit.fields.label[0]} {hit.fields["group.label"] && hit.fields["group.label"]?.[0] != hit.fields.label[0] && `(${hit.fields["group.label"]?.[0]})`} </strong>{' '}
+                                <span className="text-neutral-900">
+                                    {detailsRenderer(hit)}
 
 
-                            </span>
-                        </div>
-                    </li>
-                )
+                                </span>
+                            </div>
+                        </li>
+                    )
                 })}
             </ul>}
         </Form>

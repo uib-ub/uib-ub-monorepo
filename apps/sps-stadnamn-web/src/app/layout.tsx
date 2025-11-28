@@ -1,13 +1,13 @@
+import QueryProvider from "@/state/providers/query-provider";
 import type { Metadata } from "next";
-import "./globals.css";
-import { Source_Sans_3, Source_Serif_4 } from 'next/font/google'
-import PlausibleProvider from 'next-plausible'
-import { userAgent } from "next/server";
+import PlausibleProvider from 'next-plausible';
+import { Source_Sans_3, Source_Serif_4 } from 'next/font/google';
 import { headers } from "next/headers";
+import { userAgent } from "next/server";
 import GlobalProvider from "../state/providers/global-provider";
 import { fetchVocab } from "./api/_utils/actions";
-import QueryProvider from "@/state/providers/query-provider";
- 
+import "./globals.css";
+
 const serif = Source_Serif_4({
   subsets: ['latin'],
   weight: ["400", "700"],
@@ -15,13 +15,13 @@ const serif = Source_Serif_4({
   variable: '--font-serif',
 })
 
-const sans = Source_Sans_3  ({
+const sans = Source_Sans_3({
   weight: ["400", "600", "700"],
   subsets: ['latin'],
   display: 'swap'
-  
+
 })
- 
+
 
 export const metadata: Metadata = {
   title: {
@@ -44,8 +44,8 @@ export default async function RootLayout({
   const { coordinateVocab, sosiVocab } = await fetchVocab();
 
   return (
-    <html 
-      lang="no" 
+    <html
+      lang="no"
       className={`${serif.variable} ${sans.className}`}
     >
       <head>
@@ -56,13 +56,13 @@ export default async function RootLayout({
 
         <GlobalProvider isMobile={isMobile} sosiVocab={sosiVocab || {}} coordinateVocab={coordinateVocab || {}}>
           <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-[5001] focus:top-1 focus:py-3 focus:px-6 bg-primary-700 text-white no-underline self-center">
-        Gå til hovudinnhald
-      </a>
-      <QueryProvider>        
-        {children}
-        </QueryProvider>
+            Gå til hovudinnhald
+          </a>
+          <QueryProvider>
+            {children}
+          </QueryProvider>
         </GlobalProvider>
-        
+
       </body>
     </html>
   );

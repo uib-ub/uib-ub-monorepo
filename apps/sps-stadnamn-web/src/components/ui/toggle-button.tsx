@@ -42,11 +42,10 @@ export default function ToggleButton({
       type={type}
       onClick={onClick}
       {...ariaProps}
-      className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${
-        isSelected
+      className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isSelected
           ? 'bg-accent-800 text-white'
           : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
-      } ${className}`}
+        } ${className}`}
     >
       {children}
     </button>

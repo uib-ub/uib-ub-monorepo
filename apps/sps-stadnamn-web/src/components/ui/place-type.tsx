@@ -8,10 +8,10 @@ export default async function PlaceType({ sosiCode }: { sosiCode: string }) {
     return (
         <Link className="inline whitespace-nowrap"
             href={"https://register.geonorge.no/sosi-kodelister/stedsnavn/navneobjekttype/" + sosiCode}>
-        {sosiCode}
+            {sosiCode}
         </Link>
-    
+
     )
 
-    
+
 }

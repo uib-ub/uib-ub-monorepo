@@ -16,7 +16,7 @@ export default function AudioExplorer({recordings}: {recordings: any[]}) {
     const recording = recordings[recordingIndex]
 
     const handleCopy = async () => {
-        await navigator?.clipboard.writeText(`https://purl.org/stadnamn/iiif/${recording.manifest}`)
+        await navigator?.clipboard.writeText(`https://stadnamn.no/iiif/${recording.manifest}`)
         setCopiedId(recording.manifest)
     }
 

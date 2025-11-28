@@ -1,32 +1,31 @@
-//export const runtime = 'edge'
 import { extractFacets } from "../_utils/facets";
 import { postQuery } from "../_utils/post";
 import { getQueryString } from "../_utils/query-string";
 export async function GET(request: Request) {
 
-    const {termFilters, reservedParams} = extractFacets(request)
+    const { termFilters, reservedParams } = extractFacets(request)
     const coordinates = reservedParams?.point?.split(',')
     if (coordinates.length == 2) {
-        
+
         const { simple_query_string } = getQueryString(reservedParams)
 
 
-        const query: Record<string,any> = {
+        const query: Record<string, any> = {
             size: 1000,
             _source: false,
             fields: ['uuid', 'label', 'location', 'adm1', 'adm2'],
         }
-        
 
-        const distance_query = { 
+
+        const distance_query = {
             geo_distance: {
-            distance: '1m',
-            location: {
-                lat: parseFloat(coordinates[0]),
-                lon: parseFloat(coordinates[1])
+                distance: '1m',
+                location: {
+                    lat: parseFloat(coordinates[0]),
+                    lon: parseFloat(coordinates[1])
                 }
             },
-            
+
         }
 
         const exists_filter = {
@@ -63,7 +62,7 @@ export async function GET(request: Request) {
             if (termFilters.length) {
                 query.query.bool.filter = termFilters
             }
-            
+
         }
 
         //query.ignore_unmapped = true // Prevent error in datasets without location
@@ -71,11 +70,11 @@ export async function GET(request: Request) {
         const [data, status] = await postQuery(reservedParams.dataset || 'search', query)
         return Response.json(data, { status: status })
     }
-  
+
     else {
         return new Response('No coordinates provided', { status: 400 })
     }
-  
-      
+
+
 }
 

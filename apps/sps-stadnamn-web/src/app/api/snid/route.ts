@@ -1,10 +1,9 @@
-//export const runtime = 'edge'
 import { postQuery } from "../_utils/post";
 export async function GET(request: Request) {
     const searchParams = new URLSearchParams(new URL(request.url).search);
     const uuid = searchParams.get('uuid');
     const snid = searchParams.get('snid');
-    
+
     if (uuid) {
         // Find parent SNID when given child UUID
         const query = {
@@ -38,7 +37,7 @@ export async function GET(request: Request) {
         return Response.json(data, { status: status })
     }
     else {
-        return Response.json({error: 'INVALID_QUERY'}, { status: 400 });
+        return Response.json({ error: 'INVALID_QUERY' }, { status: 400 });
     }
-  
+
 }

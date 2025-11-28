@@ -1,13 +1,12 @@
-//export const runtime = 'edge'
 
-export async function GET(request: Request) {
+export async function GET() {
     const endpoint = process.env.STADNAMN_ES_ENDPOINT
     const token = process.env.STADNAMN_ES_TOKEN
 
     if (!endpoint || !token) {
         return new Response(
-            JSON.stringify({ error: 'Missing required environment variables' }), 
-            { 
+            JSON.stringify({ error: 'Missing required environment variables' }),
+            {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' }
             }
@@ -53,7 +52,7 @@ export async function GET(request: Request) {
         const aliasResult = await aliasResponse.json();
         const statsResult = await statsResponse.json();
 
-        
+
         // Get individual counts for each index
         const indices = await Promise.all(
             Object.entries(aliasResult).map(async ([indexName, indexInfo]: [string, any]) => {
@@ -74,9 +73,9 @@ export async function GET(request: Request) {
                     const indexCountResult = await indexCountResponse.json();
                     docCount = indexCountResult.count || 0;
                 }
-                
+
                 const indexStats = statsResult.indices[indexName];
-                
+
                 // Extract creation date from stats or fetch from settings if not available
                 let creationDate = null;
                 if (indexStats?.primaries?.store?.creation_date) {
@@ -95,20 +94,20 @@ export async function GET(request: Request) {
         );
 
         return new Response(
-            JSON.stringify({ indices }), 
-            { 
+            JSON.stringify({ indices }),
+            {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' }
             }
         );
     } catch (error: any) {
         return new Response(
-            JSON.stringify({ 
-                error: 'Failed to fetch Elasticsearch status', 
+            JSON.stringify({
+                error: 'Failed to fetch Elasticsearch status',
                 details: error.message,
                 status: 'error'
-            }), 
-            { 
+            }),
+            {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' }
             }

@@ -1,9 +1,9 @@
 'use client'
-import { PiMapPin  } from 'react-icons/pi';
+import { PiMapPin } from 'react-icons/pi';
 
+import EmbeddedMap from '@/components/map/embedded-map';
 import Link from 'next/link';
 import CoordinateType from './coordinate-type';
-import EmbeddedMap from '@/components/map/embedded-map';
 
 function convertDMS(lat: number, lon: number): string {
 
@@ -14,31 +14,31 @@ function convertDMS(lat: number, lon: number): string {
         const minutes = Math.floor(minutesNotTruncated);
         const seconds = (minutesNotTruncated - minutes) * 60; // Keep the decimal part
         return `${degrees}° ${minutes}′ ${seconds.toFixed(2)}″${degree >= 0 ? direction[0] : direction[1]}`;
-      }
-  
+    }
+
     const latitude = toDMS(lat, ['N', 'S']);
     const longitude = toDMS(lon, ['Ø', 'V']);
     return `${latitude} ${longitude}`;
-  }
+}
 
 
-export default function CoordinateInfo({source}: {source: Record<string, any>}) {
+export default function CoordinateInfo({ source }: { source: Record<string, any> }) {
     return (
 
         <div id="coordinate_info" className='space-y-6 my-2'>
             <div className="flex items-center space-x-2">
                 <PiMapPin className="w-6 h-6" />
-                <Link  className="font-semibold" 
-                   href={`https://geohack.toolforge.org/geohack.php?pagename=Geohack&params=${source.location.coordinates[1]};${source.location.coordinates[0]}&language=no`}>
+                <Link className="font-semibold"
+                    href={`https://geohack.toolforge.org/geohack.php?pagename=Geohack&params=${source.location.coordinates[1]};${source.location.coordinates[0]}&language=no`}>
                     {convertDMS(source.location.coordinates[1], source.location.coordinates[0])}
-                    </Link>
+                </Link>
             </div>
-            {source.coordinateType && 
-                <CoordinateType source={source}/> 
+            {source.coordinateType &&
+                <CoordinateType source={source} />
             }
             <EmbeddedMap coordinate={[source.location.coordinates[1], source.location.coordinates[0]]} zoom={11} />
-            
-            </div>
-            
+
+        </div>
+
     );
 }

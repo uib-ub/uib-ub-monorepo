@@ -1,9 +1,9 @@
 'use client'
-import Link from "next/link";
-import { useContext } from "react";
 import { GlobalContext } from "@/state/providers/global-provider";
-import { PiCaretLeft } from "react-icons/pi";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useContext } from "react";
+import { PiCaretLeft } from "react-icons/pi";
 
 export default function BackToSearch() {
     const { currentUrl } = useContext(GlobalContext);

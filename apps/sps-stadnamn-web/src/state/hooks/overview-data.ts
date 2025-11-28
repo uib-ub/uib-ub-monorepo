@@ -1,10 +1,6 @@
 "use client"
 
-import { useSearchParams } from "next/navigation"
-import { useQuery } from "@tanstack/react-query"
 import * as h3 from "h3-js"
-import useGroupData from "@/state/hooks/group-data"
-import { useGroup } from "@/lib/param-hooks"
 
 const overviewQuery = async (
     groupCode: string | null,
@@ -14,7 +10,7 @@ const overviewQuery = async (
     details: string | null
 ) => {
 
-    
+
     if (!groupValue || !groupDoc) {
         console.log("Early return: missing group value or groupDoc")
         return []

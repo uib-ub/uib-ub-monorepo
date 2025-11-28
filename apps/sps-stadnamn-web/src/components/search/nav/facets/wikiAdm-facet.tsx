@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useSearchQuery } from '@/lib/search-params';
-import { PiMagnifyingGlass, PiCaretDownBold, PiCaretUpBold } from 'react-icons/pi';
-import FacetToolbar from './facet-toolbar';
 import IconButton from '@/components/ui/icon-button';
+import { useSearchQuery } from '@/lib/search-params';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { PiCaretDownBold, PiCaretUpBold, PiMagnifyingGlass } from 'react-icons/pi';
+import FacetToolbar from './facet-toolbar';
 
 export default function WikiAdmFacet() {
   const router = useRouter()
@@ -17,8 +17,7 @@ export default function WikiAdmFacet() {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    fetch(`/api/wikiAdm${facetSearchQuery ? `?facetQuery=${facetSearchQuery}` : ''}${
-      paramsExceptFacet ? `${facetSearchQuery ? '&' : '?'}${paramsExceptFacet}` : ''}`,
+    fetch(`/api/wikiAdm${facetSearchQuery ? `?facetQuery=${facetSearchQuery}` : ''}${paramsExceptFacet ? `${facetSearchQuery ? '&' : '?'}${paramsExceptFacet}` : ''}`,
     ).then(response => response.json()).then(es_data => {
       setFacetAggregation(es_data.aggregations?.by_wiki)
       setFacetIsLoading(false);
@@ -46,7 +45,7 @@ export default function WikiAdmFacet() {
   // Replace toggleCombinedFilter with new version that handles both parent and child cases
   const toggleCombinedFilter = (beingChecked: boolean, wikiId: string, adm1Value?: string, adm2Value?: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    
+
     // Remove navigation-related params
     params.delete('page');
     params.delete('parent');
@@ -75,7 +74,7 @@ export default function WikiAdmFacet() {
       }
     } else {
       // Child checkbox logic
-      const valueToToggle = adm2Value 
+      const valueToToggle = adm2Value
         ? `${wikiId}_${adm1Value}_${adm2Value}`
         : `${wikiId}_${adm1Value}`;
 
@@ -125,18 +124,18 @@ export default function WikiAdmFacet() {
       {/* Search input and toolbar */}
       <div className='flex gap-2'>
         <div className='relative grow'>
-          <input 
-            aria-label="Søk i områdefilter" 
+          <input
+            aria-label="Søk i områdefilter"
             onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())}
             className="pl-8 w-full border rounded-md border-neutral-300 p-1"
           />
           <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-            <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl'/>
+            <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl' />
           </span>
         </div>
-        <FacetToolbar/>
+        <FacetToolbar />
       </div>
-      
+
       {facetAggregation?.buckets ? (
         <fieldset>
           <legend className="sr-only">Filtreringsalternativer for områdeinndeling</legend>
@@ -150,14 +149,14 @@ export default function WikiAdmFacet() {
                 <li key={item.key} className="py-2">
                   <div className="flex items-start gap-2">
                     <label className="flex items-center gap-2 flex-1">
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         checked={isChecked(facetName, item.key)}
                         onChange={(e) => toggleCombinedFilter(
                           e.target.checked,
                           item.key
                         )}
-                        className="mr-2" 
+                        className="mr-2"
                       />
                       <span className="text-neutral-950 break-words lg:text-sm xl:text-base">
                         {firstPath}
@@ -181,30 +180,30 @@ export default function WikiAdmFacet() {
                       {item.adm1?.buckets.map((adm1: any) => {
                         // Find the highest doc_count in this adm1 group
                         const maxDocCount = Math.max(...adm1.adm2?.buckets.map((b: any) => b.doc_count) || [0]);
-                        
+
                         return adm1.adm2?.buckets.map((adm2: any) => {
                           const path = `${adm2.key}, ${adm1.key}`;
-                          const isOverlapping = Array.isArray(adm2.top_hit?.hits?.hits) && 
-                            adm2.top_hit?.hits?.hits.slice(0, 2).every((hit: any) => 
-                              Array.isArray(hit._source?.wikiAdm) && 
+                          const isOverlapping = Array.isArray(adm2.top_hit?.hits?.hits) &&
+                            adm2.top_hit?.hits?.hits.slice(0, 2).every((hit: any) =>
+                              Array.isArray(hit._source?.wikiAdm) &&
                               hit._source?.wikiAdm.length > 1
                             );
-                          
+
                           // Only show if not overlapping or if it has the highest doc_count in its adm1
                           if (!isOverlapping || adm2.doc_count === maxDocCount) {
                             return (
                               <div key={`${adm1.key}-${adm2.key}`} className="py-1">
                                 <label className="flex items-center gap-2">
-                                  <input 
-                                    type="checkbox" 
+                                  <input
+                                    type="checkbox"
                                     checked={isChecked(facetName, `${item.key}_${adm1.key}_${adm2.key}`)}
                                     onChange={(e) => toggleCombinedFilter(
-                                      e.target.checked, 
-                                      item.key, 
-                                      adm1.key, 
+                                      e.target.checked,
+                                      item.key,
+                                      adm1.key,
                                       adm2.key
                                     )}
-                                    className="mr-2" 
+                                    className="mr-2"
                                   />
                                   <span className="text-neutral-950">
                                     {path}
@@ -224,7 +223,7 @@ export default function WikiAdmFacet() {
                           return null;
                         });
                       })}
-                      <a 
+                      <a
                         href={`https://www.wikidata.org/wiki/${item.key}`}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -241,10 +240,10 @@ export default function WikiAdmFacet() {
         </fieldset>
       ) : facetIsLoading ? (
         <div className="flex flex-col gap-6 my-3">
-          {Array.from({length: 6}).map((_, index) => (
+          {Array.from({ length: 6 }).map((_, index) => (
             <div key={index} className="flex items-center gap-2">
               <div className="w-4 h-4 bg-neutral-900/10 rounded-md animate-pulse"></div>
-              <div style={{width: getSkeletonLength(index, 8, 16) + 'rem'}} className="h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
+              <div style={{ width: getSkeletonLength(index, 8, 16) + 'rem' }} className="h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
               <div className="w-6 h-6 ml-auto bg-neutral-900/10 rounded-full animate-pulse"></div>
             </div>
           ))}

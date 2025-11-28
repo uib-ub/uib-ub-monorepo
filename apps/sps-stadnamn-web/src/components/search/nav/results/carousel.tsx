@@ -3,7 +3,7 @@ import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import { datasetTitles } from "@/config/metadata-config"
 import { GlobalContext } from "@/state/providers/global-provider"
 import { useContext, useRef, useState } from "react"
-import { PiCaretLeft, PiCaretLeftBold, PiCaretRight, PiCaretRightBold } from "react-icons/pi"
+import { PiCaretLeftBold, PiCaretRightBold } from "react-icons/pi"
 
 type CarouselItem = { dataset: string, uuid: string, iiif?: string | string[], content?: { text?: string, html?: string } }
 
@@ -153,7 +153,7 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
                             transition: animating ? 'transform 250ms ease' : 'none'
                         }}
                     >
-                        <ClientThumbnail iiif={items[prevIndex].iiif as any} datasetLabel={items[prevIndex].dataset}/>
+                        <ClientThumbnail iiif={items[prevIndex].iiif as any} datasetLabel={items[prevIndex].dataset} />
                     </div>
                 )}
 
@@ -165,7 +165,7 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
                         transition: animating ? 'transform 250ms ease' : 'none'
                     }}
                 >
-                    <ClientThumbnail iiif={items[currentIndex].iiif as any} datasetLabel={items[currentIndex].dataset}/>
+                    <ClientThumbnail iiif={items[currentIndex].iiif as any} datasetLabel={items[currentIndex].dataset} />
                 </div>
 
                 {/* Next */}
@@ -177,27 +177,27 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
                             transition: animating ? 'transform 250ms ease' : 'none'
                         }}
                     >
-                        <ClientThumbnail iiif={items[nextIndex].iiif as any} datasetLabel={items[nextIndex].dataset}/>
+                        <ClientThumbnail iiif={items[nextIndex].iiif as any} datasetLabel={items[nextIndex].dataset} />
                     </div>
                 )}
             </div>
             <div className="absolute top-0 left-0 text-sm px-1 text-black bg-white/70 backdrop-blur-sm">{datasetTitles[items[currentIndex].dataset]}</div>
             <div className="absolute top-0 right-0 flex gap-0">
-            {items.length > 1 && (
-                <div className={`bg-neutral-950/70 flex items-center text-white backdrop-blur-sm text-sm px-2 py-0`}>
-                    {currentIndex + 1}/{items.length}
-                </div>
-            )}
-            
+                {items.length > 1 && (
+                    <div className={`bg-neutral-950/70 flex items-center text-white backdrop-blur-sm text-sm px-2 py-0`}>
+                        {currentIndex + 1}/{items.length}
+                    </div>
+                )}
+
 
             </div>
-            {!isMobile &&currentIndex > 0 && <ClickableIcon label="Forrige" 
-                                                className="absolute bg-neutral-950/70 rounded-full text-white text-xl p-2 left-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity" 
-                                                onClick={() => setCurrentIndex(currentIndex - 1)}>
-                                        <PiCaretLeftBold />
-                                        </ClickableIcon>}
-            {!isMobile && currentIndex < items.length - 1 && <ClickableIcon label="Neste" 
-            className="absolute bg-neutral-950/70 rounded-full text-white p-2 text-xl right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity" onClick={() => setCurrentIndex(currentIndex + 1)}><PiCaretRightBold /></ClickableIcon>}
+            {!isMobile && currentIndex > 0 && <ClickableIcon label="Forrige"
+                className="absolute bg-neutral-950/70 rounded-full text-white text-xl p-2 left-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+                onClick={() => setCurrentIndex(currentIndex - 1)}>
+                <PiCaretLeftBold />
+            </ClickableIcon>}
+            {!isMobile && currentIndex < items.length - 1 && <ClickableIcon label="Neste"
+                className="absolute bg-neutral-950/70 rounded-full text-white p-2 text-xl right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity" onClick={() => setCurrentIndex(currentIndex + 1)}><PiCaretRightBold /></ClickableIcon>}
             {items.length > 1 && (
                 <div className="absolute bottom-1 left-1/2 -translate-x-1/2 md:hidden pointer-events-none">
                     <div className="flex items-center gap-1 bg-neutral-950/50 backdrop-blur-sm rounded-full px-2 py-1">

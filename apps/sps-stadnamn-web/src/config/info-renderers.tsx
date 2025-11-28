@@ -1,10 +1,10 @@
-import Link from 'next/link';
-import React, { Fragment, ReactElement } from 'react';
-import parse from 'html-react-parser';
-import { PiCodeSimple, PiInfoFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi';
+import SourceLink from '@/components/search/details/group/source-link';
 import Clickable from '@/components/ui/clickable/clickable';
 import InfoPopover from '@/components/ui/info-popover';
-import SourceLink from '@/components/search/details/group/source-link';
+import parse from 'html-react-parser';
+import Link from 'next/link';
+import { Fragment, ReactElement } from 'react';
+import { PiInfoFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi';
 
 const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string[]) => {
   const altLabels = altLabelKeys.map((key) => source[key]).filter((label: string) => label !== prefLabel && label);

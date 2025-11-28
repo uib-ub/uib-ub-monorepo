@@ -1,5 +1,5 @@
-import { useSearchParams } from 'next/navigation'
 import { fieldConfig } from '@/config/search-config';
+import { useSearchParams } from 'next/navigation';
 import { usePerspective } from './param-hooks';
 
 
@@ -20,7 +20,7 @@ export function useSearchQuery() {
     const searchQuery = new URLSearchParams()
     const size = parseInt(searchParams.get('size') || "20")
     const datasetTag = searchParams.get('datasetTag')
-    
+
 
 
 
@@ -60,13 +60,13 @@ export function useSearchQuery() {
 
 
     const searchFilterParamsString = searchQuery.toString()
-    
+
     // Params that don't require the results section to be shown
     datasetFilters.forEach(filter => {
         searchQuery.append(filter[0], filter[1])
     })
 
-    
+
     const fulltext = searchParams.get('fulltext')
     if (fulltext && datasetTag != 'tree' && searchParams.get('q')) {
         searchQuery.set('fulltext', 'on')
@@ -107,5 +107,5 @@ export function useSearchQuery() {
     */
 
 
-    return {searchQueryString: searchQuery.toString(), searchQuery, searchFilterParamsString, facetFilters, removeFilterParams, size, datasetFilters }
+    return { searchQueryString: searchQuery.toString(), searchQuery, searchFilterParamsString, facetFilters, removeFilterParams, size, datasetFilters }
 }

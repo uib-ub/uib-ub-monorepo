@@ -1,11 +1,10 @@
 'use client'
-import { datasetTitles } from "@/config/metadata-config";
-import TreeList from "./tree-list";
-import { useSearchParams } from "next/navigation";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
-import { PiArrowElbowLeftUp, PiArrowUp, PiCaretUp, PiCaretUpBold, PiX } from "react-icons/pi";
+import { datasetTitles } from "@/config/metadata-config";
+import { useSearchParams } from "next/navigation";
+import { PiX } from "react-icons/pi";
 import DatasetFacet from "./facets/dataset-facet";
-import { useSessionStore } from "@/state/zustand/session-store";
+import TreeList from "./tree-list";
 
 export default function TreeWindow() {
     const searchParams = useSearchParams()
@@ -19,11 +18,11 @@ export default function TreeWindow() {
                 {adm2 ? adm2 : adm1 ? adm1 : dataset ? datasetTitles[dataset || ''] : 'Matriklar'}
             </h2>
             <ClickableIcon label="lukk" remove={['nav']}>
-                <PiX className="text-3xl text-neutral-900"/>
+                <PiX className="text-3xl text-neutral-900" />
             </ClickableIcon>
         </div>
         <div className="overflow-y-auto stable-scrollbar max-h-[calc(100svh-7rem)] 2xl:max-h-[calc(100svh-8.5rem)]">
-            {dataset ? <TreeList/> : <DatasetFacet/>}
+            {dataset ? <TreeList /> : <DatasetFacet />}
         </div>
     </>)
 }

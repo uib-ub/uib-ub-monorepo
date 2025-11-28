@@ -1,7 +1,7 @@
-import { getSortArray } from '@/config/server-config';
-import { postQuery } from '@/app/api/_utils/post';
 import { extractFacets } from '@/app/api/_utils/facets';
+import { postQuery } from '@/app/api/_utils/post';
 import { getQueryString } from '@/app/api/_utils/query-string';
+import { getSortArray } from '@/config/server-config';
 
 function modifyQuery(query: string) {
   const lowerCaseQuery = query.toLowerCase();
@@ -24,37 +24,36 @@ function modifyQuery(query: string) {
 }
 
 export async function GET(request: Request) {
-  const {termFilters, reservedParams} = extractFacets(request)
-  const perspective = reservedParams.perspective || 'all'  
-  const { highlight, simple_query_string } = getQueryString(reservedParams)
+  const { reservedParams } = extractFacets(request)
+  const perspective = reservedParams.perspective || 'all'
 
   let sortArray: (string | object)[] = []
-    
+
   if (!sortArray.length) {
     sortArray = getSortArray(perspective)
   }
-  
+
   const queryString = reservedParams.q?.toLowerCase() || ""
   const hasWhitespace = queryString.trim().includes(' ')
-  
+
   let queryClause: Record<string, any>
-  
+
   if (hasWhitespace) {
     // Split query by whitespace
     const parts = queryString.trim().split(/\s+/)
     const prefixPart = parts[parts.length - 1] // Last word as prefix
     const requiredParts = parts.slice(0, -1) // First word(s) as required match
     const requiredQuery = requiredParts.join(' ')
-    
+
     // Get simple_query_string for the preceding tokens
     const { simple_query_string: requiredSimpleQuery } = getQueryString({
       ...reservedParams,
       q: requiredQuery
     })
-    
+
     // Build fields for adm boost query
     const admFields = ["adm1", "adm2", "group.adm1", "group.adm2"]
-    
+
     queryClause = {
       "bool": {
         "must": [
@@ -100,10 +99,10 @@ export async function GET(request: Request) {
       }
     }
   }
-    
-  const query: Record<string,any> = {
+
+  const query: Record<string, any> = {
     "size": reservedParams.size || 10,
-    ...reservedParams.from ? {from: reservedParams.from} : {},
+    ...reservedParams.from ? { from: reservedParams.from } : {},
     "query": queryClause,
     "track_scores": true,
     "track_total_hits": false,
@@ -112,8 +111,8 @@ export async function GET(request: Request) {
       "field": "group.suggest"
     },
     "sort": [
-      {"_score": "desc"},
-      {"boost": {"order": "desc", "missing": "_last"}}
+      { "_score": "desc" },
+      { "boost": { "order": "desc", "missing": "_last" } }
     ],
     "_source": false
   }
@@ -123,11 +122,11 @@ export async function GET(request: Request) {
 
 
 
-  
+
 
 
   // Only cache if no search string an no filters
   const [data, status] = await postQuery(perspective, query)
-  return Response.json(data, {status: status})
-  
+  return Response.json(data, { status: status })
+
 }

@@ -13,32 +13,32 @@ const groupDebugDataQuery = async (q: string | null, bounds: { topLeftLat: numbe
             method: 'POST',
             body: JSON.stringify({ children }),
         })
-            if (!res.ok) {
-                throw new Error('Failed to fetch group debug data')
-            }
-            const data = await res.json()
-            return data
+        if (!res.ok) {
+            throw new Error('Failed to fetch group debug data')
+        }
+        const data = await res.json()
+        return data
     }
-    
+
     if (q) {
         params.set('q', q)
     }
-    
+
     if (sort) {
         params.set('sort', sort)
     }
-    
+
     if (size) {
         params.set('size', size.toString())
     }
-    
+
     if (bounds.topLeftLat !== null && bounds.topLeftLng !== null && bounds.bottomRightLat !== null && bounds.bottomRightLng !== null) {
         params.set('topLeftLat', bounds.topLeftLat.toString())
         params.set('topLeftLng', bounds.topLeftLng.toString())
         params.set('bottomRightLat', bounds.bottomRightLat.toString())
         params.set('bottomRightLng', bounds.bottomRightLng.toString())
     }
-    
+
     const url = params.toString() ? `/api/debug/groups?${params.toString()}` : '/api/debug/groups'
     const res = await fetch(url)
     if (!res.ok) {
@@ -57,21 +57,21 @@ export function useGroupDebugData(selectedGroup?: any) {
     const hasChildren = children.length > 0
     const isFetchingChildren = !!selectedGroup && hasChildren
 
-    
+
     // Get current map bounds from map instance (only when not fetching children)
     const getMapBounds = () => {
         if (!mapFunctionRef?.current || isFetchingChildren) return null
-        
+
         try {
             const mapBounds = mapFunctionRef.current.getBounds()
             if (!mapBounds) return null
-            
+
             // Convert to the format expected by the API: [[north, west], [south, east]]
             const north = mapBounds.getNorth()
             const west = mapBounds.getWest()
             const south = mapBounds.getSouth()
             const east = mapBounds.getEast()
-            
+
             return {
                 topLeftLat: north,
                 topLeftLng: west,
@@ -83,13 +83,13 @@ export function useGroupDebugData(selectedGroup?: any) {
             return null
         }
     }
-    
+
     const bounds = getMapBounds()
 
-    
+
     return useQuery({
         // When fetching children, don't include bounds in query key to prevent refetching on pan
-        queryKey: isFetchingChildren 
+        queryKey: isFetchingChildren
             ? ['group-debug-children', selectedGroup?._id, children.length]
             : ['group-debug', q, selectedGroup?._id, hasChildren, children.length, bounds?.topLeftLat, bounds?.topLeftLng, bounds?.bottomRightLat, bounds?.bottomRightLng],
         queryFn: () => {
@@ -115,16 +115,16 @@ export function useSortedGroups() {
     // Get current map bounds from map instance
     const getMapBounds = () => {
         if (!mapFunctionRef?.current) return null
-        
+
         try {
             const mapBounds = mapFunctionRef.current.getBounds()
             if (!mapBounds) return null
-            
+
             const north = mapBounds.getNorth()
             const west = mapBounds.getWest()
             const south = mapBounds.getSouth()
             const east = mapBounds.getEast()
-            
+
             return {
                 topLeftLat: north,
                 topLeftLng: west,
@@ -136,7 +136,7 @@ export function useSortedGroups() {
             return null
         }
     }
-    
+
     const bounds = getMapBounds()
 
     // Map sortBy to API sort parameter
@@ -163,16 +163,16 @@ export function useTopGroups() {
     // Get current map bounds from map instance
     const getMapBounds = () => {
         if (!mapFunctionRef?.current) return null
-        
+
         try {
             const mapBounds = mapFunctionRef.current.getBounds()
             if (!mapBounds) return null
-            
+
             const north = mapBounds.getNorth()
             const west = mapBounds.getWest()
             const south = mapBounds.getSouth()
             const east = mapBounds.getEast()
-            
+
             return {
                 topLeftLat: north,
                 topLeftLng: west,
@@ -184,12 +184,12 @@ export function useTopGroups() {
             return null
         }
     }
-    
+
     const bounds = getMapBounds()
 
     // Only fetch top groups if highlighting is enabled and sort is not 'uuid' (which is for random distribution)
     const shouldFetch = highlightTopGroups && debugGroupsSortBy !== 'uuid'
-    
+
     // Map sortBy to API sort parameter
     // uuid_count -> 'uuid' (sorts by child_count desc)
     // h3_count -> 'h3' (sorts by h3_count desc)

@@ -1,11 +1,11 @@
-import { PiCaretDownBold, PiSortAscending, PiSortDescending, PiTrash } from "react-icons/pi"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
-import { facetConfig } from "@/config/search-config"
+import Clickable from "@/components/ui/clickable/clickable";
+import ClickableIcon from "@/components/ui/clickable/clickable-icon";
+import { facetConfig } from "@/config/search-config";
+import { contentSettings } from "@/config/server-config";
 import { usePerspective } from '@/lib/param-hooks';
-import { contentSettings } from "@/config/server-config"
-import Clickable from "@/components/ui/clickable/clickable"
-import { useSearchParams } from "next/navigation"
-import ClickableIcon from "@/components/ui/clickable/clickable-icon"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { useSearchParams } from "next/navigation";
+import { PiCaretDownBold, PiSortAscending, PiSortDescending, PiTrash } from "react-icons/pi";
 
 export default function SortSelector() {
     const searchParams = useSearchParams()
@@ -18,8 +18,8 @@ export default function SortSelector() {
         { field: "label.keyword", label: "Oppslagsord" },
         // Add administrative areas if configured
         ...(contentSettings[perspective]?.adm ? [{
-            field: Array.from({length: contentSettings[perspective]?.adm || 0}, 
-                (_, i) => `adm${i+1}.keyword`).join(","),
+            field: Array.from({ length: contentSettings[perspective]?.adm || 0 },
+                (_, i) => `adm${i + 1}.keyword`).join(","),
             label: "Område"
         }] : []),
         // Add cadastre if configured
@@ -42,11 +42,11 @@ export default function SortSelector() {
         <div className="flex gap-2">
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <button 
-                        type="button" 
+                    <button
+                        type="button"
                         className="btn btn-outline btn-compact pl-2"
                     >
-                        <PiCaretDownBold className="text-xl mr-2"/>
+                        <PiCaretDownBold className="text-xl mr-2" />
                         Sorter{currentLabel ? `: ${currentLabel}` : ''}
                     </button>
                 </DropdownMenuTrigger>
@@ -55,12 +55,12 @@ export default function SortSelector() {
                     <DropdownMenuSeparator />
                     {sortOptions.map((option) => (
                         <DropdownMenuItem asChild key={option.field}>
-                        <Clickable
-                            className={`cursor-pointer px-4 py-2 ${option.field === currentSort ? 'bg-neutral-50' : ''}`}
-                            add={option.field === currentSort ? {asc: null, desc: null} : {asc: option.field, desc: null}}
-                        >
-                            {option.label}
-                        </Clickable>
+                            <Clickable
+                                className={`cursor-pointer px-4 py-2 ${option.field === currentSort ? 'bg-neutral-50' : ''}`}
+                                add={option.field === currentSort ? { asc: null, desc: null } : { asc: option.field, desc: null }}
+                            >
+                                {option.label}
+                            </Clickable>
                         </DropdownMenuItem>
                     ))}
                 </DropdownMenuContent>
@@ -69,19 +69,19 @@ export default function SortSelector() {
             {currentSort && (
                 <>
                     <ClickableIcon
-                        className="btn btn-outline btn-compact" 
-                        add={desc ? {asc: currentSort, desc: null} : {asc: null, desc: currentSort}}
+                        className="btn btn-outline btn-compact"
+                        add={desc ? { asc: currentSort, desc: null } : { asc: null, desc: currentSort }}
                         label={desc ? "Sorter stigende" : "Sorter synkende"}
                     >
-                        {desc ? <PiSortDescending className="text-xl"/> : <PiSortAscending className="text-xl"/>}
+                        {desc ? <PiSortDescending className="text-xl" /> : <PiSortAscending className="text-xl" />}
                     </ClickableIcon>
 
-                    <ClickableIcon 
-                        className="btn btn-outline btn-compact" 
-                        add={{asc: null, desc: null}}
+                    <ClickableIcon
+                        className="btn btn-outline btn-compact"
+                        add={{ asc: null, desc: null }}
                         label="Tilbakestill sortering"
                     >
-                        <PiTrash className="text-xl"/>
+                        <PiTrash className="text-xl" />
                     </ClickableIcon>
                 </>
             )}

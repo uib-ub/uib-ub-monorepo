@@ -1,5 +1,5 @@
 import { useWarningStore } from "@/state/zustand/warning-store";
-import { useEffect, useRef, useState, PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren, ReactNode, useEffect, useRef, useState } from "react";
 import { PiWarning, PiX } from "react-icons/pi";
 
 interface WarningMessageProps extends PropsWithChildren {

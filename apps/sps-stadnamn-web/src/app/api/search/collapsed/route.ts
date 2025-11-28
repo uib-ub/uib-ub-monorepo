@@ -1,62 +1,62 @@
 //export the runtime = 'edge'
 
-import { extractFacets } from '../../_utils/facets'
-import { getQueryString } from '../../_utils/query-string';
+import { extractFacets } from '../../_utils/facets';
 import { postQuery } from '../../_utils/post';
+import { getQueryString } from '../../_utils/query-string';
 
 export async function POST(request: Request) {
-  const {size, from, initLocation } = await request.json()
-  const {termFilters, reservedParams} = extractFacets(request)
+  const { size, from, initLocation } = await request.json()
+  const { termFilters, reservedParams } = extractFacets(request)
   const { highlight, simple_query_string } = getQueryString(reservedParams)
 
-  const query: Record<string,any> = {
-    "size":  size  || 10,
-    ...from ? {from} : {},
-    ...highlight ? {highlight} : {},
+  const query: Record<string, any> = {
+    "size": size || 10,
+    ...from ? { from } : {},
+    ...highlight ? { highlight } : {},
     "track_scores": true,
     "fields": ["group.adm1", "group.adm2", "adm1", "adm2", "group.label", "uuid", "boost", "label", "location"],
     "collapse": {
       "field": "group.id",
     },
-    
+
     "sort": reservedParams.datasetTag == 'base' ?
-    [{'group.id': "asc"}, {'label.keyword': "asc"}]
-    : [
-      
-      
-      ...initLocation ? [{
-        _geo_distance: {
-          location: initLocation,
-          order: "asc"
-        }
-      }] : [],
-      ...reservedParams.q ? [{
-        _score: "desc"
-      }] : [],
-      
-      {
-        boost: {
-          order: "desc",
-          missing: "_last"
-        }
-      },
-    ],
+      [{ 'group.id': "asc" }, { 'label.keyword': "asc" }]
+      : [
+
+
+        ...initLocation ? [{
+          _geo_distance: {
+            location: initLocation,
+            order: "asc"
+          }
+        }] : [],
+        ...reservedParams.q ? [{
+          _score: "desc"
+        }] : [],
+
+        {
+          boost: {
+            order: "desc",
+            missing: "_last"
+          }
+        },
+      ],
     "_source": false
   }
 
   // Construct the query part
   let baseQuery: any;
-  
+
   const suppressedExclusion = {
     "terms": {
       "group.id": ["suppressed", "noname"]
     }
   };
-  
+
   if (simple_query_string && termFilters.length) {
     baseQuery = {
       "bool": {
-        "must": simple_query_string,              
+        "must": simple_query_string,
         "filter": termFilters,
         "must_not": [suppressedExclusion]
       }
@@ -71,7 +71,8 @@ export async function POST(request: Request) {
     }
   }
   else if (termFilters.length) {
-    baseQuery = {"bool": {
+    baseQuery = {
+      "bool": {
         "filter": termFilters,
         "must_not": [suppressedExclusion]
       }
@@ -154,6 +155,6 @@ export async function POST(request: Request) {
       */
 
   const [data, status] = await postQuery('all', query, "dfs_query_then_fetch")
-  return Response.json(data, {status: status})
-  
+  return Response.json(data, { status: status })
+
 }

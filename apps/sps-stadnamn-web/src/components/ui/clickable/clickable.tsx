@@ -1,6 +1,6 @@
 'use client'
 import Link from "next/link"
-import { useSearchParams, useRouter} from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { ParamProps } from "./param-types"
 
 

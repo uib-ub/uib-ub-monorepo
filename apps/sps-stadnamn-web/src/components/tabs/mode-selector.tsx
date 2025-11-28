@@ -1,11 +1,11 @@
 'use client'
+import { contentSettings } from "@/config/server-config";
+import { useMode, usePerspective } from "@/lib/param-hooks";
+import { GlobalContext } from "@/state/providers/global-provider";
 import { useSearchParams } from "next/navigation";
+import { useContext } from "react";
 import { PiBookOpenFill, PiBookOpenLight, PiMapTrifoldFill, PiMapTrifoldLight, PiTableFill, PiTableLight } from "react-icons/pi";
 import ClickableIcon from "../ui/clickable/clickable-icon";
-import { useContext } from "react";
-import { GlobalContext } from "@/state/providers/global-provider";
-import { usePerspective, useMode } from "@/lib/param-hooks";
-import { contentSettings } from "@/config/server-config";
 
 export default function ModeSelector() {
     const searchParams = useSearchParams()
@@ -15,41 +15,41 @@ export default function ModeSelector() {
     const datasetTag = searchParams.get('datasetTag')
 
     return <div className={`absolute z-[4000] tabs ${mode == 'map' ? 'rounded-br-md lg:rounded-md shadow-lg bg-white' : ''} ${isMobile ? 'pl-2 pt-2 pr-1 pb-1' : ' p-2 gap-1'}`} role="tablist">
-            {contentSettings[perspective]?.display == 'map' && <ClickableIcon aria-selected={mode == 'map' ? true : false}
-                      onClick={() => {
-                        setPreferredTab(perspective, 'map')
-                      }}
-                      role="tab"
-                      label="Kart"
-                      remove={['mode']}
-                      className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-auto p-1 px-2">
-                        { mode == 'map' ? <PiMapTrifoldFill className="text-3xl text-accent-800" aria-hidden="true"/>  : <PiMapTrifoldLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
+        {contentSettings[perspective]?.display == 'map' && <ClickableIcon aria-selected={mode == 'map' ? true : false}
+            onClick={() => {
+                setPreferredTab(perspective, 'map')
+            }}
+            role="tab"
+            label="Kart"
+            remove={['mode']}
+            className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-auto p-1 px-2">
+            {mode == 'map' ? <PiMapTrifoldFill className="text-3xl text-accent-800" aria-hidden="true" /> : <PiMapTrifoldLight className="text-3xl text-neutral-900" aria-hidden="true" />}
 
-            </ClickableIcon>}
+        </ClickableIcon>}
 
-            <ClickableIcon add={{mode: 'table'}} 
-                        onClick={() => {
-                            setPreferredTab(perspective, 'table')
-                        }}
-                        role="tab"
-                        label="Tabell"
-                        aria-selected={mode == 'table' ? true : false}
-                        className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-auto p-1 px-2">
-                            {mode == 'table' ? <PiTableFill className="text-3xl text-accent-800" aria-hidden="true"/>  : <PiTableLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
-            </ClickableIcon>
+        <ClickableIcon add={{ mode: 'table' }}
+            onClick={() => {
+                setPreferredTab(perspective, 'table')
+            }}
+            role="tab"
+            label="Tabell"
+            aria-selected={mode == 'table' ? true : false}
+            className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-auto p-1 px-2">
+            {mode == 'table' ? <PiTableFill className="text-3xl text-accent-800" aria-hidden="true" /> : <PiTableLight className="text-3xl text-neutral-900" aria-hidden="true" />}
+        </ClickableIcon>
 
-            {datasetTag != 'tree' && <ClickableIcon add={{mode: 'list'}} 
-                        onClick={() => {
-                            setPreferredTab(perspective, 'list')
-                        }}
-                        role="tab"
-                        label="Oppslag"
-                        aria-selected={mode == 'list' ? true : false}
-                        className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-auto p-1 px-2">
-                            {mode == 'list' ? <PiBookOpenFill className="text-3xl text-accent-800" aria-hidden="true"/>  : <PiBookOpenLight className="text-3xl text-neutral-900" aria-hidden="true"/>}
-            </ClickableIcon>}
+        {datasetTag != 'tree' && <ClickableIcon add={{ mode: 'list' }}
+            onClick={() => {
+                setPreferredTab(perspective, 'list')
+            }}
+            role="tab"
+            label="Oppslag"
+            aria-selected={mode == 'list' ? true : false}
+            className="flex h-10 whitespace-nowrap rounded items-center basis-1 gap-1 no-underline w-auto p-1 px-2">
+            {mode == 'list' ? <PiBookOpenFill className="text-3xl text-accent-800" aria-hidden="true" /> : <PiBookOpenLight className="text-3xl text-neutral-900" aria-hidden="true" />}
+        </ClickableIcon>}
 
-        </div>
-    
+    </div>
+
 }
 

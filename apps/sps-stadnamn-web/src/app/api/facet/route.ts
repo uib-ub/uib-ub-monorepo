@@ -1,4 +1,3 @@
-//export const runtime = 'edge'
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';
@@ -10,10 +9,10 @@ export async function GET(request: Request) {
   const facets = params.facets?.split(',')
   const { simple_query_string } = getQueryString(reservedParams)
 
- let aggs;
- if (facets) {
-  aggs = {}
-  for (let i = facets.length - 1; i >= 0; i--) {
+  let aggs;
+  if (facets) {
+    aggs = {}
+    for (let i = facets.length - 1; i >= 0; i--) {
       const facetField = facets[i].split('__');
       const isNestedQuery = facetField.length > 1;
 
@@ -37,21 +36,21 @@ export async function GET(request: Request) {
           ...(i < facets.length - 1 ? { aggs } : {})
         }
         : {
-            [facets[i]]: {
-              terms: {
-                field: facets[i] === 'dataset' ? '_index' : `${facets[i]}${(baseAllConfig[facets[i] as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}`,
-                missing: "_false",
-                size: params.facetSearch ? 10 : 100,
-                ...params.facetSort ? { order: { _key: params.facetSort } } : {},
-              },
-              ...(i < facets.length - 1 ? { aggs } : {})
-            }
-          };
+          [facets[i]]: {
+            terms: {
+              field: facets[i] === 'dataset' ? '_index' : `${facets[i]}${(baseAllConfig[facets[i] as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}`,
+              missing: "_false",
+              size: params.facetSearch ? 10 : 100,
+              ...params.facetSort ? { order: { _key: params.facetSort } } : {},
+            },
+            ...(i < facets.length - 1 ? { aggs } : {})
+          }
+        };
     }
   }
 
-  
-  
+
+
   const query = {
     size: 0,
     aggs,
@@ -62,11 +61,12 @@ export async function GET(request: Request) {
             simple_query_string: {
               query: params.facetSearch,
               fields: facets
-            }}] : [{ match_all: {} }],
+            }
+          }] : [{ match_all: {} }],
           ...params.q ? [simple_query_string] : [],
         ],
-        ...termFilters.length ? {filter: termFilters} : {}
-       }
+        ...termFilters.length ? { filter: termFilters } : {}
+      }
     }
   }
 

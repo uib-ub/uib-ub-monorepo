@@ -1,34 +1,32 @@
 'use client'
 
-import { PiCaretDownBold, PiCaretLeftBold, PiCaretUpBold, PiFunnel, PiFunnelBold, PiFunnelFill, PiX } from "react-icons/pi";
-import dynamic from "next/dynamic";
-import SearchResults from "./nav/results/search-results";
-import MapSettings from "../map/map-settings";
-import { useSessionStore } from "@/state/zustand/session-store";
-import { useContext, useEffect, useRef } from "react";
-import useGroupData from "@/state/hooks/group-data";
-import { useSearchQuery } from "@/lib/search-params";
-import { GlobalContext } from "@/state/providers/global-provider";
-import useSearchData from "@/state/hooks/search-data";
-import { useSearchParams } from "next/navigation";
-import Clickable from "../ui/clickable/clickable";
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
-import ClickableIcon from "../ui/clickable/clickable-icon";
-import { Badge, TitleBadge } from "../ui/badge";
 import { useMode, useOverlayParams, usePerspective } from "@/lib/param-hooks";
+import { useSearchQuery } from "@/lib/search-params";
+import useGroupData from "@/state/hooks/group-data";
+import useSearchData from "@/state/hooks/search-data";
+import { GlobalContext } from "@/state/providers/global-provider";
+import { useSessionStore } from "@/state/zustand/session-store";
+import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
+import { useContext, useEffect, useRef } from "react";
+import { PiCaretDownBold, PiCaretLeftBold, PiCaretUpBold, PiX } from "react-icons/pi";
+import MapSettings from "../map/map-settings";
+import { Badge, TitleBadge } from "../ui/badge";
+import Clickable from "../ui/clickable/clickable";
+import ClickableIcon from "../ui/clickable/clickable-icon";
 import FacetSection from "./nav/facets/facet-section";
+import SearchResults from "./nav/results/search-results";
 
-import ServerFacet from "./nav/facets/server-facet";
-import ClientFacet from "./nav/facets/client-facet";
-import WikiAdmFacet from "./nav/facets/wikiAdm-facet";
 import { fieldConfig } from "@/config/search-config";
-import DatasetFacet from "./nav/facets/dataset-facet";
-import TableOptions from "./table/table-options";
 import { useDebugStore } from "@/state/zustand/debug-store";
-import DebugToggle from "./nav/results/debug-toggle";
-import ActiveFilters from "./form/active-filters";
-import { RoundIconClickable } from "../ui/clickable/round-icon-button";
 import Spinner from "../svg/Spinner";
+import ClientFacet from "./nav/facets/client-facet";
+import DatasetFacet from "./nav/facets/dataset-facet";
+import ServerFacet from "./nav/facets/server-facet";
+import WikiAdmFacet from "./nav/facets/wikiAdm-facet";
+import DebugToggle from "./nav/results/debug-toggle";
+import TableOptions from "./table/table-options";
 
 
 
@@ -58,11 +56,11 @@ function ShowResultsButton() {
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
     if (snappedPosition == 'bottom') return null
     return <div className="p-2 fixed bottom-2 left-0 right-0 z-[3001]">
-        <Clickable remove={["facet", "options"]} 
-                   add={{results: 'on'}} 
-                   onClick={() => mode == 'table' ? setSnappedPosition('bottom') : null}
-                   className="w-full h-12 btn text-xl relative rounded-full">
-                    Vis resultat <Badge className="bg-primary-50 text-neutral-800 font-semibold px-2 absolute right-4" count={totalHits?.value || 0} /></Clickable></div>
+        <Clickable remove={["facet", "options"]}
+            add={{ results: 'on' }}
+            onClick={() => mode == 'table' ? setSnappedPosition('bottom') : null}
+            className="w-full h-12 btn text-xl relative rounded-full">
+            Vis resultat <Badge className="bg-primary-50 text-neutral-800 font-semibold px-2 absolute right-4" count={totalHits?.value || 0} /></Clickable></div>
 
 }
 
@@ -71,7 +69,7 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const resetEnabled = useRef<boolean>(false);
     const facet = useSearchParams().get('facet')
-    
+
     const mode = useMode()
 
     useEffect(() => {
@@ -83,13 +81,13 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
         if (wasAdjusted) {
             resetEnabled.current = !resetEnabled.current
         }
-        
+
     }, [isMobile, snappedPosition, groupData, mapFunctionRef, mode])
 
     if (!isMobile) {
         return <>{children}</>
     }
-    
+
     if (isMobile && facet) {
         return <div className="fixed top-0 left-0 w-full h-full z-[10001] bg-white"><div className="h-[100vh] overflow-y-auto stable-scrollbar">{children}</div>
         </div>
@@ -103,12 +101,12 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     return <Drawer {...rest} bottomHeightRem={MAP_DRAWER_BOTTOM_HEIGHT_REM} middleHeightSvh={MAP_DRAWER_MAX_HEIGHT_SVH}>{children}</Drawer>
 }
 
-function LeftWindow({children}: {children: React.ReactNode}) {
+function LeftWindow({ children }: { children: React.ReactNode }) {
     const { isMobile } = useContext(GlobalContext)
     const searchParams = useSearchParams()
-    
+
     const mapSettings = searchParams.get('mapSettings') == 'on'
-    const results = searchParams.get('results') == 'on' || (!mapSettings) 
+    const results = searchParams.get('results') == 'on' || (!mapSettings)
     if (isMobile) {
         if (mapSettings && results) return null
         return <>{children}</>
@@ -116,7 +114,7 @@ function LeftWindow({children}: {children: React.ReactNode}) {
     return <div className="bg-white shadow-lg flex flex-col absolute left-2 top-[4rem] w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-auto overflow-x-hidden stable-scrollbar">{children}</div>
 }
 
-function RightWindow({children}: {children: React.ReactNode}) {
+function RightWindow({ children }: { children: React.ReactNode }) {
     const { isMobile } = useContext(GlobalContext)
     if (isMobile) {
         return <>{children}</>
@@ -150,106 +148,106 @@ export default function OverlayInterface() {
         if (debugParam == 'on') {
             setDebug(true)
         }
-        
+
     }, [debugParam, setDebug])
 
     return <>
 
 
 
-        <div ref={drawerRef}  className="scroll-container">
-                <DrawerWrapper 
-                    drawerOpen={true}
-                    groupData={groupData}
-                    dismissable={false}
-                    setDrawerOpen={setDrawerOpen}
-                    snappedPosition={snappedPosition}
-                    setSnappedPosition={setSnappedPosition}
-                    currentPosition={currentPosition}
-                    setCurrentPosition={setCurrentPosition}
-                    scrollContainerRef={scrollableContentRef}
-                >
-                    {showLeftPanel && <LeftWindow>  
+        <div ref={drawerRef} className="scroll-container">
+            <DrawerWrapper
+                drawerOpen={true}
+                groupData={groupData}
+                dismissable={false}
+                setDrawerOpen={setDrawerOpen}
+                snappedPosition={snappedPosition}
+                setSnappedPosition={setSnappedPosition}
+                currentPosition={currentPosition}
+                setCurrentPosition={setCurrentPosition}
+                scrollContainerRef={scrollableContentRef}
+            >
+                {showLeftPanel && <LeftWindow>
 
-                        {(tableOptions && <TableOptions />)
+                    {(tableOptions && <TableOptions />)
 
 
 
                         || (facet && <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
                             <h1 className="text-lg text-neutral-900 px-1">{fieldConfig[perspective][facet]?.label}</h1>
                             <div className="flex items-center gap-1 ml-auto">
-                                    <Clickable className="flex items-center gap-1 px-2" label="Tilbake" remove={["facet"]}>
-                                        <PiCaretLeftBold className="text-black text-lg" />Tilbake
-                                    </Clickable>
-                                </div>
-                            
-                        </div>)
-                        
-                        || ((options && !facet) ? <><div  className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
-                        <div className="flex items-center gap-2 xl:px-1 w-full">
-                        
-                        <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Filter</h1> 
-                            
-                            { filterCount ? <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} /> : null}
-                            <ClickableIcon className="ml-auto" label="Lukk" remove={["options"]}><PiX className="text-black text-3xl" /></ClickableIcon>
-                        
+                                <Clickable className="flex items-center gap-1 px-2" label="Tilbake" remove={["facet"]}>
+                                    <PiCaretLeftBold className="text-black text-lg" />Tilbake
+                                </Clickable>
                             </div>
 
-                        
+                        </div>)
+
+                        || ((options && !facet) ? <><div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
+                            <div className="flex items-center gap-2 xl:px-1 w-full">
+
+                                <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Filter</h1>
+
+                                {filterCount ? <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} /> : null}
+                                <ClickableIcon className="ml-auto" label="Lukk" remove={["options"]}><PiX className="text-black text-3xl" /></ClickableIcon>
+
                             </div>
-                        <div id="options-panel" className="flex flex-col gap-2">
-                       
-                               <FacetSection />{isMobile && <ShowResultsButton />}
-                        </div></> :  null)
-                        }
-                        {facet && <div className="flex flex-col gap-2 pb-20"> 
+
+
+                        </div>
+                            <div id="options-panel" className="flex flex-col gap-2">
+
+                                <FacetSection />{isMobile && <ShowResultsButton />}
+                            </div></> : null)
+                    }
+                    {facet && <div className="flex flex-col gap-2 pb-20">
                         {facet == 'adm' ? (
                             <ClientFacet facetName={facet} />
                         ) : facet == 'wikiAdm' ? (
-                            <WikiAdmFacet /> 
+                            <WikiAdmFacet />
                         ) : facet == 'dataset' ? (
                             <DatasetFacet />
                         ) : (
                             <ServerFacet />
                         )}
                         {isMobile && <ShowResultsButton />}
-                        </div>}
-                    </LeftWindow>}
+                    </div>}
+                </LeftWindow>}
 
-                    
-                    
-                    {showRightPanel && <RightWindow>
-                        {/* Map Settings Header (separate, only when mapSettings is on) */}
-                        {mapSettings ? (
-                            <div className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 xl:px-0 gap-2`}>
-                                <h1 className="text-base xl:text-xl text-neutral-900 xl:px-4">Kartinnstillingar</h1>
-                                <div className="flex items-center gap-1 ml-auto">
-                                    <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings"]}>
-                                        <PiX className="text-black text-3xl" />
-                                    </ClickableIcon>
-                                </div>
+
+
+                {showRightPanel && <RightWindow>
+                    {/* Map Settings Header (separate, only when mapSettings is on) */}
+                    {mapSettings ? (
+                        <div className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 xl:px-0 gap-2`}>
+                            <h1 className="text-base xl:text-xl text-neutral-900 xl:px-4">Kartinnstillingar</h1>
+                            <div className="flex items-center gap-1 ml-auto">
+                                <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings"]}>
+                                    <PiX className="text-black text-3xl" />
+                                </ClickableIcon>
                             </div>
-                        ) : (
-                            <div  className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 py-1 xl:px-0 gap-2 xl:pl-2`}>
-                                <Clickable aria-expanded={showResults} aria-controls="results-panel" className="flex items-center gap-2 xl:px-1 w-full" add={{results: showResults ? null : 'on'}} remove={["results", ...(isMobile ? ['options'] : [])]}>
-                                
+                        </div>
+                    ) : (
+                        <div className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 py-1 xl:px-0 gap-2 xl:pl-2`}>
+                            <Clickable aria-expanded={showResults} aria-controls="results-panel" className="flex items-center gap-2 xl:px-1 w-full" add={{ results: showResults ? null : 'on' }} remove={["results", ...(isMobile ? ['options'] : [])]}>
+
                                 <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Kjelder</h1>
-                                
-                                   {searchLoading ? <Spinner status="Laster resultat" className="text-lg" /> : <TitleBadge className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`} count={totalHits?.value || 0} />}
-                                   {!isMobile && (
-                                        <>
-                                            {showResults ? <PiCaretUpBold className="text-lg mr-1 ml-auto" /> : <PiCaretDownBold className="text-lg ml-auto" />}
-                                        </>
-                                    )}
-                                </Clickable>
-                            </div>
-                        )}
-                        {mapSettings ? <MapSettings/> : showResults && <div id="results-panel">{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}                   
-                    </RightWindow>}
-                </DrawerWrapper>
 
-                
-            </div>
+                                {searchLoading ? <Spinner status="Laster resultat" className="text-lg" /> : <TitleBadge className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`} count={totalHits?.value || 0} />}
+                                {!isMobile && (
+                                    <>
+                                        {showResults ? <PiCaretUpBold className="text-lg mr-1 ml-auto" /> : <PiCaretDownBold className="text-lg ml-auto" />}
+                                    </>
+                                )}
+                            </Clickable>
+                        </div>
+                    )}
+                    {mapSettings ? <MapSettings /> : showResults && <div id="results-panel">{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}
+                </RightWindow>}
+            </DrawerWrapper>
+
+
+        </div>
     </>
 
 }

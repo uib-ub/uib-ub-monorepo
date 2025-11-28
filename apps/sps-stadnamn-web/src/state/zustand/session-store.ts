@@ -2,7 +2,8 @@ import { create } from 'zustand'
 
 
 
-export const useSessionStore = create<{ menuOpen: boolean, 
+export const useSessionStore = create<{
+	menuOpen: boolean,
 	setMenuOpen: (open: boolean) => void, toggleMenu: () => void,
 	autocompleteOpen: boolean,
 	setAutocompleteOpen: (open: boolean) => void,
@@ -19,7 +20,7 @@ export const useSessionStore = create<{ menuOpen: boolean,
 
 	snappedPosition: 'bottom' | 'middle' | 'top',
 	setSnappedPosition: (position: 'bottom' | 'middle' | 'top') => void,
-	
+
 	currentPosition: number,
 	setCurrentPosition: (position: number) => void,
 
@@ -33,40 +34,40 @@ export const useSessionStore = create<{ menuOpen: boolean,
 
 	openTabs: Record<string, 'sources' | 'names' | 'locations'>,
 	setOpenTabs: (id: string, tab: 'sources' | 'names' | 'locations') => void,
-	
-	}>()((set) => ({
-		menuOpen: false,
-		setMenuOpen: (open) => set({ menuOpen: open }),
-		toggleMenu: () => set((s) => ({ menuOpen: !s.menuOpen })),
 
-		drawerContent: null,
-		setDrawerContent: (content) => set({ drawerContent: content }),
+}>()((set) => ({
+	menuOpen: false,
+	setMenuOpen: (open) => set({ menuOpen: open }),
+	toggleMenu: () => set((s) => ({ menuOpen: !s.menuOpen })),
 
-		myLocation: null,
-		setMyLocation: (location) => set({ myLocation: location }),
+	drawerContent: null,
+	setDrawerContent: (content) => set({ drawerContent: content }),
 
-		drawerOpen: true,
-		setDrawerOpen: (open) => set({ drawerOpen: open }),
+	myLocation: null,
+	setMyLocation: (location) => set({ myLocation: location }),
 
-
-		snappedPosition: 'bottom',
-		setSnappedPosition: (position: 'bottom' | 'middle' | 'top') => set({ snappedPosition: position }),
-
-		currentPosition: 0,
-		setCurrentPosition: (position: number) => set({ currentPosition: position }),
-
-		displayRadius: null,
-		setDisplayRadius: (radius: number | null) => set({ displayRadius: radius }),
-		displayPoint: null,
-		setDisplayPoint: (point: [number, number] | null) => set({ displayPoint: point }),
-
-		prefTab: 'sources',
-		setPrefTab: (tab: 'sources' | 'names' | 'locations') => set({ prefTab: tab }),
-		openTabs: {},
-		setOpenTabs: (id: string, tab: 'sources' | 'names' | 'locations') => set((s) => ({ openTabs: { ...s.openTabs, [id]: tab } })),
+	drawerOpen: true,
+	setDrawerOpen: (open) => set({ drawerOpen: open }),
 
 
-		autocompleteOpen: false,
-		setAutocompleteOpen: (open) => set({ autocompleteOpen: open }),
-		toggleAutocompleteOpen: () => set((s) => ({ autocompleteOpen: !s.autocompleteOpen })),
+	snappedPosition: 'bottom',
+	setSnappedPosition: (position: 'bottom' | 'middle' | 'top') => set({ snappedPosition: position }),
+
+	currentPosition: 0,
+	setCurrentPosition: (position: number) => set({ currentPosition: position }),
+
+	displayRadius: null,
+	setDisplayRadius: (radius: number | null) => set({ displayRadius: radius }),
+	displayPoint: null,
+	setDisplayPoint: (point: [number, number] | null) => set({ displayPoint: point }),
+
+	prefTab: 'sources',
+	setPrefTab: (tab: 'sources' | 'names' | 'locations') => set({ prefTab: tab }),
+	openTabs: {},
+	setOpenTabs: (id: string, tab: 'sources' | 'names' | 'locations') => set((s) => ({ openTabs: { ...s.openTabs, [id]: tab } })),
+
+
+	autocompleteOpen: false,
+	setAutocompleteOpen: (open) => set({ autocompleteOpen: open }),
+	toggleAutocompleteOpen: () => set((s) => ({ autocompleteOpen: !s.autocompleteOpen })),
 }))

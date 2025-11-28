@@ -2,7 +2,7 @@
 import { facetConfig } from '@/config/search-config';
 import { usePerspective } from '@/lib/param-hooks';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { createContext, useEffect, useRef, useState } from 'react'
+import { createContext, useEffect, useRef, useState } from 'react';
 
 interface FacetOption {
   sort: 'doc_count' | 'asc' | 'desc';
@@ -13,13 +13,13 @@ export const GlobalContext = createContext({
   currentUrl: { current: null as string | null },
   isMobile: false,
   facetOptions: {} as Record<string, Record<string, Partial<FacetOption>>>,
-  updateFacetOption: (facetName: string, options: Partial<FacetOption>) => {},
+  updateFacetOption: (facetName: string, options: Partial<FacetOption>) => { },
   coordinateVocab: {} as Record<string, any>,
   sosiVocab: {} as Record<string, any>,
   preferredTabs: {} as Record<string, string>,
-  setPreferredTab: (dataset: string, tab: string) => {},
+  setPreferredTab: (dataset: string, tab: string) => { },
   visibleColumns: {} as Record<string, string[]>,
-  setVisibleColumns: (dataset: string, columns: string[]) => {},
+  setVisibleColumns: (dataset: string, columns: string[]) => { },
   inputValue: { current: '' as string },
   initialUrl: { current: null as string | null },
   highlightedGroup: { current: null as string | null },
@@ -50,7 +50,7 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   useEffect(() => {
     const storedOptions = localStorage.getItem('facetOptions');
     if (storedOptions) {
-        console.log("Loading facet options from localStorage")
+      console.log("Loading facet options from localStorage")
       setFacetOptions(JSON.parse(storedOptions));
     }
 
@@ -61,11 +61,12 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   }, []);
 
 
-    // Set url for navigation back to search
-    useEffect(() => {
-      if (searchParamsString && pathname == '/search') {
-        currentUrl.current = "/search?" + searchParamsString
-      }}, [searchParamsString, pathname])
+  // Set url for navigation back to search
+  useEffect(() => {
+    if (searchParamsString && pathname == '/search') {
+      currentUrl.current = "/search?" + searchParamsString
+    }
+  }, [searchParamsString, pathname])
 
 
   // Update localStorage when facet options change
@@ -88,8 +89,8 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
       [perspective]: {
         ...prev[perspective] || {},
         [facetName]: {
-          ...(prev[perspective]?.[facetName] || { 
-            sort: facetConfig[perspective].find(item => item.key == facetName)?.sort || 'doc_count', 
+          ...(prev[perspective]?.[facetName] || {
+            sort: facetConfig[perspective].find(item => item.key == facetName)?.sort || 'doc_count',
             pinningActive: false,
           }),
           ...options
@@ -113,7 +114,7 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   };
 
   return (
-    <GlobalContext.Provider 
+    <GlobalContext.Provider
       value={{
         currentUrl,
         mapFunctionRef,
