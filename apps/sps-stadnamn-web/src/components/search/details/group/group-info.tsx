@@ -13,7 +13,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { PiArchive, PiInfoFill, PiMapPinFill, PiMapPinPlusFill, PiPushPinFill, PiX } from "react-icons/pi";
+import { PiArchive, PiInfoFill, PiMapPinBold, PiMapPinFill, PiMapPinPlusFill, PiPushPinFill, PiX } from "react-icons/pi";
 import Carousel from "../../nav/results/carousel";
 import WarningMessage from "./warning-message";
 
@@ -209,7 +209,7 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
                                                 }}
                                                 className={`flex-shrink-0 p-1 rounded-full ${isActive ? 'text-accent-700 outline outline-1 outline-accent-700 bg-accent-50' : 'text-neutral-700 hover:bg-neutral-100'}`}
                                             >
-                                                {coordinateTypeLabel ? <PiMapPinPlusFill className="text-base" /> : <PiMapPinFill className="text-base" />}
+                                                {coordinateTypeLabel ? <PiMapPinFill className="text-base text-neutral-600" /> : <PiMapPinFill className="text-base text-primary-700" />}
                                             </ClickableIcon>
                                         )}
                                         <div className="flex-1 min-w-0">

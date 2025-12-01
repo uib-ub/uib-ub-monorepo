@@ -58,22 +58,23 @@ export function useSearchQuery() {
     })
 
 
-
-    const searchFilterParamsString = searchQuery.toString()
-
-    // Params that don't require the results section to be shown
     datasetFilters.forEach(filter => {
         searchQuery.append(filter[0], filter[1])
     })
 
 
+
+    const searchFilterParamsString = searchQuery.toString()
+    if (searchParams.get('datasetTag')) {
+        searchQuery.set('datasetTag', searchParams.get('datasetTag')!)
+    }
+
+    // Params that aren't considered filters
     const fulltext = searchParams.get('fulltext')
     if (fulltext && datasetTag != 'tree' && searchParams.get('q')) {
         searchQuery.set('fulltext', 'on')
     }
-    if (searchParams.get('datasetTag')) {
-        searchQuery.set('datasetTag', searchParams.get('datasetTag')!)
-    }
+    
 
     if (searchParams.get('radius') && searchParams.get('point')) {
         searchQuery.set('radius', searchParams.get('radius')!)

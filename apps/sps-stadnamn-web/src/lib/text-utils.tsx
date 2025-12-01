@@ -59,8 +59,28 @@ export const formatHighlight = (highlight: string) => {
 };
 
 export const detailsRenderer = (hit: any) => {
-  const adm1 = hit.fields["group.adm1"]?.[0] || hit.fields?.group?.adm1?.[0] || hit.fields?.adm1?.[0] || hit.adm1?.[0]
-  let adm2 = hit.fields["group.adm2"]?.[0] || hit.fields?.group?.adm2?.[0] || hit.fields?.adm2?.[0] || hit.adm2?.[0]
+  const groupAdm1 = hit.fields["group.adm1"]?.[0] || hit.fields?.group?.adm1?.[0]
+  const groupAdm2 = hit.fields["group.adm2"]?.[0] || hit.fields?.group?.adm2?.[0]
+  const directAdm1 = hit.fields?.adm1?.[0] || hit.adm1?.[0]
+  const directAdm2 = hit.fields?.adm2?.[0] || hit.adm2?.[0]
+  
+  const adm1 = groupAdm1 || directAdm1
+  let adm2 = groupAdm2 || directAdm2
+  
   if (adm2 == adm1) adm2 = undefined
-  return <>{adm2 ? adm2 + ', ' : ''}{adm1}</>
+  
+  const isAdm1FromGroup = !!groupAdm1
+  const isAdm2FromGroup = !!groupAdm2
+  
+  return (
+    <>
+      {adm2 ? (
+        <>
+          {isAdm2FromGroup ? adm2 : <em>{adm2}</em>}
+          {', '}
+        </>
+      ) : ''}
+      {isAdm1FromGroup ? adm1 : <em>{adm1}</em>}
+    </>
+  )
 }

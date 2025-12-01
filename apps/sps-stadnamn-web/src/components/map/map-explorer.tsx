@@ -737,7 +737,7 @@ export default function MapExplorer() {
               }
               else {
                 const selected = activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue && !groupLoading
-                if (selected) return null
+                if (selected || activePoint) return null
 
                 const isInit = initValue && item.fields?.["group.id"]?.[0] == initValue
                 const markerColor = isInit ? 'primary' : 'white'

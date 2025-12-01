@@ -16,9 +16,10 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { PiCaretLeftBold, PiMagnifyingGlass, PiMapPinFill, PiSliders, PiWall, PiX } from 'react-icons/pi';
 
-export async function autocompleteQuery(searchFilterParamsString: string, inputState: string, isMobile: boolean) {
+export async function autocompleteQuery(searchFilterParamsString: string, inputState: string, isMobile: boolean, datasetFilters: [string, string][] = []) {
     if (!inputState) return null
     const newQuery = new URLSearchParams(searchFilterParamsString)
+    newQuery.delete('q')
     newQuery.set('q', inputState)
     const autocompleteQuery = newQuery.toString()
 
@@ -69,9 +70,9 @@ export default function SearchForm() {
     const listRef = useRef<HTMLUListElement | null>(null)
 
     const { data, isLoading } = useQuery({
-        queryKey: ['autocomplete', inputState],
+        queryKey: ['autocomplete', inputState, datasetFilters],
         placeholderData: (prevData: any) => prevData,
-        queryFn: () => autocompleteQuery(searchFilterParamsString, inputState, isMobile)
+        queryFn: () => autocompleteQuery(searchFilterParamsString, inputState, isMobile, datasetFilters)
     })
 
 

@@ -1,30 +1,16 @@
 import { extractFacets } from '@/app/api/_utils/facets';
 import { postQuery } from '@/app/api/_utils/post';
-import { getQueryString } from '@/app/api/_utils/query-string';
 import { getSortArray } from '@/config/server-config';
 
-function modifyQuery(query: string) {
-  const lowerCaseQuery = query.toLowerCase();
-
-  // Escape special characters
-  let escapedQuery = lowerCaseQuery.replace(/([=&&||!(){}[\]^:\\/])/g, '\\$1');
-
-  // Remove < and >, as they cannot be escaped
-  escapedQuery = escapedQuery.replace(/[<>]/g, '');
-
-  if (lowerCaseQuery.includes('aa')) {
-    return `(${escapedQuery}) OR (${escapedQuery.replace(/aa/gi, 'å')})`;
-  }
-
-  if (lowerCaseQuery.includes('å')) {
-    return `(${escapedQuery}) OR (${escapedQuery.replace(/å/gi, 'aa')})`;
-  }
-
-  return escapedQuery;
+// Check if query contains special characters that should disable autocomplete
+function hasSpecialCharacters(query: string): boolean {
+  // Allow alphanumeric, spaces, and Norwegian characters (å, æ, ø)
+  // Everything else is considered a special character
+  return /[^a-zæøå0-9\s]/i.test(query);
 }
 
 export async function GET(request: Request) {
-  const { reservedParams } = extractFacets(request)
+  const { termFilters, reservedParams } = extractFacets(request)
   const perspective = reservedParams.perspective || 'all'
 
   let sortArray: (string | object)[] = []
@@ -33,69 +19,152 @@ export async function GET(request: Request) {
     sortArray = getSortArray(perspective)
   }
 
-  const queryString = reservedParams.q?.toLowerCase() || ""
-  const hasWhitespace = queryString.trim().includes(' ')
+  const queryString = reservedParams.q?.toLowerCase().trim() || ""
+  
+  // If query contains special characters, return empty results
+  if (queryString && hasSpecialCharacters(queryString)) {
+    return Response.json({ hits: { hits: [], total: { value: 0 } } }, { status: 200 })
+  }
+
+  const hasWhitespace = queryString.includes(' ')
 
   let queryClause: Record<string, any>
 
   if (hasWhitespace) {
     // Split query by whitespace
-    const parts = queryString.trim().split(/\s+/)
+    const parts = queryString.split(/\s+/).filter(p => p.length > 0)
     const prefixPart = parts[parts.length - 1] // Last word as prefix
-    const requiredParts = parts.slice(0, -1) // First word(s) as required match
-    const requiredQuery = requiredParts.join(' ')
+    const requiredParts = parts.slice(0, -1) // Preceding word(s)
 
-    // Get simple_query_string for the preceding tokens
-    const { simple_query_string: requiredSimpleQuery } = getQueryString({
-      ...reservedParams,
-      q: requiredQuery
-    })
-
-    // Build fields for adm boost query
-    const admFields = ["adm1", "adm2", "group.adm1", "group.adm2"]
-
-    queryClause = {
+    // For each preceding word, create exact match queries (word must match in at least one field)
+    const exactMatchGroups = requiredParts.map(part => ({
       "bool": {
-        "must": [
-          requiredSimpleQuery || { "match_all": {} },
-          {
-            "prefix": {
-              "label": prefixPart
-            }
-          }
-        ],
         "should": [
-          {
-            "query_string": {
-              "query": modifyQuery(prefixPart),
-              "allow_leading_wildcard": true,
-              "default_operator": "AND",
-              "fields": admFields.map(field => `${field}^0.01`)
-            }
-          }
-        ]
-      }
-    }
-  } else {
-    // No whitespace: use original behavior
-    queryClause = {
-      "dis_max": {
-        "queries": [
           {
             "term": {
               "label": {
-                "value": queryString,
+                "value": part,
+                "boost": 15.0
+              }
+            }
+          },
+          {
+            "term": {
+              "adm1": {
+                "value": part,
                 "boost": 10.0
               }
             }
           },
           {
-            "prefix": {
-              "label": queryString
+            "term": {
+              "adm2": {
+                "value": part,
+                "boost": 10.0
+              }
             }
           }
         ],
-        "tie_breaker": 0.3
+        "minimum_should_match": 1
+      }
+    }))
+
+    // Prefix fields that should support prefix matching for the last word
+    const prefixFields = ["label", "adm1", "adm2", "group.adm1", "group.adm2"]
+
+    // Create prefix queries for all relevant fields
+    const prefixQueries = prefixFields.map(field => ({
+      "constant_score": {
+        "filter": {
+          "prefix": {
+            [field]: prefixPart
+          }
+        },
+        "boost": field === "label" ? 20.0 : 15.0
+      }
+    }))
+
+    // Combine exact matches for preceding words with prefix match for last word
+    queryClause = {
+      "function_score": {
+        "query": {
+          "bool": {
+            "must": exactMatchGroups.length > 0 ? exactMatchGroups : [{ "match_all": {} }],
+            "should": prefixQueries,
+            "minimum_should_match": 1
+          }
+        },
+        // Penalize longer labels - shorter labels get higher scores
+        "script_score": {
+          "script": {
+            "source": "Math.max(0.1, 1.0 / (1.0 + doc['label.keyword'].value.length() / 15.0))"
+          }
+        },
+        "boost_mode": "multiply"
+      }
+    }
+  } else {
+    // Single word: use exact match and prefix match
+    queryClause = {
+      "function_score": {
+        "query": {
+          "bool": {
+            "should": [
+              {
+                "term": {
+                  "label": {
+                    "value": queryString,
+                    "boost": 10.0
+                  }
+                }
+              },
+              {
+                "constant_score": {
+                  "filter": {
+                    "prefix": {
+                      "label": queryString
+                    }
+                  },
+                  "boost": 5.0
+                }
+              }
+            ],
+            "minimum_should_match": 1
+          }
+        },
+        // Penalize longer labels - shorter labels get higher scores
+        "script_score": {
+          "script": {
+            "source": "Math.max(0.1, 1.0 / (1.0 + doc['label.keyword'].value.length() / 15.0))"
+          }
+        },
+        "boost_mode": "multiply"
+      }
+    }
+  }
+
+  // Exclude suppressed and noname groups, following the same pattern as other routes
+  const suppressedExclusion = {
+    "terms": {
+      "group.id": ["suppressed", "noname"]
+    }
+  }
+
+  // Apply filters following the same pattern as search routes
+  let finalQuery: Record<string, any>
+  if (termFilters.length > 0) {
+    finalQuery = {
+      "bool": {
+        "must": queryClause,
+        "filter": termFilters,
+        "must_not": [suppressedExclusion]
+      }
+    }
+  } else {
+    finalQuery = {
+      "bool": {
+        "must": queryClause,
+        "must_not": [suppressedExclusion]
       }
     }
   }
@@ -103,7 +172,7 @@ export async function GET(request: Request) {
   const query: Record<string, any> = {
     "size": reservedParams.size || 10,
     ...reservedParams.from ? { from: reservedParams.from } : {},
-    "query": queryClause,
+    "query": finalQuery,
     "track_scores": true,
     "track_total_hits": false,
     "fields": ["group.adm1", "group.adm2", "group.label", "adm1", "adm2", "uuid", "boost", "label", "location", "group.id"],
@@ -116,9 +185,6 @@ export async function GET(request: Request) {
     ],
     "_source": false
   }
-
-
-  console.log("QUERY", query)
 
 
 

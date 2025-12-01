@@ -154,6 +154,8 @@ export async function POST(request: Request) {
       }
       */
 
+      console.log(JSON.stringify(query, null, 2))
+
   const [data, status] = await postQuery('all', query, "dfs_query_then_fetch")
   return Response.json(data, { status: status })
 

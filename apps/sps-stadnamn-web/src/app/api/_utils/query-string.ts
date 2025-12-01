@@ -29,7 +29,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
       query: modifyQuery(params.q),
       allow_leading_wildcard: true,
       default_operator: "AND", // params.fulltext ? 'AND' : 'OR',
-      fields: ["label^5", "altLabels^4", "attestations.label^3", ...fulltext ? fulltextFields[perspective]?.map(item => item.key + '^2') : [], "adm1^1", "adm2^1", "group.adm1^1", "group.adm2^1"]
+      fields: ["label^5", "altLabels^4", "attestations.label^3", "adm1^1", "adm2^2", "group.adm1^1", "group.adm2^2"]
     }
   } : null
 
