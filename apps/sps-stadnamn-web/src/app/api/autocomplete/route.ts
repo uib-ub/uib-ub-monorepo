@@ -19,7 +19,8 @@ export async function GET(request: Request) {
     sortArray = getSortArray(perspective)
   }
 
-  const queryString = reservedParams.q?.toLowerCase().trim() || ""
+  const rawQueryString = reservedParams.q?.trim() || ""
+  const queryString = rawQueryString.toLowerCase()
   
   // If query contains special characters, return empty results
   if (queryString && hasSpecialCharacters(queryString)) {
@@ -28,16 +29,84 @@ export async function GET(request: Request) {
 
   const hasWhitespace = queryString.includes(' ')
 
+  // Base prefix query:
+  // - Match only on label/label.keyword (no adm fields)
+  // - Exact match gets a strong boost (on keyword)
+  // - Prefix matches are done on the full string via label.keyword so they are
+  //   not token based.
+  // - Explicitly excludes any labels that contain whitespace, so messy
+  //   multi-word labels do not interfere with single-token autocomplete.
+  // To keep these matches effectively case-insensitive against Title Case labels,
+  // we query both the raw input and a capitalised variant as prefixes.
+  const capitalizedQuery =
+    rawQueryString.length > 0
+      ? rawQueryString[0].toUpperCase() + rawQueryString.slice(1)
+      : rawQueryString
+
+  const basePrefixQuery = {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "label.keyword": {
+              "value": capitalizedQuery || queryString,
+              "boost": 10.0
+            }
+          }
+        },
+        {
+          "constant_score": {
+            "filter": {
+              "bool": {
+                "should": [
+                  {
+                    "prefix": {
+                      "label.keyword": rawQueryString
+                    }
+                  },
+                  ...(capitalizedQuery && capitalizedQuery !== rawQueryString
+                    ? [
+                        {
+                          "prefix": {
+                            "label.keyword": capitalizedQuery
+                          }
+                        }
+                      ]
+                    : [])
+                ]
+              }
+            },
+            "boost": 5.0
+          }
+        }
+      ],
+      "minimum_should_match": 1,
+      "must_not": [
+        {
+          "regexp": {
+            "label.keyword": ".*\\s.*"
+          }
+        }
+      ]
+    }
+  }
+
+  // Query clause:
+  // - For single-token queries (no whitespace), use the prefix-based
+  //   autocomplete logic only (no results containing whitespace).
+  // - For queries with whitespace, split on whitespace:
+  //   - all preceding tokens must match exactly (term queries on label)
+  //   - the last token is used as a prefix
+  //   - additionally, we add a simple_query_string over the full query.
   let queryClause: Record<string, any>
+  if (!hasWhitespace) {
+    queryClause = basePrefixQuery
+  } else {
+    const parts = queryString.split(/\s+/).filter((p) => p.length > 0)
+    const prefixPart = parts[parts.length - 1]
+    const requiredParts = parts.slice(0, -1)
 
-  if (hasWhitespace) {
-    // Split query by whitespace
-    const parts = queryString.split(/\s+/).filter(p => p.length > 0)
-    const prefixPart = parts[parts.length - 1] // Last word as prefix
-    const requiredParts = parts.slice(0, -1) // Preceding word(s)
-
-    // For each preceding word, create exact match queries (word must match in at least one field)
-    const exactMatchGroups = requiredParts.map(part => ({
+    const exactMatchGroups = requiredParts.map((part) => ({
       "bool": {
         "should": [
           {
@@ -47,33 +116,17 @@ export async function GET(request: Request) {
                 "boost": 15.0
               }
             }
-          },
-          {
-            "term": {
-              "adm1": {
-                "value": part,
-                "boost": 10.0
-              }
-            }
-          },
-          {
-            "term": {
-              "adm2": {
-                "value": part,
-                "boost": 10.0
-              }
-            }
           }
         ],
         "minimum_should_match": 1
       }
     }))
 
-    // Prefix fields that should support prefix matching for the last word
+    // For the last token, allow prefix matches on both label and adm fields so
+    // users can type parts of administrative names as well as the primary
+    // label.
     const prefixFields = ["label", "adm1", "adm2", "group.adm1", "group.adm2"]
-
-    // Create prefix queries for all relevant fields
-    const prefixQueries = prefixFields.map(field => ({
+    const prefixQueries = prefixFields.map((field) => ({
       "constant_score": {
         "filter": {
           "prefix": {
@@ -84,61 +137,27 @@ export async function GET(request: Request) {
       }
     }))
 
-    // Combine exact matches for preceding words with prefix match for last word
-    queryClause = {
-      "function_score": {
-        "query": {
-          "bool": {
-            "must": exactMatchGroups.length > 0 ? exactMatchGroups : [{ "match_all": {} }],
-            "should": prefixQueries,
-            "minimum_should_match": 1
-          }
-        },
-        // Penalize longer labels - shorter labels get higher scores
-        "script_score": {
-          "script": {
-            "source": "Math.max(0.1, 1.0 / (1.0 + doc['label.keyword'].value.length() / 15.0))"
-          }
-        },
-        "boost_mode": "multiply"
+    const multiWordAutocomplete = {
+      "bool": {
+        "must": exactMatchGroups.length > 0 ? exactMatchGroups : [{ "match_all": {} }],
+        "should": prefixQueries,
+        "minimum_should_match": 1
       }
     }
-  } else {
-    // Single word: use exact match and prefix match
+
     queryClause = {
-      "function_score": {
-        "query": {
-          "bool": {
-            "should": [
-              {
-                "term": {
-                  "label": {
-                    "value": queryString,
-                    "boost": 10.0
-                  }
-                }
-              },
-              {
-                "constant_score": {
-                  "filter": {
-                    "prefix": {
-                      "label": queryString
-                    }
-                  },
-                  "boost": 5.0
-                }
-              }
-            ],
-            "minimum_should_match": 1
-          }
-        },
-        // Penalize longer labels - shorter labels get higher scores
-        "script_score": {
-          "script": {
-            "source": "Math.max(0.1, 1.0 / (1.0 + doc['label.keyword'].value.length() / 15.0))"
-          }
-        },
-        "boost_mode": "multiply"
+      "bool": {
+        "should": [
+          {
+            "simple_query_string": {
+              "query": rawQueryString,
+              "fields": ["label"],
+              "default_operator": "and"
+            }
+          },
+          multiWordAutocomplete
+        ],
+        "minimum_should_match": 1
       }
     }
   }
