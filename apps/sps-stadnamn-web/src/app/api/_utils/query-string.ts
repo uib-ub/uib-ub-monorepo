@@ -78,23 +78,68 @@ export function getQueryString(params: { [key: string]: string | null }) {
               },
             }
     } else {
-      // No comma: single query_string across all fields
-      simple_query_string = {
-        query_string: {
-          query: modifyQuery(raw),
-          allow_leading_wildcard: true,
-          default_operator: "AND",
-          fields: [
-            "label^5",
-            "group.label^4",
-            "altLabels^4",
-            "attestations.label^3",
-            "adm2^2",
-            "group.adm2^2",
-            "group.adm1^1",
-            "adm1^1",
-          ],
-        },
+      const tokens = raw.split(/\s+/).filter(Boolean)
+
+      if (tokens.length > 1) {
+        const firstToken = tokens[0]
+        const trailingTokens = tokens.slice(1)
+
+        const firstTokenClause = {
+          query_string: {
+            query: modifyQuery(firstToken),
+            allow_leading_wildcard: true,
+            default_operator: "AND",
+            fields: [
+              "label^5",
+              "group.label^4",
+              "altLabels^4",
+              "attestations.label^3",
+            ],
+          },
+        }
+
+        const trailingClauses = trailingTokens.map((token) => ({
+          query_string: {
+            query: modifyQuery(token),
+            allow_leading_wildcard: true,
+            default_operator: "AND",
+            fields: [
+              "label^5",
+              "group.label^4",
+              "altLabels^3",
+              "attestations.label^2",
+              "adm2^2",
+              "group.adm2^2",
+              "group.adm1^1",
+              "adm1^1",
+            ],
+          },
+        }))
+
+        simple_query_string = {
+          bool: {
+            must: [firstTokenClause, ...trailingClauses],
+          },
+        }
+      } else {
+        // No comma and a single token: single query_string across all fields
+        simple_query_string = {
+          query_string: {
+            query: modifyQuery(raw),
+            allow_leading_wildcard: true,
+            default_operator: "AND",
+            fields: [
+              "label^5",
+              "group.label^4",
+              "altLabels^4",
+              "attestations.label^3",
+              "adm2^2",
+              "group.adm2^2",
+              "group.adm1^1",
+              "adm1^1",
+            ],
+          },
+        }
       }
     }
   }

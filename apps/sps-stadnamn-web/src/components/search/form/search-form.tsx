@@ -13,7 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import Form from 'next/form';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { PiCaretLeftBold, PiMagnifyingGlass, PiMapPinFill, PiSliders, PiWall, PiX } from 'react-icons/pi';
 
 export async function autocompleteQuery(searchFilterParamsString: string, inputState: string, isMobile: boolean, datasetFilters: [string, string][] = []) {
@@ -76,6 +76,62 @@ export default function SearchForm() {
     })
 
 
+    // Client-side ranking of autocomplete results based on similarity to the
+    // current input. The API only enforces coarse matching; here we prefer:
+    // - exact label == full query,
+    // - then label == first part + adm2 == last token,
+    // - then other combinations, keeping the rest of the ES ordering.
+    const rankedHits = useMemo(() => {
+        const hits: any[] = data?.hits?.hits || []
+        const q = (inputState || '').trim().toLowerCase()
+        if (!q || !hits.length) return hits
+
+        const parts = q.split(/\s+/).filter(Boolean)
+        const lastToken = parts[parts.length - 1] || ''
+        const firstPart = parts.slice(0, -1).join(' ').trim()
+
+        const firstLower = firstPart.toLowerCase()
+        const lastLower = lastToken.toLowerCase()
+
+        return [...hits]
+            .map((hit) => {
+                const label: string = hit.fields?.label?.[0] || ''
+                const adm2: string =
+                    hit.fields?.adm2?.[0] ||
+                    hit.fields?.['group.adm2']?.[0] ||
+                    ''
+
+                const labelLc = label.toLowerCase()
+                const adm2Lc = adm2.toLowerCase()
+
+                let score = 0
+
+                // Strong preference for exact label match on full query.
+                if (labelLc === q) score += 1000
+
+                // Next: label equals first part and adm2 equals last token.
+                if (firstLower && labelLc === firstLower && lastLower && adm2Lc === lastLower) {
+                    score += 900
+                }
+
+                // Label equals first part.
+                if (firstLower && labelLc === firstLower) score += 400
+
+                // adm2 equals last token.
+                if (lastLower && adm2Lc === lastLower) score += 300
+
+                // Prefix matches as weaker signals.
+                if (firstLower && labelLc.startsWith(firstLower)) score += 200
+                if (lastLower && adm2Lc.startsWith(lastLower)) score += 150
+
+                // Slight bias toward shorter labels.
+                score -= label.length * 0.01
+
+                return { ...hit, __clientScore: score }
+            })
+            .sort((a, b) => (b.__clientScore ?? 0) - (a.__clientScore ?? 0))
+    }, [data, inputState])
+
     const dropdownSelect = (event: React.MouseEvent<HTMLLIElement>, inputString: string, group?: string, coordinates?: [number, number]) => {
         inputValue.current = inputString
         if (group) {
@@ -122,9 +178,9 @@ export default function SearchForm() {
     }, [inputState, autocompleteOpen])
 
     const selectOption = (index: number) => {
-        if (!data?.hits?.hits?.length) return
+        if (!rankedHits.length) return
         if (index === 0) {
-            const label = data.hits.hits[0].fields.label[0]
+            const label = rankedHits[0].fields.label[0]
             inputValue.current = label
             setInputState(label)
             setSelectedGroup(null)
@@ -278,8 +334,8 @@ export default function SearchForm() {
                             setActiveIndex(-1)
                             return
                         }
-                        if (!data?.hits?.hits?.length) return
-                        const optionsCount = 1 + data.hits.hits.length
+                        if (!rankedHits.length) return
+                        const optionsCount = 1 + rankedHits.length
                         if (e.key === 'ArrowDown') {
                             e.preventDefault()
                             if (!autocompleteOpen) setAutocompleteOpen(true)
@@ -322,11 +378,11 @@ export default function SearchForm() {
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
             {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''} />}
-            {autocompleteOpen && data?.hits?.hits?.length > 0 && <ul id="autocomplete-results" ref={listRef} role="listbox" className={`absolute ${isMobile ? 'top-[3.5rem] left-0 w-full' : 'top-[3rem] -left-12 x-[30svw] lg:w-[calc(25svw-1rem)] shadow-lg rounded-lg rounded-t-none'} border-t border-neutral-200 max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 overflow-y-auto overscroll-none xl-p-2 xl divide-y divide-neutral-300`}>
+            {autocompleteOpen && rankedHits.length > 0 && <ul id="autocomplete-results" ref={listRef} role="listbox" className={`absolute ${isMobile ? 'top-[3.5rem] left-0 w-full' : 'top-[3rem] -left-12 x-[30svw] lg:w-[calc(25svw-1rem)] shadow-lg rounded-lg rounded-t-none'} border-t border-neutral-200 max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 overflow-y-auto overscroll-none xl-p-2 xl divide-y divide-neutral-300`}>
                 <li id={`autocomplete-option-0`} className={`cursor-pointer flex items-start gap-2 min-h-12 py-3 px-2 hover:bg-neutral-100 ${activeIndex === 0 ? 'bg-neutral-100' : ''}`}
                     tabIndex={-1}
                     role="option"
-                    onMouseDown={(event) => { dropdownSelect(event, data.hits.hits[0].fields.label[0]) }}
+                    onMouseDown={(event) => { dropdownSelect(event, rankedHits[0].fields.label[0]) }}
                     data-autocomplete-option
                     aria-selected={activeIndex === 0}
                 >
@@ -334,17 +390,17 @@ export default function SearchForm() {
                     <span className="flex items-center h-6 flex-shrink-0">
                         <PiMagnifyingGlass className="text-neutral-700" aria-hidden="true" />
                     </span>
-                    <span className="flex-1 leading-6">{data.hits.hits[0].fields.label[0]}</span>
+                    <span className="flex-1 leading-6">{rankedHits[0].fields.label[0]}</span>
 
                 </li>
-                {data?.hits?.hits?.map((hit: any) => {
+                {rankedHits.map((hit: any, index: number) => {
                     return (
                         <li key={hit._id}
                             tabIndex={-1}
                             role="option"
                             data-autocomplete-option
-                            id={`autocomplete-option-${1 + data.hits.hits.findIndex((x: any) => x._id === hit._id)}`}
-                            className={`cursor-pointer flex items-start gap-2 min-h-12 py-3 px-2 hover:bg-neutral-100 ${activeIndex === 1 + data.hits.hits.findIndex((x: any) => x._id === hit._id) ? 'bg-neutral-100' : ''}`}
+                            id={`autocomplete-option-${1 + index}`}
+                            className={`cursor-pointer flex items-start gap-2 min-h-12 py-3 px-2 hover:bg-neutral-100 ${activeIndex === 1 + index ? 'bg-neutral-100' : ''}`}
                             onMouseDown={(event) => { dropdownSelect(event, hit.fields.label[0], stringToBase64Url(hit.fields["group.id"][0]), hit.fields.location?.[0].coordinates) }}
                             aria-selected={activeIndex === 1 + data.hits.hits.findIndex((x: any) => x._id === hit._id)}>
                             {hit.fields.location?.length ? (

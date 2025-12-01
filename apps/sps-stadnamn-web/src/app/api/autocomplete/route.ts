@@ -92,72 +92,195 @@ export async function GET(request: Request) {
   }
 
   // Query clause:
-  // - For single-token queries (no whitespace), use the prefix-based
-  //   autocomplete logic only (no results containing whitespace).
-  // - For queries with whitespace, split on whitespace:
-  //   - all preceding tokens must match exactly (term queries on label)
-  //   - the last token is used as a prefix
-  //   - additionally, we add a simple_query_string over the full query.
+  // - For single-token queries (no whitespace), use the existing prefix-based
+  //   autocomplete logic.
+  // - For queries with multiple tokens (t1 .. tn):
+  //   - t1: must match the label (and only the label).
+  //   - t2 .. t{n-1}: must match either the label or any adm field, with label
+  //     preferred via scoring.
+  //   - tn (last token): must match as a prefix on label or adm (label should
+  //     be preferred; exact matches are later prioritised client-side).
   let queryClause: Record<string, any>
   if (!hasWhitespace) {
     queryClause = basePrefixQuery
   } else {
     const parts = queryString.split(/\s+/).filter((p) => p.length > 0)
-    const prefixPart = parts[parts.length - 1]
-    const requiredParts = parts.slice(0, -1)
+    const rawParts = rawQueryString.split(/\s+/).filter((p) => p.length > 0)
 
-    const exactMatchGroups = requiredParts.map((part) => ({
-      "bool": {
-        "should": [
-          {
-            "term": {
-              "label": {
-                "value": part,
-                "boost": 15.0
-              }
+    const firstToken = parts[0]
+    const lastToken = parts[parts.length - 1]
+    const middleTokens = parts.slice(1, -1)
+    const rawLastToken = rawParts[rawParts.length - 1] || ""
+    const firstPartRaw = rawParts.slice(0, -1).join(" ").trim()
+
+    const admFields = ["adm1", "adm2", "group.adm1", "group.adm2"]
+
+    const mustClauses: any[] = []
+
+    // 1) First token must match label (and only label).
+    if (firstToken?.length > 0) {
+      mustClauses.push({
+        "match": {
+          "label": {
+            "query": firstToken,
+            "operator": "and"
+          }
+        }
+      })
+    }
+
+    // 2) Middle tokens must match either label or adm, with label preferred
+    //    via scoring boosts.
+    middleTokens.forEach((token) => {
+      if (!token.length) return
+
+      const shouldClauses: any[] = [
+        {
+          "match": {
+            "label": {
+              "query": token,
+              "operator": "and",
+              "boost": 3.0
             }
           }
-        ],
-        "minimum_should_match": 1
-      }
-    }))
-
-    // For the last token, allow prefix matches on both label and adm fields so
-    // users can type parts of administrative names as well as the primary
-    // label.
-    const prefixFields = ["label", "adm1", "adm2", "group.adm1", "group.adm2"]
-    const prefixQueries = prefixFields.map((field) => ({
-      "constant_score": {
-        "filter": {
-          "prefix": {
-            [field]: prefixPart
-          }
         },
-        "boost": field === "label" ? 20.0 : 15.0
-      }
-    }))
+        ...admFields.map((field) => ({
+          "match": {
+            [field]: {
+              "query": token,
+              "operator": "and",
+              "boost": 1.0
+            }
+          }
+        }))
+      ]
 
-    const multiWordAutocomplete = {
-      "bool": {
-        "must": exactMatchGroups.length > 0 ? exactMatchGroups : [{ "match_all": {} }],
-        "should": prefixQueries,
-        "minimum_should_match": 1
+      mustClauses.push({
+        "bool": {
+          "should": shouldClauses,
+          "minimum_should_match": 1
+        }
+      })
+    })
+
+    // 3) Last token must match as prefix.
+    //    - For two-token queries (e.g. "nordre ber"), we only allow prefix
+    //      matches on the label so that cases like "Nordre Tuft, Bergen"
+    //      (where only adm matches the last token) are filtered out.
+    //    - For three-or-more-token queries (e.g. "indre berg troms"), we allow
+    //      prefix matches on both label and adm fields so queries like
+    //      "indre berg troms" can use the last token to match adm names.
+    if (lastToken?.length > 0) {
+      const lastTokenVariants = new Set<string>()
+      lastTokenVariants.add(lastToken)
+      if (rawLastToken && rawLastToken !== lastToken) {
+        lastTokenVariants.add(rawLastToken)
       }
+      const capitalizedLast =
+        rawLastToken.length > 0
+          ? rawLastToken[0].toUpperCase() + rawLastToken.slice(1)
+          : ""
+      if (capitalizedLast && capitalizedLast !== rawLastToken) {
+        lastTokenVariants.add(capitalizedLast)
+      }
+
+      const labelPrefixClauses: any[] = []
+      const admPrefixClauses: any[] = []
+
+      lastTokenVariants.forEach((value) => {
+        labelPrefixClauses.push({
+          "prefix": {
+            "label": value
+          }
+        })
+
+        admFields.forEach((field) => {
+          admPrefixClauses.push({
+            "prefix": {
+              [field]: value
+            }
+          })
+        })
+      })
+
+      const buildLabelKeywordVariants = (value: string): string[] => {
+        const trimmed = value.trim()
+        if (!trimmed) return []
+        const variants = new Set<string>()
+        variants.add(trimmed)
+        variants.add(trimmed.toLowerCase())
+        variants.add(trimmed.toUpperCase())
+        variants.add(
+          trimmed
+            .split(/\s+/)
+            .map(
+              (word) =>
+                word.length > 0
+                  ? word[0].toUpperCase() + word.slice(1).toLowerCase()
+                  : word
+            )
+            .join(" ")
+        )
+        return Array.from(variants).filter((variant) => variant.length > 0)
+      }
+
+      const labelEqualsFirstPartClause =
+        firstPartRaw.length > 0
+          ? {
+              "bool": {
+                "should": buildLabelKeywordVariants(firstPartRaw).map(
+                  (variant) => ({
+                    "term": {
+                      "label.keyword": variant
+                    }
+                  })
+                ),
+                "minimum_should_match": 1
+              }
+            }
+          : null
+
+      const allowAdmPrefix =
+        parts.length >= 3 || (!!labelEqualsFirstPartClause && parts.length >= 2)
+
+      const admPrefixWrapper =
+        allowAdmPrefix && admPrefixClauses.length > 0
+          ? parts.length >= 3
+            ? {
+                "bool": {
+                  "should": admPrefixClauses,
+                  "minimum_should_match": 1
+                }
+              }
+            : {
+                "bool": {
+                  "must": [
+                    labelEqualsFirstPartClause!,
+                    {
+                      "bool": {
+                        "should": admPrefixClauses,
+                        "minimum_should_match": 1
+                      }
+                    }
+                  ]
+                }
+              }
+          : null
+
+      mustClauses.push({
+        "bool": {
+          "should": [
+            ...labelPrefixClauses,
+            ...(admPrefixWrapper ? [admPrefixWrapper] : [])
+          ],
+          "minimum_should_match": 1
+        }
+      })
     }
 
     queryClause = {
       "bool": {
-        "should": [
-          {
-            "simple_query_string": {
-              "query": rawQueryString,
-              "fields": ["label"],
-              "default_operator": "and"
-            }
-          },
-          multiWordAutocomplete
-        ],
-        "minimum_should_match": 1
+        "must": mustClauses
       }
     }
   }
