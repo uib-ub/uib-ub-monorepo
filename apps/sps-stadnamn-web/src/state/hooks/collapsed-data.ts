@@ -7,8 +7,8 @@ import { useRef } from 'react';
 import { useDebugStore } from '../zustand/debug-store';
 import useGroupData from './group-data';
 
-const INITIAL_PAGE_SIZE = 5;
-const SUBSEQUENT_PAGE_SIZE = 40;
+export const INITIAL_PAGE_SIZE = 10;
+export const SUBSEQUENT_PAGE_SIZE = 40;
 
 // Haversine formula to calculate distance between two coordinates in meters
 const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {

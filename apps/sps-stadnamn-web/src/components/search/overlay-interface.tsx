@@ -57,7 +57,8 @@ function ShowResultsButton() {
     if (snappedPosition == 'bottom') return null
     return <div className="p-2 fixed bottom-2 left-0 right-0 z-[3001]">
         <Clickable remove={["facet", "options"]}
-            add={{ results: 'on' }}
+            // results: integer – 1 expands sources, >1 also expands "fleire namnegrupper"
+            add={{ results: '1' }}
             onClick={() => mode == 'table' ? setSnappedPosition('bottom') : null}
             className="w-full h-12 btn text-xl relative rounded-full">
             Vis resultat <Badge className="bg-primary-50 text-neutral-800 font-semibold px-2 absolute right-4" count={totalHits?.value || 0} /></Clickable></div>
@@ -106,7 +107,8 @@ function LeftWindow({ children }: { children: React.ReactNode }) {
     const searchParams = useSearchParams()
 
     const mapSettings = searchParams.get('mapSettings') == 'on'
-    const results = searchParams.get('results') == 'on' || (!mapSettings)
+    const resultsParam = parseInt(searchParams.get('results') || '0') || 0
+    const results = resultsParam > 0 || (!mapSettings)
     if (isMobile) {
         if (mapSettings && results) return null
         return <>{children}</>
@@ -229,7 +231,14 @@ export default function OverlayInterface() {
                         </div>
                     ) : (
                         <div className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 py-1 xl:px-0 gap-2 xl:pl-2`}>
-                            <Clickable aria-expanded={showResults} aria-controls="results-panel" className="flex items-center gap-2 xl:px-1 w-full" add={{ results: showResults ? null : 'on' }} remove={["results", ...(isMobile ? ['options'] : [])]}>
+                            <Clickable
+                                aria-expanded={showResults}
+                                aria-controls="results-panel"
+                                className="flex items-center gap-2 xl:px-1 w-full"
+                                // When opening, default to 1 (expand sources). When closing, remove param.
+                                add={{ results: showResults ? null : '1' }}
+                                remove={["results", ...(isMobile ? ['options'] : [])]}
+                            >
 
                                 <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Kjelder</h1>
 

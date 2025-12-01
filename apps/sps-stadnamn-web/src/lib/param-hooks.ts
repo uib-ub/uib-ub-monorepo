@@ -60,7 +60,8 @@ export function useOverlayParams() {
     const facet = searchParams.get('facet')
     const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
-    const results = searchParams.get('results') == 'on'
+    const resultsParam = parseInt(searchParams.get('results') || '0') || 0
+    const results = resultsParam > 0
 
     const tableOptions = mode == 'table' && !options
 

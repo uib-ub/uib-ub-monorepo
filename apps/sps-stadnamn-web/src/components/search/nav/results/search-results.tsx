@@ -7,7 +7,7 @@ import { useGroup } from "@/lib/param-hooks";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchQuery } from "@/lib/search-params";
 import { getSkeletonLength } from "@/lib/utils";
-import useCollapsedData from "@/state/hooks/collapsed-data";
+import useCollapsedData, { SUBSEQUENT_PAGE_SIZE } from "@/state/hooks/collapsed-data";
 import useGroupData from "@/state/hooks/group-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
@@ -41,8 +41,8 @@ export default function SearchResults() {
   const searchParams = useSearchParams()
   const init = searchParams.get('init')
   const group = searchParams.get('group')
+  const resultsParam = parseInt(searchParams.get('results') || '0') || 0
   const initValue = init ? base64UrlToString(init) : null
-  const [showOtherResults, setShowOtherResults] = useState(!!group)
   const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
   const { groupData: activeGroupData } = useGroupData()
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
@@ -65,12 +65,6 @@ export default function SearchResults() {
     setEditLat('')
     setEditLon('')
   }
-
-  useEffect(() => {
-    if (init) {
-      setShowOtherResults(false)
-    }
-  }, [init])
 
   // Stop editing when coordinates change from external sources (e.g., map interaction)
   useEffect(() => {
@@ -136,11 +130,25 @@ export default function SearchResults() {
     collapsedInitialPage
   } = useCollapsedData()
 
-
+  // Helper: count additional groups (excluding init group when present)
+  const getAdditionalResultsCount = () => {
+    if (!collapsedData) return 0
+    const allHits = collapsedData.pages.flatMap((page: any) => page.data || [])
+    if (!initValue) {
+      return allHits.length
+    }
+    return allHits.filter((hit: any) => hit.fields?.["group.id"]?.[0] !== initValue).length
+  }
 
   // Check if there are no results
   const hasNoResults = collapsedStatus === 'success' && (!collapsedData?.pages || collapsedData.pages.length === 0 || collapsedData.pages[0].data?.length === 0);
   const hasOneResult = collapsedStatus === 'success' && collapsedData?.pages && collapsedData.pages.length === 1 && collapsedData.pages[0].data?.length === 1;
+
+  // Derived: should "Fleire namnegrupper" and the list of other groups be visible?
+  // For init on desktop, this is controlled solely by resultsParam (>1 means expanded).
+  const showOtherResults = (!init || isMobile || hasOneResult)
+    ? true
+    : (resultsParam > 1);
 
 
   if (isMobile && activeGroupValue && snappedPosition == 'bottom') {
@@ -358,7 +366,23 @@ export default function SearchResults() {
         </div>
       ) : (
         <button
-          onClick={() => setShowOtherResults(!showOtherResults)}
+          onClick={() => {
+            const nextShow = !showOtherResults
+            const newParams = new URLSearchParams(searchParams)
+            if (nextShow) {
+              const currentAdditional = getAdditionalResultsCount()
+              const base = initValue ? 1 : 0
+              const desiredAdditional = Math.max(currentAdditional, 1) // at least one extra group
+              const newResultsValue = base + desiredAdditional
+              const currentResults = resultsParam || base
+              newParams.set('results', String(Math.max(currentResults, newResultsValue)))
+            } else {
+              // Collapse back to only init group
+              const base = initValue ? 1 : 0
+              newParams.set('results', String(base || 1))
+            }
+            router.push(`?${newParams.toString()}`)
+          }}
           className="w-full text-left border-t border-neutral-200 py-2 px-3 hover:bg-neutral-50 transition-colors flex items-center gap-2 text-neutral-950"
           aria-expanded={showOtherResults}
         >
@@ -403,7 +427,20 @@ export default function SearchResults() {
                       <li className="flex flex-col gap-2 justify-center py-4">
                         <button
                           type="button"
-                          onClick={() => !isFetchingNextPage && collapsedFetchNextPage()}
+                          onClick={() => {
+                            if (isFetchingNextPage) return
+
+                            const currentAdditional = getAdditionalResultsCount()
+                            const base = initValue ? 1 : 0
+                            const newAdditional = currentAdditional + SUBSEQUENT_PAGE_SIZE
+                            const newResultsValue = base + newAdditional
+
+                            const newParams = new URLSearchParams(searchParams)
+                            newParams.set('results', String(newResultsValue))
+                            router.push(`?${newParams.toString()}`)
+
+                            collapsedFetchNextPage()
+                          }}
                           className={`
                     flex items-center gap-2
                     btn-neutral btn

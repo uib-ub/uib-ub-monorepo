@@ -201,6 +201,12 @@ export default function SearchForm() {
 
 
 
+    // For query submissions:
+    // - When a group is selected (init), results=1 (only init group "sources" open)
+    // - When no init, results equals the initial page size (currently 5), so the URL
+    //   reflects that multiple results are shown.
+    const resultsValue = selectedGroup ? '1' : '5'
+
     return <div
         className="flex"
         style={{
@@ -307,7 +313,10 @@ export default function SearchForm() {
 
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''} />}
             {selectedGroup && <input type="hidden" name="init" value={selectedGroup} />}
-            <input type="hidden" name="results" value={'on'} />
+            {/* results: integer – when init is set, 1 means only init group; >1 controls extra groups.
+                When no init, we set it to the initial page size so the URL reflects that multiple
+                results are visible. */}
+            <input type="hidden" name="results" value={resultsValue} />
             {options && <input type="hidden" name="options" value={'on'} />}
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
