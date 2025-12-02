@@ -739,7 +739,7 @@ export default function MapExplorer() {
                 if (selected || activePoint) return null
 
                 const isInit = initValue && item.fields?.["group.id"]?.[0] == initValue
-                const markerColor = isInit ? 'primary' : 'white'
+                const markerColor = isInit ? 'black' : 'white'
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const icon = getLabelMarkerIcon(item.fields["group.label"]?.[0] || item.fields.label?.[0] || '[utan namn]', markerColor, childCount, false, false, false)
@@ -801,13 +801,18 @@ export default function MapExplorer() {
 
 
 
-            {groupData && groupData.fields?.location?.[0]?.coordinates && <Marker
+            {groupData && !activePoint && groupData.fields?.location?.[0]?.coordinates && <Marker
               zIndexOffset={2000}
               icon={new leaflet.DivIcon(getLabelMarkerIcon(groupData.fields["group.label"]?.[0] || groupData.fields.label?.[0] || '[utan namn]', 'accent', undefined, true, false, true))}
               position={[groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]}
               eventHandlers={{
                 click: () => {
+                  const centralLat = groupData.fields.location[0].coordinates[1];
+                  const centralLng = groupData.fields.location[0].coordinates[0];
                   fitBoundsToGroupSources(mapInstance.current, groupData);
+                  const newParams = new URLSearchParams(searchParams);
+                  newParams.set('activePoint', `${centralLat},${centralLng}`);
+                  router.push(`?${newParams.toString()}`);
                 }
               }}
             >
@@ -817,7 +822,7 @@ export default function MapExplorer() {
             {
               (() => {
                 // Only show lines and dots for the init group
-                if (!groupData?.sources || activeGroupValue !== initValue) return null;
+                if (!groupData?.sources || activeGroupValue !== initValue || !activePoint) return null;
 
                 // Find the first source with coordinates - this is the central coordinate
                 const centralSource = groupData.sources.find((source: Record<string, any>) =>
@@ -843,10 +848,7 @@ export default function MapExplorer() {
                       const lat = source.location.coordinates[1];
                       const lng = source.location.coordinates[0];
 
-                      // Skip if this is the central coordinate (no duplicate)
-                      if (centralLat === lat && centralLng === lng) {
-                        return null;
-                      }
+                      const isCentral = centralLat === lat && centralLng === lng;
 
                       // Create a unique key for this coordinate
                       const coordKey = `${lat},${lng}`;
@@ -861,15 +863,17 @@ export default function MapExplorer() {
 
                       return (
                         <Fragment key={`location-marker-${index}`}>
-                          {/* Line connecting source to central coordinate */}
-                          <Polyline
-                            positions={[[lat, lng], [centralLat, centralLng]]}
-                            pathOptions={{
-                              color: '#000000',
-                              weight: 3,
-                              opacity: 0.25
-                            }}
-                          />
+                          {/* Line connecting source to central coordinate (skip self-line) */}
+                          {!isCentral && (
+                            <Polyline
+                              positions={[[lat, lng], [centralLat, centralLng]]}
+                              pathOptions={{
+                                color: '#000000',
+                                weight: 3,
+                                opacity: 0.25
+                              }}
+                            />
+                          )}
                           {/* Source marker */}
                           <CircleMarker
                             center={[lat, lng]}

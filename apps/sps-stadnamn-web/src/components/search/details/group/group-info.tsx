@@ -209,7 +209,7 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
                                                 }}
                                                 className={`flex-shrink-0 p-1 rounded-full ${isActive ? 'text-accent-700 outline outline-1 outline-accent-700 bg-accent-50' : 'text-neutral-700 hover:bg-neutral-100'}`}
                                             >
-                                                {coordinateTypeLabel ? <PiMapPinFill className="text-base text-neutral-600" /> : <PiMapPinFill className="text-base text-primary-700" />}
+                                                <PiMapPinFill className="text-base text-neutral-600" />
                                             </ClickableIcon>
                                         )}
                                         <div className="flex-1 min-w-0">
@@ -731,6 +731,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     const searchDatasets = searchParams.getAll('dataset')
     const { mapFunctionRef, scrollableContentRef } = useContext(GlobalContext)
     const { initValue } = useGroup()
+    const activePoint = searchParams.get('activePoint')
 
     // Read activeYear and activeName from URL params
     const activeYear = searchParams.get('activeYear')
@@ -965,7 +966,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                             <div key={"audio-" + recording.uuid} className="flex items-center">
                                 <audio
                                     controls
-                                    src={`https://iiif.test.ubbe.no/iiif/audio/hord/${recording.file}`}
+                                    src={`https://iiif.spraksamlingane.no/iiif/audio/hord/${recording.file}`}
                                     className="h-10 rounded-md
                                     [&::-webkit-media-controls-enclosure]:bg-transparent 
                                     [&::-webkit-media-controls-current-time-display]:text-neutral-800 
@@ -979,11 +980,11 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                     </div>
                 ))
             }
-            {iiifItems?.length > 0 && <>
+            {iiifItems?.length > 0 && !activePoint && <>
                 <Carousel items={iiifItems} />
             </>
             }
-            {textItems.length > 0 && <TextTab textItems={textItems} />}
+            {textItems.length > 0 && !activePoint && <TextTab textItems={textItems} />}
 
             <div className="w-full pb-4 flex flex-col">
                 {/* Names section (includes timeline) - only show in init group when no activePoint filter is active */}
