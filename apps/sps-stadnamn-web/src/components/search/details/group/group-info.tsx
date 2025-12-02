@@ -731,6 +731,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     const searchDatasets = searchParams.getAll('dataset')
     const { mapFunctionRef, scrollableContentRef } = useContext(GlobalContext)
     const { initValue } = useGroup()
+    const activePoint = searchParams.get('activePoint')
 
     // Read activeYear and activeName from URL params
     const activeYear = searchParams.get('activeYear')
@@ -979,11 +980,11 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                     </div>
                 ))
             }
-            {iiifItems?.length > 0 && <>
+            {iiifItems?.length > 0 && !activePoint && <>
                 <Carousel items={iiifItems} />
             </>
             }
-            {textItems.length > 0 && <TextTab textItems={textItems} />}
+            {textItems.length > 0 && !activePoint && <TextTab textItems={textItems} />}
 
             <div className="w-full pb-4 flex flex-col">
                 {/* Names section (includes timeline) - only show in init group when no activePoint filter is active */}
