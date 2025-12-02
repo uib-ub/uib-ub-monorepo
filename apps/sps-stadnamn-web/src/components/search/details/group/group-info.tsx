@@ -1,23 +1,21 @@
-import useGroupData from "@/state/hooks/group-data";
-import Carousel from "../../nav/results/carousel";
-import { useEffect, useMemo, useState, useContext, Fragment, type ReactNode } from "react";
-import { datasetTitles } from "@/config/metadata-config";
-import { formatHtml } from "@/lib/text-utils";
-import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
-import { PiMinusBold, PiMapPin, PiPlusBold, PiQuestionFill, PiMapPinFill, PiInfoFill, PiArchive, PiInfo, PiPushPinBold, PiPushPinFill, PiMagnifyingGlass, PiPushPin, PiX, PiFunnel, PiMapPinPlusFill } from "react-icons/pi";
-import WarningMessage from "./warning-message";
-import { useSessionStore } from "@/state/zustand/session-store";
 import Spinner from "@/components/svg/Spinner";
-import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
-import AudioExplorer from "@/components/doc/audio-explorer";
-import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import Clickable from "@/components/ui/clickable/clickable";
-import { GlobalContext } from "@/state/providers/global-provider";
-import { stringToBase64Url } from "@/lib/param-utils";
-import { useGroup } from "@/lib/param-hooks";
-import { SearchParamsContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
+import ClickableIcon from "@/components/ui/clickable/clickable-icon";
+import { datasetTitles } from "@/config/metadata-config";
+import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
 import { fitBoundsToGroupSources } from "@/lib/map-utils";
+import { useGroup } from "@/lib/param-hooks";
+import { stringToBase64Url } from "@/lib/param-utils";
+import { formatHtml } from "@/lib/text-utils";
+import useGroupData from "@/state/hooks/group-data";
+import { GlobalContext } from "@/state/providers/global-provider";
+import { useSessionStore } from "@/state/zustand/session-store";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Fragment, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { PiArchive, PiInfoFill, PiMapPinBold, PiMapPinFill, PiMapPinPlusFill, PiPushPinFill, PiX } from "react-icons/pi";
+import Carousel from "../../nav/results/carousel";
+import WarningMessage from "./warning-message";
 
 // Helper function to process HTML content
 const processHtmlContent = (html: string, expanded: boolean): ReactNode => {
@@ -89,19 +87,19 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
                 const isHiddenItem = hasMultipleItems && showAll && index > 0;
                 // For the first item: if there are multiple items and we've clicked "show all", expand it
                 // For hidden items (index > 0 when showAll is true): always show fully expanded (no shortening)
-                const shouldForceExpand = hasMultipleItems && showAll && isFirstItem 
-                    ? firstItemExpanded 
-                    : isHiddenItem 
-                        ? true 
+                const shouldForceExpand = hasMultipleItems && showAll && isFirstItem
+                    ? firstItemExpanded
+                    : isHiddenItem
+                        ? true
                         : undefined;
                 // Show "Vis heile" toggle only if there's a single item
                 // If there are multiple items, don't show toggle on first item
                 const showToggle = !hasMultipleItems;
-                
+
                 return (
                     <div className="py-3 px-3" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
                         {textItem.dataset === 'rygh' && (
-                            <WarningMessage 
+                            <WarningMessage
                                 message="Feil i Norske Gaardnavne"
                                 messageId="rygh-phonetic-warning"
                             >
@@ -113,7 +111,7 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
                                     </ul>
 
                                 </div>
-                                </WarningMessage>
+                            </WarningMessage>
                         )}
                         <ExpandableContent
                             leading={<><strong className="text-neutral-950">{datasetTitles[textItem.dataset]}</strong> | </>}
@@ -122,7 +120,7 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
                             forceExpanded={shouldForceExpand}
                             showToggle={showToggle}
                         />
-                        
+
                     </div>
                 );
             })}
@@ -148,7 +146,7 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
 const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<string, any[]>, isFiltered: boolean, isInitGroup: boolean }) => {
     const [showAll, setShowAll] = useState(false)
     const datasetKeys = useMemo(() => Object.keys(datasets).filter(ds => datasets[ds] && datasets[ds].length > 0), [datasets])
-    const { sosiVocab, coordinateVocab, mapFunctionRef} = useContext(GlobalContext)
+    const { sosiVocab, coordinateVocab, mapFunctionRef } = useContext(GlobalContext)
 
     // If not filtered: show 2 if more than 3, otherwise show all
     // If filtered: show 4 if more than 5, otherwise show all
@@ -163,15 +161,15 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
             {visibleDatasets.map((ds) => {
                 const items = datasets[ds] || []
                 if (items.length === 0) return null
-                
+
                 return (
                     <li key={`sources-ds-${ds}`} className="flex flex-col w-full gap-1">
-                       {searchParams.getAll('dataset').length != 1 && <div className="flex items-center gap-2 text-neutral-800 uppercase traciking-wider">
+                        {searchParams.getAll('dataset').length != 1 && <div className="flex items-center gap-2 text-neutral-800 uppercase traciking-wider">
                             {datasetTitles[ds] || ds}
                             <ClickableIcon
                                 href={`/info/datasets/${ds}`}
                                 className="flex items-center"
-                            label="Om datasettet"
+                                label="Om datasettet"
                             >
                                 <PiInfoFill className="text-primary-700 text-sm align-middle" aria-hidden="true" />
                             </ClickableIcon>
@@ -186,7 +184,7 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
                                 ).join(", ")
 
                                 // Collect and format sosi types
-                                const sosiTypesRaw = s.sosi 
+                                const sosiTypesRaw = s.sosi
                                     ? (Array.isArray(s.sosi) ? s.sosi : [s.sosi]).filter((sosi: string) => sosi)
                                     : []
                                 const sosiTypes = sosiTypesRaw.map((type: string) => sosiVocab?.[type]?.label || type)
@@ -201,17 +199,17 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
                                     <li key={s.uuid} className="py-1 flex items-center gap-2">
                                         {isInitGroup && !activePoint && s.location?.coordinates?.length === 2 && (
                                             <ClickableIcon
-                                            label="Koordinatdetaljar"
-                                            onClick={() => {
-                                                mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-                                            }}
-                                            add={{
-                                                activePoint: `${lat},${lng}`,
+                                                label="Koordinatdetaljar"
+                                                onClick={() => {
+                                                    mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+                                                }}
+                                                add={{
+                                                    activePoint: `${lat},${lng}`,
 
-                                            }}
+                                                }}
                                                 className={`flex-shrink-0 p-1 rounded-full ${isActive ? 'text-accent-700 outline outline-1 outline-accent-700 bg-accent-50' : 'text-neutral-700 hover:bg-neutral-100'}`}
                                             >
-                                                {coordinateTypeLabel ? <PiMapPinPlusFill className="text-base" /> : <PiMapPinFill className="text-base" />}
+                                                {coordinateTypeLabel ? <PiMapPinFill className="text-base text-neutral-600" /> : <PiMapPinFill className="text-base text-primary-700" />}
                                             </ClickableIcon>
                                         )}
                                         <div className="flex-1 min-w-0">
@@ -249,413 +247,408 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
 
 const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
     const [showAll, setShowAll] = useState(false)
-	const searchParams = useSearchParams()
-	const activeYear = searchParams.get('activeYear')
-	const activeName = searchParams.get('activeName')
+    const searchParams = useSearchParams()
+    const activeYear = searchParams.get('activeYear')
+    const activeName = searchParams.get('activeName')
 
-	const { yearsOrdered, namesByYear, namesWithoutYear, nameCounts, itemsByDataset } = useMemo(() => {
-		// Helper functions to check if source matches filters
-		const matchesYear = (source: any) => {
-			if (!activeYear) return true
-			if (String(source?.year) === activeYear) return true
-			if (Array.isArray(source?.attestations)) {
-				if (source.attestations.some((a: any) => String(a?.year) === activeYear)) return true
-			}
-			return false
-		}
+    const { yearsOrdered, namesByYear, namesWithoutYear, nameCounts, itemsByDataset } = useMemo(() => {
+        // Helper functions to check if source matches filters
+        const matchesYear = (source: any) => {
+            if (!activeYear) return true
+            if (String(source?.year) === activeYear) return true
+            if (Array.isArray(source?.attestations)) {
+                if (source.attestations.some((a: any) => String(a?.year) === activeYear)) return true
+            }
+            return false
+        }
 
-		const matchesName = (source: any) => {
-			if (!activeName) return true
-			if (source?.label && String(source.label) === activeName) return true
-			if (Array.isArray(source?.altLabels)) {
-				if (source.altLabels.some((al: any) => String(typeof al === 'string' ? al : al?.label) === activeName)) return true
-			}
-			if (Array.isArray(source?.attestations)) {
-				if (source.attestations.some((a: any) => String(a?.label) === activeName)) return true
-			}
-			return false
-		}
+        const matchesName = (source: any) => {
+            if (!activeName) return true
+            if (source?.label && String(source.label) === activeName) return true
+            if (Array.isArray(source?.altLabels)) {
+                if (source.altLabels.some((al: any) => String(typeof al === 'string' ? al : al?.label) === activeName)) return true
+            }
+            if (Array.isArray(source?.attestations)) {
+                if (source.attestations.some((a: any) => String(a?.label) === activeName)) return true
+            }
+            return false
+        }
 
-		// 1) Empty structures
-		const nameToYears: Record<string, Set<string>> = {}
-		const nameCounts: Record<string, number> = {}
-		const itemsByDataset: Record<string, any[]> = {}
+        // 1) Empty structures
+        const nameToYears: Record<string, Set<string>> = {}
+        const nameCounts: Record<string, number> = {}
+        const itemsByDataset: Record<string, any[]> = {}
 
-		// 2) Build lookup from labels/altLabels (using source.year) and attestations (using att.year)
-		const pushNameYear = (name: string | undefined, year: any, source: any) => {
-			if (!name) return
-			// Only include if source matches all active filters
-			if (!matchesYear(source)) return
-			if (!matchesName(source)) return
-			const y = year != null ? String(year) : null
-			if (!y) return
-			nameToYears[name] = nameToYears[name] || new Set<string>()
-			nameToYears[name].add(y)
-			nameCounts[name] = (nameCounts[name] || 0) + 1
-		}
+        // 2) Build lookup from labels/altLabels (using source.year) and attestations (using att.year)
+        const pushNameYear = (name: string | undefined, year: any, source: any) => {
+            if (!name) return
+            // Only include if source matches all active filters
+            if (!matchesYear(source)) return
+            if (!matchesName(source)) return
+            const y = year != null ? String(year) : null
+            if (!y) return
+            nameToYears[name] = nameToYears[name] || new Set<string>()
+            nameToYears[name].add(y)
+            nameCounts[name] = (nameCounts[name] || 0) + 1
+        }
 
-		Object.entries(datasets).forEach(([ds, sources]) => {
-			itemsByDataset[ds] = itemsByDataset[ds] || []
-			sources.forEach((source: any) => {
-				itemsByDataset[ds].push(source)
-				// Labels and altLabels only when source.year exists
-				if (source?.year) {
-					pushNameYear(source.label, source.year, source)
-					if (Array.isArray(source?.altLabels)) {
-						source.altLabels.forEach((alt: any) => pushNameYear(typeof alt === 'string' ? alt : alt?.label, source.year, source))
-					}
-				}
-				// Attestations: use their own year
-				if (Array.isArray(source?.attestations)) {
-					source.attestations.forEach((att: any) => pushNameYear(att?.label, att?.year, source))
-				}
-			})
-		})
+        Object.entries(datasets).forEach(([ds, sources]) => {
+            itemsByDataset[ds] = itemsByDataset[ds] || []
+            sources.forEach((source: any) => {
+                itemsByDataset[ds].push(source)
+                // Labels and altLabels only when source.year exists
+                if (source?.year) {
+                    pushNameYear(source.label, source.year, source)
+                    if (Array.isArray(source?.altLabels)) {
+                        source.altLabels.forEach((alt: any) => pushNameYear(typeof alt === 'string' ? alt : alt?.label, source.year, source))
+                    }
+                }
+                // Attestations: use their own year
+                if (Array.isArray(source?.attestations)) {
+                    source.attestations.forEach((att: any) => pushNameYear(att?.label, att?.year, source))
+                }
+            })
+        })
 
-		// 3) Compute earliest occurrence per name and bucket names by that year
-		const namesByYear: Record<string, string[]> = {}
-		const namesWithoutYear: string[] = []
-		Object.entries(nameToYears).forEach(([name, yearsSet]) => {
-			const years = Array.from(yearsSet)
-			if (years.length === 0) {
-				namesWithoutYear.push(name)
-				return
-			}
-			const numeric = years
-				.map((y) => ({ raw: y, num: Number(y) }))
-				.filter((y) => !Number.isNaN(y.num))
-				.sort((a, b) => a.num - b.num)
-			const earliest = numeric.length ? numeric[0].raw : years.sort()[0]
-			namesByYear[earliest] = namesByYear[earliest] || []
-			namesByYear[earliest].push(name)
-		})
-		Object.keys(namesByYear).forEach((y) => namesByYear[y].sort())
-		const yearsOrdered = Object.keys(namesByYear)
-			.map((y) => Number.isNaN(Number(y)) ? y : Number(y))
-			.sort((a: any, b: any) => (a > b ? 1 : a < b ? -1 : 0))
-			.map(String)
+        // 3) Compute earliest occurrence per name and bucket names by that year
+        const namesByYear: Record<string, string[]> = {}
+        const namesWithoutYear: string[] = []
+        Object.entries(nameToYears).forEach(([name, yearsSet]) => {
+            const years = Array.from(yearsSet)
+            if (years.length === 0) {
+                namesWithoutYear.push(name)
+                return
+            }
+            const numeric = years
+                .map((y) => ({ raw: y, num: Number(y) }))
+                .filter((y) => !Number.isNaN(y.num))
+                .sort((a, b) => a.num - b.num)
+            const earliest = numeric.length ? numeric[0].raw : years.sort()[0]
+            namesByYear[earliest] = namesByYear[earliest] || []
+            namesByYear[earliest].push(name)
+        })
+        Object.keys(namesByYear).forEach((y) => namesByYear[y].sort())
+        const yearsOrdered = Object.keys(namesByYear)
+            .map((y) => Number.isNaN(Number(y)) ? y : Number(y))
+            .sort((a: any, b: any) => (a > b ? 1 : a < b ? -1 : 0))
+            .map(String)
 
-		return { yearsOrdered, namesByYear, namesWithoutYear, nameCounts, itemsByDataset }
-	}, [datasets, activeYear, activeName])
+        return { yearsOrdered, namesByYear, namesWithoutYear, nameCounts, itemsByDataset }
+    }, [datasets, activeYear, activeName])
 
-	// Rebuild filtered data based on active filters
-	const { filteredYearsOrdered, filteredNamesByYear, filteredNamesWithoutYear } = useMemo(() => {
-		if (!activeYear && !activeName) {
-			// No filter: show everything
-			return {
-				filteredYearsOrdered: yearsOrdered,
-				filteredNamesByYear: namesByYear,
-				filteredNamesWithoutYear: namesWithoutYear
-			}
-		}
+    // Rebuild filtered data based on active filters
+    const { filteredYearsOrdered, filteredNamesByYear, filteredNamesWithoutYear } = useMemo(() => {
+        if (!activeYear && !activeName) {
+            // No filter: show everything
+            return {
+                filteredYearsOrdered: yearsOrdered,
+                filteredNamesByYear: namesByYear,
+                filteredNamesWithoutYear: namesWithoutYear
+            }
+        }
 
-		// Helper to check if source matches current filters
-		const sourceMatchesFilter = (source: any) => {
-			if (activeYear) {
-				if (String(source?.year) === activeYear) return true
-				if (Array.isArray(source?.attestations)) {
-					if (source.attestations.some((a: any) => String(a?.year) === activeYear)) return true
-				}
-			}
-			if (activeName) {
-				if (source?.label && String(source.label) === activeName) return true
-				if (Array.isArray(source?.altLabels)) {
-					if (source.altLabels.some((al: any) => String(typeof al === 'string' ? al : al?.label) === activeName)) return true
-				}
-				if (Array.isArray(source?.attestations)) {
-					if (source.attestations.some((a: any) => String(a?.label) === activeName)) return true
-				}
-			}
-			return false
-		}
+        // Helper to check if source matches current filters
+        const sourceMatchesFilter = (source: any) => {
+            if (activeYear) {
+                if (String(source?.year) === activeYear) return true
+                if (Array.isArray(source?.attestations)) {
+                    if (source.attestations.some((a: any) => String(a?.year) === activeYear)) return true
+                }
+            }
+            if (activeName) {
+                if (source?.label && String(source.label) === activeName) return true
+                if (Array.isArray(source?.altLabels)) {
+                    if (source.altLabels.some((al: any) => String(typeof al === 'string' ? al : al?.label) === activeName)) return true
+                }
+                if (Array.isArray(source?.attestations)) {
+                    if (source.attestations.some((a: any) => String(a?.label) === activeName)) return true
+                }
+            }
+            return false
+        }
 
-		// Build filtered name-to-years mapping
-		const filteredNameToYears: Record<string, Set<string>> = {}
-		const filteredNameCounts: Record<string, number> = {}
+        // Build filtered name-to-years mapping
+        const filteredNameToYears: Record<string, Set<string>> = {}
+        const filteredNameCounts: Record<string, number> = {}
 
-		Object.entries(datasets).forEach(([_ds, sources]) => {
-			sources.forEach((source: any) => {
-				if (!sourceMatchesFilter(source)) return
+        Object.entries(datasets).forEach(([_ds, sources]) => {
+            sources.forEach((source: any) => {
+                if (!sourceMatchesFilter(source)) return
 
-				// Process labels and altLabels with source.year
-				if (source?.year) {
-					const pushName = (name: string | undefined) => {
-						if (!name) return
-						const y = String(source.year)
-						filteredNameToYears[name] = filteredNameToYears[name] || new Set<string>()
-						filteredNameToYears[name].add(y)
-						filteredNameCounts[name] = (filteredNameCounts[name] || 0) + 1
-					}
-					pushName(source.label)
-					if (Array.isArray(source?.altLabels)) {
-						source.altLabels.forEach((alt: any) => pushName(typeof alt === 'string' ? alt : alt?.label))
-					}
-				}
+                // Process labels and altLabels with source.year
+                if (source?.year) {
+                    const pushName = (name: string | undefined) => {
+                        if (!name) return
+                        const y = String(source.year)
+                        filteredNameToYears[name] = filteredNameToYears[name] || new Set<string>()
+                        filteredNameToYears[name].add(y)
+                        filteredNameCounts[name] = (filteredNameCounts[name] || 0) + 1
+                    }
+                    pushName(source.label)
+                    if (Array.isArray(source?.altLabels)) {
+                        source.altLabels.forEach((alt: any) => pushName(typeof alt === 'string' ? alt : alt?.label))
+                    }
+                }
 
-				// Process attestations with their own year
-				if (Array.isArray(source?.attestations)) {
-					source.attestations.forEach((att: any) => {
-						if (!att?.label) return
-						const y = att?.year != null ? String(att.year) : null
-						if (!y) return
-						filteredNameToYears[att.label] = filteredNameToYears[att.label] || new Set<string>()
-						filteredNameToYears[att.label].add(y)
-						filteredNameCounts[att.label] = (filteredNameCounts[att.label] || 0) + 1
-					})
-				}
-			})
-		})
+                // Process attestations with their own year
+                if (Array.isArray(source?.attestations)) {
+                    source.attestations.forEach((att: any) => {
+                        if (!att?.label) return
+                        const y = att?.year != null ? String(att.year) : null
+                        if (!y) return
+                        filteredNameToYears[att.label] = filteredNameToYears[att.label] || new Set<string>()
+                        filteredNameToYears[att.label].add(y)
+                        filteredNameCounts[att.label] = (filteredNameCounts[att.label] || 0) + 1
+                    })
+                }
+            })
+        })
 
-		// Build filtered namesByYear
-		const filteredNamesByYear: Record<string, string[]> = {}
-		const filteredNamesWithoutYear: string[] = []
+        // Build filtered namesByYear
+        const filteredNamesByYear: Record<string, string[]> = {}
+        const filteredNamesWithoutYear: string[] = []
 
-		Object.entries(filteredNameToYears).forEach(([name, yearsSet]) => {
-			const years = Array.from(yearsSet)
-			if (years.length === 0) {
-				filteredNamesWithoutYear.push(name)
-				return
-			}
-			
-			// If this is the active name filter, show it in ALL years where it appears
-			if (activeName && name === activeName) {
-				years.forEach((year) => {
-					filteredNamesByYear[year] = filteredNamesByYear[year] || []
-					if (!filteredNamesByYear[year].includes(name)) {
-						filteredNamesByYear[year].push(name)
-					}
-				})
-			} else {
-				// For other names, group by earliest year (normal behavior)
-				const numeric = years
-					.map((y) => ({ raw: y, num: Number(y) }))
-					.filter((y) => !Number.isNaN(y.num))
-					.sort((a, b) => a.num - b.num)
-				const earliest = numeric.length ? numeric[0].raw : years.sort()[0]
-				filteredNamesByYear[earliest] = filteredNamesByYear[earliest] || []
-				filteredNamesByYear[earliest].push(name)
-			}
-		})
+        Object.entries(filteredNameToYears).forEach(([name, yearsSet]) => {
+            const years = Array.from(yearsSet)
+            if (years.length === 0) {
+                filteredNamesWithoutYear.push(name)
+                return
+            }
 
-		Object.keys(filteredNamesByYear).forEach((y) => filteredNamesByYear[y].sort())
-		const filteredYearsOrdered = Object.keys(filteredNamesByYear)
-			.map((y) => Number.isNaN(Number(y)) ? y : Number(y))
-			.sort((a: any, b: any) => (a > b ? 1 : a < b ? -1 : 0))
-			.map(String)
+            // If this is the active name filter, show it in ALL years where it appears
+            if (activeName && name === activeName) {
+                years.forEach((year) => {
+                    filteredNamesByYear[year] = filteredNamesByYear[year] || []
+                    if (!filteredNamesByYear[year].includes(name)) {
+                        filteredNamesByYear[year].push(name)
+                    }
+                })
+            } else {
+                // For other names, group by earliest year (normal behavior)
+                const numeric = years
+                    .map((y) => ({ raw: y, num: Number(y) }))
+                    .filter((y) => !Number.isNaN(y.num))
+                    .sort((a, b) => a.num - b.num)
+                const earliest = numeric.length ? numeric[0].raw : years.sort()[0]
+                filteredNamesByYear[earliest] = filteredNamesByYear[earliest] || []
+                filteredNamesByYear[earliest].push(name)
+            }
+        })
 
-		return {
-			filteredYearsOrdered,
-			filteredNamesByYear,
-			filteredNamesWithoutYear
-		}
-	}, [datasets, activeYear, activeName, yearsOrdered, namesByYear, namesWithoutYear])
+        Object.keys(filteredNamesByYear).forEach((y) => filteredNamesByYear[y].sort())
+        const filteredYearsOrdered = Object.keys(filteredNamesByYear)
+            .map((y) => Number.isNaN(Number(y)) ? y : Number(y))
+            .sort((a: any, b: any) => (a > b ? 1 : a < b ? -1 : 0))
+            .map(String)
 
-	// Build filtered items list
-	const filteredItems = useMemo(() => {
-		return [
-			...filteredYearsOrdered.map(y => ({ type: 'year' as const, year: y, names: filteredNamesByYear[y] || [] })),
-			...filteredNamesWithoutYear.map(n => ({ type: 'noYear' as const, name: n, count: nameCounts[n] || 0 }))
-		]
-	}, [filteredYearsOrdered, filteredNamesByYear, filteredNamesWithoutYear, nameCounts])
+        return {
+            filteredYearsOrdered,
+            filteredNamesByYear,
+            filteredNamesWithoutYear
+        }
+    }, [datasets, activeYear, activeName, yearsOrdered, namesByYear, namesWithoutYear])
 
-	const hasActiveFilter = !!(activeYear || activeName)
+    // Build filtered items list
+    const filteredItems = useMemo(() => {
+        return [
+            ...filteredYearsOrdered.map(y => ({ type: 'year' as const, year: y, names: filteredNamesByYear[y] || [] })),
+            ...filteredNamesWithoutYear.map(n => ({ type: 'noYear' as const, name: n, count: nameCounts[n] || 0 }))
+        ]
+    }, [filteredYearsOrdered, filteredNamesByYear, filteredNamesWithoutYear, nameCounts])
 
-	const allItems = [...yearsOrdered.map(y => ({ type: 'year' as const, year: y, names: namesByYear[y] || [] })), ...namesWithoutYear.map(n => ({ type: 'noYear' as const, name: n, count: nameCounts[n] || 0 }))]
-	const hasMore = !hasActiveFilter && filteredItems.length > 3
-	const allYearItems = filteredItems.filter(item => item.type === 'year')
-	const allNoYearItems = filteredItems.filter(item => item.type === 'noYear')
-	
-	// When collapsed and hasMore: show first year item and last year item (collapse in the middle)
-	// Otherwise: show all items
-	const visibleYearItems = showAll || hasActiveFilter ? allYearItems : (
-		hasMore && allYearItems.length > 1
-			? [allYearItems[0], allYearItems[allYearItems.length - 1]]
-			: allYearItems.slice(0, Math.min(3, allYearItems.length))
-	)
-	// Items without year are always shown (they're handled separately in the UI)
-	const visibleNoYearItems = allNoYearItems
-	const visibleItems = [...visibleYearItems, ...visibleNoYearItems]
-	const isCollapsed = hasMore && !showAll && !hasActiveFilter && allYearItems.length > 1
-	const hiddenYearItemsCount = allYearItems.length - visibleYearItems.length
+    const hasActiveFilter = !!(activeYear || activeName)
 
-	if (allItems.length === 0) return null
+    const allItems = [...yearsOrdered.map(y => ({ type: 'year' as const, year: y, names: namesByYear[y] || [] })), ...namesWithoutYear.map(n => ({ type: 'noYear' as const, name: n, count: nameCounts[n] || 0 }))]
+    const hasMore = !hasActiveFilter && filteredItems.length > 3
+    const allYearItems = filteredItems.filter(item => item.type === 'year')
+    const allNoYearItems = filteredItems.filter(item => item.type === 'noYear')
 
-	return (
-		<div className="flex flex-col gap-3 py-2">
-			
-			<div role="group" aria-label="Filtrer på år og namneformer">
-				{/* Vertical Timeline */}
-				{visibleYearItems.length > 0 && (
-					<ul className="relative !mx-2 !px-0 p-2" role="list">
-						{visibleYearItems.map((item, index) => {
-							const isYearSelected = activeYear === item.year
-							const isLast = index === visibleYearItems.length - 1
-							const isFirst = index === 0
-							const showCollapseIndicator = isCollapsed && isFirst && visibleYearItems.length > 1
-							
-							return (
-								<Fragment key={item.year}>
-									<li className="flex items-center !pb-4 !pt-0 relative">
-										{/* Timeline line segment */}
-										<div 
-											className={`bg-primary-300 absolute w-1 left-0 ${
-												showCollapseIndicator && isFirst 
-													? 'top-1 bottom-0' 
-													: showCollapseIndicator && isLast 
-														? 'top-0 h-2' 
-														: isLast 
-															? 'top-1 h-2' 
-															: 'top-1 h-full'
-											} ${index === 0 ? 'mt-2' : ''}`}
-											aria-hidden="true"
-										/>
-										
-										{/* Timeline marker dot */}
-										<div 
-											className={`w-4 h-4 rounded-full absolute -left-1.5 top-2 transition-colors ${
-												isYearSelected 
-													? 'bg-accent-800' 
-													: 'bg-primary-500'
-											}`}
-											aria-hidden="true"
-										/>
-										
-										{/* Year and name variants on same line */}
-										<div className="ml-6 flex items-center gap-2 flex-wrap">
-											{/* Year button */}
-											<Clickable
-												replace
-												add={isYearSelected ? undefined : { activeYear: item.year }}
-												remove={isYearSelected ? ['activeYear'] : ['activeName']}
-												className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${
-													isYearSelected
-														? 'bg-accent-800 text-white'
-														: 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
-												}`}
-											>
-												{item.year}
-											</Clickable>
+    // When collapsed and hasMore: show first year item and last year item (collapse in the middle)
+    // Otherwise: show all items
+    const visibleYearItems = showAll || hasActiveFilter ? allYearItems : (
+        hasMore && allYearItems.length > 1
+            ? [allYearItems[0], allYearItems[allYearItems.length - 1]]
+            : allYearItems.slice(0, Math.min(3, allYearItems.length))
+    )
+    // Items without year are always shown (they're handled separately in the UI)
+    const visibleNoYearItems = allNoYearItems
+    const visibleItems = [...visibleYearItems, ...visibleNoYearItems]
+    const isCollapsed = hasMore && !showAll && !hasActiveFilter && allYearItems.length > 1
+    const hiddenYearItemsCount = allYearItems.length - visibleYearItems.length
 
-											{/* Name variants for this year - on same line */}
-											{item.names.length > 0 && (
-												<>
-													{item.names.map((nameKey) => {
-														const isNameSelected = activeName === nameKey
-														
-														return (
-															<Clickable
-																key={nameKey}
-																replace
-																add={isNameSelected ? undefined : { activeName: nameKey }}
-																remove={isNameSelected ? ['activeName'] : ['activeYear']}
-																className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${
-																	isNameSelected
-																		? 'bg-accent-800 text-white'
-																		: 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
-																}`}
-															>
-																{nameKey}
-															</Clickable>
-														)
-													})}
-												</>
-											)}
-										</div>
-									</li>
-									{/* Collapse indicator in the middle - transit app style */}
-									{showCollapseIndicator && (
-										<li className="flex items-center !pb-4 !pt-0 relative" key={`${item.year}-collapse-indicator`}>
-											{/* Dashed timeline line segment - extends into padding to connect seamlessly */}
-											<div 
-												className="absolute left-0 -top-4 -bottom-4 w-1 [background:repeating-linear-gradient(to_bottom,theme(colors.primary.300)_0px,theme(colors.primary.300)_4px,transparent_4px,transparent_8px)] [background-size:4px_8px]"
-												aria-hidden="true"
-											/>
-											
-											{/* Collapse button */}
-											<div className="ml-6 flex items-center">
-												<button
-													type="button"
-													className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
-													onClick={() => setShowAll(true)}
-													aria-expanded={false}
-												>
-													Vis fleire ({hiddenYearItemsCount})
-												</button>
-											</div>
-										</li>
-									)}
-								</Fragment>
-							)
-						})}
-						{/* Show fewer button at end when expanded */}
-						{hasMore && !hasActiveFilter && showAll && (
-							<li className="flex items-center !pt-2" key="show-fewer">
-								<div className="ml-6 flex items-center">
-									<button
-										type="button"
-										className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
-										onClick={() => setShowAll(false)}
-										aria-expanded={true}
-									>
-										Vis færre
-									</button>
-								</div>
-							</li>
-						)}
-					</ul>
-				)}
+    if (allItems.length === 0) return null
 
-				{/* Names without year */}
-				{visibleItems.filter(item => item.type === 'noYear').length > 0 && (
-					<div className="mt-4 pt-4 border-t border-neutral-200">
-						<div className="text-sm font-medium text-neutral-700 mb-2">Namneformer utan år</div>
-						<div className="flex flex-wrap gap-2">
-							{visibleItems
-								.filter(item => item.type === 'noYear')
-								.map((item) => {
-									const isNameSelected = activeName === item.name
-									
-									return (
-										<Clickable
-											key={item.name}
-											replace
-											add={isNameSelected ? undefined : { activeName: item.name }}
-											remove={isNameSelected ? ['activeName'] : ['activeYear']}
-											className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${
-												isNameSelected
-													? 'bg-accent-800 text-white'
-													: 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
-											}`}
-										>
-											<span>{item.name}</span>
-											<span className="text-sm opacity-75 ml-1">({item.count})</span>
-										</Clickable>
-									)
-								})}
-						</div>
-					</div>
-				)}
-			</div>
+    return (
+        <div className="flex flex-col gap-3 py-2">
 
-			{/* Active filter display */}
-			{hasActiveFilter && (
-					<div className="flex items-center gap-3 px-4 py-3 bg-accent-50 border border-accent-200 rounded-lg shadow-sm">
-						<strong className="text-neutral-900 text-base">
-							{activeYear ? `År: ${activeYear}` : activeName ? `Namneform: ${activeName}` : ''}
-						</strong>
-						<ClickableIcon
-							label="Fjern kjeldeavgrensing"
-							replace
-							remove={['activeYear', 'activeName']}
-							className="ml-auto text-accent-800 hover:text-accent-900 underline underline-offset-2 font-medium transition-colors"
-						>
-							<PiX className="text-accent-800"/>
-						</ClickableIcon>
-					</div>
-			)}
+            <div role="group" aria-label="Filtrer på år og namneformer">
+                {/* Vertical Timeline */}
+                {visibleYearItems.length > 0 && (
+                    <ul className="relative !mx-2 !px-0 p-2" role="list">
+                        {visibleYearItems.map((item, index) => {
+                            const isYearSelected = activeYear === item.year
+                            const isLast = index === visibleYearItems.length - 1
+                            const isFirst = index === 0
+                            const showCollapseIndicator = isCollapsed && isFirst && visibleYearItems.length > 1
 
-		</div>
-	)
+                            return (
+                                <Fragment key={item.year}>
+                                    <li className="flex items-center !pb-4 !pt-0 relative">
+                                        {/* Timeline line segment */}
+                                        <div
+                                            className={`bg-primary-300 absolute w-1 left-0 ${showCollapseIndicator && isFirst
+                                                    ? 'top-1 bottom-0'
+                                                    : showCollapseIndicator && isLast
+                                                        ? 'top-0 h-2'
+                                                        : isLast
+                                                            ? 'top-1 h-2'
+                                                            : 'top-1 h-full'
+                                                } ${index === 0 ? 'mt-2' : ''}`}
+                                            aria-hidden="true"
+                                        />
+
+                                        {/* Timeline marker dot */}
+                                        <div
+                                            className={`w-4 h-4 rounded-full absolute -left-1.5 top-2 transition-colors ${isYearSelected
+                                                    ? 'bg-accent-800'
+                                                    : 'bg-primary-500'
+                                                }`}
+                                            aria-hidden="true"
+                                        />
+
+                                        {/* Year and name variants on same line */}
+                                        <div className="ml-6 flex items-center gap-2 flex-wrap">
+                                            {/* Year button */}
+                                            <Clickable
+                                                replace
+                                                add={isYearSelected ? undefined : { activeYear: item.year }}
+                                                remove={isYearSelected ? ['activeYear'] : ['activeName']}
+                                                className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isYearSelected
+                                                        ? 'bg-accent-800 text-white'
+                                                        : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
+                                                    }`}
+                                            >
+                                                {item.year}
+                                            </Clickable>
+
+                                            {/* Name variants for this year - on same line */}
+                                            {item.names.length > 0 && (
+                                                <>
+                                                    {item.names.map((nameKey) => {
+                                                        const isNameSelected = activeName === nameKey
+
+                                                        return (
+                                                            <Clickable
+                                                                key={nameKey}
+                                                                replace
+                                                                add={isNameSelected ? undefined : { activeName: nameKey }}
+                                                                remove={isNameSelected ? ['activeName'] : ['activeYear']}
+                                                                className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isNameSelected
+                                                                        ? 'bg-accent-800 text-white'
+                                                                        : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
+                                                                    }`}
+                                                            >
+                                                                {nameKey}
+                                                            </Clickable>
+                                                        )
+                                                    })}
+                                                </>
+                                            )}
+                                        </div>
+                                    </li>
+                                    {/* Collapse indicator in the middle - transit app style */}
+                                    {showCollapseIndicator && (
+                                        <li className="flex items-center !pb-4 !pt-0 relative" key={`${item.year}-collapse-indicator`}>
+                                            {/* Dashed timeline line segment - extends into padding to connect seamlessly */}
+                                            <div
+                                                className="absolute left-0 -top-4 -bottom-4 w-1 [background:repeating-linear-gradient(to_bottom,theme(colors.primary.300)_0px,theme(colors.primary.300)_4px,transparent_4px,transparent_8px)] [background-size:4px_8px]"
+                                                aria-hidden="true"
+                                            />
+
+                                            {/* Collapse button */}
+                                            <div className="ml-6 flex items-center">
+                                                <button
+                                                    type="button"
+                                                    className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
+                                                    onClick={() => setShowAll(true)}
+                                                    aria-expanded={false}
+                                                >
+                                                    Vis fleire ({hiddenYearItemsCount})
+                                                </button>
+                                            </div>
+                                        </li>
+                                    )}
+                                </Fragment>
+                            )
+                        })}
+                        {/* Show fewer button at end when expanded */}
+                        {hasMore && !hasActiveFilter && showAll && (
+                            <li className="flex items-center !pt-2" key="show-fewer">
+                                <div className="ml-6 flex items-center">
+                                    <button
+                                        type="button"
+                                        className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
+                                        onClick={() => setShowAll(false)}
+                                        aria-expanded={true}
+                                    >
+                                        Vis færre
+                                    </button>
+                                </div>
+                            </li>
+                        )}
+                    </ul>
+                )}
+
+                {/* Names without year */}
+                {visibleItems.filter(item => item.type === 'noYear').length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-neutral-200">
+                        <div className="text-sm font-medium text-neutral-700 mb-2">Namneformer utan år</div>
+                        <div className="flex flex-wrap gap-2">
+                            {visibleItems
+                                .filter(item => item.type === 'noYear')
+                                .map((item) => {
+                                    const isNameSelected = activeName === item.name
+
+                                    return (
+                                        <Clickable
+                                            key={item.name}
+                                            replace
+                                            add={isNameSelected ? undefined : { activeName: item.name }}
+                                            remove={isNameSelected ? ['activeName'] : ['activeYear']}
+                                            className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isNameSelected
+                                                    ? 'bg-accent-800 text-white'
+                                                    : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
+                                                }`}
+                                        >
+                                            <span>{item.name}</span>
+                                            <span className="text-sm opacity-75 ml-1">({item.count})</span>
+                                        </Clickable>
+                                    )
+                                })}
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Active filter display */}
+            {hasActiveFilter && (
+                <div className="flex items-center gap-3 px-4 py-3 bg-accent-50 border border-accent-200 rounded-lg shadow-sm">
+                    <strong className="text-neutral-900 text-base">
+                        {activeYear ? `År: ${activeYear}` : activeName ? `Namneform: ${activeName}` : ''}
+                    </strong>
+                    <ClickableIcon
+                        label="Fjern kjeldeavgrensing"
+                        replace
+                        remove={['activeYear', 'activeName']}
+                        className="ml-auto text-accent-800 hover:text-accent-900 underline underline-offset-2 font-medium transition-colors"
+                    >
+                        <PiX className="text-accent-800" />
+                    </ClickableIcon>
+                </div>
+            )}
+
+        </div>
+    )
 }
 
 
@@ -695,26 +688,26 @@ const matchesActivePoint = (s: any, activePoint: string | null) => {
 }
 
 // Component that filters datasets and renders SourcesTab
-const FilteredSourcesTab = ({ 
-    datasets, 
-    activeYear, 
+const FilteredSourcesTab = ({
+    datasets,
+    activeYear,
     activeName,
     isInitGroup
-}: { 
-    datasets: Record<string, any[]>, 
-    activeYear: string | null, 
+}: {
+    datasets: Record<string, any[]>,
+    activeYear: string | null,
     activeName: string | null,
     isInitGroup: boolean
 }) => {
     const searchParams = useSearchParams()
     const activePoint = searchParams.get('activePoint')
-    
+
     const filtered = useMemo(() => {
         const result: Record<string, any[]> = {}
         Object.keys(datasets).forEach((ds) => {
-            result[ds] = (datasets[ds] || []).filter((s: any) => 
+            result[ds] = (datasets[ds] || []).filter((s: any) =>
                 // Only filter by activeYear, activeName, and activePoint if this is the init group
-                (isInitGroup ? matchesActiveYear(s, activeYear) : true) && 
+                (isInitGroup ? matchesActiveYear(s, activeYear) : true) &&
                 (isInitGroup ? matchesActiveName(s, activeName) : true) &&
                 (isInitGroup ? matchesActivePoint(s, activePoint) : true)
             )
@@ -738,7 +731,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     const searchDatasets = searchParams.getAll('dataset')
     const { mapFunctionRef, scrollableContentRef } = useContext(GlobalContext)
     const { initValue } = useGroup()
-    
+
     // Read activeYear and activeName from URL params
     const activeYear = searchParams.get('activeYear')
     const activeName = searchParams.get('activeName')
@@ -785,10 +778,10 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
 
 
-        
+
         groupData?.sources?.forEach((source: any) => {
             if (!source.textId || !seenTextIds.has(source.textId)) {
-                
+
                 if (source.content?.html) {
 
                     textItems.push(source)
@@ -801,7 +794,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             }
             if (source.iiif) {
                 iiifItems.push(source)
-                
+
             }
             if (source.recordings) {
                 audioItems.push(source)
@@ -866,7 +859,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     const shouldShowLabelFilter = useMemo(() => {
         // Count total sources across all datasets
         const totalSources = Object.values(datasets).reduce((sum, sources) => sum + sources.length, 0)
-        
+
         // If there's only one result, don't show the filter
         if (totalSources <= 1) {
             return false
@@ -904,7 +897,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         if (groupData?.group.id) {
             const groupId = groupData.group.id;
             const currentTab = openTabs[groupId];
-            
+
             // 1. Check if there's already a value stored at the id in openTabs
             if (currentTab) {
                 // Verify the tab is still valid for this group
@@ -919,7 +912,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 }
                 // If current tab is names but not applicable, fall through to default below
             }
-            
+
             // 2. Use prefTab if the group has the required content
             if (prefTab === 'sources') {
                 setOpenTabs(groupId, 'sources');
@@ -933,10 +926,10 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 setOpenTabs(groupId, 'locations');
                 return;
             }
-            
+
             // 3. Default to sources
             setOpenTabs(groupId, 'sources');
-            
+
         }
     }, [groupData, textItems.length, locations.length, openTabs, prefTab, setOpenTabs, showNamesTab])
 
@@ -949,16 +942,16 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
     const isGrunnord = Object.keys(datasets).some((ds: any) => ds.includes('_g'))
     if (!groupData?.group?.id) {
-    console.log("Group ID not found")
-    const props = {
-        message: `Group ID not found: ${JSON.stringify(groupData)}`
-    }
-  
-    fetch('/api/error', {
-      method: 'POST',
-      body: JSON.stringify(props)
-    })
-    return <div className="p-2">Kunne ikkje lasta inn gruppe</div>
+        console.log("Group ID not found")
+        const props = {
+            message: `Group ID not found: ${JSON.stringify(groupData)}`
+        }
+
+        fetch('/api/error', {
+            method: 'POST',
+            body: JSON.stringify(props)
+        })
+        return <div className="p-2">Kunne ikkje lasta inn gruppe</div>
     }
 
 
@@ -970,18 +963,18 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                     <div key={audioItem.uuid + 'audio'}>
                         {audioItem.recordings.map((recording: any) => (
                             <div key={"audio-" + recording.uuid} className="flex items-center">
-                            <audio 
-                                controls 
-                                src={`https://iiif.test.ubbe.no/iiif/audio/hord/${recording.file}`}
-                                className="h-10 rounded-md
+                                <audio
+                                    controls
+                                    src={`https://iiif.test.ubbe.no/iiif/audio/hord/${recording.file}`}
+                                    className="h-10 rounded-md
                                     [&::-webkit-media-controls-enclosure]:bg-transparent 
                                     [&::-webkit-media-controls-current-time-display]:text-neutral-800 
                                     [&::-webkit-media-controls-time-remaining-display]:text-neutral-800"
-                            />
-                            <Link href={`/iiif/${recording.manifest}`} className="ml-1 p-2 rounded-full aspect-square">
-                                <PiArchive className="text-md text-neutral-800" aria-hidden="true"/>
-                            </Link>
-                        </div>
+                                />
+                                <Link href={`/iiif/${recording.manifest}`} className="ml-1 p-2 rounded-full aspect-square">
+                                    <PiArchive className="text-md text-neutral-800" aria-hidden="true" />
+                                </Link>
+                            </div>
                         ))}
                     </div>
                 ))
@@ -990,7 +983,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 <Carousel items={iiifItems} />
             </>
             }
-            {textItems.length > 0 && <TextTab textItems={textItems}/>}
+            {textItems.length > 0 && <TextTab textItems={textItems} />}
 
             <div className="w-full pb-4 flex flex-col">
                 {/* Names section (includes timeline) - only show in init group when no activePoint filter is active */}
@@ -1016,7 +1009,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                 remove={['activePoint']}
                                 className="ml-auto text-accent-800 hover:text-accent-900"
                             >
-                                <PiX className="text-accent-800"/>
+                                <PiX className="text-accent-800" />
                             </ClickableIcon>
                         </div>
                     </div>
@@ -1024,8 +1017,8 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
                 {/* Sources always shown */}
                 <div className="px-3">
-                    <FilteredSourcesTab 
-                        datasets={datasets} 
+                    <FilteredSourcesTab
+                        datasets={datasets}
                         activeYear={activeYear}
                         activeName={activeName}
                         isInitGroup={initValue === groupData.group.id}
@@ -1036,20 +1029,22 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
             {locations.length > 0 && locations[0]?.location?.coordinates && initValue !== groupData.group.id && (
                 <div className="absolute bottom-0 right-0 p-3">
-                    <Clickable 
+                    <Clickable
                         onClick={() => {
                             // Fit bounds to group sources
                             fitBoundsToGroupSources(mapFunctionRef.current, groupData);
                         }}
                         remove={['group', 'activePoint', 'activeYear', 'activeName']}
                         add={{
-                            
-                            init: stringToBase64Url(groupData.group.id)
+                            // When pinning a group ("vel"), treat it as a fresh init selection:
+                            // reset results to 1 so previous expansions are not preserved.
+                            init: stringToBase64Url(groupData.group.id),
+                            results: '1'
                         }}
                         className="btn btn-neutral rounded-full lg:rounded-md flex items-center justify-center text-lg gap-2 font-semibold"
                         label="Fest til toppen"
-                    > 
-                        <PiPushPinFill aria-hidden="true" />vel 
+                    >
+                        <PiPushPinFill aria-hidden="true" />vel
                     </Clickable>
                 </div>
             )}

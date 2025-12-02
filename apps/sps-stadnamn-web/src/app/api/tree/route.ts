@@ -1,4 +1,3 @@
-//export const runtime = 'edge'
 import { treeSettings } from "@/config/server-config";
 import { postQuery } from "../_utils/post";
 
@@ -6,7 +5,7 @@ import { postQuery } from "../_utils/post";
 export async function GET(request: Request) {
     const searchParams = new URL(request.url).searchParams;
     const { dataset, adm1, adm2 } = Object.fromEntries(searchParams.entries())
-    
+
     const query = {
         size: 10000,
         track_scores: false,
@@ -19,7 +18,7 @@ export async function GET(request: Request) {
                 ]
             }
         },
-        sort: adm2 ? 
+        sort: adm2 ?
             treeSettings[dataset].sort.map(field => {
                 const [parent, child] = field.split("__");
                 // If the field contains __, it's nested
@@ -37,11 +36,11 @@ export async function GET(request: Request) {
                 return {
                     [field]: { order: "asc" }
                 };
-            }) : 
+            }) :
             [{
                 [treeSettings[dataset].aggSort]: { order: "asc" }
             }],
-        fields: ["uuid","adm1", "adm2", treeSettings[dataset].parentName, "within", treeSettings[dataset].subunit.replace("__", "."), treeSettings[dataset].aggSort],
+        fields: ["uuid", "adm1", "adm2", treeSettings[dataset].parentName, "within", treeSettings[dataset].subunit.replace("__", "."), treeSettings[dataset].aggSort],
         collapse: {
             field: adm2 ? "within.keyword" : adm1 ? "adm2.keyword" : "adm1.keyword"
         },

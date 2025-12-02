@@ -1,18 +1,18 @@
 'use client'
-import React, { useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import Clickable from '@/components/ui/clickable/clickable'
+import ClickableIcon from '@/components/ui/clickable/clickable-icon'
+import { useGroup } from '@/lib/param-hooks'
 import { stringToBase64Url } from '@/lib/param-utils'
 import useCollapsedData from '@/state/hooks/collapsed-data'
-import { PiBinocularsBold, PiBinocularsFill, PiBinocularsLight, PiBookOpenFill, PiBookOpenLight, PiCaretLeftBold, PiCaretRightBold, PiCaretUpBold, PiClock, PiClockBold, PiClockFill, PiClockLight, PiDatabaseFill, PiDatabaseLight, PiMicroscopeFill, PiMicroscopeLight, PiSignpost, PiSignpostFill, PiSignpostLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight } from 'react-icons/pi'
-import ClickableIcon from '@/components/ui/clickable/clickable-icon'
-import Clickable from '@/components/ui/clickable/clickable'
-import { useGroup } from '@/lib/param-hooks'
+import { useSearchParams } from 'next/navigation'
+import React, { useEffect, useMemo, useState } from 'react'
+import { PiBinocularsFill, PiBinocularsLight, PiBookOpenFill, PiBookOpenLight, PiCaretLeftBold, PiCaretUpBold, PiClockFill, PiClockLight, PiDatabaseFill, PiDatabaseLight, PiMicroscopeFill, PiMicroscopeLight, PiSignpostFill, PiSignpostLight, PiTreeViewFill, PiTreeViewLight, PiWallFill, PiWallLight } from 'react-icons/pi'
 
 export default function MobileSearchNav({ currentPosition, drawerContent, showScrollToTop, scrollableContent }: { currentPosition: number, drawerContent: string, showScrollToTop: boolean, scrollableContent: React.RefObject<HTMLDivElement> }) {
 
   const searchParams = useSearchParams()
   const { collapsedData, collapsedHasNextPage, collapsedFetchNextPage } = useCollapsedData()
-  const {activeGroupCode, activeGroupValue} = useGroup()
+  const { activeGroupCode, activeGroupValue } = useGroup()
   const [nextGroup, setNextGroup] = useState<Record<string, any> | null>(null)
   const [prevGroup, setPrevGroup] = useState<Record<string, any> | null>(null)
   const datasetTag = searchParams.get('datasetTag')
@@ -66,127 +66,127 @@ export default function MobileSearchNav({ currentPosition, drawerContent, showSc
 
   return (
     <>
-    <div className={`absolute bottom-14 m-3 left-0 flex shrink-1 justify-between gap-3 z-[5000] transition-all duration-300 ease-in-out rounded-full`}
-      style={{
-        transform: currentPosition == 80 ? 'translateY(0)' : 'translateY(100%)',
-        opacity: currentPosition == 80 ? 1 : 0,
-        pointerEvents: currentPosition == 80 ? 'auto' : 'none'
-      }}>
+      <div className={`absolute bottom-14 m-3 left-0 flex shrink-1 justify-between gap-3 z-[5000] transition-all duration-300 ease-in-out rounded-full`}
+        style={{
+          transform: currentPosition == 80 ? 'translateY(0)' : 'translateY(100%)',
+          opacity: currentPosition == 80 ? 1 : 0,
+          pointerEvents: currentPosition == 80 ? 'auto' : 'none'
+        }}>
         {datasetTag != 'tree' && drawerContent == 'details' && doc && <div className="flex gap-1">
           <Clickable remove={['doc']} className="btn btn-outline rounded-full shadow-lg h-12 flex items-center justify-center gap-2">
             <PiCaretLeftBold className="text-xl" aria-hidden="true" />Tilbake
           </Clickable>
         </div>}
-      {drawerContent == 'details' && !doc && <>
+        {drawerContent == 'details' && !doc && <>
 
-        
-        {/* Show "Finn namneformer" if group is not grunnord */}
-        {activeGroupCode && !activeGroupValue?.startsWith('grunnord') ? <>
-        <ClickableIcon label="Oppslag"
-            add={{details: 'group'}}
-            aria-current={details == 'group' ? 'page' : 'false'}
-            className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"  
-          >
-            {details == 'group' ? <PiBookOpenFill className="text-xl" aria-hidden="true" /> : <PiBookOpenLight className="text-xl" aria-hidden="true" />}
-          </ClickableIcon>
-          
+
+          {/* Show "Finn namneformer" if group is not grunnord */}
+          {activeGroupCode && !activeGroupValue?.startsWith('grunnord') ? <>
+            <ClickableIcon label="Oppslag"
+              add={{ details: 'group' }}
+              aria-current={details == 'group' ? 'page' : 'false'}
+              className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
+            >
+              {details == 'group' ? <PiBookOpenFill className="text-xl" aria-hidden="true" /> : <PiBookOpenLight className="text-xl" aria-hidden="true" />}
+            </ClickableIcon>
+
+            <ClickableIcon
+              label="Tidslinje"
+              remove={['doc']}
+              add={{
+                group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
+                details: 'timeline'
+              }}
+              aria-current={(details == 'timeline' && !doc) ? 'page' : 'false'}
+              className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
+            >
+              {(details == 'timeline' && !doc) ? <PiClockFill className="text-xl" aria-hidden="true" /> : <PiClockLight className="text-xl" aria-hidden="true" />}
+            </ClickableIcon>
+            <ClickableIcon
+              label="Namn"
+              remove={['doc']}
+              add={{
+                group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
+                details: 'names'
+              }}
+              aria-current={(details == 'names' && !doc) ? 'page' : 'false'}
+              className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
+            >
+              {(details == 'names' && !doc) ? <PiSignpostFill className="text-xl" aria-hidden="true" /> : <PiSignpostLight className="text-xl" aria-hidden="true" />}
+            </ClickableIcon>
+            <ClickableIcon
+              label="Liknande namn"
+              remove={['doc']}
+              add={{
+                group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
+                details: 'overview'
+              }}
+              aria-current={(details == 'overview' && !doc) ? 'page' : 'false'}
+              className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
+            >
+              {(details == 'overview' && !doc) ? <PiBinocularsFill className="text-xl" aria-hidden="true" /> : <PiBinocularsLight className="text-xl" aria-hidden="true" />}
+            </ClickableIcon>
+
+          </> : null}
+          {/* End "Finn namneformer" */}
+        </>}
+
+
+        {drawerContent == 'datasets' && <>
           <ClickableIcon
-            label="Tidslinje"
-            remove={['doc']}
-            add={{
-              group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
-              details: 'timeline'
-            }}
-            aria-current={(details == 'timeline' && !doc) ? 'page' : 'false'}
-            className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
+            label="Alle"
+            remove={["datasetTag"]}
+            aria-current={!datasetTag ? 'page' : 'false'}
+            className={`bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12`}
           >
-            {(details == 'timeline' && !doc )? <PiClockFill className="text-xl" aria-hidden="true" /> : <PiClockLight className="text-xl" aria-hidden="true" />}
+            {!datasetTag ?
+              <PiDatabaseFill className="text-3xl text-white" /> :
+              <PiDatabaseLight className="text-3xl" />}
+          </ClickableIcon>
+
+          <ClickableIcon
+            label="Djupinnsamlingar"
+            add={{ datasetTag: 'deep' }}
+            aria-current={datasetTag == 'deep' ? 'page' : 'false'}
+            className={`bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12`}
+          >
+            {datasetTag == 'deep' ?
+              <PiMicroscopeFill className="text-3xl text-white" /> :
+              <PiMicroscopeLight className="text-3xl" />}
+          </ClickableIcon>
+
+          <ClickableIcon
+            label="Registre"
+            remove={["boost_gt"]}
+            add={{ datasetTag: 'tree' }}
+            aria-current={datasetTag == 'tree' ? 'page' : 'false'}
+            className={`bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12`}
+          >
+            {datasetTag == 'tree' ?
+              <PiTreeViewFill className="text-3xl text-white" /> :
+              <PiTreeViewLight className="text-3xl" />}
           </ClickableIcon>
           <ClickableIcon
-            label="Namn"
-            remove={['doc']}
-            add={{
-              group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
-              details: 'names'
-            }}
-            aria-current={(details == 'names' && !doc) ? 'page' : 'false'}
-            className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
+            label="Grunnord"
+            remove={["dataset"]}
+            add={{ datasetTag: 'base' }}
+            aria-current={datasetTag == 'base' ? 'page' : 'false'}
+            className={`bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12`}
           >
-            {(details == 'names' && !doc )? <PiSignpostFill className="text-xl" aria-hidden="true" /> : <PiSignpostLight className="text-xl" aria-hidden="true" />}
+            {datasetTag == 'base' ?
+              <PiWallFill className="text-3xl text-white" /> :
+              <PiWallLight className="text-3xl" />}
           </ClickableIcon>
-          <ClickableIcon
-            label="Liknande namn"
-            remove={['doc']}
-            add={{
-              group: stringToBase64Url(nextGroup?.fields?.['group.id']?.[0] || ''),
-              details: 'overview'
-            }}
-            aria-current={(details == 'overview' && !doc) ? 'page' : 'false'}
-            className="bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12"
-          >
-            {(details == 'overview' && !doc )? <PiBinocularsFill className="text-xl" aria-hidden="true" /> : <PiBinocularsLight className="text-xl" aria-hidden="true" />}
-          </ClickableIcon>
-
-        </> : null}
-        {/* End "Finn namneformer" */}
-      </>}
-
-
-      {drawerContent == 'datasets' && <>
-        <ClickableIcon
-          label="Alle"
-          remove={["datasetTag"]}
-          aria-current={!datasetTag ? 'page' : 'false'}
-          className={`bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12`}
-        >
-          {!datasetTag ?
-            <PiDatabaseFill className="text-3xl text-white" /> :
-            <PiDatabaseLight className="text-3xl" />}
-        </ClickableIcon>
-
-        <ClickableIcon
-          label="Djupinnsamlingar"
-          add={{ datasetTag: 'deep' }}
-          aria-current={datasetTag == 'deep' ? 'page' : 'false'}
-          className={`bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12`}
-        >
-          {datasetTag == 'deep' ?
-            <PiMicroscopeFill className="text-3xl text-white" /> :
-            <PiMicroscopeLight className="text-3xl" />}
-        </ClickableIcon>
-
-        <ClickableIcon
-          label="Registre"
-          remove={["boost_gt"]}
-          add={{ datasetTag: 'tree' }}
-          aria-current={datasetTag == 'tree' ? 'page' : 'false'}
-          className={`bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12`}
-        >
-          {datasetTag == 'tree' ?
-            <PiTreeViewFill className="text-3xl text-white" /> :
-            <PiTreeViewLight className="text-3xl" />}
-        </ClickableIcon>
-        <ClickableIcon
-          label="Grunnord"
-          remove={["dataset"]}
-          add={{ datasetTag: 'base' }}
-          aria-current={datasetTag == 'base' ? 'page' : 'false'}
-          className={`bg-neutral-700 aria-[current=page]:bg-accent-700 text-white btn rounded-full shadow-lg h-12 w-12`}
-        >
-          {datasetTag == 'base' ?
-            <PiWallFill className="text-3xl text-white" /> :
-            <PiWallLight className="text-3xl" />}
-        </ClickableIcon>
-      </>
-      }
+        </>
+        }
 
 
 
 
-      
 
-    </div>
-    {showScrollToTop && (
+
+      </div>
+      {showScrollToTop && (
         <button
           onClick={scrollToTop}
           className="bg-neutral-700 text-white btn rounded-full shadow-lg h-12 w-12 absolute right-0 bottom-14 m-3 z-[5000] transition-all duration-300 ease-in-out"

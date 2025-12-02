@@ -1,7 +1,7 @@
 'use client'
 import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { PiCaretLeft, PiCaretRight } from "react-icons/pi"
 
 
@@ -16,8 +16,8 @@ async function fetchManifest(iiif: string | string[], imgIndex: number, width: n
 
     const dataset = data.hits.hits[0]._index.split("-")[2].split("_")[1]
     const outputWidth = width * 2
-    const outputHeight = Math.round(outputWidth * (9/16))
-    const thumbnailUrl = `https://iiif.test.ubbe.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${data.hits.hits[0]._source.images[0].uuid}/0,0,${data.hits.hits[0]._source.images[0].width},${Math.round(data.hits.hits[0]._source.images[0].width*aspectRatio)}/${outputWidth},${outputHeight}/0/default.jpg`
+    const outputHeight = Math.round(outputWidth * (9 / 16))
+    const thumbnailUrl = `https://iiif.test.ubbe.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${data.hits.hits[0]._source.images[0].uuid}/0,0,${data.hits.hits[0]._source.images[0].width},${Math.round(data.hits.hits[0]._source.images[0].width * aspectRatio)}/${outputWidth},${outputHeight}/0/default.jpg`
     return {
         thumbnailUrl,
         manifestUuid: data.hits.hits[0]._source.uuid,
@@ -25,12 +25,12 @@ async function fetchManifest(iiif: string | string[], imgIndex: number, width: n
 }
 
 
-export default function ClientThumbnail({ iiif, datasetLabel }: { iiif: string | string[], datasetLabel?: string  }) {
+export default function ClientThumbnail({ iiif, datasetLabel }: { iiif: string | string[], datasetLabel?: string }) {
     const [imgIndex, setImgIndex] = useState(0)
     const width = 320
     const aspectRatio = 9 / 16
 
-  
+
 
 
     const { data, isLoading: manifestLoading } = useQuery({
@@ -46,18 +46,18 @@ export default function ClientThumbnail({ iiif, datasetLabel }: { iiif: string |
         ) : (
             <Link href={"/iiif/" + manifestUuid} className="w-full aspect-[16/9] relative block border border-neutral-200">
                 <img
-                    src={thumbnailUrl || "/"} 
+                    src={thumbnailUrl || "/"}
                     alt="Seddel"
                     className="object-contain"
-                    
-                    />
+
+                />
             </Link>
         )}
-        
+
         <div className="flex gap-1 justify-between absolute bottom-1 right-1">
             {Array.isArray(iiif) && iiif.length > 1 && (
                 <div className="flex ml-auto">
-                    <button 
+                    <button
                         onClick={() => setImgIndex(prev => prev > 0 ? prev - 1 : iiif.length - 1)}
                         className="btn btn-outline btn-compact grow md:grow-0"
                         aria-label="Forrige bilde"
@@ -70,7 +70,7 @@ export default function ClientThumbnail({ iiif, datasetLabel }: { iiif: string |
                         </span>
                     </div>
                     <button
-                        onClick={() => setImgIndex(prev => prev < iiif.length - 1 ? prev + 1 : 0)} 
+                        onClick={() => setImgIndex(prev => prev < iiif.length - 1 ? prev + 1 : 0)}
                         className="btn btn-outline btn-compact grow md:grow-0"
                         aria-label="Neste bilde"
                     >

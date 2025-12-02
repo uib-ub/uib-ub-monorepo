@@ -1,8 +1,8 @@
-import Image from "next/image"
+import Image from "next/image";
 
-export default async function Thumbnail({ manifestId, dataset }: { manifestId: string, dataset: string}) {
+export default async function Thumbnail({ manifestId, dataset }: { manifestId: string, dataset: string }) {
     const height = 240
-    
+
 
     async function fetchThumbnail() {
         'use server'
@@ -16,15 +16,15 @@ export default async function Thumbnail({ manifestId, dataset }: { manifestId: s
 
         console.log("ID", JSON.stringify(data?.thumbnail, null, 2))
         const newThumbnailUrl = `${baseUrl}/full/${newWidth},${height}/0/default.jpg`
-        console.log("NEW", newThumbnailUrl)    
-            
+        console.log("NEW", newThumbnailUrl)
 
-        return {thumbnail: newThumbnailUrl, width: newWidth }
-    
+
+        return { thumbnail: newThumbnailUrl, width: newWidth }
+
     }
 
 
-    const {thumbnail, width } = await fetchThumbnail()
+    const { thumbnail, width } = await fetchThumbnail()
 
     return width ? (
         <Image width={width} height={height} src={thumbnail} alt="Seddel" />

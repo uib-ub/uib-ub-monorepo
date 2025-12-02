@@ -1,18 +1,17 @@
-//export const runtime = 'edge'
 
-import { extractFacets } from '../../_utils/facets'
-import { getQueryString } from '../../_utils/query-string';
-import { postQuery } from '../../_utils/post';
 import { getSortArray } from '@/config/server-config';
+import { extractFacets } from '../../_utils/facets';
+import { postQuery } from '../../_utils/post';
+import { getQueryString } from '../../_utils/query-string';
 
 
 export async function GET(request: Request) {
-  const {termFilters, reservedParams} = extractFacets(request)
+  const { termFilters, reservedParams } = extractFacets(request)
   const dataset = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
   const { highlight, simple_query_string } = getQueryString(reservedParams)
 
   let sortArray: (string | object)[] = []
-    
+
   // Convert field names with double underscores to nested field paths
   const convertToNestedPath = (field: string) => {
     if (field.includes('__')) {
@@ -30,7 +29,7 @@ export async function GET(request: Request) {
   } else if (reservedParams.desc) {
     sortArray = reservedParams.desc.split(',').map(field => ({
       ...convertToNestedPath(field),
-      [Object.keys(convertToNestedPath(field))[0]]: { 
+      [Object.keys(convertToNestedPath(field))[0]]: {
         ...Object.values(convertToNestedPath(field))[0],
         order: 'desc'
       }
@@ -42,25 +41,25 @@ export async function GET(request: Request) {
     sortArray = getSortArray(dataset)
   }
 
-    
+
   const suppressedExclusion = {
     "terms": {
       "group.id": ["suppressed", "noname"]
     }
   };
 
-  const query: Record<string,any> = {
-    "size":  parseInt(reservedParams.size || "10"),
+  const query: Record<string, any> = {
+    "size": parseInt(reservedParams.size || "10"),
     "from": parseInt(reservedParams.from || "0"),
-    ...highlight ? {highlight} : {},
-    "sort": [...sortArray, {uuid: {order: 'asc'}}],
+    ...highlight ? { highlight } : {},
+    "sort": [...sortArray, { uuid: { order: 'asc' } }],
     "_source": true
   }
 
   if (simple_query_string && termFilters.length) {
     query.query = {
       "bool": {
-        "must": simple_query_string,              
+        "must": simple_query_string,
         "filter": termFilters,
         "must_not": [suppressedExclusion]
       }
@@ -75,7 +74,8 @@ export async function GET(request: Request) {
     }
   }
   else if (termFilters.length) {
-    query.query = {"bool": {
+    query.query = {
+      "bool": {
         "filter": termFilters,
         "must_not": [suppressedExclusion]
       }
@@ -93,6 +93,6 @@ export async function GET(request: Request) {
 
   const [data, status] = await postQuery(dataset, query)
 
-  return Response.json(data, {status: status})
-  
+  return Response.json(data, { status: status })
+
 }

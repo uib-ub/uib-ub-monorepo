@@ -1,14 +1,13 @@
-//export const runtime = 'edge'
 import { extractFacets } from "../_utils/facets"
 import { postQuery } from "../_utils/post"
 import { getQueryString } from "../_utils/query-string"
 
 export async function GET(request: Request) {
-    const {termFilters, reservedParams} = extractFacets(request)
+    const { termFilters, reservedParams } = extractFacets(request)
     const dataset = reservedParams.dataset || 'all'
     const { simple_query_string } = getQueryString(reservedParams)
-    
-    const query: Record<string,any> = {
+
+    const query: Record<string, any> = {
         "size": 0,
         "track_scores": true,
         "aggs": {
@@ -98,7 +97,7 @@ export async function GET(request: Request) {
         if (simple_query_string && termFilters.length) {
             query.query = {
                 "bool": {
-                    "must": simple_query_string,              
+                    "must": simple_query_string,
                     "filter": termFilters
                 }
             }
@@ -115,5 +114,5 @@ export async function GET(request: Request) {
 
 
     const [data, status] = await postQuery(dataset, query, "dfs_query_then_fetch")
-    return Response.json(data, {status: status})
+    return Response.json(data, { status: status })
 }

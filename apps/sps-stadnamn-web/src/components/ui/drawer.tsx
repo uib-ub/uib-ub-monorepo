@@ -1,9 +1,8 @@
 'use client'
+import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, MAP_DRAWER_TOP_SUBTRACT_REM } from "@/lib/map-utils"
 import { useEffect, useRef, useState } from "react"
 import { PiCaretUpBold } from "react-icons/pi"
 import { RoundIconButton } from "./clickable/round-icon-button"
-import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, MAP_DRAWER_TOP_SUBTRACT_REM } from "@/lib/map-utils"
-import useSearchData from "@/state/hooks/search-data"
 
 
 
@@ -40,7 +39,7 @@ export default function Drawer({
     const startTouchX = useRef(0)
     const startTouchTime = useRef(0)
     const dragFromTopZoneRef = useRef(false)
-    
+
     const lastRawHeightRef = useRef<number>(0)
     const startHeightRemRef = useRef<number>(0)
     const localScrollRef = useRef<HTMLDivElement>(null)
@@ -48,7 +47,7 @@ export default function Drawer({
     const effectiveScrollRef = scrollContainerRef || localScrollRef
     const gestureStartedScrollRef = useRef<boolean>(false)
 
-    
+
 
     const svhToRem = (svh: number) => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return 0
@@ -79,7 +78,7 @@ export default function Drawer({
         if (typeof window === 'undefined') return false
         return snappedPosition === 'top' && approximately(currentPosition, topRem())
     }
-    
+
 
     const isInteractiveElement = (target: EventTarget | null): boolean => {
         return target instanceof Element && !!target.closest('a,button,input,textarea,select,[role="button"],[data-allow-touch]')
@@ -160,7 +159,7 @@ export default function Drawer({
             const target = e.target as Node
             if (!container.contains(target)) {
                 if (snappedPosition == 'middle') {
-                  setSnappedPosition('bottom')
+                    setSnappedPosition('bottom')
                 }
 
             }
@@ -254,7 +253,7 @@ export default function Drawer({
         setCurrentPosition(snapTarget)
         setSnappedPosition(
             snapTarget === bottomHeightRem ? 'bottom' :
-            snapTarget === middleRem() ? 'middle' : 'top'
+                snapTarget === middleRem() ? 'middle' : 'top'
         )
         gestureStartedScrollRef.current = false
     }
@@ -328,20 +327,20 @@ export default function Drawer({
     // Track scroll position for UI feedback
     const [scrolled, setScrolled] = useState(false)
     const [showScrollToTop, setShowScrollToTop] = useState(false)
-    
+
     useEffect(() => {
         const el = effectiveScrollRef.current
         if (!el) return
-        
+
         const onScroll = () => {
             const scrollTop = el.scrollTop
             setScrolled(scrollTop > 0)
             setShowScrollToTop(scrollTop > 300)
         }
-        
+
         el.addEventListener('scroll', onScroll, { passive: true } as any)
         onScroll() // Initialize on mount
-        
+
         return () => {
             el.removeEventListener('scroll', onScroll as any)
         }
@@ -355,53 +354,53 @@ export default function Drawer({
 
     return (
         <>
-        <div
-            className={`
+            <div
+                className={`
                 absolute top-14 left-0 w-full h-full z-[3001]
                 bg-black/50
                 pointer-events-none
                 transition-opacity duration-300
                 ${snappedPosition == 'top' ? 'opacity-100' : 'opacity-0'}
             `}
-            aria-hidden="true"
-        ></div>
-        <div
-            ref={outerRef}
-            className={`fixed w-full left-0 drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''} flex flex-col`}
-            style={{ bottom: '-0.5rem', height: `${drawerOpen ? currentPosition : 0}rem`, pointerEvents: drawerOpen ? 'auto' : 'none', zIndex: 6000, touchAction: atMiddle() ? 'auto' : 'none', overscrollBehaviorY: 'none' as any }}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-        >
-            {/* Grip */}
+                aria-hidden="true"
+            ></div>
             <div
-                className={`absolute top-0 left-1/2 -translate-x-1/2 order-b border-none border-primary-600 flex z-[6001] pb-2 px-4  rounded-b-lg  bg-white`}
+                ref={outerRef}
+                className={`fixed w-full left-0 drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''} flex flex-col`}
+                style={{ bottom: '-0.5rem', height: `${drawerOpen ? currentPosition : 0}rem`, pointerEvents: drawerOpen ? 'auto' : 'none', zIndex: 6000, touchAction: atMiddle() ? 'auto' : 'none', overscrollBehaviorY: 'none' as any }}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
             >
-           
-                <div  className={`${scrolled ? 'bg-neutral-600' : 'bg-neutral-300'} w-16 h-1.5 rounded-full m-1`}></div>
+                {/* Grip */}
+                <div
+                    className={`absolute top-0 left-1/2 -translate-x-1/2 order-b border-none border-primary-600 flex z-[6001] pb-2 px-4  rounded-b-lg  bg-white`}
+                >
 
+                    <div className={`${scrolled ? 'bg-neutral-600' : 'bg-neutral-300'} w-16 h-1.5 rounded-full m-1`}></div>
+
+                </div>
+                {/* Scroll container: scrollable if the drawer is at the max height */}
+                <div
+                    ref={effectiveScrollRef}
+                    className={`flex-1 min-h-0 bg-white ${currentPosition > bottomHeightRem ? 'rounded-t-xl' : ''}`}
+                    style={{
+                        overflowY: (atMiddle() || atTop()) ? 'auto' : 'hidden',
+                        touchAction: shouldAllowScroll() ? 'pan-y' : 'none',
+                        overscrollBehaviorY: 'contain' as any
+                    }}
+                >
+                    {children}
+                </div>
+                {showScrollToTop && (
+                    <RoundIconButton
+                        type="button"
+                        className="absolute right-6 bottom-20 z-[6001] rounded-full"
+                        onClick={scrollToTop}
+                        label="Til toppen"
+                    ><PiCaretUpBold className="text-xl xl:text-base" /></RoundIconButton>
+                )}
             </div>
-            {/* Scroll container: scrollable if the drawer is at the max height */}
-            <div
-                ref={effectiveScrollRef}
-                className={`flex-1 min-h-0 bg-white ${currentPosition > bottomHeightRem ? 'rounded-t-xl' : ''}`}
-                style={{ 
-                    overflowY: (atMiddle() || atTop()) ? 'auto' : 'hidden', 
-                    touchAction: shouldAllowScroll() ? 'pan-y' : 'none', 
-                    overscrollBehaviorY: 'contain' as any 
-                }}
-            >
-                {children}
-            </div>
-            {showScrollToTop && (
-                <RoundIconButton
-                    type="button"
-                    className="absolute right-6 bottom-20 z-[6001] rounded-full"
-                    onClick={scrollToTop}
-                    label="Til toppen"
-                ><PiCaretUpBold className="text-xl xl:text-base"/></RoundIconButton>
-            )}
-        </div>
         </>
     )
 }

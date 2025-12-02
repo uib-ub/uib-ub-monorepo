@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold } from "react-icons/pi";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi";
 
 interface NestedResourceProps {
   uri: string;
@@ -28,7 +28,7 @@ export default function NestedResource({ uri, children, parentUuid, childUuids =
       if (typeof window !== 'undefined') {
         const fragment = window.location.hash.slice(1) || '';
         const uuid = getUuid(uri);
-        
+
         if (fragment === uuid || childUuids.includes(fragment)) {
           setOpen(true);
         }
@@ -42,12 +42,12 @@ export default function NestedResource({ uri, children, parentUuid, childUuids =
 
   const uuid = getUuid(uri);
   const routeUuid = pathname.split('/').pop();
-  
+
   // Build URLs with proper fragment handling
-  const parentUrl = parentUuid ? 
-    (parentUuid === routeUuid ? pathname : `${pathname}#${parentUuid}`) : 
+  const parentUrl = parentUuid ?
+    (parentUuid === routeUuid ? pathname : `${pathname}#${parentUuid}`) :
     pathname;
-    
+
   const href = uuid ? `${pathname}#${uuid}` : pathname;
 
   return (
@@ -68,14 +68,14 @@ export default function NestedResource({ uri, children, parentUuid, childUuids =
           aria-controls={`${uuid}-content`}
         >
           {uri}
-          {open ? 
-            <PiCaretUpBold className="w-4 h-4 text-primary-700" aria-hidden="true" /> : 
+          {open ?
+            <PiCaretUpBold className="w-4 h-4 text-primary-700" aria-hidden="true" /> :
             <PiCaretDownBold className="w-4 h-4 text-primary-700" aria-hidden="true" />
           }
         </button>
       </div>
-      
-      <div 
+
+      <div
         id={`${uuid}-content`}
         className={`${open ? 'block' : 'hidden'}`}
       >

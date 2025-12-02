@@ -1,11 +1,11 @@
 'use client'
-import { useSearchParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query'
-import useGroupData from './group-data';
 import { useDocIndex, useGroup } from '@/lib/param-hooks';
+import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
+import useGroupData from './group-data';
 
 
-const docDataQuery = async (docUuid: string, docParams?: {docData: Record<string, any>, docDataset?: string}) => {
+const docDataQuery = async (docUuid: string, docParams?: { docData: Record<string, any>, docDataset?: string }) => {
     if (docParams?.docData) {
         return {
             docData: docParams.docData,
@@ -34,19 +34,19 @@ const docDataQuery = async (docUuid: string, docParams?: {docData: Record<string
     throw new Error('Doc not found')
 }
 
-export default function useDocData(docParams?: {docData: Record<string, any>, docDataset?: string}) {
+export default function useDocData(docParams?: { docData: Record<string, any>, docDataset?: string }) {
     const searchParams = useSearchParams()
     const { groupData } = useGroupData()
     const docIndex = useDocIndex()
-    const {activeGroupCode} = useGroup()
+    const { activeGroupCode } = useGroup()
     const doc = searchParams.get('doc')
-    
-    
+
+
     const docUuid = searchParams.get('doc') || groupData?.[docIndex]?._source?.uuid
 
     const { data, error: docError, isLoading: docLoading, isRefetching: docRefetching, isFetchedAfterMount: docFetchedAfterMount } = useQuery({
         queryKey: ['doc', activeGroupCode, doc, docIndex, docUuid],
-        placeholderData : (prevData) => prevData,
+        placeholderData: (prevData) => prevData,
         queryFn: async () => docUuid ? docDataQuery(docUuid, docParams) : null
     })
 

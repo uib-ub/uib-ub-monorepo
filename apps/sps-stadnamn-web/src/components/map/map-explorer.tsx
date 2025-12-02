@@ -1,30 +1,26 @@
 'use client'
-import { Fragment, useEffect, useRef, useState, useCallback, useMemo, useContext } from "react";
-import Map from "./leaflet/map";
-import { baseMaps, baseMapKeys, defaultBaseMap, baseMapLookup } from "@/config/basemap-config";
-import { PiBookOpen, PiBookOpenFill, PiCheckCircleFill, PiCrop, PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiMapPinLineFill, PiNavigationArrowFill, PiStackPlus, PiStackPlusFill, PiStackSimpleFill } from "react-icons/pi";
+import { baseMapLookup } from "@/config/basemap-config";
 import { useSearchQuery } from "@/lib/search-params";
-import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 import { useSearchParams } from "next/navigation";
+import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 
+import { boundsFromZoomAndCenter, calculateRadius, fitBoundsToGroupSources, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
+import { useGroup, usePerspective } from "@/lib/param-hooks";
+import { stringToBase64Url } from "@/lib/param-utils";
+import useDocData from "@/state/hooks/doc-data";
+import useGroupData from "@/state/hooks/group-data";
+import useSearchData from "@/state/hooks/search-data";
+import { GlobalContext } from "@/state/providers/global-provider";
+import { useMapSettings } from '@/state/zustand/persistent-map-settings';
+import { useSessionStore } from "@/state/zustand/session-store";
+import { useQueries } from "@tanstack/react-query";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import wkt from 'wellknown';
-import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
-import useDocData from "@/state/hooks/doc-data";
-import { useQueries } from "@tanstack/react-query";
-import { boundsFromZoomAndCenter, getGridSize, calculateZoomFromBounds, calculateRadius, getMyLocation, MAP_DRAWER_BOTTOM_HEIGHT_REM, getLabelBounds, panPointIntoView, fitBoundsToGroupSources } from "@/lib/map-utils";
-import useSearchData from "@/state/hooks/search-data";
-import { useGroup, usePerspective } from "@/lib/param-hooks";
-import { GlobalContext } from "@/state/providers/global-provider";
-import Clickable from "../ui/clickable/clickable";
-import useGroupData from "@/state/hooks/group-data";
-import { useSessionStore } from "@/state/zustand/session-store";
-import { useMapSettings } from '@/state/zustand/persistent-map-settings'
-import { RoundIconButton } from "../ui/clickable/round-icon-button";
+import { useDebugStore } from '../../state/zustand/debug-store';
 import DynamicMap from "./leaflet/dynamic-map";
 import MapToolbar from "./map-toolbar";
-import { useDebugStore } from '../../state/zustand/debug-store';
-import dynamic from "next/dynamic";
 
 const DynamicDebugLayers = dynamic(() => import('@/components/map/debug-layers'), {
   ssr: false
@@ -37,7 +33,7 @@ const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontS
 
 
 export default function MapExplorer() {
-  
+
   const showMarkerBounds = useDebugStore(state => state.showMarkerBounds);
   // Add state for H3 resolution
 
@@ -84,7 +80,7 @@ export default function MapExplorer() {
 
 
   const defaultZoom = isMobile ? 4 : 5
-  const defaultCenter: [number, number] = isMobile ? [62, 16] :  [62, 16]
+  const defaultCenter: [number, number] = isMobile ? [62, 16] : [62, 16]
 
 
 
@@ -95,12 +91,12 @@ export default function MapExplorer() {
       // Calculate bounds based on zoom level and center point
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-      
+
       // Get the computed value of 3rem in pixels
       const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
       const headerHeight = rootFontSize * 3;
 
-      return boundsFromZoomAndCenter({width: viewportWidth, height: viewportHeight - headerHeight}, center, zoom);
+      return boundsFromZoomAndCenter({ width: viewportWidth, height: viewportHeight - headerHeight }, center, zoom);
     }
     if (searchBounds?.length) {
       return searchBounds
@@ -108,7 +104,7 @@ export default function MapExplorer() {
     // Fallback to default bounds
     return [[72, -5], [54, 25]];
   });
-  
+
 
 
 
@@ -149,7 +145,7 @@ export default function MapExplorer() {
         enabled: !showDebugGroups,
         queryFn: async () => {
           const existingParams = new URLSearchParams(searchQueryString)
-    
+
           const newParams = existingParams.toString() ? existingParams : new URLSearchParams()
           if (searchFilterParamsString) {
             newParams.set('totalHits', totalHits.value)
@@ -157,7 +153,7 @@ export default function MapExplorer() {
           if (datasetTag == 'tree' && !searchParams.get('within')) {
             newParams.set('sosi', 'gard')
           }
-          
+
 
 
           const res = await fetch(`/api/markers/${cell.precision}/${cell.x}/${cell.y}${newParams.toString() ? `?${newParams.toString()}` : ''}`, { signal: controllerRef.current.signal })
@@ -190,7 +186,7 @@ export default function MapExplorer() {
     const seenGroups = new Set<string>()
 
     buckets.forEach((bucket: any) => {
-      if ( zoomState > 15 || activeMarkerMode == 'labels' || bucket.doc_count == 1) {
+      if (zoomState > 15 || activeMarkerMode == 'labels' || bucket.doc_count == 1) {
 
 
         const [z, x, y] = bucket.key.split('/').map(Number);
@@ -206,7 +202,7 @@ export default function MapExplorer() {
           `${z}/${x + 1}/${y + 1}`    // South-East
         ];
 
-        const evaluateNeighborMarkers = (self: Record<string, any>, neighbourMarkers: Record<string, any>[]): {other: Record<string, any> | null, otherIndex: number | null} => {
+        const evaluateNeighborMarkers = (self: Record<string, any>, neighbourMarkers: Record<string, any>[]): { other: Record<string, any> | null, otherIndex: number | null } => {
           let otherIndex = 0
 
           const selfLat = self.fields.location[0].coordinates[1]
@@ -245,17 +241,17 @@ export default function MapExplorer() {
 
           for (const neighborTile of neighborTiles) {
             const neighborMarkers = labeledMarkersLookup[neighborTile]
-            const {other, otherIndex} = evaluateNeighborMarkers(top_hit, neighborMarkers || []) 
+            const { other, otherIndex } = evaluateNeighborMarkers(top_hit, neighborMarkers || [])
             if (other && otherIndex !== null) {
               if ((other.fields.boost || 0) < (top_hit.fields.boost || 0)) {
                 const stolenChildren = other.children || []
-                const childlessOther = { ...other, children: undefined}
-                labeledMarkersLookup[neighborTile][otherIndex] = {...top_hit, labelBounds: top_hit.labelBounds, children: [childlessOther, ...stolenChildren]}
+                const childlessOther = { ...other, children: undefined }
+                labeledMarkersLookup[neighborTile][otherIndex] = { ...top_hit, labelBounds: top_hit.labelBounds, children: [childlessOther, ...stolenChildren] }
               }
               else {
                 const lostChildren = top_hit.children || []
-                const childlessTopHit = { ...top_hit, children: undefined}
-                labeledMarkersLookup[neighborTile][otherIndex] = {...other, children: [childlessTopHit, ...lostChildren]}
+                const childlessTopHit = { ...top_hit, children: undefined }
+                labeledMarkersLookup[neighborTile][otherIndex] = { ...other, children: [childlessTopHit, ...lostChildren] }
               }
               otherFound = true
               break
@@ -270,11 +266,11 @@ export default function MapExplorer() {
           }
 
 
-        
+
 
 
           ///labelItems.push({key: bucket.key, ...top_hit})
-          
+
         })
       } else {
         countItems.push(bucket)
@@ -285,14 +281,14 @@ export default function MapExplorer() {
     })
 
     // Flatten
-    const markers = Object.entries(labeledMarkersLookup).flatMap(([key, items]: [string, Record<string, any>[]]) => 
+    const markers = Object.entries(labeledMarkersLookup).flatMap(([key, items]: [string, Record<string, any>[]]) =>
       items.map(item => {
 
 
         return ({ tile: key, ...item })
       })
     )
-    const clusters = countItems.map((item: any) => ({...item, radius: calculateRadius(item.doc_count, maxDocCount, minDocCount )}))
+    const clusters = countItems.map((item: any) => ({ ...item, radius: calculateRadius(item.doc_count, maxDocCount, minDocCount) }))
 
     //console.log("MARKERS", markers)
     //console.log("CLUSTERS", clusters)
@@ -323,7 +319,7 @@ export default function MapExplorer() {
 
 
   const updateMarkerGrid = useCallback((liveBounds: [[number, number], [number, number]], liveZoom: number, gridSizeData: { gridSize: number, precision: number }, currentCells: GeotileCell[]) => {
-   // console.log("UPDATE MARKER GRID", liveBounds, liveZoom, gridSizeData, currentCells)
+    // console.log("UPDATE MARKER GRID", liveBounds, liveZoom, gridSizeData, currentCells)
     const { gridSize, precision } = gridSizeData
     const [[north, west], [south, east]] = liveBounds
 
@@ -458,9 +454,8 @@ export default function MapExplorer() {
         else {
           //setDebugChildren([])
         }
-        if (!newQueryParams.get('results')) {
-          newQueryParams.set('results', 'on')
-        }
+        // When selecting a marker, always reset results to 1 (don't preserve previous expansions)
+        newQueryParams.set('results', '1')
         newQueryParams.delete('mapSettings')
         //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
         newQueryParams.delete('doc')
@@ -475,9 +470,9 @@ export default function MapExplorer() {
 
 
         router.push(`?${newQueryParams.toString()}`)
-          
 
-        }
+
+      }
     }
   }
 
@@ -530,7 +525,7 @@ export default function MapExplorer() {
 
 
   return <>
-    <MapToolbar/>
+    <MapToolbar />
     <DynamicMap
       tapHold={true}
       zoomControl={false}
@@ -547,9 +542,9 @@ export default function MapExplorer() {
       center={urlCenter || defaultCenter}
       className={`absolute top-0 right-0 left-0 select-none`}
       style={{
-        bottom: isMobile ? `${MAP_DRAWER_BOTTOM_HEIGHT_REM-0.5}rem` : '0',
+        bottom: isMobile ? `${MAP_DRAWER_BOTTOM_HEIGHT_REM - 0.5}rem` : '0',
       }}
-      >
+    >
       {({ TileLayer, CircleMarker, Popup, Circle, Marker, useMapEvents, useMap, Rectangle, Polygon, MultiPolygon, Polyline, AttributionControl }: any, leaflet: any) => {
 
         function EventHandlers() {
@@ -561,23 +556,23 @@ export default function MapExplorer() {
               if (attribution) {
                 attribution.getContainer().style.display = mapSettings ? "block" : "none";
               }
-            }, 
+            },
 
             contextmenu: (event: any) => {
 
 
-                
-                const point = event.latlng
-                
 
-                    const newParams = new URLSearchParams(searchParams)
-                    newParams.delete('group')
-                    newParams.delete('init')
+              const point = event.latlng
 
-                    newParams.set('point', `${point.lat},${point.lng}`)
-                    router.push(`?${newParams.toString()}`)
-                  
-                
+
+              const newParams = new URLSearchParams(searchParams)
+              newParams.delete('group')
+              newParams.delete('init')
+
+              newParams.set('point', `${point.lat},${point.lng}`)
+              router.push(`?${newParams.toString()}`)
+
+
             },
 
 
@@ -650,9 +645,9 @@ export default function MapExplorer() {
         return (
 
           <>
-            <AttributionControl prefix={false} position={isMobile ? "bottomleft" : "bottomright" } />
+            <AttributionControl prefix={false} position={isMobile ? "bottomleft" : "bottomright"} />
             <EventHandlers />
-            
+
             {baseMap[perspective] && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapLookup[baseMap[perspective]].props} />}
 
 
@@ -735,13 +730,13 @@ export default function MapExplorer() {
               const lat = item.fields.location?.[0]?.coordinates?.[1];
               const lng = item.fields.location?.[0]?.coordinates?.[0];
               // Ensure lat/lng exist (0 is a valid value) and are finite
-              
+
               if (lat == undefined || lng == undefined || !isPointInViewport(lat, lng)) {
                 return null;
               }
               else {
                 const selected = activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue && !groupLoading
-                if (selected) return null
+                if (selected || activePoint) return null
 
                 const isInit = initValue && item.fields?.["group.id"]?.[0] == initValue
                 const markerColor = isInit ? 'primary' : 'white'
@@ -751,41 +746,41 @@ export default function MapExplorer() {
 
 
                 return (
-                <Fragment key={`result-frag-${item.fields.uuid[0]}`}>
-                  { showMarkerBounds && item.labelBounds && (
-                    <Rectangle
-                      bounds={item.labelBounds}
-                      pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
-                    />
-                  )}
-                  {
-                    showMarkerBounds && <CircleMarker
-                    center={[lat, lng]}
-                    radius={2}
-                    pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
-                  />
-                  }
-                  {
-                    showMarkerBounds && item.children?.map((child: any) => (
-                      <CircleMarker
-                        key={`child-${child.fields.uuid[0]}`}
-                        center={[child.fields.location[0].coordinates[1], child.fields.location[0].coordinates[0]]}
-                        radius={2}
-                        pathOptions={{ color: '#0000ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
+                  <Fragment key={`result-frag-${item.fields.uuid[0]}`}>
+                    {showMarkerBounds && item.labelBounds && (
+                      <Rectangle
+                        bounds={item.labelBounds}
+                        pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
                       />
-                    ))
-                  }
-                  {activeGroupValue != item.fields?.["group.id"]?.[0] && <Marker
-                    key={`result-${item.fields.uuid[0]}`}
-                    position={[lat, lng]}
-                    icon={new leaflet.DivIcon(icon)}
-                    riseOnHover={true}
-                    eventHandlers={selectDocHandler(item, [lat, lng])}
-                  >
-                  </Marker>}
-                </Fragment>
-              )
-            }
+                    )}
+                    {
+                      showMarkerBounds && <CircleMarker
+                        center={[lat, lng]}
+                        radius={2}
+                        pathOptions={{ color: '#ff00ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
+                      />
+                    }
+                    {
+                      showMarkerBounds && item.children?.map((child: any) => (
+                        <CircleMarker
+                          key={`child-${child.fields.uuid[0]}`}
+                          center={[child.fields.location[0].coordinates[1], child.fields.location[0].coordinates[0]]}
+                          radius={2}
+                          pathOptions={{ color: '#0000ff', weight: 1, opacity: 0.8, fillOpacity: 0.05 }}
+                        />
+                      ))
+                    }
+                    {activeGroupValue != item.fields?.["group.id"]?.[0] && <Marker
+                      key={`result-${item.fields.uuid[0]}`}
+                      position={[lat, lng]}
+                      icon={new leaflet.DivIcon(icon)}
+                      riseOnHover={true}
+                      eventHandlers={selectDocHandler(item, [lat, lng])}
+                    >
+                    </Marker>}
+                  </Fragment>
+                )
+              }
 
 
             })}
@@ -823,20 +818,20 @@ export default function MapExplorer() {
               (() => {
                 // Only show lines and dots for the init group
                 if (!groupData?.sources || activeGroupValue !== initValue) return null;
-                
+
                 // Find the first source with coordinates - this is the central coordinate
-                const centralSource = groupData.sources.find((source: Record<string, any>) => 
+                const centralSource = groupData.sources.find((source: Record<string, any>) =>
                   source?.location?.coordinates?.length === 2
                 );
-                
+
                 if (!centralSource) return null;
-                
+
                 const centralLat = centralSource.location.coordinates[1];
                 const centralLng = centralSource.location.coordinates[0];
-                
+
                 // Track unique coordinates to avoid duplicates
                 const seenCoordinates = new Set<string>();
-                
+
                 return (
                   <>
                     {/* Other source markers and connecting lines */}
@@ -847,23 +842,23 @@ export default function MapExplorer() {
                       }
                       const lat = source.location.coordinates[1];
                       const lng = source.location.coordinates[0];
-                      
+
                       // Skip if this is the central coordinate (no duplicate)
                       if (centralLat === lat && centralLng === lng) {
                         return null;
                       }
-                      
+
                       // Create a unique key for this coordinate
                       const coordKey = `${lat},${lng}`;
-                      
+
                       // Skip if we've already seen this coordinate
                       if (seenCoordinates.has(coordKey)) {
                         return null;
                       }
-                      
+
                       // Mark this coordinate as seen
                       seenCoordinates.add(coordKey);
-                      
+
                       return (
                         <Fragment key={`location-marker-${index}`}>
                           {/* Line connecting source to central coordinate */}
@@ -876,13 +871,13 @@ export default function MapExplorer() {
                             }}
                           />
                           {/* Source marker */}
-                          <CircleMarker 
-                            center={[lat, lng]} 
-                            radius={6} 
-                            weight={1} 
-                            opacity={1} 
-                            fillOpacity={1} 
-                            color="#000000" 
+                          <CircleMarker
+                            center={[lat, lng]}
+                            radius={6}
+                            weight={1}
+                            opacity={1}
+                            fillOpacity={1}
+                            color="#000000"
                             fillColor="#000000"
                             eventHandlers={{
                               click: () => {
@@ -932,34 +927,34 @@ export default function MapExplorer() {
                             fillOpacity: 0.2
                           }}
                         />;
-                        case 'LineString':
-                          return <Polyline
-                            positions={geoJSON.coordinates.map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
-                            pathOptions={{
-                              color: '#0066ff',
-                              weight: 5,
-                              opacity: 0.8,
-                              fillOpacity: 0.2
-                            }}
-                          />;
-                        
-                        case 'MultiLineString':
-                          return (
-                            <>
-                              {geoJSON.coordinates.map((lineCoords, index) => (
-                                <Polyline
-                                  key={index}
-                                  positions={lineCoords.map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
-                                  pathOptions={{
-                                    color: '#0066ff',
-                                    weight: 5,
-                                    opacity: 0.8,
-                                    fillOpacity: 0.2
-                                  }}
-                                />
-                              ))}
-                            </>
-                          );
+                      case 'LineString':
+                        return <Polyline
+                          positions={geoJSON.coordinates.map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
+                          pathOptions={{
+                            color: '#0066ff',
+                            weight: 5,
+                            opacity: 0.8,
+                            fillOpacity: 0.2
+                          }}
+                        />;
+
+                      case 'MultiLineString':
+                        return (
+                          <>
+                            {geoJSON.coordinates.map((lineCoords, index) => (
+                              <Polyline
+                                key={index}
+                                positions={lineCoords.map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
+                                pathOptions={{
+                                  color: '#0066ff',
+                                  weight: 5,
+                                  opacity: 0.8,
+                                  fillOpacity: 0.2
+                                }}
+                              />
+                            ))}
+                          </>
+                        );
                       default:
                         return null;
                     }
@@ -971,17 +966,17 @@ export default function MapExplorer() {
               </>
             )}
 
-            { myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
-            { urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" />}
-            { displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" />}
-            { point && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point} />}
-            { activePoint && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} />}
+            {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
+            {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" />}
+            {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" />}
+            {point && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point} />}
+            {activePoint && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} />}
 
 
 
 
 
-            {doc && false && docData?._source?.within && <Marker 
+            {doc && false && docData?._source?.within && <Marker
               zIndexOffset={1000}
               icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))}
               position={[docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]}

@@ -1,13 +1,13 @@
+import { fetchIIFDocByIndex, fetchIIFSuppage } from '@/app/api/_utils/actions'
 import type { NextRequest } from 'next/server'
 import { datasetTitles } from './config/metadata-config'
-import { fetchIIFDocByIndex, fetchIIFSuppage } from '@/app/api/_utils/actions'
 
 function getBaseUrlFromRequest(request: NextRequest): string {
     // Prefer the absolute request URL origin; this avoids any env var dependency
     try {
         const { origin } = new URL(request.url)
         if (origin) return origin
-    } catch {}
+    } catch { }
     // Fallback to forwarded headers if origin parsing ever fails
     const proto = request.headers.get('x-forwarded-proto') || 'https'
     const host = request.headers.get('x-forwarded-host') || request.headers.get('host')
@@ -20,22 +20,22 @@ function getBaseUrlFromRequest(request: NextRequest): string {
 async function handleApiRedirect(apiUrl: string, baseUrl: string, redirectPathFn?: (data: any) => string) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-    
+
     try {
         const response = await fetch(apiUrl, { signal: controller.signal, cache: 'force-cache', next: { tags: ["all"] } });
         clearTimeout(timeoutId);
-        
+
         if (!response.ok) {
             return new Response('Not found', { status: 404 });
         }
-        
+
         const data = await response.json();
-        
+
         if (redirectPathFn) {
             const redirectPath = redirectPathFn(data);
             return Response.redirect(baseUrl + redirectPath, 302);
         }
-        
+
         return Response.json(data);
     } catch (error: any) {
         clearTimeout(timeoutId);
@@ -50,7 +50,7 @@ export async function middleware(request: NextRequest) {
     const url = new URL(request.url)
     const path = url.pathname.split('/')
     const baseUrl = getBaseUrlFromRequest(request)
-    
+
 
     // Return 404 if /status and not dev
     if (path[1] == 'status' && process.env.NODE_ENV !== 'development') {
@@ -72,7 +72,7 @@ export async function middleware(request: NextRequest) {
         const idOrIndex = path[3]
         // Redirect canvas, annotationPage, annotation to manifest
         if (["canvas", "annotationPage", "annotation"].includes(iiifRoute)) {
-            const manifestDoc = await fetchIIFSuppage({suppageType: iiifRoute, suppageId: idOrIndex})
+            const manifestDoc = await fetchIIFSuppage({ suppageType: iiifRoute, suppageId: idOrIndex })
             if (manifestDoc?._id) {
                 return Response.redirect(baseUrl + `/iiif/manifest/${manifestDoc.fields.uuid[0]}`, 302)
             }
@@ -81,7 +81,7 @@ export async function middleware(request: NextRequest) {
 
         // Handle pagination in archive explorer
         if (iiifRoute.length == 36 && !isNaN(Number(idOrIndex))) {
-            const targetDoc = await fetchIIFDocByIndex({partOf: iiifRoute, order: idOrIndex})
+            const targetDoc = await fetchIIFDocByIndex({ partOf: iiifRoute, order: idOrIndex })
             if (targetDoc?._id) {
                 return Response.redirect(baseUrl + `/iiif/${targetDoc.fields.uuid[0]}`, 302)
             }
@@ -101,12 +101,12 @@ export async function middleware(request: NextRequest) {
         if (path.length == 5 && path[3] == 'iiif') {
             return handleApiRedirect(`${baseUrl}/api/iiif/${path[4]}`, baseUrl, () => "/iiif/" + path[4]);
         }
-        
+
         searchParams.set('dataset', dataset)
-        
-        return Response.redirect(baseUrl + "/search?" + searchParams.toString() , 302)
+
+        return Response.redirect(baseUrl + "/search?" + searchParams.toString(), 302)
     }
-    
+
     if (path[1] == 'snid') {
         const snid = path[2]
         //const apiUrl = `${baseUrl}/api/snid?snid=${snid}`;

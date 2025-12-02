@@ -177,7 +177,7 @@ export async function GET(request: Request) {
     }
 
     // If page parameter is provided, validate and use only that page
-    const selectedCanvases = page !== null 
+    const selectedCanvases = page !== null
         ? [canvases[parseInt(page, 10)]]
         : canvases;
 
@@ -189,7 +189,7 @@ export async function GET(request: Request) {
     const acceptHeader = request.headers.get('Accept');
 
     // Check format preference from query param first, then Accept header, then default based on page count
-    const wantsPDF = format === 'pdf' || 
+    const wantsPDF = format === 'pdf' ||
         (!format && (acceptHeader?.includes('application/pdf') || selectedCanvases.length > 1));
 
     if (wantsPDF) {
@@ -246,7 +246,7 @@ export async function GET(request: Request) {
             return Response.json({ error: `Failed to fetch image: ${response.statusText}\n${imageUrl}` }, { status: 500 });
         }
         const imageBuffer = await response.arrayBuffer();
-        
+
         const filename = `${outputFilename}.jpg`;
         const encodedFilename = encodeURIComponent(filename);
         return new Response(imageBuffer, {

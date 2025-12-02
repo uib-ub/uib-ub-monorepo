@@ -32,7 +32,7 @@ const tableQuery = async ({
     // Combine searchQueryString with additional parameters
     const baseUrl = `/api/search/table?${searchQueryString}`;
     const additionalParamsString = additionalParams.toString();
-    const fullUrl = additionalParamsString 
+    const fullUrl = additionalParamsString
         ? `${baseUrl}&${additionalParamsString}`
         : baseUrl;
 
@@ -47,7 +47,7 @@ const tableQuery = async ({
 
 export default function useTableData() {
 
-    const {searchQueryString } = useSearchQuery()
+    const { searchQueryString } = useSearchQuery()
     const searchParams = useSearchParams()
     const page = searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1
     const perPage = searchParams.get('perPage') ? parseInt(searchParams.get('perPage')!) : 10
@@ -60,7 +60,7 @@ export default function useTableData() {
     const { data, error, isLoading, isFetching, refetch, dataUpdatedAt } = useQuery({
         queryKey: ['tableData', page, perPage, searchQueryString, desc, asc, cadastreDoc],
         queryFn: () => tableQuery({ page, perPage, searchQueryString, desc, asc, within: cadastreDoc }),
-        placeholderData : (prevData) => prevData,
+        placeholderData: (prevData) => prevData,
         refetchOnWindowFocus: false,
         staleTime: 1000 * 60 * 5, // 5 minutes
     })

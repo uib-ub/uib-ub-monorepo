@@ -1,9 +1,9 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
 import { jsPDF } from 'jspdf'
+import { useEffect, useRef, useState } from 'react'
 // eslint-disable-next-line import/no-unresolved
-import JSZip from 'jszip'
 import { resolveLanguage } from '@/app/iiif/iiif-utils'
+import JSZip from 'jszip'
 
 type ManifestImage = { uuid: string; width: number; height: number; label?: any }
 

@@ -1,17 +1,14 @@
 'use client'
-import { useSearchParams } from 'next/navigation';
-import { useInfiniteQuery } from '@tanstack/react-query'
-import { useSearchQuery } from '@/lib/search-params';
-import { useContext, useRef } from 'react';
-import useGroupData from './group-data';
-import { extractFacets } from '@/app/api/_utils/facets';
 import { base64UrlToString } from '@/lib/param-utils';
+import { useSearchQuery } from '@/lib/search-params';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
+import { useRef } from 'react';
 import { useDebugStore } from '../zustand/debug-store';
-import { GlobalContext } from '../providers/global-provider';
-import { usePerspective } from '@/lib/param-hooks';
+import useGroupData from './group-data';
 
-const INITIAL_PAGE_SIZE = 5;
-const SUBSEQUENT_PAGE_SIZE = 40;
+export const INITIAL_PAGE_SIZE = 10;
+export const SUBSEQUENT_PAGE_SIZE = 40;
 
 // Haversine formula to calculate distance between two coordinates in meters
 const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
@@ -22,8 +19,8 @@ const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: numbe
     const Δλ = (lon2 - lon1) * Math.PI / 180;
 
     const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-              Math.cos(φ1) * Math.cos(φ2) *
-              Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+        Math.cos(φ1) * Math.cos(φ2) *
+        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     return R * c; // Distance in meters
@@ -61,7 +58,7 @@ const collapsedDataQuery = async ({
             initPlaceScore: initGroupData?.placeScore,
             initLocation,
             initLabel,
-            
+
         })
     })
     if (!res.ok) {
@@ -69,7 +66,7 @@ const collapsedDataQuery = async ({
         throw new Error(res.status.toString())
     }
     const data = await res.json()
-    
+
     // Calculate distances if initLocation exists
     const hits = data.hits?.hits || [];
     if (initLocation && initLocation.length === 2) {
@@ -84,7 +81,7 @@ const collapsedDataQuery = async ({
             }
         });
     }
-    
+
     return {
         data: hits,
         nextCursor: hits.length === size ? pageParam + 1 : undefined
@@ -100,7 +97,7 @@ export default function useCollapsedData() {
     const point = searchParams.get('point')
     const debug = useDebugStore((s) => s.debug);
     const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(initGroupCode)
-    
+
     const {
         data,
         error,
@@ -112,8 +109,8 @@ export default function useCollapsedData() {
         status
     } = useInfiniteQuery({
         queryKey: ['collapsedData', searchQueryString, initGroupLoading, initGroupCode, point],
-        queryFn: ({ pageParam }: { pageParam: number }) => collapsedDataQuery({ 
-            pageParam, 
+        queryFn: ({ pageParam }: { pageParam: number }) => collapsedDataQuery({
+            pageParam,
             searchQueryString,
             initGroupCode: initGroupCode,
             initBoost: initGroupCode ? initGroupData?.boost : null,

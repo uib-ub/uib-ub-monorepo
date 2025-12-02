@@ -1,9 +1,8 @@
 'use client'
-import Link from "next/link";
-import { PiMagnifyingGlass } from "react-icons/pi";
-import { facetConfig } from "@/config/search-config";
 import { getValueByPath } from "@/lib/utils";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { PiMagnifyingGlass } from "react-icons/pi";
 
 interface FacetItem {
   value: string;
@@ -15,31 +14,31 @@ interface ProcessedFacet {
   items: FacetItem[];
 }
 
-export default function FacetsInfobox({ 
-  source, 
-  docDataset, 
-  filteredFacets 
-}: { 
-  source: Record<string, any>; 
-  docDataset: string | null; 
-  filteredFacets: any[]; 
+export default function FacetsInfobox({
+  source,
+  docDataset,
+  filteredFacets
+}: {
+  source: Record<string, any>;
+  docDataset: string | null;
+  filteredFacets: any[];
 }) {
   const searchParams = useSearchParams();
-  
+
   if (!docDataset) return null;
 
   const buildSearchUrl = (params: Record<string, string>) => {
     const urlParams = new URLSearchParams();
-    
+
     // Always include nav=results
     urlParams.set('nav', 'results');
-    
+
     // Preserve datasetTag if it exists in current URL
     const currentDatasetTag = searchParams.get('datasetTag');
     if (currentDatasetTag) {
       urlParams.set('datasetTag', currentDatasetTag);
     }
-    
+
     // Add other parameters
     Object.entries(params).forEach(([key, value]) => {
       if (value && value.trim()) {
@@ -53,10 +52,10 @@ export default function FacetsInfobox({
   const processFacet = (facet: any): ProcessedFacet => {
     const value = getValueByPath(source, facet.key);
     const values = Array.isArray(value) ? value : [value].filter(Boolean);
-    
+
     const items: FacetItem[] = values.map((val: any) => {
       const searchParams: Record<string, string> = { [facet.key]: val };
-      
+
       // Add additional parameters if configured
       if (facet.additionalParams) {
         facet.additionalParams.forEach((param: string) => {
@@ -87,7 +86,7 @@ export default function FacetsInfobox({
         {processedFacets.map((facet, index) => (
           <div key={index} className="flex flex-col">
             <strong className="text-neutral-700">{facet.title}</strong>
-            
+
             {facet.items.length === 1 ? (
               <p>
                 <FacetLink item={facet.items[0]} />
@@ -109,8 +108,8 @@ export default function FacetsInfobox({
 
   function FacetLink({ item }: { item: FacetItem }) {
     return (
-      <Link 
-        className="no-underline flex items-center gap-1" 
+      <Link
+        className="no-underline flex items-center gap-1"
         href={buildSearchUrl(item.searchParams)}
       >
         {item.value}

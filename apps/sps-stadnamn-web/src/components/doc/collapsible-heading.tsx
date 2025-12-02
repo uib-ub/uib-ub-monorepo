@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { PiCaretDown, PiCaretDownBold, PiCaretUp, PiCaretUpBold } from "react-icons/pi";
-import { usePathname } from "next/navigation";
 import { useMode } from '@/lib/param-hooks';
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi";
 export default function CollapsibleHeading(props: {
   title: string;
   children: React.ReactNode;
@@ -16,7 +16,7 @@ export default function CollapsibleHeading(props: {
   const landingPage = pathname.startsWith('/uuid/')
   const alwaysOpen = props.alwaysOpen !== false && (landingPage || mode != 'map')
 
-  
+
   const [open, setOpen] = useState(alwaysOpen);
   const HeadingTag = props.headingLevel || 'h3';
 
@@ -32,11 +32,11 @@ export default function CollapsibleHeading(props: {
 
   return <div className="">
     <HeadingTag className="!mt-0 !py-0"><button className="text-left w-full text-black flex items-center border-y border-neutral-200 py-2 xl:border-none xl:py-0 gap-1" aria-expanded={open} aria-controls={props.title + '-collapsible'} onClick={() => setOpen(!open)}>
-        
-        {props.title} {open ? <PiCaretUpBold className="inline self-center text-primary-700" /> : <PiCaretDownBold className="inline self-center text-primary-700" />}</button></HeadingTag>
-        
+
+      {props.title} {open ? <PiCaretUpBold className="inline self-center text-primary-700" /> : <PiCaretDownBold className="inline self-center text-primary-700" />}</button></HeadingTag>
+
     <div id={props.title + '-collapsible'} className={`${open ? 'block py-2' : 'hidden'}`}>
-        {props.children}
+      {props.children}
     </div>
   </div>;
 }

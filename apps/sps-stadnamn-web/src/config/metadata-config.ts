@@ -18,60 +18,60 @@ export interface DatasetPresentation {
     img: string;
     alt: string;
     imageAttribution: string;
-    imageLicense?: {name: string, url: string};
-    imageUrl?: {name: string, url: string};
-    license: {name: string, url: string};
+    imageLicense?: { name: string, url: string };
+    imageUrl?: { name: string, url: string };
+    license: { name: string, url: string };
     attribution: string;
-    links?: {title?: string, href: string, text?: string}[];
+    links?: { title?: string, href: string, text?: string }[];
     subindices?: SubindexPresentation;
     initMode?: string;
   }
 }
 
-export const modes: Record<string, {title: string, description: string}> = {
-  map: {title: "Kart", description: "Stadnamnsøk med kartvisning"},
-  list: {title: "Liste", description: "Stadnamnsøk med listevisning"},
-  table: {title: "Tabell", description: "Stadnamnsøk med tabellvisning"},
+export const modes: Record<string, { title: string, description: string }> = {
+  map: { title: "Kart", description: "Stadnamnsøk med kartvisning" },
+  list: { title: "Liste", description: "Stadnamnsøk med listevisning" },
+  table: { title: "Tabell", description: "Stadnamnsøk med tabellvisning" },
 }
 
 export const datasetTitles: DatasetTitles = {
-    core_group_debug: "Debug",
-    all: "Stadnamnsøk",
-    core_gnidu: "GNIDu",
-    geonames: "Geonames",
-    tree: "Matriklar",
-    base: "Grunnord",
-    deep: "Djupinnsamlingar",
-    bsn: "Bustadnamnregisteret",
-    hord: "Hordanamn",
-    rygh: "Norske Gaardnavne",
-    nbas_reykjavik: "Den nasjonale stadnamnbasen (Legacy data)",
-    m1838: "Matrikkelen 1838", 
-    m1886: "Matrikkelen 1886",
-    mu1950: "Matrikkelutkastet 1950", 
-    skul: "Skulebarnsoppskriftene",
-    leks: "Norsk stadnamnleksikon",
-    leks_g: "Norsk stadnamnleksikon (Grunnord)",
-    rygh_g: "Norske Gaardnavne (Grunnord)",
-    ostf: "Bustadnavn i Østfold",
-    sof: "Fylkesarkivet i Sogn og Fjordane",
-    tot: "Totennavn",
-    ssr2016: "Sentralt stadnamnregister 2016",
-    ssr: "Sentralt stadnamnregister 2025",
-    nrk: "NRKs gamle stadnamnarkiv",
-    gn2019: "Geonames 2019",
-    ft1900: "Folketeljinga 1900",
-    ft1910: "Folketeljinga 1910",
-    m2010: "Matrikkelen 2010",
-    frogn: "Frognmaterialet",
-    gjerd: "Gjerdrumundersøkelsen",
-    sorum: "Sørummaterialet",
-    kven: "Kvenske stedsnavn",
-    snor: "Stadnamn i Noreg",
-    herad: "Heradsregisteret",
-    seta: "Seternamnarkivet",
-    osm: "OpenStreetMap 2019",
-    wikidata: "Wikidata"
+  core_group_debug: "Debug",
+  all: "Stadnamnsøk",
+  core_gnidu: "GNIDu",
+  geonames: "Geonames",
+  tree: "Matriklar",
+  base: "Grunnord",
+  deep: "Djupinnsamlingar",
+  bsn: "Bustadnamnregisteret",
+  hord: "Hordanamn",
+  rygh: "Norske Gaardnavne",
+  nbas_reykjavik: "Den nasjonale stadnamnbasen (Legacy data)",
+  m1838: "Matrikkelen 1838",
+  m1886: "Matrikkelen 1886",
+  mu1950: "Matrikkelutkastet 1950",
+  skul: "Skulebarnsoppskriftene",
+  leks: "Norsk stadnamnleksikon",
+  leks_g: "Norsk stadnamnleksikon (Grunnord)",
+  rygh_g: "Norske Gaardnavne (Grunnord)",
+  ostf: "Bustadnavn i Østfold",
+  sof: "Fylkesarkivet i Sogn og Fjordane",
+  tot: "Totennavn",
+  ssr2016: "Sentralt stadnamnregister 2016",
+  ssr: "Sentralt stadnamnregister 2025",
+  nrk: "NRKs gamle stadnamnarkiv",
+  gn2019: "Geonames 2019",
+  ft1900: "Folketeljinga 1900",
+  ft1910: "Folketeljinga 1910",
+  m2010: "Matrikkelen 2010",
+  frogn: "Frognmaterialet",
+  gjerd: "Gjerdrumundersøkelsen",
+  sorum: "Sørummaterialet",
+  kven: "Kvenske stedsnavn",
+  snor: "Stadnamn i Noreg",
+  herad: "Heradsregisteret",
+  seta: "Seternamnarkivet",
+  osm: "OpenStreetMap 2019",
+  wikidata: "Wikidata"
 }
 
 export const datasetDescriptions: Record<string, string> = {
@@ -172,7 +172,7 @@ export const publishDates: Record<string, string> = {
 }
 
 
-export const licenses: Record<string, {name: string, url: string}> = {
+export const licenses: Record<string, { name: string, url: string }> = {
   ccby4: {
     name: "CC BY 4.0",
     url: "https://creativecommons.org/licenses/by/4.0/deed.no"
@@ -181,235 +181,236 @@ export const licenses: Record<string, {name: string, url: string}> = {
     name: "CC BY-NC-SA 3.0",
     url: "https://creativecommons.org/licenses/by-nc-sa/3.0/deed.no"
   }
-  }
+}
 
 
 
 export const datasetPresentation: DatasetPresentation = {
-      all: {
-        img: "icon.svg",
-        alt: "Kart over Noreg med stadnamn",
-        imageAttribution: "Kartverket",
-        attribution: "Språksamlingane",
-        license: licenses.ccby4,
-      },
-      wikidata: {
-        img: "Wikidata-logo.svg",
-        alt: "Wikidata logo",
-        imageAttribution: "Wikimedia Foundation",
-        attribution: "Språksamlingane, Wikidata",
-        license: licenses.ccby4,
-      },
-      bsn: {
-        img: "/datasets/ubb-spr-bp-0001_sm.jpg",
-        alt: "Ei kvinneleg arkivar eller kontorist sit ved eit skrivebord framfor ei stor rekkje arkivskuffer.",
-        imageAttribution: "Avdeling for spesialsamlingar, Universitetsbiblioteket i Bergen",
-        attribution: "Språksamlingane", 
-        license: licenses.ccby4
-      },
-      hord: {
-        img: "/datasets/3037_general_7_1925_jpg300dpi.jpg",
-        alt: "Utsnitt av kart over Hordaland og Sogn og Fjordane",
-        imageAttribution: "Kartverket: Generalkart VII, L. Arentz 1929",
-        attribution: "Institutt for lingvistiske, litterære og estetiske studiar. Berika av Språksamlingane", 
-        license: licenses.ccby4,
-      },
-      rygh: {
-        img: "/datasets/Prof_oluf_rygh.jpg",
-        alt: "Oluf Rygh, portrettfoto",
-        imageAttribution: "Noregs geografiske oppmåling; retusjering: J. Nordhagen.",
-        attribution: "Riksarkivet og Dokumentasjonsprosjektet. Berika av Språksamlingane", 
-        license: licenses.ccby4,
-      },
-      ostf: {
-        img: "/datasets/Østfold_gml_herredsinndeling.png",
-        alt: "Verket byggjer på den gamle herredsinndelinga i Østfold",
-        imageAttribution: "Bustadnamn i Østfold",
-        attribution: "Kåre Hoel, Margit Harsson og Tom Schmidt. Berika av Språksamlingane", 
-        license: licenses.ccby4,
-      },
-      leks: {
-        img: "/datasets/leks2.png",
-        alt: "Framside til Norsk stadnamnleksikon 1997",
-        imageAttribution: "Skanna av Språksamlingane",
-        license: licenses.ccby4,
-        attribution: "Berit Sandnes. Berika av Språksamlingane", 
-        subindices: {
-          leks_g: {
-            initMode: "list",
-            icon: "base"
-        }},
-      },      
-      m1838: {
-        img: "/datasets/Matrikkelen_1838_Bykle_anneks_utsnitt.jpg",
-        alt: "Utsnitt frå Matrikkelen 1838, Bykle anneks",
-        imageAttribution: "Aust-Agder fylke, Nedenæs amt, Matrikkel , 1838-, oppb: Riksarkivet",
-        attribution: "Riksarkivet og Registreringssentral for historiske data, UiT. Berika av Språksamlingane", 
-        license: licenses.ccby4,
-      },
-      m1886: {
-        img: "/datasets/No-nb_digibok_2014010838007_0180_1.jpg",
-        alt: "Den førebuande matrikkelkommisjonen i Kråkstad i 1864",
-        imageAttribution: "Østlid, Martin. \"Kråkstad\", s. 180 (nb.no)",
-        attribution: "Riksarkivet og Registreringssentral for historiske data, UiT. Berika av Språksamlingane", 
-        license: licenses.ccby4,
-      },
-      mu1950: {
-        img: "/datasets/6541_inndeling_s_1950_jpg300dpi.jpg",
-        alt: "Heradskart 1950",
-        imageAttribution: "Kartverket, kommuneinndelingar 1950",
-        attribution: "Språksamlingane, opphavleg digitalisert av Dokumentasjonsprosjektet", 
-        license: licenses.ccby4,
-      },
-      skul: {
-        img: "/datasets/ubb-kk-n-520-005_sm.jpg",
-        alt: "Interiør frå klasserom, jenteklasse",
-        imageAttribution: "Avdeling for spesialsamlingar, Universitetsbiblioteket i Bergen",
-        attribution: "Språksamlingane", 
-        license: licenses.ccby4,
-      },
-      sof: {
-        img: "/datasets/SOF.JPG",
-        alt: "Utbreiingskart over Fylkesarkivet sine stadnamnsamlingar",
-        imageAttribution: "Fylkesarkivet i Vestland",
-        attribution: "Fylkesarkivet i Vestland. Berika av Språksamlingane", 
-        license: licenses.ccby4,
-        links: [{title: "Nettstad: ", href: "https://www.fylkesarkivet.no/stadnamn.380535.no.html"}]
-      },
-      tot: {
-        img: "/datasets/toten.png",
-        alt: "Historisk fotografi med gardar og bruk ved Einavatnet.",
-        imageAttribution: "Avdeling for spesialsamlingar, Universitetsbiblioteket i Bergen",
-        attribution: "Språksamlingane",
-        license: licenses.ccby4,
-      },
-      ssr2016: {
-        img: "/datasets/Logo ståande, WEB-fargar.svg",
-        alt: "Kartverkets logo",
-        imageAttribution: "Statens kartverk",
-        attribution: "Statens kartverk og Språksamlingane",
-        license: licenses.ccby4,
-      },
-      ssr: {
-        img: "/datasets/Logo ståande, WEB-fargar.svg",
-        alt: "Kartverkets logo",
-        imageAttribution: "Statens kartverk",
-        attribution: "Statens kartverk og Språksamlingane",
-        license: licenses.ccby4,
-      },
-      nrk: {
-        img: "/datasets/Norsk-rikskringkasting-Logo.svg",
-        alt: "NRKs logo",
-        imageAttribution: "Norsk rikskringkasting",
-        attribution: "NRK",
-        license: licenses.ccby4,
-      },
-      gn2019: {
-        img: "/datasets/geonames_logo_icon_171110.svg",
-        alt: "Geonames",
-        imageAttribution: "Geonames",
-        attribution: "Geonames",
-        license: licenses.ccby4,
-      },
-      geonames: {
-        img: "/datasets/geonames_logo_icon_171110.svg",
-        alt: "Geonames",
-        imageAttribution: "Geonames",
-        attribution: "Geonames",
-        license: licenses.ccby4,
-      },
-      ft1900: {
-        img: "/datasets/042sAXjQ1pbw.jpg",
-        alt: "Punchedamer i arbeid i Statistisk Centralbureau ved folketeljinga 1900",
-        imageAttribution: "Foto: Colditz, Caroline",
-        imageUrl: {"name": "oslobilder.no", "url": "http://www.oslobilder.no/NTM/NTM%20C%2011164"},
-        imageLicense: licenses.ccbyncsa3,
-        attribution: "Statistisk sentralbyrå, berika av Språksamlingane",
-        license: licenses.ccby4,
-      },
-      ft1910: {
-        img: "/datasets/ft1910.png",
-        alt: "Foto: Ukjent ca 1900-1910",
-        imageAttribution: "Avdeling for spesialsamlingar, Universitetsbiblioteket i Bergen",
-        imageUrl: {"name": "marcus.uib.no", "url": "https://marcus.uib.no/instance/photograph/ubb-bros-04220"},
-        attribution: "Statistisk sentralbyrå, berika av Språksamlingane",
-        license: licenses.ccby4,
-      },
-      m2010: {
-        img: "/datasets/Logo ståande, WEB-fargar.svg",
-        alt: "Kartverkets logo",
-        imageAttribution: "Statens kartverk",
-        attribution: "Matrikkelen 2010",
-        license: licenses.ccby4,
-      }, 
-      frogn: {
-        img: "/datasets/Frogn_komm.svg",
-        alt: "Våpen for Frogn kommune i Akershus fylke",
-        imageAttribution: "",
-        attribution: "Språksamlingane",
-        license: licenses.ccby4,
-      },
-      gjerd: {
-        img: "/datasets/Gjerdrum_komm.svg",
-        alt: "Våpen for Gjerdrum kommune i Akershus fylke",
-        imageAttribution: "",
-        attribution: "Språksamlingane",
-        license: licenses.ccby4,
-      },
-      sorum: {
-        img: "/datasets/Sørum_komm.svg",
-        alt: "Våpen for Sørum kommune i Akershus fylke",
-        imageAttribution: "",
-        attribution: "Språksamlingane",
-        license: licenses.ccby4,
-      },
-      kven: {
-        img: "/datasets/Flag_of_the_Kven_people.svg",
-        alt: "Kvenske stadnamn",
-        imageAttribution: "",
-        attribution: "Språksamlingane",
-        license: licenses.ccby4,
-      },
-      snor: {
-        img: "/datasets/idD1wneqED_logos.svg",
-        alt: "Språkrådets logo",
-        imageAttribution: "Språkrådet",
-        attribution: "Språkrådet og Språksamlingane",
-        license: licenses.ccby4,
-      },
-      herad: {
-        img: "/datasets/Akersdalen_(1949).jpg",
-        alt: "Akersdalen (seinare kalla Groruddalen), omtrent på den tida Aker vart innlemma i Oslo.",
-        imageAttribution: "Oslo byarkiv, Wikimedia Commons",
-        attribution: "Språksamlingane",
-        license: licenses.ccby4,
-      },
-      seta: {
-        img: "/datasets/ubb-kk-ncn-0275_md.jpg",
-        alt: "Stølen til garden Seim i Grøndalen, Røldal.",
-        imageAttribution: "Foto: Knud Knudsen. Avdeling for spesialsamlingar, Universitetsbiblioteket i Bergen",
-        imageUrl: {"name": "marcus.uib.no", "url": "https://marcus.uib.no/instance/photograph/ubb-kk-ncn-0275"},
-        attribution: "Språksamlingane",
-        license: licenses.ccby4,
-      },
-      wikid: {
-        img: "/datasets/Wikidata-logo.svg",
-        alt: "Wikidata",
-        imageAttribution: "Wikimedia Foundation",
-        attribution: "Wikidata",
-        license: licenses.ccby4,
-      },
-      osm: {
-        img: "/datasets/osm.png",
-        alt: "Kartutsnitt frå OpenStreetMap",
-        imageAttribution: "OpenStreetMap",
-        attribution: "OpenStreetMap",
-        license: licenses.ccby4,
+  all: {
+    img: "icon.svg",
+    alt: "Kart over Noreg med stadnamn",
+    imageAttribution: "Kartverket",
+    attribution: "Språksamlingane",
+    license: licenses.ccby4,
+  },
+  wikidata: {
+    img: "Wikidata-logo.svg",
+    alt: "Wikidata logo",
+    imageAttribution: "Wikimedia Foundation",
+    attribution: "Språksamlingane, Wikidata",
+    license: licenses.ccby4,
+  },
+  bsn: {
+    img: "/datasets/ubb-spr-bp-0001_sm.jpg",
+    alt: "Ei kvinneleg arkivar eller kontorist sit ved eit skrivebord framfor ei stor rekkje arkivskuffer.",
+    imageAttribution: "Avdeling for spesialsamlingar, Universitetsbiblioteket i Bergen",
+    attribution: "Språksamlingane",
+    license: licenses.ccby4
+  },
+  hord: {
+    img: "/datasets/3037_general_7_1925_jpg300dpi.jpg",
+    alt: "Utsnitt av kart over Hordaland og Sogn og Fjordane",
+    imageAttribution: "Kartverket: Generalkart VII, L. Arentz 1929",
+    attribution: "Institutt for lingvistiske, litterære og estetiske studiar. Berika av Språksamlingane",
+    license: licenses.ccby4,
+  },
+  rygh: {
+    img: "/datasets/Prof_oluf_rygh.jpg",
+    alt: "Oluf Rygh, portrettfoto",
+    imageAttribution: "Noregs geografiske oppmåling; retusjering: J. Nordhagen.",
+    attribution: "Riksarkivet og Dokumentasjonsprosjektet. Berika av Språksamlingane",
+    license: licenses.ccby4,
+  },
+  ostf: {
+    img: "/datasets/Østfold_gml_herredsinndeling.png",
+    alt: "Verket byggjer på den gamle herredsinndelinga i Østfold",
+    imageAttribution: "Bustadnamn i Østfold",
+    attribution: "Kåre Hoel, Margit Harsson og Tom Schmidt. Berika av Språksamlingane",
+    license: licenses.ccby4,
+  },
+  leks: {
+    img: "/datasets/leks2.png",
+    alt: "Framside til Norsk stadnamnleksikon 1997",
+    imageAttribution: "Skanna av Språksamlingane",
+    license: licenses.ccby4,
+    attribution: "Berit Sandnes. Berika av Språksamlingane",
+    subindices: {
+      leks_g: {
+        initMode: "list",
+        icon: "base"
       }
+    },
+  },
+  m1838: {
+    img: "/datasets/Matrikkelen_1838_Bykle_anneks_utsnitt.jpg",
+    alt: "Utsnitt frå Matrikkelen 1838, Bykle anneks",
+    imageAttribution: "Aust-Agder fylke, Nedenæs amt, Matrikkel , 1838-, oppb: Riksarkivet",
+    attribution: "Riksarkivet og Registreringssentral for historiske data, UiT. Berika av Språksamlingane",
+    license: licenses.ccby4,
+  },
+  m1886: {
+    img: "/datasets/No-nb_digibok_2014010838007_0180_1.jpg",
+    alt: "Den førebuande matrikkelkommisjonen i Kråkstad i 1864",
+    imageAttribution: "Østlid, Martin. \"Kråkstad\", s. 180 (nb.no)",
+    attribution: "Riksarkivet og Registreringssentral for historiske data, UiT. Berika av Språksamlingane",
+    license: licenses.ccby4,
+  },
+  mu1950: {
+    img: "/datasets/6541_inndeling_s_1950_jpg300dpi.jpg",
+    alt: "Heradskart 1950",
+    imageAttribution: "Kartverket, kommuneinndelingar 1950",
+    attribution: "Språksamlingane, opphavleg digitalisert av Dokumentasjonsprosjektet",
+    license: licenses.ccby4,
+  },
+  skul: {
+    img: "/datasets/ubb-kk-n-520-005_sm.jpg",
+    alt: "Interiør frå klasserom, jenteklasse",
+    imageAttribution: "Avdeling for spesialsamlingar, Universitetsbiblioteket i Bergen",
+    attribution: "Språksamlingane",
+    license: licenses.ccby4,
+  },
+  sof: {
+    img: "/datasets/SOF.JPG",
+    alt: "Utbreiingskart over Fylkesarkivet sine stadnamnsamlingar",
+    imageAttribution: "Fylkesarkivet i Vestland",
+    attribution: "Fylkesarkivet i Vestland. Berika av Språksamlingane",
+    license: licenses.ccby4,
+    links: [{ title: "Nettstad: ", href: "https://www.fylkesarkivet.no/stadnamn.380535.no.html" }]
+  },
+  tot: {
+    img: "/datasets/toten.png",
+    alt: "Historisk fotografi med gardar og bruk ved Einavatnet.",
+    imageAttribution: "Avdeling for spesialsamlingar, Universitetsbiblioteket i Bergen",
+    attribution: "Språksamlingane",
+    license: licenses.ccby4,
+  },
+  ssr2016: {
+    img: "/datasets/Logo ståande, WEB-fargar.svg",
+    alt: "Kartverkets logo",
+    imageAttribution: "Statens kartverk",
+    attribution: "Statens kartverk og Språksamlingane",
+    license: licenses.ccby4,
+  },
+  ssr: {
+    img: "/datasets/Logo ståande, WEB-fargar.svg",
+    alt: "Kartverkets logo",
+    imageAttribution: "Statens kartverk",
+    attribution: "Statens kartverk og Språksamlingane",
+    license: licenses.ccby4,
+  },
+  nrk: {
+    img: "/datasets/Norsk-rikskringkasting-Logo.svg",
+    alt: "NRKs logo",
+    imageAttribution: "Norsk rikskringkasting",
+    attribution: "NRK",
+    license: licenses.ccby4,
+  },
+  gn2019: {
+    img: "/datasets/geonames_logo_icon_171110.svg",
+    alt: "Geonames",
+    imageAttribution: "Geonames",
+    attribution: "Geonames",
+    license: licenses.ccby4,
+  },
+  geonames: {
+    img: "/datasets/geonames_logo_icon_171110.svg",
+    alt: "Geonames",
+    imageAttribution: "Geonames",
+    attribution: "Geonames",
+    license: licenses.ccby4,
+  },
+  ft1900: {
+    img: "/datasets/042sAXjQ1pbw.jpg",
+    alt: "Punchedamer i arbeid i Statistisk Centralbureau ved folketeljinga 1900",
+    imageAttribution: "Foto: Colditz, Caroline",
+    imageUrl: { "name": "oslobilder.no", "url": "http://www.oslobilder.no/NTM/NTM%20C%2011164" },
+    imageLicense: licenses.ccbyncsa3,
+    attribution: "Statistisk sentralbyrå, berika av Språksamlingane",
+    license: licenses.ccby4,
+  },
+  ft1910: {
+    img: "/datasets/ft1910.png",
+    alt: "Foto: Ukjent ca 1900-1910",
+    imageAttribution: "Avdeling for spesialsamlingar, Universitetsbiblioteket i Bergen",
+    imageUrl: { "name": "marcus.uib.no", "url": "https://marcus.uib.no/instance/photograph/ubb-bros-04220" },
+    attribution: "Statistisk sentralbyrå, berika av Språksamlingane",
+    license: licenses.ccby4,
+  },
+  m2010: {
+    img: "/datasets/Logo ståande, WEB-fargar.svg",
+    alt: "Kartverkets logo",
+    imageAttribution: "Statens kartverk",
+    attribution: "Matrikkelen 2010",
+    license: licenses.ccby4,
+  },
+  frogn: {
+    img: "/datasets/Frogn_komm.svg",
+    alt: "Våpen for Frogn kommune i Akershus fylke",
+    imageAttribution: "",
+    attribution: "Språksamlingane",
+    license: licenses.ccby4,
+  },
+  gjerd: {
+    img: "/datasets/Gjerdrum_komm.svg",
+    alt: "Våpen for Gjerdrum kommune i Akershus fylke",
+    imageAttribution: "",
+    attribution: "Språksamlingane",
+    license: licenses.ccby4,
+  },
+  sorum: {
+    img: "/datasets/Sørum_komm.svg",
+    alt: "Våpen for Sørum kommune i Akershus fylke",
+    imageAttribution: "",
+    attribution: "Språksamlingane",
+    license: licenses.ccby4,
+  },
+  kven: {
+    img: "/datasets/Flag_of_the_Kven_people.svg",
+    alt: "Kvenske stadnamn",
+    imageAttribution: "",
+    attribution: "Språksamlingane",
+    license: licenses.ccby4,
+  },
+  snor: {
+    img: "/datasets/idD1wneqED_logos.svg",
+    alt: "Språkrådets logo",
+    imageAttribution: "Språkrådet",
+    attribution: "Språkrådet og Språksamlingane",
+    license: licenses.ccby4,
+  },
+  herad: {
+    img: "/datasets/Akersdalen_(1949).jpg",
+    alt: "Akersdalen (seinare kalla Groruddalen), omtrent på den tida Aker vart innlemma i Oslo.",
+    imageAttribution: "Oslo byarkiv, Wikimedia Commons",
+    attribution: "Språksamlingane",
+    license: licenses.ccby4,
+  },
+  seta: {
+    img: "/datasets/ubb-kk-ncn-0275_md.jpg",
+    alt: "Stølen til garden Seim i Grøndalen, Røldal.",
+    imageAttribution: "Foto: Knud Knudsen. Avdeling for spesialsamlingar, Universitetsbiblioteket i Bergen",
+    imageUrl: { "name": "marcus.uib.no", "url": "https://marcus.uib.no/instance/photograph/ubb-kk-ncn-0275" },
+    attribution: "Språksamlingane",
+    license: licenses.ccby4,
+  },
+  wikid: {
+    img: "/datasets/Wikidata-logo.svg",
+    alt: "Wikidata",
+    imageAttribution: "Wikimedia Foundation",
+    attribution: "Wikidata",
+    license: licenses.ccby4,
+  },
+  osm: {
+    img: "/datasets/osm.png",
+    alt: "Kartutsnitt frå OpenStreetMap",
+    imageAttribution: "OpenStreetMap",
+    attribution: "OpenStreetMap",
+    license: licenses.ccby4,
+  }
 }
 
 export const subpages: Record<string, string[]> = {
-  leks: ["Nokre ord om nemningar, namngjeving og namnegransking", "Område- og bygdenamn", "Gards- og andre bustadnamn", "Elvenamn", "Innsjønamn", "Fjordnamn", "Øynamn", "Fjellnamn", "Seternamn" ]
+  leks: ["Nokre ord om nemningar, namngjeving og namnegransking", "Område- og bygdenamn", "Gards- og andre bustadnamn", "Elvenamn", "Innsjønamn", "Fjordnamn", "Øynamn", "Fjellnamn", "Seternamn"]
 }
 
 export const featureNames: Record<string, string> = {
@@ -422,7 +423,7 @@ export const featureNames: Record<string, string> = {
   "base": "Grunnord",
   "prep": "Preposisjoner",
   "digi": "Digitalisert materiale", // Inkluderer eksternt materiale
-  
+
 }
 
 export const typeNames: Record<string, string> = {

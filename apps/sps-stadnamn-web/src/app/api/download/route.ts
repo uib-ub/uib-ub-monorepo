@@ -1,17 +1,16 @@
-//export const runtime = 'edge'
 
-import { extractFacets } from '../_utils/facets'
-import { getQueryString } from '../_utils/query-string';
-import { postQuery } from '../_utils/post';
 import { getSortArray } from '@/config/server-config';
+import { extractFacets } from '../_utils/facets';
+import { postQuery } from '../_utils/post';
+import { getQueryString } from '../_utils/query-string';
 export async function GET(request: Request) {
-  const {termFilters, reservedParams} = extractFacets(request)
+  const { termFilters, reservedParams } = extractFacets(request)
   const dataset = reservedParams.dataset || 'search'  // == 'search' ? '*' : reservedParams.dataset;
   const { simple_query_string } = getQueryString(reservedParams)
 
   let sortArray: (string | object)[] = []
-    
-    // Existing sorting logic
+
+  // Existing sorting logic
 
   // Add sorting from URL parameters
   if (reservedParams.asc) {
@@ -29,8 +28,8 @@ export async function GET(request: Request) {
     sortArray = getSortArray(dataset)
   }
 
-    
-  const query: Record<string,any> = {
+
+  const query: Record<string, any> = {
     "size": reservedParams.size || 10000,
     "from": reservedParams.from || 0,
     "fields": reservedParams.fields?.split(',') || [],
@@ -40,7 +39,7 @@ export async function GET(request: Request) {
   if (simple_query_string && termFilters.length) {
     query.query = {
       "bool": {
-        "must": simple_query_string,              
+        "must": simple_query_string,
         "filter": termFilters
       }
     }
@@ -49,7 +48,8 @@ export async function GET(request: Request) {
     query.query = simple_query_string
   }
   else if (termFilters.length) {
-    query.query = {"bool": {
+    query.query = {
+      "bool": {
         "filter": termFilters
       }
     }
@@ -57,6 +57,6 @@ export async function GET(request: Request) {
 
   const [data, status] = await postQuery(dataset, query)
 
-  return Response.json(data, {status: status})
-  
+  return Response.json(data, { status: status })
+
 }

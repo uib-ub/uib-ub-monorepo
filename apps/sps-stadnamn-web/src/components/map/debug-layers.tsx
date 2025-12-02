@@ -1,12 +1,12 @@
-import {useGroupDebugData, useGniduData, useTopGroups, useSortedGroups} from "@/state/hooks/group-debug-data";
+import { useGniduData, useGroupDebugData, useSortedGroups, useTopGroups } from "@/state/hooks/group-debug-data";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import * as h3 from "h3-js";
 import Link from "next/link";
-import { Fragment, useCallback, useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { PiX } from "react-icons/pi";
 import * as wkt from "wellknown";
 import Clickable from "../ui/clickable/clickable";
-import { useSearchParams } from "next/navigation";
-import { PiX } from "react-icons/pi";
 
 
 export default function DebugLayers({mapInstance, 

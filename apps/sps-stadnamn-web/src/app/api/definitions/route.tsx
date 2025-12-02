@@ -1,4 +1,3 @@
-//export const runtime = 'edge'
 
 import { postQuery } from '../_utils/post';
 
@@ -8,9 +7,9 @@ export async function GET(request: Request) {
   const searchQuery = url.searchParams.get('q') || ""
   const vocab = url.searchParams.get('vocab') || "*"
   const size = url.searchParams.get('size') || 20
-  
 
-  const query: Record<string,any> = {
+
+  const query: Record<string, any> = {
     "size": size,
     "_source": true,
     "sort": searchQuery ? "_score" : "label.keyword",
@@ -36,5 +35,5 @@ export async function GET(request: Request) {
   }
 
   const [data, status] = await postQuery(`vocab_${vocab}`, query)
-  return Response.json(data, {status: status})
+  return Response.json(data, { status: status })
 }

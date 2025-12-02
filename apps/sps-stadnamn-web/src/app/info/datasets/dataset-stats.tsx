@@ -1,9 +1,8 @@
 import { datasetTypes } from "@/config/metadata-config";
-
 import { publishDates } from "@/config/metadata-config";
 
 export default function DatasetStats({ statsItem, itemDataset }: { statsItem: any, itemDataset: string }) {
-    return <div className="flex flex-wrap gap-1.5 text-sm">
+  return <div className="flex flex-wrap gap-1.5 text-sm">
     {statsItem?.doc_count && (
       <div className="flex items-center">
         <span className="font-medium text-neutral-900 mr-1">Oppslag:</span>
@@ -22,5 +21,5 @@ export default function DatasetStats({ statsItem, itemDataset }: { statsItem: an
         <span className="text-neutral-900">{new Date(parseInt(statsItem?.timestamp) * 1000).toLocaleDateString('no')}</span>
       </div>
     )}
-    </div>
+  </div>
 }

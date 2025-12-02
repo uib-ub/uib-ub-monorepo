@@ -1,23 +1,23 @@
 import { extractFacets } from '@/app/api/_utils/facets'
-import { getQueryString } from '@/app/api/_utils/query-string'
 import { postQuery } from '@/app/api/_utils/post'
+import { getQueryString } from '@/app/api/_utils/query-string'
 
- 
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ zoom: string, x: string, y: string }> }
 ) {
-  const { zoom: precision, x, y} = await params
+  const { zoom: precision, x, y } = await params
 
 
 
-  const { termFilters, reservedParams } =  extractFacets(request)
+  const { termFilters, reservedParams } = extractFacets(request)
   const { simple_query_string } = getQueryString(reservedParams)
   const perspective = reservedParams.perspective || 'all'
   const totalHits = reservedParams.totalHits ? parseInt(reservedParams.totalHits) : undefined
 
   console.log("DEBUG IN GRID", reservedParams.debug)
-  
+
   const suppressedExclusion = {
     "terms": {
       "group.id": ["suppressed", "noname"]
@@ -31,7 +31,7 @@ export async function GET(
     track_total_hits: false,
     track_scores: false,
     //sort: [{"group.placeScore": {order: "desc", missing: "_last"}}, { "boost": {order: "desc", missing: "_last"}}, { "group.id": {order: "asc", missing: "_last"}} ],
-    
+
     query: {
       bool: {
         filter: [
@@ -55,7 +55,7 @@ export async function GET(
           "groups": {
             "terms": {
               "field": "group.id",
-              "order": { "max_placeScore": "desc"},
+              "order": { "max_placeScore": "desc" },
               size: (Number(precision) > 17 || (totalHits && totalHits < 10000)) ? 500 : 10,
             },
             "aggs": {

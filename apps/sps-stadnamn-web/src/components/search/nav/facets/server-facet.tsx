@@ -1,17 +1,16 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useSearchQuery } from '@/lib/search-params';
 import { facetConfig, fieldConfig } from '@/config/search-config';
+import { useSearchQuery } from '@/lib/search-params';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 import { PiMagnifyingGlass } from 'react-icons/pi';
 
 import { datasetTitles } from '@/config/metadata-config';
 
-import FacetToolbar from './facet-toolbar';
-import { formatNumber, getSkeletonLength } from '@/lib/utils';
+import { FacetBadge } from '@/components/ui/badge';
 import Clickable from '@/components/ui/clickable/clickable';
 import { usePerspective } from '@/lib/param-hooks';
-import { FacetBadge } from '@/components/ui/badge';
-import PercentageCircle from './percentage-circle';
+import { getSkeletonLength } from '@/lib/utils';
+import FacetToolbar from './facet-toolbar';
 
 
 
@@ -44,11 +43,8 @@ export default function ServerFacet() {
     }
 
     // Fetch data only if we have a valid facet
-    fetch(`/api/facet?perspective=${perspective}&facets=${facet}${
-      facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${
-        paramsExceptFacet ? '&' + paramsExceptFacet : ''}${
-          sortMode != 'doc_count' ? '&facetSort=' + sortMode : ''}`).then(response => response.json()).then(es_data => {
-      
+    fetch(`/api/facet?perspective=${perspective}&facets=${facet}${facetSearch ? '&facetSearch=' + facetSearch + "*" : ''}${paramsExceptFacet ? '&' + paramsExceptFacet : ''}${sortMode != 'doc_count' ? '&facetSort=' + sortMode : ''}`).then(response => response.json()).then(es_data => {
+
       if (facet.includes('__')) {
         const [parent, child] = facet.split('__')
         setFacetAggregation(es_data.aggregations?.[parent]?.[child])
@@ -75,7 +71,7 @@ export default function ServerFacet() {
 
   const toggleFilter = (beingChecked: boolean, facet: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    
+
     // Remove existing value if present
     const existingValues = params.getAll(facet);
     params.delete(facet);
@@ -89,11 +85,11 @@ export default function ServerFacet() {
     params.delete('doc')
     params.delete('group')
     params.delete('init')
-    
+
     existingValues
       .filter(v => v !== value)
       .forEach(v => params.append(facet, v));
-    
+
 
     // Add the value if being checked
     if (beingChecked) {
@@ -102,7 +98,7 @@ export default function ServerFacet() {
 
     router.push(`?${params.toString()}`, { scroll: false });
   };
-    
+
 
   const isChecked = (facet: string, itemKey: string) => {
     const existingValues = searchParams.getAll(facet);
@@ -125,112 +121,112 @@ export default function ServerFacet() {
 
   return (
     <>
-    <div className="flex flex-col gap-2">
-    { yesCount < allCount && (
-  <div className="flex bg-white rounded-lg tabs pb-2 px-2">
-    {!facetLoading &&  (
-      <>
-        <Clickable
-          remove={[facet]}
-          add={{ [facet]: '_true'}}
-          aria-pressed={currentValue == '_true'}
-          className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
-        >
-          Med {
-            yesCount === 0 ? 0 :
-            yesCount === allCount ? 100 :
-            yesCount / allCount < 0.01 ? "< 1" :
-            yesCount / allCount > 0.99 ? "> 99" :
-            Math.floor((yesCount / allCount) * 100)
-          }%
-        </Clickable>
+      <div className="flex flex-col gap-2">
+        {yesCount < allCount && (
+          <div className="flex bg-white rounded-lg tabs pb-2 px-2">
+            {!facetLoading && (
+              <>
+                <Clickable
+                  remove={[facet]}
+                  add={{ [facet]: '_true' }}
+                  aria-pressed={currentValue == '_true'}
+                  className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
+                >
+                  Med {
+                    yesCount === 0 ? 0 :
+                      yesCount === allCount ? 100 :
+                        yesCount / allCount < 0.01 ? "< 1" :
+                          yesCount / allCount > 0.99 ? "> 99" :
+                            Math.floor((yesCount / allCount) * 100)
+                  }%
+                </Clickable>
 
-        <Clickable
-          remove={[facet]}
-          add={{ [facet]: '_false'}}
-          aria-pressed={currentValue == '_false'}
-          className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
-        >
-          Utan {
-            noCount === 0 ? 0 :
-            noCount === allCount ? 100 :
-            noCount / allCount < 0.01 ? "< 1" :
-            noCount / allCount > 0.99 ? "> 99" :
-            Math.floor((noCount / allCount) * 100)
-          }%
-        </Clickable>
-        <button
-          onClick={() => {
-            router.push(`?${new URLSearchParams(Array.from(searchParams.entries()).filter(([key, value]) => key != facet || (value != '_true' && value != '_false')))}`)
-          }}
-          aria-pressed={currentValue != '_true' && currentValue != '_false'}
-          className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
-        >
-          Alle <FacetBadge count={allCount} />
-        </button>
-      </>
-    )}
-  </div>
-)}
-    
-    {currentValue != '_true' && currentValue != '_false' && 
-    <div className='flex flex-col gap-2'>
-      <div className='flex gap-2 px-2 pt-1'>
-        <div className='w-full h-10 relative'>
-          <input 
-            aria-label="Søk i fasett" 
-            onChange={(e) => facet == 'datasets' ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
-            className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"
-          />
-          <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-            <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl'/>
-          </span>
-        </div>
-      </div>
-      
-      <FacetToolbar/>
-    
-    {  (facetLoading || facetAggregation?.buckets.length) ?
-    <fieldset>
-      <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[perspective][facet].label}`}</legend>
-      <ul aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200'>
-        {facetAggregation?.buckets.length ? facetAggregation?.buckets
-          .map((item: any, index: number) => 
-            (!clientSearch?.length || createSearchRegex(clientSearch)?.test(renderLabel(facet, item.key))) && (
-              <li key={index} className='py-3'>
-                <label className="flex items-center gap-2 lg:gap-1 xl:gap-2 px-2 flex-1 min-w-0">
-                  <input 
-                    type="checkbox" 
-                    checked={isChecked(facet, item.key)} 
-                    className="mr-2 flex-shrink-0" 
-                    name={facet} 
-                    value={item.key} 
-                    onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
-                  />
-                  <span className="text-neutral-950 break-words lg:text-sm xl:text-base min-w-0">
-                    {renderLabel(facet, item.key)} <FacetBadge count={item.doc_count} />
-                  </span>
-                </label>
-              </li>
-          ))
-          : <li>
-              <div className="flex flex-col gap-6 my-3">
-                {Array.from({length: 6}).map((_, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-neutral-900/10 rounded-md animate-pulse"></div>
-                    <div style={{width: getSkeletonLength(index, 8, 16) + 'rem'}} className="h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
-                    <div className="w-6 h-6 ml-auto bg-neutral-900/10 rounded-full animate-pulse"></div>
-                  </div>
-                ))}
+                <Clickable
+                  remove={[facet]}
+                  add={{ [facet]: '_false' }}
+                  aria-pressed={currentValue == '_false'}
+                  className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
+                >
+                  Utan {
+                    noCount === 0 ? 0 :
+                      noCount === allCount ? 100 :
+                        noCount / allCount < 0.01 ? "< 1" :
+                          noCount / allCount > 0.99 ? "> 99" :
+                            Math.floor((noCount / allCount) * 100)
+                  }%
+                </Clickable>
+                <button
+                  onClick={() => {
+                    router.push(`?${new URLSearchParams(Array.from(searchParams.entries()).filter(([key, value]) => key != facet || (value != '_true' && value != '_false')))}`)
+                  }}
+                  aria-pressed={currentValue != '_true' && currentValue != '_false'}
+                  className={`flex-1 group gap-1 !justify-start py-1.5 !px-2 text-left`}
+                >
+                  Alle <FacetBadge count={allCount} />
+                </button>
+              </>
+            )}
+          </div>
+        )}
+
+        {currentValue != '_true' && currentValue != '_false' &&
+          <div className='flex flex-col gap-2'>
+            <div className='flex gap-2 px-2 pt-1'>
+              <div className='w-full h-10 relative'>
+                <input
+                  aria-label="Søk i fasett"
+                  onChange={(e) => facet == 'datasets' ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
+                  className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"
+                />
+                <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                  <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl' />
+                </span>
               </div>
-            </li>
-        }
-      </ul>
-    </fieldset>
-    : <div role="status" aria-live="polite" className='px-2 p-2'>Ingen treff</div>
-    }
-    </div>}
-    </div>
-   </>)
+            </div>
+
+            <FacetToolbar />
+
+            {(facetLoading || facetAggregation?.buckets.length) ?
+              <fieldset>
+                <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[perspective][facet].label}`}</legend>
+                <ul aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200'>
+                  {facetAggregation?.buckets.length ? facetAggregation?.buckets
+                    .map((item: any, index: number) =>
+                      (!clientSearch?.length || createSearchRegex(clientSearch)?.test(renderLabel(facet, item.key))) && (
+                        <li key={index} className='py-3'>
+                          <label className="flex items-center gap-2 lg:gap-1 xl:gap-2 px-2 flex-1 min-w-0">
+                            <input
+                              type="checkbox"
+                              checked={isChecked(facet, item.key)}
+                              className="mr-2 flex-shrink-0"
+                              name={facet}
+                              value={item.key}
+                              onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
+                            />
+                            <span className="text-neutral-950 break-words lg:text-sm xl:text-base min-w-0">
+                              {renderLabel(facet, item.key)} <FacetBadge count={item.doc_count} />
+                            </span>
+                          </label>
+                        </li>
+                      ))
+                    : <li>
+                      <div className="flex flex-col gap-6 my-3">
+                        {Array.from({ length: 6 }).map((_, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <div className="w-4 h-4 bg-neutral-900/10 rounded-md animate-pulse"></div>
+                            <div style={{ width: getSkeletonLength(index, 8, 16) + 'rem' }} className="h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
+                            <div className="w-6 h-6 ml-auto bg-neutral-900/10 rounded-full animate-pulse"></div>
+                          </div>
+                        ))}
+                      </div>
+                    </li>
+                  }
+                </ul>
+              </fieldset>
+              : <div role="status" aria-live="polite" className='px-2 p-2'>Ingen treff</div>
+            }
+          </div>}
+      </div>
+    </>)
 
 }

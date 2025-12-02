@@ -4,11 +4,10 @@ export default async function DefinitionsLayout({ children }: { children: React.
 
     return <div className="flex flex-col gap-8">
         <div className="flex flex-col">
-        {children}
+            {children}
         </div>
-        <DefinitionBrowserContainer/>
-    
-    </div>
-  }
+        <DefinitionBrowserContainer />
 
- 
+    </div>
+}
+

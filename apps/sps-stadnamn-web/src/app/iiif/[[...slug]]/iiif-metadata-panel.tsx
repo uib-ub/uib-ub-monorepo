@@ -1,9 +1,9 @@
 'use client'
+import { datasetPresentation, licenses } from "@/config/metadata-config"
+import Image from "next/image"
 import Link from "next/link"
 import { PiCopyright } from "react-icons/pi"
 import { resolveLanguage } from "../iiif-utils"
-import { datasetPresentation, licenses } from "@/config/metadata-config"
-import Image from "next/image"
 import IIIFMapLinks from "./iiif-map-links"
 
 
@@ -12,7 +12,7 @@ const addLinks = (text: string | any) => {
     // Match HTML anchor tags with their content
     const regex = /<a\s+href="([^"]+)"[^>]*>([^<]+)<\/a>/g;
     const parts = textString.split(regex);
-    
+
     const result = [];
     for (let i = 0; i < parts.length; i++) {
         if (i % 3 === 0) {
@@ -23,7 +23,7 @@ const addLinks = (text: string | any) => {
             const url = parts[i];
             const linkText = parts[i + 1];
             result.push(
-                <Link 
+                <Link
                     key={`link-${i}`}
                     href={url}
                     target="_blank"
@@ -34,7 +34,7 @@ const addLinks = (text: string | any) => {
             i++; // Skip the next part since we've used it
         }
     }
-    
+
     return result;
 }
 
@@ -45,28 +45,28 @@ export default function IIIFMetadataPanel({ manifest, manifestDataset }: { manif
 
 
     return <div className='flex flex-col gap-4'>
-        
+
         {manifest ?
-                <>
-                
+            <>
+
                 {license && <Link href={license.url} className="flex items-center gap-1 text-neutral-900 font-semibold no-underline">
                     <PiCopyright aria-hidden="true" />
                     <span className="text-sm">Lisens: {license.name}</span>
                 </Link>}
-                
 
-        
-                
-                        
-                   { (manifest?.metadata?.length ||  manifest.alternativeManifests) &&   <ul className="text-base !px-0">
+
+
+
+
+                {(manifest?.metadata?.length || manifest.alternativeManifests) && <ul className="text-base !px-0">
                     {manifest?.metadata?.map((item: Record<string, any>, index: number) => (
                         <li key={index} className='flex flex-col'>
                             <span className='font-semibold text-neutral-800'>
                                 {resolveLanguage(item.label)}
                             </span>
                             <span>{Array.isArray(resolveLanguage(item.value)) ? resolveLanguage(item.value).join(', ') : addLinks(resolveLanguage(item.value))}</span>
-                            </li>
-                            ))}
+                        </li>
+                    ))}
 
 
 
@@ -80,10 +80,10 @@ export default function IIIFMetadataPanel({ manifest, manifestDataset }: { manif
                             ))}
                         </li>
                     }
-                
+
                 </ul>}
                 <Link href={`/iiif/${manifest.type.toLowerCase()}/${manifest.uuid}`} className="text-sm flex items-center gap-1 no-underline">
-                <Image src="https://iiif.io/favicon.ico" alt="IIIF" width={16} height={16} />
+                    <Image src="https://iiif.io/favicon.ico" alt="IIIF" width={16} height={16} />
                     <span>
                         Standardiserte metadata (IIIF)
                     </span>
@@ -93,17 +93,17 @@ export default function IIIFMetadataPanel({ manifest, manifestDataset }: { manif
 
 
 
-                        
 
 
 
 
 
-                </>
-                :
-                null
-                }
-                
-            </div>
-    
+
+            </>
+            :
+            null
+        }
+
+    </div>
+
 }

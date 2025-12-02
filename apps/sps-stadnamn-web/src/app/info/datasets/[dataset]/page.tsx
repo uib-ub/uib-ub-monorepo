@@ -1,11 +1,11 @@
-import Breadcrumbs from "@/components/layout/breadcrumbs";
-import { datasetFeatures, datasetPresentation, datasetTitles, featureNames, subpages, datasetDescriptions, datasetShortDescriptions, datasetTypes, typeNames } from "@/config/metadata-config"
-import { PiArticleFill, PiSpeakerHighFill, PiEarFill, PiMapPinLineFill, PiLinkSimpleFill, PiMapTrifoldFill, PiWallFill, PiArchiveFill, PiBooksFill, PiDatabaseFill, PiGavelFill, PiBoxArrowDownFill, PiBinaryFill } from "react-icons/pi"
-import DatasetStats from "../dataset-stats";
 import { fetchStats } from "@/app/api/_utils/stats";
+import Breadcrumbs from "@/components/layout/breadcrumbs";
+import { datasetDescriptions, datasetFeatures, datasetPresentation, datasetShortDescriptions, datasetTitles, datasetTypes, featureNames, subpages, typeNames } from "@/config/metadata-config";
 import { ReactElement } from "react";
+import { PiArchiveFill, PiArticleFill, PiBinaryFill, PiBooksFill, PiBoxArrowDownFill, PiDatabaseFill, PiEarFill, PiGavelFill, PiLinkSimpleFill, PiMapPinLineFill, PiMapTrifoldFill, PiSpeakerHighFill, PiWallFill } from "react-icons/pi";
+import DatasetStats from "../dataset-stats";
 
-import SubpageNav from '@/components/layout/subpage-nav'
+import SubpageNav from '@/components/layout/subpage-nav';
 
 const icons: { [key: string]: ReactElement } = {
     "image": <PiArticleFill aria-hidden="true" />,

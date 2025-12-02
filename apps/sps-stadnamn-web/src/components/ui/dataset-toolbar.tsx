@@ -1,11 +1,10 @@
+import { datasetPresentation, datasetTitles } from "@/config/metadata-config";
 import { treeSettings } from "@/config/server-config";
+import { useMode } from '@/lib/param-hooks';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ReactElement } from "react";
 import { PiCaretRight, PiMagnifyingGlass, PiTreeView, PiWall } from "react-icons/pi";
-import { datasetPresentation, datasetTitles } from "@/config/metadata-config";
-import { GlobalContext } from "@/state/providers/global-provider";
-import { ReactElement, useContext } from "react";
-import { useMode } from '@/lib/param-hooks';
 
 const icons: { [key: string]: ReactElement } = {
     "base": <PiWall className="text-neutral-800" aria-hidden="true" />,
