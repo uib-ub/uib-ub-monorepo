@@ -151,13 +151,22 @@ export default function SearchResults() {
     : (resultsParam > 1);
 
   useEffect(() => {
-    if (!hasOneResult || !group) return
-    if (init === group) return
+    if (!hasOneResult) return
+
+    const onlyResultId = collapsedData?.pages?.[0]?.data?.[0]?.fields?.["group.id"]?.[0]
+    if (!onlyResultId) return
+
+    const onlyResultCode = stringToBase64Url(onlyResultId)
+    const initMatches = init === onlyResultCode
+    const groupMatches = group === onlyResultCode
+
+    if (initMatches && !group) return
 
     const newParams = new URLSearchParams(searchParams)
-    newParams.set('init', group)
+    newParams.set('init', onlyResultCode)
+    newParams.delete('group')
     router.replace(`?${newParams.toString()}`)
-  }, [group, init, hasOneResult, router, searchParams])
+  }, [collapsedData, group, hasOneResult, init, router, searchParams])
 
 
   if (isMobile && activeGroupValue && snappedPosition == 'bottom') {
