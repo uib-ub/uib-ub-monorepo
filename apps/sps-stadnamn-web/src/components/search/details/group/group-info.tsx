@@ -1030,7 +1030,8 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
             {locations.length > 0 && locations[0]?.location?.coordinates && initValue !== groupData.group.id && (
                 <div className="absolute bottom-0 right-0 p-3">
-                    <Clickable
+                    <ClickableIcon
+                        label="Vel namnegruppe"
                         onClick={() => {
                             // Fit bounds to group sources
                             fitBoundsToGroupSources(mapFunctionRef.current, groupData);
@@ -1042,11 +1043,10 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                             init: stringToBase64Url(groupData.group.id),
                             results: '1'
                         }}
-                        className="btn btn-neutral rounded-full lg:rounded-md flex items-center justify-center text-lg gap-2 font-semibold"
-                        label="Fest til toppen"
+                        className="btn btn-neutral rounded-full lg:rounded-md aspect-square p-2 flex items-center justify-center gap-2 font-semibold"
                     >
-                        <PiPushPinFill aria-hidden="true" />vel
-                    </Clickable>
+                        <PiPushPinFill aria-hidden="true" className="text-2xl" />
+                    </ClickableIcon>
                 </div>
             )}
 
