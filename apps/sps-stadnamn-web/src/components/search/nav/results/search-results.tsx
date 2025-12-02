@@ -150,6 +150,15 @@ export default function SearchResults() {
     ? true
     : (resultsParam > 1);
 
+  useEffect(() => {
+    if (!hasOneResult || !group) return
+    if (init === group) return
+
+    const newParams = new URLSearchParams(searchParams)
+    newParams.set('init', group)
+    router.replace(`?${newParams.toString()}`)
+  }, [group, init, hasOneResult, router, searchParams])
+
 
   if (isMobile && activeGroupValue && snappedPosition == 'bottom') {
 
