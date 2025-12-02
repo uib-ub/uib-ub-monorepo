@@ -243,7 +243,7 @@ export default function SearchResults() {
     }
 
     const handlePlayAudio = (recording: any) => {
-      const audio = new Audio(`https://iiif.test.ubbe.no/iiif/audio/hord/${recording.file}`)
+      const audio = new Audio(`https://iiif.spraksamlingane.no/iiif/audio/hord/${recording.file}`)
       audio.play().catch(console.error)
     }
 

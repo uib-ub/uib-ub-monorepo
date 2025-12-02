@@ -39,14 +39,14 @@ function buildAnnotation(image: any, manifestDataset: string, baseUrl: string) {
     "motivation": "painting",
     "target": `${baseUrl}/iiif/canvas/${image.canvasUuid}`,
     "body": {
-      "id": `https://iiif.test.ubbe.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${image.uuid}/full/max/0/default.jpg`,
+      "id": `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${image.uuid}/full/max/0/default.jpg`,
       "type": "Image",
       "height": image.height,
       "width": image.width,
       "format": "image/jpg",
       "service": [
         {
-          "id": `https://iiif.test.ubbe.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${image.uuid}`,
+          "id": `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${image.uuid}`,
           "type": "ImageService3",
           "profile": "level1",
         }
@@ -79,7 +79,7 @@ function buildAudioAnnotation(audio: any, manifestDataset: string, baseUrl: stri
     "motivation": "painting",
     "target": `${baseUrl}/iiif/canvas/${audio.canvasUuid}`,
     "body": {
-      "id": `https://iiif.test.ubbe.no/iiif/audio/stadnamn/${manifestDataset.toUpperCase()}/${audio.uuid}`,
+      "id": `https://iiif.spraksamlingane.no/iiif/audio/stadnamn/${manifestDataset.toUpperCase()}/${audio.uuid}`,
       "type": "Sound",
       "format": "audio/" + audio.format,
       "duration": audio.duration,

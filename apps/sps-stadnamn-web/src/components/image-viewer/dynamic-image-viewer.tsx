@@ -30,7 +30,7 @@ const DynamicImageViewer = ({ images, manifestDataset, manifestId }: { images: R
     const tileSources = images.map((image: any) => {
       return {
         "@context": "http://iiif.io/api/image/2/context.json",
-        "@id": `https://iiif.test.ubbe.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${image.uuid}`,
+        "@id": `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${image.uuid}`,
         "height": image.height,
         "width": image.width,
         "profile": ["http://iiif.io/api/image/2/level2.json"],

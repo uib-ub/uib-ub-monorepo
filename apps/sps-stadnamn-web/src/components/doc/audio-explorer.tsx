@@ -24,7 +24,7 @@ export default function AudioExplorer({recordings}: {recordings: any[]}) {
       {JSON.stringify(recording)}
     <audio 
       controls 
-      src={`https://iiif.test.ubbe.no/iiif/audio/hord/${recording.file}`}
+      src={`https://iiif.spraksamlingane.no/iiif/audio/hord/${recording.file}`}
       className="h-10  rounded-md mt-2 w-full
       
         [&::-webkit-media-controls-enclosure]:bg-transparent 

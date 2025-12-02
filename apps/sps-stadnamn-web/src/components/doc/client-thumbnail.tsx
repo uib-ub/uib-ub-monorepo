@@ -17,7 +17,7 @@ async function fetchManifest(iiif: string | string[], imgIndex: number, width: n
     const dataset = data.hits.hits[0]._index.split("-")[2].split("_")[1]
     const outputWidth = width * 2
     const outputHeight = Math.round(outputWidth * (9 / 16))
-    const thumbnailUrl = `https://iiif.test.ubbe.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${data.hits.hits[0]._source.images[0].uuid}/0,0,${data.hits.hits[0]._source.images[0].width},${Math.round(data.hits.hits[0]._source.images[0].width * aspectRatio)}/${outputWidth},${outputHeight}/0/default.jpg`
+    const thumbnailUrl = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${data.hits.hits[0]._source.images[0].uuid}/0,0,${data.hits.hits[0]._source.images[0].width},${Math.round(data.hits.hits[0]._source.images[0].width * aspectRatio)}/${outputWidth},${outputHeight}/0/default.jpg`
     return {
         thumbnailUrl,
         manifestUuid: data.hits.hits[0]._source.uuid,

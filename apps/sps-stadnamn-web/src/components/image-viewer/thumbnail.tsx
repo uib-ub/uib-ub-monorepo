@@ -6,7 +6,7 @@ export default async function Thumbnail({ manifestId, dataset }: { manifestId: s
 
     async function fetchThumbnail() {
         'use server'
-        const url = `https://iiif.test.ubbe.no/iiif/manifest${dataset === 'nbas' ? '/stadnamn/NBAS' : ''}/${manifestId}.json`
+        const url = `https://iiif.spraksamlingane.no/iiif/manifest${dataset === 'nbas' ? '/stadnamn/NBAS' : ''}/${manifestId}.json`
         const res = await fetch(url);
         const data = res.ok ? await res.json() : null
         const [, originalWidth, originalHeight] = data?.thumbnail?.[0]?.id.match(/\/full\/(\d+),(\d+)\//) || []

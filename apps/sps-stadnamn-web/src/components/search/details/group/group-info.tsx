@@ -966,7 +966,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                             <div key={"audio-" + recording.uuid} className="flex items-center">
                                 <audio
                                     controls
-                                    src={`https://iiif.test.ubbe.no/iiif/audio/hord/${recording.file}`}
+                                    src={`https://iiif.spraksamlingane.no/iiif/audio/hord/${recording.file}`}
                                     className="h-10 rounded-md
                                     [&::-webkit-media-controls-enclosure]:bg-transparent 
                                     [&::-webkit-media-controls-current-time-display]:text-neutral-800 

@@ -132,7 +132,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
         {source.rawData.merknader && <div><strong className="text-neutral-900">Merknader: </strong>{source.rawData.merknader}</div>}
 
       </div>
-      {source.audio && <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/hord/${source.audio.file}`}></audio>}
+      {source.audio && <audio controls src={`https://iiif.spraksamlingane.no/iiif/audio/hord/${source.audio.file}`}></audio>}
     </>
   },
   nbas: null,
