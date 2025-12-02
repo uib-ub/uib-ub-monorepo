@@ -209,7 +209,7 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
                                                 }}
                                                 className={`flex-shrink-0 p-1 rounded-full ${isActive ? 'text-accent-700 outline outline-1 outline-accent-700 bg-accent-50' : 'text-neutral-700 hover:bg-neutral-100'}`}
                                             >
-                                                {coordinateTypeLabel ? <PiMapPinFill className="text-base text-neutral-600" /> : <PiMapPinFill className="text-base text-primary-700" />}
+                                                <PiMapPinFill className="text-base text-neutral-600" />
                                             </ClickableIcon>
                                         )}
                                         <div className="flex-1 min-w-0">
