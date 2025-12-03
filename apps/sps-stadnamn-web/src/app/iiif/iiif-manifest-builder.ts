@@ -90,7 +90,7 @@ function buildAudioAnnotation(audio: any, manifestDataset: string, baseUrl: stri
 
 export async function buildManifest(request: Request, type: string) {
   const url = new URL(request.url);
-  const uuid: string = url.pathname.split('/').pop() as string
+  const uuid: string = url.pathname.replace('.json', '').split('/').pop() as string
   // validate that uuid is a string with correct length 
   if (!uuid || uuid.length !== 36) {
     return Response.json({ error: 'Invalid UUID' }, { status: 400 })
