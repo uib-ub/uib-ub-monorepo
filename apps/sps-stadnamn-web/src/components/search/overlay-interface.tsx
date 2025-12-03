@@ -253,7 +253,7 @@ export default function OverlayInterface() {
                             </Clickable>
                         </div>
                     )}
-                    {mapSettings ? <MapSettings /> : showResults && <div id="results-panel" className="overflow-y-auto overflow-y-auto overflow-x-hidden max-h-[calc(100svh-5rem)]">{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}
+                    {mapSettings ? <MapSettings /> : showResults && <div id="results-panel" className={!isMobile ? "overflow-y-auto overflow-y-auto overflow-x-hidden max-h-[calc(100svh-5rem)]" : ""}>{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}
                 </RightWindow>}
             </DrawerWrapper>
 
