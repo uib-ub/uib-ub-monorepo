@@ -9,6 +9,60 @@ import IIIFMobileDrawer from "./iiif-mobile-drawer";
 import ImageViewer from "./image-viewer";
 
 
+export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }) {
+    const { slug } = await params
+    const manifestDoc = slug?.[0] ? await fetchDoc({ uuid: slug[0], dataset: 'iiif_*' }) : null
+    const manifest = manifestDoc?._source
+    const manifestDataset = manifestDoc?._index?.split('-')?.[2]?.split('_')?.[1]
+
+    const headersList = await headers()
+    const proto = headersList.get('x-forwarded-proto') || 'https'
+    const host = headersList.get('x-forwarded-host') || headersList.get('host')
+    const baseUrl = host ? `${proto}://${host}` : 'http://stadnamn.no'
+
+    const isCollection = manifest?.type === 'Collection'
+    const iiifType = isCollection ? 'collection' : 'manifest'
+    const manifestUrl = slug?.[0] ? `${baseUrl}/iiif/${iiifType}/${slug[0]}` : undefined
+    const firstImageUuid = manifest?.images?.[0]?.uuid
+    const firstImageUrl = firstImageUuid && manifestDataset
+        ? `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${firstImageUuid}/full/max/0/default.jpg`
+        : undefined
+
+    const label = manifest?.label ? resolveLanguage(manifest.label) : undefined
+    const summary = manifest?.summary ? resolveLanguage(manifest.summary) : undefined
+
+    // Title
+    // - For manifests: only the manifest label
+    // - For collections: include institution after the collection label when available
+    const collections = manifest?.collections as any[] | undefined
+    const institution = collections && collections.length > 0 ? collections[collections.length - 1] : undefined
+    const institutionLabel = institution?.label ? resolveLanguage(institution.label) : undefined
+
+    let title = label || undefined
+    if (isCollection && label && institutionLabel) {
+        title = `${label} | ${institutionLabel}`
+    }
+
+    // If there is a IIIF summary, use it as description
+    const description = summary || undefined
+
+    return {
+        title,
+        ...(description ? { description } : {}),
+        alternates: manifestUrl ? {
+            types: {
+                'application/ld+json': manifestUrl
+            }
+        } : undefined,
+        openGraph: {
+            ...(title ? { title } : {}),
+            ...(description ? { description } : {}),
+            ...(firstImageUrl ? { images: [firstImageUrl] } : {})
+        },
+    }
+}
+
+
 export default async function IIIFPage({ params }: { params: Promise<{ slug: string[] }> }) {
     const { slug } = await params
 

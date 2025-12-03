@@ -118,10 +118,12 @@ function LeftWindow({ children }: { children: React.ReactNode }) {
 
 function RightWindow({ children }: { children: React.ReactNode }) {
     const { isMobile } = useContext(GlobalContext)
+    const searchParams = useSearchParams()
+    const showResults = searchParams.get('results')
     if (isMobile) {
         return <>{children}</>
     }
-    return <div className="bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-auto overflow-x-hidden stable-scrollbar">{children}</div>
+    return <div className={`bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] z-[3001] ${!isMobile && showResults ? 'max-h-[calc(100svh-2rem)]': 'h-fit'} rounded-md scroll-container`}>{children}</div>
 }
 
 export default function OverlayInterface() {
@@ -251,7 +253,7 @@ export default function OverlayInterface() {
                             </Clickable>
                         </div>
                     )}
-                    {mapSettings ? <MapSettings /> : showResults && <div id="results-panel">{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}
+                    {mapSettings ? <MapSettings /> : showResults && <div id="results-panel" className="overflow-y-auto overflow-y-auto overflow-x-hidden max-h-[calc(100svh-5rem)]">{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}
                 </RightWindow>}
             </DrawerWrapper>
 

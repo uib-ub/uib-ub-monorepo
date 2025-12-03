@@ -49,7 +49,7 @@ export default function IIIFInfoSection({ manifest, manifestDataset, stats }: { 
                     }
                 </div>
             }
-            {!manifest && <p>Digitalisert arkivmateriale ordna etter opphavsinstitusjon. Ordninga gjeld det digitaliserte materialet, eksempelvis med mappestrukturer frå dokumentasjonsprosjektet, men vi har så langt det er mogleg lenka til metadata for det fysiske materialet i arkivportalen.</p>}
+            {!manifest && <><p>Språksamlinganes digitaliserte arkivmateriale. Dei fysiske arkiva er i hovudsak oppbevart ved Universitetsbiblioteket i Bergen</p><p>Materialet er her ordna etter opphavsinstitusjon. Ordninga gjeld det digitaliserte materialet, til dømes med mappestrukturer frå dokumentasjonsprosjektet, men vi har så langt det er mogleg lenka til metadata for det fysiske materialet registrert i arkivportalen.</p></>}
 
             <IIIFMetadataPanel manifest={manifest} manifestDataset={manifestDataset} />
 
