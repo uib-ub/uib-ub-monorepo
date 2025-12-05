@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Open_Sans, EB_Garamond } from 'next/font/google';
-import { RootProvider } from 'fumadocs-ui/provider';
+import { RootProvider } from 'fumadocs-ui/provider/next';
 import './globals.css';
 
 const openSans = Open_Sans({
