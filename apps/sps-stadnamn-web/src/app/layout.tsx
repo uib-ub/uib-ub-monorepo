@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: "%s - stadnamn.no",
     default: "stadnamn.no"
   },
-  description: "Søketjeneste for norske stedstnavn",
+  description: "Språksamlinganes nasjonale søketeneste for stadnamn, utvikla ved Universitetsbiblioteket i Bergen",
 };
 
 export default async function RootLayout({

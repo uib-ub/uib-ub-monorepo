@@ -67,7 +67,7 @@ export const datasetTitles: DatasetTitles = {
   gjerd: "Gjerdrumundersøkelsen",
   sorum: "Sørummaterialet",
   kven: "Kvenske stedsnavn",
-  snor: "Stadnamn i Noreg",
+  snor: "Stadnamn i Noreg (Språkrådet)",
   herad: "Heradsregisteret",
   seta: "Seternamnarkivet",
   osm: "OpenStreetMap 2019",
