@@ -632,7 +632,7 @@ const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
 
             {/* Active filter display */}
             {hasActiveFilter && (
-                <div className="flex items-center gap-3 px-4 py-3 bg-accent-50 border border-accent-200 rounded-lg shadow-sm">
+                <div className="flex items-center gap-3 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg">
                     <strong className="text-neutral-900 text-base">
                         {activeYear ? `År: ${activeYear}` : activeName ? `Namneform: ${activeName}` : ''}
                     </strong>
@@ -642,7 +642,7 @@ const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
                         remove={['activeYear', 'activeName']}
                         className="ml-auto text-accent-800 hover:text-accent-900 underline underline-offset-2 font-medium transition-colors"
                     >
-                        <PiX className="text-accent-800" />
+                        <PiX className="text-neutral-800" />
                     </ClickableIcon>
                 </div>
             )}
