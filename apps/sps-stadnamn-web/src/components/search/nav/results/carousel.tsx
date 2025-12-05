@@ -137,6 +137,7 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
         <div
             ref={containerRef}
             className="flex flex-row h-28 xl:h-32 2xl:h-48 relative select-none overflow-hidden group w-full bg-neutral-50 p-2"
+            data-carousel="true"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
