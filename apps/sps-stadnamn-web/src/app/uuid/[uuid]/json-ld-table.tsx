@@ -13,7 +13,7 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
     //console.log("CONTEXT", data)
     return data?.["@context"] || {}
   }
-  
+
   let context = await getContext()
   if (Array.isArray(jsonLd["@context"])) {
     context = {
@@ -26,9 +26,9 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
 
   // Helper function to check if a value is a literal
   const isLiteral = (value: any): boolean => {
-    return typeof value === 'string' || 
-           typeof value === 'number' || 
-           typeof value === 'boolean'
+    return typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'boolean'
   }
 
   // Helper function to resolve URIs using context
@@ -38,14 +38,14 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
 
     if (value.startsWith('@')) return value
 
-    
+
     // If it's a prefixed value (e.g. crm:E1)
     if (value.includes(':')) {
       const [prefix, local] = value.split(':')
       return resolveUri(context[prefix]) + local
     }
-    
-    
+
+
     // Resolve value
     if (context?.[value]) {
       const contextValue = context[value]
@@ -56,7 +56,7 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
         return resolveUri(contextValue['@id'])
       }
     }
-    
+
     return value
   }
 
@@ -70,7 +70,7 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
   const getParentUuid = (uri: string): string | undefined => {
     const baseUuid = getUuid(uri)
     if (!baseUuid) return undefined
-    
+
     const parentMatch = uri.match(/\/uuid\/([^/#]+)#/)
     return parentMatch ? parentMatch[1] : undefined
   }
@@ -78,7 +78,7 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
   // Helper function to collect child UUIDs from a nested object
   const getChildUuids = (value: any): string[] => {
     if (!value || typeof value !== 'object') return []
-    
+
     const uuids: string[] = []
     Object.values(value).forEach(v => {
       if (typeof v === 'object' && v !== null && 'id' in v) {
@@ -123,7 +123,7 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
     if (typeof value === 'object' && value !== null) {
       if (value['id']) {
         const uuid = getUuid(value['id'])
-        
+
         if (Object.keys(value).length > 1) {
           return (
             <ul className="min-w-full divide-y divide-neutral-100 pl-4 border-l border-neutral-300 text-sm" key={value['id']}>
@@ -132,9 +132,9 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
                 {value['id'].startsWith('_:') ? (
                   <span className="px-4 py-2">{value['id']}</span>
                 ) : (
-                  <Link 
-                    lang="en" 
-                    href={value['id']} 
+                  <Link
+                    lang="en"
+                    href={value['id']}
                     className="px-4 py-2 hover:text-black underline"
                   >
                     {value['id']}
@@ -199,13 +199,13 @@ export default async function JsonLdTable({ jsonLd }: JsonLdTableProps) {
     )
   }
 
-  const ValueRenderer = ({ 
-    uri, 
-    value, 
-    propertyKey 
-  }: { 
-    uri: string; 
-    value: any; 
+  const ValueRenderer = ({
+    uri,
+    value,
+    propertyKey
+  }: {
+    uri: string;
+    value: any;
     propertyKey: string;
   }) => {
     if (uri === "@type" || propertyKey === "type") {

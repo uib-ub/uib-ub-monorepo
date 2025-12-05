@@ -7,11 +7,11 @@ export interface ContentSettingsItem {
 }
 
 export interface TreeSettingsItem {
-  subunit: string, 
+  subunit: string,
   subunitLabel?: string,
   sort: string[], // Sort cadastral units
   aggSort: string, // Sort aggregated divisions above the cadastral unit (e. g. municipalities)
-  filter?: any, 
+  filter?: any,
   showNumber?: boolean,
   leaf: string,
   parentName: string,
@@ -66,181 +66,181 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
 }
 
 
-  export const contentSettings: Record<string, ContentSettingsItem> = {
-    search: {
-      display: 'map',
-      adm: 3,
-      sort: ["_score", "label.keyword"]
-      //adm: 3,
-      //sort: ["_score", "ranking", "adm1.keyword", "adm2.keyword"] //  "ranking" added in order to favor results with snid and multiple attestations
-    },
-    core_gnidu: {
-      display: 'map',
-      adm: 0,
-      cadastre: false,
-      sort: ["_score", "label.keyword"]
-    },
-    all: {
-      display: 'map',
-      adm: 3,
-      cadastre: false,
-      sort: ["_score"]
-    },
-    bsn: {
-      display: 'map',
-      adm: 2,
-      cadastre: true
-    },
-    hord: {
-      display: 'map',
-      adm: 3,
-      cadastre: true
-    },
-    leks: {
-      display: 'map',
-      adm: 2,
-      sort: ["_score", "label.keyword"],
-    },
-    leks_g: {
-      display: 'table',
-      sort: ["_score", "label.keyword"],
-    },
-    m1838: {
-      display: 'map',
-      adm: 2,
-      cadastre: false, // Old cadastral system and messy data
-      sort: ["_score", "cadastralIndex"],
-    },
-    m1886: {
-      display: 'map',
-      adm: 2,
-      cadastre: true,
-    },
-    mu1950: {
-      display: 'map',
-      adm: 2,
-      cadastre: true,
-    },
-    nbas: {
-      display: 'map',
-      adm: 2,
-      cadastre: false // not cleaned yet
-    },
-    ostf: {
-      display: 'map',
-      adm: 2,
-      cadastre: false
-    },
-    skul: {
-      display: 'map',
-      adm: 2,
-      cadastre: false // not cleaned yet
-    },
-    sof: {
-      display: 'map',
-      adm: 2,
-      cadastre: false
-    },
-    rygh: {
-      display: 'map',
-      adm: 2,
-      cadastre: true
-    },
-    tot: {
-      display: 'map',
-      adm: 3,
-      cadastre: true
-    },
-    ssr2016: {
-      display: 'map',
-      adm: 2,
-      cadastre: false // not cleaned yet
-    },
-    ssr: {
-      display: 'map',
-      adm: 2,
-      cadastre: false // not cleaned yet
-    },
-    nrk: {
-      display: 'map',
-      adm: 2,
-      cadastre: false
-    },
-    gn2019: {
-      display: 'map',
-      adm: 2,
-      cadastre: false,
-      sort: ["_score", "label.keyword"]
-    },
-    geonames: {
-      display: 'map',
-      adm: 2,
-      cadastre: false,
-      sort: ["_score", "label.keyword"]
-    },
-    ft1900: {
-      display: 'map',
-      adm: 2,
-      cadastre: false,
-      sort: ["_score", "label.keyword"]
-    },
-    ft1910: {
-      display: 'map',
-      adm: 2,
-      cadastre: false,
-      sort: ["_score", "label.keyword"]
-    },
-    m2010: {
-      display: 'map',
-      adm: 2,
-      cadastre: false,
-      sort: ["_score", "label.keyword"]
-    },
-    frogn: {
-      display: 'table',
-      adm: 2,
-      cadastre: false,
-      sort: ["_score", "label.keyword"]
-    },
-    gjerd: {
-      display: 'table',
-      adm: 3,
-      cadastre: false,
-      sort: ["_score", "label.keyword"]
-    },
-    sorum: {
-      display: 'table',
-      adm: 2,
-      cadastre: false,
-      sort: ["_score", "label.keyword"]
-    },
-    kven: {
-      display: 'map',
-      adm: 2,
-      cadastre: false,
-      sort: ["_score", "label.keyword"]
-    },
-    snor: {
-      display: 'map',
-      adm: 2,
-      cadastre: false,
-      sort: ["_score", "label.keyword"]
-    },
-    herad: {
-      display: 'map',
-      adm: 2,
-      cadastre: false,
-      sort: ["_score", "label.keyword"]
-    },
-    seta: {
-      display: 'map',
-      adm: 2,
-      cadastre: false,
-      sort: ["_score", "label.keyword"]
-    }
-
-    
+export const contentSettings: Record<string, ContentSettingsItem> = {
+  search: {
+    display: 'map',
+    adm: 3,
+    sort: ["_score", "label.keyword"]
+    //adm: 3,
+    //sort: ["_score", "ranking", "adm1.keyword", "adm2.keyword"] //  "ranking" added in order to favor results with snid and multiple attestations
+  },
+  core_gnidu: {
+    display: 'map',
+    adm: 0,
+    cadastre: false,
+    sort: ["_score", "label.keyword"]
+  },
+  all: {
+    display: 'map',
+    adm: 3,
+    cadastre: false,
+    sort: ["_score"]
+  },
+  bsn: {
+    display: 'map',
+    adm: 2,
+    cadastre: true
+  },
+  hord: {
+    display: 'map',
+    adm: 3,
+    cadastre: true
+  },
+  leks: {
+    display: 'map',
+    adm: 2,
+    sort: ["_score", "label.keyword"],
+  },
+  leks_g: {
+    display: 'table',
+    sort: ["_score", "label.keyword"],
+  },
+  m1838: {
+    display: 'map',
+    adm: 2,
+    cadastre: false, // Old cadastral system and messy data
+    sort: ["_score", "cadastralIndex"],
+  },
+  m1886: {
+    display: 'map',
+    adm: 2,
+    cadastre: true,
+  },
+  mu1950: {
+    display: 'map',
+    adm: 2,
+    cadastre: true,
+  },
+  nbas: {
+    display: 'map',
+    adm: 2,
+    cadastre: false // not cleaned yet
+  },
+  ostf: {
+    display: 'map',
+    adm: 2,
+    cadastre: false
+  },
+  skul: {
+    display: 'map',
+    adm: 2,
+    cadastre: false // not cleaned yet
+  },
+  sof: {
+    display: 'map',
+    adm: 2,
+    cadastre: false
+  },
+  rygh: {
+    display: 'map',
+    adm: 2,
+    cadastre: true
+  },
+  tot: {
+    display: 'map',
+    adm: 3,
+    cadastre: true
+  },
+  ssr2016: {
+    display: 'map',
+    adm: 2,
+    cadastre: false // not cleaned yet
+  },
+  ssr: {
+    display: 'map',
+    adm: 2,
+    cadastre: false // not cleaned yet
+  },
+  nrk: {
+    display: 'map',
+    adm: 2,
+    cadastre: false
+  },
+  gn2019: {
+    display: 'map',
+    adm: 2,
+    cadastre: false,
+    sort: ["_score", "label.keyword"]
+  },
+  geonames: {
+    display: 'map',
+    adm: 2,
+    cadastre: false,
+    sort: ["_score", "label.keyword"]
+  },
+  ft1900: {
+    display: 'map',
+    adm: 2,
+    cadastre: false,
+    sort: ["_score", "label.keyword"]
+  },
+  ft1910: {
+    display: 'map',
+    adm: 2,
+    cadastre: false,
+    sort: ["_score", "label.keyword"]
+  },
+  m2010: {
+    display: 'map',
+    adm: 2,
+    cadastre: false,
+    sort: ["_score", "label.keyword"]
+  },
+  frogn: {
+    display: 'table',
+    adm: 2,
+    cadastre: false,
+    sort: ["_score", "label.keyword"]
+  },
+  gjerd: {
+    display: 'table',
+    adm: 3,
+    cadastre: false,
+    sort: ["_score", "label.keyword"]
+  },
+  sorum: {
+    display: 'table',
+    adm: 2,
+    cadastre: false,
+    sort: ["_score", "label.keyword"]
+  },
+  kven: {
+    display: 'map',
+    adm: 2,
+    cadastre: false,
+    sort: ["_score", "label.keyword"]
+  },
+  snor: {
+    display: 'map',
+    adm: 2,
+    cadastre: false,
+    sort: ["_score", "label.keyword"]
+  },
+  herad: {
+    display: 'map',
+    adm: 2,
+    cadastre: false,
+    sort: ["_score", "label.keyword"]
+  },
+  seta: {
+    display: 'map',
+    adm: 2,
+    cadastre: false,
+    sort: ["_score", "label.keyword"]
   }
+
+
+}
 
 
 export const getSortArray = (dataset: string): (string | object)[] => {
@@ -257,7 +257,7 @@ export const getSortArray = (dataset: string): (string | object)[] => {
     return datasetSettings.sort
   }
 
-  
+
   if (datasetSettings.adm) {
     // Sort by all adm levels according to the dataset
     for (let i = 1; i <= datasetSettings.adm; i++) {
@@ -273,21 +273,25 @@ export const getSortArray = (dataset: string): (string | object)[] => {
         "missing": "_last", // or "_last", depending on how you want to handle missing values
         "nested": {
           "path": "cadastre" // Specify the path to the nested field
-        }}})
-      sortArray.push({
-      "cadastre.bnr": { 
+        }
+      }
+    })
+    sortArray.push({
+      "cadastre.bnr": {
         "order": "asc", // or "desc", depending on your requirement
         "mode": "min", // or "max", depending on how you want to sort multiple values within nested objects
         "missing": "_first", // or "_last", depending on how you want to handle missing values
         "nested": {
           "path": "cadastre" // Specify the path to the nested field
-        }}})
-    }
-
-    return sortArray
+        }
+      }
+    })
   }
 
+  return sortArray
+}
 
 
-  
+
+
 

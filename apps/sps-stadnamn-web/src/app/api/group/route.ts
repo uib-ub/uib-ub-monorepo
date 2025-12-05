@@ -1,4 +1,3 @@
-//export const runtime = 'edge'
 
 import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
@@ -6,27 +5,27 @@ import { postQuery } from '../_utils/post';
 import { base64UrlToString } from '@/lib/param-utils';
 
 
-  type OutputData = {
-    boost: number,
-    placeScore: number,
-    sources: Record<string, any>[],
+type OutputData = {
+  boost: number,
+  placeScore: number,
+  sources: Record<string, any>[],
 
-  };
+};
 
 export async function GET(request: Request) {
-  const {termFilters, reservedParams} = extractFacets(request)
+  const { termFilters, reservedParams } = extractFacets(request)
   const { simple_query_string } = getQueryString(reservedParams)
   console.log("USING GET (SERVER)")
 
   const perspective = reservedParams.perspective || 'all'
 
   const groupValue = base64UrlToString(reservedParams.group)
-    
-  const query: Record<string,any> = {
+
+  const query: Record<string, any> = {
     "size": 1000,
     "fields": ["group.adm1", "group.adm2", "adm1", "adm2", "group.label", "label", "group.id", "uuid", "boost", "location"],
 
-     "query": {
+    "query": {
       "bool": {
         "must": simple_query_string || { "match_all": {} },
         "filter": [{
@@ -50,16 +49,18 @@ export async function GET(request: Request) {
   }
 
 
-  
+
   const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
 
   const sources: any[] = []
-  const topDoc = {boost: -1, 
-                placeScore: -1, 
-                group: data.hits?.hits[0]?._source?.group, 
-                fields: data.hits?.hits[0]?.fields, 
-                _index: data.hits?.hits[0]?._index}
-  
+  const topDoc = {
+    boost: -1,
+    placeScore: -1,
+    group: data.hits?.hits[0]?._source?.group,
+    fields: data.hits?.hits[0]?.fields,
+    _index: data.hits?.hits[0]?._index
+  }
+
   data?.hits?.hits.forEach((hit: any) => {
     sources.push({
       dataset: hit._index.split('-')[2],
@@ -81,7 +82,7 @@ export async function GET(request: Request) {
       boost: hit._source.boost,
     })
 
-    
+
   })
 
 
@@ -92,9 +93,9 @@ export async function GET(request: Request) {
     sources,
     //viewport: data.aggregations?.viewport?.bounds,
   }
-              
 
-  
-  return Response.json(outputData, {status: status})
-  
+
+
+  return Response.json(outputData, { status: status })
+
 }

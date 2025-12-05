@@ -8,5 +8,5 @@ const DynamicTableExplorer = dynamic(() => import("@/components/search/table/tab
 
 
 export default function TableExplorerWrapper() {
-    return <DynamicTableExplorer />
+  return <DynamicTableExplorer />
 }

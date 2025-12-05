@@ -1,9 +1,5 @@
-//export const runtime = 'edge'
 
-import { extractFacets } from '../../_utils/facets'
-import { getQueryString } from '../../_utils/query-string';
 import { postQuery } from '../../_utils/post';
-import { getSortArray } from '@/config/server-config';
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -11,10 +7,9 @@ export async function POST(request: Request) {
   const searchTerms = body.searchTerms
   const h3 = body.h3
   const gnidu = body.gnidu
-  const snid = body.snid
 
-  const query: Record<string,any> = {
-    "size":  (h3 || gnidu) ? 1000 : 10,
+  const query: Record<string, any> = {
+    "size": (h3 || gnidu) ? 1000 : 10,
     "track_scores": true,
     "sort": [
       {
@@ -26,7 +21,7 @@ export async function POST(request: Request) {
       {
         _score: "desc"
       },
-      
+
     ],
     "_source": ["group.id", "label", "adm1", "adm2", "uuid", "sosi", "description", "attestations", "year", "gnidu", "h3", "location"],
   }
@@ -74,7 +69,7 @@ export async function POST(request: Request) {
   }
 
   // Add geographic/identifier filters as should clauses within the required section
-  
+
   if (false && h3 && Array.isArray(h3) && h3.length > 0) {
     identifierQuery.bool.should.push({
       "terms": {
@@ -82,7 +77,7 @@ export async function POST(request: Request) {
       }
     })
   }
-    
+
 
   if (body.lat && body.lon) {
     identifierQuery.bool.should.push({
@@ -103,7 +98,7 @@ export async function POST(request: Request) {
       }
     })
   }
-    
+
 
   // Only add the identifier requirement if we have identifier filters
   if (identifierQuery.bool.should.length > 0) {
@@ -121,5 +116,5 @@ export async function POST(request: Request) {
   }
 
   const [data, status] = await postQuery('all', query)
-  return Response.json(data, {status: status})
+  return Response.json(data, { status: status })
 }

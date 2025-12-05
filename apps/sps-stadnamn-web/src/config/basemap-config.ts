@@ -1,7 +1,7 @@
 // Default bakgrunnskart bør heller endres hvis man søker i et datasett med annen geografisk dekning enn Norge. 
 export const backgroundMap = {
-        url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
 }
 
 export const defaultBaseMap: Record<string, string> = {
@@ -9,7 +9,7 @@ export const defaultBaseMap: Record<string, string> = {
     ssr: 'world_map',
     ssr2016: 'world_map'
 }
-   
+
 interface BaseMap {
     key: string;
     name: string;
@@ -42,8 +42,8 @@ export const baseMaps: BaseMap[] = [
     },
     */
     {
-        key: 'topo', 
-        name: 'Noregskart', 
+        key: 'topo',
+        name: 'Noregskart',
         props: {
             url: 'https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png',
             attribution: '&copy; <a class="override-external-icon" href="http://www.kartverket.no/">Kartverket</a>',
@@ -56,17 +56,17 @@ export const baseMaps: BaseMap[] = [
             url: 'https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png',
             attribution: '&copy; <a class="override-external-icon" href="http://www.kartverket.no/">Kartverket</a>',
         }
-        
+
     },
     {
-        key: 'toporaster', 
-        name: 'Noregskart, store bokstaver', 
+        key: 'toporaster',
+        name: 'Noregskart, store bokstaver',
         props: {
             url: 'https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png',
             attribution: '&copy; <a class="override-external-icon" href="http://www.kartverket.no/">Kartverket</a>'
         }
     },
-    { 
+    {
         key: 'world_map',
         name: 'Verdskart',
         bright: true,
@@ -74,7 +74,7 @@ export const baseMaps: BaseMap[] = [
             url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
             attribution: '&copy; <a class="override-external-icon" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors<br/> &copy; <a class="override-external-icon" href="https://carto.com/attributions">CARTO</a>'
         }
-        
+
     }
 ];
 

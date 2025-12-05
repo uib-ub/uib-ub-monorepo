@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link"
-import { useParams, usePathname } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { PiMagnifyingGlass } from "react-icons/pi"
 

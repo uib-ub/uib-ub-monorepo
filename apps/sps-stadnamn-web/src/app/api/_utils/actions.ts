@@ -1,9 +1,6 @@
-import { getSortArray, treeSettings } from '@/config/server-config'
 import { postQuery } from './post'
-import { fieldConfig } from '@/config/search-config'
-import { datasetTitles } from '@/config/metadata-config'
 
-export async function fetchDoc(params: {uuid: string | string[], dataset?: string}) {
+export async function fetchDoc(params: { uuid: string | string[], dataset?: string }) {
     'use server'
     const { uuid, dataset } = params
     // TODO: use the same variable name in prod and test
@@ -39,53 +36,53 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
     if (!res.ok) {
         const errorResponse = await res.json();
         if (errorResponse.error) {
-            return {error: errorResponse.error.type.toUpperCase(), status: errorResponse.status};
+            return { error: errorResponse.error.type.toUpperCase(), status: errorResponse.status };
         }
         if (errorResponse.found == false) {
-            return {error: "DOCUMENT_NOT_FOUND", status: "404"}
+            return { error: "DOCUMENT_NOT_FOUND", status: "404" }
         }
     }
-  const data = await res.json()
-  //console.log(data)
+    const data = await res.json()
+    //console.log(data)
 
-  return Array.isArray(uuid) ? data.hits.hhits : data.hits.hits[0]
+    return Array.isArray(uuid) ? data.hits.hhits : data.hits.hits[0]
 
-  }
+}
 
-  export async function fetchIIFSuppage(params: {suppageType: string, suppageId: string}) {
+export async function fetchIIFSuppage(params: { suppageType: string, suppageId: string }) {
     'use server'
     const { suppageType, suppageId } = params
 
     // Determine the correct field to query based on suppageType
     let field;
     if (suppageType === 'canvas') {
-      field = "images.canvasUuid";
+        field = "images.canvasUuid";
     } else if (suppageType === 'annotation') {
-      field = "images.annotationUuid";
+        field = "images.annotationUuid";
     } else if (suppageType === 'annotationPage') {
-      field = "images.annotationPageUuid";
+        field = "images.annotationPageUuid";
     } else {
-      throw new Error("Unknown suppageType: " + suppageType)
+        throw new Error("Unknown suppageType: " + suppageType)
     }
 
     const query = {
-      size: 1,
-      fields: ['uuid'],
-      _source: false,
-      query: {
-        term: { [`${field}`]: suppageId }
-      }
+        size: 1,
+        fields: ['uuid'],
+        _source: false,
+        query: {
+            term: { [`${field}`]: suppageId }
+        }
     };
 
     // Query against the iiif* index pattern
     const [res, status] = await postQuery("iiif_*", query)
     if (status !== 200) {
-      return { error: "Failed to fetch IIIF suppage", status }
+        return { error: "Failed to fetch IIIF suppage", status }
     }
     return res.hits.hits[0]
-  }
+}
 
-  export async function fetchIIFDocByIndex(params: {partOf: string, order: string}) {
+export async function fetchIIFDocByIndex(params: { partOf: string, order: string }) {
     'use server'
     const { partOf, order } = params
     const query = {
@@ -107,9 +104,9 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
     }
 
     return res.hits.hits[0]
-  }
+}
 
-  export async function fetchSOSI(params: {sosiCode: string}) {
+export async function fetchSOSI(params: { sosiCode: string }) {
     'use server'
     const { sosiCode } = params
 
@@ -129,7 +126,7 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
     return res.hits.hits[0]  // Return the first match
 }
 
-  export async function fetchVocab() {
+export async function fetchVocab() {
     'use server'
     const query = {
         query: {
@@ -155,7 +152,7 @@ export async function fetchDoc(params: {uuid: string | string[], dataset?: strin
         }
     })
 
-    return {coordinateVocab, sosiVocab}
+    return { coordinateVocab, sosiVocab }
 }
 
 // Fetch children of a document in the same index (documents that have the uuid as the value in "within" field)
@@ -168,7 +165,7 @@ export async function fetchCadastralSubunits(dataset: string, uuid: string, fiel
                 "within.keyword": uuid
             }
         },
-        fields: fields,    
+        fields: fields,
         sort: sortFields.map((field: string) => {
             if (field.startsWith("cadastre.")) {
                 return {
@@ -180,7 +177,7 @@ export async function fetchCadastralSubunits(dataset: string, uuid: string, fiel
                     }
                 };
             } else {
-                return {[field]: "asc"};
+                return { [field]: "asc" };
             }
         }),
         _source: false
@@ -188,9 +185,9 @@ export async function fetchCadastralSubunits(dataset: string, uuid: string, fiel
     }
     const [res, status] = await postQuery(dataset, query)
     if (status != 200) {
-        return {error: "Failed to fetch children", status: status}
+        return { error: "Failed to fetch children", status: status }
     }
     return res
-    
+
 }
 

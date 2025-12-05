@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 type DismissedMessages = {
-  dismissedMessages: Set<string>  
+  dismissedMessages: Set<string>
   dismissMessage: (messageId: string) => void
   allowMessage: (messageId: string) => boolean
   resetDismissedMessages: () => void
@@ -39,11 +39,11 @@ export const useWarningStore = create<DismissedMessages>()((set, get) => ({
       writeDismissedToStorage(next)
       return { dismissedMessages: next }
     }),
-  
+
   allowMessage: (messageId: string) => {
     return !get().dismissedMessages.has(messageId)
   },
-  
+
   resetDismissedMessages: () => {
     writeDismissedToStorage(new Set<string>())
     set({ dismissedMessages: new Set<string>() })

@@ -1,9 +1,9 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
 import { jsPDF } from 'jspdf'
+import { useEffect, useRef, useState } from 'react'
 // eslint-disable-next-line import/no-unresolved
-import JSZip from 'jszip'
 import { resolveLanguage } from '@/app/iiif/iiif-utils'
+import JSZip from 'jszip'
 
 type ManifestImage = { uuid: string; width: number; height: number; label?: any }
 
@@ -83,7 +83,7 @@ export default function IIIFDownloader({ job, onDone }: { job: ViewerJob | Colle
 }
 
 function imageUrl(dataset: string, uuid: string) {
-  return `https://iiif.test.ubbe.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${uuid}/full/max/0/default.jpg`
+  return `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${uuid}/full/max/0/default.jpg`
 }
 
 function arrayBufferToBase64(ab: ArrayBuffer) {

@@ -1,14 +1,11 @@
-import useTableData from "@/state/hooks/table-data"
+import { treeSettings } from "@/config/server-config"
+import { getSkeletonLength, getValueByPath } from "@/lib/utils"
+import useDocData from "@/state/hooks/doc-data"
 import { useQuery } from "@tanstack/react-query"
 import { useSearchParams } from "next/navigation"
+import { useEffect, useRef, useState } from "react"
 import Clickable from "../../ui/clickable/clickable"
-import { formatNumber, getSkeletonLength, getValueByPath } from "@/lib/utils"
-import { treeSettings } from "@/config/server-config"
-import { datasetTitles } from '@/config/metadata-config'
-import useSearchData from "@/state/hooks/search-data"
 import CadastralTable from "../details/doc/cadastral-table"
-import useDocData from "@/state/hooks/doc-data"
-import { useState, useEffect, useRef } from "react"
 
 const getTreeData = async (dataset: string | null, adm1?: string | null, adm2?: string | null) => {
     const params = new URLSearchParams()
@@ -32,7 +29,7 @@ export default function TreeList() {
     const dataset = searchParams.get('dataset')
     const doc = searchParams.get('doc')
     const { docData } = useDocData()
-    
+
     // Add state to track previous active item
     const [previousDoc, setPreviousDoc] = useState<string | null>(null)
 
@@ -42,7 +39,7 @@ export default function TreeList() {
     // Scroll into view when docData changes
     useEffect(() => {
         if (docData?._source && activeItemRef.current) {
-            activeItemRef.current.scrollIntoView({ 
+            activeItemRef.current.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
             })
@@ -64,18 +61,18 @@ export default function TreeList() {
 
     if (!dataset || !treeData?.hits?.hits) {
         return (
-                    <ul className="list-none divide-y divide-neutral-200">
-                        {[...Array(8)].map((_, i) => (
-                            <li key={i}>
-                                <div className="flex items-center p-3">
-                                    <div 
-                                        className="h-4 bg-neutral-900/10 rounded-full animate-pulse" 
-                                        style={{ width: `${getSkeletonLength(i, 8, 16)}rem` }} 
-                                    />
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+            <ul className="list-none divide-y divide-neutral-200">
+                {[...Array(8)].map((_, i) => (
+                    <li key={i}>
+                        <div className="flex items-center p-3">
+                            <div
+                                className="h-4 bg-neutral-900/10 rounded-full animate-pulse"
+                                style={{ width: `${getSkeletonLength(i, 8, 16)}rem` }}
+                            />
+                        </div>
+                    </li>
+                ))}
+            </ul>
         )
     }
 
@@ -93,14 +90,14 @@ export default function TreeList() {
                     const farmName = fields[settings.parentName]?.[0]
                     const itemWithin = fields.within?.[0]
                     const isActive = !!docData?._source && (
-                        (itemWithin === docData._source.uuid) || 
+                        (itemWithin === docData._source.uuid) ||
                         (itemWithin === docData._source.within)
                     )
                     const wasPreviouslyActive = itemWithin === previousDoc
 
                     return (
-                        <li 
-                            key={item._id} 
+                        <li
+                            key={item._id}
                             ref={isActive ? activeItemRef : undefined}
                         >
                             <Clickable
@@ -115,10 +112,9 @@ export default function TreeList() {
                             </Clickable>
 
                             {(isActive || wasPreviouslyActive) && itemWithin && (
-                                <div 
-                                    className={`px-3 pb-3 transition-opacity duration-200 ${
-                                        isActive ? 'opacity-100' : 'opacity-0'
-                                    }`}
+                                <div
+                                    className={`px-3 pb-3 transition-opacity duration-200 ${isActive ? 'opacity-100' : 'opacity-0'
+                                        }`}
                                 >
                                     <CadastralTable
                                         dataset={dataset as string}
@@ -154,7 +150,7 @@ export default function TreeList() {
                 const countyName = fields.adm1?.[0]
                 const municipalityNumber = fields[settings.aggSort]?.[0]
                 const countyNumber = municipalityNumber?.substring(0, 2)
-                
+
                 return (
                     <li key={item._id}>
                         <Clickable

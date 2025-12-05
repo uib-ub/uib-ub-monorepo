@@ -4,7 +4,7 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const iiif = url.searchParams.get('iiif');
 
-    const query: Record<string,any> = {
+    const query: Record<string, any> = {
         size: 100,
         _source: false,
         track_scores: false,

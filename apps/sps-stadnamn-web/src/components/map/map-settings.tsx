@@ -11,7 +11,7 @@ const MapDebugSettings = dynamic(() => import("./map-debug-settings"), { ssr: fa
 export default function MapSettings() {
   const { baseMap, markerMode, setBaseMap, setMarkerMode } = useMapSettings();
   const perspective = usePerspective();
-  const debug = useDebugStore((s) => s.debug);  
+  const debug = useDebugStore((s) => s.debug);
 
   // Add state for h3 resolution
 

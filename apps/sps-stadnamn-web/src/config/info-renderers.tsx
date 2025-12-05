@@ -1,10 +1,10 @@
-import Link from 'next/link';
-import React, { Fragment, ReactElement } from 'react';
-import parse from 'html-react-parser';
-import { PiCodeSimple, PiInfoFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi';
+import SourceLink from '@/components/search/details/group/source-link';
 import Clickable from '@/components/ui/clickable/clickable';
 import InfoPopover from '@/components/ui/info-popover';
-import SourceLink from '@/components/search/details/group/source-link';
+import parse from 'html-react-parser';
+import Link from 'next/link';
+import { Fragment, ReactElement } from 'react';
+import { PiInfoFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi';
 
 const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string[]) => {
   const altLabels = altLabelKeys.map((key) => source[key]).filter((label: string) => label !== prefLabel && label);
@@ -132,7 +132,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
         {source.rawData.merknader && <div><strong className="text-neutral-900">Merknader: </strong>{source.rawData.merknader}</div>}
 
       </div>
-      {source.audio && <audio controls src={`https://iiif.test.ubbe.no/iiif/audio/hord/${source.audio.file}`}></audio>}
+      {source.audio && <audio controls src={`https://iiif.spraksamlingane.no/iiif/audio/hord/${source.audio.file}`}></audio>}
     </>
   },
   nbas: null,

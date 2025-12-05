@@ -1,10 +1,7 @@
-import { getFieldValue } from "@/lib/utils";
-import { formatHighlight, createMarkup } from "@/lib/text-utils";
-import Link from "next/link";
 import SourceLink from "@/components/search/details/group/source-link";
+import { formatHighlight } from "@/lib/text-utils";
+import { getFieldValue } from "@/lib/utils";
 import { Fragment } from "react";
-import IconButton from "@/components/ui/icon-button";
-import { PiFileFill, PiInfoFill } from "react-icons/pi";
 
 interface Renderer {
   fields?: string[];
@@ -45,52 +42,52 @@ const loktypeDetails = (loktype: string, hit: any) => {
 
 
 
-const multivalue = (value: string|string[]) => {
+const multivalue = (value: string | string[]) => {
   return Array.isArray(value) ? value.join("/") : value
 }
 
 export function formatCadastre(cadastre: Record<string, any>[]): string {
   return cadastre.map(item => {
-      if (Array.isArray(item.gnr) && item.gnr.length > 1) {
+    if (Array.isArray(item.gnr) && item.gnr.length > 1) {
 
-              return item.gnr.join(",")
+      return item.gnr.join(",")
 
-      } else if (item.bnr) {
-          if (Array.isArray(item.bnr)) {
-              // Sort bnr to ensure correct range identification
-              const sortedBnr = item.bnr.sort((a, b) => a - b);
-              const ranges = [];
-              let start = sortedBnr[0];
-              let end = start;
+    } else if (item.bnr) {
+      if (Array.isArray(item.bnr)) {
+        // Sort bnr to ensure correct range identification
+        const sortedBnr = item.bnr.sort((a, b) => a - b);
+        const ranges = [];
+        let start = sortedBnr[0];
+        let end = start;
 
-              for (let i = 1; i < sortedBnr.length; i++) {
-                  if (sortedBnr[i] === end + 1) {
-                      end = sortedBnr[i];
-                  } else {
-                      if (start === end) {
-                          ranges.push(`${item.gnr}/${start}`);
-                      } else {
-                          ranges.push(`${item.gnr}/${start}-${end}`);
-                      }
-                      start = sortedBnr[i];
-                      end = start;
-                  }
-              }
-
-              // Handle the last range or number
-              if (start === end) {
-                  ranges.push(`${item.gnr}/${start}`);
-              } else {
-                  ranges.push(`${item.gnr}/${start}-${end}`);
-              }
-
-              return ranges.join(', ');
+        for (let i = 1; i < sortedBnr.length; i++) {
+          if (sortedBnr[i] === end + 1) {
+            end = sortedBnr[i];
           } else {
-              return `${item.gnr}/${item.bnr}`;
+            if (start === end) {
+              ranges.push(`${item.gnr}/${start}`);
+            } else {
+              ranges.push(`${item.gnr}/${start}-${end}`);
+            }
+            start = sortedBnr[i];
+            end = start;
           }
+        }
+
+        // Handle the last range or number
+        if (start === end) {
+          ranges.push(`${item.gnr}/${start}`);
+        } else {
+          ranges.push(`${item.gnr}/${start}-${end}`);
+        }
+
+        return ranges.join(', ');
       } else {
-          return `${item.gnr}`;
+        return `${item.gnr}/${item.bnr}`;
       }
+    } else {
+      return `${item.gnr}`;
+    }
   }).join(', ');
 }
 
@@ -99,20 +96,20 @@ const formatAdm = (hit: any) => {
   const adm1 = getFieldValue(hit, 'adm1')
   const adm2 = getFieldValue(hit, 'adm2')
   const adm3 = getFieldValue(hit, 'adm3')
-  return <>{adm3}{adm3 && ' – '}{(adm2 &&multivalue(adm1)?.length > 0 && adm2 !== adm1) && adm2 + ', '}{adm1}</>
+  return <>{adm3}{adm3 && ' – '}{(adm2 && multivalue(adm1)?.length > 0 && adm2 !== adm1) && adm2 + ', '}{adm1}</>
 }
 
-const cadastreAdm = (knr: string | undefined, gnr: string | undefined, bnr: string | undefined, sep: string, hit: any, display: string ) => {
+const cadastreAdm = (knr: string | undefined, gnr: string | undefined, bnr: string | undefined, sep: string, hit: any, display: string) => {
   const cadastre = getFieldValue(hit, 'cadastre')
 
   const admText = display != 'grouped' ? <>{(cadastre || gnr) && gnr != "0" && ', '}{formatAdm(hit)}</> : ''
   if (cadastre) {
-    return <>{!knr && "Gnr" + (cadastre.bnr ? "/Bnr": "") + ": "}{knr}{knr && "-"}{formatCadastre(cadastre)}{admText}</>
+    return <>{!knr && "Gnr" + (cadastre.bnr ? "/Bnr" : "") + ": "}{knr}{knr && "-"}{formatCadastre(cadastre)}{admText}</>
   }
   if (!gnr || gnr == '0') {
     return admText
   }
-  return  <>{!knr && "Gnr" + (bnr ? "/Bnr": "") + ": "}{gnr && knr}{knr && gnr && '-'}{gnr}{bnr && bnr != '0' ? sep + bnr : ''}{admText}</>
+  return <>{!knr && "Gnr" + (bnr ? "/Bnr" : "") + ": "}{gnr && knr}{knr && gnr && '-'}{gnr}{bnr && bnr != '0' ? sep + bnr : ''}{admText}</>
 }
 
 
@@ -120,13 +117,13 @@ export const resultRenderers: ResultRenderers = {
   search: {
     title: defaultTitle,
     details: (hit: any, display: string) => {
-      return <>{getFieldValue(hit, 'adm2') && multivalue(getFieldValue(hit, 'adm2')) + ", "}{multivalue(getFieldValue(hit, 'adm1'))}{ getFieldValue(hit, 'adm1') == "[Uordna]" && <>&nbsp;<em>{getFieldValue(hit, 'adm2Fallback') && getFieldValue(hit, 'adm2Fallback') + ", " }{getFieldValue(hit, 'adm1Fallback')}</em></> }</>
+      return <>{getFieldValue(hit, 'adm2') && multivalue(getFieldValue(hit, 'adm2')) + ", "}{multivalue(getFieldValue(hit, 'adm1'))}{getFieldValue(hit, 'adm1') == "[Uordna]" && <>&nbsp;<em>{getFieldValue(hit, 'adm2Fallback') && getFieldValue(hit, 'adm2Fallback') + ", "}{getFieldValue(hit, 'adm1Fallback')}</em></>}</>
     }
   },
   sof: {
     title: (hit: any, display: string) => {
-     const placeType = multivalue(getFieldValue(hit, 'placeType.label'))
-     if (placeType) {
+      const placeType = multivalue(getFieldValue(hit, 'placeType.label'))
+      if (placeType) {
         return <>{defaultTitle(hit)} {` (${placeType.toLowerCase()})`}</>
       }
       else {
@@ -134,7 +131,7 @@ export const resultRenderers: ResultRenderers = {
       }
     },
     links: (hit: any) => {
-      return <SourceLink url={"https://stadnamn.fylkesarkivet.no/placename/" + hit.uuid} label="fylkesarkivet.no"/>
+      return <SourceLink url={"https://stadnamn.fylkesarkivet.no/placename/" + hit.uuid} label="fylkesarkivet.no" />
     },
     details: (hit: any, display: string) => {
       return cadastreAdm(getFieldValue(hit, 'rawData.KommuneNr'), getFieldValue(hit, 'rawData.GardsNr'), getFieldValue(hit, 'rawData.BruksNr'), "/", hit, display)
@@ -150,8 +147,8 @@ export const resultRenderers: ResultRenderers = {
     },
     links: (hit: any) => {
       return <>
-      {hit.links?.map((link: any) => <Fragment key={link}><SourceLink   key={link} url={link} />
-      </Fragment>)}
+        {hit.links?.map((link: any) => <Fragment key={link}><SourceLink key={link} url={link} />
+        </Fragment>)}
       </>
     },
     details: (hit: any, display: string) => {
@@ -177,11 +174,11 @@ export const resultRenderers: ResultRenderers = {
     },
     links: (hit: any) => {
       const link = "https://www.norskstadnamnleksikon.no/grunnord.aspx?grunnordCode=" + hit.label
-      return <> <SourceLink   label="norskstadnamnleksikon.no" url={link} /></>
+      return <> <SourceLink label="norskstadnamnleksikon.no" url={link} /></>
 
     },
     details: (hit: any, display: string) => {
-      return 
+      return
     }
   },
   bsn: {
@@ -201,14 +198,14 @@ export const resultRenderers: ResultRenderers = {
   },
   hord: {
     title: (hit: any, display: string) => {
-      return <><span className="font-semibold">{getFieldValue(hit, 'label')}{getFieldValue(hit, 'altLabels') ? ', ':''}</span>{getFieldValue(hit, 'altLabels')}</> 
+      return <><span className="font-semibold">{getFieldValue(hit, 'label')}{getFieldValue(hit, 'altLabels') ? ', ' : ''}</span>{getFieldValue(hit, 'altLabels')}</>
     },
     details: (hit: any, display: string) => {
       return <>{cadastreAdm(getFieldValue(hit, 'rawData.kommuneNr'), getFieldValue(hit, 'rawData.bruka.bruk.gardsNr'), getFieldValue(hit, 'rawData.bruka.bruk.bruksNr'), "/", hit, display)}
-      {!hit.highlight && getFieldValue(hit, 'rawData.merknader') ? 
-        <><br/>{getFieldValue(hit, 'rawData.merknader')?.slice(0,100)}{getFieldValue(hit, 'rawData.merknader')?.length > 100 ? '...' : ''}
-        </> : ''} 
-        </>
+        {!hit.highlight && getFieldValue(hit, 'rawData.merknader') ?
+          <><br />{getFieldValue(hit, 'rawData.merknader')?.slice(0, 100)}{getFieldValue(hit, 'rawData.merknader')?.length > 100 ? '...' : ''}
+          </> : ''}
+      </>
     }
   },
   nbas: {
@@ -264,10 +261,10 @@ export const resultRenderers: ResultRenderers = {
         const url = link + "&searchText=" + getFieldValue(hit, 'label')
 
 
-      return <Fragment key={link}><SourceLink label={label}   key={link} url={url} />
-      </Fragment>
+        return <Fragment key={link}><SourceLink label={label} key={link} url={url} />
+        </Fragment>
       })
-    },  
+    },
     details: (hit: any, display: string) => {
       return <> {getFieldValue(hit, 'rawData.GNID')}{getFieldValue(hit, 'rawData.GNID') && ", "}{formatAdm(hit)}</>
     }
@@ -276,7 +273,7 @@ export const resultRenderers: ResultRenderers = {
     title: defaultTitle,
     details: (hit: any, display: string) => {
       return <>{getFieldValue(hit, 'adm2')}{getFieldValue(hit, 'adm1') && ', ' + getFieldValue(hit, 'adm1')}</>
-      }
+    }
   },
   ssr2016: {
     title: defaultTitle,
@@ -287,7 +284,7 @@ export const resultRenderers: ResultRenderers = {
   ssr: {
     title: defaultTitle,
     links: (hit: any) => {
-      return <SourceLink url={"https://stadnamn.kartverket.no/fakta/" + hit.ssr} label="kartverket.no"/>
+      return <SourceLink url={"https://stadnamn.kartverket.no/fakta/" + hit.ssr} label="kartverket.no" />
     },
     details: (hit: any, display: string) => {
       return <>{formatAdm(hit)}</>
@@ -315,8 +312,8 @@ export const resultRenderers: ResultRenderers = {
     }
   }
 
-  
-  
+
+
 }
 
 
@@ -326,14 +323,14 @@ export const defaultResultRenderer: DefaultRenderer = {
 
     // SHould be deprecated
     if (hit.link) return <SourceLink url={hit.link} />
-    
-    if (!hit.links?.length) return null    
+
+    if (!hit.links?.length) return null
     if (typeof hit.links === 'string') return <SourceLink url={hit.links} />
     return <>
-    {hit.links?.map((link: any) => {
-      return <Fragment key={link}><SourceLink  key={link} url={link} />
-      </Fragment>
-    })}
+      {hit.links?.map((link: any) => {
+        return <Fragment key={link}><SourceLink key={link} url={link} />
+        </Fragment>
+      })}
     </>
 
   },
@@ -353,23 +350,23 @@ export const defaultResultRenderer: DefaultRenderer = {
     return formatAdm(hit)
   },
   sourceTitle: (hit: any) => {
-    const labels = getFieldValue(hit, 'altLabels')?.filter((label: string) => 
+    const labels = getFieldValue(hit, 'altLabels')?.filter((label: string) =>
       label !== getFieldValue(hit, 'label')
     ) || []
 
     getFieldValue(hit, 'attestations.label')?.forEach((attestation: string) => {
-        if (!labels.includes(attestation) && attestation !== getFieldValue(hit, 'label')) {
-            labels.push(attestation)
-        }
+      if (!labels.includes(attestation) && attestation !== getFieldValue(hit, 'label')) {
+        labels.push(attestation)
+      }
     })
     return <>
-    {getFieldValue(hit, 'label')}
-                {getFieldValue(hit, 'sosi') && ` (${getFieldValue(hit, 'sosi')})`}
-                {labels?.length > 0 &&
-                    <span className="text-neutral-900">
-                        {" - " +labels?.join(', ')}
-                    </span>
-                }
+      {getFieldValue(hit, 'label')}
+      {getFieldValue(hit, 'sosi') && ` (${getFieldValue(hit, 'sosi')})`}
+      {labels?.length > 0 &&
+        <span className="text-neutral-900">
+          {" - " + labels?.join(', ')}
+        </span>
+      }
     </>
   },
   sourceDetails: (hit: any) => {

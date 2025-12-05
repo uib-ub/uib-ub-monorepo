@@ -15,9 +15,11 @@
   body {
     @apply text-black antialiased;
   }
-  
 
-  html:has(.scroll-container), body:has(.scroll-container), .scroll-container  {
+
+  html:has(.scroll-container),
+  body:has(.scroll-container),
+  .scroll-container {
     @apply h-full overflow-hidden;
   }
 
@@ -83,11 +85,12 @@
   }
 
   * {
-    scrollbar-color:  #8e8580 transparent;
+    scrollbar-color: #8e8580 transparent;
     scrollbar-width: thin;
   }
 
-  input[type='checkbox'], input[type='radio'] {
+  input[type='checkbox'],
+  input[type='radio'] {
     accent-color: theme('colors.accent.800');
   }
 
@@ -95,7 +98,8 @@
     @apply !rounded-lg;
   }
 
-  input[type='checkbox']:checked:hover, input[type='radio']:checked:hover {
+  input[type='checkbox']:checked:hover,
+  input[type='radio']:checked:hover {
     accent-color: theme('colors.accent.700') !important;
   }
 
@@ -103,7 +107,8 @@
     @apply bg-accent-200 border border-accent-900 rounded-sm px-1;
   }
 
-  a[href^="http"]:not(.no-underline):not(.override-external-icon):not([aria-label]):not(a[href^="https://stadnamnportalen"]):not(a[href^="https://purl.org/stadnamn"]):after, .external-link:after {
+  a[href^="http"]:not(.no-underline):not(.override-external-icon):not([aria-label]):not(a[href^="https://stadnamn.no"]):not(a[href^="https://stadnamn.no"]):after,
+  .external-link:after {
     content: "";
     @apply self-baseline mt-0.5 ml-[.2em] inline-block h-[1em] w-[1em];
     mask: url('PhArrowSquareOut.svg') no-repeat center;
@@ -113,7 +118,7 @@
     background-color: currentColor;
   }
 
-  
+
 
 
 
@@ -131,16 +136,16 @@
       @apply bg-[center_25%];
     }
   }
-  
 
 
 
-  
-  .map-marker:hover > * {
+
+
+  .map-marker:hover>* {
     opacity: 1 !important;
   }
 
-  
+
 
 }
 
@@ -154,8 +159,8 @@
     @apply flex gap-1;
   }
 
-  .tabs > button,
-  .tabs > a {
+  .tabs>button,
+  .tabs>a {
     @apply flex items-center justify-center rounded-md;
     @apply border border-transparent;
     @apply aria-pressed:bg-neutral-100 aria-pressed:border-neutral-200;
@@ -164,8 +169,8 @@
     @apply aria-expanded:bg-neutral-100 aria-expanded:border-neutral-200 aria-expanded:shadow-inner;
   }
 
-  .text-tabs > button,
-  .text-tabs > a {
+  .text-tabs>button,
+  .text-tabs>a {
     @apply border-none;
     @apply aria-pressed:bg-accent-700 aria-pressed:text-white;
     @apply aria-selected:bg-accent-700 aria-selected:text-white;
@@ -175,18 +180,23 @@
   .inner-slate {
     @apply bg-neutral-50 border border-neutral-200 rounded-md shadow-inner;
   }
+
   .breadcrumb-link {
     @apply no-underline text-accent-800 hover:underline !decoration-accent-800;
   }
+
   .card {
     @apply bg-white shadow-lg shadow-neutral-100 xl:border-2 xl:border-neutral-200 xl:rounded-sm;
   }
 
-  .dataset-info p, .page-info p {
+  .dataset-info p,
+  .page-info p {
     @apply pb-4;
   }
 
-  h1, .dataset-info h2, .instance-info h2 {
+  h1,
+  .dataset-info h2,
+  .instance-info h2 {
     @apply text-2xl font-serif
   }
 
@@ -198,7 +208,9 @@
     @apply text-lg mt-4 text-neutral-900 font-serif py-2;
   }
 
-  .dataset-info h4, .instance-info h4, .page-info h3 {
+  .dataset-info h4,
+  .instance-info h4,
+  .page-info h3 {
     @apply text-base mt-4 text-neutral-900 font-semibold py-2;
   }
 
@@ -206,34 +218,35 @@
     @apply mt-4 text-neutral-900 pt-2;
   }
 
-  .dataset-info ul, .instance-info ul, .page-info ul {
+  .dataset-info ul,
+  .instance-info ul,
+  .page-info ul {
     @apply list-disc pl-4 py-2;
   }
 
-  .dataset-info ol, .instance-info ol, .page-info ol {
+  .dataset-info ol,
+  .instance-info ol,
+  .page-info ol {
     @apply list-decimal pl-4 py-2;
   }
 
-  .dataset-info li, .instance-info li, .page-info li {
+  .dataset-info li,
+  .instance-info li,
+  .page-info li {
     @apply py-1;
   }
-  
+
 
   .btn {
-    @apply inline-flex items-center rounded-md justify-center px-4 py-2 shadow-sm text-sm font-medium text-white 
-           bg-neutral-700 hover:bg-neutral-800 focus:outline-none focus:ring-2 ring-neutral-600
-           focus:ring-offset-2 focus:ring-offset-white rounded-md aria-[current='page']:ring-accent-700
-           transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center rounded-md justify-center px-4 py-2 shadow-sm text-sm font-medium text-white bg-neutral-700 hover:bg-neutral-800 focus:outline-none focus:ring-2 ring-neutral-600 focus:ring-offset-2 focus:ring-offset-white rounded-md aria-[current='page']:ring-accent-700 transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-primary {
-    @apply bg-primary-800 text-white border border-primary-800 hover:bg-primary-900 hover:border-primary-900
-           transition-all duration-200 focus:ring-primary-500;
+    @apply bg-primary-800 text-white border border-primary-800 hover:bg-primary-900 hover:border-primary-900 transition-all duration-200 focus:ring-primary-500;
   }
 
   .btn-outline {
-    @apply bg-white text-neutral-950 border border-neutral-200 hover:bg-neutral-50 hover:border-neutral-600
-           transition-all duration-200;
+    @apply bg-white text-neutral-950 border border-neutral-200 hover:bg-neutral-50 hover:border-neutral-600 transition-all duration-200;
   }
 
   .icon-button {
@@ -252,7 +265,8 @@
     @apply bg-neutral-700 text-neutral-400 border-neutral-600;
   }
 
-  .btn-outline[disabled], .btn-outlinte.disabled {
+  .btn-outline[disabled],
+  .btn-outlinte.disabled {
     @apply text-neutral-500 bg-white border-neutral-300;
   }
 
@@ -265,11 +279,13 @@
     @apply text-neutral-500 bg-white border-neutral-300;
   }
 
-  header nav a, a.btn {
+  header nav a,
+  a.btn {
     @apply no-underline;
   }
 
-  button[disabled] i, .btn.disabled i {
+  button[disabled] i,
+  .btn.disabled i {
     @apply text-gray-400;
   }
 
@@ -278,7 +294,7 @@
     @apply bg-accent-200 ring-1;
   }
 
-  
+
 
   button[aria-current='page'].snid-button svg {
     @apply text-accent-800;
@@ -335,40 +351,41 @@
   }
 
 
-  
+
   .result-table {
     @apply w-full text-left text-neutral-950 rounded-md bg-neutral-50 border border-neutral-200;
   }
-  
+
   .result-table thead th {
     @apply text-sm bg-neutral-100 px-4 py-3 font-semibold;
   }
 
   .result-table thead button {
-    @apply text-neutral-950 
+    @apply text-neutral-950
   }
 
   .result-table thead tr {
     @apply border-b border-neutral-400;
   }
-  
+
   .result-table tbody tr:not(:last-child) {
-    @apply border-b border-neutral-400; 
+    @apply border-b border-neutral-400;
   }
 
 
-  .result-table th button, .result-table tbody th a {
+  .result-table th button,
+  .result-table tbody th a {
     @apply !text-neutral-950 !font-semibold;
   }
 
 
 
- 
+
   .result-table tbody th {
-    @apply px-2 lg:px-4 border-r border-neutral-400 py-1 bg-neutral-50 font-normal; 
+    @apply px-2 lg:px-4 border-r border-neutral-400 py-1 bg-neutral-50 font-normal;
   }
 
-  
+
   .result-table tbody tr:nth-child(odd) {
     @apply bg-white;
   }
@@ -376,8 +393,8 @@
   .result-table tbody tr:nth-child(even) {
     @apply bg-neutral-50;
   }
-  
-  
+
+
 
 
   .result-table tbody tr:has(td a[aria-current="page"]) {
@@ -387,9 +404,9 @@
   .cadastre-header:has(h2 a[aria-current="page"]) {
     @apply bg-accent-100;
   }
-  
 
-  
+
+
   .result-table td {
     @apply px-2 py-1 lg:px-4 lg:py-2;
   }
@@ -403,7 +420,8 @@
   }
 
 
-  .old-search button[aria-current='page'], .old-search a[aria-current='page'] i {
+  .old-search button[aria-current='page'],
+  .old-search a[aria-current='page'] i {
     @apply ring-accent-800 ring-2 rounded-full ring-offset-2;
 
   }
@@ -448,9 +466,7 @@
   }
 
   .rounded-tabs {
-    @apply flex items-center px-4 py-1 rounded-full bg-neutral-100 
-           aria-selected:bg-accent-800 aria-selected:text-white no-underline
-           transition-all duration-200 hover:bg-neutral-200 aria-selected:hover:bg-accent-700;
+    @apply flex items-center px-4 py-1 rounded-full bg-neutral-100 aria-selected:bg-accent-800 aria-selected:text-white no-underline transition-all duration-200 hover:bg-neutral-200 aria-selected:hover:bg-accent-700;
   }
 
   strong {
@@ -471,6 +487,7 @@
     from {
       opacity: 0;
     }
+
     to {
       opacity: 1;
     }

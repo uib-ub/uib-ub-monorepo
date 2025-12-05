@@ -59,165 +59,165 @@ export function boundsFromZoomAndCenter(
 
   return [[north, west], [south, east]];
 }
-  
-  
-  export const calculateRadius = (docCount: number, maxDocCount: number, minDocCount: number) => {
-    const minRadius = .75; // Minimum radius for a marker
-    const maxRadius = 1; // Maximum radius for a marker
-  
-    // Ensure docCount is within the range
-    docCount = Math.max(minDocCount, Math.min(maxDocCount, docCount));
-  
-    if (maxDocCount === minDocCount) return minRadius;
-  
-    // Use a logarithmic scale for a wider distribution
-    const logMax = Math.log(maxDocCount - minDocCount + 1);
-    const logValue = Math.log(docCount - minDocCount + 1);
-    const scaledRadius = (logValue / logMax) * (maxRadius - minRadius) + minRadius;
-  
-    return scaledRadius;
-  };
-  
-  export const adjustBounds = (bounds: [[number, number], [number, number]], adjustmentFactor: number): [[number, number], [number, number]] => {
-    // bounds format: [[north, west], [south, east]]
-    const north = bounds[0][0];
-    const west = bounds[0][1];
-    const south = bounds[1][0];
-    const east = bounds[1][1];
-    
-    // Calculate the center
-    const centerLat = (north + south) / 2;
-    const centerLon = (east + west) / 2;
-    
-    // Calculate half-spans and apply adjustment factor
-    const latHalfSpan = Math.abs(north - south) * (1 + adjustmentFactor) / 2;
-    const lonHalfSpan = Math.abs(east - west) * (1 + adjustmentFactor) / 2;
-    
-    // Calculate new bounds
-    const newNorth = centerLat + latHalfSpan;
-    const newSouth = centerLat - latHalfSpan;
-    const newEast = centerLon + lonHalfSpan;
-    const newWest = centerLon - lonHalfSpan;
-    
-    return [[newNorth, newWest], [newSouth, newEast]];
-  }
+
+
+export const calculateRadius = (docCount: number, maxDocCount: number, minDocCount: number) => {
+  const minRadius = .75; // Minimum radius for a marker
+  const maxRadius = 1; // Maximum radius for a marker
+
+  // Ensure docCount is within the range
+  docCount = Math.max(minDocCount, Math.min(maxDocCount, docCount));
+
+  if (maxDocCount === minDocCount) return minRadius;
+
+  // Use a logarithmic scale for a wider distribution
+  const logMax = Math.log(maxDocCount - minDocCount + 1);
+  const logValue = Math.log(docCount - minDocCount + 1);
+  const scaledRadius = (logValue / logMax) * (maxRadius - minRadius) + minRadius;
+
+  return scaledRadius;
+};
+
+export const adjustBounds = (bounds: [[number, number], [number, number]], adjustmentFactor: number): [[number, number], [number, number]] => {
+  // bounds format: [[north, west], [south, east]]
+  const north = bounds[0][0];
+  const west = bounds[0][1];
+  const south = bounds[1][0];
+  const east = bounds[1][1];
+
+  // Calculate the center
+  const centerLat = (north + south) / 2;
+  const centerLon = (east + west) / 2;
+
+  // Calculate half-spans and apply adjustment factor
+  const latHalfSpan = Math.abs(north - south) * (1 + adjustmentFactor) / 2;
+  const lonHalfSpan = Math.abs(east - west) * (1 + adjustmentFactor) / 2;
+
+  // Calculate new bounds
+  const newNorth = centerLat + latHalfSpan;
+  const newSouth = centerLat - latHalfSpan;
+  const newEast = centerLon + lonHalfSpan;
+  const newWest = centerLon - lonHalfSpan;
+
+  return [[newNorth, newWest], [newSouth, newEast]];
+}
 
 export const calculateCenterFromBounds = (bounds: [[number, number], [number, number]]): [number, number] => {
-    const [northWest, southEast] = bounds;
-    const [north, west] = northWest;
-    const [south, east] = southEast;
-    
-    // Calculate center point
-    const centerLat = (north + south) / 2;
-    const centerLon = (west + east) / 2;
-    
-    return [centerLat, centerLon];
+  const [northWest, southEast] = bounds;
+  const [north, west] = northWest;
+  const [south, east] = southEast;
+
+  // Calculate center point
+  const centerLat = (north + south) / 2;
+  const centerLon = (west + east) / 2;
+
+  return [centerLat, centerLon];
 };
 
 export const calculateZoomFromBounds = (bounds: [[number, number], [number, number]], center?: [number, number]): number => {
-    const [northWest, southEast] = bounds;
-    const [north, west] = northWest;
-    const [south, east] = southEast;
-    
-    // Use provided center or calculate it
-    const centerLat = center ? center[0] : (north + south) / 2;
-    
-    // Calculate spans in degrees
-    const latSpan = Math.abs(north - south);
-    const lonSpan = Math.abs(east - west);
-    
-    // Earth's circumference in meters
-    const EARTH_CIRCUMFERENCE = 40075016.686;
-    
-    // Assuming the same container dimensions as the forward function
-    const containerWidth = 800; // pixels
-    const containerHeight = 600; // pixels
-    
-    // Convert degrees to meters
-    const latSpanMeters = latSpan * 111111;
-    const lonSpanMeters = lonSpan * 111111 * Math.cos(centerLat * Math.PI / 180);
-    
-    // Calculate meters per pixel for both dimensions
-    const metersPerPixelWidth = lonSpanMeters / containerWidth;
-    const metersPerPixelHeight = latSpanMeters / containerHeight;
-    
-    // Use the larger value to ensure the bounds fit within the container
-    const metersPerPixel = Math.max(metersPerPixelWidth, metersPerPixelHeight);
-    
-    // Calculate zoom level from meters per pixel
-    // Rearranging: metersPerPixel = EARTH_CIRCUMFERENCE / (256 * 2^zoom)
-    // So: 2^zoom = EARTH_CIRCUMFERENCE / (256 * metersPerPixel)
-    // And: zoom = log2(EARTH_CIRCUMFERENCE / (256 * metersPerPixel))
-    return Math.log2(EARTH_CIRCUMFERENCE / (256 * metersPerPixel));
+  const [northWest, southEast] = bounds;
+  const [north, west] = northWest;
+  const [south, east] = southEast;
+
+  // Use provided center or calculate it
+  const centerLat = center ? center[0] : (north + south) / 2;
+
+  // Calculate spans in degrees
+  const latSpan = Math.abs(north - south);
+  const lonSpan = Math.abs(east - west);
+
+  // Earth's circumference in meters
+  const EARTH_CIRCUMFERENCE = 40075016.686;
+
+  // Assuming the same container dimensions as the forward function
+  const containerWidth = 800; // pixels
+  const containerHeight = 600; // pixels
+
+  // Convert degrees to meters
+  const latSpanMeters = latSpan * 111111;
+  const lonSpanMeters = lonSpan * 111111 * Math.cos(centerLat * Math.PI / 180);
+
+  // Calculate meters per pixel for both dimensions
+  const metersPerPixelWidth = lonSpanMeters / containerWidth;
+  const metersPerPixelHeight = latSpanMeters / containerHeight;
+
+  // Use the larger value to ensure the bounds fit within the container
+  const metersPerPixel = Math.max(metersPerPixelWidth, metersPerPixelHeight);
+
+  // Calculate zoom level from meters per pixel
+  // Rearranging: metersPerPixel = EARTH_CIRCUMFERENCE / (256 * 2^zoom)
+  // So: 2^zoom = EARTH_CIRCUMFERENCE / (256 * metersPerPixel)
+  // And: zoom = log2(EARTH_CIRCUMFERENCE / (256 * metersPerPixel))
+  return Math.log2(EARTH_CIRCUMFERENCE / (256 * metersPerPixel));
 };
 
 
-  
+
 
 
 export const PRECISION_TO_DEGREES = [
-    { precision: 0, degrees: 360 },
-    { precision: 1, degrees: 180 },
-    { precision: 2, degrees: 90 },
-    { precision: 3, degrees: 45 },
-    { precision: 4, degrees: 22.5 },
-    { precision: 5, degrees: 11.25 },
-    { precision: 6, degrees: 5.625 },
-    { precision: 7, degrees: 2.8125 },
-    { precision: 8, degrees: 1.40625 },
-    { precision: 9, degrees: 0.703125 },
-    { precision: 10, degrees: 0.3515625 },
-    { precision: 11, degrees: 0.17578125 },
-    { precision: 12, degrees: 0.087890625 },
-    { precision: 13, degrees: 0.0439453125 },
-    { precision: 14, degrees: 0.02197265625 },
-    { precision: 15, degrees: 0.010986328125 },
-    { precision: 16, degrees: 0.0054931640625 },
-    { precision: 17, degrees: 0.00274658203125 },
-    { precision: 18, degrees: 0.001373291015625 },
-    { precision: 19, degrees: 0.0006866455078125 },
-    { precision: 20, degrees: 0.00034332275390625 }
-  ];
+  { precision: 0, degrees: 360 },
+  { precision: 1, degrees: 180 },
+  { precision: 2, degrees: 90 },
+  { precision: 3, degrees: 45 },
+  { precision: 4, degrees: 22.5 },
+  { precision: 5, degrees: 11.25 },
+  { precision: 6, degrees: 5.625 },
+  { precision: 7, degrees: 2.8125 },
+  { precision: 8, degrees: 1.40625 },
+  { precision: 9, degrees: 0.703125 },
+  { precision: 10, degrees: 0.3515625 },
+  { precision: 11, degrees: 0.17578125 },
+  { precision: 12, degrees: 0.087890625 },
+  { precision: 13, degrees: 0.0439453125 },
+  { precision: 14, degrees: 0.02197265625 },
+  { precision: 15, degrees: 0.010986328125 },
+  { precision: 16, degrees: 0.0054931640625 },
+  { precision: 17, degrees: 0.00274658203125 },
+  { precision: 18, degrees: 0.001373291015625 },
+  { precision: 19, degrees: 0.0006866455078125 },
+  { precision: 20, degrees: 0.00034332275390625 }
+];
 
-export const getGridSize = (bounds: [[number, number], [number, number]], currentZoom: number): { precision: number, gridSize: number} => {
+export const getGridSize = (bounds: [[number, number], [number, number]], currentZoom: number): { precision: number, gridSize: number } => {
 
   if (currentZoom < 4) return { precision: 0, gridSize: 1 }; // Default to the largest grid size for low zoom levels
 
-    const [[north, west], [south, east]] = bounds;
-    const latSpan = Math.abs(north - south);
-    const lngSpan = Math.abs(east - west);
+  const [[north, west], [south, east]] = bounds;
+  const latSpan = Math.abs(north - south);
+  const lngSpan = Math.abs(east - west);
 
-    const maxSpan = Math.max(latSpan, lngSpan);
+  const maxSpan = Math.max(latSpan, lngSpan);
 
-    for (let i = PRECISION_TO_DEGREES.length - 1; i >= 0; i--) {
-        if (PRECISION_TO_DEGREES[i].degrees >= maxSpan) {
-          return {
-            precision: PRECISION_TO_DEGREES[i].precision, 
-            gridSize: Math.pow(2, PRECISION_TO_DEGREES[i].precision)
-        }
+  for (let i = PRECISION_TO_DEGREES.length - 1; i >= 0; i--) {
+    if (PRECISION_TO_DEGREES[i].degrees >= maxSpan) {
+      return {
+        precision: PRECISION_TO_DEGREES[i].precision,
+        gridSize: Math.pow(2, PRECISION_TO_DEGREES[i].precision)
       }
     }
-    
-    return { precision: 0, gridSize: 1 }; // Default to the largest grid size if no match found
+  }
+
+  return { precision: 0, gridSize: 1 }; // Default to the largest grid size if no match found
 }
 
 
 
 export function addPadding(bounds: [[number, number], [number, number]], isMobile: boolean): [[number, number], [number, number]] {
-    if (isMobile) {
-        const padding = bounds[1][0] - bounds[0][0]
-        return [
-            [bounds[0][0] - (padding / 3), bounds[0][1]],
-            [bounds[1][0] + (padding * 3), bounds[1][1]]
-        ]
-    }
-    else {
-        const padding = (bounds[1][1] - bounds[0][1])
-        return [
-            [bounds[0][0], bounds[0][1] - padding],
-            [bounds[1][0], bounds[1][1] + padding]
-        ]
-    }
+  if (isMobile) {
+    const padding = bounds[1][0] - bounds[0][0]
+    return [
+      [bounds[0][0] - (padding / 3), bounds[0][1]],
+      [bounds[1][0] + (padding * 3), bounds[1][1]]
+    ]
+  }
+  else {
+    const padding = (bounds[1][1] - bounds[0][1])
+    return [
+      [bounds[0][0], bounds[0][1] - padding],
+      [bounds[1][0], bounds[1][1] + padding]
+    ]
+  }
 }
 
 
@@ -266,82 +266,82 @@ export const getLabelBounds = (currentMap: any, label: string, lat: number, lon:
 }
 
 export const yDistance = (currentMap: any, lat1: number, lat2: number) => {
-    // Calculate vertical pixel distance between two latitude points using map projection
-    if (!currentMap) return 0;
-    
-    const point1 = currentMap.latLngToContainerPoint([lat1, 0]);
-    const point2 = currentMap.latLngToContainerPoint([lat2, 0]); 
-    
-    return Math.abs(point1.y - point2.y);
-    }
-  
+  // Calculate vertical pixel distance between two latitude points using map projection
+  if (!currentMap) return 0;
+
+  const point1 = currentMap.latLngToContainerPoint([lat1, 0]);
+  const point2 = currentMap.latLngToContainerPoint([lat2, 0]);
+
+  return Math.abs(point1.y - point2.y);
+}
+
 export const xDistance = (currentMap: any, lon1: number, lon2: number) => {
-      // Calculate horizontal pixel distance between two longitude points using map projection
-      if (!currentMap) return 0;
-      const point1 = currentMap.latLngToContainerPoint([0, lon1]);
-      const point2 = currentMap.latLngToContainerPoint([0, lon2]); 
-      return Math.abs(point1.x - point2.x);
-  }
+  // Calculate horizontal pixel distance between two longitude points using map projection
+  if (!currentMap) return 0;
+  const point1 = currentMap.latLngToContainerPoint([0, lon1]);
+  const point2 = currentMap.latLngToContainerPoint([0, lon2]);
+  return Math.abs(point1.x - point2.x);
+}
 
 
 export const groupSameCoordinates = (data: any) => {
-    const childrenWithCoordinates = data.filter((child: any) => child.fields.location?.[0]?.coordinates?.length)
-    const clientGroups: any[] = []
-    const markerLookup: Record<string, any> = {}
+  const childrenWithCoordinates = data.filter((child: any) => child.fields.location?.[0]?.coordinates?.length)
+  const clientGroups: any[] = []
+  const markerLookup: Record<string, any> = {}
 
-    childrenWithCoordinates.forEach((child: any) => {
-        const lat = child.fields.location[0].coordinates[1]
-        const lon = child.fields.location[0].coordinates[0]
-        const uuid = child.fields.uuid[0]
-        let marker = markerLookup[lat + "_" + lon]
-        if (!marker) {
-            marker = { children: [], lat, lon, uuid }
-            markerLookup[lat + "_" + lon] = marker
-            clientGroups.push(marker)
-        }
+  childrenWithCoordinates.forEach((child: any) => {
+    const lat = child.fields.location[0].coordinates[1]
+    const lon = child.fields.location[0].coordinates[0]
+    const uuid = child.fields.uuid[0]
+    let marker = markerLookup[lat + "_" + lon]
+    if (!marker) {
+      marker = { children: [], lat, lon, uuid }
+      markerLookup[lat + "_" + lon] = marker
+      clientGroups.push(marker)
+    }
 
-        const label = child.fields.label[0]
+    const label = child.fields.label[0]
 
-        if (typeof marker.label == 'string' && marker.label !== label && !marker.label.endsWith('...')) {
-            marker.label = marker.label + "..."
-        } else {
-            marker.label = label
-        }
+    if (typeof marker.label == 'string' && marker.label !== label && !marker.label.endsWith('...')) {
+      marker.label = marker.label + "..."
+    } else {
+      marker.label = label
+    }
 
-        marker.children.unshift(child)
-    })
+    marker.children.unshift(child)
+  })
 
-    return clientGroups
+  return clientGroups
 }
 
-    
+
 export const getValidDegree = (degrees: number, maxValue: number): string => {
-    if (Math.abs(degrees) > Math.abs(maxValue)) {
-        return maxValue.toString()
-    }
-    return degrees.toString()
-    }
+  if (Math.abs(degrees) > Math.abs(maxValue)) {
+    return maxValue.toString()
+  }
+  return degrees.toString()
+}
 
 
-    export const getMyLocation = (setMyLocation: (location: [number, number]) => void) => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            const location: [number, number] = [latitude, longitude];
-            setMyLocation(location);
-            return location;
-          },
-          (error) => {
-            console.error("Error getting the location: ", error);
-            alert("Kunne ikkje finne din posisjon")
-          }
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
-        alert("Nettlesaren din støttar ikkje posisjonsbestemming")
+export const getMyLocation = (setMyLocation: (location: [number, number]) => void) => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const location: [number, number] = [latitude, longitude];
+        setMyLocation(location);
+        return location;
+      },
+      (error) => {
+        console.error("Error getting the location: ", error);
+        alert("Kunne ikkje finne din posisjon")
       }
-    }
+    );
+  } else {
+    console.error("Geolocation is not supported by this browser.");
+    alert("Nettlesaren din støttar ikkje posisjonsbestemming")
+  }
+}
 
 // Utility to pan a point into view with container-based padding for both mobile and desktop
 export function panPointIntoView(
@@ -430,7 +430,7 @@ export function fitBoundsToGroupSources(
       if (lng < minLng) minLng = lng;
       if (lng > maxLng) maxLng = lng;
     });
-    
+
     // Fly to bounds with padding
     mapInstance.flyToBounds(
       [
@@ -441,7 +441,7 @@ export function fitBoundsToGroupSources(
     );
   } else if (sourcesWithCoords.length === 1 || groupData.fields?.location?.[0]?.coordinates) {
     // Default: fly to group location at zoom 15
-    const coords = sourcesWithCoords.length === 1 
+    const coords = sourcesWithCoords.length === 1
       ? sourcesWithCoords[0].location.coordinates
       : groupData.fields.location[0].coordinates;
     mapInstance.flyTo([coords[1], coords[0]], 15, { duration });

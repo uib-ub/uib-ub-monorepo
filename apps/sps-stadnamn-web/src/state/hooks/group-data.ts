@@ -1,17 +1,17 @@
 'use client'
-import { useQuery } from '@tanstack/react-query'
-import { useSearchQuery } from '@/lib/search-params';
 import { useGroup } from '@/lib/param-hooks';
-import { useDebugStore } from '../zustand/debug-store';
-import { useSearchParams } from 'next/navigation';
 import { base64UrlToString } from '@/lib/param-utils';
+import { useSearchQuery } from '@/lib/search-params';
+import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
+import { useDebugStore } from '../zustand/debug-store';
 
 const groupDataQuery = async (
     group: string,
     sourcesQuery: string,
     debugChildren?: any[]
 ) => {
-    const newParams= new URLSearchParams(sourcesQuery);
+    const newParams = new URLSearchParams(sourcesQuery);
     newParams.set('group', group);
 
     const res = await fetch(`/api/group?${newParams.toString()}`)
@@ -25,7 +25,7 @@ const groupDataQuery = async (
 }
 
 export default function useGroupData(overrideGroupCode?: string | null) {
-    const { searchQueryString  } = useSearchQuery()
+    const { searchQueryString } = useSearchQuery()
     const { activeGroupCode, initCode } = useGroup()
     const groupCode = overrideGroupCode || activeGroupCode
     const groupValue = groupCode ? base64UrlToString(groupCode) : null

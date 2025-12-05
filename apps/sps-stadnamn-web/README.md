@@ -40,3 +40,15 @@ Prevent vercel deployments on branches that do not match `sps/*` or `stadnamn/*`
 ```bash
 if [[ "$VERCEL_GIT_COMMIT_REF" =~ .*/.* ]] && ! [[ "$VERCEL_GIT_COMMIT_REF" =~ .*(sps|stadnamn)/.* ]] ; then echo "- Tag not matched, build cancelled"; exit 0; else echo "- Build can proceed, calling turbo-ignore"; npx turbo-ignore; fi
 ```
+
+
+## .cursorignore
+Put this in .cursorignore to restrict cursor indexing to the stadnamn app
+```text
+/*
+!/.cursorignore
+!/apps/
+/apps/*
+!/apps/sps-stadnamn-web/
+/apps-sps-stadnamn-web/next-env.d.ts
+```

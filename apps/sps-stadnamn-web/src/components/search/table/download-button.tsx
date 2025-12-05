@@ -1,8 +1,4 @@
 'use client'
-import { facetConfig } from "@/config/search-config";
-import { useSearchQuery } from "@/lib/search-params";
-import { useRouter } from "next/navigation";
-import { PiDownload, PiX } from "react-icons/pi";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -13,15 +9,16 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-  } from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
+import { facetConfig } from "@/config/search-config";
 import { contentSettings } from "@/config/server-config";
 import { usePerspective } from "@/lib/param-hooks";
+import { useSearchQuery } from "@/lib/search-params";
+import { useRouter } from "next/navigation";
+import { PiDownload, PiX } from "react-icons/pi";
 
 
-
-
-
-export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, formatCadastre}: {visibleColumns: string[], showCadastre: boolean, joinWithSlash: (adm: string|string[]) => string, formatCadastre: (cadastre: string) => string}) {
+export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, formatCadastre }: { visibleColumns: string[], showCadastre: boolean, joinWithSlash: (adm: string | string[]) => string, formatCadastre: (cadastre: string) => string }) {
     const perspective = usePerspective()
     const { searchQueryString } = useSearchQuery()
     const router = useRouter()
@@ -115,7 +112,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
                             } else {
                                 const value = hit.fields[facet.key]?.[0];
                                 if (Array.isArray(value)) {
-                                    properties[facet.label] = value.slice(0,10).join(', ') + (value.length > 10 ? '...' : '');
+                                    properties[facet.label] = value.slice(0, 10).join(', ') + (value.length > 10 ? '...' : '');
                                 } else {
                                     properties[facet.label] = value || '-';
                                 }
@@ -160,11 +157,11 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
 
         // Construct URL with fields parameter
         const url = `/api/download?${searchQueryString}&size=10000&fields=${fields.join(',')}`;
-        
+
         // Fetch the data
         const response = await fetch(url);
         const data = await response.json();
-        
+
         // Prepare CSV headers based on visible columns
         const headers = ['Oppslagsord'];
         if (visibleColumns.includes('adm')) headers.push('Område');
@@ -193,7 +190,7 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
                     } else {
                         const value = hit.fields[facet.key]?.[0];
                         if (Array.isArray(value)) {
-                            row.push(value.slice(0,10).join(', ') + (value.length > 10 ? '...' : ''));
+                            row.push(value.slice(0, 10).join(', ') + (value.length > 10 ? '...' : ''));
                         } else {
                             row.push(value || '-');
                         }
@@ -223,13 +220,13 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
         <AlertDialog>
             <AlertDialogTrigger asChild>
                 <button className="btn btn-outline btn-compact pl-2 mt-2">
-                    <PiDownload className="text-xl mr-2" aria-hidden="true"/>
+                    <PiDownload className="text-xl mr-2" aria-hidden="true" />
                     Last ned
                 </button>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogCancel className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-                    <PiX className="text-xl" aria-hidden="true"/>
+                    <PiX className="text-xl" aria-hidden="true" />
                     <span className="sr-only">Close</span>
                 </AlertDialogCancel>
                 <AlertDialogHeader>
@@ -238,31 +235,31 @@ export function DownloadButton({visibleColumns, showCadastre, joinWithSlash, for
                         Vel ønska format for nedlasting av data.
                         Du kan laste ned søket ditt som CSV, GeoJSON eller JSON, samt heile datasettet som JSON.
                         Mer at treff utan koordinatar ikkje kjem med i GeoJSON-fila.
-                        
+
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="flex flex-row sm:flex-row gap-2 justify-center">
-                <AlertDialogAction 
+                    <AlertDialogAction
                         className="btn btn-outline"
                         onClick={handleDownload}
                     >
                         CSV
                     </AlertDialogAction>
-                    <AlertDialogAction 
+                    <AlertDialogAction
                         className="btn btn-outline"
                         onClick={handleJsonDownload}
                     >
                         JSON
                     </AlertDialogAction>
-                    {contentSettings[perspective]?.display === 'map' && <AlertDialogAction 
+                    {contentSettings[perspective]?.display === 'map' && <AlertDialogAction
                         className="btn btn-outline"
                         onClick={handleGeoJsonDownload}
                     >
                         GeoJSON
                     </AlertDialogAction>}
-                    
-                   
-                    <AlertDialogAction 
+
+
+                    <AlertDialogAction
                         className="btn btn-outline"
                         onClick={() => router.push(`https://git.app.uib.no/spraksamlingane/stadnamn/datasett/stadnamn-archive/-/raw/main/lfs-data/elastic/${perspective}_elastic.json?ref_type=heads&inline=false`)}
                     >

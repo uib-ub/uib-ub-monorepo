@@ -1,4 +1,3 @@
-import { getSkeletonLength } from "@/lib/utils"
 
 
 export default function DocSkeleton() {

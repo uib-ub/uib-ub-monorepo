@@ -1,8 +1,4 @@
 'use client'
-import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
-import { fieldConfig } from "@/config/search-config"
-import { getBnr, getFieldValue } from '@/lib/utils'
 import Clickable from '@/components/ui/clickable/clickable'
 import {
   Tooltip,
@@ -10,6 +6,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { fieldConfig } from "@/config/search-config"
+import { getBnr, getFieldValue } from '@/lib/utils'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 
 interface CadastralTableProps {
   dataset: string
@@ -46,9 +46,9 @@ export default function CadastralTable({ dataset, uuid, list }: CadastralTablePr
     return <ul className="list-none divide-y divide-neutral-200">
       {hits.map((hit: any) => (
         <li key={hit._id} className="py-2">
-            <Clickable link add={{ doc: hit._source.uuid, details: 'group' }} className="no-underline block px-3 py-2 hover:bg-neutral-50">
-                {`${getBnr(hit, dataset)} ${hit._source.label}`}
-            </Clickable>
+          <Clickable link add={{ doc: hit._source.uuid, details: 'group' }} className="no-underline block px-3 py-2 hover:bg-neutral-50">
+            {`${getBnr(hit, dataset)} ${hit._source.label}`}
+          </Clickable>
         </li>
       ))}
     </ul>
@@ -105,60 +105,60 @@ export default function CadastralTable({ dataset, uuid, list }: CadastralTablePr
               ))}
             </tr>
           </thead>
-        <tbody>
-          {visible.map((hit: any, index: number) => {
-            const brukText = `${getBnr(hit, dataset)} ${getFieldValue(hit, 'label')?.[0] || ''}`.trim()
-            
-            return (
-              <tr key={index} className="border-b border-neutral-100 last:border-b-0">
-                <td className="py-1 truncate">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className="block truncate">
-                        <Clickable link add={{ doc: getFieldValue(hit, 'uuid')?.[0] }} className="text-neutral-900 hover:text-neutral-700 decoration-1 underline-offset-2 hover:underline">
-                          {brukText}
-                        </Clickable>
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      {brukText}
-                    </TooltipContent>
-                  </Tooltip>
-                </td>
-                {fields.map((field, idx) => {
-                  const value = getFieldValue(hit, field.key)
-                  const displayValue = Array.isArray(value) ? value.join(', ') : value || ''
-                  
-                  return (
-                    <td className="py-1 text-neutral-800 truncate" key={idx}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span className="block truncate cursor-help">{displayValue}</span>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          {displayValue || 'Ingen verdi'}
-                        </TooltipContent>
-                      </Tooltip>
-                    </td>
-                  )
-                })}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+          <tbody>
+            {visible.map((hit: any, index: number) => {
+              const brukText = `${getBnr(hit, dataset)} ${getFieldValue(hit, 'label')?.[0] || ''}`.trim()
 
-      {hasMore && (
-        <div className="py-1 px-1 border-t border-neutral-200 bg-neutral-50">
-          <button
-            type="button"
-            onClick={() => setLimit(limit + PAGE_SIZE)}
-            className="text-neutral-700 hover:text-neutral-600 decoration-1 underline-offset-2 hover:underline text-xs"
-          >
-            Vis fleire ({hits.length - limit} til)
-          </button>
-        </div>
-      )}
+              return (
+                <tr key={index} className="border-b border-neutral-100 last:border-b-0">
+                  <td className="py-1 truncate">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="block truncate">
+                          <Clickable link add={{ doc: getFieldValue(hit, 'uuid')?.[0] }} className="text-neutral-900 hover:text-neutral-700 decoration-1 underline-offset-2 hover:underline">
+                            {brukText}
+                          </Clickable>
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {brukText}
+                      </TooltipContent>
+                    </Tooltip>
+                  </td>
+                  {fields.map((field, idx) => {
+                    const value = getFieldValue(hit, field.key)
+                    const displayValue = Array.isArray(value) ? value.join(', ') : value || ''
+
+                    return (
+                      <td className="py-1 text-neutral-800 truncate" key={idx}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="block truncate cursor-help">{displayValue}</span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {displayValue || 'Ingen verdi'}
+                          </TooltipContent>
+                        </Tooltip>
+                      </td>
+                    )
+                  })}
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+
+        {hasMore && (
+          <div className="py-1 px-1 border-t border-neutral-200 bg-neutral-50">
+            <button
+              type="button"
+              onClick={() => setLimit(limit + PAGE_SIZE)}
+              className="text-neutral-700 hover:text-neutral-600 decoration-1 underline-offset-2 hover:underline text-xs"
+            >
+              Vis fleire ({hits.length - limit} til)
+            </button>
+          </div>
+        )}
       </div>
     </TooltipProvider>
   )

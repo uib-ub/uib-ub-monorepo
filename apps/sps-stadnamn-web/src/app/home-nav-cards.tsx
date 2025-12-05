@@ -1,20 +1,19 @@
 import Link from "next/link";
 import { PiArchive, PiDatabase } from "react-icons/pi";
-import React from "react";
 
-export default function HomeNavCards({iiifStats, datasets }: {datasets: any, iiifStats: any}) {
+export default function HomeNavCards({ iiifStats, datasets }: { datasets: any, iiifStats: any }) {
 
     const navCards = [
         {
             href: "/info/datasets",
-            icon: <PiDatabase aria-hidden="true"/>,
+            icon: <PiDatabase aria-hidden="true" />,
             stat: Object.keys(datasets).length.toLocaleString('nb-NO'),
             title: "Datasett",
             description: "Få oversikt over kjeldene stadnamnsøket er basert på",
         },
         {
             href: "/iiif",
-            icon: <PiArchive aria-hidden="true"/>,
+            icon: <PiArchive aria-hidden="true" />,
             stat: (iiifStats.images + iiifStats.audio).toLocaleString('nb-NO'),
             title: "Arkiv",
             description: "Hierarkisk utforsker for arkivressurser som faksimiler og lydopptak",

@@ -1,6 +1,6 @@
 
 export async function postQuery(perspective: string, query: any, search_type?: string, cacheTags: string[] = ['all']): Promise<any[]> {
-    
+
     // TODO: use the same variable name in prod and test
     const endpoint = process.env.STADNAMN_ES_ENDPOINT
     const token = process.env.STADNAMN_ES_TOKEN
@@ -8,21 +8,21 @@ export async function postQuery(perspective: string, query: any, search_type?: s
 
     const url = `${endpoint}search-stadnamn-${process.env.SN_ENV}-${perspective}/_search${search_type ? `?search_type=${search_type}` : ''}`
 
-    
+
     try {
         res = await fetch(url, {
-            cache: 'force-cache', next: {tags: cacheTags},
+            cache: 'force-cache', next: { tags: cacheTags },
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `ApiKey ${token}`,
             },
             body: JSON.stringify(query)
-    });
+        });
     }
     catch (e) {
         console.error(e)
-        return [{error: e}, 500]
+        return [{ error: e }, 500]
     }
 
     if (!res.ok) {
@@ -36,7 +36,7 @@ export async function postQuery(perspective: string, query: any, search_type?: s
             // Handle non-JSON responses
             const textResponse = await res.text();
             console.error(textResponse);
-            return [{error: textResponse}, res.status];
+            return [{ error: textResponse }, res.status];
         }
     }
     else {

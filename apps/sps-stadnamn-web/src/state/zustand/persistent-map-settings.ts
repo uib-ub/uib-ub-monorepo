@@ -1,6 +1,6 @@
+import { baseMapKeys, baseMaps, defaultBaseMap } from '@/config/basemap-config'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { baseMaps, baseMapKeys, defaultBaseMap } from '@/config/basemap-config'
 
 type MapSettings = {
   baseMap: Record<string, string>
@@ -15,12 +15,12 @@ export const useMapSettings = create<MapSettings>()(
     (set, get) => ({
       baseMap: {},
       markerMode: 'auto',
-      setBaseMap: (perspective: string, baseMap: string) => 
-        set((state) => ({ 
-          baseMap: { 
-            ...state.baseMap, 
-            [perspective]: baseMap 
-          } 
+      setBaseMap: (perspective: string, baseMap: string) =>
+        set((state) => ({
+          baseMap: {
+            ...state.baseMap,
+            [perspective]: baseMap
+          }
         })),
       setMarkerMode: (mode: string) => set({ markerMode: mode }),
       initializeSettings: (perspective: string) => {

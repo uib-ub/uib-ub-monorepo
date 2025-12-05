@@ -1,8 +1,7 @@
 'use client'
-import { datasetTitles } from '@/config/metadata-config';
-import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { PiDatabase, PiCircle, PiTag, PiMagnifyingGlass, PiArrowClockwise, PiX, PiCheck } from 'react-icons/pi';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { PiArrowClockwise, PiCheck, PiCircle, PiDatabase, PiMagnifyingGlass, PiX } from 'react-icons/pi';
 
 interface IndexData {
   index: string;
@@ -22,7 +21,7 @@ interface StatusResponse {
 export default function StatusPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const [statusData, setStatusData] = useState<StatusResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -34,7 +33,7 @@ export default function StatusPage() {
   useEffect(() => {
     const filter = searchParams.get('filter') || 'all';
     const search = searchParams.get('search') || '';
-    
+
     setSelectedFilter(filter);
     setSearchTerm(search);
   }, [searchParams]);
@@ -42,18 +41,18 @@ export default function StatusPage() {
   // Update URL when filters change
   const updateURL = (newFilter: string, newSearch: string) => {
     const params = new URLSearchParams();
-    
+
     if (newFilter !== 'all') {
       params.set('filter', newFilter);
     }
-    
+
     if (newSearch.trim()) {
       params.set('search', newSearch.trim());
     }
-    
+
     const paramString = params.toString();
     const newURL = paramString ? `?${paramString}` : '/status';
-    
+
     router.replace(newURL, { scroll: false });
   };
 
@@ -75,14 +74,14 @@ export default function StatusPage() {
         setLoading(true);
       }
       setError(null);
-      
-      const response = await fetch('/api/status', {cache: 'no-store'});
+
+      const response = await fetch('/api/status', { cache: 'no-store' });
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to fetch status');
       }
-      
+
       setStatusData(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error occurred');
@@ -119,26 +118,26 @@ export default function StatusPage() {
 
   const getFilteredIndices = () => {
     if (!statusData?.indices) return [];
-    
+
     return statusData.indices.filter((index) => {
       // Text search filter
       const matchesSearch = index.index.toLowerCase().includes(searchTerm.toLowerCase()) ||
         index.aliases.some(alias => alias.toLowerCase().includes(searchTerm.toLowerCase()));
-      
+
       // If "all" is selected, only apply text search
       if (selectedFilter === 'all') return matchesSearch;
-      
+
       // If "no-aliases" is selected, show indices with no aliases
       if (selectedFilter === 'no-aliases') {
         return matchesSearch && index.aliases.length === 0;
       }
-      
+
       // Environment filter - check if any alias has the selected environment
       const hasMatchingTag = index.aliases.some(alias => {
         const environment = alias.split('-')[2];
         return environment === selectedFilter;
       });
-      
+
       return matchesSearch && hasMatchingTag;
     });
   };
@@ -146,9 +145,9 @@ export default function StatusPage() {
   const extractTransformationDate = (indexName: string): string | null => {
     const parts = indexName.split('-');
     const timestamp = parts[parts.length - 2];
-    
+
     if (timestamp && !isNaN(Number(timestamp))) {
-      const date = new Date(Number(timestamp)*1000);
+      const date = new Date(Number(timestamp) * 1000);
       return date.toLocaleString('nb-NO');
     }
     return null;
@@ -177,7 +176,7 @@ export default function StatusPage() {
     );
   }
 
-  
+
 
   return (
     <main className="px-4 py-6 bg-neutral-50 !h-full flex-grow">
@@ -195,7 +194,7 @@ export default function StatusPage() {
             <span>{refreshing ? 'Reloading...' : 'Reload indices'}</span>
           </button>
         </div>
-        
+
         {/* Filters and Search */}
         {statusData?.indices && statusData.indices.length > 0 && (
           <div className="flex flex-col gap-3">
@@ -224,7 +223,7 @@ export default function StatusPage() {
                 ))}
               </div>
             </div>
-            
+
             {/* Search field */}
             <div className="relative max-w-md">
               <PiMagnifyingGlass className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-neutral-400 text-base" />
@@ -238,123 +237,123 @@ export default function StatusPage() {
             </div>
           </div>
         )}
-        
+
         {statusData?.indices && statusData.indices.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
             {getFilteredIndices()
               .sort((a, b) => a.index.localeCompare(b.index))
               .map((index) => {
-              const title = [index.index.split('-').slice(2).join('-')]
-              const envAliases = index.aliases.filter(alias => !alias.includes('-all'))
-              const sourceAliases = index.aliases.filter(alias => alias.includes('-all'))
-              const sourceAliasEnvs = sourceAliases.map(alias => alias.split('-')[2])
-            
-              return (
-              <div key={index.index} className="bg-white shadow-md rounded-lg border border-neutral-200 overflow-hidden hover:shadow-lg transition-shadow duration-200 relative">
-                {/* Fading overlay when refreshing */}
-                {refreshing && (
-                  <div 
-                    className="absolute inset-0 bg-white/80 rounded-lg z-10" 
-                    style={{
-                      animation: 'fade 0.8s ease-in-out infinite alternate'
-                    }}
-                  />
-                )}
-                
-                <div className="p-3">
-                  {/* Header Section */}
-                  <div className="flex flex-col gap-2 pb-2 border-b border-neutral-100">
-                    <div className="flex items-start justify-between gap-2">
-                      <h2 className="text-base font-semibold text-neutral-900 font-mono break-all leading-tight">
-                        {title}
-                      </h2>
-                      <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-neutral-50 flex-shrink-0">
-                        <PiCircle className={`text-sm ${getStatusColor(index.status)}`} />
-                        <span className={`text-sm font-medium ${getStatusColor(index.status)} capitalize`}>
-                          {index.status}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                const title = [index.index.split('-').slice(2).join('-')]
+                const envAliases = index.aliases.filter(alias => !alias.includes('-all'))
+                const sourceAliases = index.aliases.filter(alias => alias.includes('-all'))
+                const sourceAliasEnvs = sourceAliases.map(alias => alias.split('-')[2])
 
-                  {/* Stats Section */}
-                  <div className="py-2 border-b border-neutral-100 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-neutral-600">Documents</span>
-                      <span className="text-base text-neutral-900 font-mono">
-                        {index.doc_count.toLocaleString('nb-NO')}
-                      </span>
-                    </div>
-                    {extractTransformationDate(index.index) && (
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-neutral-600">Transformed</span>
-                        <span className="text-sm text-neutral-900 font-mono">
-                          {extractTransformationDate(index.index)}
-                        </span>
-                      </div>
+                return (
+                  <div key={index.index} className="bg-white shadow-md rounded-lg border border-neutral-200 overflow-hidden hover:shadow-lg transition-shadow duration-200 relative">
+                    {/* Fading overlay when refreshing */}
+                    {refreshing && (
+                      <div
+                        className="absolute inset-0 bg-white/80 rounded-lg z-10"
+                        style={{
+                          animation: 'fade 0.8s ease-in-out infinite alternate'
+                        }}
+                      />
                     )}
-                  </div>
 
-                  {/* Aliases Section */}
-                  <div className="pt-2 space-y-2">
-                    {/* Env Aliases */}
-                    <div>
-                      {envAliases.length > 0 ? (
-                        <div className="flex flex-wrap gap-1">
-                          {envAliases.map((alias) => {
-                            const environment = alias.split('-')[2]
-                            const color = {
-                              'local': 'neutral',
-                              'dev': 'accent',
-                              'prod': 'primary',
-                            }[environment]
-                            return (
-                              <span
-                                key={alias}
-                                className={`inline-flex items-center px-2 py-0.5 rounded text-sm font-medium bg-${color}-100 text-${color}-800 border border-${color}-200`}
-                              >
-                                {environment}
-                              </span>
-                            )
-                          })}
+                    <div className="p-3">
+                      {/* Header Section */}
+                      <div className="flex flex-col gap-2 pb-2 border-b border-neutral-100">
+                        <div className="flex items-start justify-between gap-2">
+                          <h2 className="text-base font-semibold text-neutral-900 font-mono break-all leading-tight">
+                            {title}
+                          </h2>
+                          <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-neutral-50 flex-shrink-0">
+                            <PiCircle className={`text-sm ${getStatusColor(index.status)}`} />
+                            <span className={`text-sm font-medium ${getStatusColor(index.status)} capitalize`}>
+                              {index.status}
+                            </span>
+                          </div>
                         </div>
-                      ) : (
-                        <span className="text-sm text-neutral-500 italic">No environment aliases</span>
-                      )}
-                    </div>
+                      </div>
 
-                    {/* Source Aliases */}
-                    {sourceAliases.length > 0 ? (
-                      <div>
-                        <div className="flex items-center gap-1 mb-1">
-                          <PiCheck className="text-green-500 text-sm" />
-                          <span className="font-medium text-neutral-900 text-sm">
-                            Cross-search enabled
+                      {/* Stats Section */}
+                      <div className="py-2 border-b border-neutral-100 space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-neutral-600">Documents</span>
+                          <span className="text-base text-neutral-900 font-mono">
+                            {index.doc_count.toLocaleString('nb-NO')}
                           </span>
                         </div>
-                        {envAliases.some(envAlias => !sourceAliasEnvs.includes(envAlias.split('-')[2])) && (
-                          <div className="flex items-center gap-1">
-                            <PiX className="text-yellow-500 text-sm" />
-                            <span className="font-medium text-yellow-900 text-sm">
-                              Warning: Incomplete coverage
+                        {extractTransformationDate(index.index) && (
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium text-neutral-600">Transformed</span>
+                            <span className="text-sm text-neutral-900 font-mono">
+                              {extractTransformationDate(index.index)}
                             </span>
                           </div>
                         )}
                       </div>
-                    ) : (
-                      <div className="flex items-center gap-1">
-                        <PiX className="text-neutral-500 text-sm" />
-                        <span className="font-medium text-neutral-900 text-sm">
-                          No cross-search
-                        </span>
+
+                      {/* Aliases Section */}
+                      <div className="pt-2 space-y-2">
+                        {/* Env Aliases */}
+                        <div>
+                          {envAliases.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {envAliases.map((alias) => {
+                                const environment = alias.split('-')[2]
+                                const color = {
+                                  'local': 'neutral',
+                                  'dev': 'accent',
+                                  'prod': 'primary',
+                                }[environment]
+                                return (
+                                  <span
+                                    key={alias}
+                                    className={`inline-flex items-center px-2 py-0.5 rounded text-sm font-medium bg-${color}-100 text-${color}-800 border border-${color}-200`}
+                                  >
+                                    {environment}
+                                  </span>
+                                )
+                              })}
+                            </div>
+                          ) : (
+                            <span className="text-sm text-neutral-500 italic">No environment aliases</span>
+                          )}
+                        </div>
+
+                        {/* Source Aliases */}
+                        {sourceAliases.length > 0 ? (
+                          <div>
+                            <div className="flex items-center gap-1 mb-1">
+                              <PiCheck className="text-green-500 text-sm" />
+                              <span className="font-medium text-neutral-900 text-sm">
+                                Cross-search enabled
+                              </span>
+                            </div>
+                            {envAliases.some(envAlias => !sourceAliasEnvs.includes(envAlias.split('-')[2])) && (
+                              <div className="flex items-center gap-1">
+                                <PiX className="text-yellow-500 text-sm" />
+                                <span className="font-medium text-yellow-900 text-sm">
+                                  Warning: Incomplete coverage
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1">
+                            <PiX className="text-neutral-500 text-sm" />
+                            <span className="font-medium text-neutral-900 text-sm">
+                              No cross-search
+                            </span>
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                );
+              })}
+          </div>
         ) : (
           <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 text-center">
             <PiDatabase className="mx-auto text-3xl text-neutral-400 mb-3" />

@@ -1,14 +1,12 @@
-//export const runtime = 'edge'
-
 import { postQuery } from '../_utils/post';
 
 export async function fetchIIIFSearch(collection: string, q?: string, type?: string, size?: number, from?: number) {
-  
+
 
   // Build query conditions
   const mustConditions = [];
   const mustNotConditions = [];
-  
+
   // Add type filter if provided
   if (type) {
     mustConditions.push({
@@ -17,7 +15,7 @@ export async function fetchIIIFSearch(collection: string, q?: string, type?: str
       }
     });
   }
-  
+
   // Add collection filter if provided
   if (collection) {
     if (q) {
@@ -34,7 +32,7 @@ export async function fetchIIIFSearch(collection: string, q?: string, type?: str
       });
     }
   }
-  
+
   // Add search query if provided
   if (q) {
     mustConditions.push({
@@ -45,12 +43,12 @@ export async function fetchIIIFSearch(collection: string, q?: string, type?: str
       }
     });
   }
-  
+
   // If no collection and no q, filter for top-level collections
   if (!collection && !q) {
     // Add Collection type if no specific type is requested
 
-    
+
     // Exclude items with partOf
     mustNotConditions.push({
       "exists": {
@@ -83,5 +81,5 @@ export async function fetchIIIFSearch(collection: string, q?: string, type?: str
 
   const [response, status] = await postQuery('iiif_*', query)
 
-  return {response, status}
+  return { response, status }
 }

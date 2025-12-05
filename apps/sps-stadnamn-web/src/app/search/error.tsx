@@ -4,8 +4,8 @@ import { usePlausible } from 'next-plausible'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { PiArrowClockwise, PiCheck } from 'react-icons/pi'
- 
+import { PiArrowClockwise } from 'react-icons/pi'
+
 export default function Error({
   error,
   reset,
@@ -27,7 +27,7 @@ export default function Error({
     // Log the error to an error reporting service
     console.error(error)
   }, [error])
- 
+
   const handleReset = async () => {
     setIsResetting(true)
     // Add a delay to show loading state
@@ -36,10 +36,10 @@ export default function Error({
   }
 
   const props = {
-      message: error.message,
-      stack: error.stack,
-      digest: error.digest,
-      url: fullUrl
+    message: error.message,
+    stack: error.stack,
+    digest: error.digest,
+    url: fullUrl
   }
 
   fetch('/api/error', {
@@ -49,15 +49,15 @@ export default function Error({
 
   const handleReport = () => {
     const props = {
-        message: error.message,
-        stack: error.stack,
-        digest: error.digest,
-        url: fullUrl
+      message: error.message,
+      stack: error.stack,
+      digest: error.digest,
+      url: fullUrl
     }
-    plausible('error', {props})
+    plausible('error', { props })
     setIsReported(true)
   }
- 
+
   return (
     <main className="flex-1 flex lg:items-center justify-center p-4 bg-neutral-50 pt-14" >
       <div role="alert" aria-live="assertive" className="w-full max-w-xl lg:rounded-lg p-8 space-y-6">
@@ -69,7 +69,7 @@ export default function Error({
 
           {/* TODO: remove true */}
           {(SN_ENV === 'dev' || SN_ENV === 'local') && <div className="inner-slate bg-white p-4 rounded-md">
-             Showing stack trace in development or preview environment
+            Showing stack trace in development or preview environment
             <p className="font-mono text-sm text-neutral-700 break-words" lang="en">{error?.message}</p>
             <pre>
               {JSON.stringify(error?.stack, null, 2)}
@@ -87,13 +87,13 @@ export default function Error({
               ) : (
                 <PiArrowClockwise aria-hidden="true" />
               )}
-                Last sida på nytt
+              Last sida på nytt
 
             </button>
             <Link href="https://skjemaker.app.uib.no/view.php?id=16665712" target="_blank" rel="noopener" className="btn text-white flex-1 flex items-center justify-center gap-2"
               onClick={handleReport}
-            >  
-            Rapporter
+            >
+              Rapporter
             </Link>
 
           </div>
