@@ -44,11 +44,33 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     }
 
     // If there is a IIIF summary, use it as description
-    const description = summary || undefined
+    // If no summary, try to get labels from seeAlso (alternativeManifests)
+    // For top-level (no manifest), don't set description - let layout handle it
+    // For items with manifest but no summary or seeAlso, set description to null to suppress meta tag
+    const hasSummary = summary && typeof summary === 'string' && summary.trim().length > 0
+    let description: string | null | undefined
+    
+    if (!manifest) {
+        description = undefined // Let layout handle it
+    } else if (hasSummary) {
+        description = summary
+    } else if (manifest.alternativeManifests && Array.isArray(manifest.alternativeManifests) && manifest.alternativeManifests.length > 0) {
+        // Extract labels from seeAlso/alternativeManifests
+        const labels = manifest.alternativeManifests
+            .map((item: any) => item.label ? resolveLanguage(item.label) : null)
+            .filter((label: string | null) => label && typeof label === 'string' && label.trim().length > 0)
+        
+        if (labels.length > 0) {
+            description = labels.join(', ')
+        } else {
+            description = null
+        }
+    } else {
+        description = null
+    }
 
-    return {
+    const metadata: any = {
         title,
-        ...(description ? { description } : {}),
         alternates: manifestUrl ? {
             types: {
                 'application/ld+json': manifestUrl
@@ -56,10 +78,23 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         } : undefined,
         openGraph: {
             ...(title ? { title } : {}),
-            ...(description ? { description } : {}),
             ...(firstImageUrl ? { images: [firstImageUrl] } : {})
         },
     }
+
+    // Only include description when manifest has summary
+    // For top-level (no manifest), omit to use layout's default
+    // For manifest without summary, set to null to suppress layout's default and prevent meta tag
+    if (description !== undefined) {
+        if (description !== null) {
+            metadata.description = description
+            metadata.openGraph.description = description
+        } else {
+            metadata.description = null
+        }
+    }
+
+    return metadata
 }
 
 
