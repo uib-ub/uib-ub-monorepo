@@ -84,6 +84,12 @@ export default function Drawer({
         return target instanceof Element && !!target.closest('a,button,input,textarea,select,[role="button"],[data-allow-touch]')
     }
 
+    const isWithinCarousel = (target: EventTarget | null): boolean => {
+        if (!(target instanceof Element)) return false
+        // Check if the target is within a carousel by looking for the data-carousel attribute
+        return !!target.closest('[data-carousel="true"]')
+    }
+
     const isScrollable = (): boolean => {
         if (effectiveScrollRef.current) {
             return effectiveScrollRef.current.scrollHeight > effectiveScrollRef.current.clientHeight
@@ -173,6 +179,10 @@ export default function Drawer({
     }, [drawerOpen, setDrawerOpen, setSnappedPosition, snappedPosition])
 
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+        // Ignore touches that start within a carousel - let the carousel handle them
+        if (isWithinCarousel(e.target)) {
+            return
+        }
         startTouchY.current = e.touches[0].clientY
         startTouchX.current = e.touches[0].clientX
         setSnapped(false)
@@ -189,6 +199,10 @@ export default function Drawer({
     }
 
     const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+        // Ignore touches that end within a carousel - let the carousel handle them
+        if (isWithinCarousel(e.target)) {
+            return
+        }
         const endTouchY = e.changedTouches[0].clientY
         const swipeDistance = startTouchY.current - endTouchY
         const isClick = Math.abs(swipeDistance) < 10
@@ -259,6 +273,10 @@ export default function Drawer({
     }
 
     const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+        // Ignore touches within a carousel - let the carousel handle horizontal swipes
+        if (isWithinCarousel(e.target)) {
+            return
+        }
         const isHorizontal = Math.abs(startTouchX.current - e.touches[0].clientX) > Math.abs(startTouchY.current - e.touches[0].clientY)
         if (isHorizontal) return
 

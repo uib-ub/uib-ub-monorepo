@@ -30,8 +30,7 @@ export default function FacetsInfobox({
   const buildSearchUrl = (params: Record<string, string>) => {
     const urlParams = new URLSearchParams();
 
-    // Always include nav=results
-    urlParams.set('nav', 'results');
+    urlParams.set('maxResults', '10');
 
     // Preserve datasetTag if it exists in current URL
     const currentDatasetTag = searchParams.get('datasetTag');

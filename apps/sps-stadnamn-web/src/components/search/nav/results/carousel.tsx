@@ -137,6 +137,7 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
         <div
             ref={containerRef}
             className="flex flex-row h-28 xl:h-32 2xl:h-48 relative select-none overflow-hidden group w-full bg-neutral-50 p-2"
+            data-carousel="true"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -181,10 +182,10 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
                     </div>
                 )}
             </div>
-            <div className="absolute top-0 left-0 text-sm px-1 text-black bg-white/70 backdrop-blur-sm">{datasetTitles[items[currentIndex].dataset]}</div>
+            <strong className="absolute top-0 left-0 text-sm px-1 text-black bg-white/70 backdrop-blur-sm m-1 py-0 rounded-md">{datasetTitles[items[currentIndex].dataset]}</strong>
             <div className="absolute top-0 right-0 flex gap-0">
                 {items.length > 1 && (
-                    <div className={`bg-neutral-950/70 flex items-center text-white backdrop-blur-sm text-sm px-2 py-0`}>
+                    <div className={`bg-neutral-950/70 flex items-center text-white backdrop-blur-sm text-sm px-2 py-0 rounded-md m-1`}>
                         {currentIndex + 1}/{items.length}
                     </div>
                 )}

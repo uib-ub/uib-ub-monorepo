@@ -29,6 +29,13 @@ export const metadata: Metadata = {
     default: "stadnamn.no"
   },
   description: "Språksamlinganes nasjonale søketeneste for stadnamn, utvikla ved Universitetsbiblioteket i Bergen",
+  openGraph: {
+    images: ["/icon.svg"],
+  },
+  twitter: {
+    card: "summary",
+    images: ["/icon.svg"],
+  },
 };
 
 export default async function RootLayout({

@@ -60,8 +60,7 @@ export function useOverlayParams() {
     const facet = searchParams.get('facet')
     const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
-    const resultsParam = parseInt(searchParams.get('results') || '0') || 0
-    const results = resultsParam > 0
+    const maxResults = searchParams.get('maxResults')
 
     const tableOptions = mode == 'table' && !options
 
@@ -69,7 +68,7 @@ export function useOverlayParams() {
 
     const showLeftPanel = options || facet || tableOptions || !isMobile
 
-    const showResults = mode != 'table' && (results || (isMobile && !showLeftPanel))
+    const showResults = mode != 'table' && (maxResults || (isMobile && !showLeftPanel))
     const showRightPanel = mode != 'table' && (isMobile ? !showLeftPanel : true)
 
     return { showLeftPanel, showRightPanel, options, mapSettings, facet, showResults, tableOptions }

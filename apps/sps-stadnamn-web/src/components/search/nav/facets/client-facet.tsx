@@ -66,7 +66,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     let hasSibling = false
 
     const newParams = Array.from(searchParams.entries()).filter(urlParam => {
-      if (['parent', 'doc', 'group', 'details', 'zoom', 'center', 'page'].includes(urlParam[0])) return false // remove child view
+      if (['parent', 'doc', 'group', 'init', 'details', 'maxResults', 'zoom', 'center', 'page'].includes(urlParam[0])) return false // remove child view
       if (urlParam[0] != paramName) return true // Ignore other params
       if (urlParam[1] == chosenValue) return false // remove self
       const urlPath = urlParam[1].split('__')
@@ -87,6 +87,10 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
       }
       return true
     })
+
+    if (searchParams.get('maxResults')) {
+      newParams.push(['maxResults', '10'])
+    }
 
 
 

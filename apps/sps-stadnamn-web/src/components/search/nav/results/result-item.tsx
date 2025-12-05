@@ -57,17 +57,9 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
 
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
     const { activeGroupValue, initValue } = useGroup()
+    const maxResults = searchParams.get('maxResults')
 
 
-
-    useEffect(() => {
-        // Scroll into view if section changes to results
-        if (!hit.fields?.uuid) return;
-
-        if (isMobile && nav == 'results' && doc == hit.fields.uuid && itemRef.current) {
-            itemRef.current.scrollIntoView({ behavior: 'instant', block: 'center' })
-        }
-    }, [nav, doc, hit.fields?.uuid, isMobile])
 
 
     const label = hit.fields?.label?.[0] || ''

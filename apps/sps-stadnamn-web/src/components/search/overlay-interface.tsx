@@ -58,7 +58,7 @@ function ShowResultsButton() {
     return <div className="p-2 fixed bottom-2 left-0 right-0 z-[3001]">
         <Clickable remove={["facet", "options"]}
             // results: integer – 1 expands sources, >1 also expands "fleire namnegrupper"
-            add={{ results: '1' }}
+            add={{ maxResults: '1' }}
             onClick={() => mode == 'table' ? setSnappedPosition('bottom') : null}
             className="w-full h-12 btn text-xl relative rounded-full">
             Vis resultat <Badge className="bg-primary-50 text-neutral-800 font-semibold px-2 absolute right-4" count={totalHits?.value || 0} /></Clickable></div>
@@ -107,10 +107,9 @@ function LeftWindow({ children }: { children: React.ReactNode }) {
     const searchParams = useSearchParams()
 
     const mapSettings = searchParams.get('mapSettings') == 'on'
-    const resultsParam = parseInt(searchParams.get('results') || '0') || 0
-    const results = resultsParam > 0 || (!mapSettings)
+    const maxResults = searchParams.get('maxResults')
     if (isMobile) {
-        if (mapSettings && results) return null
+        if (mapSettings && maxResults) return null
         return <>{children}</>
     }
     return <div className="bg-white shadow-lg flex flex-col absolute left-2 top-[4rem] w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-auto overflow-x-hidden stable-scrollbar">{children}</div>
@@ -119,11 +118,11 @@ function LeftWindow({ children }: { children: React.ReactNode }) {
 function RightWindow({ children }: { children: React.ReactNode }) {
     const { isMobile } = useContext(GlobalContext)
     const searchParams = useSearchParams()
-    const showResults = searchParams.get('results')
+    const maxResults = searchParams.get('maxResults')
     if (isMobile) {
         return <>{children}</>
     }
-    return <div className={`bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] z-[3001] ${!isMobile && showResults ? 'max-h-[calc(100svh-2rem)]': 'h-fit'} rounded-md scroll-container`}>{children}</div>
+    return <div className={`bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] z-[3001] max-h-[calc(100svh-2rem)] rounded-md flex flex-col overflow-hidden`}>{children}</div>
 }
 
 export default function OverlayInterface() {
@@ -143,10 +142,10 @@ export default function OverlayInterface() {
     const { facetFilters, datasetFilters } = useSearchQuery()
     const filterCount = facetFilters.length + datasetFilters.length
     const perspective = usePerspective()
-    const mode = useMode()
     const setDebug = useDebugStore((s) => s.setDebug)
     const debugParam = searchParams.get('debug')
     const showDebugGroups = searchParams.get('debugGroups') == 'on'
+    const maxResults = searchParams.get('maxResults')
 
     useEffect(() => {
         if (debugParam == 'on') {
@@ -234,12 +233,12 @@ export default function OverlayInterface() {
                     ) : (
                         <div className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 py-1 xl:px-0 gap-2 xl:pl-2`}>
                             <Clickable
-                                aria-expanded={showResults}
+                                aria-expanded={!!maxResults}
                                 aria-controls="results-panel"
                                 className="flex items-center gap-2 xl:px-1 w-full"
                                 // When opening, default to 1 (expand sources). When closing, remove param.
-                                add={{ results: showResults ? null : '1' }}
-                                remove={["results", ...(isMobile ? ['options'] : [])]}
+                                add={{ maxResults: maxResults ? null : searchParams.get('init') ? '1' : '10' }}
+                                remove={["maxResults", ...(isMobile ? ['options'] : [])]}
                             >
 
                                 <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Kjelder</h1>
@@ -253,7 +252,7 @@ export default function OverlayInterface() {
                             </Clickable>
                         </div>
                     )}
-                    {mapSettings ? <MapSettings /> : showResults && <div id="results-panel" className={!isMobile ? "overflow-y-auto overflow-y-auto overflow-x-hidden max-h-[calc(100svh-5rem)]" : ""}>{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}
+                    {mapSettings ? <MapSettings /> : showResults && <div id="results-panel" className={!isMobile ? "flex-1 overflow-y-auto overflow-x-hidden min-h-0" : ""}>{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}
                 </RightWindow>}
             </DrawerWrapper>
 

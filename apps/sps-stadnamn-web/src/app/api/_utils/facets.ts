@@ -40,7 +40,7 @@ export const RESERVED_PARAMS = [
   'init',
   'group',
   'options',
-  'results',
+  'maxResults',
   'mapSettings',
   'debug',
   'debugGroups',
