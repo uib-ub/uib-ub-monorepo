@@ -1,0 +1,35 @@
+{
+  "name": "prisma-db",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": {
+      "import": "./index.ts",
+      "types": "./index.ts"
+    },
+    "./client": {
+      "import": "./client.ts",
+      "types": "./client.d.ts"
+    },
+    "./types": {
+      "types": "./generated/client/index.d.ts"
+    },
+    "./schema": "./prisma/schema.prisma"
+  },
+  "scripts": {
+    "generate": "prisma generate --schema=./prisma/schema.prisma",
+    "migrate": "prisma migrate dev --schema=./prisma/schema.prisma",
+    "migrate:deploy": "prisma migrate deploy --schema=./prisma/schema.prisma",
+    "studio": "prisma studio --schema=./prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@prisma/adapter-neon": "7.1.0",
+    "@prisma/client": "7.1.0"
+  },
+  "devDependencies": {
+    "prisma": "7.1.0"
+  }
+}
