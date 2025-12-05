@@ -84,7 +84,7 @@ export const columns: ColumnDef<LinksProps>[] = [
       if (status !== 'deleted') {
         return (
           <div key={`check-${id}-${url}`}>
-            <CheckHttpStatus id={id} url={url} />
+            <CheckHttpStatus url={url} />
           </div>
         )
       }
