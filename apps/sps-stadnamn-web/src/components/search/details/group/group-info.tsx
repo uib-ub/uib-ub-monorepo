@@ -135,7 +135,7 @@ const TextTab = ({ textItems }: { textItems: any[] }) => {
                         setFirstItemExpanded(false);
                     } : handleShowAll}
                 >
-                    {showAll ? <>Vis mindre tekstinnhald</> : <>Vis alt tekstinnhald (+{textItems.length - 1})</>}
+                    {showAll ? <>Vis mindre tekstinnhald</> : <>Vis meir tekstinnhald (+{textItems.length - 1})</>}
                 </button>
             )}
         </>
