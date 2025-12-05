@@ -20,7 +20,7 @@
     "./schema": "./prisma/schema.prisma"
   },
   "scripts": {
-    "generate": "prisma generate --schema=./prisma/schema.prisma",
+    "generate-db": "prisma generate --schema=./prisma/schema.prisma",
     "migrate": "prisma migrate dev --schema=./prisma/schema.prisma",
     "migrate:deploy": "prisma migrate deploy --schema=./prisma/schema.prisma",
     "studio": "prisma studio --schema=./prisma/schema.prisma"
