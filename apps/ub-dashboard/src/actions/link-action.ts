@@ -19,6 +19,8 @@ const generateQR = async (text: string, retries = 3): Promise<string> => {
       await new Promise(resolve => setTimeout(resolve, 100 * attempt))
     }
   }
+  // This is unreachable but needed for TypeScript type checking
+  // The loop always exits via return (success) or throw (all retries failed)
   throw new Error('QR code generation failed')
 }
 
@@ -29,8 +31,8 @@ export async function createShortLink(prevState: CreateShortLinkState, formData:
 
   try {
     const schema = z.object({
-      title: z.string(),
-      originalURL: z.string().url().min(1).max(2048),
+      title: z.string().min(1, 'Title is required'),
+      originalURL: z.string().url().min(1, 'URL is required').max(2048, 'URL is too long'),
     })
     const data = schema.parse({
       title: formData.get("title"),
@@ -65,7 +67,7 @@ export async function createShortLink(prevState: CreateShortLinkState, formData:
   } catch (err) {
     // Handle Zod validation errors
     if (err instanceof z.ZodError) {
-      const firstError = err.errors[0]
+      const firstError = err.issues[0]
       return { message: `Invalid input: ${firstError.message}` }
     }
 
