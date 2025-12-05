@@ -9,12 +9,12 @@ import { ComponentSource } from './component-source';
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
     ...defaultMdxComponents,
+    ...components,
     ComponentPreview,
     ComponentSource,
     Tabs,
     Tab,
     Steps,
     Step,
-    ...components,
   };
 }
