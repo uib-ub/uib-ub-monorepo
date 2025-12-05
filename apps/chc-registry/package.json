@@ -22,7 +22,7 @@
     "build:docs": "fumadocs-mdx"
   },
   "dependencies": {
-    "@radix-ui/react-label": "2.1.6",
+    "@radix-ui/react-label": "2.1.8",
     "@radix-ui/react-scroll-area": "1.2.10",
     "@radix-ui/react-select": "2.2.6",
     "@radix-ui/react-slot": "1.2.3",
@@ -34,7 +34,7 @@
     "fumadocs-core": "16.2.3",
     "fumadocs-mdx": "14.1.0",
     "fumadocs-ui": "16.2.3",
-    "glob": "7.2.3",
+    "glob": "13.0.0",
     "jotai": "2.13.1",
     "lucide-react": "0.510.0",
     "motion": "12.23.21",
