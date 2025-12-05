@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server'
-import { getXataClient } from '../../../utils/xata'
+import { prisma } from '../../../db/client'
 
 export async function GET() {
-  const xata = getXataClient()
-  const links = await xata.db.links.getAll()
-  return NextResponse.json(links)
+  try {
+    const links = await prisma.link.findMany()
+    return NextResponse.json(links)
+  } catch (err) {
+    return NextResponse.json(
+      { error: { message: `An error ocurred, ${err}` } },
+      { status: 500 }
+    )
+  }
 }
 

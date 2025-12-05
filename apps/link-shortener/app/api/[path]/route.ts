@@ -1,29 +1,33 @@
 import { NextResponse } from 'next/server'
-import { LinksRecord, getXataClient } from '../../../utils/xata'
+import { prisma } from '../../../db/client'
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ path: string }> }
 ) {
   const { path } = await params
-  const xata = getXataClient()
 
   try {
-    const response: LinksRecord | null = await xata.db.links
-      .filter('path', path)
-      .getFirst()
+    const link = await prisma.link.findFirst({
+      where: {
+        path
+      },
+    })
 
-    if (!response) {
+    if (!link || !link.originalURL) {
       return NextResponse.json(
         { error: { message: 'No redirect found' } },
         { status: 404 }
       )
     }
 
-    const { id, redirectType, originalURL, views } = response
-    await xata.db.links.update(id, { views: views + 1 })
+    // Update views count atomically to avoid race conditions
+    await prisma.link.update({
+      where: { id: link.id },
+      data: { views: { increment: 1 } },
+    })
 
-    return NextResponse.redirect(originalURL, { status: redirectType })
+    return NextResponse.redirect(link.originalURL, { status: link.redirectType })
   } catch (err) {
     return NextResponse.json(
       { error: { message: `An error ocurred, ${err}` } },

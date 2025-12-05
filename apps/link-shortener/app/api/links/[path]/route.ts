@@ -1,26 +1,32 @@
 import { NextResponse } from 'next/server'
-import { getXataClient, type LinksRecord } from '../../../../utils/xata'
+import { prisma } from '../../../../db/client'
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ path: string }> }
 ) {
   const { path } = await params
-  const xata = getXataClient()
 
   try {
-    const response: LinksRecord | null = await xata.db.links
-      .filter('path', path)
-      .getFirst()
+    const link = await prisma.link.findFirst({
+      // This 'where' clause looks for a Link where the 'path' matches the provided path OR the 'id' matches the provided path.
+      // This allows the API to fetch a link by its short URL path *or* by its database ID, whichever is supplied in ':path'.
+      where: {
+        OR: [
+          { path },
+          { id: path }
+        ]
+      },
+    })
 
-    if (!response) {
+    if (!link || !link.originalURL) {
       return NextResponse.json(
         { error: { message: 'No redirect found' } },
         { status: 404 }
       )
     }
 
-    return NextResponse.json(response)
+    return NextResponse.json(link)
   } catch (err) {
     return NextResponse.json(
       { error: { message: `An error ocurred, ${err}` } },
