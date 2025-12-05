@@ -19,6 +19,9 @@
         ".env.local",
         ".env.production",
         ".env"
+      ],
+      "env": [
+        "DATABASE_URL"
       ]
     },
     "sps-termportal-web#generate": {
@@ -54,5 +57,15 @@
         "transit"
       ]
     }
+  },
+  "db:generate": {
+    "cache": false
+  },
+  "db:migrate": {
+    "cache": false,
+    "persistent": true
+  },
+  "db:deploy": {
+    "cache": false
   }
 }

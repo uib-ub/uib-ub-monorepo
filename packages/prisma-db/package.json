@@ -6,23 +6,12 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "exports": {
-    ".": {
-      "import": "./index.ts",
-      "types": "./index.ts"
-    },
-    "./client": {
-      "import": "./client.ts",
-      "types": "./client.d.ts"
-    },
-    "./types": {
-      "types": "./generated/client/index.d.ts"
-    },
-    "./schema": "./prisma/schema.prisma"
+    ".": "./src/index.ts"
   },
   "scripts": {
-    "generate-db": "prisma generate --schema=./prisma/schema.prisma",
-    "migrate": "prisma migrate dev --schema=./prisma/schema.prisma",
-    "migrate:deploy": "prisma migrate deploy --schema=./prisma/schema.prisma",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev --skip-generate",
+    "db:deploy": "prisma migrate deploy",
     "studio": "prisma studio --schema=./prisma/schema.prisma"
   },
   "dependencies": {
