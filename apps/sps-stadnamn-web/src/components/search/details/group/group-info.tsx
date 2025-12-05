@@ -1041,7 +1041,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                             // When pinning a group ("vel"), treat it as a fresh init selection:
                             // reset results to 1 so previous expansions are not preserved.
                             init: stringToBase64Url(groupData.group.id),
-                            results: '1'
+                            maxResults: '1'
                         }}
                         className="btn btn-neutral rounded-full lg:rounded-md aspect-square p-2 flex items-center justify-center gap-2 font-semibold"
                     >

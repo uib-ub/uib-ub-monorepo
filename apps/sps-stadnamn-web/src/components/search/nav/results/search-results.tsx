@@ -41,7 +41,7 @@ export default function SearchResults() {
   const searchParams = useSearchParams()
   const init = searchParams.get('init')
   const group = searchParams.get('group')
-  const resultsParam = parseInt(searchParams.get('results') || '0') || 0
+  const resultsParam = parseInt(searchParams.get('maxResults') || '0') || 0
   const initValue = init ? base64UrlToString(init) : null
   const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
   const { groupData: activeGroupData } = useGroupData()
@@ -393,11 +393,11 @@ export default function SearchResults() {
               const desiredAdditional = Math.max(currentAdditional, 1) // at least one extra group
               const newResultsValue = base + desiredAdditional
               const currentResults = resultsParam || base
-              newParams.set('results', String(Math.max(currentResults, newResultsValue)))
+              newParams.set('maxResults', String(Math.max(currentResults, newResultsValue)))
             } else {
               // Collapse back to only init group
               const base = initValue ? 1 : 0
-              newParams.set('results', String(base || 1))
+              newParams.set('maxResults', String(base || 1))
             }
             router.push(`?${newParams.toString()}`)
           }}
@@ -454,7 +454,7 @@ export default function SearchResults() {
                             const newResultsValue = base + newAdditional
 
                             const newParams = new URLSearchParams(searchParams)
-                            newParams.set('results', String(newResultsValue))
+                            newParams.set('maxResults', String(newResultsValue))
                             router.push(`?${newParams.toString()}`)
 
                             collapsedFetchNextPage()
@@ -491,7 +491,7 @@ export default function SearchResults() {
         {isMobile && (
           <div className="flex flex-col gap-2 justify-center">
             <Clickable
-              remove={["results"]}
+              remove={["maxResults"]}
               add={{ options: 'on' }}
               link
               onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null}

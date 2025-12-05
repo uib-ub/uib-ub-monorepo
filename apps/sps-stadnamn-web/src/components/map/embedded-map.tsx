@@ -60,7 +60,7 @@ export default function EmbeddedMap({
                                     click: () => {
                                         const newParams = new URLSearchParams();
                                         newParams.set('init', stringToBase64Url(source?.group?.id));
-                                        newParams.set('results', '1');
+                                        newParams.set('maxResults', '1');
                                         newParams.set('activePoint', `${coordinate[0]},${coordinate[1]}`);
                                         router.push(`/search?${newParams.toString()}`);
                                     }

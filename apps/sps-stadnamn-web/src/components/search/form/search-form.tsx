@@ -36,7 +36,7 @@ export async function autocompleteQuery(searchFilterParamsString: string, inputS
 export default function SearchForm() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const { isMobile, preferredTabs, inputValue, mapFunctionRef } = useContext(GlobalContext)    //const autocompleteOpen = searchParams.get('nav') == 'results'
+    const { isMobile, preferredTabs, inputValue, mapFunctionRef } = useContext(GlobalContext)
     const menuOpen = useSessionStore((s: any) => s.menuOpen)
     const autocompleteOpen = useSessionStore((s: any) => s.autocompleteOpen)
     const setAutocompleteOpen = useSessionStore((s: any) => s.setAutocompleteOpen)
@@ -257,11 +257,7 @@ export default function SearchForm() {
 
 
 
-    // For query submissions:
-    // - When a group is selected (init), results=1 (only init group "sources" open)
-    // - When no init, results equals the initial page size (currently 5), so the URL
-    //   reflects that multiple results are shown.
-    const resultsValue = selectedGroup ? '1' : '5'
+
 
     return <div
         className="flex"
@@ -372,7 +368,7 @@ export default function SearchForm() {
             {/* results: integer – when init is set, 1 means only init group; >1 controls extra groups.
                 When no init, we set it to the initial page size so the URL reflects that multiple
                 results are visible. */}
-            <input type="hidden" name="results" value={resultsValue} />
+            <input type="hidden" name="maxResults" value="5" />
             {options && <input type="hidden" name="options" value={'on'} />}
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
