@@ -30,7 +30,7 @@ export const columns: ColumnDef<LinksProps>[] = [
       </Link>
     )
   },
-  {
+  /* {
     accessorKey: "label",
     header: ({ column }) => {
       return (
@@ -44,11 +44,11 @@ export const columns: ColumnDef<LinksProps>[] = [
         </Button>
       )
     },
-  },
-  {
+  }, */
+  /* {
     header: "Type",
     accessorKey: "type",
-  },
+  }, */
   {
     header: "Brukes av",
     accessorKey: "usedBy",
@@ -84,7 +84,7 @@ export const columns: ColumnDef<LinksProps>[] = [
       if (status !== 'deleted') {
         return (
           <div key={`check-${id}-${url}`}>
-            <CheckHttpStatus id={id} url={url} />
+            <CheckHttpStatus url={url} />
           </div>
         )
       }
