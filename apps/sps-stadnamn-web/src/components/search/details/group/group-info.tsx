@@ -237,7 +237,7 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
                         className="text-lg text-neutral-900 flex items-center gap-1"
                         onClick={() => setShowAll(!showAll)}
                     >
-                        {showAll ? 'Færre kjelder' : `Fleire kjelder (${datasetKeys.length - visibleCount})`}
+                        {showAll ? 'Færre datasett' : `Fleire datasett (+${datasetKeys.length - visibleCount})`}
                     </button>
                 </li>
             )}
