@@ -4,18 +4,19 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "next build",
+    "build": "cd ../../packages/prisma-db && npm run generate && cd ../../apps/link-shortener && next build",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next",
     "check-types": "tsc --noEmit",
     "dev": "next dev --port 3003",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
+    "postinstall": "cd ../../packages/prisma-db && npm run generate",
     "start": "next start"
   },
   "dependencies": {
     "@heroicons/react": "2.2.0",
-    "@xata.io/client": "0.30.1",
     "next": "16.0.7",
+    "prisma-db": "*",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
