@@ -122,7 +122,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     if (isMobile) {
         return <>{children}</>
     }
-    return <div className={`bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] z-[3001] ${!isMobile && maxResults ? 'max-h-[calc(100svh-2rem)]': 'h-fit'} rounded-md scroll-container`}>{children}</div>
+    return <div className={`bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] z-[3001] max-h-[calc(100svh-2rem)] rounded-md flex flex-col overflow-hidden`}>{children}</div>
 }
 
 export default function OverlayInterface() {
@@ -252,7 +252,7 @@ export default function OverlayInterface() {
                             </Clickable>
                         </div>
                     )}
-                    {mapSettings ? <MapSettings /> : showResults && <div id="results-panel" className={!isMobile ? "overflow-y-auto overflow-y-auto overflow-x-hidden max-h-[calc(100svh-5rem)]" : ""}>{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}
+                    {mapSettings ? <MapSettings /> : showResults && <div id="results-panel" className={!isMobile ? "flex-1 overflow-y-auto overflow-x-hidden min-h-0" : ""}>{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}
                 </RightWindow>}
             </DrawerWrapper>
 

@@ -30,7 +30,7 @@ export default function ActiveFilters() {
     newSearchParams.delete(key)
 
     // Add back mode, nav and facet params if they exist
-    const keptParams = ['mode', 'nav', 'facet', 'options', 'results']
+    const keptParams = ['mode', 'facet', 'options', 'maxResults']
     keptParams.forEach((param: string) => {
       const value = searchParams.get(param)
       if (value) newSearchParams.set(param, value)
@@ -115,6 +115,7 @@ export default function ActiveFilters() {
       <div className="flex flex-wrap gap-2 px-1">
         {allFilters.map(([key, value]) => (
           <button
+          type="button"
             key={`${key}__${value}`}
             onClick={() => removeFilter(key, value)}
             className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer"
