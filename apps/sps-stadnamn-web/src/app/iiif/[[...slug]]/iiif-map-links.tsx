@@ -12,7 +12,7 @@ async function getIIIFMapLinks(iiif: string | undefined) {
 
 
 import { useParams } from "next/navigation";
-import { PiMapPin } from "react-icons/pi";
+import { PiMapPin, PiMapPinFill } from "react-icons/pi";
 
 export default function IIIFMapLinks() {
     const params = useParams();
@@ -29,11 +29,11 @@ export default function IIIFMapLinks() {
     }
 
     return <aside>
-        <h2>Oppslag i stadnamnsøket</h2>
+        <h2 className="!text-2xl">Oppslag i stadnamnsøket</h2>
+        <ul className="list-none !px-0 !mx-0 ">
         {data?.hits?.hits?.map((hit: any) => (
-            <div key={hit._id}>
-                <Link className="flex items-center gap-1" href={`/uuid/${hit.fields.uuid[0]}`}>{hit.fields?.location && <PiMapPin aria-hidden="true" />} {hit.fields.label[0]}</Link>
-            </div>
+                <li key={hit._id} className="list-none"><Link className="flex gap-2 no-underline items-center text-xl" href={`/uuid/${hit.fields.uuid[0]}`}>{hit.fields?.location && <PiMapPinFill aria-hidden="true" className="text-primary-700 text-2xl"/>} {hit.fields.label[0]}</Link></li>
         ))}
+        </ul>
     </aside>
 }
