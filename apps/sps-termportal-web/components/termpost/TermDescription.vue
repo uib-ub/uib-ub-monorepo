@@ -129,9 +129,10 @@
           :lang="d.scopeNote?.['@language']"
           v-html="htmlify(d.scopeNote?.['@value'])"
         />
+        <!-- Notes with sources -->
         <dd
           v-if="d.scopeNote?.source"
-          v-html="`(${d.scopeNote?.source})`"
+          v-html="`(${d.scopeNote.source['@value'] || d.scopeNote.source})`"
         />
       </TermpostTermProp>
     </dl>

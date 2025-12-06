@@ -7,7 +7,7 @@
       <!-- All termbases + expand -->
       <button
         v-if="searchInterface.termbase.length == 0"
-        class="min-h-[2.3em] rounded-md border border-gray-300 px-3 py-1"
+        class="cursor-pointer min-h-[2.3em] rounded-md border border-gray-300 px-3 py-1"
         @click="panel = !panel"
       >
         {{ $t("global.samling.all") }}
@@ -17,7 +17,7 @@
       <button
         v-for="tb in searchInterface.termbase"
         :key="tb"
-        class="group flex min-h-[2.3em] items-center justify-center space-x-1.5 rounded-md border border-gray-300 py-1 pl-3 pr-2"
+        class="cursor-pointer group flex min-h-[2.3em] items-center justify-center space-x-1.5 rounded-md border border-gray-300 pl-3 pr-2 hover:bg-gray-100"
         @click="
           searchInterface.termbase = searchInterface.termbase.filter(
             (item) => item !== tb,
@@ -25,52 +25,47 @@
         "
       >
         <span>{{ getLaLo(`${tb}-3A${tb}`) }}</span>
-        <Icon
-          name="material-symbols:close"
+        <IconClose
           size="1.2rem"
-          class="mt-0.5 rounded-sm border border-white text-gray-600 group-hover:border-gray-300 group-hover:bg-gray-100"
+          class="mt-0.5 rounded-[3px] border border-white text-gray-600 group-hover:border-gray-400 group-hover:bg-gray-200"
         />
       </button>
     </div>
     <div class="flex justify-center">
       <!-- Expand all termbases panel -->
       <button
-        class="absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border-2 border-gray-200 border-t-white bg-white"
+        class="cursor-pointer absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border-2 border-gray-200 border-t-white bg-white"
+        :aria-label="$t('searchBar.expandTermbaseMenu')"
         @click="panel = !panel"
       >
-        <Icon
-          name="mdi:chevron-down"
+        <IconChevronDown
           size="1.6em"
-          class="mt-[-7px] text-gray-600"
-          aria-hidden="true"
+          class="-translate-y-2"
         />
-        <span class="sr-only">{{ $t("searchBar.expandTermbaseMenu") }}</span>
       </button>
     </div>
     <div
       v-if="panel"
       class="absolute z-20 mt-[6px] rounded-b-[7px] border border-gray-300 border-t-white bg-white p-2 shadow-lg"
     >
-      <div class="absolute right-0 top-0 mr-1 mt-1 flex space-x-2">
+      <div class="absolute right-0 top-0 h-8 mr-1 mt-1 flex space-x-2 text-xl">
         <button
           v-if="searchInterface.termbase.length > 0"
-          class="rounded-sm border border-transparent p-0.5 text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
+          class="flex items-center justify-center w-8 cursor-pointer rounded-xs border border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-100"
+          :aria-label="$t('searchBar.resetTermbaseOptions')"
           @click="searchInterface.termbase = []"
         >
           <IconReset
-            class="text-lg"
-            size="1.35em"
+            size="1.3em"
+            class="translate-y-[1px]"
           />
-          <span class="sr-only">{{
-            $t("searchBar.resetTermbaseOptions")
-          }}</span>
         </button>
         <button
-          class="flex justify-center rounded-sm border border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-100"
+          class="flex items-center justify-center w-8 cursor-pointer rounded-xs border border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300 hover:bg-gray-100"
+          aria-label="Close"
           @click="panel = false"
         >
-          <IconClose class="text-lg" />
-          <span class="sr-only">{{ $t("searchBar.closeTermbaseMenu") }}</span>
+          <IconClose />
         </button>
       </div>
       <div class="px-2 text-lg">
