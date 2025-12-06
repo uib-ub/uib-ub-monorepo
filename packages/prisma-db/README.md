@@ -7,7 +7,7 @@ This package contains the shared Prisma schema and client for the monorepo.
 Import the Prisma client:
 
 ```typescript
-import { prisma } from 'prisma/client'
+import { prisma } from 'prisma-db'
 ```
 
 ## Development
