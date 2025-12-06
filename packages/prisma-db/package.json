@@ -6,7 +6,7 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/client.ts"
   },
   "scripts": {
     "db:generate": "prisma generate",
