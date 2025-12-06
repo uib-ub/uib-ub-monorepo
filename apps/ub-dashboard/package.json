@@ -4,14 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "cd ../../packages/prisma-db && npm run generate-db && cd ../../apps/ub-dashboard && next build",
+    "build": "cd ../../packages/prisma-db && npm run db:generate && cd ../../apps/ub-dashboard && next build",
     "check-types": "tsc --noEmit",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next",
     "dev": "next dev --turbopack -p 3002",
     "edit": "node scripts/edit-document.js",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "postinstall": "cd ../../packages/prisma-db && npm run generate-db",
+    "postinstall": "cd ../../packages/prisma-db && npm run db:generate",
     "start": "next start",
     "test": "jest",
     "type-check": "tsc --noEmit"
