@@ -54,8 +54,8 @@ export const columns: ColumnDef<LinksProps>[] = [
     accessorKey: "usedBy",
     cell: ({ row }: { row: any }) => (
       <div className='flex flex-col gap-2'>
-        {row.getValue('usedBy')?.map((t: any, i: number) => (
-          <div key={i}>
+        {row.getValue('usedBy')?.map((t: { id: string, label: string }) => (
+          <div key={t.id}>
             {t.label}
           </div>
         ))}
