@@ -15,12 +15,12 @@ import { prisma } from 'prisma/client'
 Generate the Prisma client:
 
 ```bash
-npm run generate
+npm run db:generate
 ```
 
 Run migrations:
 
 ```bash
-npm run migrate
+npm run db:migrate
 ```
 
