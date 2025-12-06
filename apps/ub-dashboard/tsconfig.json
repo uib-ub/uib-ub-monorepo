@@ -6,10 +6,14 @@
         "name": "next"
       }
     ],
+    "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@/db/*": [
+        "./db/*"
       ]
     }
   },

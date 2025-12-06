@@ -1,32 +1,63 @@
-export const dynamic = 'force-dynamic' // defaults to force-static
+export const revalidate = 60 // Revalidate every 60 seconds
+
+// In-memory cache to prevent duplicate requests
+const requestCache = new Map<string, { data: string | number; timestamp: number }>()
+const CACHE_TTL = 60000 // 60 seconds
+
+const getStatusMessage = (status: number): string => {
+  const statusMap: Record<number, string> = {
+    200: 'Ok',
+    301: 'Moved permanently',
+    400: 'Bad request',
+    401: 'Restricted',
+    404: 'Unavailable',
+  }
+  return statusMap[status] || String(status)
+}
+
+const getErrorMessage = (error: any): string => {
+  // Handle timeout errors
+  if (error.name === 'AbortError' ||
+    error.message?.includes('timeout') ||
+    error.message?.includes('Timeout') ||
+    error.cause?.code === 'UND_ERR_CONNECT_TIMEOUT' ||
+    error.cause?.code === 'ETIMEDOUT') {
+    return 'Timeout'
+  }
+
+  // Handle connection errors
+  if (error.cause?.code === 'ENOTFOUND' || error.cause?.code === 'ECONNREFUSED') {
+    return 'Unreachable'
+  }
+
+  if (error.message?.includes('fetch failed')) {
+    return 'Connection failed'
+  }
+
+  return error.cause?.code || 'Error'
+}
 
 const fetchData = async (url: string): Promise<string | number> => {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+
   try {
-    const response = await fetch(url, { method: 'GET', next: { revalidate: 60 } })
+    const response = await fetch(url, {
+      method: 'GET',
+      signal: controller.signal,
+      next: { revalidate: 60 }
+    })
+
+    clearTimeout(timeoutId)
+
     if (!response) {
-      return "Fuck up"
+      return 'No response'
     }
-    if (response.status === 301) {
-      return 'Moved permanently'
-    }
-    if (response.status === 400) {
-      return 'Bad request'
-    }
-    if (response.status === 401) {
-      return 'Restricted'
-    }
-    if (response.status === 404) {
-      return 'Unavailable'
-    }
-    if (response.status === 200) {
-      return 'Ok'
-    }
-    return response.status
+
+    return getStatusMessage(response.status)
   } catch (error: any) {
-    if ('cause' in error) {
-      return error.cause.code;
-    }
-    return 'Error';
+    clearTimeout(timeoutId)
+    return getErrorMessage(error)
   }
 }
 
@@ -37,6 +68,36 @@ export async function GET(request: Request) {
     // Return an error response or a default value
     return Response.json('URL parameter is missing')
   }
+
+  // Check cache first
+  const cached = requestCache.get(url)
+  const now = Date.now()
+  if (cached && (now - cached.timestamp) < CACHE_TTL) {
+    return Response.json(cached.data, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300'
+      }
+    })
+  }
+
+  // Fetch fresh data
   const data = await fetchData(url)
-  return Response.json(data)
+
+  // Update cache
+  requestCache.set(url, { data, timestamp: now })
+
+  // Clean up old cache entries periodically
+  if (requestCache.size > 100) {
+    for (const [key, value] of requestCache.entries()) {
+      if ((now - value.timestamp) > CACHE_TTL) {
+        requestCache.delete(key)
+      }
+    }
+  }
+
+  return Response.json(data, {
+    headers: {
+      'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300'
+    }
+  })
 }

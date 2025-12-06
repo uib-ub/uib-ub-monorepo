@@ -10,8 +10,7 @@
         "dist/**"
       ],
       "env": [
-        "XATA_API_KEY",
-        "XATA_BRANCH",
+        "DATABASE_URL",
         "VERCEL_ENV",
         "VERCEL_URL"
       ],

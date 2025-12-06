@@ -8,22 +8,24 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { LinksRecord } from '@/utils/xata';
-import { xata } from '@/utils/xataClient';
+import { prisma } from '@/db/client';
 import { ExternalLinkIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
+import type { Link } from 'prisma-db';
 
 async function getData() {
   'use server'
-  return await xata.db.links.sort('created', 'desc').getAll()
+  return await prisma.link.findMany({
+    orderBy: { created: 'desc' }
+  })
 }
 
 const Links = async () => {
-  const data: LinksRecord[] = await getData();
+  const data: Link[] = await getData();
 
   return (
     <div className='flex flex-col gap-4'>
-      {data ? data.map((link: LinksRecord) => (
+      {data ? data.map((link: Link) => (
         <div key={link.id} className='flex gap-4 border rounded-lg overflow-hidden'>
           <div className='px-5 py-4'>
             <div className='font-black text:md md:text-2xl break-all'>{link.title ?? link.originalURL}</div>
