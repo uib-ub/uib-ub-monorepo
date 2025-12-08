@@ -55,6 +55,13 @@ export async function fetchStats() {
   const query = {
     "size": 0,
     "track_total_hits": true,
+    "query": {
+      "bool": {
+        "must_not": [
+          { "terms": { "group.id": ["noname"] } }
+        ]
+      }
+    },
     "aggs": {
       "datasets": {
         "terms": {
@@ -66,10 +73,12 @@ export async function fetchStats() {
         "filter": {
           "bool": {
             "must": [
-              { "exists": { "field": "group.id" } }
+              { "exists": { "field": "group.id" } },
+              
             ],
             "must_not": [
-              { "terms": { "_index": baseWordDatasets.map((dataset) => `search-stadnamn-${process.env.SN_ENV}-${dataset}`) } }
+              { "terms": { "_index": baseWordDatasets.map((dataset) => `search-stadnamn-${process.env.SN_ENV}-${dataset}`) } },
+              { "terms": { "group.id": ["suppressed", "noname"] } }
             ]
           }
         },
