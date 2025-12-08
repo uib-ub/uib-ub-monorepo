@@ -194,12 +194,12 @@ export const datasetPresentation: DatasetPresentation = {
     license: licenses.ccby4,
   },
   wikidata: {
-    img: "Wikidata-logo.svg",
+    img: "/datasets/Wikidata-logo.svg",
     alt: "Wikidata logo",
     imageAttribution: "Wikimedia Foundation",
-    attribution: "Språksamlingane, Wikidata",
+    attribution: "Wikidata, flata ut av Språksamlingane",
     license: licenses.ccby4,
-  },
+  },  
   bsn: {
     img: "/datasets/ubb-spr-bp-0001_sm.jpg",
     alt: "Ei kvinneleg arkivar eller kontorist sit ved eit skrivebord framfor ei stor rekkje arkivskuffer.",
@@ -307,7 +307,7 @@ export const datasetPresentation: DatasetPresentation = {
   },
   gn2019: {
     img: "/datasets/geonames_logo_icon_171110.svg",
-    alt: "Geonames",
+    alt: "Geonames, logo",
     imageAttribution: "Geonames",
     attribution: "Geonames",
     license: licenses.ccby4,
@@ -391,13 +391,6 @@ export const datasetPresentation: DatasetPresentation = {
     imageAttribution: "Foto: Knud Knudsen. Avdeling for spesialsamlingar, Universitetsbiblioteket i Bergen",
     imageUrl: { "name": "marcus.uib.no", "url": "https://marcus.uib.no/instance/photograph/ubb-kk-ncn-0275" },
     attribution: "Språksamlingane",
-    license: licenses.ccby4,
-  },
-  wikid: {
-    img: "/datasets/Wikidata-logo.svg",
-    alt: "Wikidata",
-    imageAttribution: "Wikimedia Foundation",
-    attribution: "Wikidata",
     license: licenses.ccby4,
   },
   osm: {
