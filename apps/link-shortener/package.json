@@ -15,7 +15,7 @@
   "dependencies": {
     "@heroicons/react": "2.2.0",
     "@xata.io/client": "0.23.4",
-    "next": "15.3.6",
+    "next": "15.4.8",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },

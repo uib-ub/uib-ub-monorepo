@@ -45,7 +45,7 @@
     "termportal-ui": "*",
     "typescript": "5.9.3",
     "uuid": "13.0.0",
-    "vite": "7.1.9",
+    "vite": "7.1.11",
     "vitest": "3.2.4",
     "vue-i18n": "11.1.12",
     "vue-matomo": "4.2.0",
