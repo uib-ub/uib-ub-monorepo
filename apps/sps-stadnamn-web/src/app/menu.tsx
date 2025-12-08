@@ -118,7 +118,7 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 {modeOutsideSearch == 'table'
                                     ? <PiTableFill className="text-xl" />
                                     : <PiTableLight className="text-xl" />}
-                                Kjeldetabell
+                                Tabellvisning
                             </Clickable>
                         </div>
                         <hr className="w-full h-px bg-neutral-200 border-0 my-0" />
