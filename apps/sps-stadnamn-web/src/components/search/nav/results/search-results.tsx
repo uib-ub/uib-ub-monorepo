@@ -471,7 +471,7 @@ export default function SearchResults() {
                     ${isFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
                   `}
                         >
-                          {isFetchingNextPage && <Spinner className="text-white" status="Lastar" />} {isFetchingNextPage ? 'Lastar...' : 'Vis fleire'}
+                          {isFetchingNextPage && <Spinner className="text-white" status="Lastar" />} {isFetchingNextPage ? 'Lastar...' : 'Vis meir'}
                         </button>
                       </li>
                     )}
