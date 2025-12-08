@@ -90,15 +90,15 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 aria-selected={modeOutsideSearch == 'map'}
                                 aria-current={modeOutsideSearch == 'map' ? 'page' : undefined}
                                 remove={['mode']}
-                                className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-base text-left
+                                className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
                                 ${modeOutsideSearch == 'map'
                                         ? 'bg-accent-800 text-white font-semibold'
                                         : 'hover:bg-accent-100 text-neutral-900'
                                     }`}
                             >
                                 {modeOutsideSearch == 'map'
-                                    ? <PiMapTrifoldFill className="text-xl" />
-                                    : <PiMapTrifoldLight className="text-xl" />}
+                                    ? <PiMapTrifoldFill className="text-xl" aria-hidden="true" />
+                                    : <PiMapTrifoldLight className="text-xl" aria-hidden="true" />}
                                 Kart
                             </Clickable>
                             <Clickable
@@ -109,16 +109,16 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 aria-selected={modeOutsideSearch == 'table'}
                                 aria-current={modeOutsideSearch == 'table' ? 'page' : undefined}
                                 add={{ mode: 'table' }}
-                                className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-base text-left
+                                className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
                                 ${modeOutsideSearch == 'table'
                                         ? 'bg-accent-800 text-white font-semibold'
                                         : 'hover:bg-accent-100 text-neutral-900'
                                     }`}
                             >
                                 {modeOutsideSearch == 'table'
-                                    ? <PiTableFill className="text-xl" />
-                                    : <PiTableLight className="text-xl" />}
-                                Kjeldetabell
+                                    ? <PiTableFill className="text-xl" aria-hidden="true" />
+                                    : <PiTableLight className="text-xl" aria-hidden="true" />}
+                                Tabellvisning
                             </Clickable>
                         </div>
                         <hr className="w-full h-px bg-neutral-200 border-0 my-0" />
@@ -128,20 +128,20 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 href="/help"
                                 aria-current={pathname === '/help' ? 'page' : undefined}
                             >
-                                <PiQuestion aria-hidden="true" />Søketips
+                                <PiQuestion className="text-xl" aria-hidden="true" />Søketips
                             </Link>
                             <Link scroll={false}
                                 className="flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900"
                                 href="https://skjemaker.app.uib.no/view.php?id=16665712"
                             >
-                                <PiChatCircleText aria-hidden="true" />Tilbakemelding
+                                <PiChatCircleText className="text-xl" aria-hidden="true" />Tilbakemelding
                             </Link>
                             <Link scroll={false}
                                 className={`flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 ${pathname === '/iiif' ? 'bg-accent-800 text-white font-semibold' : ''}`}
                                 href="/iiif"
                                 aria-current={pathname === '/iiif' ? 'page' : undefined}
                             >
-                                <PiArchive aria-hidden="true" />Arkiv
+                                <PiArchive className="text-xl" aria-hidden="true" />Arkiv
                             </Link>
                             <div className="flex flex-col w-full">
                                 <Link scroll={false}
@@ -149,7 +149,7 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                     href="/info"
                                     aria-current={pathname === '/info' ? 'page' : undefined}
                                 >
-                                    <PiInfo aria-hidden="true" />Informasjon
+                                    <PiInfo className="text-xl" aria-hidden="true" />Informasjon
                                 </Link>
                                 <Link scroll={false}
                                     className={`flex items-center gap-2 px-4 py-3 pl-10 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 ${pathname === '/info/privacy' ? 'bg-accent-800 text-white font-semibold' : ''}`}
@@ -171,7 +171,7 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 className="flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900"
                                 href="https://uustatus.no/nn/erklaringer/publisert/c3abf798-49b7-4776-b1ee-f07b46dadd38"
                             >
-                                <PiPersonArmsSpread aria-hidden="true" />Tilgjengeerklæring
+                                <PiPersonArmsSpread className="text-xl" aria-hidden="true" />Tilgjengeerklæring
                             </Link>
                         </div>
                     </div>
