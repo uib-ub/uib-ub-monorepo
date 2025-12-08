@@ -2,16 +2,32 @@ export const metadata = { title: 'Søketips' }
 
 
 # Søketips
-Stadnamportalen samlar data frå ei rekke kjelder, presenterte som [datasett](/datasets). Treff som ligg nær kvarandre geografisk, blir slått saman i grupper dersom dei har same oppsalgsord, og prioriterte datasett blir
-viste øvst. Du kan navigere til neste treff ved å trykke på navigasjonsknappane, eller ved å trykke **ctrl** og høgre eller venstre piltast.  Du kan òg velje «Liknande namn» for å få ei oversikt over liknande namn i nærleiken, namn som ikkje naudsynlegvis
-er med i søket.
+Stadnamportalen samlar data frå både Språksamlingane sine arkiv og eksterne kjelder. Desse er alle presentert som [datasett](/info/datasets). 
+
+## Stadnamnsøk
+I [stadnamnsøket](/search) grupperer vi <em>kjeldeoppslag</em> som ligg nær kvarandre geografisk i <em>namnegrupper</em>. Du kan velje namnegruppe ved å navigere ned med piltastene eller trykkje på søkjeforslaga som kjem når du skriv i søkjefeltet.
+
+Du kan òg velje namnegruppe ved å trykkje på etikettane i kartet. Når du har valt namnegruppe vil andre treff visast under «Fleire namnegrupper», sortert etter avstand frå treffet du veljer.
+Bytt til andre namnegrupper ved å trykkje knappane med teikjestiftikon. Når du har valt ei namnegruppe kan du filtrere dei underordna kjeldeoppslaga etter år og namneform, eller trykkje på kartmarkørene i lista for å sjå detaljar om koordinatane.
+
+## Tabellvisning
+[Tabellvisninga](/search?mode=table) viser dei individuelle kjeldeoppslaga utan gruppering. Du kan velje kva kolonner som visast, men merk at det varierer kva felt som er tilgjengelege for dei ulike datasetta.
+Her kan du også laste ned data som CSV, GeoJSON eller JSON.
+
+**NB: Tabellvisninga er ikkje ferdig utvikla. Rapporter gjerne feil eller kom med innspill i [skjemaet for tilbakemelding](https://skjemaker.app.uib.no/view.php?id=16665712)**
+
 
 ## Søkefeltet
-
 Med hovudsøkjefeltet øvst i søkjeseksjonen søkjer du på stadnamn som inneheld alle orda du skriv inn, men ikkje nødvendigvis i same rekkefølgje – **Berg Nordre** vil òg gje treff på «Nordre Berg». Dersom søkjevisninga har ein knapp for å søkje i anna enn stadnamn, kan søket gje treff som inneheld berre eitt av orda du skriv inn.
 
 ### Frasesøk
 Set hermeteikn rundt søket for å søkje etter ein frase eller eit namn som består av fleire ord. "Berg Nordre" gjev til dømes ikkje treff på «Nordre Berg», men du vil få treff på dette om du søkjer utan hermeteikn.
+
+### Områdesøk
+Det er tre måter du kan finne stadnamn i eit bestemt geografisk område:
+1.  Skriv kommunenamnet til slutt i søkjestrengen
+2.  Vel eit namn i kartet eller eit søkjeforslag i nedtrekksmenyen som kjem når du skriv i søkjefeltet, og ekspander «Fleire namnegrupper» for å sjå treff sortert etter avstand frå treffet du veljer.
+3.  Legg til ein kommune som søkefilter
 
 ### Søk med jokertegn
 Teiknet **\*** kan brukast til trunkering (forkorting) av eitt eller fleire teikn. Til dømes vil søket **berg\*** gje treff på «Berg», «Bergen», «Bergheim». Teiknet kan plasserast kvar som helst og fleire gonger i søkjeordet. 
