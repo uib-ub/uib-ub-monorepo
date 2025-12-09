@@ -56,7 +56,7 @@ export default async function RootLayout({
       className={`${serif.variable} ${sans.className}`}
     >
       <head>
-        <PlausibleProvider domain="stadnamnportalen.uib.no" />
+        <PlausibleProvider domain="stadnamn.no" />
       </head>
       <body className="bg-neutral-900 flex flex-col min-h-[100svh] overflow-x-hidden">
         {/* Remove the Image component since we're using CSS background-image */}
@@ -74,3 +74,4 @@ export default async function RootLayout({
     </html>
   );
 }
+
