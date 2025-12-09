@@ -13,7 +13,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { PiArchive, PiCaretLeftBold, PiCaretRightBold, PiInfoFill, PiMapPinBold, PiMapPinFill, PiMapPinPlusFill, PiPushPinFill, PiX } from "react-icons/pi";
+import { PiArchive, PiArrowUp, PiCaretLeftBold, PiCaretRightBold, PiInfoFill, PiMapPinBold, PiMapPinFill, PiMapPinPlusFill, PiPushPin, PiPushPinFill, PiX } from "react-icons/pi";
 import Carousel from "../../nav/results/carousel";
 import WarningMessage from "./warning-message";
 
@@ -1084,7 +1084,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
 
             {locations.length > 0 && locations[0]?.location?.coordinates && initValue !== groupData.group.id && (
-                <div className="absolute bottom-0 right-0 p-3">
+                <div className="">
                     <ClickableIcon
                         label="Vel namnegruppe"
                         onClick={() => {
@@ -1098,9 +1098,12 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                             init: stringToBase64Url(groupData.group.id),
                             maxResults: '1'
                         }}
-                        className="btn btn-neutral rounded-full lg:rounded-md aspect-square p-2 flex items-center justify-center gap-2 font-semibold"
+                        className="btn btn-outline self-center rounded-md w-[calc(100%-1.5rem)] p-2mibold text-xl !mx-3"
                     >
-                        <PiPushPinFill aria-hidden="true" className="text-2xl" />
+                        <div className="flex flex-row items-center justify-center gap-2">
+                            <PiPushPin aria-hidden="true" className="text-xl" />
+                            Vel
+                        </div>
                     </ClickableIcon>
                 </div>
             )}
