@@ -818,12 +818,6 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         return { iiifItems, textItems, audioItems, datasets, locations, uniqueCoordinates: Array.from(coordSet) }
     }, [groupData, searchDatasets])
 
-    // Find current coordinate index
-    const currentCoordIndex = useMemo(() => {
-        if (!activePoint) return -1
-        return uniqueCoordinates.indexOf(activePoint)
-    }, [activePoint, uniqueCoordinates])
-
     // Helper function to push name-year pairs
     const pushNameYear = (nameToYears: Record<string, Set<string>>, name: string | undefined, year: any) => {
         if (!name) return
@@ -1010,63 +1004,52 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 {/* Active point filter display - only in init group */}
                 {searchParams.get('activePoint') && initValue === groupData.group.id && (
                     <div className="px-3 pt-2">
-                        <div className="flex items-center gap-2 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg">
-                            <PiMapPinFill className="text-accent-800 flex-shrink-0" aria-hidden="true" />
-                            <span className="text-neutral-900 text-base">
-                                {searchParams.get('activePoint')?.split(',').map((coord: string, index: number) => {
-                                    const value = parseFloat(coord);
-                                    return `${index === 0 ? 'N' : 'Ø'} ${value.toFixed(4)}°`;
-                                }).join(', ')}
-                            </span>
-                            {/* Navigation buttons - only show if there are multiple coordinates */}
-                            {uniqueCoordinates.length > 1 ? (
-                                <div className="flex items-center h-8 bg-white rounded-md border border-neutral-200 ml-2">
-                                    <ClickableIcon
-                                        label="Forrige koordinat"
-                                        className="btn btn-outline btn-compact rounded-r-none h-8"
-                                        add={{ activePoint: uniqueCoordinates[(currentCoordIndex - 1 + uniqueCoordinates.length) % uniqueCoordinates.length] }}
-                                        onClick={(e) => {
-                                            const prevIndex = (currentCoordIndex - 1 + uniqueCoordinates.length) % uniqueCoordinates.length
-                                            const prevCoord = uniqueCoordinates[prevIndex]
-                                            const [lat, lng] = prevCoord.split(',').map(parseFloat)
-                                            // Use setTimeout to ensure URL update happens first
-                                            setTimeout(() => {
-                                                mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] })
-                                            }, 0)
-                                        }}
-                                    >
-                                        <PiCaretLeftBold className="text-primary-700" aria-hidden="true" />
-                                    </ClickableIcon>
-                                    <span className="text-neutral-800 border-y border-neutral-200 h-8 flex items-center min-w-12 text-center px-3 text-sm">
-                                        {currentCoordIndex + 1}/{uniqueCoordinates.length}
-                                    </span>
-                                    <ClickableIcon
-                                        label="Neste koordinat"
-                                        className="btn btn-outline btn-compact rounded-l-none h-8"
-                                        add={{ activePoint: uniqueCoordinates[(currentCoordIndex + 1) % uniqueCoordinates.length] }}
-                                        onClick={(e) => {
-                                            const nextIndex = (currentCoordIndex + 1) % uniqueCoordinates.length
-                                            const nextCoord = uniqueCoordinates[nextIndex]
-                                            const [lat, lng] = nextCoord.split(',').map(parseFloat)
-                                            // Use setTimeout to ensure URL update happens first
-                                            setTimeout(() => {
-                                                mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] })
-                                            }, 0)
-                                        }}
-                                    >
-                                        <PiCaretRightBold className="text-primary-700" aria-hidden="true" />
-                                    </ClickableIcon>
+                        <div className="flex flex-col gap-2 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <PiMapPinFill className="text-accent-800 flex-shrink-0" aria-hidden="true" />
+                                    <span className="text-neutral-900 text-base font-medium">Koordinatar</span>
                                 </div>
-                            ) : (
-                                <em className="text-neutral-800 ml-2">Einaste koordinat</em>
-                            )}
-                            <ClickableIcon
-                                label="Fjern kjeldeavgrensing"
-                                remove={['activePoint']}
-                                className="ml-auto text-accent-800 hover:text-accent-900"
-                            >
-                                <PiX className="text-neutral-800" />
-                            </ClickableIcon>
+                                <ClickableIcon
+                                    label="Fjern kjeldeavgrensing"
+                                    remove={['activePoint']}
+                                    className="text-accent-800 hover:text-accent-900 flex-shrink-0"
+                                >
+                                    <PiX className="text-neutral-800" />
+                                </ClickableIcon>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                                {uniqueCoordinates.map((coord: string) => {
+                                    const [lat, lng] = coord.split(',').map(parseFloat);
+                                    const isActive = activePoint === coord;
+                                    const fullLat = lat
+                                    const fullLng = lng
+                                    const shortLat = lat.toFixed(2);
+                                    const shortLng = lng.toFixed(2);
+                                    const fullText = `N ${fullLat}°, Ø ${fullLng}°`;
+                                    const shortText = `N ${shortLat}°, Ø ${shortLng}°`;
+
+                                    return (
+                                        <Clickable
+                                            key={coord}
+                                            add={{ activePoint: coord }}
+                                            onClick={() => {
+                                                setTimeout(() => {
+                                                    mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+                                                }, 0);
+                                            }}
+                                            className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
+                                                isActive
+                                                    ? 'bg-accent-800 text-white'
+                                                    : 'bg-white text-neutral-900 hover:bg-neutral-200 border border-neutral-200'
+                                            }`}
+                                            title={fullText}
+                                        >
+                                            {shortText}
+                                        </Clickable>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
                 )}

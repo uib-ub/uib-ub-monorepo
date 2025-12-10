@@ -821,11 +821,11 @@ export default function MapExplorer() {
 
             {
               (() => {
-                // Only show lines and dots for the init group
-                if (!groupData?.sources || activeGroupValue !== initValue || !activePoint) return null;
+                // Show lines and dots for the init group whenever there is an init
+                if (!initValue || !initGroupData?.sources) return null;
 
                 // Find the first source with coordinates - this is the central coordinate
-                const centralSource = groupData.sources.find((source: Record<string, any>) =>
+                const centralSource = initGroupData.sources.find((source: Record<string, any>) =>
                   source?.location?.coordinates?.length === 2
                 );
 
@@ -834,13 +834,23 @@ export default function MapExplorer() {
                 const centralLat = centralSource.location.coordinates[1];
                 const centralLng = centralSource.location.coordinates[0];
 
-                // Track unique coordinates to avoid duplicates
-                const seenCoordinates = new Set<string>();
+                // Collect all unique coordinates to check if there are multiple
+                const uniqueCoordinates = new Set<string>();
+                initGroupData.sources.forEach((source: Record<string, any>) => {
+                  if (source?.location?.coordinates?.length === 2) {
+                    const lat = source.location.coordinates[1];
+                    const lng = source.location.coordinates[0];
+                    uniqueCoordinates.add(`${lat},${lng}`);
+                  }
+                });
+
+                // Only show lines and dots if there are multiple coordinates
+                if (uniqueCoordinates.size < 2) return null;
 
                 return (
                   <>
                     {/* Other source markers and connecting lines */}
-                    {groupData.sources.map((source: Record<string, any>, index: number) => {
+                    {initGroupData.sources.map((source: Record<string, any>, index: number) => {
                       if (!source?.location?.coordinates?.length) {
                         console.log("NO MARKERS", source?.location)
                         return null;
@@ -853,13 +863,13 @@ export default function MapExplorer() {
                       // Create a unique key for this coordinate
                       const coordKey = `${lat},${lng}`;
 
-                      // Skip if we've already seen this coordinate
-                      if (seenCoordinates.has(coordKey)) {
+                      // Skip if we've already rendered this coordinate (remove from set as we render)
+                      if (!uniqueCoordinates.has(coordKey)) {
                         return null;
                       }
 
-                      // Mark this coordinate as seen
-                      seenCoordinates.add(coordKey);
+                      // Remove from set so we only render each unique coordinate once
+                      uniqueCoordinates.delete(coordKey);
 
                       return (
                         <Fragment key={`location-marker-${index}`}>
@@ -974,7 +984,16 @@ export default function MapExplorer() {
             {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" />}
             {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" />}
             {point && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point} />}
-            {activePoint && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} />}
+            {activePoint && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} 
+            eventHandlers={{
+              click: () => {
+                // Center view
+                if (mapInstance.current) {
+                  mapInstance.current.setView(activePoint, 18);
+                }
+              }
+            }}
+            />}
 
 
 
