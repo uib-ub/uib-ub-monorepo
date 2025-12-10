@@ -1082,7 +1082,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <PiMapPinFill className="text-accent-800 flex-shrink-0" aria-hidden="true" />
-                                    <span className="text-neutral-900 text-base font-medium">Koordinatar</span>
+                                    <span className="text-neutral-900 text-base font-medium">koordinater</span>
                                 </div>
                                 <ClickableIcon
                                     label="Fjern kjeldeavgrensing"

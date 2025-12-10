@@ -234,7 +234,7 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
                     <AlertDialogDescription>
                         Vel ønska format for nedlasting av data.
                         Du kan laste ned søket ditt som CSV, GeoJSON eller JSON, samt heile datasettet som JSON.
-                        Mer at treff utan koordinatar ikkje kjem med i GeoJSON-fila.
+                        Mer at treff utan koordinater ikkje kjem med i GeoJSON-fila.
 
                     </AlertDialogDescription>
                 </AlertDialogHeader>
