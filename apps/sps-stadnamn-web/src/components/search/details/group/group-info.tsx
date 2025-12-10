@@ -836,6 +836,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
 
         const seenTextIds = new Set<string>()
+        const seenIiifUuids = new Set<string>()
 
 
 
@@ -853,9 +854,9 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                     if (source.textId) seenTextIds.add(source.textId)
                 }
             }
-            if (source.iiif) {
+            if (source.iiif && (!source.uuid || !seenIiifUuids.has(source.iiif))) {
                 iiifItems.push(source)
-
+                if (source.uuid) seenIiifUuids.add(source.iiif)
             }
             if (source.recordings) {
                 audioItems.push(source)
