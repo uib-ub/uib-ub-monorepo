@@ -373,27 +373,37 @@ const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
 
         Object.entries(datasets).forEach(([_ds, sources]) => {
             sources.forEach((source: any) => {
-                if (!sourceMatchesFilter(source)) return
-
                 // Process labels and altLabels with source.year
+                // Only include if: (1) source has a year, (2) if activeYear is set, source.year matches, (3) if activeName is set, only add if this specific label matches
                 if (source?.year) {
-                    const pushName = (name: string | undefined) => {
-                        if (!name) return
-                        const y = String(source.year)
-                        filteredNameToYears[name] = filteredNameToYears[name] || new Set<string>()
-                        filteredNameToYears[name].add(y)
-                        filteredNameCounts[name] = (filteredNameCounts[name] || 0) + 1
-                    }
-                    pushName(source.label)
-                    if (Array.isArray(source?.altLabels)) {
-                        source.altLabels.forEach((alt: any) => pushName(typeof alt === 'string' ? alt : alt?.label))
+                    // Check if source.year matches activeYear filter
+                    const yearMatches = !activeYear || String(source.year) === activeYear
+                    if (yearMatches) {
+                        const pushName = (name: string | undefined) => {
+                            if (!name) return
+                            // If activeName is set, only add this name if it matches
+                            if (activeName && name !== activeName) return
+                            const y = String(source.year)
+                            filteredNameToYears[name] = filteredNameToYears[name] || new Set<string>()
+                            filteredNameToYears[name].add(y)
+                            filteredNameCounts[name] = (filteredNameCounts[name] || 0) + 1
+                        }
+                        pushName(source.label)
+                        if (Array.isArray(source?.altLabels)) {
+                            source.altLabels.forEach((alt: any) => pushName(typeof alt === 'string' ? alt : alt?.label))
+                        }
                     }
                 }
 
                 // Process attestations with their own year
+                // Only include if: (1) attestation has label and year, (2) if activeName is set, attestation.label matches, (3) if activeYear is set, attestation.year matches
                 if (Array.isArray(source?.attestations)) {
                     source.attestations.forEach((att: any) => {
                         if (!att?.label) return
+                        // If activeName is set, only add this attestation if its label matches
+                        if (activeName && att.label !== activeName) return
+                        // If activeYear is set, only add if this attestation's year matches
+                        if (activeYear && String(att?.year) !== activeYear) return
                         const y = att?.year != null ? String(att.year) : null
                         if (!y) return
                         filteredNameToYears[att.label] = filteredNameToYears[att.label] || new Set<string>()
@@ -482,8 +492,25 @@ const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
         <div className="flex flex-col gap-3 py-2">
 
             <div role="group" aria-label="Filtrer på år og namneformer">
+                {/* Active filter display */}
+                {hasActiveFilter && (
+                    <div className="flex items-center gap-3 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg mb-3">
+                        <strong className="text-neutral-900 text-base">
+                            {activeYear ? `År: ${activeYear}` : activeName ? `Namneform: ${activeName}` : ''}
+                        </strong>
+                        <ClickableIcon
+                            label="Fjern kjeldeavgrensing"
+                            replace
+                            remove={['activeYear', 'activeName']}
+                            className="ml-auto text-accent-800 hover:text-accent-900 underline underline-offset-2 font-medium transition-colors"
+                        >
+                            <PiX className="text-neutral-800" />
+                        </ClickableIcon>
+                    </div>
+                )}
+
                 {/* Vertical Timeline */}
-                {visibleYearItems.length > 0 && (
+                {visibleYearItems.length > 0 && !activeYear && (
                     <ul className="relative !mx-2 !px-0 p-2" role="list">
                         {visibleYearItems.map((item, index) => {
                             const isYearSelected = activeYear === item.year
@@ -532,7 +559,7 @@ const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
                                             </Clickable>
 
                                             {/* Name variants for this year - on same line */}
-                                            {item.names.length > 0 && (
+                                            {item.names.length > 0 && !activeName && (
                                                 <>
                                                     {item.names.map((nameKey) => {
                                                         const isNameSelected = activeName === nameKey
@@ -600,7 +627,7 @@ const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
                 )}
 
                 {/* Names without year */}
-                {visibleItems.filter(item => item.type === 'noYear').length > 0 && (
+                {visibleItems.filter(item => item.type === 'noYear').length > 0 && !activeName && (
                     <div className="mt-4 pt-4 border-t border-neutral-200">
                         <div className="text-sm font-medium text-neutral-700 mb-2">Namneformer utan år</div>
                         <div className="flex flex-wrap gap-2">
@@ -629,23 +656,6 @@ const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
                     </div>
                 )}
             </div>
-
-            {/* Active filter display */}
-            {hasActiveFilter && (
-                <div className="flex items-center gap-3 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg">
-                    <strong className="text-neutral-900 text-base">
-                        {activeYear ? `År: ${activeYear}` : activeName ? `Namneform: ${activeName}` : ''}
-                    </strong>
-                    <ClickableIcon
-                        label="Fjern kjeldeavgrensing"
-                        replace
-                        remove={['activeYear', 'activeName']}
-                        className="ml-auto text-accent-800 hover:text-accent-900 underline underline-offset-2 font-medium transition-colors"
-                    >
-                        <PiX className="text-neutral-800" />
-                    </ClickableIcon>
-                </div>
-            )}
 
         </div>
     )
