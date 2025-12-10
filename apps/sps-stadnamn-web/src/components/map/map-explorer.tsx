@@ -847,12 +847,21 @@ export default function MapExplorer() {
                 // Only show lines and dots if there are multiple coordinates
                 if (uniqueCoordinates.size < 2) return null;
 
+                // Create a set of unique coordinates for rendering
+                const coordinatesToRender = new Set<string>();
+                initGroupData.sources.forEach((source: Record<string, any>) => {
+                  if (source?.location?.coordinates?.length === 2) {
+                    const lat = source.location.coordinates[1];
+                    const lng = source.location.coordinates[0];
+                    coordinatesToRender.add(`${lat},${lng}`);
+                  }
+                });
+
                 return (
                   <>
-                    {/* Other source markers and connecting lines */}
+                    {/* Render all lines first (so they appear behind) */}
                     {initGroupData.sources.map((source: Record<string, any>, index: number) => {
                       if (!source?.location?.coordinates?.length) {
-                        console.log("NO MARKERS", source?.location)
                         return null;
                       }
                       const lat = source.location.coordinates[1];
@@ -860,48 +869,58 @@ export default function MapExplorer() {
 
                       const isCentral = centralLat === lat && centralLng === lng;
 
+                      // Only render line if not central
+                      if (isCentral) return null;
+
+                      return (
+                        <Polyline
+                          key={`line-${index}`}
+                          positions={[[lat, lng], [centralLat, centralLng]]}
+                          pathOptions={{
+                            color: '#000000',
+                            weight: 3,
+                            opacity: 0.5
+                          }}
+                        />
+                      );
+                    })}
+                    {/* Render all dots after lines (so they appear on top) */}
+                    {initGroupData.sources.map((source: Record<string, any>, index: number) => {
+                      if (!source?.location?.coordinates?.length) {
+                        return null;
+                      }
+                      const lat = source.location.coordinates[1];
+                      const lng = source.location.coordinates[0];
+
                       // Create a unique key for this coordinate
                       const coordKey = `${lat},${lng}`;
 
                       // Skip if we've already rendered this coordinate (remove from set as we render)
-                      if (!uniqueCoordinates.has(coordKey)) {
+                      if (!coordinatesToRender.has(coordKey)) {
                         return null;
                       }
 
                       // Remove from set so we only render each unique coordinate once
-                      uniqueCoordinates.delete(coordKey);
+                      coordinatesToRender.delete(coordKey);
 
                       return (
-                        <Fragment key={`location-marker-${index}`}>
-                          {/* Line connecting source to central coordinate (skip self-line) */}
-                          {!isCentral && (
-                            <Polyline
-                              positions={[[lat, lng], [centralLat, centralLng]]}
-                              pathOptions={{
-                                color: '#000000',
-                                weight: 3,
-                                opacity: 0.25
-                              }}
-                            />
-                          )}
-                          {/* Source marker */}
-                          <CircleMarker
-                            center={[lat, lng]}
-                            radius={6}
-                            weight={1}
-                            opacity={1}
-                            fillOpacity={1}
-                            color="#000000"
-                            fillColor="#000000"
-                            eventHandlers={{
-                              click: () => {
-                                const newParams = new URLSearchParams(searchParams);
-                                newParams.set('activePoint', `${lat},${lng}`);
-                                router.push(`?${newParams.toString()}`);
-                              }
-                            }}
-                          />
-                        </Fragment>
+                        <CircleMarker
+                          key={`marker-${index}`}
+                          center={[lat, lng]}
+                          radius={6}
+                          weight={2}
+                          opacity={1}
+                          fillOpacity={1}
+                          color="#000000"
+                          fillColor="white"
+                          eventHandlers={{
+                            click: () => {
+                              const newParams = new URLSearchParams(searchParams);
+                              newParams.set('activePoint', `${lat},${lng}`);
+                              router.push(`?${newParams.toString()}`);
+                            }
+                          }}
+                        />
                       );
                     })}
                   </>
