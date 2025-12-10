@@ -22,7 +22,7 @@
     "jspdf": "3.0.3",
     "jszip": "3.10.1",
     "leaflet": "1.9.4",
-    "next": "15.5.7",
+    "next": "15.4.8",
     "next-mdx-remote": "5.0.0",
     "next-plausible": "3.12.5",
     "openseadragon": "5.0.1",

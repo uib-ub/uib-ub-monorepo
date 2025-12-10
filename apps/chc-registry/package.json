@@ -38,7 +38,7 @@
     "jotai": "2.13.1",
     "lucide-react": "0.510.0",
     "motion": "12.23.21",
-    "next": "16.0.7",
+    "next": "15.4.8",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-resizable-panels": "3.0.6",
