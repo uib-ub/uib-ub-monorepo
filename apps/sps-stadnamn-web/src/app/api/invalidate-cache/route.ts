@@ -2,7 +2,8 @@ import { revalidateTag } from "next/cache";
 
 export async function GET(request: Request) {
     // Check for API token in Authorization header
-    if (process.env.NODE_ENV != 'development') {
+    // Only require auth in production (not in preview or development)
+    if (process.env.VERCEL_ENV === 'production') {
         const authHeader = request.headers.get('authorization');
         const expectedToken = process.env.STADNAMN_CACHE_TOKEN;
 
