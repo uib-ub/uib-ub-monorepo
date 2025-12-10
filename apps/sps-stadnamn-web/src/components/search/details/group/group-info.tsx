@@ -433,6 +433,12 @@ const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
                         filteredNamesByYear[year].push(name)
                     }
                 })
+            } else if (activeYear && years.includes(activeYear)) {
+                // If a year is active, show names under that year (even if it's not their earliest)
+                filteredNamesByYear[activeYear] = filteredNamesByYear[activeYear] || []
+                if (!filteredNamesByYear[activeYear].includes(name)) {
+                    filteredNamesByYear[activeYear].push(name)
+                }
             } else {
                 // For other names, group by earliest year (normal behavior)
                 const numeric = years
@@ -487,6 +493,30 @@ const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
     const hiddenYearItemsCount = allYearItems.length - visibleYearItems.length
 
     if (allItems.length === 0) return null
+    
+    // Determine if we should show filter options (timeline, name buttons)
+    // Hide filter options if there's only one filter option total
+    let shouldShowFilterOptions = true
+    
+    // Check if there's one year with one name (and no names without year)
+    if (filteredYearsOrdered.length === 1 && filteredNamesWithoutYear.length === 0) {
+        const yearNames = filteredNamesByYear[filteredYearsOrdered[0]] || []
+        if (yearNames.length === 1) {
+            shouldShowFilterOptions = false
+        }
+    }
+    // Check if there's one name without year (and no years)
+    if (filteredYearsOrdered.length === 0 && filteredNamesWithoutYear.length === 1) {
+        shouldShowFilterOptions = false
+    }
+    // When a name is selected, check if there's only one year remaining
+    if (activeName && !activeYear && filteredYearsOrdered.length === 1 && filteredNamesWithoutYear.length === 0) {
+        shouldShowFilterOptions = false
+    }
+    // When a year is selected, check if there's only one name remaining
+    if (activeYear && !activeName && filteredNamesByYear[activeYear] && filteredNamesByYear[activeYear].length === 1) {
+        shouldShowFilterOptions = false
+    }
 
     return (
         <div className="flex flex-col gap-3 py-2">
@@ -510,7 +540,7 @@ const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
                 )}
 
                 {/* Vertical Timeline */}
-                {visibleYearItems.length > 0 && !activeYear && (
+                {shouldShowFilterOptions && visibleYearItems.length > 0 && !activeYear && (
                     <ul className="relative !mx-2 !px-0 p-2" role="list">
                         {visibleYearItems.map((item, index) => {
                             const isYearSelected = activeYear === item.year
@@ -626,8 +656,27 @@ const NamesSection = ({ datasets }: { datasets: Record<string, any[]> }) => {
                     </ul>
                 )}
 
+                {/* Names for selected year (when year is active, show names without timeline) */}
+                {shouldShowFilterOptions && activeYear && !activeName && filteredNamesByYear[activeYear] && filteredNamesByYear[activeYear].length > 1 && (
+                    <div className="flex flex-wrap gap-2">
+                        {filteredNamesByYear[activeYear].map((nameKey) => {
+                            return (
+                                <Clickable
+                                    key={nameKey}
+                                    replace
+                                    add={{ activeName: nameKey }}
+                                    remove={['activeYear']}
+                                    className="flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
+                                >
+                                    {nameKey}
+                                </Clickable>
+                            )
+                        })}
+                    </div>
+                )}
+
                 {/* Names without year */}
-                {visibleItems.filter(item => item.type === 'noYear').length > 0 && !activeName && (
+                {shouldShowFilterOptions && visibleItems.filter(item => item.type === 'noYear').length > 0 && !activeName && (
                     <div className="mt-4 pt-4 border-t border-neutral-200">
                         <div className="text-sm font-medium text-neutral-700 mb-2">Namneformer utan år</div>
                         <div className="flex flex-wrap gap-2">
@@ -870,6 +919,21 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             namesByYear[earliest].push(name)
         })
         const yearsOrdered = Object.keys(namesByYear)
+        const totalUniqueNames = Object.keys(nameToYears).length
+        const totalYears = yearsOrdered.length
+        
+        // Don't show filter if there's only one filter option total
+        // (one year and one name, or one name with no years, or one year with no names)
+        if (totalYears === 1 && totalUniqueNames === 1) {
+            return false
+        }
+        if (totalYears === 0 && totalUniqueNames === 1) {
+            return false
+        }
+        if (totalYears === 1 && totalUniqueNames === 0) {
+            return false
+        }
+        
         return (yearsOrdered.length > 1) || (namesWithoutYear.length > 0)
     }, [datasets])
 
