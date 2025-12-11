@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "5.91.2",
-    "@types/leaflet": "1.9.20",
+    "@types/leaflet": "1.9.21",
     "@types/mdx": "2.0.13",
     "@types/node": "22.19.1",
     "@types/openseadragon": "3.0.10",
