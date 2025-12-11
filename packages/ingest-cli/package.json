@@ -28,7 +28,7 @@
     "@types/pretty-time": "^1.1.5",
     "@types/sparql-http-client": "^3.0.5",
     "eslint-config": "*",
-    "type-fest": "^4.10.1",
+    "type-fest": "^5.3.1",
     "typescript": "^5.9.2",
     "typescript-config": "*",
     "vitest": "^1.2.1"
