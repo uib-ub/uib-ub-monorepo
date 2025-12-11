@@ -21,7 +21,7 @@
     "@nuxt/icon": "1.15.0",
     "@nuxtjs/sanity": "1.13.3",
     "@nuxtjs/tailwindcss": "7.0.0-beta.1",
-    "@sanity/client": "7.12.0",
+    "@sanity/client": "7.13.2",
     "@sanity/vision": "3.99.0",
     "@seidhr/sanity-plugin-timespan-input": "4.0.3",
     "@sidebase/nuxt-auth": "1.1.0",
