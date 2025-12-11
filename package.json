@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.25.2",
-    "lint-staged": "^13.1.2",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.0.3",
     "turbo": "^2.5.5"
   },
