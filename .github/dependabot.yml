@@ -1,0 +1,14 @@
+# All PRs created by dependabot failed.
+# Adding versioning-strategy: increase might fix it.
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "05:00"
+      timezone: "Europe/Oslo"
+    versioning-strategy: increase
+    open-pull-requests-limit: 20
