@@ -29,7 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     
     const datasets = Object.keys(datasetTitles).map((dataset) => {
         return {
-            url: `https://stadnamn.no/info/datasets/${dataset}`,
+            url: `https://stadnamn.no/info/datasets/${dataset.split('_')[0]}`,
             priority: ["ssr", "ssr2016", "geonames", "wikidata"].includes(dataset) ? 0.5 : 0.9,
 
         }

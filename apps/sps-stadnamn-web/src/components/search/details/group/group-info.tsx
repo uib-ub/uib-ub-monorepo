@@ -167,7 +167,7 @@ const SourcesTab = ({ datasets, isFiltered, isInitGroup }: { datasets: Record<st
                         {searchParams.getAll('dataset').length != 1 && <div className="flex items-center gap-2 text-neutral-800 uppercase traciking-wider">
                             {datasetTitles[ds] || ds}
                             <ClickableIcon
-                                href={`/info/datasets/${ds}`}
+                                href={`/info/datasets/${ds.split('_')[0]}`}
                                 className="flex items-center"
                                 label="Om datasettet"
                             >
