@@ -23,22 +23,22 @@
             placement="main"
           />
           <main class="grow">
-            <div class="mb-2 mt-3 flex justify-between">
-              <div class="flex space-x-6 text-2xl">
-                <h2
-                  id="main"
-                  class="ml-0.5"
-                >
+            <div class="ml-0.5 mb-2 mt-3 flex justify-between text-2xl">
+              <div class="flex space-x-4">
+                <h2 id="main">
                   <AppLink to="#main">
                     {{ $t("searchFilter.results-heading") }}
                   </AppLink>
                 </h2>
                 <UtilsTransitionOpacity>
-                  <IconSpinner
+                  <div
                     v-if="searchDataPending.entries"
-                    size="0.8em"
-                    class="mt-0.5"
-                  />
+                    role="status"
+                    class="mt-[1px]"
+                    :aria-label="$t('spinnerIcon.srText')"
+                  >
+                    <IconSpinner size="0.8em" />
+                  </div>
                 </UtilsTransitionOpacity>
               </div>
               <div class="flex items-end text-lg">
