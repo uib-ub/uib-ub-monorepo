@@ -11,7 +11,7 @@ export default function FileCard({ item, itemDataset, currentItem }: { item: any
     const canvasCount = item?.images?.length
     const image = item?.images?.[0].uuid
     const type = item?.type
-    const thumbnail = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${itemDataset.toUpperCase()}/${image}/0,0,${canvasWidth},${Math.round(canvasWidth * aspectRatio)}/${width * 2},${height * 2}/0/default.tif`
+    const thumbnail = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${itemDataset.toUpperCase()}/${image}/0,0,${canvasWidth},${Math.round(canvasWidth * aspectRatio)}/${width * 2},${height * 2}/0/default.jpg`
 
     return <Link
         href={`/iiif/${item.uuid}`}

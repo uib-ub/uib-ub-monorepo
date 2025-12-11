@@ -20,7 +20,7 @@ async function fetchManifest(iiif: string | string[], imgIndex: number, width: n
     const manifestType = source.type
     const outputWidth = width * 2
     const outputHeight = Math.round(outputWidth * (9 / 16))
-    const thumbnailUrl = manifestType === 'Collection' || !source.images?.[0] ? null : `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${source.images[0].uuid}/0,0,${source.images[0].width},${Math.round(source.images[0].width * aspectRatio)}/${outputWidth},${outputHeight}/0/default.tif`
+    const thumbnailUrl = manifestType === 'Collection' || !source.images?.[0] ? null : `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${source.images[0].uuid}/0,0,${source.images[0].width},${Math.round(source.images[0].width * aspectRatio)}/${outputWidth},${outputHeight}/0/default.jpg`
     return {
         thumbnailUrl,
         manifestUuid: source.uuid,
