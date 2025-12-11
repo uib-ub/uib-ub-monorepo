@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const manifestUrl = slug?.[0] ? `${baseUrl}/iiif/${iiifType}/${slug[0]}` : undefined
     const firstImageUuid = manifest?.images?.[0]?.uuid
     const firstImageUrl = firstImageUuid && manifestDataset
-        ? `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${firstImageUuid}/full/max/0/default.jpg`
+        ? `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${firstImageUuid}/full/max/0/default.tif`
         : undefined
 
     const label = manifest?.label ? resolveLanguage(manifest.label) : undefined

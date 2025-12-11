@@ -83,7 +83,7 @@ export default function IIIFDownloader({ job, onDone }: { job: ViewerJob | Colle
 }
 
 function imageUrl(dataset: string, uuid: string) {
-  return `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${uuid}/full/max/0/default.jpg`
+  return `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${uuid}/full/max/0/default.tif`
 }
 
 function arrayBufferToBase64(ab: ArrayBuffer) {

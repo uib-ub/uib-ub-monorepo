@@ -42,7 +42,7 @@ export async function GET(request: Request) {
 
                 for (let i = 0; i < images.length; i++) {
                     const img = images[i];
-                    const imageUrl = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${itemDataset.toUpperCase()}/${img.uuid}/full/max/0/default.jpg`;
+                    const imageUrl = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${itemDataset.toUpperCase()}/${img.uuid}/full/max/0/default.tif`;
                     const resp = await fetch(imageUrl);
                     if (!resp.ok) continue;
                     const buffer = await resp.arrayBuffer();
@@ -73,7 +73,7 @@ export async function GET(request: Request) {
                 const manifestName = resolveLanguage(hit._source?.label) || hit._source?.uuid || 'manifest';
 
                 const addImageToPdf = async (canvas: any, pageIndex: number, pdf: jsPDF) => {
-                    const imageUrl = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${itemDataset.toUpperCase()}/${canvas.uuid}/full/max/0/default.jpg`;
+                    const imageUrl = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${itemDataset.toUpperCase()}/${canvas.uuid}/full/max/0/default.tif`;
                     const response = await fetch(imageUrl);
                     if (!response.ok) return;
                     const arrayBuffer = await response.arrayBuffer();
@@ -132,7 +132,7 @@ export async function GET(request: Request) {
             pageIndex: number,
             pdf: jsPDF
         ) => {
-            const imageUrl = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${canvas.dataset.toUpperCase()}/${canvas.uuid}/full/max/0/default.jpg`;
+            const imageUrl = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${canvas.dataset.toUpperCase()}/${canvas.uuid}/full/max/0/default.tif`;
             const response = await fetch(imageUrl);
             if (!response.ok) {
                 throw new Error(`Failed to fetch image: ${response.statusText}\n${imageUrl}`);
@@ -195,7 +195,7 @@ export async function GET(request: Request) {
     if (wantsPDF) {
         // Function to load image and add to PDF
         const addImageToPdf = async (canvas: any, pageIndex: number, pdf: jsPDF) => {
-            const imageUrl = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${canvas.uuid}/full/max/0/default.jpg`;
+            const imageUrl = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${canvas.uuid}/full/max/0/default.tif`;
             const response = await fetch(imageUrl);
             if (!response.ok) {
                 throw new Error(`Failed to fetch image: ${response.statusText}\n${imageUrl}\n${JSON.stringify(canvas)}`);
@@ -240,7 +240,7 @@ export async function GET(request: Request) {
         });
     } else {
         // Handle single image download as JPG
-        const imageUrl = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${selectedCanvases[0].uuid}/full/max/0/default.jpg`;
+        const imageUrl = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${selectedCanvases[0].uuid}/full/max/0/default.tif`;
         const response = await fetch(imageUrl);
         if (!response.ok) {
             return Response.json({ error: `Failed to fetch image: ${response.statusText}\n${imageUrl}` }, { status: 500 });

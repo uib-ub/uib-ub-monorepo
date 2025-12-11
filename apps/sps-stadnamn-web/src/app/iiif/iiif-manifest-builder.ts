@@ -39,7 +39,7 @@ function buildAnnotation(image: any, manifestDataset: string, baseUrl: string) {
     "motivation": "painting",
     "target": `${baseUrl}/iiif/canvas/${image.canvasUuid}`,
     "body": {
-      "id": `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${image.uuid}/full/max/0/default.jpg`,
+      "id": `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${image.uuid}/full/max/0/default.tif`,
       "type": "Image",
       "height": image.height,
       "width": image.width,

@@ -15,7 +15,7 @@ export default async function Thumbnail({ manifestId, dataset }: { manifestId: s
         const baseUrl = data?.thumbnail?.[0]?.id.split('/full/')[0]
 
         console.log("ID", JSON.stringify(data?.thumbnail, null, 2))
-        const newThumbnailUrl = `${baseUrl}/full/${newWidth},${height}/0/default.jpg`
+        const newThumbnailUrl = `${baseUrl}/full/${newWidth},${height}/0/default.tif`
         console.log("NEW", newThumbnailUrl)
 
 
