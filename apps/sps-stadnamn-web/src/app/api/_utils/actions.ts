@@ -1,7 +1,7 @@
+import 'server-only'
 import { postQuery } from './post'
 
 export async function fetchDoc(params: { uuid: string | string[], dataset?: string }) {
-    'use server'
     const { uuid, dataset } = params
     // TODO: use the same variable name in prod and test
     const endpoint = process.env.STADNAMN_ES_ENDPOINT
@@ -50,7 +50,6 @@ export async function fetchDoc(params: { uuid: string | string[], dataset?: stri
 }
 
 export async function fetchIIFSuppage(params: { suppageType: string, suppageId: string }) {
-    'use server'
     const { suppageType, suppageId } = params
 
     // Determine the correct field to query based on suppageType
@@ -83,7 +82,6 @@ export async function fetchIIFSuppage(params: { suppageType: string, suppageId: 
 }
 
 export async function fetchIIFDocByIndex(params: { partOf: string, order: string }) {
-    'use server'
     const { partOf, order } = params
     const query = {
         size: 1,
@@ -107,7 +105,6 @@ export async function fetchIIFDocByIndex(params: { partOf: string, order: string
 }
 
 export async function fetchSOSI(params: { sosiCode: string }) {
-    'use server'
     const { sosiCode } = params
 
     const query = {
@@ -127,7 +124,6 @@ export async function fetchSOSI(params: { sosiCode: string }) {
 }
 
 export async function fetchVocab() {
-    'use server'
     const query = {
         query: {
             match_all: {}
@@ -157,7 +153,6 @@ export async function fetchVocab() {
 
 // Fetch children of a document in the same index (documents that have the uuid as the value in "within" field)
 export async function fetchCadastralSubunits(dataset: string, uuid: string, fields: string[], sortFields: string[]) {
-    'use server'
     const query = {
         size: 1000,
         query: {

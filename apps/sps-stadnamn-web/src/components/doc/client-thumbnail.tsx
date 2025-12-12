@@ -48,7 +48,14 @@ export default function ClientThumbnail({ iiif, datasetLabel }: { iiif: string |
         {manifestLoading ? (
             <div className="w-full aspect-[16/9] bg-neutral-200 animate-pulse border border-neutral-200"></div>
         ) : manifestUuid && (
-            <Link href={"/iiif/" + manifestUuid} className="w-full h-full relative border border-neutral-200 flex flex-col items-center justify-center bg-neutral-50 p-2 gap-1 no-underline">
+            <Link
+                href={"/iiif/" + manifestUuid}
+                className={
+                    manifestType === 'Collection'
+                        ? "w-full h-full relative border border-neutral-200 flex flex-col items-center justify-center bg-neutral-50 p-2 gap-1 no-underline"
+                        : "w-full h-full relative border border-neutral-200 bg-neutral-50 overflow-hidden no-underline"
+                }
+            >
                 {manifestType === 'Collection' ? (
                     <>
                         <PiArchiveThin aria-hidden="true" className="w-16 h-16 md:w-24 md:h-24 text-neutral-800" />
@@ -60,7 +67,8 @@ export default function ClientThumbnail({ iiif, datasetLabel }: { iiif: string |
                     <img
                         src={thumbnailUrl || "/"}
                         alt="Seddel"
-                        className="object-contain w-full h-full"
+                        // Fill width and let height overflow; container clips the bottom.
+                        className="block w-full h-auto"
                     />
                 )}
             </Link>

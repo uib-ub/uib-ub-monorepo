@@ -17,6 +17,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: '**.spraksamlingane.no',
+      },
+      {
+        protocol: 'https',
         hostname: 'iiif.io',
       }
     ],

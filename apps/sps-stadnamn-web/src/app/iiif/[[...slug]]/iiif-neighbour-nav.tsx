@@ -14,6 +14,7 @@ import { RoundIconButton } from "@/components/ui/clickable/round-icon-button";
 import IconLink from "@/components/ui/icon-link";
 import { useIIIFSessionStore } from '@/state/zustand/iiif-session-store';
 import dynamic from 'next/dynamic';
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { PiArrowElbowLeftUpBold, PiCaretLeftBold, PiCaretLineLeftBold, PiCaretLineRightBold, PiCaretRightBold, PiDotsThreeBold, PiDownloadSimpleBold, PiX, PiXBold } from "react-icons/pi";
 import { resolveLanguage } from '../iiif-utils';
@@ -26,8 +27,10 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
     const isCollection = manifest?.type === 'Collection'
     const [isDownloading, setIsDownloading] = useState(false)
     const [downloaderJob, setDownloaderJob] = useState<any | null>(null)
+    const [isNavigating, setIsNavigating] = useState(false)
     const navOpen = useIIIFSessionStore((s) => s.navOpen)
     const setNavOpen = useIIIFSessionStore((s) => s.setNavOpen)
+    const router = useRouter()
 
     if (!manifest) return null
 
@@ -58,6 +61,26 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
         }
     };
 
+    const handleNeighbourNav = async (e: React.MouseEvent, order: number) => {
+        // Keep the link semantics (href) but do client-side navigation without a server redirect,
+        // so the explorer doesn't hard-reload.
+        e.preventDefault()
+        if (isNavigating) return
+        if (!manifest?.partOf) return
+
+        try {
+            setIsNavigating(true)
+            const res = await fetch(`/api/iiif/redirect-by-index?partOf=${encodeURIComponent(manifest.partOf)}&order=${encodeURIComponent(String(order))}`)
+            if (!res.ok) return
+            const data = await res.json()
+            if (data?.uuid) {
+                router.push(`/iiif/${data.uuid}`)
+            }
+        } finally {
+            setIsNavigating(false)
+        }
+    }
+
     return (
         <>
             <nav className={`flex items-center gap-2 ${manifest.type == 'Manifest' ? `absolute top-14 ${isMobile ? 'left-0' : 'left-[20svw]'} m-2` : ''}`}>
@@ -81,7 +104,10 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
                                 {manifest.parentLength > 3 && <IconLink
                                     label="Første element i samlinga"
                                     className="rounded-full p-1 xl:p-2"
-                                    href={`/iiif/${manifest.partOf}/1`}                        >
+                                    href={`/iiif/${manifest.partOf}/1`}
+                                    prefetch={false}
+                                    onClick={(e: React.MouseEvent) => handleNeighbourNav(e, 1)}
+                                >
                                     <PiCaretLineLeftBold className="text-xl xl:text-base" />
                                 </IconLink>}
 
@@ -91,6 +117,8 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
                                     className="rounded-full p-1 xl:p-2"
                                     label="Forrige element i samlinga"
                                     href={`/iiif/${manifest.partOf}/${Math.max(manifest.order - 1, 1)}`}
+                                    prefetch={false}
+                                    onClick={(e: React.MouseEvent) => handleNeighbourNav(e, Math.max(manifest.order - 1, 1))}
                                 >
                                     <PiCaretLeftBold className="text-xl xl:text-base" />
                                 </IconLink>
@@ -106,6 +134,8 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
                                     label="Neste element i samlinga"
                                     className="rounded-full p-1 xl:p-2"
                                     href={`/iiif/${manifest.partOf}/${Math.min(manifest.order + 1, manifest.parentLength)}`}
+                                    prefetch={false}
+                                    onClick={(e: React.MouseEvent) => handleNeighbourNav(e, Math.min(manifest.order + 1, manifest.parentLength))}
                                 >
                                     <PiCaretRightBold className="text-xl xl:text-base" />
                                 </IconLink>
@@ -116,6 +146,8 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
                                     className="rounded-full p-1 xl:p-2"
                                     label="Siste element i samlinga"
                                     href={`/iiif/${manifest.partOf}/${manifest.parentLength}`}
+                                    prefetch={false}
+                                    onClick={(e: React.MouseEvent) => handleNeighbourNav(e, manifest.parentLength)}
                                 >
                                     <PiCaretLineRightBold className="text-xl xl:text-base" />
                                 </IconLink>}

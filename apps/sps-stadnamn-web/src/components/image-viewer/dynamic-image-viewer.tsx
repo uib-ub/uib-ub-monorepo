@@ -8,70 +8,142 @@ import ErrorMessage from '../error-message';
 import { RoundIconButton } from '../ui/clickable/round-icon-button';
 import IconButton from '../ui/icon-button';
 
+const IIIF_ORIGIN = 'https://iiif.spraksamlingane.no';
+const IIIF_IMAGE_PATH_PREFIX = '/iiif/image/stadnamn/';
+
+function assertAllowedIiifUrl(url: URL) {
+  if (url.origin !== IIIF_ORIGIN) throw new Error(`Disallowed IIIF origin: ${url.origin}`);
+  if (!url.pathname.startsWith(IIIF_IMAGE_PATH_PREFIX)) {
+    throw new Error(`Disallowed IIIF path: ${url.pathname}`);
+  }
+}
+
 const DynamicImageViewer = ({ images, manifestDataset, manifestId }: { images: Record<string, any>[], manifestDataset: string, manifestId: string }) => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
   const viewer = useRef<OpenSeadragon.Viewer | null>(null);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [error, setError] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const pendingLoadRef = useRef(false);
+  const expectedPageRef = useRef<number | null>(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const currentPosition = useIIIFSessionStore((s) => s.currentPosition)
   const snappedPosition = useIIIFSessionStore((s) => s.snappedPosition)
   const drawerOpen = useIIIFSessionStore((s) => s.drawerOpen)
   const { isMobile } = useContext(GlobalContext)
 
+  const beginLoading = useCallback((expectedPage?: number) => {
+    pendingLoadRef.current = true;
+    if (typeof expectedPage === 'number') {
+      expectedPageRef.current = expectedPage;
+    }
+    setIsLoading(true);
+    setError(null);
+  }, []);
+
+  const finishLoading = useCallback(() => {
+    if (!pendingLoadRef.current) return;
+    pendingLoadRef.current = false;
+    setIsLoading(false);
+  }, []);
+
+  // Clean up OpenSeadragon on unmount to avoid leaking WebGL contexts.
+  useEffect(() => {
+    return () => {
+      try {
+        viewer.current?.destroy();
+      } catch {
+        // ignore cleanup errors
+      } finally {
+        viewer.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
 
-    //setIsLoading(true);
     // TODO: create api route that generates manifest from elasticsearch index  
+    beginLoading(0);
     setCurrentPage(0)
 
-    const tileSources = images.map((image: any) => {
-      return {
-        "@context": "http://iiif.io/api/image/2/context.json",
-        "@id": `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${manifestDataset.toUpperCase()}/${image.uuid}`,
-        "height": image.height,
-        "width": image.width,
-        "profile": ["http://iiif.io/api/image/2/level2.json"],
-        "protocol": "http://iiif.io/api/image"
-      };
-    });
+    try {
+      const dataset = manifestDataset.toUpperCase();
+      const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!/^[A-Z0-9_-]+$/.test(dataset)) throw new Error(`Invalid dataset: ${manifestDataset}`);
 
-    setNumberOfPages(tileSources.length);
+      const tileSources = images.map((image: any) => {
+        const uuid = String(image.uuid || '');
+        if (!uuidRe.test(uuid)) throw new Error(`Invalid image uuid: ${uuid}`);
 
-    if (!viewer.current) {
-      viewer.current = OpenSeadragon({
-        id: "openseadragon-viewer",
-        prefixUrl: "path/to/openseadragon/images/",
-        maxZoomPixelRatio: 3.0,
-        showNavigationControl: false,
-        showSequenceControl: false,
-        sequenceMode: true,
-        tileSources: tileSources as any
+        const iiifId = new URL(`/iiif/image/stadnamn/${dataset}/${uuid}`, 'https://iiif.spraksamlingane.no');
+        assertAllowedIiifUrl(iiifId);
+
+        return {
+          "@context": "http://iiif.io/api/image/2/context.json",
+          "@id": iiifId.toString(),
+          "height": image.height,
+          "width": image.width,
+          "profile": ["http://iiif.io/api/image/2/level2.json"],
+          "protocol": "http://iiif.io/api/image"
+        };
       });
 
-      viewer.current.addHandler('tile-load-failed', function (event) {
-        // Log the error to the console
-        //console.log(event)
-        setError("TILE_LOAD_FAILED")
+      setNumberOfPages(tileSources.length);
 
-        //setError({message: event.message, tile: event.tile, code: event.});
+      if (!viewer.current) {
+        viewer.current = OpenSeadragon({
+          id: "openseadragon-viewer",
+          prefixUrl: "path/to/openseadragon/images/",
+          maxZoomPixelRatio: 3.0,
+          showNavigationControl: false,
+          showSequenceControl: false,
+          sequenceMode: true,
+          // Helps WebGL/canvas use the tiles safely *if* the IIIF server sends CORS headers.
+          crossOriginPolicy: 'Anonymous',
+          tileSources: tileSources as any
+        });
 
-        // Optional: Handle the error, e.g., by displaying a custom error message to the user
-        // or attempting to load a placeholder image.
-      });
+        viewer.current.addHandler('tile-load-failed', function () {
+          setError("TILE_LOAD_FAILED")
+          pendingLoadRef.current = false;
+          setIsLoading(false);
 
-      viewer.current.addHandler('page', function (event: { page: React.SetStateAction<number>; }) {
-        setCurrentPage(event.page);
-      });
+          //setError({message: event.message, tile: event.tile, code: event.});
 
-    } else {
-      viewer.current.open(tileSources);
-      viewer.current.viewport.goHome();
+          // Optional: Handle the error, e.g., by displaying a custom error message to the user
+          // or attempting to load a placeholder image.
+        });
+
+        viewer.current.addHandler('page', function (event: { page: number; }) {
+          beginLoading(event.page);
+          setCurrentPage(event.page);
+        });
+
+        // WebGLDrawer doesn't raise `tile-drawn`; use first `tile-loaded` for the requested page instead.
+        viewer.current.addHandler('tile-loaded', function () {
+          const expectedPage = expectedPageRef.current;
+          const current = (viewer.current as any)?.currentPage?.();
+
+          if (typeof expectedPage === 'number' && typeof current === 'number' && expectedPage !== current) {
+            return;
+          }
+
+          finishLoading();
+        });
+
+      } else {
+        beginLoading(0);
+        viewer.current.open(tileSources);
+        viewer.current.viewport.goHome();
+      }
+    } catch (e: any) {
+      setError(e?.message || 'INVALID_IIIF_SOURCE');
+      pendingLoadRef.current = false;
+      setIsLoading(false);
     }
 
-  }, [images, manifestDataset, manifestId]);
+  }, [beginLoading, finishLoading, images, manifestDataset, manifestId]);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -125,14 +197,22 @@ const DynamicImageViewer = ({ images, manifestDataset, manifestId }: { images: R
     }
   };
 
+  const handleGoToPage = (page: number) => {
+    if (!viewer.current) return;
+    beginLoading(page);
+    viewer.current.goToPage(page);
+  };
 
 
   return (
     <div className='w-full h-full relative'>
-      {error ? <div className="pt-10"><ErrorMessage error={{ error }} message="Kunne ikke laste bildet" /></div> : !viewerRef.current ?
-        <div className='absolute top-0 left-0 w-full h-full text-white bg-opacity-50 flex items-center justify-center z-[1000]'><Spinner status="Lastar inn bilde" className='w-20 h-20' /></div>
-        : null
-      }
+      {error ? (
+        <div className="pt-10"><ErrorMessage error={{ error }} message="Kunne ikke laste bildet" /></div>
+      ) : isLoading ? (
+        <div className='absolute top-0 left-0 w-full h-full text-white bg-neutral-950/40 flex items-center justify-center z-[1000]'>
+          <Spinner status="Lastar inn bilde" className='w-20 h-20' />
+        </div>
+      ) : null}
       {(!isMobile || snappedPosition != 'middle') && <div className={`absolute right-0 flex z-[1000] gap-2 p-2 text-white`}>
         {!isMobile && <><RoundIconButton
           onClick={() => viewer.current?.viewport.zoomBy(1.5)}
@@ -163,14 +243,14 @@ const DynamicImageViewer = ({ images, manifestDataset, manifestId }: { images: R
 
         <IconButton
           className="p-3"
-          onClick={() => viewer.current?.goToPage(currentPage - 1)}
+          onClick={() => handleGoToPage(currentPage - 1)}
           label="Forrige side">
           <PiCaretLeftFill aria-hidden="true" />
         </IconButton>
         <span className='text-base'>{`${currentPage + 1}/${numberOfPages}`}</span>
         <IconButton
           className="p-3"
-          onClick={() => viewer.current?.goToPage(currentPage + 1)}
+          onClick={() => handleGoToPage(currentPage + 1)}
           label="Neste side">
           <PiCaretRightFill aria-hidden="true" />
         </IconButton>
