@@ -16,6 +16,12 @@ export default function manifest(): MetadataRoute.Manifest {
         type: 'image/png',
       },
       {
+        src: '/icon-mask.png',
+        sizes: '512x512',
+        purpose: 'maskable',
+        type: 'image/png',
+      },
+      {
         src: '/android-chrome-512x512.png',
         sizes: '512x512',
         type: 'image/png',
