@@ -16,6 +16,6 @@ export async function GET(request: Request) {
         }
     }
 
-    revalidateTag('all')
+    revalidateTag('all', 'max')
     return new Response('Cache invalidated', { status: 200 })
 }
