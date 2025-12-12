@@ -231,7 +231,7 @@ export default function DatasetFacet() {
                           {datasetShortDescriptions[item.key.split('-')[2]]}
                           <div className="flex mt-2">
                             <Link
-                              href={`info/datasets/${item.key.split('-')[2]}`}
+                              href={`info/datasets/${item.key.split('-')[2].split('_')[0]}`}
                               className="flex items-center gap-1 no-underline"
                             >
                               Les meir <PiCaretRight className="xl:text-lg text-primary-700" />

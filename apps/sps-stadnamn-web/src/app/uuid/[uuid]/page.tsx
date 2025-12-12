@@ -192,7 +192,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
           <div className="text-sm text-neutral-800">{datasetShortDescriptions[docDataset]}</div>
 
           <div className="flex gap-2 mt-4 w-full">
-            <Link href={"/info/datasets/" + docDataset} className="btn btn-outline">Les meir</Link>
+            <Link href={"/info/datasets/" + docDataset.split('_')[0]} className="btn btn-outline">Les meir</Link>
           </div>
         </aside>
 
