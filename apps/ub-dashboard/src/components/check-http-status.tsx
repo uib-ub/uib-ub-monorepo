@@ -1,15 +1,12 @@
 "use client"
-import { getBaseUrl } from '@/lib/utils';
+import { useHttpStatus } from '@/hooks/use-http-status';
 
-export const CheckHttpStatus = async ({ url }: { url: string }) => {
-  if (typeof window === 'undefined') {
-    return null; // Return null if not in a browser environment
+export const CheckHttpStatus = ({ url }: { url: string }) => {
+  const { status, isLoading } = useHttpStatus(url);
+
+  if (isLoading) {
+    return <span>...</span>;
   }
 
-  const res = await fetch(`${getBaseUrl()}/api/http-status?url=${url}`)
-  const status = await res.json()
-
-  return (
-    <span>{status}</span>
-  )
+  return <span>{status}</span>;
 }

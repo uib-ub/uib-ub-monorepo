@@ -1,8 +1,7 @@
 "use client"
 
-import React, { Suspense } from "react"
+import React from "react"
 import { CheckHttpStatus } from '@/components/check-http-status'
-import { LoadingSpinner } from '@/components/loaders/loading-spinner'
 import { Button } from '@/components/ui/button'
 import { CaretSortIcon, ClockIcon, TrashIcon } from "@radix-ui/react-icons"
 import { ColumnDef } from "@tanstack/react-table"
@@ -31,7 +30,7 @@ export const columns: ColumnDef<LinksProps>[] = [
       </Link>
     )
   },
-  {
+  /* {
     accessorKey: "label",
     header: ({ column }) => {
       return (
@@ -45,11 +44,11 @@ export const columns: ColumnDef<LinksProps>[] = [
         </Button>
       )
     },
-  },
-  {
+  }, */
+  /* {
     header: "Type",
     accessorKey: "type",
-  },
+  }, */
   {
     header: "Brukes av",
     accessorKey: "usedBy",
@@ -77,13 +76,19 @@ export const columns: ColumnDef<LinksProps>[] = [
   {
     header: "Online?",
     //accessorKey: "url",
-    cell: ({ row }: { row: any }) => (
-      <Suspense fallback={<LoadingSpinner />}>
-        {row.getValue('status') as string == 'deleted'
-          ? <CheckHttpStatus url={row.getValue('url')} />
-          : null
-        }
-      </Suspense>
-    )
+    cell: ({ row }: { row: any }) => {
+      const status = row.getValue('status') as string
+      const url = row.getValue('url') as string
+      const id = row.original.id
+
+      if (status !== 'deleted') {
+        return (
+          <div key={`check-${id}-${url}`}>
+            <CheckHttpStatus url={url} />
+          </div>
+        )
+      }
+      return null
+    }
   },
 ]
