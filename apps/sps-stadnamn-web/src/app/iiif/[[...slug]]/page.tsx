@@ -1,6 +1,7 @@
-import { fetchDoc } from "@/app/api/_utils/actions";
+import { fetchDoc, fetchIIFDocByIndex } from "@/app/api/_utils/actions";
 import { fetchIIIFStats } from "@/app/api/_utils/stats";
 import { headers } from "next/headers";
+import { notFound, redirect } from "next/navigation";
 import { userAgent } from "next/server";
 import { resolveLanguage } from "../iiif-utils";
 import CollectionExplorer from "./collection-explorer";
@@ -8,9 +9,34 @@ import IIIFInfoSection from "./iiif-info-section";
 import IIIFMobileDrawer from "./iiif-mobile-drawer";
 import ImageViewer from "./image-viewer";
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function maybeRedirectByIndex(slug?: string[]) {
+    if (!slug?.[0] || slug.length < 2) return;
+
+    const partOf = slug[0];
+    const order = slug[1];
+
+    // Only handle /iiif/<uuid>/<number>
+    if (!UUID_RE.test(partOf) || !/^\d+$/.test(order)) return;
+
+    const hit: any = await fetchIIFDocByIndex({ partOf, order });
+    const resolvedUuid = hit?.fields?.uuid?.[0];
+
+    if (!resolvedUuid || !UUID_RE.test(resolvedUuid)) {
+        notFound();
+    }
+
+    redirect(`/iiif/${resolvedUuid}`);
+}
+
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }) {
     const { slug } = await params
+
+    // Ensure metadata for /iiif/<partOf>/<order> resolves to the correct item
+    await maybeRedirectByIndex(slug)
+
     const manifestDoc = slug?.[0] ? await fetchDoc({ uuid: slug[0], dataset: 'iiif_*' }) : null
     const manifest = manifestDoc?._source
     const manifestDataset = manifestDoc?._index?.split('-')?.[2]?.split('_')?.[1]
@@ -100,6 +126,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function IIIFPage({ params }: { params: Promise<{ slug: string[] }> }) {
     const { slug } = await params
+
+    // Handle pagination URLs like /iiif/<collectionUuid>/<order> without relying on proxy/middleware.
+    await maybeRedirectByIndex(slug)
 
     const manifestDoc = slug?.[0] ? await fetchDoc({ uuid: slug[0], dataset: 'iiif_*' }) : null
     const manifest = manifestDoc?._source

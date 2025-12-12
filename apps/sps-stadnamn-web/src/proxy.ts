@@ -81,21 +81,6 @@ export async function proxy(request: NextRequest) {
             }
             return new Response('Not found', { status: 404 })
         }
-
-        // Handle pagination in archive explorer
-        if (iiifRoute.length == 36 && !isNaN(Number(idOrIndex))) {
-            const lookupUrl = `${baseUrl}/api/iiif/redirect-by-index?partOf=${encodeURIComponent(iiifRoute)}&order=${encodeURIComponent(idOrIndex)}`
-            const res = await fetch(lookupUrl, { cache: 'force-cache' })
-            if (!res.ok) return new Response('Not found', { status: 404 })
-            const data = await res.json()
-            if (data?.uuid) {
-                return Response.redirect(baseUrl + `/iiif/${data.uuid}`, 302)
-            }
-            return new Response('Not found', { status: 404 })
-        }
-
-
-
     }
 
     if (path[1] == 'view') {
