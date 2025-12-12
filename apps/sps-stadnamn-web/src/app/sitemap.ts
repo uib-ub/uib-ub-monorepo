@@ -12,15 +12,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
             url: 'https://stadnamn.no/info',
             priority: 1
         },
+     {
+            url: 'https://stadnamn.no/iiif',
+            priority: 1
+        },
         {
             url: 'https://stadnamn.no/help',
             priority: 0.9
         },
-        {
-            url: 'https://stadnamn.no/feedback',
-            priority: 0.9
-        },
-
         {
             url: 'https://stadnamn.no/datasets',
             priority: 0.9
