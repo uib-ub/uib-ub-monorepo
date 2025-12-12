@@ -2,7 +2,8 @@
 import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { useState } from "react"
-import { PiCaretLeft, PiCaretRight } from "react-icons/pi"
+import { PiCaretLeft, PiCaretRight, PiArchiveThin } from "react-icons/pi"
+import { resolveLanguage } from "@/app/iiif/iiif-utils"
 
 
 async function fetchManifest(iiif: string | string[], imgIndex: number, width: number, aspectRatio: number) {
@@ -15,12 +16,16 @@ async function fetchManifest(iiif: string | string[], imgIndex: number, width: n
     const data = await response.json()
 
     const dataset = data.hits.hits[0]._index.split("-")[2].split("_")[1]
+    const source = data.hits.hits[0]._source
+    const manifestType = source.type
     const outputWidth = width * 2
     const outputHeight = Math.round(outputWidth * (9 / 16))
-    const thumbnailUrl = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${data.hits.hits[0]._source.images[0].uuid}/0,0,${data.hits.hits[0]._source.images[0].width},${Math.round(data.hits.hits[0]._source.images[0].width * aspectRatio)}/${outputWidth},${outputHeight}/0/default.jpg`
+    const thumbnailUrl = manifestType === 'Collection' || !source.images?.[0] ? null : `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${dataset.toUpperCase()}/${source.images[0].uuid}/0,0,${source.images[0].width},${Math.round(source.images[0].width * aspectRatio)}/${outputWidth},${outputHeight}/0/default.jpg`
     return {
         thumbnailUrl,
-        manifestUuid: data.hits.hits[0]._source.uuid,
+        manifestUuid: source.uuid,
+        manifestType,
+        label: source.label,
     }
 }
 
@@ -37,20 +42,27 @@ export default function ClientThumbnail({ iiif, datasetLabel }: { iiif: string |
         queryKey: ['manifest', iiif, imgIndex],
         queryFn: async () => fetchManifest(iiif, imgIndex, width, aspectRatio)
     })
-    const { thumbnailUrl, manifestUuid } = data || {}
+    const { thumbnailUrl, manifestUuid, manifestType, label } = data || {}
 
-
-    return <div className="flex flex-col gap-1 relative">
+    return <div className="flex flex-col gap-1 relative h-full">
         {manifestLoading ? (
             <div className="w-full aspect-[16/9] bg-neutral-200 animate-pulse border border-neutral-200"></div>
-        ) : (
-            <Link href={"/iiif/" + manifestUuid} className="w-full aspect-[16/9] relative block border border-neutral-200">
-                <img
-                    src={thumbnailUrl || "/"}
-                    alt="Seddel"
-                    className="object-contain"
-
-                />
+        ) : manifestUuid && (
+            <Link href={"/iiif/" + manifestUuid} className="w-full h-full relative border border-neutral-200 flex flex-col items-center justify-center bg-neutral-50 p-2 gap-1 no-underline">
+                {manifestType === 'Collection' ? (
+                    <>
+                        <PiArchiveThin aria-hidden="true" className="w-16 h-16 md:w-24 md:h-24 text-neutral-800" />
+                        <span className="truncate w-full text-center text-neutral-900">
+                            {label ? resolveLanguage(label) : ''}
+                        </span>
+                    </>
+                ) : (
+                    <img
+                        src={thumbnailUrl || "/"}
+                        alt="Seddel"
+                        className="object-contain w-full h-full"
+                    />
+                )}
             </Link>
         )}
 

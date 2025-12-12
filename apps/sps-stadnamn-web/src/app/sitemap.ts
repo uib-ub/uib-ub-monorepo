@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { datasetTitles } from '@/config/metadata-config'
+import { datasetPresentation } from '@/config/metadata-config'
  
 export default function sitemap(): MetadataRoute.Sitemap {
     
@@ -27,9 +27,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
         }
     ]
     
-    const datasets = Object.keys(datasetTitles).map((dataset) => {
+    const datasets = Object.keys(datasetPresentation).filter((dataset) => dataset !== 'all').map((dataset) => {
         return {
-            url: `https://stadnamn.no/info/datasets/${dataset}`,
+            url: `https://stadnamn.no/info/datasets/${dataset.split('_')[0]}`,
             priority: ["ssr", "ssr2016", "geonames", "wikidata"].includes(dataset) ? 0.5 : 0.9,
 
         }

@@ -79,7 +79,7 @@ export default function MapToolbar() {
                             : 1
                     }}
                 >
-                    <PiInfoFill className="inline text-xl" /> Ingen treff med koordinatar
+                    <PiInfoFill className="inline text-xl" /> Ingen treff med koordinater
                 </div>
 
             }
