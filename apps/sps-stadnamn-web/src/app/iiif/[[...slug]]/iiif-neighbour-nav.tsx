@@ -83,7 +83,7 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
 
     return (
         <>
-            <nav className={`flex items-center gap-2 ${manifest.type == 'Manifest' ? `absolute top-14 ${isMobile ? 'left-0' : 'left-[20svw]'} m-2` : ''}`}>
+            <nav className={`flex items-center gap-2 ${manifest.type == 'Manifest' ? `absolute top-14 ${isMobile ? 'left-0' : 'left-[20svw]'} m-2 z-[6000]` : ''}`}>
                 {/* Collection link (hidden on mobile when neighbour nav is open) */}
                 {(!isMobile || !navOpen || isCollection) && (
                     <RoundIconButton

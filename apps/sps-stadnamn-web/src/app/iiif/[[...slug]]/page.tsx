@@ -4,9 +4,10 @@ import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { userAgent } from "next/server";
 import { resolveLanguage } from "../iiif-utils";
-import CollectionExplorer from "./collection-explorer";
 import IIIFInfoSection from "./iiif-info-section";
 import IIIFMobileDrawer from "./iiif-mobile-drawer";
+import IIIFNeighbourNav from "./iiif-neighbour-nav";
+import CollectionExplorer from "./collection-explorer";
 import ImageViewer from "./image-viewer";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -168,6 +169,8 @@ export default async function IIIFPage({ params }: { params: Promise<{ slug: str
 
             {!isCollection && (isImage || manifest?.audio) && (
                 <div className={`flex-1 min-w-0 bg-neutral-200 flex flex-col`}>
+                    {/* Keep neighbour nav on manifest/audio pages without pulling in the collection explorer bundle */}
+                    <IIIFNeighbourNav manifest={manifest} isMobile={isMobile} manifestDataset={manifestDataset} />
                     {isImage && <div className="relative flex-1"><ImageViewer images={manifest.images} manifestDataset={manifestDataset} manifestId={manifest.uuid} /></div>}
                     {manifest?.audio && <div className="flex flex-col gap-4 items-center justify-center h-full hidden lg:flex">
                         <h2 className="text-2xl text-neutral-900 font-semibold">{resolveLanguage(manifest.audio.label)}</h2>
@@ -178,7 +181,7 @@ export default async function IIIFPage({ params }: { params: Promise<{ slug: str
                     </div>}
                 </div>
             )}
-            <CollectionExplorer manifest={manifest} isCollection={isCollection} manifestDataset={manifestDataset} />
+            {isCollection && <CollectionExplorer manifest={manifest} isCollection={isCollection} manifestDataset={manifestDataset} />}
 
         </div>
 
