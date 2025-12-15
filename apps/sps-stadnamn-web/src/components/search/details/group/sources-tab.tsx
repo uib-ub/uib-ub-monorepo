@@ -3,9 +3,10 @@
 import { Fragment, useContext, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PiFile, PiFileFill, PiInfoFill, PiMapPinFill } from "react-icons/pi";
+import { PiBookOpen, PiFile, PiFileFill, PiInfoFill, PiMapPinFill, PiTreeViewFill, PiTreeViewLight } from "react-icons/pi";
 import { datasetTitles } from "@/config/metadata-config";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
+import { treeSettings } from "@/config/server-config";
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { matchesActiveYear, matchesActiveName, matchesActivePoint } from "./group-utils";
@@ -61,7 +62,8 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
         isInitGroup: boolean,
         activePoint: string | null,
         indentLevel: number = 0,
-        role?: 'parent' | 'child'
+        role?: 'parent' | 'child',
+        showTreeButton: boolean = false
     ) => {
         const additionalLabels = Array.from(
             new Set([
@@ -112,6 +114,9 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
         const indentStyle = indentLevel > 0 ? { paddingLeft: `${indentLevel * 1.5}rem` } : undefined
         const hasPin = isInitGroup && !activePoint && s.location?.coordinates?.length === 2
         const links = resultRenderers[ds]?.links?.(s) || defaultResultRenderer?.links?.(s)
+        const canOpenTreeView = showTreeButton && !!treeSettings[ds]
+        const adm1 = firstValue(s?.adm1)
+        const adm2 = firstValue(s?.adm2)
 
         return (
             <li key={s.uuid} className="py-1" style={indentStyle}>
@@ -128,17 +133,43 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                             }}
                             className={`flex-shrink-0 inline-flex items-center justify-center p-0 w-6 h-6 rounded-full self-center row-start-1 col-start-1 ${isActive ? 'text-accent-700 outline outline-1 outline-accent-700 bg-accent-50' : 'text-neutral-700 hover:bg-neutral-100'}`}
                         >
-                            <PiMapPinFill className="w-5 h-5 text-neutral-600" aria-hidden="true" />
+                            <PiMapPinFill className="text-neutral-700 h-6 w-6" aria-hidden="true" />
                         </ClickableIcon>
                     )}
 
                     <div className={`${hasPin ? 'row-start-1 col-start-2' : ''} flex-1 min-w-0 flex flex-wrap items-center gap-x-2 leading-6 min-h-6`}>
 
-                        <Link className="no-underline hover:underline text-lg" href={"/uuid/" + s.uuid}>
-                            <strong>{cadastrePrefix}{s.label}</strong>
+                        <Link className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md !px-2 py-1 h-8 btn btn-outline btn-compact" href={"/uuid/" + s.uuid}>
+                            <strong>{cadastrePrefix}{s.label}</strong> {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
                         </Link>
-                        {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
-                        {additionalLabels && <span className="text-neutral-900"> – {additionalLabels}</span>}
+
+                        {canOpenTreeView && (
+                            <ClickableIcon
+                                label="Opne matrikkelvisning"
+                                className=""
+                                add={{
+                                    datasetTag: 'tree',
+                                    dataset: ds,
+                                    doc: s.uuid,
+                                    parent: s.uuid,
+                                    nav: 'results',
+                                    // Leaving mode untouched (map/list/doc) – just switching to tree datasetTag.
+                                    // Clear group context so the UI switches away from group-details view.
+                                    group: null,
+                                    init: null,
+                                    details: null,
+                                    docIndex: null,
+                                    page: null,
+                                    ...(adm1 ? { adm1 } : {}),
+                                    ...(adm2 ? { adm2 } : {}),
+                                }}
+                            >
+                                <PiTreeViewFill className="text-neutral-700 h-6 w-6" aria-hidden="true" />
+                            </ClickableIcon>
+                        )}
+                        
+                       
+                        {additionalLabels && <span className="text-neutral-900">{additionalLabels}</span>}
                         {/* Keep source links on the same line when there is available space; wrap naturally when needed */}
                         {links}
                     </div>
@@ -188,17 +219,10 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                     <li key={`sources-ds-${ds}`} className="flex flex-col w-full gap-1">
                         {searchParams.getAll('dataset').length != 1 && <div className="flex items-center gap-2 text-neutral-800 uppercase traciking-wider">
                             {datasetTitles[ds] || ds}
-                            <ClickableIcon
-                                href={`/info/datasets/${ds.split('_')[0]}`}
-                                className="flex items-center"
-                                label="Om datasettet"
-                            >
-                                <PiInfoFill className="text-primary-700 text-sm align-middle" aria-hidden="true" />
-                            </ClickableIcon>
                         </div>}
                         <ul className="flex flex-col w-full gap-1">
                             {/* No nesting at all – show gnr for standalone items */}
-                            {!hasNesting && items.map((s: any) => renderItem(s, ds, isInitGroup, activePoint, 0, 'parent'))}
+                            {!hasNesting && items.map((s: any) => renderItem(s, ds, isInitGroup, activePoint, 0, 'parent', true))}
 
                             {/* With nesting – render parents with their children */}
                             {hasNesting && rootItems.map((parent: any) => {
@@ -207,7 +231,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
 
                                 if (childCount === 0) {
                                     // Parent candidate with no children in this group – still show gnr prefix
-                                    return renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent')
+                                    return renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent', true)
                                 }
 
                                 const showAllChildren = showAllChildrenParents.has(parent.uuid)
@@ -227,10 +251,10 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
 
                                 return (
                                     <Fragment key={parent.uuid}>
-                                        {renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent')}
+                                        {renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent', true)}
                                         <ul className="flex flex-col w-full gap-1">
                                             {visibleChildren.map((child: any) =>
-                                                renderItem(child, ds, isInitGroup, activePoint, 1, 'child')
+                                                renderItem(child, ds, isInitGroup, activePoint, 1, 'child', false)
                                             )}
                                             {hiddenCount > 0 && (
                                                 <li className="py-1" style={{ paddingLeft: `${1.5 * 1.5}rem` }}>
