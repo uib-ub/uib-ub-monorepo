@@ -11,6 +11,15 @@ import { PiBookOpen } from 'react-icons/pi'
 const normalizeLabel = (value?: string | null) =>
   (value || '').replace(/\s+/g, ' ').trim().toLowerCase()
 
+const firstValue = (v: any) => Array.isArray(v) ? v[0] : v
+const toPrefix = (v: any) => {
+  const x = firstValue(v)
+  if (x == null) return ''
+  const s = String(x)
+  if (!s || s === '0') return ''
+  return `${s} `
+}
+
 const getGroupData = async (groupId: string, size: number) => {
   const res = await fetch(`/api/group?group=${groupId}&size=${size}`)
   if (!res.ok) {
@@ -171,6 +180,13 @@ export default function GroupList({ docData }: { docData: Record<string, any> })
                   const bnrText = Array.isArray(bnr) ? bnr.join(',') : String(bnr)
                   if (bnrText && bnrText !== '0') cadastrePrefix = `${bnrText} `
                 }
+              }
+
+              // Special-case: Matrikkelen 1838 uses misc.MNR / misc.LNR rather than cadastre.gnr/bnr.
+              if (!cadastrePrefix && docDataset === 'm1838') {
+                cadastrePrefix = isChild
+                  ? toPrefix(getFieldValue(hit, 'misc.LNR'))
+                  : toPrefix(getFieldValue(hit, 'misc.MNR'))
               }
 
               return (

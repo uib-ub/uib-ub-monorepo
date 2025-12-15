@@ -44,6 +44,15 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
         })
     }
 
+    const firstValue = (v: any) => Array.isArray(v) ? v[0] : v
+    const toPrefix = (v: any) => {
+        const x = firstValue(v)
+        if (x == null) return ''
+        const s = String(x)
+        if (!s || s === '0') return ''
+        return `${s} `
+    }
+
     // Reuse the existing item markup for both parents (gard) and children (bruk).
     // The optional role is used only for cadastre prefixing.
     const renderItem = (
@@ -91,6 +100,13 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                     cadastrePrefix = `${bnrText} `
                 }
             }
+        }
+
+        // Special-case: Matrikkelen 1838 uses misc.MNR (matrikkelnummer) and misc.LNR (løpenummer)
+        // rather than standard cadastre.gnr/bnr. Fall back to these for prefixing.
+        if (!cadastrePrefix && ds === 'm1838') {
+            if (role === 'parent') cadastrePrefix = toPrefix(s?.misc?.MNR ?? s?.misc?.mnr ?? s?.mnr)
+            if (role === 'child') cadastrePrefix = toPrefix(s?.misc?.LNR ?? s?.misc?.lnr ?? s?.lnr)
         }
 
         const indentStyle = indentLevel > 0 ? { paddingLeft: `${indentLevel * 1.5}rem` } : undefined

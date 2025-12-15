@@ -45,7 +45,7 @@ export async function GET(request: Request) {
       },
     ],
     "track_total_hits": false,
-    "_source": ["uuid", "label", "attestations", "year", "boost", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area", "misc.Enhetsnummer", "ssr", "within", "cadastre"],
+    "_source": ["uuid", "label", "attestations", "year", "boost", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area", "misc.Enhetsnummer", "misc.MNR", "misc.LNR", "ssr", "within", "cadastre"],
   }
 
 
@@ -66,6 +66,7 @@ export async function GET(request: Request) {
       dataset: hit._index.split('-')[2],
       uuid: hit._source.uuid,
       label: hit._source.label,
+      misc: hit._source.misc,
       textId: hit._source.misc?.Enhetsnummer,
       attestations: hit._source.attestations,
       year: hit._source.year,
