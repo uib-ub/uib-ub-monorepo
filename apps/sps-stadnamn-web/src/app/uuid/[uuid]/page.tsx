@@ -10,21 +10,82 @@ import { facetConfig } from '@/config/search-config'
 import { treeSettings } from '@/config/server-config'
 import { getValueByPath } from '@/lib/utils'
 import Link from 'next/link'
+import { headers } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'
 import { PiBracketsCurlyBold } from 'react-icons/pi'
+import sanitizeHtml from 'sanitize-html'
 import GroupList from './GroupList'
 import OriginalData from './original-data'
 import ServerCadastreBreadcrumb from './server-cadastre-breadcrumb'
+
+const normalizeText = (text: string) => text.replace(/\s+/g, ' ').trim()
+
+const toText = (value: unknown): string | undefined => {
+  if (typeof value === 'string') return normalizeText(value)
+  if (Array.isArray(value)) {
+    const joined = value.filter((v): v is string => typeof v === 'string').join(' ')
+    return joined ? normalizeText(joined) : undefined
+  }
+  return undefined
+}
+
+const stripAllHtml = (html: string) => normalizeText(sanitizeHtml(html, { allowedTags: [], allowedAttributes: {} }))
 
 export async function generateMetadata({ params }: { params: Promise<{ uuid: string }> }) {
   const { uuid } = await params
   const docData = await fetchDoc({ uuid })
 
+  const headersList = await headers()
+  const proto = headersList.get('x-forwarded-proto') || 'https'
+  const host = headersList.get('x-forwarded-host') || headersList.get('host')
+  const baseUrl = host ? `${proto}://${host}` : 'https://stadnamn.no'
+
+  const title = docData?._source?.label || docData?._source?.uuid || uuid
+  const resolvedUuid = docData?._source?.uuid || uuid
+  const canonicalUrl = `${baseUrl}/uuid/${resolvedUuid}`
+
+  let rawDescription = toText(docData?._source?.description) ?? toText(docData?._source?.content?.text)
+  if (!rawDescription && typeof docData?._source?.content?.html === 'string') {
+    rawDescription = stripAllHtml(docData?._source?.content?.html)
+  }
+  const description = rawDescription && rawDescription.length > 0 ? rawDescription : undefined
+
+  // Prefer a real preview image when the record links to a IIIF manifest.
+  let ogImageUrl: string | undefined
+  const firstManifestId = docData?._source?.images?.[0]?.manifest
+  if (typeof firstManifestId === 'string' && firstManifestId.length > 0) {
+    const manifestDoc: any = await fetchDoc({ uuid: firstManifestId, dataset: 'iiif_*' })
+    const manifestDataset = manifestDoc?._index?.split('-')?.[2]?.split('_')?.[1]
+    const firstImageUuid = manifestDoc?._source?.images?.[0]?.uuid
+
+    if (manifestDataset && firstImageUuid) {
+      ogImageUrl = `https://iiif.spraksamlingane.no/iiif/image/stadnamn/${String(
+        manifestDataset,
+      ).toUpperCase()}/${firstImageUuid}/full/max/0/default.jpg`
+    }
+  }
+
   return {
-    title: docData?._source?.label || docData?._source.uuid,
-    ...(docData?._source?.description && {
-      description: docData._source.description
-    })
+    title,
+    ...(description ? { description } : {}),
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      type: 'article',
+      title,
+      url: canonicalUrl,
+      siteName: 'stadnamn.no',
+      locale: 'no_NO',
+      ...(description ? { description } : {}),
+      ...(ogImageUrl ? { images: [ogImageUrl] } : {}),
+    },
+    twitter: {
+      card: ogImageUrl ? 'summary_large_image' : 'summary',
+      title,
+      ...(description ? { description } : {}),
+      ...(ogImageUrl ? { images: [ogImageUrl] } : {}),
+    },
   }
 }
 
