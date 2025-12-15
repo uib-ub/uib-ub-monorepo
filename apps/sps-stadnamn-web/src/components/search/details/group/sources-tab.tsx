@@ -140,7 +140,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                     <div className={`${hasPin ? 'row-start-1 col-start-2' : ''} flex-1 min-w-0 flex flex-wrap items-center gap-2 leading-6 min-h-6`}>
 
                         <Link className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md !px-2 py-1 h-8 btn btn-outline btn-compact" href={"/uuid/" + s.uuid}>
-                            <strong>{cadastrePrefix}{s.label}</strong> {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
+                        {cadastrePrefix}<strong>{s.label}</strong> {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
                         </Link>
 
                         {canOpenTreeView && (
