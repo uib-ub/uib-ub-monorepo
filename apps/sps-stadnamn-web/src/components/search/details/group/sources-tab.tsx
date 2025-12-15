@@ -137,7 +137,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                         </ClickableIcon>
                     )}
 
-                    <div className={`${hasPin ? 'row-start-1 col-start-2' : ''} flex-1 min-w-0 flex flex-wrap items-center gap-x-2 leading-6 min-h-6`}>
+                    <div className={`${hasPin ? 'row-start-1 col-start-2' : ''} flex-1 min-w-0 flex flex-wrap items-center gap-2 leading-6 min-h-6`}>
 
                         <Link className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md !px-2 py-1 h-8 btn btn-outline btn-compact" href={"/uuid/" + s.uuid}>
                             <strong>{cadastrePrefix}{s.label}</strong> {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
@@ -185,7 +185,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
     }
 
     return (
-        <ul className="flex flex-col w-full gap-4 pt-4">
+        <ul className="flex flex-col w-full gap-8 pt-4">
             {visibleDatasets.map((ds) => {
                 const items = datasets[ds] || []
                 if (items.length === 0) return null
@@ -216,11 +216,11 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                 const hasNesting = childrenMap.size > 0
 
                 return (
-                    <li key={`sources-ds-${ds}`} className="flex flex-col w-full gap-1">
+                    <li key={`sources-ds-${ds}`} className="flex flex-col w-full gap-4">
                         {searchParams.getAll('dataset').length != 1 && <div className="flex items-center gap-2 text-neutral-800 uppercase traciking-wider">
                             {datasetTitles[ds] || ds}
                         </div>}
-                        <ul className="flex flex-col w-full gap-1">
+                        <ul className="flex flex-col w-full gap-4">
                             {/* No nesting at all – show gnr for standalone items */}
                             {!hasNesting && items.map((s: any) => renderItem(s, ds, isInitGroup, activePoint, 0, 'parent', true))}
 
@@ -257,7 +257,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                                                 renderItem(child, ds, isInitGroup, activePoint, 1, 'child', false)
                                             )}
                                             {hiddenCount > 0 && (
-                                                <li className="py-1" style={{ paddingLeft: `${1.5 * 1.5}rem` }}>
+                                                <li style={{ paddingLeft: `${1.5 * 1.5}rem` }}>
                                                     <button
                                                         type="button"
                                                         className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
@@ -268,7 +268,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                                                 </li>
                                             )}
                                             {hasManyChildren && showAllChildren && (
-                                                <li className="py-1" style={{ paddingLeft: `${1.5 * 1.5}rem` }}>
+                                                <li style={{ paddingLeft: `${1.5 * 1.5}rem` }}>
                                                     <button
                                                         type="button"
                                                         className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
