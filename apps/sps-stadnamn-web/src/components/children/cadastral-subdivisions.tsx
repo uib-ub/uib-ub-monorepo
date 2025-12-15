@@ -12,12 +12,14 @@ export default function CadastralSubdivisions({ dataset, doc, childrenData, land
         return null
     }
 
-    const fields = Object.entries(fieldConfig[dataset]).filter(([key, value]) => value.cadastreTable).map(([key, value]) => {
+    const datasetFieldConfig = fieldConfig?.[dataset] || {}
+    const fields = Object.entries(datasetFieldConfig).filter(([key, value]: any) => value?.cadastreTable).map(([key, value]: any) => {
         return { key, label: value.label }
     })
 
 
-    const LinkWrapper = ({ uuid, children }: { uuid: string, children: React.ReactNode }) => {
+    const LinkWrapper = ({ uuid, children }: { uuid?: string, children: React.ReactNode }) => {
+        if (!uuid) return <>{children}</>
         const commonProps = {
             'aria-current': doc == uuid ? ('page' as const) : undefined,
             className: "group no-underline flex gap-1 items-center rounded-full"

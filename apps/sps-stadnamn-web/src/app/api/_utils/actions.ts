@@ -153,6 +153,11 @@ export async function fetchVocab() {
 
 // Fetch children of a document in the same index (documents that have the uuid as the value in "within" field)
 export async function fetchCadastralSubunits(dataset: string, uuid: string, fields: string[], sortFields: string[]) {
+    const toEsField = (field: string) => field.replaceAll("__", ".")
+
+    const esFields = (fields || []).map(toEsField)
+    const esSortFields = (sortFields || []).map(toEsField)
+
     const query = {
         size: 1000,
         query: {
@@ -160,8 +165,8 @@ export async function fetchCadastralSubunits(dataset: string, uuid: string, fiel
                 "within.keyword": uuid
             }
         },
-        fields: fields,
-        sort: sortFields.map((field: string) => {
+        fields: esFields,
+        sort: esSortFields.map((field: string) => {
             if (field.startsWith("cadastre.")) {
                 return {
                     [field]: {

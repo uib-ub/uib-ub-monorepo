@@ -1,4 +1,4 @@
-import { fetchDoc } from '@/app/api/_utils/actions'
+import { fetchCadastralSubunits, fetchDoc } from '@/app/api/_utils/actions'
 import CadastralSubdivisions from '@/components/children/cadastral-subdivisions'
 import CollapsibleHeading from '@/components/doc/collapsible-heading'
 import ErrorMessage from '@/components/error-message'
@@ -6,7 +6,7 @@ import Thumbnail from '@/components/image-viewer/thumbnail'
 import CoordinateInfo from '@/components/search/details/doc/coordinate-info'
 import { infoPageRenderers } from '@/config/info-renderers'
 import { datasetPresentation, datasetShortDescriptions, datasetTitles } from '@/config/metadata-config'
-import { facetConfig } from '@/config/search-config'
+import { facetConfig, fieldConfig } from '@/config/search-config'
 import { treeSettings } from '@/config/server-config'
 import { getValueByPath } from '@/lib/utils'
 import Link from 'next/link'
@@ -106,6 +106,51 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
 
   if (docData._source.uuid != uuid && docData._source.redirects.includes(uuid)) {
     redirect(`/uuid/${docData._source.uuid}#${uuid}`)
+  }
+
+  const resolvedUuid: string = docData?._source?.uuid || uuid
+
+  const shouldShowCadastralSubdivisions =
+    !!treeSettings[docDataset] && docData?._source?.sosi == 'gard'
+
+  // The record doesn't reliably include a `children` array, so fetch subunits from ES as a fallback.
+  let cadastralChildrenData: any[] | null = null
+  if (shouldShowCadastralSubdivisions) {
+    const existingChildren = docData?._source?.children
+    const hasRenderableChildren =
+      Array.isArray(existingChildren) &&
+      existingChildren.length > 0 &&
+      typeof existingChildren[0] === 'object'
+
+    if (hasRenderableChildren) {
+      cadastralChildrenData = existingChildren
+    } else {
+      const datasetFieldConfig: Record<string, any> = (fieldConfig as any)?.[docDataset] || {}
+      const cadastreTableKeys = Object.entries(datasetFieldConfig)
+        .filter(([, v]) => (v as any)?.cadastreTable)
+        .map(([k]) => k)
+
+      const fields = Array.from(
+        new Set<string>(
+          [
+            'uuid',
+            'label',
+            treeSettings[docDataset]?.leaf,
+            treeSettings[docDataset]?.subunit,
+            ...cadastreTableKeys,
+          ].filter(Boolean) as string[],
+        ),
+      )
+
+      const res = await fetchCadastralSubunits(
+        docDataset,
+        resolvedUuid,
+        fields,
+        treeSettings[docDataset]?.sort || [],
+      )
+
+      cadastralChildrenData = Array.isArray((res as any)?.hits?.hits) ? (res as any).hits.hits : null
+    }
   }
 
 
@@ -212,10 +257,10 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
           : null}
 
 
-        {treeSettings[docDataset] && docData._source.sosi == 'gard' &&
+        {shouldShowCadastralSubdivisions &&
           <div className="mt-4">
             <h2 className="">Underordna bruk</h2>
-            <CadastralSubdivisions dataset={docDataset} doc={uuid} childrenData={docData._source.children} landingPage={true} />
+            <CadastralSubdivisions dataset={docDataset} doc={resolvedUuid} childrenData={cadastralChildrenData} landingPage={true} />
           </div>
         }
 

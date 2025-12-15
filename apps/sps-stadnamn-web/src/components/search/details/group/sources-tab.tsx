@@ -117,24 +117,15 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                     )}
 
                     <div className={`${hasPin ? 'row-start-1 col-start-2' : ''} flex-1 min-w-0 flex flex-wrap items-center gap-x-2 leading-6 min-h-6`}>
-                        {cadastrePrefix && (
-                            <Link className="no-underline rounded-full bg-neutral-600 text-white px-1.5 !py-0 inline-flex items-center text-sm" href={"/uuid/" + s.uuid}>
-                                {cadastrePrefix}
-                            </Link>
-                        )}
 
                         <Link className="no-underline hover:underline text-lg" href={"/uuid/" + s.uuid}>
-                            <strong>{s.label}</strong>
+                            <strong>{cadastrePrefix}{s.label}</strong>
                         </Link>
                         {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
                         {additionalLabels && <span className="text-neutral-900"> – {additionalLabels}</span>}
+                        {/* Keep source links on the same line when there is available space; wrap naturally when needed */}
+                        {links}
                     </div>
-
-                    {links && (
-                        <div className={`${hasPin ? 'row-start-2 col-start-2' : ''} mt-0.5`}>
-                            {links}
-                        </div>
-                    )}
 
                     {isInitGroup && activePoint && lat && lng && (
                         <div className={`bg-neutral-50 border border-neutral-200 rounded-md px-2 py-1 mt-0.5 w-full ${hasPin ? 'col-start-2 row-start-3' : ''}`}>
