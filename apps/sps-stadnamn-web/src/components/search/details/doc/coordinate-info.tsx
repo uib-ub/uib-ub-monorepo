@@ -27,7 +27,6 @@ export default function CoordinateInfo({ source }: { source: Record<string, any>
 
         <div id="coordinate_info" className='space-y-6 my-2'>
             <div className="flex items-center space-x-2">
-                <PiMapPin className="w-6 h-6" />
                 <Link className="font-semibold"
                     href={`https://geohack.toolforge.org/geohack.php?pagename=Geohack&params=${source.location.coordinates[1]};${source.location.coordinates[0]}&language=no`}>
                     {convertDMS(source.location.coordinates[1], source.location.coordinates[0])}
