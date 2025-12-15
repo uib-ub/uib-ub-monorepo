@@ -119,7 +119,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
         const adm2 = firstValue(s?.adm2)
 
         return (
-            <li key={s.uuid} className="py-1" style={indentStyle}>
+            <li key={s.uuid} className="" style={indentStyle}>
                 <div className={hasPin ? "grid grid-cols-[auto,1fr] gap-x-2" : "flex flex-col"}>
                     {hasPin && (
                         <ClickableIcon
@@ -220,7 +220,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                         {searchParams.getAll('dataset').length != 1 && <div className="flex items-center gap-2 text-neutral-800 uppercase traciking-wider">
                             {datasetTitles[ds] || ds}
                         </div>}
-                        <ul className="flex flex-col w-full gap-4">
+                        <ul className="flex flex-col w-full gap-2">
                             {/* No nesting at all – show gnr for standalone items */}
                             {!hasNesting && items.map((s: any) => renderItem(s, ds, isInitGroup, activePoint, 0, 'parent', true))}
 
