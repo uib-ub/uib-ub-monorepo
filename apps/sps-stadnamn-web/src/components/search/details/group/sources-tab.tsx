@@ -119,67 +119,49 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
         const adm2 = firstValue(s?.adm2)
 
         return (
-            <li key={s.uuid} className="" style={indentStyle}>
-                <div className={hasPin ? "grid grid-cols-[auto,1fr] gap-x-2" : "flex flex-col"}>
-                    {hasPin && (
-                        <ClickableIcon
-                            label="Koordinatdetaljar"
-                            onClick={() => {
-                                mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-                            }}
-                            add={{
-                                activePoint: `${lat},${lng}`,
+            <li key={s.uuid} className="flex flex-col gap-1" style={indentStyle}>
+                    <div className="flex flex-wrap items-center gap-4 leading-6 min-h-6">
+                        {hasPin && (
+                            <ClickableIcon
+                                label="Koordinatdetaljar"
+                                onClick={() => {
+                                    mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+                                }}
+                                add={{
+                                    activePoint: `${lat},${lng}`,
 
-                            }}
-                            className={`flex-shrink-0 inline-flex items-center justify-center p-0 w-6 h-6 rounded-full self-center row-start-1 col-start-1 ${isActive ? 'text-accent-700 outline outline-1 outline-accent-700 bg-accent-50' : 'text-neutral-700 hover:bg-neutral-100'}`}
-                        >
-                            <PiMapPinFill className="text-neutral-700 h-6 w-6" aria-hidden="true" />
-                        </ClickableIcon>
-                    )}
-
-                    <div className={`${hasPin ? 'row-start-1 col-start-2' : ''} flex-1 min-w-0 flex flex-wrap items-center gap-2 leading-6 min-h-6`}>
+                                }}
+                                className={`flex-shrink-0 inline-flex items-center justify-center p-0 w-6 h-6 rounded-full ${isActive ? 'text-accent-700 outline outline-1 outline-accent-700 bg-accent-50' : 'text-neutral-700 hover:bg-neutral-100'}`}
+                            >
+                                <PiMapPinFill className="text-neutral-700 h-6 w-6" aria-hidden="true" />
+                            </ClickableIcon>
+                        )}
 
                         <Link className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md !px-2 py-1 h-8 btn btn-outline btn-compact" href={"/uuid/" + s.uuid}>
-                        {cadastrePrefix}<strong>{s.label}</strong> {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
+                            {cadastrePrefix}<strong>{s.label}</strong> {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
                         </Link>
 
                         {canOpenTreeView && (
                             <ClickableIcon
                                 label="Opne matrikkelvisning"
                                 className=""
-                                add={{
-                                    datasetTag: 'tree',
-                                    dataset: ds,
-                                    doc: s.uuid,
-                                    parent: s.uuid,
-                                    nav: 'results',
-                                    // Leaving mode untouched (map/list/doc) – just switching to tree datasetTag.
-                                    // Clear group context so the UI switches away from group-details view.
-                                    group: null,
-                                    init: null,
-                                    details: null,
-                                    docIndex: null,
-                                    page: null,
-                                    ...(adm1 ? { adm1 } : {}),
-                                    ...(adm2 ? { adm2 } : {}),
-                                }}
+                                href="/"
                             >
                                 <PiTreeViewFill className="text-neutral-700 h-6 w-6" aria-hidden="true" />
                             </ClickableIcon>
                         )}
-                        
-                       
+
                         {additionalLabels && <span className="text-neutral-900">{additionalLabels}</span>}
                         {/* Keep source links on the same line when there is available space; wrap naturally when needed */}
                         {links}
                     </div>
 
                     {isInitGroup && activePoint && lat && lng && (
-                        <div className={`bg-neutral-50 border border-neutral-200 rounded-md px-2 py-1 mt-0.5 w-full ${hasPin ? 'col-start-2 row-start-3' : ''}`}>
+                        <div className="bg-neutral-50 border border-neutral-200 rounded-md px-2 py-1 mt-0.5 w-full">
                             {coordinateTypeLabel || "Opphavleg koordinat i " + datasetTitles[ds]}
                         </div>
                     )}
-                </div>
+   
             </li>
         )
     }
@@ -220,7 +202,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                         {searchParams.getAll('dataset').length != 1 && <div className="flex items-center gap-2 text-neutral-800 uppercase traciking-wider">
                             {datasetTitles[ds] || ds}
                         </div>}
-                        <ul className="flex flex-col w-full gap-2">
+                        <ul className="flex flex-col w-full gap-4">
                             {/* No nesting at all – show gnr for standalone items */}
                             {!hasNesting && items.map((s: any) => renderItem(s, ds, isInitGroup, activePoint, 0, 'parent', true))}
 
@@ -252,7 +234,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                                 return (
                                     <Fragment key={parent.uuid}>
                                         {renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent', true)}
-                                        <ul className="flex flex-col w-full gap-1">
+                                        <ul className="flex flex-col w-full gap-2 -mt-2">
                                             {visibleChildren.map((child: any) =>
                                                 renderItem(child, ds, isInitGroup, activePoint, 1, 'child', false)
                                             )}
