@@ -24,12 +24,16 @@ const sans = Source_Sans_3({
 
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://stadnamn.no'),
   title: {
     template: "%s - stadnamn.no",
     default: "stadnamn.no"
   },
   description: "Språksamlinganes nasjonale søketeneste for stadnamn, utvikla ved Universitetsbiblioteket i Bergen",
   openGraph: {
+    type: 'website',
+    siteName: 'stadnamn.no',
+    locale: 'no_NO',
     images: ["/icon.svg"],
   },
   twitter: {

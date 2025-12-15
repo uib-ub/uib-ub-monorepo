@@ -1,6 +1,7 @@
 import Spinner from '@/components/svg/Spinner';
 import { GlobalContext } from '@/state/providers/global-provider';
 import { useIIIFSessionStore } from '@/state/zustand/iiif-session-store';
+import OpenSeadragon from 'openseadragon';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { PiArrowClockwiseBold, PiCaretLeftFill, PiCaretRightFill, PiCornersOutBold, PiMagnifyingGlassMinusBold, PiMagnifyingGlassPlusBold, PiXBold } from 'react-icons/pi';
 import ErrorMessage from '../error-message';
@@ -19,8 +20,7 @@ function assertAllowedIiifUrl(url: URL) {
 
 const DynamicImageViewer = ({ images, manifestDataset, manifestId }: { images: Record<string, any>[], manifestDataset: string, manifestId: string }) => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
-  // Lazily created to keep initial JS parse/execute low (OpenSeadragon is imported dynamically).
-  const viewer = useRef<any | null>(null);
+  const viewer = useRef<OpenSeadragon.Viewer | null>(null);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [error, setError] = useState<any>(null);
@@ -67,106 +67,81 @@ const DynamicImageViewer = ({ images, manifestDataset, manifestId }: { images: R
     beginLoading(0);
     setCurrentPage(0)
 
-    let cancelled = false;
+    try {
+      const dataset = manifestDataset.toUpperCase();
+      const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!/^[A-Z0-9_-]+$/.test(dataset)) throw new Error(`Invalid dataset: ${manifestDataset}`);
 
-    const schedule = (fn: () => void) => {
-      const w = window as any;
-      if (typeof w.requestIdleCallback === 'function') {
-        const id = w.requestIdleCallback(fn, { timeout: 1500 });
-        return () => {
-          try { w.cancelIdleCallback?.(id); } catch { /* ignore */ }
+      const tileSources = images.map((image: any) => {
+        const uuid = String(image.uuid || '');
+        if (!uuidRe.test(uuid)) throw new Error(`Invalid image uuid: ${uuid}`);
+
+        const iiifId = new URL(`/iiif/image/stadnamn/${dataset}/${uuid}`, 'https://iiif.spraksamlingane.no');
+        assertAllowedIiifUrl(iiifId);
+
+        return {
+          "@context": "http://iiif.io/api/image/2/context.json",
+          "@id": iiifId.toString(),
+          "height": image.height,
+          "width": image.width,
+          "profile": ["http://iiif.io/api/image/2/level2.json"],
+          "protocol": "http://iiif.io/api/image"
         };
-      }
-      const t = window.setTimeout(fn, 1);
-      return () => window.clearTimeout(t);
-    };
+      });
 
-    const cancelScheduled = schedule(() => {
-      void (async () => {
-        try {
-          const dataset = manifestDataset.toUpperCase();
-          const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-          if (!/^[A-Z0-9_-]+$/.test(dataset)) throw new Error(`Invalid dataset: ${manifestDataset}`);
+      setNumberOfPages(tileSources.length);
 
-          const tileSources = images.map((image: any) => {
-            const uuid = String(image.uuid || '');
-            if (!uuidRe.test(uuid)) throw new Error(`Invalid image uuid: ${uuid}`);
+      if (!viewer.current) {
+        viewer.current = OpenSeadragon({
+          id: "openseadragon-viewer",
+          prefixUrl: "path/to/openseadragon/images/",
+          maxZoomPixelRatio: 3.0,
+          showNavigationControl: false,
+          showSequenceControl: false,
+          sequenceMode: true,
+          // Helps WebGL/canvas use the tiles safely *if* the IIIF server sends CORS headers.
+          crossOriginPolicy: 'Anonymous',
+          tileSources: tileSources as any
+        });
 
-            const iiifId = new URL(`/iiif/image/stadnamn/${dataset}/${uuid}`, 'https://iiif.spraksamlingane.no');
-            assertAllowedIiifUrl(iiifId);
-
-            return {
-              "@context": "http://iiif.io/api/image/2/context.json",
-              "@id": iiifId.toString(),
-              "height": image.height,
-              "width": image.width,
-              "profile": ["http://iiif.io/api/image/2/level2.json"],
-              "protocol": "http://iiif.io/api/image"
-            };
-          });
-
-          if (cancelled) return;
-          setNumberOfPages(tileSources.length);
-
-          // Lazy import to avoid adding OpenSeadragon to the initial JS execution path.
-          const mod = await import('openseadragon');
-          const OpenSeadragon = (mod as any).default ?? mod;
-          if (cancelled) return;
-
-          if (!viewer.current) {
-            viewer.current = OpenSeadragon({
-              id: "openseadragon-viewer",
-              prefixUrl: "path/to/openseadragon/images/",
-              maxZoomPixelRatio: 3.0,
-              showNavigationControl: false,
-              showSequenceControl: false,
-              sequenceMode: true,
-              // Helps WebGL/canvas use the tiles safely *if* the IIIF server sends CORS headers.
-              crossOriginPolicy: 'Anonymous',
-              tileSources: tileSources as any
-            });
-
-            viewer.current.addHandler('tile-load-failed', function () {
-              setError("TILE_LOAD_FAILED")
-              pendingLoadRef.current = false;
-              setIsLoading(false);
-            });
-
-            viewer.current.addHandler('page', function (event: { page: number; }) {
-              beginLoading(event.page);
-              setCurrentPage(event.page);
-            });
-
-            // WebGLDrawer doesn't raise `tile-drawn`; use first `tile-loaded` for the requested page instead.
-            viewer.current.addHandler('tile-loaded', function () {
-              const expectedPage = expectedPageRef.current;
-              const current = (viewer.current as any)?.currentPage?.();
-
-              if (typeof expectedPage === 'number' && typeof current === 'number' && expectedPage !== current) {
-                return;
-              }
-
-              finishLoading();
-            });
-
-          } else {
-            beginLoading(0);
-            viewer.current.open(tileSources);
-            viewer.current.viewport.goHome();
-          }
-        } catch (e: any) {
-          if (cancelled) return;
-          setError(e?.message || 'INVALID_IIIF_SOURCE');
+        viewer.current.addHandler('tile-load-failed', function () {
+          setError("TILE_LOAD_FAILED")
           pendingLoadRef.current = false;
           setIsLoading(false);
-        }
-      })();
-    });
 
-    return () => {
-      cancelled = true;
-      cancelScheduled();
-    };
+          //setError({message: event.message, tile: event.tile, code: event.});
+
+          // Optional: Handle the error, e.g., by displaying a custom error message to the user
+          // or attempting to load a placeholder image.
+        });
+
+        viewer.current.addHandler('page', function (event: { page: number; }) {
+          beginLoading(event.page);
+          setCurrentPage(event.page);
+        });
+
+        // WebGLDrawer doesn't raise `tile-drawn`; use first `tile-loaded` for the requested page instead.
+        viewer.current.addHandler('tile-loaded', function () {
+          const expectedPage = expectedPageRef.current;
+          const current = (viewer.current as any)?.currentPage?.();
+
+          if (typeof expectedPage === 'number' && typeof current === 'number' && expectedPage !== current) {
+            return;
+          }
+
+          finishLoading();
+        });
+
+      } else {
+        beginLoading(0);
+        viewer.current.open(tileSources);
+        viewer.current.viewport.goHome();
+      }
+    } catch (e: any) {
+      setError(e?.message || 'INVALID_IIIF_SOURCE');
+      pendingLoadRef.current = false;
+      setIsLoading(false);
+    }
 
   }, [beginLoading, finishLoading, images, manifestDataset, manifestId]);
 

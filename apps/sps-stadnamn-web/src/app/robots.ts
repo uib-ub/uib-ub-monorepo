@@ -10,5 +10,8 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       disallow: '/',
     },
+    sitemap: process.env.VERCEL_ENV === 'production'
+      ? 'https://stadnamn.no/sitemap-index.xml'
+      : undefined,
   }
 }

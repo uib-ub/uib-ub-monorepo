@@ -3,7 +3,7 @@
 import { Fragment, useContext, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PiInfoFill, PiMapPinFill } from "react-icons/pi";
+import { PiFile, PiFileFill, PiInfoFill, PiMapPinFill } from "react-icons/pi";
 import { datasetTitles } from "@/config/metadata-config";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
 import { GlobalContext } from "@/state/providers/global-provider";
@@ -94,35 +94,52 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
         }
 
         const indentStyle = indentLevel > 0 ? { paddingLeft: `${indentLevel * 1.5}rem` } : undefined
+        const hasPin = isInitGroup && !activePoint && s.location?.coordinates?.length === 2
+        const links = resultRenderers[ds]?.links?.(s) || defaultResultRenderer?.links?.(s)
 
         return (
-            <li key={s.uuid} className="py-1 flex items-center gap-2" style={indentStyle}>
-                {isInitGroup && !activePoint && s.location?.coordinates?.length === 2 && (
-                    <ClickableIcon
-                        label="Koordinatdetaljar"
-                        onClick={() => {
-                            mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-                        }}
-                        add={{
-                            activePoint: `${lat},${lng}`,
+            <li key={s.uuid} className="py-1" style={indentStyle}>
+                <div className={hasPin ? "grid grid-cols-[auto,1fr] gap-x-2" : "flex flex-col"}>
+                    {hasPin && (
+                        <ClickableIcon
+                            label="Koordinatdetaljar"
+                            onClick={() => {
+                                mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+                            }}
+                            add={{
+                                activePoint: `${lat},${lng}`,
 
-                        }}
-                        className={`flex-shrink-0 p-1 rounded-full ${isActive ? 'text-accent-700 outline outline-1 outline-accent-700 bg-accent-50' : 'text-neutral-700 hover:bg-neutral-100'}`}
-                    >
-                        <PiMapPinFill className="text-base text-neutral-600" />
-                    </ClickableIcon>
-                )}
-                <div className="flex-1 min-w-0">
-                    <div>
-                        <Link className="no-underline hover:underline" href={"/uuid/" + s.uuid}>
-                            <strong>{cadastrePrefix}{s.label}</strong>
+                            }}
+                            className={`flex-shrink-0 inline-flex items-center justify-center p-0 w-6 h-6 rounded-full self-center row-start-1 col-start-1 ${isActive ? 'text-accent-700 outline outline-1 outline-accent-700 bg-accent-50' : 'text-neutral-700 hover:bg-neutral-100'}`}
+                        >
+                            <PiMapPinFill className="w-5 h-5 text-neutral-600" aria-hidden="true" />
+                        </ClickableIcon>
+                    )}
+
+                    <div className={`${hasPin ? 'row-start-1 col-start-2' : ''} flex-1 min-w-0 flex flex-wrap items-center gap-x-2 leading-6 min-h-6`}>
+                        {cadastrePrefix && (
+                            <Link className="no-underline rounded-full bg-neutral-600 text-white px-1.5 !py-0 inline-flex items-center text-sm" href={"/uuid/" + s.uuid}>
+                                {cadastrePrefix}
+                            </Link>
+                        )}
+
+                        <Link className="no-underline hover:underline text-lg" href={"/uuid/" + s.uuid}>
+                            <strong>{s.label}</strong>
                         </Link>
                         {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
                         {additionalLabels && <span className="text-neutral-900"> – {additionalLabels}</span>}
-                        {resultRenderers[ds]?.links?.(s) || defaultResultRenderer?.links?.(s)}
                     </div>
+
+                    {links && (
+                        <div className={`${hasPin ? 'row-start-2 col-start-2' : ''} mt-0.5`}>
+                            {links}
+                        </div>
+                    )}
+
                     {isInitGroup && activePoint && lat && lng && (
-                        <div className="bg-neutral-50 border border-neutral-200 rounded-md px-2 py-1 mt-0.5 w-full">{coordinateTypeLabel || "Opphavleg koordinat i " + datasetTitles[ds]} </div>
+                        <div className={`bg-neutral-50 border border-neutral-200 rounded-md px-2 py-1 mt-0.5 w-full ${hasPin ? 'col-start-2 row-start-3' : ''}`}>
+                            {coordinateTypeLabel || "Opphavleg koordinat i " + datasetTitles[ds]}
+                        </div>
                     )}
                 </div>
             </li>
@@ -173,8 +190,8 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                             </ClickableIcon>
                         </div>}
                         <ul className="flex flex-col w-full gap-1">
-                            {/* No nesting at all – behave exactly as before */}
-                            {!hasNesting && items.map((s: any) => renderItem(s, ds, isInitGroup, activePoint, 0))}
+                            {/* No nesting at all – show gnr for standalone items */}
+                            {!hasNesting && items.map((s: any) => renderItem(s, ds, isInitGroup, activePoint, 0, 'parent'))}
 
                             {/* With nesting – render parents with their children */}
                             {hasNesting && rootItems.map((parent: any) => {
@@ -215,7 +232,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                                                         className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
                                                         onClick={() => toggleShowAllChildren(parent.uuid)}
                                                     >
-                                                        Vis fleire ( + {hiddenCount} )
+                                                        Vis fleire ({hiddenCount})
                                                     </button>
                                                 </li>
                                             )}
@@ -245,7 +262,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                         className="text-lg text-neutral-900 flex items-center gap-1"
                         onClick={() => setShowAll(!showAll)}
                     >
-                        {showAll ? 'Færre datasett' : `Fleire datasett ( + ${datasetKeys.length - visibleCount} )`}
+                        {showAll ? 'Færre datasett' : `Fleire datasett (${datasetKeys.length - visibleCount})`}
                     </button>
                 </li>
             )}
