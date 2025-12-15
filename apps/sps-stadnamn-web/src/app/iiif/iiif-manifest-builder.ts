@@ -3,6 +3,25 @@ import { postQuery } from "@/app/api/_utils/post";
 import { datasetPresentation, licenses } from "@/config/metadata-config";
 import { ensureArrayValues } from "@/app/iiif/iiif-utils";
 
+const iiifCorsHeaders: Record<string, string> = {
+  // IIIF manifests are typically public; allowing cross-origin access enables viewers like Mirador.
+  // If you want to restrict this, replace "*" with a specific origin (and consider Vary: Origin).
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Accept, Range, Authorization",
+  "Access-Control-Max-Age": "86400",
+}
+
+function withIiifCorsHeaders(headers?: HeadersInit) {
+  const h = new Headers(headers)
+  for (const [k, v] of Object.entries(iiifCorsHeaders)) h.set(k, v)
+  return h
+}
+
+function iiifJson(data: any, init?: ResponseInit) {
+  return Response.json(data, { ...init, headers: withIiifCorsHeaders(init?.headers) })
+}
+
 function getBaseUrlFromRequest(request: Request): string {
   try {
     const { origin } = new URL(request.url)
@@ -93,7 +112,7 @@ export async function buildManifest(request: Request, type: string) {
   const uuid: string = url.pathname.replace('.json', '').split('/').pop() as string
   // validate that uuid is a string with correct length 
   if (!uuid || uuid.length !== 36) {
-    return Response.json({ error: 'Invalid UUID' }, { status: 400 })
+    return iiifJson({ error: 'Invalid UUID' }, { status: 400 })
   }
 
   let doc
@@ -112,7 +131,7 @@ export async function buildManifest(request: Request, type: string) {
   }
 
   if (!doc) {
-    return Response.json({ error: 'Document not found' }, { status: 404 })
+    return iiifJson({ error: 'Document not found' }, { status: 404 })
   }
   else {
     doc = ensureArrayValues(doc)
@@ -161,7 +180,7 @@ export async function buildManifest(request: Request, type: string) {
     })
 
 
-    return Response.json(collection_manifest, { status })
+    return iiifJson(collection_manifest, { status })
   }
 
 
@@ -202,7 +221,7 @@ export async function buildManifest(request: Request, type: string) {
       manifest["items"] = [buildAudioCanvas(source.audio, manifestDataset, baseUrl)]
     }
 
-    return Response.json(manifest, { status: 200 })
+    return iiifJson(manifest, { status: 200 })
   }
 
 
@@ -211,32 +230,32 @@ export async function buildManifest(request: Request, type: string) {
   if (type == 'canvas') {
     if (source.images) {
       const canvas = source.images.find((image: any) => image.canvasUuid == uuid)
-      return Response.json(buildImageCanvas(canvas, manifestDataset, baseUrl))
+      return iiifJson(buildImageCanvas(canvas, manifestDataset, baseUrl))
     } else if (source.audio) {
-      return Response.json(buildAudioCanvas(source.audio, manifestDataset, baseUrl))
+      return iiifJson(buildAudioCanvas(source.audio, manifestDataset, baseUrl))
     }
   }
 
   if (type == 'annotationPage') {
     if (source.images) {
       const canvas = source.images.find((image: any) => image.annotationPageUuid == uuid)
-      return Response.json(buildAnnotationPage(canvas, manifestDataset, baseUrl))
+      return iiifJson(buildAnnotationPage(canvas, manifestDataset, baseUrl))
     } else if (source.audio) {
-      return Response.json(buildAudioAnnotationPage(source.audio, manifestDataset, baseUrl))
+      return iiifJson(buildAudioAnnotationPage(source.audio, manifestDataset, baseUrl))
     }
   }
 
   if (type == 'annotation') {
     if (source.images) {
       const canvas = source.images.find((image: any) => image.annotationUuid == uuid)
-      return Response.json(buildAnnotation(canvas, manifestDataset, baseUrl))
+      return iiifJson(buildAnnotation(canvas, manifestDataset, baseUrl))
     } else if (source.audio) {
-      return Response.json(buildAudioAnnotation(source.audio, manifestDataset, baseUrl))
+      return iiifJson(buildAudioAnnotation(source.audio, manifestDataset, baseUrl))
     }
 
   }
 
-  return Response.json({ error: `Invalid type: ${type}` }, { status: 400 })
+  return iiifJson({ error: `Invalid type: ${type}` }, { status: 400 })
 
 
 
