@@ -169,9 +169,9 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
   },
   m1886: {
     ...required, sosi, adm, adm1, adm2,
-    "misc.knr": { label: "Kommunenummer", table, facet, result },
-    "misc.gnr": { label: "Gardsnummer", table, facet, result, additionalParams: ["misc.knr"] },
-    "misc.bnr": { label: "Bruksnummer", table, facet, result, additionalParams: ["misc.knr", "misc.gnr"] },
+    "knr": { label: "Kommunenummer", table, facet, result },
+    "misc.GNR": { label: "Gardsnummer", table, facet, result, additionalParams: ["knr"] },
+    "misc.BNR": { label: "Bruksnummer", table, facet, result, additionalParams: ["knr", "misc.GNR"] },
     ...cadastre,
     ...identifiers,
   },
