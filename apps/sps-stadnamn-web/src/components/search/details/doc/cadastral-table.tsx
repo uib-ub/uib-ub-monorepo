@@ -63,9 +63,9 @@ export default function CadastralTable({ dataset, uuid, list }: CadastralTablePr
   }
 
   if (list) {
-    return <ul className="list-none divide-y divide-neutral-200">
+    return <ul className="list-none flex flex-col gap-0.5">
       {hits.map((hit: any) => (
-        <li key={hit._id} className="py-2">
+        <li key={hit._id}>
           <Clickable
             link
             add={{
@@ -75,9 +75,14 @@ export default function CadastralTable({ dataset, uuid, list }: CadastralTablePr
                 : {}),
               ...(hit?._source?.group?.id ? { init: stringToBase64Url(hit._source.group.id) } : {}),
             }}
-            className="no-underline block px-3 py-2 hover:bg-neutral-50"
+            className="no-underline grid grid-cols-[1.75rem_1fr] items-center gap-2 px-3 py-1.5 w-full hover:bg-neutral-50 focus:bg-neutral-50 transition-colors"
           >
-            {`${getBnr(hit, dataset)} ${hit._source.label}`}
+            <span className="tabular-nums text-xs text-neutral-900 text-right font-medium">
+              {getBnr(hit, dataset)}
+            </span>
+            <span className="text-neutral-900 truncate">
+              {hit._source.label}
+            </span>
           </Clickable>
         </li>
       ))}

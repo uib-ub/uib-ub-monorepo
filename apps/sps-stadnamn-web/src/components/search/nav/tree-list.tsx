@@ -1,5 +1,5 @@
 import { treeSettings } from "@/config/server-config"
-import { getSkeletonLength, getValueByPath } from "@/lib/utils"
+import { getGnr, getSkeletonLength } from "@/lib/utils"
 import { useQuery } from "@tanstack/react-query"
 import Clickable from "../../ui/clickable/clickable"
 import { buildTreeParam } from "@/lib/tree-param"
@@ -69,7 +69,7 @@ export default function TreeList({
 
                 // If we're at adm2 level, show cadastral units (farms). Click goes to uuid level.
                 if (adm2) {
-                    const gnr = getValueByPath(fields, settings.subunit.replace('__', '.'))
+                    const gnr = getGnr(item, dataset)
                     const farmName = fields[settings.parentName]?.[0] || fields.label?.[0]
                     const itemUuid = fields.uuid?.[0]
                     const isExpanded = !!expandedUuid && !!itemUuid && expandedUuid === itemUuid
@@ -111,12 +111,12 @@ export default function TreeList({
                                 className="flex items-center justify-between p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full aria-[current='page']:bg-accent-50"
                             >
                                 <span className="flex-1 text-black">
-                                    {gnr && `${gnr}. `}{farmName}
+                                    {gnr ? `${gnr} ` : ''}{farmName}
                                 </span>
                             </Clickable>
                             {isExpanded && (
-                                <div className="pb-2">
-                                    <div className="ml-3 border-l border-neutral-200">
+                                <div className="pb-3">
+                                    <div className="ml-0 mt-1">
                                         <CadastralTable dataset={dataset} uuid={itemUuid} list={true} />
                                     </div>
                                 </div>
