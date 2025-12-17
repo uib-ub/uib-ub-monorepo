@@ -35,6 +35,12 @@ export const useSessionStore = create<{
 	openTabs: Record<string, 'sources' | 'names' | 'locations'>,
 	setOpenTabs: (id: string, tab: 'sources' | 'names' | 'locations') => void,
 
+	// When entering tree/cadastral view from /search, store the previous querystring
+	// so we can restore it when leaving tree view.
+	treeSavedQuery: string | null,
+	setTreeSavedQuery: (query: string) => void,
+	clearTreeSavedQuery: () => void,
+
 }>()((set) => ({
 	menuOpen: false,
 	setMenuOpen: (open) => set({ menuOpen: open }),
@@ -65,6 +71,10 @@ export const useSessionStore = create<{
 	setPrefTab: (tab: 'sources' | 'names' | 'locations') => set({ prefTab: tab }),
 	openTabs: {},
 	setOpenTabs: (id: string, tab: 'sources' | 'names' | 'locations') => set((s) => ({ openTabs: { ...s.openTabs, [id]: tab } })),
+
+	treeSavedQuery: null,
+	setTreeSavedQuery: (query: string) => set({ treeSavedQuery: query }),
+	clearTreeSavedQuery: () => set({ treeSavedQuery: null }),
 
 
 	autocompleteOpen: false,

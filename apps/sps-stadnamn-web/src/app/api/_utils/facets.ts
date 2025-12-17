@@ -44,6 +44,7 @@ export const RESERVED_PARAMS = [
   'mapSettings',
   'debug',
   'debugGroups',
+  'includeSuppressed',
   'locations' // Lokaliteter - tab that enables nested markers
 
 ] as const;
@@ -234,6 +235,19 @@ export function extractFacets(request: Request) {
         });
       }
 
+      // Handle 'within' field - try both with and without .keyword suffix
+      // since different datasets may have different mappings
+      else if (key == 'within') {
+        termFilters.push({
+          "bool": {
+            "should": filteredValues.flatMap(value => [
+              { "term": { "within": value } },
+              { "term": { "within.keyword": value } }
+            ]),
+            "minimum_should_match": 1
+          }
+        });
+      }
 
       // Handle nested properties
       else if (key.includes('__')) {

@@ -105,19 +105,19 @@ export default function TreeList({
                                     tree: isExpanded
                                         ? buildTreeParam({ dataset, adm1, adm2 })
                                         : buildTreeParam({ dataset, adm1, adm2, uuid: itemUuid }),
-                                    ...(groupId ? { init: stringToBase64Url(groupId) } : {}),
+                                    ...(groupId ? { group: stringToBase64Url(groupId) } : {}),
                                     ...(activePoint ? { activePoint } : {}),
                                 }}
-                                className="flex items-center justify-between p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full aria-[current='page']:bg-accent-50"
+                                className="flex items-center p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full aria-[current='page']:bg-accent-50"
                             >
-                                <span className="flex-1 text-black">
+                                <span className="text-black">
                                     {gnr ? `${gnr} ` : ''}{farmName}
                                 </span>
                             </Clickable>
                             {isExpanded && (
                                 <div className="pb-3">
                                     <div className="ml-0 mt-1">
-                                        <CadastralTable dataset={dataset} uuid={itemUuid} list={true} />
+                                        <CadastralTable dataset={dataset} uuid={itemUuid} list={true} flush={true} groupId={groupId} gnr={gnr} adm1={adm1} adm2={adm2} />
                                     </div>
                                 </div>
                             )}

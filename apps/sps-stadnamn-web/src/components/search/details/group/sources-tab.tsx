@@ -10,6 +10,9 @@ import { treeSettings } from "@/config/server-config";
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { matchesActiveYear, matchesActiveName, matchesActivePoint } from "./group-utils";
+import CoordinateTypeInfo from "../doc/coordinate-type-info";
+import IconButton from "@/components/ui/icon-button";
+import { useTreeIsolation } from "@/lib/tree-isolation";
 
 interface SourcesTabProps {
     datasets: Record<string, any[]>;
@@ -22,7 +25,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
     // Parents whose children are fully expanded (show all bruk, not just 2)
     const [showAllChildrenParents, setShowAllChildrenParents] = useState<Set<string>>(new Set())
     const datasetKeys = useMemo(() => Object.keys(datasets).filter(ds => datasets[ds] && datasets[ds].length > 0), [datasets])
-    const { sosiVocab, coordinateVocab, mapFunctionRef } = useContext(GlobalContext)
+    const { sosiVocab, mapFunctionRef } = useContext(GlobalContext)
 
     // If not filtered: show 2 datasets if more than 3, otherwise show all
     // If filtered: show 4 datasets if more than 5, otherwise show all
@@ -31,6 +34,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
     const visibleDatasets = showAll ? datasetKeys : datasetKeys.slice(0, visibleCount)
     const searchParams = useSearchParams()
     const activePoint = searchParams.get('activePoint')
+    const { openTree } = useTreeIsolation()
 
     // Toggle whether a parent shows ALL its children (bruk) or only the first 2
     const toggleShowAllChildren = (uuid: string) => {
@@ -82,7 +86,6 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
         const lat = s.location?.coordinates?.[1];
         const lng = s.location?.coordinates?.[0];
         const isActive = activePoint && lat && lng && activePoint === `${lat},${lng}`;
-        const coordinateTypeLabel = s.coordinateType && coordinateVocab?.[s.coordinateType]?.label;
 
         // Cadastre prefix: gnr on parent (gard), bnr on child (bruk)
         let cadastrePrefix = ''
@@ -142,15 +145,13 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                         </Link>
 
                         {canOpenTreeView && isInitGroup && !activePoint && (
-                            <ClickableIcon
+                            <IconButton
                                 label="Opne matrikkelvisning"
                                 className=""
-                                add={{
-                                    tree: `${ds}_${adm1}_${adm2}_${s.uuid}`
-                                }}
+                                onClick={() => openTree(`${ds}_${adm1}_${adm2}_${s.uuid}`)}
                             >
                                 <PiTreeViewFill className="text-neutral-700 h-6 w-6" aria-hidden="true" />
-                            </ClickableIcon>
+                            </IconButton>
                         )}
 
                         {additionalLabels && <span className="text-neutral-900">{additionalLabels}</span>}
@@ -160,7 +161,11 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
 
                     {isInitGroup && activePoint && lat && lng && (
                         <div className="bg-neutral-50 border border-neutral-200 rounded-md px-2 py-1 mt-0.5 w-full">
-                            {coordinateTypeLabel || "Opphavleg koordinat i " + datasetTitles[ds]}
+                            {s.coordinateType ? (
+                                <CoordinateTypeInfo coordinateType={s.coordinateType} />
+                            ) : (
+                                <span className="text-sm text-neutral-700">Opphavleg koordinat i {datasetTitles[ds]}</span>
+                            )}
                         </div>
                     )}
    
