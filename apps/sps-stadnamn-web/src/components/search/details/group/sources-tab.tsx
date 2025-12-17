@@ -213,8 +213,13 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                             {/* No nesting at all – show gnr for standalone items */}
                             {!hasNesting && items.map((s: any) => renderItem(s, ds, isInitGroup, activePoint, 0, 'parent', true))}
 
-                            {/* With nesting – render parents with their children */}
-                            {hasNesting && rootItems.map((parent: any) => {
+                            {/* With nesting – only show children (subunits/bruk) for the init group */}
+                            {hasNesting && !isInitGroup && rootItems.map((parent: any) =>
+                                renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent', true)
+                            )}
+
+                            {/* With nesting (init group) – render parents with their children */}
+                            {hasNesting && isInitGroup && rootItems.map((parent: any) => {
                                 const children = childrenMap.get(parent.uuid) || []
                                 const childCount = children.length
 
