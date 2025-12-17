@@ -10,8 +10,8 @@ import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useContext, useEffect, useMemo } from "react";
-import { PiArchive, PiMapPinFill, PiPushPin, PiX } from "react-icons/pi";
+import { useContext, useEffect, useMemo, type ReactNode } from "react";
+import { PiArchive, PiCaretLeftBold, PiCaretRightBold, PiDotsThreeBold, PiMapPinFill, PiPushPin, PiX } from "react-icons/pi";
 import Carousel from "../../nav/results/carousel";
 import { TextTab } from "./text-tab";
 import { NamesSection } from "./names-section";
@@ -29,6 +29,20 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     const { mapFunctionRef, scrollableContentRef } = useContext(GlobalContext)
     const { initValue } = useGroup()
     const activePoint = searchParams.get('activePoint')
+
+    const roundCoordString = (value: string, decimals: number) => {
+        const n = Number(value)
+        if (!Number.isFinite(n)) return value.trim()
+        const fixed = n.toFixed(decimals)
+        // Trim trailing zeros (and possible trailing dot) for nicer display
+        return fixed.replace(/\.?0+$/, '')
+    }
+
+    const formatCoordText = (lat: string, lng: string) => {
+        // Light rounding for readability (selection is by index, so no ambiguity)
+        const d = 6
+        return `N ${roundCoordString(lat, d)}°, Ø ${roundCoordString(lng, d)}°`
+    }
 
     // Read activeYear and activeName from URL params
     const activeYear = searchParams.get('activeYear')
@@ -312,7 +326,15 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <PiMapPinFill className="text-accent-800 flex-shrink-0" aria-hidden="true" />
-                                    <span className="text-neutral-900 text-base font-medium">koordinater</span>
+                                    <span className="text-neutral-900 text-base font-medium">
+                                        {(() => {
+                                            const activeIdx = uniqueCoordinates.findIndex((c) => c === activePoint)
+                                            const coord = uniqueCoordinates[Math.max(0, activeIdx)]
+                                            if (!coord) return 'koordinater'
+                                            const [latStr, lngStr] = coord.split(',')
+                                            return formatCoordText(latStr, lngStr)
+                                        })()}
+                                    </span>
                                 </div>
                                 <ClickableIcon
                                     label="Fjern kjeldeavgrensing"
@@ -322,37 +344,144 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                     <PiX className="text-neutral-800" />
                                 </ClickableIcon>
                             </div>
-                            <div className="flex flex-wrap gap-2">
-                                {uniqueCoordinates.map((coord: string) => {
-                                    const [lat, lng] = coord.split(',').map(parseFloat);
-                                    const isActive = activePoint === coord;
-                                    const fullLat = lat
-                                    const fullLng = lng
-                                    const shortLat = lat.toFixed(2);
-                                    const shortLng = lng.toFixed(2);
-                                    const fullText = `N ${fullLat}°, Ø ${fullLng}°`;
-                                    const shortText = `N ${shortLat}°, Ø ${shortLng}°`;
+                            {(() => {
+                                const total = uniqueCoordinates.length
+                                if (total <= 1) return null
 
+                                const activeIndexRaw = uniqueCoordinates.findIndex((c) => c === activePoint)
+                                const activeIndex = activeIndexRaw >= 0 ? activeIndexRaw : 0
+
+                                const goTo = (index: number) => {
+                                    const coord = uniqueCoordinates[index]
+                                    const [lat, lng] = coord.split(',').map(parseFloat)
+                                    return {
+                                        coord,
+                                        lat,
+                                        lng
+                                    }
+                                }
+
+                                const buildPageItems = () => {
+                                    // Return array of 0-based page indices and "ellipsis" markers.
+                                    // Keep this short so the control doesn't wrap: e.g. 1 … 4 … 10
+                                    const maxNumbers = 5
+                                    const items: Array<number | 'ellipsis'> = []
+
+                                    if (total <= maxNumbers) {
+                                        for (let i = 0; i < total; i++) items.push(i)
+                                        return items
+                                    }
+
+                                    const first = 0
+                                    const last = total - 1
+                                    items.push(first)
+
+                                    // Near the start: 1 2 3 … last
+                                    if (activeIndex <= 2) {
+                                        items.push(1, 2, 'ellipsis', last)
+                                        return items
+                                    }
+
+                                    // Near the end: 1 … last-2 last-1 last
+                                    if (activeIndex >= total - 3) {
+                                        items.push('ellipsis', last - 2, last - 1, last)
+                                        return items
+                                    }
+
+                                    // Middle: 1 … active … last
+                                    items.push('ellipsis', activeIndex, 'ellipsis', last)
+                                    return items
+                                }
+
+                                const NavBtn = ({
+                                    label,
+                                    targetIndex,
+                                    disabled,
+                                    children
+                                }: {
+                                    label: string
+                                    targetIndex: number
+                                    disabled: boolean
+                                    children: ReactNode
+                                }) => {
+                                    const t = goTo(targetIndex)
                                     return (
                                         <Clickable
-                                            key={coord}
-                                            add={{ activePoint: coord }}
+                                            add={{ activePoint: t.coord }}
+                                            disabled={disabled}
                                             onClick={() => {
+                                                if (disabled) return
                                                 setTimeout(() => {
-                                                    mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-                                                }, 0);
+                                                    mapFunctionRef.current?.flyTo([t.lat, t.lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] })
+                                                }, 0)
                                             }}
-                                            className={`px-3 py-1.5 rounded-md text-sm transition-colors ${isActive
-                                                ? 'bg-accent-800 text-white'
-                                                : 'bg-white text-neutral-900 hover:bg-neutral-200 border border-neutral-200'
+                                            className={`w-9 h-9 inline-flex items-center justify-center rounded-md text-sm transition-colors border border-neutral-200 ${disabled
+                                                ? 'bg-neutral-100 text-neutral-400 cursor-not-allowed'
+                                                : 'bg-white text-neutral-900 hover:bg-neutral-200'
                                                 }`}
-                                            title={fullText}
+                                            aria-label={label}
+                                            title={label}
                                         >
-                                            {shortText}
+                                            {children}
                                         </Clickable>
-                                    );
-                                })}
-                            </div>
+                                    )
+                                }
+
+                                return (
+                                    <div className="flex flex-nowrap items-center gap-2">
+                                        <NavBtn label="Førre koordinat" targetIndex={Math.max(0, activeIndex - 1)} disabled={activeIndex === 0}>
+                                            <PiCaretLeftBold aria-hidden="true" />
+                                        </NavBtn>
+
+                                        <div className="flex flex-nowrap gap-2">
+                                            {buildPageItems().map((item, idx) => {
+                                                if (item === 'ellipsis') {
+                                                    return (
+                                                        <span
+                                                            key={`ellipsis-${idx}`}
+                                                            className="w-9 h-9 inline-flex items-center justify-center text-neutral-500 select-none"
+                                                            aria-hidden="true"
+                                                        >
+                                                            <PiDotsThreeBold className="text-base" aria-hidden="true" />
+                                                        </span>
+                                                    )
+                                                }
+
+                                                const index = item
+                                                const coord = uniqueCoordinates[index]
+                                                const isActive = index === activeIndex
+                                                const [latStr, lngStr] = coord.split(',')
+                                                const fullText = formatCoordText(latStr, lngStr)
+                                                const { lat, lng } = goTo(index)
+
+                                                return (
+                                                    <Clickable
+                                                        key={coord}
+                                                        add={{ activePoint: coord }}
+                                                        onClick={() => {
+                                                            setTimeout(() => {
+                                                                mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] })
+                                                            }, 0)
+                                                        }}
+                                                        className={`w-9 h-9 inline-flex items-center justify-center rounded-md text-sm transition-colors border border-neutral-200 ${isActive
+                                                            ? 'bg-accent-800 text-white border-accent-800'
+                                                            : 'bg-white text-neutral-900 hover:bg-neutral-200'
+                                                            }`}
+                                                        title={fullText}
+                                                        aria-label={`Koordinat ${index + 1} av ${total}: ${fullText}`}
+                                                    >
+                                                        {index + 1}
+                                                    </Clickable>
+                                                )
+                                            })}
+                                        </div>
+
+                                        <NavBtn label="Neste koordinat" targetIndex={Math.min(total - 1, activeIndex + 1)} disabled={activeIndex === total - 1}>
+                                            <PiCaretRightBold aria-hidden="true" />
+                                        </NavBtn>
+                                    </div>
+                                )
+                            })()}
                         </div>
                     </div>
                 )}
