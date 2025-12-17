@@ -141,11 +141,13 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                             {cadastrePrefix}<strong>{s.label}</strong> {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
                         </Link>
 
-                        {canOpenTreeView && (
+                        {canOpenTreeView && isInitGroup && !activePoint && (
                             <ClickableIcon
                                 label="Opne matrikkelvisning"
                                 className=""
-                                href="/"
+                                add={{
+                                    tree: `${ds}_${adm1}_${adm2}_${s.uuid}`
+                                }}
                             >
                                 <PiTreeViewFill className="text-neutral-700 h-6 w-6" aria-hidden="true" />
                             </ClickableIcon>
@@ -167,7 +169,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
     }
 
     return (
-        <ul className="flex flex-col w-full gap-8 pt-4">
+        <ul className="flex flex-col w-full gap-8 pt-8">
             {visibleDatasets.map((ds) => {
                 const items = datasets[ds] || []
                 if (items.length === 0) return null

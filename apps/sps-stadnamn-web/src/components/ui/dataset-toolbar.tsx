@@ -27,7 +27,7 @@ export default function DatasetToolbar({ itemDataset }: { itemDataset: string })
             </Link>
         ))}
 
-        {treeSettings[itemDataset] && <Link href={`/search?dataset=${itemDataset}&nav=tree`} className="btn btn-outline btn-compact"><PiTreeView className="text-neutral-800" aria-hidden="true" />Register</Link>}
+        {treeSettings[itemDataset] && <Link href={`/search?tree=${itemDataset}`} className="btn btn-outline btn-compact"><PiTreeView className="text-neutral-800" aria-hidden="true" />Register</Link>}
 
         <Link href={`/info/datasets/${itemDataset.split('_')[0]}`} className="btn btn-outline btn-compact">Les meir<PiCaretRight className="text-primary-700" aria-hidden="true" /></Link>
 

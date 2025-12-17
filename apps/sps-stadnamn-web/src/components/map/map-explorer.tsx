@@ -8,13 +8,15 @@ import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./mark
 import { boundsFromZoomAndCenter, calculateRadius, fitBoundsToGroupSources, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
+import { parseTreeParam } from "@/lib/tree-param";
+import { getBnr, getGnr } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
 import useGroupData from "@/state/hooks/group-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useMapSettings } from '@/state/zustand/persistent-map-settings';
 import { useSessionStore } from "@/state/zustand/session-store";
-import { useQueries } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import wkt from 'wellknown';
@@ -62,6 +64,8 @@ export default function MapExplorer() {
   const mapInstance = useRef<any>(null)
   const doc = searchParams.get('doc')
   const datasetTag = searchParams.get('datasetTag')
+  const tree = searchParams.get('tree')
+  const treeState = useMemo(() => parseTreeParam(tree), [tree])
   const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
   const mapSettings = searchParams.get('mapSettings') == 'on'
   const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
@@ -76,6 +80,80 @@ export default function MapExplorer() {
   const debug = useDebugStore((s) => s.debug)
   const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
   const showDebugGroups = searchParams.get('debugGroups') == 'on';
+
+  const treeDataset = treeState?.dataset
+  const treeUuid = treeState?.uuid
+  const lastTreeFitKeyRef = useRef<string | null>(null)
+
+  // Tree mode overlay data: selected cadastral unit + its subunits (bruk)
+  const { data: treeUnitDoc } = useQuery({
+    queryKey: ['treeSelectedDoc', treeDataset, treeUuid],
+    enabled: !!treeDataset && !!treeUuid,
+    queryFn: async () => {
+      const params = new URLSearchParams({ uuid: treeUuid as string, dataset: treeDataset as string })
+      const res = await fetch(`/api/tree?${params.toString()}`)
+      if (!res.ok) return null
+      const data = await res.json()
+      return data?.hits?.hits?.[0]?._source || null
+    },
+    staleTime: 1000 * 60 * 5,
+  })
+
+  const { data: treeSubunitsData } = useQuery({
+    queryKey: ['cadastral', treeDataset, treeUuid],
+    enabled: !!treeDataset && !!treeUuid,
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        perspective: treeDataset as string,
+        within: treeUuid as string,
+        size: '1000',
+      })
+      const res = await fetch(`/api/search/table?${params.toString()}`)
+      if (!res.ok) return null
+      return res.json()
+    },
+    staleTime: 1000 * 60 * 5,
+  })
+
+  // In tree mode, fit bounds to the selected cadastral unit + its subunits,
+  // similar to how selecting a collapsed result fits to a group's sources.
+  useEffect(() => {
+    if (!mapInstance.current) return
+    if (!treeDataset || !treeUuid) return
+
+    const key = `${treeDataset}:${treeUuid}`
+    if (lastTreeFitKeyRef.current === key) return
+
+    const sources: Array<{ location: { coordinates: [number, number] } }> = []
+
+    if (treeUnitDoc?.location?.coordinates?.length === 2) {
+      const [lng, lat] = treeUnitDoc.location.coordinates as [number, number]
+      sources.push({ location: { coordinates: [lng, lat] } })
+    }
+
+    const subHits: any[] = treeSubunitsData?.hits?.hits || []
+    subHits.forEach((h: any) => {
+      const coords = h?._source?.location?.coordinates
+      if (coords?.length === 2) {
+        const [lng, lat] = coords as [number, number]
+        sources.push({ location: { coordinates: [lng, lat] } })
+      }
+    })
+
+    if (!sources.length) return
+
+    fitBoundsToGroupSources(
+      mapInstance.current,
+      {
+        sources,
+        ...(treeUnitDoc?.location?.coordinates?.length === 2
+          ? { fields: { location: [{ coordinates: treeUnitDoc.location.coordinates }] } }
+          : {}),
+      },
+      { duration: 0.25, padding: [50, 50], maxZoom: 18 }
+    )
+    lastTreeFitKeyRef.current = key
+  }, [treeDataset, treeUuid, treeUnitDoc, treeSubunitsData])
 
 
 
@@ -115,6 +193,27 @@ export default function MapExplorer() {
   const gridSizeRef = useRef<{ gridSize: number, precision: number }>(getGridSize(snappedBounds, zoomState));
   const router = useRouter()
 
+  // Ensure consistent stacking order for the tree-mode connected overlay:
+  // label markers (top) > numbered circles/dots > connecting lines (bottom).
+  const ensureTreeOverlayPanes = useCallback((map: any) => {
+    if (!map?.createPane) return
+
+    const ensure = (name: string, zIndex: number) => {
+      const existing = map.getPane?.(name)
+      const pane = existing || map.createPane(name)
+      if (pane?.style) {
+        pane.style.zIndex = String(zIndex)
+        // Avoid panes catching clicks; let Marker/Circle/Polyline handle pointer events.
+        // (Leaflet defaults are fine, but this keeps it predictable.)
+        pane.style.pointerEvents = 'auto'
+      }
+    }
+
+    ensure('treeLinePane', 350)
+    ensure('treeCirclePane', 450)
+    ensure('treeLabelPane', 650)
+  }, [])
+
 
   // Add state for geotile cells and intersecting cells
   interface GeotileCell {
@@ -150,7 +249,7 @@ export default function MapExplorer() {
           if (searchFilterParamsString) {
             newParams.set('totalHits', totalHits.value)
           }
-          if (datasetTag == 'tree' && !searchParams.get('within')) {
+          if (tree && !searchParams.get('within')) {
             newParams.set('sosi', 'gard')
           }
 
@@ -533,6 +632,7 @@ export default function MapExplorer() {
         if (!mapInstance.current) {
           mapInstance.current = e.target;
           mapFunctionRef.current = e.target;
+          ensureTreeOverlayPanes(e.target)
         }
       }}
       attributionControl={false}
@@ -549,6 +649,10 @@ export default function MapExplorer() {
 
         function EventHandlers() {
           const map = useMap();
+          // In case the map remounts, ensure panes exist.
+          useEffect(() => {
+            ensureTreeOverlayPanes(map)
+          }, [map]);
           useMapEvents({
             movestart: () => {
               tapHoldRef.current = null
@@ -821,7 +925,179 @@ export default function MapExplorer() {
 
             {
               (() => {
-                // Show lines and dots for the init group whenever there is an init
+                // When tree mode is active (and a cadastral unit is selected), show connected markers for
+                // the cadastral unit (gård) and its subunits (bruk) instead of "sources in init group".
+                const isTreeActive = !!tree && !!treeDataset && !!treeUuid
+
+                const subunitHits: any[] = treeSubunitsData?.hits?.hits || []
+                const subunitWithCoords = subunitHits.filter((h: any) => h?._source?.location?.coordinates?.length === 2)
+                const farmCoord = treeUnitDoc?.location?.coordinates?.length === 2
+                  ? [treeUnitDoc.location.coordinates[1], treeUnitDoc.location.coordinates[0]]
+                  : null
+
+                // The central point MUST be the cadastral unit's own coordinate (gård).
+                // If we don't have that coordinate, we don't render this overlay.
+                const central = farmCoord
+
+                if (isTreeActive && central && subunitWithCoords.length > 0) {
+                  const [centralLat, centralLng] = central as [number, number]
+
+                  // De-duplicate subunits by coordinate (so we don't draw multiple identical lines)
+                  const uniqueCoordKey = (lat: number, lng: number) => `${lat},${lng}`
+                  const uniqueCoords = new Set<string>()
+
+                  const numberCircleIcon = (value: string, variant: 'black' | 'white' = 'white') => {
+                    const bg = variant === 'black' ? '#000000' : '#ffffff'
+                    const fg = variant === 'black' ? '#ffffff' : '#000000'
+                    const border = '#000000'
+                    return new leaflet.DivIcon({
+                      className: '',
+                      html: `
+                        <div style="
+                          width: 22px;
+                          height: 22px;
+                          border-radius: 9999px;
+                          border: 2px solid ${border};
+                          background: ${bg};
+                          color: ${fg};
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          font-size: 12px;
+                          font-weight: 700;
+                          box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+                          transform: translate(-50%, -50%);
+                        ">
+                          ${value}
+                        </div>
+                      `,
+                      iconSize: [22, 22],
+                      iconAnchor: [0, 0],
+                    })
+                  }
+
+                  return (
+                    <>
+                      {/* Farm (cadastral unit) marker */}
+                      {farmCoord && (
+                        <>
+                          {/* Circle (dot) at farm coordinate */}
+                          <CircleMarker
+                            key={`tree-farm-dot-${treeUuid}`}
+                            center={[centralLat, centralLng]}
+                            radius={7}
+                            weight={3}
+                            opacity={1}
+                            fillOpacity={1}
+                            color="#000000"
+                            fillColor="#ffffff"
+                            pane="treeCirclePane"
+                            eventHandlers={{
+                              click: () => {
+                                const newParams = new URLSearchParams(searchParams);
+                                if (treeUnitDoc?.group?.id) {
+                                  newParams.set('init', stringToBase64Url(treeUnitDoc.group.id));
+                                  newParams.delete('group');
+                                }
+                                newParams.set('activePoint', `${centralLat},${centralLng}`);
+                                newParams.set('maxResults', '1');
+                                router.push(`?${newParams.toString()}`);
+                              }
+                            }}
+                          />
+
+                          {/* Label marker (number + label) */}
+                          <Marker
+                            key={`tree-farm-label-${treeUuid}`}
+                            zIndexOffset={2500}
+                            pane="treeLabelPane"
+                            icon={new leaflet.DivIcon(
+                              getLabelMarkerIcon(
+                                `${treeDataset ? (getGnr({ _source: treeUnitDoc }, treeDataset) || '') : ''} ${treeUnitDoc?.label || '[utan namn]'}`
+                                  .trim() || '[utan namn]',
+                                'black',
+                                undefined,
+                                true,
+                                false,
+                                false
+                              )
+                            )}
+                            position={[centralLat, centralLng]}
+                            eventHandlers={{
+                              click: () => {
+                                const newParams = new URLSearchParams(searchParams);
+                                if (treeUnitDoc?.group?.id) {
+                                  newParams.set('init', stringToBase64Url(treeUnitDoc.group.id));
+                                  newParams.delete('group');
+                                }
+                                newParams.set('activePoint', `${centralLat},${centralLng}`);
+                                newParams.set('maxResults', '1');
+                                router.push(`?${newParams.toString()}`);
+                              }
+                            }}
+                          />
+                        </>
+                      )}
+
+                      {/* Lines + subunit markers */}
+                      {subunitWithCoords.map((hit: any, index: number) => {
+                        const coords = hit?._source?.location?.coordinates
+                        if (!coords?.length) return null
+                        const lat = coords[1]
+                        const lng = coords[0]
+                        const coordKey = uniqueCoordKey(lat, lng)
+                        const isCentral = lat === centralLat && lng === centralLng
+                        if (isCentral) return null
+                        if (uniqueCoords.has(coordKey)) return null
+                        uniqueCoords.add(coordKey)
+
+                        const bnr = treeDataset ? getBnr(hit, treeDataset) : null
+                        const numberText = (bnr || '').toString().trim() || '?'
+
+                        return (
+                          <Fragment key={`tree-subunit-${index}-${coordKey}`}>
+                            <Polyline
+                              key={`tree-line-${index}-${coordKey}`}
+                              positions={[[lat, lng], [centralLat, centralLng]]}
+                              pane="treeLinePane"
+                              pathOptions={{
+                                color: '#000000',
+                                weight: 3,
+                                opacity: 0.5
+                              }}
+                            />
+                            <Marker
+                              key={`tree-marker-${index}-${coordKey}`}
+                              position={[lat, lng]}
+                              pane="treeCirclePane"
+                              icon={numberCircleIcon(numberText, 'white')}
+                              eventHandlers={{
+                                click: () => {
+                                  const newParams = new URLSearchParams(searchParams);
+                                  newParams.set('maxResults', '1');
+                                  if (hit?._source?.group?.id) {
+                                    newParams.set('init', stringToBase64Url(hit._source.group.id));
+                                    newParams.delete('group');
+                                  }
+                                  if (hit?._source?.uuid) {
+                                    newParams.set('doc', hit._source.uuid);
+                                  }
+                                  newParams.set('activePoint', `${lat},${lng}`);
+                                  newParams.delete('activeYear');
+                                  newParams.delete('activeName');
+                                  newParams.delete('point');
+                                  router.push(`?${newParams.toString()}`);
+                                }
+                              }}
+                            />
+                          </Fragment>
+                        )
+                      })}
+                    </>
+                  )
+                }
+
+                // Default mode: show lines and dots for the init group whenever there is an init
                 if (!initValue || !initGroupData?.sources) return null;
 
                 // Find the first source with coordinates - this is the central coordinate

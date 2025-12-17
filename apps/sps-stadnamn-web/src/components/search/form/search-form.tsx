@@ -293,7 +293,7 @@ export default function SearchForm() {
             <div className={`flex w-full h-full pr-1 bg-white ${isMobile ? 'shadow-lg' : `shadow-l-none rounded-l-none ${autocompleteOpen && data?.hits?.hits?.length > 0 ? 'rounded-tr-md' : 'rounded-r-md'} shadow-lg`} items-center relative group`}>
 
                 <label htmlFor="search-input" className="sr-only">Søk</label>
-                {false && datasetTag != 'tree' && !(isMobile && autocompleteOpen) && <ClickableIcon onClick={() => { setSnappedPosition('middle') }} add={{ options: options ? null : 'on' }} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
+                {false && !(isMobile && autocompleteOpen) && <ClickableIcon onClick={() => { setSnappedPosition('middle') }} add={{ options: options ? null : 'on' }} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
                     <PiSliders className="text-3xl xl:text-2xl" aria-hidden="true" />
                     {filterCount > 0 && <span className={`results-badge bg-primary-500 absolute top-1 left-1 rounded-full text-white text-xs ${filterCount < 10 ? 'px-1.5' : 'px-1'}`}>
                         {formatNumber(filterCount)}

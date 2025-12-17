@@ -13,6 +13,7 @@ export default function ModeSelector() {
     const mode = useMode()
     const { setPreferredTab, isMobile } = useContext(GlobalContext)
     const datasetTag = searchParams.get('datasetTag')
+    const tree = searchParams.get('tree')
 
     return <div className={`absolute z-[4000] tabs ${mode == 'map' ? 'rounded-br-md lg:rounded-md shadow-lg bg-white' : ''} ${isMobile ? 'pl-2 pt-2 pr-1 pb-1' : ' p-2 gap-1'}`} role="tablist">
         {contentSettings[perspective]?.display == 'map' && <ClickableIcon aria-selected={mode == 'map' ? true : false}
@@ -38,7 +39,7 @@ export default function ModeSelector() {
             {mode == 'table' ? <PiTableFill className="text-3xl text-accent-800" aria-hidden="true" /> : <PiTableLight className="text-3xl text-neutral-900" aria-hidden="true" />}
         </ClickableIcon>
 
-        {datasetTag != 'tree' && <ClickableIcon add={{ mode: 'list' }}
+        {!tree && <ClickableIcon add={{ mode: 'list' }}
             onClick={() => {
                 setPreferredTab(perspective, 'list')
             }}

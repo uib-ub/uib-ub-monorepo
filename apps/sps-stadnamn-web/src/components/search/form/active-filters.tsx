@@ -16,7 +16,8 @@ export default function ActiveFilters() {
   const searchParams = useSearchParams()
   const perspective = usePerspective()
   const datasetTag = searchParams.get('datasetTag')
-  const dataset = searchParams.get('dataset')
+  const tree = searchParams.get('tree')
+  const hasTree = !!searchParams.get('tree')
 
   const fulltext = searchParams.get('fulltext')
 
@@ -86,9 +87,11 @@ export default function ActiveFilters() {
 
   //const gnr =  getGnr(parentData, perspective)
 
-  if (datasetTag == 'tree') {
+  if (tree) {
     return <div className={`text-neutral-950 flex-wrap rounded-md gap-2 xl:h-10 pl-3 pr-2 py-1 flex items-center bg-white xl:shadow-md`}>
-      {dataset && <CadastreBreadcrumb />}<ClickableIcon label="Lukk matrikkelvisning" remove={["datasetTag"]}><PiX className="w-6 h-6 self-center flex-shrink-0" /></ClickableIcon></div>
+      {hasTree && <CadastreBreadcrumb />}
+      <ClickableIcon label="Lukk matrikkelvisning" remove={["tree"]}><PiX className="w-6 h-6 self-center flex-shrink-0" /></ClickableIcon>
+    </div>
   }
 
 

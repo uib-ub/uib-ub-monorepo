@@ -1,11 +1,11 @@
 import { treeSettings } from "@/config/server-config"
 import { getSkeletonLength, getValueByPath } from "@/lib/utils"
-import useDocData from "@/state/hooks/doc-data"
 import { useQuery } from "@tanstack/react-query"
-import { useSearchParams } from "next/navigation"
-import { useEffect, useRef, useState } from "react"
 import Clickable from "../../ui/clickable/clickable"
+import { buildTreeParam } from "@/lib/tree-param"
+import { useQueryClient } from "@tanstack/react-query"
 import CadastralTable from "../details/doc/cadastral-table"
+import { stringToBase64Url } from "@/lib/param-utils"
 
 const getTreeData = async (dataset: string | null, adm1?: string | null, adm2?: string | null) => {
     const params = new URLSearchParams()
@@ -22,36 +22,19 @@ const getTreeData = async (dataset: string | null, adm1?: string | null, adm2?: 
     return data
 }
 
-export default function TreeList() {
-    const searchParams = useSearchParams()
-    const adm1 = searchParams.get('adm1')
-    const adm2 = searchParams.get('adm2')
-    const dataset = searchParams.get('dataset')
-    const doc = searchParams.get('doc')
-    const { docData } = useDocData()
-
-    // Add state to track previous active item
-    const [previousDoc, setPreviousDoc] = useState<string | null>(null)
-
-    // Add ref to track the active list item
-    const activeItemRef = useRef<HTMLLIElement>(null)
-
-    // Scroll into view when docData changes
-    useEffect(() => {
-        if (docData?._source && activeItemRef.current) {
-            activeItemRef.current.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            })
-        }
-    }, [docData])
-
-    // Update previous doc when current doc changes
-    useEffect(() => {
-        if (doc !== previousDoc) {
-            setPreviousDoc(doc)
-        }
-    }, [doc, previousDoc])
+export default function TreeList({
+    dataset,
+    adm1,
+    adm2,
+    expandedUuid
+}: {
+    dataset: string
+    adm1?: string
+    adm2?: string
+    expandedUuid?: string | null
+}) {
+    const removeLegacyParams = ['dataset', 'adm1', 'adm2', 'doc']
+    const queryClient = useQueryClient()
 
     const { data: treeData } = useQuery({
         queryKey: ['treeData', dataset, adm1, adm2],
@@ -59,7 +42,7 @@ export default function TreeList() {
         enabled: !!dataset
     })
 
-    if (!dataset || !treeData?.hits?.hits) {
+    if (!treeData?.hits?.hits) {
         return (
             <ul className="list-none divide-y divide-neutral-200">
                 {[...Array(8)].map((_, i) => (
@@ -84,50 +67,65 @@ export default function TreeList() {
             {treeData.hits.hits.map((item: any) => {
                 const fields = item.fields
 
-                // If we're at adm2 level, show the farm names with gnr
+                // If we're at adm2 level, show cadastral units (farms). Click goes to uuid level.
                 if (adm2) {
-                    const gnr = fields.cadastre?.[0]?.gnr?.[0] || getValueByPath(fields, settings.subunit.replace('__', '.'))
-                    const farmName = fields[settings.parentName]?.[0]
-                    const itemWithin = fields.within?.[0]
-                    const isActive = !!docData?._source && (
-                        (itemWithin === docData._source.uuid) ||
-                        (itemWithin === docData._source.within)
-                    )
-                    const wasPreviouslyActive = itemWithin === previousDoc
+                    const gnr = getValueByPath(fields, settings.subunit.replace('__', '.'))
+                    const farmName = fields[settings.parentName]?.[0] || fields.label?.[0]
+                    const itemUuid = fields.uuid?.[0]
+                    const isExpanded = !!expandedUuid && !!itemUuid && expandedUuid === itemUuid
+                    const groupId = fields?.["group.id"]?.[0]
+                    const coords = fields?.location?.[0]?.coordinates
+                    const activePoint = Array.isArray(coords) && coords.length === 2
+                        ? `${coords[1]},${coords[0]}`
+                        : undefined
 
                     return (
                         <li
                             key={item._id}
-                            ref={isActive ? activeItemRef : undefined}
                         >
                             <Clickable
                                 link
-                                add={{ doc: itemWithin }}
+                                onClick={() => {
+                                    if (!isExpanded) {
+                                        // Prefill the selected-doc cache so breadcrumbs/title can render instantly.
+                                        // Keep this lightweight: label + location + group id + number (for breadcrumb + map).
+                                        const numberText = Array.isArray(gnr) ? gnr.join(", ") : (gnr?.toString?.() || gnr || '')
+                                        if (itemUuid) {
+                                            queryClient.setQueryData(['treeSelectedDoc', dataset, itemUuid], {
+                                                label: farmName,
+                                                ...(coords ? { location: { coordinates: coords } } : {}),
+                                                ...(groupId ? { group: { id: groupId } } : {}),
+                                                ...(numberText ? { __treeNumber: numberText } : {}),
+                                            })
+                                        }
+                                    }
+                                }}
+                                remove={removeLegacyParams}
+                                add={{
+                                    tree: isExpanded
+                                        ? buildTreeParam({ dataset, adm1, adm2 })
+                                        : buildTreeParam({ dataset, adm1, adm2, uuid: itemUuid }),
+                                    ...(groupId ? { init: stringToBase64Url(groupId) } : {}),
+                                    ...(activePoint ? { activePoint } : {}),
+                                }}
                                 className="flex items-center justify-between p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full aria-[current='page']:bg-accent-50"
-                                aria-current={isActive ? 'page' : undefined}
                             >
                                 <span className="flex-1 text-black">
                                     {gnr && `${gnr}. `}{farmName}
                                 </span>
                             </Clickable>
-
-                            {(isActive || wasPreviouslyActive) && itemWithin && (
-                                <div
-                                    className={`px-3 pb-3 transition-opacity duration-200 ${isActive ? 'opacity-100' : 'opacity-0'
-                                        }`}
-                                >
-                                    <CadastralTable
-                                        dataset={dataset as string}
-                                        uuid={itemWithin as string}
-                                        list={true}
-                                    />
+                            {isExpanded && (
+                                <div className="pb-2">
+                                    <div className="ml-3 border-l border-neutral-200">
+                                        <CadastralTable dataset={dataset} uuid={itemUuid} list={true} />
+                                    </div>
                                 </div>
                             )}
                         </li>
                     )
                 }
 
-                // If we're at adm1 level, show municipality numbers and farm names
+                // If we're at adm1 level, show municipalities. Click goes to adm2 level.
                 if (adm1) {
                     const municipalityNumber = fields[settings.aggSort]?.[0]
                     const municipalityName = fields['adm2']
@@ -135,7 +133,10 @@ export default function TreeList() {
                         <li key={item._id}>
                             <Clickable
                                 link
-                                add={{ adm2: fields.adm2?.[0] }}
+                                remove={removeLegacyParams}
+                                add={{
+                                    tree: buildTreeParam({ dataset, adm1, adm2: fields.adm2?.[0] })
+                                }}
                                 className="flex items-center justify-between p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full"
                             >
                                 <span className="flex-1 text-black">
@@ -146,7 +147,7 @@ export default function TreeList() {
                     )
                 }
 
-                // At dataset level, show counties with their numbers
+                // At dataset level, show counties. Click goes to adm1 level.
                 const countyName = fields.adm1?.[0]
                 const municipalityNumber = fields[settings.aggSort]?.[0]
                 const countyNumber = municipalityNumber?.substring(0, 2)
@@ -155,7 +156,10 @@ export default function TreeList() {
                     <li key={item._id}>
                         <Clickable
                             link
-                            add={{ adm1: countyName }}
+                            remove={removeLegacyParams}
+                            add={{
+                                tree: buildTreeParam({ dataset, adm1: countyName })
+                            }}
                             className="flex items-center justify-between p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full"
                         >
                             <span className="flex-1 text-black">

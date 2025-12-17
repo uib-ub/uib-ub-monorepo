@@ -45,7 +45,7 @@ export async function GET(request: Request) {
       },
     ],
     "track_total_hits": false,
-    "_source": ["uuid", "label", "attestations", "year", "boost", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area", "misc.Enhetsnummer", "misc.MNR", "misc.LNR", "ssr", "within", "cadastre"],
+    "_source": ["uuid", "label", "attestations", "year", "boost", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area", "misc.Enhetsnummer", "misc.MNR", "misc.LNR", "ssr", "within", "cadastre", "adm1", "adm2"],
   }
 
 
@@ -83,6 +83,9 @@ export async function GET(request: Request) {
       boost: hit._source.boost,
       within: hit._source.within,
       cadastre: hit._source.cadastre,
+      // Needed by the "Opne matrikkelvisning" button (tree param), and these are NOT `group.adm1/adm2`.
+      adm1: hit._source.adm1,
+      adm2: hit._source.adm2,
     })
 
 

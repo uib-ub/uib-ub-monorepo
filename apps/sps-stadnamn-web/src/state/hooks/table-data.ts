@@ -1,5 +1,6 @@
 'use client'
 import { useSearchQuery } from "@/lib/search-params";
+import { parseTreeParam } from "@/lib/tree-param";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 
@@ -53,9 +54,10 @@ export default function useTableData() {
     const perPage = searchParams.get('perPage') ? parseInt(searchParams.get('perPage')!) : 10
     const desc = searchParams.get('desc')
     const asc = searchParams.get('asc')
-    const datasetTag = searchParams.get('datasetTag')
+    const tree = searchParams.get('tree')
     const doc = searchParams.get('doc')
-    const cadastreDoc = datasetTag == 'tree' ? doc : null
+    const treeUuid = parseTreeParam(searchParams.get('tree')).uuid
+    const cadastreDoc = tree ? (treeUuid || doc) : null
 
     const { data, error, isLoading, isFetching, refetch, dataUpdatedAt } = useQuery({
         queryKey: ['tableData', page, perPage, searchQueryString, desc, asc, cadastreDoc],

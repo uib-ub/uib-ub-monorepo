@@ -14,6 +14,7 @@ import { usePerspective } from '@/lib/param-hooks';
 import { getSkeletonLength } from '@/lib/utils';
 import Link from 'next/link';
 import FacetToolbar from './facet-toolbar';
+import { buildTreeParam } from '@/lib/tree-param';
 
 // Memoized RegExp factory to prevent memory leaks
 const createSearchRegex = (() => {
@@ -44,7 +45,7 @@ export default function DatasetFacet() {
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
   const paramsExceptFacet = removeFilterParams('dataset')
   const datasetTag = searchParams.get('datasetTag')
-  const isCadastral = searchParams.get('datasetTag') == 'tree'
+  const isCadastral = !!searchParams.get('tree')
 
   useEffect(() => {
 
@@ -125,7 +126,7 @@ export default function DatasetFacet() {
     <>
       <div id="dataset-facet-content" className='flex flex-col gap-2'>
 
-        {datasetTag != 'tree' && <div className='flex gap-2 px-2 pt-1'>
+        {!isCadastral && <div className='flex gap-2 px-2 pt-1'>
           <div className='w-full h-10 relative'>
             <input aria-label="Søk i fasett" onChange={(e) => setClientSearch(e.target.value)}
               className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2" />
@@ -153,6 +154,7 @@ export default function DatasetFacet() {
                 if (isCadastral) {
                   const dataset = item.key.split('-')[2]
 
+                  // In cadastral/register mode we ONLY show datasets that support tree navigation.
                   return { item, titleMatch: !!treeSettings[dataset] }
                 }
 
@@ -172,12 +174,21 @@ export default function DatasetFacet() {
               })
               .map(({ item, titleMatch, descriptionMatch }: { item: any, titleMatch: boolean, descriptionMatch: boolean }, index: number) => {
 
-                if (!clientSearch?.length || descriptionMatch || titleMatch) {
+                // In cadastral/register mode: only show datasets with treeSettings.
+                if ((isCadastral && !titleMatch) || (!clientSearch?.length || descriptionMatch || titleMatch)) {
+                  if (isCadastral && !titleMatch) return null
                   const isExpanded = expandedDescriptions.has(item.key);
                   return (
                     <li key={index} className='py-3 relative'>
                       {isCadastral ?
-                        <Clickable link only={{ datasetTag: 'tree', dataset: item.key.split('-')[2] }} className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0 no-underline">
+                        <Clickable
+                          link
+                          remove={['dataset', 'adm1', 'adm2', 'doc']}
+                          add={{
+                            tree: buildTreeParam({ dataset: item.key.split('-')[2] })
+                          }}
+                          className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0 no-underline"
+                        >
                           {renderLabel(item.key)}<PiCaretRightBold className="text-primary-700" aria-hidden="true" />
                         </Clickable>
 

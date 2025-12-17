@@ -27,6 +27,7 @@ import ServerFacet from "./nav/facets/server-facet";
 import WikiAdmFacet from "./nav/facets/wikiAdm-facet";
 import DebugToggle from "./nav/results/debug-toggle";
 import TableOptions from "./table/table-options";
+import TreeWindow from "./nav/tree-window";
 
 
 
@@ -112,7 +113,7 @@ function LeftWindow({ children }: { children: React.ReactNode }) {
         if (mapSettings && maxResults) return null
         return <>{children}</>
     }
-    return <div className="bg-white shadow-lg flex flex-col absolute left-2 top-[4rem] w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-auto overflow-x-hidden stable-scrollbar">{children}</div>
+    return <div className="bg-white shadow-lg flex flex-col absolute left-2 top-[4rem] w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-auto overflow-x-hidden">{children}</div>
 }
 
 function RightWindow({ children }: { children: React.ReactNode }) {
@@ -146,6 +147,7 @@ export default function OverlayInterface() {
     const debugParam = searchParams.get('debug')
     const showDebugGroups = searchParams.get('debugGroups') == 'on'
     const maxResults = searchParams.get('maxResults')
+    const tree = searchParams.get('tree')
 
     useEffect(() => {
         if (debugParam == 'on') {
@@ -173,6 +175,8 @@ export default function OverlayInterface() {
                 {showLeftPanel && <LeftWindow>
 
                     {(tableOptions && <TableOptions />)
+
+                        || (tree && <TreeWindow />)
 
 
 

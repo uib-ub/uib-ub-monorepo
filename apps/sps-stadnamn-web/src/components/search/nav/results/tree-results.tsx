@@ -72,12 +72,12 @@ export default function TreeResults() {
       <div className="pt-2 pb-4 mx-2 !text-base flex">
         <Clickable link id="tree-title" aria-label="Innholdsfortegnelse"
           className="breadcrumb-link self-center  text-base"
-          only={{ adm: null, datasetTag: 'tree', mode: searchParams.get('mode') }}>
+          only={{ adm: null, mode: searchParams.get('mode') }}>
           <PiHouseFill aria-hidden="true" className="text-base" />
         </Clickable>
         &nbsp;/&nbsp;
         {groupBy == 'adm2' ? <>{treeAdm}</>
-          : <Clickable link className="breadcrumb-link !text-base" only={{ adm: treeAdm.split("__")[1], datasetTag: 'tree', mode: searchParams.get('mode') }}>
+          : <Clickable link className="breadcrumb-link !text-base" only={{ adm: treeAdm.split("__")[1], mode: searchParams.get('mode') }}>
             {treeAdm.split("__")[1]}
           </Clickable>}
         {!groupBy && <>
@@ -104,7 +104,6 @@ export default function TreeResults() {
               className="no-underline px-4 p-2 inline-block"
               only={{
                 adm: groupBy == 'adm2' ? item.key + "__" + treeAdm : item.key,
-                datasetTag: 'tree',
                 mode: searchParams.get('mode') == 'doc' ? preferredTabs[perspective] : searchParams.get('mode')
               }}>
               {treeSettings[perspective].showNumber && (treeAdm ? item.aggNum.buckets[0]?.key : item.aggNum.buckets[0]?.key.slice(0, 2))} {item.key}

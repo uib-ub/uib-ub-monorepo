@@ -7,9 +7,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { fieldConfig } from "@/config/search-config"
+import { treeSettings } from "@/config/server-config"
 import { getBnr, getFieldValue } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { stringToBase64Url } from '@/lib/param-utils'
 
 interface CadastralTableProps {
   dataset: string
@@ -18,14 +20,18 @@ interface CadastralTableProps {
 }
 
 export default function CadastralTable({ dataset, uuid, list }: CadastralTableProps) {
-  const { data: cadastralData, isLoading: cadastralLoading } = useQuery({
+  const { data: cadastralData, isLoading: cadastralLoading, error: cadastralError } = useQuery({
     queryKey: ['cadastral', dataset, uuid],
     queryFn: async () => {
+      const sortFields = treeSettings[dataset]?.sort?.length
+        ? treeSettings[dataset].sort.join(',')
+        : 'cadastre__gnr,cadastre__bnr'
+
       const params = new URLSearchParams({
         perspective: dataset,
         within: uuid,
         size: '1000',
-        asc: 'cadastre__gnr,cadastre__bnr'
+        asc: sortFields
       })
 
       const res = await fetch(`/api/search/table?${params.toString()}`)
@@ -40,13 +46,37 @@ export default function CadastralTable({ dataset, uuid, list }: CadastralTablePr
 
   const hits = cadastralData?.hits?.hits || []
 
-  if (cadastralLoading || !hits.length) return null
+  if (cadastralLoading) return null
+  if (cadastralError) {
+    return (
+      <div className="text-sm text-neutral-800 px-3 py-2">
+        Kunne ikkje henta underordna bruk.
+      </div>
+    )
+  }
+  if (!hits.length) {
+    return (
+      <div className="text-sm text-neutral-800 px-3 py-2">
+        Ingen underordna bruk.
+      </div>
+    )
+  }
 
   if (list) {
     return <ul className="list-none divide-y divide-neutral-200">
       {hits.map((hit: any) => (
         <li key={hit._id} className="py-2">
-          <Clickable link add={{ doc: hit._source.uuid, details: 'group' }} className="no-underline block px-3 py-2 hover:bg-neutral-50">
+          <Clickable
+            link
+            add={{
+              doc: hit._source.uuid,
+              ...(hit?._source?.location?.coordinates?.length === 2
+                ? { activePoint: `${hit._source.location.coordinates[1]},${hit._source.location.coordinates[0]}` }
+                : {}),
+              ...(hit?._source?.group?.id ? { init: stringToBase64Url(hit._source.group.id) } : {}),
+            }}
+            className="no-underline block px-3 py-2 hover:bg-neutral-50"
+          >
             {`${getBnr(hit, dataset)} ${hit._source.label}`}
           </Clickable>
         </li>

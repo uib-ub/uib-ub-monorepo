@@ -65,13 +65,18 @@ export function useSearchQuery() {
 
 
     const searchFilterParamsString = searchQuery.toString()
-    if (searchParams.get('datasetTag')) {
-        searchQuery.set('datasetTag', searchParams.get('datasetTag')!)
+    const urlDatasetTag = searchParams.get('datasetTag')
+    const tree = searchParams.get('tree')
+    // Only include datasetTag in API query strings when it's relevant:
+    // - always include non-tree datasetTags (e.g. 'deep', 'base')
+    // - include 'tree' only when `tree` is present (tree param is the source of truth)
+    if (urlDatasetTag && (urlDatasetTag !== 'tree' || !!tree)) {
+        searchQuery.set('datasetTag', urlDatasetTag)
     }
 
     // Params that aren't considered filters
     const fulltext = searchParams.get('fulltext')
-    if (fulltext && datasetTag != 'tree' && searchParams.get('q')) {
+    if (fulltext && !tree && searchParams.get('q')) {
         searchQuery.set('fulltext', 'on')
     }
     
@@ -92,20 +97,6 @@ export function useSearchQuery() {
         return outputUrl.toString()
     }
 
-    // Tree params
-    /*
-    if (false && treeView) {
-        searchQuery.append('sosi', 'gard')
-        const adm = searchParams.get('adm')
-        size = 0
-        if (adm) {
-            searchQuery.append('adm', adm)
-            if (adm.split("__").length == contentSettings[dataset].adm) {
-                size = 500
-            }
-        }
-    }
-    */
 
 
     return { searchQueryString: searchQuery.toString(), searchQuery, searchFilterParamsString, facetFilters, removeFilterParams, size, datasetFilters }

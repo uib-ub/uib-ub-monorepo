@@ -3,7 +3,7 @@ import useSearchData from "@/state/hooks/search-data"
 import { GlobalContext } from "@/state/providers/global-provider"
 import { useSessionStore } from "@/state/zustand/session-store"
 import { useContext } from "react"
-import { PiFunnel, PiFunnelFill, PiGpsFix, PiInfoFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus } from "react-icons/pi"
+import { PiFunnel, PiFunnelFill, PiGpsFix, PiInfoFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus, PiTreeView } from "react-icons/pi"
 import { RoundIconButton, RoundIconClickable } from "../ui/clickable/round-icon-button"
 
 
@@ -21,6 +21,7 @@ export function FilterButton() {
         <RoundIconClickable
             className={`relative ${options ? 'bg-accent-800 text-white' : ''}`}
             label="Filter"
+            remove={['tree']}
             add={{ options: 'on' }}
             aria-controls="options-panel"
             aria-expanded={options}
@@ -33,6 +34,19 @@ export function FilterButton() {
                     className={`text-xs absolute bottom-1.5 right-1.5 ${options ? 'bg-white border border-accent-800 text-accent-800' : 'bg-primary-700 text-white'}`}
                 />
             )}
+        </RoundIconClickable>
+    )
+}
+
+export function TreeButton() {
+    return (
+        <RoundIconClickable
+            className="bg-accent-800 text-white"
+            label="Matriklar"
+            add={{ tree: 'root' }}
+            remove={['options']}
+        >
+            <PiTreeView className="text-2xl" />
         </RoundIconClickable>
     )
 }
@@ -91,6 +105,9 @@ export default function MapToolbar() {
             >
                 {!isMobile && (
                     <FilterButton />
+                )}
+                {!isMobile && (
+                    <TreeButton />
                 )}
                 <RoundIconClickable
                     className={`${mapSettings ? 'bg-accent-800 text-white' : ''}`}

@@ -297,7 +297,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             }
             {textItems.length > 0 && !activePoint && <TextTab textItems={textItems} />}
 
-            <div className="w-full pb-4 flex flex-col">
+            <div className="w-full pb-8 flex flex-col">
                 {/* Names section (includes timeline) - only show in init group when no activePoint filter is active */}
                 {shouldShowLabelFilter && initValue === groupData.group.id && !searchParams.get('activePoint') &&
                     <div className="px-3 pt-2">

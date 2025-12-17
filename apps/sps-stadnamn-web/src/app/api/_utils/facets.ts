@@ -65,16 +65,19 @@ export function extractFacets(request: Request) {
     urlParams.set('boost_lt', '20')
   }
 
+  // Tree mode (register) is controlled solely by `tree`.
+  // When `tree` is present and no specific dataset filter is set, search across cadastral datasets.
+  if (urlParams.get('tree') && !urlParams.get('dataset')) {
+    datasets.push(...Object.keys(treeSettings))
+  }
+
 
 
   for (const [key, value] of urlParams.entries()) {
     if (RESERVED_PARAMS.includes(key as any)) {
       reservedParams[key] = value
       if (key == 'datasetTag' && !urlParams.get('dataset')) { // Don't add datasets to the search if dataset is already set
-        if (value == 'tree') {
-          datasets.push(...Object.keys(treeSettings))
-        }
-        else if (value == 'base') {
+        if (value == 'base') {
           datasets.push(...Object.keys(datasetTitles).filter(key => key.endsWith('_g')))
         }
       }

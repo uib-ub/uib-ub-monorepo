@@ -28,7 +28,7 @@ export default function TableExplorer() {
 
 
     const doc = searchParams.get('doc')
-    const datasetTag = searchParams.get('datasetTag')
+    const tree = searchParams.get('tree')
 
     const { tableData, tableLoading } = useTableData()
     const currentPosition = useSessionStore((s) => s.currentPosition)
@@ -71,7 +71,7 @@ export default function TableExplorer() {
         <Clickable className="flex items-center gap-2 btn btn-neutral" remove={['mode', 'tableOptions']}><PiMapTrifold className="text-lg" aria-hidden="true" /><span className="sr-only lg:not-sr-only">Kartvisning</span></Clickable></div>
         <div className='flex flex-col py-2 gap-y-4 h-full bg-white'>
             <div className='flex  flex-col gap-4 xl:gap-2 !mx-2'>
-                {datasetTag == 'tree' && doc && tableData?.[0]?._source && treeSettings[perspective] && <h2 className="text-xl px-1">{`${getGnr(tableData?.[0], perspective) || getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.subunit) || ""} ${getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.parentName) || tableData?.[0]?._source?.label || ""}`}</h2>}
+                {tree && doc && tableData?.[0]?._source && treeSettings[perspective] && <h2 className="text-xl px-1">{`${getGnr(tableData?.[0], perspective) || getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.subunit) || ""} ${getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.parentName) || tableData?.[0]?._source?.label || ""}`}</h2>}
 
                 {tableData && tableData.length > 0 ?
                     <div className="border border-neutral-300 rounded-md">
