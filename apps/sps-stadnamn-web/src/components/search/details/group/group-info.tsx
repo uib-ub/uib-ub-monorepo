@@ -503,6 +503,14 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                     <ClickableIcon
                         label="Vel namnegruppe"
                         onClick={() => {
+                            // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
+                            // The subsequent URL param update can remount components quickly, so do this eagerly.
+                            if (scrollableContentRef.current) {
+                                scrollableContentRef.current.scrollTo({
+                                    top: 0,
+                                    behavior: 'auto'
+                                })
+                            }
                             // Fit bounds to group sources
                             fitBoundsToGroupSources(mapFunctionRef.current, groupData);
                         }}
