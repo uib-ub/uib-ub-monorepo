@@ -55,7 +55,7 @@ export default function TreeWindow() {
         <div className="flex-1 overflow-y-auto stable-scrollbar min-h-0">
             {/* Breadcrumbs driven by `tree` */}
             {dataset && (
-                <div className="px-3 pt-2 pb-1 text-sm flex flex-wrap gap-2">
+                <div className="sticky top-0 z-10 bg-white px-3 pt-2 pb-1 text-sm flex flex-wrap gap-2 border-b border-neutral-200">
                     <ClickableIcon
                         link
                         label="Matriklar"

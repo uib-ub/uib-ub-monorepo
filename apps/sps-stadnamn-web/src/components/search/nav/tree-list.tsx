@@ -6,6 +6,7 @@ import { buildTreeParam } from "@/lib/tree-param"
 import { useQueryClient } from "@tanstack/react-query"
 import CadastralTable from "../details/doc/cadastral-table"
 import { stringToBase64Url } from "@/lib/param-utils"
+import { useEffect } from "react"
 
 const getTreeData = async (dataset: string | null, adm1?: string | null, adm2?: string | null) => {
     const params = new URLSearchParams()
@@ -41,6 +42,20 @@ export default function TreeList({
         queryFn: () => getTreeData(dataset, adm1, adm2),
         enabled: !!dataset
     })
+
+    useEffect(() => {
+        // When opening matrikkelvisning directly on a uuid, ensure that row is visible.
+        // This scrolls the right panel (TreeWindow) to the expanded cadastral unit.
+        if (!adm2 || !expandedUuid) return
+        if (!treeData?.hits?.hits?.length) return
+
+        const id = `tree-item-${expandedUuid}`
+        // Defer one frame so the expanded content is mounted before measuring/scrolling.
+        requestAnimationFrame(() => {
+            const el = document.getElementById(id)
+            el?.scrollIntoView({ behavior: 'instant' as any, block: 'center' })
+        })
+    }, [adm2, expandedUuid, treeData?.hits?.hits?.length])
 
     if (!treeData?.hits?.hits) {
         return (
@@ -85,6 +100,7 @@ export default function TreeList({
                         >
                             <Clickable
                                 link
+                                id={itemUuid ? `tree-item-${itemUuid}` : undefined}
                                 onClick={() => {
                                     if (!isExpanded) {
                                         // Prefill the selected-doc cache so breadcrumbs/title can render instantly.

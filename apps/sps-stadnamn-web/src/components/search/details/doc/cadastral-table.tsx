@@ -33,6 +33,7 @@ interface CadastralTableProps {
 export default function CadastralTable({ dataset, uuid, list, groupId: parentGroupId, gnr, adm1, adm2, flush, showGroupLink = true, showMarkers = true }: CadastralTableProps) {
   const searchParams = useSearchParams()
   const currentGroup = searchParams.get('group')
+  const activePointParam = searchParams.get('activePoint')
   const clearTreeSavedQuery = useSessionStore((s) => s.clearTreeSavedQuery)
   
   const { data: cadastralData, isLoading: cadastralLoading, error: cadastralError } = useQuery({
@@ -161,9 +162,10 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
                       Array.isArray(coords) && coords.length === 2
                         ? `${coords[1]},${coords[0]}`
                         : undefined
+                    const isActiveMarker = !!activePoint && !!activePointParam && activePointParam === activePoint
 
                     return (
-                      <tr key={hit._id} className="border-t border-neutral-100 hover:bg-neutral-50">
+                      <tr key={hit._id} className="border-t border-neutral-100">
                         {showMarkers && (
                           <td className={`px-2 ${cellPadY} align-middle`}>
                             {activePoint ? (
@@ -172,7 +174,11 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
                                   <Clickable
                                     link
                                     add={{ activePoint }}
-                                    className={`inline-flex items-center justify-center ${flush ? "w-7 h-7" : "w-8 h-8"} rounded hover:bg-neutral-100 text-neutral-700`}
+                                    aria-pressed={isActiveMarker}
+                                    className={`inline-flex items-center justify-center ${flush ? "w-7 h-7" : "w-8 h-8"} rounded transition-colors ${isActiveMarker
+                                      ? "text-accent-800 bg-accent-50 outline outline-1 outline-accent-700 hover:bg-accent-100"
+                                      : "text-neutral-700 hover:bg-neutral-100"
+                                      }`}
                                     aria-label="Vis punkt på kart"
                                   >
                                     <PiMapPinFill className="text-lg" aria-hidden="true" />
