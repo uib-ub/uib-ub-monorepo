@@ -3,11 +3,9 @@ import useSearchData from "@/state/hooks/search-data"
 import { GlobalContext } from "@/state/providers/global-provider"
 import { useSessionStore } from "@/state/zustand/session-store"
 import { useContext } from "react"
-import { PiFunnel, PiFunnelFill, PiGpsFix, PiInfoFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus, PiTreeView } from "react-icons/pi"
+import { PiFunnel, PiFunnelFill, PiGpsFix, PiInfoFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus } from "react-icons/pi"
 import { RoundIconButton, RoundIconClickable } from "../ui/clickable/round-icon-button"
 import { useRouter, useSearchParams } from "next/navigation"
-
-import { useTreeIsolation } from "@/lib/tree-isolation"
 
 
 import { useOverlayParams } from "@/lib/param-hooks"
@@ -55,21 +53,6 @@ export function FilterButton() {
                     className={`text-xs absolute bottom-1.5 right-1.5 ${options ? 'bg-white border border-accent-800 text-accent-800' : 'bg-primary-700 text-white'}`}
                 />
             )}
-        </RoundIconButton>
-    )
-}
-
-export function TreeButton() {
-    const { openTree } = useTreeIsolation()
-    const searchParams = useSearchParams()
-    const tree = searchParams.get('tree')
-    return (
-        <RoundIconButton
-            className={tree ? "bg-accent-800 text-white" : ""}
-            label="Matriklar"
-            onClick={() => openTree('root')}
-        >
-            <PiTreeView className="text-2xl" />
         </RoundIconButton>
     )
 }
@@ -129,9 +112,6 @@ export default function MapToolbar() {
                 {!isMobile && (
                     <FilterButton />
                 )}
-                {!isMobile && (
-                    <TreeButton />
-                )}
                 <RoundIconClickable
                     className={`${mapSettings ? 'bg-accent-800 text-white' : ''}`}
                     aria-controls="map-settings-panel"
@@ -175,9 +155,6 @@ export default function MapToolbar() {
                 >
                     <PiGpsFix className="text-2xl" />
                 </RoundIconButton>
-                {isMobile && (
-                    <TreeButton />
-                )}
                 {isMobile && (
                     <FilterButton />
                 )}

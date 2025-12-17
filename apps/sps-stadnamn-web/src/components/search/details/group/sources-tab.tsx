@@ -3,16 +3,13 @@
 import { Fragment, useContext, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PiBookOpen, PiFile, PiFileFill, PiInfoFill, PiMapPinFill, PiTreeViewFill, PiTreeViewLight } from "react-icons/pi";
+import { PiBookOpen, PiFile, PiFileFill, PiInfoFill, PiMapPinFill } from "react-icons/pi";
 import { datasetTitles } from "@/config/metadata-config";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
-import { treeSettings } from "@/config/server-config";
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { matchesActiveYear, matchesActiveName, matchesActivePoint } from "./group-utils";
 import CoordinateTypeInfo from "../doc/coordinate-type-info";
-import IconButton from "@/components/ui/icon-button";
-import { useTreeIsolation } from "@/lib/tree-isolation";
 
 interface SourcesTabProps {
     datasets: Record<string, any[]>;
@@ -34,7 +31,6 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
     const visibleDatasets = showAll ? datasetKeys : datasetKeys.slice(0, visibleCount)
     const searchParams = useSearchParams()
     const activePoint = searchParams.get('activePoint')
-    const { openTree } = useTreeIsolation()
 
     // Toggle whether a parent shows ALL its children (bruk) or only the first 2
     const toggleShowAllChildren = (uuid: string) => {
@@ -67,7 +63,6 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
         activePoint: string | null,
         indentLevel: number = 0,
         role?: 'parent' | 'child',
-        showTreeButton: boolean = false
     ) => {
         const additionalLabels = Array.from(
             new Set([
@@ -117,9 +112,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
         const indentStyle = indentLevel > 0 ? { paddingLeft: `${indentLevel * 1.5}rem` } : undefined
         const hasPin = isInitGroup && !activePoint && s.location?.coordinates?.length === 2
         const links = resultRenderers[ds]?.links?.(s) || defaultResultRenderer?.links?.(s)
-        const canOpenTreeView = showTreeButton && !!treeSettings[ds]
-        const adm1 = firstValue(s?.adm1)
-        const adm2 = firstValue(s?.adm2)
+        // Tree view button removed (now available in the top mode/menu bar).
 
         return (
             <li key={s.uuid} className="flex flex-col gap-1" style={indentStyle}>
@@ -143,16 +136,6 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                         <Link className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md !px-2 py-1 h-8 btn btn-outline btn-compact" href={"/uuid/" + s.uuid}>
                             {cadastrePrefix}<strong>{s.label}</strong> {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
                         </Link>
-
-                        {canOpenTreeView && isInitGroup && !activePoint && (
-                            <IconButton
-                                label="Opne matrikkelvisning"
-                                className=""
-                                onClick={() => openTree(`${ds}_${adm1}_${adm2}_${s.uuid}`)}
-                            >
-                                <PiTreeViewFill className="text-neutral-700 h-6 w-6" aria-hidden="true" />
-                            </IconButton>
-                        )}
 
                         {additionalLabels && <span className="text-neutral-900">{additionalLabels}</span>}
                         {/* Keep source links on the same line when there is available space; wrap naturally when needed */}
@@ -211,11 +194,11 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                         </div>}
                         <ul className="flex flex-col w-full gap-4">
                             {/* No nesting at all – show gnr for standalone items */}
-                            {!hasNesting && items.map((s: any) => renderItem(s, ds, isInitGroup, activePoint, 0, 'parent', true))}
+                            {!hasNesting && items.map((s: any) => renderItem(s, ds, isInitGroup, activePoint, 0, 'parent'))}
 
                             {/* With nesting – only show children (subunits/bruk) for the init group */}
                             {hasNesting && !isInitGroup && rootItems.map((parent: any) =>
-                                renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent', true)
+                                renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent')
                             )}
 
                             {/* With nesting (init group) – render parents with their children */}
@@ -225,7 +208,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
 
                                 if (childCount === 0) {
                                     // Parent candidate with no children in this group – still show gnr prefix
-                                    return renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent', true)
+                                    return renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent')
                                 }
 
                                 const showAllChildren = showAllChildrenParents.has(parent.uuid)
@@ -245,10 +228,10 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
 
                                 return (
                                     <Fragment key={parent.uuid}>
-                                        {renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent', true)}
+                                        {renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent')}
                                         <ul className="flex flex-col w-full gap-2 -mt-2">
                                             {visibleChildren.map((child: any) =>
-                                                renderItem(child, ds, isInitGroup, activePoint, 1, 'child', false)
+                                                renderItem(child, ds, isInitGroup, activePoint, 1, 'child')
                                             )}
                                             {hiddenCount > 0 && (
                                                 <li style={{ paddingLeft: `${1.5 * 1.5}rem` }}>

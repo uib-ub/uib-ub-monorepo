@@ -1,10 +1,11 @@
 'use client'
 import Clickable from "@/components/ui/clickable/clickable";
 import { useMode } from "@/lib/param-hooks";
+import { useTreeIsolation } from "@/lib/tree-isolation";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useRef } from "react";
-import { PiArchive, PiChatCircleText, PiHouseFill, PiInfo, PiList, PiMapTrifoldFill, PiMapTrifoldLight, PiPersonArmsSpread, PiQuestion, PiTableFill, PiTableLight, PiX } from 'react-icons/pi';
+import { PiArchive, PiChatCircleText, PiHouseFill, PiInfo, PiList, PiMapTrifoldFill, PiMapTrifoldLight, PiPersonArmsSpread, PiQuestion, PiTableFill, PiTableLight, PiTreeViewFill, PiTreeViewLight, PiX } from 'react-icons/pi';
 import { GlobalContext } from "../state/providers/global-provider";
 import { useSessionStore } from "../state/zustand/session-store";
 
@@ -18,6 +19,11 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
     const fulltext = searchParams.get('fulltext')
     const mode = useMode()
     const modeOutsideSearch = pathname == '/search' ? mode : null
+    const { openTree, closeTree } = useTreeIsolation()
+    const tree = searchParams.get('tree')
+    const isTreeActive = pathname === '/search' && !!tree
+    const isMapActive = modeOutsideSearch === 'map' && !isTreeActive
+    const isTableActive = modeOutsideSearch === 'table' && !isTreeActive
     const router = useRouter()
     const q = searchParams.get("q")
     const datasetTag = searchParams.get("datasetTag")
@@ -87,35 +93,54 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 link
                                 href="/search"
                                 onClick={() => setMenuOpen(false)}
-                                aria-selected={modeOutsideSearch == 'map'}
-                                aria-current={modeOutsideSearch == 'map' ? 'page' : undefined}
+                                aria-selected={isMapActive}
+                                aria-current={isMapActive ? 'page' : undefined}
                                 remove={['mode']}
                                 className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
-                                ${modeOutsideSearch == 'map'
+                                ${isMapActive
                                         ? 'bg-accent-800 text-white font-semibold'
                                         : 'hover:bg-accent-100 text-neutral-900'
                                     }`}
                             >
-                                {modeOutsideSearch == 'map'
+                                {isMapActive
                                     ? <PiMapTrifoldFill className="text-xl" aria-hidden="true" />
                                     : <PiMapTrifoldLight className="text-xl" aria-hidden="true" />}
-                                Kart
+                                Stadnamnkart
                             </Clickable>
+                            <button
+                                type="button"
+                                role="tab"
+                                onClick={() => {
+                                    setMenuOpen(false)
+                                    tree ? closeTree() : openTree('root')
+                                }}
+                                aria-selected={isTreeActive}
+                                className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
+                                ${isTreeActive
+                                        ? 'bg-accent-800 text-white font-semibold'
+                                        : 'hover:bg-accent-100 text-neutral-900'
+                                    }`}
+                            >
+                                {isTreeActive
+                                    ? <PiTreeViewFill className="text-xl" aria-hidden="true" />
+                                    : <PiTreeViewLight className="text-xl" aria-hidden="true" />}
+                                Matrikkelvising
+                            </button>
                             <Clickable
                                 role="tab"
                                 href="/search"
                                 link
                                 onClick={() => setMenuOpen(false)}
-                                aria-selected={modeOutsideSearch == 'table'}
-                                aria-current={modeOutsideSearch == 'table' ? 'page' : undefined}
+                                aria-selected={isTableActive}
+                                aria-current={isTableActive ? 'page' : undefined}
                                 add={{ mode: 'table' }}
                                 className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
-                                ${modeOutsideSearch == 'table'
+                                ${isTableActive
                                         ? 'bg-accent-800 text-white font-semibold'
                                         : 'hover:bg-accent-100 text-neutral-900'
                                     }`}
                             >
-                                {modeOutsideSearch == 'table'
+                                {isTableActive
                                     ? <PiTableFill className="text-xl" aria-hidden="true" />
                                     : <PiTableLight className="text-xl" aria-hidden="true" />}
                                 Tabellvisning
