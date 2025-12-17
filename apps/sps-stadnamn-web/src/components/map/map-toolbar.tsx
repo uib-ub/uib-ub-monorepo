@@ -176,6 +176,9 @@ export default function MapToolbar() {
                     <PiGpsFix className="text-2xl" />
                 </RoundIconButton>
                 {isMobile && (
+                    <TreeButton />
+                )}
+                {isMobile && (
                     <FilterButton />
                 )}
             </div>
