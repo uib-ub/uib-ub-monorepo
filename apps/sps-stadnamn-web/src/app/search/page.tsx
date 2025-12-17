@@ -4,8 +4,6 @@ import { modes } from "@/config/metadata-config";
 import React from "react";
 import MapDrawer from "@/components/search/overlay-interface";
 import MapWrapper from "@/components/map/map-wrapper";
-import DocInfo from "@/components/search/details/doc/doc-info";
-import ListExplorer from "@/components/search/list/list-explorer";
 import TableExplorer from "@/components/search/table/table-explorer";
 import StatusSection from "@/components/search/status-section";
 import OverlayInterface from "@/components/search/overlay-interface";
