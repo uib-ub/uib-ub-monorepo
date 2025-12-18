@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactElement } from "react";
 import { PiCaretRight, PiMagnifyingGlass, PiTreeView, PiWall } from "react-icons/pi";
+import { useTreeIsolation } from "@/lib/tree-isolation";
 
 const icons: { [key: string]: ReactElement } = {
     "base": <PiWall className="text-neutral-800" aria-hidden="true" />,
@@ -13,6 +14,7 @@ const icons: { [key: string]: ReactElement } = {
 export default function DatasetToolbar({ itemDataset }: { itemDataset: string }) {
     const mode = useMode()
     const pathname = usePathname()
+    const { openTree } = useTreeIsolation()
 
     return <nav className="flex flex-wrap gap-2">
         <Link aria-current={(pathname == '/search' && mode == 'map') ? 'page' : false}
@@ -27,7 +29,15 @@ export default function DatasetToolbar({ itemDataset }: { itemDataset: string })
             </Link>
         ))}
 
-        {treeSettings[itemDataset] && <Link href={`/search?dataset=${itemDataset}&nav=tree`} className="btn btn-outline btn-compact"><PiTreeView className="text-neutral-800" aria-hidden="true" />Register</Link>}
+        {treeSettings[itemDataset] && (
+            <button
+                type="button"
+                onClick={() => openTree(itemDataset)}
+                className="btn btn-outline btn-compact"
+            >
+                <PiTreeView className="text-neutral-800" aria-hidden="true" />Register
+            </button>
+        )}
 
         <Link href={`/info/datasets/${itemDataset.split('_')[0]}`} className="btn btn-outline btn-compact">Les meir<PiCaretRight className="text-primary-700" aria-hidden="true" /></Link>
 

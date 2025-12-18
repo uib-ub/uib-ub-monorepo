@@ -12,10 +12,11 @@ export default function OptionsWindow() {
 
     const searchParams = useSearchParams()
     const facet = searchParams.get('facet')
-    const datasetTag = searchParams.get('datasetTag')
+    const tree = searchParams.get('tree')
 
 
-    if (datasetTag == 'tree') {
+    // Tree viewer is controlled solely by `tree`
+    if (tree) {
         return <TreeWindow />
     }
     else if (!facet) {

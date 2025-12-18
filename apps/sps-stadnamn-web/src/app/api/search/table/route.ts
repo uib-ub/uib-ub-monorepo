@@ -9,6 +9,7 @@ export async function GET(request: Request) {
   const { termFilters, reservedParams } = extractFacets(request)
   const dataset = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
   const { highlight, simple_query_string } = getQueryString(reservedParams)
+  const includeSuppressed = reservedParams.includeSuppressed === '1' || reservedParams.includeSuppressed === 'true'
 
   let sortArray: (string | object)[] = []
 
@@ -56,12 +57,14 @@ export async function GET(request: Request) {
     "_source": true
   }
 
+  const mustNot = includeSuppressed ? [] : [suppressedExclusion]
+
   if (simple_query_string && termFilters.length) {
     query.query = {
       "bool": {
         "must": simple_query_string,
         "filter": termFilters,
-        "must_not": [suppressedExclusion]
+        ...(mustNot.length ? { "must_not": mustNot } : {})
       }
     }
   }
@@ -69,7 +72,7 @@ export async function GET(request: Request) {
     query.query = {
       "bool": {
         "must": simple_query_string,
-        "must_not": [suppressedExclusion]
+        ...(mustNot.length ? { "must_not": mustNot } : {})
       }
     }
   }
@@ -77,7 +80,7 @@ export async function GET(request: Request) {
     query.query = {
       "bool": {
         "filter": termFilters,
-        "must_not": [suppressedExclusion]
+        ...(mustNot.length ? { "must_not": mustNot } : {})
       }
     }
   }
@@ -85,7 +88,7 @@ export async function GET(request: Request) {
     query.query = {
       "bool": {
         "must": { "match_all": {} },
-        "must_not": [suppressedExclusion]
+        ...(mustNot.length ? { "must_not": mustNot } : {})
       }
     }
   }

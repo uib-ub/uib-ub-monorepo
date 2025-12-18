@@ -27,6 +27,7 @@ import ServerFacet from "./nav/facets/server-facet";
 import WikiAdmFacet from "./nav/facets/wikiAdm-facet";
 import DebugToggle from "./nav/results/debug-toggle";
 import TableOptions from "./table/table-options";
+import TreeWindow from "./nav/tree-window";
 
 
 
@@ -112,7 +113,7 @@ function LeftWindow({ children }: { children: React.ReactNode }) {
         if (mapSettings && maxResults) return null
         return <>{children}</>
     }
-    return <div className="bg-white shadow-lg flex flex-col absolute left-2 top-[4rem] w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-auto overflow-x-hidden stable-scrollbar">{children}</div>
+    return <div className="bg-white shadow-lg flex flex-col absolute left-2 top-[4rem] w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-auto overflow-x-hidden">{children}</div>
 }
 
 function RightWindow({ children }: { children: React.ReactNode }) {
@@ -146,6 +147,7 @@ export default function OverlayInterface() {
     const debugParam = searchParams.get('debug')
     const showDebugGroups = searchParams.get('debugGroups') == 'on'
     const maxResults = searchParams.get('maxResults')
+    const tree = searchParams.get('tree')
 
     useEffect(() => {
         if (debugParam == 'on') {
@@ -173,8 +175,6 @@ export default function OverlayInterface() {
                 {showLeftPanel && <LeftWindow>
 
                     {(tableOptions && <TableOptions />)
-
-
 
                         || (facet && <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
                             <h1 className="text-lg text-neutral-900 px-1">{fieldConfig[perspective][facet]?.label}</h1>
@@ -220,39 +220,56 @@ export default function OverlayInterface() {
 
 
                 {showRightPanel && <RightWindow>
-                    {/* Map Settings Header (separate, only when mapSettings is on) */}
+                    {/* Map settings should be available even when tree view is active */}
                     {mapSettings ? (
-                        <div className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 xl:px-0 gap-2`}>
-                            <h1 className="text-base xl:text-xl text-neutral-900 xl:px-4">Kartinnstillingar</h1>
-                            <div className="flex items-center gap-1 ml-auto">
-                                <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings"]}>
-                                    <PiX className="text-black text-3xl" />
-                                </ClickableIcon>
+                        <>
+                            <div className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 xl:px-0 gap-2`}>
+                                <h1 className="text-base xl:text-xl text-neutral-900 xl:px-4">Kartinnstillingar</h1>
+                                <div className="flex items-center gap-1 ml-auto">
+                                    <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings"]}>
+                                        <PiX className="text-black text-3xl" />
+                                    </ClickableIcon>
+                                </div>
                             </div>
-                        </div>
+                            <MapSettings />
+                        </>
+                    ) : tree ? (
+                        <TreeWindow />
                     ) : (
-                        <div className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 py-1 xl:px-0 gap-2 xl:pl-2`}>
-                            <Clickable
-                                aria-expanded={!!maxResults}
-                                aria-controls="results-panel"
-                                className="flex items-center gap-2 xl:px-1 w-full"
-                                // When opening, default to 1 (expand sources). When closing, remove param.
-                                add={{ maxResults: maxResults ? null : searchParams.get('init') ? '1' : '10' }}
-                                remove={["maxResults", ...(isMobile ? ['options'] : [])]}
-                            >
+                        <>
+                            <div className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 py-1 xl:px-0 gap-2 xl:pl-2`}>
+                                <Clickable
+                                    aria-expanded={!!maxResults}
+                                    aria-controls="results-panel"
+                                    className="flex items-center gap-2 xl:px-1 w-full"
+                                    // When opening, default to 1 (expand sources). When closing, remove param.
+                                    add={{ maxResults: maxResults ? null : searchParams.get('init') ? '1' : '10' }}
+                                    remove={["maxResults", ...(isMobile ? ['options'] : [])]}
+                                >
 
-                                <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Kjelder</h1>
+                                    <h1 className="text-base xl:text-lg text-neutral-900 font-sans">Kjelder</h1>
 
-                                {searchLoading ? <Spinner status="Laster resultat" className="text-lg" /> : <TitleBadge className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`} count={totalHits?.value || 0} />}
-                                {!isMobile && (
-                                    <>
-                                        {showResults ? <PiCaretUpBold className="text-lg mr-1 ml-auto" /> : <PiCaretDownBold className="text-lg ml-auto" />}
-                                    </>
-                                )}
-                            </Clickable>
-                        </div>
+                                    {searchLoading ? <Spinner status="Laster resultat" className="text-lg" /> : <TitleBadge className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`} count={totalHits?.value || 0} />}
+                                    {!isMobile && (
+                                        <>
+                                            {showResults ? <PiCaretUpBold className="text-lg mr-1 ml-auto" /> : <PiCaretDownBold className="text-lg ml-auto" />}
+                                        </>
+                                    )}
+                                </Clickable>
+                            </div>
+                            {showResults && (
+                                <div
+                                    id="results-panel"
+                                    // On desktop, this is the actual scroll container for the right panel.
+                                    // Wire it to the shared ref so components (e.g. GroupInfo) can scroll to top.
+                                    ref={isMobile ? undefined : scrollableContentRef}
+                                    className={!isMobile ? "flex-1 overflow-y-auto overflow-x-hidden min-h-0" : ""}
+                                >
+                                    {showDebugGroups ? <DebugToggle /> : <SearchResults />}
+                                </div>
+                            )}
+                        </>
                     )}
-                    {mapSettings ? <MapSettings /> : showResults && <div id="results-panel" className={!isMobile ? "flex-1 overflow-y-auto overflow-x-hidden min-h-0" : ""}>{showDebugGroups ? <DebugToggle /> : <SearchResults />}</div>}
                 </RightWindow>}
             </DrawerWrapper>
 

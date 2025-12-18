@@ -5,6 +5,7 @@ import { useSessionStore } from "@/state/zustand/session-store"
 import { useContext } from "react"
 import { PiFunnel, PiFunnelFill, PiGpsFix, PiInfoFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus } from "react-icons/pi"
 import { RoundIconButton, RoundIconClickable } from "../ui/clickable/round-icon-button"
+import { useRouter, useSearchParams } from "next/navigation"
 
 
 import { useOverlayParams } from "@/lib/param-hooks"
@@ -12,19 +13,38 @@ import { useSearchQuery } from "@/lib/search-params"
 import { TitleBadge } from "../ui/badge"
 
 export function FilterButton() {
+    const router = useRouter()
+    const searchParams = useSearchParams()
+    const treeSavedQuery = useSessionStore((s) => s.treeSavedQuery)
+    const clearTreeSavedQuery = useSessionStore((s) => s.clearTreeSavedQuery)
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
     const { facetFilters, datasetFilters } = useSearchQuery()
     const filterCount = facetFilters.length + datasetFilters.length
     const { options } = useOverlayParams()
 
     return (
-        <RoundIconClickable
+        <RoundIconButton
             className={`relative ${options ? 'bg-accent-800 text-white' : ''}`}
             label="Filter"
-            add={{ options: 'on' }}
             aria-controls="options-panel"
             aria-expanded={options}
-            onClick={() => setSnappedPosition('middle')}
+            onClick={() => {
+                setSnappedPosition('middle')
+
+                // If tree view is active, exit tree while restoring stored params (if any),
+                // then open the options panel.
+                const base = treeSavedQuery != null
+                    ? new URLSearchParams(treeSavedQuery)
+                    : new URLSearchParams(searchParams)
+
+                base.delete('tree')
+                base.set('options', 'on')
+                router.replace(`?${base.toString()}`)
+
+                if (treeSavedQuery != null) {
+                    clearTreeSavedQuery()
+                }
+            }}
         >
             {options ? <PiFunnelFill className="text-2xl" /> : <PiFunnel className="text-2xl" />}
             {filterCount > 0 && (
@@ -33,7 +53,7 @@ export function FilterButton() {
                     className={`text-xs absolute bottom-1.5 right-1.5 ${options ? 'bg-white border border-accent-800 text-accent-800' : 'bg-primary-700 text-white'}`}
                 />
             )}
-        </RoundIconClickable>
+        </RoundIconButton>
     )
 }
 

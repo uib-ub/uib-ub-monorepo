@@ -1,12 +1,12 @@
 import { fetchDoc } from '@/app/api/_utils/actions'
-import CadastralSubdivisions from '@/components/children/cadastral-subdivisions'
+import CadastralTable from '@/components/search/details/doc/cadastral-table'
 import CollapsibleHeading from '@/components/doc/collapsible-heading'
 import ErrorMessage from '@/components/error-message'
 import Thumbnail from '@/components/image-viewer/thumbnail'
 import CoordinateInfo from '@/components/search/details/doc/coordinate-info'
 import { infoPageRenderers } from '@/config/info-renderers'
 import { datasetPresentation, datasetShortDescriptions, datasetTitles } from '@/config/metadata-config'
-import { facetConfig } from '@/config/search-config'
+import { facetConfig, fieldConfig } from '@/config/search-config'
 import { treeSettings } from '@/config/server-config'
 import { getValueByPath } from '@/lib/utils'
 import Link from 'next/link'
@@ -107,6 +107,13 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
   if (docData._source.uuid != uuid && docData._source.redirects.includes(uuid)) {
     redirect(`/uuid/${docData._source.uuid}#${uuid}`)
   }
+
+  const resolvedUuid: string = docData?._source?.uuid || uuid
+
+  const shouldShowCadastralSubdivisions =
+    !!treeSettings[docDataset] && docData?._source?.sosi == 'gard'
+
+  // `CadastralTable` fetches subunits itself; no need to prefetch children here.
 
 
 
@@ -212,10 +219,18 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
           : null}
 
 
-        {treeSettings[docDataset] && docData._source.sosi == 'gard' &&
+        {shouldShowCadastralSubdivisions &&
           <div className="mt-4">
             <h2 className="">Underordna bruk</h2>
-            <CadastralSubdivisions dataset={docDataset} doc={uuid} childrenData={docData._source.children} landingPage={true} />
+            <CadastralTable
+              dataset={docDataset}
+              uuid={resolvedUuid}
+              list={true}
+              flush={true}
+              groupId={(docData as any)?._source?.group?.id}
+              showGroupLink={false}
+              showMarkers={false}
+            />
           </div>
         }
 

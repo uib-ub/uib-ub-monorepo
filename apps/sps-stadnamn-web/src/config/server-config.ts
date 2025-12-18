@@ -30,11 +30,11 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
   },
   m1886: {
     subunit: "cadastre__gnr",
-    parentName: "misc.gardsnamn",
+    parentName: "misc.Gardsnamn",
     leaf: "cadastre__bnr",
     sort: ["cadastre__gnr", "cadastre__bnr"],
-    aggSort: "misc.knr.keyword",
-    geoSort: "misc.bnr.keyword"
+    aggSort: "misc.GNR.keyword",
+    geoSort: "misc.BNR.keyword"
   },
   mu1950: {
     subunit: "cadastre__gnr",

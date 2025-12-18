@@ -7,21 +7,13 @@
    viewBox="0 0 50.799999 50.800001"
    version="1.1"
    id="svg5"
-   sodipodi:docname="icon.svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview7"
-     pagecolor="#606664"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     showgrid="false"
-     units="px"
-     width="192px"/>
   <defs
      id="defs2" />
-  <g id="layer1">
+  <g
+     id="layer1"
+     transform="matrix(0.9,0,0,0.9,2.5399998,2.5400005)">
     <path
        id="path28141"
        style="fill:#ad2a28;fill-opacity:1;stroke:#ffffff;stroke-width:1.88022;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
