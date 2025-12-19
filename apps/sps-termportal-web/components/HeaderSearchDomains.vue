@@ -181,12 +181,8 @@ const deactivatedDomains = computed(() => {
 function resetSubdomainOptions() {
   const searchInterface = useSearchInterface();
   const topDomains = Object.keys(bootstrapData.value.domain);
-  const flatSubDomains = flattenOrderDomains()
-    .map(d => d[0])
-    .filter(domain => !topDomains.includes(domain));
-
   Object.keys(searchInterface.value.domain).forEach((domain) => {
-    if (flatSubDomains.includes(domain)) {
+    if (!topDomains.includes(domain)) {
       delete searchInterface.value.domain[domain];
     }
   });
