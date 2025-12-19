@@ -1,19 +1,18 @@
 <template>
-  <div
-    role="status"
-    class="flex items-center"
-  >
-    <Icon
-      class="tp-spin p-1"
-      name="icomoon-free:spinner8"
-      :size="size"
-      aria-hidden="true"
-    />
-  </div>
+  <Icon
+    class="tp-spin"
+    name="icomoon-free:spinner8"
+    :size="size"
+    aria-hidden="true"
+  />
 </template>
 
 <script setup lang="ts">
-defineProps({ size: { type: String, default: "1.5em" } });
+withDefaults(defineProps<{
+  size?: string | number
+}>(), {
+  size: '1.5em',
+})
 </script>
 
 <style scoped>

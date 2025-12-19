@@ -8,7 +8,7 @@
       <ol class="flex flex-wrap justify-center px-2 pb-2 pt-1.5">
         <li>
           <button
-            class="px-1.5 py-0.5 text-lg underline-offset-2 hover:underline"
+            class="px-1.5 py-0.5 text-lg underline-offset-2 hover:underline cursor-pointer"
             :class="{ 'font-semibold underline': query.char[0] === null }"
             @click="query.char = [null, 0]"
           >
@@ -20,7 +20,7 @@
           :key="charEntry[0]"
         >
           <button
-            class="px-[4px] py-0.5 text-lg underline-offset-2 hover:underline"
+            class="px-[4px] py-0.5 text-lg underline-offset-2 hover:underline cursor-pointer"
             :class="{
               'font-semibold underline': query.char[0] === charEntry[0],
             }"

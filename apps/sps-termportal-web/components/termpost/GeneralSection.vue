@@ -91,7 +91,7 @@
             <TermpostTermDescription
               v-if="scopeNote?.source"
               :flex="true"
-              :data="[`(${scopeNote.source})`]"
+              :data="[`(${scopeNote.source?.['@value'] || scopeNote.source})`]"
             />
           </div>
         </TermpostTermProp>
