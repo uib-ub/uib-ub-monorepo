@@ -49,12 +49,12 @@ export const ComponentPreview: React.FC<{ name: string, resizeable?: boolean }> 
   if (resizeable) {
     return (
       <div className='flex items-center justify-center bg-card rounded-lg border min-h-96'>
-        <ResizablePanelGroup direction="horizontal">
+        <ResizablePanelGroup orientation="horizontal">
           <ResizablePanel defaultSize={100}>
             <DynamicComponent />
           </ResizablePanel>
           <ResizableHandle />
-          <ResizablePanel />
+          <ResizablePanel defaultSize={0} minSize={0} />
         </ResizablePanelGroup>
       </div>
     );
