@@ -184,6 +184,29 @@ export const blocks: Registry['items'] = [
 
 ---
 
+## Add a Fumadocs demo page
+
+**Create a new MDX file, the `name` must match your `registry:example` item:**
+```
+content/docs/ui/{component}.mdx
+```
+
+**Minimal page structure:**
+```mdx
+---
+title: IIIF Image
+description: A IIIF image component
+---
+
+## Preview
+<Tabs items={['preview', 'code']}>
+  <Tab><ComponentPreview name='iiif-image-demo' /></Tab>
+  <Tab><ComponentSource name='iiif-image-demo' /></Tab>
+</Tabs>
+```
+
+---
+
 ## Build step → JSON
 
 **Running `npm run build:registry`:**
