@@ -62,7 +62,7 @@ a {
 }
 p {
     font-size: 20pt;
-    font-weight: 600;
+    font-weight: 300;
     color: var(--text);
 }
 code {
