@@ -12,7 +12,7 @@ import { useSessionStore } from "@/state/zustand/session-store"
 import { useQuery } from "@tanstack/react-query"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useContext } from "react"
-import { PiCaretRightBold } from "react-icons/pi"
+import { PiCaretRightBold, PiX } from "react-icons/pi"
 
 const getFacetFieldCounts = async (searchQueryString: string) => {
   const response = await fetch(`/api/fieldsPresent?${searchQueryString}`)
@@ -146,13 +146,56 @@ const RadiusFilter = () => {
 
 export default function FacetSection() {
   const perspective = usePerspective()
+  const router = useRouter()
   const searchParams = useSearchParams()
   const facet = searchParams.get('facet')
   const datasets = searchParams.getAll('dataset')
   const filterDataset = perspective == 'all' ? datasets.length == 1 ? datasets[0] : 'all' : perspective
-  const { facetFilters } = useSearchQuery()
+  const { facetFilters, datasetFilters, searchQuery } = useSearchQuery()
 
   const { isMobile } = useContext(GlobalContext)
+
+  const removeFilter = (key: string, value: string) => {
+    const newSearchParams = new URLSearchParams(searchQuery)
+    const values = newSearchParams.getAll(key)
+
+    // Remove all values for this key
+    newSearchParams.delete(key)
+
+    // Add back mode, nav and facet params if they exist
+    const keptParams = ['mode', 'facet', 'options', 'maxResults']
+    keptParams.forEach((param: string) => {
+      const value = searchParams.get(param)
+      if (value) newSearchParams.set(param, value)
+    })
+
+    // Add back all values except the one we want to remove
+    values.filter(v => v !== value)
+      .forEach(v => newSearchParams.append(key, v))
+
+    router.push(`?${newSearchParams.toString()}`)
+  }
+
+  const getChipValue = (name: string, value: string) => {
+    const values = value.split('__')
+
+    // Handle dataset-related filters
+    if (name == 'datasetTag' || name == 'dataset' || name == 'datasets') {
+      return datasetTitles[value] || value
+    }
+
+    // Handle special cases
+    if (values[0] == "_false" && name == "adm") {
+      if (values.length == 1) return "[inga verdi]"
+      return values[1] + " (utan underinndeling)"
+    }
+
+    if (values[0] == "_false") return values[1] || values[0]
+    if (value == "_true") return value
+
+    // Return just the value part
+    return values[0]
+  }
   /*
   
   const availableFacets = filterDataset == 'all'
@@ -178,6 +221,13 @@ export default function FacetSection() {
       const hasCount = facetFieldCounts?.[f.key]?.doc_count > 0 || facetFieldCounts?.[fieldName]?.doc_count > 0;
       const isFiltered = facetFilters.some(([key]) => key === f.key);
       return hasCount || isFiltered;
+    }).sort((a, b) => {
+
+      // Active filters first, otherwise preserve order
+      const aInParams = searchParams.has(a.key);
+      const bInParams = searchParams.has(b.key);
+      return Number(!aInParams) - Number(!bInParams);
+
     }).filter(f => datasets.length > 0 ? f.datasets?.find((d: string) => datasets.includes(d)) : f.key == 'dataset' || (f.datasets?.length && f.datasets?.length > 1))
     :
     facetConfig[filterDataset]?.filter(f => {
@@ -196,14 +246,48 @@ export default function FacetSection() {
       <MiscOptions />
 
       {false && <RadiusFilter />}
-      <Clickable
-        className="w-full flex justify-between p-3"
-        add={{ facet: facet == 'dataset' ? null : 'dataset' }}>
+      <div>
+        <Clickable
+          className="w-full flex justify-between p-3"
+          add={{ facet: facet == 'dataset' ? null : 'dataset' }}>
 
-        <span className="text-lg">Datasett</span>
-        <PiCaretRightBold className="inline self-center text-primary-700 text-xl" />
+          <span className="text-lg">Datasett</span>
+          <PiCaretRightBold className="inline self-center text-primary-700 text-xl" />
 
-      </Clickable>
+        </Clickable>
+        
+        {datasetFilters.length > 0 && (
+          <div className="px-3 pb-3 flex flex-col gap-2">
+            <div className="flex items-end gap-2">
+              <div className="flex flex-wrap gap-1.5 flex-1 min-w-0">
+                {datasetFilters.map(([key, value]) => (
+                  <button
+                    key={`${key}__${value}`}
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      removeFilter(key, value)
+                    }}
+                    className="px-2 py-1 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer text-sm hover:bg-neutral-50"
+                  >
+                    {getChipValue(key, value)}
+                    <PiX className="ml-0.5 text-sm" aria-hidden="true" />
+                  </button>
+                ))}
+              </div>
+              {datasetFilters.length > 0 && (
+                <Clickable
+                  remove={['dataset']}
+                  className="text-sm py-1 px-2 text-neutral-700 hover:text-neutral-900 flex-shrink-0 self-end"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Nullstill
+                </Clickable>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
 
 
       {(facetsLoading && !availableFacets.length) && (
@@ -226,6 +310,9 @@ export default function FacetSection() {
 
       {availableFacets.filter(f => !f.child && f.key != 'dataset').map(f => {
         const isExpanded = facet == f.key
+        const activeFiltersForFacet = facetFilters.filter(([key]) => key === f.key)
+        const hasActiveFilters = activeFiltersForFacet.length > 0
+        
         return (
           <div key={f.key} className={facetsLoading ? 'opacity-50' : ''}>
             <Clickable className="w-full flex justify-between p-3"
@@ -238,10 +325,39 @@ export default function FacetSection() {
                 {filterDataset != 'all' && f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}
               </div>
               <PiCaretRightBold className="inline self-center text-primary-700 text-xl" />
-
-
             </Clickable>
-
+            
+            {hasActiveFilters && (
+              <div className="px-3 pb-3 flex flex-col gap-2">
+                <div className="flex items-end gap-2">
+                  <div className="flex flex-wrap gap-1.5 flex-1 min-w-0">
+                    {activeFiltersForFacet.map(([key, value]) => (
+                      <button
+                        key={`${key}__${value}`}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          removeFilter(key, value)
+                        }}
+                        className="px-2 py-1 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer text-sm hover:bg-neutral-50"
+                      >
+                        {getChipValue(key, value)}
+                        <PiX className="ml-0.5 text-sm" aria-hidden="true" />
+                      </button>
+                    ))}
+                  </div>
+                  {hasActiveFilters && (
+                    <Clickable
+                      remove={[f.key]}
+                      className="text-sm py-1 px-2 text-neutral-700 hover:text-neutral-900 flex-shrink-0 self-end"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Nullstill
+                    </Clickable>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )
       })}
