@@ -84,18 +84,24 @@ export async function proxy(request: NextRequest) {
     }
 
     if (path[1] == 'view') {
-        const searchParams = new URLSearchParams(url.searchParams)
+        
         const dataset = path[2]
         if (path.length == 5 && path[3] == 'doc') {
-            return handleApiRedirect(`${baseUrl}/api/uuid/${path[4]}`, baseUrl, () => "/uuid/" + path[4]);
+            return Response.redirect(baseUrl + "/uuid/" + path[4].slice(0, 36), 302)
         }
         if (path.length == 5 && path[3] == 'iiif') {
-            return handleApiRedirect(`${baseUrl}/api/iiif/${path[4]}`, baseUrl, () => "/iiif/" + path[4]);
+            return Response.redirect(baseUrl + "/iiif/" + path[4].slice(0, 36), 302)
         }
 
+        const newSearchParams = new URLSearchParams()
+
+        const searchParams = new URLSearchParams(url.search)
+        if (searchParams.get('q')) {
+            newSearchParams.set('q', searchParams.get('q')!)
+        }
         searchParams.set('dataset', dataset)
 
-        return Response.redirect(baseUrl + "/search?" + searchParams.toString(), 302)
+        return Response.redirect(baseUrl + "/search?" + newSearchParams.toString(), 302)
     }
 
     if (path[1] == 'snid') {
