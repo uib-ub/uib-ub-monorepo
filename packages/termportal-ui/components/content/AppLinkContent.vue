@@ -1,10 +1,8 @@
 <template>
-  <span>
-    <AppLink v-if="to" class="underline hover:decoration-2" :to="to">
-      {{ desc }}
-    </AppLink>
-    <span v-else>{{ desc }}</span>
-  </span>
+  <AppLink v-if="to" class="underline hover:decoration-2" :to="to">
+    {{ desc }}
+  </AppLink>
+  <span v-else>{{ desc }}</span>
 </template>
 
 <script setup lang="ts">

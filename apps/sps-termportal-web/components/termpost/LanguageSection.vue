@@ -114,7 +114,7 @@
       >
         <!-- Reverse order to display it in same way as in wiki -->
         <TermpostTermDescription
-          prop="altLabel"
+          prop="hiddenLabel"
           :data="[...concept?.hiddenLabel[lang]].reverse()"
           :data-lang="lang"
         />

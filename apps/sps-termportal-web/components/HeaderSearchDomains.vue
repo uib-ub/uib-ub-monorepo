@@ -56,16 +56,14 @@
       <div class="flex justify-center">
         <button
           v-if="domainSelected"
-          class="absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border-2 border-gray-200 border-t-white bg-white"
+          class="cursor-pointer absolute mt-[6px] flex h-[1.1em] w-16 justify-center rounded-b-md border-2 border-gray-200 border-t-white bg-white"
+          :aria-label="$t('searchBar.expandDomainMenu')"
           @click="panel = !panel"
         >
-          <Icon
-            name="mdi:chevron-down"
+          <IconChevronDown
             size="1.6em"
-            class="mt-[-7px] text-gray-600"
-            aria-hidden="true"
+            class="-translate-y-1.5"
           />
-          <span class="sr-only">{{ $t("searchBar.expandDomainMenu") }}</span>
         </button>
       </div>
     </div>
@@ -75,26 +73,24 @@
         class="absolute z-20 mt-[6px] max-w-fit rounded-b-[7px] border border-gray-300 border-t-white bg-white shadow-lg"
         :style="{ width: `${topWrapper.offsetWidth}px` }"
       >
-        <div class="absolute right-0 top-0 mr-1 mt-1 flex space-x-2">
+        <div class="absolute right-0 top-0 flex justify-between h-8 mr-1 mt-1 space-x-2 text-xl">
           <button
             v-if="subdomainSpecified"
-            class="rounded-sm border border-transparent p-0.5 text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
+            class="flex items-center justify-center w-8 cursor-pointer rounded-xs border border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
+            :aria-label="$t('searchBar.resetDomainOptions')"
             @click="resetSubdomainOptions()"
           >
             <IconReset
-              class="text-lg"
-              size="1.35em"
+              size="1.3em"
+              class="translate-y-[1px]"
             />
-            <span class="sr-only">{{
-              $t("searchBar.resetDomainOptions")
-            }}</span>
           </button>
           <button
-            class="flex justify-center rounded-sm border border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
+            class="cursor-pointer flex items-center w-8 justify-center rounded-xs border border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-100 hover:text-gray-800"
+            :aria-label="$t('searchBar.closeDomainMenu')"
             @click="panel = false"
           >
-            <IconClose class="text-lg" />
-            <span class="sr-only">Close</span>
+            <IconClose />
           </button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -185,12 +181,8 @@ const deactivatedDomains = computed(() => {
 function resetSubdomainOptions() {
   const searchInterface = useSearchInterface();
   const topDomains = Object.keys(bootstrapData.value.domain);
-  const flatSubDomains = flattenOrderDomains()
-    .map(d => d[0])
-    .filter(domain => !topDomains.includes(domain));
-
   Object.keys(searchInterface.value.domain).forEach((domain) => {
-    if (flatSubDomains.includes(domain)) {
+    if (!topDomains.includes(domain)) {
       delete searchInterface.value.domain[domain];
     }
   });
