@@ -118,5 +118,7 @@ tsconfig.build.tsbuildinfo
 /apps/ub-dashboard/v1
 /apps/api/v1
 
-# Ignored since it's app specific
+# Ignore app specific AI ignore configs
 .cursorignore
+.continueignore
+.continue
