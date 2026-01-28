@@ -39,7 +39,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
 
       {source.content?.html && <div className="inline-flex flex-col inner-slate">
         <div className='border-b border-neutral-200 p-4 flex gap-2'>Bind {source.misc.Bind}, s. {source.misc.Side}{source.links?.map((link: any) => <div key={link}><SourceLink url={link} /></div>)}
-          {source.content.html.includes("font-phonetic") && <span className='text-sm'><PiWarningFill className='inline mr-1 text-primary-700' />Transkriberinga kan innehalde feil teikn, særleg i lydskrift</span>}</div>
+          {false && source.content.html.includes("font-phonetic") && <span className='text-sm'><PiWarningFill className='inline mr-1 text-primary-700' />Transkriberinga kan innehalde feil teikn, særleg i lydskrift</span>}</div>
         <div className='space-y-2 inline p-4'>{parse(source.content.html)}</div>
 
       </div>
