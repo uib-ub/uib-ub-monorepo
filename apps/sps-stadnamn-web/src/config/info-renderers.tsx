@@ -1,6 +1,7 @@
 import SourceLink from '@/components/search/details/group/source-link';
 import Clickable from '@/components/ui/clickable/clickable';
 import InfoPopover from '@/components/ui/info-popover';
+import LegacyChildren from '@/components/search/details/doc/legacy-children';
 import parse from 'html-react-parser';
 import Link from 'next/link';
 import { Fragment, ReactElement } from 'react';
@@ -248,6 +249,11 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
   sorum: (source: any) => {
     return <>
       {source.rawData.KOMMENTAR && <><strong className="text-neutral-900">Kommentar: </strong>{source.rawData.KOMMENTAR}</>}
+    </>
+  },
+  legacy_search: (source: any) => {
+    return <>
+      <LegacyChildren source={source} />
     </>
   }
 
