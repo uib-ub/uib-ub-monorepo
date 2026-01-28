@@ -8,6 +8,20 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_SN_ENV: process.env.SN_ENV,
   },
+  redirects: async () => {
+    return [
+      {
+        source: '/datasets',
+        destination: '/info/datasets',
+        permanent: true,
+      },
+      {
+        source: '/view/:dataset/info',
+        destination: '/info/datasets/:dataset',
+        permanent: true,
+      },
+    ]
+  },
   images: {
     remotePatterns: [
       {
