@@ -106,9 +106,9 @@ export default function ActiveFilters() {
   const allFilters = [...datasetFilters, ...facetFilters]
 
   return (
-    <div className="flex flex-col gap-2">
+    <section className="flex flex-col gap-2" aria-labelledby="active-filters-title">
       <div className="flex items-center gap-2 px-1">
-        <h2 className="text-lg font-semibold text-neutral-900 flex-1 mx-1 my-2">Aktive filter</h2>
+        <div id="active-filters-title" className="text-lg font-semibold text-neutral-900 flex-1 mx-1 my-2">Aktive filter</div>
         {showClearButton && (
           <Clickable
             remove={['q', ...facetFilters.map(([key]) => key), ...datasetFilters.map(([key]) => key)]}
@@ -133,7 +133,7 @@ export default function ActiveFilters() {
           </button>
         ))}
       </div>
-    </div>
+    </section>
   )
 
 }

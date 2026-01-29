@@ -382,7 +382,8 @@ export default function Drawer({
             `}
                 aria-hidden="true"
             ></div>
-            <div
+            <section
+                aria-labelledby="drawer-title"
                 ref={outerRef}
                 className={`fixed w-full left-0 drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''} flex flex-col`}
                 style={{ bottom: '-0.5rem', height: `${drawerOpen ? currentPosition : 0}rem`, pointerEvents: drawerOpen ? 'auto' : 'none', zIndex: 6000, touchAction: atMiddle() ? 'auto' : 'none', overscrollBehaviorY: 'none' as any }}
@@ -418,7 +419,7 @@ export default function Drawer({
                         label="Til toppen"
                     ><PiCaretUpBold className="text-xl xl:text-base" /></RoundIconButton>
                 )}
-            </div>
+            </section>
         </>
     )
 }
