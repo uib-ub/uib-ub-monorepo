@@ -16,7 +16,9 @@ const spec = {
 
 **Kjeldeoppslag** (source record): a single record or document from a particular dataset. Has a \`uuid\` and belongs to one namnegruppe (\`group.id\`).
 
-**Namnegruppe** (name group): kjeldeoppslag with identical names or spelling variants of the same name, grouped by geographic proximity. \`group.id\` is the uuid of one of the members.`
+**Namnegruppe** (name group): kjeldeoppslag with identical names or spelling variants of the same name, grouped by geographic proximity. \`group.id\` is the uuid of one of the members.
+
+**Special case — grunnord:** In the lexicon (leks) and related datasets, \`group.id\` may be prefixed with \`grunnord_\` (e.g. \`grunnord_berg\`). These are lexical groups by root word (grunnord), not geographic namnegrupper: all entries that share the same base word. When calling /api/group with a \`grunnord_*\` id, the text query (\`q\`) is typically applied to filter within that root-word group.`
   },
   components: {
     schemas: {
@@ -287,13 +289,13 @@ const spec = {
         summary: "All documents in a namnegruppe",
         description: `Returns every kjeldeoppslag in the given namnegruppe. Use this when you have a document (or a group.id from search) and want all source records in that name group.
 
-**Parameter \`group\`:** The namnegruppe id — i.e. the uuid of any one of the documents in the group (same as \`group.id\` on any member). May be base64url-encoded or raw.
+**Parameter \`group\`:** The namnegruppe id — i.e. the uuid of any one of the documents in the group (same as \`group.id\` on any member). May be base64url-encoded or raw. **Special case:** For lexicon/grunnord datasets, \`group\` can be a \`grunnord_*\` id (e.g. \`grunnord_berg\`) meaning "all entries with this root word"; pass it raw or base64-encoded (the route accepts both). In that case \`q\` is usually kept to filter by text within the root-word group.
 
 **Optional:** \`q\`, \`dataset\`, \`perspective\` to filter within the group (same semantics as search).
 
 **Response:** \`sources\` — array of full document objects (label, uuid, attestations, year, location, iiif, content, etc.). \`group\` — group-level metadata (label, adm1, adm2, id). Top-level \`boost\`, \`placeScore\`, \`fields\` from a representative hit may also be present.`,
         parameters: [
-          { name: "group", in: "query", required: true, description: "Namnegruppe id (uuid of one member, or group.id). May be base64url-encoded or raw.", schema: { type: "string" } },
+          { name: "group", in: "query", required: true, description: "Namnegruppe id (uuid of one member, or group.id).", schema: { type: "string" } },
           { name: "q", in: "query", description: "Filter within group", schema: { type: "string" } },
           { name: "dataset", in: "query", description: "Filter by dataset", schema: { $ref: "#/components/schemas/DatasetCode" } },
           { name: "perspective", in: "query", description: "Search perspective", schema: { type: "string" } }
