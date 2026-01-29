@@ -18,7 +18,7 @@ const spec = {
 
 **Namnegruppe** (name group): kjeldeoppslag with identical names or spelling variants of the same name, grouped by geographic proximity. \`group.id\` is the uuid of one of the members.
 
-**Special case — grunnord:** In the lexicon (leks) and related datasets, \`group.id\` may be prefixed with \`grunnord_\` (e.g. \`grunnord_berg\`). These are lexical groups by root word (grunnord), not geographic namnegrupper: all entries that share the same base word. When calling /api/group with a \`grunnord_*\` id, the text query (\`q\`) is typically applied to filter within that root-word group.`
+**Special case — grunnord:** In the Norsk stadnamleksikon and Norge Gaardnavne - Grunnord (leks_g, rygh_g), \`group.id\` may be prefixed with \`grunnord_\` (e.g. \`grunnord_berg\`). These are lexical groups by root word (grunnord), not geographic namnegrupper: all entries that share the same base word. When calling /api/group with a \`grunnord_*\` id, the text query (\`q\`) is typically applied to filter within that root-word group.`
   },
   components: {
     schemas: {
