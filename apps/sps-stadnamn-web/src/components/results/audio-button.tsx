@@ -25,6 +25,7 @@ export default function AudioButton({ audioFile, iconClass }: { audioFile: strin
 
   return (
     <>
+    {JSON.stringify(audioFile)}
       <audio ref={audio} src={audioFile} onEnded={() => setPlaying(null)} />
       <IconButton onClick={togglePlay} label={playing ? "Pause" : "Spill av lyd"}>
         {playing == audioFile ? <PiPauseCircleFill className={"align-text-bottom " + iconClass} /> : <PiPlayCircleFill className={iconClass} />}

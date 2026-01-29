@@ -311,8 +311,7 @@ export default function DatasetBrowser() {
                 <div className={`w-20 xl:w-40 h-20 xl:h-auto xl:self-stretch ${datasetPresentation[itemDataset].img.endsWith('.svg') ? 'bg-neutral-100 p-2 rounded' : ''}`}>
                   <Image
                     src={datasetPresentation[itemDataset].img}
-                    alt="Illustrasjon"
-                    aria-describedby={itemDataset + "_attribution"}
+                    alt=""
                     width="256"
                     height="256"
                     className={`w-full h-full object-cover sepia-[25%] grayscale-[50%] rounded ${datasetPresentation[itemDataset].img.endsWith('.svg')

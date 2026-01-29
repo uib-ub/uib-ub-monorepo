@@ -192,9 +192,9 @@ export default async function IIIFPage({ params }: { params: Promise<{ slug: str
                         </div>
                     )}
                     {manifest?.audio && <div className="flex flex-col gap-4 items-center justify-center h-full hidden lg:flex">
-                        <h2 className="text-2xl text-neutral-900 font-semibold">{resolveLanguage(manifest.audio.label)}</h2>
+                        <h2 className="text-2xl text-neutral-900 font-semibold" id="audio-label">{resolveLanguage(manifest.audio.label)}</h2>
 
-                        <audio controls src={`https://iiif.spraksamlingane.no/iiif/audio/stadnamn/${manifestDataset.toUpperCase()}/${manifest.audio.uuid}.${manifest.audio.format}`} className="w-full max-w-md">
+                        <audio aria-labelledby="audio-label" controls src={`https://iiif.spraksamlingane.no/iiif/audio/stadnamn/${manifestDataset.toUpperCase()}/${manifest.audio.uuid}.${manifest.audio.format}`} className="w-full max-w-md">
                             Your browser does not support the audio element.
                         </audio>
                     </div>}

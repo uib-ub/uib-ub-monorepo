@@ -75,8 +75,8 @@ export default async function DatasetPage({ params }: { params: Promise<{ datase
             </div>
         </div>
         <div className='xl:w-1/3'>
-            <img src={info.img} alt={info.alt || ''} className="object-cover" />
-            <small>Illustrasjon: {info.alt} | {info.imageAttribution} {info.imageUrl && <a href={info.imageUrl.url} target="_blank" rel="noopener noreferrer">{info.imageUrl.name}</a>} {info.imageLicense && <a href={info.imageLicense.url} target="_blank" rel="noopener noreferrer">{info.imageLicense.name}</a>}</small>
+            <img src={info.img} alt="" className="object-cover" />
+            <small id="dataset-illustration" className="text-neutral-700 text-xs p-1 sr-only">Illustrasjon: {info.alt} | {info.imageAttribution} {info.imageUrl && <a href={info.imageUrl.url} target="_blank" rel="noopener noreferrer">{info.imageUrl.name}</a>} {info.imageLicense && <a href={info.imageLicense.url} target="_blank" rel="noopener noreferrer">{info.imageLicense.name}</a>}</small>
         </div>
 
     </div>
