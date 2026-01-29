@@ -19,7 +19,12 @@ export async function GET(request: Request) {
 
   const perspective = reservedParams.perspective || 'all'
 
-  const groupValue = base64UrlToString(reservedParams.group)
+  // Grunnord ids (e.g. grunnord_berg) may be sent raw or base64-encoded; accept both
+  const rawGroup = reservedParams.group ?? ''
+  const groupValue =
+    rawGroup.startsWith('grunnord_')
+      ? rawGroup
+      : base64UrlToString(reservedParams.group)
 
   const query: Record<string, any> = {
     "size": 1000,
