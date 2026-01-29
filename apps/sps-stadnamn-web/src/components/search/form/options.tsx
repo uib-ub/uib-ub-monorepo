@@ -30,7 +30,7 @@ export default function Options() {
 
     return <DropdownMenu>
         <DropdownMenuTrigger asChild>
-            <button aria-label="Søkealternativ" className="items-center flex justify-center h-full border-neutral-200 !w-14 xl:w-12 border-l-2 border-neutral-200 xl:border-none shrink-0">
+            <button aria-label="Søkealternativ" className="items-center flex justify-center h-full border-neutral-200 !w-14 xl:w-12 border-l-2 xl:border-none shrink-0">
                 <PiFaders className="text-3xl" aria-hidden="true" />
 
             </button>

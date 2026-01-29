@@ -287,10 +287,11 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             {
                 audioItems?.map((audioItem) => (
                     <div key={audioItem.uuid + 'audio'}>
-                        {audioItem.recordings.map((recording: any) => (
+                        {audioItem.recordings.map((recording: any, index: number) => (
                             <div key={"audio-" + recording.uuid} className="flex items-center">
                                 <audio
                                     controls
+                                    aria-label={`Lydopptak${audioItems.length > 1 ? ` ${index + 1} av ${audioItem.recordings.length}` : ''}`}
                                     src={`https://iiif.spraksamlingane.no/iiif/audio/hord/${recording.file}`}
                                     className="h-10 rounded-md
                                     [&::-webkit-media-controls-enclosure]:bg-transparent 

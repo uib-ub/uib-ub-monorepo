@@ -45,20 +45,20 @@ export default function StatusSection() {
         aria-live="polite"
         className="bg-neutral-900 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit"
       >
-        <PiInfoFill className="inline text-xl" /> Ingen treff med koordinater
+        <PiInfoFill className="inline text-xl" aria-hidden="true" /> Ingen treff med koordinater
       </div>
     }
 
 
-    {(!searchLoading && !searchError && totalHits?.value == 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl" /> Ingen treff</div> : null}
+    {(!searchLoading && !searchError && totalHits?.value == 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl" aria-hidden="true" /> Ingen treff</div> : null}
 
     {searchError && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md h-12 px-4 text-white opacity-90 flex gap-4 items-center w-fit">
-      <PiWarningFill className="inline text-xl" />
+      <PiWarningFill className="inline text-xl" aria-hidden="true" />
       <span>Kunne ikkje hente søkeresultat</span>
     </div>
     }
     {!searchBounds && !searchError && !searchLoading && totalHits > 0 && mode == 'map' && <div role="status" aria-live="polite" className="bg-primary-700 h-12 px-4 rounded-md text-white opacity-90 flex gap-4 items-center w-fit">
-      <PiWarningFill className="inline text-xl" />
+      <PiWarningFill className="inline text-xl" aria-hidden="true" />
       <span>Kunne ikkje hente koordinater</span>
     </div>}
 

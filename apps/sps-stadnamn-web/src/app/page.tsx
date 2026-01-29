@@ -57,7 +57,7 @@ export default async function Home() {
       type="submit" 
       aria-label="Søk"
     >
-      <PiMagnifyingGlass className="text-3xl lg:text-2xl"/>
+      <PiMagnifyingGlass className="text-3xl lg:text-2xl" aria-hidden="true" />
     </button>
   </Form>
   </div>
@@ -84,7 +84,7 @@ export default async function Home() {
         href="/search"
         className="text-neutral-950 no-underline lg:mb-16 mt-6 lg:mt-2 w-full lg:w-auto h-14 lg:h-auto text-3xl pr-12 pl-8 py-4 lg:py-2 lg:pr-8 lg:pl-6 rounded-lg md:rounded-full flex items-center gap-3 transition-colors duration-200 justify-center"
       >
-        <PiMapTrifoldFill className="text-4xl" />
+        <PiMapTrifoldFill className="text-4xl" aria-hidden="true" />
         Kart
       </Link>
     </div>
@@ -126,8 +126,7 @@ export default async function Home() {
               <div className={`h-full ${card.img.endsWith('.svg') ? 'bg-neutral-100' : ''}`}>
                 <Image 
                   src={card.img} 
-                  alt="Illustrasjon" 
-                  aria-describedby={card.code + "_attribution"} 
+                  alt="" 
                   height="512" 
                   width="512" 
                   className={`w-full h-full sepia-[25%] grayscale-[50%] border-2 border-neutral-200 rounded-md ${
@@ -158,8 +157,7 @@ export default async function Home() {
               <div className={`h-full ${card.img.endsWith('.svg') ? 'bg-neutral-100' : ''}`}>
                 <Image 
                   src={card.img} 
-                  alt="Illustrasjon" 
-                  aria-describedby={card.code + "_attribution"} 
+                  alt="" 
                   height="512" 
                   width="512" 
                   className={`w-full h-full sepia-[25%] grayscale-[50%] border-2 border-neutral-200 rounded-md ${

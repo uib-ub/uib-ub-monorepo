@@ -235,7 +235,7 @@ export default function DatasetFacet() {
                         className="absolute right-2 top-3 rounded-full btn btn-outline btn-compact p-1 flex-shrink-0"
                         aria-label={`${isExpanded ? 'Skjul' : 'Vis'} beskrivelse`}
                       >
-                        {isExpanded ? <PiCaretUpBold className="w-4 h-4" /> : <PiCaretDownBold className="w-4 h-4" />}
+                        {isExpanded ? <PiCaretUpBold className="w-4 h-4" aria-hidden="true" /> : <PiCaretDownBold className="w-4 h-4" aria-hidden="true" />}
                       </IconButton>
                       {isExpanded && (
                         <div className='mt-2 ml-6 mb-2 pr-10'>
@@ -245,7 +245,7 @@ export default function DatasetFacet() {
                               href={`info/datasets/${item.key.split('-')[2].split('_')[0]}`}
                               className="flex items-center gap-1 no-underline"
                             >
-                              Les meir <PiCaretRight className="xl:text-lg text-primary-700" />
+                              Les meir <PiCaretRight className="xl:text-lg text-primary-700" aria-hidden="true" />
                             </Link>
                           </div>
                         </div>

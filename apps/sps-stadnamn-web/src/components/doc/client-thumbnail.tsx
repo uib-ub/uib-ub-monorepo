@@ -66,7 +66,7 @@ export default function ClientThumbnail({ iiif, datasetLabel }: { iiif: string |
                 ) : (
                     <img
                         src={thumbnailUrl || "/"}
-                        alt="Seddel"
+                        alt={label ? resolveLanguage(label) : 'Dokument'}
                         // Fill width and let height overflow; container clips the bottom.
                         className="block w-full h-auto"
                     />
@@ -80,9 +80,9 @@ export default function ClientThumbnail({ iiif, datasetLabel }: { iiif: string |
                     <button
                         onClick={() => setImgIndex(prev => prev > 0 ? prev - 1 : iiif.length - 1)}
                         className="btn btn-outline btn-compact grow md:grow-0"
-                        aria-label="Forrige bilde"
+                        aria-label="Førre bilete"
                     >
-                        <PiCaretLeft />
+                        <PiCaretLeft aria-hidden="true" />
                     </button>
                     <div className="flex gap-2">
                         <span className="px-3 py-1 rounded-sm border-neutral-400">
@@ -92,9 +92,9 @@ export default function ClientThumbnail({ iiif, datasetLabel }: { iiif: string |
                     <button
                         onClick={() => setImgIndex(prev => prev < iiif.length - 1 ? prev + 1 : 0)}
                         className="btn btn-outline btn-compact grow md:grow-0"
-                        aria-label="Neste bilde"
+                        aria-label="Neste bilete"
                     >
-                        <PiCaretRight />
+                        <PiCaretRight aria-hidden="true" />
                     </button>
                 </div>
             )}

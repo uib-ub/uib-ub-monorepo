@@ -27,6 +27,6 @@ export default async function Thumbnail({ manifestId, dataset }: { manifestId: s
     const { thumbnail, width } = await fetchThumbnail()
 
     return width ? (
-        <Image width={width} height={height} src={thumbnail} alt="Seddel" />
-    ) : "NO WIDTH"
+        <Image width={width} height={height} src={thumbnail} alt="" aria-hidden="true" />
+    ) : null
 }

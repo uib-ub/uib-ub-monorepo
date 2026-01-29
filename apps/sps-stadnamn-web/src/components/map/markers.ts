@@ -11,7 +11,7 @@ const buildMarker = (color: string, style: string) => {
   // assign hex from color name
   const fill = colorMapping[color] || color
 
-  return `<svg
+  return `<svg aria-hidden="true"
     viewBox="0 0 13.229166 21.695834"
     version="1.1"
     style="${style}"
@@ -46,7 +46,7 @@ const buildMarker = (color: string, style: string) => {
 const buildMultiMarker = (color: string, style: string) => {
   const fill = colorMapping[color] || color
   return `
-    <svg
+    <svg aria-hidden="true"
     viewBox="0 0 13.229166 21.695834"
     version="1.1"
     style="${style}"

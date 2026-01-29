@@ -347,7 +347,7 @@ const spec = {
 
 export default function IndexPage() {
   return (
-    <main id="main" className="container dataset-info stable-scrollbar overflow-auto">
+    <main id="main" className="dataset-info bg-white h-full w-full grow">
       <SwaggerUI spec={spec} />
     </main>
   );

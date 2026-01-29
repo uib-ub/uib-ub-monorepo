@@ -1,6 +1,7 @@
 import SourceLink from '@/components/search/details/group/source-link';
 import Clickable from '@/components/ui/clickable/clickable';
 import InfoPopover from '@/components/ui/info-popover';
+import LegacyChildren from '@/components/search/details/doc/legacy-children';
 import parse from 'html-react-parser';
 import Link from 'next/link';
 import { Fragment, ReactElement } from 'react';
@@ -27,9 +28,9 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
             const dataset = "rygh"
             return <Fragment key={index}>
 
-              <Clickable link className="no-underline flex items-center" href="/search" only={{ dataset, "misc.KNR": source.misc.KNR }}>{source.misc.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-700' /></Clickable>
-              {item.gnr && <>- <Clickable link className="no-underline flex items-center" href="/search" only={{ dataset, "misc.Gnr": item.gnr.toString(), "misc.KNR": source.misc.KNR }}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-700' /></Clickable> </>}
-              {item.bnr && <>{"/"} <Clickable link className="no-underline flex items-center" href="/search" only={{ dataset, "misc.Bnr": item.bnr.toString(), "misc.KNR": source.misc.KNR }}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-700' /></Clickable> </>}
+              <Clickable link className="no-underline flex items-center" href="/search" only={{ dataset, "misc.KNR": source.misc.KNR }}>{source.misc.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-700' aria-hidden="true" /></Clickable>
+              {item.gnr && <>- <Clickable link className="no-underline flex items-center" href="/search" only={{ dataset, "misc.Gnr": item.gnr.toString(), "misc.KNR": source.misc.KNR }}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-700' aria-hidden="true" /></Clickable> </>}
+              {item.bnr && <>{"/"} <Clickable link className="no-underline flex items-center" href="/search" only={{ dataset, "misc.Bnr": item.bnr.toString(), "misc.KNR": source.misc.KNR }}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-700' aria-hidden="true" /></Clickable> </>}
 
 
             </Fragment>
@@ -39,7 +40,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
 
       {source.content?.html && <div className="inline-flex flex-col inner-slate">
         <div className='border-b border-neutral-200 p-4 flex gap-2'>Bind {source.misc.Bind}, s. {source.misc.Side}{source.links?.map((link: any) => <div key={link}><SourceLink url={link} /></div>)}
-          {false && source.content.html.includes("font-phonetic") && <span className='text-sm'><PiWarningFill className='inline mr-1 text-primary-700' />Transkriberinga kan innehalde feil teikn, særleg i lydskrift</span>}</div>
+          {false && source.content.html.includes("font-phonetic") && <span className='text-sm'><PiWarningFill className='inline mr-1 text-primary-700' aria-hidden="true" />Transkriberinga kan innehalde feil teikn, særleg i lydskrift</span>}</div>
         <div className='space-y-2 inline p-4'>{parse(source.content.html)}</div>
 
       </div>
@@ -79,7 +80,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
   },
   leks_g: (source: any) => {
     return <>
-      {source["note"] && <span className='flex items-center gap-1'><PiInfoFill className='inline mr-1 text-neutral-600' />{source["note"]}</span>}
+      {source["note"] && <span className='flex items-center gap-1'><PiInfoFill className='inline mr-1 text-neutral-600' aria-hidden="true" />{source["note"]}</span>}
       {source.content?.html && <div className='space-y-2'>{parse(source.content?.html)}</div>}
     </>
   },
@@ -132,7 +133,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
         {source.rawData.merknader && <div><strong className="text-neutral-900">Merknader: </strong>{source.rawData.merknader}</div>}
 
       </div>
-      {source.audio && <audio controls src={`https://iiif.spraksamlingane.no/iiif/audio/hord/${source.audio.file}`}></audio>}
+      {source.audio && <audio aria-label={"Lydopptak: " + source.audio.file} controls src={`https://iiif.spraksamlingane.no/iiif/audio/hord/${source.audio.file}`}></audio>}
     </>
   },
   nbas: null,
@@ -201,7 +202,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
   },
   ssr2016: null,
   ssr: (source: any) => {
-    return <><div><PiWarningFill className="inline-block mr-1 text-neutral-600 text-lg" />Sjå normeringsstatus på kartverket.no</div>
+    return <><div><PiWarningFill className="inline-block mr-1 text-neutral-600 text-lg" aria-hidden="true" />Sjå normeringsstatus på kartverket.no</div>
       {source.ssr && <div className="flex flex-wrap gap-2"><Link className="rectangular-external-link" href={`https://stadnamn.kartverket.no/fakta/${source.ssr}`}>kartverket.no</Link>
         <Link className="rectangular-external-link" href={`http://wfs.geonorge.no/skwms1/wfs.stedsnavn50?service=WFS&version=2.0.0&request=GetFeature&STOREDQUERY_ID=urn:ogc:def:storedQuery:OGC-WFS::Stedsnummer&stedsnummer=${source.ssr}`}>Rådata (WFS)</Link>
       </div>}
@@ -248,6 +249,11 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
   sorum: (source: any) => {
     return <>
       {source.rawData.KOMMENTAR && <><strong className="text-neutral-900">Kommentar: </strong>{source.rawData.KOMMENTAR}</>}
+    </>
+  },
+  legacy_search: (source: any) => {
+    return <>
+      <LegacyChildren source={source} />
     </>
   }
 

@@ -184,7 +184,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
             })}
         </div>}
 
-        {docData?._source.location && <div>
+        {docData?._source.location && docData?._source.group?.id && <div>
           <CollapsibleHeading headingLevel="h2" title="Koordinatinformasjon">
             <CoordinateInfo source={docData?._source} />
           </CollapsibleHeading>

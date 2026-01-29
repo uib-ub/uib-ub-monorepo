@@ -19,6 +19,7 @@ import GroupInfo from "../../details/group/group-info";
 import ActiveFilters from "../../form/active-filters";
 import ResultItem from "./result-item";
 import SearchQueryDisplay from "./search-query-display";
+import IconButton from "@/components/ui/icon-button";
 
 
 
@@ -257,15 +258,15 @@ export default function SearchResults() {
         )}
         {audioItems.length > 0 && (
           <div className="flex gap-1 ml-auto flex-shrink-0">
-            {audioItems.map((audioItem) =>
+            {audioItems.map((audioItem, index: number) =>
               audioItem.recordings.map((recording: any) => (
                 <button
                   key={"audio-preview-" + recording.uuid}
                   onClick={() => handlePlayAudio(recording)}
                   className="p-1 text-primary-700 hover:text-primary-900 transition-colors"
-                  title="Spill av lydopptak"
+                  aria-label={`Lydopptak ${audioItems.length > 1 ? ` ${index + 1} av ${audioItems.length}` : ''}`}
                 >
-                  <PiPlayFill className="text-lg" />
+                  <PiPlayFill className="text-lg" aria-hidden="true" />
                 </button>
               ))
             )}
@@ -297,7 +298,7 @@ export default function SearchResults() {
         (point && !init) && (
           <div className="p-3 flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <button onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><PiMapPinFill className="text-primary-700" /></button>
+              <IconButton label="Gå til koordinatet" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><PiMapPinFill className="text-primary-700" /></IconButton>
               {isEditingCoordinates ? (
                 <div className="flex items-center gap-2 flex-1">
                   <input
@@ -345,11 +346,11 @@ export default function SearchResults() {
               <div className="flex items-center gap-2">
                 {!isEditingCoordinates && (
                   <ClickableIcon className="btn btn-outline h-6 w-6 btn-compact rounded-full text-neutral-900" label="Rediger startpunkt" onClick={startEditingCoordinates}>
-                    <PiPencilSimpleBold />
+                    <PiPencilSimpleBold aria-hidden="true" />
                   </ClickableIcon>
                 )}
                 <ClickableIcon className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900" label="Fjern startpunkt" remove={['point', 'radius']}>
-                  <PiXBold />
+                  <PiXBold aria-hidden="true" />
                 </ClickableIcon>
               </div>
             </div>

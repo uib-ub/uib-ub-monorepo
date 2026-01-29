@@ -252,7 +252,7 @@ export default function FacetSection() {
           add={{ facet: facet == 'dataset' ? null : 'dataset' }}>
 
           <span className="text-lg">Datasett</span>
-          <PiCaretRightBold className="inline self-center text-primary-700 text-xl" />
+          <PiCaretRightBold className="inline self-center text-primary-700 text-xl" aria-hidden="true" />
 
         </Clickable>
         
@@ -324,7 +324,7 @@ export default function FacetSection() {
                 {filterDataset == 'all' && (f.datasets?.length || 0) == 1 && f.datasets?.[0] && <em className="text-neutral-700 text-sm self-center">{datasetTitles[f.datasets?.[0]]}</em>}
                 {filterDataset != 'all' && f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}
               </div>
-              <PiCaretRightBold className="inline self-center text-primary-700 text-xl" />
+              <PiCaretRightBold className="inline self-center text-primary-700 text-xl" aria-hidden="true" />
             </Clickable>
             
             {hasActiveFilters && (
