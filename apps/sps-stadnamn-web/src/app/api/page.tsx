@@ -40,14 +40,15 @@ const spec = {
     }
   },
   tags: [
-    { name: "Search", description: "The endpoints powering the map interface: bounds, result count, results collapsed by name group, and markers." },
-    { name: "Source records", description: "Table, download, document lookup, and namnegruppe members." },
+    { name: "Map", description: "The endpoints powering the map interface: bounds, result count, results collapsed by name group, and markers." },
+    { name: "Table", description: "Endpoints used in the table interface. Return all documents without collapsing by name group." },
+    { name: "Documents", description: "Document lookup and namnegruppe members." },
     { name: "IIIF", description: "Archive resources adhering to the International Image Interoperability Framework (IIIF Presentation API 3)" }
   ],
   paths: {
     "/api/search": {
       get: {
-        tags: ["Search"],
+        tags: ["Map"],
         summary: "Map bounds",
         description: `Returns only the geographic bounds (viewport) of the current search — no document hits. The response has size 0 and includes \`aggregations.viewport.bounds\` with \`top_left\` and \`bottom_right\` (each \`{ lat, lon }\`). Use this to fit the map to the result area.
 
@@ -94,7 +95,7 @@ const spec = {
     },
     "/api/search/collapsed": {
       post: {
-        tags: ["Search"],
+        tags: ["Map"],
         summary: "Map list results (by namnegruppe)",
         description: `Returns one hit per namnegruppe — this is what powers the map sidebar list. Results are collapsed by \`group.id\`, so each hit represents one name group, not every kjeldeoppslag.
 
@@ -174,7 +175,7 @@ const spec = {
     },
     "/api/search/table": {
       get: {
-        tags: ["Source records"],
+        tags: ["Table"],
         summary: "Table search — all kjeldeoppslag",
         description: `Returns a flat, paginated list of **all** matching kjeldeoppslag — one hit per document, no namnegruppe grouping. Use for tabular display, bulk operations, or when you need every attestation.
 
@@ -215,7 +216,7 @@ const spec = {
     },
     "/api/download": {
       get: {
-        tags: ["Source records"],
+        tags: ["Table"],
         summary: "Download search results",
         description: `Export matching kjeldeoppslag as JSON. Same query and facet params as search; you control which fields and how many rows.
 
@@ -242,7 +243,7 @@ const spec = {
     },
     "/api/doc": {
       get: {
-        tags: ["Source records"],
+        tags: ["Documents"],
         summary: "Document lookup by UUID (query)",
         description: `Fetch one kjeldeoppslag by its UUID. Optional \`dataset\` filter; omit to search across all datasets. If the document has redirects, a hit by redirect UUID is also resolved.
 
@@ -264,28 +265,49 @@ const spec = {
     },
     "/uuid/{uuid}.json": {
       get: {
-        tags: ["Source records"],
-        summary: "Document lookup by UUID (path)",
-        description: `Same document as GET /api/doc?uuid={uuid}. **The .json extension is required** for the API response; without it the server serves the HTML document page (human-facing).
-
-**Path:** \`/uuid/{uuid}.json\` — the path parameter is the UUID only; .json is literal. Example: \`/uuid/550e8400-e29b-41d4-a716-446655440000.json\`.
-
-**Variants:** Replace .json with .geojson to get a single GeoJSON Feature (geometry from document location, properties from selected fields). Use .jsonld for JSON-LD representation of the document. All return Content-Type application/json.`,
+        tags: ["Documents"],
+        summary: "Document lookup by UUID (JSON)",
+        description: `Same document as GET /api/doc?uuid={uuid}. Returns the kjeldeoppslag as JSON (Elasticsearch-style hit with \`_source\`). **An extension is required** for the API response; without it the server serves the HTML document page. For GeoJSON or JSON-LD use \`/uuid/{uuid}.geojson\` or \`/uuid/{uuid}.jsonld\`.`,
         parameters: [
-          { name: "uuid", in: "path", required: true, description: "Document UUID (without extension; .json is part of the path)", schema: { type: "string" } }
+          { name: "uuid", in: "path", required: true, description: "Document UUID (without extension)", schema: { type: "string" } }
         ],
         responses: {
-          "200": {
-            description: "Document (JSON), GeoJSON Feature (.geojson), or JSON-LD (.jsonld)",
-            content: { "application/json": { schema: { type: "object" } } }
-          },
+          "200": { description: "Document as JSON", content: { "application/json": { schema: { type: "object" } } } },
+          "404": { description: "Document not found" }
+        }
+      }
+    },
+    "/uuid/{uuid}.geojson": {
+      get: {
+        tags: ["Documents"],
+        summary: "Document lookup by UUID (GeoJSON)",
+        description: `Same document as GET /api/doc?uuid={uuid}, returned as a single GeoJSON Feature. Geometry comes from the document \`location\`; properties include \`id\`, \`label\`, \`rawData\`, \`adm1\`, \`adm2\`, \`audio\`. Use for map layers or GIS tools.`,
+        parameters: [
+          { name: "uuid", in: "path", required: true, description: "Document UUID (without extension)", schema: { type: "string" } }
+        ],
+        responses: {
+          "200": { description: "Single GeoJSON Feature", content: { "application/json": { schema: { type: "object" } } } },
+          "404": { description: "Document not found" }
+        }
+      }
+    },
+    "/uuid/{uuid}.jsonld": {
+      get: {
+        tags: ["Documents"],
+        summary: "Document lookup by UUID (JSON-LD)",
+        description: `Same document as GET /api/doc?uuid={uuid}, returned as JSON-LD. The structure depends on the dataset (lexicon, etc.); a default mapping is used when no dataset-specific \`doc2jsonld\` is configured. Use for linked data or semantic applications.`,
+        parameters: [
+          { name: "uuid", in: "path", required: true, description: "Document UUID (without extension)", schema: { type: "string" } }
+        ],
+        responses: {
+          "200": { description: "Document as JSON-LD", content: { "application/json": { schema: { type: "object" } } } },
           "404": { description: "Document not found" }
         }
       }
     },
     "/api/group": {
       get: {
-        tags: ["Source records"],
+        tags: ["Documents"],
         summary: "All documents in a namnegruppe",
         description: `Returns every kjeldeoppslag in the given namnegruppe. Use this when you have a document (or a group.id from search) and want all source records in that name group.
 
@@ -320,7 +342,7 @@ const spec = {
     },
     "/api/markers/{zoom}/{x}/{y}": {
       get: {
-        tags: ["Search"],
+        tags: ["Map"],
         summary: "Map tile markers (by namnegruppe)",
         description: `Returns one representative hit per namnegruppe for the given map tile. Used to draw markers on the map — each marker corresponds to one namnegruppe, not every kjeldeoppslag.
 
