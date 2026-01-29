@@ -38,7 +38,7 @@ const spec = {
     }
   },
   tags: [
-    { name: "Search", description: "Map search: bounds, collapsed list, markers. One result per namnegruppe." },
+    { name: "Search", description: "The endpoints powering the map interface: bounds, result count, results collapsed by name group, and markers." },
     { name: "Source records", description: "Table, download, document lookup, and namnegruppe members." },
     { name: "IIIF", description: "Archive resources adhering to the International Image Interoperability Framework (IIIF Presentation API 3)" }
   ],
