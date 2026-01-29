@@ -246,7 +246,9 @@ export default function FacetSection() {
       <MiscOptions />
 
       {false && <RadiusFilter />}
-      <div>
+      <ul className="flex flex-col divide-y divide-neutral-200 list-none p-0 m-0">
+        <li>
+        <div>
         <Clickable
           className="w-full flex justify-between p-3"
           add={{ facet: facet == 'dataset' ? null : 'dataset' }}>
@@ -288,12 +290,13 @@ export default function FacetSection() {
           </div>
         )}
       </div>
+        </li>
 
 
       {(facetsLoading && !availableFacets.length) && (
         <>
           {Array.from({ length: 3 }).map((_, index) => (
-            <div key={index}>
+            <li key={index}>
               <div className="w-full flex justify-between p-3">
                 <div className="flex flex-wrap gap-4">
                   <div
@@ -303,7 +306,7 @@ export default function FacetSection() {
                 </div>
                 <div className="w-5 h-5 bg-neutral-900/10 rounded-full animate-pulse self-center"></div>
               </div>
-            </div>
+            </li>
           ))}
         </>
       )}
@@ -314,7 +317,7 @@ export default function FacetSection() {
         const hasActiveFilters = activeFiltersForFacet.length > 0
         
         return (
-          <div key={f.key} className={facetsLoading ? 'opacity-50' : ''}>
+          <li key={f.key} className={facetsLoading ? 'opacity-50' : ''}>
             <Clickable className="w-full flex justify-between p-3"
               aria-controls={f.key + '-collapsible'}
               add={{ facet: f.key }}>
@@ -358,9 +361,10 @@ export default function FacetSection() {
                 </div>
               </div>
             )}
-          </div>
+          </li>
         )
       })}
+      </ul>
     </div>
 
   )
