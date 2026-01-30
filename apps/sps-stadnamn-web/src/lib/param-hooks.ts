@@ -66,7 +66,7 @@ export function useOverlayParams() {
 
 
 
-    const showLeftPanel = options || facet || tableOptions || !isMobile
+    const showLeftPanel = options || facet || tableOptions
 
     const showResults = mode != 'table' && (maxResults || (isMobile && !showLeftPanel))
     const showRightPanel = mode != 'table' && (isMobile ? !showLeftPanel : true)

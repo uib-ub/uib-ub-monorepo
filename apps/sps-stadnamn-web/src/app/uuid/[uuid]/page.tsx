@@ -17,6 +17,7 @@ import sanitizeHtml from 'sanitize-html'
 import GroupList from './GroupList'
 import OriginalData from './original-data'
 import ServerCadastreBreadcrumb from './server-cadastre-breadcrumb'
+import IconButton from '@/components/ui/icon-button'
 
 const normalizeText = (text: string) => text.replace(/\s+/g, ' ').trim()
 
@@ -268,7 +269,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
           <div className="text-sm text-neutral-800">{datasetShortDescriptions[docDataset]}</div>
 
           <div className="flex gap-2 mt-4 w-full">
-            <Link href={"/info/datasets/" + docDataset.split('_')[0]} className="btn btn-outline">Les meir</Link>
+            <Link href={"/info/datasets/" + docDataset.split('_')[0]} className="btn btn-outline">Les meir<span className="sr-only"> om {datasetTitles[docDataset]}</span></Link>
           </div>
         </aside>
 

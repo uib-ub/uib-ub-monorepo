@@ -90,9 +90,10 @@ export default function TreeResults() {
       </div>
 
     }
-    {groupBy == 'adm1' && <h2 className="text-lg m-2 font-serif">Fylker</h2>}
-    {groupBy == 'adm2' && <h2 className="text-lg m-2 font-serif">Kommuner</h2>}
-    {!groupBy && <h2 className="text-lg mx-2 font-serif">Garder</h2>}
+    <section aria-labelledby="tree-results-title">
+    {groupBy == 'adm1' && <div id="tree-results-title" className="text-lg m-2 font-serif">Fylker</div>}
+    {groupBy == 'adm2' && <div id="tree-results-title" className="text-lg m-2 font-serif">Kommuner</div>}
+    {!groupBy && <div id="tree-results-title" className="text-lg mx-2 font-serif">Garder</div>}
 
     <ul className="flex flex-col divide-y divide-neutral-200">
 
@@ -116,6 +117,7 @@ export default function TreeResults() {
         })}
 
     </ul>
+    </section>
 
 
   </>

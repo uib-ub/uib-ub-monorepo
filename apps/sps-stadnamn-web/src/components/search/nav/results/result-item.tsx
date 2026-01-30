@@ -93,7 +93,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
             <div className="flex items-center justify-between gap-x-2 whitespace-normal w-full text-xl">
                 <div className="inline-flex items-center flex-wrap gap-x-2">
                     {isGrunnord && (
-                        <h2 className="inline-flex items-center gap-x-2">
+                        <span className="inline-flex items-center gap-x-2">
                             {!perspectiveIsGrunnord && (
                                 <span className="text-neutral-800">
                                     Grunnord:
@@ -104,13 +104,13 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                                 {hit.fields.label?.[0]}
                             </span>
 
-                        </h2>
+                        </span>
                     )}
                     {showScore && hit._score}
                     {!isGrunnord && (
-                        <h2 className="font-semibold">
+                        <span className="font-semibold">
                             {label}
-                        </h2>
+                        </span>
                     )}
                     <span className="text-neutral-900">{detailsRenderer(hit)}</span>
                 </div>

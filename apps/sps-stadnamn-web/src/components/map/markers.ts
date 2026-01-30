@@ -84,7 +84,7 @@ export function getLabelMarkerIcon(label: string, color: string, docCount?: numb
   return {
     className: '',
     html: `
-        <div class="map-marker group" style="display: flex; align-items: center; justify-content: center; position: relative; height: 2rem;">
+        <div class="map-marker group" role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: 2rem;">
           <div class="absolute -top-6 left-1/2 -translate-x-1/2">
             <div class="flex flex-col items-center">
               <div class="flex items-center ${color == 'white' ? 'text-black' : 'text-white'} tracking-wide whitespace-nowrap rounded-md text-center text-sm py-0.5 px-1.5 shadow-lg" style="background-color: ${color == 'accent' ? colorValue : `${colorValue}e6`}; border-color: ${colorValue}e6;">
@@ -120,7 +120,7 @@ export function getHoverMarker(docCount: number, label: string, color: string) {
 export function getClusterMarker(docCount: number, width: number, height: number, fontSize: number, colorClasses?: string) {
   return {
     className: '',
-    html: `<div class="${colorClasses ? colorClasses : 'bg-white text-neutral-950'} -translate-x-1/3 -translate-y-1/3 drop-shadow-xl shadow-lg font-bold" style="border-radius: 50%; width: ${width}rem; font-size: ${fontSize}rem; height: ${height}rem; display: flex; align-items: center; justify-content: center;">${formatNumber(docCount)}</div>`
+    html: `<div class="${colorClasses ? colorClasses : 'bg-white text-neutral-950'} -translate-x-1/3 -translate-y-1/3 drop-shadow-xl shadow-lg font-bold" tabindex="-1" style="border-radius: 50%; width: ${width}rem; font-size: ${fontSize}rem; height: ${height}rem; display: flex; align-items: center; justify-content: center;">${formatNumber(docCount)}</div>`
   }
 }
 
@@ -129,7 +129,7 @@ export function getUnlabeledMarker(color: string, selected?: boolean) {
   const sizeAdjustment = selected ? 1.5 : 1;
   return {
     className: '',
-    html: `<div style="display: flex; align-items: center; justify-content: center; position: relative; height: ${32 * sizeAdjustment}px;">
+    html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: ${32 * sizeAdjustment}px;">
                 ${buildMarker(color, `position:absolute;left-0;bottom:${26 * sizeAdjustment}px;height:${32 * sizeAdjustment}px`)}
                 </div>`
   }

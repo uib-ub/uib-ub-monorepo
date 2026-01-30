@@ -64,14 +64,14 @@ export default function TableExplorer() {
 
 
 
-    return <><div className="flex items-baseline gap-2 px-4 p-2"><h2 className="text-xl !m-0 !p-0">Tabellvisning</h2>
+    return <section aria-labelledby="table-explorer-title"><div className="flex items-baseline gap-2 px-4 p-2"><div id="table-explorer-title" className="text-xl !m-0 !p-0">Tabellvisning</div>
 
 
         <Clickable className="flex items-center gap-2 btn btn-outline ml-auto" add={{ options: 'on' }}><PiFunnel className="text-lg" aria-hidden="true" /><span className="sr-only lg:not-sr-only">Filter</span>{filterCount > 0 && <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} />}</Clickable>
         <Clickable className="flex items-center gap-2 btn btn-neutral" remove={['mode', 'tableOptions']}><PiMapTrifold className="text-lg" aria-hidden="true" /><span className="sr-only lg:not-sr-only">Kartvisning</span></Clickable></div>
         <div className='flex flex-col py-2 gap-y-4 h-full bg-white'>
             <div className='flex  flex-col gap-4 xl:gap-2 !mx-2'>
-                {tree && doc && tableData?.[0]?._source && treeSettings[perspective] && <h2 className="text-xl px-1">{`${getGnr(tableData?.[0], perspective) || getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.subunit) || ""} ${getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.parentName) || tableData?.[0]?._source?.label || ""}`}</h2>}
+                {tree && doc && tableData?.[0]?._source && treeSettings[perspective] && <div className="text-xl px-1">{`${getGnr(tableData?.[0], perspective) || getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.subunit) || ""} ${getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.parentName) || tableData?.[0]?._source?.label || ""}`}</div>}
 
                 {tableData && tableData.length > 0 ?
                     <div className="border border-neutral-300 rounded-md">
@@ -201,7 +201,7 @@ export default function TableExplorer() {
 
 
         </div>
-    </>
+    </section>
 
 }
 

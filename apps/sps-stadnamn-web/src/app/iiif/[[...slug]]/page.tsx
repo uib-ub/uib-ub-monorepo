@@ -95,6 +95,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         description = null
     }
 
+    if (!title) {
+        title = "Arkiv"
+    }
     const metadata: any = {
         title,
         alternates: manifestUrl ? {

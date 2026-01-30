@@ -61,8 +61,9 @@ export default function TableOptions() {
             }
         </div>
 
+        <section className="flex flex-col gap-2" aria-labelledby="table-options-columns-title">
         <div className="flex items-center gap-2">
-            <h3 className="text-lg">Kolonner</h3>
+            <div id="table-options-columns-title" className="text-lg">Kolonner</div>
         </div>
         <div className='relative'>
             <input
@@ -113,6 +114,7 @@ export default function TableOptions() {
             ))}
 
         </div>
+        </section>
     </div>
 
 

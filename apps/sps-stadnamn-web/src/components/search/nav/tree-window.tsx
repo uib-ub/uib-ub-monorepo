@@ -45,9 +45,9 @@ export default function TreeWindow() {
 
     return (<>
         <div className="flex p-2 border-b border-neutral-200 shrink-0">
-            <h2 className="text-black text-xl mr-auto mx-1">
+            <div id="right-title" className="text-black text-xl mr-auto mx-1">
                 {title}
-            </h2>
+            </div>
             <IconButton label="lukk" onClick={closeTree}>
                 <PiX className="text-3xl text-neutral-900" />
             </IconButton>

@@ -31,10 +31,9 @@ const iiifQuery = async (collectionUuid: string, searchQuery: string, from: numb
 };
 
 export default function CollectionExplorer({ manifest, isCollection, manifestDataset }: { manifest: any, isCollection: boolean, manifestDataset?: string }) {
-    const { inputValue } = useContext(GlobalContext);
+    const [inputValue, setInputValue] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const containerRef = useRef<HTMLDivElement>(null);
-    const searchTimeout = useRef<ReturnType<typeof setTimeout>>(null);
     const { isMobile } = useContext(GlobalContext);
 
     const {
@@ -87,23 +86,13 @@ export default function CollectionExplorer({ manifest, isCollection, manifestDat
         }
     }, [handleScroll]);
 
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        inputValue.current = value;
-        // reset happens via queryKey change
-
-        if (searchTimeout.current) {
-            clearTimeout(searchTimeout.current);
-        }
-
-        searchTimeout.current = setTimeout(() => {
-            setSearchQuery(value);
-        }, 300);
+    const submitSearch = () => {
+        setSearchQuery(inputValue);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            (e.target as HTMLInputElement).blur();
+            submitSearch();
         }
     };
 
@@ -116,7 +105,7 @@ export default function CollectionExplorer({ manifest, isCollection, manifestDat
 
     return (
         <div ref={containerRef} className="flex-1 min-w-0 flex flex-col lg:gap-4 lg:p-4 pb-48 overflow-y-auto lg:overflow-y-auto stable-scrollbar bg-neutral-200">
-            <div className="w-full z-[6000] flex flex-col gap-4 sticky lg:static top-0 xl:top-auto">
+            <div className="w-full z-[6000] flex flex-col gap-4">
                 {/* Add fixed height and min-height to prevent squishing */}
                 {manifest && !isMobile &&
                     <div className=" flex items-center px-2 pt-2 justify-between w-full">
@@ -135,33 +124,38 @@ export default function CollectionExplorer({ manifest, isCollection, manifestDat
                 <div className={`flex flex-col lg:flex-row items-center gap-4 xl:mr-2`}>
 
 
-                    <div className='flex w-full xl:w-80 items-center bg-white group px-3 xl:px-1 shadow-md border-y border-neutral-300 lg:border-none h-14 lg:h-12 lg:rounded-md'>
-                        <PiMagnifyingGlass className="text-3xl xl:text-2xl xl:shrink-0 xl:ml-2 text-neutral-400 group-focus-within:text-neutral-900" aria-hidden="true" />
+                    <div className='flex w-full xl:w-80 pr-1 items-center bg-white group shadow-lg rounded-md h-14 lg:h-12'>
                         <input
                             id={"search-input-" + manifest?.uuid}
                             type="text"
                             aria-label="Søk i arkivsamling"
                             name="query"
-                            value={inputValue.current}
-                            onChange={handleSearch}
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            className="bg-transparent px-3 xl:px-2 focus:outline-none w-full p-2"
+                            className="bg-transparent pr-2 px-4 focus:outline-none flex w-full shrink text-lg xl:text-base"
                         />
-                        <div className="w-8 flex justify-center">
-                            {inputValue.current && (
-                                <button
-                                    onClick={() => {
-                                        inputValue.current = '';
-                                        setSearchQuery('');
-                                    }}
-                                    className="hover:bg-neutral-100 rounded-full p-1"
-                                    aria-label="Tøm søk"
-                                >
-                                    <PiX className="text-lg" />
-                                </button>
-                            )}
-                        </div>
-
+                        {inputValue && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setInputValue('');
+                                    setSearchQuery('');
+                                }}
+                                className="m-1 p-1"
+                                aria-label="Tøm søk"
+                            >
+                                <PiX className="text-3xl lg:text-2xl text-neutral-800" />
+                            </button>
+                        )}
+                        <button
+                            type="button"
+                            onClick={submitSearch}
+                            className="mr-1 p-1"
+                            aria-label="Søk"
+                        >
+                            <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800" aria-hidden="true" />
+                        </button>
                     </div>
                     <IIIFNeighbourNav manifest={manifest} isMobile={isMobile} />
                 </div>
