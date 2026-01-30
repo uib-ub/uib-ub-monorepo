@@ -93,9 +93,9 @@ export default function TableExplorer() {
                                             <SortHeader field='adm1.keyword,adm2.keyword,cadastre__gnr,cadastre__bnr' label="Matrikkel" description="Gnr/Bnr kommunevis" />
                                         </th>
                                     }
-                                    {facetConfig[perspective]?.filter(item => item.key && visibleColumnsArray.includes(item.key))?.map((facet: any) => (
+                                    {facetConfig[perspective]?.filter(item => item.key && item.key !== 'adm' && visibleColumnsArray.includes(item.key))?.map((facet: any) => (
                                         <th key={facet.key}>
-                                            <SortHeader field={facet.type ? facet.key : facet.key.replace("__", ".") + ".keyword"} label={facet.label} description={facet.description} />
+                                            <SortHeader field={(facet.type || facet.keyword) ? facet.key.replace("__", ".") : facet.key.replace("__", ".") + ".keyword"} label={facet.label} description={facet.description} />
                                         </th>
                                     ))}
                                 </tr>
@@ -143,7 +143,7 @@ export default function TableExplorer() {
                                                     {hit._source.cadastre && formatCadastre(hit._source.cadastre)}
                                                 </td>
                                             }
-                                            {facetConfig[perspective]?.filter(item => item.key && visibleColumnsArray.includes(item.key))?.map((facet: any) => (
+                                            {facetConfig[perspective]?.filter(item => item.key && item.key !== 'adm' && visibleColumnsArray.includes(item.key))?.map((facet: any) => (
                                                 facet.key.includes("__") ?
                                                     <td key={facet.key}>
                                                         {[...new Set(hit._source[facet.key.split("__")[0]]
