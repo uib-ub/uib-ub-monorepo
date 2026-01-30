@@ -6,7 +6,7 @@
     <div ref="termpostRef">
       <h2
         v-if="pagetitle"
-        :id="mainp ? '#main' : `#${encodeURI(pagetitle)}`"
+        :id="mainp ? 'main' : `#${encodeURI(pagetitle)}`"
         class="mt-3 pb-0 md:mt-4 lg:mt-6 xl:pb-4"
       >
         <AppLink
