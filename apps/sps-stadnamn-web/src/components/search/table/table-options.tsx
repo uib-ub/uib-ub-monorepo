@@ -89,7 +89,7 @@ export default function TableOptions() {
 
         }
 
-        <div className='flex gap-4 px-2 flex-col'>
+        <div className='flex gap-4 px-1 flex-col'>
             {contentSettings[perspective]?.cadastre && <div>
                 <label className="flex gap-2">
                     <input
