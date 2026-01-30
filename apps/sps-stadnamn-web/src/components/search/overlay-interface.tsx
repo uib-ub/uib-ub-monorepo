@@ -251,11 +251,22 @@ export default function OverlayInterface() {
 
                                     <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-lg text-neutral-900 font-sans">Kjelder</div>
 
-                                    {searchLoading ? <Spinner status="Laster resultat" className="text-lg" /> : <TitleBadge className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`} count={totalHits?.value || 0} />}
+                                    {searchLoading ? (
+                                        <Spinner status="Laster resultat" className="text-lg" />
+                                    ) : (
+                                        <TitleBadge
+                                            className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`}
+                                            count={totalHits?.value || 0}
+                                        />
+                                    )}
                                     {!isMobile && (
-                                        <>
-                                            {showResults ? <PiCaretUpBold className="text-lg mr-1 ml-auto" /> : <PiCaretDownBold className="text-lg ml-auto" />}
-                                        </>
+                                        <span className="ml-auto pr-2 flex w-6 justify-end">
+                                            {showResults ? (
+                                                <PiCaretUpBold className="text-lg" />
+                                            ) : (
+                                                <PiCaretDownBold className="text-lg" />
+                                            )}
+                                        </span>
                                     )}
                                 </Clickable>
                             </div>
