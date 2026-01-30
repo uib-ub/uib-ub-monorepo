@@ -120,7 +120,7 @@ export function getHoverMarker(docCount: number, label: string, color: string) {
 export function getClusterMarker(docCount: number, width: number, height: number, fontSize: number, colorClasses?: string) {
   return {
     className: '',
-    html: `<div class="${colorClasses ? colorClasses : 'bg-white text-neutral-950'} -translate-x-1/3 -translate-y-1/3 drop-shadow-xl shadow-lg font-bold" role="button" tabindex="0" style="border-radius: 50%; width: ${width}rem; font-size: ${fontSize}rem; height: ${height}rem; display: flex; align-items: center; justify-content: center;">${formatNumber(docCount)}</div>`
+    html: `<div class="${colorClasses ? colorClasses : 'bg-white text-neutral-950'} -translate-x-1/3 -translate-y-1/3 drop-shadow-xl shadow-lg font-bold" tabindex="-1" style="border-radius: 50%; width: ${width}rem; font-size: ${fontSize}rem; height: ${height}rem; display: flex; align-items: center; justify-content: center;">${formatNumber(docCount)}</div>`
   }
 }
 
