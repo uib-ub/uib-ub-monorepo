@@ -189,9 +189,9 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                             <Link
                                 scroll={false}
                                 className="flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900"
-                                href="https://uustatus.no/nn/erklaringer/publisert/c3abf798-49b7-4776-b1ee-f07b46dadd38"
+                                href="https://uustatus.no/nn/erklaringer/publisert/075fa5bb-f135-4383-a4e2-0d60482e2042"
                             >
-                                <PiPersonArmsSpread className="text-xl" aria-hidden="true" />Tilgjengeerklæring
+                                <PiPersonArmsSpread className="text-xl" aria-hidden="true" />Tilgjengelegheitserklæring
                             </Link>
                         </div>
                     </div>
