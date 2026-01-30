@@ -12,9 +12,10 @@ import useGroupData from "@/state/hooks/group-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { PiCheck, PiMapPinFill, PiMinusBold, PiPencilSimpleBold, PiPlayFill, PiPlusBold, PiX, PiXBold } from "react-icons/pi";
+import { PiCheck, PiMapPinFill, PiMinusBold, PiPencilSimpleBold, PiPlayFill, PiPlusBold, PiQuestion, PiX, PiXBold } from "react-icons/pi";
 import GroupInfo from "../../details/group/group-info";
 import ActiveFilters from "../../form/active-filters";
 import ResultItem from "./result-item";
@@ -521,8 +522,11 @@ export default function SearchResults() {
           </div>
         ) : hasNoResults && (
           <div className="flex justify-center">
-            <div role="status" aria-live="polite" className="text-neutral-950 pb-4">
-              Ingen søkeresultater
+            <div role="status" aria-live="polite" className="flex flex-col items-center gap-2 text-neutral-950 pb-4">
+              Ingen søkeresultat
+              <Link scroll={false} href="/help" className="flex items-center gap-2 px-4 py-3 rounded-md transition-colors no-underline text-neutral-900 hover:bg-accent-100">
+                <PiQuestion className="text-xl" aria-hidden="true" />Søketips
+              </Link>
             </div>
           </div>
         )}
