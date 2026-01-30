@@ -12,11 +12,12 @@ import { getValueByPath } from '@/lib/utils'
 import Link from 'next/link'
 import { headers } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'
-import { PiBracketsCurlyBold } from 'react-icons/pi'
+import { PiBracketsCurlyBold, PiInfoFill } from 'react-icons/pi'
 import sanitizeHtml from 'sanitize-html'
 import GroupList from './GroupList'
 import OriginalData from './original-data'
 import ServerCadastreBreadcrumb from './server-cadastre-breadcrumb'
+import IconButton from '@/components/ui/icon-button'
 
 const normalizeText = (text: string) => text.replace(/\s+/g, ' ').trim()
 
@@ -264,12 +265,8 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
       {datasetPresentation[docDataset] && <div className="flex flex-col lg:h-fit gap-4 my-4 lg:my-0">
         <aside className="bg-neutral-50 shadow-md !text-neutral-950 p-4 rounded-md">
 
-          <h2 className="!m-0 !p-0 font-serif !text-xl !font-normal">{datasetTitles[docDataset]}</h2>
+          <h2 className="!m-0 !p-0 font-serif !text-xl !font-normal flex items-center gap-2">{datasetTitles[docDataset]}<IconButton label="Infoside" href={"/info/datasets/" + docDataset.split('_')[0]}><PiInfoFill className="text-neutral-800 text-primary-700" aria-hidden="true" /></IconButton></h2>
           <div className="text-sm text-neutral-800">{datasetShortDescriptions[docDataset]}</div>
-
-          <div className="flex gap-2 mt-4 w-full">
-            <Link href={"/info/datasets/" + docDataset.split('_')[0]} className="btn btn-outline">Les meir</Link>
-          </div>
         </aside>
 
 
