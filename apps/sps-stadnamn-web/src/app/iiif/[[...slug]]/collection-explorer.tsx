@@ -116,7 +116,7 @@ export default function CollectionExplorer({ manifest, isCollection, manifestDat
 
     return (
         <div ref={containerRef} className="flex-1 min-w-0 flex flex-col lg:gap-4 lg:p-4 pb-48 overflow-y-auto lg:overflow-y-auto stable-scrollbar bg-neutral-200">
-            <div className="w-full z-[6000] flex flex-col gap-4 sticky lg:static top-0 xl:top-auto">
+            <div className="w-full z-[6000] flex flex-col gap-4">
                 {/* Add fixed height and min-height to prevent squishing */}
                 {manifest && !isMobile &&
                     <div className=" flex items-center px-2 pt-2 justify-between w-full">
