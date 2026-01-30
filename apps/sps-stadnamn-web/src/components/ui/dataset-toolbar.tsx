@@ -39,7 +39,7 @@ export default function DatasetToolbar({ itemDataset }: { itemDataset: string })
             </button>
         )}
 
-        <Link href={`/info/datasets/${itemDataset.split('_')[0]}`} className="btn btn-outline btn-compact">Infoside<PiCaretRight className="text-primary-700" aria-hidden="true" /></Link>
+        <Link href={`/info/datasets/${itemDataset.split('_')[0]}`} className="btn btn-outline btn-compact">Les meir<span className="sr-only"> om {datasetTitles[itemDataset]}</span><PiCaretRight className="text-primary-700" aria-hidden="true" /></Link>
 
     </nav>
 
