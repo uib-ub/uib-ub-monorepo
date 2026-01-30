@@ -543,34 +543,42 @@ export default function MapExplorer() {
 
 
   const selectDocHandler = (selected: Record<string, any>, markerPoint: [number, number], hits?: Record<string, any>[]) => {
+    const openMarker = () => {
+      const newQueryParams = new URLSearchParams(searchParams)
+      const fields = selected.fields || {}
+      if (selected._source?.misc?.children && debug) {
+        setDebugChildren(selected._source?.misc?.children)
+      }
+      else {
+        //setDebugChildren([])
+      }
+      // When selecting a marker, always reset results to 1 (don't preserve previous expansions)
+      newQueryParams.set('maxResults', '1')
+      newQueryParams.delete('mapSettings')
+      //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
+      newQueryParams.delete('doc')
+
+      newQueryParams.set('init', stringToBase64Url(fields["group.id"][0]))
+      newQueryParams.delete('group')
+      newQueryParams.delete('activePoint')
+      newQueryParams.delete('activeYear')
+      newQueryParams.delete('activeName')
+      newQueryParams.delete('point')
+
+
+
+      router.push(`?${newQueryParams.toString()}`)
+
+
+    }
     return {
-      click: () => {
-        const newQueryParams = new URLSearchParams(searchParams)
-        const fields = selected.fields || {}
-        if (selected._source?.misc?.children && debug) {
-          setDebugChildren(selected._source?.misc?.children)
+      click: openMarker,
+      keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+        const key = e.originalEvent?.key ?? e.key
+        if (key === 'Enter' || key === ' ') {
+          ;(e.originalEvent ?? e).preventDefault()
+          openMarker()
         }
-        else {
-          //setDebugChildren([])
-        }
-        // When selecting a marker, always reset results to 1 (don't preserve previous expansions)
-        newQueryParams.set('maxResults', '1')
-        newQueryParams.delete('mapSettings')
-        //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
-        newQueryParams.delete('doc')
-
-        newQueryParams.set('init', stringToBase64Url(fields["group.id"][0]))
-        newQueryParams.delete('group')
-        newQueryParams.delete('activePoint')
-        newQueryParams.delete('activeYear')
-        newQueryParams.delete('activeName')
-        newQueryParams.delete('point')
-
-
-
-        router.push(`?${newQueryParams.toString()}`)
-
-
       }
     }
   }
@@ -824,6 +832,15 @@ export default function MapExplorer() {
                           if (mapInstance.current) {
                             mapInstance.current.fitBounds(zoomTarget, { maxZoom: 18 });
                           }
+                        },
+                        keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                          const key = e.originalEvent?.key ?? e.key
+                          if (key === 'Enter' || key === ' ') {
+                            ;(e.originalEvent ?? e).preventDefault()
+                            if (mapInstance.current) {
+                              mapInstance.current.fitBounds(zoomTarget, { maxZoom: 18 });
+                            }
+                          }
                         }
                       }}
                     />
@@ -917,6 +934,18 @@ export default function MapExplorer() {
                   const newParams = new URLSearchParams(searchParams);
                   newParams.set('activePoint', `${centralLat},${centralLng}`);
                   router.push(`?${newParams.toString()}`);
+                },
+                keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                  const key = e.originalEvent?.key ?? e.key
+                  if (key === 'Enter' || key === ' ') {
+                    ;(e.originalEvent ?? e).preventDefault()
+                    const centralLat = groupData.fields.location[0].coordinates[1];
+                    const centralLng = groupData.fields.location[0].coordinates[0];
+                    fitBoundsToGroupSources(mapInstance.current, groupData);
+                    const newParams = new URLSearchParams(searchParams);
+                    newParams.set('activePoint', `${centralLat},${centralLng}`);
+                    router.push(`?${newParams.toString()}`);
+                  }
                 }
               }}
             >
@@ -953,7 +982,7 @@ export default function MapExplorer() {
                     return new leaflet.DivIcon({
                       className: '',
                       html: `
-                        <div style="
+                        <div role="button" tabindex="0" style="
                           width: 22px;
                           height: 22px;
                           border-radius: 9999px;
@@ -1002,6 +1031,20 @@ export default function MapExplorer() {
                                 newParams.set('activePoint', `${centralLat},${centralLng}`);
                                 newParams.set('maxResults', '1');
                                 router.push(`?${newParams.toString()}`);
+                              },
+                              keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                                const key = e.originalEvent?.key ?? e.key
+                                if (key === 'Enter' || key === ' ') {
+                                  ;(e.originalEvent ?? e).preventDefault()
+                                  const newParams = new URLSearchParams(searchParams);
+                                  if (treeUnitDoc?.group?.id) {
+                                    newParams.set('init', stringToBase64Url(treeUnitDoc.group.id));
+                                    newParams.delete('group');
+                                  }
+                                  newParams.set('activePoint', `${centralLat},${centralLng}`);
+                                  newParams.set('maxResults', '1');
+                                  router.push(`?${newParams.toString()}`);
+                                }
                               }
                             }}
                           />
@@ -1033,6 +1076,20 @@ export default function MapExplorer() {
                                 newParams.set('activePoint', `${centralLat},${centralLng}`);
                                 newParams.set('maxResults', '1');
                                 router.push(`?${newParams.toString()}`);
+                              },
+                              keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                                const key = e.originalEvent?.key ?? e.key
+                                if (key === 'Enter' || key === ' ') {
+                                  ;(e.originalEvent ?? e).preventDefault()
+                                  const newParams = new URLSearchParams(searchParams);
+                                  if (treeUnitDoc?.group?.id) {
+                                    newParams.set('init', stringToBase64Url(treeUnitDoc.group.id));
+                                    newParams.delete('group');
+                                  }
+                                  newParams.set('activePoint', `${centralLat},${centralLng}`);
+                                  newParams.set('maxResults', '1');
+                                  router.push(`?${newParams.toString()}`);
+                                }
                               }
                             }}
                           />
@@ -1087,6 +1144,26 @@ export default function MapExplorer() {
                                   newParams.delete('activeName');
                                   newParams.delete('point');
                                   router.push(`?${newParams.toString()}`);
+                                },
+                                keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                                  const key = e.originalEvent?.key ?? e.key
+                                  if (key === 'Enter' || key === ' ') {
+                                    ;(e.originalEvent ?? e).preventDefault()
+                                    const newParams = new URLSearchParams(searchParams);
+                                    newParams.set('maxResults', '1');
+                                    if (hit?._source?.group?.id) {
+                                      newParams.set('init', stringToBase64Url(hit._source.group.id));
+                                      newParams.delete('group');
+                                    }
+                                    if (hit?._source?.uuid) {
+                                      newParams.set('doc', hit._source.uuid);
+                                    }
+                                    newParams.set('activePoint', `${lat},${lng}`);
+                                    newParams.delete('activeYear');
+                                    newParams.delete('activeName');
+                                    newParams.delete('point');
+                                    router.push(`?${newParams.toString()}`);
+                                  }
                                 }
                               }}
                             />
@@ -1194,6 +1271,15 @@ export default function MapExplorer() {
                               const newParams = new URLSearchParams(searchParams);
                               newParams.set('activePoint', `${lat},${lng}`);
                               router.push(`?${newParams.toString()}`);
+                            },
+                            keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                              const key = e.originalEvent?.key ?? e.key
+                              if (key === 'Enter' || key === ' ') {
+                                ;(e.originalEvent ?? e).preventDefault()
+                                const newParams = new URLSearchParams(searchParams);
+                                newParams.set('activePoint', `${lat},${lng}`);
+                                router.push(`?${newParams.toString()}`);
+                              }
                             }
                           }}
                         />
@@ -1285,6 +1371,15 @@ export default function MapExplorer() {
                 // Center view
                 if (mapInstance.current) {
                   mapInstance.current.setView(activePoint, 18);
+                }
+              },
+              keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                const key = e.originalEvent?.key ?? e.key
+                if (key === 'Enter' || key === ' ') {
+                  ;(e.originalEvent ?? e).preventDefault()
+                  if (mapInstance.current) {
+                    mapInstance.current.setView(activePoint, 18);
+                  }
                 }
               }
             }}
