@@ -49,7 +49,7 @@ export default function TableOptions() {
 
 
 
-    return <div className="flex flex-col gap-2 px-1">
+    return <div className="flex flex-col gap-2 px-4 py-2">
         <div className='flex gap-2 mt-2 xl:mt-0'>
 
 
