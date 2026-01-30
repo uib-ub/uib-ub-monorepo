@@ -87,13 +87,11 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                     </div>
 
                     <div className="flex flex-col w-full gap-0">
-                        <div className="flex flex-col w-full gap-0" role="tablist">
+                        <div className="flex flex-col w-full gap-0">
                             <Clickable
-                                role="tab"
                                 link
                                 href="/search"
                                 onClick={() => setMenuOpen(false)}
-                                aria-selected={isMapActive}
                                 aria-current={isMapActive ? 'page' : undefined}
                                 remove={['mode']}
                                 className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
@@ -109,12 +107,11 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                             </Clickable>
                             <button
                                 type="button"
-                                role="tab"
                                 onClick={() => {
                                     setMenuOpen(false)
                                     tree ? closeTree() : openTree('root')
                                 }}
-                                aria-selected={isTreeActive}
+                                aria-current={isTreeActive ? 'page' : undefined}
                                 className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
                                 ${isTreeActive
                                         ? 'bg-accent-800 text-white font-semibold'
@@ -127,11 +124,9 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 Matrikkelvising
                             </button>
                             <Clickable
-                                role="tab"
                                 href="/search"
                                 link
                                 onClick={() => setMenuOpen(false)}
-                                aria-selected={isTableActive}
                                 aria-current={isTableActive ? 'page' : undefined}
                                 add={{ mode: 'table' }}
                                 className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
