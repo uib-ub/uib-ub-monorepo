@@ -124,7 +124,8 @@ export default function TableExplorer() {
                                                         className="p-1 hover:bg-neutral-100 rounded-full"
                                                         link
                                                         add={{
-                                                            doc: hit._source?.uuid,
+                                                            init: hit._source?.group?.id,
+                                                            activePoint: [hit._source.location.coordinates[1], hit._source.location.coordinates[0]].join(','),
                                                             mode: null,
                                                             center: [hit._source.location.coordinates[1], hit._source.location.coordinates[0]].join(','),
                                                             zoom: "8"
