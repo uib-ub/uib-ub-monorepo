@@ -3,7 +3,7 @@ import { baseMapLookup } from "@/config/basemap-config";
 import { useSearchQuery } from "@/lib/search-params";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
+import { getClusterMarker, getLabelMarkerIcon, getPointMarker, getUnlabeledMarker } from "./markers";
 
 import { boundsFromZoomAndCenter, calculateRadius, fitBoundsToGroupSources, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
@@ -230,7 +230,7 @@ export default function MapExplorer() {
   // Cluster mode
   // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
-  const activeMarkerMode = markerMode === 'auto' ? ((!searchParams.get('q')?.length || totalHits?.value > 10000) ? 'labels' : 'counts') : markerMode
+  const activeMarkerMode = markerMode === 'auto' ? (searchParams.get('q') ? 'counts' : (zoomState > 15 ? 'labels' : 'points')) : markerMode
 
 
 
@@ -285,7 +285,7 @@ export default function MapExplorer() {
     const seenGroups = new Set<string>()
 
     buckets.forEach((bucket: any) => {
-      if (zoomState > 15 || activeMarkerMode == 'labels' || bucket.doc_count == 1) {
+      if (zoomState > 15 || activeMarkerMode == 'labels' || activeMarkerMode == 'points' || bucket.doc_count == 1) {
 
 
         const [z, x, y] = bucket.key.split('/').map(Number);
@@ -329,15 +329,21 @@ export default function MapExplorer() {
 
         bucket.groups.buckets.forEach((group: any) => {
           const top_hit: Record<string, any> = group.top.hits.hits[0]
-          let otherFound = false
           if (seenGroups.has(top_hit.fields["group.id"]?.[0])) {
             return
           }
-          else {
-            seenGroups.add(top_hit.fields["group.id"]?.[0])
+          seenGroups.add(top_hit.fields["group.id"]?.[0])
+
+          // Points mode: no overlap logic – show every group as its own marker, allow them close together
+          if (activeMarkerMode === 'points') {
+            if (!labeledMarkersLookup[bucket.key]) {
+              labeledMarkersLookup[bucket.key] = []
+            }
+            labeledMarkersLookup[bucket.key].push(top_hit)
+            return
           }
 
-
+          let otherFound = false
           for (const neighborTile of neighborTiles) {
             const neighborMarkers = labeledMarkersLookup[neighborTile]
             const { other, otherIndex } = evaluateNeighborMarkers(top_hit, neighborMarkers || [])
@@ -363,13 +369,6 @@ export default function MapExplorer() {
             }
             labeledMarkersLookup[bucket.key].push(top_hit)
           }
-
-
-
-
-
-          ///labelItems.push({key: bucket.key, ...top_hit})
-
         })
       } else {
         countItems.push(bucket)
@@ -863,7 +862,9 @@ export default function MapExplorer() {
                 const markerColor = isInit ? 'black' : 'white'
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
-                const icon = getLabelMarkerIcon(item.fields["group.label"]?.[0] || item.fields.label?.[0] || '[utan namn]', markerColor, childCount, false, false, false)
+                const icon = activeMarkerMode === 'points'
+                  ? getPointMarker(markerColor, false)
+                  : getLabelMarkerIcon(item.fields["group.label"]?.[0] || item.fields.label?.[0] || '[utan namn]', markerColor, childCount, false, false, false)
 
 
                 return (
@@ -924,7 +925,7 @@ export default function MapExplorer() {
 
             {groupData && !activePoint && groupData.fields?.location?.[0]?.coordinates && <Marker
               zIndexOffset={2000}
-              icon={new leaflet.DivIcon(getLabelMarkerIcon(groupData.fields["group.label"]?.[0] || groupData.fields.label?.[0] || '[utan namn]', 'accent', undefined, true, false, true))}
+              icon={new leaflet.DivIcon(activeMarkerMode === 'points' ? getPointMarker('accent', true) : getLabelMarkerIcon(groupData.fields["group.label"]?.[0] || groupData.fields.label?.[0] || '[utan namn]', 'accent', undefined, true, false, true))}
               position={[groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]}
               eventHandlers={{
                 click: () => {

@@ -316,13 +316,14 @@ export default function SearchForm() {
                     defaultValue={urlQuery}
                     autoComplete="off"
                     autoFocus={!isMobile && pathname == '/search'}
-                    onFocus={() => {
-                        if (!input.current?.value) return; setInputState(input.current?.value || ''); setAutocompleteOpen(true);
-                    }}
                     onBlur={() => setAutocompleteOpen(false)}
-
-
-                    onChange={(event) => { inputValue.current = event.target.value; setInputState(event.target.value); setActiveIndex(-1); setAutocompleteOpen(true) }}
+                    onChange={(event) => {
+                        const v = event.target.value
+                        inputValue.current = v
+                        setInputState(v)
+                        setActiveIndex(-1)
+                        setAutocompleteOpen(!!v.trim())
+                    }}
                     onKeyDown={(e) => {
                         if (e.key === 'Escape') {
                             e.preventDefault()

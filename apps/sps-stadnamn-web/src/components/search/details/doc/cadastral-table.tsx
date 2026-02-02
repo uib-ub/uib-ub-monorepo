@@ -123,7 +123,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
             <Clickable
               link
               onClick={() => clearTreeSavedQuery()}
-              add={{ init: stringToBase64Url(parentGroupId) }}
+              add={{ init: stringToBase64Url(parentGroupId), maxResults: '1' }}
               remove={['tree', 'doc', 'activePoint']}
               className="inline-flex items-center gap-1 text-sm text-neutral-700 hover:text-neutral-900 no-underline"
             >

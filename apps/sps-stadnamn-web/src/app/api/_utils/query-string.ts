@@ -122,7 +122,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
           },
         }
       } else {
-        // No comma and a single token: single query_string across all fields
+        // No comma and a single token: single query_string across name fields
         simple_query_string = {
           query_string: {
             query: modifyQuery(raw),
@@ -133,10 +133,6 @@ export function getQueryString(params: { [key: string]: string | null }) {
               "group.label^4",
               "altLabels^4",
               "attestations.label^3",
-              "adm2^2",
-              "group.adm2^2",
-              "group.adm1^1",
-              "adm1^1",
             ],
           },
         }
@@ -159,6 +155,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
       ...fulltext ? Object.fromEntries(fulltextFields[perspective].map(item => ([item.key, {}]))) : {}
     }
   } : null
+
 
   return { highlight, simple_query_string }
 }

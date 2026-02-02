@@ -19,6 +19,7 @@ export default function MapSettings() {
     { key: 'auto', label: 'Automatisk' },
     { key: 'counts', label: 'Klynger' },
     { key: 'labels', label: 'Etiketter' },
+    { key: 'points', label: 'Punkter' },
   ];
 
   return (

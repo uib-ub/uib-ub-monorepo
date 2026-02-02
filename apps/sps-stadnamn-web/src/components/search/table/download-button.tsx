@@ -33,7 +33,7 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
             fields.push('cadastre');
         }
         // Add fields from facet config
-        facetConfig[perspective]?.filter(item => item.key && visibleColumns.includes(item.key))
+        facetConfig[perspective]?.filter(item => item.key && item.key !== 'adm' && visibleColumns.includes(item.key))
             ?.forEach(facet => {
                 if (facet.key.includes("__")) {
                     fields.push(facet.key.split("__")[0]);
@@ -65,7 +65,7 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
             fields.push('cadastre');
         }
         // Add fields from facet config
-        facetConfig[perspective]?.filter(item => item.key && visibleColumns.includes(item.key))
+        facetConfig[perspective]?.filter(item => item.key && item.key !== 'adm' && visibleColumns.includes(item.key))
             ?.forEach(facet => {
                 if (facet.key.includes("__")) {
                     fields.push(facet.key.split("__")[0]);
@@ -103,7 +103,7 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
                     }
 
                     // Add facet fields if visible
-                    facetConfig[perspective]?.filter(item => item.key && visibleColumns.includes(item.key))
+                    facetConfig[perspective]?.filter(item => item.key && item.key !== 'adm' && visibleColumns.includes(item.key))
                         ?.forEach((facet: any) => {
                             if (facet.key.includes("__")) {
                                 const [baseKey, subKey] = facet.key.split("__");
@@ -146,7 +146,7 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
             fields.push('cadastre');
         }
         // Add fields from facet config
-        facetConfig[perspective]?.filter(item => item.key && visibleColumns.includes(item.key))
+        facetConfig[perspective]?.filter(item => item.key && item.key !== 'adm' && visibleColumns.includes(item.key))
             ?.forEach(facet => {
                 if (facet.key.includes("__")) {
                     fields.push(facet.key.split("__")[0]);
@@ -166,7 +166,7 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
         const headers = ['Oppslagsord'];
         if (visibleColumns.includes('adm')) headers.push('Område');
         if (showCadastre && visibleColumns.includes('cadastre')) headers.push('Matrikkel');
-        facetConfig[perspective]?.filter(item => item.key && visibleColumns.includes(item.key))
+        facetConfig[perspective]?.filter(item => item.key && item.key !== 'adm' && visibleColumns.includes(item.key))
             ?.forEach(facet => headers.push(facet?.label || ''));
 
         // Prepare CSV rows
@@ -181,7 +181,7 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
             if (showCadastre && visibleColumns.includes('cadastre')) {
                 row.push(hit.fields.cadastre ? formatCadastre(hit.fields.cadastre[0]) : '');
             }
-            facetConfig[perspective]?.filter(item => item.key && visibleColumns.includes(item.key))
+            facetConfig[perspective]?.filter(item => item.key && item.key !== 'adm' && visibleColumns.includes(item.key))
                 ?.forEach((facet: any) => {
                     if (facet.key.includes("__")) {
                         const [baseKey, subKey] = facet.key.split("__");
