@@ -498,3 +498,8 @@
   }
 
 }
+
+/* Hover label for point markers: pass through pointer so dot keeps receiving hover */
+.leaflet-marker-icon.point-marker-hover-label {
+  pointer-events: none !important;
+}
