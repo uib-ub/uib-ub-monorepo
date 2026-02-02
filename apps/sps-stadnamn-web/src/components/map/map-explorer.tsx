@@ -230,7 +230,7 @@ export default function MapExplorer() {
   // Cluster mode
   // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
-  const activeMarkerMode = markerMode === 'auto' ? ((!searchParams.get('q')?.length || totalHits?.value > 10000) ? 'labels' : 'counts') : markerMode
+  const activeMarkerMode = markerMode === 'auto' ? (searchParams.get('q') ? 'counts' : (zoomState > 15 ? 'labels' : 'points')) : markerMode
 
 
 
