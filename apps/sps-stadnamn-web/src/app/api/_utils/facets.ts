@@ -294,6 +294,14 @@ export function extractFacets(request: Request) {
 
     }
   }
+
+  // Exclude group.id "suppressed" and "noname" from all queries unless tree/cadastral view or includeSuppressed
+  if (!urlParams.get('tree') && reservedParams.includeSuppressed !== '1' && reservedParams.includeSuppressed !== 'true') {
+    termFilters.push({
+      bool: { must_not: { terms: { 'group.id': ['suppressed', 'noname'] } } }
+    });
+  }
+
   if (datasets.length) {
     termFilters.push({
       "bool": {

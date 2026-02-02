@@ -7,12 +7,6 @@ export async function GET(request: Request) {
   const {termFilters, reservedParams} = extractFacets(request)
   const perspective = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
   const { simple_query_string } = getQueryString(reservedParams)
-    
-  const suppressedExclusion = {
-    "terms": {
-      "group.id": ["suppressed", "noname"]
-    }
-  };
 
   const query: Record<string,any> = {
     "track_total_hits": 10000000,
@@ -33,32 +27,29 @@ export async function GET(request: Request) {
   if (simple_query_string && termFilters.length) {
     query.query = {
       "bool": {
-        "must": simple_query_string,              
-        "filter": termFilters,
-        "must_not": [suppressedExclusion]
+        "must": simple_query_string,
+        "filter": termFilters
       }
     }
   }
   else if (simple_query_string) {
     query.query = {
       "bool": {
-        "must": simple_query_string,
-        "must_not": [suppressedExclusion]
+        "must": simple_query_string
       }
     }
   }
   else if (termFilters.length) {
-    query.query = {"bool": {
-        "filter": termFilters,
-        "must_not": [suppressedExclusion]
+    query.query = {
+      "bool": {
+        "filter": termFilters
       }
     }
   }
   else {
     query.query = {
       "bool": {
-        "must": { "match_all": {} },
-        "must_not": [suppressedExclusion]
+        "must": { "match_all": {} }
       }
     }
   }
