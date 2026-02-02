@@ -31,7 +31,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     }
   }
 
-  const { data: histData, isLoading: histIsLoading } = useQuery({
+  /*const { data: histData, isLoading: histIsLoading } = useQuery({
     queryKey: ['histAdm', perspective, paramsExceptFacet],
     queryFn: async () => {
       const response = await fetch(`/api/facet?perspective=${perspective}&facets=adm1${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`)
@@ -39,6 +39,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
       return es_data.aggregations?.["adm1"]
     }
   })
+    */
 
   const { data: facetData, isLoading: facetIsLoading } = useQuery({
     queryKey: ['facet', perspective, paramsExceptFacet],
