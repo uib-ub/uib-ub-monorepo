@@ -11,8 +11,8 @@ export async function GET(
 
 
 
-  const { termFilters, reservedParams, datasets } = extractFacets(request)
-  const { simple_query_string } = getQueryString(reservedParams, { datasets })
+  const { termFilters, reservedParams } = extractFacets(request)
+  const { simple_query_string } = getQueryString(reservedParams)
   const perspective = reservedParams.perspective || 'all'
   const totalHits = reservedParams.totalHits ? parseInt(reservedParams.totalHits) : undefined
 

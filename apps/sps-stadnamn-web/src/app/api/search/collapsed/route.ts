@@ -6,8 +6,8 @@ import { getQueryString } from '../../_utils/query-string';
 
 export async function POST(request: Request) {
   const { size, from, initLocation } = await request.json()
-  const { termFilters, reservedParams, datasets } = extractFacets(request)
-  const { highlight, simple_query_string } = getQueryString(reservedParams, { datasets })
+  const { termFilters, reservedParams } = extractFacets(request)
+  const { highlight, simple_query_string } = getQueryString(reservedParams)
 
   const query: Record<string, any> = {
     "size": size || 10,

@@ -1,5 +1,3 @@
-import { fulltextFields } from "@/config/search-config";
-
 function modifyQuery(query: string) {
   const lowerCaseQuery = query.toLowerCase();
 
@@ -27,28 +25,12 @@ const baseNameFields = [
   "attestations.label^3",
 ]
 
-export function getQueryString(
-  params: { [key: string]: string | null },
-  options?: { datasets?: string[] }
-) {
-  const fulltext = params.fulltext == "on"
-  const perspective = params.perspective || "all"
-  // When only one dataset is selected (e.g. Hordanamn), use it for fulltext fields
-  const effectivePerspective =
-    perspective === "all" &&
-    options?.datasets?.length === 1 &&
-    fulltextFields[options.datasets[0]]
-      ? options.datasets[0]
-      : perspective
+const fulltextFields = ["content.text", "content.html", "note"]
 
-  const fulltextFieldKeys =
-    fulltext && effectivePerspective !== "all" && fulltextFields[effectivePerspective]
-      ? fulltextFields[effectivePerspective].map((f) => f.key)
-      : []
+export function getQueryString(params: { [key: string]: string | null }) {
+  const fulltext = params.fulltext == "on"
   const nameFields =
-    fulltextFieldKeys.length > 0
-      ? [...baseNameFields, ...fulltextFieldKeys]
-      : baseNameFields
+    fulltext ? [...baseNameFields, ...fulltextFields] : baseNameFields
 
   let simple_query_string: any = null
 
@@ -99,37 +81,11 @@ export function getQueryString(
               },
             }
     } else {
-      const tokens = raw.split(/\s+/).filter(Boolean)
+      // Quoted phrase: pass whole string so query_string can do phrase search
+      const isQuotedPhrase =
+        raw.length >= 2 && raw.startsWith('"') && raw.endsWith('"')
 
-      if (tokens.length > 1) {
-        const firstToken = tokens[0]
-        const trailingTokens = tokens.slice(1)
-
-        const firstTokenClause = {
-          query_string: {
-            query: modifyQuery(firstToken),
-            allow_leading_wildcard: true,
-            default_operator: "AND",
-            fields: nameFields,
-          },
-        }
-
-        const trailingClauses = trailingTokens.map((token) => ({
-          query_string: {
-            query: modifyQuery(token),
-            allow_leading_wildcard: true,
-            default_operator: "AND",
-            fields: [...nameFields, "adm2^2", "group.adm2^2", "group.adm1^1", "adm1^1"],
-          },
-        }))
-
-        simple_query_string = {
-          bool: {
-            must: [firstTokenClause, ...trailingClauses],
-          },
-        }
-      } else {
-        // No comma and a single token: single query_string across name fields
+      if (isQuotedPhrase) {
         simple_query_string = {
           query_string: {
             query: modifyQuery(raw),
@@ -138,6 +94,47 @@ export function getQueryString(
             fields: nameFields,
           },
         }
+      } else {
+        const tokens = raw.split(/\s+/).filter(Boolean)
+
+        if (tokens.length > 1) {
+          const firstToken = tokens[0]
+          const trailingTokens = tokens.slice(1)
+
+          const firstTokenClause = {
+            query_string: {
+              query: modifyQuery(firstToken),
+              allow_leading_wildcard: true,
+              default_operator: "AND",
+              fields: nameFields,
+            },
+          }
+
+          const trailingClauses = trailingTokens.map((token) => ({
+            query_string: {
+              query: modifyQuery(token),
+              allow_leading_wildcard: true,
+              default_operator: "AND",
+              fields: [...nameFields, "adm2^2", "group.adm2^2", "group.adm1^1", "adm1^1"],
+            },
+          }))
+
+          simple_query_string = {
+            bool: {
+              must: [firstTokenClause, ...trailingClauses],
+            },
+          }
+        } else {
+          // No comma and a single token: single query_string across name fields
+          simple_query_string = {
+            query_string: {
+              query: modifyQuery(raw),
+              allow_leading_wildcard: true,
+              default_operator: "AND",
+              fields: nameFields,
+            },
+          }
+        }
       }
     }
   }
@@ -145,22 +142,19 @@ export function getQueryString(
   //const test = fulltext && params.dataset ? Object.fromEntries(fulltextFields[params.dataset].map(item => ([item.key, {}]))) : {}
 
 
-  const highlight = params.q && fulltext ? {
-    pre_tags: ["<mark>"],
-    post_tags: ["</mark>"],
-    boundary_scanner_locale: "nn-NO",
-
-    fields: {
-      "altLabels": {},
-      "attestations.label": {},
-      "content.text": {},
-      "content.html": {},
-      //...test,
-      ...(fulltext && effectivePerspective !== "all" && fulltextFields[effectivePerspective]
-        ? Object.fromEntries(fulltextFields[effectivePerspective].map((item) => [item.key, {}]))
-        : {})
-    }
-  } : null
+  const highlight =
+    params.q && fulltext
+      ? {
+          pre_tags: ["<mark>"],
+          post_tags: ["</mark>"],
+          boundary_scanner_locale: "nn-NO",
+          fields: {
+            altLabels: {},
+            "attestations.label": {},
+            ...Object.fromEntries(fulltextFields.map((f) => [f, {}])),
+          },
+        }
+      : null
 
   console.log("SIMPLE QUERY STRING", JSON.stringify(simple_query_string, null, 2))
 

@@ -3,8 +3,8 @@ import { postQuery } from "../../_utils/post"
 import { getQueryString } from "../../_utils/query-string"
 
 export async function GET(request: Request) {
-  const { reservedParams, datasets } = extractFacets(request)
-  const { simple_query_string } = getQueryString(reservedParams, { datasets })
+  const { reservedParams } = extractFacets(request)
+  const { simple_query_string } = getQueryString(reservedParams)
 
   // Get sort parameter from query string
   const url = new URL(request.url)

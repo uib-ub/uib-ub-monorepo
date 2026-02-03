@@ -4,9 +4,9 @@ import { extractFacets } from '../_utils/facets';
 import { postQuery } from '../_utils/post';
 import { getQueryString } from '../_utils/query-string';
 export async function GET(request: Request) {
-  const { termFilters, reservedParams, datasets } = extractFacets(request)
+  const { termFilters, reservedParams } = extractFacets(request)
   const dataset = reservedParams.dataset || 'search'  // == 'search' ? '*' : reservedParams.dataset;
-  const { simple_query_string } = getQueryString(reservedParams, { datasets })
+  const { simple_query_string } = getQueryString(reservedParams)
 
   let sortArray: (string | object)[] = []
 
