@@ -20,9 +20,35 @@ function modifyQuery(query: string) {
   return escapedQuery;
 }
 
-export function getQueryString(params: { [key: string]: string | null }) {
-  const fulltext = params.fulltext == 'on'
-  const perspective = params.perspective || 'all'
+const baseNameFields = [
+  "label^5",
+  "group.label^4",
+  "altLabels^4",
+  "attestations.label^3",
+]
+
+export function getQueryString(
+  params: { [key: string]: string | null },
+  options?: { datasets?: string[] }
+) {
+  const fulltext = params.fulltext == "on"
+  const perspective = params.perspective || "all"
+  // When only one dataset is selected (e.g. Hordanamn), use it for fulltext fields
+  const effectivePerspective =
+    perspective === "all" &&
+    options?.datasets?.length === 1 &&
+    fulltextFields[options.datasets[0]]
+      ? options.datasets[0]
+      : perspective
+
+  const fulltextFieldKeys =
+    fulltext && effectivePerspective !== "all" && fulltextFields[effectivePerspective]
+      ? fulltextFields[effectivePerspective].map((f) => f.key)
+      : []
+  const nameFields =
+    fulltextFieldKeys.length > 0
+      ? [...baseNameFields, ...fulltextFieldKeys]
+      : baseNameFields
 
   let simple_query_string: any = null
 
@@ -41,12 +67,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
               query: modifyQuery(namePart),
               allow_leading_wildcard: true,
               default_operator: "AND",
-              fields: [
-                "label^5",
-                "group.label^4",
-                "altLabels^4",
-                "attestations.label^3",
-              ],
+              fields: nameFields,
             },
           }
         : null
@@ -89,12 +110,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
             query: modifyQuery(firstToken),
             allow_leading_wildcard: true,
             default_operator: "AND",
-            fields: [
-              "label^5",
-              "group.label^4",
-              "altLabels^4",
-              "attestations.label^3",
-            ],
+            fields: nameFields,
           },
         }
 
@@ -103,16 +119,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
             query: modifyQuery(token),
             allow_leading_wildcard: true,
             default_operator: "AND",
-            fields: [
-              "label^5",
-              "group.label^4",
-              "altLabels^3",
-              "attestations.label^2",
-              "adm2^2",
-              "group.adm2^2",
-              "group.adm1^1",
-              "adm1^1",
-            ],
+            fields: [...nameFields, "adm2^2", "group.adm2^2", "group.adm1^1", "adm1^1"],
           },
         }))
 
@@ -128,12 +135,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
             query: modifyQuery(raw),
             allow_leading_wildcard: true,
             default_operator: "AND",
-            fields: [
-              "label^5",
-              "group.label^4",
-              "altLabels^4",
-              "attestations.label^3",
-            ],
+            fields: nameFields,
           },
         }
       }
@@ -151,10 +153,16 @@ export function getQueryString(params: { [key: string]: string | null }) {
     fields: {
       "altLabels": {},
       "attestations.label": {},
+      "content.text": {},
+      "content.html": {},
       //...test,
-      ...fulltext ? Object.fromEntries(fulltextFields[perspective].map(item => ([item.key, {}]))) : {}
+      ...(fulltext && effectivePerspective !== "all" && fulltextFields[effectivePerspective]
+        ? Object.fromEntries(fulltextFields[effectivePerspective].map((item) => [item.key, {}]))
+        : {})
     }
   } : null
+
+  console.log("SIMPLE QUERY STRING", JSON.stringify(simple_query_string, null, 2))
 
 
   return { highlight, simple_query_string }

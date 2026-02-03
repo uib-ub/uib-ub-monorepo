@@ -7,7 +7,7 @@ import { extractFacets } from '../_utils/facets';
 export async function GET(request: Request) {
   const { termFilters, reservedParams, datasets } = extractFacets(request)
   const perspective = reservedParams.perspective || 'all'
-  const { simple_query_string } = getQueryString(reservedParams)
+  const { simple_query_string } = getQueryString(reservedParams, { datasets })
 
   // Filter facets based on dataset selection (similar to facet-section.tsx logic)
   const availableFacets = perspective == 'all'

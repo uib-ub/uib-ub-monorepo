@@ -13,8 +13,8 @@ type OutputData = {
 };
 
 export async function GET(request: Request) {
-  const { termFilters, reservedParams } = extractFacets(request)
-  const { simple_query_string } = getQueryString(reservedParams)
+  const { termFilters, reservedParams, datasets } = extractFacets(request)
+  const { simple_query_string } = getQueryString(reservedParams, { datasets })
   console.log("USING GET (SERVER)")
 
   const perspective = reservedParams.perspective || 'all'

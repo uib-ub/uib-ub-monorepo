@@ -52,6 +52,7 @@ const link = { label: "Lenke", result }
 const image = { "image.manifest": { label: "Seddel", result } }
 const html = { "content.html": { label: "Tekstinnhald", fulltext } }
 const text = { "content.text": { label: "Tekstinnhald", fulltext } }
+
 const boost = { numeric }
 const dataset = { label: "Datasett" }
 const coordinateType = { label: "Koordinattype", facet }
@@ -96,7 +97,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     ...identifiers,
   },
   hord: {
-    ...required, adm, adm1, adm2, link, ...image,
+    ...required, adm, adm1, adm2, link, ...image, ...text,
     "misc.subset": { label: "Arkivtilvising", table, facet, featuredFacet },
     "rawData.arkivTilvising": { label: "Arkivtilvising", table, facet, featuredFacet },
     "adm3": { label: "Tidligere kommune", result },

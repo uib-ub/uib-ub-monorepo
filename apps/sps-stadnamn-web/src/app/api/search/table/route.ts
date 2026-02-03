@@ -6,9 +6,9 @@ import { getQueryString } from '../../_utils/query-string';
 
 
 export async function GET(request: Request) {
-  const { termFilters, reservedParams } = extractFacets(request)
+  const { termFilters, reservedParams, datasets } = extractFacets(request)
   const dataset = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
-  const { highlight, simple_query_string } = getQueryString(reservedParams)
+  const { highlight, simple_query_string } = getQueryString(reservedParams, { datasets })
 
   let sortArray: (string | object)[] = []
 

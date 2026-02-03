@@ -3,11 +3,11 @@ import { postQuery } from "../_utils/post";
 import { getQueryString } from "../_utils/query-string";
 export async function GET(request: Request) {
 
-    const { termFilters, reservedParams } = extractFacets(request)
+    const { termFilters, reservedParams, datasets } = extractFacets(request)
     const coordinates = reservedParams?.point?.split(',')
     if (coordinates.length == 2) {
 
-        const { simple_query_string } = getQueryString(reservedParams)
+        const { simple_query_string } = getQueryString(reservedParams, { datasets })
 
 
         const query: Record<string, any> = {

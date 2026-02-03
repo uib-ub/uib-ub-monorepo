@@ -3,9 +3,9 @@ import { postQuery } from "../_utils/post"
 import { getQueryString } from "../_utils/query-string"
 
 export async function GET(request: Request) {
-    const { termFilters, reservedParams } = extractFacets(request)
+    const { termFilters, reservedParams, datasets } = extractFacets(request)
     const dataset = reservedParams.dataset || 'all'
-    const { simple_query_string } = getQueryString(reservedParams)
+    const { simple_query_string } = getQueryString(reservedParams, { datasets })
 
     const query: Record<string, any> = {
         "size": 0,

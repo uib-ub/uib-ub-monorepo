@@ -4,9 +4,9 @@ import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';
 
 export async function GET(request: Request) {
-  const {termFilters, reservedParams} = extractFacets(request)
+  const { termFilters, reservedParams, datasets } = extractFacets(request)
   const perspective = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
-  const { simple_query_string } = getQueryString(reservedParams)
+  const { simple_query_string } = getQueryString(reservedParams, { datasets })
 
   const query: Record<string,any> = {
     "track_total_hits": 10000000,
