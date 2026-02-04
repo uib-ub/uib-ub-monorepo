@@ -4,9 +4,6 @@
 
 import { type DocumentDefinition } from 'sanity'
 import { type StructureResolver } from 'sanity/structure'
-/* import { Iframe } from 'sanity-plugin-iframe-pane' */
-/* import { iframeOptions } from '../../../sanity.config' */
-/* import { PREVIEWABLE_DOCUMENT_TYPES } from '@/sanity/schemas' */
 
 export const singletonPlugin = (types: string[]) => {
   return {
@@ -55,15 +52,6 @@ export const pageStructure = (
             .views([
               // Default form view
               S.view.form(),
-              // Preview
-              /* ...(PREVIEWABLE_DOCUMENT_TYPES.includes(typeDef.name as any)
-                ? [
-                  S.view
-                    .component(Iframe)
-                    .options(iframeOptions)
-                    .title('Preview'),
-                ]
-                : []), */
             ]),
         )
     })

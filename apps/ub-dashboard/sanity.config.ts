@@ -19,15 +19,9 @@ import { codeInput } from '@sanity/code-input'
 import { table } from '@sanity/table';
 import { schema } from '@/sanity/schema'
 import { deskStructure } from '@/sanity/structure'
-import { PREVIEWABLE_DOCUMENT_TYPES_REQUIRING_SLUGS } from '@/sanity/schemas';
-/* import { defineUrlResolver, PREVIEW_BASE_URL } from '@/sanity/lib/utils'; */
 import { templates } from '@/sanity/structure/templates';
 import { defaultDocumentNode } from '@/sanity/structure/defaultDocumentNode';
 
-/* export const urlResolver = defineUrlResolver({
-  base: PREVIEW_BASE_URL,
-  requiresSlug: PREVIEWABLE_DOCUMENT_TYPES_REQUIRING_SLUGS,
-}) */
 
 export default defineConfig({
   title: 'UB-dashboard',
