@@ -8,6 +8,8 @@ const nextConfig = {
       },
     ],
   },
+  // Silence Next 16 Turbopack warning when a webpack config is present.
+  turbopack: {},
   logging: {
     fetches: {
       fullUrl: true,

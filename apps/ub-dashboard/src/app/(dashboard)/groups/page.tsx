@@ -1,14 +1,11 @@
 import React, { Suspense } from 'react'
-import { draftMode } from 'next/headers'
-import { LiveQuery } from 'next-sanity/preview/live-query'
 import Groups, { query } from './_components/groups'
 import { sanityFetch } from '@/sanity/lib/fetch'
 import { MainShell } from '@/components/shared/main-shell'
-import PreviewGroups from './_components/preview-groups'
 import Link from 'next/link'
 
 export default async function GroupsPage() {
-  const data = await sanityFetch({ query, revalidate: 7200 })
+  const { data } = await sanityFetch({ query })
 
   return (
     <MainShell>
@@ -22,16 +19,9 @@ export default async function GroupsPage() {
           Oversikt
         </Link>
       </div>
-      <LiveQuery
-        enabled={(await draftMode()).isEnabled}
-        query={query}
-        initialData={data}
-        as={PreviewGroups}
-      >
-        <Suspense fallback={<div>Loading...</div>}>
-          <Groups data={data} />
-        </Suspense>
-      </LiveQuery>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Groups data={data} />
+      </Suspense>
     </MainShell>
   );
 }
