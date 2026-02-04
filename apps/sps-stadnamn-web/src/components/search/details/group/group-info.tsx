@@ -11,7 +11,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, type ReactNode } from "react";
-import { PiArchive, PiCaretLeftBold, PiCaretRightBold, PiDotsThreeBold, PiMapPin, PiMapPinFill, PiPushPin, PiX } from "react-icons/pi";
+import { PiArchive, PiCaretLeftBold, PiCaretRightBold, PiMapPin, PiPushPin, PiX } from "react-icons/pi";
 import Carousel from "../../nav/results/carousel";
 import { TextTab } from "./text-tab";
 import { NamesSection } from "./names-section";
@@ -282,7 +282,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
 
     return (
-        <div id={id} className="flex flex-wrap items-center gap-2 pb-4 relative">
+        <div id={id} className="relative flex min-w-0 flex-wrap items-center gap-2 pb-4">
 
             {
                 audioItems?.map((audioItem) => (
@@ -312,7 +312,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             }
             {textItems.length > 0 && !activePoint && <TextTab textItems={textItems} />}
 
-            <div className="flex flex-col pb-4">
+            <div className="min-w-0 w-full flex flex-col pb-4">
                 {/* Names section (includes timeline) - only show in init group when no activePoint filter is active */}
                 {shouldShowLabelFilter && initValue === groupData.group.id && !searchParams.get('activePoint') &&
                     <div className="px-3 pt-2">
@@ -320,175 +320,88 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                     </div>
                 }
 
-                {/* Active point filter display - only in init group */}
+                {/* Active point filter display - only in init group. Sticky so it stays put; coordinate + nav in a right-aligned group so expandables below cannot affect their position. */}
                 {searchParams.get('activePoint') && initValue === groupData.group.id && (
-                    <div className="px-3 pt-2">
-                        <div className="flex flex-col gap-2 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <PiMapPinFill className="text-accent-800 flex-shrink-0" aria-hidden="true" />
-                                    <span className="text-neutral-900 text-base font-medium">
-                                        {(() => {
-                                            const activeIdx = uniqueCoordinates.findIndex((c) => c === activePoint)
-                                            const coord = uniqueCoordinates[Math.max(0, activeIdx)]
-                                            if (!coord) return 'koordinater'
-                                            const [latStr, lngStr] = coord.split(',')
-                                            return formatCoordText(latStr, lngStr)
-                                        })()}
-                                    </span>
-                                </div>
-                                <ClickableIcon
-                                    label="Fjern kjeldeavgrensing"
-                                    remove={['activePoint']}
-                                    className="text-accent-800 hover:text-accent-900 flex-shrink-0"
-                                >
-                                    <PiX className="text-neutral-800" />
-                                </ClickableIcon>
-                            </div>
-                            {(() => {
-                                const total = uniqueCoordinates.length
-                                if (total <= 1) return null
+                    <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 pt-2 pb-2">
+                        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+                            <Clickable
+                                remove={['activePoint']}
+                                aria-label="Tilbake"
+                                className="inline-flex shrink-0 items-center gap-1.5 text-neutral-800 hover:text-neutral-900"
+                            >
+                                <PiCaretLeftBold className="text-base shrink-0" aria-hidden="true" />
+                                <span className="whitespace-nowrap">Tilbake</span>
+                            </Clickable>
+                            <div className="flex min-w-[8rem] flex-1 basis-0 flex-wrap items-center justify-end gap-x-3 gap-y-2 sm:basis-auto sm:flex-1">
+                                {(() => {
+                                    const total = uniqueCoordinates.length
+                                    const activeIndexRaw = uniqueCoordinates.findIndex((c) => c === activePoint)
+                                    const activeIndex = activeIndexRaw >= 0 ? activeIndexRaw : 0
+                                    const coord = uniqueCoordinates[activeIndex]
+                                    const [latStr, lngStr] = coord ? coord.split(',') : ['', '']
+                                    const coordText = coord ? formatCoordText(latStr, lngStr) : 'koordinater'
 
-                                const activeIndexRaw = uniqueCoordinates.findIndex((c) => c === activePoint)
-                                const activeIndex = activeIndexRaw >= 0 ? activeIndexRaw : 0
-
-                                const goTo = (index: number) => {
-                                    const coord = uniqueCoordinates[index]
-                                    const [lat, lng] = coord.split(',').map(parseFloat)
-                                    return {
-                                        coord,
-                                        lat,
-                                        lng
-                                    }
-                                }
-
-                                const buildPageItems = () => {
-                                    // Return array of 0-based page indices and "ellipsis" markers.
-                                    // Keep this short so the control doesn't wrap: e.g. 1 … 4 … 10
-                                    const maxNumbers = 5
-                                    const items: Array<number | 'ellipsis'> = []
-
-                                    if (total <= maxNumbers) {
-                                        for (let i = 0; i < total; i++) items.push(i)
-                                        return items
-                                    }
-
-                                    const first = 0
-                                    const last = total - 1
-                                    items.push(first)
-
-                                    // Near the start: 1 2 3 … last
-                                    if (activeIndex <= 2) {
-                                        items.push(1, 2, 'ellipsis', last)
-                                        return items
+                                    const NavBtn = ({
+                                        label,
+                                        targetIndex,
+                                        disabled,
+                                        children
+                                    }: {
+                                        label: string
+                                        targetIndex: number
+                                        disabled: boolean
+                                        children: ReactNode
+                                    }) => {
+                                        const c = uniqueCoordinates[targetIndex]
+                                        const [lat, lng] = c.split(',').map(parseFloat)
+                                        return (
+                                            <Clickable
+                                                add={{ activePoint: c }}
+                                                disabled={disabled}
+                                                onClick={() => {
+                                                    if (disabled) return
+                                                    setTimeout(() => {
+                                                        mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] })
+                                                    }, 0)
+                                                }}
+                                                className={`h-9 w-9 shrink-0 inline-flex items-center justify-center rounded-md text-sm transition-colors border border-neutral-200 ${disabled
+                                                    ? 'bg-neutral-100 text-neutral-400 cursor-not-allowed'
+                                                    : 'bg-white text-neutral-900 hover:bg-neutral-200'
+                                                    }`}
+                                                aria-label={label}
+                                                title={label}
+                                            >
+                                                {children}
+                                            </Clickable>
+                                        )
                                     }
 
-                                    // Near the end: 1 … last-2 last-1 last
-                                    if (activeIndex >= total - 3) {
-                                        items.push('ellipsis', last - 2, last - 1, last)
-                                        return items
-                                    }
-
-                                    // Middle: 1 … active … last
-                                    items.push('ellipsis', activeIndex, 'ellipsis', last)
-                                    return items
-                                }
-
-                                const NavBtn = ({
-                                    label,
-                                    targetIndex,
-                                    disabled,
-                                    children
-                                }: {
-                                    label: string
-                                    targetIndex: number
-                                    disabled: boolean
-                                    children: ReactNode
-                                }) => {
-                                    const t = goTo(targetIndex)
                                     return (
-                                        <Clickable
-                                            add={{ activePoint: t.coord }}
-                                            disabled={disabled}
-                                            onClick={() => {
-                                                if (disabled) return
-                                                setTimeout(() => {
-                                                    mapFunctionRef.current?.flyTo([t.lat, t.lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] })
-                                                }, 0)
-                                            }}
-                                            className={`w-9 h-9 inline-flex items-center justify-center rounded-md text-sm transition-colors border border-neutral-200 ${disabled
-                                                ? 'bg-neutral-100 text-neutral-400 cursor-not-allowed'
-                                                : 'bg-white text-neutral-900 hover:bg-neutral-200'
-                                                }`}
-                                            aria-label={label}
-                                            title={label}
-                                        >
-                                            {children}
-                                        </Clickable>
+                                        <>
+                                            <span className="min-w-0 flex-1 truncate text-right text-base font-medium text-neutral-900" title={coordText}>
+                                                {coordText}
+                                            </span>
+                                            <div className="flex shrink-0 items-center gap-1.5">
+                                                <NavBtn label="Førre koordinat" targetIndex={Math.max(0, activeIndex - 1)} disabled={activeIndex === 0}>
+                                                    <PiCaretLeftBold aria-hidden="true" />
+                                                </NavBtn>
+                                                <span className="text-neutral-700 text-sm tabular-nums w-9 text-center" aria-hidden="true">
+                                                    {activeIndex + 1}/{total}
+                                                </span>
+                                                <NavBtn label="Neste koordinat" targetIndex={Math.min(total - 1, activeIndex + 1)} disabled={activeIndex === total - 1}>
+                                                    <PiCaretRightBold aria-hidden="true" />
+                                                </NavBtn>
+                                            </div>
+                                        </>
                                     )
-                                }
-
-                                return (
-                                    <div className="flex flex-nowrap items-center gap-2">
-                                        <NavBtn label="Førre koordinat" targetIndex={Math.max(0, activeIndex - 1)} disabled={activeIndex === 0}>
-                                            <PiCaretLeftBold aria-hidden="true" />
-                                        </NavBtn>
-
-                                        <div className="flex flex-nowrap gap-2">
-                                            {buildPageItems().map((item, idx) => {
-                                                if (item === 'ellipsis') {
-                                                    return (
-                                                        <span
-                                                            key={`ellipsis-${idx}`}
-                                                            className="w-9 h-9 inline-flex items-center justify-center text-neutral-500 select-none"
-                                                            aria-hidden="true"
-                                                        >
-                                                            <PiDotsThreeBold className="text-base" aria-hidden="true" />
-                                                        </span>
-                                                    )
-                                                }
-
-                                                const index = item
-                                                const coord = uniqueCoordinates[index]
-                                                const isActive = index === activeIndex
-                                                const [latStr, lngStr] = coord.split(',')
-                                                const fullText = formatCoordText(latStr, lngStr)
-                                                const { lat, lng } = goTo(index)
-
-                                                return (
-                                                    <Clickable
-                                                        key={coord}
-                                                        add={{ activePoint: coord }}
-                                                        onClick={() => {
-                                                            setTimeout(() => {
-                                                                mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] })
-                                                            }, 0)
-                                                        }}
-                                                        className={`w-9 h-9 inline-flex items-center justify-center rounded-md text-sm transition-colors border border-neutral-200 ${isActive
-                                                            ? 'bg-accent-800 text-white border-accent-800'
-                                                            : 'bg-white text-neutral-900 hover:bg-neutral-200'
-                                                            }`}
-                                                        title={fullText}
-                                                        aria-label={`Koordinat ${index + 1} av ${total}: ${fullText}`}
-                                                    >
-                                                        {index + 1}
-                                                    </Clickable>
-                                                )
-                                            })}
-                                        </div>
-
-                                        <NavBtn label="Neste koordinat" targetIndex={Math.min(total - 1, activeIndex + 1)} disabled={activeIndex === total - 1}>
-                                            <PiCaretRightBold aria-hidden="true" />
-                                        </NavBtn>
-                                    </div>
-                                )
-                            })()}
+                                })()}
+                            </div>
                         </div>
                     </div>
                 )}
 
-                {/* Sources always shown */}
-                <div className="px-3">
+                {/* Sources always shown - min-w-0 so width is constrained by panel, not by expanded content */}
+                <div className="min-w-0 px-3">
                     <FilteredSourcesTab
                         datasets={datasets}
                         activeYear={activeYear}
