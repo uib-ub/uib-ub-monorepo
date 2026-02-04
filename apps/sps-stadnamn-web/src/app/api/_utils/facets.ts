@@ -93,16 +93,22 @@ export function extractFacets(request: Request) {
         rangeFilters[fieldName][operator] = value;
       }
       else if (value == '_true') {
-        termFilters.push({
-          "exists": { "field": key }
-        });
+        if (key == 'adm') {
+          if (!clientFacets.adm) clientFacets.adm = [];
+          clientFacets.adm.push(value);
+        } else {
+          termFilters.push({ "exists": { "field": key } });
+        }
       }
       else if (value == '_false') {
-        termFilters.push({
-          "bool": {
-            "must_not": { "exists": { "field": key } }
-          }
-        });
+        if (key == 'adm') {
+          if (!clientFacets.adm) clientFacets.adm = [];
+          clientFacets.adm.push(value);
+        } else {
+          termFilters.push({
+            "bool": { "must_not": { "exists": { "field": key } } }
+          });
+        }
       }
       else {
         const facets = key == 'adm' ? clientFacets : serverFacets;
@@ -141,44 +147,54 @@ export function extractFacets(request: Request) {
   }
 
 
-  // Hierarchical facets
+  // Hierarchical facets (adm is not a real ES field; handle _true/_false and paths here)
   if (Object.keys(clientFacets).length) {
     if (clientFacets.adm) {
+      const admValues = clientFacets.adm;
+      const isAdmPath = (v: string) => v !== '_true' && v.slice(0, 6) !== '_false';
+      const isAdmFalse = (v: string) => v.slice(0, 6) === '_false';
+
       termFilters.push({
         "bool": {
           "should": [
-            ...clientFacets.adm.filter((value: string) => value.slice(0, 6) != "_false").map((value: string) => ({
+            // adm=_true: docs that have group.adm1
+            ...admValues.filter((v: string) => v === '_true').map(() => ({
+              "exists": { "field": "group.adm1.keyword" }
+            })),
+            // adm=_false (top-level "[inga verdi]"): docs that have neither group.adm1 nor group.adm2
+            ...admValues.filter((v: string) => v === '_false').map(() => ({
               "bool": {
-                "filter": value.split("__").reverse().map((value: string, index: number) => ({
-
-                  "term": { [`group.adm${index + 1}.keyword`]: value }
-                }))
+                "must_not": [
+                  { "exists": { "field": "group.adm1.keyword" } },
+                  { "exists": { "field": "group.adm2.keyword" } }
+                ]
               }
             })),
-            // Handle N/A values
-            ...clientFacets.adm.filter((value: string) => value.slice(0, 6) == "_false").map((value: string) => {
-              // Split the value to separate the levels and remove the "_false" prefix
+            // adm=_false__level1__level2: N/A at a specific level
+            ...admValues.filter((v: string) => isAdmFalse(v) && v.length > 8).map((value: string) => {
               const levels = value.slice(8).split('__').filter(val => val.length).reverse();
-              const mustClauses = levels.map((level, index) => ({
+              const mustClauses = levels.map((level: string, index: number) => ({
                 "term": { [`group.adm${index + 1}.keyword`]: level }
               }));
-
-              // The last level index is determined by the number of levels specified
               const lastLevelIndex = levels.length + 1;
-
               return {
                 "bool": {
                   "must": mustClauses,
-                  "must_not": [{
-                    "exists": { "field": `group.adm${lastLevelIndex}.keyword` }
-                  }]
+                  "must_not": [{ "exists": { "field": `group.adm${lastLevelIndex}.keyword` } }]
                 }
               };
-            })
+            }),
+            // adm=path (e.g. Agder__Kristiansand)
+            ...admValues.filter(isAdmPath).map((value: string) => ({
+              "bool": {
+                "filter": value.split("__").reverse().map((val: string, index: number) => ({
+                  "term": { [`group.adm${index + 1}.keyword`]: val }
+                }))
+              }
+            }))
           ],
           "minimum_should_match": 1
         }
-
       })
 
     }
@@ -294,6 +310,14 @@ export function extractFacets(request: Request) {
 
     }
   }
+
+  // Exclude group.id "suppressed" and "noname" from all queries unless tree/cadastral view or includeSuppressed
+  if (!urlParams.get('tree') && reservedParams.includeSuppressed !== '1' && reservedParams.includeSuppressed !== 'true') {
+    termFilters.push({
+      bool: { must_not: { terms: { 'group.id': ['suppressed', 'noname'] } } }
+    });
+  }
+
   if (datasets.length) {
     termFilters.push({
       "bool": {

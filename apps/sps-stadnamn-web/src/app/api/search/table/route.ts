@@ -9,7 +9,6 @@ export async function GET(request: Request) {
   const { termFilters, reservedParams } = extractFacets(request)
   const dataset = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
   const { highlight, simple_query_string } = getQueryString(reservedParams)
-  const includeSuppressed = reservedParams.includeSuppressed === '1' || reservedParams.includeSuppressed === 'true'
 
   let sortArray: (string | object)[] = []
 
@@ -43,12 +42,6 @@ export async function GET(request: Request) {
   }
 
 
-  const suppressedExclusion = {
-    "terms": {
-      "group.id": ["suppressed", "noname"]
-    }
-  };
-
   const query: Record<string, any> = {
     "size": parseInt(reservedParams.size || "10"),
     "from": parseInt(reservedParams.from || "0"),
@@ -57,38 +50,33 @@ export async function GET(request: Request) {
     "_source": true
   }
 
-  const mustNot = includeSuppressed ? [] : [suppressedExclusion]
-
+  // termFilters from extractFacets includes suppressed/noname exclusion unless includeSuppressed=1 or tree view
   if (simple_query_string && termFilters.length) {
     query.query = {
       "bool": {
         "must": simple_query_string,
-        "filter": termFilters,
-        ...(mustNot.length ? { "must_not": mustNot } : {})
+        "filter": termFilters
       }
     }
   }
   else if (simple_query_string) {
     query.query = {
       "bool": {
-        "must": simple_query_string,
-        ...(mustNot.length ? { "must_not": mustNot } : {})
+        "must": simple_query_string
       }
     }
   }
   else if (termFilters.length) {
     query.query = {
       "bool": {
-        "filter": termFilters,
-        ...(mustNot.length ? { "must_not": mustNot } : {})
+        "filter": termFilters
       }
     }
   }
   else {
     query.query = {
       "bool": {
-        "must": { "match_all": {} },
-        ...(mustNot.length ? { "must_not": mustNot } : {})
+        "must": { "match_all": {} }
       }
     }
   }

@@ -18,12 +18,6 @@ export async function GET(
 
   console.log("DEBUG IN GRID", reservedParams.debug)
 
-  const suppressedExclusion = {
-    "terms": {
-      "group.id": ["suppressed", "noname"]
-    }
-  };
-
   const query: Record<string, any> = {
     size: 0,
 
@@ -40,8 +34,7 @@ export async function GET(
               location: { geotile: `${precision}/${x}/${y}` }
             }
           },
-        ],
-        must_not: [suppressedExclusion]
+        ]
       }
     },
     aggs: {

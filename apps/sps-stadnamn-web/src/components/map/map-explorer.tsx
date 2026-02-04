@@ -225,12 +225,13 @@ export default function MapExplorer() {
   }
 
   const [markerCells, setMarkerCells] = useState<GeotileCell[]>([])
+  const [hoveredPointKey, setHoveredPointKey] = useState<string | null>(null)
 
   // Cluster if:
   // Cluster mode
   // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
-  const activeMarkerMode = markerMode === 'auto' ? (searchParams.get('q') ? 'counts' : (zoomState > 15 ? 'labels' : 'points')) : markerMode
+  const activeMarkerMode = markerMode === 'auto' ? (searchParams.get('q') && zoomState < 10 ? 'counts' : (zoomState < 7 ? 'points' : 'labels')) : markerMode
 
 
 
@@ -862,9 +863,9 @@ export default function MapExplorer() {
                 const markerColor = isInit ? 'black' : 'white'
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
-                const icon = activeMarkerMode === 'points'
-                  ? getPointMarker(markerColor, false)
-                  : getLabelMarkerIcon(item.fields["group.label"]?.[0] || item.fields.label?.[0] || '[utan namn]', markerColor, childCount, false, false, false)
+                const labelText = item.fields["group.label"]?.[0] || item.fields.label?.[0] || '[utan namn]'
+                const isHovered = activeMarkerMode === 'points' && hoveredPointKey === item.fields.uuid[0]
+                const icon = getLabelMarkerIcon(labelText, markerColor, childCount, false, false, false)
 
 
                 return (
@@ -892,14 +893,49 @@ export default function MapExplorer() {
                         />
                       ))
                     }
-                    {activeGroupValue != item.fields?.["group.id"]?.[0] && <Marker
-                      key={`result-${item.fields.uuid[0]}`}
-                      position={[lat, lng]}
-                      icon={new leaflet.DivIcon(icon)}
-                      riseOnHover={true}
-                      eventHandlers={selectDocHandler(item, [lat, lng])}
-                    >
-                    </Marker>}
+                    {activeGroupValue != item.fields?.["group.id"]?.[0] && (
+                      <>
+                        {activeMarkerMode === 'points' ? (
+                          <CircleMarker
+                            key={`result-${item.fields.uuid[0]}`}
+                            center={[lat, lng]}
+                            radius={5}
+                            pathOptions={{
+                              color: '#000000',
+                              weight: 2,
+                              fillColor: '#ffffff',
+                              opacity: 0.9,
+                              fillOpacity: 0.5,
+                            }}
+                            eventHandlers={{
+                              ...selectDocHandler(item, [lat, lng]),
+                              mouseover: () => setHoveredPointKey(item.fields.uuid[0]),
+                              mouseout: () => setHoveredPointKey(null),
+                            }}
+                          />
+                        ) : (
+                          <Marker
+                            key={`result-${item.fields.uuid[0]}`}
+                            position={[lat, lng]}
+                            icon={new leaflet.DivIcon(icon)}
+                            riseOnHover={true}
+                            eventHandlers={selectDocHandler(item, [lat, lng])}
+                          />
+                        )}
+                        {activeMarkerMode === 'points' && isHovered && (
+                          <Marker
+                            key={`result-label-hover-${item.fields.uuid[0]}`}
+                            position={[lat, lng]}
+                            zIndexOffset={1000}
+                            icon={new leaflet.DivIcon({
+                              ...getLabelMarkerIcon(labelText, markerColor, undefined, false, false, true),
+                              className: 'point-marker-hover-label',
+                            })}
+                            eventHandlers={{}}
+                          />
+                        )}
+                      </>
+                    )}
                   </Fragment>
                 )
               }
@@ -1175,8 +1211,8 @@ export default function MapExplorer() {
                   )
                 }
 
-                // Default mode: show lines and dots for the init group whenever there is an init
-                if (!initValue || !initGroupData?.sources) return null;
+                // Default mode: show lines and dots for the init group only when there is an activePoint
+                if (!activePoint || !initValue || !initGroupData?.sources) return null;
 
                 // Find the first source with coordinates - this is the central coordinate
                 const centralSource = initGroupData.sources.find((source: Record<string, any>) =>

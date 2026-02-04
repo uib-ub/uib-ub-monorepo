@@ -285,28 +285,19 @@ export async function GET(request: Request) {
     }
   }
 
-  // Exclude suppressed and noname groups, following the same pattern as other routes
-  const suppressedExclusion = {
-    "terms": {
-      "group.id": ["suppressed", "noname"]
-    }
-  }
-
-  // Apply filters following the same pattern as search routes
+  // Apply filters (termFilters from extractFacets already includes suppressed/noname exclusion when not tree/cadastral)
   let finalQuery: Record<string, any>
   if (termFilters.length > 0) {
     finalQuery = {
       "bool": {
         "must": queryClause,
-        "filter": termFilters,
-        "must_not": [suppressedExclusion]
+        "filter": termFilters
       }
     }
   } else {
     finalQuery = {
       "bool": {
-        "must": queryClause,
-        "must_not": [suppressedExclusion]
+        "must": queryClause
       }
     }
   }

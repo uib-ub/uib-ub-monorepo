@@ -52,6 +52,8 @@ const link = { label: "Lenke", result }
 const image = { "image.manifest": { label: "Seddel", result } }
 const html = { "content.html": { label: "Tekstinnhald", fulltext } }
 const text = { "content.text": { label: "Tekstinnhald", fulltext } }
+const note = { "content.note": { label: "Tekstinnhald", fulltext } }
+
 const boost = { numeric }
 const dataset = { label: "Datasett" }
 const coordinateType = { label: "Koordinattype", facet }
@@ -81,7 +83,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
   },
   bsn: {
     ...required, adm, adm1, adm2,
-    "rawData.komm": { label: "Beskrivelse", fulltext },
+    "rawData.komm": { label: "Kommentar" }, ...note,
     "rawData.loktype.type": { label: "Lokalitetstype", description: "Ustandardisert lokalitetstype", table, facet },
     "rawData.oppskr.os_navn": { label: "Oppskriver", facet },
     "rawData.oppskr.år": { label: "Oppskrivingstid", facet },
@@ -96,11 +98,11 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     ...identifiers,
   },
   hord: {
-    ...required, adm, adm1, adm2, link, ...image,
+    ...required, adm, adm1, adm2, link, ...image, ...text,
     "misc.subset": { label: "Arkivtilvising", table, facet, featuredFacet },
     "rawData.arkivTilvising": { label: "Arkivtilvising", table, facet, featuredFacet },
     "adm3": { label: "Tidligere kommune", result },
-    "rawData.merknader": { label: "Merknader", fulltext },
+    "rawData.merknader": { label: "Merknader" },
     "rawData.kommuneNr": { label: "Kommunenummer", table, facet },
     "rawData.oppskrivar": { label: "Oppskrivar", table, facet },
     "rawData.oppskrivingsTid": { label: "Oppskrivingstid", table, facet },
@@ -315,8 +317,8 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     ...identifiers
   },
   frogn: {
-    ...required, adm, adm1, adm2,
-    "rawData.KOMMENTAR": { label: "Kommentar", fulltext, facet, table, result },
+    ...required, adm, adm1, adm2, ...note,
+    "rawData.KOMMENTAR": { label: "Kommentar", facet, table, result },
     "rawData.KARTBLAD": { label: "Kartblad", table, facet, result },
     "rawData.INNSAMLNR": { label: "Innsamlingsnummer", table, facet, result },
     "rawData.KARTNR": { label: "Kartnummer", table, facet },
@@ -340,7 +342,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     "rawData.ALT_OPPSLAG": { label: "Alternativt oppslag", table, facet }
   },
   gjerd: {
-    ...required, adm, adm1, adm2,
+    ...required, adm, adm1, adm2, ...note,
     "rawData.ID1": { label: "ID", result, table },
     "rawData.OPPSLAG": { label: "Oppslag", result, table, facet },
     "rawData.DEL_SAMLING": { label: "Del av samling", table, facet },
@@ -355,13 +357,13 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     "rawData.OPPSKRIVER_ETTERNAVN": { label: "Oppskrivar etternavn", table },
     "rawData.LOKTYPE": { label: "Lokalitetstype", table, facet },
     "rawData.PREP": { label: "Preposisjon", table, facet },
-    "rawData.KOMMENTAR_1": { label: "Kommentar 1", table, fulltext },
+    "rawData.KOMMENTAR_1": { label: "Kommentar 1", table },
     "rawData.INFORMANT": { label: "Informant", table, facet },
     "rawData.GNR_BNR": { label: "Gards- og bruksnummer", table, facet },
     "rawData.UTTALE": { label: "Uttale", table },
     "rawData.INFORMANT_FORNAVN": { label: "Informant fornavn", table },
     "rawData.INFORMANT_ETTERNAVN": { label: "Informant etternavn", table },
-    "rawData.KOMMENTAR_2": { label: "Kommentar 2", table, fulltext },
+    "rawData.KOMMENTAR_2": { label: "Kommentar 2", table },
     "rawData.ETTERLEDD": { label: "Etterledd", table, facet },
     "rawData.DATO": { label: "Dato", table, facet },
     "rawData.SOKN": { label: "Sokn", table, facet },
@@ -373,7 +375,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     "rawData.EIER": { label: "Eigar", table, facet }
   },
   sorum: {
-    ...required, adm, adm1, adm2, adm3,
+    ...required, adm, adm1, adm2, adm3, ...note,
     "rawData.ID": { label: "ID", table, result },
     "rawData.KART": { label: "Kart", table, facet },
     "rawData.NGIDENT": { label: "NG-identifikator", table, facet },
@@ -402,12 +404,12 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     "rawData.FØDSELSÅR": { label: "Fødselsår", table, facet },
     "rawData.INNSAMLINGSÅR": { label: "Innsamlingsår", table, facet },
     "rawData.UTTALE_LYDSKRIFT": { label: "Uttale lydskrift", table },
-    "rawData.KOMMENTAR1": { label: "Kommentar 1", table, fulltext },
+    "rawData.KOMMENTAR1": { label: "Kommentar 1", table },
     "rawData.TIDL_NAMN_PÅ": { label: "Tidlegare namn på", table, facet },
-    "rawData.KOMMENTAR2": { label: "Kommentar 2", table, facet, fulltext },
+    "rawData.KOMMENTAR2": { label: "Kommentar 2", table, facet },
   },
   kven: {
-    ...required, adm, adm1, adm2,
+    ...required, adm, adm1, adm2, ...note, ...html,
     "misc.oppslagsform": { label: "Oppslagsform", result, table, facet },
     "misc.bare_fra_skriftlige_kilder": { label: "Bare fra skriftlige kilder", facet },
     "misc.publisert": { label: "Publisert", facet },
@@ -419,7 +421,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     "misc.kartreferanse": { label: "Kartreferanse", table },
     "misc.leddanalyse": { label: "Leddanalyse", table },
     "misc.uttale": { label: "Uttale", table, result },
-    "misc.annet": { label: "Annet", fulltext },
+    "misc.annet": { label: "Annet" },
     "misc.navnegruppe": { label: "Navnegruppe", facet, result },
     "misc.GNR": { label: "Gardsnummer", table, facet, result },
     "misc.parallellnavn_no": { label: "Parallellnavn (norsk)", table, result },
@@ -428,9 +430,9 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     "misc.tradisjon_no": { label: "Tradisjon (norsk)", table, facet },
     "misc.tradisjon_kv": { label: "Tradisjon (kvensk)", table, facet },
     "misc.boyningsform": { label: "Bøyningsform", table },
-    "misc.etymologiOgLitteratur": { label: "Etymologi og litteratur", fulltext },
-    "misc.informantkommentar_no": { label: "Informantkommentar (norsk)", fulltext },
-    "misc.informantkommentar_kv": { label: "Informantkommentar (kvensk)", fulltext },
+    "misc.etymologiOgLitteratur": { label: "Etymologi og litteratur" },
+    "misc.informantkommentar_no": { label: "Informantkommentar (norsk)" },
+    "misc.informantkommentar_kv": { label: "Informantkommentar (kvensk)" },
     "misc.standardnummerSSR": { label: "SSR-nummer", facet },
     "misc.KNR": { label: "Kommunenummer", facet, result },
     "misc.FNR": { label: "Fylkesnummer", facet },

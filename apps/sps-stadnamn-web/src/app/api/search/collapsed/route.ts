@@ -47,42 +47,32 @@ export async function POST(request: Request) {
   // Construct the query part
   let baseQuery: any;
 
-  const suppressedExclusion = {
-    "terms": {
-      "group.id": ["suppressed", "noname"]
-    }
-  };
-
   if (simple_query_string && termFilters.length) {
     baseQuery = {
       "bool": {
         "must": simple_query_string,
-        "filter": termFilters,
-        "must_not": [suppressedExclusion]
+        "filter": termFilters
       }
     }
   }
   else if (simple_query_string) {
     baseQuery = {
       "bool": {
-        "must": simple_query_string,
-        "must_not": [suppressedExclusion]
+        "must": simple_query_string
       }
     }
   }
   else if (termFilters.length) {
     baseQuery = {
       "bool": {
-        "filter": termFilters,
-        "must_not": [suppressedExclusion]
+        "filter": termFilters
       }
     }
   }
   else {
     baseQuery = {
       "bool": {
-        "must": { "match_all": {} },
-        "must_not": [suppressedExclusion]
+        "must": { "match_all": {} }
       }
     }
   }

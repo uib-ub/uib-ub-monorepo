@@ -20,7 +20,10 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
 
   return {
     title: q || "Søk",
-    description: ""
+    robots: {
+      index: false,
+      follow: false
+    }
   }
 }
 
