@@ -156,7 +156,6 @@ export function getQueryString(params: { [key: string]: string | null }) {
         }
       : null
 
-  console.log("SIMPLE QUERY STRING", JSON.stringify(simple_query_string, null, 2))
 
 
   return { highlight, simple_query_string }
