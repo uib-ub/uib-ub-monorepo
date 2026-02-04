@@ -312,7 +312,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             }
             {textItems.length > 0 && !activePoint && <TextTab textItems={textItems} />}
 
-            <div className="flex flex-col">
+            <div className="flex flex-col pb-4">
                 {/* Names section (includes timeline) - only show in init group when no activePoint filter is active */}
                 {shouldShowLabelFilter && initValue === groupData.group.id && !searchParams.get('activePoint') &&
                     <div className="px-3 pt-2">
@@ -529,9 +529,9 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                             { duration: 0.25, maxZoom: 18, padding: [50, 50] }
                                         );
                                     }}
-                                    className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-neutral-300 bg-white text-neutral-800 hover:bg-neutral-100"
+                                    className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 bg-white text-neutral-800 hover:bg-neutral-100"
                                 >
-                                    <PiMapPin aria-hidden="true" className="text-xl" />
+                                    <PiMapPin aria-hidden="true" className="text-2xl" />
                                 </ClickableIcon>
                             );
                         })()}
@@ -559,9 +559,9 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                 init: stringToBase64Url(groupData.group.id),
                                 maxResults: '1'
                             }}
-                            className="btn btn-neutral inline-flex items-center justify-center w-10 h-10 rounded-full text-xl"
+                            className="btn btn-neutral inline-flex items-center justify-center w-12 h-12 rounded-full text-xl"
                         >
-                            <PiPushPin aria-hidden="true" />
+                            <PiPushPin aria-hidden="true" className="text-2xl" />
                         </ClickableIcon>
                     </div>
                 </div>
