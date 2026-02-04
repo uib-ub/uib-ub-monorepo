@@ -11,7 +11,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, type ReactNode } from "react";
-import { PiArchive, PiCaretLeftBold, PiCaretRightBold, PiDotsThreeBold, PiMapPinFill, PiPushPin, PiX } from "react-icons/pi";
+import { PiArchive, PiCaretLeftBold, PiCaretRightBold, PiDotsThreeBold, PiMapPin, PiMapPinFill, PiPushPin, PiX } from "react-icons/pi";
 import Carousel from "../../nav/results/carousel";
 import { TextTab } from "./text-tab";
 import { NamesSection } from "./names-section";
@@ -282,7 +282,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
 
     return (
-        <div id={id} className="w-full flex flex-col gap-2 pb-8 relative">
+        <div id={id} className="flex flex-wrap items-center gap-2 pb-4 relative">
 
             {
                 audioItems?.map((audioItem) => (
@@ -312,7 +312,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             }
             {textItems.length > 0 && !activePoint && <TextTab textItems={textItems} />}
 
-            <div className="w-full pb-8 flex flex-col">
+            <div className="flex flex-col">
                 {/* Names section (includes timeline) - only show in init group when no activePoint filter is active */}
                 {shouldShowLabelFilter && initValue === groupData.group.id && !searchParams.get('activePoint') &&
                     <div className="px-3 pt-2">
@@ -499,36 +499,71 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             </div>
 
 
-            {locations.length > 0 && locations[0]?.location?.coordinates && initValue !== groupData.group.id && (
-                <div className="">
-                    <ClickableIcon
-                        label="Vel namnegruppe"
-                        onClick={() => {
-                            // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
-                            // The subsequent URL param update can remount components quickly, so do this eagerly.
-                            if (scrollableContentRef.current) {
-                                scrollableContentRef.current.scrollTo({
-                                    top: 0,
-                                    behavior: 'auto'
-                                })
+            {initValue !== groupData.group.id && (
+                <div className="px-3 ml-auto mt-auto">
+                    <div className="flex flex-row items-center gap-2">
+                        
+
+                        {(() => {
+                            const firstWithCoords = locations.find(
+                                (loc: any) => loc?.location?.coordinates?.length >= 2
+                            );
+
+                            if (!firstWithCoords) {
+                                return (
+                                    <span className="text-sm text-neutral-600 px-2 whitespace-nowrap">
+                                        Utan koordinat
+                                    </span>
+                                );
                             }
-                            // Fit bounds to group sources
-                            fitBoundsToGroupSources(mapFunctionRef.current, groupData);
-                        }}
-                        remove={['group', 'activePoint', 'activeYear', 'activeName']}
-                        add={{
-                            // When pinning a group ("vel"), treat it as a fresh init selection:
-                            // reset results to 1 so previous expansions are not preserved.
-                            init: stringToBase64Url(groupData.group.id),
-                            maxResults: '1'
-                        }}
-                        className="btn btn-outline self-center rounded-md w-[calc(100%-1.5rem)] p-2mibold text-xl !mx-3"
-                    >
-                        <div className="flex flex-row items-center justify-center gap-2">
-                            <PiPushPin aria-hidden="true" className="text-xl" />
-                            Vel
-                        </div>
-                    </ClickableIcon>
+
+                            const [lng, lat] = firstWithCoords.location.coordinates;
+
+                            return (
+                                <ClickableIcon
+                                    label="Gå til koordinat"
+                                    onClick={() => {
+                                        mapFunctionRef.current?.flyTo(
+                                            [lat, lng],
+                                            15,
+                                            { duration: 0.25, maxZoom: 18, padding: [50, 50] }
+                                        );
+                                    }}
+                                    className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-neutral-300 bg-white text-neutral-800 hover:bg-neutral-100"
+                                >
+                                    <PiMapPin aria-hidden="true" className="text-xl" />
+                                </ClickableIcon>
+                            );
+                        })()}
+
+                        <ClickableIcon
+                            label="Vel namnegruppe"
+                            onClick={() => {
+                                // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
+                                // The subsequent URL param update can remount components quickly, so do this eagerly.
+                                if (scrollableContentRef.current) {
+                                    scrollableContentRef.current.scrollTo({
+                                        top: 0,
+                                        behavior: 'auto'
+                                    })
+                                }
+                                // Fit bounds to group sources when coordinates are available
+                                if (locations.some((loc: any) => loc?.location?.coordinates)) {
+                                    fitBoundsToGroupSources(mapFunctionRef.current, groupData);
+                                }
+                            }}
+                            remove={['group', 'activePoint', 'activeYear', 'activeName']}
+                            add={{
+                                // When pinning a group ("vel"), treat it as a fresh init selection:
+                                // reset results to 1 so previous expansions are not preserved.
+                                init: stringToBase64Url(groupData.group.id),
+                                maxResults: '1'
+                            }}
+                            className="btn btn-neutral inline-flex items-center justify-center w-10 h-10 rounded-full text-xl"
+                        >
+                            <PiPushPin aria-hidden="true" />
+                        </ClickableIcon>
+                    </div>
                 </div>
             )}
 
