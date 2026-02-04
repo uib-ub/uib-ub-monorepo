@@ -375,7 +375,7 @@ export default function SearchResults() {
             <GroupInfo id={`group-info-${initGroupData.fields["group.id"]}`} overrideGroupCode={init || undefined} />
 
           </>
-            : <div className="p-2">Det har oppstått ein feil</div>}
+            : null}
         </div>
       ))}
 
