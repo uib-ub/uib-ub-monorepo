@@ -116,7 +116,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
 
         return (
             <li key={s.uuid} className="flex flex-col gap-1" style={indentStyle}>
-                    <div className="flex flex-wrap items-center gap-4 leading-6 min-h-6">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 leading-6 min-h-6">
                         {hasPin && (
                             <ClickableIcon
                                 label="Koordinatdetaljar"
@@ -138,6 +138,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                         </Link>
 
                         {additionalLabels && <span className="text-neutral-900">{additionalLabels}</span>}
+                        {s.phonetic && <span className="text-neutral-900">{s.phonetic}</span>}
                         {s.content?.note && <span className="text-neutral-900">{s.content.note}</span>}
                         {/* Keep source links on the same line when there is available space; wrap naturally when needed */}
                         {links}
