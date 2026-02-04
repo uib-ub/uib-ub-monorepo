@@ -138,6 +138,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                         </Link>
 
                         {additionalLabels && <span className="text-neutral-900">{additionalLabels}</span>}
+                        {s.content?.note && <span className="text-neutral-900">{s.content.note}</span>}
                         {/* Keep source links on the same line when there is available space; wrap naturally when needed */}
                         {links}
                     </div>
