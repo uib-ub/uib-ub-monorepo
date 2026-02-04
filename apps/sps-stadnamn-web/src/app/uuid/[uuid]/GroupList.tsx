@@ -121,8 +121,9 @@ export default function GroupList({ docData }: { docData: Record<string, any> })
     return <GroupListSkeleton />
   }
 
-  // If the document has no group, don't render an empty "Namnegruppe" box
-  if (!groupId) {
+  // If the document has no group, or the group only contains a single item,
+  // don't render an empty or trivial "Namnegruppe" box.
+  if (!groupId || !data || data.total <= 1) {
     return null
   }
 
