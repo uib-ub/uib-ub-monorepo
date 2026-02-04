@@ -3,7 +3,7 @@ import { baseMapLookup } from "@/config/basemap-config";
 import { useSearchQuery } from "@/lib/search-params";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
+import { getClusterMarker, getLabelMarkerIcon, getPointMarker, getUnlabeledMarker } from "./markers";
 
 import { boundsFromZoomAndCenter, calculateRadius, fitBoundsToGroupSources, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
@@ -961,7 +961,7 @@ export default function MapExplorer() {
 
             {groupData && !activePoint && groupData.fields?.location?.[0]?.coordinates && <Marker
               zIndexOffset={2000}
-              icon={new leaflet.DivIcon(getLabelMarkerIcon(groupData.fields["group.label"]?.[0] || groupData.fields.label?.[0] || '[utan namn]', 'accent', undefined, true, false, true))}
+              icon={new leaflet.DivIcon(activeMarkerMode === 'points' ? getPointMarker('accent', true) : getLabelMarkerIcon(groupData.fields["group.label"]?.[0] || groupData.fields.label?.[0] || '[utan namn]', 'accent', undefined, true, false, true))}
               position={[groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]}
               eventHandlers={{
                 click: () => {
