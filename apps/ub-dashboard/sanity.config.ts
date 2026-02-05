@@ -9,7 +9,6 @@ import {
   dashboardTool, projectUsersWidget,
   projectInfoWidget,
 } from "@sanity/dashboard";
-import { documentListWidget } from "sanity-plugin-dashboard-widget-document-list";
 
 // Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
 import { apiVersion, dataset, projectId } from '@/sanity/env'
@@ -40,12 +39,6 @@ export default defineConfig({
   plugins: [
     dashboardTool({
       widgets: [
-        documentListWidget({
-          title: 'Recently edited',
-          order: '_updatedAt desc',
-          limit: 10,
-          layout: { width: 'small' },
-        }),
         projectUsersWidget({ layout: { width: 'medium' } }),
         projectInfoWidget(),
       ],
