@@ -283,9 +283,9 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
         <div className="flex flex-col gap-3 py-2">
 
             <div>
-                <div className="flex items-center mb-1">
+                <div className="flex items-center mb-1 text-lg">
                     <span className="text-neutral-800">
-                        <strong className="text-neutral-900 text-lg">Omtrentleg tidslinje</strong>
+                        <strong className="text-neutral-900 ">Omtrentleg tidslinje</strong>
                     </span>
                     <InfoPopover>
                         Tidslinja viser tidlegaste år Språksamlingane har henta ut for kvar kjeldeform. Den kan innehalde feil,
