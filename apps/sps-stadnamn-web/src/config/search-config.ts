@@ -61,7 +61,7 @@ const resources: FieldConfigItem = {
   facet,
   facetOperator: 'AND',
   valueMap: {
-    "geo": "Koordinater",
+    "geo": "Koordinatar",
     "text": "Tekst",
     "note": "Merknad",
     "image": "Skanna materiale",
