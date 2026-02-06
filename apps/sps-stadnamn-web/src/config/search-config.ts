@@ -31,7 +31,7 @@ interface FacetConfigItem extends FieldConfigItem {
 
 const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, numeric, keyword, noInfobox, specialFacet] = Array(11).fill(true);
 
-const sosi = { label: "Stedstype (standardisert)", description: "SOSI-standarden", facet, table, result, noInfobox, keyword }
+const sosi = { label: "Namneobjekttype", description: "Stadtype etter SOSI-standarden", facet, table, result, noInfobox, keyword }
 const placeType = { label: "Lokalitetstype", table, facet, result, noInfobox }
 const cadastre = {
   "within": { label: "Gard", result },
@@ -280,10 +280,9 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     ...identifiers,
   },
   ssr: {
-    ...required, adm, adm1, adm2,
+    ...required, adm, adm1, adm2, sosi,
     ssr,
     //"location.type": {label: "Areal", facet, keyword}, // Fungerte bare i tabellen. Dukket ikke opp som facet
-    sosi,
     coordinateType,
     "misc.navnesakstatus": { label: "Navnesakstatus", facet },
     "misc.navnestatus": { label: "Navnestatus", facet },
