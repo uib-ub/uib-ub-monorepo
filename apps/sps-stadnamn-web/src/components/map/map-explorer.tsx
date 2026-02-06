@@ -64,6 +64,8 @@ export default function MapExplorer() {
   const mapInstance = useRef<any>(null)
   const doc = searchParams.get('doc')
   const datasetTag = searchParams.get('datasetTag')
+  const datasetParams = searchParams.getAll('dataset')
+  const singleDatasetSelected = datasetParams.length === 1
   const tree = searchParams.get('tree')
   const treeState = useMemo(() => parseTreeParam(tree), [tree])
   const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
@@ -80,6 +82,13 @@ export default function MapExplorer() {
   const debug = useDebugStore((s) => s.debug)
   const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
   const showDebugGroups = searchParams.get('debugGroups') == 'on';
+
+  const getDisplayLabel = (fields: Record<string, any>): string =>
+    (
+      singleDatasetSelected
+        ? (fields.label?.[0] || fields["group.label"]?.[0])
+        : (fields["group.label"]?.[0] || fields.label?.[0])
+    ) || '[utan namn]'
 
   const treeDataset = treeState?.dataset
   const treeUuid = treeState?.uuid
@@ -307,7 +316,7 @@ export default function MapExplorer() {
 
           const selfLat = self.fields.location[0].coordinates[1]
           const selfLon = self.fields.location[0].coordinates[0]
-          const selfLabel: string = self.fields["group.label"]?.[0] || self.fields.label?.[0] || ''
+          const selfLabel: string = getDisplayLabel(self.fields)
           self.labelBounds = self.labelBounds || getLabelBounds(mapInstance.current, selfLabel, selfLat, selfLon, rootFontSize)
           const selfBounds = self.labelBounds
 
@@ -863,7 +872,7 @@ export default function MapExplorer() {
                 const markerColor = isInit ? 'black' : 'white'
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
-                const labelText = item.fields["group.label"]?.[0] || item.fields.label?.[0] || '[utan namn]'
+                const labelText = getDisplayLabel(item.fields)
                 const isHovered = activeMarkerMode === 'points' && hoveredPointKey === item.fields.uuid[0]
                 const icon = getLabelMarkerIcon(labelText, markerColor, childCount, false, false, false)
 
@@ -959,35 +968,47 @@ export default function MapExplorer() {
 
 
 
-            {groupData && !activePoint && groupData.fields?.location?.[0]?.coordinates && <Marker
-              zIndexOffset={2000}
-              icon={new leaflet.DivIcon(activeMarkerMode === 'points' ? getPointMarker('accent', true) : getLabelMarkerIcon(groupData.fields["group.label"]?.[0] || groupData.fields.label?.[0] || '[utan namn]', 'accent', undefined, true, false, true))}
-              position={[groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]}
-              eventHandlers={{
-                click: () => {
-                  const centralLat = groupData.fields.location[0].coordinates[1];
-                  const centralLng = groupData.fields.location[0].coordinates[0];
-                  fitBoundsToGroupSources(mapInstance.current, groupData);
-                  const newParams = new URLSearchParams(searchParams);
-                  newParams.set('activePoint', `${centralLat},${centralLng}`);
-                  router.push(`?${newParams.toString()}`);
-                },
-                keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
-                  const key = e.originalEvent?.key ?? e.key
-                  if (key === 'Enter' || key === ' ') {
-                    ;(e.originalEvent ?? e).preventDefault()
+            {groupData && !activePoint && groupData.fields?.location?.[0]?.coordinates && (
+              <Marker
+                zIndexOffset={2000}
+                icon={new leaflet.DivIcon(
+                  activeMarkerMode === 'points'
+                    ? getPointMarker('accent', true)
+                    : getLabelMarkerIcon(
+                        getDisplayLabel(groupData.fields),
+                        'accent',
+                        undefined,
+                        true,
+                        false,
+                        true
+                      )
+                )}
+                position={[groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]}
+                eventHandlers={{
+                  click: () => {
                     const centralLat = groupData.fields.location[0].coordinates[1];
                     const centralLng = groupData.fields.location[0].coordinates[0];
                     fitBoundsToGroupSources(mapInstance.current, groupData);
                     const newParams = new URLSearchParams(searchParams);
                     newParams.set('activePoint', `${centralLat},${centralLng}`);
                     router.push(`?${newParams.toString()}`);
+                  },
+                  keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                    const key = e.originalEvent?.key ?? e.key
+                    if (key === 'Enter' || key === ' ') {
+                      ;(e.originalEvent ?? e).preventDefault()
+                      const centralLat = groupData.fields.location[0].coordinates[1];
+                      const centralLng = groupData.fields.location[0].coordinates[0];
+                      fitBoundsToGroupSources(mapInstance.current, groupData);
+                      const newParams = new URLSearchParams(searchParams);
+                      newParams.set('activePoint', `${centralLat},${centralLng}`);
+                      router.push(`?${newParams.toString()}`);
+                    }
                   }
-                }
-              }}
-            >
-            </Marker>
-            }
+                }}
+              >
+              </Marker>
+            )}
 
             {
               (() => {
