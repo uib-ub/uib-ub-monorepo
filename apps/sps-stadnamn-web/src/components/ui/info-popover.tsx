@@ -10,6 +10,7 @@ export default function InfoPopover({ children }: { children?: React.ReactNode }
         <>
             <button
                 popoverTarget={popoverId}
+                type="button"
                 style={{ ['anchorName' as any]: anchorName }}
                 className="inline ml-1 text-primary-700"
                 aria-label="Merknad"

@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
 import { Fragment, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { PiQuestion, PiQuestionMark, PiX } from "react-icons/pi";
+import { PiX } from "react-icons/pi";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
-import IconButton from "@/components/ui/icon-button";
+import InfoPopover from "@/components/ui/info-popover";
 
 interface NamesSectionProps {
     datasets: Record<string, any[]>;
@@ -13,7 +13,6 @@ interface NamesSectionProps {
 
 export const NamesSection = ({ datasets }: NamesSectionProps) => {
     const [showAll, setShowAll] = useState(false)
-    const [showTimelineInfo, setShowTimelineInfo] = useState(false)
     const searchParams = useSearchParams()
     const activeYear = searchParams.get('activeYear')
     const activeName = searchParams.get('activeName')
@@ -283,25 +282,16 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
     return (
         <div className="flex flex-col gap-3 py-2">
 
-            <div role="group" aria-labelledby="timeline-info-label" aria-describedby="timeline-info-description">
-                <div className="flex items-center gap-2 mb-1">
+            <div>
+                <div className="flex items-center mb-1">
                     <span className="text-neutral-800">
-                        <strong className="text-neutral-900" id="timeline-info-label">Omtrentleg tidslinje</strong>
+                        <strong className="text-neutral-900 text-lg">Omtrentleg tidslinje</strong>
                     </span>
-                    <IconButton
-                        label="Vis forklaring for omtrentleg tidslinje"
-                        onClick={() => setShowTimelineInfo((prev) => !prev)}
-                        className="ml-1 inline-flex h-6 w-6 items-center justify-center rounded-full border border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-100"
-                    >
-                        <PiQuestionMark className="h-3.5 w-3.5" />
-                    </IconButton>
-                </div>
-                {showTimelineInfo && (
-                    <p className="text-neutral-700 max-w-prose mb-2" id="timeline-info-description">
+                    <InfoPopover>
                         Tidslinja viser tidlegaste år Språksamlingane har henta ut for kvar kjeldeform. Den kan innehalde feil,
                         og er berre meint som eit verktøy for å filtrere kjeldene.
-                    </p>
-                )}
+                    </InfoPopover>
+                </div>
                 {/* Active filter display */}
                 {hasActiveFilter && (
                     <div className="flex items-center gap-3 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg mb-3">
