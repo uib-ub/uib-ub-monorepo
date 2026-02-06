@@ -12,7 +12,7 @@ import { useSessionStore } from "@/state/zustand/session-store"
 import { useQuery } from "@tanstack/react-query"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useContext } from "react"
-import { PiCaretRightBold, PiX } from "react-icons/pi"
+import { PiCaretRightBold, PiPencilSimple, PiPencilSimpleBold, PiPencilSimpleFill, PiX } from "react-icons/pi"
 
 const getFacetFieldCounts = async (searchQueryString: string) => {
   const response = await fetch(`/api/fieldsPresent?${searchQueryString}`)
@@ -267,12 +267,20 @@ export default function FacetSection() {
       <ul className="flex flex-col divide-y divide-neutral-200 list-none p-0 m-0">
         <li>
         <div>
+        {/*
+          Use a pen icon instead of a caret when there are
+          selected items for the dataset facet.
+        */}
         <Clickable
           className="w-full flex justify-between p-3"
           add={{ facet: facet == 'dataset' ? null : 'dataset' }}>
 
           <span className="text-lg">Datasett</span>
-          <PiCaretRightBold className="inline self-center text-primary-700 text-xl" aria-hidden="true" />
+          {datasetFilters.length > 0 ? (
+            <PiPencilSimple className="inline self-center text-primary-700 text-xl" aria-hidden="true" />
+          ) : (
+            <PiCaretRightBold className="inline self-center text-primary-700 text-xl" aria-hidden="true" />
+          )}
 
         </Clickable>
         
@@ -345,7 +353,11 @@ export default function FacetSection() {
                 {filterDataset == 'all' && (f.datasets?.length || 0) == 1 && f.datasets?.[0] && <em className="text-neutral-700 text-sm self-center">{datasetTitles[f.datasets?.[0]]}</em>}
                 {filterDataset != 'all' && f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}
               </div>
-              <PiCaretRightBold className="inline self-center text-primary-700 text-xl" aria-hidden="true" />
+              {hasActiveFilters ? (
+                <PiPencilSimpleBold className="inline self-center text-primary-700 text-xl" aria-hidden="true" />
+              ) : (
+                <PiCaretRightBold className="inline self-center text-primary-700 text-xl" aria-hidden="true" />
+              )}
             </Clickable>
             
             {hasActiveFilters && (
