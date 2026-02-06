@@ -12,7 +12,7 @@ import { useSessionStore } from "@/state/zustand/session-store"
 import { useQuery } from "@tanstack/react-query"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useContext } from "react"
-import { PiCaretRightBold, PiPencilSimple, PiPencilSimpleBold, PiPencilSimpleFill, PiX } from "react-icons/pi"
+import { PiCaretRightBold, PiPencilFill, PiPencilSimple, PiPencilSimpleBold, PiPencilSimpleFill, PiX } from "react-icons/pi"
 
 const getFacetFieldCounts = async (searchQueryString: string) => {
   const response = await fetch(`/api/fieldsPresent?${searchQueryString}`)
@@ -272,21 +272,23 @@ export default function FacetSection() {
           selected items for the dataset facet.
         */}
         <Clickable
-          className="w-full flex justify-between p-3"
+          className={`w-full flex justify-between px-4 py-3 transition-colors ${datasetFilters.length > 0 ? 'bg-accent-50' : 'bg-white'}`}
           add={{ facet: facet == 'dataset' ? null : 'dataset' }}>
 
-          <span className="text-lg">Datasett</span>
-          {datasetFilters.length > 0 ? (
-            <PiPencilSimple className="inline self-center text-primary-700 text-xl" aria-hidden="true" />
-          ) : (
-            <PiCaretRightBold className="inline self-center text-primary-700 text-xl" aria-hidden="true" />
-          )}
+          <span className={`text-lg ${datasetFilters.length > 0 ? 'font-semibold text-accent-900' : ''}`}>Datasett</span>
+
+          <div className="flex items-center gap-2">
+            <PiCaretRightBold
+              className={`inline self-center text-xl ${datasetFilters.length > 0 ? 'text-accent-900' : 'text-primary-700'}`}
+              aria-hidden="true"
+            />
+          </div>
 
         </Clickable>
         
         {datasetFilters.length > 0 && (
-          <div className="px-3 pb-3 flex flex-col gap-2">
-            <div className="flex items-end gap-2">
+          <div className="px-4 pb-3 pt-2 flex flex-col gap-2">
+            <div className="flex items-start gap-2">
               <div className="flex flex-wrap gap-1.5 flex-1 min-w-0">
                 {datasetFilters.map(([key, value]) => (
                   <button
@@ -343,26 +345,29 @@ export default function FacetSection() {
         const hasActiveFilters = activeFiltersForFacet.length > 0
         
         return (
-          <li key={f.key} className={facetsLoading ? 'opacity-50' : ''}>
-            <Clickable className="w-full flex justify-between p-3"
+          <li key={f.key} className={`space-y-1 ${facetsLoading ? 'opacity-50' : ''}`}>
+            <Clickable
+              className={`w-full flex justify-between px-4 py-3 transition-colors ${hasActiveFilters ? 'bg-accent-50' : 'bg-white'}`}
               aria-controls={f.key + '-collapsible'}
               add={{ facet: f.key }}>
               <div className="flex flex-wrap gap-4">
-                <span className="text-lg">{f.label}</span>
+                <span className={`text-lg ${hasActiveFilters ? 'font-semibold text-accent-900' : ''}`}>{f.label}</span>
 
                 {filterDataset == 'all' && (f.datasets?.length || 0) == 1 && f.datasets?.[0] && <em className="text-neutral-700 text-sm self-center">{datasetTitles[f.datasets?.[0]]}</em>}
                 {filterDataset != 'all' && f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}
               </div>
-              {hasActiveFilters ? (
-                <PiPencilSimpleBold className="inline self-center text-primary-700 text-xl" aria-hidden="true" />
-              ) : (
-                <PiCaretRightBold className="inline self-center text-primary-700 text-xl" aria-hidden="true" />
-              )}
+
+              <div className="flex items-center gap-2">
+                <PiCaretRightBold
+                  className={`inline self-center text-xl ${hasActiveFilters ? 'text-accent-900' : 'text-primary-700'}`}
+                  aria-hidden="true"
+                />
+              </div>
             </Clickable>
             
             {hasActiveFilters && (
-              <div className="px-3 pb-3 flex flex-col gap-2">
-                <div className="flex items-end gap-2">
+              <div className="px-4 pb-3 pt-1 flex flex-col gap-2">
+                <div className="flex items-start gap-2">
                   <div className="flex flex-wrap gap-1.5 flex-1 min-w-0">
                     {activeFiltersForFacet.map(([key, value]) => (
                       <button
