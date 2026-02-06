@@ -2,7 +2,7 @@ import { facetConfig, fieldConfig } from '@/config/search-config';
 import { useSearchQuery } from '@/lib/search-params';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { PiMagnifyingGlass } from 'react-icons/pi';
+import { PiMagnifyingGlass, PiProhibitBold } from 'react-icons/pi';
 
 import { datasetTitles } from '@/config/metadata-config';
 
@@ -79,7 +79,7 @@ export default function ServerFacet() {
   const toggleFilter = (beingChecked: boolean, facet: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    // Remove existing value if present
+    // Remove existing values for this facet so we can rebuild it
     const existingValues = params.getAll(facet);
     params.delete(facet);
 
@@ -94,7 +94,7 @@ export default function ServerFacet() {
     params.delete('init')
 
     existingValues
-      .filter(v => v !== value)
+      .filter(v => v !== value && v !== `!${value}`)
       .forEach(v => params.append(facet, v));
 
 
@@ -110,6 +110,45 @@ export default function ServerFacet() {
   const isChecked = (facet: string, itemKey: string) => {
     const existingValues = searchParams.getAll(facet);
     return existingValues.includes(itemKey.toString());
+  };
+
+  const isExcluded = (facet: string, itemKey: string) => {
+    const existingValues = searchParams.getAll(facet);
+    return existingValues.includes(`!${itemKey.toString()}`);
+  };
+
+  const toggleExclude = (facet: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    const existingValues = params.getAll(facet);
+    params.delete(facet);
+
+    params.delete('page');
+
+    // reset because different markers should be shown
+    params.delete('parent');
+    params.delete('zoom');
+    params.delete('center');
+    params.delete('doc');
+    params.delete('group');
+    params.delete('init');
+
+    const negativeValue = `!${value}`;
+
+    const withoutCurrent = existingValues.filter(
+      (v) => v !== value && v !== negativeValue
+    );
+
+    withoutCurrent.forEach((v) => params.append(facet, v));
+
+    const currentlyExcluded = existingValues.includes(negativeValue);
+
+    // If it's not currently excluded, add the negative value
+    if (!currentlyExcluded) {
+      params.append(facet, negativeValue);
+    }
+
+    router.push(`?${params.toString()}`, { scroll: false });
   };
 
   // Memoized RegExp factory to prevent memory leaks
@@ -201,19 +240,37 @@ export default function ServerFacet() {
                     .map((item: any, index: number) =>
                       (!clientSearch?.length || createSearchRegex(clientSearch)?.test(renderLabel(facet, item.key))) && (
                         <li key={index} className='py-3'>
-                          <label className="flex items-center gap-2 lg:gap-1 xl:gap-2 px-2 flex-1 min-w-0">
-                            <input
-                              type="checkbox"
-                              checked={isChecked(facet, item.key)}
-                              className="mr-2 flex-shrink-0"
-                              name={facet}
-                              value={item.key}
-                              onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
-                            />
-                            <span className="text-neutral-950 break-words lg:text-sm xl:text-base min-w-0">
-                              {renderLabel(facet, item.key)} <FacetBadge count={item.doc_count} />
-                            </span>
-                          </label>
+                          <div className="flex items-center gap-2 px-2">
+                            <label className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0">
+                              <input
+                                type="checkbox"
+                                checked={isChecked(facet, item.key)}
+                                className="mr-2 flex-shrink-0"
+                                name={facet}
+                                value={item.key}
+                                onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
+                              />
+                              <span className="text-neutral-950 break-words lg:text-sm xl:text-base min-w-0">
+                                {renderLabel(facet, item.key)} <FacetBadge count={item.doc_count} />
+                              </span>
+                            </label>
+                            <button
+                              type="button"
+                              className={`ml-1 flex-shrink-0 rounded-full p-1 text-lg ${isExcluded(facet, item.key)
+                                ? 'text-accent-700 bg-accent-50 outline outline-1 outline-accent-700'
+                                : 'text-neutral-400 hover:text-accent-700 hover:bg-accent-50'
+                                }`}
+                              aria-label={`${isExcluded(facet, item.key) ? 'Fjern utestenging av' : 'Utesteng'} ${renderLabel(facet, item.key)}`}
+                              aria-pressed={isExcluded(facet, item.key)}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                toggleExclude(facet, item.key);
+                              }}
+                            >
+                              <PiProhibitBold aria-hidden={true} />
+                            </button>
+                          </div>
                         </li>
                       ))
                     : <li>

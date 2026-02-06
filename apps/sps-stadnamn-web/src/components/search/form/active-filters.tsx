@@ -6,7 +6,7 @@ import { fieldConfig } from "@/config/search-config"
 import { usePerspective } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
-import { PiX } from "react-icons/pi"
+import { PiProhibitBold, PiX } from "react-icons/pi"
 import CadastreBreadcrumb from "../details/doc/cadastre-breadcrumb"
 import IconButton from "@/components/ui/icon-button"
 import { useTreeIsolation } from "@/lib/tree-isolation"
@@ -56,8 +56,9 @@ export default function ActiveFilters() {
     const label = fieldSettings.label || name
     const omitLabel = fieldSettings?.omitLabel || name == 'adm'
 
-    const values = value.split('__')
-
+    const isExcluded = value.startsWith('!')
+    const normalizedValue = isExcluded ? value.slice(1) : value
+    const values = normalizedValue.split('__')
 
     // Add any special cases here
     if (values[0] == "_false" && name == "adm") {
@@ -66,19 +67,32 @@ export default function ActiveFilters() {
     }
 
     if (name == 'datasetTag') {
-      return datasetTitles[value] || value
+      return datasetTitles[normalizedValue] || normalizedValue
     }
-
 
     if (name == 'dataset') {
-      return datasetTitles[value] || value
+      return datasetTitles[normalizedValue] || normalizedValue
     }
 
-    if (values[0] == "_false") return "Utan: " + (label || name)
-    if (value == "_true") return "Med: " + (label || name)
-    if (name == "datasets") {
-      return datasetTitles[value] || value
+    if (!isExcluded && normalizedValue == "_true") {
+      return "Med: " + (label || name)
     }
+
+    if (values[0] == "_false") {
+      return "[ingen verdi]"
+    }
+
+    if (name == "datasets") {
+      return datasetTitles[normalizedValue] || normalizedValue
+    }
+
+    // Map via valueMap if available (e.g. resources)
+    const baseKey = values[0]
+    const mapped = fieldSettings.valueMap?.[baseKey]
+    if (mapped) {
+      return mapped
+    }
+
     return (omitLabel ? '' : label + ": ") + values[0]
   }
 
@@ -119,19 +133,31 @@ export default function ActiveFilters() {
         )}
       </div>
       <div className="flex flex-wrap gap-2 px-1">
-        {allFilters.map(([key, value]) => (
-          <button
-          type="button"
-            key={`${key}__${value}`}
-            onClick={() => removeFilter(key, value)}
-            className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer"
-          >
-            {(key == 'datasetTag' || key == 'dataset' || key == 'datasets')
-              ? datasetTitles[value]
-              : getFieldLabel(key, value)}
-            <PiX className="ml-auto text-lg" aria-hidden="true" />
-          </button>
-        ))}
+        {allFilters.map(([key, value]) => {
+          const isExcluded = value.startsWith('!')
+          const normalizedValue = isExcluded ? value.slice(1) : value
+          const label = (key == 'datasetTag' || key == 'dataset' || key == 'datasets')
+            ? (datasetTitles[normalizedValue] || normalizedValue)
+            : getFieldLabel(key, value)
+
+          return (
+            <button
+              type="button"
+              key={`${key}__${value}`}
+              onClick={() => removeFilter(key, value)}
+              className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer"
+            >
+              {isExcluded && (
+                <PiProhibitBold
+                  className="text-sm text-accent-700"
+                  aria-hidden="true"
+                />
+              )}
+              <span>{label}</span>
+              <PiX className="ml-auto text-lg" aria-hidden="true" />
+            </button>
+          )
+        })}
       </div>
     </section>
   )

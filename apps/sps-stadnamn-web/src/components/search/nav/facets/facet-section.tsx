@@ -12,7 +12,7 @@ import { useSessionStore } from "@/state/zustand/session-store"
 import { useQuery } from "@tanstack/react-query"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useContext } from "react"
-import { PiCaretRightBold, PiPencilFill, PiPencilSimple, PiPencilSimpleBold, PiPencilSimpleFill, PiX } from "react-icons/pi"
+import { PiCaretRightBold, PiPencilFill, PiPencilSimple, PiPencilSimpleBold, PiPencilSimpleFill, PiProhibitBold, PiX } from "react-icons/pi"
 
 const getFacetFieldCounts = async (searchQueryString: string) => {
   const response = await fetch(`/api/fieldsPresent?${searchQueryString}`)
@@ -188,11 +188,13 @@ export default function FacetSection() {
   }
 
   const getChipValue = (name: string, value: string) => {
-    const values = value.split('__')
+    const isExcluded = value.startsWith('!')
+    const normalizedValue = isExcluded ? value.slice(1) : value
+    const values = normalizedValue.split('__')
 
     // Handle dataset-related filters
     if (name == 'datasetTag' || name == 'dataset' || name == 'datasets') {
-      return datasetTitles[value] || value
+      return datasetTitles[normalizedValue] || normalizedValue
     }
 
     const valueMap = getFacetValueMap(name)
@@ -208,8 +210,8 @@ export default function FacetSection() {
       return values[1] + " (utan underinndeling)"
     }
 
-    if (values[0] == "_false") return values[1] || values[0]
-    if (value == "_true") return value
+    if (values[0] == "_false") return "[ingen verdi]"
+    if (normalizedValue == "_true") return normalizedValue
 
     // Return just the value part
     return values[0]
@@ -290,20 +292,29 @@ export default function FacetSection() {
           <div className="px-4 pb-3 pt-2 flex flex-col gap-2">
             <div className="flex items-start gap-2">
               <div className="flex flex-wrap gap-1.5 flex-1 min-w-0">
-                {datasetFilters.map(([key, value]) => (
-                  <button
-                    key={`${key}__${value}`}
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      removeFilter(key, value)
-                    }}
-                    className="px-2 py-1 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer text-sm hover:bg-neutral-50"
-                  >
-                    {getChipValue(key, value)}
-                    <PiX className="ml-0.5 text-sm" aria-hidden="true" />
-                  </button>
-                ))}
+                {datasetFilters.map(([key, value]) => {
+                  const isExcluded = value.startsWith('!')
+                  return (
+                    <button
+                      key={`${key}__${value}`}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        removeFilter(key, value)
+                      }}
+                      className="px-2 py-1 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer text-sm hover:bg-neutral-50"
+                    >
+                      {isExcluded && (
+                        <PiProhibitBold
+                          className="text-xs text-accent-700"
+                          aria-hidden="true"
+                        />
+                      )}
+                      <span>{getChipValue(key, value)}</span>
+                      <PiX className="ml-0.5 text-sm" aria-hidden="true" />
+                    </button>
+                  )
+                })}
               </div>
               {datasetFilters.length > 0 && (
                 <Clickable
@@ -369,20 +380,29 @@ export default function FacetSection() {
               <div className="px-4 pb-3 pt-1 flex flex-col gap-2">
                 <div className="flex items-start gap-2">
                   <div className="flex flex-wrap gap-1.5 flex-1 min-w-0">
-                    {activeFiltersForFacet.map(([key, value]) => (
-                      <button
-                        key={`${key}__${value}`}
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          removeFilter(key, value)
-                        }}
-                        className="px-2 py-1 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer text-sm hover:bg-neutral-50"
-                      >
-                        {getChipValue(key, value)}
-                        <PiX className="ml-0.5 text-sm" aria-hidden="true" />
-                      </button>
-                    ))}
+                    {activeFiltersForFacet.map(([key, value]) => {
+                      const isExcluded = value.startsWith('!')
+                      return (
+                        <button
+                          key={`${key}__${value}`}
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            removeFilter(key, value)
+                          }}
+                          className="px-2 py-1 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer text-sm hover:bg-neutral-50"
+                        >
+                          {isExcluded && (
+                            <PiProhibitBold
+                              className="text-xs text-accent-700"
+                              aria-hidden="true"
+                            />
+                          )}
+                          <span>{getChipValue(key, value)}</span>
+                          <PiX className="ml-0.5 text-sm" aria-hidden="true" />
+                        </button>
+                      )
+                    })}
                   </div>
                   {hasActiveFilters && (
                     <Clickable
