@@ -6,7 +6,7 @@ import { fieldConfig } from "@/config/search-config"
 import { usePerspective } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
-import { PiProhibitBold, PiX } from "react-icons/pi"
+import { PiProhibit, PiX } from "react-icons/pi"
 import CadastreBreadcrumb from "../details/doc/cadastre-breadcrumb"
 import IconButton from "@/components/ui/icon-button"
 import { useTreeIsolation } from "@/lib/tree-isolation"
@@ -52,8 +52,8 @@ export default function ActiveFilters() {
 
   const getFieldLabel = (name: string, value: string) => {
 
-    const fieldSettings = fieldConfig[perspective][name]
-    const label = fieldSettings.label || name
+    const fieldSettings = fieldConfig[perspective]?.[name] || {}
+    const label = (fieldSettings as any).label || name
     const omitLabel = fieldSettings?.omitLabel || name == 'adm'
 
     const isExcluded = value.startsWith('!')
@@ -79,7 +79,9 @@ export default function ActiveFilters() {
     }
 
     if (values[0] == "_false") {
-      return "[ingen verdi]"
+      // Generic "no value" case – include field label so chips stay clear
+      const valueLabel = "[ingen verdi]"
+      return (omitLabel ? '' : label + ": ") + valueLabel
     }
 
     if (name == "datasets") {
@@ -88,7 +90,7 @@ export default function ActiveFilters() {
 
     // Map via valueMap if available (e.g. resources)
     const baseKey = values[0]
-    const mapped = fieldSettings.valueMap?.[baseKey]
+    const mapped = (fieldSettings as any).valueMap?.[baseKey]
     if (mapped) {
       return mapped
     }
@@ -148,12 +150,12 @@ export default function ActiveFilters() {
               className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer"
             >
               {isExcluded && (
-                <PiProhibitBold
-                  className="text-sm text-accent-700"
+                <PiProhibit
+                  className="text-sm text-neutral-800 flex-shrink-0"
                   aria-hidden="true"
                 />
               )}
-              <span>{label}</span>
+              <span className="text-sm">{label}</span>
               <PiX className="ml-auto text-lg" aria-hidden="true" />
             </button>
           )

@@ -6,6 +6,8 @@ import { persist } from 'zustand/middleware'
 type Preferences = {
   facetSort: Record<string, string>
   setFacetSort: (facet: string, sort: string) => void
+  facetCountMode: 'absolute' | 'percent'
+  setFacetCountMode: (mode: 'absolute' | 'percent') => void
 }
 
 export const usePreferences = create<Preferences>()(
@@ -18,6 +20,11 @@ export const usePreferences = create<Preferences>()(
             ...state.facetSort,
             [facet]: sort
           }
+        })),
+      facetCountMode: 'absolute',
+      setFacetCountMode: (mode) =>
+        set(() => ({
+          facetCountMode: mode
         }))
     }),
     {

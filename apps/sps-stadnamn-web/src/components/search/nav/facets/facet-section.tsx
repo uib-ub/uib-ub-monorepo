@@ -12,7 +12,7 @@ import { useSessionStore } from "@/state/zustand/session-store"
 import { useQuery } from "@tanstack/react-query"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useContext } from "react"
-import { PiCaretRightBold, PiPencilFill, PiPencilSimple, PiPencilSimpleBold, PiPencilSimpleFill, PiProhibitBold, PiX } from "react-icons/pi"
+import { PiCaretRightBold, PiPencilFill, PiPencilSimple, PiPencilSimpleBold, PiPencilSimpleFill, PiProhibit, PiX } from "react-icons/pi"
 
 const getFacetFieldCounts = async (searchQueryString: string) => {
   const response = await fetch(`/api/fieldsPresent?${searchQueryString}`)
@@ -305,12 +305,12 @@ export default function FacetSection() {
                       className="px-2 py-1 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer text-sm hover:bg-neutral-50"
                     >
                       {isExcluded && (
-                        <PiProhibitBold
-                          className="text-xs text-accent-700"
+                        <PiProhibit
+                          className="text-sm text-neutral-800 flex-shrink-0"
                           aria-hidden="true"
                         />
                       )}
-                      <span>{getChipValue(key, value)}</span>
+                      <span className="text-sm">{getChipValue(key, value)}</span>
                       <PiX className="ml-0.5 text-sm" aria-hidden="true" />
                     </button>
                   )
@@ -393,12 +393,12 @@ export default function FacetSection() {
                           className="px-2 py-1 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer text-sm hover:bg-neutral-50"
                         >
                           {isExcluded && (
-                            <PiProhibitBold
-                              className="text-xs text-accent-700"
+                            <PiProhibit
+                              className="text-sm text-neutral-800 flex-shrink-0"
                               aria-hidden="true"
                             />
                           )}
-                          <span>{getChipValue(key, value)}</span>
+                          <span className="text-sm">{getChipValue(key, value)}</span>
                           <PiX className="ml-0.5 text-sm" aria-hidden="true" />
                         </button>
                       )

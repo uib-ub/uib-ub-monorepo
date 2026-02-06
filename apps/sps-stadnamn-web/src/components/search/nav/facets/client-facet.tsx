@@ -8,6 +8,7 @@ import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/state/providers/global-provider';
 import { usePerspective } from '@/lib/param-hooks';
 import { FacetBadge } from '@/components/ui/badge';
+import { usePreferences } from '@/state/zustand/persistent-preferences';
 
 
 
@@ -20,6 +21,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   const searchParams = useSearchParams()
   const { facetOptions } = useContext(GlobalContext)
   const currentFacet = searchParams.get('facet') || 'adm'
+  const facetCountMode = usePreferences((state) => state.facetCountMode);
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
   const expandedFacets = new Set<string>();
@@ -152,6 +154,10 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   };
 
 
+  const totalCount = facetAggregation?.buckets
+    ? facetAggregation.buckets.reduce((sum: number, bucket: { doc_count: number }) => sum + bucket.doc_count, 0)
+    : 0;
+
   const listItem = (item: any, index: number, baseName: string, path: string[], parentChecked: boolean) => {
     const childAggregation = 'group.' + baseName + (path.length + 1);
     const checked = isChecked(baseName, path);
@@ -161,6 +167,11 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
 
 
     const label = path[0] == "_false" ? (path.length == 1 ? "[inga verdi]" : "[utan underinndeling]") : item.key
+
+    const displayCount =
+      facetCountMode === 'percent' && totalCount > 0
+        ? Math.round((item.doc_count / totalCount) * 100)
+        : item.doc_count;
 
 
     return (
@@ -173,7 +184,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
             className="mr-2 flex-shrink-0"
           />
           <span className="text-neutral-950 break-words lg:text-sm xl:text-base min-w-0">
-            {label} <FacetBadge count={item.doc_count} />
+            {label} <FacetBadge count={displayCount} mode={facetCountMode} />
           </span>
         </label>
 
