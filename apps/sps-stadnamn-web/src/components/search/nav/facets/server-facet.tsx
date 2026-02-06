@@ -64,6 +64,13 @@ export default function ServerFacet() {
   }
 
   const renderLabel = (key: string, label: string) => {
+    // Use valueMap from facet configuration if available
+    const facetConfigItem = availableFacets.find(f => f.key === key);
+    const rawValue = label.split('__')[0];
+    if (facetConfigItem?.valueMap && facetConfigItem.valueMap[rawValue]) {
+      return facetConfigItem.valueMap[rawValue];
+    }
+
     if (label == '_false') return '[ingen verdi]'
     if (key == 'datasets') return datasetTitles[label]
     return label

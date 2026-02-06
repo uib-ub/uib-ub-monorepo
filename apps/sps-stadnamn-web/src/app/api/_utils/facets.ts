@@ -239,6 +239,8 @@ export function extractFacets(request: Request) {
       const hasFalse = values.includes("_false");
       const hasTrue = values.includes("_true");
       const filteredValues = values.filter(value => value !== "_false" && value !== "_true");
+      const fieldName = `${key}${(baseAllConfig[key as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}`;
+      const facetOperator = baseAllConfig[key as keyof typeof baseAllConfig]?.facetOperator || 'OR';
 
       if (key == 'group') {
         termFilters.push({
@@ -293,16 +295,29 @@ export function extractFacets(request: Request) {
 
 
       } else {
-        termFilters.push({
-          "bool": {
-            "should": [
-              ...(hasFalse ? [{ "bool": { "must_not": { "exists": { "field": `${key}${(baseAllConfig[key as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}` } } } }] : []),
-              ...(hasTrue ? [{ "exists": { "field": `${key}${(baseAllConfig[key as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}` } }] : []),
-              ...(filteredValues.length ? [{ "terms": { [`${key}${(baseAllConfig[key as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}`]: filteredValues } }] : [])
-            ],
-            "minimum_should_match": 1
-          }
-        });
+        // Default behaviour: OR between selected values
+        // Configurable behaviour: AND between selected values for specific facets (e.g. resources)
+        if (facetOperator === 'AND' && !hasFalse && !hasTrue && filteredValues.length) {
+          // Require that all selected values are present on the field
+          termFilters.push({
+            "bool": {
+              "must": filteredValues.map(value => ({
+                "term": { [fieldName]: value }
+              }))
+            }
+          });
+        } else {
+          termFilters.push({
+            "bool": {
+              "should": [
+                ...(hasFalse ? [{ "bool": { "must_not": { "exists": { "field": fieldName } } } }] : []),
+                ...(hasTrue ? [{ "exists": { "field": fieldName } }] : []),
+                ...(filteredValues.length ? [{ "terms": { [fieldName]: filteredValues } }] : [])
+              ],
+              "minimum_should_match": 1
+            }
+          });
+        }
       }
 
 

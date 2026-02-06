@@ -2,9 +2,10 @@
 
 import { Fragment, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { PiX } from "react-icons/pi";
+import { PiQuestion, PiQuestionMark, PiX } from "react-icons/pi";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
+import IconButton from "@/components/ui/icon-button";
 
 interface NamesSectionProps {
     datasets: Record<string, any[]>;
@@ -12,6 +13,7 @@ interface NamesSectionProps {
 
 export const NamesSection = ({ datasets }: NamesSectionProps) => {
     const [showAll, setShowAll] = useState(false)
+    const [showTimelineInfo, setShowTimelineInfo] = useState(false)
     const searchParams = useSearchParams()
     const activeYear = searchParams.get('activeYear')
     const activeName = searchParams.get('activeName')
@@ -50,7 +52,8 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
             if (!matchesYear(source)) return
             if (!matchesName(source)) return
             const y = year != null ? String(year) : null
-            if (!y) return
+            // Skip clearly invalid/typo years that start with 0 (e.g. "0990")
+            if (!y || y.startsWith('0')) return
             nameToYears[name] = nameToYears[name] || new Set<string>()
             nameToYears[name].add(y)
             nameCounts[name] = (nameCounts[name] || 0) + 1
@@ -91,7 +94,12 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
         })
         Object.keys(namesByYear).forEach((y) => namesByYear[y].sort())
         const yearsOrdered = Object.keys(namesByYear)
-            .map((y) => Number.isNaN(Number(y)) ? y : Number(y))
+            .map((y) => {
+                // Keep leading-zero years as-is (e.g. "0990"), don't coerce to number
+                if (typeof y === 'string' && y.startsWith('0')) return y
+                const n = Number(y)
+                return Number.isNaN(n) ? y : n
+            })
             .sort((a: any, b: any) => (a > b ? 1 : a < b ? -1 : 0))
             .map(String)
 
@@ -115,16 +123,23 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
         Object.entries(datasets).forEach(([, sources]) => {
             sources.forEach((source: any) => {
                 // Process labels and altLabels with source.year
-                // Only include if: (1) source has a year, (2) if activeYear is set, source.year matches, (3) if activeName is set, only add if this specific label matches
+                // Only include if: (1) source has a valid year (not starting with 0),
+                // (2) if activeYear is set, source.year matches,
+                // (3) if activeName is set, only add if this specific label matches
                 if (source?.year) {
+                    const yearStr = String(source.year)
+                    // Skip clearly invalid/typo years that start with 0 (e.g. "0990")
+                    if (yearStr.startsWith('0')) {
+                        return
+                    }
                     // Check if source.year matches activeYear filter
-                    const yearMatches = !activeYear || String(source.year) === activeYear
+                    const yearMatches = !activeYear || yearStr === activeYear
                     if (yearMatches) {
                         const pushName = (name: string | undefined) => {
                             if (!name) return
                             // If activeName is set, only add this name if it matches
                             if (activeName && name !== activeName) return
-                            const y = String(source.year)
+                            const y = yearStr
                             filteredNameToYears[name] = filteredNameToYears[name] || new Set<string>()
                             filteredNameToYears[name].add(y)
                         }
@@ -136,16 +151,19 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
                 }
 
                 // Process attestations with their own year
-                // Only include if: (1) attestation has label and year, (2) if activeName is set, attestation.label matches, (3) if activeYear is set, attestation.year matches
+                // Only include if: (1) attestation has label and valid year (not starting with 0),
+                // (2) if activeName is set, attestation.label matches,
+                // (3) if activeYear is set, attestation.year matches
                 if (Array.isArray(source?.attestations)) {
                     source.attestations.forEach((att: any) => {
                         if (!att?.label) return
+                        const y = att?.year != null ? String(att.year) : null
+                        // Skip clearly invalid/typo years that start with 0 (e.g. "0990")
+                        if (!y || y.startsWith('0')) return
                         // If activeName is set, only add this attestation if its label matches
                         if (activeName && att.label !== activeName) return
                         // If activeYear is set, only add if this attestation's year matches
-                        if (activeYear && String(att?.year) !== activeYear) return
-                        const y = att?.year != null ? String(att.year) : null
-                        if (!y) return
+                        if (activeYear && y !== activeYear) return
                         filteredNameToYears[att.label] = filteredNameToYears[att.label] || new Set<string>()
                         filteredNameToYears[att.label].add(y)
                     })
@@ -192,7 +210,12 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
 
         Object.keys(filteredNamesByYear).forEach((y) => filteredNamesByYear[y].sort())
         const filteredYearsOrdered = Object.keys(filteredNamesByYear)
-            .map((y) => Number.isNaN(Number(y)) ? y : Number(y))
+            .map((y) => {
+                // Keep leading-zero years as-is (e.g. "0990"), don't coerce to number
+                if (typeof y === 'string' && y.startsWith('0')) return y
+                const n = Number(y)
+                return Number.isNaN(n) ? y : n
+            })
             .sort((a: any, b: any) => (a > b ? 1 : a < b ? -1 : 0))
             .map(String)
 
@@ -260,7 +283,25 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
     return (
         <div className="flex flex-col gap-3 py-2">
 
-            <div role="group" aria-label="Filtrer på år og namneformer">
+            <div role="group" aria-labelledby="timeline-info-label" aria-describedby="timeline-info-description">
+                <div className="flex items-center gap-2 mb-1">
+                    <span className="text-neutral-800">
+                        <strong className="text-neutral-900" id="timeline-info-label">Omtrentleg tidslinje</strong>
+                    </span>
+                    <IconButton
+                        label="Vis forklaring for omtrentleg tidslinje"
+                        onClick={() => setShowTimelineInfo((prev) => !prev)}
+                        className="ml-1 inline-flex h-6 w-6 items-center justify-center rounded-full border border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-100"
+                    >
+                        <PiQuestionMark className="h-3.5 w-3.5" />
+                    </IconButton>
+                </div>
+                {showTimelineInfo && (
+                    <p className="text-neutral-700 max-w-prose mb-2" id="timeline-info-description">
+                        Tidslinja viser tidlegaste år Språksamlingane har henta ut for kvar kjeldeform. Den kan innehalde feil,
+                        og er berre meint som eit verktøy for å filtrere kjeldene.
+                    </p>
+                )}
                 {/* Active filter display */}
                 {hasActiveFilter && (
                     <div className="flex items-center gap-3 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg mb-3">

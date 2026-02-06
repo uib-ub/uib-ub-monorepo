@@ -5,6 +5,7 @@ export interface FieldConfigItem {
   description?: string; // Description of field
   fulltext?: boolean; // Can be selected as search field
   facet?: boolean;
+  valueMap?: { [key: string]: string }; // Optional mapping from raw facet values to display labels
   omitLabel?: boolean;
   table?: boolean; // Show in table view by default
   sort?: 'asc' | 'desc';
@@ -21,6 +22,7 @@ export interface FieldConfigItem {
   keyword?: boolean; // Is mapped as keyword in ES
   noInfobox?: boolean; // Not shown in facets infobox
   specialFacet?: boolean; // Special facet, e. g. adm client facet
+  facetOperator?: 'AND' | 'OR'; // How multiple values for this facet are combined (default OR)
 }
 
 interface FacetConfigItem extends FieldConfigItem {
@@ -53,6 +55,19 @@ const image = { "image.manifest": { label: "Seddel", result } }
 const html = { "content.html": { label: "Tekstinnhald", fulltext } }
 const text = { "content.text": { label: "Tekstinnhald", fulltext } }
 const note = { "content.note": { label: "Tekstinnhald", fulltext } }
+const resources: FieldConfigItem = {
+  label: "Ressurser",
+  keyword,
+  facet,
+  facetOperator: 'AND',
+  valueMap: {
+    "geo": "Koordinater",
+    "text": "Tekst",
+    "note": "Merknad",
+    "image": "Skanna materiale",
+    "audio": "Lyd"
+  }
+}
 
 const boost = { numeric }
 const dataset = { label: "Datasett" }
@@ -63,7 +78,7 @@ const labelDefaults = {
   "altLabels": { label: "Andre namn", table, facet, result },
   "attestations": { label: "Kjeldeformer", table, result },
 }
-const required = { uuid, boost, label, dataset }
+const required = { uuid, boost, label, dataset, resources }
 
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 

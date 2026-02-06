@@ -176,12 +176,30 @@ export default function FacetSection() {
     router.push(`?${newSearchParams.toString()}`)
   }
 
+  const getFacetValueMap = (name: string) => {
+    // Try to find the facet config for this name in the current dataset/perspective
+    const facetsForDataset =
+      filterDataset === 'all'
+        ? facetConfig['all']
+        : facetConfig[filterDataset] || [];
+
+    const facetItem = facetsForDataset.find((f) => f.key === name);
+    return facetItem?.valueMap as Record<string, string> | undefined;
+  }
+
   const getChipValue = (name: string, value: string) => {
     const values = value.split('__')
 
     // Handle dataset-related filters
     if (name == 'datasetTag' || name == 'dataset' || name == 'datasets') {
       return datasetTitles[value] || value
+    }
+
+    const valueMap = getFacetValueMap(name)
+    const baseValue = values[0]
+
+    if (valueMap && valueMap[baseValue]) {
+      return valueMap[baseValue]
     }
 
     // Handle special cases
