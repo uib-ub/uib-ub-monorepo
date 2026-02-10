@@ -91,20 +91,21 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
 
             className="w-full text-left p-3">
             <div className="flex items-center justify-between gap-x-2 whitespace-normal w-full text-xl">
-                <div className="inline-flex items-center flex-wrap gap-x-2">
+                <div className="inline-flex items-center flex-wrap gap-x-2 w-full">
                     {isGrunnord && (
-                        <span className="inline-flex items-center gap-x-2">
-                            {!perspectiveIsGrunnord && (
-                                <span className="text-neutral-800">
-                                    Grunnord:
-                                </span>
-                            )}
+                        <div className="inline-flex items-center gap-x-2 w-full">
+                            
 
                             <span className="font-semibold">
                                 {hit.fields.label?.[0]}
                             </span>
+                            {!perspectiveIsGrunnord && (
+                                <em className="text-neutral-800 ml-auto">
+                                    Grunnord
+                                </em>
+                            )}
 
-                        </span>
+                        </div>
                     )}
                     {showScore && hit._score}
                     {!isGrunnord && (
