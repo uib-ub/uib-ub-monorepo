@@ -44,7 +44,7 @@ const adm = { label: "Områdeinndeling", facet, specialFacet, noInfobox }
 const adm1 = { label: "Fylke", result } // Necessary for it to be included in fields
 const adm2 = { label: "Kommune", result } // Necessary for it to be included in fields
 const adm3 = { label: "Sogn, bydel eller tidlegare kommune", result }
-const snid = { label: "Stadnamn ID", facet, omitLabel }
+const snid = { label: "Stadnamn ID", facet, omitLabel, keyword }
 const gnidu = { label: "GNIDu", facet, result }
 const midu = { label: "MIDu", facet }
 const h3 = { label: "H3", result }
@@ -65,6 +65,7 @@ const resources: FieldConfigItem = {
     "text": "Tekst",
     "note": "Merknad",
     "image": "Skanna materiale",
+    "phonetic": "Lydskrift",
     "audio": "Lyd"
   }
 }
@@ -109,6 +110,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     "rawData.parform.pf_navn": { label: "Parform", facet },
     "rawData.gmlsform.navnform": { label: "Gammel navneform", facet },
     "misc.transcriber": { label: "Transkribert ved", facet },
+    coordinateType,
     ...cadastre,
     ...identifiers,
   },
@@ -168,7 +170,6 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     "misc.Eigar": { label: "Eigar", table, facet, cadastreTable },
     "misc.Mark": { label: "Skyldmark", table, facet },
     "misc.Øre": { label: "Skyldøre", table, facet },
-    "misc.Koordinattype": { label: "Koordinattype", facet },
     ...identifiers,
   },
   m1838: {
