@@ -573,6 +573,7 @@ export default function MapExplorer() {
       newQueryParams.delete('activeYear')
       newQueryParams.delete('activeName')
       newQueryParams.delete('point')
+      newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
 
 
 
