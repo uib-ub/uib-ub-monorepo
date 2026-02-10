@@ -20,12 +20,13 @@
 <script setup lang="ts">
 const appConfig = useAppConfig();
 
+const searchOptionsConfig = appConfig.search.options;
 const searchInterface = useSearchInterface();
 const searchData = useSearchData();
 const searchDataStats = useSearchDataStats();
 const searchDataPending = useSearchDataPending();
 
-const props = defineProps({
+defineProps({
   context: { type: String, default: "full" },
 });
 
@@ -35,16 +36,16 @@ const pending = computed(() => {
   return !Object.values(searchDataPending.value).every(el => !el);
 });
 
-const count = computed(() => {
+const totalMatchesCount = computed(() => {
   try {
-    return sum(Object.values(searchDataStats.value?.context || [])) || 0;
+    return sum(Object.values(searchDataStats.value?.matching || [])) || 0;
   }
   catch (e) {
     return 0;
   }
 });
 
-const countFetchedMatches = computed(() => {
+const fetchedMatchesCount = computed(() => {
   return countSearchEntries(searchData.value);
 });
 
@@ -59,50 +60,36 @@ onUnmounted(() => {
   // }
 });
 
-const flatMatchingValues = appConfig.search.options.matching.default.flat();
+const flatMatchingValues = appConfig.search.options.matching.default.flat() as Matching[];
 const fetchFurtherSearchData = () => {
-  console.log("check to fetch more");
   const element = resultslist.value;
-  if (count.value > countFetchedMatches.value && !pending.value) {
-    if (element.getBoundingClientRect().bottom * 0.75 < window.innerHeight) {
+  if (totalMatchesCount.value > fetchedMatchesCount.value && !pending.value) {
+    if (element && element.getBoundingClientRect().bottom * 0.75 < window.innerHeight) {
       const offset: SearchOptions["offset"] = {};
 
       if (searchInterface.value.term && searchInterface.value.term.length > 0) {
-        let newOffsetCalc;
-        let oldOffsetCalc = countFetchedMatches.value;
-        let fetchNextMatching = false;
+        let offsetCalc: number = fetchedMatchesCount.value;
 
-        for (const match of flatMatchingValues) {
-          if (
-            Object.keys(searchDataStats.value.matching || []).includes(match)
-          ) {
-            const matchCount
-              = searchDataStats.value.matching?.[match as Matching] || 0;
-            if (fetchNextMatching) {
-              offset[match as Matching] = 0;
-            }
-            if (oldOffsetCalc < 0) {
-              break;
-            }
-            newOffsetCalc = oldOffsetCalc - matchCount;
-            if (newOffsetCalc < 0) {
-              offset[match as Matching] = oldOffsetCalc;
-            }
-            const nextfetchCalc = matchCount - oldOffsetCalc;
-            if (
-              nextfetchCalc > 0
-              && nextfetchCalc < appConfig.search.options.limit.default
-            ) {
-              fetchNextMatching = true;
-            }
-            oldOffsetCalc = newOffsetCalc;
+        for (const matchingPattern of flatMatchingValues) {
+          if (matchingPattern === "full-ci" && searchDataStats.value?.matching?.["full"]) {
+            offsetCalc = offsetCalc - searchDataStats.value?.matching?.["full"];
           }
+          // Continue if matchingPattern not is part of the matched patterns for the current search string
+          // Edge case: doesn't match the "full" pattern,
+          // because the actual patterns are "full-cs" and "full-ci" and the data in `searchDataStats` is "full"
+          // There are usually not more than 50 "full" matches
+          if (!searchDataStats.value.matching?.[matchingPattern]) continue;
+          if (offsetCalc < searchDataStats.value.matching?.[matchingPattern]) {
+            offset[matchingPattern] = offsetCalc;
+          }
+          offsetCalc = offsetCalc - searchDataStats.value?.matching?.[matchingPattern];
+          // Don't check additional patterns if there are remaining matches for the current pattern
+          if (offsetCalc < 0) break;
         }
       }
       else {
-        offset.all = countFetchedMatches.value;
+        offset.all = fetchedMatchesCount.value;
       }
-
       useFetchSearchData(
         useGenSearchOptions("further", {
           offset,
