@@ -138,7 +138,9 @@
     "resetDomainOptions": "Reset domain selection",
     "expandTermbaseMenu": "Extend termbase menu",
     "closeTermbaseMenu": "Close termbase menu",
-    "resetTermbaseOptions": "Reset termbase selection"
+    "resetTermbaseOptions": "Reset termbase selection",
+    "switchToTermbaseSearch": "Switch to termbase search",
+    "switchToDomainSearch": "Switch to domain search"
   },
   "searchFilter": {
     "results": "results",
