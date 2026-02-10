@@ -10,7 +10,7 @@ import { FacetBadge } from '@/components/ui/badge';
 import Clickable from '@/components/ui/clickable/clickable';
 import IconButton from '@/components/ui/icon-button';
 import { treeSettings } from '@/config/server-config';
-import { usePerspective } from '@/lib/param-hooks';
+import { useMode, usePerspective } from '@/lib/param-hooks';
 import { getSkeletonLength } from '@/lib/utils';
 import Link from 'next/link';
 import FacetToolbar from './facet-toolbar';
@@ -48,6 +48,7 @@ export default function DatasetFacet() {
   const datasetTag = searchParams.get('datasetTag')
   const isCadastral = !!searchParams.get('tree')
   const facetCountMode = usePreferences((state) => state.facetCountMode);
+  const mode = useMode()
 
   useEffect(() => {
 
@@ -141,7 +142,7 @@ export default function DatasetFacet() {
         </div>}
 
       </div>
-      <FacetToolbar />
+      { mode == 'map' && <FacetToolbar />}
 
 
 
