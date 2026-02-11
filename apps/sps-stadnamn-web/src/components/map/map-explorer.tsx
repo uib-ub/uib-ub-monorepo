@@ -3,7 +3,7 @@ import { baseMapLookup } from "@/config/basemap-config";
 import { useSearchQuery } from "@/lib/search-params";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { getClusterMarker, getLabelMarkerIcon, getPointMarker, getUnlabeledMarker } from "./markers";
+import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 
 import { boundsFromZoomAndCenter, calculateRadius, fitBoundsToGroupSources, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
@@ -973,16 +973,14 @@ export default function MapExplorer() {
               <Marker
                 zIndexOffset={2000}
                 icon={new leaflet.DivIcon(
-                  activeMarkerMode === 'points'
-                    ? getPointMarker('accent', true)
-                    : getLabelMarkerIcon(
-                        getDisplayLabel(groupData.fields),
-                        'accent',
-                        undefined,
-                        true,
-                        false,
-                        true
-                      )
+                  getLabelMarkerIcon(
+                    getDisplayLabel(groupData.fields),
+                    'accent',
+                    undefined,
+                    true,
+                    false,
+                    true
+                  )
                 )}
                 position={
                   point && initValue
