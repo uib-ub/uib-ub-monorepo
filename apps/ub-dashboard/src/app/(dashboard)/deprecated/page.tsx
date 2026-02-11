@@ -1,12 +1,9 @@
-import { draftMode } from 'next/headers'
-import { LiveQuery } from 'next-sanity/preview/live-query'
 import Deprecated, { query } from './_components/deprecated'
 import { sanityFetch } from '@/sanity/lib/fetch'
 import { MainShell } from '@/components/shared/main-shell'
-import PreviewDeprecated from './_components/preview-deprecated'
 
 export default async function DeprecatedPage() {
-  const data = await sanityFetch({ query, revalidate: 7200 })
+  const { data } = await sanityFetch({ query })
 
   return (
     <MainShell>
@@ -14,14 +11,7 @@ export default async function DeprecatedPage() {
         <h1>Utfasede typer</h1>
       </div>
       {/* <pre className='text-xs'>{JSON.stringify(data, null, 2)}</pre> */}
-      <LiveQuery
-        enabled={(await draftMode()).isEnabled}
-        query={query}
-        initialData={data}
-        as={PreviewDeprecated}
-      >
-        <Deprecated data={data} />
-      </LiveQuery>
+      <Deprecated data={data} />
     </MainShell>
   );
 }

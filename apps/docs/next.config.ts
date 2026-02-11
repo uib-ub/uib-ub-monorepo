@@ -1,5 +1,4 @@
 import nextra from 'nextra';
-import bundleAnalyzer from '@next/bundle-analyzer'
 
 const withNextra = nextra({
   // contentDirBasePath: '/',
@@ -8,18 +7,12 @@ const withNextra = nextra({
   unstable_shouldAddLocaleToLinks: true,
 })
 
-const withBundleAnalyzer = bundleAnalyzer({
-  enabled: process.env.ANALYZE === 'true'
+const nextConfig = withNextra({
+  i18n: {
+    locales: ['nb', 'en'],
+    defaultLocale: 'nb',
+  },
+  transpilePackages: ['assets'],
 })
-
-const nextConfig = withBundleAnalyzer(
-  withNextra({
-    i18n: {
-      locales: ['nb', 'en'],
-      defaultLocale: 'nb',
-    },
-    transpilePackages: ['assets'],
-  })
-)
 
 export default nextConfig

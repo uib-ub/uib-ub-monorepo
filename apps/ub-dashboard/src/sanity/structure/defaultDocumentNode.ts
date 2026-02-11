@@ -7,12 +7,6 @@ export const defaultDocumentNode = (S: any, { schemaType }: { schemaType: any })
   if ((PREVIEWABLE_DOCUMENT_TYPES).includes(schemaType)) {
     return S.document().views([
       S.view.form(),
-      /* S.view
-        .component(Iframe)
-        .options({
-          url: (doc: SanityDocument) => getPreviewUrl(doc),
-        })
-        .title('Preview'), */
     ])
   }
 

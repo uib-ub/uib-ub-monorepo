@@ -30,8 +30,8 @@
     "turbo": "2.7.4"
   },
   "overrides": {
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
   },
   "packageManager": "npm@11.5.2"
 }
