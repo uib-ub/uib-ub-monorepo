@@ -410,7 +410,7 @@ export const featureNames: Record<string, string> = {
   "image": "Faksimiler",
   "audio": "Lydopptak",
   "phonetic": "Lydskrift",
-  "coordinates": "Koordinater",
+  "coordinates": "Koordinatar",
   "link": "Lenker",
   "maps": "Skannede kart",
   "base": "Grunnord",

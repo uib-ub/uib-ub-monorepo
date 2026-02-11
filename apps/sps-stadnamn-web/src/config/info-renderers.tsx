@@ -175,7 +175,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
         {title: 'Matrikkelnummer', value: source.rawData.GNID},
         {title: 'Bind', value: source.rawData.Bind},
         {title: 'Sidetall', value: source.rawData["Sidetall/henvisning"]},
-        {title: 'Koordinater', value: [source.rawData.X, source.rawData.Y].filter(Boolean).join(", ")},
+        {title: 'Koordinatar', value: [source.rawData.X, source.rawData.Y].filter(Boolean).join(", ")},
         {title: 'Presisjon', value: source.rawData.Koordinattype},
         {title: 'StedsnavnID', value: source.rawData.SNID},
         {title: 'Unikt matrikkelnummer', items: source.gnidu?.map((gnidu: string) => ({value: gnidu, href: `/view/ostf?gnidu=${encodeURIComponent(gnidu)}`}))},

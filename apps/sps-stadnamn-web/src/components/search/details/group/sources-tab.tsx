@@ -116,7 +116,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
 
         return (
             <li key={s.uuid} className="flex flex-col gap-1" style={indentStyle}>
-                    <div className="flex flex-wrap items-center gap-4 leading-6 min-h-6">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 leading-6 min-h-6">
                         {hasPin && (
                             <ClickableIcon
                                 label="Koordinatdetaljar"
@@ -138,12 +138,14 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                         </Link>
 
                         {additionalLabels && <span className="text-neutral-900">{additionalLabels}</span>}
+                        {s.phonetic && <span className="text-neutral-900">{s.phonetic}</span>}
+                        {s.content?.note && <span className="text-neutral-900">{s.content.note}</span>}
                         {/* Keep source links on the same line when there is available space; wrap naturally when needed */}
                         {links}
                     </div>
 
                     {isInitGroup && activePoint && lat && lng && (
-                        <div className="bg-neutral-50 border border-neutral-200 rounded-md px-2 py-1 mt-0.5 w-full">
+                        <div className="mt-0.5 min-w-0 w-full rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1">
                             {s.coordinateType ? (
                                 <CoordinateTypeInfo coordinateType={s.coordinateType} />
                             ) : (
@@ -157,7 +159,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
     }
 
     return (
-        <ul className="flex flex-col w-full gap-8 pt-8">
+        <ul className="flex flex-col gap-8 pt-8">
             {visibleDatasets.map((ds) => {
                 const items = datasets[ds] || []
                 if (items.length === 0) return null

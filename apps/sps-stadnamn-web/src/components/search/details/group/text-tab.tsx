@@ -71,7 +71,7 @@ export const TextTab = ({ textItems }: TextTabProps) => {
             {hasMultipleItems && (
                 <button
                     type="button"
-                    className="mx-3 flex items-center gap-1 text-neutral-900 text-lg mb-4"
+                    className="mx-3 flex items-center gap-1 text-neutral-900 text-lg"
                     aria-expanded={showAll}
                     aria-controls={`text-items-${textItems.length}`}
                     onClick={showAll ? () => {

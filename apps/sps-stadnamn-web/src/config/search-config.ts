@@ -5,6 +5,7 @@ export interface FieldConfigItem {
   description?: string; // Description of field
   fulltext?: boolean; // Can be selected as search field
   facet?: boolean;
+  valueMap?: { [key: string]: string }; // Optional mapping from raw facet values to display labels
   omitLabel?: boolean;
   table?: boolean; // Show in table view by default
   sort?: 'asc' | 'desc';
@@ -21,6 +22,7 @@ export interface FieldConfigItem {
   keyword?: boolean; // Is mapped as keyword in ES
   noInfobox?: boolean; // Not shown in facets infobox
   specialFacet?: boolean; // Special facet, e. g. adm client facet
+  facetOperator?: 'AND' | 'OR'; // How multiple values for this facet are combined (default OR)
 }
 
 interface FacetConfigItem extends FieldConfigItem {
@@ -29,7 +31,7 @@ interface FacetConfigItem extends FieldConfigItem {
 
 const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, numeric, keyword, noInfobox, specialFacet] = Array(11).fill(true);
 
-const sosi = { label: "Stedstype (standardisert)", description: "SOSI-standarden", facet, table, result, noInfobox, keyword }
+const sosi = { label: "Namneobjekttype", description: "Stadtype etter SOSI-standarden", facet, table, result, noInfobox, keyword }
 const placeType = { label: "Lokalitetstype", table, facet, result, noInfobox }
 const cadastre = {
   "within": { label: "Gard", result },
@@ -42,7 +44,7 @@ const adm = { label: "Områdeinndeling", facet, specialFacet, noInfobox }
 const adm1 = { label: "Fylke", result } // Necessary for it to be included in fields
 const adm2 = { label: "Kommune", result } // Necessary for it to be included in fields
 const adm3 = { label: "Sogn, bydel eller tidlegare kommune", result }
-const snid = { label: "Stadnamn ID", facet, omitLabel }
+const snid = { label: "Stadnamn ID", facet, omitLabel, keyword }
 const gnidu = { label: "GNIDu", facet, result }
 const midu = { label: "MIDu", facet }
 const h3 = { label: "H3", result }
@@ -53,6 +55,20 @@ const image = { "image.manifest": { label: "Seddel", result } }
 const html = { "content.html": { label: "Tekstinnhald", fulltext } }
 const text = { "content.text": { label: "Tekstinnhald", fulltext } }
 const note = { "content.note": { label: "Tekstinnhald", fulltext } }
+const resources: FieldConfigItem = {
+  label: "Ressurser",
+  keyword,
+  facet,
+  facetOperator: 'AND',
+  valueMap: {
+    "geo": "Koordinatar",
+    "text": "Tekst",
+    "note": "Merknad",
+    "image": "Skanna materiale",
+    "phonetic": "Lydskrift",
+    "audio": "Lyd"
+  }
+}
 
 const boost = { numeric }
 const dataset = { label: "Datasett" }
@@ -63,7 +79,7 @@ const labelDefaults = {
   "altLabels": { label: "Andre namn", table, facet, result },
   "attestations": { label: "Kjeldeformer", table, result },
 }
-const required = { uuid, boost, label, dataset }
+const required = { uuid, boost, label, dataset, resources }
 
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 
@@ -94,6 +110,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     "rawData.parform.pf_navn": { label: "Parform", facet },
     "rawData.gmlsform.navnform": { label: "Gammel navneform", facet },
     "misc.transcriber": { label: "Transkribert ved", facet },
+    coordinateType,
     ...cadastre,
     ...identifiers,
   },
@@ -153,7 +170,6 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     "misc.Eigar": { label: "Eigar", table, facet, cadastreTable },
     "misc.Mark": { label: "Skyldmark", table, facet },
     "misc.Øre": { label: "Skyldøre", table, facet },
-    "misc.Koordinattype": { label: "Koordinattype", facet },
     ...identifiers,
   },
   m1838: {
@@ -265,10 +281,9 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     ...identifiers,
   },
   ssr: {
-    ...required, adm, adm1, adm2,
+    ...required, adm, adm1, adm2, sosi,
     ssr,
     //"location.type": {label: "Areal", facet, keyword}, // Fungerte bare i tabellen. Dukket ikke opp som facet
-    sosi,
     coordinateType,
     "misc.navnesakstatus": { label: "Navnesakstatus", facet },
     "misc.navnestatus": { label: "Navnestatus", facet },

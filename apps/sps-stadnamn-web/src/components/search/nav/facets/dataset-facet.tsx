@@ -10,11 +10,12 @@ import { FacetBadge } from '@/components/ui/badge';
 import Clickable from '@/components/ui/clickable/clickable';
 import IconButton from '@/components/ui/icon-button';
 import { treeSettings } from '@/config/server-config';
-import { usePerspective } from '@/lib/param-hooks';
+import { useMode, usePerspective } from '@/lib/param-hooks';
 import { getSkeletonLength } from '@/lib/utils';
 import Link from 'next/link';
 import FacetToolbar from './facet-toolbar';
 import { buildTreeParam } from '@/lib/tree-param';
+import { usePreferences } from '@/state/zustand/persistent-preferences';
 
 // Memoized RegExp factory to prevent memory leaks
 const createSearchRegex = (() => {
@@ -46,6 +47,8 @@ export default function DatasetFacet() {
   const paramsExceptFacet = removeFilterParams('dataset')
   const datasetTag = searchParams.get('datasetTag')
   const isCadastral = !!searchParams.get('tree')
+  const facetCountMode = usePreferences((state) => state.facetCountMode);
+  const mode = useMode()
 
   useEffect(() => {
 
@@ -139,7 +142,7 @@ export default function DatasetFacet() {
         </div>}
 
       </div>
-      <FacetToolbar />
+      { mode == 'map' && <FacetToolbar />}
 
 
 
@@ -178,6 +181,14 @@ export default function DatasetFacet() {
                 if ((isCadastral && !titleMatch) || (!clientSearch?.length || descriptionMatch || titleMatch)) {
                   if (isCadastral && !titleMatch) return null
                   const isExpanded = expandedDescriptions.has(item.key);
+                  const totalCount = facetAggregation?.buckets
+                    ? facetAggregation.buckets.reduce((sum: number, bucket: { doc_count: number }) => sum + bucket.doc_count, 0)
+                    : 0;
+
+                  const displayCount =
+                    facetCountMode === 'percent' && totalCount > 0
+                      ? Math.round((item.doc_count / totalCount) * 100)
+                      : item.doc_count;
                   return (
                     <li key={index} className='py-3 relative'>
                       {isCadastral ?
@@ -215,14 +226,14 @@ export default function DatasetFacet() {
                                     {firstPart + ' '}
                                     <span className="whitespace-nowrap">
                                       {lastWord}
-                                      <FacetBadge count={item.doc_count} />
+                                      <FacetBadge count={displayCount} mode={facetCountMode} />
 
                                     </span>
                                   </>
                                 ) : (
                                   <>
                                     {lastWord}
-                                    <FacetBadge count={item.doc_count} />
+                                    <FacetBadge count={displayCount} mode={facetCountMode} />
                                   </>
                                 )}
                               </span>

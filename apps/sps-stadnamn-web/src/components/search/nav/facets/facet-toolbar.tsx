@@ -18,6 +18,9 @@ export default function FacetToolbar() {
     const facetSort = usePreferences((state) => state.facetSort)
     const setFacetSort = usePreferences((state) => state.setFacetSort)
 
+    const facetCountMode = usePreferences((state) => state.facetCountMode)
+    const setFacetCountMode = usePreferences((state) => state.setFacetCountMode)
+
     const currentFacet = facet || facetConfig[perspective][0]?.key
 
     const sortMode = facetSort[currentFacet] || facetOptions[perspective]?.[currentFacet]?.sort
@@ -46,6 +49,34 @@ export default function FacetToolbar() {
             }}>
                 Avmerk alle
             </button>}
+
+            <div className="ml-auto flex items-center gap-1 text-xs">
+                <span className="sr-only">Vis treff som</span>
+                <button
+                    type="button"
+                    className={`px-2 py-0.5 rounded-full border text-[0.7rem] ${
+                        facetCountMode === 'absolute'
+                            ? 'bg-neutral-100 text-neutral-900 border-neutral-400'
+                            : 'bg-white text-neutral-700 border-neutral-300'
+                        }`}
+                    aria-pressed={facetCountMode === 'absolute'}
+                    onClick={() => setFacetCountMode('absolute')}
+                >
+                    Antal
+                </button>
+                <button
+                    type="button"
+                    className={`px-2 py-0.5 rounded-full border text-[0.7rem] ${
+                        facetCountMode === 'percent'
+                            ? 'bg-neutral-100 text-neutral-900 border-neutral-400'
+                            : 'bg-white text-neutral-700 border-neutral-300'
+                        }`}
+                    aria-pressed={facetCountMode === 'percent'}
+                    onClick={() => setFacetCountMode('percent')}
+                >
+                    Prosent
+                </button>
+            </div>
         </div>
     )
 

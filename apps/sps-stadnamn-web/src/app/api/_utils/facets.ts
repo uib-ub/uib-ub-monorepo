@@ -110,6 +110,16 @@ export function extractFacets(request: Request) {
           });
         }
       }
+      // Explicitly exclude the "[ingen verdi]" bucket: require that the field exists
+      else if (value === '!_false') {
+        if (key == 'adm') {
+          // For adm, treat as requiring any adm value (equivalent to _true)
+          if (!clientFacets.adm) clientFacets.adm = [];
+          clientFacets.adm.push('_true');
+        } else {
+          termFilters.push({ "exists": { "field": key } });
+        }
+      }
       else {
         const facets = key == 'adm' ? clientFacets : serverFacets;
         if (!facets[key]) {
@@ -238,7 +248,12 @@ export function extractFacets(request: Request) {
     for (const [key, values] of Object.entries(serverFacets)) {
       const hasFalse = values.includes("_false");
       const hasTrue = values.includes("_true");
-      const filteredValues = values.filter(value => value !== "_false" && value !== "_true");
+      const excludedValues = values.filter((value) => value.startsWith("!")).map((value) => value.slice(1));
+      const filteredValues = values.filter(
+        (value) => value !== "_false" && value !== "_true" && !value.startsWith("!")
+      );
+      const fieldName = `${key}${(baseAllConfig[key as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}`;
+      const facetOperator = baseAllConfig[key as keyof typeof baseAllConfig]?.facetOperator || 'OR';
 
       if (key == 'group') {
         termFilters.push({
@@ -278,6 +293,17 @@ export function extractFacets(request: Request) {
                   ...(hasTrue ? [{ "exists": { "field": `${base}.${nested}` } }] : []),
                   ...(filteredValues.length ? [{ "terms": { [`${base}.${nested}`]: filteredValues } }] : [])
                 ],
+                ...(excludedValues.length
+                  ? {
+                    "must_not": [
+                      {
+                        "terms": {
+                          [`${base}.${nested}`]: excludedValues
+                        }
+                      }
+                    ]
+                  }
+                  : {}),
                 "minimum_should_match": 1
               }
             }
@@ -293,16 +319,51 @@ export function extractFacets(request: Request) {
 
 
       } else {
-        termFilters.push({
-          "bool": {
-            "should": [
-              ...(hasFalse ? [{ "bool": { "must_not": { "exists": { "field": `${key}${(baseAllConfig[key as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}` } } } }] : []),
-              ...(hasTrue ? [{ "exists": { "field": `${key}${(baseAllConfig[key as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}` } }] : []),
-              ...(filteredValues.length ? [{ "terms": { [`${key}${(baseAllConfig[key as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}`]: filteredValues } }] : [])
-            ],
-            "minimum_should_match": 1
-          }
-        });
+        // Default behaviour: OR between selected values
+        // Configurable behaviour: AND between selected values for specific facets (e.g. resources)
+        if (facetOperator === 'AND' && !hasFalse && !hasTrue && filteredValues.length) {
+          // Require that all selected values are present on the field
+          termFilters.push({
+            "bool": {
+              "must": filteredValues.map(value => ({
+                "term": { [fieldName]: value }
+              })),
+              ...(excludedValues.length
+                ? {
+                  "must_not": [
+                    {
+                      "terms": {
+                        [fieldName]: excludedValues
+                      }
+                    }
+                  ]
+                }
+                : {})
+            }
+          });
+        } else {
+          termFilters.push({
+            "bool": {
+              "should": [
+                ...(hasFalse ? [{ "bool": { "must_not": { "exists": { "field": fieldName } } } }] : []),
+                ...(hasTrue ? [{ "exists": { "field": fieldName } }] : []),
+                ...(filteredValues.length ? [{ "terms": { [fieldName]: filteredValues } }] : [])
+              ],
+              ...(excludedValues.length
+                ? {
+                  "must_not": [
+                    {
+                      "terms": {
+                        [fieldName]: excludedValues
+                      }
+                    }
+                  ]
+                }
+                : {}),
+              "minimum_should_match": 1
+            }
+          });
+        }
       }
 
 

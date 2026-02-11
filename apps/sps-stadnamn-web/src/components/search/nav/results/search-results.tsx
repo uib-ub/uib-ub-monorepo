@@ -356,7 +356,7 @@ export default function SearchResults() {
               </div>
             </div>
             {isEditingCoordinates && (
-              <span className="text-sm text-neutral-800">{isMobile ? "Trykk og hald for å hente startpnk i kartet" : "Høgreklikk for å hente startpunkt i kartet"}</span>
+              <span className="text-sm text-neutral-800">{isMobile ? "Trykk og hald for å hente startpnk i kartet" : "Høgreklikk i kartet for å hente nytt startpunkt"}</span>
             )}
           </div>
         )
