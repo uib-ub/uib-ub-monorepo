@@ -31,7 +31,7 @@
         <span
           id="domainSwitchLabel"
           class="sr-only"
-        >Use domain search.</span>
+        >{{ searchInterface.useDomain ? `${$t("searchBar.switchToTermbaseSearch", 0)}` : `${$t("searchBar.switchToDomainSearch", 0)}` }}</span>
       </div>
       <div>{{ $t("global.termbase", 0) }}</div>
     </button>

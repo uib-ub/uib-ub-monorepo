@@ -72,7 +72,7 @@
         {{ $t("global.termbase", 2) }}
       </div>
       <div
-        class="grid grid-flow-row grid-cols-1 grid-rows-15 gap-x-2 gap-y-0 lg:grid-flow-col"
+        class="grid grid-flow-row grid-cols-1 grid-rows-16 gap-x-2 gap-y-0 lg:grid-flow-col"
       >
         <div
           v-for="tb of orderedTermbases"
