@@ -240,7 +240,7 @@ export default function MapExplorer() {
   // Cluster mode
   // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
-  const activeMarkerMode = markerMode === 'auto' ? (searchParams.get('q') && zoomState < 10 ? 'counts' : (zoomState < 7 ? 'points' : 'labels')) : markerMode
+  const activeMarkerMode = markerMode === 'auto' ? (searchParams.get('q') ? (zoomState < 14 ? 'counts' : 'points') : 'labels') : markerMode
 
 
 
@@ -909,13 +909,13 @@ export default function MapExplorer() {
                           <CircleMarker
                             key={`result-${item.fields.uuid[0]}`}
                             center={[lat, lng]}
-                            radius={5}
+                            radius={6}
                             pathOptions={{
                               color: '#000000',
                               weight: 2,
                               fillColor: '#ffffff',
-                              opacity: 0.9,
-                              fillOpacity: 0.5,
+                              opacity: 1,
+                              fillOpacity: 0.8,
                             }}
                             eventHandlers={{
                               ...selectDocHandler(item, [lat, lng]),
