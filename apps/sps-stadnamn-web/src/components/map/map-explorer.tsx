@@ -969,7 +969,7 @@ export default function MapExplorer() {
 
 
 
-            {groupData && !activePoint && groupData.fields?.location?.[0]?.coordinates && (
+            {groupData && !activePoint && ((point && initValue) || groupData.fields?.location?.[0]?.coordinates) && (
               <Marker
                 zIndexOffset={2000}
                 icon={new leaflet.DivIcon(
@@ -984,12 +984,22 @@ export default function MapExplorer() {
                         true
                       )
                 )}
-                position={[groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]}
+                position={
+                  point && initValue
+                    ? point
+                    : groupData.fields?.location?.[0]?.coordinates
+                      ? [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]
+                      : null
+                }
                 eventHandlers={{
                   click: () => {
-                    const centralLat = groupData.fields.location[0].coordinates[1];
-                    const centralLng = groupData.fields.location[0].coordinates[0];
-                    fitBoundsToGroupSources(mapInstance.current, groupData);
+                    const [centralLat, centralLng] =
+                      point && initValue
+                        ? point
+                        : [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]];
+                    if (!(point && initValue)) {
+                      fitBoundsToGroupSources(mapInstance.current, groupData);
+                    }
                     const newParams = new URLSearchParams(searchParams);
                     newParams.set('activePoint', `${centralLat},${centralLng}`);
                     router.push(`?${newParams.toString()}`);
@@ -998,9 +1008,13 @@ export default function MapExplorer() {
                     const key = e.originalEvent?.key ?? e.key
                     if (key === 'Enter' || key === ' ') {
                       ;(e.originalEvent ?? e).preventDefault()
-                      const centralLat = groupData.fields.location[0].coordinates[1];
-                      const centralLng = groupData.fields.location[0].coordinates[0];
-                      fitBoundsToGroupSources(mapInstance.current, groupData);
+                      const [centralLat, centralLng] =
+                        point && initValue
+                          ? point
+                          : [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]];
+                      if (!(point && initValue)) {
+                        fitBoundsToGroupSources(mapInstance.current, groupData);
+                      }
                       const newParams = new URLSearchParams(searchParams);
                       newParams.set('activePoint', `${centralLat},${centralLng}`);
                       router.push(`?${newParams.toString()}`);
@@ -1423,7 +1437,7 @@ export default function MapExplorer() {
             {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
             {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" />}
             {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" />}
-            {point && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point} />}
+            {point && !initValue && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point} />}
             {activePoint && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} 
             eventHandlers={{
               click: () => {
