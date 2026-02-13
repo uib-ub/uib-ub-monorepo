@@ -23,11 +23,13 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     const { groupData, groupLoading } = useGroupData(overrideGroupCode)
     const prefTab = useSessionStore(state => state.prefTab)
     const setPrefTab = useSessionStore(state => state.setPrefTab)
+    const snappedPosition = useSessionStore(state => state.snappedPosition)
+    const setSnappedPosition = useSessionStore(state => state.setSnappedPosition)
     const openTabs = useSessionStore(state => state.openTabs)
     const setOpenTabs = useSessionStore(state => state.setOpenTabs)
     const searchParams = useSearchParams()
     const searchDatasets = searchParams.getAll('dataset')
-    const { mapFunctionRef, scrollableContentRef } = useContext(GlobalContext)
+    const { mapFunctionRef, scrollableContentRef, isMobile } = useContext(GlobalContext)
     const { initValue } = useGroup()
     const activePoint = searchParams.get('activePoint')
 
@@ -448,6 +450,9 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                             15,
                                             { duration: 0.25, maxZoom: 18, padding: [50, 50] }
                                         );
+                                        if (isMobile && snappedPosition !== 'bottom') {
+                                            setSnappedPosition('bottom');
+                                        }
                                     }}
                                     remove={['docIndex', 'doc', 'group', 'parent', 'activePoint']}
                                     add={{ group: stringToBase64Url(groupData.group.id) }}
