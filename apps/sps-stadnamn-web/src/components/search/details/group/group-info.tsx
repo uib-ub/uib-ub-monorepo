@@ -2,6 +2,7 @@ import Spinner from "@/components/svg/Spinner";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { datasetTitles } from "@/config/metadata-config";
+import { defaultMaxResultsParam } from "@/config/max-results";
 import { fitBoundsToGroupSources } from "@/lib/map-utils";
 import { useGroup } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
@@ -467,10 +468,9 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                             }}
                             remove={['group', 'activePoint', 'activeYear', 'activeName']}
                             add={{
-                                // When pinning a group ("vel"), treat it as a fresh init selection:
-                                // reset results to 1 so previous expansions are not preserved.
+                                // When pinning a group ("vel"), treat it as a fresh init selection.
                                 init: stringToBase64Url(groupData.group.id),
-                                maxResults: '5'
+                                maxResults: defaultMaxResultsParam
                             }}
                             className="btn btn-neutral inline-flex items-center justify-center w-12 h-12 rounded-full text-xl"
                         >

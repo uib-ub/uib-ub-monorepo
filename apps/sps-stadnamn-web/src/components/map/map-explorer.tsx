@@ -1,5 +1,6 @@
 'use client'
 import { baseMapLookup } from "@/config/basemap-config";
+import { defaultMaxResultsParam } from "@/config/max-results";
 import { useSearchQuery } from "@/lib/search-params";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -565,8 +566,8 @@ export default function MapExplorer() {
       else {
         //setDebugChildren([])
       }
-      // When selecting a marker, always reset results to 1 (don't preserve previous expansions)
-      newQueryParams.set('maxResults', '4')
+      // When selecting a marker, always reset results to default.
+      newQueryParams.set('maxResults', defaultMaxResultsParam)
       newQueryParams.delete('mapSettings')
       //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
       newQueryParams.delete('doc')
@@ -789,7 +790,7 @@ export default function MapExplorer() {
           const hasMapSettings = newParams.has('mapSettings')
 
           if (!hasMaxResults) {
-            newParams.set('maxResults', '1')
+            newParams.set('maxResults', defaultMaxResultsParam)
           }
           if (hasMapSettings) {
             newParams.delete('mapSettings')
@@ -1118,7 +1119,7 @@ export default function MapExplorer() {
                                   newParams.delete('group');
                                 }
                                 newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                newParams.set('maxResults', '1');
+                                newParams.set('maxResults', defaultMaxResultsParam);
                                 router.push(`?${newParams.toString()}`);
                               },
                               keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
@@ -1131,7 +1132,7 @@ export default function MapExplorer() {
                                     newParams.delete('group');
                                   }
                                   newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                  newParams.set('maxResults', '1');
+                                  newParams.set('maxResults', defaultMaxResultsParam);
                                   router.push(`?${newParams.toString()}`);
                                 }
                               }
@@ -1163,7 +1164,7 @@ export default function MapExplorer() {
                                   newParams.delete('group');
                                 }
                                 newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                newParams.set('maxResults', '1');
+                                newParams.set('maxResults', defaultMaxResultsParam);
                                 router.push(`?${newParams.toString()}`);
                               },
                               keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
@@ -1176,7 +1177,7 @@ export default function MapExplorer() {
                                     newParams.delete('group');
                                   }
                                   newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                  newParams.set('maxResults', '1');
+                                  newParams.set('maxResults', defaultMaxResultsParam);
                                   router.push(`?${newParams.toString()}`);
                                 }
                               }
@@ -1220,7 +1221,7 @@ export default function MapExplorer() {
                               eventHandlers={{
                                 click: () => {
                                   const newParams = new URLSearchParams(searchParams);
-                                  newParams.set('maxResults', '1');
+                                  newParams.set('maxResults', defaultMaxResultsParam);
                                   if (hit?._source?.group?.id) {
                                     newParams.set('init', stringToBase64Url(hit._source.group.id));
                                     newParams.delete('group');
@@ -1239,7 +1240,7 @@ export default function MapExplorer() {
                                   if (key === 'Enter' || key === ' ') {
                                     ;(e.originalEvent ?? e).preventDefault()
                                     const newParams = new URLSearchParams(searchParams);
-                                    newParams.set('maxResults', '1');
+                                    newParams.set('maxResults', defaultMaxResultsParam);
                                     if (hit?._source?.group?.id) {
                                       newParams.set('init', stringToBase64Url(hit._source.group.id));
                                       newParams.delete('group');

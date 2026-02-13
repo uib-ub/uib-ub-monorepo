@@ -19,6 +19,7 @@ import FacetSection from "./nav/facets/facet-section";
 import SearchResults from "./nav/results/search-results";
 
 import { fieldConfig } from "@/config/search-config";
+import { defaultMaxResultsParam } from "@/config/max-results";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import Spinner from "../svg/Spinner";
 import ClientFacet from "./nav/facets/client-facet";
@@ -58,8 +59,8 @@ function ShowResultsButton() {
     if (snappedPosition == 'bottom') return null
     return <div className="p-2 fixed bottom-2 left-0 right-0 z-[3001]">
         <Clickable remove={["facet", "options"]}
-            // results: integer – 1 expands sources, >1 also expands "fleire namnegrupper"
-            add={{ maxResults: '5' }}
+            // results: integer – minimum is 5 and controls expanded results.
+            add={{ maxResults: defaultMaxResultsParam }}
             onClick={() => mode == 'table' ? setSnappedPosition('bottom') : null}
             className="w-full h-12 btn text-xl relative rounded-full">
             Vis resultat <Badge className="bg-primary-50 text-neutral-800 font-semibold px-2 absolute right-4" count={totalHits?.value || 0} /></Clickable></div>
@@ -244,8 +245,8 @@ export default function OverlayInterface() {
                                     aria-expanded={!!maxResults}
                                     aria-controls="results-panel"
                                     className="flex items-center gap-2 xl:px-1 w-full"
-                                    // When opening, default to 1 (expand sources). When closing, remove param.
-                                    add={{ maxResults: maxResults ? null : searchParams.get('init') ? '1' : '10' }}
+                                    // When opening, use default results count. When closing, remove param.
+                                    add={{ maxResults: maxResults ? null : defaultMaxResultsParam }}
                                     remove={["maxResults", ...(isMobile ? ['options'] : [])]}
                                 >
 

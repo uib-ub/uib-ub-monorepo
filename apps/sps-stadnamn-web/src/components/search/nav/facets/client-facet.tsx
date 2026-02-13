@@ -2,6 +2,7 @@ import { useState, useContext, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchQuery } from '@/lib/search-params';
+import { expandedMaxResultsParam } from '@/config/max-results';
 
 import { PiFunnel } from 'react-icons/pi';
 import FacetToolbar from './facet-toolbar';
@@ -92,7 +93,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     })
 
     if (searchParams.get('maxResults')) {
-      newParams.push(['maxResults', '10'])
+      newParams.push(['maxResults', expandedMaxResultsParam])
     }
 
 

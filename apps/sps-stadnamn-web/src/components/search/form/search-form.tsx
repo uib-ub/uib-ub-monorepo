@@ -1,5 +1,6 @@
 'use client'
 import Menu from '@/app/menu';
+import { defaultMaxResultsParam, getClampedMaxResultsFromParam } from '@/config/max-results';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
 import { useMode, usePerspective } from '@/lib/param-hooks';
@@ -48,6 +49,10 @@ export default function SearchForm() {
     const router = useRouter()
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
     const options = searchParams.get('options')
+    const maxResults = searchParams.get('maxResults')
+    const normalizedMaxResultsParam = maxResults
+        ? String(getClampedMaxResultsFromParam(maxResults) || Number(defaultMaxResultsParam))
+        : null
 
 
     const input = useRef<HTMLInputElement | null>(null)
@@ -366,10 +371,8 @@ export default function SearchForm() {
 
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''} />}
             {selectedGroup && <input type="hidden" name="init" value={selectedGroup} />}
-            {/* results: integer – when init is set, 1 means only init group; >1 controls extra groups.
-                When no init, we set it to the initial page size so the URL reflects that multiple
-                results are visible. */}
-            <input type="hidden" name="maxResults" value="5" />
+            {/* results: integer – minimum is 5 when present. */}
+            {normalizedMaxResultsParam && <input type="hidden" name="maxResults" value={normalizedMaxResultsParam} />}
             {options && <input type="hidden" name="options" value={'on'} />}
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}

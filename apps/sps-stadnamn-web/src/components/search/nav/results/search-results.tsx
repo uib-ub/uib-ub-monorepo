@@ -3,6 +3,7 @@ import Spinner from "@/components/svg/Spinner";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { datasetTitles } from "@/config/metadata-config";
+import { clampMaxResults, expandedMaxResultsParam, getClampedMaxResultsFromParam } from "@/config/max-results";
 import { useGroup } from "@/lib/param-hooks";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchQuery } from "@/lib/search-params";
@@ -44,7 +45,7 @@ export default function SearchResults() {
   const init = searchParams.get('init')
   const group = searchParams.get('group')
   const hasQParam = !!searchParams.get('q')?.trim()
-  const resultsParam = parseInt(searchParams.get('maxResults') || '0') || 0
+  const resultsParam = getClampedMaxResultsFromParam(searchParams.get('maxResults'))
   const initValue = init ? base64UrlToString(init) : null
   const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
   const { groupData: activeGroupData } = useGroupData()
@@ -394,7 +395,7 @@ export default function SearchResults() {
           {initSearchLabel && (
             <Clickable
               link
-              add={{ q: initSearchLabel, maxResults: '10' }}
+              add={{ q: initSearchLabel, maxResults: expandedMaxResultsParam }}
               className="ml-auto btn btn-outline btn-sm rounded-full"
               aria-label={`Avgrens til ${initSearchLabel}`}
             >
@@ -451,7 +452,7 @@ export default function SearchResults() {
                             const currentAdditional = getAdditionalResultsCount()
                             const base = initValue ? 1 : 0
                             const newAdditional = currentAdditional + SUBSEQUENT_PAGE_SIZE
-                            const newResultsValue = base + newAdditional
+                            const newResultsValue = clampMaxResults(base + newAdditional)
 
                             const newParams = new URLSearchParams(searchParams)
                             newParams.set('maxResults', String(newResultsValue))
