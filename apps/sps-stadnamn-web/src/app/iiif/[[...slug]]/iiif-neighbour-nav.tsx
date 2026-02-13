@@ -246,7 +246,7 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
 
                 {showBackToSearch && backToSearchHref && (
                     <RoundIconButton
-                        className="ml-auto"
+                        className=""
                         href={backToSearchHref}
                         label="Tilbake til søk"
                     >
