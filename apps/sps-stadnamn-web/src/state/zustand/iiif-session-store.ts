@@ -6,15 +6,19 @@ export const useIIIFSessionStore = create<{
 
 	drawerOpen: boolean,
 	setDrawerOpen: (open: boolean) => void,
-
+	
 	navOpen: boolean,
 	setNavOpen: (open: boolean) => void,
-
+	
 	snappedPosition: 'bottom' | 'middle' | 'top',
 	setSnappedPosition: (position: 'bottom' | 'middle' | 'top') => void,
-
+	
 	currentPosition: number,
 	setCurrentPosition: (position: number) => void,
+
+	// Single archive search context used for "back to search" buttons
+	searchContext: { collectionUuid: string | null, query: string } | null,
+	setSearchContext: (ctx: { collectionUuid: string | null, query: string } | null) => void,
 
 }>()((set) => ({
 
@@ -39,5 +43,8 @@ export const useIIIFSessionStore = create<{
 
 	currentPosition: 0,
 	setCurrentPosition: (position: number) => set({ currentPosition: position }),
+
+	searchContext: null,
+	setSearchContext: (ctx: { collectionUuid: string | null, query: string } | null) => set({ searchContext: ctx }),
 
 }))	

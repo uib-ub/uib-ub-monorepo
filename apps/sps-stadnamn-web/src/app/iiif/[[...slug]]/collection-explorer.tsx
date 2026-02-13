@@ -2,7 +2,10 @@
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import Spinner from "@/components/svg/Spinner";
 import { GlobalContext } from "@/state/providers/global-provider";
+import { useIIIFSessionStore } from "@/state/zustand/iiif-session-store";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import Form from "next/form";
+import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { PiMagnifyingGlass, PiX } from "react-icons/pi";
 import { resolveLanguage } from "../iiif-utils";
@@ -31,10 +34,19 @@ const iiifQuery = async (collectionUuid: string, searchQuery: string, from: numb
 };
 
 export default function CollectionExplorer({ manifest, isCollection, manifestDataset }: { manifest: any, isCollection: boolean, manifestDataset?: string }) {
-    const [inputValue, setInputValue] = useState('');
-    const [searchQuery, setSearchQuery] = useState('');
-    const containerRef = useRef<HTMLDivElement>(null);
     const { isMobile } = useContext(GlobalContext);
+    const manifestUuid = manifest?.uuid as string | undefined;
+    const searchParams = useSearchParams();
+    const searchContext = useIIIFSessionStore((s) => s.searchContext);
+    const setSearchContext = useIIIFSessionStore((s) => s.setSearchContext);
+
+    // q in the URL is the source of truth for the current view
+    const initialQuery = searchParams.get('q') || '';
+
+    const [inputValue, setInputValue] = useState(initialQuery);
+    const [searchQuery, setSearchQuery] = useState(initialQuery);
+
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const {
         data,
@@ -87,7 +99,16 @@ export default function CollectionExplorer({ manifest, isCollection, manifestDat
     }, [handleScroll]);
 
     const submitSearch = () => {
-        setSearchQuery(inputValue);
+        const trimmed = inputValue.trim();
+        setSearchQuery(trimmed);
+
+        // Store single search context for "back to search"
+        const contextCollectionUuid = manifestUuid || null; // null represents top-level
+        if (trimmed) {
+            setSearchContext({ collectionUuid: contextCollectionUuid, query: trimmed });
+        } else if (searchContext && searchContext.collectionUuid === contextCollectionUuid) {
+            setSearchContext(null);
+        }
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -122,41 +143,48 @@ export default function CollectionExplorer({ manifest, isCollection, manifestDat
 
 
                 <div className={`flex flex-col lg:flex-row items-center gap-4 xl:mr-2`}>
-
-
-                    <div className='flex w-full xl:w-80 pr-1 items-center bg-white group shadow-lg rounded-md h-14 lg:h-12'>
-                        <input
-                            id={"search-input-" + manifest?.uuid}
-                            type="text"
-                            aria-label="Søk i arkivsamling"
-                            name="query"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            className="bg-transparent pr-2 px-4 focus:outline-none flex w-full shrink text-lg xl:text-base"
-                        />
-                        {inputValue && (
+                    <Form
+                        action={manifestUuid ? `/iiif/${manifestUuid}` : "/iiif"}
+                        onSubmitCapture={submitSearch}
+                        className="flex w-full xl:w-80"
+                    >
+                        <div className='flex w-full pr-1 items-center bg-white group shadow-lg lg:rounded-md h-14 lg:h-12'>
+                            <input
+                                id={"search-input-" + manifestUuid}
+                                type="text"
+                                aria-label="Søk i arkivsamling"
+                                name="q"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                className="bg-transparent pr-2 px-4 focus:outline-none flex w-full shrink text-lg xl:text-base"
+                            />
+                            {inputValue && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setInputValue('');
+                                        setSearchQuery('');
+                                        const contextCollectionUuid = manifestUuid || null;
+                                        if (searchContext && searchContext.collectionUuid === contextCollectionUuid) {
+                                            setSearchContext(null);
+                                        }
+                                    }}
+                                    className="m-1 p-1"
+                                    aria-label="Tøm søk"
+                                >
+                                    <PiX className="text-3xl lg:text-2xl text-neutral-800" />
+                                </button>
+                            )}
                             <button
-                                type="button"
-                                onClick={() => {
-                                    setInputValue('');
-                                    setSearchQuery('');
-                                }}
-                                className="m-1 p-1"
-                                aria-label="Tøm søk"
+                                type="submit"
+                                className="mr-1 p-1"
+                                aria-label="Søk"
                             >
-                                <PiX className="text-3xl lg:text-2xl text-neutral-800" />
+                                <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800" aria-hidden="true" />
                             </button>
-                        )}
-                        <button
-                            type="button"
-                            onClick={submitSearch}
-                            className="mr-1 p-1"
-                            aria-label="Søk"
-                        >
-                            <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800" aria-hidden="true" />
-                        </button>
-                    </div>
+                        </div>
+                    </Form>
                     <IIIFNeighbourNav manifest={manifest} isMobile={isMobile} />
                 </div>
 
