@@ -129,7 +129,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                                 }}
                                 className={`flex-shrink-0 inline-flex items-center justify-center p-0 w-6 h-6 rounded-full ${isActive ? 'text-accent-700 outline outline-1 outline-accent-700 bg-accent-50' : 'text-neutral-700 hover:bg-neutral-100'}`}
                             >
-                                <PiMapPinFill className="text-neutral-700 h-6 w-6" aria-hidden="true" />
+                                <PiMapPinFill className="text-primary-700 h-6 w-6" aria-hidden="true" />
                             </ClickableIcon>
                         )}
 

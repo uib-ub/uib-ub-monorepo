@@ -456,7 +456,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                     }}
                                     remove={['docIndex', 'doc', 'group', 'parent', 'activePoint']}
                                     add={{ group: stringToBase64Url(groupData.group.id) }}
-                                    className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 bg-white text-neutral-800 hover:bg-neutral-100"
+                                    className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
                                 >
                                     <PiMapPin aria-hidden="true" className="text-2xl" />
                                 </ClickableIcon>

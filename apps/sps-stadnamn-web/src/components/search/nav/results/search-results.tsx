@@ -304,7 +304,7 @@ export default function SearchResults() {
         (point && !init) && (
           <div className="p-3 flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <IconButton label="Gå til koordinatet" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><PiMapPinFill className="text-primary-700" /></IconButton>
+              <IconButton label="Gå til koordinat" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><PiMapPinFill className="text-primary-700" /></IconButton>
               {isEditingCoordinates ? (
                 <div className="flex items-center gap-2 flex-1">
                   <input
