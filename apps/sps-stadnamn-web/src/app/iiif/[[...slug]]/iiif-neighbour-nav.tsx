@@ -31,6 +31,7 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
     const navOpen = useIIIFSessionStore((s) => s.navOpen)
     const setNavOpen = useIIIFSessionStore((s) => s.setNavOpen)
     const searchContext = useIIIFSessionStore((s) => s.searchContext)
+    const setReturnFocusUuid = useIIIFSessionStore((s) => s.setReturnFocusUuid)
     const router = useRouter()
 
     if (!manifest) return null
@@ -248,6 +249,11 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
                     <RoundIconButton
                         className=""
                         href={backToSearchHref}
+                        onClick={() => {
+                            if (!isCollection && manifest?.uuid) {
+                                setReturnFocusUuid(manifest.uuid)
+                            }
+                        }}
                         label="Tilbake til søk"
                     >
                         <PiCaretLeftBold className="text-xl xl:text-base" />

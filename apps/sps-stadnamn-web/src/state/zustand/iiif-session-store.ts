@@ -20,6 +20,10 @@ export const useIIIFSessionStore = create<{
 	searchContext: { collectionUuid: string | null, query: string } | null,
 	setSearchContext: (ctx: { collectionUuid: string | null, query: string } | null) => void,
 
+	// Item to focus when returning from manifest back to search
+	returnFocusUuid: string | null,
+	setReturnFocusUuid: (uuid: string | null) => void,
+
 }>()((set) => ({
 
 	navOpen: (() => {
@@ -46,5 +50,8 @@ export const useIIIFSessionStore = create<{
 
 	searchContext: null,
 	setSearchContext: (ctx: { collectionUuid: string | null, query: string } | null) => set({ searchContext: ctx }),
+
+	returnFocusUuid: null,
+	setReturnFocusUuid: (uuid: string | null) => set({ returnFocusUuid: uuid }),
 
 }))	

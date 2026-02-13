@@ -39,14 +39,18 @@ export default function CollectionExplorer({ manifest, isCollection, manifestDat
     const searchParams = useSearchParams();
     const searchContext = useIIIFSessionStore((s) => s.searchContext);
     const setSearchContext = useIIIFSessionStore((s) => s.setSearchContext);
+    const returnFocusUuid = useIIIFSessionStore((s) => s.returnFocusUuid);
+    const setReturnFocusUuid = useIIIFSessionStore((s) => s.setReturnFocusUuid);
 
     // q in the URL is the source of truth for the current view
     const initialQuery = searchParams.get('q') || '';
 
     const [inputValue, setInputValue] = useState(initialQuery);
     const [searchQuery, setSearchQuery] = useState(initialQuery);
+    const [returnFocusHighlightUuid, setReturnFocusHighlightUuid] = useState<string | null>(null);
 
     const containerRef = useRef<HTMLDivElement>(null);
+    const focusHandledRef = useRef(false);
 
     const {
         data,
@@ -79,16 +83,34 @@ export default function CollectionExplorer({ manifest, isCollection, manifestDat
     const total = pages?.[0]?.hits?.total?.value || 0;
     const typeCounts = pages?.[0]?.aggregations?.types?.buckets || [];
 
-    const handleScroll = useCallback(() => {
-        if (!containerRef.current || isLoading) return;
+    const scrollKey = `iiif-scroll-${manifestUuid ?? 'root'}-${searchQuery}`;
 
-        const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+    useEffect(() => {
+        // Keep local state and session search context in sync with URL q on load/navigation.
+        setInputValue(initialQuery);
+        setSearchQuery(initialQuery);
+        const contextCollectionUuid = manifestUuid || null;
+        if (initialQuery.trim()) {
+            setSearchContext({ collectionUuid: contextCollectionUuid, query: initialQuery.trim() });
+        } else if (searchContext && searchContext.collectionUuid === contextCollectionUuid) {
+            setSearchContext(null);
+        }
+    }, [initialQuery, manifestUuid, setSearchContext]);
+
+    const handleScroll = useCallback(() => {
+        const container = containerRef.current;
+        if (!container || isLoading) return;
+
+        const { scrollTop, scrollHeight, clientHeight } = container;
+        try {
+            sessionStorage.setItem(scrollKey, String(scrollTop));
+        } catch { /* ignore */ }
         if (scrollHeight - scrollTop <= clientHeight * 3) {
             if (hasNextPage && !isFetchingNextPage) {
                 fetchNextPage();
             }
         }
-    }, [isLoading, hasNextPage, isFetchingNextPage, fetchNextPage]);
+    }, [isLoading, hasNextPage, isFetchingNextPage, fetchNextPage, scrollKey]);
 
     useEffect(() => {
         const container = containerRef.current;
@@ -97,6 +119,35 @@ export default function CollectionExplorer({ manifest, isCollection, manifestDat
             return () => container.removeEventListener('scroll', handleScroll);
         }
     }, [handleScroll]);
+
+    useEffect(() => {
+        if (!returnFocusUuid) {
+            focusHandledRef.current = false;
+            return;
+        }
+        if (focusHandledRef.current || isLoading) return;
+        const hasFocusItem = results.some((r: any) => r._source?.uuid === returnFocusUuid);
+        if (!hasFocusItem) return;
+        focusHandledRef.current = true;
+        const container = containerRef.current;
+        const uuidToFocus = returnFocusUuid;
+        if (container) {
+            try {
+                const saved = sessionStorage.getItem(scrollKey);
+                if (saved !== null) {
+                    const scrollTop = Number(saved);
+                    if (Number.isFinite(scrollTop)) container.scrollTop = scrollTop;
+                }
+            } catch { /* ignore */ }
+        }
+        // Focus after layout so we don't fight with other renders
+        setTimeout(() => {
+            const el = containerRef.current?.querySelector<HTMLElement>(`[data-uuid="${uuidToFocus}"]`);
+            el?.focus({ preventScroll: true });
+            setReturnFocusHighlightUuid(uuidToFocus);
+            setReturnFocusUuid(null);
+        }, 0);
+    }, [returnFocusUuid, results, isLoading, scrollKey, setReturnFocusUuid]);
 
     const submitSearch = () => {
         const trimmed = inputValue.trim();
@@ -197,7 +248,11 @@ export default function CollectionExplorer({ manifest, isCollection, manifestDat
                     const itemDataset = result._index.split('-')[2].split('_')[1]
                     return (
                         <Fragment key={result._id || index}>
-                            <FileCard item={result._source} itemDataset={itemDataset} />
+                            <FileCard
+                                item={result._source}
+                                itemDataset={itemDataset}
+                                isReturnFocus={returnFocusHighlightUuid === result._source?.uuid}
+                            />
                         </Fragment>
                     )
                 })}
