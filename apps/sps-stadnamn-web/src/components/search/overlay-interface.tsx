@@ -277,7 +277,7 @@ export default function OverlayInterface() {
                                     // On desktop, this is the actual scroll container for the right panel.
                                     // Wire it to the shared ref so components (e.g. GroupInfo) can scroll to top.
                                     ref={isMobile ? undefined : scrollableContentRef}
-                                    className={!isMobile ? "flex-1 overflow-auto min-h-0" : ""}
+                                    className={!isMobile ? "flex-1 overflow-y-scroll overflow-x-auto md:overflow-x-hidden min-h-0" : ""}
                                 >
                                     {showDebugGroups ? <DebugToggle /> : <SearchResults />}
                                 </div>
