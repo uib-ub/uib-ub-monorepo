@@ -63,7 +63,6 @@ const resources: FieldConfigItem = {
   valueMap: {
     "geo": "Koordinatar",
     "text": "Tekst",
-    "note": "Merknad",
     "image": "Skanna materiale",
     "phonetic": "Lydskrift",
     "audio": "Lyd"
