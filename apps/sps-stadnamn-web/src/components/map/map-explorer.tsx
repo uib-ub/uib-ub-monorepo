@@ -566,7 +566,7 @@ export default function MapExplorer() {
         //setDebugChildren([])
       }
       // When selecting a marker, always reset results to 1 (don't preserve previous expansions)
-      newQueryParams.set('maxResults', '1')
+      newQueryParams.set('maxResults', '4')
       newQueryParams.delete('mapSettings')
       //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
       newQueryParams.delete('doc')

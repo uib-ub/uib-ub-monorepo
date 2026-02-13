@@ -15,7 +15,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { PiCheck, PiMapPinFill, PiMinusBold, PiPencilSimpleBold, PiPlayFill, PiPlusBold, PiQuestion, PiX, PiXBold } from "react-icons/pi";
+import { PiCheck, PiMagnifyingGlass, PiMapPinFill, PiPencilSimpleBold, PiPlayFill, PiQuestion, PiX, PiXBold } from "react-icons/pi";
 import GroupInfo from "../../details/group/group-info";
 import ActiveFilters from "../../form/active-filters";
 import ResultItem from "./result-item";
@@ -43,6 +43,7 @@ export default function SearchResults() {
   const searchParams = useSearchParams()
   const init = searchParams.get('init')
   const group = searchParams.get('group')
+  const hasQParam = !!searchParams.get('q')?.trim()
   const resultsParam = parseInt(searchParams.get('maxResults') || '0') || 0
   const initValue = init ? base64UrlToString(init) : null
   const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
@@ -60,6 +61,7 @@ export default function SearchResults() {
   const previousPointRef = useRef<string | null>(null)
   const { totalHits } = useSearchData()
   const router = useRouter()
+  const initSearchLabel = initGroupData?.fields?.label?.[0]?.trim()
 
   // Unified function to stop editing
   const stopEditingCoordinates = () => {
@@ -136,15 +138,17 @@ export default function SearchResults() {
   const getAdditionalResultsCount = () => {
     if (!collapsedData) return 0
     const allHits = collapsedData.pages.flatMap((page: any) => page.data || [])
-    if (!initValue) {
-      return allHits.length
-    }
+    if (!initValue) return allHits.length
     return allHits.filter((hit: any) => hit.fields?.["group.id"]?.[0] !== initValue).length
   }
 
   // Check if there are no results
   const hasNoResults = collapsedStatus === 'success' && (!collapsedData?.pages || collapsedData.pages.length === 0 || collapsedData.pages[0].data?.length === 0);
   const hasOneResult = collapsedStatus === 'success' && collapsedData?.pages && collapsedData.pages.length === 1 && collapsedData.pages[0].data?.length === 1;
+  const hasMaxResultsLimit = resultsParam > 0
+  const maxAdditionalVisible = hasMaxResultsLimit
+    ? Math.max(resultsParam - (initValue ? 1 : 0), 0)
+    : Number.POSITIVE_INFINITY;
 
   // Derived: should "Fleire namnegrupper" and the list of other groups be visible?
   // For init on desktop, this is controlled solely by resultsParam (>1 means expanded).
@@ -379,43 +383,33 @@ export default function SearchResults() {
         </div>
       ))}
 
-      {init && !isMobile && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
+      {init && !isMobile && !hasQParam && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
         </div>
       ) : (
-        <button
-          onClick={() => {
-            const nextShow = !showOtherResults
-            const newParams = new URLSearchParams(searchParams)
-            if (nextShow) {
-              const currentAdditional = getAdditionalResultsCount()
-              const base = initValue ? 1 : 0
-              const desiredAdditional = Math.max(currentAdditional, 1) // at least one extra group
-              const newResultsValue = base + desiredAdditional
-              const currentResults = resultsParam || base
-              newParams.set('maxResults', String(Math.max(currentResults, newResultsValue)))
-            } else {
-              // Collapse back to only init group
-              const base = initValue ? 1 : 0
-              newParams.set('maxResults', String(base || 1))
-            }
-            router.push(`?${newParams.toString()}`)
-          }}
-          className="w-full text-left border-t border-neutral-200 py-2 px-3 hover:bg-neutral-50 transition-colors flex items-center gap-2 text-neutral-950"
-          aria-expanded={showOtherResults}
-        >
-          {showOtherResults ? <PiMinusBold className="inline self-center text-lg text-primary-700" /> : <PiPlusBold className="inline self-center text-primary-700 text-lg" />}
-          <span className="text-lg">Fleire namnegrupper</span>
-        </button>
+        <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2 text-neutral-950">
+          <span id="other-groups-title" className="xl:text-lg font-sans text-neutral-900">Fleire namnegrupper</span>
+          {initSearchLabel && (
+            <Clickable
+              link
+              add={{ q: initSearchLabel, maxResults: '10' }}
+              className="ml-auto btn btn-outline btn-sm rounded-full"
+              aria-label={`Avgrens til ${initSearchLabel}`}
+            >
+              <PiMagnifyingGlass className="text-base" aria-hidden="true" />
+              <span className="ml-1">{initSearchLabel}</span>
+            </Clickable>
+          )}
+        </div>
       )) : null}
 
       {(!init || showOtherResults || isMobile || hasOneResult) && (
         <>
           <SearchQueryDisplay />
 
-          <ul id="result_list" className={`flex flex-col divide-y divide-neutral-300 ${init && !isMobile && showOtherResults ? 'border-b' : 'border-y'} border-neutral-200`}>
+          <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-300 ${init && !isMobile && showOtherResults ? 'border-b' : 'border-y'} border-neutral-200`}>
 
 
             {(initGroupLoading || collapsedLoading && collapsedInitialPage === 1) ? Array.from({ length: collapsedInitialPage === 1 ? 6 : 40 }).map((_, i) => (
@@ -424,16 +418,20 @@ export default function SearchResults() {
                 <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `${getSkeletonLength(i, 10, 16)}rem` }}></div>
               </div>
             )) :
-              collapsedData?.pages.map((page: any, pageIndex: number) => {
+              (() => {
+                let renderedAdditional = 0
+                return collapsedData?.pages.map((page: any, pageIndex: number) => {
                 const isLastPage = pageIndex === (collapsedData?.pages.length || 0) - 1
                 return (
                   <Fragment key={`page-${pageIndex}`}>
                     {page.data?.map((item: any) => {
                       if (initValue && item.fields["group.id"]?.[0] == initValue) return null;
+                      if (renderedAdditional >= maxAdditionalVisible) return null;
                       if (!item.fields["group.id"]) {
                         console.log("No group ID", item);
                         return null
                       }
+                      renderedAdditional += 1
                       return (
                         <CollapsibleResultItem
                           key={item.fields["group.id"]?.[0]}
@@ -457,7 +455,7 @@ export default function SearchResults() {
 
                             const newParams = new URLSearchParams(searchParams)
                             newParams.set('maxResults', String(newResultsValue))
-                            router.push(`?${newParams.toString()}`)
+                            router.push(`?${newParams.toString()}`, { scroll: false })
 
                             collapsedFetchNextPage()
                           }}
@@ -479,7 +477,7 @@ export default function SearchResults() {
                     )}
                   </Fragment>
                 )
-              })}
+              })})()}
           </ul>
         </>
       )}

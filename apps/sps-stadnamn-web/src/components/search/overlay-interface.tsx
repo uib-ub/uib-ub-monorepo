@@ -59,7 +59,7 @@ function ShowResultsButton() {
     return <div className="p-2 fixed bottom-2 left-0 right-0 z-[3001]">
         <Clickable remove={["facet", "options"]}
             // results: integer – 1 expands sources, >1 also expands "fleire namnegrupper"
-            add={{ maxResults: '1' }}
+            add={{ maxResults: '5' }}
             onClick={() => mode == 'table' ? setSnappedPosition('bottom') : null}
             className="w-full h-12 btn text-xl relative rounded-full">
             Vis resultat <Badge className="bg-primary-50 text-neutral-800 font-semibold px-2 absolute right-4" count={totalHits?.value || 0} /></Clickable></div>

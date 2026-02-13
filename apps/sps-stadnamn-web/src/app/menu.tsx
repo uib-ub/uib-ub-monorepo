@@ -94,7 +94,7 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 onClick={() => setMenuOpen(false)}
                                 aria-current={isMapActive ? 'page' : undefined}
                                 remove={['mode', 'tree', 'activePoint', 'group']}
-                                add={{ maxResults: '1', init: searchParams.get('group') }}
+                                add={{ maxResults: '5', init: searchParams.get('group') }}
                                 className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
                                 ${isMapActive
                                         ? 'bg-accent-800 text-white font-semibold'
