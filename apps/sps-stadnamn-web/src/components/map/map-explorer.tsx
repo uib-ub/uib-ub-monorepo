@@ -995,12 +995,9 @@ export default function MapExplorer() {
                       point && initValue
                         ? point
                         : [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]];
-                    if (!(point && initValue)) {
-                      fitBoundsToGroupSources(mapInstance.current, groupData);
+                    if (mapInstance.current) {
+                      mapInstance.current.setView([centralLat, centralLng], 18);
                     }
-                    const newParams = new URLSearchParams(searchParams);
-                    newParams.set('activePoint', `${centralLat},${centralLng}`);
-                    router.push(`?${newParams.toString()}`);
                   },
                   keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
                     const key = e.originalEvent?.key ?? e.key
@@ -1010,12 +1007,9 @@ export default function MapExplorer() {
                         point && initValue
                           ? point
                           : [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]];
-                      if (!(point && initValue)) {
-                        fitBoundsToGroupSources(mapInstance.current, groupData);
+                      if (mapInstance.current) {
+                        mapInstance.current.setView([centralLat, centralLng], 18);
                       }
-                      const newParams = new URLSearchParams(searchParams);
-                      newParams.set('activePoint', `${centralLat},${centralLng}`);
-                      router.push(`?${newParams.toString()}`);
                     }
                   }
                 }}
