@@ -98,6 +98,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
   },
   bsn: {
     ...required, adm, adm1, adm2,
+    resources,
     "rawData.komm": { label: "Kommentar" }, ...note,
     "rawData.loktype.type": { label: "Lokalitetstype", description: "Ustandardisert lokalitetstype", table, facet },
     "rawData.oppskr.os_navn": { label: "Oppskriver", facet },
