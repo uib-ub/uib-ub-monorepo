@@ -655,7 +655,8 @@ export default function MapExplorer() {
       }}
       attributionControl={false}
       zoomSnap={0.5}
-      zoomDelta={0.5}
+      zoomDelta={1}
+      wheelPxPerZoomLevel={30}
       zoom={urlZoom || defaultZoom}
       center={urlCenter || defaultCenter}
       className={`absolute top-0 right-0 left-0 select-none`}
@@ -775,7 +776,7 @@ export default function MapExplorer() {
           if (mapInstance.current) {
             const currentZoom = mapInstance.current.getZoom?.() ?? 18
             const maxZoom = mapInstance.current.getMaxZoom?.() ?? 20
-            const nextZoom = Math.min(currentZoom + 1, maxZoom)
+            const nextZoom = Math.min(currentZoom + 2, maxZoom)
             mapInstance.current.setView([centralLat, centralLng], nextZoom)
           }
 
