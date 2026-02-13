@@ -13,7 +13,7 @@ import { useSessionStore } from '@/state/zustand/session-store';
 import { useQuery } from '@tanstack/react-query';
 import Form from 'next/form';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { PiCaretLeftBold, PiMagnifyingGlass, PiMapPinFill, PiSliders, PiWall, PiX } from 'react-icons/pi';
 
@@ -46,7 +46,6 @@ export default function SearchForm() {
     const snappedPosition = useSessionStore((s: any) => s.snappedPosition)
     const currentPosition = useSessionStore((s: any) => s.currentPosition)
     const datasetTag = searchParams.get('datasetTag')
-    const router = useRouter()
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
     const options = searchParams.get('options')
     const maxResults = searchParams.get('maxResults')
@@ -316,7 +315,7 @@ export default function SearchForm() {
                     aria-expanded={autocompleteOpen}
                     maxLength={200}
                     ref={input}
-                    name="q"
+                    name={inputState.trim() ? 'q' : undefined}
                     key={urlQuery}
                     defaultValue={urlQuery}
                     autoComplete="off"
@@ -364,7 +363,7 @@ export default function SearchForm() {
                 {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''} />}
 
                 {inputState && !menuOpen &&
-                    <ClickableIcon label="Tøm" onClick={() => { clearQuery() }}>
+                    <ClickableIcon label="Tøm" remove={['q', 'maxResults']} replace onClick={() => { clearQuery() }}>
                         <PiX className="text-3xl lg:text-2xl text-neutral-800 group-focus-within:text-neutral-800 m-1" /></ClickableIcon>}
                 <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800" aria-hidden="true" /></button>
             </div>
