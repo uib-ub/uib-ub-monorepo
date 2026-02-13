@@ -250,7 +250,9 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
                         className=""
                         href={backToSearchHref}
                         onClick={() => {
-                            if (!isCollection && manifest?.uuid) {
+                            // Works for both Manifest and Collection detail pages.
+                            // We always want to focus the opened result card when returning.
+                            if (manifest?.uuid) {
                                 setReturnFocusUuid(manifest.uuid)
                             }
                         }}
