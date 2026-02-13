@@ -338,7 +338,11 @@ export default function MapExplorer() {
         }
 
         bucket.groups.buckets.forEach((group: any) => {
-          const top_hit: Record<string, any> = group.top.hits.hits[0]
+          const top_hit: Record<string, any> = {
+            ...group.top.hits.hits[0],
+            // Used in points mode to slightly scale marker size by number of sources.
+            sourceCount: group.doc_count || 1,
+          }
           if (seenGroups.has(top_hit.fields["group.id"]?.[0])) {
             return
           }
@@ -906,6 +910,9 @@ export default function MapExplorer() {
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const labelText = getDisplayLabel(item.fields)
                 const isHovered = activeMarkerMode === 'points' && hoveredPointKey === item.fields.uuid[0]
+                const pointRadius = activeMarkerMode === 'points'
+                  ? Math.min(9, 6 + Math.log2(Math.max(1, item.sourceCount || 1)) * 0.8)
+                  : 6
                 const icon = getLabelMarkerIcon(labelText, markerColor, childCount, false, false, false)
 
 
@@ -940,10 +947,10 @@ export default function MapExplorer() {
                           <CircleMarker
                             key={`result-${item.fields.uuid[0]}`}
                             center={[lat, lng]}
-                            radius={6}
+                            radius={pointRadius}
                             pathOptions={{
                               color: '#000000',
-                              weight: 2,
+                              weight: 1,
                               fillColor: '#ffffff',
                               opacity: 1,
                               fillOpacity: 0.8,
