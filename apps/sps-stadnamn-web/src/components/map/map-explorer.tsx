@@ -71,6 +71,7 @@ export default function MapExplorer() {
   const treeState = useMemo(() => parseTreeParam(tree), [tree])
   const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
   const mapSettings = searchParams.get('mapSettings') == 'on'
+  const hasGroupParam = Boolean(searchParams.get('group'))
   const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
   const activePoint = searchParams.get('activePoint') ? (searchParams.get('activePoint')!.split(',').map(parseFloat) as [number, number]) : null
   const urlRadius = searchParams.get('radius') ? parseInt(searchParams.get('radius')!) : null
@@ -774,9 +775,7 @@ export default function MapExplorer() {
           if (!groupData?.fields?.location?.[0]?.coordinates) return
 
           const [centralLat, centralLng] =
-            point && initValue
-              ? point
-              : [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]
+            [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]
 
           if (mapInstance.current) {
             const currentZoom = mapInstance.current.getZoom?.() ?? 18
@@ -906,6 +905,7 @@ export default function MapExplorer() {
                 if (selected || activePoint) return null
 
                 const isInit = initValue && item.fields?.["group.id"]?.[0] == initValue
+                if (hasGroupParam && isInit) return null
                 const markerColor = isInit ? 'black' : 'white'
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
@@ -1022,11 +1022,9 @@ export default function MapExplorer() {
                   )
                 )}
                 position={
-                  point && initValue
-                    ? point
-                    : groupData.fields?.location?.[0]?.coordinates
-                      ? [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]
-                      : null
+                  groupData.fields?.location?.[0]?.coordinates
+                    ? [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]
+                    : null
                 }
                 eventHandlers={{
                   click: focusGroupMarker,
@@ -1040,6 +1038,29 @@ export default function MapExplorer() {
                 }}
               >
               </Marker>
+            )}
+            {hasGroupParam && !activePoint && initGroupData?.fields?.location?.[0]?.coordinates && (
+              <Marker
+                zIndexOffset={1500}
+                icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))}
+                position={[initGroupData.fields.location[0].coordinates[1], initGroupData.fields.location[0].coordinates[0]]}
+                eventHandlers={{
+                  click: () => {
+                    const newParams = new URLSearchParams(searchParams)
+                    newParams.delete('group')
+                    router.push(`?${newParams.toString()}`)
+                  },
+                  keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                    const key = e.originalEvent?.key ?? e.key
+                    if (key === 'Enter' || key === ' ') {
+                      ;(e.originalEvent ?? e).preventDefault()
+                      const newParams = new URLSearchParams(searchParams)
+                      newParams.delete('group')
+                      router.push(`?${newParams.toString()}`)
+                    }
+                  }
+                }}
+              />
             )}
 
             {

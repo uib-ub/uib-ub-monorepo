@@ -131,6 +131,19 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         return { iiifItems, textItems, audioItems, datasets, locations, uniqueCoordinates: Array.from(coordSet) }
     }, [groupData, searchDatasets])
 
+    const markerCoords = groupData?.fields?.location?.[0]?.coordinates
+    const groupMarkerPosition: [number, number] | null =
+        (Array.isArray(markerCoords) && markerCoords.length >= 2)
+            ? (() => {
+                const lat = Number(markerCoords[1])
+                const lng = Number(markerCoords[0])
+                return Number.isFinite(lat) && Number.isFinite(lng) ? [lat, lng] : null
+            })()
+            : null
+    // Match the marker position after selecting this group ("Vel namnegruppe").
+    // The new accent marker should be the group's marker coordinate.
+    const preferredFlyTarget: [number, number] | null = groupMarkerPosition
+
     const showNamesTab = useMemo(() => {
         // Replicate NamesTab's filter determinism: timeline or names without year
         const nameToYears: Record<string, Set<string>> = {}
@@ -313,7 +326,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             }
             {textItems.length > 0 && !activePoint && <TextTab textItems={textItems} />}
 
-            <div className="min-w-0 w-full flex flex-col pb-4">
+            <div className="min-w-0 w-full flex flex-col">
                 {/* Names section (includes timeline) - only show in init group when no activePoint filter is active */}
                 {shouldShowLabelFilter && initValue === groupData.group.id && !searchParams.get('activePoint') &&
                     <div className="px-3 pt-2">
@@ -413,17 +426,12 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             </div>
 
 
-            {initValue !== groupData.group.id && (
-                <div className="px-3 ml-auto mt-auto">
-                    <div className="flex flex-row items-center gap-2">
+            <div className="px-3 ml-auto mt-auto">
+                <div className="flex flex-row items-center gap-2">
                         
 
                         {(() => {
-                            const firstWithCoords = locations.find(
-                                (loc: any) => loc?.location?.coordinates?.length >= 2
-                            );
-
-                            if (!firstWithCoords) {
+                            if (!preferredFlyTarget) {
                                 return (
                                     <span className="text-sm text-neutral-600 px-2 whitespace-nowrap">
                                         Utan koordinat
@@ -431,18 +439,18 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                 );
                             }
 
-                            const [lng, lat] = firstWithCoords.location.coordinates;
-
                             return (
                                 <ClickableIcon
                                     label="Gå til koordinat"
                                     onClick={() => {
                                         mapFunctionRef.current?.flyTo(
-                                            [lat, lng],
+                                            preferredFlyTarget,
                                             15,
                                             { duration: 0.25, maxZoom: 18, padding: [50, 50] }
                                         );
                                     }}
+                                    remove={['docIndex', 'doc', 'group', 'parent', 'activePoint']}
+                                    add={{ group: stringToBase64Url(groupData.group.id) }}
                                     className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 bg-white text-neutral-800 hover:bg-neutral-100"
                                 >
                                     <PiMapPin aria-hidden="true" className="text-2xl" />
@@ -450,35 +458,30 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                             );
                         })()}
 
-                        <ClickableIcon
-                            label="Vel namnegruppe"
-                            onClick={() => {
-                                // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
-                                // The subsequent URL param update can remount components quickly, so do this eagerly.
-                                if (scrollableContentRef.current) {
-                                    scrollableContentRef.current.scrollTo({
-                                        top: 0,
-                                        behavior: 'auto'
-                                    })
-                                }
-                                // Fit bounds to group sources when coordinates are available
-                                if (locations.some((loc: any) => loc?.location?.coordinates)) {
-                                    fitBoundsToGroupSources(mapFunctionRef.current, groupData);
-                                }
-                            }}
-                            remove={['group', 'activePoint', 'activeYear', 'activeName']}
-                            add={{
-                                // When pinning a group ("vel"), treat it as a fresh init selection.
-                                init: stringToBase64Url(groupData.group.id),
-                                maxResults: defaultMaxResultsParam
-                            }}
-                            className="btn btn-neutral inline-flex items-center justify-center w-12 h-12 rounded-full text-xl"
-                        >
-                            <PiPushPin aria-hidden="true" className="text-2xl" />
-                        </ClickableIcon>
+                        {initValue !== groupData.group.id && (
+                            <ClickableIcon
+                                label="Vel namnegruppe"
+                                onClick={() => {
+                                    // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
+                                    // The subsequent URL param update can remount components quickly, so do this eagerly.
+                                    if (preferredFlyTarget) {
+                                        mapFunctionRef.current?.flyTo(preferredFlyTarget, 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+                                    }
+                                    
+                                }}
+                                remove={['group', 'point', 'activePoint', 'activeYear', 'activeName']}
+                                add={{
+                                    // When pinning a group ("vel"), treat it as a fresh init selection.
+                                    init: stringToBase64Url(groupData.group.id),
+                                    maxResults: defaultMaxResultsParam
+                                }}
+                                className="btn btn-neutral inline-flex items-center justify-center w-12 h-12 rounded-full text-xl"
+                            >
+                                <PiPushPin aria-hidden="true" className="text-2xl" />
+                            </ClickableIcon>
+                        )}
                     </div>
                 </div>
-            )}
 
         </div>
     );
