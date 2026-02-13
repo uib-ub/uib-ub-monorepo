@@ -384,7 +384,7 @@ export default function SearchResults() {
         </div>
       ))}
 
-      {init && !isMobile && !hasQParam && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
+      {init && !hasQParam && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
