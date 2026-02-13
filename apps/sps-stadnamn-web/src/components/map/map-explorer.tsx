@@ -764,6 +764,36 @@ export default function MapExplorer() {
         }
 
 
+        const focusGroupMarker = () => {
+          if (!groupData?.fields?.location?.[0]?.coordinates) return
+
+          const [centralLat, centralLng] =
+            point && initValue
+              ? point
+              : [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]
+
+          if (mapInstance.current) {
+            const currentZoom = mapInstance.current.getZoom?.() ?? 18
+            const maxZoom = mapInstance.current.getMaxZoom?.() ?? 20
+            const nextZoom = Math.min(currentZoom + 1, maxZoom)
+            mapInstance.current.setView([centralLat, centralLng], nextZoom)
+          }
+
+          const newParams = new URLSearchParams(searchParams)
+          const hasMaxResults = newParams.has('maxResults')
+          const hasMapSettings = newParams.has('mapSettings')
+
+          if (!hasMaxResults) {
+            newParams.set('maxResults', '1')
+          }
+          if (hasMapSettings) {
+            newParams.delete('mapSettings')
+          }
+          if (!hasMaxResults || hasMapSettings) {
+            router.push(`?${newParams.toString()}`)
+          }
+        }
+
         return (
 
           <>
@@ -990,26 +1020,12 @@ export default function MapExplorer() {
                       : null
                 }
                 eventHandlers={{
-                  click: () => {
-                    const [centralLat, centralLng] =
-                      point && initValue
-                        ? point
-                        : [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]];
-                    if (mapInstance.current) {
-                      mapInstance.current.setView([centralLat, centralLng], 18);
-                    }
-                  },
+                  click: focusGroupMarker,
                   keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
                     const key = e.originalEvent?.key ?? e.key
                     if (key === 'Enter' || key === ' ') {
                       ;(e.originalEvent ?? e).preventDefault()
-                      const [centralLat, centralLng] =
-                        point && initValue
-                          ? point
-                          : [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]];
-                      if (mapInstance.current) {
-                        mapInstance.current.setView([centralLat, centralLng], 18);
-                      }
+                      focusGroupMarker()
                     }
                   }
                 }}
