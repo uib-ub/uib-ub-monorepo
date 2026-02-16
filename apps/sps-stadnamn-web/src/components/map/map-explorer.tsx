@@ -927,8 +927,8 @@ export default function MapExplorer() {
                 const labelText = getDisplayLabel(item.fields)
                 const isHovered = activeMarkerMode === 'points' && hoveredPointKey === item.fields.uuid[0]
                 
-                const pointBaseRadius = isMobile ? 9 : 6.2
-                const pointMaxRadius = isMobile ? 10.8 : 8.2
+                const pointBaseRadius = isMobile ? 7 : 6.2
+                const pointMaxRadius = isMobile ? 8.8 : 8.2
                 const pointGrowthFactor = isMobile ? 0.5 : 0.45
                 const pointRadius = activeMarkerMode === 'points'
                   ? Math.min(pointMaxRadius, pointBaseRadius + Math.log2(Math.max(1, item.sourceCount || 1)) * pointGrowthFactor)
