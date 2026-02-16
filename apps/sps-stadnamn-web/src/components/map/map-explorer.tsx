@@ -246,13 +246,14 @@ export default function MapExplorer() {
   }
 
   const [markerCells, setMarkerCells] = useState<GeotileCell[]>([])
-  const [hoveredPointKey, setHoveredPointKey] = useState<string | null>(null)
 
   // Cluster if:
   // Cluster mode
   // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
-  const activeMarkerMode = markerMode === 'auto' ? (searchParams.get('q') ? (zoomState < 14 ? 'counts' : 'points') : 'labels') : markerMode
+  const activeMarkerMode = markerMode === 'auto'
+    ? (searchParams.get('q') ? (zoomState < 14 ? 'counts' : 'points') : 'labels')
+    : (markerMode === 'circles' ? 'points' : markerMode)
 
 
 
@@ -307,7 +308,7 @@ export default function MapExplorer() {
     const seenGroups = new Set<string>()
 
     buckets.forEach((bucket: any) => {
-      if (zoomState > 15 || activeMarkerMode == 'labels' || activeMarkerMode == 'circles' || activeMarkerMode == 'points' || bucket.doc_count == 1) {
+      if (zoomState > 15 || activeMarkerMode == 'labels' || activeMarkerMode == 'points' || bucket.doc_count == 1) {
 
 
         const [z, x, y] = bucket.key.split('/').map(Number);
@@ -352,8 +353,6 @@ export default function MapExplorer() {
         bucket.groups.buckets.forEach((group: any) => {
           const top_hit: Record<string, any> = {
             ...group.top.hits.hits[0],
-            // Used in circles mode to slightly scale marker size by number of sources.
-            sourceCount: group.doc_count || 1,
             // In cluster mode, singletons should render as black pin markers.
             isClusterSingleton: activeMarkerMode === 'counts' && bucket.doc_count === 1,
           }
@@ -362,8 +361,8 @@ export default function MapExplorer() {
           }
           seenGroups.add(top_hit.fields["group.id"]?.[0])
 
-          // Circles/points mode: no overlap logic – show every group as its own marker, allow them close together
-          if (activeMarkerMode === 'circles' || activeMarkerMode === 'points') {
+          // Points mode: no overlap logic – show every group as its own marker, allow them close together.
+          if (activeMarkerMode === 'points') {
             if (!labeledMarkersLookup[bucket.key]) {
               labeledMarkersLookup[bucket.key] = []
             }
@@ -785,7 +784,7 @@ export default function MapExplorer() {
 
         const focusGroupMarker = () => {
           const pointFocusTarget =
-            (activeMarkerMode === 'circles' || activeMarkerMode === 'labels' || activeMarkerMode === 'points') && point
+            (activeMarkerMode === 'labels' || activeMarkerMode === 'points') && point
               ? point
               : null
           const groupFocusTarget = groupData?.fields?.location?.[0]?.coordinates
@@ -924,7 +923,7 @@ export default function MapExplorer() {
                 const isAtActivePoint = Boolean(point && Math.abs(lat - point[0]) < 0.000001 && Math.abs(lng - point[1]) < 0.000001)
                 const shouldHideUnlabeledActiveAreaMarker = activeGroupHasArea && (isActiveGroupMarker || isAtActivePoint)
                 if (activePoint) return null
-                if (selected && activeMarkerMode !== 'circles' && activeMarkerMode !== 'points') return null
+                if (selected && activeMarkerMode !== 'points') return null
 
                 const isInit = initValue && item.fields?.["group.id"]?.[0] == initValue
                 if (hasGroupParam && isInit) return null
@@ -932,7 +931,6 @@ export default function MapExplorer() {
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const labelText = getDisplayLabel(item.fields)
-                const isHovered = activeMarkerMode === 'circles' && hoveredPointKey === item.fields.uuid[0]
                 const pointMarkerTooltip = !isMobile ? (
                   <Tooltip direction="top" offset={[0, -20]} opacity={1} className="point-marker-tooltip">
                     <div className="px-2 py-0.5 text-sm tracking-wide text-black bg-white/90 rounded-md shadow-lg whitespace-nowrap">
@@ -940,13 +938,6 @@ export default function MapExplorer() {
                     </div>
                   </Tooltip>
                 ) : null
-                
-                const pointBaseRadius = isMobile ? 7 : 6.2
-                const pointMaxRadius = isMobile ? 8.8 : 8.2
-                const pointGrowthFactor = isMobile ? 0.5 : 0.45
-                const pointRadius = activeMarkerMode === 'circles'
-                  ? Math.min(pointMaxRadius, pointBaseRadius + Math.log2(Math.max(1, item.sourceCount || 1)) * pointGrowthFactor)
-                  : null
                 
                 const icon = getLabelMarkerIcon(labelText, markerColor, childCount, false, false, false)
 
@@ -976,27 +967,9 @@ export default function MapExplorer() {
                         />
                       ))
                     }
-                    {(activeMarkerMode === 'circles' || activeMarkerMode === 'points' || activeGroupValue != item.fields?.["group.id"]?.[0]) && (
+                    {(activeMarkerMode === 'points' || activeGroupValue != item.fields?.["group.id"]?.[0]) && (
                       <>
-                        {activeMarkerMode === 'circles' ? (
-                          <CircleMarker
-                            key={`result-${item.fields.uuid[0]}`}
-                            center={[lat, lng]}
-                            radius={pointRadius}
-                            pathOptions={{
-                              color: 'black',
-                              weight: 1,
-                              fillColor: 'white',
-                              fillOpacity: 0.6,
-                              className: 'point-marker-button',
-                            }}
-                            eventHandlers={{
-                              ...selectDocHandler(item, [lat, lng]),
-                              mouseover: () => setHoveredPointKey(item.fields.uuid[0]),
-                              mouseout: () => setHoveredPointKey(null),
-                            }}
-                          />
-                        ) : activeMarkerMode === 'points' ? (
+                        {activeMarkerMode === 'points' ? (
                           shouldHideUnlabeledActiveAreaMarker ? null : (
                             <Marker
                               key={`result-${item.fields.uuid[0]}`}
@@ -1027,18 +1000,6 @@ export default function MapExplorer() {
                             icon={new leaflet.DivIcon(icon)}
                             riseOnHover={true}
                             eventHandlers={selectDocHandler(item, [lat, lng])}
-                          />
-                        )}
-                        { !isMobile && activeMarkerMode === 'circles' && isHovered && (
-                          <Marker
-                            key={`result-label-hover-${item.fields.uuid[0]}`}
-                            position={[lat, lng]}
-                            zIndexOffset={1000}
-                            icon={new leaflet.DivIcon({
-                              ...getLabelMarkerIcon(labelText, markerColor, undefined, false, false, true),
-                              className: 'point-marker-hover-label',
-                            })}
-                            eventHandlers={{}}
                           />
                         )}
                       </>
@@ -1082,7 +1043,7 @@ export default function MapExplorer() {
                     )
                 )}
                 position={
-                  (activeMarkerMode === 'circles' || activeMarkerMode === 'labels' || activeMarkerMode === 'points') && point
+                  (activeMarkerMode === 'labels' || activeMarkerMode === 'points') && point
                     ? point
                     : (
                       groupData.fields?.location?.[0]?.coordinates

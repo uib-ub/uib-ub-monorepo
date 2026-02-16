@@ -37,12 +37,16 @@ export const useMapSettings = create<MapSettings>()(
     }),
     {
       name: 'map-settings',
-      version: 2,
-      migrate: (persistedState: any, version: number) => {
-        if (version < 2 && persistedState?.markerMode === 'points') {
+      version: 3,
+      migrate: (persistedState: any) => {
+        if (!persistedState) {
+          return persistedState
+        }
+        // "circles" mode has been removed; normalize old persisted values.
+        if (persistedState.markerMode === 'circles') {
           return {
             ...persistedState,
-            markerMode: 'circles'
+            markerMode: 'points'
           }
         }
         return persistedState
