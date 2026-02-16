@@ -931,7 +931,7 @@ export default function MapExplorer() {
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const labelText = getDisplayLabel(item.fields)
-                const pointMarkerTooltip = !isMobile ? (
+                const pointMarkerTooltip = (!isMobile && !isAtActivePoint) ? (
                   <Tooltip direction="top" offset={[0, -20]} opacity={1} className="point-marker-tooltip">
                     <div className="px-2 py-0.5 text-sm tracking-wide text-black bg-white/90 rounded-md shadow-lg whitespace-nowrap">
                       {labelText}
