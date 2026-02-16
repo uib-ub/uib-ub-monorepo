@@ -46,8 +46,6 @@ const formatDistance = (meters: number) => {
 export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hit: any, onClick?: () => void, notClickable?: boolean } & Record<string, any>) {
     const perspective = usePerspective()
     const searchParams = useSearchParams()
-    const doc = searchParams.get('doc')
-    const nav = searchParams.get('nav')
     const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit._index?.split('-')?.[2]
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
@@ -57,10 +55,6 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
 
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
     const { activeGroupValue, initValue } = useGroup()
-    const maxResults = searchParams.get('maxResults')
-
-
-
 
     const label = hit.fields?.label?.[0] || ''
 
@@ -125,7 +119,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
         </Clickable>
         {(initValue && initValue == hit.fields["group.id"][0]) && (
             <div className="p-3">
-                <ClickableIcon className="h-6 w-6 p-0 rounded-full btn btn-outline text-neutral-700" label="Lukk namnegruppe" remove={['init', 'activePoint']}>
+                <ClickableIcon className="h-6 w-6 p-0 rounded-full btn btn-outline text-neutral-700" label="Lukk namnegruppe" remove={['init', 'activePoint', 'point' ]}>
                     <PiXBold />
                 </ClickableIcon>
             </div>

@@ -1,9 +1,10 @@
 'use client'
 import { baseMapLookup } from "@/config/basemap-config";
+import { defaultMaxResultsParam } from "@/config/max-results";
 import { useSearchQuery } from "@/lib/search-params";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
+import { getAreaLabelMarkerIcon, getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 
 import { boundsFromZoomAndCenter, calculateRadius, fitBoundsToGroupSources, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
@@ -70,6 +71,7 @@ export default function MapExplorer() {
   const treeState = useMemo(() => parseTreeParam(tree), [tree])
   const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
   const mapSettings = searchParams.get('mapSettings') == 'on'
+  const hasGroupParam = Boolean(searchParams.get('group'))
   const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
   const activePoint = searchParams.get('activePoint') ? (searchParams.get('activePoint')!.split(',').map(parseFloat) as [number, number]) : null
   const urlRadius = searchParams.get('radius') ? parseInt(searchParams.get('radius')!) : null
@@ -93,6 +95,16 @@ export default function MapExplorer() {
   const treeDataset = treeState?.dataset
   const treeUuid = treeState?.uuid
   const lastTreeFitKeyRef = useRef<string | null>(null)
+  const areaSource = useMemo(
+    () =>
+      (doc
+        ? groupData?.sources?.find((source: Record<string, any>) => source.uuid === doc && source.area)
+        : undefined) ??
+      groupData?.sources?.find((source: Record<string, any>) => source.area),
+    [doc, groupData?.sources]
+  )
+  const activeGroupHasArea = Boolean(areaSource?.area)
+  const initGroupHasArea = Boolean(initGroupData?.sources?.some((source: Record<string, any>) => source.area))
 
   // Tree mode overlay data: selected cadastral unit + its subunits (bruk)
   const { data: treeUnitDoc } = useQuery({
@@ -234,13 +246,14 @@ export default function MapExplorer() {
   }
 
   const [markerCells, setMarkerCells] = useState<GeotileCell[]>([])
-  const [hoveredPointKey, setHoveredPointKey] = useState<string | null>(null)
 
   // Cluster if:
   // Cluster mode
   // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
-  const activeMarkerMode = markerMode === 'auto' ? (searchParams.get('q') && zoomState < 10 ? 'counts' : (zoomState < 7 ? 'points' : 'labels')) : markerMode
+  const activeMarkerMode = markerMode === 'auto'
+    ? (searchParams.get('q') ? (zoomState < 14 ? 'counts' : 'points') : 'labels')
+    : (markerMode === 'circles' ? 'points' : markerMode)
 
 
 
@@ -338,13 +351,17 @@ export default function MapExplorer() {
         }
 
         bucket.groups.buckets.forEach((group: any) => {
-          const top_hit: Record<string, any> = group.top.hits.hits[0]
+          const top_hit: Record<string, any> = {
+            ...group.top.hits.hits[0],
+            // In cluster mode, singletons should render as black pin markers.
+            isClusterSingleton: activeMarkerMode === 'counts' && bucket.doc_count === 1,
+          }
           if (seenGroups.has(top_hit.fields["group.id"]?.[0])) {
             return
           }
           seenGroups.add(top_hit.fields["group.id"]?.[0])
 
-          // Points mode: no overlap logic – show every group as its own marker, allow them close together
+          // Points mode: no overlap logic – show every group as its own marker, allow them close together.
           if (activeMarkerMode === 'points') {
             if (!labeledMarkersLookup[bucket.key]) {
               labeledMarkersLookup[bucket.key] = []
@@ -561,8 +578,8 @@ export default function MapExplorer() {
       else {
         //setDebugChildren([])
       }
-      // When selecting a marker, always reset results to 1 (don't preserve previous expansions)
-      newQueryParams.set('maxResults', '1')
+      // When selecting a marker, always reset results to default.
+      newQueryParams.set('maxResults', defaultMaxResultsParam)
       newQueryParams.delete('mapSettings')
       //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
       newQueryParams.delete('doc')
@@ -655,7 +672,8 @@ export default function MapExplorer() {
       }}
       attributionControl={false}
       zoomSnap={0.5}
-      zoomDelta={0.5}
+      zoomDelta={1}
+      wheelPxPerZoomLevel={30}
       zoom={urlZoom || defaultZoom}
       center={urlCenter || defaultCenter}
       className={`absolute top-0 right-0 left-0 select-none`}
@@ -663,7 +681,7 @@ export default function MapExplorer() {
         bottom: isMobile ? `${MAP_DRAWER_BOTTOM_HEIGHT_REM - 0.5}rem` : '0',
       }}
     >
-      {({ TileLayer, CircleMarker, Popup, Circle, Marker, useMapEvents, useMap, Rectangle, Polygon, MultiPolygon, Polyline, AttributionControl }: any, leaflet: any) => {
+      {({ TileLayer, CircleMarker, Popup, Circle, Marker, Tooltip, useMapEvents, useMap, Rectangle, Polygon, MultiPolygon, Polyline, AttributionControl }: any, leaflet: any) => {
 
         function EventHandlers() {
           const map = useMap();
@@ -763,6 +781,40 @@ export default function MapExplorer() {
           return null
         }
 
+
+        const focusGroupMarker = () => {
+          const pointFocusTarget =
+            (activeMarkerMode === 'labels' || activeMarkerMode === 'points') && point
+              ? point
+              : null
+          const groupFocusTarget = groupData?.fields?.location?.[0]?.coordinates
+            ? [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]] as [number, number]
+            : null
+
+          const focusTarget = pointFocusTarget || groupFocusTarget
+          if (!focusTarget) return
+
+          if (mapInstance.current) {
+            const currentZoom = mapInstance.current.getZoom?.() ?? 18
+            const maxZoom = mapInstance.current.getMaxZoom?.() ?? 20
+            const nextZoom = Math.min(currentZoom + 2, maxZoom)
+            mapInstance.current.setView(focusTarget, nextZoom)
+          }
+
+          const newParams = new URLSearchParams(searchParams)
+          const hasMaxResults = newParams.has('maxResults')
+          const hasMapSettings = newParams.has('mapSettings')
+
+          if (!hasMaxResults) {
+            newParams.set('maxResults', defaultMaxResultsParam)
+          }
+          if (hasMapSettings) {
+            newParams.delete('mapSettings')
+          }
+          if (!hasMaxResults || hasMapSettings) {
+            router.push(`?${newParams.toString()}`)
+          }
+        }
 
         return (
 
@@ -866,15 +918,27 @@ export default function MapExplorer() {
                 return null;
               }
               else {
-                const selected = activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue && !groupLoading
-                if (selected || activePoint) return null
+                const selected = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue && !groupLoading)
+                const isActiveGroupMarker = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue)
+                const isAtActivePoint = Boolean(point && Math.abs(lat - point[0]) < 0.000001 && Math.abs(lng - point[1]) < 0.000001)
+                const shouldHideUnlabeledActiveAreaMarker = activeGroupHasArea && (isActiveGroupMarker || isAtActivePoint)
+                if (activePoint) return null
+                if (selected && activeMarkerMode !== 'points') return null
 
                 const isInit = initValue && item.fields?.["group.id"]?.[0] == initValue
+                if (hasGroupParam && isInit) return null
                 const markerColor = isInit ? 'black' : 'white'
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const labelText = getDisplayLabel(item.fields)
-                const isHovered = activeMarkerMode === 'points' && hoveredPointKey === item.fields.uuid[0]
+                const pointMarkerTooltip = (!isMobile && !isAtActivePoint) ? (
+                  <Tooltip direction="top" offset={[0, -20]} opacity={1} className="point-marker-tooltip">
+                    <div className="px-2 py-0.5 text-sm tracking-wide text-black bg-white/90 rounded-md shadow-lg whitespace-nowrap">
+                      {labelText}
+                    </div>
+                  </Tooltip>
+                ) : null
+                
                 const icon = getLabelMarkerIcon(labelText, markerColor, childCount, false, false, false)
 
 
@@ -903,26 +967,32 @@ export default function MapExplorer() {
                         />
                       ))
                     }
-                    {activeGroupValue != item.fields?.["group.id"]?.[0] && (
+                    {(activeMarkerMode === 'points' || activeGroupValue != item.fields?.["group.id"]?.[0]) && (
                       <>
                         {activeMarkerMode === 'points' ? (
-                          <CircleMarker
-                            key={`result-${item.fields.uuid[0]}`}
-                            center={[lat, lng]}
-                            radius={5}
-                            pathOptions={{
-                              color: '#000000',
-                              weight: 2,
-                              fillColor: '#ffffff',
-                              opacity: 0.9,
-                              fillOpacity: 0.5,
-                            }}
-                            eventHandlers={{
-                              ...selectDocHandler(item, [lat, lng]),
-                              mouseover: () => setHoveredPointKey(item.fields.uuid[0]),
-                              mouseout: () => setHoveredPointKey(null),
-                            }}
-                          />
+                          shouldHideUnlabeledActiveAreaMarker ? null : (
+                            <Marker
+                              key={`result-${item.fields.uuid[0]}`}
+                              position={[lat, lng]}
+                              icon={new leaflet.DivIcon(getUnlabeledMarker('black'))}
+                              riseOnHover={true}
+                              eventHandlers={selectDocHandler(item, [lat, lng])}
+                            >
+                              {pointMarkerTooltip}
+                            </Marker>
+                          )
+                        ) : activeMarkerMode === 'counts' && item.isClusterSingleton ? (
+                          shouldHideUnlabeledActiveAreaMarker ? null : (
+                            <Marker
+                              key={`result-${item.fields.uuid[0]}`}
+                              position={[lat, lng]}
+                              icon={new leaflet.DivIcon(getUnlabeledMarker('black'))}
+                              riseOnHover={true}
+                              eventHandlers={selectDocHandler(item, [lat, lng])}
+                            >
+                              {pointMarkerTooltip}
+                            </Marker>
+                          )
                         ) : (
                           <Marker
                             key={`result-${item.fields.uuid[0]}`}
@@ -930,18 +1000,6 @@ export default function MapExplorer() {
                             icon={new leaflet.DivIcon(icon)}
                             riseOnHover={true}
                             eventHandlers={selectDocHandler(item, [lat, lng])}
-                          />
-                        )}
-                        {activeMarkerMode === 'points' && isHovered && (
-                          <Marker
-                            key={`result-label-hover-${item.fields.uuid[0]}`}
-                            position={[lat, lng]}
-                            zIndexOffset={1000}
-                            icon={new leaflet.DivIcon({
-                              ...getLabelMarkerIcon(labelText, markerColor, undefined, false, false, true),
-                              className: 'point-marker-hover-label',
-                            })}
-                            eventHandlers={{}}
                           />
                         )}
                       </>
@@ -973,54 +1031,61 @@ export default function MapExplorer() {
               <Marker
                 zIndexOffset={2000}
                 icon={new leaflet.DivIcon(
-                  getLabelMarkerIcon(
-                    getDisplayLabel(groupData.fields),
-                    'accent',
-                    undefined,
-                    true,
-                    false,
-                    true
-                  )
+                  activeGroupHasArea
+                    ? getAreaLabelMarkerIcon(getDisplayLabel(groupData.fields))
+                    : getLabelMarkerIcon(
+                      getDisplayLabel(groupData.fields),
+                      'accent',
+                      undefined,
+                      true,
+                      false,
+                      true
+                    )
                 )}
                 position={
-                  point && initValue
+                  (activeMarkerMode === 'labels' || activeMarkerMode === 'points') && point
                     ? point
-                    : groupData.fields?.location?.[0]?.coordinates
-                      ? [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]
-                      : null
+                    : (
+                      groupData.fields?.location?.[0]?.coordinates
+                        ? [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]
+                        : null
+                    )
                 }
                 eventHandlers={{
-                  click: () => {
-                    const [centralLat, centralLng] =
-                      point && initValue
-                        ? point
-                        : [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]];
-                    if (!(point && initValue)) {
-                      fitBoundsToGroupSources(mapInstance.current, groupData);
-                    }
-                    const newParams = new URLSearchParams(searchParams);
-                    newParams.set('activePoint', `${centralLat},${centralLng}`);
-                    router.push(`?${newParams.toString()}`);
-                  },
+                  click: focusGroupMarker,
                   keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
                     const key = e.originalEvent?.key ?? e.key
                     if (key === 'Enter' || key === ' ') {
                       ;(e.originalEvent ?? e).preventDefault()
-                      const [centralLat, centralLng] =
-                        point && initValue
-                          ? point
-                          : [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]];
-                      if (!(point && initValue)) {
-                        fitBoundsToGroupSources(mapInstance.current, groupData);
-                      }
-                      const newParams = new URLSearchParams(searchParams);
-                      newParams.set('activePoint', `${centralLat},${centralLng}`);
-                      router.push(`?${newParams.toString()}`);
+                      focusGroupMarker()
                     }
                   }
                 }}
               >
               </Marker>
+            )}
+            {hasGroupParam && !activePoint && !initGroupHasArea && initGroupData?.fields?.location?.[0]?.coordinates && (
+              <Marker
+                zIndexOffset={1500}
+                icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))}
+                position={[initGroupData.fields.location[0].coordinates[1], initGroupData.fields.location[0].coordinates[0]]}
+                eventHandlers={{
+                  click: () => {
+                    const newParams = new URLSearchParams(searchParams)
+                    newParams.delete('group')
+                    router.push(`?${newParams.toString()}`)
+                  },
+                  keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                    const key = e.originalEvent?.key ?? e.key
+                    if (key === 'Enter' || key === ' ') {
+                      ;(e.originalEvent ?? e).preventDefault()
+                      const newParams = new URLSearchParams(searchParams)
+                      newParams.delete('group')
+                      router.push(`?${newParams.toString()}`)
+                    }
+                  }
+                }}
+              />
             )}
 
             {
@@ -1100,7 +1165,7 @@ export default function MapExplorer() {
                                   newParams.delete('group');
                                 }
                                 newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                newParams.set('maxResults', '1');
+                                newParams.set('maxResults', defaultMaxResultsParam);
                                 router.push(`?${newParams.toString()}`);
                               },
                               keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
@@ -1113,7 +1178,7 @@ export default function MapExplorer() {
                                     newParams.delete('group');
                                   }
                                   newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                  newParams.set('maxResults', '1');
+                                  newParams.set('maxResults', defaultMaxResultsParam);
                                   router.push(`?${newParams.toString()}`);
                                 }
                               }
@@ -1145,7 +1210,7 @@ export default function MapExplorer() {
                                   newParams.delete('group');
                                 }
                                 newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                newParams.set('maxResults', '1');
+                                newParams.set('maxResults', defaultMaxResultsParam);
                                 router.push(`?${newParams.toString()}`);
                               },
                               keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
@@ -1158,7 +1223,7 @@ export default function MapExplorer() {
                                     newParams.delete('group');
                                   }
                                   newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                  newParams.set('maxResults', '1');
+                                  newParams.set('maxResults', defaultMaxResultsParam);
                                   router.push(`?${newParams.toString()}`);
                                 }
                               }
@@ -1202,7 +1267,7 @@ export default function MapExplorer() {
                               eventHandlers={{
                                 click: () => {
                                   const newParams = new URLSearchParams(searchParams);
-                                  newParams.set('maxResults', '1');
+                                  newParams.set('maxResults', defaultMaxResultsParam);
                                   if (hit?._source?.group?.id) {
                                     newParams.set('init', stringToBase64Url(hit._source.group.id));
                                     newParams.delete('group');
@@ -1221,7 +1286,7 @@ export default function MapExplorer() {
                                   if (key === 'Enter' || key === ' ') {
                                     ;(e.originalEvent ?? e).preventDefault()
                                     const newParams = new URLSearchParams(searchParams);
-                                    newParams.set('maxResults', '1');
+                                    newParams.set('maxResults', defaultMaxResultsParam);
                                     if (hit?._source?.group?.id) {
                                       newParams.set('init', stringToBase64Url(hit._source.group.id));
                                       newParams.delete('group');
@@ -1363,79 +1428,82 @@ export default function MapExplorer() {
 
             {debug && <DynamicDebugLayers mapInstance={mapInstance} Polygon={Polygon} Rectangle={Rectangle} CircleMarker={CircleMarker} geotileKeyToBounds={geotileKeyToBounds} markerCells={markerCells} />}
 
+            {(() => {
+              if (!areaSource?.area) return null;
 
+              try {
+                const geoJSON = wkt.parse(areaSource.area);
+                if (!geoJSON) return null;
+                const toLatLng = (coord: [number, number] | [number, number, number]): [number, number] => [coord[1], coord[0]];
 
-            {docData?._source?.area && (
-              <>
-                {(() => {
-                  try {
-                    const geoJSON = wkt.parse(docData._source.area);
-                    if (!geoJSON) return null;
-
-                    switch (geoJSON.type) {
-                      case 'Polygon':
-                        return <Polygon
-                          positions={geoJSON.coordinates[0]}
-                          pathOptions={{
-                            color: '#0066ff',
-                            weight: 2,
-                            opacity: 0.8,
-                            fillOpacity: 0.2
-                          }}
-                        />;
-                      case 'MultiPolygon':
-                        return <MultiPolygon
-                          positions={geoJSON.coordinates}
-                          pathOptions={{
-                            color: '#0066ff',
-                            weight: 2,
-                            opacity: 0.8,
-                            fillOpacity: 0.2
-                          }}
-                        />;
-                      case 'LineString':
-                        return <Polyline
-                          positions={geoJSON.coordinates.map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
-                          pathOptions={{
-                            color: '#0066ff',
-                            weight: 5,
-                            opacity: 0.8,
-                            fillOpacity: 0.2
-                          }}
-                        />;
-
-                      case 'MultiLineString':
-                        return (
-                          <>
-                            {geoJSON.coordinates.map((lineCoords, index) => (
-                              <Polyline
-                                key={index}
-                                positions={lineCoords.map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
-                                pathOptions={{
-                                  color: '#0066ff',
-                                  weight: 5,
-                                  opacity: 0.8,
-                                  fillOpacity: 0.2
-                                }}
-                              />
-                            ))}
-                          </>
-                        );
-                      default:
-                        return null;
-                    }
-                  } catch (error) {
-                    console.error('Failed to parse WKT:', error);
+                switch (geoJSON.type) {
+                  case 'Polygon':
+                    return <Polygon
+                      positions={geoJSON.coordinates[0].map(toLatLng)}
+                      interactive={false}
+                      pathOptions={{
+                        color: '#0061ab',
+                        weight: 2,
+                        opacity: 0.9,
+                        fillOpacity: 0.2
+                      }}
+                    />;
+                  case 'MultiPolygon':
+                    return <MultiPolygon
+                      positions={geoJSON.coordinates.map((polygon) =>
+                        polygon.map((ring) =>
+                          ring.map(toLatLng)
+                        )
+                      )}
+                      interactive={false}
+                      pathOptions={{
+                        color: '#0061ab',
+                        weight: 2,
+                        opacity: 0.9,
+                        fillOpacity: 0.2
+                      }}
+                    />;
+                  case 'LineString':
+                    return <Polyline
+                      positions={geoJSON.coordinates.map(toLatLng)}
+                      interactive={false}
+                      pathOptions={{
+                        color: '#0061ab',
+                        weight: 5,
+                        opacity: 0.9,
+                        fillOpacity: 0.2
+                      }}
+                    />;
+                  case 'MultiLineString':
+                    return (
+                      <>
+                        {geoJSON.coordinates.map((lineCoords, index) => (
+                          <Polyline
+                            key={index}
+                            positions={lineCoords.map(toLatLng)}
+                            interactive={false}
+                            pathOptions={{
+                              color: '#0061ab',
+                              weight: 5,
+                              opacity: 0.9,
+                              fillOpacity: 0.2
+                            }}
+                          />
+                        ))}
+                      </>
+                    );
+                  default:
                     return null;
-                  }
-                })()}
-              </>
-            )}
-
-            {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
-            {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" />}
-            {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" />}
-            {point && !initValue && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point} />}
+                }
+              } catch (error) {
+                console.error('Failed to parse WKT:', error);
+                return null;
+              }
+            })()}
+            {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" interactive={false} />}
+            {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" interactive={false} />}
+            {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" interactive={false} />}
+            {point && !initValue && !activeGroupHasArea && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point} />}
             {activePoint && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} 
             eventHandlers={{
               click: () => {

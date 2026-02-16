@@ -503,3 +503,22 @@
 .leaflet-marker-icon.point-marker-hover-label {
   pointer-events: none !important;
 }
+
+/* Custom point-marker hover tooltip: use label-only chip, no default bubble arrow. */
+.leaflet-tooltip.point-marker-tooltip {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  pointer-events: none;
+}
+
+.leaflet-tooltip.point-marker-tooltip::before {
+  display: none;
+}
+
+/* White map point with subtle button-like depth */
+.leaflet-interactive.point-marker-button {
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5))
+    drop-shadow(0 2px 3px rgba(0, 0, 0, 0.32));
+}

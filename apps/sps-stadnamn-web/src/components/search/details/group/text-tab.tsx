@@ -41,7 +41,7 @@ export const TextTab = ({ textItems }: TextTabProps) => {
                 const showToggle = !hasMultipleItems;
 
                 return (
-                    <div className="py-3 px-3" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
+                    <div className="py-3 px-3 max-w-[calc(100%-1rem)]" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
                         {false && textItem.dataset === 'rygh' && (
                             <WarningMessage
                                 message="Feil i Norske Gaardnavne"

@@ -30,9 +30,30 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
     const [isNavigating, setIsNavigating] = useState(false)
     const navOpen = useIIIFSessionStore((s) => s.navOpen)
     const setNavOpen = useIIIFSessionStore((s) => s.setNavOpen)
+    const searchContext = useIIIFSessionStore((s) => s.searchContext)
+    const setReturnFocusUuid = useIIIFSessionStore((s) => s.setReturnFocusUuid)
     const router = useRouter()
 
     if (!manifest) return null
+
+    const currentCollectionUuid = isCollection ? (manifest.uuid as string | undefined) : (manifest.partOf as string | undefined)
+    const hasSearch = !!searchContext && !!searchContext.query
+    const searchCollectionUuid = searchContext?.collectionUuid ?? null
+    const currentKey = currentCollectionUuid ?? null
+
+    // Show back-to-search when:
+    // - there is a stored search, and
+    // - we are in a different collection than where the search was done, or in a non-collection view
+    const showBackToSearch =
+        hasSearch &&
+        (!!searchContext?.query) &&
+        (!isCollection || searchCollectionUuid !== currentKey)
+
+    const backToSearchHref = !hasSearch
+        ? undefined
+        : (searchCollectionUuid
+            ? `/iiif/${searchCollectionUuid}?q=${encodeURIComponent(searchContext!.query)}`
+            : `/iiif?q=${encodeURIComponent(searchContext!.query)}`)
 
     const handleDownload = async (format: string) => {
         try {
@@ -83,7 +104,7 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
 
     return (
         <>
-            <nav className={`flex items-center gap-2 ${manifest.type == 'Manifest' ? `absolute top-14 ${isMobile ? 'left-0' : 'left-[20svw]'} m-2` : ''}`}>
+            <nav className={`flex items-center gap-2 w-full px-3 ${manifest.type == 'Manifest' ? `absolute top-14 ${isMobile ? 'left-0' : 'left-[20svw]'} m-2` : ''}`}>
                 {/* Collection link (hidden on mobile when neighbour nav is open) */}
                 {(!isMobile || !navOpen || isCollection) && (
                     <RoundIconButton
@@ -223,6 +244,23 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
                         )}
                     </AlertDialogContent>
                 </AlertDialog>}
+
+                {showBackToSearch && backToSearchHref && (
+                    <RoundIconButton
+                        className=""
+                        href={backToSearchHref}
+                        onClick={() => {
+                            // Works for both Manifest and Collection detail pages.
+                            // We always want to focus the opened result card when returning.
+                            if (manifest?.uuid) {
+                                setReturnFocusUuid(manifest.uuid)
+                            }
+                        }}
+                        label="Tilbake til søk"
+                    >
+                        <PiCaretLeftBold className="text-xl xl:text-base" />
+                    </RoundIconButton>
+                )}
 
                 {/* Mobile toggle on the right side */}
                 {isMobile && !isCollection && (

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PiArchiveThin, PiBankThin, PiFileAudioThin } from "react-icons/pi";
 import { resolveLanguage } from "../iiif-utils";
 
-export default function FileCard({ item, itemDataset, currentItem }: { item: any, itemDataset: string, currentItem?: string }) {
+export default function FileCard({ item, itemDataset, currentItem, isReturnFocus }: { item: any, itemDataset: string, currentItem?: string, isReturnFocus?: boolean }) {
 
     const height = 160
     const width = 240
@@ -15,7 +15,9 @@ export default function FileCard({ item, itemDataset, currentItem }: { item: any
 
     return <Link
         href={`/iiif/${item.uuid}`}
-        className={`flex ${type == 'Manifest' ? 'flex-col' : 'xl:flex-col'} h-full w-full items-center gap-2 no-underline bg-white shadow-md p-2 rounded-md min-h-[56px] aria-[current=page]:bg-accent-900 aria-[current=page]:text-white`}
+        data-uuid={item.uuid}
+        data-return-focus={isReturnFocus ? 'true' : undefined}
+        className={`flex ${type == 'Manifest' ? 'flex-col' : 'xl:flex-col'} h-full w-full items-center gap-2 no-underline bg-white shadow-md p-2 rounded-md min-h-[56px] data-[return-focus=true]:bg-accent-100 aria-[current=page]:bg-accent-900 aria-[current=page]:text-white`}
         aria-current={item.uuid == currentItem ? "page" : undefined}>
         {type === 'Collection' && (
             <>

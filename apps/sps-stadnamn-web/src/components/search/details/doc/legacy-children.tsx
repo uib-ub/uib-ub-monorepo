@@ -3,6 +3,7 @@
 
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
+import { defaultMaxResultsParam } from '@/config/max-results'
 
 type GroupSummary = { id: string; label?: string }
 
@@ -68,7 +69,7 @@ export default function LegacyChildren({ source }: { source: Record<string, any>
           <ul className="!m-0 !p-0 !list-none space-y-1">
             {groups.map((g) => (
               <li key={g.id}>
-                <Link className="no-underline" href={`/search?group=${encodeURIComponent(g.id)}&maxResults=1`}>
+                <Link className="no-underline" href={`/search?group=${encodeURIComponent(g.id)}&maxResults=${defaultMaxResultsParam}`}>
                   {g.label || g.id}
                 </Link>
               </li>
