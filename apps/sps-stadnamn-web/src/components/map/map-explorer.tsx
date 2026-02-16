@@ -915,7 +915,7 @@ export default function MapExplorer() {
                 return null;
               }
               else {
-                const selected = activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue && !groupLoading
+                const selected = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue && !groupLoading)
                 if (activePoint) return null
                 if (selected && activeMarkerMode !== 'points') return null
 
@@ -1441,6 +1441,7 @@ export default function MapExplorer() {
                   case 'Polygon':
                     return <Polygon
                       positions={geoJSON.coordinates[0].map(toLatLng)}
+                      interactive={false}
                       pathOptions={{
                         color: '#0061ab',
                         weight: 2,
@@ -1455,6 +1456,7 @@ export default function MapExplorer() {
                           ring.map(toLatLng)
                         )
                       )}
+                      interactive={false}
                       pathOptions={{
                         color: '#0061ab',
                         weight: 2,
@@ -1465,6 +1467,7 @@ export default function MapExplorer() {
                   case 'LineString':
                     return <Polyline
                       positions={geoJSON.coordinates.map(toLatLng)}
+                      interactive={false}
                       pathOptions={{
                         color: '#0061ab',
                         weight: 5,
@@ -1479,6 +1482,7 @@ export default function MapExplorer() {
                           <Polyline
                             key={index}
                             positions={lineCoords.map(toLatLng)}
+                            interactive={false}
                             pathOptions={{
                               color: '#0061ab',
                               weight: 5,
@@ -1497,9 +1501,9 @@ export default function MapExplorer() {
                 return null;
               }
             })()}
-            {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
-            {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" />}
-            {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" />}
+            {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" interactive={false} />}
+            {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" interactive={false} />}
+            {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" interactive={false} />}
             {point && !initValue && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point} />}
             {activePoint && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} 
             eventHandlers={{
