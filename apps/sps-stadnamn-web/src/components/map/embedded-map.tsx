@@ -5,6 +5,8 @@ import dynamic from 'next/dynamic';
 import { getUnlabeledMarker } from "./markers";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { useRouter } from "next/navigation";
+import type { KeyboardEvent } from "react";
+import { useMapSettings } from "@/state/zustand/persistent-map-settings";
 
 const DynamicMap = dynamic(() => import('./leaflet/dynamic-map'), {
     ssr: false
@@ -24,9 +26,33 @@ export default function EmbeddedMap({
     source,
 }: EmbeddedMapProps) {
     const router = useRouter();
+    const storedBaseMap = useMapSettings((state) => state.baseMap);
+    const datasetPerspective = typeof source?.dataset === 'string' ? source.dataset : '';
+    const selectedBaseMapKey = datasetPerspective && baseMapLookup[storedBaseMap?.[datasetPerspective]]
+        ? storedBaseMap[datasetPerspective]
+        : (storedBaseMap?.all && baseMapLookup[storedBaseMap.all] ? storedBaseMap.all : 'world_map');
+    const handleMapClick = () => {
+        const newParams = new URLSearchParams();
+        newParams.set('init', stringToBase64Url(source?.group?.id));
+        newParams.set('maxResults', defaultMaxResultsParam);
+        newParams.set('activePoint', `${coordinate[0]},${coordinate[1]}`);
+        router.push(`/search?${newParams.toString()}`);
+    };
+    const handleMapKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        handleMapClick();
+    };
     //const coordinate = [source.location.coordinates[1], source.location.coordinates[0]]
     return (
-        <div className={`w-full ${className}`} style={{ height: '14rem', width: '18.75rem' }}>
+        <div
+            className={`relative w-full cursor-pointer ${className}`}
+            style={{ height: '14rem', width: '18.75rem' }}
+            role="button"
+            tabIndex={0}
+            aria-label="Open search at this map location"
+            onKeyDown={handleMapKeyDown}
+        >
             <DynamicMap
                 zoomControl={false}
                 attributionControl={false}
@@ -40,9 +66,12 @@ export default function EmbeddedMap({
                 center={coordinate}
                 className="w-full h-full"
             >
-                {({ TileLayer, Marker, AttributionControl }: any, leaflet: any) => {
+                {({ TileLayer, Rectangle, Marker, AttributionControl }: any, leaflet: any) => {
                     // Use a simple base map
-                    const baseMap = baseMapLookup['world_map'];
+                    const baseMap = baseMapLookup[selectedBaseMapKey] || baseMapLookup['world_map'];
+                    const visibleMarkerHtml = getUnlabeledMarker("primary").html
+                        .replace('role="button"', 'aria-hidden="true"')
+                        .replace('tabindex="0"', '');
 
                     return (
                         <>
@@ -54,18 +83,24 @@ export default function EmbeddedMap({
                                     {...baseMap.props}
                                 />
                             )}
+                            <Rectangle
+                                bounds={[[-90, -180], [90, 180]]}
+                                pathOptions={{
+                                    fillOpacity: 0,
+                                    opacity: 0
+                                }}
+                                eventHandlers={{
+                                    click: handleMapClick
+                                }}
+                            />
                             <Marker
                                 position={coordinate}
-                                icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))}
-                                eventHandlers={{
-                                    click: () => {
-                                        const newParams = new URLSearchParams();
-                                        newParams.set('init', stringToBase64Url(source?.group?.id));
-                                        newParams.set('maxResults', defaultMaxResultsParam);
-                                        newParams.set('activePoint', `${coordinate[0]},${coordinate[1]}`);
-                                        router.push(`/search?${newParams.toString()}`);
-                                    }
-                                }}
+                                icon={new leaflet.DivIcon({
+                                    className: '',
+                                    html: visibleMarkerHtml
+                                })}
+                                interactive={false}
+                                keyboard={false}
                             />
                         </>
                     );
