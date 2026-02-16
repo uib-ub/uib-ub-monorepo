@@ -18,7 +18,7 @@ export default function MapSettings() {
   const markerModes = [
     { key: 'auto', label: 'Automatisk' },
     { key: 'counts', label: 'Klynger' },
-    { key: 'labels', label: 'Etiketter' },
+    { key: 'labels', label: 'Etikettar' },
     { key: 'circles', label: 'Sirklar' },
     { key: 'points', label: 'Punktnåler' },
   ];
