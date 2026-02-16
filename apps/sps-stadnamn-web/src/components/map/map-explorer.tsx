@@ -103,6 +103,8 @@ export default function MapExplorer() {
       groupData?.sources?.find((source: Record<string, any>) => source.area),
     [doc, groupData?.sources]
   )
+  const activeGroupHasArea = Boolean(areaSource?.area)
+  const initGroupHasArea = Boolean(initGroupData?.sources?.some((source: Record<string, any>) => source.area))
 
   // Tree mode overlay data: selected cadastral unit + its subunits (bruk)
   const { data: treeUnitDoc } = useQuery({
@@ -305,7 +307,7 @@ export default function MapExplorer() {
     const seenGroups = new Set<string>()
 
     buckets.forEach((bucket: any) => {
-      if (zoomState > 15 || activeMarkerMode == 'labels' || activeMarkerMode == 'points' || bucket.doc_count == 1) {
+      if (zoomState > 15 || activeMarkerMode == 'labels' || activeMarkerMode == 'circles' || activeMarkerMode == 'points' || bucket.doc_count == 1) {
 
 
         const [z, x, y] = bucket.key.split('/').map(Number);
@@ -350,16 +352,18 @@ export default function MapExplorer() {
         bucket.groups.buckets.forEach((group: any) => {
           const top_hit: Record<string, any> = {
             ...group.top.hits.hits[0],
-            // Used in points mode to slightly scale marker size by number of sources.
+            // Used in circles mode to slightly scale marker size by number of sources.
             sourceCount: group.doc_count || 1,
+            // In cluster mode, singletons should render as black pin markers.
+            isClusterSingleton: activeMarkerMode === 'counts' && bucket.doc_count === 1,
           }
           if (seenGroups.has(top_hit.fields["group.id"]?.[0])) {
             return
           }
           seenGroups.add(top_hit.fields["group.id"]?.[0])
 
-          // Points mode: no overlap logic – show every group as its own marker, allow them close together
-          if (activeMarkerMode === 'points') {
+          // Circles/points mode: no overlap logic – show every group as its own marker, allow them close together
+          if (activeMarkerMode === 'circles' || activeMarkerMode === 'points') {
             if (!labeledMarkersLookup[bucket.key]) {
               labeledMarkersLookup[bucket.key] = []
             }
@@ -781,7 +785,7 @@ export default function MapExplorer() {
 
         const focusGroupMarker = () => {
           const pointFocusTarget =
-            (activeMarkerMode === 'points' || activeMarkerMode === 'labels') && point
+            (activeMarkerMode === 'circles' || activeMarkerMode === 'labels' || activeMarkerMode === 'points') && point
               ? point
               : null
           const groupFocusTarget = groupData?.fields?.location?.[0]?.coordinates
@@ -916,8 +920,11 @@ export default function MapExplorer() {
               }
               else {
                 const selected = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue && !groupLoading)
+                const isActiveGroupMarker = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue)
+                const isAtActivePoint = Boolean(point && Math.abs(lat - point[0]) < 0.000001 && Math.abs(lng - point[1]) < 0.000001)
+                const shouldHideUnlabeledActiveAreaMarker = activeGroupHasArea && (isActiveGroupMarker || isAtActivePoint)
                 if (activePoint) return null
-                if (selected && activeMarkerMode !== 'points') return null
+                if (selected && activeMarkerMode !== 'circles' && activeMarkerMode !== 'points') return null
 
                 const isInit = initValue && item.fields?.["group.id"]?.[0] == initValue
                 if (hasGroupParam && isInit) return null
@@ -925,12 +932,12 @@ export default function MapExplorer() {
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const labelText = getDisplayLabel(item.fields)
-                const isHovered = activeMarkerMode === 'points' && hoveredPointKey === item.fields.uuid[0]
+                const isHovered = activeMarkerMode === 'circles' && hoveredPointKey === item.fields.uuid[0]
                 
                 const pointBaseRadius = isMobile ? 7 : 6.2
                 const pointMaxRadius = isMobile ? 8.8 : 8.2
                 const pointGrowthFactor = isMobile ? 0.5 : 0.45
-                const pointRadius = activeMarkerMode === 'points'
+                const pointRadius = activeMarkerMode === 'circles'
                   ? Math.min(pointMaxRadius, pointBaseRadius + Math.log2(Math.max(1, item.sourceCount || 1)) * pointGrowthFactor)
                   : null
                 
@@ -962,9 +969,9 @@ export default function MapExplorer() {
                         />
                       ))
                     }
-                    {(activeMarkerMode === 'points' || activeGroupValue != item.fields?.["group.id"]?.[0]) && (
+                    {(activeMarkerMode === 'circles' || activeMarkerMode === 'points' || activeGroupValue != item.fields?.["group.id"]?.[0]) && (
                       <>
-                        {activeMarkerMode === 'points' ? (
+                        {activeMarkerMode === 'circles' ? (
                           <CircleMarker
                             key={`result-${item.fields.uuid[0]}`}
                             center={[lat, lng]}
@@ -982,6 +989,26 @@ export default function MapExplorer() {
                               mouseout: () => setHoveredPointKey(null),
                             }}
                           />
+                        ) : activeMarkerMode === 'points' ? (
+                          shouldHideUnlabeledActiveAreaMarker ? null : (
+                            <Marker
+                              key={`result-${item.fields.uuid[0]}`}
+                              position={[lat, lng]}
+                              icon={new leaflet.DivIcon(getUnlabeledMarker('black'))}
+                              riseOnHover={true}
+                              eventHandlers={selectDocHandler(item, [lat, lng])}
+                            />
+                          )
+                        ) : activeMarkerMode === 'counts' && item.isClusterSingleton ? (
+                          shouldHideUnlabeledActiveAreaMarker ? null : (
+                            <Marker
+                              key={`result-${item.fields.uuid[0]}`}
+                              position={[lat, lng]}
+                              icon={new leaflet.DivIcon(getUnlabeledMarker('black'))}
+                              riseOnHover={true}
+                              eventHandlers={selectDocHandler(item, [lat, lng])}
+                            />
+                          )
                         ) : (
                           <Marker
                             key={`result-${item.fields.uuid[0]}`}
@@ -991,7 +1018,7 @@ export default function MapExplorer() {
                             eventHandlers={selectDocHandler(item, [lat, lng])}
                           />
                         )}
-                        { !isMobile && activeMarkerMode === 'points' && isHovered && (
+                        { !isMobile && activeMarkerMode === 'circles' && isHovered && (
                           <Marker
                             key={`result-label-hover-${item.fields.uuid[0]}`}
                             position={[lat, lng]}
@@ -1032,7 +1059,7 @@ export default function MapExplorer() {
               <Marker
                 zIndexOffset={2000}
                 icon={new leaflet.DivIcon(
-                  areaSource?.area
+                  activeGroupHasArea
                     ? getAreaLabelMarkerIcon(getDisplayLabel(groupData.fields))
                     : getLabelMarkerIcon(
                       getDisplayLabel(groupData.fields),
@@ -1044,7 +1071,7 @@ export default function MapExplorer() {
                     )
                 )}
                 position={
-                  (activeMarkerMode === 'points' || activeMarkerMode === 'labels') && point
+                  (activeMarkerMode === 'circles' || activeMarkerMode === 'labels' || activeMarkerMode === 'points') && point
                     ? point
                     : (
                       groupData.fields?.location?.[0]?.coordinates
@@ -1065,7 +1092,7 @@ export default function MapExplorer() {
               >
               </Marker>
             )}
-            {hasGroupParam && !activePoint && initGroupData?.fields?.location?.[0]?.coordinates && (
+            {hasGroupParam && !activePoint && !initGroupHasArea && initGroupData?.fields?.location?.[0]?.coordinates && (
               <Marker
                 zIndexOffset={1500}
                 icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))}
@@ -1504,7 +1531,7 @@ export default function MapExplorer() {
             {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" interactive={false} />}
             {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" interactive={false} />}
             {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" interactive={false} />}
-            {point && !initValue && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point} />}
+            {point && !initValue && !activeGroupHasArea && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point} />}
             {activePoint && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} 
             eventHandlers={{
               click: () => {
