@@ -682,7 +682,7 @@ export default function MapExplorer() {
         bottom: isMobile ? `${MAP_DRAWER_BOTTOM_HEIGHT_REM - 0.5}rem` : '0',
       }}
     >
-      {({ TileLayer, CircleMarker, Popup, Circle, Marker, useMapEvents, useMap, Rectangle, Polygon, MultiPolygon, Polyline, AttributionControl }: any, leaflet: any) => {
+      {({ TileLayer, CircleMarker, Popup, Circle, Marker, Tooltip, useMapEvents, useMap, Rectangle, Polygon, MultiPolygon, Polyline, AttributionControl }: any, leaflet: any) => {
 
         function EventHandlers() {
           const map = useMap();
@@ -933,6 +933,13 @@ export default function MapExplorer() {
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const labelText = getDisplayLabel(item.fields)
                 const isHovered = activeMarkerMode === 'circles' && hoveredPointKey === item.fields.uuid[0]
+                const pointMarkerTooltip = !isMobile ? (
+                  <Tooltip direction="top" offset={[0, -20]} opacity={1} className="point-marker-tooltip">
+                    <div className="px-2 py-0.5 text-sm tracking-wide text-black bg-white/90 rounded-md shadow-lg whitespace-nowrap">
+                      {labelText}
+                    </div>
+                  </Tooltip>
+                ) : null
                 
                 const pointBaseRadius = isMobile ? 7 : 6.2
                 const pointMaxRadius = isMobile ? 8.8 : 8.2
@@ -997,7 +1004,9 @@ export default function MapExplorer() {
                               icon={new leaflet.DivIcon(getUnlabeledMarker('black'))}
                               riseOnHover={true}
                               eventHandlers={selectDocHandler(item, [lat, lng])}
-                            />
+                            >
+                              {pointMarkerTooltip}
+                            </Marker>
                           )
                         ) : activeMarkerMode === 'counts' && item.isClusterSingleton ? (
                           shouldHideUnlabeledActiveAreaMarker ? null : (
@@ -1007,7 +1016,9 @@ export default function MapExplorer() {
                               icon={new leaflet.DivIcon(getUnlabeledMarker('black'))}
                               riseOnHover={true}
                               eventHandlers={selectDocHandler(item, [lat, lng])}
-                            />
+                            >
+                              {pointMarkerTooltip}
+                            </Marker>
                           )
                         ) : (
                           <Marker
