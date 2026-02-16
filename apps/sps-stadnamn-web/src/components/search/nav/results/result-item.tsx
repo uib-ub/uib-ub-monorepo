@@ -46,8 +46,6 @@ const formatDistance = (meters: number) => {
 export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hit: any, onClick?: () => void, notClickable?: boolean } & Record<string, any>) {
     const perspective = usePerspective()
     const searchParams = useSearchParams()
-    const doc = searchParams.get('doc')
-    const nav = searchParams.get('nav')
     const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit._index?.split('-')?.[2]
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
@@ -57,10 +55,6 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
 
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
     const { activeGroupValue, initValue } = useGroup()
-    const maxResults = searchParams.get('maxResults')
-
-
-
 
     const label = hit.fields?.label?.[0] || ''
 
