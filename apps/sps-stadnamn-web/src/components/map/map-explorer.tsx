@@ -4,7 +4,7 @@ import { defaultMaxResultsParam } from "@/config/max-results";
 import { useSearchQuery } from "@/lib/search-params";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
+import { getAreaLabelMarkerIcon, getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 
 import { boundsFromZoomAndCenter, calculateRadius, fitBoundsToGroupSources, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
@@ -95,6 +95,14 @@ export default function MapExplorer() {
   const treeDataset = treeState?.dataset
   const treeUuid = treeState?.uuid
   const lastTreeFitKeyRef = useRef<string | null>(null)
+  const areaSource = useMemo(
+    () =>
+      (doc
+        ? groupData?.sources?.find((source: Record<string, any>) => source.uuid === doc && source.area)
+        : undefined) ??
+      groupData?.sources?.find((source: Record<string, any>) => source.area),
+    [doc, groupData?.sources]
+  )
 
   // Tree mode overlay data: selected cadastral unit + its subunits (bruk)
   const { data: treeUnitDoc } = useQuery({
@@ -242,7 +250,7 @@ export default function MapExplorer() {
   // Cluster mode
   // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
-  const activeMarkerMode = markerMode === 'auto' ? (searchParams.get('q') ? (zoomState < 14 ? 'counts' : 'points') : (zoomState < 8 ? 'points' : 'labels')) : markerMode
+  const activeMarkerMode = markerMode === 'auto' ? (searchParams.get('q') ? (zoomState < 14 ? 'counts' : 'points') : 'labels') : markerMode
 
 
 
@@ -1019,14 +1027,16 @@ export default function MapExplorer() {
               <Marker
                 zIndexOffset={2000}
                 icon={new leaflet.DivIcon(
-                  getLabelMarkerIcon(
-                    getDisplayLabel(groupData.fields),
-                    'accent',
-                    undefined,
-                    true,
-                    false,
-                    true
-                  )
+                  areaSource?.area
+                    ? getAreaLabelMarkerIcon(getDisplayLabel(groupData.fields))
+                    : getLabelMarkerIcon(
+                      getDisplayLabel(groupData.fields),
+                      'accent',
+                      undefined,
+                      true,
+                      false,
+                      true
+                    )
                 )}
                 position={
                   (activeMarkerMode === 'points' || activeMarkerMode === 'labels') && point
@@ -1414,75 +1424,74 @@ export default function MapExplorer() {
 
             {debug && <DynamicDebugLayers mapInstance={mapInstance} Polygon={Polygon} Rectangle={Rectangle} CircleMarker={CircleMarker} geotileKeyToBounds={geotileKeyToBounds} markerCells={markerCells} />}
 
+            {(() => {
+              if (!areaSource?.area) return null;
 
+              try {
+                const geoJSON = wkt.parse(areaSource.area);
+                if (!geoJSON) return null;
+                const toLatLng = (coord: [number, number] | [number, number, number]): [number, number] => [coord[1], coord[0]];
 
-            {docData?._source?.area && (
-              <>
-                {(() => {
-                  try {
-                    const geoJSON = wkt.parse(docData._source.area);
-                    if (!geoJSON) return null;
-
-                    switch (geoJSON.type) {
-                      case 'Polygon':
-                        return <Polygon
-                          positions={geoJSON.coordinates[0]}
-                          pathOptions={{
-                            color: '#0066ff',
-                            weight: 2,
-                            opacity: 0.8,
-                            fillOpacity: 0.2
-                          }}
-                        />;
-                      case 'MultiPolygon':
-                        return <MultiPolygon
-                          positions={geoJSON.coordinates}
-                          pathOptions={{
-                            color: '#0066ff',
-                            weight: 2,
-                            opacity: 0.8,
-                            fillOpacity: 0.2
-                          }}
-                        />;
-                      case 'LineString':
-                        return <Polyline
-                          positions={geoJSON.coordinates.map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
-                          pathOptions={{
-                            color: '#0066ff',
-                            weight: 5,
-                            opacity: 0.8,
-                            fillOpacity: 0.2
-                          }}
-                        />;
-
-                      case 'MultiLineString':
-                        return (
-                          <>
-                            {geoJSON.coordinates.map((lineCoords, index) => (
-                              <Polyline
-                                key={index}
-                                positions={lineCoords.map(coord => [coord[1], coord[0]])} // Swap to [lat, lon] for Leaflet
-                                pathOptions={{
-                                  color: '#0066ff',
-                                  weight: 5,
-                                  opacity: 0.8,
-                                  fillOpacity: 0.2
-                                }}
-                              />
-                            ))}
-                          </>
-                        );
-                      default:
-                        return null;
-                    }
-                  } catch (error) {
-                    console.error('Failed to parse WKT:', error);
+                switch (geoJSON.type) {
+                  case 'Polygon':
+                    return <Polygon
+                      positions={geoJSON.coordinates[0].map(toLatLng)}
+                      pathOptions={{
+                        color: '#0061ab',
+                        weight: 2,
+                        opacity: 0.9,
+                        fillOpacity: 0.2
+                      }}
+                    />;
+                  case 'MultiPolygon':
+                    return <MultiPolygon
+                      positions={geoJSON.coordinates.map((polygon) =>
+                        polygon.map((ring) =>
+                          ring.map(toLatLng)
+                        )
+                      )}
+                      pathOptions={{
+                        color: '#0061ab',
+                        weight: 2,
+                        opacity: 0.9,
+                        fillOpacity: 0.2
+                      }}
+                    />;
+                  case 'LineString':
+                    return <Polyline
+                      positions={geoJSON.coordinates.map(toLatLng)}
+                      pathOptions={{
+                        color: '#0061ab',
+                        weight: 5,
+                        opacity: 0.9,
+                        fillOpacity: 0.2
+                      }}
+                    />;
+                  case 'MultiLineString':
+                    return (
+                      <>
+                        {geoJSON.coordinates.map((lineCoords, index) => (
+                          <Polyline
+                            key={index}
+                            positions={lineCoords.map(toLatLng)}
+                            pathOptions={{
+                              color: '#0061ab',
+                              weight: 5,
+                              opacity: 0.9,
+                              fillOpacity: 0.2
+                            }}
+                          />
+                        ))}
+                      </>
+                    );
+                  default:
                     return null;
-                  }
-                })()}
-              </>
-            )}
-
+                }
+              } catch (error) {
+                console.error('Failed to parse WKT:', error);
+                return null;
+              }
+            })()}
             {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" />}
             {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" />}
             {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" />}

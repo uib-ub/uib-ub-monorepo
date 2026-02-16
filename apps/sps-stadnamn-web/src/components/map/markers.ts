@@ -101,6 +101,24 @@ export function getLabelMarkerIcon(label: string, color: string, docCount?: numb
   };
 }
 
+export function getAreaLabelMarkerIcon(label: string, docCount?: number) {
+  return {
+    className: '',
+    html: `
+        <div class="map-marker group" role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: 2rem;">
+          <div class="absolute -top-6 left-1/2 -translate-x-1/2">
+            <div class="flex flex-col items-center">
+              <div class="flex items-center tracking-wide whitespace-nowrap rounded-md text-center text-sm py-0.5 px-1.5 shadow-lg" style="background-color: rgba(222, 240, 255, 0.6); border-color: rgba(222, 240, 255, 0.6); color: #000000; font-weight: 700;">
+                <div class="max-w-32 min-w-0 block truncate">${label}</div>
+                ${docCount ? `<span class="ml-1 text-xs bg-neutral-100  flex items-center py-0 my-0.5 text-neutral-950 rounded-full px-1 text-center font-normal">+${docCount}</span>` : ''}
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>`
+  };
+}
+
 
 
 export function getHoverMarker(docCount: number, label: string, color: string) {
