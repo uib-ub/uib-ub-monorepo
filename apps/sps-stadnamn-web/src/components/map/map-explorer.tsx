@@ -772,16 +772,22 @@ export default function MapExplorer() {
 
 
         const focusGroupMarker = () => {
-          if (!groupData?.fields?.location?.[0]?.coordinates) return
+          const pointFocusTarget =
+            (activeMarkerMode === 'points' || activeMarkerMode === 'labels') && point
+              ? point
+              : null
+          const groupFocusTarget = groupData?.fields?.location?.[0]?.coordinates
+            ? [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]] as [number, number]
+            : null
 
-          const [centralLat, centralLng] =
-            [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]
+          const focusTarget = pointFocusTarget || groupFocusTarget
+          if (!focusTarget) return
 
           if (mapInstance.current) {
             const currentZoom = mapInstance.current.getZoom?.() ?? 18
             const maxZoom = mapInstance.current.getMaxZoom?.() ?? 20
             const nextZoom = Math.min(currentZoom + 2, maxZoom)
-            mapInstance.current.setView([centralLat, centralLng], nextZoom)
+            mapInstance.current.setView(focusTarget, nextZoom)
           }
 
           const newParams = new URLSearchParams(searchParams)
@@ -902,7 +908,8 @@ export default function MapExplorer() {
               }
               else {
                 const selected = activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue && !groupLoading
-                if (selected || activePoint) return null
+                if (activePoint) return null
+                if (selected && activeMarkerMode !== 'points') return null
 
                 const isInit = initValue && item.fields?.["group.id"]?.[0] == initValue
                 if (hasGroupParam && isInit) return null
@@ -942,7 +949,7 @@ export default function MapExplorer() {
                         />
                       ))
                     }
-                    {activeGroupValue != item.fields?.["group.id"]?.[0] && (
+                    {(activeMarkerMode === 'points' || activeGroupValue != item.fields?.["group.id"]?.[0]) && (
                       <>
                         {activeMarkerMode === 'points' ? (
                           <CircleMarker
@@ -951,7 +958,7 @@ export default function MapExplorer() {
                             radius={pointRadius}
                             pathOptions={{
                               color: '#000000',
-                              weight: 1,
+                              weight: 2,
                               fillColor: '#ffffff',
                               opacity: 1,
                               fillOpacity: 0.8,
@@ -971,7 +978,7 @@ export default function MapExplorer() {
                             eventHandlers={selectDocHandler(item, [lat, lng])}
                           />
                         )}
-                        {activeMarkerMode === 'points' && isHovered && (
+                        { activeMarkerMode === 'points' && isHovered && (
                           <Marker
                             key={`result-label-hover-${item.fields.uuid[0]}`}
                             position={[lat, lng]}
@@ -1022,9 +1029,13 @@ export default function MapExplorer() {
                   )
                 )}
                 position={
-                  groupData.fields?.location?.[0]?.coordinates
-                    ? [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]
-                    : null
+                  (activeMarkerMode === 'points' || activeMarkerMode === 'labels') && point
+                    ? point
+                    : (
+                      groupData.fields?.location?.[0]?.coordinates
+                        ? [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]
+                        : null
+                    )
                 }
                 eventHandlers={{
                   click: focusGroupMarker,
