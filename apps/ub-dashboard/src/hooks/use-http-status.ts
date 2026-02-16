@@ -33,19 +33,16 @@ export function useHttpStatus(url: string | null) {
           `${getBaseUrl()}/api/http-status?url=${encodeURIComponent(url)}`,
           {
             signal: abortController.signal,
+            cache: 'no-store',
           }
         );
 
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-
         const data = await res.json();
-        setStatus(data);
+        setStatus(data?.status ?? 'Unknown');
         setIsLoading(false);
         setError(null);
         // Update client cache
-        clientCache.set(url, { data, timestamp: now });
+        clientCache.set(url, { data: data?.status ?? 'Unknown', timestamp: now });
       } catch (err: any) {
         // Ignore abort errors (component unmounted)
         if (err.name !== 'AbortError') {

@@ -1,4 +1,4 @@
-import NextAuth from "next-auth"
+import NextAuth, { type NextAuthConfig, type NextAuthResult } from "next-auth"
 
 // Add type declarations
 declare module "next-auth" {
@@ -15,7 +15,7 @@ declare module "next-auth" {
   }
 }
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+const authConfig = {
   providers: [
     {
       id: 'dataporten',
@@ -80,4 +80,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     error: '/auth/error',
   },
   //debug: true,
-})
+} satisfies NextAuthConfig
+
+const nextAuth = NextAuth(authConfig)
+
+export const handlers: NextAuthResult["handlers"] = nextAuth.handlers
+export const signIn: NextAuthResult["signIn"] = nextAuth.signIn
+export const signOut: NextAuthResult["signOut"] = nextAuth.signOut
+export const auth: NextAuthResult["auth"] = nextAuth.auth

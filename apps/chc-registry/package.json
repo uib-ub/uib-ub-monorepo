@@ -38,9 +38,9 @@
     "jotai": "2.16.2",
     "lucide-react": "0.562.0",
     "motion": "12.26.2",
-    "next": "16.1.2",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "next": "16.1.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "react-resizable-panels": "4.4.1",
     "sonner": "2.0.7",
     "tailwind-merge": "3.3.0"

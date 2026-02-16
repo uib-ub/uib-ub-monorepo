@@ -1,7 +1,4 @@
-import { draftMode } from 'next/headers'
-import { LiveQuery } from 'next-sanity/preview/live-query'
 import Timeline from '@/components/timeline'
-import PreviewTimeline from './_components/preview-timeline'
 import { sanityFetch } from '@/sanity/lib/fetch'
 import { MainShell } from '@/components/shared/main-shell'
 import { groq } from 'next-sanity'
@@ -68,19 +65,12 @@ const query = groq`{
 }`
 
 export default async function TimelinePage() {
-  const data = await sanityFetch({ query, revalidate: 7200 })
+  const { data } = await sanityFetch({ query })
 
   return (
     <MainShell>
       <h1 className='mb-6'>Tidslinje</h1>
-      <LiveQuery
-        enabled={(await draftMode()).isEnabled}
-        query={query}
-        initialData={data.timeline}
-        as={PreviewTimeline}
-      >
-        <Timeline data={data.timeline} />
-      </LiveQuery>
+      <Timeline data={data.timeline} />
     </MainShell>
   );
 }

@@ -139,7 +139,9 @@
     "resetDomainOptions": "Tilbakestill domeneval",
     "expandTermbaseMenu": "Utvid termbasemeny",
     "closeTermbaseMenu": "Skjul termbasemeny",
-    "resetTermbaseOptions": "Tilbakestill termbaseval"
+    "resetTermbaseOptions": "Tilbakestill termbaseval",
+    "switchToTermbaseSearch": "Byt til termbasesøk",
+    "switchToDomainSearch": "Byt til domenesøk"
   },
   "searchFilter": {
     "results": "treff",

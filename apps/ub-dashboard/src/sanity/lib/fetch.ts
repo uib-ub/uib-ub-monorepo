@@ -1,25 +1,26 @@
+import 'server-only'
+
+import { defineLive } from 'next-sanity/live'
 import type { QueryParams } from '@sanity/client'
 
 import { client } from './client'
 
- 
-export const token = process.env.SANITY_API_READ_TOKEN!
+const token = process.env.SANITY_API_READ_TOKEN
+if (!token) {
+  throw new Error('Missing SANITY_API_READ_TOKEN')
+}
 
-export async function sanityFetch<QueryString extends string>({
-  query,
-  params = {},
-  revalidate = 60, // default revalidation time in seconds
-  tags = [],
-}: {
+export const { sanityFetch, SanityLive } = defineLive({
+  client,
+  serverToken: token,
+  browserToken: token,
+  fetchOptions: {
+    revalidate: false,
+  },
+})
+
+export type SanityFetchOptions<QueryString extends string> = {
   query: QueryString
   params?: QueryParams
-  revalidate?: number | false
   tags?: string[]
-}) {
-  return client.fetch(query, params, {
-    next: {
-      revalidate: tags.length ? false : revalidate, // for simple, time-based revalidation
-      tags, // for tag-based revalidation
-    },
-  })
 }

@@ -80,7 +80,7 @@ export default defineAppConfig({
           ["contains-ci"],
         ],
       },
-      limit: { default: 30 },
+      limit: { default: 50 },
       offset: { default: undefined },
     },
   },
