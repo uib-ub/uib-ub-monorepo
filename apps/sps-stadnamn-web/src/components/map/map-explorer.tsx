@@ -926,9 +926,14 @@ export default function MapExplorer() {
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const labelText = getDisplayLabel(item.fields)
                 const isHovered = activeMarkerMode === 'points' && hoveredPointKey === item.fields.uuid[0]
+                
+                const pointBaseRadius = isMobile ? 7 : 6.2
+                const pointMaxRadius = isMobile ? 8.8 : 8.2
+                const pointGrowthFactor = isMobile ? 0.5 : 0.45
                 const pointRadius = activeMarkerMode === 'points'
-                  ? Math.min(9, 6 + Math.log2(Math.max(1, item.sourceCount || 1)) * 0.8)
-                  : 6
+                  ? Math.min(pointMaxRadius, pointBaseRadius + Math.log2(Math.max(1, item.sourceCount || 1)) * pointGrowthFactor)
+                  : null
+                
                 const icon = getLabelMarkerIcon(labelText, markerColor, childCount, false, false, false)
 
 
@@ -965,11 +970,12 @@ export default function MapExplorer() {
                             center={[lat, lng]}
                             radius={pointRadius}
                             pathOptions={{
-                              color: '#000000',
-                              weight: 2,
+                              color: '#2f2f2f',
+                              weight: 1.6,
                               fillColor: '#ffffff',
-                              opacity: 1,
-                              fillOpacity: 0.8,
+                              opacity: 0.95,
+                              fillOpacity: 0.9,
+                              className: 'point-marker-button',
                             }}
                             eventHandlers={{
                               ...selectDocHandler(item, [lat, lng]),
@@ -986,7 +992,7 @@ export default function MapExplorer() {
                             eventHandlers={selectDocHandler(item, [lat, lng])}
                           />
                         )}
-                        { activeMarkerMode === 'points' && isHovered && (
+                        { !isMobile && activeMarkerMode === 'points' && isHovered && (
                           <Marker
                             key={`result-label-hover-${item.fields.uuid[0]}`}
                             position={[lat, lng]}
