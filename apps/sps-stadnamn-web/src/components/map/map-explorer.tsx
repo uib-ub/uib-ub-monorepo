@@ -85,12 +85,17 @@ export default function MapExplorer() {
   const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
   const showDebugGroups = searchParams.get('debugGroups') == 'on';
 
-  const getDisplayLabel = (fields: Record<string, any>): string =>
-    (
-      singleDatasetSelected
-        ? (fields.label?.[0] || fields["group.label"]?.[0])
-        : (fields["group.label"]?.[0] || fields.label?.[0])
-    ) || '[utan namn]'
+  const getDisplayLabel = (fields?: Record<string, any> | null): string => {
+    const label = fields?.label?.[0]
+    const groupLabel = fields?.["group.label"]?.[0]
+    return (
+      (
+        singleDatasetSelected
+          ? (label || groupLabel)
+          : (groupLabel || label)
+      ) || '[utan namn]'
+    )
+  }
 
   const treeDataset = treeState?.dataset
   const treeUuid = treeState?.uuid
