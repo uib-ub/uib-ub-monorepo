@@ -194,7 +194,7 @@ export default async function IIIFPage({ params }: { params: Promise<{ slug: str
                             )}
                         </div>
                     )}
-                    {manifest?.audio && <div className="flex flex-col gap-4 items-center justify-center h-full hidden lg:flex">
+                    {manifest?.audio && <div className="flex flex-col gap-4 items-center justify-center h-full px-8 lg:flex">
                         <h2 className="text-2xl text-neutral-900 font-semibold" id="audio-label">{resolveLanguage(manifest.audio.label)}</h2>
 
                         <audio aria-labelledby="audio-label" controls src={`https://iiif.spraksamlingane.no/iiif/audio/stadnamn/${manifestDataset.toUpperCase()}/${manifest.audio.uuid}.${manifest.audio.format}`} className="w-full max-w-md">

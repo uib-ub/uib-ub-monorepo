@@ -363,7 +363,7 @@ export default function SearchForm() {
                 {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''} />}
 
                 {inputState && !menuOpen &&
-                    <ClickableIcon label="Tøm" remove={['q', 'maxResults']} replace onClick={() => { clearQuery() }}>
+                    <ClickableIcon label="Tøm" remove={['q']} add={{ maxResults: defaultMaxResultsParam }} replace onClick={() => { clearQuery() }}>
                         <PiX className="text-3xl lg:text-2xl text-neutral-800 group-focus-within:text-neutral-800 m-1" /></ClickableIcon>}
                 <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800" aria-hidden="true" /></button>
             </div>
