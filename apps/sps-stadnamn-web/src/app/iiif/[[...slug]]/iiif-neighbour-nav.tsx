@@ -119,7 +119,7 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
                         {(!isMobile || navOpen || isCollection) && (
                             <div
                                 id="iiif-neighbour-nav-bar"
-                                className={`${isMobile && navOpen ? 'h-10 px-2 shadow-lg' : 'h-full px-2'} flex items-center font-semibold bg-neutral-950/70 text-white rounded-full backdrop-blur-sm`}
+                                className={`${isMobile && navOpen ? 'h-10 px-2 shadow-lg' : 'h-full px-2'} flex gap-2 lg:gap-1 items-center font-semibold bg-neutral-950/70 text-white rounded-full backdrop-blur-sm`}
                             >
                                 {/* First button */}
                                 {manifest.parentLength > 3 && <IconLink
