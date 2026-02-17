@@ -17,6 +17,7 @@ interface EmbeddedMapProps {
     zoom?: number;
     className?: string;
     source: Record<string, any>;
+    usePointQuery?: boolean;
 }
 
 export default function EmbeddedMap({
@@ -24,6 +25,7 @@ export default function EmbeddedMap({
     zoom = 10,
     className = "",
     source,
+    usePointQuery = false,
 }: EmbeddedMapProps) {
     const router = useRouter();
     const storedBaseMap = useMapSettings((state) => state.baseMap);
@@ -33,9 +35,17 @@ export default function EmbeddedMap({
         : (storedBaseMap?.all && baseMapLookup[storedBaseMap.all] ? storedBaseMap.all : 'world_map');
     const handleMapClick = () => {
         const newParams = new URLSearchParams();
-        newParams.set('init', stringToBase64Url(source?.group?.id));
-        newParams.set('maxResults', defaultMaxResultsParam);
-        newParams.set('activePoint', `${coordinate[0]},${coordinate[1]}`);
+        if (usePointQuery) {
+            if (typeof source?.label === 'string' && source.label.length > 0) {
+                newParams.set('q', source.label);
+            }
+            newParams.set('point', `${coordinate[0]},${coordinate[1]}`);
+            newParams.set('maxResults', defaultMaxResultsParam);
+        } else {
+            newParams.set('init', stringToBase64Url(source?.group?.id));
+            newParams.set('maxResults', defaultMaxResultsParam);
+            newParams.set('activePoint', `${coordinate[0]},${coordinate[1]}`);
+        }
         router.push(`/search?${newParams.toString()}`);
     };
     const handleMapKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
