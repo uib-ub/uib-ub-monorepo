@@ -104,7 +104,7 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
 
     return (
         <>
-            <nav className={`flex items-center gap-2 w-full px-3 ${manifest.type == 'Manifest' ? `absolute top-14 ${isMobile ? 'left-0' : 'left-[20svw]'} m-2` : ''}`}>
+            <nav className={`flex items-center gap-2 w-full ${manifest.type == 'Manifest' ? `absolute top-14 ${isMobile ? 'left-0' : 'left-[20svw]'} m-2` : ''}`}>
                 {/* Collection link (hidden on mobile when neighbour nav is open) */}
                 {(!isMobile || !navOpen || isCollection) && (
                     <RoundIconButton
@@ -119,7 +119,7 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
                         {(!isMobile || navOpen || isCollection) && (
                             <div
                                 id="iiif-neighbour-nav-bar"
-                                className={`${isMobile && navOpen ? 'mx-auto h-10 py-1 px-2 shadow-lg' : 'h-full px-2'} flex items-center font-semibold bg-neutral-950/70 text-white rounded-full backdrop-blur-sm`}
+                                className={`${isMobile && navOpen ? 'h-10 px-2 shadow-lg' : 'h-full px-2'} flex items-center font-semibold bg-neutral-950/70 text-white rounded-full backdrop-blur-sm`}
                             >
                                 {/* First button */}
                                 {manifest.parentLength > 3 && <IconLink
