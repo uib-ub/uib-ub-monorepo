@@ -4,11 +4,7 @@ export const backgroundMap = {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
 }
 
-export const defaultBaseMap: Record<string, string> = {
-    all: 'world_map',
-    ssr: 'world_map',
-    ssr2016: 'world_map'
-}
+export const defaultBaseMap = 'standard'
 
 export type MapLayerCoverage = 'global' | 'regional'
 
@@ -18,6 +14,8 @@ export interface BaseMap {
     bright?: boolean;
     coverage: MapLayerCoverage;
     opacity?: number;
+    maxZoom?: number;
+    maxNativeZoom?: number;
     wms?: {
         layers: string;
         format?: string;
@@ -99,8 +97,8 @@ export const baseMaps: BaseMap[] = [
         }
     },
     {
-        key: 'world_map',
-        name: 'Verdskart',
+        key: 'neutral',
+        name: 'Nøytral',
         bright: true,
         coverage: 'global',
         props: {
@@ -108,6 +106,44 @@ export const baseMaps: BaseMap[] = [
             attribution: '&copy; <a class="override-external-icon" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors<br/> &copy; <a class="override-external-icon" href="https://carto.com/attributions">CARTO</a>'
         }
 
+    },
+    {
+        key: 'standard',
+        name: 'Standard',
+        coverage: 'global',
+        props: {
+            url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png',
+            attribution: '&copy; <a class="override-external-icon" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors<br/> &copy; <a class="override-external-icon" href="https://carto.com/attributions">CARTO</a>'
+        }
+    },
+    {
+        key: 'high_contrast',
+        name: 'Høgkontrast',
+        coverage: 'global',
+        props: {
+            url: 'https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}.png',
+            attribution: '&copy; <a class="override-external-icon" href="https://stadiamaps.com/">Stadia Maps</a> <a class="override-external-icon" href="https://stamen.com/">&copy; Stamen Design</a> &copy; <a class="override-external-icon" href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a class="override-external-icon" href="https://www.openstreetmap.org/about">OpenStreetMap</a> contributors'
+        }
+    },
+    {
+        key: 'terrain',
+        name: 'Terreng',
+        coverage: 'global',
+        props: {
+            url: 'https://tiles.stadiamaps.com/tiles/stamen_terrain_background/{z}/{x}/{y}.png',
+            attribution: '&copy; <a class="override-external-icon" href="https://stadiamaps.com/">Stadia Maps</a> <a class="override-external-icon" href="https://stamen.com/">&copy; Stamen Design</a> &copy; <a class="override-external-icon" href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a class="override-external-icon" href="https://www.openstreetmap.org/about">OpenStreetMap</a> contributors'
+        }
+    },
+    {
+        key: 'satellite',
+        name: 'Foto',
+        coverage: 'global',
+        maxZoom: 20,
+        maxNativeZoom: 20,
+        props: {
+            url: 'https://fly.maptiles.arcgis.com/arcgis/rest/services/World_Imagery_Firefly/MapServer/tile/{z}/{y}/{x}',
+            attribution: 'Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community'
+        }
     }
 ];
 

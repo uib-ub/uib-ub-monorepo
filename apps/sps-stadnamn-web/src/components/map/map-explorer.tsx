@@ -50,7 +50,7 @@ export default function MapExplorer() {
 
 
   const controllerRef = useRef(new AbortController());
-  const { baseMap, overlayMaps, markerMode, setBaseMap, setMarkerMode, initializeSettings } = useMapSettings()
+  const { baseMap, overlayMaps, markerMode, initializeSettings } = useMapSettings()
   const searchParams = useSearchParams()
   const { searchQueryString, searchFilterParamsString } = useSearchQuery()
   const perspective = usePerspective()
@@ -521,8 +521,8 @@ export default function MapExplorer() {
 
 
   useEffect(() => {
-    initializeSettings(perspective)
-  }, [perspective])
+    initializeSettings()
+  }, [])
 
   useEffect(() => {
     updateMarkerGrid(snappedBounds, zoomState, gridSizeRef.current, markerCells)
@@ -827,15 +827,16 @@ export default function MapExplorer() {
             <AttributionControl prefix={false} position={isMobile ? "bottomleft" : "bottomright"} />
             <EventHandlers />
 
-            {baseMap[perspective] && (
+            {baseMap && baseMapLookup[baseMap] && (
               <TileLayer
-                key={`base-${baseMap[perspective]}`}
-                maxZoom={18}
-                maxNativeZoom={18}
-                {...baseMapLookup[baseMap[perspective]].props}
+                key={`base-${baseMap}`}
+                maxZoom={baseMapLookup[baseMap].maxZoom ?? 18}
+                maxNativeZoom={baseMapLookup[baseMap].maxNativeZoom ?? 18}
+                zIndex={100}
+                {...baseMapLookup[baseMap].props}
               />
             )}
-            {(overlayMaps[perspective] || []).map((overlayKey) => {
+            {(overlayMaps || []).map((overlayKey) => {
               const overlayMap = baseMapLookup[overlayKey]
               if (!overlayMap) return null
               if (overlayMap.wms) {
@@ -849,6 +850,7 @@ export default function MapExplorer() {
                     transparent={overlayMap.wms.transparent ?? true}
                     version={overlayMap.wms.version ?? '1.3.0'}
                     opacity={overlayMap.opacity ?? 1}
+                    zIndex={200}
                   />
                 )
               }
@@ -858,6 +860,7 @@ export default function MapExplorer() {
                   maxZoom={18}
                   maxNativeZoom={18}
                   opacity={overlayMap.opacity ?? 1}
+                  zIndex={200}
                   {...overlayMap.props}
                 />
               )

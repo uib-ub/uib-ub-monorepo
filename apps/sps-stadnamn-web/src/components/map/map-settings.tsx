@@ -1,8 +1,8 @@
 'use client'
 import { baseLayerMaps, overlayLayerMaps } from "@/config/basemap-config";
+import { defaultBaseMap } from "@/config/basemap-config";
 import { useMapSettings } from "@/state/zustand/persistent-map-settings";
 import ToggleButton from "@/components/ui/toggle-button";
-import { usePerspective } from "@/lib/param-hooks";
 import dynamic from "next/dynamic";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import { useMemo, useState } from "react";
@@ -12,7 +12,6 @@ const MapDebugSettings = dynamic(() => import("./map-debug-settings"), { ssr: fa
 
 export default function MapSettings() {
   const { baseMap, overlayMaps, markerMode, setBaseMap, toggleOverlayMap, clearOverlayMaps, setMarkerMode } = useMapSettings();
-  const perspective = usePerspective();
   const debug = useDebugStore((s) => s.debug);
   const [overlaySearch, setOverlaySearch] = useState('');
 
@@ -24,7 +23,16 @@ export default function MapSettings() {
     { key: 'labels', label: 'Etikettar' },
     { key: 'points', label: 'Punkter' },
   ];
-  const selectedOverlays = overlayMaps[perspective] || [];
+  const orderedBaseLayerMaps = useMemo(() => {
+    const defaultKey = defaultBaseMap || baseLayerMaps[0]?.key;
+    if (!defaultKey) return baseLayerMaps;
+    return [...baseLayerMaps].sort((a, b) => {
+      if (a.key === defaultKey) return -1;
+      if (b.key === defaultKey) return 1;
+      return 0;
+    });
+  }, []);
+  const selectedOverlays = overlayMaps || [];
   const filteredOverlays = useMemo(() => {
     const query = overlaySearch.trim().toLowerCase();
     if (!query) return overlayLayerMaps;
@@ -67,13 +75,13 @@ export default function MapSettings() {
         <fieldset className="border-0 p-0 m-0">
           <legend className="text-base font-semibold text-neutral-900 p-3">Bakgrunnslag</legend>
           <div className="flex flex-wrap gap-2 px-2 py-1">
-            {baseLayerMaps.map((item) => {
-              const selected = baseMap[perspective] === item.key;
+            {orderedBaseLayerMaps.map((item) => {
+              const selected = baseMap === item.key;
               return (
                 <ToggleButton
                   key={item.key}
                   isSelected={selected}
-                  onClick={() => setBaseMap(perspective, item.key)}
+                  onClick={() => setBaseMap(item.key)}
                   role="radio"
                   ariaChecked={selected}
                   ariaLabelledBy={`basemap-label-${item.key}`}
@@ -110,7 +118,7 @@ export default function MapSettings() {
               </div>
               <button
                 type="button"
-                onClick={() => clearOverlayMaps(perspective)}
+                onClick={() => clearOverlayMaps()}
                 disabled={selectedOverlays.length === 0}
                 className="btn btn-outline btn-sm whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
               >
@@ -128,7 +136,7 @@ export default function MapSettings() {
                         <input
                           type="checkbox"
                           checked={selected}
-                          onChange={() => toggleOverlayMap(perspective, item.key)}
+                          onChange={() => toggleOverlayMap(item.key)}
                         />
                         <span id={`overlay-label-${item.key}`} className="whitespace-nowrap">
                           {item.name}
