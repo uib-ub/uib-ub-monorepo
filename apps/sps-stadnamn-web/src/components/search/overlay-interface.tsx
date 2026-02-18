@@ -227,9 +227,11 @@ export default function OverlayInterface() {
                     {mapSettings ? (
                         <>
                             <div className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 xl:px-0 gap-2`} id="map-settings-panel">
-                                <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-xl text-neutral-900 xl:px-4">Kartinnstillingar</div>
+                                <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-xl text-neutral-900 xl:px-4">
+                                    {searchParams.get('overlaySelector') === 'on' ? 'Overlegg' : 'Kartinnstillingar'}
+                                </div>
                                 <div className="flex items-center gap-1 ml-auto">
-                                    <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings"]}>
+                                    <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings", "overlaySelector"]}>
                                         <PiX className="text-black text-3xl" />
                                     </ClickableIcon>
                                 </div>

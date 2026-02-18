@@ -57,6 +57,7 @@ export function useOverlayParams() {
     const searchParams = useSearchParams()
     const options = searchParams.get('options') == 'on'
     const mapSettings = searchParams.get('mapSettings') == 'on'
+    const overlaySelector = searchParams.get('overlaySelector') == 'on'
     const facet = searchParams.get('facet')
     const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
@@ -71,6 +72,6 @@ export function useOverlayParams() {
     const showResults = mode != 'table' && (maxResults || (isMobile && !showLeftPanel))
     const showRightPanel = mode != 'table' && (isMobile ? !showLeftPanel : true)
 
-    return { showLeftPanel, showRightPanel, options, mapSettings, facet, showResults, tableOptions }
+    return { showLeftPanel, showRightPanel, options, mapSettings, overlaySelector, facet, showResults, tableOptions }
 
 }

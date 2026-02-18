@@ -42,6 +42,7 @@ export const RESERVED_PARAMS = [
   'options',
   'maxResults',
   'mapSettings',
+  'overlaySelector',
   'debug',
   'debugGroups',
   'includeSuppressed',

@@ -6,14 +6,38 @@ import ToggleButton from "@/components/ui/toggle-button";
 import dynamic from "next/dynamic";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import { useMemo, useState } from "react";
-import { PiMagnifyingGlass } from "react-icons/pi";
+import { PiArrowLeft, PiMagnifyingGlass, PiX } from "react-icons/pi";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const MapDebugSettings = dynamic(() => import("./map-debug-settings"), { ssr: false });
 
 export default function MapSettings() {
-  const { baseMap, overlayMaps, markerMode, setBaseMap, toggleOverlayMap, clearOverlayMaps, setMarkerMode } = useMapSettings();
+  const {
+    baseMap,
+    overlayMaps,
+    markerMode,
+    setBaseMap,
+    addOverlayMap,
+    removeOverlayMap,
+    moveOverlayMap,
+    clearOverlayMaps,
+    setMarkerMode
+  } = useMapSettings();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const debug = useDebugStore((s) => s.debug);
   const [overlaySearch, setOverlaySearch] = useState('');
+  const overlaySelectorOpen = searchParams.get('overlaySelector') === 'on';
+
+  const setOverlaySelectorOpen = (open: boolean) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (open) {
+      params.set('overlaySelector', 'on');
+    } else {
+      params.delete('overlaySelector');
+    }
+    router.replace(`?${params.toString()}`, { scroll: false });
+  };
 
   // Add state for h3 resolution
 
@@ -33,11 +57,128 @@ export default function MapSettings() {
     });
   }, []);
   const selectedOverlays = overlayMaps || [];
+  const availableOverlays = useMemo(() => {
+    const selected = new Set(selectedOverlays);
+    return overlayLayerMaps.filter((item) => !selected.has(item.key));
+  }, [selectedOverlays]);
   const filteredOverlays = useMemo(() => {
     const query = overlaySearch.trim().toLowerCase();
-    if (!query) return overlayLayerMaps;
-    return overlayLayerMaps.filter((item) => item.name.toLowerCase().includes(query));
-  }, [overlaySearch]);
+    if (!query) return availableOverlays;
+    return availableOverlays.filter((item) => item.name.toLowerCase().includes(query));
+  }, [overlaySearch, availableOverlays]);
+  const overlayNameByKey = useMemo(() => {
+    return overlayLayerMaps.reduce<Record<string, string>>((acc, item) => {
+      acc[item.key] = item.name;
+      return acc;
+    }, {});
+  }, []);
+
+  if (overlaySelectorOpen) {
+    return (
+      <div className="flex flex-col gap-4 pb-4 xl:px-2">
+        <section>
+          <fieldset className="border-0 p-0 m-0">
+            <legend className="sr-only">Overlegg</legend>
+            <div className="px-2 py-1 flex flex-col gap-3">
+              <div className="flex items-center justify-between gap-2">
+                <button
+                  type="button"
+                  onClick={() => setOverlaySelectorOpen(false)}
+                  className="btn btn-outline btn-sm w-fit"
+                >
+                  <PiArrowLeft className="text-lg" aria-hidden={true} />
+                  Tilbake
+                </button>
+                <button
+                  type="button"
+                  onClick={() => clearOverlayMaps()}
+                  disabled={selectedOverlays.length === 0}
+                  className="btn btn-outline btn-sm whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  Nullstill
+                </button>
+              </div>
+              <fieldset>
+                <legend className="sr-only">Valde overlegg</legend>
+                <ul className="flex flex-col divide-y divide-neutral-200 border border-neutral-200 rounded-md max-h-64 overflow-auto">
+                  {selectedOverlays.map((overlayKey, index) => (
+                    <li key={overlayKey} className="px-3 py-2 flex flex-wrap items-center gap-2">
+                      <span className="min-w-0 basis-full sm:basis-auto sm:flex-1 truncate">{overlayNameByKey[overlayKey] || overlayKey}</span>
+                      <div className="ml-auto flex flex-wrap gap-2 max-w-full">
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-sm"
+                          onClick={() => moveOverlayMap(index, index - 1)}
+                          disabled={index === 0}
+                        >
+                          Opp
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-sm"
+                          onClick={() => moveOverlayMap(index, index + 1)}
+                          disabled={index === selectedOverlays.length - 1}
+                        >
+                          Ned
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-sm"
+                          onClick={() => removeOverlayMap(overlayKey)}
+                        >
+                          Fjern
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                  {!selectedOverlays.length && (
+                    <li className="px-3 py-2 text-neutral-600">Ingen overlegg valde</li>
+                  )}
+                </ul>
+              </fieldset>
+
+              <div className="w-full h-10 relative">
+                <input
+                  aria-label="Søk i overlegg som kan leggjast til"
+                  value={overlaySearch}
+                  onChange={(e) => setOverlaySearch(e.target.value)}
+                  placeholder="Søk i overlegg"
+                  className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"
+                />
+                <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                  <PiMagnifyingGlass aria-hidden={true} className="text-neutral-500 text-xl" />
+                </span>
+              </div>
+              <fieldset>
+                <legend className="sr-only">Legg til overlegg</legend>
+                <ul className="flex flex-col divide-y divide-neutral-200 border border-neutral-200 rounded-md max-h-64 overflow-auto">
+                  {filteredOverlays.map((item) => {
+                    return (
+                      <li key={item.key} className="px-3 py-2 flex flex-wrap items-center gap-2">
+                        <span id={`overlay-label-${item.key}`} className="min-w-0 basis-full sm:basis-auto sm:flex-1 truncate">
+                          {item.name}
+                        </span>
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-sm ml-auto"
+                          onClick={() => addOverlayMap(item.key)}
+                        >
+                          Legg til
+                        </button>
+                      </li>
+                    );
+                  })}
+                  {!filteredOverlays.length && (
+                    <li className="px-3 py-2 text-neutral-600">Ingen fleire overlegg funne</li>
+                  )}
+                </ul>
+              </fieldset>
+            </div>
+          </fieldset>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4 pb-4 xl:px-2">
@@ -100,58 +241,45 @@ export default function MapSettings() {
       </section>
 
       <section>
-        <fieldset className="border-0 p-0 m-0">
-          <legend className="text-base font-semibold text-neutral-900 p-3">Overlegg</legend>
-          <div className="px-2 py-1 flex flex-col gap-3">
-            <div className="flex gap-2 items-center">
-              <div className="w-full h-10 relative">
-                <input
-                  aria-label="Søk i overlegg"
-                  value={overlaySearch}
-                  onChange={(e) => setOverlaySearch(e.target.value)}
-                  placeholder="Søk i overlegg"
-                  className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"
-                />
-                <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                  <PiMagnifyingGlass aria-hidden={true} className="text-neutral-500 text-xl" />
-                </span>
-              </div>
+        <div className="border-0 p-0 m-0">
+          <div className="px-3 py-3 flex items-center justify-between gap-2">
+            <h2 className="text-base font-semibold text-neutral-900">Overlegg</h2>
+            <button
+              type="button"
+              onClick={() => setOverlaySelectorOpen(true)}
+              className="btn btn-outline btn-sm whitespace-nowrap"
+            >
+              {selectedOverlays.length > 0 ? 'endre' : 'legg til'}
+            </button>
+          </div>
+          <div className="px-2 py-1 flex items-start gap-2">
+            <div className="flex flex-wrap gap-2 flex-1 min-w-0">
+              {selectedOverlays.map((overlayKey) => (
+                <button
+                  type="button"
+                  key={overlayKey}
+                  onClick={() => removeOverlayMap(overlayKey)}
+                  className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer text-sm hover:bg-neutral-50 min-w-0 max-w-full"
+                >
+                  <span className="truncate">{overlayNameByKey[overlayKey] || overlayKey}</span>
+                  <PiX className="ml-auto text-lg flex-shrink-0" aria-hidden="true" />
+                </button>
+              ))}
+              {!selectedOverlays.length && (
+                <div className="px-1 py-1.5 text-neutral-600 text-sm">Ingen overlegg valde</div>
+              )}
+            </div>
+            {selectedOverlays.length > 0 && (
               <button
                 type="button"
                 onClick={() => clearOverlayMaps()}
-                disabled={selectedOverlays.length === 0}
-                className="btn btn-outline btn-sm whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
+                className="py-1.5 px-2 text-sm whitespace-nowrap text-neutral-800 hover:text-neutral-950"
               >
                 Nullstill
               </button>
-            </div>
-            <fieldset>
-              <legend className="sr-only">Vel overlegg</legend>
-              <ul className="flex flex-col divide-y divide-neutral-200 border border-neutral-200 rounded-md max-h-64 overflow-auto">
-                {filteredOverlays.map((item) => {
-                  const selected = selectedOverlays.includes(item.key);
-                  return (
-                    <li key={item.key} className="px-3 py-2">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={selected}
-                          onChange={() => toggleOverlayMap(item.key)}
-                        />
-                        <span id={`overlay-label-${item.key}`} className="whitespace-nowrap">
-                          {item.name}
-                        </span>
-                      </label>
-                    </li>
-                  );
-                })}
-                {!filteredOverlays.length && (
-                  <li className="px-3 py-2 text-neutral-600">Ingen overlegg funne</li>
-                )}
-              </ul>
-            </fieldset>
+            )}
           </div>
-        </fieldset>
+        </div>
       </section>
 
       {debug && <MapDebugSettings />}

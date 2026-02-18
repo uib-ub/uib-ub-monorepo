@@ -23,6 +23,9 @@ type MapSettings = {
   overlayMaps: string[]
   markerMode: string
   setBaseMap: (baseMap: string) => void
+  addOverlayMap: (mapKey: string) => void
+  removeOverlayMap: (mapKey: string) => void
+  moveOverlayMap: (fromIndex: number, toIndex: number) => void
   toggleOverlayMap: (mapKey: string) => void
   clearOverlayMaps: () => void
   setMarkerMode: (mode: string) => void
@@ -39,6 +42,32 @@ export const useMapSettings = create<MapSettings>()(
         set(() => ({
           baseMap
         })),
+      addOverlayMap: (mapKey: string) =>
+        set((state) => {
+          const current = state.overlayMaps || []
+          if (current.includes(mapKey)) return { overlayMaps: current }
+          return { overlayMaps: [...current, mapKey] }
+        }),
+      removeOverlayMap: (mapKey: string) =>
+        set((state) => ({
+          overlayMaps: (state.overlayMaps || []).filter((key) => key !== mapKey)
+        })),
+      moveOverlayMap: (fromIndex: number, toIndex: number) =>
+        set((state) => {
+          const current = [...(state.overlayMaps || [])]
+          if (
+            fromIndex < 0 ||
+            toIndex < 0 ||
+            fromIndex >= current.length ||
+            toIndex >= current.length ||
+            fromIndex === toIndex
+          ) {
+            return { overlayMaps: current }
+          }
+          const [moved] = current.splice(fromIndex, 1)
+          current.splice(toIndex, 0, moved)
+          return { overlayMaps: current }
+        }),
       toggleOverlayMap: (mapKey: string) =>
         set((state) => {
           const current = state.overlayMaps || []
