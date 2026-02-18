@@ -50,7 +50,7 @@ export default function MapExplorer() {
 
 
   const controllerRef = useRef(new AbortController());
-  const { baseMap, markerMode, setBaseMap, setMarkerMode, initializeSettings } = useMapSettings()
+  const { baseMap, overlayMaps, markerMode, setBaseMap, setMarkerMode, initializeSettings } = useMapSettings()
   const searchParams = useSearchParams()
   const { searchQueryString, searchFilterParamsString } = useSearchQuery()
   const perspective = usePerspective()
@@ -686,7 +686,7 @@ export default function MapExplorer() {
         bottom: isMobile ? `${MAP_DRAWER_BOTTOM_HEIGHT_REM - 0.5}rem` : '0',
       }}
     >
-      {({ TileLayer, CircleMarker, Popup, Circle, Marker, Tooltip, useMapEvents, useMap, Rectangle, Polygon, MultiPolygon, Polyline, AttributionControl }: any, leaflet: any) => {
+      {({ TileLayer, WMSTileLayer, CircleMarker, Popup, Circle, Marker, Tooltip, useMapEvents, useMap, Rectangle, Polygon, MultiPolygon, Polyline, AttributionControl }: any, leaflet: any) => {
 
         function EventHandlers() {
           const map = useMap();
@@ -827,7 +827,41 @@ export default function MapExplorer() {
             <AttributionControl prefix={false} position={isMobile ? "bottomleft" : "bottomright"} />
             <EventHandlers />
 
-            {baseMap[perspective] && <TileLayer maxZoom={18} maxNativeZoom={18} {...baseMapLookup[baseMap[perspective]].props} />}
+            {baseMap[perspective] && (
+              <TileLayer
+                key={`base-${baseMap[perspective]}`}
+                maxZoom={18}
+                maxNativeZoom={18}
+                {...baseMapLookup[baseMap[perspective]].props}
+              />
+            )}
+            {(overlayMaps[perspective] || []).map((overlayKey) => {
+              const overlayMap = baseMapLookup[overlayKey]
+              if (!overlayMap) return null
+              if (overlayMap.wms) {
+                return (
+                  <WMSTileLayer
+                    key={`overlay-wms-${overlayKey}`}
+                    url={overlayMap.props.url}
+                    attribution={overlayMap.props.attribution}
+                    layers={overlayMap.wms.layers}
+                    format={overlayMap.wms.format ?? 'image/png'}
+                    transparent={overlayMap.wms.transparent ?? true}
+                    version={overlayMap.wms.version ?? '1.3.0'}
+                    opacity={overlayMap.opacity ?? 1}
+                  />
+                )
+              }
+              return (
+                <TileLayer
+                  key={`overlay-${overlayKey}`}
+                  maxZoom={18}
+                  maxNativeZoom={18}
+                  opacity={overlayMap.opacity ?? 1}
+                  {...overlayMap.props}
+                />
+              )
+            })}
 
 
             {/* Draw geotile query results */}
