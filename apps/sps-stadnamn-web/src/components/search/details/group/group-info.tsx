@@ -435,7 +435,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                         {(() => {
                             if (!preferredFlyTarget) {
                                 return (
-                                    <span className="text-sm text-neutral-600 px-2 whitespace-nowrap">
+                                    <span className="text-sm text-neutral-700 px-2 whitespace-nowrap">
                                         Utan koordinat
                                     </span>
                                 );

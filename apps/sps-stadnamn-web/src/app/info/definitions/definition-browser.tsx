@@ -44,7 +44,7 @@ export default function DefinitionBrowser() {
             <h2 id="search" className="text-lg !my-0">Finn ordforklaringar</h2>
             <div className="flex flex-col gap-2">
                 <div className='flex max-w-xl border-none outline outline-1 outline-neutral-300 focus-within:border-neutral-200 rounded-md items-center relative group focus-within:outline-2 focus-within:outline-neutral-600'>
-                    <PiMagnifyingGlass className="text-xl shrink-0 text-neutral-600 group-focus-within:text-neutral-800 ml-3" aria-hidden="true"/>
+                    <PiMagnifyingGlass className="text-xl shrink-0 text-neutral-700 group-focus-within:text-neutral-800 ml-3" aria-hidden="true"/>
                     
                     <input
                         aria-labelledby="search"

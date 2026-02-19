@@ -80,7 +80,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
   },
   leks_g: (source: any) => {
     return <>
-      {source["note"] && <span className='flex items-center gap-1'><PiInfoFill className='inline mr-1 text-neutral-600' aria-hidden="true" />{source["note"]}</span>}
+      {source["note"] && <span className='flex items-center gap-1'><PiInfoFill className='inline mr-1 text-neutral-700' aria-hidden="true" />{source["note"]}</span>}
       {source.content?.html && <div className='space-y-2'>{parse(source.content?.html)}</div>}
     </>
   },
@@ -202,7 +202,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
   },
   ssr2016: null,
   ssr: (source: any) => {
-    return <><div><PiWarningFill className="inline-block mr-1 text-neutral-600 text-lg" aria-hidden="true" />Sjå normeringsstatus på kartverket.no</div>
+    return <><div><PiWarningFill className="inline-block mr-1 text-neutral-700 text-lg" aria-hidden="true" />Sjå normeringsstatus på kartverket.no</div>
       {source.ssr && <div className="flex flex-wrap gap-2"><Link className="rectangular-external-link" href={`https://stadnamn.kartverket.no/fakta/${source.ssr}`}>kartverket.no</Link>
         <Link className="rectangular-external-link" href={`http://wfs.geonorge.no/skwms1/wfs.stedsnavn50?service=WFS&version=2.0.0&request=GetFeature&STOREDQUERY_ID=urn:ogc:def:storedQuery:OGC-WFS::Stedsnummer&stedsnummer=${source.ssr}`}>Rådata (WFS)</Link>
       </div>}

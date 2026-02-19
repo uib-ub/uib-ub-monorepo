@@ -65,7 +65,7 @@ export default function AudioExplorer({recordings}: {recordings: any[]}) {
       >
         <PiCaretLeft className="text-lg" aria-hidden="true"/>
       </IconButton>
-      <span className="text-neutral-500 flex items-center justify-center">
+      <span className="text-neutral-700 flex items-center justify-center">
         {recordingIndex + 1}/{recordings.length}
       </span>
       <IconButton 
