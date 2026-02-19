@@ -1,7 +1,7 @@
 # Stadnamnportalen
 Frontend and REST API for Språksamlingane's place name collections.
 
-Leaflet implementation based on [next-leaflet-starter](https://github.com/colbyfayock/next-leaflet-starter)
+Map implementation uses [maplibre-gl](https://maplibre.org/maplibre-gl-js/docs/API/).
 
 Data for elasticsearch:
 https://git.app.uib.no/spraksamlingane/stadnamn/datasett/stadnamn-archive
@@ -13,7 +13,7 @@ https://git.app.uib.no/spraksamlingane/stadnamn/iiif.spraksamlingane.no
 
 
 ## Main libraries used
-* Map: [leaflet](https://leafletjs.com/) through [react-leaflet](https://react-leaflet.js.org/)
+* Map: [maplibre-gl](https://maplibre.org/maplibre-gl-js/docs/API/)
 * Image viewer: [open seadragon](https://openseadragon.github.io/)
 * Some of the UI components: [radix-ui](https://www.radix-ui.com/) (components copied from [shadcn](https://ui.shadcn.com/))
 

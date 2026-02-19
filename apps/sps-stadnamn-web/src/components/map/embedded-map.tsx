@@ -2,16 +2,14 @@
 import { baseMapLookup } from "@/config/basemap-config";
 import { baseLayerKeys } from "@/config/basemap-config";
 import { defaultMaxResultsParam } from "@/config/max-results";
-import dynamic from 'next/dynamic';
 import { getUnlabeledMarker } from "./markers";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { useRouter } from "next/navigation";
 import type { KeyboardEvent } from "react";
+import { useEffect, useRef } from "react";
 import { useMapSettings } from "@/state/zustand/persistent-map-settings";
-
-const DynamicMap = dynamic(() => import('./leaflet/dynamic-map'), {
-    ssr: false
-});
+import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 interface EmbeddedMapProps {
     coordinate: [number, number];
@@ -29,6 +27,9 @@ export default function EmbeddedMap({
     usePointQuery = false,
 }: EmbeddedMapProps) {
     const router = useRouter();
+    const mapContainerRef = useRef<HTMLDivElement | null>(null);
+    const mapRef = useRef<maplibregl.Map | null>(null);
+    const markerRef = useRef<maplibregl.Marker | null>(null);
     const storedBaseMap = useMapSettings((state) => state.baseMap);
     const selectedBaseMapKey = storedBaseMap && baseLayerKeys.includes(storedBaseMap)
         ? storedBaseMap
@@ -53,6 +54,66 @@ export default function EmbeddedMap({
         event.preventDefault();
         handleMapClick();
     };
+
+    useEffect(() => {
+        const container = mapContainerRef.current;
+        if (!container || mapRef.current) return;
+
+        const map = new maplibregl.Map({
+            container,
+            style: {
+                version: 8,
+                sources: {},
+                layers: [{ id: 'background', type: 'background', paint: { 'background-color': '#f4f4f5' } }],
+            } as any,
+            center: [coordinate[1], coordinate[0]],
+            zoom,
+            attributionControl: {},
+            interactive: false,
+        });
+        mapRef.current = map;
+
+        map.on('load', () => {
+            const baseMap = baseMapLookup[selectedBaseMapKey] || baseMapLookup['standard'];
+            if (baseMap?.props?.url) {
+                const url = baseMap.props.url.replaceAll('{r}', '');
+                const tiles = url.includes('{s}')
+                    ? ['a', 'b', 'c', 'd'].map((s) => url.replaceAll('{s}', s))
+                    : [url];
+                map.addSource('embedded-base', {
+                    type: 'raster',
+                    tiles,
+                    tileSize: 256,
+                    attribution: baseMap.props.attribution,
+                    maxzoom: baseMap.maxNativeZoom ?? baseMap.maxZoom ?? 22,
+                } as any);
+                map.addLayer({
+                    id: 'embedded-base',
+                    type: 'raster',
+                    source: 'embedded-base',
+                } as any);
+            }
+            const visibleMarkerHtml = getUnlabeledMarker("primary").html
+                .replace('role="button"', 'aria-hidden="true"')
+                .replace('tabindex="0"', '');
+            const markerEl = document.createElement('div');
+            markerEl.innerHTML = visibleMarkerHtml;
+            markerRef.current = new maplibregl.Marker({ element: markerEl, anchor: 'center' })
+                .setLngLat([coordinate[1], coordinate[0]])
+                .addTo(map);
+        });
+
+        return () => {
+            markerRef.current?.remove();
+            markerRef.current = null;
+            try {
+                map.remove();
+            } catch {
+                // no-op
+            }
+            mapRef.current = null;
+        };
+    }, [coordinate, selectedBaseMapKey, zoom]);
     //const coordinate = [source.location.coordinates[1], source.location.coordinates[0]]
     return (
         <div
@@ -61,61 +122,10 @@ export default function EmbeddedMap({
             role="button"
             tabIndex={0}
             aria-label="Open search at this map location"
+            onClick={handleMapClick}
             onKeyDown={handleMapKeyDown}
         >
-            <DynamicMap
-                zoomControl={false}
-                attributionControl={false}
-                dragging={false}
-                touchZoom={false}
-                doubleClickZoom={false}
-                scrollWheelZoom={false}
-                boxZoom={false}
-                keyboard={false}
-                zoom={zoom}
-                center={coordinate}
-                className="w-full h-full"
-            >
-                {({ TileLayer, Rectangle, Marker, AttributionControl }: any, leaflet: any) => {
-                    // Use a simple base map
-                    const baseMap = baseMapLookup[selectedBaseMapKey] || baseMapLookup['standard'];
-                    const visibleMarkerHtml = getUnlabeledMarker("primary").html
-                        .replace('role="button"', 'aria-hidden="true"')
-                        .replace('tabindex="0"', '');
-
-                    return (
-                        <>
-                            <AttributionControl prefix={false} position="bottomright" />
-                            {baseMap && (
-                                <TileLayer
-                                    maxZoom={baseMap.maxZoom ?? 18}
-                                    maxNativeZoom={baseMap.maxNativeZoom ?? 18}
-                                    {...baseMap.props}
-                                />
-                            )}
-                            <Rectangle
-                                bounds={[[-90, -180], [90, 180]]}
-                                pathOptions={{
-                                    fillOpacity: 0,
-                                    opacity: 0
-                                }}
-                                eventHandlers={{
-                                    click: handleMapClick
-                                }}
-                            />
-                            <Marker
-                                position={coordinate}
-                                icon={new leaflet.DivIcon({
-                                    className: '',
-                                    html: visibleMarkerHtml
-                                })}
-                                interactive={false}
-                                keyboard={false}
-                            />
-                        </>
-                    );
-                }}
-            </DynamicMap>
+            <div ref={mapContainerRef} className="w-full h-full" />
         </div>
     );
 }

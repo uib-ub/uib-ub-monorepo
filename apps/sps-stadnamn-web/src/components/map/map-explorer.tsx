@@ -11,6 +11,7 @@ import { useGroup, usePerspective } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { parseTreeParam } from "@/lib/tree-param";
 import { getBnr, getGnr } from "@/lib/utils";
+import { parseCameraParam, serializeCameraParam } from "@/lib/camera-url";
 import useDocData from "@/state/hooks/doc-data";
 import useGroupData from "@/state/hooks/group-data";
 import useSearchData from "@/state/hooks/search-data";
@@ -23,6 +24,7 @@ import { useRouter } from "next/navigation";
 import wkt from 'wellknown';
 import { useDebugStore } from '../../state/zustand/debug-store';
 import DynamicMap from "./leaflet/dynamic-map";
+import MaplibreDirectMap from "@/components/map/maplibre-direct-map";
 import MapToolbar from "./map-toolbar";
 
 const DynamicDebugLayers = dynamic(() => import('@/components/map/debug-layers'), {
@@ -54,8 +56,23 @@ export default function MapExplorer() {
   const searchParams = useSearchParams()
   const { searchQueryString, searchFilterParamsString } = useSearchQuery()
   const perspective = usePerspective()
-  const urlZoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
-  const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
+  const urlCamera = useMemo(() => parseCameraParam(searchParams.get('cam')), [searchParams])
+  const legacyUrlZoom = searchParams.get('zoom') ? parseFloat(searchParams.get('zoom')!) : null
+  const legacyUrlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
+  const hasCam = !!searchParams.get('cam')
+  const is3DMode = hasCam
+  const urlZoom = !is3DMode && typeof legacyUrlZoom === 'number'
+    ? legacyUrlZoom
+    : (urlCamera?.mode === 'center' && typeof urlCamera.zoom === 'number')
+      ? urlCamera.zoom
+      : null
+  const urlCenter = !is3DMode && legacyUrlCenter
+    ? legacyUrlCenter
+    : (urlCamera?.mode === 'center' && urlCamera.center?.length === 2)
+      ? urlCamera.center
+      : null
+  const initialBearing = is3DMode && typeof urlCamera?.bearing === 'number' ? urlCamera.bearing : 0
+  const initialPitch = is3DMode && typeof urlCamera?.pitch === 'number' ? urlCamera.pitch : 0
   const allowFitBounds = useRef(false)
   const { activeGroupValue, initValue, initCode } = useGroup()
   const { groupLoading, groupData } = useGroupData()
@@ -650,18 +667,228 @@ export default function MapExplorer() {
 
   const isPointInViewport = useCallback(
     (lat: number, lng: number) => {
-      const mapBounds = mapInstance?.current?.getBounds();
+      const mapBounds = mapFunctionRef?.current?.getBounds?.() || mapInstance?.current?.getBounds?.();
       if (!mapBounds) return false;
       const bounds = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()],];
       if (!bounds) return false;
       const [[north, west], [south, east]] = bounds;
       return lat <= north && lat >= south && lng >= west && lng <= east;
     },
-    []
+    [mapFunctionRef]
   );
 
+  const directMapResultMarkers = useMemo(() => {
+    if (!processedMarkerResults?.length) return []
+
+    return processedMarkerResults.flatMap((item: any) => {
+      if (item.doc_count) {
+        const clusterBounds = geotileKeyToBounds(item.key)
+        const flattenedTopHits = item.groups?.buckets?.map((bucket: any) => bucket.top.hits.hits[0]) || []
+        if (!clusterBounds || !flattenedTopHits.length) return []
+
+        let latSum = 0
+        let lngSum = 0
+        flattenedTopHits.forEach((hit: any) => {
+          latSum += hit.fields.location[0].coordinates?.[1] ?? 0
+          lngSum += hit.fields.location[0].coordinates?.[0] ?? 0
+        })
+        const avgLocation: [number, number] = [latSum / flattenedTopHits.length, lngSum / flattenedTopHits.length]
+        const boundsHeight = clusterBounds[0][0] - clusterBounds[1][0]
+        const boundsWidth = clusterBounds[1][1] - clusterBounds[0][1]
+        const zoomTarget: [[number, number], [number, number]] = [
+          [avgLocation[0] + boundsHeight / 3, avgLocation[1] - boundsWidth / 3],
+          [avgLocation[0] - boundsHeight / 3, avgLocation[1] + boundsWidth / 3]
+        ]
+        const icon = getClusterMarker(
+          item.doc_count,
+          item.radius * 2 + (item.doc_count > 99 ? item.doc_count.toString().length / 4 : 0),
+          item.radius * 2,
+          item.radius * 0.8
+        )
+
+        return [{
+          id: `cluster-${item.key}`,
+          position: avgLocation,
+          html: icon.html,
+          anchor: 'center' as const,
+          onClick: () => {
+            if (mapFunctionRef.current) {
+              mapFunctionRef.current.fitBounds(zoomTarget, { maxZoom: 18 })
+            }
+          }
+        }]
+      }
+
+      const lat = item.fields?.location?.[0]?.coordinates?.[1]
+      const lng = item.fields?.location?.[0]?.coordinates?.[0]
+      if (lat == undefined || lng == undefined || !isPointInViewport(lat, lng)) return []
+
+      const selected = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue && !groupLoading)
+      const isActiveGroupMarker = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue)
+      const isAtActivePoint = Boolean(point && Math.abs(lat - point[0]) < 0.000001 && Math.abs(lng - point[1]) < 0.000001)
+      const shouldHideUnlabeledActiveAreaMarker = activeGroupHasArea && (isActiveGroupMarker || isAtActivePoint)
+      if (activePoint) return []
+      if (selected && activeMarkerMode !== 'points') return []
+
+      const isInit = initValue && item.fields?.["group.id"]?.[0] == initValue
+      if (hasGroupParam && isInit) return []
+      const markerColor = isInit ? 'black' : 'white'
+      const labelText = getDisplayLabel(item.fields)
+
+      const html = activeMarkerMode === 'points'
+        ? getUnlabeledMarker('black').html
+        : (activeMarkerMode === 'counts' && item.isClusterSingleton)
+          ? getUnlabeledMarker('black').html
+          : getLabelMarkerIcon(labelText, markerColor, undefined, false, false, false).html
+
+      if (shouldHideUnlabeledActiveAreaMarker && (activeMarkerMode === 'points' || (activeMarkerMode === 'counts' && item.isClusterSingleton))) {
+        return []
+      }
+
+      return [{
+        id: `result-${item.fields?.uuid?.[0] || `${lat}-${lng}`}`,
+        position: [lat, lng] as [number, number],
+        html,
+        anchor: (activeMarkerMode === 'points' || (activeMarkerMode === 'counts' && item.isClusterSingleton)) ? ('bottom' as const) : ('center' as const),
+        onClick: () => {
+          const handlers = selectDocHandler(item, [lat, lng])
+          handlers.click()
+        }
+      }]
+    })
+  }, [
+    processedMarkerResults,
+    geotileKeyToBounds,
+    mapFunctionRef,
+    isPointInViewport,
+    activeGroupValue,
+    groupLoading,
+    point,
+    activeGroupHasArea,
+    activePoint,
+    activeMarkerMode,
+    initValue,
+    hasGroupParam,
+    getDisplayLabel,
+    selectDocHandler
+  ])
 
 
+
+
+  const useDirectMap = true
+
+  if (useDirectMap) {
+    const [directCenter2D, setDirectCenter2D] = useState<[number, number]>(urlCenter || defaultCenter)
+    const [directZoom2D, setDirectZoom2D] = useState<number>(urlZoom || defaultZoom)
+
+    useEffect(() => {
+      if (!is3DMode) {
+        setDirectCenter2D(urlCenter || defaultCenter)
+        setDirectZoom2D(urlZoom || defaultZoom)
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [is3DMode, urlCenter?.[0], urlCenter?.[1], urlZoom])
+
+    const directMapCenter = is3DMode && urlCenter ? urlCenter : directCenter2D
+    const directMapZoom = is3DMode && typeof urlZoom === 'number' ? urlZoom : directZoom2D
+    return <>
+      <MapToolbar />
+      <div
+        className="absolute top-0 right-0 left-0"
+        style={{
+          bottom: isMobile ? `${MAP_DRAWER_BOTTOM_HEIGHT_REM - 0.5}rem` : '0',
+        }}
+      >
+        <MaplibreDirectMap
+          mapRef={mapFunctionRef}
+          center={directMapCenter}
+          zoom={directMapZoom}
+          baseMapKey={baseMap || 'standard'}
+          overlayMapKeys={overlayMaps || []}
+          baseMapLookup={baseMapLookup}
+          point={point}
+          activePoint={activePoint}
+          resultMarkers={directMapResultMarkers}
+          enable3D={is3DMode}
+          initialBearing={initialBearing}
+          initialPitch={initialPitch}
+          className="w-full h-full select-none"
+          onContextMenu={(mapPoint: [number, number]) => {
+            const newParams = new URLSearchParams(searchParams)
+            newParams.delete('group')
+            newParams.delete('init')
+            newParams.set('point', `${mapPoint[0]},${mapPoint[1]}`)
+            router.push(`?${newParams.toString()}`)
+          }}
+          onMoveEnd={({
+            bounds,
+            center,
+            zoom,
+            bearing,
+            pitch
+          }: {
+            bounds: [[number, number], [number, number]];
+            center: [number, number];
+            zoom: number;
+            bearing: number;
+            pitch: number;
+          }) => {
+            setSnappedBounds(bounds)
+            const [[north, west], [south, east]] = bounds
+            const mapBoundsPoints = [
+              [north, west],
+              [north, east],
+              [south, east],
+              [south, west]
+            ]
+            if (zoom != zoomState) {
+              if (zoomState >= 4) {
+                gridSizeRef.current = getGridSize(bounds, zoom);
+              } else {
+                gridSizeRef.current = { gridSize: 1, precision: 0 }
+              }
+              updateMarkerGrid(bounds, zoom, gridSizeRef.current, markerCells);
+              setZoomState(zoom);
+            } else if (!mapBoundsPoints.every((viewportPoint) => {
+              return markerCells.some((cell) => {
+                if (!cell.bounds) return false;
+                const [[cellNorth, cellWest], [cellSouth, cellEast]] = cell.bounds;
+                return viewportPoint[0] <= cellNorth && viewportPoint[0] >= cellSouth &&
+                  viewportPoint[1] >= cellWest && viewportPoint[1] <= cellEast;
+              });
+            })) {
+              updateMarkerGrid(bounds, zoom, gridSizeRef.current, markerCells);
+            }
+
+            const newParams = new URLSearchParams(searchParams)
+            if (is3DMode) {
+              const camStr = serializeCameraParam({
+                v: 1,
+                mode: 'center',
+                center,
+                zoom,
+                bearing,
+                pitch,
+                bounds,
+              })
+              newParams.set('cam', camStr)
+              newParams.delete('zoom')
+              newParams.delete('center')
+            } else {
+              const zoomStr = zoom.toString()
+              const centerStr = `${center[0]},${center[1]}`
+              newParams.set('zoom', zoomStr)
+              newParams.set('center', centerStr)
+              newParams.delete('cam')
+            }
+            const newUrl = `${window.location.pathname}?${newParams.toString()}`;
+            window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
+          }}
+        />
+      </div>
+    </>
+  }
 
   return <>
     <MapToolbar />
@@ -672,6 +899,19 @@ export default function MapExplorer() {
         if (!mapInstance.current) {
           mapInstance.current = e.target;
           mapFunctionRef.current = e.target;
+          if (urlCamera?.mode === 'bounds' && urlCamera.bounds) {
+            mapInstance.current.fitBounds(urlCamera.bounds, {
+              duration: 0,
+              padding: urlCamera.padding ?? [0, 0],
+              maxZoom: typeof urlCamera.zoom === 'number' ? urlCamera.zoom : 18,
+            });
+            if (typeof urlCamera.bearing === 'number' && typeof mapInstance.current.setBearing === 'function') {
+              mapInstance.current.setBearing(urlCamera.bearing);
+            }
+            if (typeof urlCamera.pitch === 'number' && typeof mapInstance.current.setPitch === 'function') {
+              mapInstance.current.setPitch(urlCamera.pitch);
+            }
+          }
           ensureTreeOverlayPanes(e.target)
         }
       }}
@@ -774,8 +1014,31 @@ export default function MapExplorer() {
 
 
               const newParams = new URLSearchParams(searchParams)
-              newParams.set('zoom', mapZoom)
-              newParams.set('center', `${mapCenter.lat},${mapCenter.lng}`)
+              if (is3DMode) {
+                const mapBearing = typeof map.getBearing === 'function' ? map.getBearing() : 0
+                const mapPitch = typeof map.getPitch === 'function' ? map.getPitch() : 0
+                const camStr = serializeCameraParam({
+                  v: 1,
+                  mode: 'center',
+                  center: [mapCenter.lat, mapCenter.lng],
+                  zoom: mapZoom,
+                  bearing: mapBearing,
+                  pitch: mapPitch,
+                  bounds: [[north, west], [south, east]],
+                })
+                if (searchParams.get('cam') === camStr && !searchParams.get('zoom') && !searchParams.get('center')) {
+                  return
+                }
+                newParams.set('cam', camStr)
+                newParams.delete('zoom')
+                newParams.delete('center')
+              } else {
+                const mapZoomStr = mapZoom.toString()
+                const mapCenterStr = `${mapCenter.lat},${mapCenter.lng}`
+                newParams.set('zoom', mapZoomStr)
+                newParams.set('center', mapCenterStr)
+                newParams.delete('cam')
+              }
 
               // Update URL without triggering router events
               const newUrl = `${window.location.pathname}?${newParams.toString()}`;

@@ -3,7 +3,7 @@ import useSearchData from "@/state/hooks/search-data"
 import { GlobalContext } from "@/state/providers/global-provider"
 import { useSessionStore } from "@/state/zustand/session-store"
 import { useContext } from "react"
-import { PiFunnel, PiFunnelFill, PiGpsFix, PiInfoFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus } from "react-icons/pi"
+import { PiCube, PiFunnel, PiFunnelFill, PiGpsFix, PiInfoFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus } from "react-icons/pi"
 import { RoundIconButton, RoundIconClickable } from "../ui/clickable/round-icon-button"
 import { useRouter, useSearchParams } from "next/navigation"
 
@@ -66,6 +66,9 @@ export default function MapToolbar() {
     const { totalHits, searchBounds, searchLoading, searchError } = useSearchData()
     const { options } = useOverlayParams()
     const { mapSettings } = useOverlayParams()
+    const router = useRouter()
+    const searchParams = useSearchParams()
+    const hasCam = !!searchParams.get('cam')
 
     const svhToRem = (svh: number) => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return 0
@@ -138,6 +141,104 @@ export default function MapToolbar() {
                             label="Zoom ut"
                         >
                             <PiMagnifyingGlassMinusFill className="text-2xl" />
+                        </RoundIconButton>
+                        <RoundIconButton
+                            onClick={() => {
+                                const base = new URLSearchParams(searchParams)
+                                const camParam = base.get('cam')
+                                const map = (mapFunctionRef?.current as any)?._map ?? mapFunctionRef?.current
+                                const applyTilt = (lat: number, lng: number, zoom: number) => {
+                                    if (map && typeof map.easeTo === 'function') {
+                                        map.easeTo({ center: [lng, lat], zoom, pitch: 60, bearing: 0 })
+                                    }
+                                }
+                                const clearTilt = (lat: number, lng: number, zoom: number) => {
+                                    if (map && typeof map.easeTo === 'function') {
+                                        map.easeTo({ center: [lng, lat], zoom, pitch: 0, bearing: 0 })
+                                    }
+                                }
+                                if (camParam) {
+                                    // Turn 3D off: use live map center/zoom and drop cam.
+                                    let center: [number, number] | undefined
+                                    let zoom: number | undefined
+                                    if (map && typeof map.getCenter === 'function' && typeof map.getZoom === 'function') {
+                                        const c = map.getCenter()
+                                        const z = map.getZoom()
+                                        if (c && typeof c.lat === 'number' && typeof c.lng === 'number') {
+                                            center = [c.lat, c.lng]
+                                        }
+                                        if (typeof z === 'number') zoom = z
+                                    }
+                                    if (!center) {
+                                        const urlCenter = searchParams.get('center')
+                                            ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number])
+                                            : undefined
+                                        if (urlCenter) center = urlCenter
+                                    }
+                                    if (typeof zoom !== 'number') {
+                                        zoom = searchParams.get('zoom') ? parseFloat(searchParams.get('zoom')!) : undefined
+                                    }
+                                    if (center) {
+                                        base.set('center', `${center[0]},${center[1]}`)
+                                    }
+                                    if (typeof zoom === 'number') {
+                                        base.set('zoom', String(zoom))
+                                    }
+                                    base.delete('cam')
+                                    if (center && typeof zoom === 'number') {
+                                        clearTilt(center[0], center[1], zoom)
+                                    }
+                                } else {
+                                    // Turn 3D on: derive cam solely from live map camera.
+                                    if (!map || typeof map.getCenter !== 'function' || typeof map.getZoom !== 'function') {
+                                        // If the map isn't ready, don't change camera or URL.
+                                        return
+                                    }
+                                    const c = map.getCenter()
+                                    const z = map.getZoom()
+                                    if (!c || typeof c.lat !== 'number' || typeof c.lng !== 'number' || typeof z !== 'number') {
+                                        return
+                                    }
+                                    const lat = c.lat
+                                    const lng = c.lng
+                                    const zoom = z
+                                    let bounds: { north: number; west: number; south: number; east: number } | null = null
+                                    if (typeof map.getBounds === 'function') {
+                                        const b = map.getBounds()
+                                        if (b && typeof b.getNorth === 'function' && typeof b.getWest === 'function') {
+                                            bounds = {
+                                                north: b.getNorth(),
+                                                west: b.getWest(),
+                                                south: b.getSouth(),
+                                                east: b.getEast(),
+                                            }
+                                        }
+                                    }
+                                    const payload = {
+                                        v: 1,
+                                        mode: 'center' as const,
+                                        center: [lat, lng] as [number, number],
+                                        zoom,
+                                        bearing: 0,
+                                        pitch: 60,
+                                        bounds: bounds
+                                            ? ([[bounds.north, bounds.west], [bounds.south, bounds.east]] as [[number, number], [number, number]])
+                                            : undefined,
+                                    }
+                                    const json = JSON.stringify(payload)
+                                    const camValue = btoa(json).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '')
+                                    base.set('cam', camValue)
+                                    base.delete('zoom')
+                                    base.delete('center')
+                                    applyTilt(lat, lng, zoom)
+                                }
+                                router.replace(`?${base.toString()}`)
+                            }}
+                            side="top"
+                            label="3D-modus"
+                            className={hasCam ? 'bg-accent-800 text-white' : ''}
+                        >
+                            <PiCube className="text-2xl" />
                         </RoundIconButton>
                     </>
 

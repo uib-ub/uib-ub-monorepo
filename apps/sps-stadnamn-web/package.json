@@ -22,6 +22,7 @@
     "jspdf": "4.0.0",
     "jszip": "3.10.1",
     "leaflet": "1.9.4",
+    "maplibre-gl": "5.18.0",
     "next": "16.1.6",
     "next-mdx-remote": "5.0.0",
     "next-plausible": "3.12.5",
