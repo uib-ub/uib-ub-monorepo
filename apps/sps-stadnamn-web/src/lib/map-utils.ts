@@ -353,9 +353,29 @@ export function panPointIntoView(
 ) {
   if (!map || !point) return false;
 
+  // Support both Leaflet maps and MapLibre wrapper objects
+  const coreMap =
+    map &&
+    typeof map.getSize !== 'function' &&
+    map._map &&
+    typeof map._map.getSize === 'function'
+      ? map._map
+      : map;
+
+  // If the underlying map doesn't have the Leaflet-style APIs, skip panning
+  if (
+    !coreMap ||
+    typeof coreMap.getSize !== 'function' ||
+    typeof coreMap.getZoom !== 'function' ||
+    typeof coreMap.latLngToContainerPoint !== 'function' ||
+    typeof coreMap.fitBounds !== 'function'
+  ) {
+    return false;
+  }
+
   const [lat, lng] = point;
-  const size = map.getSize();
-  const zoom = map.getZoom();
+  const size = coreMap.getSize();
+  const zoom = coreMap.getZoom();
 
   // Hard-coded paddings based on platform and drawer state
   let padLeft = 0, padRight = 0, padTop = 0, padBottom = 0;
@@ -377,13 +397,13 @@ export function panPointIntoView(
   }
 
   // Check visibility within padded rectangle
-  const pt = map.latLngToContainerPoint([lat, lng]);
+  const pt = coreMap.latLngToContainerPoint([lat, lng]);
   const insideHoriz = pt.x >= padLeft && pt.x <= (size.x - padRight);
   const insideVert = pt.y >= padTop && pt.y <= (size.y - padBottom);
 
   if (reset || !(insideHoriz && insideVert)) {
     const eps = 1e-6;
-    map.fitBounds(
+    coreMap.fitBounds(
       [[lat + eps, lng - eps], [lat - eps, lng + eps]],
       {
         paddingTopLeft: [padLeft, padTop],

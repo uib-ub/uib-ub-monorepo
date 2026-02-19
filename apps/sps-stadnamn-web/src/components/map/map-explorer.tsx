@@ -773,6 +773,121 @@ export default function MapExplorer() {
     selectDocHandler
   ])
 
+  const directGroupMarkers = useMemo(() => {
+    const markers: {
+      id: string;
+      position: [number, number];
+      html: string;
+      anchor?: 'center' | 'bottom' | 'top' | 'left' | 'right';
+      onClick?: () => void;
+    }[] = []
+    let activeGroupMarker: {
+      id: string;
+      position: [number, number];
+      html: string;
+      anchor?: 'center' | 'bottom' | 'top' | 'left' | 'right';
+      onClick?: () => void;
+    } | null = null
+
+    // Active group / area marker (accent label or area label)
+    if (
+      groupData &&
+      !activePoint &&
+      ((point && initValue) || groupData.fields?.location?.[0]?.coordinates)
+    ) {
+      let latLng: [number, number] | null = null
+      if ((activeMarkerMode === 'labels' || activeMarkerMode === 'points') && point) {
+        latLng = point
+      } else if (groupData.fields?.location?.[0]?.coordinates?.length === 2) {
+        latLng = [
+          groupData.fields.location[0].coordinates[1],
+          groupData.fields.location[0].coordinates[0],
+        ]
+      }
+
+      if (latLng) {
+        const label = getDisplayLabel(groupData.fields)
+        const html = activeGroupHasArea
+          ? getAreaLabelMarkerIcon(label).html
+          : getLabelMarkerIcon(label, 'accent', undefined, true, false, true).html
+
+        activeGroupMarker = {
+          id: 'group-marker',
+          position: latLng,
+          html,
+          anchor: 'bottom',
+          onClick: () => {
+            const map = (mapFunctionRef.current as any)?._map ?? mapFunctionRef.current
+            if (map && typeof map.getZoom === 'function' && typeof map.getMaxZoom === 'function' && typeof map.easeTo === 'function') {
+              const currentZoom = map.getZoom()
+              const maxZoom = map.getMaxZoom()
+              const nextZoom = Math.min(currentZoom + 2, maxZoom)
+              map.easeTo({ center: [latLng![1], latLng![0]], zoom: nextZoom })
+            }
+
+            const newParams = new URLSearchParams(searchParams)
+            const hasMaxResults = newParams.has('maxResults')
+            const hasMapSettingsParam = newParams.has('mapSettings')
+
+            if (!hasMaxResults) {
+              newParams.set('maxResults', defaultMaxResultsParam)
+            }
+            if (hasMapSettingsParam) {
+              newParams.delete('mapSettings')
+            }
+            if (!hasMaxResults || hasMapSettingsParam) {
+              router.push(`?${newParams.toString()}`)
+            }
+          },
+        }
+      }
+    }
+
+    // Init group black label when a group is active
+    if (
+      hasGroupParam &&
+      initGroupData?.fields?.location?.[0]?.coordinates?.length === 2
+    ) {
+      const lat = initGroupData.fields.location[0].coordinates[1]
+      const lng = initGroupData.fields.location[0].coordinates[0]
+      const label = getDisplayLabel(initGroupData.fields)
+      const html = getLabelMarkerIcon(label, 'black', undefined, true, false, true).html
+
+      markers.push({
+        id: 'init-group-label',
+        position: [lat, lng],
+        html,
+        anchor: 'bottom',
+        onClick: () => {
+          const newParams = new URLSearchParams(searchParams)
+          newParams.delete('group')
+          router.push(`?${newParams.toString()}`)
+        },
+      })
+    }
+
+    // Ensure active group marker is added last so it appears on top
+    if (activeGroupMarker) {
+      markers.push(activeGroupMarker)
+    }
+
+    return markers
+  }, [
+    activeGroupHasArea,
+    activeMarkerMode,
+    activePoint,
+    getDisplayLabel,
+    groupData,
+    initGroupData,
+    initGroupHasArea,
+    initValue,
+    mapFunctionRef,
+    point,
+    router,
+    hasGroupParam,
+    searchParams,
+  ])
+
 
 
 
@@ -792,6 +907,10 @@ export default function MapExplorer() {
 
     const directMapCenter = is3DMode && urlCenter ? urlCenter : directCenter2D
     const directMapZoom = is3DMode && typeof urlZoom === 'number' ? urlZoom : directZoom2D
+    const directPoint =
+      point && !initValue && !activeGroupHasArea && hasGroupParam
+        ? point
+        : null
     return <>
       <MapToolbar />
       <div
@@ -807,9 +926,9 @@ export default function MapExplorer() {
           baseMapKey={baseMap || 'standard'}
           overlayMapKeys={overlayMaps || []}
           baseMapLookup={baseMapLookup}
-          point={point}
+          point={directPoint}
           activePoint={activePoint}
-          resultMarkers={directMapResultMarkers}
+          resultMarkers={[...directMapResultMarkers, ...directGroupMarkers]}
           enable3D={is3DMode}
           initialBearing={initialBearing}
           initialPitch={initialPitch}
