@@ -11,6 +11,7 @@ export type MapLayerCoverage = 'global' | 'regional'
 export interface BaseMap {
     key: string;
     name: string;
+    provider?: string;
     bright?: boolean;
     coverage: MapLayerCoverage;
     opacity?: number;
@@ -51,7 +52,8 @@ export const baseMaps: BaseMap[] = [
     */
     {
         key: 'topo',
-        name: 'Noregskart',
+        name: 'Topografisk noregskart',
+        provider: 'Kartverket',
         coverage: 'regional',
         opacity: 0.8,
         props: {
@@ -61,7 +63,8 @@ export const baseMaps: BaseMap[] = [
     },
     {
         key: 'topograatone',
-        name: 'Noregskart, gråtone',
+        name: 'Kartverket, gråtone',
+        provider: 'Kartverket',
         coverage: 'regional',
         opacity: 0.8,
         props: {
@@ -72,7 +75,8 @@ export const baseMaps: BaseMap[] = [
     },
     {
         key: 'toporaster',
-        name: 'Noregskart, store bokstaver',
+        name: 'Noregskart, store bokstaver ',
+        provider: 'Kartverket',
         coverage: 'regional',
         opacity: 0.8,
         props: {
@@ -83,6 +87,7 @@ export const baseMaps: BaseMap[] = [
     {
         key: 'historiske_kart_amt1',
         name: 'Historiske kart (amtskart)',
+        provider: 'Kartverket',
         coverage: 'regional',
         opacity: 0.75,
         wms: {
@@ -97,8 +102,39 @@ export const baseMaps: BaseMap[] = [
         }
     },
     {
+        key: 'matrikkelkart',
+        name: 'Matrikkelkart',
+        provider: 'Kartverket',
+        coverage: 'regional',
+        opacity: 0.8,
+        wms: {
+            layers: 'matrikkelkart',
+            format: 'image/png',
+            transparent: true,
+            version: '1.3.0'
+        },
+        props: {
+            url: 'https://wms.geonorge.no/skwms1/wms.matrikkelkart?language=eng&',
+            attribution: '&copy; <a class="override-external-icon" href="https://www.kartverket.no/">Kartverket</a>'
+        }
+    },
+    {
+        key: 'svalbard_basiskart',
+        name: 'Svalbard',
+        provider: 'Norsk Polarinstitutt',
+        coverage: 'regional',
+        opacity: 0.8,
+        maxZoom: 18,
+        maxNativeZoom: 18,
+        props: {
+            url: 'https://geodata.npolar.no/arcgis/rest/services/Basisdata/NP_Basiskart_Svalbard_WMTS_3857/MapServer/WMTS/tile/1.0.0/Basisdata_NP_Basiskart_Svalbard_WMTS_3857/default/GoogleMapsCompatible/{z}/{y}/{x}',
+            attribution: '&copy; <a class="override-external-icon" href="https://www.npolar.no/">Norsk Polarinstitutt</a>'
+        }
+    },
+    {
         key: 'neutral',
         name: 'Nøytral',
+        provider: 'CARTO',
         bright: true,
         coverage: 'global',
         props: {
@@ -110,6 +146,7 @@ export const baseMaps: BaseMap[] = [
     {
         key: 'standard',
         name: 'Standard',
+        provider: 'CARTO',
         coverage: 'global',
         props: {
             url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png',
@@ -119,6 +156,7 @@ export const baseMaps: BaseMap[] = [
     {
         key: 'high_contrast',
         name: 'Høgkontrast',
+        provider: 'Stadia Maps / Stamen',
         coverage: 'global',
         props: {
             url: 'https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}.png',
@@ -128,6 +166,7 @@ export const baseMaps: BaseMap[] = [
     {
         key: 'terrain',
         name: 'Terreng',
+        provider: 'Stadia Maps / Stamen',
         coverage: 'global',
         props: {
             url: 'https://tiles.stadiamaps.com/tiles/stamen_terrain_background/{z}/{x}/{y}.png',
@@ -137,6 +176,7 @@ export const baseMaps: BaseMap[] = [
     {
         key: 'satellite',
         name: 'Foto',
+        provider: 'Esri',
         coverage: 'global',
         maxZoom: 20,
         maxNativeZoom: 20,

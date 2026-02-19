@@ -4,10 +4,11 @@ import { defaultBaseMap } from "@/config/basemap-config";
 import { useMapSettings } from "@/state/zustand/persistent-map-settings";
 import ToggleButton from "@/components/ui/toggle-button";
 import Clickable from "@/components/ui/clickable/clickable";
+import IconButton from "@/components/ui/icon-button";
 import dynamic from "next/dynamic";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import { useMemo, useState } from "react";
-import { PiArrowLeft, PiMagnifyingGlass, PiX } from "react-icons/pi";
+import { PiArrowLeft, PiCaretDownBold, PiCaretUpBold, PiMagnifyingGlass, PiPlus, PiX } from "react-icons/pi";
 import { useSearchParams } from "next/navigation";
 
 const MapDebugSettings = dynamic(() => import("./map-debug-settings"), { ssr: false });
@@ -56,9 +57,9 @@ export default function MapSettings() {
     if (!query) return availableOverlays;
     return availableOverlays.filter((item) => item.name.toLowerCase().includes(query));
   }, [overlaySearch, availableOverlays]);
-  const overlayNameByKey = useMemo(() => {
-    return overlayLayerMaps.reduce<Record<string, string>>((acc, item) => {
-      acc[item.key] = item.name;
+  const overlayMetaByKey = useMemo(() => {
+    return overlayLayerMaps.reduce<Record<string, { name: string; provider?: string }>>((acc, item) => {
+      acc[item.key] = { name: item.name, provider: item.provider };
       return acc;
     }, {});
   }, []);
@@ -68,7 +69,7 @@ export default function MapSettings() {
       <div className="flex flex-col gap-4 pb-4 xl:px-2">
         <section>
           <fieldset className="border-0 p-0 m-0">
-            <legend className="sr-only">Overlegg</legend>
+            <legend className="sr-only">Kartoverlegg</legend>
             <div className="px-2 py-1 flex flex-col gap-3">
               <div className="flex items-center justify-between gap-2">
                 <Clickable
@@ -92,37 +93,44 @@ export default function MapSettings() {
                 <legend className="sr-only">Valde overlegg</legend>
                 <ul className="flex flex-col divide-y divide-neutral-200 border border-neutral-200 rounded-md max-h-64 overflow-auto">
                   {selectedOverlays.map((overlayKey, index) => (
-                    <li key={overlayKey} className="px-3 py-2 flex flex-wrap items-center gap-2">
-                      <span className="min-w-0 basis-full sm:basis-auto sm:flex-1 truncate">{overlayNameByKey[overlayKey] || overlayKey}</span>
-                      <div className="ml-auto flex flex-wrap gap-2 max-w-full">
-                        <button
-                          type="button"
-                          className="btn btn-outline btn-sm"
+                    <li key={overlayKey} className="px-3 py-2 flex items-start gap-3">
+                      <div className="flex flex-col gap-1">
+                        <IconButton
+                          label="Flytt overlegg opp"
+                          className="text-sm aspect-square btn btn-outline btn-sm p-1 h-6 w-6 min-h-0"
                           onClick={() => moveOverlayMap(index, index - 1)}
                           disabled={index === 0}
                         >
-                          Opp
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-outline btn-sm"
+                          <PiCaretUpBold />
+                        </IconButton>
+                        <IconButton
+                          label="Flytt overlegg ned"
+                          className="text-sm aspect-square btn btn-outline btn-sm p-1 h-6 w-6 min-h-0"
                           onClick={() => moveOverlayMap(index, index + 1)}
                           disabled={index === selectedOverlays.length - 1}
                         >
-                          Ned
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-outline btn-sm"
+                          <PiCaretDownBold />
+                        </IconButton>
+                      </div>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate">{overlayMetaByKey[overlayKey]?.name || overlayKey}</span>
+                        {overlayMetaByKey[overlayKey]?.provider && (
+                          <span className="block text-xs text-neutral-700 truncate">{overlayMetaByKey[overlayKey]?.provider}</span>
+                        )}
+                      </span>
+                      <div className="ml-auto">
+                        <IconButton
+                          label="Fjern overlegg"
+                          className="text-lg aspect-square btn btn-outline btn-sm p-2"
                           onClick={() => removeOverlayMap(overlayKey)}
                         >
-                          Fjern
-                        </button>
+                          <PiX />
+                        </IconButton>
                       </div>
                     </li>
                   ))}
                   {!selectedOverlays.length && (
-                    <li className="px-3 py-2 text-neutral-600">Ingen overlegg valde</li>
+                    <li className="px-3 py-2 text-neutral-700">Ingen overlegg valde</li>
                   )}
                 </ul>
               </fieldset>
@@ -136,7 +144,7 @@ export default function MapSettings() {
                   className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"
                 />
                 <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                  <PiMagnifyingGlass aria-hidden={true} className="text-neutral-500 text-xl" />
+                  <PiMagnifyingGlass aria-hidden={true} className="text-neutral-700 text-xl" />
                 </span>
               </div>
               <fieldset>
@@ -145,21 +153,22 @@ export default function MapSettings() {
                   {filteredOverlays.map((item) => {
                     return (
                       <li key={item.key} className="px-3 py-2 flex flex-wrap items-center gap-2">
-                        <span id={`overlay-label-${item.key}`} className="min-w-0 basis-full sm:basis-auto sm:flex-1 truncate">
-                          {item.name}
+                        <span id={`overlay-label-${item.key}`} className="min-w-0 basis-full sm:basis-auto sm:flex-1">
+                          <span className="block truncate">{item.name}</span>
+                          {item.provider && <span className="block text-xs text-neutral-700 truncate">{item.provider}</span>}
                         </span>
-                        <button
-                          type="button"
-                          className="btn btn-outline btn-sm ml-auto inline-flex items-center"
+                        <IconButton
+                          label="Legg til overlegg"
+                          className="text-lg aspect-square btn btn-outline btn-sm p-2 ml-auto"
                           onClick={() => addOverlayMap(item.key)}
                         >
-                          Legg til
-                        </button>
+                          <PiPlus />
+                        </IconButton>
                       </li>
                     );
                   })}
                   {!filteredOverlays.length && (
-                    <li className="px-3 py-2 text-neutral-600">Ingen fleire overlegg funne</li>
+                    <li className="px-3 py-2 text-neutral-700">Ingen fleire overlegg funne</li>
                   )}
                 </ul>
               </fieldset>
@@ -233,7 +242,7 @@ export default function MapSettings() {
       <section>
         <div className="border-0 p-0 m-0">
           <div className="px-3 py-3 flex items-center justify-between gap-2">
-            <h2 className="text-base font-semibold text-neutral-900">Overlegg</h2>
+            <h2 className="text-base font-semibold text-neutral-900">Kartoverlegg</h2>
             <Clickable
               link
               add={{ overlaySelector: 'on' }}
@@ -251,12 +260,12 @@ export default function MapSettings() {
                   onClick={() => removeOverlayMap(overlayKey)}
                   className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer text-sm hover:bg-neutral-50 min-w-0 max-w-full"
                 >
-                  <span className="truncate">{overlayNameByKey[overlayKey] || overlayKey}</span>
+                  <span className="truncate">{overlayMetaByKey[overlayKey]?.name || overlayKey}</span>
                   <PiX className="ml-auto text-lg flex-shrink-0" aria-hidden="true" />
                 </button>
               ))}
               {!selectedOverlays.length && (
-                <div className="px-1 py-1.5 text-neutral-600 text-sm">Ingen overlegg valde</div>
+                <div className="px-1 py-1.5 text-neutral-700 text-sm">Ingen overlegg valde</div>
               )}
             </div>
             {selectedOverlays.length > 0 && (
