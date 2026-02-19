@@ -147,16 +147,6 @@ export default function MapToolbar() {
                                 const base = new URLSearchParams(searchParams)
                                 const camParam = base.get('cam')
                                 const map = (mapFunctionRef?.current as any)?._map ?? mapFunctionRef?.current
-                                const applyTilt = (lat: number, lng: number, zoom: number) => {
-                                    if (map && typeof map.easeTo === 'function') {
-                                        map.easeTo({ center: [lng, lat], zoom, pitch: 60, bearing: 0 })
-                                    }
-                                }
-                                const clearTilt = (lat: number, lng: number, zoom: number) => {
-                                    if (map && typeof map.easeTo === 'function') {
-                                        map.easeTo({ center: [lng, lat], zoom, pitch: 0, bearing: 0 })
-                                    }
-                                }
                                 if (camParam) {
                                     // Turn 3D off: use live map center/zoom and drop cam.
                                     let center: [number, number] | undefined
@@ -185,9 +175,6 @@ export default function MapToolbar() {
                                         base.set('zoom', String(zoom))
                                     }
                                     base.delete('cam')
-                                    if (center && typeof zoom === 'number') {
-                                        clearTilt(center[0], center[1], zoom)
-                                    }
                                 } else {
                                     // Turn 3D on: derive cam solely from live map camera.
                                     if (!map || typeof map.getCenter !== 'function' || typeof map.getZoom !== 'function') {
@@ -230,7 +217,6 @@ export default function MapToolbar() {
                                     base.set('cam', camValue)
                                     base.delete('zoom')
                                     base.delete('center')
-                                    applyTilt(lat, lng, zoom)
                                 }
                                 router.replace(`?${base.toString()}`)
                             }}

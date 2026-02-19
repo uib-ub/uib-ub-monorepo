@@ -219,11 +219,30 @@ export default function MaplibreDirectMap({
         getBounds: () => map.getBounds(),
         getZoom: () => map.getZoom(),
         setView: (latlng: LatLng, z?: number) =>
-          map.easeTo({ center: toLngLat(latlng), zoom: typeof z === 'number' ? z : map.getZoom(), duration: 0 }),
-        flyTo: (latlng: LatLng, z?: number) =>
-          map.flyTo({ center: toLngLat(latlng), zoom: typeof z === 'number' ? z : map.getZoom() }),
+          map.easeTo({
+            center: toLngLat(latlng),
+            zoom: typeof z === 'number' ? z : map.getZoom(),
+            duration: 0,
+          }),
+        flyTo: (latlng: LatLng, z?: number, options?: any) =>
+          map.flyTo({
+            center: toLngLat(latlng),
+            zoom: typeof z === 'number' ? z : map.getZoom(),
+            duration: 800,
+            essential: true,
+            easing: (t) => 1 - Math.pow(1 - t, 3),
+            ...(options || {}),
+          }),
         fitBounds: (bounds: Bounds, options?: any) =>
-          map.fitBounds([[bounds[0][1], bounds[1][0]], [bounds[1][1], bounds[0][0]]], options),
+          map.fitBounds(
+            [[bounds[0][1], bounds[1][0]], [bounds[1][1], bounds[0][0]]],
+            {
+              duration: 800,
+              essential: true,
+              easing: (t: number) => 1 - Math.pow(1 - t, 3),
+              ...(options || {}),
+            },
+          ),
       };
     }
 
@@ -247,14 +266,33 @@ export default function MaplibreDirectMap({
     if (enable3D) {
       if ((map as any).dragRotate?.enable) (map as any).dragRotate.enable();
       if ((map as any).touchZoomRotate?.enableRotation) (map as any).touchZoomRotate.enableRotation();
+      const c = map.getCenter();
+      const z = map.getZoom();
+      map.easeTo({
+        center: c,
+        zoom: z,
+        bearing: initialBearing,
+        pitch: initialPitch || 60,
+        duration: 1200,
+        essential: true,
+        easing: (t) => 1 - Math.pow(1 - t, 3),
+      });
     } else {
       if ((map as any).dragRotate?.disable) (map as any).dragRotate.disable();
       if ((map as any).touchZoomRotate?.disableRotation) (map as any).touchZoomRotate.disableRotation();
       const c = map.getCenter();
       const z = map.getZoom();
-      map.easeTo({ center: c, zoom: z, bearing: 0, pitch: 0 });
+      map.easeTo({
+        center: c,
+        zoom: z,
+        bearing: 0,
+        pitch: 0,
+        duration: 1200,
+        essential: true,
+        easing: (t) => 1 - Math.pow(1 - t, 3),
+      });
     }
-  }, [enable3D]);
+  }, [enable3D, initialBearing, initialPitch]);
 
   useEffect(() => {
     const map = mapInternalRef.current;
