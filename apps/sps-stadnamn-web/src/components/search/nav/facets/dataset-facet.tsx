@@ -142,7 +142,7 @@ export default function DatasetFacet() {
         </div>}
 
       </div>
-      { mode == 'map' && <FacetToolbar />}
+      { mode == 'map' && !searchParams.get('tree') && <FacetToolbar />}
 
 
 
