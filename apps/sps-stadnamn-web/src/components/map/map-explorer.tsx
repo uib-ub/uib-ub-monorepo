@@ -4,7 +4,7 @@ import { defaultMaxResultsParam } from "@/config/max-results";
 import { useSearchQuery } from "@/lib/search-params";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { getAreaLabelMarkerIcon, getClusterMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
+import { getAreaLabelMarkerIcon, getClusterMarker, getInitAnchorMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 
 import { boundsFromZoomAndCenter, calculateRadius, fitBoundsToGroupSources, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
 import { useGroup, usePerspective } from "@/lib/param-hooks";
@@ -1109,7 +1109,7 @@ export default function MapExplorer() {
             {hasGroupParam && !activePoint && !initGroupHasArea && initGroupData?.fields?.location?.[0]?.coordinates && (
               <Marker
                 zIndexOffset={1500}
-                icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))}
+                icon={new leaflet.DivIcon(getInitAnchorMarker())}
                 position={[initGroupData.fields.location[0].coordinates[1], initGroupData.fields.location[0].coordinates[0]]}
                 eventHandlers={{
                   click: () => {

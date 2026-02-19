@@ -12,7 +12,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, type ReactNode } from "react";
-import { PiArchive, PiCaretLeftBold, PiCaretRightBold, PiMapPin, PiPushPin, PiX } from "react-icons/pi";
+import { PiAnchor, PiArchive, PiCaretLeftBold, PiCaretRightBold, PiMapPin, PiPushPin, PiX } from "react-icons/pi";
 import Carousel from "../../nav/results/carousel";
 import { TextTab } from "./text-tab";
 import { NamesSection } from "./names-section";
@@ -482,7 +482,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                 }}
                                 className="btn btn-neutral inline-flex items-center justify-center w-12 h-12 rounded-full text-xl"
                             >
-                                <PiPushPin aria-hidden="true" className="text-2xl" />
+                                <PiAnchor aria-hidden="true" className="text-2xl" />
                             </ClickableIcon>
                         )}
                     </div>

@@ -153,6 +153,24 @@ export function getUnlabeledMarker(color: string, selected?: boolean) {
   }
 }
 
+/**
+ * Special marker for the pinned init group.
+ * Visually distinguished with an anchor symbol to mirror the "Vel namnegruppe" button.
+ */
+export function getInitAnchorMarker() {
+  const size = 28;
+  const border = '#000000';
+  const fill = colorMapping['primary'];
+  return {
+    className: '',
+    html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; width: ${size}px; height: ${size}px; transform: translate(-50%, -50%);">
+                <div style="width: ${size}px; height: ${size}px; border-radius: 9999px; background-color: ${fill}; border: 2px solid ${border}; box-shadow: 0 1px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 18px; font-weight: 700;">
+                  ⚓
+                </div>
+            </div>`
+  }
+}
+
 /** Small circle marker for "Punkter" map mode (no labels). Styled like other circles: fill + black border for contrast. */
 export function getPointMarker(color: string, selected?: boolean) {
   const fill = colorMapping[color] || color
