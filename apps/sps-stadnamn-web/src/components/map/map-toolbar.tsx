@@ -38,7 +38,11 @@ export function FilterButton() {
                     : new URLSearchParams(searchParams)
 
                 base.delete('tree')
-                base.set('options', 'on')
+                if (options) {
+                    base.delete('options')
+                } else {
+                    base.set('options', 'on')
+                }
                 router.replace(`?${base.toString()}`)
 
                 if (treeSavedQuery != null) {
@@ -117,7 +121,7 @@ export default function MapToolbar() {
                     aria-controls="map-settings-panel"
                     aria-expanded={mapSettings}
                     label="Kartinnstillingar"
-                    add={{ mapSettings: 'on' }}
+                    add={{ mapSettings: mapSettings ? null : 'on' }}
                     onClick={() => setSnappedPosition('middle')}
                 >
                     <PiStackPlus className="text-2xl" />
