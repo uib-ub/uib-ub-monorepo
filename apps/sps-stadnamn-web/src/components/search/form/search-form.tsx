@@ -363,7 +363,7 @@ export default function SearchForm() {
                 {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''} />}
 
                 {inputState && !menuOpen &&
-                    <ClickableIcon label="Tøm" remove={['q']} add={{ maxResults: defaultMaxResultsParam }} replace onClick={() => { clearQuery() }}>
+                    <ClickableIcon label="Tøm" remove={['q', 'maxResults']} replace onClick={() => { clearQuery() }}>
                         <PiX className="text-3xl lg:text-2xl text-neutral-800 group-focus-within:text-neutral-800 m-1" /></ClickableIcon>}
                 <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800" aria-hidden="true" /></button>
             </div>
@@ -373,6 +373,7 @@ export default function SearchForm() {
             {/* results: integer – minimum is 5 when present. */}
             {normalizedMaxResultsParam && <input type="hidden" name="maxResults" value={normalizedMaxResultsParam} />}
             {options && <input type="hidden" name="options" value={'on'} />}
+            <input type="hidden" name="maxResults" value={defaultMaxResultsParam} />
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
