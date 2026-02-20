@@ -960,7 +960,7 @@ export default function MapExplorer() {
                 return null;
               }
               else {
-                const selected = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue && !groupLoading)
+                const selected = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == groupData?.fields?.["group.id"]?.[0] && !groupLoading)
                 const isActiveGroupMarker = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue)
                 const isAtActivePoint = Boolean(point && Math.abs(lat - point[0]) < 0.000001 && Math.abs(lng - point[1]) < 0.000001)
                 const shouldHideUnlabeledActiveAreaMarker = activeGroupHasArea && (isActiveGroupMarker || isAtActivePoint)
