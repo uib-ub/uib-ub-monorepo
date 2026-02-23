@@ -151,6 +151,8 @@ export default function OverlayInterface() {
     const showDebugGroups = searchParams.get('debugGroups') == 'on'
     const maxResults = searchParams.get('maxResults')
     const tree = searchParams.get('tree')
+    const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
+    const groupLabel = groupData?.fields?.label?.[0]
 
     useEffect(() => {
         if (debugParam == 'on') {
@@ -251,8 +253,11 @@ export default function OverlayInterface() {
                                     add={{ maxResults: maxResults ? null : defaultMaxResultsParam }}
                                     remove={["maxResults", ...(isMobile ? ['options'] : [])]}
                                 >
+                                    
 
-                                    <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-lg text-neutral-900 font-sans">Kjelder</div>
+                                    <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-lg text-neutral-900 font-sans">{coordinateInfo ? `Koordinatar` : 'Kjelder'}{coordinateInfo && groupLabel && <> | <strong className="text-neutral-900">{groupLabel}</strong></>}</div>
+
+                                    {!coordinateInfo && <>
 
                                     {searchLoading ? (
                                         <Spinner status="Laster resultat" className="text-lg" />
@@ -262,6 +267,9 @@ export default function OverlayInterface() {
                                             count={totalHits?.value || 0}
                                         />
                                     )}
+
+                                    </>}
+                                    
                                     {!isMobile && (
                                         <span className="ml-auto pr-2 flex w-6 justify-end">
                                             {showResults ? (

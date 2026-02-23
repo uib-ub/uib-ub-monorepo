@@ -8,10 +8,11 @@ import { datasetTitles } from "@/config/metadata-config";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
-import { matchesActiveYear, matchesActiveName, matchesActivePoint } from "./group-utils";
+import { matchesActiveYear, matchesActiveName } from "./group-utils";
 import CoordinateTypeInfo from "../doc/coordinate-type-info";
 import SubtleLink from "@/components/ui/clickable/subtle-link";
 import { treeSettings } from "@/config/server-config";
+import { useActivePoint } from "@/lib/param-hooks";
 
 interface SourcesTabProps {
     datasets: Record<string, any[]>;
@@ -26,15 +27,17 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
     const datasetKeys = useMemo(() => Object.keys(datasets).filter(ds => datasets[ds] && datasets[ds].length > 0), [datasets])
     const { sosiVocab, mapFunctionRef } = useContext(GlobalContext)
 
+    const searchParams = useSearchParams()
+    const center = searchParams.get('center')
+    const zoom = searchParams.get('zoom')
+    const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
     // If not filtered: show 2 datasets if more than 3, otherwise show all
     // If filtered: show 4 datasets if more than 5, otherwise show all
     const hasMore = isFiltered ? datasetKeys.length > 5 : datasetKeys.length > 3
     const visibleCount = isFiltered ? (hasMore ? 4 : datasetKeys.length) : (hasMore ? 2 : datasetKeys.length)
-    const visibleDatasets = showAll ? datasetKeys : datasetKeys.slice(0, visibleCount)
-    const searchParams = useSearchParams()
-    const activePoint = searchParams.get('activePoint')
-    const center = searchParams.get('center')
-    const zoom = searchParams.get('zoom')
+    const visibleDatasets = coordinateInfo
+        ? datasetKeys
+        : (showAll ? datasetKeys : datasetKeys.slice(0, visibleCount))
 
     // Toggle whether a parent shows ALL its children (bruk) or only the first 2
     const toggleShowAllChildren = (uuid: string) => {
@@ -63,8 +66,6 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
     const renderItem = (
         s: any,
         ds: string,
-        isInitGroup: boolean,
-        activePoint: string | null,
         indentLevel: number = 0,
         role?: 'parent' | 'child',
         showMatrikkelvising: boolean = true,
@@ -85,7 +86,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
 
         const lat = s.location?.coordinates?.[1];
         const lng = s.location?.coordinates?.[0];
-        const isActive = activePoint && lat && lng && activePoint === `${lat},${lng}`;
+        const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
 
         // Cadastre prefix: gnr on parent (gard), bnr on child (bruk)
         let cadastrePrefix = ''
@@ -115,7 +116,6 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
         }
 
         const indentStyle = indentLevel > 0 ? { paddingLeft: `${indentLevel * 1.5}rem` } : undefined
-        const hasPin = isInitGroup && !activePoint && s.location?.coordinates?.length === 2
         const links = resultRenderers[ds]?.links?.(s) || defaultResultRenderer?.links?.(s)
         // Tree view button removed (now available in the top mode/menu bar).
 
@@ -133,7 +133,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                         {links}
                     </div>
 
-                    {isInitGroup && activePoint && lat && lng && (
+                    {coordinateInfo && lat && lng && (
                         <div className="mt-0.5 min-w-0 w-full rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1">
                             {s.coordinateType ? (
                                 <CoordinateTypeInfo coordinateType={s.coordinateType} />
@@ -200,7 +200,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                         </div>}
                         <ul className="flex flex-col w-full gap-4">
                             {/* No nesting at all – show gnr for standalone items */}
-                            {!hasNesting && items.map((s: any) => renderItem(s, ds, isInitGroup, activePoint, 0, 'parent'))}
+                            {!hasNesting && items.map((s: any) => renderItem(s, ds, 0, 'parent'))}
 
                             {/* With nesting – always render parents with their children (subunits/bruk) */}
                             {hasNesting && rootItems.map((parent: any) => {
@@ -211,7 +211,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                                     // Parent candidate with no children in this group – still show gnr prefix and Matrikkelvising below
                                     return (
                                         <Fragment key={parent.uuid}>
-                                            {renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent', false)}
+                                            {renderItem(parent, ds, 0, 'parent', false)}
                                             {renderMatrikkelvisingForParent(parent, ds)}
                                         </Fragment>
                                     )
@@ -234,10 +234,10 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
 
                                 return (
                                     <Fragment key={parent.uuid}>
-                                        {renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent', false)}
+                                        {renderItem(parent, ds, 0, 'parent', false)}
                                         <ul className="flex flex-col w-full gap-2 -mt-2">
                                             {visibleChildren.map((child: any) =>
-                                                renderItem(child, ds, isInitGroup, activePoint, 1, 'child')
+                                                renderItem(child, ds, 1, 'child')
                                             )}
                                             {hiddenCount > 0 && (
                                                 <li className="pl-9">
@@ -271,7 +271,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                     </li>
                 )
             })}
-            {hasMore && (
+            {hasMore && !coordinateInfo && (
                 <li className="mt-1">
                     <button
                         type="button"
@@ -301,7 +301,8 @@ export const FilteredSourcesTab = ({
     isInitGroup
 }: FilteredSourcesTabProps) => {
     const searchParams = useSearchParams()
-    const activePoint = searchParams.get('activePoint')
+    const activePoint = useActivePoint()
+    const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
 
     const filtered = useMemo(() => {
         const result: Record<string, any[]> = {}
@@ -310,7 +311,7 @@ export const FilteredSourcesTab = ({
                 // Only filter by activeYear, activeName, and activePoint if this is the init group
                 (isInitGroup ? matchesActiveYear(s, activeYear) : true) &&
                 (isInitGroup ? matchesActiveName(s, activeName) : true) &&
-                (isInitGroup ? matchesActivePoint(s, activePoint) : true)
+                (coordinateInfo ? s.location?.coordinates?.[0] == activePoint?.[1] && s.location?.coordinates?.[1] == activePoint?.[0] : true)
             )
         })
         return result

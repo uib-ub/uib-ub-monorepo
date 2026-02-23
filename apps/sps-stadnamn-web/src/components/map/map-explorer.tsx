@@ -1376,11 +1376,11 @@ export default function MapExplorer() {
                   )
                 }
 
-                // Default mode: show lines and dots for the init group only when there is an activePoint
-                if (!coordinateInfo || !initValue || !initGroupData?.sources) return null;
+                // Default mode: show lines and dots for the current group (falls back to init when no group param is set)
+                if (!coordinateInfo || !groupData?.sources) return null;
 
                 // Find the first source with coordinates - this is the central coordinate
-                const centralSource = initGroupData.sources.find((source: Record<string, any>) =>
+                const centralSource = groupData.sources.find((source: Record<string, any>) =>
                   source?.location?.coordinates?.length === 2
                 );
 
@@ -1391,7 +1391,7 @@ export default function MapExplorer() {
 
                 // Collect all unique coordinates to check if there are multiple
                 const uniqueCoordinates = new Set<string>();
-                initGroupData.sources.forEach((source: Record<string, any>) => {
+                groupData.sources.forEach((source: Record<string, any>) => {
                   if (source?.location?.coordinates?.length === 2) {
                     const lat = source.location.coordinates[1];
                     const lng = source.location.coordinates[0];
@@ -1404,7 +1404,7 @@ export default function MapExplorer() {
 
                 // Create a set of unique coordinates for rendering
                 const coordinatesToRender = new Set<string>();
-                initGroupData.sources.forEach((source: Record<string, any>) => {
+                groupData.sources.forEach((source: Record<string, any>) => {
                   if (source?.location?.coordinates?.length === 2) {
                     const lat = source.location.coordinates[1];
                     const lng = source.location.coordinates[0];
@@ -1415,7 +1415,7 @@ export default function MapExplorer() {
                 return (
                   <>
                     {/* Render all lines first (so they appear behind) */}
-                    {initGroupData.sources.map((source: Record<string, any>, index: number) => {
+                    {groupData.sources.map((source: Record<string, any>, index: number) => {
                       if (!source?.location?.coordinates?.length) {
                         return null;
                       }
@@ -1440,7 +1440,7 @@ export default function MapExplorer() {
                       );
                     })}
                     {/* Render all dots after lines (so they appear on top) */}
-                    {initGroupData.sources.map((source: Record<string, any>, index: number) => {
+                    {groupData.sources.map((source: Record<string, any>, index: number) => {
                       if (!source?.location?.coordinates?.length) {
                         return null;
                       }

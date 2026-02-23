@@ -21,16 +21,12 @@ import { matchesActiveYear, matchesActiveName, pushNameYear } from "./group-util
 
 export default function GroupInfo({ id, overrideGroupCode }: { id: string, overrideGroupCode?: string }) {
     const { groupData, groupLoading } = useGroupData(overrideGroupCode)
-    const prefTab = useSessionStore(state => state.prefTab)
-    const setPrefTab = useSessionStore(state => state.setPrefTab)
     const snappedPosition = useSessionStore(state => state.snappedPosition)
     const setSnappedPosition = useSessionStore(state => state.setSnappedPosition)
-    const openTabs = useSessionStore(state => state.openTabs)
-    const setOpenTabs = useSessionStore(state => state.setOpenTabs)
     const searchParams = useSearchParams()
     const searchDatasets = searchParams.getAll('dataset')
     const { mapFunctionRef, scrollableContentRef, isMobile } = useContext(GlobalContext)
-    const { initValue } = useGroup()
+    const { initValue, activeGroupValue } = useGroup()
     const activePoint = searchParams.get('activePoint')
     const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
 
@@ -65,12 +61,11 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         }
     }, [initValue, groupData?.group?.id, scrollableContentRef]);
 
-    const { iiifItems, textItems, audioItems, datasets, locations, uniqueCoordinates } = useMemo(() => {
+    const { iiifItems, textItems, audioItems, datasets, uniqueCoordinates } = useMemo(() => {
         const iiifItems: any[] = []
         const textItems: any[] = []
         const audioItems: any[] = []
-        const locations: any[] = []
-        const seenEnhetsid = new Set<string>()
+        const allCoordinates: any[] = []
         const datasets: Record<string, any[]> = {}
         const coordSet = new Set<string>()
 
@@ -118,7 +113,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 audioItems.push(source)
             }
             if (source.location) {
-                locations.push(source)
+                allCoordinates.push(source)
                 // Collect unique coordinates
                 const lat = source.location?.coordinates?.[1]
                 const lng = source.location?.coordinates?.[0]
@@ -131,7 +126,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         })
 
 
-        return { iiifItems, textItems, audioItems, datasets, locations, uniqueCoordinates: Array.from(coordSet) }
+        return { iiifItems, textItems, audioItems, datasets, uniqueCoordinates: Array.from(coordSet) }
     }, [groupData, searchDatasets])
 
     const markerCoords = groupData?.fields?.location?.[0]?.coordinates
@@ -295,7 +290,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 }
 
                 {/* Active point filter display - only in init group. Sticky so it stays put; coordinate + nav in a right-aligned group so expandables below cannot affect their position. */}
-                {coordinateInfo && initValue === groupData.group.id && (
+                {coordinateInfo && (
                     <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 pt-2 pb-2">
                         <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
                             <Clickable
@@ -408,17 +403,18 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                             setSnappedPosition('bottom');
                                         }
                                     }}
-                                    remove={['docIndex', 'doc', 'group', 'parent', 'activePoint']}
-                                    add={{ group: stringToBase64Url(groupData.group.id), activePoint: preferredFlyTarget?.toString(), coordinateInfo: 'on' }}
+                                    remove={['group', 'activePoint']}
+                                    add={{ group: initValue == activeGroupValue ? null : stringToBase64Url(groupData.group.id), activePoint: preferredFlyTarget?.toString(), coordinateInfo: 'on' }}
                                     className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
                                 >
-                                    <PiMapPin aria-hidden="true" className="text-2xl" />
+                                    <PiMapPin aria-hidden="true" className="text-2xl text-neutral-800" />
+
                                 </ClickableIcon>
                                 }
 
                         {initValue !== groupData.group.id && (
                             <ClickableIcon
-                                label="Forankre namnegruppe"
+                                label="Vel som utgangspunkt"
                                 onClick={() => {
                                     // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
                                     // The subsequent URL param update can remount components quickly, so do this eagerly.
@@ -431,6 +427,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                 add={{
                                     // When pinning a group ("vel"), treat it as a fresh init selection.
                                     init: stringToBase64Url(groupData.group.id),
+                                    point: `${preferredFlyTarget?.[0]},${preferredFlyTarget?.[1]}`,
                                     maxResults: defaultMaxResultsParam
                                 }}
                                 className="btn btn-neutral inline-flex items-center justify-center w-12 h-12 rounded-full text-xl"
