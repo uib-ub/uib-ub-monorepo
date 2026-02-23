@@ -156,7 +156,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
         return (
             <li className="pb-4 pt-2">
                 <SubtleLink link only={{ tree: `${ds}_${parent.adm1}_${parent.adm2}_${parent.uuid}`, center, zoom }}>
-                    Matrikkelvising
+                    Vis i matrikkelen
                 </SubtleLink>
             </li>
         )
