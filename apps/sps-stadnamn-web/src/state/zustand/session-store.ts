@@ -29,12 +29,6 @@ export const useSessionStore = create<{
 	displayPoint: [number, number] | null,
 	setDisplayPoint: (point: [number, number] | null) => void,
 
-	prefTab: 'sources' | 'names' | 'locations',
-	setPrefTab: (tab: 'sources' | 'names' | 'locations') => void,
-
-	openTabs: Record<string, 'sources' | 'names' | 'locations'>,
-	setOpenTabs: (id: string, tab: 'sources' | 'names' | 'locations') => void,
-
 	// When entering tree/cadastral view from /search, store the previous querystring
 	// so we can restore it when leaving tree view.
 	treeSavedQuery: string | null,
