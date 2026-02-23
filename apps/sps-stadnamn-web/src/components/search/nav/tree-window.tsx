@@ -34,16 +34,11 @@ export default function TreeWindow() {
             ? ((selectedDoc as any)?.__treeNumber || (getValueByPath(selectedDoc, treeSettings[dataset].subunit) || ''))
             : ''
 
-    // Title: when a cadastral unit is selected, show its label (not uuid).
-    const title =
-        uuid
-            ? (selectedDoc?.label || (selectedDocLoading ? 'Laster…' : ''))
-            : (adm2 ? adm2 : adm1 ? adm1 : dataset ? datasetTitles[dataset || ''] : 'Matriklar')
 
     return (<>
         <div className="flex p-2 border-b border-neutral-200 shrink-0">
             <div id="right-title" className="text-black text-xl mr-auto mx-1">
-                {title}
+                Matrikkelvising
             </div>
             {
 
