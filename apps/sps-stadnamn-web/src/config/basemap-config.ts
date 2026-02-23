@@ -106,7 +106,6 @@ export const baseMaps: BaseMap[] = [
         name: 'Matrikkelkart',
         provider: 'Kartverket',
         coverage: 'regional',
-        opacity: 0.8,
         wms: {
             layers: 'matrikkelkart',
             format: 'image/png',
@@ -135,6 +134,8 @@ export const baseMaps: BaseMap[] = [
         key: 'neutral',
         name: 'Nøytral',
         provider: 'CARTO',
+        maxZoom: 20,
+        maxNativeZoom: 20, 
         bright: true,
         coverage: 'global',
         props: {
@@ -147,6 +148,8 @@ export const baseMaps: BaseMap[] = [
         key: 'standard',
         name: 'Standard',
         provider: 'CARTO',
+        maxZoom: 20,
+        maxNativeZoom: 20,
         coverage: 'global',
         props: {
             url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png',
@@ -158,6 +161,8 @@ export const baseMaps: BaseMap[] = [
         name: 'Høgkontrast',
         provider: 'Stadia Maps / Stamen',
         coverage: 'global',
+        maxZoom: 20,
+        maxNativeZoom: 20,
         props: {
             url: 'https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}.png',
             attribution: '&copy; <a class="override-external-icon" href="https://stadiamaps.com/">Stadia Maps</a> <a class="override-external-icon" href="https://stamen.com/">&copy; Stamen Design</a> &copy; <a class="override-external-icon" href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a class="override-external-icon" href="https://www.openstreetmap.org/about">OpenStreetMap</a> contributors'
@@ -166,11 +171,13 @@ export const baseMaps: BaseMap[] = [
     {
         key: 'terrain',
         name: 'Terreng',
-        provider: 'Stadia Maps / Stamen',
+        provider: 'OpenTopoMap',
         coverage: 'global',
+        maxZoom: 20,
+        maxNativeZoom: 17,
         props: {
-            url: 'https://tiles.stadiamaps.com/tiles/stamen_terrain_background/{z}/{x}/{y}.png',
-            attribution: '&copy; <a class="override-external-icon" href="https://stadiamaps.com/">Stadia Maps</a> <a class="override-external-icon" href="https://stamen.com/">&copy; Stamen Design</a> &copy; <a class="override-external-icon" href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a class="override-external-icon" href="https://www.openstreetmap.org/about">OpenStreetMap</a> contributors'
+            url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+            attribution: 'Map data: &copy; <a class="override-external-icon" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a class="override-external-icon" href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a class="override-external-icon" href="https://opentopomap.org">OpenTopoMap</a> (<a class="override-external-icon" href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
         }
     },
     {
@@ -178,7 +185,7 @@ export const baseMaps: BaseMap[] = [
         name: 'Foto',
         provider: 'Esri',
         coverage: 'global',
-        maxZoom: 18,
+        maxZoom: 20,
         maxNativeZoom: 18,
         props: {
             url: 'https://fly.maptiles.arcgis.com/arcgis/rest/services/World_Imagery_Firefly/MapServer/tile/{z}/{y}/{x}',
