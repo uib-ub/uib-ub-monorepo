@@ -82,7 +82,6 @@ export default function MapExplorer() {
 
   const tapHoldRef = useRef<null | number>(null)
   const setDebugChildren = useDebugStore((s) => s.setDebugChildren)
-  const locations = searchParams.get('locations') == 'on'
   const debug = useDebugStore((s) => s.debug)
   const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
   const showDebugGroups = searchParams.get('debugGroups') == 'on';
@@ -111,7 +110,6 @@ export default function MapExplorer() {
     [doc, groupData?.sources]
   )
   const activeGroupHasArea = Boolean(areaSource?.area)
-  const initGroupHasArea = Boolean(initGroupData?.sources?.some((source: Record<string, any>) => source.area))
 
   // Tree mode overlay data: selected cadastral unit + its subunits (bruk)
   const { data: treeUnitDoc } = useQuery({
@@ -621,7 +619,6 @@ export default function MapExplorer() {
         newQueryParams.delete('activePoint')
         newQueryParams.delete('activeYear')
         newQueryParams.delete('activeName')
-        newQueryParams.delete('point')
         newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
 
       }
@@ -1131,7 +1128,7 @@ export default function MapExplorer() {
               >
               </Marker>
             )}
-            {hasGroupParam && !coordinateInfo && !initGroupHasArea && point && point != activePoint && (
+            {hasGroupParam && !coordinateInfo && point && (point != activePoint) && (
               <Marker
                 zIndexOffset={1500}
                 icon={new leaflet.DivIcon(getInitAnchorMarker())}

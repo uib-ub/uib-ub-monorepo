@@ -67,11 +67,6 @@ export const useSessionStore = create<{
 	displayPoint: null,
 	setDisplayPoint: (point: [number, number] | null) => set({ displayPoint: point }),
 
-	prefTab: 'sources',
-	setPrefTab: (tab: 'sources' | 'names' | 'locations') => set({ prefTab: tab }),
-	openTabs: {},
-	setOpenTabs: (id: string, tab: 'sources' | 'names' | 'locations') => set((s) => ({ openTabs: { ...s.openTabs, [id]: tab } })),
-
 	treeSavedQuery: null,
 	setTreeSavedQuery: (query: string) => set({ treeSavedQuery: query }),
 	clearTreeSavedQuery: () => set({ treeSavedQuery: null }),

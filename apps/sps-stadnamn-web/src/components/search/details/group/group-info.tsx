@@ -232,49 +232,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         return showNamesTab
     }, [datasets, activeYear, activeName, showNamesTab])
 
-    useEffect(() => {
-        if (!groupData?.group) {
-            console.log("GROUP ISSUE", groupData);
-            return;
-        }
-        if (groupData?.group.id) {
-            const groupId = groupData.group.id;
-            const currentTab = openTabs[groupId];
 
-            // 1. Check if there's already a value stored at the id in openTabs
-            if (currentTab) {
-                // Verify the tab is still valid for this group
-                if (currentTab === 'sources') {
-                    return; // Keep the existing tab
-                }
-                if (currentTab === 'names' && showNamesTab) {
-                    return; // Keep the existing tab
-                }
-                if (currentTab === 'locations' && locations.length > 0) {
-                    return; // Keep the existing tab
-                }
-                // If current tab is names but not applicable, fall through to default below
-            }
-
-            // 2. Use prefTab if the group has the required content
-            if (prefTab === 'sources') {
-                setOpenTabs(groupId, 'sources');
-                return;
-            }
-            if (prefTab === 'names' && showNamesTab) {
-                setOpenTabs(groupId, 'names');
-                return;
-            }
-            if (prefTab === 'locations' && locations.length > 0) {
-                setOpenTabs(groupId, 'locations');
-                return;
-            }
-
-            // 3. Default to sources
-            setOpenTabs(groupId, 'sources');
-
-        }
-    }, [groupData, textItems.length, locations.length, openTabs, prefTab, setOpenTabs, showNamesTab])
 
 
     if (groupLoading) return (
@@ -283,7 +241,6 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         </div>
     )
 
-    const isGrunnord = Object.keys(datasets).some((ds: any) => ds.includes('_g'))
     if (!groupData?.group?.id) {
         console.log("Group ID not found")
         const props = {

@@ -53,8 +53,6 @@ export async function GET(request: Request) {
     "_source": ["uuid", "label", "attestations", "year", "boost", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area", "misc.Enhetsnummer", "misc.MNR", "misc.LNR", "ssr", "within", "cadastre", "adm1", "adm2"],
   }
 
-
-
   const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
 
   const sources: any[] = []
