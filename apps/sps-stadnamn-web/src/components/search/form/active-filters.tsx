@@ -7,9 +7,6 @@ import { usePerspective } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PiProhibit, PiX } from "react-icons/pi"
-import CadastreBreadcrumb from "../details/doc/cadastre-breadcrumb"
-import IconButton from "@/components/ui/icon-button"
-import { useTreeIsolation } from "@/lib/tree-isolation"
 
 
 export default function ActiveFilters() {
@@ -20,7 +17,6 @@ export default function ActiveFilters() {
   const datasetTag = searchParams.get('datasetTag')
   const tree = searchParams.get('tree')
   const hasTree = !!searchParams.get('tree')
-  const { closeTree } = useTreeIsolation()
 
   const fulltext = searchParams.get('fulltext')
 
@@ -105,13 +101,6 @@ export default function ActiveFilters() {
 
 
   //const gnr =  getGnr(parentData, perspective)
-
-  if (tree) {
-    return <div className={`text-neutral-950 flex-wrap rounded-md gap-2 xl:h-10 pl-3 pr-2 py-1 flex items-center bg-white xl:shadow-md`}>
-      {hasTree && <CadastreBreadcrumb />}
-      <IconButton label="Lukk matrikkelvisning" onClick={closeTree}><PiX className="w-6 h-6 self-center flex-shrink-0" /></IconButton>
-    </div>
-  }
 
 
   if (!facetFilters.length && !datasetFilters.length) {

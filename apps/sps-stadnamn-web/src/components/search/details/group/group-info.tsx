@@ -432,18 +432,14 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 <div className="flex flex-row items-center gap-2">
                         
 
-                        {(() => {
-                            if (!preferredFlyTarget) {
-                                return (
+                        {!preferredFlyTarget ? 
                                     <span className="text-sm text-neutral-700 px-2 whitespace-nowrap">
                                         Utan koordinat
                                     </span>
-                                );
-                            }
+                                :
 
-                            return (
-                                <ClickableIcon
-                                    label="Gå til koordinat"
+                            <ClickableIcon
+                                    label="Koordinatdetaljar"
                                     onClick={() => {
                                         mapFunctionRef.current?.flyTo(
                                             preferredFlyTarget,
@@ -455,13 +451,12 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                         }
                                     }}
                                     remove={['docIndex', 'doc', 'group', 'parent', 'activePoint']}
-                                    add={{ group: stringToBase64Url(groupData.group.id) }}
+                                    add={{ group: stringToBase64Url(groupData.group.id), activePoint: preferredFlyTarget?.toString() }}
                                     className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
                                 >
                                     <PiMapPin aria-hidden="true" className="text-2xl" />
                                 </ClickableIcon>
-                            );
-                        })()}
+                                }
 
                         {initValue !== groupData.group.id && (
                             <ClickableIcon

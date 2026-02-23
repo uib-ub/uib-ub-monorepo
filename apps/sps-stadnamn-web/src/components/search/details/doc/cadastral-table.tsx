@@ -17,6 +17,7 @@ import { PiCaretRightBold, PiMapPinFill } from "react-icons/pi"
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useSessionStore } from '@/state/zustand/session-store'
+import SubtleLink from '@/components/ui/clickable/subtle-link'
 
 interface CadastralTableProps {
   dataset: string
@@ -27,15 +28,15 @@ interface CadastralTableProps {
   adm1?: string | null
   adm2?: string | null
   flush?: boolean // Remove outer padding/border wrappers (used on /uuid page)
-  showGroupLink?: boolean // Show "Opne namnegruppe" row (default: true)
   showMarkers?: boolean // Show marker buttons/column (default: true)
 }
 
-export default function CadastralTable({ dataset, uuid, list, groupId: parentGroupId, gnr, adm1, adm2, flush, showGroupLink = true, showMarkers = true }: CadastralTableProps) {
+export default function CadastralTable({ dataset, uuid, list, groupId: parentGroupId, gnr, adm1, adm2, flush, showMarkers = true }: CadastralTableProps) {
   const searchParams = useSearchParams()
-  const currentGroup = searchParams.get('group')
   const activePointParam = searchParams.get('activePoint')
   const clearTreeSavedQuery = useSessionStore((s) => s.clearTreeSavedQuery)
+  const center = searchParams.get('center')
+  const zoom = searchParams.get('zoom')
   
   const { data: cadastralData, isLoading: cadastralLoading, error: cadastralError } = useQuery({
     queryKey: ['cadastral', dataset, uuid, gnr, adm1, adm2],
@@ -119,19 +120,6 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
     
     return (
       <div className={`flex flex-col ${outerGapClass}`}>
-        {showGroupLink && !isParentSuppressed && (
-          <div className={`${groupLinkPadXClass} py-1`}>
-            <Clickable
-              link
-              onClick={() => clearTreeSavedQuery()}
-              add={{ init: stringToBase64Url(parentGroupId), maxResults: defaultMaxResultsParam }}
-              remove={['tree', 'doc', 'activePoint']}
-              className="inline-flex items-center gap-1 text-sm text-neutral-700 hover:text-neutral-900 no-underline"
-            >
-              Opne namnegruppe <PiCaretRightBold aria-hidden="true" />
-            </Clickable>
-          </div>
-        )}
         <div className={padXClass}>
           <TooltipProvider>
             <div className={tableContainerClass}>
@@ -228,6 +216,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
             </div>
           </TooltipProvider>
         </div>
+        {parentGroupId && <SubtleLink link className="px-3 py-1" only={{init: stringToBase64Url(parentGroupId), maxResults: defaultMaxResultsParam, center, zoom }}>Vis i stadnamnsøk </SubtleLink>}
       </div>
     )
   }

@@ -69,7 +69,7 @@ export default function MapSettings() {
       <div className="flex flex-col gap-4 pb-4 xl:px-2">
         <section>
           <fieldset className="border-0 p-0 m-0">
-            <legend className="sr-only">Kartoverlegg</legend>
+            <legend className="sr-only">Kartlag</legend>
             <div className="px-2 py-1 flex flex-col gap-3">
               <div className="flex items-center justify-between gap-2">
                 <Clickable
@@ -242,13 +242,13 @@ export default function MapSettings() {
       <section>
         <div className="border-0 p-0 m-0">
           <div className="px-3 py-3 flex items-center justify-between gap-2">
-            <h2 className="text-base font-semibold text-neutral-900">Kartoverlegg</h2>
+            {selectedOverlays.length > 0 &&<h2 className="text-base font-semibold text-neutral-900">Kartlag</h2>}
             <Clickable
               link
               add={{ overlaySelector: 'on' }}
               className="btn btn-outline btn-sm whitespace-nowrap inline-flex items-center"
             >
-              {selectedOverlays.length > 0 ? 'Endre' : 'Legg til'}
+              {selectedOverlays.length > 0 ? 'Endre' : 'Legg til fleire kartlag'}
             </Clickable>
           </div>
           <div className="px-2 py-1 flex items-start gap-2">
@@ -264,9 +264,7 @@ export default function MapSettings() {
                   <PiX className="ml-auto text-lg flex-shrink-0" aria-hidden="true" />
                 </button>
               ))}
-              {!selectedOverlays.length && (
-                <div className="px-1 py-1.5 text-neutral-700 text-sm">Ingen overlegg valde</div>
-              )}
+
             </div>
             {selectedOverlays.length > 0 && (
               <button

@@ -10,7 +10,7 @@ import { boundsFromZoomAndCenter, calculateRadius, fitBoundsToGroupSources, getG
 import { useGroup, usePerspective } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { parseTreeParam } from "@/lib/tree-param";
-import { getBnr, getGnr } from "@/lib/utils";
+import { getBnr, getGnr, indexToCode } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
 import useGroupData from "@/state/hooks/group-data";
 import useSearchData from "@/state/hooks/search-data";
@@ -24,6 +24,7 @@ import wkt from 'wellknown';
 import { useDebugStore } from '../../state/zustand/debug-store';
 import DynamicMap from "./leaflet/dynamic-map";
 import MapToolbar from "./map-toolbar";
+import { treeSettings } from "@/config/server-config";
 
 const DynamicDebugLayers = dynamic(() => import('@/components/map/debug-layers'), {
   ssr: false
@@ -53,13 +54,13 @@ export default function MapExplorer() {
   const { baseMap, overlayMaps, markerMode, initializeSettings } = useMapSettings()
   const searchParams = useSearchParams()
   const { searchQueryString, searchFilterParamsString } = useSearchQuery()
-  const perspective = usePerspective()
   const urlZoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
   const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
   const allowFitBounds = useRef(false)
   const { activeGroupValue, initValue, initCode } = useGroup()
   const { groupLoading, groupData } = useGroupData()
   const { groupData: initGroupData } = useGroupData(initCode)
+  const { docData } = useDocData()
 
   const { isMobile, mapFunctionRef } = useContext(GlobalContext)
   const mapInstance = useRef<any>(null)
@@ -267,9 +268,9 @@ export default function MapExplorer() {
       const key = `${cell.precision}/${cell.x}/${cell.y}`
 
       return ({
-        queryKey: ['markerResults', key, searchQueryString, showDebugGroups],
+        queryKey: ['markerResults', key, searchQueryString, showDebugGroups, tree],
         placeHolder: (prevData: any) => prevData,
-        enabled: !showDebugGroups,
+        enabled: !showDebugGroups && (!tree || tree.split('_').length < 4),
         queryFn: async () => {
           const existingParams = new URLSearchParams(searchQueryString)
 
@@ -277,8 +278,25 @@ export default function MapExplorer() {
           if (searchFilterParamsString) {
             newParams.set('totalHits', totalHits.value)
           }
-          if (tree && !searchParams.get('within')) {
+          else if (tree) {
             newParams.set('sosi', 'gard')
+            if (tree == 'root') {
+              // Add a dataset param for each dataset in treeSettings
+              Object.keys(treeSettings).forEach((dataset) => {
+                newParams.append('dataset', dataset)
+              })
+            }
+            else {
+              const parts = tree.split('_')
+              //if (parts.length > 3) return {}
+              const [dataset, adm1, adm2] = parts
+
+              newParams.set('dataset', dataset)
+              
+              if (adm1) newParams.set('adm1', adm1)
+              if (adm2) newParams.set('adm2', adm2)
+            }
+            
           }
 
 
@@ -441,7 +459,6 @@ export default function MapExplorer() {
   if (searchParams.get('error') == 'true') {
     throw new Error('Simulated client side error');
   }
-  const { docData } = useDocData()
 
 
 
@@ -583,19 +600,34 @@ export default function MapExplorer() {
       else {
         //setDebugChildren([])
       }
-      // When selecting a marker, always reset results to default.
-      newQueryParams.set('maxResults', defaultMaxResultsParam)
-      newQueryParams.delete('mapSettings')
-      //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
-      newQueryParams.delete('doc')
 
-      newQueryParams.set('init', stringToBase64Url(fields["group.id"][0]))
-      newQueryParams.delete('group')
-      newQueryParams.delete('activePoint')
-      newQueryParams.delete('activeYear')
-      newQueryParams.delete('activeName')
-      newQueryParams.delete('point')
-      newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
+      if (tree) {
+        newQueryParams.set('doc', fields["uuid"][0])
+        const datasetCode = indexToCode(selected._index)[0]
+        const adm1 = fields["adm1"][0]
+        const adm2 = fields["adm2"][0]
+        newQueryParams.set('tree', `${datasetCode}_${adm1}_${adm2}`)
+        //if (indexToCode(selected._index) 
+        console.log("SELECED", selected)
+      }
+      else {
+        newQueryParams.set('maxResults', defaultMaxResultsParam)
+        newQueryParams.delete('mapSettings')
+        //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
+        newQueryParams.delete('doc')
+
+        newQueryParams.set('init', stringToBase64Url(fields["group.id"][0]))
+        newQueryParams.delete('group')
+        newQueryParams.delete('activePoint')
+        newQueryParams.delete('activeYear')
+        newQueryParams.delete('activeName')
+        newQueryParams.delete('point')
+        newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
+
+      }
+
+
+
 
 
 
@@ -961,11 +993,12 @@ export default function MapExplorer() {
               }
               else {
                 const selected = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == groupData?.fields?.["group.id"]?.[0] && !groupLoading)
+                const selectedInCadastre = Boolean(tree && docData && item.fields?.["uuid"]?.[0] == docData._source.uuid)
                 const isActiveGroupMarker = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue)
                 const isAtActivePoint = Boolean(point && Math.abs(lat - point[0]) < 0.000001 && Math.abs(lng - point[1]) < 0.000001)
                 const shouldHideUnlabeledActiveAreaMarker = activeGroupHasArea && (isActiveGroupMarker || isAtActivePoint)
                 if (activePoint) return null
-                if (selected && activeMarkerMode !== 'points') return null
+                if (selected || selectedInCadastre) return null
 
                 const isInit = initValue && item.fields?.["group.id"]?.[0] == initValue
                 if (hasGroupParam && isInit) return null
@@ -1066,6 +1099,16 @@ export default function MapExplorer() {
                 }}
               />
             }))}
+
+            { false &&
+              tree && docData?._source && (
+                <Marker
+                  key={`tree-doc-${docData._source.uuid}`}
+                  position={[docData._source.location.coordinates[1], docData._source.location.coordinates[0]]}
+                  icon={new leaflet.DivIcon(getLabelMarkerIcon(docData._source.label, 'accent', undefined, false, false, true))}
+                />
+              )
+            }
 
 
 
@@ -1309,18 +1352,10 @@ export default function MapExplorer() {
                               eventHandlers={{
                                 click: () => {
                                   const newParams = new URLSearchParams(searchParams);
-                                  newParams.set('maxResults', defaultMaxResultsParam);
-                                  if (hit?._source?.group?.id) {
-                                    newParams.set('init', stringToBase64Url(hit._source.group.id));
-                                    newParams.delete('group');
-                                  }
                                   if (hit?._source?.uuid) {
                                     newParams.set('doc', hit._source.uuid);
                                   }
                                   newParams.set('activePoint', `${lat},${lng}`);
-                                  newParams.delete('activeYear');
-                                  newParams.delete('activeName');
-                                  newParams.delete('point');
                                   router.push(`?${newParams.toString()}`);
                                 },
                                 keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
@@ -1328,18 +1363,10 @@ export default function MapExplorer() {
                                   if (key === 'Enter' || key === ' ') {
                                     ;(e.originalEvent ?? e).preventDefault()
                                     const newParams = new URLSearchParams(searchParams);
-                                    newParams.set('maxResults', defaultMaxResultsParam);
-                                    if (hit?._source?.group?.id) {
-                                      newParams.set('init', stringToBase64Url(hit._source.group.id));
-                                      newParams.delete('group');
-                                    }
                                     if (hit?._source?.uuid) {
                                       newParams.set('doc', hit._source.uuid);
                                     }
                                     newParams.set('activePoint', `${lat},${lng}`);
-                                    newParams.delete('activeYear');
-                                    newParams.delete('activeName');
-                                    newParams.delete('point');
                                     router.push(`?${newParams.toString()}`);
                                   }
                                 }

@@ -63,6 +63,7 @@ export default function SearchResults() {
   const { totalHits } = useSearchData()
   const router = useRouter()
   const initSearchLabel = initGroupData?.fields?.label?.[0]?.trim()
+  const activePoint = searchParams.get('activePoint') ? (searchParams.get('activePoint')!.split(',').map(parseFloat) as [number, number]) : null
 
   // Unified function to stop editing
   const stopEditingCoordinates = () => {
@@ -366,7 +367,7 @@ export default function SearchResults() {
           </div>
         )
       }
-      {init && (initGroupLoading ? (
+      {init && !activePoint && (initGroupLoading ? (
         <div className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-300">
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `10rem` }}></div>
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `16rem` }}></div>
@@ -384,7 +385,11 @@ export default function SearchResults() {
         </div>
       ))}
 
-      {init && !hasQParam && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
+      {
+        activePoint && <GroupInfo id={`group-info-${activeGroupValue}`} overrideGroupCode={activeGroupValue || undefined} />
+      }
+
+      {init && !activePoint && !hasQParam && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
@@ -406,7 +411,7 @@ export default function SearchResults() {
         </div>
       )) : null}
 
-      {(!init || showOtherResults || isMobile || hasOneResult) && (
+      {(!init || showOtherResults || isMobile || hasOneResult) && (!activePoint) && (
         <>
           <SearchQueryDisplay />
 

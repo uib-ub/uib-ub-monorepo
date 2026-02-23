@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import CadastralTable from "../details/doc/cadastral-table"
 import { stringToBase64Url } from "@/lib/param-utils"
 import { useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 
 const getTreeData = async (dataset: string | null, adm1?: string | null, adm2?: string | null) => {
     const params = new URLSearchParams()
@@ -27,15 +28,17 @@ export default function TreeList({
     dataset,
     adm1,
     adm2,
-    expandedUuid
+    expandedUuid,
+    docUuid
 }: {
     dataset: string
     adm1?: string
     adm2?: string
     expandedUuid?: string | null
+    docUuid?: string | null
 }) {
-    const removeLegacyParams = ['dataset', 'adm1', 'adm2', 'doc']
-    const queryClient = useQueryClient()
+    const searchParams = useSearchParams()
+    const tree = searchParams.get('tree')
 
     const { data: treeData } = useQuery({
         queryKey: ['treeData', dataset, adm1, adm2],
@@ -43,19 +46,18 @@ export default function TreeList({
         enabled: !!dataset
     })
 
+    const scrollTargetUuid = docUuid ?? expandedUuid
     useEffect(() => {
-        // When opening matrikkelvisning directly on a uuid, ensure that row is visible.
-        // This scrolls the right panel (TreeWindow) to the expanded cadastral unit.
-        if (!adm2 || !expandedUuid) return
+        // When opening matrikkelvisning directly on a uuid (or doc param), ensure that row is visible.
+        if (!adm2 || !scrollTargetUuid) return
         if (!treeData?.hits?.hits?.length) return
 
-        const id = `tree-item-${expandedUuid}`
-        // Defer one frame so the expanded content is mounted before measuring/scrolling.
+        const id = `tree-item-${scrollTargetUuid}`
         requestAnimationFrame(() => {
             const el = document.getElementById(id)
             el?.scrollIntoView({ behavior: 'instant' as any, block: 'center' })
         })
-    }, [adm2, expandedUuid, treeData?.hits?.hits?.length])
+    }, [adm2, scrollTargetUuid, treeData?.hits?.hits?.length])
 
     if (!treeData?.hits?.hits) {
         return (
@@ -88,6 +90,7 @@ export default function TreeList({
                     const farmName = fields[settings.parentName]?.[0] || fields.label?.[0]
                     const itemUuid = fields.uuid?.[0]
                     const isExpanded = !!expandedUuid && !!itemUuid && expandedUuid === itemUuid
+                    const isHighlighted = !!docUuid && !!itemUuid && docUuid === itemUuid
                     const groupId = fields?.["group.id"]?.[0]
                     const coords = fields?.location?.[0]?.coordinates
                     const activePoint = Array.isArray(coords) && coords.length === 2
@@ -101,30 +104,13 @@ export default function TreeList({
                             <Clickable
                                 link
                                 id={itemUuid ? `tree-item-${itemUuid}` : undefined}
-                                onClick={() => {
-                                    if (!isExpanded) {
-                                        // Prefill the selected-doc cache so breadcrumbs/title can render instantly.
-                                        // Keep this lightweight: label + location + group id + number (for breadcrumb + map).
-                                        const numberText = Array.isArray(gnr) ? gnr.join(", ") : (gnr?.toString?.() || gnr || '')
-                                        if (itemUuid) {
-                                            queryClient.setQueryData(['treeSelectedDoc', dataset, itemUuid], {
-                                                label: farmName,
-                                                ...(coords ? { location: { coordinates: coords } } : {}),
-                                                ...(groupId ? { group: { id: groupId } } : {}),
-                                                ...(numberText ? { __treeNumber: numberText } : {}),
-                                            })
-                                        }
-                                    }
-                                }}
-                                remove={removeLegacyParams}
+                                remove={ ['activePoint']}
+  
                                 add={{
-                                    tree: isExpanded
-                                        ? buildTreeParam({ dataset, adm1, adm2 })
-                                        : buildTreeParam({ dataset, adm1, adm2, uuid: itemUuid }),
-                                    ...(groupId ? { group: stringToBase64Url(groupId) } : {}),
-                                    ...(activePoint ? { activePoint } : {}),
+                                    doc: itemUuid != docUuid ? itemUuid : null,
+                                    tree: itemUuid != docUuid ? buildTreeParam({ dataset, adm1, adm2, uuid: itemUuid }) : tree
                                 }}
-                                className="flex items-center p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full aria-[current='page']:bg-accent-50"
+                                className={`flex items-center p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full aria-[current='page']:bg-accent-50 ${isHighlighted ? 'bg-accent-50 ring-1 ring-accent-200 ring-inset' : ''}`}
                             >
                                 <span className="text-black">
                                     {gnr ? `${gnr} ` : ''}{farmName}
@@ -149,7 +135,7 @@ export default function TreeList({
                         <li key={item._id}>
                             <Clickable
                                 link
-                                remove={removeLegacyParams}
+                                remove={ ['doc', 'activePoint']}
                                 add={{
                                     tree: buildTreeParam({ dataset, adm1, adm2: fields.adm2?.[0] })
                                 }}
@@ -172,7 +158,7 @@ export default function TreeList({
                     <li key={item._id}>
                         <Clickable
                             link
-                            remove={removeLegacyParams}
+                            remove={['doc', 'activePoint']}
                             add={{
                                 tree: buildTreeParam({ dataset, adm1: countyName })
                             }}

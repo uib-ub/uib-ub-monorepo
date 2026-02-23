@@ -13,8 +13,8 @@ import { useSearchQuery } from "@/lib/search-params"
 import { TitleBadge } from "../ui/badge"
 
 export function FilterButton() {
-    const router = useRouter()
     const searchParams = useSearchParams()
+    const router = useRouter()
     const treeSavedQuery = useSessionStore((s) => s.treeSavedQuery)
     const clearTreeSavedQuery = useSessionStore((s) => s.clearTreeSavedQuery)
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
@@ -30,24 +30,14 @@ export function FilterButton() {
             aria-expanded={options}
             onClick={() => {
                 setSnappedPosition('middle')
-
-                // If tree view is active, exit tree while restoring stored params (if any),
-                // then open the options panel.
-                const base = treeSavedQuery != null
-                    ? new URLSearchParams(treeSavedQuery)
-                    : new URLSearchParams(searchParams)
-
-                base.delete('tree')
+                const newParams = new URLSearchParams(searchParams)
                 if (options) {
-                    base.delete('options')
-                } else {
-                    base.set('options', 'on')
+                    newParams.delete('options')
                 }
-                router.replace(`?${base.toString()}`)
-
-                if (treeSavedQuery != null) {
-                    clearTreeSavedQuery()
+                else {
+                    newParams.set('options', 'on')
                 }
+                router.push(`?${newParams.toString()}`)
             }}
         >
             {options ? <PiFunnelFill className="text-2xl" /> : <PiFunnel className="text-2xl" />}
@@ -63,6 +53,7 @@ export function FilterButton() {
 
 export default function MapToolbar() {
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
+    const searchParams = useSearchParams()
     const currentPosition = useSessionStore((s) => s.currentPosition)
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
     const setMyLocation = useSessionStore((s) => s.setMyLocation)
@@ -70,6 +61,7 @@ export default function MapToolbar() {
     const { totalHits, searchBounds, searchLoading, searchError } = useSearchData()
     const { options } = useOverlayParams()
     const { mapSettings } = useOverlayParams()
+    const tree = searchParams.get('tree')
 
     const svhToRem = (svh: number) => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return 0
@@ -113,7 +105,7 @@ export default function MapToolbar() {
                     top: isMobile ? currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM ? "4rem" : `${4 - currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem` : "0.5rem",
                 }}
             >
-                {!isMobile && (
+                {!isMobile && !tree && (
                     <FilterButton />
                 )}
                 <RoundIconClickable

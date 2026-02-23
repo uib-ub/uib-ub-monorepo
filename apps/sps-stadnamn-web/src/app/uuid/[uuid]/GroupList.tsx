@@ -1,4 +1,6 @@
 'use client'
+import Clickable from '@/components/ui/clickable/clickable'
+import { defaultMaxResultsParam } from '@/config/max-results'
 import { datasetTitles } from '@/config/metadata-config'
 import { defaultResultRenderer, resultRenderers } from '@/config/result-renderers'
 import { stringToBase64Url } from '@/lib/param-utils'
@@ -6,7 +8,7 @@ import { getFieldValue } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useState } from 'react'
-import { PiBookOpen } from 'react-icons/pi'
+import { PiBookOpen, PiMapTrifold } from 'react-icons/pi'
 
 const normalizeLabel = (value?: string | null) =>
   (value || '').replace(/\s+/g, ' ').trim().toLowerCase()
@@ -127,8 +129,9 @@ export default function GroupList({ docData }: { docData: Record<string, any> })
     return null
   }
 
-  return <aside className="bg-neutral-50 shadow-md !text-neutral-950 px-4 pb-4 pt-0 rounded-md">
+  return <aside className="bg-neutral-50 shadow-md !text-neutral-950 px-4 pb-4 pt-0 rounded-md relative">
     <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Namnegruppe</h2>
+    <Clickable link className="no-underline flex absolute top-0 right-0 py-1 px-4 items-center gap-1" href={'/search'} add={{ init: stringToBase64Url(groupId) , maxResults: defaultMaxResultsParam}}><PiMapTrifold aria-hidden="true" />Vis i kartet</Clickable>
     {data && <div className="flex flex-col gap-2">
       {Object.entries(data.groupedByDataset).map(([docDataset, hits]) => {
         const sourceTitle = resultRenderers[docDataset]?.sourceTitle || defaultResultRenderer.sourceTitle

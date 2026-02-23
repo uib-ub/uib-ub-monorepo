@@ -10,6 +10,8 @@ import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { matchesActiveYear, matchesActiveName, matchesActivePoint } from "./group-utils";
 import CoordinateTypeInfo from "../doc/coordinate-type-info";
+import SubtleLink from "@/components/ui/clickable/subtle-link";
+import { treeSettings } from "@/config/server-config";
 
 interface SourcesTabProps {
     datasets: Record<string, any[]>;
@@ -31,6 +33,8 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
     const visibleDatasets = showAll ? datasetKeys : datasetKeys.slice(0, visibleCount)
     const searchParams = useSearchParams()
     const activePoint = searchParams.get('activePoint')
+    const center = searchParams.get('center')
+    const zoom = searchParams.get('zoom')
 
     // Toggle whether a parent shows ALL its children (bruk) or only the first 2
     const toggleShowAllChildren = (uuid: string) => {
@@ -63,6 +67,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
         activePoint: string | null,
         indentLevel: number = 0,
         role?: 'parent' | 'child',
+        showMatrikkelvising: boolean = true,
     ) => {
         const additionalLabels = Array.from(
             new Set([
@@ -117,22 +122,6 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
         return (
             <li key={s.uuid} className="flex flex-col gap-1" style={indentStyle}>
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-2 leading-6 min-h-6">
-                        {hasPin && (
-                            <ClickableIcon
-                                label="Koordinatdetaljar"
-                                onClick={() => {
-                                    mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-                                }}
-                                add={{
-                                    activePoint: `${lat},${lng}`,
-
-                                }}
-                                className={`flex-shrink-0 inline-flex items-center justify-center p-0 w-6 h-6 rounded-full ${isActive ? 'text-accent-700 outline outline-1 outline-accent-700 bg-accent-50' : 'text-neutral-700 hover:bg-neutral-100'}`}
-                            >
-                                <PiMapPinFill className="text-primary-700 h-6 w-6" aria-hidden="true" />
-                            </ClickableIcon>
-                        )}
-
                         <Link className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md !px-2 py-1 h-8 btn btn-outline btn-compact" href={"/uuid/" + s.uuid}>
                             {cadastrePrefix}<strong>{s.label}</strong> {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
                         </Link>
@@ -153,7 +142,22 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                             )}
                         </div>
                     )}
-   
+                    {showMatrikkelvising && s.sosi == 'gard' && treeSettings[ds] && (
+                        <SubtleLink className="pb-4 pt-2" link only={{ tree: `${ds}_${s.adm1}_${s.adm2}_${s.uuid}`, center, zoom }}>
+                            Matrikkelvising
+                        </SubtleLink>
+                    )}
+            </li>
+        )
+    }
+
+    const renderMatrikkelvisingForParent = (parent: any, ds: string) => {
+        if (parent.sosi !== 'gard' || !treeSettings[ds]) return null
+        return (
+            <li className="pb-4 pt-2">
+                <SubtleLink link only={{ tree: `${ds}_${parent.adm1}_${parent.adm2}_${parent.uuid}`, center, zoom }}>
+                    Matrikkelvising
+                </SubtleLink>
             </li>
         )
     }
@@ -198,19 +202,19 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                             {/* No nesting at all – show gnr for standalone items */}
                             {!hasNesting && items.map((s: any) => renderItem(s, ds, isInitGroup, activePoint, 0, 'parent'))}
 
-                            {/* With nesting – only show children (subunits/bruk) for the init group */}
-                            {hasNesting && !isInitGroup && rootItems.map((parent: any) =>
-                                renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent')
-                            )}
-
-                            {/* With nesting (init group) – render parents with their children */}
-                            {hasNesting && isInitGroup && rootItems.map((parent: any) => {
+                            {/* With nesting – always render parents with their children (subunits/bruk) */}
+                            {hasNesting && rootItems.map((parent: any) => {
                                 const children = childrenMap.get(parent.uuid) || []
                                 const childCount = children.length
 
                                 if (childCount === 0) {
-                                    // Parent candidate with no children in this group – still show gnr prefix
-                                    return renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent')
+                                    // Parent candidate with no children in this group – still show gnr prefix and Matrikkelvising below
+                                    return (
+                                        <Fragment key={parent.uuid}>
+                                            {renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent', false)}
+                                            {renderMatrikkelvisingForParent(parent, ds)}
+                                        </Fragment>
+                                    )
                                 }
 
                                 const showAllChildren = showAllChildrenParents.has(parent.uuid)
@@ -230,13 +234,13 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
 
                                 return (
                                     <Fragment key={parent.uuid}>
-                                        {renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent')}
+                                        {renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent', false)}
                                         <ul className="flex flex-col w-full gap-2 -mt-2">
                                             {visibleChildren.map((child: any) =>
                                                 renderItem(child, ds, isInitGroup, activePoint, 1, 'child')
                                             )}
                                             {hiddenCount > 0 && (
-                                                <li style={{ paddingLeft: `${1.5 * 1.5}rem` }}>
+                                                <li className="pl-9">
                                                     <button
                                                         type="button"
                                                         className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
@@ -247,7 +251,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                                                 </li>
                                             )}
                                             {hasManyChildren && showAllChildren && (
-                                                <li style={{ paddingLeft: `${1.5 * 1.5}rem` }}>
+                                                <li className="pl-9">
                                                     <button
                                                         type="button"
                                                         className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
@@ -258,10 +262,12 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                                                 </li>
                                             )}
                                         </ul>
+                                        {renderMatrikkelvisingForParent(parent, ds)}
                                     </Fragment>
                                 )
                             })}
                         </ul>
+                        
                     </li>
                 )
             })}
