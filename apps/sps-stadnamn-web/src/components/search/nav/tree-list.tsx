@@ -108,7 +108,7 @@ export default function TreeList({
   
                                 add={{
                                     doc: itemUuid != docUuid ? itemUuid : null,
-                                    tree: itemUuid != docUuid ? buildTreeParam({ dataset, adm1, adm2, uuid: itemUuid }) : tree
+                                    tree: itemUuid == docUuid ? buildTreeParam({ dataset, adm1, adm2}) :  buildTreeParam({ dataset, adm1, adm2, uuid: itemUuid })
                                 }}
                                 className={`flex items-center p-3 hover:bg-neutral-50 focus:bg-neutral-50 transition-colors no-underline w-full aria-[current='page']:bg-accent-50 ${isHighlighted ? 'bg-accent-50 ring-1 ring-accent-200 ring-inset' : ''}`}
                             >
