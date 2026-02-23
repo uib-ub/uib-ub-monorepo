@@ -38,6 +38,24 @@ export function useGroup() {
     return { initCode, initValue, activeGroupValue, activeGroupCode }
 }
 
+export function usePoint() {
+    const searchParams = useSearchParams()
+    const rawPoint = searchParams.get('point')
+    if (!rawPoint) {
+        return null
+    }
+    return rawPoint.split(',').map(parseFloat) as [number, number]
+}
+
+export function useActivePoint() {
+    const searchParams = useSearchParams()
+    const rawPoint = searchParams.get('activePoint') || searchParams.get('point')
+    if (!rawPoint) {
+        return null
+    }
+    return rawPoint.split(',').map(parseFloat) as [number, number]
+}
+
 
 export function useMode() {
     const searchParams = useSearchParams()

@@ -4,7 +4,7 @@ import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { datasetTitles } from "@/config/metadata-config";
 import { clampMaxResults, expandedMaxResultsParam, getClampedMaxResultsFromParam } from "@/config/max-results";
-import { useGroup } from "@/lib/param-hooks";
+import { useGroup, usePoint } from "@/lib/param-hooks";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchQuery } from "@/lib/search-params";
 import { getSkeletonLength } from "@/lib/utils";
@@ -51,7 +51,7 @@ export default function SearchResults() {
   const { groupData: activeGroupData } = useGroupData()
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const { isMobile, sosiVocab, mapFunctionRef } = useContext(GlobalContext)
-  const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
+  const point = usePoint()
   const { facetFilters, datasetFilters } = useSearchQuery()
   const filterCount = facetFilters.length + datasetFilters.length
   const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
@@ -64,6 +64,7 @@ export default function SearchResults() {
   const router = useRouter()
   const initSearchLabel = initGroupData?.fields?.label?.[0]?.trim()
   const activePoint = searchParams.get('activePoint') ? (searchParams.get('activePoint')!.split(',').map(parseFloat) as [number, number]) : null
+  const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
 
   // Unified function to stop editing
   const stopEditingCoordinates = () => {
@@ -367,7 +368,7 @@ export default function SearchResults() {
           </div>
         )
       }
-      {init && !activePoint && (initGroupLoading ? (
+      {init && !coordinateInfo && (initGroupLoading ? (
         <div className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-300">
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `10rem` }}></div>
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `16rem` }}></div>
@@ -386,10 +387,10 @@ export default function SearchResults() {
       ))}
 
       {
-        activePoint && <GroupInfo id={`group-info-${activeGroupValue}`} overrideGroupCode={activeGroupValue || undefined} />
+        coordinateInfo && <GroupInfo id={`group-info-${activeGroupValue}`} overrideGroupCode={activeGroupValue || undefined} />
       }
 
-      {init && !activePoint && !hasQParam && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
+      {init && !coordinateInfo && !hasQParam && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
@@ -402,16 +403,15 @@ export default function SearchResults() {
               link
               add={{ q: initSearchLabel, maxResults: expandedMaxResultsParam }}
               className="ml-auto btn btn-outline btn-sm rounded-full"
-              aria-label={`Avgrens til ${initSearchLabel}`}
             >
               <PiMagnifyingGlass className="text-base" aria-hidden="true" />
-              <span className="ml-1">{initSearchLabel}</span>
+              <span className="ml-1">Søk på oppslagsordet</span>
             </Clickable>
           )}
         </div>
       )) : null}
 
-      {(!init || showOtherResults || isMobile || hasOneResult) && (!activePoint) && (
+      {(!init || showOtherResults || isMobile || hasOneResult) && (!coordinateInfo) && (
         <>
           <SearchQueryDisplay />
 

@@ -7,7 +7,7 @@ import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState
 import { getAreaLabelMarkerIcon, getClusterMarker, getInitAnchorMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 
 import { boundsFromZoomAndCenter, calculateRadius, fitBoundsToGroupSources, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
-import { useGroup, usePerspective } from "@/lib/param-hooks";
+import { useActivePoint, useGroup, usePoint } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { parseTreeParam } from "@/lib/tree-param";
 import { getBnr, getGnr, indexToCode } from "@/lib/utils";
@@ -62,7 +62,7 @@ export default function MapExplorer() {
   const { groupData: initGroupData } = useGroupData(initCode)
   const { docData } = useDocData()
 
-  const { isMobile, mapFunctionRef } = useContext(GlobalContext)
+  const { isMobile, mapFunctionRef, scrollableContentRef } = useContext(GlobalContext)
   const mapInstance = useRef<any>(null)
   const doc = searchParams.get('doc')
   const datasetTag = searchParams.get('datasetTag')
@@ -73,8 +73,9 @@ export default function MapExplorer() {
   const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
   const mapSettings = searchParams.get('mapSettings') == 'on'
   const hasGroupParam = Boolean(searchParams.get('group'))
-  const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
-  const activePoint = searchParams.get('activePoint') ? (searchParams.get('activePoint')!.split(',').map(parseFloat) as [number, number]) : null
+  const point = usePoint()
+  const activePoint = useActivePoint()
+  const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
   const urlRadius = searchParams.get('radius') ? parseInt(searchParams.get('radius')!) : null
   const displayRadius = useSessionStore((s) => s.displayRadius)
   const displayPoint = useSessionStore((s) => s.displayPoint)
@@ -268,9 +269,9 @@ export default function MapExplorer() {
       const key = `${cell.precision}/${cell.x}/${cell.y}`
 
       return ({
-        queryKey: ['markerResults', key, searchQueryString, showDebugGroups, tree],
-        placeHolder: (prevData: any) => prevData,
-        enabled: !showDebugGroups && (!tree || tree.split('_').length < 4),
+        queryKey: ['markerResults', key, searchQueryString, showDebugGroups, tree, coordinateInfo],
+        placeHolder: (prevData: any) => coordinateInfo ? null : prevData,
+        enabled: !coordinateInfo && !showDebugGroups && (!tree || tree.split('_').length < 4),
         queryFn: async () => {
           const existingParams = new URLSearchParams(searchQueryString)
 
@@ -615,7 +616,6 @@ export default function MapExplorer() {
         newQueryParams.delete('mapSettings')
         //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
         newQueryParams.delete('doc')
-
         newQueryParams.set('init', stringToBase64Url(fields["group.id"][0]))
         newQueryParams.delete('group')
         newQueryParams.delete('activePoint')
@@ -995,9 +995,9 @@ export default function MapExplorer() {
                 const selected = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == groupData?.fields?.["group.id"]?.[0] && !groupLoading)
                 const selectedInCadastre = Boolean(tree && docData && item.fields?.["uuid"]?.[0] == docData._source.uuid)
                 const isActiveGroupMarker = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue)
-                const isAtActivePoint = Boolean(point && Math.abs(lat - point[0]) < 0.000001 && Math.abs(lng - point[1]) < 0.000001)
+                const isAtActivePoint = Boolean(activePoint && Math.abs(lat - activePoint[0]) < 0.000001 && Math.abs(lng - activePoint[1]) < 0.000001)
                 const shouldHideUnlabeledActiveAreaMarker = activeGroupHasArea && (isActiveGroupMarker || isAtActivePoint)
-                if (activePoint) return null
+                //if (activePoint) return null
                 if (selected || selectedInCadastre) return null
 
                 const isInit = initValue && item.fields?.["group.id"]?.[0] == initValue
@@ -1006,7 +1006,7 @@ export default function MapExplorer() {
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const labelText = getDisplayLabel(item.fields)
-                const pointMarkerTooltip = (!isMobile && !isAtActivePoint) ? (
+                const pointMarkerTooltip = (!isMobile) ? (
                   <Tooltip direction="top" offset={[0, -20]} opacity={1} className="point-marker-tooltip">
                     <div className="px-2 py-0.5 text-sm tracking-wide text-black bg-white/90 rounded-md shadow-lg whitespace-nowrap">
                       {labelText}
@@ -1100,19 +1100,9 @@ export default function MapExplorer() {
               />
             }))}
 
-            { false &&
-              tree && docData?._source && (
-                <Marker
-                  key={`tree-doc-${docData._source.uuid}`}
-                  position={[docData._source.location.coordinates[1], docData._source.location.coordinates[0]]}
-                  icon={new leaflet.DivIcon(getLabelMarkerIcon(docData._source.label, 'accent', undefined, false, false, true))}
-                />
-              )
-            }
 
 
-
-            {groupData && !activePoint && ((point && initValue) || groupData.fields?.location?.[0]?.coordinates) && (
+            {groupData && !coordinateInfo && activePoint && (
               <Marker
                 zIndexOffset={2000}
                 icon={new leaflet.DivIcon(
@@ -1127,15 +1117,7 @@ export default function MapExplorer() {
                       true
                     )
                 )}
-                position={
-                  (activeMarkerMode === 'labels' || activeMarkerMode === 'points') && point
-                    ? point
-                    : (
-                      groupData.fields?.location?.[0]?.coordinates
-                        ? [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]]
-                        : null
-                    )
-                }
+                position={activePoint}
                 eventHandlers={{
                   click: focusGroupMarker,
                   keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
@@ -1149,24 +1131,42 @@ export default function MapExplorer() {
               >
               </Marker>
             )}
-            {hasGroupParam && !activePoint && !initGroupHasArea && initGroupData?.fields?.location?.[0]?.coordinates && (
+            {hasGroupParam && !coordinateInfo && !initGroupHasArea && point && point != activePoint && (
               <Marker
                 zIndexOffset={1500}
                 icon={new leaflet.DivIcon(getInitAnchorMarker())}
-                position={[initGroupData.fields.location[0].coordinates[1], initGroupData.fields.location[0].coordinates[0]]}
+                position={point}
                 eventHandlers={{
                   click: () => {
                     const newParams = new URLSearchParams(searchParams)
                     newParams.delete('group')
+                    newParams.delete('activePoint')
                     router.push(`?${newParams.toString()}`)
+                    if (scrollableContentRef?.current) {
+                      requestAnimationFrame(() => {
+                        scrollableContentRef.current?.scrollTo({
+                          top: 0,
+                          behavior: 'smooth'
+                        })
+                      })
+                    }
                   },
                   keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
                     const key = e.originalEvent?.key ?? e.key
                     if (key === 'Enter' || key === ' ') {
                       ;(e.originalEvent ?? e).preventDefault()
                       const newParams = new URLSearchParams(searchParams)
+                      newParams.delete('activePoint')
                       newParams.delete('group')
                       router.push(`?${newParams.toString()}`)
+                      if (scrollableContentRef?.current) {
+                        requestAnimationFrame(() => {
+                          scrollableContentRef.current?.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                          })
+                        })
+                      }
                     }
                   }
                 }}
@@ -1380,7 +1380,7 @@ export default function MapExplorer() {
                 }
 
                 // Default mode: show lines and dots for the init group only when there is an activePoint
-                if (!activePoint || !initValue || !initGroupData?.sources) return null;
+                if (!coordinateInfo || !initValue || !initGroupData?.sources) return null;
 
                 // Find the first source with coordinates - this is the central coordinate
                 const centralSource = initGroupData.sources.find((source: Record<string, any>) =>
@@ -1498,7 +1498,7 @@ export default function MapExplorer() {
             {debug && <DynamicDebugLayers mapInstance={mapInstance} Polygon={Polygon} Rectangle={Rectangle} CircleMarker={CircleMarker} geotileKeyToBounds={geotileKeyToBounds} markerCells={markerCells} />}
 
             {(() => {
-              if (!areaSource?.area) return null;
+              if (!areaSource?.area || coordinateInfo) return null;
 
               try {
                 const geoJSON = wkt.parse(areaSource.area);
@@ -1573,7 +1573,7 @@ export default function MapExplorer() {
             {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" interactive={false} />}
             {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" interactive={false} />}
             {point && !initValue && !activeGroupHasArea && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point} />}
-            {activePoint && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} 
+            {coordinateInfo && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} 
             eventHandlers={{
               click: () => {
                 // Center view
@@ -1592,19 +1592,6 @@ export default function MapExplorer() {
               }
             }}
             />}
-
-
-
-
-
-            {doc && false && docData?._source?.within && <Marker
-              zIndexOffset={1000}
-              icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))}
-              position={[docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]}
-            >
-              {docData?._source?.label}
-            </Marker>
-            }
 
           </>)
       }}

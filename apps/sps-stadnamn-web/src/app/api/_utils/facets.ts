@@ -28,6 +28,7 @@ export const RESERVED_PARAMS = [
   'zoom',
   'point',
   'activePoint',
+  'coordinateInfo',
   'activeYear',
   'activeName',
   'radius',

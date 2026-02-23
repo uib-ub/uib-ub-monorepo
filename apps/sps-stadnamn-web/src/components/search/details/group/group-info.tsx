@@ -32,6 +32,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     const { mapFunctionRef, scrollableContentRef, isMobile } = useContext(GlobalContext)
     const { initValue } = useGroup()
     const activePoint = searchParams.get('activePoint')
+    const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
 
     const roundCoordString = (value: string, decimals: number) => {
         const n = Number(value)
@@ -142,7 +143,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 return Number.isFinite(lat) && Number.isFinite(lng) ? [lat, lng] : null
             })()
             : null
-    // Match the marker position after selecting this group ("Vel namnegruppe").
+    // Match the marker position after selecting this group ("Forankre namnegruppe").
     // The new accent marker should be the group's marker coordinate.
     const preferredFlyTarget: [number, number] | null = groupMarkerPosition
 
@@ -286,7 +287,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     if (!groupData?.group?.id) {
         console.log("Group ID not found")
         const props = {
-            message: `Group ID not found: ${JSON.stringify(groupData)}`
+            message: `Group ID not found: ${JSON.stringify(groupData)}}`
         }
 
         fetch('/api/error', {
@@ -330,18 +331,18 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
             <div className="min-w-0 w-full flex flex-col">
                 {/* Names section (includes timeline) - only show in init group when no activePoint filter is active */}
-                {shouldShowLabelFilter && initValue === groupData.group.id && !searchParams.get('activePoint') &&
+                {shouldShowLabelFilter && initValue === groupData.group.id && !coordinateInfo &&
                     <div className="px-3 pt-2">
                         <NamesSection datasets={datasets} />
                     </div>
                 }
 
                 {/* Active point filter display - only in init group. Sticky so it stays put; coordinate + nav in a right-aligned group so expandables below cannot affect their position. */}
-                {searchParams.get('activePoint') && initValue === groupData.group.id && (
+                {coordinateInfo && initValue === groupData.group.id && (
                     <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 pt-2 pb-2">
                         <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
                             <Clickable
-                                remove={['activePoint']}
+                                remove={['coordinateInfo']}
                                 aria-label="Tilbake"
                                 className="inline-flex shrink-0 items-center gap-1.5 text-neutral-800 hover:text-neutral-900"
                             >
@@ -428,7 +429,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             </div>
 
 
-            <div className="px-3 ml-auto mt-auto">
+            {!coordinateInfo && <div className="px-3 ml-auto mt-auto">
                 <div className="flex flex-row items-center gap-2">
                         
 
@@ -451,7 +452,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                         }
                                     }}
                                     remove={['docIndex', 'doc', 'group', 'parent', 'activePoint']}
-                                    add={{ group: stringToBase64Url(groupData.group.id), activePoint: preferredFlyTarget?.toString() }}
+                                    add={{ group: stringToBase64Url(groupData.group.id), activePoint: preferredFlyTarget?.toString(), coordinateInfo: 'on' }}
                                     className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
                                 >
                                     <PiMapPin aria-hidden="true" className="text-2xl" />
@@ -460,7 +461,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
                         {initValue !== groupData.group.id && (
                             <ClickableIcon
-                                label="Vel namnegruppe"
+                                label="Forankre namnegruppe"
                                 onClick={() => {
                                     // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
                                     // The subsequent URL param update can remount components quickly, so do this eagerly.
@@ -481,7 +482,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                             </ClickableIcon>
                         )}
                     </div>
-                </div>
+                </div>}
 
         </div>
     );

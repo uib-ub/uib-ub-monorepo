@@ -80,7 +80,10 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                 panPointIntoView(map, [lat, lng], isMobile, isMobile);
             }}
             remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
-            add={{ group: activeGroupValue == hit.fields["group.id"][0] ? null : stringToBase64Url(hit.fields["group.id"][0]) }}
+            add={{ group: activeGroupValue == hit.fields["group.id"][0] ? null : stringToBase64Url(hit.fields["group.id"][0]),
+                activePoint: hit.fields.location ? `${hit.fields.location[0].coordinates[1]},${hit.fields.location[0].coordinates[0]}` : null
+
+            }}
 
 
             className="w-full text-left p-3">
@@ -119,7 +122,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
         </Clickable>
         {(initValue && initValue == hit.fields["group.id"][0]) && (
             <div className="p-3">
-                <ClickableIcon className="h-6 w-6 p-0 rounded-full btn btn-outline text-neutral-700" label="Lukk namnegruppe" remove={['init', 'activePoint', 'point' ]}>
+                <ClickableIcon className="h-6 w-6 p-0 rounded-full btn btn-outline text-neutral-700" label="Lukk forankra namnegruppe" remove={['init', 'activePoint', 'point' ]}>
                     <PiXBold />
                 </ClickableIcon>
             </div>
