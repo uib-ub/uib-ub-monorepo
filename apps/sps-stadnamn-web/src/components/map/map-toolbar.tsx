@@ -113,6 +113,7 @@ export default function MapToolbar() {
                     aria-controls="map-settings-panel"
                     aria-expanded={mapSettings}
                     label="Kartinnstillingar"
+                    remove={['overlaySelector']}
                     add={{ mapSettings: mapSettings ? null : 'on' }}
                     onClick={() => setSnappedPosition('middle')}
                 >
