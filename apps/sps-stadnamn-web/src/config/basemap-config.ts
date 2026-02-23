@@ -178,8 +178,8 @@ export const baseMaps: BaseMap[] = [
         name: 'Foto',
         provider: 'Esri',
         coverage: 'global',
-        maxZoom: 20,
-        maxNativeZoom: 20,
+        maxZoom: 18,
+        maxNativeZoom: 18,
         props: {
             url: 'https://fly.maptiles.arcgis.com/arcgis/rest/services/World_Imagery_Firefly/MapServer/tile/{z}/{y}/{x}',
             attribution: 'Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community'
