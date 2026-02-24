@@ -150,7 +150,7 @@ export const baseMaps: BaseMap[] = [
             url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png',
             attribution: '&copy; <a class="override-external-icon" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors<br/> &copy; <a class="override-external-icon" href="https://carto.com/attributions">CARTO</a>'
         }
-    },
+    }, /*
     {
         key: 'high_contrast',
         name: 'Høgkontrast',
@@ -162,7 +162,7 @@ export const baseMaps: BaseMap[] = [
             url: 'https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}.png',
             attribution: '&copy; <a class="override-external-icon" href="https://stadiamaps.com/">Stadia Maps</a> <a class="override-external-icon" href="https://stamen.com/">&copy; Stamen Design</a> &copy; <a class="override-external-icon" href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a class="override-external-icon" href="https://www.openstreetmap.org/about">OpenStreetMap</a> contributors'
         }
-    },
+    },*/
     {
         key: 'terrain',
         name: 'Terreng',
