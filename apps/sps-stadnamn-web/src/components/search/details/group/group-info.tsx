@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, type ReactNode } from "react";
 import { PiAnchor, PiAnchorSimple, PiArchive, PiCaretLeftBold, PiCaretRightBold, PiMapPin, PiPushPin, PiX } from "react-icons/pi";
+import { detailsRenderer } from "@/lib/text-utils";
 import Carousel from "../../nav/results/carousel";
 import { TextTab } from "./text-tab";
 import { NamesSection } from "./names-section";
@@ -29,6 +30,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     const { initValue, activeGroupValue } = useGroup()
     const activePoint = searchParams.get('activePoint')
     const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
+    const labelFilter = searchParams.get('labelFilter') === 'on'
 
     const roundCoordString = (value: string, decimals: number) => {
         const n = Number(value)
@@ -47,6 +49,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     // Read activeYear and activeName from URL params
     const activeYear = searchParams.get('activeYear')
     const activeName = searchParams.get('activeName')
+    const groupLabel = groupData?.fields?.label?.[0]
 
     // Scroll to top when init group changes (when clicking "vel" button)
     useEffect(() => {
@@ -206,7 +209,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         // Check if all sources match all active filters
         const hasActiveFilters = !!(activeYear || activeName)
         if (!hasActiveFilters) {
-            return showNamesTab // Show if there are multiple names/years to filter by
+            //return showNamesTab // Show if there are multiple names/years to filter by
         }
 
         // Count how many sources match the active filters
@@ -221,7 +224,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
         // If all sources match all filters, don't show the filter
         if (matchingCount === totalSources) {
-            return false
+            //return false
         }
 
         return showNamesTab
@@ -282,26 +285,52 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             {textItems.length > 0 && !activePoint && <TextTab textItems={textItems} />}
 
             <div className="min-w-0 w-full flex flex-col">
-                {/* Names section (includes timeline) - only show in init group when no activePoint filter is active */}
-                {shouldShowLabelFilter && initValue === groupData.group.id && !coordinateInfo &&
-                    <div className="px-3 pt-2">
-                        <NamesSection datasets={datasets} />
-                    </div>
-                }
-
-                {/* Active point filter display - only in init group. Sticky so it stays put; coordinate + nav in a right-aligned group so expandables below cannot affect their position. */}
-                {coordinateInfo && (
+                {/* Filtering / coordinate sticky headers */}
+                {labelFilter && !coordinateInfo && (
                     <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 pt-2 pb-2">
-                        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+                        <div className="flex min-w-0 items-center justify-between gap-x-3 gap-y-2">
+                            <div className="min-w-0 flex-1 flex items-center gap-2 text-base text-neutral-900">
+                                <span className="font-semibold truncate">
+                                    {groupLabel}
+                                </span>
+                                <span className="truncate text-neutral-900">
+                                    {detailsRenderer(groupData)}
+                                </span>
+                            </div>
                             <Clickable
-                                remove={['coordinateInfo']}
+                                remove={['labelFilter', 'activeName', 'activeYear']}
                                 aria-label="Tilbake"
                                 className="inline-flex shrink-0 items-center gap-1.5 text-neutral-800 hover:text-neutral-900"
                             >
                                 <PiCaretLeftBold className="text-base shrink-0" aria-hidden="true" />
                                 <span className="whitespace-nowrap">Tilbake</span>
                             </Clickable>
-                            <div className="flex min-w-[8rem] flex-1 basis-0 flex-wrap items-center justify-end gap-x-3 gap-y-2 sm:basis-auto sm:flex-1">
+                        </div>
+                    </div>
+                )}
+
+                {coordinateInfo && (
+                    <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 pt-2 pb-2">
+                        <div className="flex flex-col min-w-0 gap-y-1">
+                            <div className="flex min-w-0 items-center justify-between gap-x-3 gap-y-2">
+                                <div className="min-w-0 flex-1 flex items-center gap-2 text-base text-neutral-900">
+                                    <span className="font-semibold truncate">
+                                        {groupLabel}
+                                    </span>
+                                    <span className="truncate text-neutral-900">
+                                        {detailsRenderer(groupData)}
+                                    </span>
+                                </div>
+                                <Clickable
+                                    remove={['coordinateInfo']}
+                                    aria-label="Tilbake"
+                                    className="inline-flex shrink-0 items-center gap-1.5 text-neutral-800 hover:text-neutral-900"
+                                >
+                                    <PiCaretLeftBold className="text-base shrink-0" aria-hidden="true" />
+                                    <span className="whitespace-nowrap">Tilbake</span>
+                                </Clickable>
+                            </div>
+                            <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-2">
                                 {(() => {
                                     const total = uniqueCoordinates.length
                                     const activeIndexRaw = uniqueCoordinates.findIndex((c) => c === activePoint)
@@ -347,7 +376,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
                                     return (
                                         <>
-                                            <span className="min-w-0 flex-1 truncate text-right text-base font-medium text-neutral-900" title={coordText}>
+                                            <span className="min-w-0 flex-1 truncate text-base text-neutral-900" title={coordText}>
                                                 {coordText}
                                             </span>
                                             <div className="flex shrink-0 items-center gap-1.5">
@@ -369,13 +398,23 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                     </div>
                 )}
 
+                {/* Names section (includes timeline) - show for all eligible groups, hide only in coordinate view */}
+                {shouldShowLabelFilter && !coordinateInfo && (
+                    <div className={`px-3 ${initValue === groupData.group.id ? 'pt-2' : 'pt-6'}`}>
+                        <NamesSection
+                            datasets={datasets}
+                            groupCode={stringToBase64Url(groupData.group.id)}
+                        />
+                    </div>
+                )}
+
                 {/* Sources always shown - min-w-0 so width is constrained by panel, not by expanded content */}
                 <div className="min-w-0 px-3">
                     <FilteredSourcesTab
                         datasets={datasets}
                         activeYear={activeYear}
                         activeName={activeName}
-                        isInitGroup={initValue === groupData.group.id}
+                        isInitGroup={activeGroupValue === groupData.group.id}
                     />
                 </div>
             </div>

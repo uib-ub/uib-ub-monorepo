@@ -152,7 +152,7 @@ export default function OverlayInterface() {
     const maxResults = searchParams.get('maxResults')
     const tree = searchParams.get('tree')
     const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
-    const groupLabel = groupData?.fields?.label?.[0]
+    const labelFilter = searchParams.get('labelFilter') === 'on'
 
     useEffect(() => {
         if (debugParam == 'on') {
@@ -255,9 +255,9 @@ export default function OverlayInterface() {
                                 >
                                     
 
-                                    <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-lg text-neutral-900 font-sans">{coordinateInfo ? `Koordinatar` : 'Kjelder'}{coordinateInfo && groupLabel && <> | <strong className="text-neutral-900">{groupLabel}</strong></>}</div>
+                                    <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-lg text-neutral-900 font-sans">{coordinateInfo && `Koordinatar`  || labelFilter && 'Namneformer' || 'Kjelder'}</div>
 
-                                    {!coordinateInfo && <>
+                                    {!coordinateInfo && ! labelFilter && <>
 
                                     {searchLoading ? (
                                         <Spinner status="Laster resultat" className="text-lg" />

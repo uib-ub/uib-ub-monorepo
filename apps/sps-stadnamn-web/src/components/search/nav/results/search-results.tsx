@@ -67,6 +67,7 @@ export default function SearchResults() {
   const initHasCoordinates = !!initGroupData?.sources?.some((source: any) => source.location?.coordinates)
   const activePoint = searchParams.get('activePoint') ? (searchParams.get('activePoint')!.split(',').map(parseFloat) as [number, number]) : null
   const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
+  const labelFilter = searchParams.get('labelFilter') === 'on'
 
   // Sort mode is controlled by URL param so it is shareable/bookmarkable
   const rawSort = searchParams.get('searchSort')
@@ -384,7 +385,7 @@ export default function SearchResults() {
           </div>
         )
       }
-      {init && !coordinateInfo && (initGroupLoading ? (
+      {init && !coordinateInfo && !labelFilter && (initGroupLoading ? (
         <div className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-300">
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `10rem` }}></div>
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `16rem` }}></div>
@@ -402,11 +403,11 @@ export default function SearchResults() {
         </div>
       ))}
 
-      {
-        coordinateInfo && <GroupInfo id={`group-info-${activeGroupValue}`} overrideGroupCode={activeGroupValue || undefined} />
-      }
+      {(coordinateInfo || labelFilter) && (
+        <GroupInfo id={`group-info-${activeGroupValue}`} overrideGroupCode={activeGroupValue || undefined} />
+      )}
 
-      {init && !coordinateInfo && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
+      {init && !coordinateInfo && !labelFilter && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
@@ -456,7 +457,7 @@ export default function SearchResults() {
         </div>
       )) : null}
 
-      {(!init || showOtherResults || isMobile || hasOneResult) && (!coordinateInfo) && (
+      {(!init || showOtherResults || isMobile || hasOneResult) && (!coordinateInfo && !labelFilter) && (
         <>
           <SearchQueryDisplay />
 
@@ -534,7 +535,7 @@ export default function SearchResults() {
       )}
 
 
-      {(filterCount > 0 || isMobile || searchError || collapsedError || hasNoResults) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
+      {(filterCount > 0 || isMobile || searchError || collapsedError || hasNoResults) && (!labelFilter) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
         {filterCount > 0 && showOtherResults && <div className="mx-2 mb-4">
 
           <ActiveFilters /></div>}

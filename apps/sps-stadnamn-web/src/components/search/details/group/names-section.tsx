@@ -2,20 +2,22 @@
 
 import { Fragment, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { PiX } from "react-icons/pi";
+import { PiInfoBold, PiInfoFill, PiX } from "react-icons/pi";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import InfoPopover from "@/components/ui/info-popover";
 
 interface NamesSectionProps {
     datasets: Record<string, any[]>;
+    groupCode?: string | null;
 }
 
-export const NamesSection = ({ datasets }: NamesSectionProps) => {
+export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
     const [showAll, setShowAll] = useState(false)
     const searchParams = useSearchParams()
     const activeYear = searchParams.get('activeYear')
     const activeName = searchParams.get('activeName')
+    const labelFilter = searchParams.get('labelFilter') === 'on'
 
     const { yearsOrdered, namesByYear, namesWithoutYear, nameCounts } = useMemo(() => {
         // Helper functions to check if source matches filters
@@ -44,28 +46,34 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
         const nameToYears: Record<string, Set<string>> = {}
         const nameCounts: Record<string, number> = {}
 
-        // 2) Build lookup from labels/altLabels (using source.year) and attestations (using att.year)
+        // 2) Build lookup from labels/altLabels (using source.year when valid) and attestations (using att.year when valid)
         const pushNameYear = (name: string | undefined, year: any, source: any) => {
             if (!name) return
             // Only include if source matches all active filters
             if (!matchesYear(source)) return
             if (!matchesName(source)) return
             const y = year != null ? String(year) : null
-            // Skip clearly invalid/typo years that start with 0 (e.g. "0990")
-            if (!y || y.startsWith('0')) return
             nameToYears[name] = nameToYears[name] || new Set<string>()
+            // Skip clearly invalid/typo years that start with 0 (e.g. "0990"),
+            // but still register the name so it can appear under "Namneformer utan år"
+            if (!y || y.startsWith('0')) {
+                nameCounts[name] = (nameCounts[name] || 0) + 1
+                return
+            }
             nameToYears[name].add(y)
             nameCounts[name] = (nameCounts[name] || 0) + 1
         }
 
         Object.entries(datasets).forEach(([, sources]) => {
             sources.forEach((source: any) => {
-                // Labels and altLabels only when source.year exists
-                if (source?.year) {
-                    pushNameYear(source.label, source.year, source)
-                    if (Array.isArray(source?.altLabels)) {
-                        source.altLabels.forEach((alt: any) => pushNameYear(typeof alt === 'string' ? alt : alt?.label, source.year, source))
-                    }
+                // Labels and altLabels, regardless of whether source.year exists.
+                // If year is missing or invalid, the name will still be collected
+                // and end up under "Namneformer utan år".
+                pushNameYear(source.label, source?.year, source)
+                if (Array.isArray(source?.altLabels)) {
+                    source.altLabels.forEach((alt: any) =>
+                        pushNameYear(typeof alt === 'string' ? alt : alt?.label, source?.year, source),
+                    )
                 }
                 // Attestations: use their own year
                 if (Array.isArray(source?.attestations)) {
@@ -234,6 +242,7 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
     }, [filteredYearsOrdered, filteredNamesByYear, filteredNamesWithoutYear, nameCounts])
 
     const hasActiveFilter = !!(activeYear || activeName)
+    const preventCollapse = hasActiveFilter || labelFilter
 
     const allItems = [...yearsOrdered.map(y => ({ type: 'year' as const, year: y, names: namesByYear[y] || [] })), ...namesWithoutYear.map(n => ({ type: 'noYear' as const, name: n, count: nameCounts[n] || 0 }))]
     const hasMore = !hasActiveFilter && filteredItems.length > 3
@@ -242,7 +251,7 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
 
     // When collapsed and hasMore: show first year item and last year item (collapse in the middle)
     // Otherwise: show all items
-    const visibleYearItems = showAll || hasActiveFilter ? allYearItems : (
+    const visibleYearItems = showAll || preventCollapse ? allYearItems : (
         hasMore && allYearItems.length > 1
             ? [allYearItems[0], allYearItems[allYearItems.length - 1]]
             : allYearItems.slice(0, Math.min(3, allYearItems.length))
@@ -250,7 +259,7 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
     // Items without year are always shown (they're handled separately in the UI)
     const visibleNoYearItems = allNoYearItems
     const visibleItems = [...visibleYearItems, ...visibleNoYearItems]
-    const isCollapsed = hasMore && !showAll && !hasActiveFilter && allYearItems.length > 1
+    const isCollapsed = hasMore && !showAll && !preventCollapse && allYearItems.length > 1
     const hiddenYearItemsCount = allYearItems.length - visibleYearItems.length
 
     if (allItems.length === 0) return null
@@ -280,37 +289,51 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
     }
 
     return (
-        <div className="flex flex-col gap-3 py-2">
+        <div className="flex flex-col gap-3">
+            {labelFilter && <p className="text-neutral-900">Filtreringsalternativa viser namneformer Språksamlingane har henta ut frå kjeldene, rangert etter tidlegaste registrerte år. Lista er ikkje naudsynlegvis komplett, og kan innehalde feil.</p>}
+            
 
             <div>
-                <div className="flex items-center mb-1 text-lg">
-                    <span className="text-neutral-800">
-                        <strong className="text-neutral-900 ">Omtrentleg tidslinje</strong>
-                    </span>
-                    <InfoPopover>
-                        Tidslinja viser tidlegaste år Språksamlingane har henta ut for kvar kjeldeform. Den kan innehalde feil,
-                        og er berre meint som eit verktøy for å filtrere kjeldene.
-                    </InfoPopover>
-                </div>
-                {/* Active filter display */}
+                {/* Active filter display – chips styled like global active filters */}
                 {hasActiveFilter && (
-                    <div className="flex items-center gap-3 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-lg mb-3">
-                        <strong className="text-neutral-900 text-base">
-                            {activeYear ? `År: ${activeYear}` : activeName ? `Namneform: ${activeName}` : ''}
-                        </strong>
-                        <ClickableIcon
-                            label="Fjern kjeldeavgrensing"
-                            replace
-                            remove={['activeYear', 'activeName']}
-                            className="ml-auto text-accent-800 hover:text-accent-900 underline underline-offset-2 font-medium transition-colors"
-                        >
-                            <PiX className="text-neutral-800" />
-                        </ClickableIcon>
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                        {activeYear && (
+                            <Clickable
+                                replace
+                                remove={['activeYear']}
+                                add={groupCode ? { group: groupCode } : {}}
+                                className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer"
+                            >
+                                <span className="text-sm">År: {activeYear}</span>
+                                <PiX className="ml-auto text-lg" aria-hidden="true" />
+                            </Clickable>
+                        )}
+                        {activeName && (
+                            <Clickable
+                                replace
+                                remove={['activeName']}
+                                add={groupCode ? { group: groupCode } : {}}
+                                className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer"
+                            >
+                                <span className="text-sm">Namneform: {activeName}</span>
+                                <PiX className="ml-auto text-lg" aria-hidden="true" />
+                            </Clickable>
+                        )}
+                        {(activeYear && activeName) && (
+                            <Clickable
+                                replace
+                                remove={['activeYear', 'activeName']}
+                                add={groupCode ? { group: groupCode } : {}}
+                                className="px-2 py-1.5 text-sm text-neutral-800 hover:text-accent-800 underline underline-offset-2 ml-1"
+                            >
+                                Nullstill
+                            </Clickable>
+                        )}
                     </div>
                 )}
 
                 {/* Vertical Timeline */}
-                {shouldShowFilterOptions && visibleYearItems.length > 0 && !activeYear && (
+                {shouldShowFilterOptions && visibleYearItems.length > 0 && (
                     <ul className="relative !mx-2 !px-0 p-2" role="list">
                         {visibleYearItems.map((item, index) => {
                             const isYearSelected = activeYear === item.year
@@ -348,8 +371,11 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
                                             {/* Year button */}
                                             <Clickable
                                                 replace
-                                                add={isYearSelected ? undefined : { activeYear: item.year }}
-                                                remove={isYearSelected ? ['activeYear'] : ['activeName']}
+                                                add={{
+                                                    activeYear: isYearSelected ? null : item.year,
+                                                    labelFilter: 'on',
+                                                    ...(groupCode ? { group: groupCode } : {}),
+                                                }}
                                                 className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isYearSelected
                                                     ? 'bg-accent-800 text-white'
                                                     : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
@@ -368,8 +394,11 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
                                                             <Clickable
                                                                 key={nameKey}
                                                                 replace
-                                                                add={isNameSelected ? undefined : { activeName: nameKey }}
-                                                                remove={isNameSelected ? ['activeName'] : ['activeYear']}
+                                                                add={{
+                                                                    activeName: isNameSelected ? null : nameKey,
+                                                                    labelFilter: 'on',
+                                                                    ...(groupCode ? { group: groupCode } : {}),
+                                                                }}
                                                                 className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isNameSelected
                                                                     ? 'bg-accent-800 text-white'
                                                                     : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
@@ -408,8 +437,8 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
                                 </Fragment>
                             )
                         })}
-                        {/* Show fewer button at end when expanded */}
-                        {hasMore && !hasActiveFilter && showAll && (
+                        {/* Show fewer button at end when expanded (only when collapse is allowed) */}
+                        {hasMore && !preventCollapse && showAll && (
                             <li className="flex items-center !pt-2" key="show-fewer">
                                 <div className="ml-6 flex items-center">
                                     <button
@@ -434,8 +463,11 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
                                 <Clickable
                                     key={nameKey}
                                     replace
-                                    add={{ activeName: nameKey }}
-                                    remove={['activeYear']}
+                                    add={{
+                                        activeName: nameKey,
+                                        labelFilter: 'on',
+                                        ...(groupCode ? { group: groupCode } : {}),
+                                    }}
                                     className="flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
                                 >
                                     {nameKey}
@@ -459,8 +491,11 @@ export const NamesSection = ({ datasets }: NamesSectionProps) => {
                                         <Clickable
                                             key={item.name}
                                             replace
-                                            add={isNameSelected ? undefined : { activeName: item.name }}
-                                            remove={isNameSelected ? ['activeName'] : ['activeYear']}
+                                            add={{
+                                                activeName: isNameSelected ? null : item.name,
+                                                labelFilter: 'on',
+                                                ...(groupCode ? { group: groupCode } : {}),
+                                            }}
                                             className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isNameSelected
                                                 ? 'bg-accent-800 text-white'
                                                 : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'

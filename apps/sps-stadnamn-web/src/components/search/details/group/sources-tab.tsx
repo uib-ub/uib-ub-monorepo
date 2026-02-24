@@ -31,11 +31,12 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
     const center = searchParams.get('center')
     const zoom = searchParams.get('zoom')
     const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
+    const labelFilter = searchParams.get('labelFilter') === 'on'
     // If not filtered: show 2 datasets if more than 3, otherwise show all
     // If filtered: show 4 datasets if more than 5, otherwise show all
     const hasMore = isFiltered ? datasetKeys.length > 5 : datasetKeys.length > 3
     const visibleCount = isFiltered ? (hasMore ? 4 : datasetKeys.length) : (hasMore ? 2 : datasetKeys.length)
-    const visibleDatasets = coordinateInfo
+    const visibleDatasets = (coordinateInfo || labelFilter)
         ? datasetKeys
         : (showAll ? datasetKeys : datasetKeys.slice(0, visibleCount))
 
@@ -163,7 +164,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
     }
 
     return (
-        <ul className="flex flex-col gap-8 pt-8">
+        <ul className="flex flex-col gap-8 pt-4">
             {visibleDatasets.map((ds) => {
                 const items = datasets[ds] || []
                 if (items.length === 0) return null
@@ -271,7 +272,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                     </li>
                 )
             })}
-            {hasMore && !coordinateInfo && (
+            {hasMore && !coordinateInfo && !labelFilter && (
                 <li className="mt-1">
                     <button
                         type="button"
