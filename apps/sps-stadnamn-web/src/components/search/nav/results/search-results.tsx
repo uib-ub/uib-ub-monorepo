@@ -417,7 +417,7 @@ export default function SearchResults() {
           {initSearchLabel && (
             qParam && qParam == initSearchLabel.trim() && initHasCoordinates ? (
               <div
-                className="ml-auto flex items-center gap-3 text-sm"
+                className="ml-auto flex items-center gap-3 xl:gap-2 text-sm"
                 role="radiogroup"
                 aria-label="Sorter treff"
               >
