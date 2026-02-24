@@ -427,12 +427,12 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                 add={{
                                     // When pinning a group ("vel"), treat it as a fresh init selection.
                                     init: stringToBase64Url(groupData.group.id),
-                                    point: `${preferredFlyTarget?.[0]},${preferredFlyTarget?.[1]}`,
+                                    point: preferredFlyTarget ? `${preferredFlyTarget?.[0]},${preferredFlyTarget?.[1]}` : null,
                                     maxResults: defaultMaxResultsParam
                                 }}
-                                className="btn btn-neutral inline-flex items-center justify-center w-12 h-12 rounded-full text-xl"
+                                className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
                             >
-                                <PiAnchorSimple aria-hidden="true" className="text-2xl" />
+                                <PiAnchorSimple aria-hidden="true" className="text-2xl text-neutral-800" />
                             </ClickableIcon>
                         )}
                     </div>

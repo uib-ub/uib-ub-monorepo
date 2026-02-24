@@ -390,7 +390,7 @@ export default function SearchResults() {
         coordinateInfo && <GroupInfo id={`group-info-${activeGroupValue}`} overrideGroupCode={activeGroupValue || undefined} />
       }
 
-      {init && !coordinateInfo && !hasQParam && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
+      {init && !coordinateInfo && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
@@ -398,14 +398,16 @@ export default function SearchResults() {
       ) : (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2 text-neutral-950">
           <span id="other-groups-title" className="xl:text-lg font-sans text-neutral-900">Fleire namnegrupper</span>
-          {initSearchLabel && (
+          {initSearchLabel && !hasQParam && (
             <Clickable
               link
               add={{ q: initSearchLabel, maxResults: expandedMaxResultsParam }}
-              className="ml-auto btn btn-outline btn-sm rounded-full"
+              className="ml-auto btn btn-outline btn-sm rounded-full min-w-0"
             >
               <PiMagnifyingGlass className="text-base" aria-hidden="true" />
-              <span className="ml-1">Søk på oppslagsordet</span>
+              <span className="ml-1 truncate">
+                {initSearchLabel}
+              </span>
             </Clickable>
           )}
         </div>

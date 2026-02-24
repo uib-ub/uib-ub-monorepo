@@ -54,17 +54,17 @@ export default function SearchQueryDisplay() {
   if (!searchQ) return null
 
   return (
-    <section className={`p-3 flex flex-col gap-2 border-t border-neutral-200 ${init ? 'bg-neutral-50' : ''}`} aria-labelledby="search-query-title">
-      <div id="search-query-title" className="flex items-center gap-2 text-neutral-950 text-xl cursor-pointer" onClick={handleEdit}>
-        <PiMagnifyingGlass className="text-lg" aria-hidden="true" />
-        <strong>{searchQ}</strong>
+    <section className={`p-3 flex flex-wrap gap-x-6 gap-y-3 border-t border-neutral-200 items-center ${init ? 'bg-neutral-50' : ''}`} aria-labelledby="search-query-title">
+      <div id="search-query-title" className="flex items-center gap-3 text-neutral-950 text-xl cursor-pointer" onClick={handleEdit}>
+        <PiMagnifyingGlass className="text-xl" aria-hidden="true" />
+        {searchQ}
         <ClickableIcon label="Fjern søkeord" remove={['q']} className="ml-auto h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900">
           <PiXBold />
         </ClickableIcon>
       </div>
-      <div className="flex items-center gap-4 mt-1 text-sm">
+      <div className="flex items-center gap-4 text-sm">
         {isSingleWord && (
-          <label className="flex items-center gap-2">
+          <label className="flex items-center gap-2 p-1">
             <input
               type="checkbox"
               checked={isFuzzy}
@@ -74,7 +74,7 @@ export default function SearchQueryDisplay() {
             Omtrentleg
           </label>
         )}
-        <label className="flex items-center gap-2">
+        <label className="flex items-center gap-2 p-1">
           <input
             type="checkbox"
             checked={!!fulltext}

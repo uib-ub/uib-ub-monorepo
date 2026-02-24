@@ -38,13 +38,30 @@ export function useGroup() {
     return { initCode, initValue, activeGroupValue, activeGroupCode }
 }
 
+
+const validatePoint = (point: string) => {
+    const splitPoint = point.split(',')
+    if (splitPoint.length !== 2) {
+        return null
+    }
+    const lat = parseFloat(splitPoint[0])
+    const lon = parseFloat(splitPoint[1])
+    if (isNaN(lat) || isNaN(lon)) {
+        return null
+    }
+    return [lat, lon]
+}
+
+
+
+
 export function usePoint() {
     const searchParams = useSearchParams()
     const rawPoint = searchParams.get('point')
     if (!rawPoint) {
         return null
     }
-    return rawPoint.split(',').map(parseFloat) as [number, number]
+    return validatePoint(rawPoint)
 }
 
 export function useActivePoint() {
@@ -53,7 +70,7 @@ export function useActivePoint() {
     if (!rawPoint) {
         return null
     }
-    return rawPoint.split(',').map(parseFloat) as [number, number]
+    return validatePoint(rawPoint)
 }
 
 
