@@ -290,7 +290,7 @@ export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
 
     return (
         <div className="flex flex-col gap-3">
-            {labelFilter && <p className="text-neutral-900">Filtreringsalternativa viser namneformer Språksamlingane har henta ut frå kjeldene, rangert etter tidlegaste registrerte år. Lista er ikkje naudsynlegvis komplett, og kan innehalde feil.</p>}
+            {labelFilter && <p className="text-neutral-900">Filtreringsalternativa viser namneformer Språksamlingane har henta ut frå kjeldene, eventuelt med tidlegaste registrerte år. Lista er ikkje naudsynlegvis komplett, og kan innehalde feil.</p>}
             
 
             <div>

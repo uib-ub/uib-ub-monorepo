@@ -288,7 +288,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 {/* Filtering / coordinate sticky headers */}
                 {labelFilter && !coordinateInfo && (
                     <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 pt-2 pb-2">
-                        <div className="flex min-w-0 items-center justify-between gap-x-3 gap-y-2">
+                        <div className="flex min-w-0 items-center justify-between gap-3 gap-y-2">
                             <div className="min-w-0 flex-1 flex items-center gap-2 text-base text-neutral-900">
                                 <span className="font-semibold truncate">
                                     {groupLabel}
@@ -310,8 +310,8 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 )}
 
                 {coordinateInfo && (
-                    <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 pt-2 pb-2">
-                        <div className="flex flex-col min-w-0 gap-y-1">
+                    <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 py-3">
+                        <div className="flex flex-col min-w-0 gap-y-3">
                             <div className="flex min-w-0 items-center justify-between gap-x-3 gap-y-2">
                                 <div className="min-w-0 flex-1 flex items-center gap-2 text-base text-neutral-900">
                                     <span className="font-semibold truncate">
@@ -383,8 +383,8 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                                 <NavBtn label="Førre koordinat" targetIndex={Math.max(0, activeIndex - 1)} disabled={activeIndex === 0}>
                                                     <PiCaretLeftBold aria-hidden="true" />
                                                 </NavBtn>
-                                                <span className="text-neutral-700 text-sm tabular-nums w-9 text-center" aria-hidden="true">
-                                                    {activeIndex + 1}/{total}
+                                                <span className="text-neutral-700 text-sm tabular-nums text-center px-2" aria-hidden="true">
+                                                    Koordinat {activeIndex + 1} av {total}
                                                 </span>
                                                 <NavBtn label="Neste koordinat" targetIndex={Math.min(total - 1, activeIndex + 1)} disabled={activeIndex === total - 1}>
                                                     <PiCaretRightBold aria-hidden="true" />
