@@ -17,6 +17,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { PiCheck, PiMagnifyingGlass, PiMapPinFill, PiPencilSimpleBold, PiPlayFill, PiQuestion, PiX, PiXBold } from "react-icons/pi";
+import ToggleButton from "@/components/ui/toggle-button";
 import GroupInfo from "../../details/group/group-info";
 import ActiveFilters from "../../form/active-filters";
 import ResultItem from "./result-item";
@@ -44,7 +45,7 @@ export default function SearchResults() {
   const searchParams = useSearchParams()
   const init = searchParams.get('init')
   const group = searchParams.get('group')
-  const hasQParam = !!searchParams.get('q')?.trim()
+  const qParam = searchParams.get('q')?.trim()
   const resultsParam = getClampedMaxResultsFromParam(searchParams.get('maxResults'))
   const initValue = init ? base64UrlToString(init) : null
   const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
@@ -63,8 +64,23 @@ export default function SearchResults() {
   const { totalHits } = useSearchData()
   const router = useRouter()
   const initSearchLabel = initGroupData?.fields?.label?.[0]?.trim()
+  const initHasCoordinates = !!initGroupData?.sources?.some((source: any) => source.location?.coordinates)
   const activePoint = searchParams.get('activePoint') ? (searchParams.get('activePoint')!.split(',').map(parseFloat) as [number, number]) : null
   const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
+
+  // Sort mode is controlled by URL param so it is shareable/bookmarkable
+  const rawSort = searchParams.get('searchSort')
+  const sortMode: 'distance' | 'similarity' =
+    rawSort === 'similarity' ? 'similarity' : 'distance'
+
+  const setSortMode = (mode: 'distance' | 'similarity') => {
+    const newParams = new URLSearchParams(searchParams)
+    newParams.set('searchSort', mode)
+    router.push(`?${newParams.toString()}`, { scroll: false })
+  }
+
+  const handleSortDistance = () => setSortMode('distance')
+  const handleSortSimilarity = () => setSortMode('similarity')
 
   // Unified function to stop editing
   const stopEditingCoordinates = () => {
@@ -396,19 +412,46 @@ export default function SearchResults() {
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
         </div>
       ) : (
-        <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2 text-neutral-950">
-          <span id="other-groups-title" className="xl:text-lg font-sans text-neutral-900">Fleire namnegrupper</span>
-          {initSearchLabel && !hasQParam && (
-            <Clickable
-              link
-              add={{ q: initSearchLabel, maxResults: expandedMaxResultsParam }}
-              className="ml-auto btn btn-outline btn-sm rounded-full min-w-0"
-            >
-              <PiMagnifyingGlass className="text-base" aria-hidden="true" />
-              <span className="ml-1 truncate">
-                {initSearchLabel}
-              </span>
-            </Clickable>
+        <div className="w-full border-t border-neutral-200 border-b-none pt-4 pb-2 xl:py-2 px-3 flex items-center gap-2 text-neutral-950">
+          <span id="other-groups-title" className="text-lg font-sans text-neutral-900">{qParam ? (qParam == initSearchLabel ? 'Andre treff' : 'Søkeresultat') : 'Fleire namnegrupper'}</span>
+          {initSearchLabel && (
+            qParam && qParam == initSearchLabel.trim() && initHasCoordinates ? (
+              <div
+                className="ml-auto flex items-center gap-3 text-sm"
+                role="radiogroup"
+                aria-label="Sorter treff"
+              >
+                <ToggleButton
+                  small
+                  isSelected={sortMode === 'distance'}
+                  onClick={handleSortDistance}
+                  role="radio"
+                  ariaChecked={sortMode === 'distance'}
+                >
+                  Avstand
+                </ToggleButton>
+                <ToggleButton
+                  small
+                  isSelected={sortMode === 'similarity'}
+                  onClick={handleSortSimilarity}
+                  role="radio"
+                  ariaChecked={sortMode === 'similarity'}
+                >
+                  Likskap
+                </ToggleButton>
+              </div>
+            ) : (
+              <Clickable
+                link
+                add={{ q: initSearchLabel, maxResults: expandedMaxResultsParam }}
+                className="ml-auto btn btn-outline btn-sm rounded-full min-w-0"
+              >
+                <PiMagnifyingGlass className="text-base" aria-hidden="true" />
+                <span className="ml-1 truncate">
+                  {initSearchLabel}
+                </span>
+              </Clickable>
+            )
           )}
         </div>
       )) : null}

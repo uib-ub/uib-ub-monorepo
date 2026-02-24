@@ -1,5 +1,6 @@
 'use client'
 import IconButton from "@/components/ui/icon-button";
+import ToggleButton from "@/components/ui/toggle-button";
 import { facetConfig } from "@/config/search-config";
 import { usePerspective } from "@/lib/param-hooks";
 import { GlobalContext } from "@/state/providers/global-provider";
@@ -52,30 +53,24 @@ export default function FacetToolbar() {
 
             <div className="ml-auto flex items-center gap-1 text-xs">
                 <span className="sr-only">Vis treff som</span>
-                <button
-                    type="button"
-                    className={`px-2 py-0.5 rounded-full border text-[0.7rem] ${
-                        facetCountMode === 'absolute'
-                            ? 'bg-neutral-100 text-neutral-900 border-neutral-400'
-                            : 'bg-white text-neutral-700 border-neutral-300'
-                        }`}
-                    aria-pressed={facetCountMode === 'absolute'}
+                <ToggleButton
+                    small
+                    isSelected={facetCountMode === 'absolute'}
+                    ariaPressed={facetCountMode === 'absolute'}
                     onClick={() => setFacetCountMode('absolute')}
+                    className="border text-[0.7rem]"
                 >
-                    Antal
-                </button>
-                <button
-                    type="button"
-                    className={`px-2 py-0.5 rounded-full border text-[0.7rem] ${
-                        facetCountMode === 'percent'
-                            ? 'bg-neutral-100 text-neutral-900 border-neutral-400'
-                            : 'bg-white text-neutral-700 border-neutral-300'
-                        }`}
-                    aria-pressed={facetCountMode === 'percent'}
+                    Antall
+                </ToggleButton>
+                <ToggleButton
+                    small
+                    isSelected={facetCountMode === 'percent'}
+                    ariaPressed={facetCountMode === 'percent'}
                     onClick={() => setFacetCountMode('percent')}
+                    className="border text-[0.7rem]"
                 >
                     Prosent
-                </button>
+                </ToggleButton>
             </div>
         </div>
     )

@@ -13,6 +13,7 @@ export const RESERVED_PARAMS = [
   'asc',
   'desc',
   'fulltext',
+  'fuzzy',
   'facetSort',
   'fields',
   'size',
@@ -47,7 +48,8 @@ export const RESERVED_PARAMS = [
   'debug',
   'debugGroups',
   'includeSuppressed',
-  'locations' // Lokaliteter - tab that enables nested markers
+  'locations', // Lokaliteter - tab that enables nested markers
+  'searchSort'
 
 ] as const;
 

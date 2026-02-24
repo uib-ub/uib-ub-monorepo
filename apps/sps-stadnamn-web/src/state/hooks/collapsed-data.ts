@@ -42,7 +42,12 @@ const collapsedDataQuery = async ({
     console.log(`📄 Fetching page ${pageParam}:`, { isFirstPage, size, from, expectedRange: `${from}-${from + size - 1}` });
 
 
-    const initLocation = initGroupData?.fields?.location?.[0]?.coordinates || point
+    // `location` in Elasticsearch is stored as [lon, lat].
+    // Group data already uses that order, but `point` from the URL is [lat, lon],
+    // so we need to flip it before sending it as `initLocation`.
+    const initLocation =
+        initGroupData?.fields?.location?.[0]?.coordinates ||
+        (point ? [point[1], point[0]] as [number, number] : null)
     const initLabel = initGroupData?.sources[0]?.label || undefined
 
     const res = await fetch(`/api/search/collapsed?${searchQueryString}`, {
@@ -91,6 +96,10 @@ export default function useCollapsedData() {
     const initGroupCode = searchParams.get('init')
     const point = usePoint()
     const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(initGroupCode)
+    const searchSort = searchParams.get('searchSort')
+    const effectiveSearchQueryString = searchSort
+        ? `${searchQueryString}${searchQueryString ? '&' : ''}searchSort=${searchSort}`
+        : searchQueryString
 
     const {
         data,
@@ -102,10 +111,10 @@ export default function useCollapsedData() {
         isLoading,
         status
     } = useInfiniteQuery({
-        queryKey: ['collapsedData', searchQueryString, initGroupLoading, initGroupCode, point],
+        queryKey: ['collapsedData', searchQueryString, searchSort, initGroupLoading, initGroupCode, point],
         queryFn: ({ pageParam }: { pageParam: number }) => collapsedDataQuery({
             pageParam,
-            searchQueryString,
+            searchQueryString: effectiveSearchQueryString,
             initGroupCode: initGroupCode,
             initGroupData: initGroupCode ? initGroupData : null,
             point

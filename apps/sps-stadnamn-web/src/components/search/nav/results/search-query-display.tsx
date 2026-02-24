@@ -26,17 +26,16 @@ export default function SearchQueryDisplay() {
   }
 
   // Check if query is single word (only letters) for fuzzy search toggle
-  const isSingleWord = searchQ ? /^\p{L}+~?$/u.test(searchQ) : false
-  const isFuzzy = searchQ?.includes('~') || false
-  const queryWithoutTilde = searchQ?.replace(/~$/, '') || ''
+  const isSingleWord = searchQ ? /^\p{L}+$/u.test(searchQ) : false
+  const isFuzzy = searchParams.get('fuzzy') === 'on'
   const fulltext = searchParams.get('fulltext')
 
   const handleFuzzyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newParams = new URLSearchParams(searchParams)
     if (e.target.checked) {
-      newParams.set('q', queryWithoutTilde + '~')
+      newParams.set('fuzzy', 'on')
     } else {
-      newParams.set('q', queryWithoutTilde)
+      newParams.delete('fuzzy')
     }
     router.push(`?${newParams.toString()}`)
   }
@@ -54,7 +53,7 @@ export default function SearchQueryDisplay() {
   if (!searchQ) return null
 
   return (
-    <section className={`p-3 flex flex-wrap gap-x-6 gap-y-3 border-t border-neutral-200 items-center ${init ? 'bg-neutral-50' : ''}`} aria-labelledby="search-query-title">
+    <section className={`p-3 flex flex-wrap gap-x-6 gap-y-3 items-center`} aria-labelledby="search-query-title">
       <div id="search-query-title" className="flex items-center gap-3 text-neutral-950 text-xl cursor-pointer" onClick={handleEdit}>
         <PiMagnifyingGlass className="text-xl" aria-hidden="true" />
         {searchQ}
@@ -62,7 +61,7 @@ export default function SearchQueryDisplay() {
           <PiXBold />
         </ClickableIcon>
       </div>
-      <div className="flex items-center gap-4 text-sm">
+      <div className="flex items-center gap-3 text-sm">
         {isSingleWord && (
           <label className="flex items-center gap-2 p-1">
             <input

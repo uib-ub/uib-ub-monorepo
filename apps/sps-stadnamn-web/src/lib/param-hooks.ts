@@ -39,7 +39,7 @@ export function useGroup() {
 }
 
 
-const validatePoint = (point: string) => {
+const validatePoint = (point: string): [number, number] | null => {
     const splitPoint = point.split(',')
     if (splitPoint.length !== 2) {
         return null
@@ -49,13 +49,13 @@ const validatePoint = (point: string) => {
     if (isNaN(lat) || isNaN(lon)) {
         return null
     }
-    return [lat, lon]
+    return [lat, lon] as [number, number]
 }
 
 
 
 
-export function usePoint() {
+export function usePoint(): [number, number] | null {
     const searchParams = useSearchParams()
     const rawPoint = searchParams.get('point')
     if (!rawPoint) {
@@ -64,7 +64,7 @@ export function usePoint() {
     return validatePoint(rawPoint)
 }
 
-export function useActivePoint() {
+export function useActivePoint(): [number, number] | null {
     const searchParams = useSearchParams()
     const rawPoint = searchParams.get('activePoint') || searchParams.get('point')
     if (!rawPoint) {
