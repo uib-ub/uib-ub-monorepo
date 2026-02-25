@@ -10,6 +10,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { datasetTitles } from "@/config/metadata-config";
 import { facetConfig } from "@/config/search-config";
 import { contentSettings } from "@/config/server-config";
 import { usePerspective } from "@/lib/param-hooks";
@@ -20,8 +21,10 @@ import { PiDownload, PiX } from "react-icons/pi";
 
 export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, formatCadastre }: { visibleColumns: string[], showCadastre: boolean, joinWithSlash: (adm: string | string[]) => string, formatCadastre: (cadastre: string) => string }) {
     const perspective = usePerspective()
-    const { searchQueryString } = useSearchQuery()
+    const { searchQueryString, datasetFilters } = useSearchQuery()
     const router = useRouter()
+
+    const activeDatasetCode = datasetFilters.length === 1 ? datasetFilters[0][1] : null
 
     const fetchAllHits = async (fields: string[]) => {
         const pageSize = 10000
@@ -294,38 +297,54 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
                     <AlertDialogTitle>Last ned data</AlertDialogTitle>
                     <AlertDialogDescription>
                         Vel ønska format for nedlasting av data.
-                        Du kan laste ned søket ditt som CSV, GeoJSON eller JSON, samt heile datasettet som JSON.
-                        Mer at treff utan koordinater ikkje kjem med i GeoJSON-fila.
+                        Du kan laste ned søket ditt som CSV, GeoJSON eller JSON.
+                        {activeDatasetCode && " Du kan òg laste ned heile datasettet som JSONL."}
+                        Merk at treff utan koordinater ikkje kjem med i GeoJSON-fila.
 
                     </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter className="flex flex-row sm:flex-row gap-2 justify-center">
-                    <AlertDialogAction
-                        className="btn btn-outline"
-                        onClick={handleDownload}
-                    >
-                        CSV
-                    </AlertDialogAction>
-                    <AlertDialogAction
-                        className="btn btn-outline"
-                        onClick={handleJsonDownload}
-                    >
-                        JSON
-                    </AlertDialogAction>
-                    {contentSettings[perspective]?.display === 'map' && <AlertDialogAction
-                        className="btn btn-outline"
-                        onClick={handleGeoJsonDownload}
-                    >
-                        GeoJSON
-                    </AlertDialogAction>}
-
-
-                    <AlertDialogAction
-                        className="btn btn-outline"
-                        onClick={() => router.push(`https://git.app.uib.no/spraksamlingane/stadnamn/datasett/stadnamn-archive/-/raw/main/lfs-data/elastic/${perspective}_elastic.json?ref_type=heads&inline=false`)}
-                    >
-                        JSON (heile datasettet)
-                    </AlertDialogAction>
+                <AlertDialogFooter className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex flex-col gap-3 flex-1">
+                        
+                        <div className="flex flex-row flex-wrap gap-2 justify-start">
+                            <AlertDialogAction
+                                className="btn btn-outline"
+                                onClick={handleDownload}
+                            >
+                                CSV
+                            </AlertDialogAction>
+                            <AlertDialogAction
+                                className="btn btn-outline"
+                                onClick={handleJsonDownload}
+                            >
+                                JSON
+                            </AlertDialogAction>
+                            {contentSettings[perspective]?.display === 'map' && (
+                                <AlertDialogAction
+                                    className="btn btn-outline"
+                                    onClick={handleGeoJsonDownload}
+                                >
+                                    GeoJSON
+                                </AlertDialogAction>
+                            )}
+                        </div>
+                    </div>
+                    {activeDatasetCode && (
+                        <div className="flex flex-col gap-3 flex-1 sm:border-l sm:pl-6 sm:ml-4">
+                            <p className="font-semibold text-sm text-left">Heile {datasetTitles[activeDatasetCode]}</p>
+                            <div className="flex flex-row flex-wrap gap-2 justify-start">
+                                <AlertDialogAction
+                                    className="btn btn-outline"
+                                    onClick={() => {
+                                        if (!activeDatasetCode) return
+                                        router.push(`https://git.app.uib.no/spraksamlingane/stadnamn/datasett/stadnamn-archive/-/raw/iiif-and-new-aggregation/lfs-data/elastic/${activeDatasetCode}_elastic.jsonl?ref_type=heads&inline=false`)
+                                    }}
+                                >
+                                    JSONL
+                                </AlertDialogAction>
+                            </div>
+                        </div>
+                    )}
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

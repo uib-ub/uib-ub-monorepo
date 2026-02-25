@@ -123,6 +123,19 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     const searchParams = useSearchParams()
     const maxResults = searchParams.get('maxResults')
     if (isMobile) {
+        const mapSettings = searchParams.get('mapSettings') == 'on'
+        const overlaySelector = searchParams.get('overlaySelector') === 'on'
+
+        if (mapSettings && overlaySelector) {
+            return (
+                <div className="fixed top-0 left-0 w-full h-full z-[10001] bg-white">
+                    <div className="h-[100vh] overflow-y-auto stable-scrollbar">
+                        {children}
+                    </div>
+                </div>
+            )
+        }
+
         return <>{children}</>
     }
     return <section className={`bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] z-[3001] max-h-[calc(100svh-2rem)] rounded-md flex flex-col overflow-auto`}
