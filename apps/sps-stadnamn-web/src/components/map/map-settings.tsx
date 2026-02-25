@@ -72,8 +72,7 @@ export default function MapSettings() {
 
   if (overlaySelectorOpen) {
     return (
-      <div className="flex flex-col gap-4 pb-4 xl:px-2">
-        <section>
+        <section className="flex flex-col gap-8 pb-4 xl:px-2">
           <fieldset className="border-0 p-0 m-0">
             <legend className="sr-only">Kartlag</legend>
             <div className="px-2 py-1 flex flex-col gap-3">
