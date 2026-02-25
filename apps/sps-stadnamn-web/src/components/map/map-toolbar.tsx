@@ -100,6 +100,19 @@ export default function MapToolbar() {
                 {!isMobile && !tree && (
                     <FilterButton />
                 )}
+                <RoundIconButton
+                    onClick={() => {
+                        getMyLocation((location) => {
+                            mapFunctionRef?.current?.setView(location, 15)
+                            setMyLocation(location)
+                        })
+                    }}
+                    side="top"
+                    label="Min posisjon"
+                    className="p-3"
+                >
+                    <PiGpsFix className="text-2xl" />
+                </RoundIconButton>
                 <RoundIconClickable
                     className={`p-3 ${mapSettings ? 'bg-accent-800 text-white' : ''}`}
                     aria-controls="map-settings-panel"
@@ -132,19 +145,7 @@ export default function MapToolbar() {
 
                 )}
 
-                <RoundIconButton
-                    onClick={() => {
-                        getMyLocation((location) => {
-                            mapFunctionRef?.current?.setView(location, 15)
-                            setMyLocation(location)
-                        })
-                    }}
-                    side="top"
-                    label="Min posisjon"
-                    className="p-3"
-                >
-                    <PiGpsFix className="text-2xl" />
-                </RoundIconButton>
+                
                 {isMobile && (
                     <FilterButton />
                 )}
