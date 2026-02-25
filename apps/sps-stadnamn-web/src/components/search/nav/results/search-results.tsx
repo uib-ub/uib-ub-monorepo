@@ -16,7 +16,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { PiCheck, PiMagnifyingGlass, PiMapPinFill, PiPencilSimpleBold, PiPlayFill, PiQuestion, PiX, PiXBold } from "react-icons/pi";
+import { PiCheck, PiMagnifyingGlass, PiMapPinFill, PiPencilSimpleBold, PiPlayFill, PiQuestion, PiStopFill, PiX, PiXBold } from "react-icons/pi";
 import ToggleButton from "@/components/ui/toggle-button";
 import GroupInfo from "../../details/group/group-info";
 import ActiveFilters from "../../form/active-filters";
@@ -68,6 +68,8 @@ export default function SearchResults() {
   const activePoint = searchParams.get('activePoint') ? (searchParams.get('activePoint')!.split(',').map(parseFloat) as [number, number]) : null
   const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
   const labelFilter = searchParams.get('labelFilter') === 'on'
+  const [playingPreviewId, setPlayingPreviewId] = useState<string | null>(null)
+  const audioPreviewRef = useRef<HTMLAudioElement | null>(null)
 
   // Sort mode is controlled by URL param so it is shareable/bookmarkable
   const rawSort = searchParams.get('searchSort')
@@ -124,6 +126,15 @@ export default function SearchResults() {
     }
     setIsEditingCoordinates(true)
   }
+
+  useEffect(() => {
+    return () => {
+      if (audioPreviewRef.current) {
+        audioPreviewRef.current.pause()
+        audioPreviewRef.current = null
+      }
+    }
+  }, [])
 
   const cancelEditingCoordinates = () => {
     stopEditingCoordinates()
@@ -269,13 +280,42 @@ export default function SearchResults() {
     }
 
     const handlePlayAudio = (recording: any) => {
+      // Toggle pause if the same recording is already playing
+      if (audioPreviewRef.current && playingPreviewId === recording.uuid) {
+        if (!audioPreviewRef.current.paused) {
+          audioPreviewRef.current.pause()
+          setPlayingPreviewId(null)
+          return
+        }
+      }
+
+      // Stop any previous preview
+      if (audioPreviewRef.current) {
+        audioPreviewRef.current.pause()
+        audioPreviewRef.current = null
+      }
+
       const audio = new Audio(`https://iiif.spraksamlingane.no/iiif/audio/hord/${recording.file}`)
-      audio.play().catch(console.error)
+      audioPreviewRef.current = audio
+      setPlayingPreviewId(recording.uuid)
+
+      audio.addEventListener('ended', () => {
+        setPlayingPreviewId((current) => (current === recording.uuid ? null : current))
+      })
+
+      audio.play().catch((error) => {
+        // Ignore AbortError caused by a pause() interrupting play()
+        if ((error as any)?.name === 'AbortError') {
+          return
+        }
+        console.error(error)
+        setPlayingPreviewId((current) => (current === recording.uuid ? null : current))
+      })
     }
 
     return <div className="px-2 h-[100vh]">
       <div className="flex items-center gap-2">
-        <strong>{label}</strong>
+        <strong className="text-xl">{label}</strong>
         {sosiTypes.length > 0 && (
           <span className="text-neutral-700 text-sm truncate">
             {sosiTypes.slice(0, 3).join(', ')}{sosiTypes.length > 3 && '...'}
@@ -288,10 +328,11 @@ export default function SearchResults() {
                 <button
                   key={"audio-preview-" + recording.uuid}
                   onClick={() => handlePlayAudio(recording)}
-                  className="p-1 text-neutral-900"
-                  aria-label={`Lydopptak ${audioItems.length > 1 ? ` ${index + 1} av ${audioItems.length}` : ''}`}
+                  className={`p-1 rounded-md text-neutral-900`}
+                  aria-label={`Lydopptak${audioItems.length > 1 ? ` ${index + 1} av ${audioItems.length}` : ''}${playingPreviewId === recording.uuid ? ' (stoppar)' : ''}`}
+                  aria-pressed={playingPreviewId === recording.uuid}
                 >
-                  <PiPlayFill className="text-lg" aria-hidden="true" />
+                  {playingPreviewId === recording.uuid ? <PiStopFill className="text-lg" aria-hidden="true" /> : <PiPlayFill className="text-lg" aria-hidden="true" />}
                 </button>
               ))
             )}
