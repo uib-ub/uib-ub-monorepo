@@ -4,7 +4,7 @@ import { GlobalContext } from "@/state/providers/global-provider"
 import { useSessionStore } from "@/state/zustand/session-store"
 import { useContext } from "react"
 import { PiFunnel, PiFunnelFill, PiGpsFix, PiInfoFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus } from "react-icons/pi"
-import { RoundIconButton, RoundIconClickable } from "../ui/clickable/round-icon-button"
+import { RoundIconButton, RoundIconClickable, RoundIconClickableWithBadge } from "../ui/clickable/round-icon-button"
 import { useRouter, useSearchParams } from "next/navigation"
 
 
@@ -21,33 +21,24 @@ export function FilterButton() {
     const { facetFilters, datasetFilters } = useSearchQuery()
     const filterCount = facetFilters.length + datasetFilters.length
     const { options } = useOverlayParams()
+    const snappedPosition = useSessionStore((s) => s.snappedPosition)
 
     return (
-        <RoundIconButton
+        <RoundIconClickableWithBadge
             className={`relative p-3 ${options ? 'bg-accent-800 text-white' : ''}`}
             label="Filter"
             aria-controls="options-panel"
             aria-expanded={options}
+            add={{ options: options ? null : 'on' }}
+            active
             onClick={() => {
-                setSnappedPosition('middle')
-                const newParams = new URLSearchParams(searchParams)
-                if (options) {
-                    newParams.delete('options')
-                }
-                else {
-                    newParams.set('options', 'on')
-                }
-                router.push(`?${newParams.toString()}`)
+                !options && snappedPosition !== 'middle' && setSnappedPosition('middle')
             }}
+            count={filterCount}
+            isActive={options}
         >
             {options ? <PiFunnelFill className="text-2xl" /> : <PiFunnel className="text-2xl" />}
-            {filterCount > 0 && (
-                <TitleBadge
-                    count={filterCount}
-                    className={`text-xs absolute bottom-1.5 right-1.5 ${options ? 'bg-white border border-accent-800 text-accent-800' : 'bg-primary-700 text-white'}`}
-                />
-            )}
-        </RoundIconButton>
+        </RoundIconClickableWithBadge>
     )
 }
 

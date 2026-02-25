@@ -1,10 +1,12 @@
 'use client'
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, MAP_DRAWER_TOP_SUBTRACT_REM } from "@/lib/map-utils"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { PiCaretUpBold, PiFunnel, PiFunnelBold, PiFunnelFill } from "react-icons/pi"
-import { RoundIconButton, RoundIconClickable } from "./clickable/round-icon-button"
+import { PiCaretUp, PiCaretUpBold, PiFunnel } from "react-icons/pi"
+import { RoundIconButton, RoundIconClickable, RoundIconClickableWithBadge } from "./clickable/round-icon-button"
 import Clickable from "./clickable/clickable"
-import { useSearchParams } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
+import { useSearchQuery } from "@/lib/search-params"
+import { FilterButton } from "../map/map-toolbar"
 
 
 
@@ -50,10 +52,14 @@ export default function Drawer({
     const gestureStartedScrollRef = useRef<boolean>(false)
 
     const searchParams = useSearchParams()
+    const pathname = usePathname()
+    const isIiifRoute = pathname?.startsWith('/iiif')
     const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
     const labelFilter = searchParams.get('labelFilter') === 'on'
     const options = searchParams.get('options') == 'on'
-    const showFilterButton = !options && !coordinateInfo && !labelFilter && snappedPosition != 'bottom'
+    const { facetFilters, datasetFilters } = useSearchQuery()
+    const filterCount = facetFilters.length + datasetFilters.length
+    const showFilterButton = !isIiifRoute && !options && !coordinateInfo && !labelFilter && snappedPosition != 'bottom'
 
 
 
@@ -423,23 +429,19 @@ export default function Drawer({
                 {showScrollToTop && (
                     <RoundIconButton
                         type="button"
-                        className="absolute right-3 bottom-20 z-[6001] rounded-full"
+                        className="absolute right-3 bottom-20 z-[6001] p-3"
                         onClick={scrollToTop}
                         label="Til toppen"
-                    ><PiCaretUpBold className="text-3xl text-neutral-700 xl:text-base" /></RoundIconButton>
+                        side="top"
+                    >
+                        <PiCaretUp className="text-2xl" />
+                    </RoundIconButton>
                 )}
 
                 {showFilterButton && (
-
-                <RoundIconClickable
-                label="Filtrer søket"
-                remove={["maxResults"]}
-                add={{ options: 'on' }}
-                link
-                        className="absolute right-3 bottom-6 z-[6001] rounded-full"
-                >
-                    <PiFunnel className="text-3xl text-neutral-700 xl:text-base" />
-                </RoundIconClickable>
+                    <div className="absolute right-3 bottom-6 z-[6001]">
+                       <FilterButton />
+                    </div>
                 )}
 
             </section>
