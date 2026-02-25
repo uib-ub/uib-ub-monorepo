@@ -13,6 +13,7 @@ import { useSearchParams } from "next/navigation";
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import WarningMessage from "../search/details/group/warning-message";
+import { useSessionStore } from "@/state/zustand/session-store";
 
 const MapDebugSettings = dynamic(() => import("./map-debug-settings"), { ssr: false });
 
@@ -29,6 +30,7 @@ export default function MapSettings() {
     setMarkerMode
   } = useMapSettings();
   const searchParams = useSearchParams();
+  const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
   const debug = useDebugStore((s) => s.debug);
   const [overlaySearch, setOverlaySearch] = useState('');
   const overlaySelectorOpen = searchParams.get('overlaySelector') === 'on';
@@ -90,7 +92,7 @@ export default function MapSettings() {
 
               <fieldset>
                 <legend className="sr-only">Legg til overlegg</legend>
-                <ul className="flex flex-col divide-y divide-neutral-200 border border-neutral-200 rounded-md">
+                <ul className="flex flex-col divide-y divide-neutral-200 border border-neutral-200 rounded-md overflow-hidden">
                   {filteredOverlays.map((item) => {
                     return (
                       <li key={item.key}>
@@ -104,6 +106,9 @@ export default function MapSettings() {
 
                             const map = mapFunctionRef?.current;
                             const bounds = item.bounds;
+                            // set drawer position to middle
+                            setSnappedPosition('middle');
+
                             if (map && bounds) {
                               try {
                                 const center = map.getCenter?.();
@@ -162,66 +167,74 @@ export default function MapSettings() {
       {/* Marker Mode Section */}
       <section>
         <fieldset className="border-0 p-0 m-0">
-          <legend className="text-base font-semibold text-neutral-900 p-3">Markørar</legend>
-          <div className="flex flex-wrap gap-2 px-2 py-1">
-            {markerModes.map((mode) => {
-              const selected = markerMode === mode.key;
-              return (
-                <ToggleButton
-                  key={mode.key}
-                  isSelected={selected}
-                  onClick={() => setMarkerMode(mode.key)}
-                  role="radio"
-                  ariaChecked={selected}
-                  ariaLabelledBy={`markermode-label-${mode.key}`}
-                >
-                  <span
-                    id={`markermode-label-${mode.key}`}
-                    className="whitespace-nowrap"
-                  >
-                    {mode.label}
-                  </span>
-                </ToggleButton>
-              );
-            })}
-          </div>
+          <legend className="text-base text-neutral-900 pl-3 pr-2 py-2 w-full">
+            <div className="flex flex-wrap items-center gap-3 justify-between w-full">
+              <span className="text-lg text-neutral-800">Markørar</span>
+              <div className="flex flex-wrap gap-2">
+                {markerModes.map((mode) => {
+                  const selected = markerMode === mode.key;
+                  return (
+                    <ToggleButton
+                      key={mode.key}
+                      isSelected={selected}
+                      onClick={() => setMarkerMode(mode.key)}
+                      role="radio"
+                      ariaChecked={selected}
+                      ariaLabelledBy={`markermode-label-${mode.key}`}
+                    >
+                      <span
+                        id={`markermode-label-${mode.key}`}
+                        className="whitespace-nowrap"
+                      >
+                        {mode.label}
+                      </span>
+                    </ToggleButton>
+                  );
+                })}
+              </div>
+            </div>
+          </legend>
         </fieldset>
       </section>
 
       {/* Basemap Section */}
       <section>
         <fieldset className="border-0 p-0 m-0">
-          <legend className="text-base font-semibold text-neutral-900 p-3">Bakgrunnslag</legend>
-          <div className="flex flex-wrap gap-2 px-2 py-1">
-            {orderedBaseLayerMaps.map((item) => {
-              const selected = baseMap === item.key;
-              return (
-                <ToggleButton
-                  key={item.key}
-                  isSelected={selected}
-                  onClick={() => setBaseMap(item.key)}
-                  role="radio"
-                  ariaChecked={selected}
-                  ariaLabelledBy={`basemap-label-${item.key}`}
-                >
-                  <span
-                    id={`basemap-label-${item.key}`}
-                    className="whitespace-nowrap"
-                  >
-                    {item.name}
-                  </span>
-                </ToggleButton>
-              );
-            })}
-          </div>
+          <legend className="text-base text-neutral-900 pl-3 pr-2 py-2 w-full">
+            <div className="flex flex-wrap items-center gap-3 justify-between w-full">
+              <span className="text-lg text-neutral-800">Bakgrunnslag</span>
+              <div className="flex flex-wrap gap-2">
+                {orderedBaseLayerMaps.map((item) => {
+                  const selected = baseMap === item.key;
+                  return (
+                    <ToggleButton
+                      key={item.key}
+                      isSelected={selected}
+                      onClick={() => setBaseMap(item.key)}
+                      role="radio"
+                      ariaChecked={selected}
+                      ariaLabelledBy={`basemap-label-${item.key}`}
+                    >
+                      <span
+                        id={`basemap-label-${item.key}`}
+                        className="whitespace-nowrap"
+                      >
+                        {item.name}
+                      </span>
+                    </ToggleButton>
+                  );
+                })}
+              </div>
+            </div>
+          </legend>
         </fieldset>
       </section>
 
       <section>
         <fieldset className="border-0 p-0 m-0">
-          <div className="px-2 py-1 flex gap-3 items-center">
-          <legend className="text-base font-semibold text-neutral-900 p-3 w-full justify-between">Andre kartlag</legend>
-          <div className="flex gap-2">
+          <div className="flex gap-3 items-center">
+          <legend className="text-lg text-neutral-800 p-3 w-full justify-between">Andre kartlag</legend>
+          <div className="flex gap-2 px-2">
           {selectedOverlays.length > 0 && <Clickable onClick={() => clearOverlayMaps()} className="btn btn-outline btn-sm whitespace-nowrap inline-flex items-center">
             Nullstill
           </Clickable>}

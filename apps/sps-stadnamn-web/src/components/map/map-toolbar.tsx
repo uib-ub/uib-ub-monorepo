@@ -22,6 +22,7 @@ export function FilterButton() {
     const filterCount = facetFilters.length + datasetFilters.length
     const { options } = useOverlayParams()
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
+    const { isMobile } = useContext(GlobalContext)
 
     return (
         <RoundIconClickableWithBadge
@@ -30,6 +31,7 @@ export function FilterButton() {
             aria-controls="options-panel"
             aria-expanded={options}
             add={{ options: options ? null : 'on' }}
+            remove={isMobile ? ['mapSettings'] : []}
             isActive={options}
             onClick={() => {
                 !options && snappedPosition !== 'middle' && setSnappedPosition('middle')
@@ -103,9 +105,9 @@ export default function MapToolbar() {
                     aria-controls="map-settings-panel"
                     aria-expanded={mapSettings}
                     label="Kartinnstillingar"
-                    remove={['overlaySelector']}
+                    remove={['overlaySelector', ...(isMobile ? ['options'] : [])]}
                     add={{ mapSettings: mapSettings ? null : 'on' }}
-                    onClick={() => setSnappedPosition('middle')}
+                    onClick={() => !mapSettings && setSnappedPosition('middle')}
                 >
                     <PiStackPlus className="text-2xl" />
                 </RoundIconClickable>

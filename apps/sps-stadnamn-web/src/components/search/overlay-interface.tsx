@@ -80,6 +80,10 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
 
     useEffect(() => {
         if (!isMobile || mode == 'table' || !mapFunctionRef?.current) return
+        // When map settings or the overlay selector are open, avoid auto-panning the map
+        // so that explicit map interactions (like fitting to an overlay) are not overridden
+        // when the drawer position changes.
+        if (mapSettings || overlaySelector) return
         const point = groupData?.sources?.[0]?.location?.coordinates
         if (!point) return
 
@@ -88,7 +92,7 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
             resetEnabled.current = !resetEnabled.current
         }
 
-    }, [isMobile, snappedPosition, groupData, mapFunctionRef, mode])
+    }, [isMobile, snappedPosition, groupData, mapFunctionRef, mode, mapSettings, overlaySelector])
 
     if (!isMobile) {
         return <>{children}</>
@@ -236,7 +240,7 @@ export default function OverlayInterface() {
                     {/* Map settings should be available even when tree view is active */}
                     {mapSettings ? (
                         <>
-                            <div className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 xl:px-0 gap-2`} id="map-settings-panel">
+                            <div className={`w-full sticky flex items-center pl-3 ${isMobile ? 'h-8' : 'h-12'} xl:px-0 gap-2`} id="map-settings-panel">
                                 <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-xl text-neutral-900 xl:px-4">
                                     {searchParams.get('overlaySelector') === 'on' ? 'Kartlag' : 'Kartinnstillingar'}
                                 </div>
