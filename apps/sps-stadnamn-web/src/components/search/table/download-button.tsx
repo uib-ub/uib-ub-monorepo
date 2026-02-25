@@ -23,6 +23,61 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
     const { searchQueryString } = useSearchQuery()
     const router = useRouter()
 
+    const fetchAllHits = async (fields: string[]) => {
+        const pageSize = 10000
+        const baseParams = new URLSearchParams(searchQueryString)
+        baseParams.delete('size')
+        baseParams.delete('from')
+
+        let allHits: any[] = []
+        let from = 0
+        let firstResponse: any | null = null
+        let total: { value?: number; relation?: string } | null = null
+
+        // Paginate until we have all hits (or no more hits are returned)
+        // Relies on hits.total.value when available to avoid extra requests.
+        // Falls back to stopping when a page returns fewer than pageSize hits.
+        // NOTE: This uses from/size pagination and is therefore limited by the
+        // index's max_result_window setting in Elasticsearch.
+        // If more results exist beyond that, they will not be included.
+        // For very large exports, consider increasing max_result_window or
+        // implementing search_after/scroll server-side.
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+            const pageParams = new URLSearchParams(baseParams)
+            pageParams.set('size', pageSize.toString())
+            pageParams.set('from', from.toString())
+            pageParams.set('fields', fields.join(','))
+
+            const response = await fetch(`/api/download?${pageParams.toString()}`)
+            const data = await response.json()
+
+            if (!firstResponse) {
+                firstResponse = data
+                total = data?.hits?.total || null
+            }
+
+            const pageHits: any[] = data?.hits?.hits || []
+            if (!pageHits.length) {
+                break
+            }
+
+            allHits = allHits.concat(pageHits)
+
+            if (total?.value && allHits.length >= total.value) {
+                break
+            }
+
+            if (pageHits.length < pageSize) {
+                break
+            }
+
+            from += pageSize
+        }
+
+        return { allHits, firstResponse, total }
+    }
+
     const handleJsonDownload = async () => {
         // Get all required fields based on visible columns
         const fields = ['label', 'uuid'];
@@ -42,10 +97,22 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
                 }
             });
 
-        const url = `/api/download?${searchQueryString}&size=10000&fields=${fields.join(',')}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        const jsonContent = JSON.stringify(data, null, 2);
+        const { allHits, firstResponse, total } = await fetchAllHits(fields)
+
+        let exportData: any
+        if (firstResponse && firstResponse.hits) {
+            exportData = { ...firstResponse, hits: { ...firstResponse.hits, hits: allHits } }
+            if (exportData.hits.total && typeof exportData.hits.total === 'object') {
+                exportData.hits.total = {
+                    value: allHits.length,
+                    relation: total?.relation || 'eq',
+                }
+            }
+        } else {
+            exportData = { hits: { total: { value: allHits.length, relation: 'eq' }, hits: allHits } }
+        }
+
+        const jsonContent = JSON.stringify(exportData, null, 2);
         const blob = new Blob([jsonContent], { type: 'application/json' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
@@ -74,14 +141,12 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
                 }
             });
 
-        const url = `/api/download?${searchQueryString}&size=10000&fields=${fields.join(',')}`;
-        const response = await fetch(url);
-        const data = await response.json();
+        const { allHits } = await fetchAllHits(fields)
 
         // Convert to GeoJSON format
         const geoJson = {
             type: "FeatureCollection",
-            features: data.hits.hits
+            features: allHits
                 .filter((hit: any) => hit.fields?.location?.[0])
                 .map((hit: any) => {
                     const properties: any = {
@@ -156,11 +221,7 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
             });
 
         // Construct URL with fields parameter
-        const url = `/api/download?${searchQueryString}&size=10000&fields=${fields.join(',')}`;
-
-        // Fetch the data
-        const response = await fetch(url);
-        const data = await response.json();
+        const { allHits } = await fetchAllHits(fields)
 
         // Prepare CSV headers based on visible columns
         const headers = ['Oppslagsord'];
@@ -170,7 +231,7 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
             ?.forEach(facet => headers.push(facet?.label || ''));
 
         // Prepare CSV rows
-        const rows = data.hits.hits.map((hit: any) => {
+        const rows = allHits.map((hit: any) => {
             const row = [hit.fields.label[0]];
             if (visibleColumns.includes('adm')) {
                 const adm1 = hit.fields.adm1?.[0] || '';
