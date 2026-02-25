@@ -11,7 +11,7 @@ import { fieldConfig } from "@/config/search-config"
 import { treeSettings } from "@/config/server-config"
 import { getBnr, getFieldValue } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { stringToBase64Url } from '@/lib/param-utils'
 import { PiCaretRightBold, PiMapPinFill } from "react-icons/pi"
 import Link from 'next/link'
@@ -86,6 +86,19 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
 
   const hits = cadastralData?.hits?.hits || []
 
+  // When a bruk marker is activated on the map (activePoint param changes),
+  // ensure the corresponding row in the cadastral table is scrolled into view.
+  useEffect(() => {
+    if (!list) return
+    if (!activePointParam) return
+    if (!hits.length) return
+
+    requestAnimationFrame(() => {
+      const el = document.querySelector<HTMLTableRowElement>('tr[data-active-bruk=\"true\"]')
+      el?.scrollIntoView({ behavior: 'instant' as any, block: 'center' })
+    })
+  }, [list, activePointParam, hits.length])
+
   if (cadastralLoading) return null
   if (cadastralError) {
     return (
@@ -154,7 +167,11 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
                     const isActiveMarker = !!activePoint && !!activePointParam && activePointParam === activePoint
 
                     return (
-                      <tr key={hit._id} className="border-t border-neutral-100">
+                      <tr
+                        key={hit._id}
+                        className="border-t border-neutral-100"
+                        data-active-bruk={isActiveMarker ? 'true' : undefined}
+                      >
                         {showMarkers && (
                           <td className={`px-2 ${cellPadY} align-middle`}>
                             {activePoint ? (
