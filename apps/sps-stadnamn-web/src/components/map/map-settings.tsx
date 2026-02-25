@@ -157,7 +157,6 @@ export default function MapSettings() {
             </div>
           </fieldset>
         </section>
-      </div>
     );
   }
 
