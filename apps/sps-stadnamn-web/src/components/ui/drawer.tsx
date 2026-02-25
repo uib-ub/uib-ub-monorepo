@@ -57,9 +57,10 @@ export default function Drawer({
     const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
     const labelFilter = searchParams.get('labelFilter') === 'on'
     const options = searchParams.get('options') == 'on'
+    const mapSettings = searchParams.get('mapSettings') == 'on'
     const { facetFilters, datasetFilters } = useSearchQuery()
     const filterCount = facetFilters.length + datasetFilters.length
-    const showFilterButton = !isIiifRoute && !options && !coordinateInfo && !labelFilter && snappedPosition != 'bottom'
+    const showFilterButton = !isIiifRoute && !options && !mapSettings && !coordinateInfo && !labelFilter && snappedPosition != 'bottom'
 
 
 
