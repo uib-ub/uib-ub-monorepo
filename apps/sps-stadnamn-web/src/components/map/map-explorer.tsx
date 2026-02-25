@@ -1189,28 +1189,57 @@ export default function MapExplorer() {
                 if (isTreeActive && central && subunitWithCoords.length > 0) {
                   const [centralLat, centralLng] = central as [number, number]
 
-                  // De-duplicate subunits by coordinate (so we don't draw multiple identical lines)
-                  const uniqueCoordKey = (lat: number, lng: number) => `${lat},${lng}`
-                  const uniqueCoords = new Set<string>()
+                  const coordKeyFor = (lat: number, lng: number) => `${lat},${lng}`
 
-                  const numberCircleIcon = (value: string, variant: 'black' | 'white' | 'accent' = 'white') => {
-                    const isAccent = variant === 'accent'
-                    const bg = variant === 'black' ? '#000000' : variant === 'accent' ? '#0061ab' : '#ffffff'
-                    const fg = variant === 'black' || variant === 'accent' ? '#ffffff' : '#000000'
+                  // Group subunits by coordinate so a single marker can
+                  // represent multiple bruk that share the same point.
+                  const subunitsByCoord: Record<string, { lat: number; lng: number; hits: any[] }> = {}
+                  for (const hit of subunitWithCoords) {
+                    const coords = hit?._source?.location?.coordinates
+                    if (!coords?.length) continue
+                    const lat = coords[1]
+                    const lng = coords[0]
+                    const key = coordKeyFor(lat, lng)
+                    if (!subunitsByCoord[key]) {
+                      subunitsByCoord[key] = { lat, lng, hits: [] }
+                    }
+                    subunitsByCoord[key].hits.push(hit)
+                  }
+
+                  const getBrukMarkerIcon = (
+                    value: string,
+                    options?: { isActive?: boolean; isMulti?: boolean }
+                  ) => {
+                    const isActive = options?.isActive ?? false
+                    const isMulti = options?.isMulti ?? false
+
+                    const bg = isActive ? '#0061ab' : '#ffffff'
+                    const fg = isActive ? '#ffffff' : '#000000'
                     const border = '#000000'
-                    const size = isAccent ? 28 : 22
-                    const fontSize = isAccent ? 13 : 12
+
+                    const baseSize = isActive ? 28 : 22
+                    const textLength = value?.length ?? 0
+                    const usePill = isMulti || textLength > 3
+
+                    const height = baseSize
+                    const width = usePill
+                      ? Math.max(baseSize, baseSize + Math.max(0, textLength - 3) * 6)
+                      : baseSize
+
+                    const fontSize = isActive ? 13 : 12
+
                     return new leaflet.DivIcon({
                       className: '',
                       html: `
                         <div role="button" tabindex="0" style="
-                          width: ${size}px;
-                          height: ${size}px;
+                          min-width: ${width}px;
+                          height: ${height}px;
+                          padding: 0 4px;
                           border-radius: 9999px;
                           border: 2px solid ${border};
                           background: ${bg};
                           color: ${fg};
-                          display: flex;
+                          display: inline-flex;
                           align-items: center;
                           justify-content: center;
                           font-size: ${fontSize}px;
@@ -1221,7 +1250,7 @@ export default function MapExplorer() {
                           ${value}
                         </div>
                       `,
-                      iconSize: [size, size],
+                      iconSize: [width, height],
                       iconAnchor: [0, 0],
                     })
                   }
@@ -1302,19 +1331,22 @@ export default function MapExplorer() {
                       )}
 
                       {/* Lines + subunit markers */}
-                      {subunitWithCoords.map((hit: any, index: number) => {
-                        const coords = hit?._source?.location?.coordinates
-                        if (!coords?.length) return null
-                        const lat = coords[1]
-                        const lng = coords[0]
-                        const coordKey = uniqueCoordKey(lat, lng)
+                      {Object.entries(subunitsByCoord).map(([coordKey, group], index) => {
+                        const { lat, lng, hits } = group
                         const isCentral = lat === centralLat && lng === centralLng
                         if (isCentral) return null
-                        if (uniqueCoords.has(coordKey)) return null
-                        uniqueCoords.add(coordKey)
 
-                        const bnr = treeDataset ? getBnr(hit, treeDataset) : null
-                        const numberText = (bnr || '').toString().trim() || '?'
+                        const bnrs = treeDataset
+                          ? hits
+                            .map((h: any) => getBnr(h, treeDataset))
+                            .filter((b: any) => b !== null && b !== undefined && `${b}`.trim().length > 0)
+                          : []
+
+                        const hasMultiple = hits.length > 1
+                        const firstText = (bnrs[0] ?? '').toString().trim()
+                        const baseText = firstText || '?'
+                        const displayText = hasMultiple ? `${baseText}…` : baseText
+
                         const isActiveBruk = Boolean(
                           activePoint &&
                           Math.abs(lat - activePoint[0]) < 0.000001 &&
@@ -1338,12 +1370,13 @@ export default function MapExplorer() {
                               position={[lat, lng]}
                               pane="treeCirclePane"
                               zIndexOffset={isActiveBruk ? 100 : 0}
-                              icon={numberCircleIcon(numberText, isActiveBruk ? 'accent' : 'white')}
+                              icon={getBrukMarkerIcon(displayText, { isActive: isActiveBruk, isMulti: hasMultiple })}
                               eventHandlers={{
                                 click: () => {
                                   const newParams = new URLSearchParams(searchParams);
-                                  if (hit?._source?.uuid) {
-                                    newParams.set('doc', hit._source.uuid);
+                                  const firstHit = hits[0]
+                                  if (firstHit?._source?.uuid) {
+                                    newParams.set('doc', firstHit._source.uuid);
                                   }
                                   newParams.set('activePoint', `${lat},${lng}`);
                                   router.push(`?${newParams.toString()}`);
@@ -1353,8 +1386,9 @@ export default function MapExplorer() {
                                   if (key === 'Enter' || key === ' ') {
                                     ;(e.originalEvent ?? e).preventDefault()
                                     const newParams = new URLSearchParams(searchParams);
-                                    if (hit?._source?.uuid) {
-                                      newParams.set('doc', hit._source.uuid);
+                                    const firstHit = hits[0]
+                                    if (firstHit?._source?.uuid) {
+                                      newParams.set('doc', firstHit._source.uuid);
                                     }
                                     newParams.set('activePoint', `${lat},${lng}`);
                                     router.push(`?${newParams.toString()}`);
