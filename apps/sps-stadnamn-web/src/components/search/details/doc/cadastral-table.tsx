@@ -11,12 +11,13 @@ import { fieldConfig } from "@/config/search-config"
 import { treeSettings } from "@/config/server-config"
 import { getBnr, getFieldValue } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
-import { useState, useEffect } from 'react'
+import { useRef, useEffect, useState, useContext } from 'react'
 import { stringToBase64Url } from '@/lib/param-utils'
 import { PiCaretRightBold, PiMapPinFill } from "react-icons/pi"
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useSessionStore } from '@/state/zustand/session-store'
+import { GlobalContext } from '@/state/providers/global-provider'
 import SubtleLink from '@/components/ui/clickable/subtle-link'
 
 interface CadastralTableProps {
@@ -33,7 +34,9 @@ interface CadastralTableProps {
 
 export default function CadastralTable({ dataset, uuid, list, groupId: parentGroupId, gnr, adm1, adm2, flush, showMarkers = true }: CadastralTableProps) {
   const searchParams = useSearchParams()
+  const { scrollToBrukRef } = useContext(GlobalContext)
   const activePointParam = searchParams.get('activePoint')
+  const rowRefs = useRef<Record<string, HTMLTableRowElement>>({})
   const clearTreeSavedQuery = useSessionStore((s) => s.clearTreeSavedQuery)
   const center = searchParams.get('center')
   const zoom = searchParams.get('zoom')
@@ -86,18 +89,17 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
 
   const hits = cadastralData?.hits?.hits || []
 
-  // When a bruk marker is activated on the map (activePoint param changes),
-  // ensure the corresponding row in the cadastral table is scrolled into view.
+  // Register scroll callback so the map can ask us to scroll a bruk row (no URL).
   useEffect(() => {
     if (!list) return
-    if (!activePointParam) return
-    if (!hits.length) return
-
-    requestAnimationFrame(() => {
-      const el = document.querySelector<HTMLTableRowElement>('tr[data-active-bruk=\"true\"]')
-      el?.scrollIntoView({ behavior: 'instant' as any, block: 'center' })
-    })
-  }, [list, activePointParam, hits.length])
+    scrollToBrukRef.current = (activePoint: string) => {
+      const el = rowRefs.current[activePoint]
+      el?.scrollIntoView({ behavior: 'instant', block: 'center' })
+    }
+    return () => {
+      scrollToBrukRef.current = null
+    }
+  }, [list, scrollToBrukRef])
 
   if (cadastralLoading) return null
   if (cadastralError) {
@@ -116,7 +118,6 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
   }
 
   if (list) {
-    const isParentSuppressed = !parentGroupId || parentGroupId === 'suppressed' || parentGroupId === 'noname'
     const cadastreTableFields = Object.entries(fieldConfig[dataset] || {})
       .filter(([_, cfg]) => cfg.cadastreTable)
       .map(([key, cfg]) => ({ key, label: cfg.label || key }))
@@ -129,8 +130,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
     const headPadY = flush ? "py-1.5" : "py-2"
     const cellPadY = flush ? "py-1" : "py-1.5"
     const iconColWidth = flush ? "w-9" : "w-10"
-    const groupLinkPadXClass = flush ? "px-3" : padXClass
-    
+
     return (
       <div className={`flex flex-col ${outerGapClass}`}>
         <div className={padXClass}>
@@ -169,8 +169,8 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
                     return (
                       <tr
                         key={hit._id}
+                        ref={activePoint ? (el) => { if (el) rowRefs.current[activePoint] = el; else delete rowRefs.current[activePoint] } : undefined}
                         className="border-t border-neutral-100"
-                        data-active-bruk={isActiveMarker ? 'true' : undefined}
                       >
                         {showMarkers && (
                           <td className={`px-2 ${cellPadY} align-middle`}>

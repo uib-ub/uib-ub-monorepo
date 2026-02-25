@@ -62,7 +62,7 @@ export default function MapExplorer() {
   const { groupData: initGroupData } = useGroupData(initCode)
   const { docData } = useDocData()
 
-  const { isMobile, mapFunctionRef, scrollableContentRef } = useContext(GlobalContext)
+  const { isMobile, mapFunctionRef, scrollableContentRef, scrollToBrukRef } = useContext(GlobalContext)
   const mapInstance = useRef<any>(null)
   const doc = searchParams.get('doc')
   const datasetTag = searchParams.get('datasetTag')
@@ -1373,25 +1373,29 @@ export default function MapExplorer() {
                               icon={getBrukMarkerIcon(displayText, { isActive: isActiveBruk, isMulti: hasMultiple })}
                               eventHandlers={{
                                 click: () => {
+                                  const activePointStr = `${lat},${lng}`;
                                   const newParams = new URLSearchParams(searchParams);
                                   const firstHit = hits[0]
                                   if (firstHit?._source?.uuid) {
                                     newParams.set('doc', firstHit._source.uuid);
                                   }
-                                  newParams.set('activePoint', `${lat},${lng}`);
+                                  newParams.set('activePoint', activePointStr);
                                   router.push(`?${newParams.toString()}`);
+                                  scrollToBrukRef.current?.(activePointStr);
                                 },
                                 keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
                                   const key = e.originalEvent?.key ?? e.key
                                   if (key === 'Enter' || key === ' ') {
                                     ;(e.originalEvent ?? e).preventDefault()
+                                    const activePointStr = `${lat},${lng}`;
                                     const newParams = new URLSearchParams(searchParams);
                                     const firstHit = hits[0]
                                     if (firstHit?._source?.uuid) {
                                       newParams.set('doc', firstHit._source.uuid);
                                     }
-                                    newParams.set('activePoint', `${lat},${lng}`);
+                                    newParams.set('activePoint', activePointStr);
                                     router.push(`?${newParams.toString()}`);
+                                    scrollToBrukRef.current?.(activePointStr);
                                   }
                                 }
                               }}
