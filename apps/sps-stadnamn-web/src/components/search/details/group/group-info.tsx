@@ -278,11 +278,11 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                     </div>
                 ))
             }
-            {iiifItems?.length > 0 && !activePoint && <>
+            {iiifItems?.length > 0 && !coordinateInfo && <>
                 <Carousel items={iiifItems} />
             </>
             }
-            {textItems.length > 0 && !activePoint && <TextTab textItems={textItems} />}
+            {textItems.length > 0 && !coordinateInfo && <TextTab textItems={textItems} />}
 
             <div className="min-w-0 w-full flex flex-col">
                 {/* Filtering / coordinate sticky headers */}
