@@ -24,7 +24,7 @@ export function FilterButton() {
 
     return (
         <RoundIconButton
-            className={`relative ${options ? 'bg-accent-800 text-white' : ''}`}
+            className={`relative p-3 ${options ? 'bg-accent-800 text-white' : ''}`}
             label="Filter"
             aria-controls="options-panel"
             aria-expanded={options}
@@ -109,7 +109,7 @@ export default function MapToolbar() {
                     <FilterButton />
                 )}
                 <RoundIconClickable
-                    className={`${mapSettings ? 'bg-accent-800 text-white' : ''}`}
+                    className={`p-3 ${mapSettings ? 'bg-accent-800 text-white' : ''}`}
                     aria-controls="map-settings-panel"
                     aria-expanded={mapSettings}
                     label="Kartinnstillingar"
@@ -149,6 +149,7 @@ export default function MapToolbar() {
                     }}
                     side="top"
                     label="Min posisjon"
+                    className="p-3"
                 >
                     <PiGpsFix className="text-2xl" />
                 </RoundIconButton>

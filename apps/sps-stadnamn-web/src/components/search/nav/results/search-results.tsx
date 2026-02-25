@@ -540,27 +540,6 @@ export default function SearchResults() {
 
           <ActiveFilters /></div>}
 
-        {isMobile && (
-          <div className="flex flex-col gap-2 justify-center">
-            <Clickable
-              remove={["maxResults"]}
-              add={{ options: 'on' }}
-              link
-              onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null}
-              className={`
-                  flex items-center gap-2
-                  btn-outline btn
-                  justify-center
-                  text-lg
-                  px-4 py-2 rounded-full xl:rounded-md
-                  mx-3
-                  relative
-                `}
-            >
-              Filtrer søket
-            </Clickable>
-          </div>
-        )}
 
 
         {/* Error and empty states */}
