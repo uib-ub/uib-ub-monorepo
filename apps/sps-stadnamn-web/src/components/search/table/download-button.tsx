@@ -25,6 +25,10 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
     const router = useRouter()
 
     const activeDatasetCode = datasetFilters.length === 1 ? datasetFilters[0][1] : null
+    const activeDatasetTitle: string | null =
+        activeDatasetCode && datasetTitles[activeDatasetCode]
+            ? datasetTitles[activeDatasetCode]
+            : null
 
     const fetchAllHits = async (fields: string[]) => {
         const pageSize = 10000
@@ -329,15 +333,17 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
                             )}
                         </div>
                     </div>
-                    {activeDatasetCode && (
+                    {activeDatasetCode && activeDatasetTitle && (
                         <div className="flex flex-col gap-3 flex-1 sm:border-l sm:pl-6 sm:ml-4">
-                            <p className="font-semibold text-sm text-left">Heile {datasetTitles[activeDatasetCode]}</p>
+                            <p className="font-semibold text-sm text-left">Heile {activeDatasetTitle}</p>
                             <div className="flex flex-row flex-wrap gap-2 justify-start">
                                 <AlertDialogAction
                                     className="btn btn-outline"
                                     onClick={() => {
                                         if (!activeDatasetCode) return
-                                        router.push(`https://git.app.uib.no/spraksamlingane/stadnamn/datasett/stadnamn-archive/-/raw/iiif-and-new-aggregation/lfs-data/elastic/${activeDatasetCode}_elastic.jsonl?ref_type=heads&inline=false`)
+                                        if (typeof window !== "undefined") {
+                                            window.location.href = `https://git.app.uib.no/spraksamlingane/stadnamn/datasett/stadnamn-archive/-/raw/iiif-and-new-aggregation/lfs-data/elastic/${activeDatasetCode}_elastic.jsonl?ref_type=heads&inline=false`
+                                        }
                                     }}
                                 >
                                     JSONL
