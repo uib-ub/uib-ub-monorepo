@@ -195,7 +195,7 @@ export default function SearchResults() {
   }, [collapsedData, group, hasOneResult, init, router, searchParams])
 
 
-  if (isMobile && activeGroupValue && snappedPosition == 'bottom') {
+  if (isMobile && activeGroupValue && snappedPosition == 'bottom' && !coordinateInfo && !labelFilter) {
 
     if (!activeGroupData) return null;
 
