@@ -100,12 +100,12 @@ export function useOverlayParams() {
 
     const tableOptions = mode == 'table' && !options
 
-
-
-    const showLeftPanel = options || facet || tableOptions
+    // On mobile, when map settings are open, give them priority and hide the left panel
+    const showLeftPanel = (options || facet || tableOptions) && (!isMobile || !mapSettings)
 
     const showResults = mode != 'table' && (maxResults || (isMobile && !showLeftPanel))
-    const showRightPanel = mode != 'table' && (isMobile ? !showLeftPanel : true)
+    // On mobile, always show the right panel if map settings are active, even if the left panel would otherwise be visible
+    const showRightPanel = mode != 'table' && (isMobile ? (mapSettings || !showLeftPanel) : true)
 
     return { showLeftPanel, showRightPanel, options, mapSettings, overlaySelector, facet, showResults, tableOptions }
 
