@@ -30,12 +30,11 @@ export function FilterButton() {
             aria-controls="options-panel"
             aria-expanded={options}
             add={{ options: options ? null : 'on' }}
-            active
+            isActive={options}
             onClick={() => {
                 !options && snappedPosition !== 'middle' && setSnappedPosition('middle')
             }}
             count={filterCount}
-            isActive={options}
         >
             {options ? <PiFunnelFill className="text-2xl" /> : <PiFunnel className="text-2xl" />}
         </RoundIconClickableWithBadge>
