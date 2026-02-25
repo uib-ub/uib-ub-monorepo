@@ -245,9 +245,9 @@ export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
     const preventCollapse = hasActiveFilter || labelFilter
 
     const allItems = [...yearsOrdered.map(y => ({ type: 'year' as const, year: y, names: namesByYear[y] || [] })), ...namesWithoutYear.map(n => ({ type: 'noYear' as const, name: n, count: nameCounts[n] || 0 }))]
-    const hasMore = !hasActiveFilter && filteredItems.length > 3
     const allYearItems = filteredItems.filter(item => item.type === 'year')
     const allNoYearItems = filteredItems.filter(item => item.type === 'noYear')
+    const hasMore = !hasActiveFilter && allYearItems.length > 3
 
     // When collapsed and hasMore: show first year item and last year item (collapse in the middle)
     // Otherwise: show all items
