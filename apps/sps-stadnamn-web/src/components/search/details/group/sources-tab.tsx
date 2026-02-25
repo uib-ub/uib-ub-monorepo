@@ -145,7 +145,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                     )}
                     {showMatrikkelvising && s.sosi == 'gard' && treeSettings[ds] && (
                         <SubtleLink className="pb-4 pt-2" link only={{ tree: `${ds}_${s.adm1}_${s.adm2}_${s.uuid}`, center, zoom }}>
-                            Matrikkelvising
+                            Vis i matrikkelen
                         </SubtleLink>
                     )}
             </li>

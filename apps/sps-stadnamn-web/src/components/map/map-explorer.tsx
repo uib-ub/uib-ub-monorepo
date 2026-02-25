@@ -1193,16 +1193,19 @@ export default function MapExplorer() {
                   const uniqueCoordKey = (lat: number, lng: number) => `${lat},${lng}`
                   const uniqueCoords = new Set<string>()
 
-                  const numberCircleIcon = (value: string, variant: 'black' | 'white' = 'white') => {
-                    const bg = variant === 'black' ? '#000000' : '#ffffff'
-                    const fg = variant === 'black' ? '#ffffff' : '#000000'
+                  const numberCircleIcon = (value: string, variant: 'black' | 'white' | 'accent' = 'white') => {
+                    const isAccent = variant === 'accent'
+                    const bg = variant === 'black' ? '#000000' : variant === 'accent' ? '#0061ab' : '#ffffff'
+                    const fg = variant === 'black' || variant === 'accent' ? '#ffffff' : '#000000'
                     const border = '#000000'
+                    const size = isAccent ? 28 : 22
+                    const fontSize = isAccent ? 13 : 12
                     return new leaflet.DivIcon({
                       className: '',
                       html: `
                         <div role="button" tabindex="0" style="
-                          width: 22px;
-                          height: 22px;
+                          width: ${size}px;
+                          height: ${size}px;
                           border-radius: 9999px;
                           border: 2px solid ${border};
                           background: ${bg};
@@ -1210,7 +1213,7 @@ export default function MapExplorer() {
                           display: flex;
                           align-items: center;
                           justify-content: center;
-                          font-size: 12px;
+                          font-size: ${fontSize}px;
                           font-weight: 700;
                           box-shadow: 0 1px 4px rgba(0,0,0,0.2);
                           transform: translate(-50%, -50%);
@@ -1218,7 +1221,7 @@ export default function MapExplorer() {
                           ${value}
                         </div>
                       `,
-                      iconSize: [22, 22],
+                      iconSize: [size, size],
                       iconAnchor: [0, 0],
                     })
                   }
@@ -1242,10 +1245,6 @@ export default function MapExplorer() {
                             eventHandlers={{
                               click: () => {
                                 const newParams = new URLSearchParams(searchParams);
-                                if (treeUnitDoc?.group?.id) {
-                                  newParams.set('init', stringToBase64Url(treeUnitDoc.group.id));
-                                  newParams.delete('group');
-                                }
                                 newParams.set('activePoint', `${centralLat},${centralLng}`);
                                 newParams.set('maxResults', defaultMaxResultsParam);
                                 router.push(`?${newParams.toString()}`);
@@ -1255,10 +1254,6 @@ export default function MapExplorer() {
                                 if (key === 'Enter' || key === ' ') {
                                   ;(e.originalEvent ?? e).preventDefault()
                                   const newParams = new URLSearchParams(searchParams);
-                                  if (treeUnitDoc?.group?.id) {
-                                    newParams.set('init', stringToBase64Url(treeUnitDoc.group.id));
-                                    newParams.delete('group');
-                                  }
                                   newParams.set('activePoint', `${centralLat},${centralLng}`);
                                   newParams.set('maxResults', defaultMaxResultsParam);
                                   router.push(`?${newParams.toString()}`);
@@ -1287,10 +1282,6 @@ export default function MapExplorer() {
                             eventHandlers={{
                               click: () => {
                                 const newParams = new URLSearchParams(searchParams);
-                                if (treeUnitDoc?.group?.id) {
-                                  newParams.set('init', stringToBase64Url(treeUnitDoc.group.id));
-                                  newParams.delete('group');
-                                }
                                 newParams.set('activePoint', `${centralLat},${centralLng}`);
                                 newParams.set('maxResults', defaultMaxResultsParam);
                                 router.push(`?${newParams.toString()}`);
@@ -1300,10 +1291,6 @@ export default function MapExplorer() {
                                 if (key === 'Enter' || key === ' ') {
                                   ;(e.originalEvent ?? e).preventDefault()
                                   const newParams = new URLSearchParams(searchParams);
-                                  if (treeUnitDoc?.group?.id) {
-                                    newParams.set('init', stringToBase64Url(treeUnitDoc.group.id));
-                                    newParams.delete('group');
-                                  }
                                   newParams.set('activePoint', `${centralLat},${centralLng}`);
                                   newParams.set('maxResults', defaultMaxResultsParam);
                                   router.push(`?${newParams.toString()}`);
@@ -1328,6 +1315,11 @@ export default function MapExplorer() {
 
                         const bnr = treeDataset ? getBnr(hit, treeDataset) : null
                         const numberText = (bnr || '').toString().trim() || '?'
+                        const isActiveBruk = Boolean(
+                          activePoint &&
+                          Math.abs(lat - activePoint[0]) < 0.000001 &&
+                          Math.abs(lng - activePoint[1]) < 0.000001
+                        )
 
                         return (
                           <Fragment key={`tree-subunit-${index}-${coordKey}`}>
@@ -1336,8 +1328,8 @@ export default function MapExplorer() {
                               positions={[[lat, lng], [centralLat, centralLng]]}
                               pane="treeLinePane"
                               pathOptions={{
-                                color: '#000000',
-                                weight: 3,
+                                color: isActiveBruk ? '#0061ab' : '#000000',
+                                weight: isActiveBruk ? 4 : 3,
                                 opacity: 0.5
                               }}
                             />
@@ -1345,7 +1337,8 @@ export default function MapExplorer() {
                               key={`tree-marker-${index}-${coordKey}`}
                               position={[lat, lng]}
                               pane="treeCirclePane"
-                              icon={numberCircleIcon(numberText, 'white')}
+                              zIndexOffset={isActiveBruk ? 100 : 0}
+                              icon={numberCircleIcon(numberText, isActiveBruk ? 'accent' : 'white')}
                               eventHandlers={{
                                 click: () => {
                                   const newParams = new URLSearchParams(searchParams);
