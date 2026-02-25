@@ -71,7 +71,10 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const resetEnabled = useRef<boolean>(false);
-    const facet = useSearchParams().get('facet')
+    const searchParams = useSearchParams()
+    const facet = searchParams.get('facet')
+    const mapSettings = searchParams.get('mapSettings') == 'on'
+    const overlaySelector = searchParams.get('overlaySelector') === 'on'
 
     const mode = useMode()
 
@@ -91,9 +94,14 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
         return <>{children}</>
     }
 
-    if (isMobile && facet) {
-        return <div className="fixed top-0 left-0 w-full h-full z-[10001] bg-white"><div className="h-[100vh] overflow-y-auto stable-scrollbar">{children}</div>
-        </div>
+    if (isMobile && (facet || (mapSettings && overlaySelector))) {
+        return (
+            <div className="fixed top-0 left-0 w-full h-full z-[10001] bg-white">
+                <div className="h-[100svh] overflow-y-auto stable-scrollbar">
+                    {children}
+                </div>
+            </div>
+        )
     }
     if (mode == 'list') {
         return <div className="bg-white absolute top-14 left-0 right-0 h-[calc(100svh-3.5rem)] z-[3001] overflow-y-auto stable-scrollbar">
@@ -123,19 +131,6 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     const searchParams = useSearchParams()
     const maxResults = searchParams.get('maxResults')
     if (isMobile) {
-        const mapSettings = searchParams.get('mapSettings') == 'on'
-        const overlaySelector = searchParams.get('overlaySelector') === 'on'
-
-        if (mapSettings && overlaySelector) {
-            return (
-                <div className="fixed top-0 left-0 w-full h-full z-[10001] bg-white">
-                    <div className="h-[100vh] overflow-y-auto stable-scrollbar">
-                        {children}
-                    </div>
-                </div>
-            )
-        }
-
         return <>{children}</>
     }
     return <section className={`bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] z-[3001] max-h-[calc(100svh-2rem)] rounded-md flex flex-col overflow-auto`}
@@ -246,9 +241,16 @@ export default function OverlayInterface() {
                                     {searchParams.get('overlaySelector') === 'on' ? 'Kartlag' : 'Kartinnstillingar'}
                                 </div>
                                 <div className="flex items-center gap-1 ml-auto">
-                                    <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings", "overlaySelector"]}>
-                                        <PiX className="text-black text-3xl" />
-                                    </ClickableIcon>
+                                    {searchParams.get('overlaySelector') === 'on' ? (
+                                        <Clickable className="flex items-center gap-1 px-2" label="Tilbake" remove={["overlaySelector"]}>
+                                            <PiCaretLeftBold className="text-black text-lg" />
+                                            Tilbake
+                                        </Clickable>
+                                    ) : (
+                                        <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings", "overlaySelector"]}>
+                                            <PiX className="text-black text-3xl" />
+                                        </ClickableIcon>
+                                    )}
                                 </div>
                             </div>
                             <MapSettings />

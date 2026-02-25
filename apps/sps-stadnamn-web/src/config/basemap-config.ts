@@ -6,6 +6,11 @@ export const backgroundMap = {
 
 export const defaultBaseMap = 'standard'
 
+const centerPoints: Record<string, [number, number]> = {
+    "Norway": [63.43, 10.40],
+    "Svalbard": [78.22, 15.63],
+}
+
 export type MapLayerCoverage = 'global' | 'regional'
 
 export interface BaseMap {
@@ -14,6 +19,12 @@ export interface BaseMap {
     provider?: string;
     bright?: boolean;
     coverage: MapLayerCoverage;
+    center?: [number, number];
+    /**
+     * Optional geographic bounds for the layer.
+     * Format: [[north, west], [south, east]]
+     */
+    bounds?: [[number, number], [number, number]];
     opacity?: number;
     maxZoom?: number;
     maxNativeZoom?: number;
@@ -55,6 +66,9 @@ export const baseMaps: BaseMap[] = [
         name: 'Topografisk noregskart',
         provider: 'Kartverket',
         coverage: 'regional',
+        center: centerPoints.Norway,
+        // Approximate bounds for mainland Norway
+        bounds: [[71.3, 4.0], [57.9, 31.5]],
         props: {
             url: 'https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png',
             attribution: '&copy; <a class="override-external-icon" href="http://www.kartverket.no/">Kartverket</a>',
@@ -65,6 +79,8 @@ export const baseMaps: BaseMap[] = [
         name: 'Kartverket, gråtone',
         provider: 'Kartverket',
         coverage: 'regional',
+        center: centerPoints.Norway,
+        bounds: [[71.3, 4.0], [57.9, 31.5]],
         props: {
             url: 'https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png',
             attribution: '&copy; <a class="override-external-icon" href="http://www.kartverket.no/">Kartverket</a>',
@@ -76,6 +92,8 @@ export const baseMaps: BaseMap[] = [
         name: 'Noregskart, store bokstaver ',
         provider: 'Kartverket',
         coverage: 'regional',
+        center: centerPoints.Norway,
+        bounds: [[71.3, 4.0], [57.9, 31.5]],
         props: {
             url: 'https://cache.kartverket.no/v1/wmts/1.0.0/toporaster/default/webmercator/{z}/{y}/{x}.png',
             attribution: '&copy; <a class="override-external-icon" href="http://www.kartverket.no/">Kartverket</a>'
@@ -86,6 +104,8 @@ export const baseMaps: BaseMap[] = [
         name: 'Historiske kart (amtskart)',
         provider: 'Kartverket',
         coverage: 'regional',
+        center: centerPoints.Norway,
+        bounds: [[71.3, 4.0], [57.9, 31.5]],
         wms: {
             layers: 'amt1',
             format: 'image/png',
@@ -102,6 +122,7 @@ export const baseMaps: BaseMap[] = [
         name: 'Matrikkelkart',
         provider: 'Kartverket',
         coverage: 'regional',
+        bounds: [[71.3, 4.0], [57.9, 31.5]],
         wms: {
             layers: 'matrikkelkart',
             format: 'image/png',
@@ -118,6 +139,9 @@ export const baseMaps: BaseMap[] = [
         name: 'Svalbard',
         provider: 'Norsk Polarinstitutt',
         coverage: 'regional',
+        center: centerPoints.Svalbard,
+        // Approximate bounds for Svalbard
+        bounds: [[81.0, 5.0], [74.0, 35.0]],
         maxZoom: 18,
         maxNativeZoom: 18,
         props: {

@@ -7,9 +7,12 @@ import Clickable from "@/components/ui/clickable/clickable";
 import IconButton from "@/components/ui/icon-button";
 import dynamic from "next/dynamic";
 import { useDebugStore } from "@/state/zustand/debug-store";
-import { useMemo, useState } from "react";
-import { PiArrowLeft, PiCaretDownBold, PiCaretUpBold, PiMagnifyingGlass, PiPlus, PiX } from "react-icons/pi";
+import { useContext, useMemo, useState } from "react";
+import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiMagnifyingGlass, PiPlusBold, PiX } from "react-icons/pi";
 import { useSearchParams } from "next/navigation";
+import { GlobalContext } from "@/state/providers/global-provider";
+import ClickableIcon from "../ui/clickable/clickable-icon";
+import WarningMessage from "../search/details/group/warning-message";
 
 const MapDebugSettings = dynamic(() => import("./map-debug-settings"), { ssr: false });
 
@@ -29,6 +32,7 @@ export default function MapSettings() {
   const debug = useDebugStore((s) => s.debug);
   const [overlaySearch, setOverlaySearch] = useState('');
   const overlaySelectorOpen = searchParams.get('overlaySelector') === 'on';
+  const { mapFunctionRef } = useContext(GlobalContext);
 
   // Add state for h3 resolution
 
@@ -71,70 +75,6 @@ export default function MapSettings() {
           <fieldset className="border-0 p-0 m-0">
             <legend className="sr-only">Kartlag</legend>
             <div className="px-2 py-1 flex flex-col gap-3">
-              <div className="flex items-center justify-between gap-2">
-                <Clickable
-                  link
-                  remove={['overlaySelector']}
-                  className="btn btn-outline btn-sm w-fit inline-flex items-center"
-                >
-                  <PiArrowLeft className="text-lg" aria-hidden={true} />
-                  Tilbake
-                </Clickable>
-                <button
-                  type="button"
-                  onClick={() => clearOverlayMaps()}
-                  disabled={selectedOverlays.length === 0}
-                  className="btn btn-outline btn-sm whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  Nullstill
-                </button>
-              </div>
-              <fieldset>
-                <legend className="sr-only">Valde overlegg</legend>
-                <ul className="flex flex-col divide-y divide-neutral-200 border border-neutral-200 rounded-md max-h-64 overflow-auto">
-                  {selectedOverlays.map((overlayKey, index) => (
-                    <li key={overlayKey} className="px-3 py-2 flex items-start gap-3">
-                      <div className="flex flex-col gap-1">
-                        <IconButton
-                          label="Flytt overlegg opp"
-                          className="text-sm aspect-square btn btn-outline btn-sm p-1 h-6 w-6 min-h-0"
-                          onClick={() => moveOverlayMap(index, index - 1)}
-                          disabled={index === 0}
-                        >
-                          <PiCaretUpBold />
-                        </IconButton>
-                        <IconButton
-                          label="Flytt overlegg ned"
-                          className="text-sm aspect-square btn btn-outline btn-sm p-1 h-6 w-6 min-h-0"
-                          onClick={() => moveOverlayMap(index, index + 1)}
-                          disabled={index === selectedOverlays.length - 1}
-                        >
-                          <PiCaretDownBold />
-                        </IconButton>
-                      </div>
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate">{overlayMetaByKey[overlayKey]?.name || overlayKey}</span>
-                        {overlayMetaByKey[overlayKey]?.provider && (
-                          <span className="block text-xs text-neutral-700 truncate">{overlayMetaByKey[overlayKey]?.provider}</span>
-                        )}
-                      </span>
-                      <div className="ml-auto">
-                        <IconButton
-                          label="Fjern overlegg"
-                          className="text-lg aspect-square btn btn-outline btn-sm p-2"
-                          onClick={() => removeOverlayMap(overlayKey)}
-                        >
-                          <PiX />
-                        </IconButton>
-                      </div>
-                    </li>
-                  ))}
-                  {!selectedOverlays.length && (
-                    <li className="px-3 py-2 text-neutral-700">Ingen overlegg valde</li>
-                  )}
-                </ul>
-              </fieldset>
-
               <div className="w-full h-10 relative">
                 <input
                   aria-label="Søk i overlegg som kan leggjast til"
@@ -147,23 +87,61 @@ export default function MapSettings() {
                   <PiMagnifyingGlass aria-hidden={true} className="text-neutral-700 text-xl" />
                 </span>
               </div>
+
               <fieldset>
                 <legend className="sr-only">Legg til overlegg</legend>
-                <ul className="flex flex-col divide-y divide-neutral-200 border border-neutral-200 rounded-md max-h-64 overflow-auto">
+                <ul className="flex flex-col divide-y divide-neutral-200 border border-neutral-200 rounded-md">
                   {filteredOverlays.map((item) => {
                     return (
-                      <li key={item.key} className="px-3 py-2 flex flex-wrap items-center gap-2">
-                        <span id={`overlay-label-${item.key}`} className="min-w-0 basis-full sm:basis-auto sm:flex-1">
-                          <span className="block truncate">{item.name}</span>
-                          {item.provider && <span className="block text-xs text-neutral-700 truncate">{item.provider}</span>}
-                        </span>
-                        <IconButton
-                          label="Legg til overlegg"
-                          className="text-lg aspect-square btn btn-outline btn-sm p-2 ml-auto"
-                          onClick={() => addOverlayMap(item.key)}
+                      <li key={item.key}>
+                        <Clickable
+                          aria-label={`Legg til overlegg ${item.name}`}
+                          remove={['overlaySelector']}
+                          className="w-full px-3 py-2 flex justify-between items-center gap-2 text-left bg-white hover:bg-neutral-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-500"
+                          onClick={() => {
+                            addOverlayMap(item.key);
+                            setOverlaySearch('');
+
+                            const map = mapFunctionRef?.current;
+                            const bounds = item.bounds;
+                            if (map && bounds) {
+                              try {
+                                const center = map.getCenter?.();
+                                const [[north, west], [south, east]] = bounds;
+
+                                let isInside = false;
+                                if (center && typeof center.lat === 'number' && typeof center.lng === 'number') {
+                                  const { lat, lng } = center;
+                                  isInside =
+                                    lat <= north &&
+                                    lat >= south &&
+                                    lng >= west &&
+                                    lng <= east;
+                                }
+
+                                if (!isInside) {
+                                  map.fitBounds(
+                                    [
+                                      [north, west],
+                                      [south, east]
+                                    ],
+                                    { maxZoom: 8, duration: 0.25 }
+                                  );
+                                }
+                              } catch (error) {
+                                console.warn('Failed to adjust map to overlay bounds', error);
+                              }
+                            }
+                          }}
                         >
-                          <PiPlus />
-                        </IconButton>
+                          <span id={`overlay-label-${item.key}`} className="min-w-0 flex-1">
+                            <span className="block truncate text-neutral-900">{item.name}</span>
+                            {item.provider && <span className="block text-xs text-neutral-700 truncate">{item.provider}</span>}
+                          </span>
+                          <span className="ml-2 text-xl text-primary-700 flex-shrink-0" aria-hidden={true}>
+                            <PiPlusBold />
+                          </span>
+                        </Clickable>
                       </li>
                     );
                   })}
@@ -240,43 +218,78 @@ export default function MapSettings() {
       </section>
 
       <section>
-        <div className="border-0 p-0 m-0">
-          <div className="px-3 py-3 flex items-center justify-between gap-2">
-            {selectedOverlays.length > 0 &&<h2 className="text-base font-semibold text-neutral-900">Kartlag</h2>}
-            <Clickable
-              link
-              add={{ overlaySelector: 'on' }}
-              className="btn btn-outline btn-sm whitespace-nowrap inline-flex items-center"
-            >
-              {selectedOverlays.length > 0 ? 'Endre' : 'Legg til fleire kartlag'}
-            </Clickable>
-          </div>
-          <div className="px-2 py-1 flex items-start gap-2">
-            <div className="flex flex-wrap gap-2 flex-1 min-w-0">
-              {selectedOverlays.map((overlayKey) => (
-                <button
-                  type="button"
-                  key={overlayKey}
-                  onClick={() => removeOverlayMap(overlayKey)}
-                  className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer text-sm hover:bg-neutral-50 min-w-0 max-w-full"
-                >
-                  <span className="truncate">{overlayMetaByKey[overlayKey]?.name || overlayKey}</span>
-                  <PiX className="ml-auto text-lg flex-shrink-0" aria-hidden="true" />
-                </button>
-              ))}
-
-            </div>
-            {selectedOverlays.length > 0 && (
-              <button
-                type="button"
-                onClick={() => clearOverlayMaps()}
-                className="py-1.5 px-2 text-sm whitespace-nowrap text-neutral-800 hover:text-neutral-950"
+        <fieldset className="border-0 p-0 m-0">
+          <div className="px-2 py-1 flex gap-3 items-center">
+          <legend className="text-base font-semibold text-neutral-900 p-3 w-full justify-between">Andre kartlag</legend>
+          <div className="flex gap-2">
+          {selectedOverlays.length > 0 && <Clickable onClick={() => clearOverlayMaps()} className="btn btn-outline btn-sm whitespace-nowrap inline-flex items-center">
+            Nullstill
+          </Clickable>}
+          <Clickable
+                link
+                add={{ overlaySelector: "on" }}
+                className="btn btn-outline btn-sm whitespace-nowrap inline-flex items-center"
               >
-                Nullstill
-              </button>
+                Legg til
+          </Clickable>
+          </div>
+          </div>
+          <div className="px-2 py-1 flex flex-col gap-3">
+            {selectedOverlays.length > 2 && (
+              <WarningMessage
+                message="Mange ekstra kartlag kan gjere kartet tregare å bruke."
+                messageId="overlay-performance-warning"
+              />
+            )}
+
+            {selectedOverlays.length > 0 && (
+              <fieldset>
+                <legend className="sr-only">Aktive kartlag</legend>
+                <ul className="flex flex-col divide-y divide-neutral-200 border border-neutral-200 rounded-md">
+                  {selectedOverlays.map((overlayKey, index) => (
+                    <li key={overlayKey} className="p-2 flex items-start gap-3">
+                      <div className="flex flex-col gap-1">
+                        <IconButton
+                          label="Flytt kartlag opp"
+                          className="text-sm aspect-square btn btn-outline btn-sm p-1 h-6 w-6 min-h-0"
+                          onClick={() => moveOverlayMap(index, index - 1)}
+                          disabled={index === 0}
+                        >
+                          <PiCaretUpBold />
+                        </IconButton>
+                        <IconButton
+                          label="Flytt kartlag ned"
+                          className="text-sm aspect-square btn btn-outline btn-sm p-1 h-6 w-6 min-h-0"
+                          onClick={() => moveOverlayMap(index, index + 1)}
+                          disabled={index === selectedOverlays.length - 1}
+                        >
+                          <PiCaretDownBold />
+                        </IconButton>
+                      </div>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate">{overlayMetaByKey[overlayKey]?.name || overlayKey}</span>
+                        {overlayMetaByKey[overlayKey]?.provider && (
+                          <span className="block text-xs text-neutral-700 truncate">
+                            {overlayMetaByKey[overlayKey]?.provider}
+                          </span>
+                        )}
+                      </span>
+                      <div className="ml-auto">
+                        <IconButton
+                          label="Fjern kartlag"
+                          className="text-lg aspect-square btn btn-outline btn-sm p-2"
+                          onClick={() => removeOverlayMap(overlayKey)}
+                        >
+                          <PiX />
+                        </IconButton>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </fieldset>
             )}
           </div>
-        </div>
+        </fieldset>
       </section>
 
       {debug && <MapDebugSettings />}
