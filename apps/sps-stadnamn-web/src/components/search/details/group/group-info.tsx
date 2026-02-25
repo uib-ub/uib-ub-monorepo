@@ -260,7 +260,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 audioItems?.map((audioItem) => (
                     <div key={audioItem.uuid + 'audio'}>
                         {audioItem.recordings.map((recording: any, index: number) => (
-                            <div key={"audio-" + recording.uuid} className="flex items-center">
+                            <div key={"audio-" + recording.uuid} className="flex items-center p-2">
                                 <audio
                                     controls
                                     aria-label={`Lydopptak${audioItems.length > 1 ? ` ${index + 1} av ${audioItem.recordings.length}` : ''}`}
@@ -453,7 +453,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
                         {initValue !== groupData.group.id && (
                             <ClickableIcon
-                                label="Vel som utgangspunkt"
+                                label="Forankre gruppa som startpunkt"
                                 onClick={() => {
                                     // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
                                     // The subsequent URL param update can remount components quickly, so do this eagerly.

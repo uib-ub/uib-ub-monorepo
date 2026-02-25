@@ -282,13 +282,13 @@ export default function SearchResults() {
           </span>
         )}
         {audioItems.length > 0 && (
-          <div className="flex gap-1 ml-auto flex-shrink-0">
+          <div className="flex gap-1 ml-auto flex-shrink-0 border border-neutral-200 rounded-md p-1 mr-2">
             {audioItems.map((audioItem, index: number) =>
               audioItem.recordings.map((recording: any) => (
                 <button
                   key={"audio-preview-" + recording.uuid}
                   onClick={() => handlePlayAudio(recording)}
-                  className="p-1 text-primary-700 hover:text-primary-900 transition-colors"
+                  className="p-1 text-neutral-900"
                   aria-label={`Lydopptak ${audioItems.length > 1 ? ` ${index + 1} av ${audioItems.length}` : ''}`}
                 >
                   <PiPlayFill className="text-lg" aria-hidden="true" />
