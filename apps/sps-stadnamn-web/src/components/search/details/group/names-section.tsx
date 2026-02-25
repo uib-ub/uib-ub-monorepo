@@ -332,9 +332,35 @@ export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
                     </div>
                 )}
 
-                {/* Vertical Timeline */}
-                {shouldShowFilterOptions && visibleYearItems.length > 0 && (
-                    <ul className="relative !mx-2 !px-0 p-2" role="list">
+                {/* Timeline and "Namneformer utan år" in one block so they read as one section */}
+                {shouldShowFilterOptions && (visibleYearItems.length > 0 || (visibleItems.filter(item => item.type === 'noYear').length > 0 && !activeName)) && (
+                    <div className="relative mx-2 px-0 pt-2 pb-2">
+                    {visibleYearItems.length > 0 && activeName && (
+                        <div className="flex flex-wrap gap-2">
+                            {visibleYearItems.map((item) => {
+                                const isYearSelected = activeYear === item.year
+                                return (
+                                    <Clickable
+                                        key={item.year}
+                                        replace
+                                        add={{
+                                            activeYear: isYearSelected ? null : item.year,
+                                            labelFilter: 'on',
+                                            ...(groupCode ? { group: groupCode } : {}),
+                                        }}
+                                        className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isYearSelected
+                                            ? 'bg-accent-800 text-white'
+                                            : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
+                                            }`}
+                                    >
+                                        {item.year}
+                                    </Clickable>
+                                )
+                            })}
+                        </div>
+                    )}
+                    {visibleYearItems.length > 0 && !activeName && (
+                    <ul className="relative !mx-0 !px-0 !p-0" role="list">
                         {visibleYearItems.map((item, index) => {
                             const isYearSelected = activeYear === item.year
                             const isLast = index === visibleYearItems.length - 1
@@ -385,7 +411,7 @@ export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
                                             </Clickable>
 
                                             {/* Name variants for this year - on same line */}
-                                            {item.names.length > 0 && !activeName && (
+                                            {item.names.length > 0 && (
                                                 <>
                                                     {item.names.map((nameKey) => {
                                                         const isNameSelected = activeName === nameKey
@@ -453,6 +479,39 @@ export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
                             </li>
                         )}
                     </ul>
+                    )}
+                    {visibleItems.filter(item => item.type === 'noYear').length > 0 && !activeName && (
+                        <div className={visibleYearItems.length > 0 ? 'mt-3' : undefined}>
+                            <div className="text-sm font-medium text-neutral-600 mb-1.5">Namneformer utan år</div>
+                            <div className="flex flex-wrap gap-2">
+                                {visibleItems
+                                    .filter(item => item.type === 'noYear')
+                                    .map((item) => {
+                                        const isNameSelected = activeName === item.name
+
+                                        return (
+                                            <Clickable
+                                                key={item.name}
+                                                replace
+                                                add={{
+                                                    activeName: isNameSelected ? null : item.name,
+                                                    labelFilter: 'on',
+                                                    ...(groupCode ? { group: groupCode } : {}),
+                                                }}
+                                                className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isNameSelected
+                                                    ? 'bg-accent-800 text-white'
+                                                    : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
+                                                    }`}
+                                            >
+                                                <span>{item.name}</span>
+                                                <span className="text-sm opacity-75 ml-1">({item.count})</span>
+                                            </Clickable>
+                                        )
+                                    })}
+                            </div>
+                        </div>
+                    )}
+                    </div>
                 )}
 
                 {/* Names for selected year (when year is active, show names without timeline) */}
@@ -477,38 +536,6 @@ export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
                     </div>
                 )}
 
-                {/* Names without year */}
-                {shouldShowFilterOptions && visibleItems.filter(item => item.type === 'noYear').length > 0 && !activeName && (
-                    <div className="mt-4 pt-4 border-t border-neutral-200">
-                        <div className="text-sm font-medium text-neutral-700 mb-2">Namneformer utan år</div>
-                        <div className="flex flex-wrap gap-2">
-                            {visibleItems
-                                .filter(item => item.type === 'noYear')
-                                .map((item) => {
-                                    const isNameSelected = activeName === item.name
-
-                                    return (
-                                        <Clickable
-                                            key={item.name}
-                                            replace
-                                            add={{
-                                                activeName: isNameSelected ? null : item.name,
-                                                labelFilter: 'on',
-                                                ...(groupCode ? { group: groupCode } : {}),
-                                            }}
-                                            className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isNameSelected
-                                                ? 'bg-accent-800 text-white'
-                                                : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
-                                                }`}
-                                        >
-                                            <span>{item.name}</span>
-                                            <span className="text-sm opacity-75 ml-1">({item.count})</span>
-                                        </Clickable>
-                                    )
-                                })}
-                        </div>
-                    </div>
-                )}
             </div>
 
         </div>

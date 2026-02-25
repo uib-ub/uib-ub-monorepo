@@ -12,7 +12,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, type ReactNode } from "react";
-import { PiAnchor, PiAnchorSimple, PiArchive, PiCaretLeftBold, PiCaretRightBold, PiMapPin, PiPushPin, PiX } from "react-icons/pi";
+import { PiAnchor, PiAnchorSimple, PiArchive, PiCaretLeftBold, PiCaretRightBold, PiMapPin, PiMapTrifold, PiPushPin, PiX } from "react-icons/pi";
 import { detailsRenderer } from "@/lib/text-utils";
 import Carousel from "../../nav/results/carousel";
 import { TextTab } from "./text-tab";
@@ -431,7 +431,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                 :
 
                             <ClickableIcon
-                                    label="Koordinatdetaljar"
+                                    label="Kartfesting"
                                     onClick={() => {
                                         mapFunctionRef.current?.flyTo(
                                             preferredFlyTarget,
@@ -446,7 +446,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                     add={{ group: initValue == activeGroupValue ? null : stringToBase64Url(groupData.group.id), activePoint: preferredFlyTarget?.toString(), coordinateInfo: 'on' }}
                                     className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
                                 >
-                                    <PiMapPin aria-hidden="true" className="text-2xl text-neutral-800" />
+                                    <PiMapTrifold aria-hidden="true" className="text-2xl text-neutral-800" />
 
                                 </ClickableIcon>
                                 }
