@@ -1,5 +1,7 @@
 'use client'
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
+import { stringToBase64Url } from "@/lib/param-utils"
+import useGroupData from "@/state/hooks/group-data"
 import { useSessionStore } from "@/state/zustand/session-store"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PiMagnifyingGlass, PiXBold } from "react-icons/pi"
@@ -11,6 +13,8 @@ export default function SearchQueryDisplay() {
   const init = searchParams.get('init')
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
+  const noGrouping = searchParams.get('noGrouping') === 'on'
+  const { groupData: initGroupData } = useGroupData(init)
 
   const handleEdit = () => {
     const input = document.getElementById('search-input') as HTMLInputElement
@@ -50,10 +54,26 @@ export default function SearchQueryDisplay() {
     router.push(`?${newParams.toString()}`)
   }
 
+  const handleNoGroupingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newParams = new URLSearchParams(searchParams)
+    if (e.target.checked) {
+      newParams.delete('noGrouping')
+      if (init) {
+        newParams.set('init', stringToBase64Url(initGroupData?.group?.id))
+      }
+    } else {
+      newParams.set('noGrouping', 'on')
+      if (init) {
+        newParams.set('init', initGroupData?.fields?.["uuid"]?.[0])
+      }
+    }
+    router.push(`?${newParams.toString()}`)
+  }
+
   if (!searchQ) return null
 
   return (
-    <section className={`p-3 flex flex-wrap gap-x-6 gap-y-3 items-center`} aria-labelledby="search-query-title">
+    <section className={`p-3 flex flex-wrap gap-x-6 gap-y-3 items-center border-b border-neutral-200`} aria-labelledby="search-query-title">
       <div id="search-query-title" className="flex items-center gap-3 text-neutral-950 text-xl cursor-pointer" onClick={handleEdit}>
         <PiMagnifyingGlass className="text-xl" aria-hidden="true" />
         {searchQ}
@@ -81,6 +101,15 @@ export default function SearchQueryDisplay() {
             className="h-3 w-3 xl:h-4 xl:w-4"
           />
           Fulltekst
+        </label>
+        <label className="flex items-center gap-2 p-1">
+          <input
+            type="checkbox"
+            checked={!noGrouping}
+            onChange={handleNoGroupingChange}
+            className="h-3 w-3 xl:h-4 xl:w-4"
+          />
+          Gruppert
         </label>
       </div>
     </section>

@@ -13,14 +13,15 @@ import CoordinateTypeInfo from "../doc/coordinate-type-info";
 import SubtleLink from "@/components/ui/clickable/subtle-link";
 import { treeSettings } from "@/config/server-config";
 import { useActivePoint } from "@/lib/param-hooks";
+import DistanceBadge from "@/components/search/distance-badge";
 
 interface SourcesTabProps {
     datasets: Record<string, any[]>;
     isFiltered: boolean;
-    isInitGroup: boolean;
+    distanceMeters?: number | null;
 }
 
-export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProps) => {
+export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabProps) => {
     const [showAll, setShowAll] = useState(false)
     // Parents whose children are fully expanded (show all bruk, not just 2)
     const [showAllChildrenParents, setShowAllChildrenParents] = useState<Set<string>>(new Set())
@@ -32,6 +33,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
     const zoom = searchParams.get('zoom')
     const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
     const labelFilter = searchParams.get('labelFilter') === 'on'
+    const noGrouping = searchParams.get('noGrouping') === 'on'
     // If not filtered: show 2 datasets if more than 3, otherwise show all
     // If filtered: show 4 datasets if more than 5, otherwise show all
     const hasMore = isFiltered ? datasetKeys.length > 5 : datasetKeys.length > 3
@@ -164,7 +166,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
     }
 
     return (
-        <ul className="flex flex-col gap-8 pt-4">
+        <ul className="flex flex-col gap-8 pt-4 w-full">
             {visibleDatasets.map((ds) => {
                 const items = datasets[ds] || []
                 if (items.length === 0) return null
@@ -194,11 +196,18 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
 
                 const hasNesting = childrenMap.size > 0
 
+                const showDistance = noGrouping && typeof distanceMeters === 'number';
+
                 return (
                     <li key={`sources-ds-${ds}`} className="flex flex-col w-full gap-4">
-                        {searchParams.getAll('dataset').length != 1 && <div className="flex items-center gap-2 text-neutral-800 uppercase traciking-wider">
-                            {datasetTitles[ds] || ds}
-                        </div>}
+                        
+                            <div className="flex items-center w-full justify-between">
+                                <span className="text-neutral-800 uppercase traciking-wider">{datasetTitles[ds] || ds}</span>
+                                <div className="ml-auto">
+                                    {showDistance && <DistanceBadge meters={distanceMeters} />}
+                                </div>
+                            </div>
+              
                         <ul className="flex flex-col w-full gap-4">
                             {/* No nesting at all – show gnr for standalone items */}
                             {!hasNesting && items.map((s: any) => renderItem(s, ds, 0, 'parent'))}
@@ -292,6 +301,7 @@ interface FilteredSourcesTabProps {
     activeYear: string | null;
     activeName: string | null;
     isInitGroup: boolean;
+    distanceMeters?: number | null;
 }
 
 // Component that filters datasets and renders SourcesTab
@@ -299,7 +309,8 @@ export const FilteredSourcesTab = ({
     datasets,
     activeYear,
     activeName,
-    isInitGroup
+    isInitGroup,
+    distanceMeters,
 }: FilteredSourcesTabProps) => {
     const searchParams = useSearchParams()
     const activePoint = useActivePoint()
@@ -320,6 +331,12 @@ export const FilteredSourcesTab = ({
 
     const isFiltered = !!(activeYear || activeName || (isInitGroup && activePoint))
 
-    return <SourcesTab datasets={filtered} isFiltered={isFiltered} isInitGroup={isInitGroup} />
+    return (
+        <SourcesTab
+            datasets={filtered}
+            isFiltered={isFiltered}
+            distanceMeters={distanceMeters}
+        />
+    )
 }
 

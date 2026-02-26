@@ -12,7 +12,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, type ReactNode } from "react";
-import { PiAnchor, PiAnchorSimple, PiArchive, PiCaretLeftBold, PiCaretRightBold, PiMapPin, PiMapTrifold, PiPushPin, PiX } from "react-icons/pi";
+import { PiAnchor, PiAnchorSimple, PiArchive, PiCaretLeftBold, PiCaretRightBold, PiCheck, PiMapPin, PiMapTrifold, PiPushPin, PiX } from "react-icons/pi";
 import { detailsRenderer } from "@/lib/text-utils";
 import Carousel from "../../nav/results/carousel";
 import { TextTab } from "./text-tab";
@@ -20,7 +20,15 @@ import { NamesSection } from "./names-section";
 import { FilteredSourcesTab } from "./sources-tab";
 import { matchesActiveYear, matchesActiveName, pushNameYear } from "./group-utils";
 
-export default function GroupInfo({ id, overrideGroupCode }: { id: string, overrideGroupCode?: string }) {
+export default function GroupInfo({
+    id,
+    overrideGroupCode,
+    distanceMeters,
+}: {
+    id: string;
+    overrideGroupCode?: string;
+    distanceMeters?: number | null;
+}) {
     const { groupData, groupLoading } = useGroupData(overrideGroupCode)
     const snappedPosition = useSessionStore(state => state.snappedPosition)
     const setSnappedPosition = useSessionStore(state => state.setSnappedPosition)
@@ -31,6 +39,8 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     const activePoint = searchParams.get('activePoint')
     const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
     const labelFilter = searchParams.get('labelFilter') === 'on'
+    const noGrouping = searchParams.get('noGrouping') === 'on'
+    const isInit = initValue == groupData?.group?.id || initValue == groupData?.fields?.["uuid"]?.[0]
 
     const roundCoordString = (value: string, decimals: number) => {
         const n = Number(value)
@@ -249,12 +259,23 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
             method: 'POST',
             body: JSON.stringify(props)
         })
-        return <div className="p-2">Kunne ikkje lasta inn gruppe</div>
+        return <div className="p-2">Kunne ikkje lasta inn gruppe {JSON.stringify(groupData)} {overrideGroupCode}</div>
     }
 
 
     return (
-        <div id={id} className="relative flex min-w-0 flex-wrap items-center gap-2 pb-4">
+        <div id={id} className="relative flex min-w-0 flex-wrap items-center pb-4">
+            {noGrouping && (
+                <div className="min-w-0 px-3 w-full">
+                    <FilteredSourcesTab
+                        datasets={datasets}
+                        activeYear={activeYear}
+                        activeName={activeName}
+                        isInitGroup={activeGroupValue === groupData.group.id}
+                        distanceMeters={distanceMeters}
+                    />
+                </div>
+            )}
 
             {
                 audioItems?.map((audioItem) => (
@@ -408,15 +429,17 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                     </div>
                 )}
 
-                {/* Sources always shown - min-w-0 so width is constrained by panel, not by expanded content */}
-                <div className="min-w-0 px-3">
-                    <FilteredSourcesTab
-                        datasets={datasets}
-                        activeYear={activeYear}
-                        activeName={activeName}
-                        isInitGroup={activeGroupValue === groupData.group.id}
-                    />
-                </div>
+                {/* min-w-0 so width is constrained by panel, not by expanded content */}
+                {!noGrouping && (
+                    <div className="min-w-0 px-3">
+                        <FilteredSourcesTab
+                            datasets={datasets}
+                            activeYear={activeYear}
+                            activeName={activeName}
+                            isInitGroup={activeGroupValue === groupData.group.id}
+                        />
+                    </div>
+                )}
             </div>
 
 
@@ -451,9 +474,8 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                 </ClickableIcon>
                                 }
 
-                        {initValue !== groupData.group.id && (
                             <ClickableIcon
-                                label="Forankre gruppa som startpunkt"
+                                label={`${isInit ? "Fjern som startpunkt" : "Vel som startpunkt"}`}
                                 onClick={() => {
                                     // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
                                     // The subsequent URL param update can remount components quickly, so do this eagerly.
@@ -465,15 +487,15 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                                 remove={['group', 'point', 'activePoint', 'activeYear', 'activeName']}
                                 add={{
                                     // When pinning a group ("vel"), treat it as a fresh init selection.
-                                    init: stringToBase64Url(groupData.group.id),
+                                    init: isInit ? null : noGrouping ? groupData.fields["uuid"][0] : stringToBase64Url(groupData.group.id),
                                     point: preferredFlyTarget ? `${preferredFlyTarget?.[0]},${preferredFlyTarget?.[1]}` : null,
                                     maxResults: defaultMaxResultsParam
                                 }}
                                 className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
                             >
-                                <PiAnchorSimple aria-hidden="true" className="text-2xl text-neutral-800" />
+                                {isInit ? <PiX aria-hidden="true" className="text-2xl text-neutral-800" /> : <PiCheck aria-hidden="true" className="text-2xl text-neutral-800" />}
                             </ClickableIcon>
-                        )}
+                        
                     </div>
                 </div>}
 

@@ -26,14 +26,29 @@ import IconButton from "@/components/ui/icon-button";
 
 
 
-const CollapsibleResultItem = ({ hit, activeGroupValue }: { hit: any, activeGroupValue: string | null }) => {
+const CollapsibleResultItem = ({ hit, activeGroupValue }: { hit: any; activeGroupValue: string | null }) => {
+  const [expanded, setExpanded] = useState(activeGroupValue == hit.fields['group.id'][0])
+  const searchParams = useSearchParams()
+  const noGrouping = searchParams.get('noGrouping') === 'on'
+  const groupCode = noGrouping ? hit.fields['uuid'][0] : stringToBase64Url(hit.fields['group.id'][0])
 
-  const [expanded, setExpanded] = useState(activeGroupValue == hit.fields["group.id"][0])
-  const groupCode = stringToBase64Url(hit.fields["group.id"][0])
+  const distanceMeters = typeof hit.distance === 'number' ? hit.distance : null
+
   return (
-    <li className="relative" key={hit.fields["group.id"][0]}>
-      <ResultItem hit={hit} onClick={() => setExpanded(!expanded)} aria-controls={`group-info-${hit.fields["group.id"][0]}`} aria-expanded={expanded} />
-      {expanded && <GroupInfo id={`group-info-${hit.fields["group.id"][0]}`} overrideGroupCode={groupCode} />}
+    <li className="relative" key={hit.fields['group.id'][0]}>
+      <ResultItem
+        hit={hit}
+        onClick={() => setExpanded(!expanded)}
+        aria-controls={`group-info-${hit.fields['group.id'][0]}`}
+        aria-expanded={expanded}
+      />
+      {(expanded || noGrouping) && (
+        <GroupInfo
+          id={`group-info-${hit.fields['group.id'][0]}`}
+          overrideGroupCode={groupCode}
+          distanceMeters={noGrouping ? distanceMeters : null}
+        />
+      )}
     </li>
   )
 }
@@ -49,6 +64,13 @@ export default function SearchResults() {
   const resultsParam = getClampedMaxResultsFromParam(searchParams.get('maxResults'))
   const initValue = init ? base64UrlToString(init) : null
   const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
+  // In grouped view, init points to a group id (base64 encoded).
+  // In non-grouped view, init points to a source uuid, so we must derive the
+  // corresponding group id from initGroupData to exclude it from the collapsed results.
+  const noGrouping = searchParams.get('noGrouping') === 'on'
+  const initGroupId = init
+    ? (initGroupData?.group?.id ?? (!noGrouping ? initValue : null))
+    : (!noGrouping ? initValue : null)
   const { groupData: activeGroupData } = useGroupData()
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const { isMobile, sosiVocab, mapFunctionRef } = useContext(GlobalContext)
@@ -169,8 +191,8 @@ export default function SearchResults() {
   const getAdditionalResultsCount = () => {
     if (!collapsedData) return 0
     const allHits = collapsedData.pages.flatMap((page: any) => page.data || [])
-    if (!initValue) return allHits.length
-    return allHits.filter((hit: any) => hit.fields?.["group.id"]?.[0] !== initValue).length
+    if (!initGroupId) return allHits.length
+    return allHits.filter((hit: any) => hit.fields?.["group.id"]?.[0] !== initGroupId).length
   }
 
   // Check if there are no results
@@ -178,7 +200,7 @@ export default function SearchResults() {
   const hasOneResult = collapsedStatus === 'success' && collapsedData?.pages && collapsedData.pages.length === 1 && collapsedData.pages[0].data?.length === 1;
   const hasMaxResultsLimit = resultsParam > 0
   const maxAdditionalVisible = hasMaxResultsLimit
-    ? Math.max(resultsParam - (initValue ? 1 : 0), 0)
+    ? Math.max(resultsParam - (initGroupId ? 1 : 0), 0)
     : Number.POSITIVE_INFINITY;
 
   // Derived: should "Fleire namnegrupper" and the list of other groups be visible?
@@ -436,14 +458,12 @@ export default function SearchResults() {
         </div>
       ) : initGroupData && (
         <div className="relative" key={`init-${initValue}`}>
-          <ResultItem
-            hit={initGroupData}
-          />
-          {initGroupData.fields?.["group.id"] ? <>
-            <GroupInfo id={`group-info-${initGroupData.fields["group.id"]}`} overrideGroupCode={init || undefined} />
-
-          </>
-            : null}
+          <ResultItem hit={initGroupData} />
+          {initGroupData.fields?.['group.id'] ? (
+            <>
+              <GroupInfo id={`group-info-${initGroupData.fields['group.id']}`} overrideGroupCode={init || undefined} />
+            </>
+          ) : null}
         </div>
       ))}
 
@@ -458,7 +478,7 @@ export default function SearchResults() {
         </div>
       ) : (
         <div className="w-full border-t border-neutral-200 border-b-none pt-4 pb-2 xl:py-2 px-3 flex items-center gap-2 text-neutral-950">
-          <span id="other-groups-title" className="text-lg font-sans text-neutral-900">{qParam ? (qParam == initSearchLabel ? 'Andre treff' : 'Søkeresultat') : 'Fleire namnegrupper'}</span>
+          <span id="other-groups-title" className="text-lg font-sans text-neutral-900">{qParam ? (qParam == initSearchLabel ? 'Andre treff' : 'Søkeresultat') : (noGrouping ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper')}</span>
           {initSearchLabel && (
             qParam && qParam == initSearchLabel.trim() && initHasCoordinates ? (
               <div
@@ -521,7 +541,7 @@ export default function SearchResults() {
                 return (
                   <Fragment key={`page-${pageIndex}`}>
                     {page.data?.map((item: any) => {
-                      if (initValue && item.fields["group.id"]?.[0] == initValue) return null;
+                      if (initGroupId && item.fields["group.id"]?.[0] == initGroupId) return null;
                       if (renderedAdditional >= maxAdditionalVisible) return null;
                       if (!item.fields["group.id"]) {
                         console.log("No group ID", item);
@@ -545,7 +565,7 @@ export default function SearchResults() {
                             if (isFetchingNextPage) return
 
                             const currentAdditional = getAdditionalResultsCount()
-                            const base = initValue ? 1 : 0
+                            const base = initGroupId ? 1 : 0
                             const newAdditional = currentAdditional + SUBSEQUENT_PAGE_SIZE
                             const newResultsValue = clampMaxResults(base + newAdditional)
 

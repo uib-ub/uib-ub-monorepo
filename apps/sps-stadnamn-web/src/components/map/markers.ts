@@ -188,54 +188,11 @@ export function getInitAnchorMarker() {
   return {
     className: '',
     html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: 40px;">
-                <svg
-                  viewBox="0 0 13.229166 21.695834"
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  style="position:absolute; left:0; bottom:30px; height:36px">
-                  <defs id="defs2" />
-                  <g id="layer1">
-                    <g id="g35914" transform="matrix(0.298402,0,0,0.298402,-0.96482737,5.8697336)">
-                      <g id="g35909">
-                        <path
-                          id="path28141"
-                          fill="#cf3c3a"
-                          style="stroke-width:7.55906"
-                          stroke="white"
-                          d="M 96,0 A 79.999998,79.999998 0 0 0 16,80 79.999998,79.999998 0 0 0 79.082031,158.16211 L 96,192 112.91797,158.16211 A 79.999998,79.999998 0 0 0 176,80 79.999998,79.999998 0 0 0 96,0 Z"
-                          transform="scale(0.26458333)" />
-                      </g>
-                    </g>
-                  </g>
-                  <g id="g1" transform="matrix(0.03125,0,0,0.03125,2.614583,8.84792)">
-                    <circle
-                      cx="128"
-                      cy="36.866562"
-                      r="24"
-                      fill="none"
-                      stroke="#ffffff"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="16" />
-                    <line
-                      x1="128"
-                      y1="188.86656"
-                      x2="128"
-                      y2="60.866562"
-                      fill="none"
-                      stroke="#ffffff"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="16" />
-                    <path
-                      d="M 56,92.86656 H 32 a 96,96 0 0 0 192,0 h -24"
-                      fill="none"
-                      stroke="#ffffff"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="16" />
-                  </g>
-                </svg>
+                <img
+                  src="/markerPrimaryCheck.svg"
+                  alt=""
+                  aria-hidden="true"
+                  style="position:absolute; left:0; bottom:30px; height:36px" />
             </div>`
   }
 }
