@@ -32,7 +32,8 @@ const collapsedDataQuery = async ({
     initGroupCode,
     initGroupData,
     point,
-}: { pageParam?: number; searchQueryString: string, initGroupCode: string | null, initGroupData: Record<string, any> | null, point: [number, number] | null }) => {
+    searchSort,
+}: { pageParam?: number; searchQueryString: string, initGroupCode: string | null, initGroupData: Record<string, any> | null, point: [number, number] | null, searchSort: string | null }) => {
 
     // Determine size and from based on page number
     const isFirstPage = pageParam === 0;
@@ -50,7 +51,7 @@ const collapsedDataQuery = async ({
         (point ? [point[1], point[0]] as [number, number] : null)
     const initLabel = initGroupData?.sources[0]?.label || undefined
 
-    const res = await fetch(`/api/search/collapsed?${searchQueryString}`, {
+    const res = await fetch(`/api/search/collapsed?${searchQueryString}${searchSort ? `&searchSort=${searchSort}` : ''}`, {
         method: 'POST',
         body: JSON.stringify({
             size: size,
@@ -97,9 +98,6 @@ export default function useCollapsedData() {
     const point = usePoint()
     const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(initGroupCode)
     const searchSort = searchParams.get('searchSort')
-    const effectiveSearchQueryString = searchSort
-        ? `${searchQueryString}${searchQueryString ? '&' : ''}searchSort=${searchSort}`
-        : searchQueryString
 
     const {
         data,
@@ -114,10 +112,11 @@ export default function useCollapsedData() {
         queryKey: ['collapsedData', searchQueryString, searchSort, initGroupLoading, initGroupCode, point],
         queryFn: ({ pageParam }: { pageParam: number }) => collapsedDataQuery({
             pageParam,
-            searchQueryString: effectiveSearchQueryString,
+            searchQueryString,
             initGroupCode: initGroupCode,
             initGroupData: initGroupCode ? initGroupData : null,
-            point
+            point,
+            searchSort
         }),
         //placeholderData: (prevData: any) => prevData,
         initialPageParam: initialPageRef.current - 1,

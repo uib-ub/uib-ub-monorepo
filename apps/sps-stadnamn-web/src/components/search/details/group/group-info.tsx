@@ -443,7 +443,7 @@ export default function GroupInfo({
             </div>
 
 
-            {!coordinateInfo && <div className="px-3 ml-auto mt-auto">
+            {!coordinateInfo && !labelFilter && <div className="px-3 ml-auto mt-auto">
                 <div className="flex flex-row items-center gap-2">
                         
 
@@ -487,8 +487,9 @@ export default function GroupInfo({
                                 remove={['group', 'point', 'activePoint', 'activeYear', 'activeName']}
                                 add={{
                                     // When pinning a group ("vel"), treat it as a fresh init selection.
+                                    q: searchParams.get('q') ? groupData.fields.label[0] : null,
                                     init: isInit ? null : noGrouping ? groupData.fields["uuid"][0] : stringToBase64Url(groupData.group.id),
-                                    point: preferredFlyTarget ? `${preferredFlyTarget?.[0]},${preferredFlyTarget?.[1]}` : null,
+                                    point: (!isInit && preferredFlyTarget) ? `${preferredFlyTarget?.[0]},${preferredFlyTarget?.[1]}` : null,
                                     maxResults: defaultMaxResultsParam
                                 }}
                                 className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"

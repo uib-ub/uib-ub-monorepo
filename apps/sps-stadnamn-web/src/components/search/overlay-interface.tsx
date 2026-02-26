@@ -108,7 +108,7 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
         )
     }
     if (mode == 'list') {
-        return <div className="bg-white absolute top-14 left-0 right-0 h-[calc(100svh-3.5rem)] z-[3001] overflow-y-auto stable-scrollbar">
+        return <div className="bg-white absolute top-14 left-0 right-0 h-[calc(100svh-3.5rem)] z-[3001] overflow-y-scroll">
 
             {children}
         </div>
@@ -126,7 +126,7 @@ function LeftWindow({ children }: { children: React.ReactNode }) {
         if (mapSettings && maxResults) return null
         return <>{children}</>
     }
-    return <section className="bg-white shadow-lg flex flex-col absolute left-2 top-[4rem] w-[calc(30svw-1rem)] lg:w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-auto "
+    return <section className="bg-white shadow-lg flex flex-col absolute left-2 top-[4rem] w-[calc(30svw-1rem)] lg:w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-scroll "
         aria-labelledby="left-title">{children}</section>
 }
 
@@ -137,7 +137,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     if (isMobile) {
         return <>{children}</>
     }
-    return <section className={`bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] z-[3001] max-h-[calc(100svh-2rem)] rounded-md flex flex-col overflow-auto`}
+    return <section className={`bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] z-[3001] max-h-[calc(100svh-2rem)] rounded-md flex flex-col overflow-y-scroll`}
         aria-labelledby="right-title">{children}</section>
 }
 
@@ -306,7 +306,7 @@ export default function OverlayInterface() {
                                     // On desktop, this is the actual scroll container for the right panel.
                                     // Wire it to the shared ref so components (e.g. GroupInfo) can scroll to top.
                                     ref={isMobile ? undefined : scrollableContentRef}
-                                    className={!isMobile ? "flex-1 overflow-y-scroll overflow-x-auto md:overflow-x-hidden min-h-0" : ""}
+                                    className={!isMobile ? "flex-1 min-h-0" : ""}
                                 >
                                     {showDebugGroups ? <DebugToggle /> : <SearchResults />}
                                 </div>

@@ -1,5 +1,6 @@
 'use client'
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
+import ToggleButton from "@/components/ui/toggle-button"
 import { stringToBase64Url } from "@/lib/param-utils"
 import useGroupData from "@/state/hooks/group-data"
 import { useSessionStore } from "@/state/zustand/session-store"
@@ -11,23 +12,12 @@ export default function SearchQueryDisplay() {
   const router = useRouter()
   const searchQ = searchParams.get('q')
   const init = searchParams.get('init')
-  const snappedPosition = useSessionStore((s) => s.snappedPosition)
-  const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
   const noGrouping = searchParams.get('noGrouping') === 'on'
   const { groupData: initGroupData } = useGroupData(init)
+  const qParam = searchParams.get('q')
+  const initHasCoordinates = !!initGroupData?.sources?.some((source: any) => source.location?.coordinates)
+  const searchSort = searchParams.get('searchSort')
 
-  const handleEdit = () => {
-    const input = document.getElementById('search-input') as HTMLInputElement
-    if (input) {
-      input.focus()
-      input.select()
-    }
-
-    // Change drawer position to bottom if it's middle
-    if (snappedPosition === 'middle') {
-      setSnappedPosition('bottom')
-    }
-  }
 
   // Check if query is single word (only letters) for fuzzy search toggle
   const isSingleWord = searchQ ? /^\p{L}+$/u.test(searchQ) : false
@@ -74,14 +64,7 @@ export default function SearchQueryDisplay() {
 
   return (
     <section className={`p-3 flex flex-wrap gap-x-6 gap-y-3 items-center border-b border-neutral-200`} aria-labelledby="search-query-title">
-      <div id="search-query-title" className="flex items-center gap-3 text-neutral-950 text-xl cursor-pointer" onClick={handleEdit}>
-        <PiMagnifyingGlass className="text-xl" aria-hidden="true" />
-        {searchQ}
-        <ClickableIcon label="Fjern søkeord" remove={['q']} className="ml-auto h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900">
-          <PiXBold />
-        </ClickableIcon>
-      </div>
-      <div className="flex items-center gap-3 text-sm">
+      <div className="flex items-center gap-3 text-sm flex-wrap">
         {isSingleWord && (
           <label className="flex items-center gap-2 p-1">
             <input
@@ -111,6 +94,41 @@ export default function SearchQueryDisplay() {
           />
           Gruppert
         </label>
+
+        {qParam && initHasCoordinates && (
+              <div
+                className="ml-auto flex items-center gap-3 xl:gap-2 text-sm"
+                role="radiogroup"
+                aria-label="Sorter treff"
+              >
+                <ToggleButton
+                  small
+                  isSelected={!searchSort}
+                  onClick={() => {
+                    const newParams = new URLSearchParams(searchParams)
+                    newParams.delete('searchSort')
+                    router.push(`?${newParams.toString()}`)
+                  }}
+                  role="radio"
+                  ariaChecked={!searchSort}
+                >
+                  Avstand
+                </ToggleButton>
+                <ToggleButton
+                  small
+                  isSelected={searchSort === 'similarity'}
+                  onClick={() => {
+                    const newParams = new URLSearchParams(searchParams)
+                    newParams.set('searchSort', 'similarity')
+                    router.push(`?${newParams.toString()}`)
+                  }}
+                  role="radio"
+                  ariaChecked={searchSort === 'similarity'}
+                >
+                  Likskap
+                </ToggleButton>
+              </div>
+            )}
       </div>
     </section>
   )
