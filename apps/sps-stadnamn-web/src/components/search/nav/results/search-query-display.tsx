@@ -46,7 +46,7 @@ export default function SearchQueryDisplay() {
   if (!searchQ) return null
 
   return (
-    <section className={`p-3 flex flex-wrap gap-x-6 gap-y-3 items-center border-b border-neutral-200`} aria-labelledby="search-query-title">
+    <section className={`p-3 flex flex-wrap gap-x-6 gap-y-3 items-center border-b border-neutral-200 bg-neutral-50`} aria-labelledby="search-query-title">
       <div className="flex items-center gap-3 text-sm flex-wrap">
         {isSingleWord && (
           <label className="flex items-center gap-2 p-1">

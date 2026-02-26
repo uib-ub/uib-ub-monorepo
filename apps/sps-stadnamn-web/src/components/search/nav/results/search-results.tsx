@@ -465,15 +465,15 @@ export default function SearchResults() {
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
         </div>
       ) : (
-        <div className="w-full border-t border-neutral-200 border-b-none pt-4 pb-2 xl:py-2 px-3 flex items-center gap-2 text-neutral-950 min-w-0 overflow-hidden">
-          {qParam && <Clickable remove={['q', 'searchSort']} add={{ q: null }} className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-2 cursor-pointer"><PiMagnifyingGlass className="" aria-hidden="true" />{qParam}<PiX className="text-lg" aria-hidden="true" /></Clickable>}
+        <div className="w-full border-t border-neutral-200 bg-neutral-50 border-b-none pt-4 pb-2 xl:py-2 px-3 flex items-center gap-2 text-neutral-950 min-w-0 overflow-hidden">
+          {qParam && <Clickable remove={['q', 'searchSort']} add={{ q: null }} className="px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-2 cursor-pointer"><PiMagnifyingGlass className="" aria-hidden="true" />{qParam}<PiX className="text-lg" aria-hidden="true" /></Clickable>}
           <span id="other-groups-title" className={`text-lg font-sans text-neutral-900 whitespace-nowrap ${qParam ? 'sr-only' : ''}`}>{noGrouping ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}</span>
             
             {(!initSearchLabel || qParam != initSearchLabel) && (
               <Clickable
                 link
                 add={{ q: initSearchLabel, maxResults: expandedMaxResultsParam }}
-                className="ml-auto px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer no-underline max-w-full min-w-0"
+                className="ml-auto px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-1 cursor-pointer no-underline max-w-full min-w-0"
               >
                 {!(qParam && !identicalQuery) &&<PiFunnel aria-hidden="true" className="flex-shrink-0" />}
                 <span className="ml-1 truncate flex-1 min-w-0">
