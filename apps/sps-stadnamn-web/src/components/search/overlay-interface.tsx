@@ -274,7 +274,7 @@ export default function OverlayInterface() {
                                 >
                                     
 
-                                    <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-lg text-neutral-900 font-sans">{coordinateInfo && `Kartfesting`  || labelFilter && 'Namneformer' || 'Kjelder'}</div>
+                                    <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-lg text-neutral-900 font-sans">{coordinateInfo && `Kartfesting`  || labelFilter && 'Namneformer' || 'Treff'}</div>
 
                                     {!coordinateInfo && ! labelFilter && <>
 

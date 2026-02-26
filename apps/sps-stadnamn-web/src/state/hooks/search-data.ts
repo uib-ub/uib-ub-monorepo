@@ -48,9 +48,17 @@ export default function useSearchData() {
     })
 
 
+    // Support both nested (unique_group_ids) and direct cardinality aggregations
+    const groupCount =
+        data?.aggregations?.groups?.unique_group_ids?.value ??
+        data?.aggregations?.groups?.value
+
     return {
         searchData: data?.hits?.hits || null,
-        totalHits: data?.hits?.total || null,
+        // Prefer unique group.id count when available; fall back to raw document total
+        totalHits: (groupCount ?? null) !== null
+            ? { value: groupCount, relation: 'eq' }
+            : data?.hits?.total || null,
         searchError: error,
         searchLoading: isLoading,
         searchBounds: data?.limitedBounds || null,
