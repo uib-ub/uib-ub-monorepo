@@ -206,11 +206,14 @@ export default function SearchResults() {
   }, [collapsedData, group, hasOneResult, init, router, searchParams])
 
 
-  if (isMobile && activeGroupValue && snappedPosition == 'bottom' && !coordinateInfo && !labelFilter) {
+  // On mobile, show a compact summary for the "init" group when pinned,
+  // otherwise fall back to the currently active group.
+  if (isMobile && snappedPosition == 'bottom' && !coordinateInfo && !labelFilter && (init || activeGroupValue)) {
 
-    if (!activeGroupData) return null;
+    const summaryGroupData = init ? initGroupData : activeGroupData
+    if (!summaryGroupData) return null;
 
-    const label = activeGroupData?.fields?.label?.[0]
+    const label = summaryGroupData?.fields?.label?.[0]
     const datasets: string[] = []
     const seenDatasets = new Set<string>()
     const audioItems: any[] = []
@@ -251,7 +254,7 @@ export default function SearchResults() {
 
     // Collect unique sosi place types from all sources and map to vocabulary
     const sosiTypesRaw = Array.from(new Set(
-      (activeGroupData?.sources || [])
+      (summaryGroupData?.sources || [])
         .flatMap((src: any) => {
           if (!src.sosi) return []
           return Array.isArray(src.sosi) ? src.sosi : [src.sosi]
@@ -260,7 +263,7 @@ export default function SearchResults() {
     )) as string[]
     const sosiTypes = sosiTypesRaw.map((type: string) => sosiVocab[type]?.label || type)
 
-    activeGroupData?.sources?.forEach((source: any) => {
+    summaryGroupData?.sources?.forEach((source: any) => {
       if (!seenDatasets.has(source.dataset)) {
         datasets.push(source.dataset)
         seenDatasets.add(source.dataset)
