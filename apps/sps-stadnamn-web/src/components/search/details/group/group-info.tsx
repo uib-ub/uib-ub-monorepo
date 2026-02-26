@@ -443,7 +443,7 @@ export default function GroupInfo({
             </div>
 
 
-            {!coordinateInfo && !labelFilter && <div className="px-3 ml-auto mt-auto">
+            {!coordinateInfo && !labelFilter && !noGrouping && <div className="px-3 ml-auto mt-auto">
                 <div className="flex flex-row items-center gap-2">
                         
 
