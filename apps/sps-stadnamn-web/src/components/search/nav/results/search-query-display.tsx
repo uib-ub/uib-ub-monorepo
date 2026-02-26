@@ -69,7 +69,7 @@ export default function SearchQueryDisplay() {
           Fulltekst
         </label>
         
-        {qParam && initHasCoordinates && (
+        {qParam && initHasCoordinates && init && (
               <div
                 className="ml-auto flex items-center gap-3 xl:gap-2 text-sm"
                 role="radiogroup"

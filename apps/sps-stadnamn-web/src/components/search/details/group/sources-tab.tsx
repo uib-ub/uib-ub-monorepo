@@ -3,7 +3,7 @@
 import { Fragment, useContext, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PiBookOpen, PiFile, PiFileFill, PiInfoFill, PiMapPinFill } from "react-icons/pi";
+import { PiBookOpen, PiCheck, PiCheckCircle, PiFile, PiFileFill, PiInfoFill, PiMapPin, PiMapPinFill } from "react-icons/pi";
 import { datasetTitles } from "@/config/metadata-config";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
 import { GlobalContext } from "@/state/providers/global-provider";
@@ -12,7 +12,8 @@ import { matchesActiveYear, matchesActiveName } from "./group-utils";
 import CoordinateTypeInfo from "../doc/coordinate-type-info";
 import SubtleLink from "@/components/ui/clickable/subtle-link";
 import { treeSettings } from "@/config/server-config";
-import { useActivePoint } from "@/lib/param-hooks";
+import { panPointIntoView } from "@/lib/map-utils";
+import { useActivePoint, useGroup } from "@/lib/param-hooks";
 import DistanceBadge from "@/components/search/distance-badge";
 
 interface SourcesTabProps {
@@ -26,7 +27,8 @@ export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabP
     // Parents whose children are fully expanded (show all bruk, not just 2)
     const [showAllChildrenParents, setShowAllChildrenParents] = useState<Set<string>>(new Set())
     const datasetKeys = useMemo(() => Object.keys(datasets).filter(ds => datasets[ds] && datasets[ds].length > 0), [datasets])
-    const { sosiVocab, mapFunctionRef } = useContext(GlobalContext)
+    const { sosiVocab, mapFunctionRef, isMobile } = useContext(GlobalContext)
+    const { initValue } = useGroup()
 
     const searchParams = useSearchParams()
     const center = searchParams.get('center')
@@ -34,6 +36,7 @@ export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabP
     const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
     const labelFilter = searchParams.get('labelFilter') === 'on'
     const noGrouping = searchParams.get('noGrouping') === 'on'
+    const activePoint = useActivePoint()
     // If not filtered: show 2 datasets if more than 3, otherwise show all
     // If filtered: show 4 datasets if more than 5, otherwise show all
     const hasMore = isFiltered ? datasetKeys.length > 5 : datasetKeys.length > 3
@@ -124,7 +127,29 @@ export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabP
 
         return (
             <li key={s.uuid} className="flex flex-col gap-1" style={indentStyle}>
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 leading-6 min-h-6">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-2 leading-6 min-h-6">
+                        {noGrouping && (
+                            <div className="flex items-center shrink-0 -mr-2">
+                                {initValue != s.uuid  && <ClickableIcon
+                                    label={initValue === s.uuid ? "Fjern utgangspunkt" : "Sett som utgangspunkt"}
+                                    add={{ init: initValue === s.uuid ? null : s.uuid }}
+                                    className="h-8 w-8 p-0 rounded-md btn-compact text-neutral-700"
+                                >
+                                    <PiCheckCircle className="text-2xl" aria-hidden />
+                                </ClickableIcon>}
+                                {lat != null && lng != null && (
+                                    <ClickableIcon
+                                        label="Sett aktivt punkt"
+                                        add={{ activePoint: `${lat},${lng}` }}
+                                        onClick={() => panPointIntoView(mapFunctionRef.current, [lat, lng], isMobile, isMobile)}
+                                        className="h-8 w-8 p-0 rounded-md btn-compact text-neutral-700"
+                                    >
+                                        {activePoint && activePoint[0] === lat && activePoint[1] === lng ? <PiMapPinFill className="text-2xl text-accent-800" aria-hidden /> : <PiMapPin className="text-2xl" aria-hidden />}
+                                    </ClickableIcon>
+                                )}
+                                
+                            </div>
+                        )}
                         <Link className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md !px-2 py-1 h-8 btn btn-outline btn-compact" href={"/uuid/" + s.uuid}>
                             {cadastrePrefix}<strong>{s.label}</strong> {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
                         </Link>
@@ -136,7 +161,7 @@ export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabP
                         {links}
                     </div>
 
-                    {coordinateInfo && lat && lng && (
+                    {(coordinateInfo || (noGrouping && activePoint && activePoint[0] === lat && activePoint[1] === lng)) && lat && lng && (
                         <div className="mt-0.5 min-w-0 w-full rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1">
                             {s.coordinateType ? (
                                 <CoordinateTypeInfo coordinateType={s.coordinateType} />
@@ -314,6 +339,7 @@ export const FilteredSourcesTab = ({
 }: FilteredSourcesTabProps) => {
     const searchParams = useSearchParams()
     const activePoint = useActivePoint()
+
     const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
 
     const filtered = useMemo(() => {
