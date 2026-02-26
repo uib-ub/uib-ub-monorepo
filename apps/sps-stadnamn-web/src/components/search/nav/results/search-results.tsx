@@ -197,6 +197,8 @@ export default function SearchResults() {
 
   useEffect(() => {
     if (!hasOneResult) return
+    // Don't re-add init when user has set a point (e.g. via map context menu); they explicitly cleared init.
+    if (searchParams.has('point')) return
 
     const onlyResultId = collapsedData?.pages?.[0]?.data?.[0]?.fields?.["group.id"]?.[0]
     if (!onlyResultId) return

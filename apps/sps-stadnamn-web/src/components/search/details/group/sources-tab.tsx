@@ -3,7 +3,7 @@
 import { Fragment, useContext, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PiBookOpen, PiCheck, PiCheckCircle, PiFile, PiFileFill, PiInfoFill, PiMapPin, PiMapPinFill } from "react-icons/pi";
+import { PiBookOpen, PiCheck, PiCheckCircle, PiFile, PiFileFill, PiInfoFill, PiMapPin, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
 import { datasetTitles } from "@/config/metadata-config";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
 import { GlobalContext } from "@/state/providers/global-provider";
@@ -130,13 +130,7 @@ export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabP
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-2 leading-6 min-h-6">
                         {noGrouping && (
                             <div className="flex items-center shrink-0 -mr-2">
-                                {initValue != s.uuid  && <ClickableIcon
-                                    label={initValue === s.uuid ? "Fjern utgangspunkt" : "Sett som utgangspunkt"}
-                                    add={{ init: initValue === s.uuid ? null : s.uuid }}
-                                    className="h-8 w-8 p-0 rounded-md btn-compact text-neutral-700"
-                                >
-                                    <PiCheckCircle className="text-2xl" aria-hidden />
-                                </ClickableIcon>}
+                                
                                 {lat != null && lng != null && (
                                     <ClickableIcon
                                         label="Sett aktivt punkt"
@@ -228,8 +222,19 @@ export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabP
                         
                             <div className="flex items-center w-full justify-between">
                                 <span className="text-neutral-800 uppercase traciking-wider">{datasetTitles[ds] || ds}</span>
-                                <div className="ml-auto">
+                                <div className="ml-auto flex items-center gap-1">
                                     {showDistance && <DistanceBadge meters={distanceMeters} />}
+
+                                    { noGrouping && <>
+                                    <ClickableIcon
+                                    label={initValue === items[0].uuid ? "Fjern utgangspunkt" : "Sett som utgangspunkt"}
+                                    add={{ init: initValue === items[0].uuid ? null : items[0].uuid }}
+                                    className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900"
+                                >
+                                    {initValue == items[0].uuid ? <PiXBold aria-hidden="true" /> : <PiCheck aria-hidden="true" />}
+                                </ClickableIcon>
+
+                                </>}
                                 </div>
                             </div>
               
