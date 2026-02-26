@@ -472,7 +472,7 @@ export default function SearchResults() {
                 add={{ q: initSearchLabel, maxResults: expandedMaxResultsParam }}
                 className="ml-auto px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer no-underline max-w-full min-w-0"
               >
-                <PiFunnel aria-hidden="true" className="flex-shrink-0" />
+                {!(qParam && !identicalQuery) &&<PiFunnel aria-hidden="true" className="flex-shrink-0" />}
                 <span className="ml-1 truncate flex-1 min-w-0">
                   {initSearchLabel}
                 </span>
