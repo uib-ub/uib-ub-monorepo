@@ -23,6 +23,7 @@ import ActiveFilters from "../../form/active-filters";
 import ResultItem from "./result-item";
 import SearchQueryDisplay from "./search-query-display";
 import IconButton from "@/components/ui/icon-button";
+import GroupedResultsToggle from "./grouped-results-toggle";
 
 
 
@@ -551,12 +552,18 @@ export default function SearchResults() {
                         >
                           {isFetchingNextPage && <Spinner className="text-white" status="Lastar" />} {isFetchingNextPage ? 'Lastar...' : 'Vis meir'}
                         </button>
+                        
                       </li>
                     )}
                   </Fragment>
                 )
               })})()}
           </ul>
+          {isMobile && (
+                          <div className="mt-2 px-4">
+                            <GroupedResultsToggle />
+                          </div>
+                        )}
         </>
       )}
 

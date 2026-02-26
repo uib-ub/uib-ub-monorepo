@@ -53,12 +53,25 @@ export default function useSearchData() {
         data?.aggregations?.groups?.unique_group_ids?.value ??
         data?.aggregations?.groups?.value
 
+    const rawTotalHits = data?.hits?.total || null
+
+    // Explicit totals for namnegrupper (groups) vs individual documents (kjeldeoppslag)
+    const groupTotalHits =
+        (groupCount ?? null) !== null
+            ? { value: groupCount, relation: 'eq' as const }
+            : null
+
+    const docTotalHits = rawTotalHits || null
+
+    // Preserve existing behaviour: prefer unique group.id count when available,
+    // but also expose both counters explicitly for UI components that need them.
+    const totalHits = groupTotalHits || docTotalHits || null
+
     return {
         searchData: data?.hits?.hits || null,
-        // Prefer unique group.id count when available; fall back to raw document total
-        totalHits: (groupCount ?? null) !== null
-            ? { value: groupCount, relation: 'eq' }
-            : data?.hits?.total || null,
+        totalHits,
+        groupTotalHits,
+        docTotalHits,
         searchError: error,
         searchLoading: isLoading,
         searchBounds: data?.limitedBounds || null,

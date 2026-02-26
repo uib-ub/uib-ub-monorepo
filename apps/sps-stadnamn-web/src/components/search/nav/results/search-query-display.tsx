@@ -12,7 +12,6 @@ export default function SearchQueryDisplay() {
   const router = useRouter()
   const searchQ = searchParams.get('q')
   const init = searchParams.get('init')
-  const noGrouping = searchParams.get('noGrouping') === 'on'
   const { groupData: initGroupData } = useGroupData(init)
   const qParam = searchParams.get('q')
   const initHasCoordinates = !!initGroupData?.sources?.some((source: any) => source.location?.coordinates)
@@ -44,22 +43,6 @@ export default function SearchQueryDisplay() {
     router.push(`?${newParams.toString()}`)
   }
 
-  const handleNoGroupingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newParams = new URLSearchParams(searchParams)
-    if (e.target.checked) {
-      newParams.delete('noGrouping')
-      if (init) {
-        newParams.set('init', stringToBase64Url(initGroupData?.group?.id))
-      }
-    } else {
-      newParams.set('noGrouping', 'on')
-      if (init) {
-        newParams.set('init', initGroupData?.fields?.["uuid"]?.[0])
-      }
-    }
-    router.push(`?${newParams.toString()}`)
-  }
-
   if (!searchQ) return null
 
   return (
@@ -85,16 +68,7 @@ export default function SearchQueryDisplay() {
           />
           Fulltekst
         </label>
-        <label className="flex items-center gap-2 p-1">
-          <input
-            type="checkbox"
-            checked={!noGrouping}
-            onChange={handleNoGroupingChange}
-            className="h-3 w-3 xl:h-4 xl:w-4"
-          />
-          Gruppert
-        </label>
-
+        
         {qParam && initHasCoordinates && (
               <div
                 className="ml-auto flex items-center gap-3 xl:gap-2 text-sm"

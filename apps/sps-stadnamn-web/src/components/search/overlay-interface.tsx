@@ -7,20 +7,21 @@ import useGroupData from "@/state/hooks/group-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
+import { useDebugStore } from "@/state/zustand/debug-store";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useRef } from "react";
-import { PiCaretDownBold, PiCaretLeftBold, PiCaretUpBold, PiX } from "react-icons/pi";
+import { PiBook, PiBookOpen, PiCaretDownBold, PiCaretLeftBold, PiCaretUpBold, PiX } from "react-icons/pi";
 import MapSettings from "../map/map-settings";
 import { Badge, TitleBadge } from "../ui/badge";
 import Clickable from "../ui/clickable/clickable";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import FacetSection from "./nav/facets/facet-section";
+import GroupedResultsToggle from "./nav/results/grouped-results-toggle";
 import SearchResults from "./nav/results/search-results";
 
 import { fieldConfig } from "@/config/search-config";
 import { defaultMaxResultsParam } from "@/config/max-results";
-import { useDebugStore } from "@/state/zustand/debug-store";
 import Spinner from "../svg/Spinner";
 import ClientFacet from "./nav/facets/client-facet";
 import DatasetFacet from "./nav/facets/dataset-facet";
@@ -263,34 +264,17 @@ export default function OverlayInterface() {
                         <TreeWindow />
                     ) : (
                         <>
-                            <div className={`w-full flex shrink-0 items-center ${isMobile ? 'h-8 min-h-8' : 'h-12 min-h-12'} px-2 py-1 xl:px-0 gap-2 xl:pl-2`}>
+                            <div className={` flex items-center w-full ${isMobile ? 'h-8 min-h-8' : 'h-12 min-h-12'} px-2 py-1 xl:px-0 gap-2 xl:pl-2`}>
                                 <Clickable
                                     aria-expanded={!!maxResults}
                                     aria-controls="results-panel"
-                                    className="flex items-center gap-2 xl:px-1 w-full"
+                                    className="flex items-center gap-2 xl:px-1"
                                     // When opening, use default results count. When closing, remove param.
                                     add={{ maxResults: maxResults ? null : defaultMaxResultsParam }}
                                     remove={["maxResults", ...(isMobile ? ['options'] : [])]}
                                 >
-                                    
-
-                                    <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-lg text-neutral-900 font-sans">{coordinateInfo && `Kartfesting`  || labelFilter && 'Namneformer' || 'Treff'}</div>
-
-                                    {!coordinateInfo && ! labelFilter && <>
-
-                                    {searchLoading ? (
-                                        <Spinner status="Laster resultat" className="text-lg" />
-                                    ) : (
-                                        <TitleBadge
-                                            className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`}
-                                            count={totalHits?.value || 0}
-                                        />
-                                    )}
-
-                                    </>}
-                                    
-                                    {!isMobile && (
-                                        <span className="ml-auto pr-2 flex w-6 justify-end">
+                                    {!coordinateInfo && !labelFilter && !isMobile && (
+                                        <span className="flex w-6 justify-center">
                                             {showResults ? (
                                                 <PiCaretUpBold className="text-lg" />
                                             ) : (
@@ -298,7 +282,30 @@ export default function OverlayInterface() {
                                             )}
                                         </span>
                                     )}
+
+                                    <div id={isMobile ? 'drawer-title' : 'right-title'} className={`text-base xl:text-lg text-neutral-900 font-sans ${isMobile ? 'w-full flex justify-end' : ''}`}>
+                                        {coordinateInfo && `Kartfesting` || labelFilter && 'Namneformer' || 'Treff'}
+                                    </div>
+
+                                    {!coordinateInfo && !labelFilter && (
+                                        <>
+                                            {searchLoading ? (
+                                                <Spinner status="Laster resultat" className="text-lg" />
+                                            ) : (
+                                                <TitleBadge
+                                                    className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`}
+                                                    count={totalHits?.value || 0}
+                                                />
+                                            )}
+                                        </>
+                                    )}
                                 </Clickable>
+
+                                {!coordinateInfo && !labelFilter && !isMobile && (
+                                    <div className="ml-auto mr-4">
+                                        <GroupedResultsToggle />
+                                    </div>
+                                )}
                             </div>
                             {showResults && (
                                 <div
