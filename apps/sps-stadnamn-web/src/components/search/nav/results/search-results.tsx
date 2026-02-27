@@ -292,7 +292,7 @@ export default function SearchResults() {
   return (
     <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
       {
-        (point && !init) && (
+        (point && !init) && !coordinateInfo && (
           <div className="p-3 flex flex-col gap-2">
             <div className="flex items-center gap-2 justify-between">
               <IconButton label="Gå til koordinat" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/markerPrimaryCheck.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" /></IconButton>
