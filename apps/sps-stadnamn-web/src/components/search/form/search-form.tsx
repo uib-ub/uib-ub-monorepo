@@ -59,6 +59,7 @@ export default function SearchForm() {
 
 
     const mode = useMode()
+    const isTableMode = mode === 'table'
 
     // Initialize from URL params - this is the source of truth
     const urlQuery = searchParams.get('q') || ''
@@ -70,7 +71,8 @@ export default function SearchForm() {
     const listRef = useRef<HTMLUListElement | null>(null)
 
     const { data, isLoading } = useQuery({
-        queryKey: ['autocomplete', inputState, datasetFilters],
+        queryKey: ['autocomplete', inputState, datasetFilters, isTableMode],
+        enabled: !isTableMode && !!inputState.trim(),
         placeholderData: (prevData: any) => prevData,
         queryFn: () => autocompleteQuery(searchFilterParamsString, inputState, isMobile, datasetFilters)
     })
@@ -178,6 +180,13 @@ export default function SearchForm() {
     useEffect(() => {
         setActiveIndex(-1)
     }, [inputState, autocompleteOpen])
+
+    // Close autocomplete when switching to table mode
+    useEffect(() => {
+        if (isTableMode && autocompleteOpen) {
+            setAutocompleteOpen(false)
+        }
+    }, [isTableMode, autocompleteOpen, setAutocompleteOpen])
 
     const selectOption = (index: number) => {
         if (!rankedHits.length) return
@@ -326,7 +335,7 @@ export default function SearchForm() {
                         inputValue.current = v
                         setInputState(v)
                         setActiveIndex(-1)
-                        setAutocompleteOpen(!!v.trim())
+                        setAutocompleteOpen(!isTableMode && !!v.trim())
                     }}
                     onKeyDown={(e) => {
                         if (e.key === 'Escape') {
@@ -339,11 +348,11 @@ export default function SearchForm() {
                         const optionsCount = 1 + rankedHits.length
                         if (e.key === 'ArrowDown') {
                             e.preventDefault()
-                            if (!autocompleteOpen) setAutocompleteOpen(true)
+                            if (!autocompleteOpen && !isTableMode) setAutocompleteOpen(true)
                             setActiveIndex((prev) => ((prev + 1 + optionsCount) % optionsCount))
                         } else if (e.key === 'ArrowUp') {
                             e.preventDefault()
-                            if (!autocompleteOpen) setAutocompleteOpen(true)
+                            if (!autocompleteOpen && !isTableMode) setAutocompleteOpen(true)
                             setActiveIndex((prev) => ((prev - 1 + optionsCount) % optionsCount))
                         } else if (e.key === 'Enter') {
                             if (autocompleteOpen && activeIndex >= 0) {
@@ -407,7 +416,7 @@ export default function SearchForm() {
                             aria-selected={activeIndex === 1 + data.hits.hits.findIndex((x: any) => x._id === hit._id)}>
                             {hit.fields.location?.length ? (
                                 <span className="flex items-center h-6 flex-shrink-0">
-                                    <PiMapPinFill aria-hidden="true" className="text-neutral-700" />
+                                    <PiMapPinFill aria-hidden="true" className="text-primary-700" />
                                 </span>
                             ) : null}
                             {hit._index.split('-')[2].endsWith('_g') && (

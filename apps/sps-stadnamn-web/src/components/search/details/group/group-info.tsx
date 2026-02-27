@@ -157,6 +157,10 @@ export default function GroupInfo({
 
     const showNamesTab = useMemo(() => {
         // Replicate NamesTab's filter determinism: timeline or names without year
+        const totalSources = Object.values(datasets).reduce((sum, sources) => sum + sources.length, 0)
+        if (totalSources < 6) {
+            return false
+        }
         const nameToYears: Record<string, Set<string>> = {}
         Object.values(datasets).forEach((sources: any[]) => {
             sources.forEach((source: any) => {
@@ -190,6 +194,17 @@ export default function GroupInfo({
         const yearsOrdered = Object.keys(namesByYear)
         const totalUniqueNames = Object.keys(nameToYears).length
         const totalYears = yearsOrdered.length
+
+        // Don't show if the number of unique labels or the number of years is the same as the number of sources
+        if (totalUniqueNames === totalSources) {
+            return false
+        }
+        if (totalYears === totalSources) {
+            return false
+        }
+
+
+
 
         // Don't show filter if there's only one filter option total
         // (one year and one name, or one name with no years, or one year with no names)
@@ -277,33 +292,37 @@ export default function GroupInfo({
                 </div>
             )}
 
-            {
-                audioItems?.map((audioItem) => (
-                    <div key={audioItem.uuid + 'audio'}>
-                        {audioItem.recordings.map((recording: any, index: number) => (
-                            <div key={"audio-" + recording.uuid} className="flex items-center p-2">
-                                <audio
-                                    controls
-                                    aria-label={`Lydopptak${audioItems.length > 1 ? ` ${index + 1} av ${audioItem.recordings.length}` : ''}`}
-                                    src={`https://iiif.spraksamlingane.no/iiif/audio/hord/${recording.file}`}
-                                    className="h-10 rounded-md
+            {!shouldShowLabelFilter && !coordinateInfo && <>
+
+                {
+                    audioItems?.map((audioItem) => (
+                        <div key={audioItem.uuid + 'audio'}>
+                            {audioItem.recordings.map((recording: any, index: number) => (
+                                <div key={"audio-" + recording.uuid} className="flex items-center p-2">
+                                    <audio
+                                        controls
+                                        aria-label={`Lydopptak${audioItems.length > 1 ? ` ${index + 1} av ${audioItem.recordings.length}` : ''}`}
+                                        src={`https://iiif.spraksamlingane.no/iiif/audio/hord/${recording.file}`}
+                                        className="h-10 rounded-md
                                     [&::-webkit-media-controls-enclosure]:bg-transparent 
                                     [&::-webkit-media-controls-current-time-display]:text-neutral-800 
                                     [&::-webkit-media-controls-time-remaining-display]:text-neutral-800"
-                                />
-                                <Link href={`/iiif/${recording.manifest}`} className="ml-1 p-2 rounded-full aspect-square">
-                                    <PiArchive className="text-md text-neutral-800" aria-hidden="true" />
-                                </Link>
-                            </div>
-                        ))}
-                    </div>
-                ))
-            }
-            {iiifItems?.length > 0 && !coordinateInfo && <>
-                <Carousel items={iiifItems} />
-            </>
-            }
-            {textItems.length > 0 && !coordinateInfo && <TextTab textItems={textItems} />}
+                                    />
+                                    <Link href={`/iiif/${recording.manifest}`} className="ml-1 p-2 rounded-full aspect-square">
+                                        <PiArchive className="text-md text-neutral-800" aria-hidden="true" />
+                                    </Link>
+                                </div>
+                            ))}
+                        </div>
+                    ))
+                }
+                {iiifItems?.length > 0 && <>
+                    <Carousel items={iiifItems} />
+                </>
+                }
+                {textItems.length > 0 && <TextTab textItems={textItems} />}
+
+            </>}
 
             <div className="min-w-0 w-full flex flex-col">
                 {/* Filtering / coordinate sticky headers */}
@@ -331,27 +350,9 @@ export default function GroupInfo({
                 )}
 
                 {coordinateInfo && (
-                    <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 py-3">
+                    <div className="w-full shrink-0 border-b border-neutral-100 bg-white px-3 py-3">
                         <div className="flex flex-col min-w-0 gap-y-3">
-                            <div className="flex min-w-0 items-center justify-between gap-x-3 gap-y-2">
-                                <div className="min-w-0 flex-1 flex items-center gap-2 text-base text-neutral-900">
-                                    <span className="font-semibold truncate">
-                                        {groupLabel}
-                                    </span>
-                                    <span className="truncate text-neutral-900">
-                                        {detailsRenderer(groupData)}
-                                    </span>
-                                </div>
-                                <Clickable
-                                    remove={['coordinateInfo']}
-                                    aria-label="Tilbake"
-                                    className="inline-flex shrink-0 items-center gap-1.5 text-neutral-800 hover:text-neutral-900"
-                                >
-                                    <PiCaretLeftBold className="text-base shrink-0" aria-hidden="true" />
-                                    <span className="whitespace-nowrap">Tilbake</span>
-                                </Clickable>
-                            </div>
-                            <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
                                 {(() => {
                                     const total = uniqueCoordinates.length
                                     const activeIndexRaw = uniqueCoordinates.findIndex((c) => c === activePoint)
@@ -400,17 +401,17 @@ export default function GroupInfo({
                                             <span className="min-w-0 flex-1 truncate text-base text-neutral-900" title={coordText}>
                                                 {coordText}
                                             </span>
-                                            <div className="flex shrink-0 items-center gap-1.5">
+                                            {total > 1 && <div className="flex shrink-0 items-center gap-1.5">
                                                 <NavBtn label="Førre koordinat" targetIndex={Math.max(0, activeIndex - 1)} disabled={activeIndex === 0}>
                                                     <PiCaretLeftBold aria-hidden="true" />
                                                 </NavBtn>
                                                 <span className="text-neutral-700 text-sm tabular-nums text-center px-2" aria-hidden="true">
-                                                    Koordinat {activeIndex + 1} av {total}
+                                                    {activeIndex + 1} av {total}
                                                 </span>
                                                 <NavBtn label="Neste koordinat" targetIndex={Math.min(total - 1, activeIndex + 1)} disabled={activeIndex === total - 1}>
                                                     <PiCaretRightBold aria-hidden="true" />
                                                 </NavBtn>
-                                            </div>
+                                            </div>}
                                         </>
                                     )
                                 })()}
@@ -445,60 +446,60 @@ export default function GroupInfo({
 
             {!coordinateInfo && !labelFilter && !noGrouping && <div className="px-3 ml-auto mt-auto">
                 <div className="flex flex-row items-center gap-2">
-                        
 
-                        {!preferredFlyTarget ? 
-                                    <span className="text-sm text-neutral-700 px-2 whitespace-nowrap">
-                                        Utan koordinat
-                                    </span>
-                                :
 
-                            <ClickableIcon
-                                    label="Kartfesting"
-                                    onClick={() => {
-                                        mapFunctionRef.current?.flyTo(
-                                            preferredFlyTarget,
-                                            15,
-                                            { duration: 0.25, maxZoom: 18, padding: [50, 50] }
-                                        );
-                                        if (isMobile && snappedPosition !== 'bottom') {
-                                            setSnappedPosition('bottom');
-                                        }
-                                    }}
-                                    remove={['group', 'activePoint']}
-                                    add={{ group: initValue == activeGroupValue ? null : stringToBase64Url(groupData.group.id), activePoint: preferredFlyTarget?.toString(), coordinateInfo: 'on' }}
-                                    className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
-                                >
-                                    <PiMapTrifold aria-hidden="true" className="text-2xl text-neutral-800" />
+                    {!preferredFlyTarget ?
+                        <span className="text-sm text-neutral-700 px-2 whitespace-nowrap">
+                            Utan koordinat
+                        </span>
+                        :
 
-                                </ClickableIcon>
+                        <ClickableIcon
+                            label="Kartfesting"
+                            onClick={() => {
+                                mapFunctionRef.current?.flyTo(
+                                    preferredFlyTarget,
+                                    15,
+                                    { duration: 0.25, maxZoom: 18, padding: [50, 50] }
+                                );
+                                if (isMobile && snappedPosition !== 'bottom') {
+                                    setSnappedPosition('bottom');
                                 }
+                            }}
+                            remove={['group', 'activePoint']}
+                            add={{ group: initValue == activeGroupValue ? null : stringToBase64Url(groupData.group.id), activePoint: preferredFlyTarget?.toString(), coordinateInfo: 'on' }}
+                            className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
+                        >
+                            <PiMapTrifold aria-hidden="true" className="text-2xl text-neutral-800" />
 
-                            <ClickableIcon
-                                label={`${isInit ? "Fjern som startpunkt" : "Vel som startpunkt"}`}
-                                onClick={() => {
-                                    // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
-                                    // The subsequent URL param update can remount components quickly, so do this eagerly.
-                                    if (preferredFlyTarget) {
-                                        mapFunctionRef.current?.flyTo(preferredFlyTarget, 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-                                    }
-                                    
-                                }}
-                                remove={['group', 'point', 'activePoint', 'activeYear', 'activeName']}
-                                add={{
-                                    // When pinning a group ("vel"), treat it as a fresh init selection.
-                                    q: searchParams.get('q') ? groupData.fields.label[0] : null,
-                                    init: isInit ? null : noGrouping ? groupData.fields["uuid"][0] : stringToBase64Url(groupData.group.id),
-                                    point: (!isInit && preferredFlyTarget) ? `${preferredFlyTarget?.[0]},${preferredFlyTarget?.[1]}` : null,
-                                    maxResults: defaultMaxResultsParam
-                                }}
-                                className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
-                            >
-                                {isInit ? <PiX aria-hidden="true" className="text-2xl text-neutral-800" /> : <PiCheck aria-hidden="true" className="text-2xl text-neutral-800" />}
-                            </ClickableIcon>
-                        
-                    </div>
-                </div>}
+                        </ClickableIcon>
+                    }
+
+                    <ClickableIcon
+                        label={`${isInit ? "Fjern som startpunkt" : "Vel som startpunkt"}`}
+                        onClick={() => {
+                            // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
+                            // The subsequent URL param update can remount components quickly, so do this eagerly.
+                            if (preferredFlyTarget) {
+                                mapFunctionRef.current?.flyTo(preferredFlyTarget, 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+                            }
+
+                        }}
+                        remove={['group', 'point', 'activePoint', 'activeYear', 'activeName']}
+                        add={{
+                            // When pinning a group ("vel"), treat it as a fresh init selection.
+                            q: searchParams.get('q') ? groupData.fields.label[0] : null,
+                            init: isInit ? null : noGrouping ? groupData.fields["uuid"][0] : stringToBase64Url(groupData.group.id),
+                            point: (!isInit && preferredFlyTarget) ? `${preferredFlyTarget?.[0]},${preferredFlyTarget?.[1]}` : null,
+                            maxResults: defaultMaxResultsParam
+                        }}
+                        className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
+                    >
+                        {isInit ? <PiX aria-hidden="true" className="text-2xl text-neutral-800" /> : <PiCheck aria-hidden="true" className="text-2xl text-neutral-800" />}
+                    </ClickableIcon>
+
+                </div>
+            </div>}
 
         </div>
     );
