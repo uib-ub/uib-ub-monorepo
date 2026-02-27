@@ -1,17 +1,40 @@
 'use client'
 
+import { useContext, useEffect, useRef } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { stringToBase64Url } from "@/lib/param-utils"
 import useGroupData from "@/state/hooks/group-data"
 import ToggleButton from "@/components/ui/toggle-button"
+import { GlobalContext } from "@/state/providers/global-provider"
 
 export default function GroupedResultsToggle() {
     const searchParams = useSearchParams()
     const router = useRouter()
+    const { scrollableContentRef } = useContext(GlobalContext)
 
     const init = searchParams.get('init')
     const noGrouping = searchParams.get('noGrouping') === 'on'
     const isGrouped = !noGrouping
+
+    // Track previous mode so we only scroll when it actually changes
+    const previousNoGroupingRef = useRef(noGrouping)
+
+    useEffect(() => {
+        if (previousNoGroupingRef.current === noGrouping) {
+            // First run or no change – just sync the value
+            previousNoGroupingRef.current = noGrouping
+            return
+        }
+
+        previousNoGroupingRef.current = noGrouping
+
+        if (scrollableContentRef.current) {
+            scrollableContentRef.current.scrollTo({
+                top: 0,
+                behavior: 'auto',
+            })
+        }
+    }, [noGrouping, scrollableContentRef])
 
     // Reuse the same init-based group lookup logic that the rest of the UI uses.
     const { groupData: initGroupData } = useGroupData(init)
