@@ -290,7 +290,7 @@ export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
 
     return (
         <div className="flex flex-col gap-3">
-            {labelFilter && <p className="text-neutral-900">Filtreringsalternativa viser namneformer Språksamlingane har henta ut frå kjeldene, eventuelt med tidlegaste registrerte år. Lista er ikkje naudsynlegvis komplett, og kan innehalde feil.</p>}
+            {labelFilter && <p className="text-neutral-900">Filtreringsalternativa baserer seg på namneformer Språksamlingane har henta ut frå kjeldene, eventuelt med tidlegaste registrerte år. Lista er ikkje naudsynlegvis komplett, og kan innehalde feil.</p>}
             
 
             <div>
@@ -393,7 +393,7 @@ export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
                                         />
 
                                         {/* Year and name variants on same line */}
-                                        <div className="ml-6 flex items-center gap-2 flex-wrap">
+                                        <div className="ml-6 flex items-center gap-2 min-w-0">
                                             {/* Year button */}
                                             <Clickable
                                                 replace
@@ -410,9 +410,9 @@ export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
                                                 {item.year}
                                             </Clickable>
 
-                                            {/* Name variants for this year - on same line */}
+                                            {/* Name variants for this year */}
                                             {item.names.length > 0 && (
-                                                <>
+                                                <div className="flex-1 min-w-0 flex flex-wrap gap-2">
                                                     {item.names.map((nameKey) => {
                                                         const isNameSelected = activeName === nameKey
 
@@ -425,16 +425,19 @@ export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
                                                                     labelFilter: 'on',
                                                                     ...(groupCode ? { group: groupCode } : {}),
                                                                 }}
-                                                                className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isNameSelected
+                                                                className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors max-w-full overflow-hidden ${isNameSelected
                                                                     ? 'bg-accent-800 text-white'
                                                                     : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
                                                                     }`}
+                                                                title={nameKey}
                                                             >
-                                                                {nameKey}
+                                                                <span className="truncate max-w-full">
+                                                                    {nameKey}
+                                                                </span>
                                                             </Clickable>
                                                         )
                                                     })}
-                                                </>
+                                                </div>
                                             )}
                                         </div>
                                     </li>
