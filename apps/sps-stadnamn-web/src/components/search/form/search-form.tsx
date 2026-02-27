@@ -63,7 +63,7 @@ export default function SearchForm() {
     // Initialize from URL params - this is the source of truth
     const urlQuery = searchParams.get('q') || ''
     const [inputState, setInputState] = useState<string>(urlQuery)
-    const [point, setPoint] = useState<string>()
+    const [submittedPoint, setSubmittedPoint] = useState<string | null>(null)
     const [autocompleteFacetFilters, setAutocompleteFacetFilters] = useState<[string, string][]>(facetFilters)
     const [autocompleteDatasetFilters, setAutocompleteDatasetFilters] = useState<[string, string][]>(datasetFilters)
     const [activeIndex, setActiveIndex] = useState<number>(-1)
@@ -138,7 +138,9 @@ export default function SearchForm() {
             setSelectedGroup(group)
             setInputState(inputString)
             if (coordinates?.length == 2) {
-                panPointIntoView(mapFunctionRef.current, [coordinates[1], coordinates[0]], isMobile, false)
+                const [lon, lat] = coordinates
+                panPointIntoView(mapFunctionRef.current, [lat, lon], isMobile, false)
+                setSubmittedPoint(`${lat},${lon}`)
             }
         }
 
@@ -195,7 +197,9 @@ export default function SearchForm() {
             }
             const coords = hit.fields.location?.[0]?.coordinates
             if (coords?.length === 2) {
-                panPointIntoView(mapFunctionRef.current, [coords[1], coords[0]], isMobile, false)
+                const [lon, lat] = coords
+                panPointIntoView(mapFunctionRef.current, [lat, lon], isMobile, false)
+                setSubmittedPoint(`${lat},${lon}`)
             }
         }
 
@@ -273,7 +277,7 @@ export default function SearchForm() {
                     : 1)
         }}>
         <header className={`${isMobile && autocompleteOpen ? 'sr-only' : `flex flex-none ${isMobile ? 'w-14 h-14' : 'absolute top-2 left-2 h-12 w-auto'}`} ${(autocompleteOpen || menuOpen) ? '' : 'shadow-lg'} bg-neutral-50`}><Menu shadow autocompleteShowing={autocompleteOpen && data?.hits?.hits?.length > 0} /></header>
-        <Form ref={form} onSubmitCapture={() => setSelectedGroup(null)} action="/search" id="search-form" aria-label="Stadnamnsøk"
+        <Form ref={form} onSubmitCapture={() => { setSelectedGroup(null); setSubmittedPoint(null) }} action="/search" id="search-form" aria-label="Stadnamnsøk"
             className={`${isMobile ? 'h-14' : 'h-12'} ${isMobile && autocompleteOpen ? 'w-[100svw]' : isMobile ? 'w-[calc(100svw-3.5rem)]' : 'w-[calc(30svw-4rem)] lg:w-[calc(25svw-4rem)] absolute top-2 left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? `z-[7000] ${!isMobile && '!rounded-b-none'}` : 'z-[3001]'}`}
 
 
@@ -355,7 +359,7 @@ export default function SearchForm() {
                 />
 
                 {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset} />)}
-                {point && <input type="hidden" name="point" value={point} />}
+                {submittedPoint && <input type="hidden" name="point" value={submittedPoint} />}
                 {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''} />}
 
                 {(inputState || searchParams.get('q')) && !menuOpen &&
@@ -369,7 +373,7 @@ export default function SearchForm() {
             {/* results: integer – minimum is 5 when present. */}
             {options && <input type="hidden" name="options" value={'on'} />}
             {searchParams.get('noGrouping') && <input type="hidden" name="noGrouping" value={'on'} />}
-            {searchParams.get('point') && <input type="hidden" name="point" value={searchParams.get('point') || ''} />}
+            {!submittedPoint && searchParams.get('point') && <input type="hidden" name="point" value={searchParams.get('point') || ''} />}
             <input type="hidden" name="maxResults" value={defaultMaxResultsParam} />
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
