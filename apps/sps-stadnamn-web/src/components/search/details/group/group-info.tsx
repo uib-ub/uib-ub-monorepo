@@ -397,7 +397,7 @@ export default function GroupInfo({
                                             <span className="min-w-0 flex-1 truncate text-base text-neutral-900" title={coordText}>
                                                 {coordText}
                                             </span>
-                                            <div className="flex shrink-0 items-center gap-1.5">
+                                            {total > 1 && <div className="flex shrink-0 items-center gap-1.5">
                                                 <NavBtn label="Førre koordinat" targetIndex={Math.max(0, activeIndex - 1)} disabled={activeIndex === 0}>
                                                     <PiCaretLeftBold aria-hidden="true" />
                                                 </NavBtn>
@@ -407,7 +407,7 @@ export default function GroupInfo({
                                                 <NavBtn label="Neste koordinat" targetIndex={Math.min(total - 1, activeIndex + 1)} disabled={activeIndex === total - 1}>
                                                     <PiCaretRightBold aria-hidden="true" />
                                                 </NavBtn>
-                                            </div>
+                                            </div>}
                                         </>
                                     )
                                 })()}
