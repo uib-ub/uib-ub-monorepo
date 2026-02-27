@@ -17,14 +17,12 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { PiCaretRightBold, PiCheck, PiFunnel, PiMagnifyingGlass, PiMapPinFill, PiPencilSimpleBold, PiPlayFill, PiQuestion, PiStopFill, PiX, PiXBold } from "react-icons/pi";
-import ToggleButton from "@/components/ui/toggle-button";
 import GroupInfo from "../../details/group/group-info";
 import ActiveFilters from "../../form/active-filters";
 import ResultItem from "./result-item";
 import SearchQueryDisplay from "./search-query-display";
 import IconButton from "@/components/ui/icon-button";
 import GroupedResultsToggle from "./grouped-results-toggle";
-import { getInitAnchorMarker } from "@/components/map/markers";
 
 
 
@@ -79,13 +77,6 @@ export default function SearchResults() {
   const point = usePoint()
   const { facetFilters, datasetFilters } = useSearchQuery()
   const filterCount = facetFilters.length + datasetFilters.length
-  const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
-  // State for inline coordinate editing
-  const [isEditingCoordinates, setIsEditingCoordinates] = useState(false)
-  const [editLat, setEditLat] = useState('')
-  const [editLon, setEditLon] = useState('')
-  const previousPointRef = useRef<string | null>(null)
-  const { totalHits } = useSearchData()
   const router = useRouter()
   const initSearchLabel = initGroupData?.fields?.label?.[0]?.trim()
   const identicalQuery = qParam?.toLowerCase() == initSearchLabel?.toLowerCase()
@@ -325,7 +316,7 @@ export default function SearchResults() {
         (point && !init) && (
           <div className="p-3 flex flex-col gap-2">
             <div className="flex items-center gap-2 justify-between">
-              <IconButton label="Gå til koordinat" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/markerPrimaryCheck.svg" alt="" aria-hidden="true" className="w-8 h-8 self-center" /></IconButton>
+              <IconButton label="Gå til koordinat" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/markerPrimaryCheck.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" /></IconButton>
                
                 <span className="flex-1">
                   {point ? (
