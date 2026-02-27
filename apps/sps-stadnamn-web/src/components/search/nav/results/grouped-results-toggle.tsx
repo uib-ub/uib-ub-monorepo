@@ -65,7 +65,7 @@ export default function GroupedResultsToggle() {
     return (
         <div className="flex items-center gap-2 text-xs xl:text-sm text-neutral-900">
             <span className="sr-only">Visningsmodus for treff</span>
-            <div className="inline-flex gap-2" role="radiogroup" aria-label="Visningsmodus for treff">
+            <div className="flex-wrap inline-flex gap-2" role="radiogroup" aria-label="Visningsmodus for treff">
                 <ToggleButton
                     isSelected={isGrouped}
                     role="radio"
