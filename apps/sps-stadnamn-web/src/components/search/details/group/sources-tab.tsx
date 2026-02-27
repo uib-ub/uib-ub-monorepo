@@ -145,7 +145,7 @@ export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabP
                             </div>
                         )}
                         <Link
-                            className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md py-1 !px-3 btn btn-outline btn-compact text-lg min-w-0"
+                            className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md py-1 !px-3 btn btn-outline btn-compact text-lg shrink-0 max-w-sm"
                             href={"/uuid/" + s.uuid}
                         >
                             <span className="flex items-baseline gap-1 min-w-0 max-w-full">
@@ -158,7 +158,7 @@ export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabP
                                     {s.label}
                                 </strong>
                                 {sosiTypesDisplay && (
-                                    <span className="text-neutral-900 text-sm truncate max-w-[40%]">
+                                    <span className="text-neutral-900 text-sm truncate min-w-0">
                                         {sosiTypesDisplay}
                                     </span>
                                 )}
