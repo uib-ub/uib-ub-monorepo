@@ -88,7 +88,7 @@ export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabP
             ? (Array.isArray(s.sosi) ? s.sosi : [s.sosi]).filter((sosi: string) => sosi)
             : []
         const sosiTypes = sosiTypesRaw.map((type: string) => sosiVocab?.[type]?.label || type)
-        const sosiTypesDisplay = sosiTypes.length > 0 ? ` (${sosiTypes.join(', ')})` : ''
+        const sosiTypesDisplay = sosiTypes.length > 0 ? ` ${sosiTypes.join(', ')}` : ''
 
         const lat = s.location?.coordinates?.[1];
         const lng = s.location?.coordinates?.[0];
@@ -144,8 +144,25 @@ export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabP
                                 
                             </div>
                         )}
-                        <Link className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md py-1 !px-3 btn btn-outline btn-compact text-lg" href={"/uuid/" + s.uuid}>
-                            {cadastrePrefix}<strong>{s.label}</strong> {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
+                        <Link
+                            className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md py-1 !px-3 btn btn-outline btn-compact text-lg flex-1 min-w-0"
+                            href={"/uuid/" + s.uuid}
+                        >
+                            <span className="flex items-center gap-1 min-w-0 w-full">
+                                {cadastrePrefix && (
+                                    <span className="shrink-0 text-neutral-950">
+                                        {cadastrePrefix}
+                                    </span>
+                                )}
+                                <strong className="truncate min-w-0 text-neutral-950">
+                                    {s.label}
+                                </strong>
+                                {sosiTypesDisplay && (
+                                    <span className="text-neutral-900 text-sm truncate max-w-[40%]">
+                                        {sosiTypesDisplay}
+                                    </span>
+                                )}
+                            </span>
                         </Link>
 
                         {additionalLabels && <span className="text-neutral-900">{additionalLabels}</span>}
