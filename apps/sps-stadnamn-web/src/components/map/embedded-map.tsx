@@ -1,5 +1,6 @@
 'use client'
 import { baseMapLookup } from "@/config/basemap-config";
+import { baseLayerKeys } from "@/config/basemap-config";
 import { defaultMaxResultsParam } from "@/config/max-results";
 import dynamic from 'next/dynamic';
 import { getUnlabeledMarker } from "./markers";
@@ -29,10 +30,9 @@ export default function EmbeddedMap({
 }: EmbeddedMapProps) {
     const router = useRouter();
     const storedBaseMap = useMapSettings((state) => state.baseMap);
-    const datasetPerspective = typeof source?.dataset === 'string' ? source.dataset : '';
-    const selectedBaseMapKey = datasetPerspective && baseMapLookup[storedBaseMap?.[datasetPerspective]]
-        ? storedBaseMap[datasetPerspective]
-        : (storedBaseMap?.all && baseMapLookup[storedBaseMap.all] ? storedBaseMap.all : 'world_map');
+    const selectedBaseMapKey = storedBaseMap && baseLayerKeys.includes(storedBaseMap)
+        ? storedBaseMap
+        : 'standard';
     const handleMapClick = () => {
         const newParams = new URLSearchParams();
         if (usePointQuery) {
@@ -78,7 +78,7 @@ export default function EmbeddedMap({
             >
                 {({ TileLayer, Rectangle, Marker, AttributionControl }: any, leaflet: any) => {
                     // Use a simple base map
-                    const baseMap = baseMapLookup[selectedBaseMapKey] || baseMapLookup['world_map'];
+                    const baseMap = baseMapLookup[selectedBaseMapKey] || baseMapLookup['standard'];
                     const visibleMarkerHtml = getUnlabeledMarker("primary").html
                         .replace('role="button"', 'aria-hidden="true"')
                         .replace('tabindex="0"', '');
@@ -88,8 +88,8 @@ export default function EmbeddedMap({
                             <AttributionControl prefix={false} position="bottomright" />
                             {baseMap && (
                                 <TileLayer
-                                    maxZoom={18}
-                                    maxNativeZoom={18}
+                                    maxZoom={baseMap.maxZoom ?? 18}
+                                    maxNativeZoom={baseMap.maxNativeZoom ?? 18}
                                     {...baseMap.props}
                                 />
                             )}

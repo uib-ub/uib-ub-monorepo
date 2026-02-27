@@ -25,6 +25,7 @@ export const GlobalContext = createContext({
   highlightedGroup: { current: null as string | null },
   mapFunctionRef: { current: null as any },
   scrollableContentRef: { current: null as HTMLDivElement | null },
+  scrollToBrukRef: { current: null as ((activePoint: string) => void) | null },
 });
 
 export default function GlobalProvider({ children, isMobile, sosiVocab, coordinateVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any>, coordinateVocab: Record<string, any> }) {
@@ -43,6 +44,7 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   const pathname = usePathname()
   const mapFunctionRef = useRef<any>(null)
   const scrollableContentRef = useRef<HTMLDivElement | null>(null)
+  const scrollToBrukRef = useRef<((activePoint: string) => void) | null>(null)
 
 
 
@@ -119,6 +121,7 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
         currentUrl,
         mapFunctionRef,
         scrollableContentRef,
+        scrollToBrukRef,
         isMobile,
         facetOptions,
         updateFacetOption,

@@ -39,6 +39,41 @@ export function useGroup() {
 }
 
 
+const validatePoint = (point: string): [number, number] | null => {
+    const splitPoint = point.split(',')
+    if (splitPoint.length !== 2) {
+        return null
+    }
+    const lat = parseFloat(splitPoint[0])
+    const lon = parseFloat(splitPoint[1])
+    if (isNaN(lat) || isNaN(lon)) {
+        return null
+    }
+    return [lat, lon] as [number, number]
+}
+
+
+
+
+export function usePoint(): [number, number] | null {
+    const searchParams = useSearchParams()
+    const rawPoint = searchParams.get('point')
+    if (!rawPoint) {
+        return null
+    }
+    return validatePoint(rawPoint)
+}
+
+export function useActivePoint(): [number, number] | null {
+    const searchParams = useSearchParams()
+    const rawPoint = searchParams.get('activePoint') || searchParams.get('point')
+    if (!rawPoint) {
+        return null
+    }
+    return validatePoint(rawPoint)
+}
+
+
 export function useMode() {
     const searchParams = useSearchParams()
     const datasetTag = searchParams.get('datasetTag')
@@ -57,6 +92,7 @@ export function useOverlayParams() {
     const searchParams = useSearchParams()
     const options = searchParams.get('options') == 'on'
     const mapSettings = searchParams.get('mapSettings') == 'on'
+    const overlaySelector = searchParams.get('overlaySelector') == 'on'
     const facet = searchParams.get('facet')
     const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
@@ -64,13 +100,13 @@ export function useOverlayParams() {
 
     const tableOptions = mode == 'table' && !options
 
-
-
-    const showLeftPanel = options || facet || tableOptions
+    // On mobile, when map settings are open, give them priority and hide the left panel
+    const showLeftPanel = (options || facet || tableOptions) && (!isMobile || !mapSettings)
 
     const showResults = mode != 'table' && (maxResults || (isMobile && !showLeftPanel))
-    const showRightPanel = mode != 'table' && (isMobile ? !showLeftPanel : true)
+    // On mobile, always show the right panel if map settings are active, even if the left panel would otherwise be visible
+    const showRightPanel = mode != 'table' && (isMobile ? (mapSettings || !showLeftPanel) : true)
 
-    return { showLeftPanel, showRightPanel, options, mapSettings, facet, showResults, tableOptions }
+    return { showLeftPanel, showRightPanel, options, mapSettings, overlaySelector, facet, showResults, tableOptions }
 
 }

@@ -177,7 +177,7 @@ export default function ServerFacet() {
                   className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"
                 />
                 <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                  <PiMagnifyingGlass aria-hidden={true} className='text-neutral-500 text-xl' />
+                  <PiMagnifyingGlass aria-hidden={true} className='text-neutral-700 text-xl' />
                 </span>
               </div>
             </div>

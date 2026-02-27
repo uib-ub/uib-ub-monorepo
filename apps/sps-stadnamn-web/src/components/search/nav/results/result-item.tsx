@@ -1,6 +1,7 @@
 'use client'
 import Clickable from '@/components/ui/clickable/clickable';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
+import { datasetTitles } from '@/config/metadata-config';
 import { panPointIntoView } from '@/lib/map-utils';
 import { useGroup, usePerspective } from '@/lib/param-hooks';
 import { stringToBase64Url } from '@/lib/param-utils';
@@ -11,6 +12,7 @@ import { useSessionStore } from '@/state/zustand/session-store';
 import { useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useRef } from 'react';
 import { PiXBold } from 'react-icons/pi';
+import DistanceBadge from '@/components/search/distance-badge';
 
 const uniqueLabels = (hit: any) => {
     const labels = new Set<string>();
@@ -35,14 +37,6 @@ const uniqueLabels = (hit: any) => {
     ));
 }
 
-const formatDistance = (meters: number) => {
-    if (meters < 1000) {
-        return `${Math.round(meters)} m`;
-    } else {
-        return `${Math.round(meters / 1000)} km`;
-    }
-};
-
 export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hit: any, onClick?: () => void, notClickable?: boolean } & Record<string, any>) {
     const perspective = usePerspective()
     const searchParams = useSearchParams()
@@ -52,6 +46,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const showScore = useDebugStore((s: any) => s.showScore)
     const isGrunnord = docDataset?.includes('_g')
+    const noGrouping = searchParams.get('noGrouping') === 'on'
 
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
     const { activeGroupValue, initValue } = useGroup()
@@ -60,6 +55,10 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
 
 
     if (!hit._index) return <div className="p-2">Det har oppstått ein feil: Kunne ikkje hente kjelder</div>
+
+    if (noGrouping) {
+        return null
+    }
 
 
 
@@ -80,7 +79,10 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                 panPointIntoView(map, [lat, lng], isMobile, isMobile);
             }}
             remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
-            add={{ group: activeGroupValue == hit.fields["group.id"][0] ? null : stringToBase64Url(hit.fields["group.id"][0]) }}
+            add={{ group: activeGroupValue == hit.fields["group.id"][0] ? null : stringToBase64Url(hit.fields["group.id"][0]),
+                activePoint: hit.fields.location ? `${hit.fields.location[0].coordinates[1]},${hit.fields.location[0].coordinates[0]}` : null
+
+            }}
 
 
             className="w-full text-left p-3">
@@ -109,25 +111,16 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                     )}
                     <span className="text-neutral-900">{detailsRenderer(hit)}</span>
                 </div>
-                {typeof hit.distance === 'number' && (
-                    <span className="bg-neutral-200 text-neutral-900 px-2 rounded-full text-nowrap shrink-0 text-base">
-                        {formatDistance(hit.distance)}
-                    </span>
-                )}
+                <DistanceBadge meters={hit.distance} />
             </div>
             {hit.highlight && <>{formatHighlight(hit.highlight['content.html']?.[0] || hit.highlight['content.text']?.[0])}</>}
+            
         </Clickable>
-        {(initValue && initValue == hit.fields["group.id"][0]) && (
+        {(false && initValue && initValue == hit.fields["group.id"][0]) && (
             <div className="p-3">
                 <ClickableIcon className="h-6 w-6 p-0 rounded-full btn btn-outline text-neutral-700" label="Lukk namnegruppe" remove={['init', 'activePoint', 'point' ]}>
                     <PiXBold />
                 </ClickableIcon>
-            </div>
-        )}
-        {/*TODO: use for dataset count*/}
-        {false && hit.inner_hits?.group?.hits?.total?.value > 1 && (
-            <div className={`ml-auto flex items-center rounded-full text-sm px-2.5 py-1 bg-neutral-100 text-neutral-950 group-aria-expanded:bg-accent-800 group-aria-expanded:text-white`}>
-                {hit.inner_hits?.group?.hits?.total?.value}
             </div>
         )}
 

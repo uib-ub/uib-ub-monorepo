@@ -112,7 +112,7 @@ export default function StatusPage() {
       case 'green': return 'text-green-600';
       case 'yellow': return 'text-yellow-600';
       case 'red': return 'text-red-600';
-      default: return 'text-neutral-600';
+      default: return 'text-neutral-700';
     }
   };
 
@@ -157,7 +157,7 @@ export default function StatusPage() {
   if (loading) {
     return (
       <main className="flex flex-col items-center justify-center min-h-screen p-4 bg-neutral-50">
-        <div className="flex items-center gap-2 text-neutral-600">
+        <div className="flex items-center gap-2 text-neutral-700">
           <PiDatabase className="animate-pulse text-2xl" />
           <span>Loading status...</span>
         </div>
@@ -279,14 +279,14 @@ export default function StatusPage() {
                       {/* Stats Section */}
                       <div className="py-2 border-b border-neutral-100 space-y-1">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium text-neutral-600">Documents</span>
+                          <span className="text-sm font-medium text-neutral-700">Documents</span>
                           <span className="text-base text-neutral-900 font-mono">
                             {index.doc_count.toLocaleString('nb-NO')}
                           </span>
                         </div>
                         {extractTransformationDate(index.index) && (
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-neutral-600">Transformed</span>
+                            <span className="text-sm font-medium text-neutral-700">Transformed</span>
                             <span className="text-sm text-neutral-900 font-mono">
                               {extractTransformationDate(index.index)}
                             </span>
@@ -318,7 +318,7 @@ export default function StatusPage() {
                               })}
                             </div>
                           ) : (
-                            <span className="text-sm text-neutral-500 italic">No environment aliases</span>
+                            <span className="text-sm text-neutral-700 italic">No environment aliases</span>
                           )}
                         </div>
 
@@ -342,7 +342,7 @@ export default function StatusPage() {
                           </div>
                         ) : (
                           <div className="flex items-center gap-1">
-                            <PiX className="text-neutral-500 text-sm" />
+                            <PiX className="text-neutral-700 text-sm" />
                             <span className="font-medium text-neutral-900 text-sm">
                               No cross-search
                             </span>
@@ -358,7 +358,7 @@ export default function StatusPage() {
           <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 text-center">
             <PiDatabase className="mx-auto text-3xl text-neutral-400 mb-3" />
             <h2 className="text-base font-semibold text-neutral-700 mb-1">No Indices Found</h2>
-            <p className="text-sm text-neutral-600">No Elasticsearch indices are currently available.</p>
+            <p className="text-sm text-neutral-700">No Elasticsearch indices are currently available.</p>
           </div>
         )}
 
@@ -368,7 +368,7 @@ export default function StatusPage() {
             <h3 className="font-semibold text-neutral-900 mb-2 text-base">Summary</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
               <div className="flex flex-col">
-                <span className="text-neutral-600">
+                <span className="text-neutral-700">
                   {selectedFilter === 'all' ? 'Total' : 'Filtered'} Indices
                 </span>
                 <span className="text-xl font-semibold text-neutral-900">
@@ -376,7 +376,7 @@ export default function StatusPage() {
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-neutral-600">
+                <span className="text-neutral-700">
                   {selectedFilter === 'all' ? 'Total' : 'Filtered'} Documents
                 </span>
                 <span className="text-xl font-semibold text-neutral-900">
@@ -386,7 +386,7 @@ export default function StatusPage() {
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-neutral-600">
+                <span className="text-neutral-700">
                   {selectedFilter === 'all' ? 'Total' : 'Filtered'} Size (including replicas)
                 </span>
                 <span className="text-xl font-semibold text-neutral-900">

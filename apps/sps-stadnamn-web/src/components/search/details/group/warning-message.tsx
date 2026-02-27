@@ -32,7 +32,7 @@ export default function WarningMessage({
     // If children are present, message is the shortMessage, children is the body
     if (children) {
         return (
-            <div className="mb-3 mt-1 text-primary-900 bg-primary-50 p-1 px-2 rounded-md relative">
+            <div className="mb-3 mt-1 text-primary-900 bg-primary-50 p-2 px-3 rounded-md relative">
                 <div className="flex items-center gap-2 max-w-[calc(100%-2rem)]">
                     <PiWarning className="inline text-primary-800 mr-1 shrink-0" aria-hidden="true" />
                     <span className="font-medium">{message}</span>
@@ -54,7 +54,7 @@ export default function WarningMessage({
                 )}
                 <button
                     type="button"
-                    className="absolute top-1 right-1"
+                    className="absolute top-2 right-2"
                     onClick={() => dismissMessage(messageId)}
                     aria-label="Lukk advarsel"
                 >
@@ -66,14 +66,14 @@ export default function WarningMessage({
 
     // If no children, always show full message as before
     return (
-        <div className="mb-3 mt-1 text-primary-900 bg-primary-50 p-1 px-2 rounded-md relative">
+        <div className="mb-3 mt-1 text-primary-900 bg-primary-50 p-2 px-3 rounded-md relative">
             <div className="max-w-[calc(100%-2rem)]">
                 <PiWarning className="inline text-primary-800 mr-1" aria-hidden="true" />
                 {message}
             </div>
             <button
                 type="button"
-                className="absolute top-1 right-1"
+                className="absolute top-2 right-2"
                 onClick={() => dismissMessage(messageId)}
                 aria-label="Lukk advarsel"
             >

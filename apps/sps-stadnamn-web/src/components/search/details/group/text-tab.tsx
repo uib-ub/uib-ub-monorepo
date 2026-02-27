@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { ExpandableContent } from "./expandable-content";
-import WarningMessage from "./warning-message";
 
 interface TextTabProps {
     textItems: any[];
@@ -42,21 +41,6 @@ export const TextTab = ({ textItems }: TextTabProps) => {
 
                 return (
                     <div className="py-3 px-3 max-w-[calc(100%-1rem)]" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
-                        {false && textItem.dataset === 'rygh' && (
-                            <WarningMessage
-                                message="Feil i Norske Gaardnavne"
-                                messageId="rygh-phonetic-warning"
-                            >
-                                <div>
-                                    Den digitale utgåva av Norske Gaardnavne kan innehalde feil. Sjå trykt utgåve på nb.no.
-                                    <ul className="list-disc pl-6 py-2 space-y-2">
-                                        <li className="break-words">Feil i lydskrift</li>
-                                        <li className="break-words">Ord som ikkje er namn kan førekoma i tidslinjene Språksamlingane har henta ut</li>
-                                    </ul>
-
-                                </div>
-                            </WarningMessage>
-                        )}
                         <ExpandableContent
                             leading={<><strong className="text-neutral-950">{datasetTitles[textItem.dataset]}</strong> | </>}
                             html={(textItem.content.html ? textItem.content.html.replace(/<\/?p>/g, '') : textItem.content.html) || null}

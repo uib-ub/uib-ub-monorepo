@@ -78,7 +78,7 @@ const labelDefaults = {
   "altLabels": { label: "Andre namn", table, facet, result },
   "attestations": { label: "Kjeldeformer", table, result },
 }
-const required = { uuid, boost, label, dataset, resources }
+const required = { uuid, boost, label, dataset } //, resources }
 
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 

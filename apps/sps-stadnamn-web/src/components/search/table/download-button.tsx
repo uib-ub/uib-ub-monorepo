@@ -10,6 +10,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { datasetTitles } from "@/config/metadata-config";
 import { facetConfig } from "@/config/search-config";
 import { contentSettings } from "@/config/server-config";
 import { usePerspective } from "@/lib/param-hooks";
@@ -20,8 +21,69 @@ import { PiDownload, PiX } from "react-icons/pi";
 
 export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, formatCadastre }: { visibleColumns: string[], showCadastre: boolean, joinWithSlash: (adm: string | string[]) => string, formatCadastre: (cadastre: string) => string }) {
     const perspective = usePerspective()
-    const { searchQueryString } = useSearchQuery()
+    const { searchQueryString, datasetFilters } = useSearchQuery()
     const router = useRouter()
+
+    const activeDatasetCode = datasetFilters.length === 1 ? datasetFilters[0][1] : null
+    const activeDatasetTitle: string | null =
+        activeDatasetCode && datasetTitles[activeDatasetCode]
+            ? datasetTitles[activeDatasetCode]
+            : null
+
+    const fetchAllHits = async (fields: string[]) => {
+        const pageSize = 10000
+        const baseParams = new URLSearchParams(searchQueryString)
+        baseParams.delete('size')
+        baseParams.delete('from')
+
+        let allHits: any[] = []
+        let from = 0
+        let firstResponse: any | null = null
+        let total: { value?: number; relation?: string } | null = null
+
+        // Paginate until we have all hits (or no more hits are returned)
+        // Relies on hits.total.value when available to avoid extra requests.
+        // Falls back to stopping when a page returns fewer than pageSize hits.
+        // NOTE: This uses from/size pagination and is therefore limited by the
+        // index's max_result_window setting in Elasticsearch.
+        // If more results exist beyond that, they will not be included.
+        // For very large exports, consider increasing max_result_window or
+        // implementing search_after/scroll server-side.
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+            const pageParams = new URLSearchParams(baseParams)
+            pageParams.set('size', pageSize.toString())
+            pageParams.set('from', from.toString())
+            pageParams.set('fields', fields.join(','))
+
+            const response = await fetch(`/api/download?${pageParams.toString()}`)
+            const data = await response.json()
+
+            if (!firstResponse) {
+                firstResponse = data
+                total = data?.hits?.total || null
+            }
+
+            const pageHits: any[] = data?.hits?.hits || []
+            if (!pageHits.length) {
+                break
+            }
+
+            allHits = allHits.concat(pageHits)
+
+            if (total?.value && allHits.length >= total.value) {
+                break
+            }
+
+            if (pageHits.length < pageSize) {
+                break
+            }
+
+            from += pageSize
+        }
+
+        return { allHits, firstResponse, total }
+    }
 
     const handleJsonDownload = async () => {
         // Get all required fields based on visible columns
@@ -42,10 +104,22 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
                 }
             });
 
-        const url = `/api/download?${searchQueryString}&size=10000&fields=${fields.join(',')}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        const jsonContent = JSON.stringify(data, null, 2);
+        const { allHits, firstResponse, total } = await fetchAllHits(fields)
+
+        let exportData: any
+        if (firstResponse && firstResponse.hits) {
+            exportData = { ...firstResponse, hits: { ...firstResponse.hits, hits: allHits } }
+            if (exportData.hits.total && typeof exportData.hits.total === 'object') {
+                exportData.hits.total = {
+                    value: allHits.length,
+                    relation: total?.relation || 'eq',
+                }
+            }
+        } else {
+            exportData = { hits: { total: { value: allHits.length, relation: 'eq' }, hits: allHits } }
+        }
+
+        const jsonContent = JSON.stringify(exportData, null, 2);
         const blob = new Blob([jsonContent], { type: 'application/json' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
@@ -74,14 +148,12 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
                 }
             });
 
-        const url = `/api/download?${searchQueryString}&size=10000&fields=${fields.join(',')}`;
-        const response = await fetch(url);
-        const data = await response.json();
+        const { allHits } = await fetchAllHits(fields)
 
         // Convert to GeoJSON format
         const geoJson = {
             type: "FeatureCollection",
-            features: data.hits.hits
+            features: allHits
                 .filter((hit: any) => hit.fields?.location?.[0])
                 .map((hit: any) => {
                     const properties: any = {
@@ -156,11 +228,7 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
             });
 
         // Construct URL with fields parameter
-        const url = `/api/download?${searchQueryString}&size=10000&fields=${fields.join(',')}`;
-
-        // Fetch the data
-        const response = await fetch(url);
-        const data = await response.json();
+        const { allHits } = await fetchAllHits(fields)
 
         // Prepare CSV headers based on visible columns
         const headers = ['Oppslagsord'];
@@ -170,7 +238,7 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
             ?.forEach(facet => headers.push(facet?.label || ''));
 
         // Prepare CSV rows
-        const rows = data.hits.hits.map((hit: any) => {
+        const rows = allHits.map((hit: any) => {
             const row = [hit.fields.label[0]];
             if (visibleColumns.includes('adm')) {
                 const adm1 = hit.fields.adm1?.[0] || '';
@@ -233,38 +301,56 @@ export function DownloadButton({ visibleColumns, showCadastre, joinWithSlash, fo
                     <AlertDialogTitle>Last ned data</AlertDialogTitle>
                     <AlertDialogDescription>
                         Vel ønska format for nedlasting av data.
-                        Du kan laste ned søket ditt som CSV, GeoJSON eller JSON, samt heile datasettet som JSON.
-                        Mer at treff utan koordinater ikkje kjem med i GeoJSON-fila.
+                        Du kan laste ned søket ditt som CSV, GeoJSON eller JSON.
+                        {activeDatasetCode && " Du kan òg laste ned heile datasettet som JSONL."}
+                        Merk at treff utan koordinater ikkje kjem med i GeoJSON-fila.
 
                     </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter className="flex flex-row sm:flex-row gap-2 justify-center">
-                    <AlertDialogAction
-                        className="btn btn-outline"
-                        onClick={handleDownload}
-                    >
-                        CSV
-                    </AlertDialogAction>
-                    <AlertDialogAction
-                        className="btn btn-outline"
-                        onClick={handleJsonDownload}
-                    >
-                        JSON
-                    </AlertDialogAction>
-                    {contentSettings[perspective]?.display === 'map' && <AlertDialogAction
-                        className="btn btn-outline"
-                        onClick={handleGeoJsonDownload}
-                    >
-                        GeoJSON
-                    </AlertDialogAction>}
-
-
-                    <AlertDialogAction
-                        className="btn btn-outline"
-                        onClick={() => router.push(`https://git.app.uib.no/spraksamlingane/stadnamn/datasett/stadnamn-archive/-/raw/main/lfs-data/elastic/${perspective}_elastic.json?ref_type=heads&inline=false`)}
-                    >
-                        JSON (heile datasettet)
-                    </AlertDialogAction>
+                <AlertDialogFooter className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex flex-col gap-3 flex-1">
+                        
+                        <div className="flex flex-row flex-wrap gap-2 justify-start">
+                            <AlertDialogAction
+                                className="btn btn-outline"
+                                onClick={handleDownload}
+                            >
+                                CSV
+                            </AlertDialogAction>
+                            <AlertDialogAction
+                                className="btn btn-outline"
+                                onClick={handleJsonDownload}
+                            >
+                                JSON
+                            </AlertDialogAction>
+                            {contentSettings[perspective]?.display === 'map' && (
+                                <AlertDialogAction
+                                    className="btn btn-outline"
+                                    onClick={handleGeoJsonDownload}
+                                >
+                                    GeoJSON
+                                </AlertDialogAction>
+                            )}
+                        </div>
+                    </div>
+                    {activeDatasetCode && activeDatasetTitle && (
+                        <div className="flex flex-col gap-3 flex-1 sm:border-l sm:pl-6 sm:ml-4">
+                            <p className="font-semibold text-sm text-left">Heile {activeDatasetTitle}</p>
+                            <div className="flex flex-row flex-wrap gap-2 justify-start">
+                                <AlertDialogAction
+                                    className="btn btn-outline"
+                                    onClick={() => {
+                                        if (!activeDatasetCode) return
+                                        if (typeof window !== "undefined") {
+                                            window.location.href = `https://git.app.uib.no/spraksamlingane/stadnamn/datasett/stadnamn-archive/-/raw/iiif-and-new-aggregation/lfs-data/elastic/${activeDatasetCode}_elastic.jsonl?ref_type=heads&inline=false`
+                                        }
+                                    }}
+                                >
+                                    JSONL
+                                </AlertDialogAction>
+                            </div>
+                        </div>
+                    )}
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

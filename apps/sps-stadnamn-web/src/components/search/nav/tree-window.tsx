@@ -10,13 +10,10 @@ import { PiHouseFill, PiX } from "react-icons/pi";
 import DatasetFacet from "./facets/dataset-facet";
 import TreeList from "./tree-list";
 import Clickable from "@/components/ui/clickable/clickable";
-import IconButton from "@/components/ui/icon-button";
-import { useTreeIsolation } from "@/lib/tree-isolation";
 
 export default function TreeWindow() {
     const searchParams = useSearchParams()
     const { dataset, adm1, adm2, uuid } = parseTreeParam(searchParams.get('tree'))
-    const { closeTree } = useTreeIsolation()
 
     const { data: selectedDoc, isLoading: selectedDocLoading, isError: selectedDocError } = useQuery({
         queryKey: ['treeSelectedDoc', dataset, uuid],
@@ -37,20 +34,15 @@ export default function TreeWindow() {
             ? ((selectedDoc as any)?.__treeNumber || (getValueByPath(selectedDoc, treeSettings[dataset].subunit) || ''))
             : ''
 
-    // Title: when a cadastral unit is selected, show its label (not uuid).
-    const title =
-        uuid
-            ? (selectedDoc?.label || (selectedDocLoading ? 'Laster…' : ''))
-            : (adm2 ? adm2 : adm1 ? adm1 : dataset ? datasetTitles[dataset || ''] : 'Matriklar')
 
     return (<>
         <div className="flex p-2 border-b border-neutral-200 shrink-0">
             <div id="right-title" className="text-black text-xl mr-auto mx-1">
-                {title}
+                Matrikkelvising
             </div>
-            <IconButton label="lukk" onClick={closeTree}>
-                <PiX className="text-3xl text-neutral-900" />
-            </IconButton>
+            {
+
+            }
         </div>
         <div className="flex-1 overflow-y-auto stable-scrollbar min-h-0">
             {/* Breadcrumbs driven by `tree` */}
@@ -60,6 +52,7 @@ export default function TreeWindow() {
                         link
                         label="Matriklar"
                         className="breadcrumb-link"
+                        remove={['doc', 'activePoint']}
                         add={{ tree: 'root' }}
                     >
                         <PiHouseFill aria-hidden="true" className="inline" />
@@ -82,6 +75,7 @@ export default function TreeWindow() {
                             <Clickable
                                 link
                                 className="breadcrumb-link"
+                                remove={['doc', 'activePoint']}
                                 add={{ tree: buildTreeParam({ dataset, adm1 }) }}
                             >
                                 {adm1}
@@ -94,6 +88,7 @@ export default function TreeWindow() {
                             <Clickable
                                 link
                                 className="breadcrumb-link"
+                                remove={['doc', 'activePoint']}
                                 add={{ tree: buildTreeParam({ dataset, adm1, adm2 }) }}
                             >
                                 {adm2}
@@ -117,7 +112,7 @@ export default function TreeWindow() {
                 <div className="p-3 text-neutral-900">Datasettet har ikkje matrikkelvising.</div>
             )}
             {dataset && treeSettings[dataset] && (
-                <TreeList dataset={dataset} adm1={adm1} adm2={adm2} expandedUuid={uuid} />
+                <TreeList dataset={dataset} adm1={adm1} adm2={adm2} expandedUuid={uuid} docUuid={searchParams.get('doc')} />
             )}
         </div>
     </>)

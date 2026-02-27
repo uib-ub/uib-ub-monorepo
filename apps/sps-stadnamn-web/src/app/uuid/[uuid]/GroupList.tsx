@@ -1,4 +1,6 @@
 'use client'
+import Clickable from '@/components/ui/clickable/clickable'
+import { defaultMaxResultsParam } from '@/config/max-results'
 import { datasetTitles } from '@/config/metadata-config'
 import { defaultResultRenderer, resultRenderers } from '@/config/result-renderers'
 import { stringToBase64Url } from '@/lib/param-utils'
@@ -6,7 +8,7 @@ import { getFieldValue } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useState } from 'react'
-import { PiBookOpen } from 'react-icons/pi'
+import { PiBookOpen, PiBookOpenFill, PiMapTrifold } from 'react-icons/pi'
 
 const normalizeLabel = (value?: string | null) =>
   (value || '').replace(/\s+/g, ' ').trim().toLowerCase()
@@ -20,7 +22,9 @@ const toPrefix = (v: any) => {
   return `${s} `
 }
 
-const getGroupData = async (groupId: string, size: number) => {
+const BATCH_SIZE = 5
+
+const getGroupData = async (groupId: string, size: number, currentUuid?: string) => {
   const res = await fetch(`/api/group?group=${groupId}&size=${size}`)
   if (!res.ok) {
     throw new Error('Failed to fetch group')
@@ -42,9 +46,33 @@ const getGroupData = async (groupId: string, size: number) => {
         ? data.hits.total.value
         : items.length
 
-  // `/api/group` currently returns all sources (server ignores `size`), so we enforce the collapsed
-  // view client-side by slicing to `size` while keeping `total` for the expand button.
-  const visibleItems = Number.isFinite(size) ? items.slice(0, size) : items
+  // When collapsed (small size) and currentUuid is set: add 5 to the cutoff until the batch
+  // contains the current UUID, then add 5 more — so the current is never at the bottom.
+  const isCollapsed = Number.isFinite(size) && size < 1000
+  let visibleItems: any[]
+  if (isCollapsed && currentUuid && items.length > 0) {
+    const currentIndex = items.findIndex(
+      (item: any) => (getFieldValue(item, 'uuid') || [])?.[0] === currentUuid
+    )
+    if (currentIndex >= 0) {
+      // Smallest batch size that contains current (1-based position) = currentIndex + 1
+      // Round up to next multiple of BATCH_SIZE, then add BATCH_SIZE more
+      const minBatchContainingCurrent = currentIndex + 1
+      const cutoff =
+        BATCH_SIZE * Math.ceil(minBatchContainingCurrent / BATCH_SIZE) + BATCH_SIZE
+      let visibleCount = Math.min(cutoff, total)
+      // Don't collapse unless hidden count is more than half the visible count
+      const hidden = total - visibleCount
+      if (hidden <= visibleCount / 2) {
+        visibleCount = total
+      }
+      visibleItems = items.slice(0, visibleCount)
+    } else {
+      visibleItems = items.slice(0, size)
+    }
+  } else {
+    visibleItems = Number.isFinite(size) ? items.slice(0, size) : items
+  }
 
   // Group the visible items by dataset
   const groupedByDataset: Record<string, any[]> = {}
@@ -62,7 +90,7 @@ const getGroupData = async (groupId: string, size: number) => {
     groupedByDataset[datasetTag].push(item)
   })
 
-  return { groupedByDataset, total }
+  return { groupedByDataset, total, visibleCount: visibleItems.length }
 }
 
 // Skeleton component for loading state
@@ -101,15 +129,16 @@ const GroupListSkeleton = () => (
 )
 
 export default function GroupList({ docData }: { docData: Record<string, any> }) {
-  const [size, setSize] = useState(5)
+  const [size, setSize] = useState(BATCH_SIZE)
   const groupId: string | undefined = docData?._source?.group?.id
   const currentUuid: string | undefined = docData?._source?.uuid
 
   const { data, isLoading } = useQuery({
-    queryKey: ['group', groupId, size],
+    queryKey: ['group', groupId, size, currentUuid],
     enabled: !!groupId,
     placeholderData: (prevData) => prevData,
-    queryFn: () => getGroupData(stringToBase64Url(groupId as string), size)
+    queryFn: () =>
+      getGroupData(stringToBase64Url(groupId as string), size, currentUuid)
   })
 
   const handleShowMore = () => {
@@ -127,8 +156,9 @@ export default function GroupList({ docData }: { docData: Record<string, any> })
     return null
   }
 
-  return <aside className="bg-neutral-50 shadow-md !text-neutral-950 px-4 pb-4 pt-0 rounded-md">
+  return <aside className="bg-neutral-50 shadow-md !text-neutral-950 px-4 pb-4 pt-0 rounded-md relative">
     <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Namnegruppe</h2>
+    <Clickable link className="no-underline flex absolute top-0 right-0 py-2 px-4 items-center gap-1" href={'/search'} add={{ init: stringToBase64Url(groupId) , maxResults: defaultMaxResultsParam}}><PiMapTrifold aria-hidden="true" />Vis i kartet</Clickable>
     {data && <div className="flex flex-col gap-2">
       {Object.entries(data.groupedByDataset).map(([docDataset, hits]) => {
         const sourceTitle = resultRenderers[docDataset]?.sourceTitle || defaultResultRenderer.sourceTitle
@@ -198,7 +228,7 @@ export default function GroupList({ docData }: { docData: Record<string, any> })
                     href={"/uuid/" + hitUuid}
                   >
                     <div className="group-hover:bg-neutral-100 p-1 rounded-full">
-                      <PiBookOpen className="text-primary-700 aria-[current='page']:text-accent-800" />
+                      {currentUuid === hitUuid ? <PiBookOpenFill className="text-accent-800" /> : <PiBookOpen className="text-primary-700" />}
                     </div>
                     <div className="min-w-0">
                       <div className="text-neutral-950">
@@ -215,13 +245,13 @@ export default function GroupList({ docData }: { docData: Record<string, any> })
         </div>
       })}
 
-      {data.total > size && (
+      {data.total > (data.visibleCount ?? size) && (
         <button
           onClick={handleShowMore}
           className="btn btn-outline flex items-center justify-center gap-2 py-2 px-4 w-full"
         >
           <span className="text-sm font-medium text-neutral-700">
-            Vis fleire ({data.total - size})
+            Vis fleire ({data.total - (data.visibleCount ?? size)})
           </span>
         </button>
       )}

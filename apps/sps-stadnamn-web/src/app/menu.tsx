@@ -2,7 +2,6 @@
 import Clickable from "@/components/ui/clickable/clickable";
 import { defaultMaxResultsParam } from "@/config/max-results";
 import { useMode } from "@/lib/param-hooks";
-import { useTreeIsolation } from "@/lib/tree-isolation";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useRef } from "react";
@@ -20,7 +19,6 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
     const fulltext = searchParams.get('fulltext')
     const mode = useMode()
     const modeOutsideSearch = pathname == '/search' ? mode : null
-    const { openTree, closeTree } = useTreeIsolation()
     const tree = searchParams.get('tree')
     const isTreeActive = pathname === '/search' && !!tree
     const isMapActive = modeOutsideSearch === 'map' && !isTreeActive
@@ -29,6 +27,8 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
     const q = searchParams.get("q")
     const datasetTag = searchParams.get("datasetTag")
     const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
+    const zoom = searchParams.get('zoom')
+    const center = searchParams.get('center')
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -107,12 +107,13 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                     : <PiMapTrifoldLight className="text-xl" aria-hidden="true" />}
                                 Stadnamnkart
                             </Clickable>
-                            <button
-                                type="button"
+                            <Clickable
                                 onClick={() => {
                                     setMenuOpen(false)
-                                    tree ? closeTree() : openTree('root')
                                 }}
+                                only={{ tree: 'root', zoom, center }}
+                                href="/search"
+                                link
                                 aria-current={isTreeActive ? 'page' : undefined}
                                 className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
                                 ${isTreeActive
@@ -124,12 +125,13 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                     ? <PiTreeViewFill className="text-xl" aria-hidden="true" />
                                     : <PiTreeViewLight className="text-xl" aria-hidden="true" />}
                                 Matrikkelvising
-                            </button>
+                            </Clickable>
                             <Clickable
                                 href="/search"
                                 link
                                 onClick={() => setMenuOpen(false)}
                                 aria-current={isTableActive ? 'page' : undefined}
+                                remove={['tree', 'activePoint', 'group', 'init']}
                                 add={{ mode: 'table' }}
                                 className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
                                 ${isTableActive
@@ -140,7 +142,7 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 {isTableActive
                                     ? <PiTableFill className="text-xl" aria-hidden="true" />
                                     : <PiTableLight className="text-xl" aria-hidden="true" />}
-                                Tabellvisning
+                                Tabellvising
                             </Clickable>
                         </div>
                         <hr className="w-full h-px bg-neutral-200 border-0 my-0" />

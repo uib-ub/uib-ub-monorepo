@@ -1,6 +1,6 @@
 'use client'
 import Menu from '@/app/menu';
-import { defaultMaxResultsParam, getClampedMaxResultsFromParam } from '@/config/max-results';
+import { defaultMaxResultsParam } from '@/config/max-results';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
 import { useMode, usePerspective } from '@/lib/param-hooks';
@@ -48,10 +48,6 @@ export default function SearchForm() {
     const datasetTag = searchParams.get('datasetTag')
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
     const options = searchParams.get('options')
-    const maxResults = searchParams.get('maxResults')
-    const normalizedMaxResultsParam = maxResults
-        ? String(getClampedMaxResultsFromParam(maxResults) || Number(defaultMaxResultsParam))
-        : null
 
 
     const input = useRef<HTMLInputElement | null>(null)
@@ -362,8 +358,8 @@ export default function SearchForm() {
                 {point && <input type="hidden" name="point" value={point} />}
                 {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''} />}
 
-                {inputState && !menuOpen &&
-                    <ClickableIcon label="Tøm" remove={['q']} add={{ maxResults: defaultMaxResultsParam }} replace onClick={() => { clearQuery() }}>
+                {(inputState || searchParams.get('q')) && !menuOpen &&
+                    <ClickableIcon label="Tøm" remove={['q']} replace onClick={() => { clearQuery() }}>
                         <PiX className="text-3xl lg:text-2xl text-neutral-800 group-focus-within:text-neutral-800 m-1" /></ClickableIcon>}
                 <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800" aria-hidden="true" /></button>
             </div>
@@ -371,10 +367,13 @@ export default function SearchForm() {
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''} />}
             {selectedGroup && <input type="hidden" name="init" value={selectedGroup} />}
             {/* results: integer – minimum is 5 when present. */}
-            {normalizedMaxResultsParam && <input type="hidden" name="maxResults" value={normalizedMaxResultsParam} />}
             {options && <input type="hidden" name="options" value={'on'} />}
+            {searchParams.get('noGrouping') && <input type="hidden" name="noGrouping" value={'on'} />}
+            {searchParams.get('point') && <input type="hidden" name="point" value={searchParams.get('point') || ''} />}
+            <input type="hidden" name="maxResults" value={defaultMaxResultsParam} />
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
+            {searchParams.get('fuzzy') && <input type="hidden" name="fuzzy" value={searchParams.get('fuzzy') || ''} />}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
             {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''} />}
             {autocompleteOpen && rankedHits.length > 0 && <ul id="autocomplete-results" ref={listRef} role="listbox" className={`absolute ${isMobile ? 'top-[3.5rem] left-0 w-full' : 'top-[3rem] -left-12 x-[30svw] lg:w-[calc(25svw-1rem)] shadow-lg rounded-lg rounded-t-none'} border-t border-neutral-200 max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 overflow-y-auto overscroll-none xl-p-2 xl divide-y divide-neutral-300`}>

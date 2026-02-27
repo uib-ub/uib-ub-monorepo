@@ -32,14 +32,6 @@ export const matchesActiveName = (s: any, activeName: string | null) => {
     return false
 }
 
-export const matchesActivePoint = (s: any, activePoint: string | null) => {
-    if (!activePoint) return true
-    const lat = s.location?.coordinates?.[1]
-    const lng = s.location?.coordinates?.[0]
-    if (!lat || !lng) return false
-    return activePoint === `${lat},${lng}`
-}
-
 // Helper function to push name-year pairs
 export const pushNameYear = (nameToYears: Record<string, Set<string>>, name: string | undefined, year: any) => {
     if (!name) return

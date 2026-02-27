@@ -7,13 +7,10 @@ import { PiCaretRight, PiHouseFill } from "react-icons/pi"
 import { buildTreeParam, parseTreeParam } from "@/lib/tree-param"
 import { useQuery } from "@tanstack/react-query"
 import { getValueByPath } from "@/lib/utils"
-import IconButton from "@/components/ui/icon-button"
-import { useTreeIsolation } from "@/lib/tree-isolation"
 
 export default function CadastreBreadcrumb() {
   const searchParams = useSearchParams()
   const { dataset, adm1, adm2, uuid } = parseTreeParam(searchParams.get('tree'))
-  const { closeTree } = useTreeIsolation()
 
   if (!dataset) return null
 
@@ -36,19 +33,12 @@ export default function CadastreBreadcrumb() {
       : ''
 
   return <>
-    <IconButton
-      label="Lukk matrikkelvising"
-      className="breadcrumb-link text-lg whitespace-nowrap flex items-center gap-1"
-      onClick={closeTree}
-    >
-      <PiHouseFill aria-hidden="true" className="inline" />
-    </IconButton>
     <PiCaretRight className="w-4 h-4 self-center flex-shrink-0" />
     {(dataset) && <>
       <Clickable
         link
         className="breadcrumb-link text-lg whitespace-nowrap"
-        remove={['dataset', 'adm1', 'adm2', 'doc']}
+        remove={['doc', 'activePoint']}
         add={{ tree: buildTreeParam({ dataset }) }}
       >
         {datasetTitles[dataset]}
@@ -61,7 +51,7 @@ export default function CadastreBreadcrumb() {
         <Clickable
           link
           className="breadcrumb-link text-lg whitespace-nowrap"
-          remove={['dataset', 'adm1', 'adm2', 'doc']}
+          remove={['doc', 'activePoint']}
           add={{ tree: buildTreeParam({ dataset, adm1 }) }}
         >
           {adm1}
@@ -76,7 +66,7 @@ export default function CadastreBreadcrumb() {
         <Clickable
           link
           className="breadcrumb-link text-lg whitespace-nowrap"
-          remove={['dataset', 'adm1', 'adm2', 'doc']}
+          remove={['doc', 'activePoint']}
           add={{ tree: buildTreeParam({ dataset, adm1, adm2 }) }}
         >
           {adm2}

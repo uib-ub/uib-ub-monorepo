@@ -3,34 +3,47 @@
 import { Fragment, useContext, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PiBookOpen, PiFile, PiFileFill, PiInfoFill, PiMapPinFill } from "react-icons/pi";
+import { PiBookOpen, PiCheck, PiCheckCircle, PiFile, PiFileFill, PiInfoFill, PiMapPin, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
 import { datasetTitles } from "@/config/metadata-config";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
-import { matchesActiveYear, matchesActiveName, matchesActivePoint } from "./group-utils";
+import { matchesActiveYear, matchesActiveName } from "./group-utils";
 import CoordinateTypeInfo from "../doc/coordinate-type-info";
+import SubtleLink from "@/components/ui/clickable/subtle-link";
+import { treeSettings } from "@/config/server-config";
+import { panPointIntoView } from "@/lib/map-utils";
+import { useActivePoint, useGroup } from "@/lib/param-hooks";
+import DistanceBadge from "@/components/search/distance-badge";
 
 interface SourcesTabProps {
     datasets: Record<string, any[]>;
     isFiltered: boolean;
-    isInitGroup: boolean;
+    distanceMeters?: number | null;
 }
 
-export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProps) => {
+export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabProps) => {
     const [showAll, setShowAll] = useState(false)
     // Parents whose children are fully expanded (show all bruk, not just 2)
     const [showAllChildrenParents, setShowAllChildrenParents] = useState<Set<string>>(new Set())
     const datasetKeys = useMemo(() => Object.keys(datasets).filter(ds => datasets[ds] && datasets[ds].length > 0), [datasets])
-    const { sosiVocab, mapFunctionRef } = useContext(GlobalContext)
+    const { sosiVocab, mapFunctionRef, isMobile } = useContext(GlobalContext)
+    const { initValue } = useGroup()
 
+    const searchParams = useSearchParams()
+    const center = searchParams.get('center')
+    const zoom = searchParams.get('zoom')
+    const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
+    const labelFilter = searchParams.get('labelFilter') === 'on'
+    const noGrouping = searchParams.get('noGrouping') === 'on'
+    const activePoint = useActivePoint()
     // If not filtered: show 2 datasets if more than 3, otherwise show all
     // If filtered: show 4 datasets if more than 5, otherwise show all
     const hasMore = isFiltered ? datasetKeys.length > 5 : datasetKeys.length > 3
     const visibleCount = isFiltered ? (hasMore ? 4 : datasetKeys.length) : (hasMore ? 2 : datasetKeys.length)
-    const visibleDatasets = showAll ? datasetKeys : datasetKeys.slice(0, visibleCount)
-    const searchParams = useSearchParams()
-    const activePoint = searchParams.get('activePoint')
+    const visibleDatasets = (coordinateInfo || labelFilter)
+        ? datasetKeys
+        : (showAll ? datasetKeys : datasetKeys.slice(0, visibleCount))
 
     // Toggle whether a parent shows ALL its children (bruk) or only the first 2
     const toggleShowAllChildren = (uuid: string) => {
@@ -59,10 +72,9 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
     const renderItem = (
         s: any,
         ds: string,
-        isInitGroup: boolean,
-        activePoint: string | null,
         indentLevel: number = 0,
         role?: 'parent' | 'child',
+        showMatrikkelvising: boolean = true,
     ) => {
         const additionalLabels = Array.from(
             new Set([
@@ -80,7 +92,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
 
         const lat = s.location?.coordinates?.[1];
         const lng = s.location?.coordinates?.[0];
-        const isActive = activePoint && lat && lng && activePoint === `${lat},${lng}`;
+        const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
 
         // Cadastre prefix: gnr on parent (gard), bnr on child (bruk)
         let cadastrePrefix = ''
@@ -110,29 +122,28 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
         }
 
         const indentStyle = indentLevel > 0 ? { paddingLeft: `${indentLevel * 1.5}rem` } : undefined
-        const hasPin = isInitGroup && !activePoint && s.location?.coordinates?.length === 2
         const links = resultRenderers[ds]?.links?.(s) || defaultResultRenderer?.links?.(s)
         // Tree view button removed (now available in the top mode/menu bar).
 
         return (
             <li key={s.uuid} className="flex flex-col gap-1" style={indentStyle}>
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 leading-6 min-h-6">
-                        {hasPin && (
-                            <ClickableIcon
-                                label="Koordinatdetaljar"
-                                onClick={() => {
-                                    mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-                                }}
-                                add={{
-                                    activePoint: `${lat},${lng}`,
-
-                                }}
-                                className={`flex-shrink-0 inline-flex items-center justify-center p-0 w-6 h-6 rounded-full ${isActive ? 'text-accent-700 outline outline-1 outline-accent-700 bg-accent-50' : 'text-neutral-700 hover:bg-neutral-100'}`}
-                            >
-                                <PiMapPinFill className="text-primary-700 h-6 w-6" aria-hidden="true" />
-                            </ClickableIcon>
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-2 leading-6 min-h-6">
+                        {noGrouping && (
+                            <div className="flex items-center shrink-0 -mr-2">
+                                
+                                {lat != null && lng != null && (
+                                    <ClickableIcon
+                                        label="Sett aktivt punkt"
+                                        add={{ activePoint: `${lat},${lng}` }}
+                                        onClick={() => panPointIntoView(mapFunctionRef.current, [lat, lng], isMobile, isMobile)}
+                                        className="h-8 w-8 p-0 rounded-md btn-compact text-neutral-700"
+                                    >
+                                        {activePoint && activePoint[0] === lat && activePoint[1] === lng ? <PiMapPinFill className="text-2xl text-accent-800" aria-hidden /> : <PiMapPin className="text-2xl" aria-hidden />}
+                                    </ClickableIcon>
+                                )}
+                                
+                            </div>
                         )}
-
                         <Link className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md !px-2 py-1 h-8 btn btn-outline btn-compact" href={"/uuid/" + s.uuid}>
                             {cadastrePrefix}<strong>{s.label}</strong> {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
                         </Link>
@@ -144,7 +155,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                         {links}
                     </div>
 
-                    {isInitGroup && activePoint && lat && lng && (
+                    {(coordinateInfo || (noGrouping && activePoint && activePoint[0] === lat && activePoint[1] === lng)) && lat && lng && (
                         <div className="mt-0.5 min-w-0 w-full rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1">
                             {s.coordinateType ? (
                                 <CoordinateTypeInfo coordinateType={s.coordinateType} />
@@ -153,13 +164,28 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                             )}
                         </div>
                     )}
-   
+                    {showMatrikkelvising && s.sosi == 'gard' && treeSettings[ds] && (
+                        <SubtleLink className="pb-4 pt-2" link only={{ tree: `${ds}_${s.adm1}_${s.adm2}_${s.uuid}`, center, zoom }}>
+                            Vis i matrikkelen
+                        </SubtleLink>
+                    )}
+            </li>
+        )
+    }
+
+    const renderMatrikkelvisingForParent = (parent: any, ds: string) => {
+        if (parent.sosi !== 'gard' || !treeSettings[ds]) return null
+        return (
+            <li className="pb-4 pt-2">
+                <SubtleLink link only={{ tree: `${ds}_${parent.adm1}_${parent.adm2}_${parent.uuid}`, center, zoom }}>
+                    Vis i matrikkelen
+                </SubtleLink>
             </li>
         )
     }
 
     return (
-        <ul className="flex flex-col gap-8 pt-8">
+        <ul className="flex flex-col gap-8 py-4 w-full">
             {visibleDatasets.map((ds) => {
                 const items = datasets[ds] || []
                 if (items.length === 0) return null
@@ -189,28 +215,46 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
 
                 const hasNesting = childrenMap.size > 0
 
+                const showDistance = noGrouping && typeof distanceMeters === 'number';
+
                 return (
                     <li key={`sources-ds-${ds}`} className="flex flex-col w-full gap-4">
-                        {searchParams.getAll('dataset').length != 1 && <div className="flex items-center gap-2 text-neutral-800 uppercase traciking-wider">
-                            {datasetTitles[ds] || ds}
-                        </div>}
+                        
+                            <div className="flex items-center w-full justify-between">
+                                <span className="text-neutral-800 uppercase traciking-wider">{datasetTitles[ds] || ds}</span>
+                                <div className="ml-auto flex items-center gap-1">
+                                    {showDistance && <DistanceBadge meters={distanceMeters} />}
+
+                                    { noGrouping && <>
+                                    <ClickableIcon
+                                    label={initValue === items[0].uuid ? "Fjern utgangspunkt" : "Sett som utgangspunkt"}
+                                    add={{ init: initValue === items[0].uuid ? null : items[0].uuid }}
+                                    className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900"
+                                >
+                                    {initValue == items[0].uuid ? <PiXBold aria-hidden="true" /> : <PiCheck aria-hidden="true" />}
+                                </ClickableIcon>
+
+                                </>}
+                                </div>
+                            </div>
+              
                         <ul className="flex flex-col w-full gap-4">
                             {/* No nesting at all – show gnr for standalone items */}
-                            {!hasNesting && items.map((s: any) => renderItem(s, ds, isInitGroup, activePoint, 0, 'parent'))}
+                            {!hasNesting && items.map((s: any) => renderItem(s, ds, 0, 'parent'))}
 
-                            {/* With nesting – only show children (subunits/bruk) for the init group */}
-                            {hasNesting && !isInitGroup && rootItems.map((parent: any) =>
-                                renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent')
-                            )}
-
-                            {/* With nesting (init group) – render parents with their children */}
-                            {hasNesting && isInitGroup && rootItems.map((parent: any) => {
+                            {/* With nesting – always render parents with their children (subunits/bruk) */}
+                            {hasNesting && rootItems.map((parent: any) => {
                                 const children = childrenMap.get(parent.uuid) || []
                                 const childCount = children.length
 
                                 if (childCount === 0) {
-                                    // Parent candidate with no children in this group – still show gnr prefix
-                                    return renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent')
+                                    // Parent candidate with no children in this group – still show gnr prefix and Matrikkelvising below
+                                    return (
+                                        <Fragment key={parent.uuid}>
+                                            {renderItem(parent, ds, 0, 'parent', false)}
+                                            {renderMatrikkelvisingForParent(parent, ds)}
+                                        </Fragment>
+                                    )
                                 }
 
                                 const showAllChildren = showAllChildrenParents.has(parent.uuid)
@@ -230,13 +274,13 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
 
                                 return (
                                     <Fragment key={parent.uuid}>
-                                        {renderItem(parent, ds, isInitGroup, activePoint, 0, 'parent')}
+                                        {renderItem(parent, ds, 0, 'parent', false)}
                                         <ul className="flex flex-col w-full gap-2 -mt-2">
                                             {visibleChildren.map((child: any) =>
-                                                renderItem(child, ds, isInitGroup, activePoint, 1, 'child')
+                                                renderItem(child, ds, 1, 'child')
                                             )}
                                             {hiddenCount > 0 && (
-                                                <li style={{ paddingLeft: `${1.5 * 1.5}rem` }}>
+                                                <li className="pl-9">
                                                     <button
                                                         type="button"
                                                         className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
@@ -247,7 +291,7 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                                                 </li>
                                             )}
                                             {hasManyChildren && showAllChildren && (
-                                                <li style={{ paddingLeft: `${1.5 * 1.5}rem` }}>
+                                                <li className="pl-9">
                                                     <button
                                                         type="button"
                                                         className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
@@ -258,14 +302,16 @@ export const SourcesTab = ({ datasets, isFiltered, isInitGroup }: SourcesTabProp
                                                 </li>
                                             )}
                                         </ul>
+                                        {renderMatrikkelvisingForParent(parent, ds)}
                                     </Fragment>
                                 )
                             })}
                         </ul>
+                        
                     </li>
                 )
             })}
-            {hasMore && (
+            {hasMore && !coordinateInfo && !labelFilter && (
                 <li className="mt-1">
                     <button
                         type="button"
@@ -285,6 +331,7 @@ interface FilteredSourcesTabProps {
     activeYear: string | null;
     activeName: string | null;
     isInitGroup: boolean;
+    distanceMeters?: number | null;
 }
 
 // Component that filters datasets and renders SourcesTab
@@ -292,10 +339,13 @@ export const FilteredSourcesTab = ({
     datasets,
     activeYear,
     activeName,
-    isInitGroup
+    isInitGroup,
+    distanceMeters,
 }: FilteredSourcesTabProps) => {
     const searchParams = useSearchParams()
-    const activePoint = searchParams.get('activePoint')
+    const activePoint = useActivePoint()
+
+    const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
 
     const filtered = useMemo(() => {
         const result: Record<string, any[]> = {}
@@ -304,7 +354,7 @@ export const FilteredSourcesTab = ({
                 // Only filter by activeYear, activeName, and activePoint if this is the init group
                 (isInitGroup ? matchesActiveYear(s, activeYear) : true) &&
                 (isInitGroup ? matchesActiveName(s, activeName) : true) &&
-                (isInitGroup ? matchesActivePoint(s, activePoint) : true)
+                (coordinateInfo ? s.location?.coordinates?.[0] == activePoint?.[1] && s.location?.coordinates?.[1] == activePoint?.[0] : true)
             )
         })
         return result
@@ -312,6 +362,12 @@ export const FilteredSourcesTab = ({
 
     const isFiltered = !!(activeYear || activeName || (isInitGroup && activePoint))
 
-    return <SourcesTab datasets={filtered} isFiltered={isFiltered} isInitGroup={isInitGroup} />
+    return (
+        <SourcesTab
+            datasets={filtered}
+            isFiltered={isFiltered}
+            distanceMeters={distanceMeters}
+        />
+    )
 }
 

@@ -4,8 +4,8 @@ import { useSearchQuery } from '@/lib/search-params';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useRef } from 'react';
-import { useDebugStore } from '../zustand/debug-store';
 import useGroupData from './group-data';
+import { usePoint } from '@/lib/param-hooks';
 
 export const INITIAL_PAGE_SIZE = 10;
 export const SUBSEQUENT_PAGE_SIZE = 40;
@@ -30,11 +30,10 @@ const collapsedDataQuery = async ({
     pageParam = 0,
     searchQueryString,
     initGroupCode,
-    initBoost,
-    initPlaceScore,
     initGroupData,
     point,
-}: { pageParam?: number; searchQueryString: string, initGroupCode: string | null, initBoost: number | null, initPlaceScore: number | null, initGroupData: Record<string, any> | null, point: string | null }) => {
+    searchSort,
+}: { pageParam?: number; searchQueryString: string, initGroupCode: string | null, initGroupData: Record<string, any> | null, point: [number, number] | null, searchSort: string | null }) => {
 
     // Determine size and from based on page number
     const isFirstPage = pageParam === 0;
@@ -44,18 +43,20 @@ const collapsedDataQuery = async ({
     console.log(`📄 Fetching page ${pageParam}:`, { isFirstPage, size, from, expectedRange: `${from}-${from + size - 1}` });
 
 
-    const initGroupValue = initGroupCode ? base64UrlToString(initGroupCode) : undefined
-    const initLocation = initGroupData?.fields?.location?.[0]?.coordinates || (point ? point?.split(',').map(Number).reverse() : undefined)
+    // `location` in Elasticsearch is stored as [lon, lat].
+    // Group data already uses that order, but `point` from the URL is [lat, lon],
+    // so we need to flip it before sending it as `initLocation`.
+    const initLocation =
+        initGroupData?.fields?.location?.[0]?.coordinates ||
+        (point ? [point[1], point[0]] as [number, number] : null)
     const initLabel = initGroupData?.sources[0]?.label || undefined
 
-    const res = await fetch(`/api/search/collapsed?${searchQueryString}`, {
+    const res = await fetch(`/api/search/collapsed?${searchQueryString}${searchSort ? `&searchSort=${searchSort}` : ''}`, {
         method: 'POST',
         body: JSON.stringify({
             size: size,
             from: from,
             //initGroupValue: initGroupValue,
-            initBoost: initGroupData?.boost,
-            initPlaceScore: initGroupData?.placeScore,
             initLocation,
             initLabel,
 
@@ -94,9 +95,9 @@ export default function useCollapsedData() {
     const initialPageRef = useRef(initialPage)
     const { searchQueryString } = useSearchQuery()
     const initGroupCode = searchParams.get('init')
-    const point = searchParams.get('point')
-    const debug = useDebugStore((s) => s.debug);
+    const point = usePoint()
     const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(initGroupCode)
+    const searchSort = searchParams.get('searchSort')
 
     const {
         data,
@@ -108,15 +109,14 @@ export default function useCollapsedData() {
         isLoading,
         status
     } = useInfiniteQuery({
-        queryKey: ['collapsedData', searchQueryString, initGroupLoading, initGroupCode, point],
+        queryKey: ['collapsedData', searchQueryString, searchSort, initGroupLoading, initGroupCode, point],
         queryFn: ({ pageParam }: { pageParam: number }) => collapsedDataQuery({
             pageParam,
             searchQueryString,
             initGroupCode: initGroupCode,
-            initBoost: initGroupCode ? initGroupData?.boost : null,
-            initPlaceScore: initGroupCode ? initGroupData?.placeScore : null,
             initGroupData: initGroupCode ? initGroupData : null,
-            point
+            point,
+            searchSort
         }),
         //placeholderData: (prevData: any) => prevData,
         initialPageParam: initialPageRef.current - 1,

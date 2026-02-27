@@ -4,6 +4,7 @@ import { type ReactNode } from 'react'
 interface ToggleButtonProps {
   children: ReactNode
   isSelected?: boolean
+  small?: boolean
   onClick?: () => void
   className?: string
   ariaPressed?: boolean
@@ -17,6 +18,7 @@ interface ToggleButtonProps {
 export default function ToggleButton({
   children,
   isSelected = false,
+  small = false,
   onClick,
   className = '',
   ariaPressed,
@@ -37,12 +39,16 @@ export default function ToggleButton({
   if (ariaLabelledBy) ariaProps['aria-labelledby'] = ariaLabelledBy
   if (role) ariaProps['role'] = role
 
+  const sizeClasses = small
+    ? 'px-2 py-0.5 text-sm'
+    : 'px-3 py-1.5 min-w-[2.5rem]'
+
   return (
     <button
       type={type}
       onClick={onClick}
       {...ariaProps}
-      className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isSelected
+      className={`flex items-center gap-1 transition-colors whitespace-nowrap rounded-md ${sizeClasses} ${isSelected
           ? 'bg-accent-800 text-white'
           : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'
         } ${className}`}

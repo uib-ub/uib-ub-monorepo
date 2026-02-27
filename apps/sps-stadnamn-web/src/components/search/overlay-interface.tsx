@@ -7,20 +7,21 @@ import useGroupData from "@/state/hooks/group-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
+import { useDebugStore } from "@/state/zustand/debug-store";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useRef } from "react";
-import { PiCaretDownBold, PiCaretLeftBold, PiCaretUpBold, PiX } from "react-icons/pi";
+import { PiBook, PiBookOpen, PiCaretDownBold, PiCaretLeftBold, PiCaretUpBold, PiX } from "react-icons/pi";
 import MapSettings from "../map/map-settings";
 import { Badge, TitleBadge } from "../ui/badge";
 import Clickable from "../ui/clickable/clickable";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import FacetSection from "./nav/facets/facet-section";
+import GroupedResultsToggle from "./nav/results/grouped-results-toggle";
 import SearchResults from "./nav/results/search-results";
 
 import { fieldConfig } from "@/config/search-config";
 import { defaultMaxResultsParam } from "@/config/max-results";
-import { useDebugStore } from "@/state/zustand/debug-store";
 import Spinner from "../svg/Spinner";
 import ClientFacet from "./nav/facets/client-facet";
 import DatasetFacet from "./nav/facets/dataset-facet";
@@ -71,12 +72,19 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const resetEnabled = useRef<boolean>(false);
-    const facet = useSearchParams().get('facet')
+    const searchParams = useSearchParams()
+    const facet = searchParams.get('facet')
+    const mapSettings = searchParams.get('mapSettings') == 'on'
+    const overlaySelector = searchParams.get('overlaySelector') === 'on'
 
     const mode = useMode()
 
     useEffect(() => {
         if (!isMobile || mode == 'table' || !mapFunctionRef?.current) return
+        // When map settings or the overlay selector are open, avoid auto-panning the map
+        // so that explicit map interactions (like fitting to an overlay) are not overridden
+        // when the drawer position changes.
+        if (mapSettings || overlaySelector) return
         const point = groupData?.sources?.[0]?.location?.coordinates
         if (!point) return
 
@@ -85,18 +93,23 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
             resetEnabled.current = !resetEnabled.current
         }
 
-    }, [isMobile, snappedPosition, groupData, mapFunctionRef, mode])
+    }, [isMobile, snappedPosition, groupData, mapFunctionRef, mode, mapSettings, overlaySelector])
 
     if (!isMobile) {
         return <>{children}</>
     }
 
-    if (isMobile && facet) {
-        return <div className="fixed top-0 left-0 w-full h-full z-[10001] bg-white"><div className="h-[100vh] overflow-y-auto stable-scrollbar">{children}</div>
-        </div>
+    if (isMobile && (facet || (mapSettings && overlaySelector))) {
+        return (
+            <div className="fixed top-0 left-0 w-full h-full z-[10001] bg-white">
+                <div className="h-[100svh] overflow-y-auto stable-scrollbar">
+                    {children}
+                </div>
+            </div>
+        )
     }
     if (mode == 'list') {
-        return <div className="bg-white absolute top-14 left-0 right-0 h-[calc(100svh-3.5rem)] z-[3001] overflow-y-auto stable-scrollbar">
+        return <div className="bg-white absolute top-14 left-0 right-0 h-[calc(100svh-3.5rem)] z-[3001] overflow-y-scroll">
 
             {children}
         </div>
@@ -114,7 +127,7 @@ function LeftWindow({ children }: { children: React.ReactNode }) {
         if (mapSettings && maxResults) return null
         return <>{children}</>
     }
-    return <section className="bg-white shadow-lg flex flex-col absolute left-2 top-[4rem] w-[calc(30svw-1rem)] lg:w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-auto "
+    return <section className="bg-white shadow-lg flex flex-col absolute left-2 top-[4rem] w-[calc(30svw-1rem)] lg:w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-scroll "
         aria-labelledby="left-title">{children}</section>
 }
 
@@ -125,7 +138,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     if (isMobile) {
         return <>{children}</>
     }
-    return <section className={`bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] z-[3001] max-h-[calc(100svh-2rem)] rounded-md flex flex-col overflow-auto`}
+    return <section className={`bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] z-[3001] max-h-[calc(100svh-2rem)] rounded-md flex flex-col overflow-y-scroll`}
         aria-labelledby="right-title">{children}</section>
 }
 
@@ -137,8 +150,9 @@ export default function OverlayInterface() {
     const setDrawerOpen = useSessionStore((s) => s.setDrawerOpen);
     const { isMobile, scrollableContentRef } = useContext(GlobalContext)
     const searchParams = useSearchParams()
-    const { totalHits, searchBounds, searchLoading, searchError } = useSearchData()
+    const { totalHits, docTotalHits, searchLoading } = useSearchData()
     const { groupData } = useGroupData()
+    const noGrouping = searchParams.get('noGrouping') === 'on'
 
     const drawerRef = useRef<HTMLDivElement>(null)
 
@@ -151,6 +165,8 @@ export default function OverlayInterface() {
     const showDebugGroups = searchParams.get('debugGroups') == 'on'
     const maxResults = searchParams.get('maxResults')
     const tree = searchParams.get('tree')
+    const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
+    const labelFilter = searchParams.get('labelFilter') === 'on'
 
     useEffect(() => {
         if (debugParam == 'on') {
@@ -226,12 +242,21 @@ export default function OverlayInterface() {
                     {/* Map settings should be available even when tree view is active */}
                     {mapSettings ? (
                         <>
-                            <div className={`w-full flex items-center ${isMobile ? 'h-8' : 'h-12'} px-2 xl:px-0 gap-2`} id="map-settings-panel">
-                                <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-xl text-neutral-900 xl:px-4">Kartinnstillingar</div>
+                            <div className={`w-full sticky flex items-center pl-3 ${isMobile ? 'h-8' : 'h-12'} xl:px-0 gap-2`} id="map-settings-panel">
+                                <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-xl text-neutral-900 xl:px-4">
+                                    {searchParams.get('overlaySelector') === 'on' ? 'Kartlag' : 'Kartinnstillingar'}
+                                </div>
                                 <div className="flex items-center gap-1 ml-auto">
-                                    <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings"]}>
-                                        <PiX className="text-black text-3xl" />
-                                    </ClickableIcon>
+                                    {searchParams.get('overlaySelector') === 'on' ? (
+                                        <Clickable className="flex items-center gap-1 px-2" label="Tilbake" remove={["overlaySelector"]}>
+                                            <PiCaretLeftBold className="text-black text-lg" />
+                                            Tilbake
+                                        </Clickable>
+                                    ) : (
+                                        <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings", "overlaySelector"]}>
+                                            <PiX className="text-black text-3xl" />
+                                        </ClickableIcon>
+                                    )}
                                 </div>
                             </div>
                             <MapSettings />
@@ -240,28 +265,17 @@ export default function OverlayInterface() {
                         <TreeWindow />
                     ) : (
                         <>
-                            <div className={`w-full flex shrink-0 items-center ${isMobile ? 'h-8 min-h-8' : 'h-12 min-h-12'} px-2 py-1 xl:px-0 gap-2 xl:pl-2`}>
+                            <div className={` flex items-center w-full ${isMobile ? 'h-8 min-h-8' : 'h-12 min-h-12'} px-2 py-1 xl:px-0 gap-2 xl:pl-2`}>
                                 <Clickable
                                     aria-expanded={!!maxResults}
                                     aria-controls="results-panel"
-                                    className="flex items-center gap-2 xl:px-1 w-full"
+                                    className="flex items-center gap-2 xl:px-1"
                                     // When opening, use default results count. When closing, remove param.
                                     add={{ maxResults: maxResults ? null : defaultMaxResultsParam }}
                                     remove={["maxResults", ...(isMobile ? ['options'] : [])]}
                                 >
-
-                                    <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-lg text-neutral-900 font-sans">Kjelder</div>
-
-                                    {searchLoading ? (
-                                        <Spinner status="Laster resultat" className="text-lg" />
-                                    ) : (
-                                        <TitleBadge
-                                            className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`}
-                                            count={totalHits?.value || 0}
-                                        />
-                                    )}
-                                    {!isMobile && (
-                                        <span className="ml-auto pr-2 flex w-6 justify-end">
+                                    {!coordinateInfo && !labelFilter && !isMobile && (
+                                        <span className="flex w-6 justify-center">
                                             {showResults ? (
                                                 <PiCaretUpBold className="text-lg" />
                                             ) : (
@@ -269,7 +283,30 @@ export default function OverlayInterface() {
                                             )}
                                         </span>
                                     )}
+
+                                    <div id={isMobile ? 'drawer-title' : 'right-title'} className={`text-base xl:text-lg text-neutral-900 font-sans ${isMobile ? 'w-full flex justify-end' : ''}`}>
+                                        {coordinateInfo && `Kartfesting` || labelFilter && 'Namneformer' || 'Treff'}
+                                    </div>
+
+                                    {!coordinateInfo && !labelFilter && (
+                                        <>
+                                            {searchLoading ? (
+                                                <Spinner status="Laster resultat" className="text-lg" />
+                                            ) : (
+                                                <TitleBadge
+                                                    className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`}
+                                                    count={noGrouping ? docTotalHits?.value ?? 0 : totalHits?.value ?? 0}
+                                                />
+                                            )}
+                                        </>
+                                    )}
                                 </Clickable>
+
+                                {!coordinateInfo && !labelFilter && !isMobile && (
+                                    <div className="ml-auto mr-4">
+                                        <GroupedResultsToggle />
+                                    </div>
+                                )}
                             </div>
                             {showResults && (
                                 <div
@@ -277,7 +314,7 @@ export default function OverlayInterface() {
                                     // On desktop, this is the actual scroll container for the right panel.
                                     // Wire it to the shared ref so components (e.g. GroupInfo) can scroll to top.
                                     ref={isMobile ? undefined : scrollableContentRef}
-                                    className={!isMobile ? "flex-1 overflow-y-scroll overflow-x-auto md:overflow-x-hidden min-h-0" : ""}
+                                    className={!isMobile ? "flex-1 min-h-0" : ""}
                                 >
                                     {showDebugGroups ? <DebugToggle /> : <SearchResults />}
                                 </div>

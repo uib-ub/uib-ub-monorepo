@@ -4,7 +4,7 @@ import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { datasetTitles } from "@/config/metadata-config";
 import { clampMaxResults, expandedMaxResultsParam, getClampedMaxResultsFromParam } from "@/config/max-results";
-import { useGroup } from "@/lib/param-hooks";
+import { useGroup, usePoint } from "@/lib/param-hooks";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchQuery } from "@/lib/search-params";
 import { getSkeletonLength } from "@/lib/utils";
@@ -16,23 +16,39 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { PiCheck, PiMagnifyingGlass, PiMapPinFill, PiPencilSimpleBold, PiPlayFill, PiQuestion, PiX, PiXBold } from "react-icons/pi";
+import { PiCaretRightBold, PiCheck, PiFunnel, PiMagnifyingGlass, PiMapPinFill, PiPencilSimpleBold, PiPlayFill, PiQuestion, PiStopFill, PiX, PiXBold } from "react-icons/pi";
 import GroupInfo from "../../details/group/group-info";
 import ActiveFilters from "../../form/active-filters";
 import ResultItem from "./result-item";
 import SearchQueryDisplay from "./search-query-display";
 import IconButton from "@/components/ui/icon-button";
+import GroupedResultsToggle from "./grouped-results-toggle";
 
 
 
-const CollapsibleResultItem = ({ hit, activeGroupValue }: { hit: any, activeGroupValue: string | null }) => {
+const CollapsibleResultItem = ({ hit, activeGroupValue }: { hit: any; activeGroupValue: string | null }) => {
+  const [expanded, setExpanded] = useState(activeGroupValue == hit.fields['group.id'][0])
+  const searchParams = useSearchParams()
+  const noGrouping = searchParams.get('noGrouping') === 'on'
+  const groupCode = noGrouping ? hit.fields['uuid'][0] : stringToBase64Url(hit.fields['group.id'][0])
 
-  const [expanded, setExpanded] = useState(activeGroupValue == hit.fields["group.id"][0])
-  const groupCode = stringToBase64Url(hit.fields["group.id"][0])
+  const distanceMeters = typeof hit.distance === 'number' ? hit.distance : null
+
   return (
-    <li className="relative" key={hit.fields["group.id"][0]}>
-      <ResultItem hit={hit} onClick={() => setExpanded(!expanded)} aria-controls={`group-info-${hit.fields["group.id"][0]}`} aria-expanded={expanded} />
-      {expanded && <GroupInfo id={`group-info-${hit.fields["group.id"][0]}`} overrideGroupCode={groupCode} />}
+    <li className="relative" key={hit.fields['group.id'][0]}>
+      <ResultItem
+        hit={hit}
+        onClick={() => setExpanded(!expanded)}
+        aria-controls={`group-info-${hit.fields['group.id'][0]}`}
+        aria-expanded={expanded}
+      />
+      {(expanded || noGrouping) && (
+        <GroupInfo
+          id={`group-info-${hit.fields['group.id'][0]}`}
+          overrideGroupCode={groupCode}
+          distanceMeters={noGrouping ? distanceMeters : null}
+        />
+      )}
     </li>
   )
 }
@@ -44,84 +60,44 @@ export default function SearchResults() {
   const searchParams = useSearchParams()
   const init = searchParams.get('init')
   const group = searchParams.get('group')
-  const hasQParam = !!searchParams.get('q')?.trim()
+  const qParam = searchParams.get('q')?.trim()
   const resultsParam = getClampedMaxResultsFromParam(searchParams.get('maxResults'))
   const initValue = init ? base64UrlToString(init) : null
   const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
+  // In grouped view, init points to a group id (base64 encoded).
+  // In non-grouped view, init points to a source uuid, so we must derive the
+  // corresponding group id from initGroupData to exclude it from the collapsed results.
+  const noGrouping = searchParams.get('noGrouping') === 'on'
+  const initGroupId = init
+    ? (initGroupData?.group?.id ?? (!noGrouping ? initValue : null))
+    : (!noGrouping ? initValue : null)
   const { groupData: activeGroupData } = useGroupData()
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const { isMobile, sosiVocab, mapFunctionRef } = useContext(GlobalContext)
-  const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
+  const point = usePoint()
   const { facetFilters, datasetFilters } = useSearchQuery()
   const filterCount = facetFilters.length + datasetFilters.length
-  const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
-  // State for inline coordinate editing
-  const [isEditingCoordinates, setIsEditingCoordinates] = useState(false)
-  const [editLat, setEditLat] = useState('')
-  const [editLon, setEditLon] = useState('')
-  const previousPointRef = useRef<string | null>(null)
-  const { totalHits } = useSearchData()
   const router = useRouter()
   const initSearchLabel = initGroupData?.fields?.label?.[0]?.trim()
+  const identicalQuery = qParam?.toLowerCase() == initSearchLabel?.toLowerCase()
+  const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
+  const labelFilter = searchParams.get('labelFilter') === 'on'
+  const [playingPreviewId, setPlayingPreviewId] = useState<string | null>(null)
+  const audioPreviewRef = useRef<HTMLAudioElement | null>(null)
 
-  // Unified function to stop editing
-  const stopEditingCoordinates = () => {
-    setIsEditingCoordinates(false)
-    setEditLat('')
-    setEditLon('')
-  }
 
-  // Stop editing when coordinates change from external sources (e.g., map interaction)
+
   useEffect(() => {
-    const currentPointString = point ? `${point[0]},${point[1]}` : null
-
-    // Only stop editing if:
-    // 1. We're currently editing
-    // 2. The point exists
-    // 3. The point actually changed (not just initial render)
-    if (isEditingCoordinates && point && previousPointRef.current !== null && previousPointRef.current !== currentPointString) {
-      stopEditingCoordinates()
-    }
-
-    // Update the ref to track the current point
-    previousPointRef.current = currentPointString
-  }, [point, isEditingCoordinates])
-
-  // Functions for coordinate editing
-  const startEditingCoordinates = () => {
-    if (point) {
-      setEditLat(point[1].toFixed(5)) // lat is second in point array
-      setEditLon(point[0].toFixed(5)) // lon is first in point array
-    } else {
-      const sourceWithLocation = activeGroupData?.sources?.find((source: any) => source.location?.coordinates)
-      if (sourceWithLocation?.location?.coordinates) {
-        const [lon, lat] = sourceWithLocation.location.coordinates
-        setEditLat(lat.toFixed(5))
-        setEditLon(lon.toFixed(5))
-      } else {
-        setEditLat('')
-        setEditLon('')
+    return () => {
+      if (audioPreviewRef.current) {
+        audioPreviewRef.current.pause()
+        audioPreviewRef.current = null
       }
     }
-    setIsEditingCoordinates(true)
-  }
+  }, [])
 
-  const cancelEditingCoordinates = () => {
-    stopEditingCoordinates()
-  }
 
-  const saveCoordinates = () => {
-    const lat = parseFloat(editLat)
-    const lon = parseFloat(editLon)
 
-    if (!isNaN(lat) && !isNaN(lon)) {
-      // Update URL with new coordinates
-      const newParams = new URLSearchParams(searchParams)
-      //newParams.set('point', `${lon},${lat}`)
-      router.push(`?${newParams.toString()}`)
-      stopEditingCoordinates()
-    }
-  }
 
   // Use the enhanced infinite query hook
   const {
@@ -139,8 +115,8 @@ export default function SearchResults() {
   const getAdditionalResultsCount = () => {
     if (!collapsedData) return 0
     const allHits = collapsedData.pages.flatMap((page: any) => page.data || [])
-    if (!initValue) return allHits.length
-    return allHits.filter((hit: any) => hit.fields?.["group.id"]?.[0] !== initValue).length
+    if (!initGroupId) return allHits.length
+    return allHits.filter((hit: any) => hit.fields?.["group.id"]?.[0] !== initGroupId).length
   }
 
   // Check if there are no results
@@ -148,7 +124,7 @@ export default function SearchResults() {
   const hasOneResult = collapsedStatus === 'success' && collapsedData?.pages && collapsedData.pages.length === 1 && collapsedData.pages[0].data?.length === 1;
   const hasMaxResultsLimit = resultsParam > 0
   const maxAdditionalVisible = hasMaxResultsLimit
-    ? Math.max(resultsParam - (initValue ? 1 : 0), 0)
+    ? Math.max(resultsParam - (initGroupId ? 1 : 0), 0)
     : Number.POSITIVE_INFINITY;
 
   // Derived: should "Fleire namnegrupper" and the list of other groups be visible?
@@ -157,30 +133,15 @@ export default function SearchResults() {
     ? true
     : (resultsParam > 1);
 
-  useEffect(() => {
-    if (!hasOneResult) return
 
-    const onlyResultId = collapsedData?.pages?.[0]?.data?.[0]?.fields?.["group.id"]?.[0]
-    if (!onlyResultId) return
+  // On mobile, show a compact summary for the "init" group when pinned,
+  // otherwise fall back to the currently active group.
+  if (isMobile && snappedPosition == 'bottom' && !coordinateInfo && !labelFilter && (init || activeGroupValue)) {
 
-    const onlyResultCode = stringToBase64Url(onlyResultId)
-    const initMatches = init === onlyResultCode
-    const groupMatches = group === onlyResultCode
+    const summaryGroupData = init ? initGroupData : activeGroupData
+    if (!summaryGroupData) return null;
 
-    if (initMatches && !group) return
-
-    const newParams = new URLSearchParams(searchParams)
-    newParams.set('init', onlyResultCode)
-    newParams.delete('group')
-    router.replace(`?${newParams.toString()}`)
-  }, [collapsedData, group, hasOneResult, init, router, searchParams])
-
-
-  if (isMobile && activeGroupValue && snappedPosition == 'bottom') {
-
-    if (!activeGroupData) return null;
-
-    const label = activeGroupData?.fields?.label?.[0]
+    const label = summaryGroupData?.fields?.label?.[0]
     const datasets: string[] = []
     const seenDatasets = new Set<string>()
     const audioItems: any[] = []
@@ -221,7 +182,7 @@ export default function SearchResults() {
 
     // Collect unique sosi place types from all sources and map to vocabulary
     const sosiTypesRaw = Array.from(new Set(
-      (activeGroupData?.sources || [])
+      (summaryGroupData?.sources || [])
         .flatMap((src: any) => {
           if (!src.sosi) return []
           return Array.isArray(src.sosi) ? src.sosi : [src.sosi]
@@ -230,7 +191,7 @@ export default function SearchResults() {
     )) as string[]
     const sosiTypes = sosiTypesRaw.map((type: string) => sosiVocab[type]?.label || type)
 
-    activeGroupData?.sources?.forEach((source: any) => {
+    summaryGroupData?.sources?.forEach((source: any) => {
       if (!seenDatasets.has(source.dataset)) {
         datasets.push(source.dataset)
         seenDatasets.add(source.dataset)
@@ -250,29 +211,59 @@ export default function SearchResults() {
     }
 
     const handlePlayAudio = (recording: any) => {
+      // Toggle pause if the same recording is already playing
+      if (audioPreviewRef.current && playingPreviewId === recording.uuid) {
+        if (!audioPreviewRef.current.paused) {
+          audioPreviewRef.current.pause()
+          setPlayingPreviewId(null)
+          return
+        }
+      }
+
+      // Stop any previous preview
+      if (audioPreviewRef.current) {
+        audioPreviewRef.current.pause()
+        audioPreviewRef.current = null
+      }
+
       const audio = new Audio(`https://iiif.spraksamlingane.no/iiif/audio/hord/${recording.file}`)
-      audio.play().catch(console.error)
+      audioPreviewRef.current = audio
+      setPlayingPreviewId(recording.uuid)
+
+      audio.addEventListener('ended', () => {
+        setPlayingPreviewId((current) => (current === recording.uuid ? null : current))
+      })
+
+      audio.play().catch((error) => {
+        // Ignore AbortError caused by a pause() interrupting play()
+        if ((error as any)?.name === 'AbortError') {
+          return
+        }
+        console.error(error)
+        setPlayingPreviewId((current) => (current === recording.uuid ? null : current))
+      })
     }
 
     return <div className="px-2 h-[100vh]">
       <div className="flex items-center gap-2">
-        <strong>{label}</strong>
+        <strong className="text-xl">{label}</strong>
         {sosiTypes.length > 0 && (
           <span className="text-neutral-700 text-sm truncate">
             {sosiTypes.slice(0, 3).join(', ')}{sosiTypes.length > 3 && '...'}
           </span>
         )}
         {audioItems.length > 0 && (
-          <div className="flex gap-1 ml-auto flex-shrink-0">
+          <div className="flex gap-1 ml-auto flex-shrink-0 border border-neutral-200 rounded-md p-1 mr-2">
             {audioItems.map((audioItem, index: number) =>
               audioItem.recordings.map((recording: any) => (
                 <button
                   key={"audio-preview-" + recording.uuid}
                   onClick={() => handlePlayAudio(recording)}
-                  className="p-1 text-primary-700 hover:text-primary-900 transition-colors"
-                  aria-label={`Lydopptak ${audioItems.length > 1 ? ` ${index + 1} av ${audioItems.length}` : ''}`}
+                  className={`p-1 rounded-md text-neutral-900`}
+                  aria-label={`Lydopptak${audioItems.length > 1 ? ` ${index + 1} av ${audioItems.length}` : ''}${playingPreviewId === recording.uuid ? ' (stoppar)' : ''}`}
+                  aria-pressed={playingPreviewId === recording.uuid}
                 >
-                  <PiPlayFill className="text-lg" aria-hidden="true" />
+                  {playingPreviewId === recording.uuid ? <PiStopFill className="text-lg" aria-hidden="true" /> : <PiPlayFill className="text-lg" aria-hidden="true" />}
                 </button>
               ))
             )}
@@ -303,110 +294,77 @@ export default function SearchResults() {
       {
         (point && !init) && (
           <div className="p-3 flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <IconButton label="Gå til koordinat" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><PiMapPinFill className="text-primary-700" /></IconButton>
-              {isEditingCoordinates ? (
-                <div className="flex items-center gap-2 flex-1">
-                  <input
-                    type="number"
-                    value={editLon}
-                    onChange={(e) => setEditLon(e.target.value)}
-                    placeholder="Longitude"
-                    className="w-20 px-1 py-0.5 text-sm border border-neutral-300 rounded"
-
-                  />
-                  <span>,</span>
-                  <input
-                    type="number"
-                    value={editLat}
-                    onChange={(e) => setEditLat(e.target.value)}
-                    placeholder="Latitude"
-                    className="w-20 px-1 py-0.5 text-sm border border-neutral-300 rounded"
-                  />
-
-
-                  <button
-                    onClick={saveCoordinates}
-                    className="p-1 text-green-600 hover:text-green-800"
-                    aria-label="Lagre koordinater"
-                  >
-                    <PiCheck className="text-lg" aria-hidden="true" />
-                  </button>
-                  <button
-                    onClick={cancelEditingCoordinates}
-                    className="p-1 text-red-600 hover:text-red-800"
-                    aria-label="Avbryt"
-                  >
-                    <PiX className="text-lg" aria-hidden="true" />
-                  </button>
-                </div>
-              ) : (
+            <div className="flex items-center gap-2 justify-between">
+              <IconButton label="Gå til koordinat" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/markerPrimaryCheck.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" /></IconButton>
+               
                 <span className="flex-1">
                   {point ? (
                     <>
-                      {`${Math.round(Math.abs(point[0]))}°${point[0] >= 0 ? 'N' : 'S'}, ${Math.round(Math.abs(point[1]))}°${point[1] >= 0 ? 'Ø' : 'V'}`}
+                      {`${Math.abs(point[0]).toFixed(6)}°${point[0] >= 0 ? 'N' : 'S'}, ${Math.abs(point[1]).toFixed(6)}°${point[1] >= 0 ? 'Ø' : 'V'}`}
                     </>
                   ) : 'Ukjent'}
                 </span>
-              )}
+                
               <div className="flex items-center gap-2">
-                {!isEditingCoordinates && (
-                  <ClickableIcon className="btn btn-outline h-6 w-6 btn-compact rounded-full text-neutral-900" label="Rediger startpunkt" onClick={startEditingCoordinates}>
-                    <PiPencilSimpleBold aria-hidden="true" />
-                  </ClickableIcon>
-                )}
                 <ClickableIcon className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900" label="Fjern startpunkt" remove={['point', 'radius']}>
                   <PiXBold aria-hidden="true" />
                 </ClickableIcon>
               </div>
+              
             </div>
-            {isEditingCoordinates && (
-              <span className="text-sm text-neutral-800">{isMobile ? "Trykk og hald for å hente startpnk i kartet" : "Høgreklikk i kartet for å hente nytt startpunkt"}</span>
-            )}
+
+              <span className="text-neutral-800 text-sm">{isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"}</span>
           </div>
         )
       }
-      {init && (initGroupLoading ? (
+      {init && !coordinateInfo && !labelFilter && (initGroupLoading ? (
         <div className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-300">
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `10rem` }}></div>
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `16rem` }}></div>
         </div>
       ) : initGroupData && (
         <div className="relative" key={`init-${initValue}`}>
-          <ResultItem
-            hit={initGroupData}
-          />
-          {initGroupData.fields?.["group.id"] ? <>
-            <GroupInfo id={`group-info-${initGroupData.fields["group.id"]}`} overrideGroupCode={init || undefined} />
-
-          </>
-            : null}
+          <ResultItem hit={initGroupData} />
+          {initGroupData.fields?.['group.id'] ? (
+            <>
+              <GroupInfo id={`group-info-${initGroupData.fields['group.id']}`} overrideGroupCode={init || undefined} />
+            </>
+          ) : null}
         </div>
       ))}
 
-      {init && !hasQParam && (totalHits?.value > initGroupData?.sources?.length) ? (initGroupLoading ? (
+      {(coordinateInfo || labelFilter) && (
+        <GroupInfo id={`group-info-${activeGroupValue}`} overrideGroupCode={activeGroupValue || undefined} />
+      )}
+
+      {(init || (isMobile && qParam)) && !coordinateInfo && !labelFilter ? (initGroupLoading ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
         </div>
       ) : (
-        <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2 text-neutral-950">
-          <span id="other-groups-title" className="xl:text-lg font-sans text-neutral-900">Fleire namnegrupper</span>
-          {initSearchLabel && (
-            <Clickable
-              link
-              add={{ q: initSearchLabel, maxResults: expandedMaxResultsParam }}
-              className="ml-auto btn btn-outline btn-sm rounded-full"
-              aria-label={`Avgrens til ${initSearchLabel}`}
-            >
-              <PiMagnifyingGlass className="text-base" aria-hidden="true" />
-              <span className="ml-1">{initSearchLabel}</span>
-            </Clickable>
-          )}
+        <div className="w-full border-t border-neutral-200 bg-neutral-50 border-b-none pt-4 pb-2 xl:py-2 px-3 flex items-center gap-2 text-neutral-950 min-w-0 overflow-hidden">
+          {qParam && <Clickable remove={['q', 'searchSort']} add={{ q: null }} className="px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-2 cursor-pointer"><PiMagnifyingGlass className="" aria-hidden="true" />{qParam}<PiX className="text-lg" aria-hidden="true" /></Clickable>}
+          <span id="other-groups-title" className={`text-lg font-sans text-neutral-900 whitespace-nowrap ${qParam ? 'sr-only' : ''}`}>{noGrouping ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}</span>
+            
+            {(!initSearchLabel || qParam != initSearchLabel) && init && (
+              <Clickable
+                link
+                add={{ q: initSearchLabel, maxResults: expandedMaxResultsParam }}
+                className="ml-auto px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-1 cursor-pointer no-underline max-w-full min-w-0"
+              >
+                {!(qParam && !identicalQuery) &&<PiFunnel aria-hidden="true" className="flex-shrink-0" />}
+                <span className="ml-1 truncate flex-1 min-w-0">
+                  {initSearchLabel}
+                </span>
+                {qParam && !identicalQuery && <PiCaretRightBold aria-hidden="true" className="flex-shrink-0" />}
+              </Clickable>
+            )}
+          
         </div>
       )) : null}
 
-      {(!init || showOtherResults || isMobile || hasOneResult) && (
+      {(!init || showOtherResults || isMobile || hasOneResult) && (!coordinateInfo && !labelFilter) && (
         <>
           <SearchQueryDisplay />
 
@@ -426,7 +384,7 @@ export default function SearchResults() {
                 return (
                   <Fragment key={`page-${pageIndex}`}>
                     {page.data?.map((item: any) => {
-                      if (initValue && item.fields["group.id"]?.[0] == initValue) return null;
+                      if (initGroupId && item.fields["group.id"]?.[0] == initGroupId) return null;
                       if (renderedAdditional >= maxAdditionalVisible) return null;
                       if (!item.fields["group.id"]) {
                         console.log("No group ID", item);
@@ -450,7 +408,7 @@ export default function SearchResults() {
                             if (isFetchingNextPage) return
 
                             const currentAdditional = getAdditionalResultsCount()
-                            const base = initValue ? 1 : 0
+                            const base = initGroupId ? 1 : 0
                             const newAdditional = currentAdditional + SUBSEQUENT_PAGE_SIZE
                             const newResultsValue = clampMaxResults(base + newAdditional)
 
@@ -474,42 +432,27 @@ export default function SearchResults() {
                         >
                           {isFetchingNextPage && <Spinner className="text-white" status="Lastar" />} {isFetchingNextPage ? 'Lastar...' : 'Vis meir'}
                         </button>
+                        
                       </li>
                     )}
                   </Fragment>
                 )
               })})()}
           </ul>
+          {isMobile && (
+                          <div className="mt-2 px-4">
+                            <GroupedResultsToggle />
+                          </div>
+                        )}
         </>
       )}
 
 
-      {(filterCount > 0 || isMobile || searchError || collapsedError || hasNoResults) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
+      {(filterCount > 0 || isMobile || searchError || collapsedError || hasNoResults) && (!labelFilter) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
         {filterCount > 0 && showOtherResults && <div className="mx-2 mb-4">
 
           <ActiveFilters /></div>}
 
-        {isMobile && (
-          <div className="flex flex-col gap-2 justify-center">
-            <Clickable
-              remove={["maxResults"]}
-              add={{ options: 'on' }}
-              link
-              onClick={() => snappedPosition == 'bottom' ? setSnappedPosition('middle') : null}
-              className={`
-                  flex items-center gap-2
-                  btn-outline btn
-                  justify-center
-                  text-lg
-                  px-4 py-2 rounded-full xl:rounded-md
-                  mx-3
-                  relative
-                `}
-            >
-              Filtrer søket
-            </Clickable>
-          </div>
-        )}
 
 
         {/* Error and empty states */}
