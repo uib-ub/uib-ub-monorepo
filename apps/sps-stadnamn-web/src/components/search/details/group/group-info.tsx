@@ -157,6 +157,10 @@ export default function GroupInfo({
 
     const showNamesTab = useMemo(() => {
         // Replicate NamesTab's filter determinism: timeline or names without year
+        const totalSources = Object.values(datasets).reduce((sum, sources) => sum + sources.length, 0)
+        if (totalSources < 6) {
+            return false
+        }
         const nameToYears: Record<string, Set<string>> = {}
         Object.values(datasets).forEach((sources: any[]) => {
             sources.forEach((source: any) => {
@@ -190,6 +194,17 @@ export default function GroupInfo({
         const yearsOrdered = Object.keys(namesByYear)
         const totalUniqueNames = Object.keys(nameToYears).length
         const totalYears = yearsOrdered.length
+
+        // Don't show if the number of unique labels or the number of years is the same as the number of sources
+        if (totalUniqueNames === totalSources) {
+            return false
+        }
+        if (totalYears === totalSources) {
+            return false
+        }
+
+
+        
 
         // Don't show filter if there's only one filter option total
         // (one year and one name, or one name with no years, or one year with no names)
