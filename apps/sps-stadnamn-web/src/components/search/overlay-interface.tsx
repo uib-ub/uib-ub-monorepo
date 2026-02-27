@@ -302,6 +302,16 @@ export default function OverlayInterface() {
                                     )}
                                 </Clickable>
 
+                                {coordinateInfo && (
+                                    <ClickableIcon
+                                        label="Lukk"
+                                        className="ml-auto mr-2 p-2"
+                                        remove={["coordinateInfo", "activePoint"]}
+                                    >
+                                        <PiX className="text-black text-2xl" />
+                                    </ClickableIcon>
+                                )}
+
                                 {!coordinateInfo && !labelFilter && !isMobile && (
                                     <div className="ml-auto mr-4">
                                         <GroupedResultsToggle />
