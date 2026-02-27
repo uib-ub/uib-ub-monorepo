@@ -619,6 +619,7 @@ export default function MapExplorer() {
         newQueryParams.delete('activePoint')
         newQueryParams.delete('activeYear')
         newQueryParams.delete('activeName')
+        newQueryParams.delete('labelFilter')
         newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
 
       }
@@ -817,6 +818,7 @@ export default function MapExplorer() {
 
 
         const focusGroupMarker = () => {
+          console.log("focusGroupMarker", activeMarkerMode, point, groupData?.fields?.location?.[0]?.coordinates)
           const pointFocusTarget =
             (activeMarkerMode === 'labels' || activeMarkerMode === 'points') && point
               ? point
@@ -845,6 +847,7 @@ export default function MapExplorer() {
           if (hasMapSettings) {
             newParams.delete('mapSettings')
           }
+
           if (!hasMaxResults || hasMapSettings) {
             router.push(`?${newParams.toString()}`)
           }
