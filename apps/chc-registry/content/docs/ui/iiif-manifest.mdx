@@ -70,3 +70,48 @@ export const cn = (...inputs: ClassValue[]) => {
 <Step>Update the import paths to match your project setup</Step>
 
 </Steps>
+
+## i18n (translations)
+
+Clover ships with built-in i18n support. This registry configures it once at the app level so all `IIIFManifest` usages share the same translations.
+
+In a Next.js app using this component:
+
+```tsx
+// src/lib/clover-i18n.tsx
+'use client';
+
+import { initCloverI18n } from '@samvera/clover-iiif/i18n';
+
+let initialized = false;
+
+if (!initialized) {
+  initCloverI18n({
+    lng: 'nb', // or 'nn' / 'no'
+    fallbackLng: ['nb', 'no', 'en'],
+  });
+  initialized = true;
+}
+
+export const CloverI18nProvider = () => null;
+```
+
+Then wire it into your root layout:
+
+```tsx
+// src/app/layout.tsx
+import { CloverI18nProvider } from '@/lib/clover-i18n';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="nb">
+      <body>
+        <CloverI18nProvider />
+        {children}
+      </body>
+    </html>
+  );
+}
+```
+
+You can change the default language or add custom translations by updating the `initCloverI18n` call. See the official Clover docs for more options: https://samvera-labs.github.io/clover-iiif/docs/i18n
