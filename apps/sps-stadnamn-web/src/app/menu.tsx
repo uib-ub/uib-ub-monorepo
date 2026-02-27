@@ -112,6 +112,8 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                     setMenuOpen(false)
                                 }}
                                 only={{ tree: 'root', zoom, center }}
+                                href="/search"
+                                link
                                 aria-current={isTreeActive ? 'page' : undefined}
                                 className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
                                 ${isTreeActive

@@ -14,7 +14,9 @@ export default function NavBar({ handleBlur, ...props }: any) {
             <Clickable onBlur={handleBlur} scroll={false} remove={['mode']} link href="/search" className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:pl-8 lg:mx-0">Kart</Clickable>
             <Clickable
                 onBlur={handleBlur}
-                add={{ tree: 'root' }}
+                only={{ tree: 'root' }}
+                href="/search"
+                link
                 className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0"
             >
                 Matrikkelvising
