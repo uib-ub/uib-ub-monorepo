@@ -63,6 +63,36 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   }, []);
 
 
+  // Load visible columns from localStorage for current perspective
+  useEffect(() => {
+    try {
+      const storedVisibleColumns = localStorage.getItem(`visibleColumns_${perspective}`);
+      if (!storedVisibleColumns) return;
+
+      const parsed = JSON.parse(storedVisibleColumns);
+
+      let columns: string[] | undefined;
+      if (Array.isArray(parsed)) {
+        columns = parsed;
+      } else if (parsed && typeof parsed === 'object') {
+        const maybe = (parsed as Record<string, string[]>)[perspective];
+        if (Array.isArray(maybe)) {
+          columns = maybe;
+        }
+      }
+
+      if (columns && columns.length) {
+        setVisibleColumns(prev => ({
+          ...prev,
+          [perspective]: columns,
+        }));
+      }
+    } catch {
+      // Ignore storage errors
+    }
+  }, [perspective]);
+
+
   // Set url for navigation back to search
   useEffect(() => {
     if (searchParamsString && pathname == '/search') {
