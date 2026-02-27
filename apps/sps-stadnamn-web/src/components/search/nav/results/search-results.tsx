@@ -441,6 +441,7 @@ export default function SearchResults() {
           </ul>
           {isMobile && (
                           <div className="mt-2 px-4">
+                            <span>Øvste eining i søket</span>
                             <GroupedResultsToggle />
                           </div>
                         )}

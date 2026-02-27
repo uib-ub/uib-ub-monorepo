@@ -1,9 +1,9 @@
 'use client'
 
 import { useSearchParams, useRouter } from "next/navigation"
-import { ChangeEvent } from "react"
 import { stringToBase64Url } from "@/lib/param-utils"
 import useGroupData from "@/state/hooks/group-data"
+import ToggleButton from "@/components/ui/toggle-button"
 
 export default function GroupedResultsToggle() {
     const searchParams = useSearchParams()
@@ -11,22 +11,22 @@ export default function GroupedResultsToggle() {
 
     const init = searchParams.get('init')
     const noGrouping = searchParams.get('noGrouping') === 'on'
+    const isGrouped = !noGrouping
 
     // Reuse the same init-based group lookup logic that the rest of the UI uses.
     const { groupData: initGroupData } = useGroupData(init)
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const checked = e.target.checked
+    const handleToggle = (enableGrouping: boolean) => {
         const newParams = new URLSearchParams(searchParams.toString())
 
-        if (checked) {
-            // Enable grouped view
+        if (enableGrouping) {
+            // Enable grouped view ("Namnegrupper")
             newParams.delete('noGrouping')
             if (init && initGroupData?.group?.id) {
                 newParams.set('init', stringToBase64Url(initGroupData.group.id))
             }
         } else {
-            // Disable grouped view (flat kjeldeoppslag)
+            // Disable grouped view ("Kjeldeoppslag")
             newParams.set('noGrouping', 'on')
             const initUuid = initGroupData?.fields?.["uuid"]?.[0]
             if (init && initUuid) {
@@ -38,15 +38,29 @@ export default function GroupedResultsToggle() {
     }
 
     return (
-        <label className="inline-flex items-center gap-2 text-xs xl:text-sm text-neutral-900">
-            <input
-                type="checkbox"
-                className="h-3 w-3 xl:h-4 xl:w-4"
-                checked={!noGrouping}
-                onChange={handleChange}
-            />
-            <span>Grupperte treff</span>
-        </label>
+        <div className="flex items-center gap-2 text-xs xl:text-sm text-neutral-900">
+            <span className="sr-only">Visningsmodus for treff</span>
+            <div className="inline-flex gap-2" role="radiogroup" aria-label="Visningsmodus for treff">
+                <ToggleButton
+                    isSelected={isGrouped}
+                    role="radio"
+                    ariaChecked={isGrouped}
+                    onClick={() => handleToggle(true)}
+                    small
+                >
+                    Namnegrupper
+                </ToggleButton>
+                <ToggleButton
+                    isSelected={!isGrouped}
+                    role="radio"
+                    ariaChecked={!isGrouped}
+                    onClick={() => handleToggle(false)}
+                    small
+                >
+                    Kjeldeoppslag
+                </ToggleButton>
+            </div>
+        </div>
     )
 }
 
