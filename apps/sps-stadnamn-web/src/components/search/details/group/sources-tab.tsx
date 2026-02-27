@@ -144,7 +144,7 @@ export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabP
                                 
                             </div>
                         )}
-                        <Link className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md !px-2 py-1 h-8 btn btn-outline btn-compact" href={"/uuid/" + s.uuid}>
+                        <Link className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md py-1 !px-3 btn btn-outline btn-compact text-lg" href={"/uuid/" + s.uuid}>
                             {cadastrePrefix}<strong>{s.label}</strong> {sosiTypesDisplay && <span className="text-neutral-900">{sosiTypesDisplay}</span>}
                         </Link>
 
