@@ -73,7 +73,7 @@ export default function GroupedResultsToggle() {
                     onClick={() => handleToggle(true)}
                     small
                 >
-                    <span className="sr-only 2xl:not-sr-only">Namnegrupper</span>{!isMobile && <PiSignpost className="2xl:hidden" aria-hidden="true" />}
+                    <span className={!isMobile ? "sr-only 2xl:not-sr-only" : ""}>Namnegrupper</span>{!isMobile && <PiSignpost className="2xl:hidden" aria-hidden="true" />}
                 </ToggleButton>
                 <ToggleButton
                     isSelected={!isGrouped}
@@ -82,7 +82,7 @@ export default function GroupedResultsToggle() {
                     onClick={() => handleToggle(false)}
                     small
                 >
-                    <span className="sr-only 2xl:not-sr-only">Kjeldeoppslag</span>{!isMobile && <PiBookOpen className="2xl:hidden" aria-hidden="true" />}
+                    <span className={!isMobile ? "sr-only 2xl:not-sr-only" : ""}>Kjeldeoppslag</span>{!isMobile && <PiBookOpen className="2xl:hidden" aria-hidden="true" />}
                 </ToggleButton>
             </div>
         </div>
