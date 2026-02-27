@@ -60,7 +60,7 @@ export default function MapExplorer() {
   const { activeGroupValue, initValue, initCode } = useGroup()
   const { groupLoading, groupData } = useGroupData()
   const { groupData: initGroupData } = useGroupData(initCode)
-  const { docData } = useDocData()
+  const { docData, docDataset } = useDocData()
 
   const { isMobile, mapFunctionRef, scrollableContentRef, scrollToBrukRef } = useContext(GlobalContext)
   const mapInstance = useRef<any>(null)
@@ -1171,6 +1171,69 @@ export default function MapExplorer() {
             )}
 
             {
+              // When a single document representing a gård is active (via `doc`) but
+              // no specific tree selection (with uuid) is active, show the same farm
+              // label marker at the document's coordinate so the highlighted gård is
+              // visible on the map.
+              (() => {
+                const hasTreeSelection = !!tree && !!treeDataset && !!treeUuid
+                if (hasTreeSelection) return null
+                if (!docData?._source) return null
+                if (docData._source.sosi !== 'gard') return null
+                if (!docDataset || !treeSettings[docDataset]) return null
+                const coords = docData._source.location?.coordinates
+                if (!coords || coords.length !== 2) return null
+
+                const centralLat = coords[1]
+                const centralLng = coords[0]
+
+                const labelText =
+                  `${getGnr({ _source: docData._source }, docDataset) || ''} ${docData._source.label || '[utan namn]'}`
+                    .trim() || '[utan namn]'
+
+                return (
+                  <>
+                    {/* Farm (cadastral unit) marker when only `doc` is active */}
+                    <Marker
+                      key={`doc-farm-label-${docData._source.uuid}`}
+                      zIndexOffset={2500}
+                      pane="treeLabelPane"
+                      icon={new leaflet.DivIcon(
+                        getLabelMarkerIcon(
+                          labelText,
+                          'black',
+                          undefined,
+                          true,
+                          false,
+                          true
+                        )
+                      )}
+                      position={[centralLat, centralLng]}
+                      eventHandlers={{
+                        click: () => {
+                          const newParams = new URLSearchParams(searchParams);
+                          newParams.set('activePoint', `${centralLat},${centralLng}`);
+                          newParams.set('maxResults', defaultMaxResultsParam);
+                          router.push(`?${newParams.toString()}`);
+                        },
+                        keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                          const key = e.originalEvent?.key ?? e.key
+                          if (key === 'Enter' || key === ' ') {
+                            ;(e.originalEvent ?? e).preventDefault()
+                            const newParams = new URLSearchParams(searchParams);
+                            newParams.set('activePoint', `${centralLat},${centralLng}`);
+                            newParams.set('maxResults', defaultMaxResultsParam);
+                            router.push(`?${newParams.toString()}`);
+                          }
+                        }
+                      }}
+                    />
+                  </>
+                )
+              })()
+            }
+
+            {
               (() => {
                 // When tree mode is active (and a cadastral unit is selected), show connected markers for
                 // the cadastral unit (gård) and its subunits (bruk) instead of "sources in init group".
@@ -1178,8 +1241,20 @@ export default function MapExplorer() {
 
                 const subunitHits: any[] = treeSubunitsData?.hits?.hits || []
                 const subunitWithCoords = subunitHits.filter((h: any) => h?._source?.location?.coordinates?.length === 2)
-                const farmCoord = treeUnitDoc?.location?.coordinates?.length === 2
-                  ? [treeUnitDoc.location.coordinates[1], treeUnitDoc.location.coordinates[0]]
+
+                // Prefer the explicitly selected tree unit when tree mode is active.
+                // Otherwise, fall back to the currently active doc when it is a cadastral unit (gård)
+                // in a dataset that supports tree view. This allows the gård label marker to appear
+                // when the document is highlighted via the `doc` param, even if the tree is not expanded.
+                const treeCentralSource =
+                  (isTreeActive && treeUnitDoc)
+                    ? treeUnitDoc
+                    : (docData?._source?.sosi === 'gard' && docDataset && treeSettings[docDataset])
+                      ? docData._source
+                      : null
+
+                const farmCoord = treeCentralSource?.location?.coordinates?.length === 2
+                  ? [treeCentralSource.location.coordinates[1], treeCentralSource.location.coordinates[0]]
                   : null
 
                 // The central point MUST be the cadastral unit's own coordinate (gård).
@@ -1258,6 +1333,41 @@ export default function MapExplorer() {
                   return (
                     <>
                       {/* Farm (cadastral unit) marker */}
+                      <Marker
+                        key={`tree-farm-label-${treeUuid ?? treeCentralSource?.uuid ?? 'doc'}`}
+                        zIndexOffset={2500}
+                        pane="treeLabelPane"
+                        icon={new leaflet.DivIcon(
+                          getLabelMarkerIcon(
+                            `${(treeDataset ?? docDataset)
+                              ? (getGnr({ _source: treeCentralSource }, (treeDataset ?? docDataset) as string) || '')
+                              : ''} ${treeCentralSource?.label || '[utan namn]'}`
+                              .trim() || '[utan namn]',
+                            'black',
+                            undefined,
+                            true,
+                            false,
+                            false
+                          )
+                        )}
+                        position={[centralLat, centralLng]}
+                        eventHandlers={{
+                          click: () => {
+                            const newParams = new URLSearchParams(searchParams);
+                            newParams.set('activePoint', `${centralLat},${centralLng}`);
+                            router.push(`?${newParams.toString()}`);
+                          },
+                          keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                            const key = e.originalEvent?.key ?? e.key
+                            if (key === 'Enter' || key === ' ') {
+                              ;(e.originalEvent ?? e).preventDefault()
+                              const newParams = new URLSearchParams(searchParams);
+                              newParams.set('activePoint', `${centralLat},${centralLng}`);
+                              router.push(`?${newParams.toString()}`);
+                            }
+                          }
+                        }}
+                      />
                       {farmCoord && (
                         <>
                           {/* Circle (dot) at farm coordinate */}
@@ -1292,41 +1402,7 @@ export default function MapExplorer() {
                           />
 
                           {/* Label marker (number + label) */}
-                          <Marker
-                            key={`tree-farm-label-${treeUuid}`}
-                            zIndexOffset={2500}
-                            pane="treeLabelPane"
-                            icon={new leaflet.DivIcon(
-                              getLabelMarkerIcon(
-                                `${treeDataset ? (getGnr({ _source: treeUnitDoc }, treeDataset) || '') : ''} ${treeUnitDoc?.label || '[utan namn]'}`
-                                  .trim() || '[utan namn]',
-                                'black',
-                                undefined,
-                                true,
-                                false,
-                                false
-                              )
-                            )}
-                            position={[centralLat, centralLng]}
-                            eventHandlers={{
-                              click: () => {
-                                const newParams = new URLSearchParams(searchParams);
-                                newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                newParams.set('maxResults', defaultMaxResultsParam);
-                                router.push(`?${newParams.toString()}`);
-                              },
-                              keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
-                                const key = e.originalEvent?.key ?? e.key
-                                if (key === 'Enter' || key === ' ') {
-                                  ;(e.originalEvent ?? e).preventDefault()
-                                  const newParams = new URLSearchParams(searchParams);
-                                  newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                  newParams.set('maxResults', defaultMaxResultsParam);
-                                  router.push(`?${newParams.toString()}`);
-                                }
-                              }
-                            }}
-                          />
+
                         </>
                       )}
 
