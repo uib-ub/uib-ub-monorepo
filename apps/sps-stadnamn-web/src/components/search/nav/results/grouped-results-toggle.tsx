@@ -6,15 +6,17 @@ import { stringToBase64Url } from "@/lib/param-utils"
 import useGroupData from "@/state/hooks/group-data"
 import ToggleButton from "@/components/ui/toggle-button"
 import { GlobalContext } from "@/state/providers/global-provider"
+import { PiBookOpen, PiSignpost, PiTreeView } from "react-icons/pi"
 
 export default function GroupedResultsToggle() {
     const searchParams = useSearchParams()
     const router = useRouter()
-    const { scrollableContentRef } = useContext(GlobalContext)
+    const { scrollableContentRef, isMobile } = useContext(GlobalContext)
 
     const init = searchParams.get('init')
     const noGrouping = searchParams.get('noGrouping') === 'on'
     const isGrouped = !noGrouping
+
 
     // Track previous mode so we only scroll when it actually changes
     const previousNoGroupingRef = useRef(noGrouping)
@@ -71,7 +73,7 @@ export default function GroupedResultsToggle() {
                     onClick={() => handleToggle(true)}
                     small
                 >
-                    Namnegrupper
+                    <span className="sr-only 2xl:not-sr-only">Namnegrupper</span>{!isMobile && <PiSignpost className="2xl:hidden" aria-hidden="true" />}
                 </ToggleButton>
                 <ToggleButton
                     isSelected={!isGrouped}
@@ -80,7 +82,7 @@ export default function GroupedResultsToggle() {
                     onClick={() => handleToggle(false)}
                     small
                 >
-                    Kjeldeoppslag
+                    <span className="sr-only 2xl:not-sr-only">Kjeldeoppslag</span>{!isMobile && <PiBookOpen className="2xl:hidden" aria-hidden="true" />}
                 </ToggleButton>
             </div>
         </div>
