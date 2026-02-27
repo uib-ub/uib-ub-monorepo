@@ -133,27 +133,6 @@ export default function SearchResults() {
     ? true
     : (resultsParam > 1);
 
-  useEffect(() => {
-    if (!hasOneResult) return
-    // Don't re-add init when user has set a point (e.g. via map context menu); they explicitly cleared init.
-    if (searchParams.has('point')) return
-    return
-
-    const onlyResultId = collapsedData?.pages?.[0]?.data?.[0]?.fields?.["group.id"]?.[0]
-    if (!onlyResultId) return
-
-    const onlyResultCode = stringToBase64Url(onlyResultId)
-    const initMatches = init === onlyResultCode
-    const groupMatches = group === onlyResultCode
-
-    if (initMatches && !group) return
-
-    const newParams = new URLSearchParams(searchParams)
-    newParams.set('init', onlyResultCode)
-    newParams.delete('group')
-    router.replace(`?${newParams.toString()}`)
-  }, [collapsedData, group, hasOneResult, init, router, searchParams])
-
 
   // On mobile, show a compact summary for the "init" group when pinned,
   // otherwise fall back to the currently active group.
