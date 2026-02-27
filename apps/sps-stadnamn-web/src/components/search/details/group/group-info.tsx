@@ -348,24 +348,6 @@ export default function GroupInfo({
                 {coordinateInfo && (
                     <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 py-3">
                         <div className="flex flex-col min-w-0 gap-y-3">
-                            <div className="flex min-w-0 items-center justify-between gap-x-3 gap-y-2">
-                                <div className="min-w-0 flex-1 flex items-center gap-2 text-base text-neutral-900">
-                                    <span className="font-semibold truncate">
-                                        {groupLabel}
-                                    </span>
-                                    <span className="truncate text-neutral-900">
-                                        {detailsRenderer(groupData)}
-                                    </span>
-                                </div>
-                                <Clickable
-                                    remove={['coordinateInfo']}
-                                    aria-label="Tilbake"
-                                    className="inline-flex shrink-0 items-center gap-1.5 text-neutral-800 hover:text-neutral-900"
-                                >
-                                    <PiCaretLeftBold className="text-base shrink-0" aria-hidden="true" />
-                                    <span className="whitespace-nowrap">Tilbake</span>
-                                </Clickable>
-                            </div>
                             <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-2">
                                 {(() => {
                                     const total = uniqueCoordinates.length
