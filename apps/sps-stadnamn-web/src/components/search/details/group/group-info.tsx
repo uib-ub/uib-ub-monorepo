@@ -346,9 +346,9 @@ export default function GroupInfo({
                 )}
 
                 {coordinateInfo && (
-                    <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 py-3">
+                    <div className="w-full shrink-0 border-b border-neutral-100 bg-white px-3 py-3">
                         <div className="flex flex-col min-w-0 gap-y-3">
-                            <div className="flex min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
                                 {(() => {
                                     const total = uniqueCoordinates.length
                                     const activeIndexRaw = uniqueCoordinates.findIndex((c) => c === activePoint)
@@ -402,7 +402,7 @@ export default function GroupInfo({
                                                     <PiCaretLeftBold aria-hidden="true" />
                                                 </NavBtn>
                                                 <span className="text-neutral-700 text-sm tabular-nums text-center px-2" aria-hidden="true">
-                                                    Koordinat {activeIndex + 1} av {total}
+                                                    {activeIndex + 1} av {total}
                                                 </span>
                                                 <NavBtn label="Neste koordinat" targetIndex={Math.min(total - 1, activeIndex + 1)} disabled={activeIndex === total - 1}>
                                                     <PiCaretRightBold aria-hidden="true" />
