@@ -8,12 +8,13 @@ import IconButton from "@/components/ui/icon-button";
 import dynamic from "next/dynamic";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import { useContext, useMemo, useState } from "react";
-import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiMagnifyingGlass, PiPlusBold, PiX } from "react-icons/pi";
+import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiInfoFill, PiMagnifyingGlass, PiPlusBold, PiX } from "react-icons/pi";
 import { useSearchParams } from "next/navigation";
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import WarningMessage from "../search/details/group/warning-message";
 import { useSessionStore } from "@/state/zustand/session-store";
+import Link from "next/link";
 
 const MapDebugSettings = dynamic(() => import("./map-debug-settings"), { ssr: false });
 
@@ -64,10 +65,13 @@ export default function MapSettings() {
     return availableOverlays.filter((item) => item.name.toLowerCase().includes(query));
   }, [overlaySearch, availableOverlays]);
   const overlayMetaByKey = useMemo(() => {
-    return overlayLayerMaps.reduce<Record<string, { name: string; provider?: string }>>((acc, item) => {
-      acc[item.key] = { name: item.name, provider: item.provider };
-      return acc;
-    }, {});
+    return overlayLayerMaps.reduce<Record<string, { name: string; provider?: string; info?: string }>>(
+      (acc, item) => {
+        acc[item.key] = { name: item.name, provider: item.provider, info: item.info };
+        return acc;
+      },
+      {}
+    );
   }, []);
 
   if (overlaySelectorOpen) {
@@ -94,11 +98,37 @@ export default function MapSettings() {
                 <ul className="flex flex-col divide-y divide-neutral-200 border border-neutral-200 rounded-md overflow-hidden">
                   {filteredOverlays.map((item) => {
                     return (
-                      <li key={item.key}>
+                      <li
+                        key={item.key}
+                        className="w-full px-3 py-2 flex justify-between items-center gap-2 bg-white"
+                      >
+                        <div className="min-w-0 flex-1 flex items-start gap-2">
+                          <span id={`overlay-label-${item.key}`} className="min-w-0 flex-1">
+                            <span className="flex items-center gap-1">
+                              <span className="block truncate text-neutral-900">{item.name}</span>
+                              {item.info && (
+                                <Link
+                                  href={item.info}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  aria-label={`Opne informasjon om ${item.name}`}
+                                  className="shrink-0 text-neutral-700 hover:text-neutral-900"
+                                >
+                                  <PiInfoFill className="inline text-base" aria-hidden="true" />
+                                </Link>
+                              )}
+                            </span>
+                            {item.provider && (
+                              <span className="block text-xs text-neutral-700 truncate">
+                                {item.provider}
+                              </span>
+                            )}
+                          </span>
+                        </div>
                         <Clickable
                           aria-label={`Legg til overlegg ${item.name}`}
                           remove={['overlaySelector']}
-                          className="w-full px-3 py-2 flex justify-between items-center gap-2 text-left bg-white hover:bg-neutral-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-500"
+                          className="btn btn-outline btn-sm whitespace-nowrap inline-flex items-center ml-2 flex-shrink-0 hover:bg-neutral-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-500"
                           onClick={() => {
                             addOverlayMap(item.key);
                             setOverlaySearch('');
@@ -138,13 +168,7 @@ export default function MapSettings() {
                             }
                           }}
                         >
-                          <span id={`overlay-label-${item.key}`} className="min-w-0 flex-1">
-                            <span className="block truncate text-neutral-900">{item.name}</span>
-                            {item.provider && <span className="block text-xs text-neutral-700 truncate">{item.provider}</span>}
-                          </span>
-                          <span className="ml-2 text-xl text-primary-700 flex-shrink-0" aria-hidden={true}>
-                            <PiPlusBold />
-                          </span>
+                          <span className="ml-1 text-sm">Legg til</span>
                         </Clickable>
                       </li>
                     );
@@ -257,45 +281,62 @@ export default function MapSettings() {
               <fieldset>
                 <legend className="sr-only">Aktive kartlag</legend>
                 <ul className="flex flex-col divide-y divide-neutral-200 border border-neutral-200 rounded-md">
-                  {selectedOverlays.map((overlayKey, index) => (
-                    <li key={overlayKey} className="p-2 flex items-start gap-3">
-                      <div className="flex flex-col gap-1">
-                        <IconButton
-                          label="Flytt kartlag opp"
-                          className="text-sm aspect-square btn btn-outline btn-sm p-1 h-6 w-6 min-h-0"
-                          onClick={() => moveOverlayMap(index, index - 1)}
-                          disabled={index === 0}
-                        >
-                          <PiCaretUpBold />
-                        </IconButton>
-                        <IconButton
-                          label="Flytt kartlag ned"
-                          className="text-sm aspect-square btn btn-outline btn-sm p-1 h-6 w-6 min-h-0"
-                          onClick={() => moveOverlayMap(index, index + 1)}
-                          disabled={index === selectedOverlays.length - 1}
-                        >
-                          <PiCaretDownBold />
-                        </IconButton>
-                      </div>
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate">{overlayMetaByKey[overlayKey]?.name || overlayKey}</span>
-                        {overlayMetaByKey[overlayKey]?.provider && (
-                          <span className="block text-xs text-neutral-700 truncate">
-                            {overlayMetaByKey[overlayKey]?.provider}
+                  {selectedOverlays.map((overlayKey, index) => {
+                    const meta = overlayMetaByKey[overlayKey];
+                    const title = meta?.name || overlayKey;
+                    return (
+                      <li key={overlayKey} className="p-2 flex items-start gap-3">
+                        <div className="flex flex-col gap-1">
+                          <IconButton
+                            label="Flytt kartlag opp"
+                            className="text-sm aspect-square btn btn-outline btn-sm p-1 h-6 w-6 min-h-0"
+                            onClick={() => moveOverlayMap(index, index - 1)}
+                            disabled={index === 0}
+                          >
+                            <PiCaretUpBold />
+                          </IconButton>
+                          <IconButton
+                            label="Flytt kartlag ned"
+                            className="text-sm aspect-square btn btn-outline btn-sm p-1 h-6 w-6 min-h-0"
+                            onClick={() => moveOverlayMap(index, index + 1)}
+                            disabled={index === selectedOverlays.length - 1}
+                          >
+                            <PiCaretDownBold />
+                          </IconButton>
+                        </div>
+                        <span className="min-w-0 flex-1">
+                          <span className="flex items-center gap-1">
+                            <span className="block truncate">{title}</span>
+                            {meta?.info && (
+                              <Link
+                                href={meta.info}
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label={`Opne informasjon om ${title}`}
+                                className="shrink-0 text-neutral-700 hover:text-neutral-900"
+                              >
+                                <PiInfoFill className="inline text-base" aria-hidden="true" />
+                              </Link>
+                            )}
                           </span>
-                        )}
-                      </span>
-                      <div className="ml-auto">
-                        <IconButton
-                          label="Fjern kartlag"
-                          className="text-lg aspect-square btn btn-outline btn-sm p-2"
-                          onClick={() => removeOverlayMap(overlayKey)}
-                        >
-                          <PiX />
-                        </IconButton>
-                      </div>
-                    </li>
-                  ))}
+                          {meta?.provider && (
+                            <span className="block text-xs text-neutral-700 truncate">
+                              {meta.provider}
+                            </span>
+                          )}
+                        </span>
+                        <div className="ml-auto">
+                          <IconButton
+                            label="Fjern kartlag"
+                            className="text-lg aspect-square btn btn-outline btn-sm p-2"
+                            onClick={() => removeOverlayMap(overlayKey)}
+                          >
+                            <PiX />
+                          </IconButton>
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ul>
               </fieldset>
             )}

@@ -20,6 +20,7 @@ export interface BaseMap {
     bright?: boolean;
     coverage: MapLayerCoverage;
     center?: [number, number];
+    info?: string;
     /**
      * Optional geographic bounds for the layer.
      * Format: [[north, west], [south, east]]
@@ -64,6 +65,7 @@ export const baseMaps: BaseMap[] = [
     {
         key: 'topo',
         name: 'Topografisk noregskart',
+        info: 'https://kartkatalog.geonorge.no/metadata/topografisk-norgeskart-wmts--cache/8f381180-1a47-4453-bee7-9a3d64843efa',
         provider: 'Kartverket',
         coverage: 'regional',
         center: centerPoints.Norway,
@@ -76,7 +78,8 @@ export const baseMaps: BaseMap[] = [
     },
     {
         key: 'topograatone',
-        name: 'Kartverket, gråtone',
+        name: 'Topografisk gråtonekart',
+        info: 'https://kartkatalog.geonorge.no/metadata/topografisk-norgeskart-wmts--cache/8f381180-1a47-4453-bee7-9a3d64843efa',
         provider: 'Kartverket',
         coverage: 'regional',
         center: centerPoints.Norway,
@@ -89,7 +92,8 @@ export const baseMaps: BaseMap[] = [
     },
     {
         key: 'toporaster',
-        name: 'Noregskart, store bokstaver ',
+        name: 'Topografisk noregskart (raster)',
+        info: 'https://kartkatalog.geonorge.no/metadata/topografisk-norgeskart-wmts--cache/8f381180-1a47-4453-bee7-9a3d64843efa',
         provider: 'Kartverket',
         coverage: 'regional',
         center: centerPoints.Norway,
@@ -100,8 +104,23 @@ export const baseMaps: BaseMap[] = [
         }
     },
     {
+        key: 'sjokartraster',
+        name: 'Sjøkart (raster)',
+        info: 'https://kartkatalog.geonorge.no/metadata/sjokartraster-wmts--cache/8f381180-1a47-4453-bee7-9a3d64843efa',
+        provider: 'Kartverket',
+        coverage: 'regional',
+        center: centerPoints.Norway,
+        // Approximate bounds based on WMTS WGS84BoundingBox
+        bounds: [[81.78, -14.66], [53.75, 44.25]],
+        props: {
+            url: 'https://cache.kartverket.no/v1/wmts/1.0.0/sjokartraster/default/webmercator/{z}/{y}/{x}.png',
+            attribution: '&copy; <a class="override-external-icon" href="http://www.kartverket.no/">Kartverket</a>'
+        }
+    },
+    {
         key: 'historiske_kart_amt1',
         name: 'Historiske kart (amtskart)',
+        info: "https://kartkatalog.geonorge.no/metadata/historiske-kart-wms/f0ef87bf-91a1-4f00-b864-9655d3d7c1de",
         provider: 'Kartverket',
         coverage: 'regional',
         center: centerPoints.Norway,
@@ -119,7 +138,8 @@ export const baseMaps: BaseMap[] = [
     },
     {
         key: 'matrikkelkart',
-        name: 'Matrikkelkart',
+        name: 'Matrikkelen - Eiendomskart Teig',
+        info: "https://kartkatalog.geonorge.no/metadata/matrikkelen-eiendomskart-teig/74340c24-1c8a-4454-b813-bfe498e80f16",
         provider: 'Kartverket',
         coverage: 'regional',
         bounds: [[71.3, 4.0], [57.9, 31.5]],
@@ -136,8 +156,9 @@ export const baseMaps: BaseMap[] = [
     },
     {
         key: 'svalbard_basiskart',
-        name: 'Svalbard',
+        name: 'Basiskart Svalbard',
         provider: 'Norsk Polarinstitutt',
+        info: 'https://kartkatalog.geonorge.no/metadata/np-basiskart-svalbard-wmts-3857/485822c4-eb86-42f8-988a-6008a75ffd5f',
         coverage: 'regional',
         center: centerPoints.Svalbard,
         // Approximate bounds for Svalbard
