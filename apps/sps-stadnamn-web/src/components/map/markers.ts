@@ -187,12 +187,12 @@ export function getUnlabeledMarker(color: string, selected?: boolean) {
 export function getInitAnchorMarker() {
   return {
     className: '',
-    html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: 40px;">
+    html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: 32px;">
                 <img
                   src="/markerPrimaryCheck.svg"
                   alt=""
                   aria-hidden="true"
-                  style="position:absolute; left:0; bottom:30px; height:36px" />
+                  style="position:absolute; bottom:26px; height:32px" />
             </div>`
   }
 }

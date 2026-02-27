@@ -54,6 +54,7 @@ export default function MapToolbar() {
     const { options } = useOverlayParams()
     const { mapSettings } = useOverlayParams()
     const tree = searchParams.get('tree')
+    const router = useRouter()
 
     const svhToRem = (svh: number) => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return 0
@@ -104,7 +105,14 @@ export default function MapToolbar() {
                     onClick={() => {
                         getMyLocation((location) => {
                             mapFunctionRef?.current?.setView(location, 15)
-                            setMyLocation(location)
+
+                            const newUrl = new URLSearchParams(searchParams)
+                            newUrl.set('center', `${location[0]},${location[1]}`)
+                            newUrl.set('point', `${location[0]},${location[1]}`)
+                            newUrl.delete('group')
+                            newUrl.delete('init')
+                            //newUrl.set('zoom', '15')
+                            router.push(`?${newUrl.toString()}`)
                         })
                     }}
                     side="top"

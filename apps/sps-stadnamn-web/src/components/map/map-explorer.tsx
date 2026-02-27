@@ -1600,7 +1600,7 @@ export default function MapExplorer() {
             {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" interactive={false} />}
             {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" interactive={false} />}
             {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" interactive={false} />}
-            {point && !initValue && !activeGroupHasArea && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("primary"))} position={point} />}
+            {point && !initValue && !activeGroupHasArea && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
             {coordinateInfo && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} 
             eventHandlers={{
               click: () => {

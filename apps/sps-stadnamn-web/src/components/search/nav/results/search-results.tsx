@@ -24,6 +24,7 @@ import ResultItem from "./result-item";
 import SearchQueryDisplay from "./search-query-display";
 import IconButton from "@/components/ui/icon-button";
 import GroupedResultsToggle from "./grouped-results-toggle";
+import { getInitAnchorMarker } from "@/components/map/markers";
 
 
 
@@ -93,47 +94,7 @@ export default function SearchResults() {
   const [playingPreviewId, setPlayingPreviewId] = useState<string | null>(null)
   const audioPreviewRef = useRef<HTMLAudioElement | null>(null)
 
-  // Unified function to stop editing
-  const stopEditingCoordinates = () => {
-    setIsEditingCoordinates(false)
-    setEditLat('')
-    setEditLon('')
-  }
 
-  // Stop editing when coordinates change from external sources (e.g., map interaction)
-  useEffect(() => {
-    const currentPointString = point ? `${point[0]},${point[1]}` : null
-
-    // Only stop editing if:
-    // 1. We're currently editing
-    // 2. The point exists
-    // 3. The point actually changed (not just initial render)
-    if (isEditingCoordinates && point && previousPointRef.current !== null && previousPointRef.current !== currentPointString) {
-      stopEditingCoordinates()
-    }
-
-    // Update the ref to track the current point
-    previousPointRef.current = currentPointString
-  }, [point, isEditingCoordinates])
-
-  // Functions for coordinate editing
-  const startEditingCoordinates = () => {
-    if (point) {
-      setEditLat(point[1].toFixed(5)) // lat is second in point array
-      setEditLon(point[0].toFixed(5)) // lon is first in point array
-    } else {
-      const sourceWithLocation = activeGroupData?.sources?.find((source: any) => source.location?.coordinates)
-      if (sourceWithLocation?.location?.coordinates) {
-        const [lon, lat] = sourceWithLocation.location.coordinates
-        setEditLat(lat.toFixed(5))
-        setEditLon(lon.toFixed(5))
-      } else {
-        setEditLat('')
-        setEditLon('')
-      }
-    }
-    setIsEditingCoordinates(true)
-  }
 
   useEffect(() => {
     return () => {
@@ -144,22 +105,8 @@ export default function SearchResults() {
     }
   }, [])
 
-  const cancelEditingCoordinates = () => {
-    stopEditingCoordinates()
-  }
 
-  const saveCoordinates = () => {
-    const lat = parseFloat(editLat)
-    const lon = parseFloat(editLon)
 
-    if (!isNaN(lat) && !isNaN(lon)) {
-      // Update URL with new coordinates
-      const newParams = new URLSearchParams(searchParams)
-      //newParams.set('point', `${lon},${lat}`)
-      router.push(`?${newParams.toString()}`)
-      stopEditingCoordinates()
-    }
-  }
 
   // Use the enhanced infinite query hook
   const {
@@ -199,6 +146,7 @@ export default function SearchResults() {
     if (!hasOneResult) return
     // Don't re-add init when user has set a point (e.g. via map context menu); they explicitly cleared init.
     if (searchParams.has('point')) return
+    return
 
     const onlyResultId = collapsedData?.pages?.[0]?.data?.[0]?.fields?.["group.id"]?.[0]
     if (!onlyResultId) return
@@ -376,66 +324,26 @@ export default function SearchResults() {
       {
         (point && !init) && (
           <div className="p-3 flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <IconButton label="Gå til koordinat" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><PiMapPinFill className="text-primary-700" /></IconButton>
-              {isEditingCoordinates ? (
-                <div className="flex items-center gap-2 flex-1">
-                  <input
-                    type="number"
-                    value={editLon}
-                    onChange={(e) => setEditLon(e.target.value)}
-                    placeholder="Longitude"
-                    className="w-20 px-1 py-0.5 text-sm border border-neutral-300 rounded"
-
-                  />
-                  <span>,</span>
-                  <input
-                    type="number"
-                    value={editLat}
-                    onChange={(e) => setEditLat(e.target.value)}
-                    placeholder="Latitude"
-                    className="w-20 px-1 py-0.5 text-sm border border-neutral-300 rounded"
-                  />
-
-
-                  <button
-                    onClick={saveCoordinates}
-                    className="p-1 text-green-600 hover:text-green-800"
-                    aria-label="Lagre koordinater"
-                  >
-                    <PiCheck className="text-lg" aria-hidden="true" />
-                  </button>
-                  <button
-                    onClick={cancelEditingCoordinates}
-                    className="p-1 text-red-600 hover:text-red-800"
-                    aria-label="Avbryt"
-                  >
-                    <PiX className="text-lg" aria-hidden="true" />
-                  </button>
-                </div>
-              ) : (
+            <div className="flex items-center gap-2 justify-between">
+              <IconButton label="Gå til koordinat" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/markerPrimaryCheck.svg" alt="" aria-hidden="true" className="w-8 h-8 self-center" /></IconButton>
+               
                 <span className="flex-1">
                   {point ? (
                     <>
-                      {`${Math.round(Math.abs(point[0]))}°${point[0] >= 0 ? 'N' : 'S'}, ${Math.round(Math.abs(point[1]))}°${point[1] >= 0 ? 'Ø' : 'V'}`}
+                      {`${Math.abs(point[0]).toFixed(6)}°${point[0] >= 0 ? 'N' : 'S'}, ${Math.abs(point[1]).toFixed(6)}°${point[1] >= 0 ? 'Ø' : 'V'}`}
                     </>
                   ) : 'Ukjent'}
                 </span>
-              )}
+                
               <div className="flex items-center gap-2">
-                {!isEditingCoordinates && (
-                  <ClickableIcon className="btn btn-outline h-6 w-6 btn-compact rounded-full text-neutral-900" label="Rediger startpunkt" onClick={startEditingCoordinates}>
-                    <PiPencilSimpleBold aria-hidden="true" />
-                  </ClickableIcon>
-                )}
                 <ClickableIcon className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900" label="Fjern startpunkt" remove={['point', 'radius']}>
                   <PiXBold aria-hidden="true" />
                 </ClickableIcon>
               </div>
+              
             </div>
-            {isEditingCoordinates && (
-              <span className="text-sm text-neutral-800">{isMobile ? "Trykk og hald for å hente startpnk i kartet" : "Høgreklikk i kartet for å hente nytt startpunkt"}</span>
-            )}
+
+              <span className="text-neutral-800 text-sm">{isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"}</span>
           </div>
         )
       }
@@ -459,7 +367,7 @@ export default function SearchResults() {
         <GroupInfo id={`group-info-${activeGroupValue}`} overrideGroupCode={activeGroupValue || undefined} />
       )}
 
-      {init && !coordinateInfo && !labelFilter ? (initGroupLoading ? (
+      {(init || (isMobile && qParam)) && !coordinateInfo && !labelFilter ? (initGroupLoading ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
@@ -469,7 +377,7 @@ export default function SearchResults() {
           {qParam && <Clickable remove={['q', 'searchSort']} add={{ q: null }} className="px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-2 cursor-pointer"><PiMagnifyingGlass className="" aria-hidden="true" />{qParam}<PiX className="text-lg" aria-hidden="true" /></Clickable>}
           <span id="other-groups-title" className={`text-lg font-sans text-neutral-900 whitespace-nowrap ${qParam ? 'sr-only' : ''}`}>{noGrouping ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}</span>
             
-            {(!initSearchLabel || qParam != initSearchLabel) && (
+            {(!initSearchLabel || qParam != initSearchLabel) && init && (
               <Clickable
                 link
                 add={{ q: initSearchLabel, maxResults: expandedMaxResultsParam }}

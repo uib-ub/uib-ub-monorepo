@@ -185,7 +185,7 @@ export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabP
     }
 
     return (
-        <ul className="flex flex-col gap-8 pt-4 w-full">
+        <ul className="flex flex-col gap-8 py-4 w-full">
             {visibleDatasets.map((ds) => {
                 const items = datasets[ds] || []
                 if (items.length === 0) return null
