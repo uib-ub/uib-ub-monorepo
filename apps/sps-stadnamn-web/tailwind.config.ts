@@ -7,9 +7,6 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/config/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  safelist: [
-    "font-phonetic"
-  ],
   theme: {
     extend: {
       fontFamily: {
