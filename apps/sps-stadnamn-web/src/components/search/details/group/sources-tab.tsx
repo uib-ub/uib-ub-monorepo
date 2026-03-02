@@ -3,7 +3,7 @@
 import { Fragment, useContext, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PiBookOpen, PiCheck, PiCheckCircle, PiFile, PiFileFill, PiInfoFill, PiMapPin, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
+import { PiBookOpen, PiCheck, PiCheckCircle, PiFile, PiFileFill, PiGps, PiInfoFill, PiMapPin, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
 import { datasetTitles } from "@/config/metadata-config";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
 import { GlobalContext } from "@/state/providers/global-provider";
@@ -248,7 +248,7 @@ export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabP
                                     add={{ init: initValue === items[0].uuid ? null : items[0].uuid }}
                                     className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900"
                                 >
-                                    {initValue == items[0].uuid ? <PiXBold aria-hidden="true" /> : <PiCheck aria-hidden="true" />}
+                                    {initValue == items[0].uuid ? <PiXBold aria-hidden="true" /> : <PiGps aria-hidden="true" />}
                                 </ClickableIcon>
 
                                 </>}
