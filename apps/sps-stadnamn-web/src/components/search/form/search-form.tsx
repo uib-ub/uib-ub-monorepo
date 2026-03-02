@@ -382,7 +382,7 @@ export default function SearchForm() {
             {/* results: integer – minimum is 5 when present. */}
             {options && <input type="hidden" name="options" value={'on'} />}
             {searchParams.get('noGrouping') && <input type="hidden" name="noGrouping" value={'on'} />}
-            {!submittedPoint && searchParams.get('point') && <input type="hidden" name="point" value={searchParams.get('point') || ''} />}
+            {!submittedPoint && !searchParams.get('init') && searchParams.get('point') && <input type="hidden" name="point" value={searchParams.get('point') || ''} />}
             <input type="hidden" name="maxResults" value={defaultMaxResultsParam} />
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
