@@ -183,7 +183,7 @@ export default function OverlayInterface() {
 
     const isDesktopMap = !isMobile && mode !== 'table'
 
-    const desktopMapButtons = isDesktopMap && !options ? (
+    const desktopMapButtons = isDesktopMap && !options && !facet ? (
         <div className="flex gap-2">
             <Clickable className="btn btn-outline btn-sm" add={{ options: 'on' }}>
                 Alle filter
