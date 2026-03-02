@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
+@source inline("font-phonetic");
 @font-face {
   font-family: 'PhoneticFont';
   src: url('/fonts/no____.woff2') format('woff2');
@@ -125,9 +128,10 @@
 
 
   .carta-marina::before {
-    @apply fixed top-0 left-0 z-[-1] h-[100vh] w-full animate-fade-in;
+    @apply fixed top-0 left-0 z-[-1] h-[100vh] w-full;
     content: '';
     @apply bg-[url('/Carta_Marina_compressed.webp')] bg-cover bg-no-repeat bg-[center_40%];
+    animation: fadeIn 2s ease-in forwards;
   }
 
 
@@ -462,7 +466,7 @@
 
 
   .rectangular-external-link {
-    @apply font-semibold no-underline bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-md p-2 px-4 external-link
+    @apply font-semibold no-underline bg-neutral-50 border border-neutral-200 text-neutral-950 rounded-md p-2 px-4;
   }
 
   .rounded-tabs {
