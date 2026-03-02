@@ -191,9 +191,9 @@ export default function OverlayInterface() {
             {filterCount > 0 && (
                 <Clickable
                     className="btn btn-neutral btn-sm"
-                    remove={['q', ...facetFilters.map(([key]) => key), ...datasetFilters.map(([key]) => key)]}
+                    remove={[...facetFilters.map(([key]) => key), ...datasetFilters.map(([key]) => key)]}
                 >
-                    Nullstill
+                    Tøm
                 </Clickable>
             )}
         </div>
