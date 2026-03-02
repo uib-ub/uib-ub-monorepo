@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "content-grid",
-  "type": "registry:block",
   "title": "Content Grid",
   "description": "Content Grid",
   "dependencies": [
@@ -23,5 +22,6 @@
   ],
   "css": {
     "@import \"../components/styles/content-grid.css\"": {}
-  }
+  },
+  "type": "registry:block"
 }

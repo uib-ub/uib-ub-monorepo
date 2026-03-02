@@ -4,24 +4,44 @@
   "homepage": "https://chc-registry.vercel.app",
   "items": [
     {
-      "name": "button",
-      "type": "registry:block",
-      "title": "Button",
-      "description": "Button",
+      "name": "iiif-manifest",
+      "title": "IIIF Manifest",
+      "description": "IIIF Manifest",
       "dependencies": [
-        "@radix-ui/react-slot",
+        "@samvera/clover-iiif",
+        "next"
+      ],
+      "registryDependencies": [
+        "skeleton"
+      ],
+      "files": [
+        {
+          "path": "src/registry/uib-ub/items/iiif-manifest/components/iiif-manifest.tsx",
+          "type": "registry:component",
+          "target": "components/ui/chc/iiif-manifest.tsx"
+        }
+      ],
+      "type": "registry:block"
+    },
+    {
+      "name": "iiif-image",
+      "title": "IIIF Image",
+      "description": "IIIF Image",
+      "dependencies": [
+        "@samvera/clover-iiif",
         "next"
       ],
       "files": [
         {
-          "path": "src/registry/uib-ub/items/button/components/button.tsx",
-          "type": "registry:component"
+          "path": "src/registry/uib-ub/items/iiif-image/components/iiif-image.tsx",
+          "type": "registry:component",
+          "target": "components/ui/chc/iiif-image.tsx"
         }
-      ]
+      ],
+      "type": "registry:block"
     },
     {
       "name": "content-grid",
-      "type": "registry:block",
       "title": "Content Grid",
       "description": "Content Grid",
       "dependencies": [
@@ -41,44 +61,24 @@
       ],
       "css": {
         "@import \"../components/styles/content-grid.css\"": {}
-      }
+      },
+      "type": "registry:block"
     },
     {
-      "name": "iiif-image",
-      "type": "registry:block",
-      "title": "IIIF Image",
-      "description": "IIIF Image",
+      "name": "button",
+      "title": "Button",
+      "description": "Button",
       "dependencies": [
-        "@samvera/clover-iiif",
+        "@radix-ui/react-slot",
         "next"
       ],
       "files": [
         {
-          "path": "src/registry/uib-ub/items/iiif-image/components/iiif-image.tsx",
-          "type": "registry:component",
-          "target": "components/ui/chc/iiif-image.tsx"
+          "path": "src/registry/uib-ub/items/button/components/button.tsx",
+          "type": "registry:component"
         }
-      ]
-    },
-    {
-      "name": "iiif-manifest",
-      "type": "registry:block",
-      "title": "IIIF Manifest",
-      "description": "IIIF Manifest",
-      "dependencies": [
-        "@samvera/clover-iiif",
-        "next"
       ],
-      "registryDependencies": [
-        "skeleton"
-      ],
-      "files": [
-        {
-          "path": "src/registry/uib-ub/items/iiif-manifest/components/iiif-manifest.tsx",
-          "type": "registry:component",
-          "target": "components/ui/chc/iiif-manifest.tsx"
-        }
-      ]
+      "type": "registry:block"
     }
   ]
 }

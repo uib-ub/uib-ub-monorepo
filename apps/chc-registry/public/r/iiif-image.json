@@ -1,7 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "iiif-image",
-  "type": "registry:block",
   "title": "IIIF Image",
   "description": "IIIF Image",
   "dependencies": [
@@ -15,5 +14,6 @@
       "type": "registry:component",
       "target": "components/ui/chc/iiif-image.tsx"
     }
-  ]
+  ],
+  "type": "registry:block"
 }

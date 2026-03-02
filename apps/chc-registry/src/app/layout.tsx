@@ -3,6 +3,7 @@ import { Open_Sans, EB_Garamond } from 'next/font/google';
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import './globals.css';
 import { CloverI18nProvider } from '@/lib/clover-i18n';
+import { PaletteProvider } from '@/components/theme/palette-provider';
 
 const openSans = Open_Sans({
   variable: '--font-open-sans',
@@ -21,12 +22,14 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang='nb' suppressHydrationWarning>
+    <html lang='en' suppressHydrationWarning>
       <body
-        className={`${openSans.variable} ${garamond.variable} antialiased`}
+        className={`${openSans.variable} ${garamond.variable} antialiased flex flex-col min-h-screen`}
       >
         <CloverI18nProvider />
-        <RootProvider>{children}</RootProvider>
+        <PaletteProvider>
+          <RootProvider>{children}</RootProvider>
+        </PaletteProvider>
       </body>
     </html>
   );

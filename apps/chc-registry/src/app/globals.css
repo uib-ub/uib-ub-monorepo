@@ -4,11 +4,23 @@
 @import 'tw-animate-css';
 @import '../styles/content-grid.css';
 
-/* @import './uib-theme.css'; */
+/* UIB design tokens / palettes */
+@import './_styles/uib/palette-red.css';
+@import './_styles/uib/palette-blue.css';
+@import './_styles/uib/palette-green.css';
 
 @custom-variant dark (&:is(.dark *));
 
+/* Reset Tailwind's default theme scales we want to fully control */
+@theme {
+  --color-*: initial;
+  --spacing-*: initial;
+  --radius-*: initial;
+  --text-*: initial;
+}
+
 @theme inline {
+  /* semantic colors already used throughout the app */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-open-sans);
@@ -41,61 +53,63 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-blue-50: #f2fbfd;
-  --color-blue-100: #d1ebff;
-  --color-blue-200: #b9ddfe;
-  --color-blue-300: #9acdfd;
-  --color-blue-400: #65b4ff;
-  --color-blue-500: #009fee;
-  --color-blue-600: #0175bf;
-  --color-blue-700: #00417d;
-  --color-blue-800: #012050;
-  --color-blue-900: #00102a;
-  --color-blue-950: #00102a;
-  --color-red-50: #fef9f1;
-  --color-red-100: #ffdacc;
-  --color-red-200: #ffb1a3;
-  --color-red-300: #ff8c79;
-  --color-red-400: #ff7061;
-  --color-red-500: #ec3d3c;
-  --color-red-600: #aa1317;
-  --color-red-700: #761a19;
-  --color-red-800: #300a09;
-  --color-red-900: #1d0606;
-  --color-red-950: #0d0303;
-  --color-green-50: #f2fdf6;
-  --color-green-100: #d4fce5;
-  --color-green-200: #b1f5cc;
-  --color-green-300: #8df0b5;
-  --color-green-400: #32cd8e;
-  --color-green-500: #28a465;
-  --color-green-600: #058356;
-  --color-green-700: #006647;
-  --color-green-800: #09301c;
-  --color-green-900: #051b0f;
-  --color-green-950: #020a07;
-  --color-beige-50: #eae2d5;
-  --color-lavender-500: #aaadfd;
-  --color-orange-500: #faa978;
-  --color-pink-500: #ff80ad;
-  --color-yellow-300: #fff0a4;
+
+  /* brand color scale driven by active UIB palette */
+  --color-brand-50: var(--theme-color-050);
+  --color-brand-100: var(--theme-color-100);
+  --color-brand-200: var(--theme-color-200);
+  --color-brand-300: var(--theme-color-300);
+  --color-brand-400: var(--theme-color-400);
+  --color-brand-500: var(--theme-color-500);
+  --color-brand-600: var(--theme-color-600);
+  --color-brand-700: var(--theme-color-700);
+  --color-brand-800: var(--theme-color-800);
+  --color-brand-900: var(--theme-color-900);
+
+  /* spacing scale (px-*, m-*, etc.) from UIB tokens */
+  --spacing-0: 0;
+  --spacing-1: var(--space-1-on-desktop);
+  --spacing-2: var(--space-2-on-desktop);
+  --spacing-3: var(--space-3-on-desktop);
+  --spacing-4: var(--space-4-on-desktop);
+  --spacing-5: var(--space-5-on-desktop);
+  --spacing-6: var(--space-6-on-desktop);
+  --spacing-8: var(--space-8-on-desktop);
+  --spacing-10: var(--space-10-on-desktop);
+  --spacing-12: var(--space-12-on-desktop);
+  --spacing-14: var(--space-14-on-desktop);
+  --spacing-16: var(--space-16-on-desktop);
+  --spacing-24: var(--space-24-on-desktop);
+  --spacing-32: var(--space-32-on-desktop);
+
+  /* border radii from UIB tokens */
+  --radius-sm: var(--border-radius-sm);
+  --radius-md: var(--border-radius-md);
+  --radius-lg: var(--border-radius-lg);
+  --radius-xl: var(--border-radius-pill);
+
+  /* typography scale based on UIB font sizes */
+  --text-sm: var(--font-size-body-small-on-desktop);
+  --text-base: var(--font-size-body-on-desktop);
+  --text-lg: var(--font-size-lead-on-desktop);
+  --text-xl: var(--font-size-h4-on-desktop);
+  --text-2xl: var(--font-size-h3-on-desktop);
+  --text-3xl: var(--font-size-h2-on-desktop);
+  --text-4xl: var(--font-size-h1-on-desktop);
 }
 
 :root {
   --font-serif: "EB Garamond", "Times New Roman", Times, serif;
   --radius: 0.5rem;
+  /* light mode defaults, will be influenced by active palette via theme-color-* */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: var(--theme-color-600);
+  --primary-foreground: var(--color-bg-1);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -128,8 +142,8 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+  --primary: var(--theme-color-300);
+  --primary-foreground: var(--color-bg-6);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
@@ -165,6 +179,9 @@
   a {
     @apply underline-offset-4 
   }
+  h1 {
+    color: var(--color-brand-600);
+  }
 }
 
 @utility prose {
@@ -172,3 +189,4 @@
     @apply underline-offset-4
   }
 }
+
