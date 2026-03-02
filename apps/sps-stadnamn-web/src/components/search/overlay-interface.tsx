@@ -117,7 +117,7 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     return <Drawer {...rest} bottomHeightRem={MAP_DRAWER_BOTTOM_HEIGHT_REM} middleHeightSvh={MAP_DRAWER_MAX_HEIGHT_SVH}>{children}</Drawer>
 }
 
-function LeftWindow({ children }: { children: React.ReactNode }) {
+function LeftWindow({ children, bottomContent }: { children: React.ReactNode, bottomContent?: React.ReactNode }) {
     const { isMobile } = useContext(GlobalContext)
     const searchParams = useSearchParams()
 
@@ -127,8 +127,13 @@ function LeftWindow({ children }: { children: React.ReactNode }) {
         if (mapSettings && maxResults) return null
         return <>{children}</>
     }
-    return <section className="bg-white shadow-lg flex flex-col absolute left-2 top-[4rem] w-[calc(30svw-1rem)] lg:w-[calc(25svw-1rem)] max-h-[calc(100svh-4.5rem)] z-[3001] rounded-md overflow-y-scroll "
-        aria-labelledby="left-title">{children}</section>
+    return (
+        <div className="absolute left-2 top-[4rem] z-[3001] w-[calc(30svw-1rem)] lg:w-[calc(25svw-1rem)] flex flex-col items-start gap-2 max-h-[calc(100svh-4.5rem)]">
+            <section className="bg-white shadow-lg flex flex-col w-full rounded-md overflow-y-scroll min-h-0"
+                aria-labelledby="left-title">{children}</section>
+            {bottomContent}
+        </div>
+    )
 }
 
 function RightWindow({ children }: { children: React.ReactNode }) {
@@ -167,6 +172,7 @@ export default function OverlayInterface() {
     const tree = searchParams.get('tree')
     const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
     const labelFilter = searchParams.get('labelFilter') === 'on'
+    const mode = useMode()
 
     useEffect(() => {
         if (debugParam == 'on') {
@@ -175,9 +181,25 @@ export default function OverlayInterface() {
 
     }, [debugParam, setDebug])
 
+    const isDesktopMap = !isMobile && mode !== 'table'
+
+    const desktopMapButtons = isDesktopMap && !options ? (
+        <div className="flex gap-2">
+            <Clickable className="btn btn-outline btn-sm" add={{ options: 'on' }}>
+                Alle filter
+            </Clickable>
+            {filterCount > 0 && (
+                <Clickable
+                    className="btn btn-neutral btn-sm"
+                    remove={['q', ...facetFilters.map(([key]) => key), ...datasetFilters.map(([key]) => key)]}
+                >
+                    Nullstill
+                </Clickable>
+            )}
+        </div>
+    ) : undefined
+
     return <>
-
-
 
         <div ref={drawerRef} className="scroll-container">
             <DrawerWrapper
@@ -191,37 +213,51 @@ export default function OverlayInterface() {
                 setCurrentPosition={setCurrentPosition}
                 scrollContainerRef={scrollableContentRef}
             >
-                {showLeftPanel && <LeftWindow>
+                {showLeftPanel && <LeftWindow bottomContent={desktopMapButtons}>
 
-                    {(tableOptions && <TableOptions />)
+                    {tableOptions && (
+                        <TableOptions />
+                    )}
 
-                        || (facet && <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
-                            <div id={isMobile ? 'drawer-title' : 'left-title'} className="text-lg text-neutral-900 px-1">{fieldConfig[perspective][facet]?.label}</div>
+                    {!tableOptions && facet && (
+                        <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
+                            <div id={isMobile ? 'drawer-title' : 'left-title'} className="text-lg text-neutral-900 px-1">
+                                {fieldConfig[perspective][facet]?.label}
+                            </div>
                             <div className="flex items-center gap-1 ml-auto">
                                 <Clickable className="flex items-center gap-1 px-2" label="Tilbake" remove={["facet"]}>
-                                    <PiCaretLeftBold className="text-black text-lg" />Tilbake
+                                    <PiCaretLeftBold className="text-black text-lg" />
+                                    Tilbake
                                 </Clickable>
                             </div>
-
-                        </div>)
-
-                        || ((options && !facet) ? <><div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
-                            <div className="flex items-center gap-2 xl:px-1 w-full">
-
-                                <div id={isMobile ? 'drawer-title' : 'left-title'} className="text-base xl:text-lg text-neutral-900 font-sans">Filter</div>
-
-                                {filterCount ? <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} /> : null}
-                                <ClickableIcon className="ml-auto" label="Lukk" remove={["options"]}><PiX className="text-black text-3xl" /></ClickableIcon>
-
-                            </div>
-
-
                         </div>
-                            <div id="options-panel" className="flex flex-col gap-2">
+                    )}
 
-                                <FacetSection />{isMobile && <ShowResultsButton />}
-                            </div></> : null)
-                    }
+                    {!tableOptions && !facet && (
+                        <>
+                            {options && (
+                                <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
+                                    <div className="flex items-center gap-2 xl:px-1 w-full">
+                                        <div id={isMobile ? 'drawer-title' : 'left-title'} className="text-base xl:text-lg text-neutral-900 font-sans">
+                                            Filter
+                                        </div>
+                                        {filterCount ? (
+                                            <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} />
+                                        ) : null}
+                                        <ClickableIcon className="ml-auto" label="Lukk" remove={["options"]}>
+                                            <PiX className="text-black text-3xl" />
+                                        </ClickableIcon>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div id="options-panel" className="flex flex-col gap-2">
+                                <FacetSection />
+                                {isMobile && <ShowResultsButton />}
+                            </div>
+                        </>
+                    )}
+
                     {facet && <div className="flex flex-col gap-2 pb-20">
                         {facet == 'adm' ? (
                             <ClientFacet facetName={facet} />

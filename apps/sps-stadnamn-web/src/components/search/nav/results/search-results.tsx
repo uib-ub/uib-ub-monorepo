@@ -353,7 +353,7 @@ export default function SearchResults() {
                 add={{ q: initSearchLabel, maxResults: expandedMaxResultsParam }}
                 className="ml-auto px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-1 cursor-pointer no-underline max-w-full min-w-0"
               >
-                {!(qParam && !identicalQuery) &&<PiFunnel aria-hidden="true" className="flex-shrink-0" />}
+                {!(qParam && !identicalQuery) &&<PiMagnifyingGlass aria-hidden="true" className="flex-shrink-0" />}
                 <span className="ml-1 truncate flex-1 min-w-0">
                   {initSearchLabel}
                 </span>
@@ -449,7 +449,7 @@ export default function SearchResults() {
       )}
 
 
-      {(filterCount > 0 || isMobile || searchError || collapsedError || hasNoResults) && (!labelFilter) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
+      {(isMobile || searchError || collapsedError || hasNoResults) && (!labelFilter) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
         {filterCount > 0 && showOtherResults && <div className="mx-2 mb-4">
 
           <ActiveFilters /></div>}

@@ -100,8 +100,17 @@ export function useOverlayParams() {
 
     const tableOptions = mode == 'table' && !options
 
-    // On mobile, when map settings are open, give them priority and hide the left panel
-    const showLeftPanel = (options || facet || tableOptions) && (!isMobile || !mapSettings)
+    let showLeftPanel: boolean
+
+    if (isMobile) {
+        // On mobile, when map settings are open, give them priority and hide the left panel
+        showLeftPanel = (!!options || !!facet || !!tableOptions) && !mapSettings
+    } else {
+        // On desktop, mirror mobile behavior in table mode, otherwise always show.
+        showLeftPanel = mode === 'table'
+            ? (!!options || !!facet || !!tableOptions)
+            : true
+    }
 
     const showResults = mode != 'table' && (maxResults || (isMobile && !showLeftPanel))
     // On mobile, always show the right panel if map settings are active, even if the left panel would otherwise be visible

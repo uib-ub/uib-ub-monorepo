@@ -3,7 +3,7 @@ import MiscOptions from "@/app/misc-options"
 import Clickable from "@/components/ui/clickable/clickable"
 import { datasetTitles } from "@/config/metadata-config"
 import { facetConfig } from "@/config/search-config"
-import { useGroup, usePerspective, usePoint } from "@/lib/param-hooks"
+import { useGroup, useMode, usePerspective, usePoint } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import { getSkeletonLength } from "@/lib/utils"
 import useGroupData from "@/state/hooks/group-data"
@@ -12,7 +12,7 @@ import { useSessionStore } from "@/state/zustand/session-store"
 import { useQuery } from "@tanstack/react-query"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useContext } from "react"
-import { PiCaretRightBold, PiPencilFill, PiPencilSimple, PiPencilSimpleBold, PiPencilSimpleFill, PiProhibit, PiX } from "react-icons/pi"
+import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiFunnel, PiProhibit, PiX } from "react-icons/pi"
 
 const getFacetFieldCounts = async (searchQueryString: string) => {
   const response = await fetch(`/api/fieldsPresent?${searchQueryString}`)
@@ -146,6 +146,7 @@ const RadiusFilter = () => {
 
 export default function FacetSection() {
   const perspective = usePerspective()
+  const mode = useMode()
   const router = useRouter()
   const searchParams = useSearchParams()
   const facet = searchParams.get('facet')
@@ -154,6 +155,7 @@ export default function FacetSection() {
   const { facetFilters, datasetFilters, searchQuery } = useSearchQuery()
 
   const { isMobile } = useContext(GlobalContext)
+  const optionsOpen = searchParams.get('options') === 'on'
 
   const removeFilter = (key: string, value: string) => {
     const newSearchParams = new URLSearchParams(searchQuery)
@@ -258,41 +260,79 @@ export default function FacetSection() {
       return hasCount || isFiltered;
     });
 
+  const primaryFacetKeys = ['adm']
+  const prioritizedFacetKeys = new Set<string>([
+    ...primaryFacetKeys,
+    ...facetFilters.map(([key]) => key),
+  ])
 
-  return (
+  const primaryFacets = availableFacets?.filter(
+    (f) => !f.child && prioritizedFacetKeys.has(f.key)
+  ) || []
 
+  const otherFacets = availableFacets?.filter(
+    (f) => !f.child && f.key !== 'dataset' && !prioritizedFacetKeys.has(f.key)
+  ) || []
 
-    <div className="flex flex-col divide-y divide-neutral-200 border-b border-neutral-200 w-full pb-20">
-      <MiscOptions />
+  const isDesktopMapMode = !isMobile && mode !== 'table'
+  const totalFilterCount = facetFilters.length + datasetFilters.length
 
-      {false && <RadiusFilter />}
-      <ul className="flex flex-col divide-y divide-neutral-200 list-none p-0 m-0">
-        <li>
-        <div>
-        {/*
-          Use a pen icon instead of a caret when there are
-          selected items for the dataset facet.
-        */}
-        <Clickable
-          className={`w-full flex justify-between px-4 py-3 transition-colors ${datasetFilters.length > 0 ? 'bg-accent-50' : 'bg-white'}`}
-          add={{ facet: facet == 'dataset' ? null : 'dataset' }}>
+  // Secondary facets are always visible:
+  // - on mobile (when the filter panel is open)
+  // - in table mode (desktop behaves like mobile)
+  // - on desktop map view when options are open (options toggled via "Fleire filter")
+  const shouldShowSecondaryFacets = isMobile || mode === 'table' || optionsOpen
 
-          <span className={`text-lg ${datasetFilters.length > 0 ? 'font-semibold text-accent-900' : ''}`}>Datasett</span>
+  const renderFacetRow = (f: (typeof availableFacets)[number]) => {
+    const activeFiltersForFacet = facetFilters.filter(([key]) => key === f.key)
+    const hasActiveFilters = activeFiltersForFacet.length > 0
 
-          <div className="flex items-center gap-2">
-            <PiCaretRightBold
-              className={`inline self-center text-xl ${datasetFilters.length > 0 ? 'text-accent-900' : 'text-primary-700'}`}
-              aria-hidden="true"
-            />
+    return (
+      <li key={f.key} className={facetsLoading ? 'opacity-50' : ''}>
+        <div className="w-full p-3 transition-colors bg-white">
+          {/* Header row: title + actions (Legg til + Tøm) */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-base truncate">{f.label}</span>
+              {filterDataset == 'all' && (f.datasets?.length || 0) == 1 && f.datasets?.[0] && (
+                <em className="text-neutral-700 text-sm truncate">
+                  {datasetTitles[f.datasets?.[0]]}
+                </em>
+              )}
+              {filterDataset != 'all' && f.key.includes('rawData') ? (
+                <em className="text-neutral-700 text-sm">Opphavlege data</em>
+              ) : null}
+            </div>
+
+            <div className="flex items-center gap-4 flex-shrink-0">
+            {hasActiveFilters && (
+                <Clickable
+                  remove={[f.key]}
+                  link
+                  className="text-sm text-neutral-700 hover:text-neutral-900 flex-shrink-0 no-underline"
+                  aria-label={`Tøm filter for ${f.label}`}
+                >
+                  Tøm
+                </Clickable>
+              )}
+              <Clickable
+                link
+                className="text-sm text-neutral-700 hover:text-neutral-900 flex-shrink-0 no-underline"
+                aria-controls={f.key + '-collapsible'}
+                add={{ facet: f.key }}
+              >
+                <span>Legg til</span>
+              </Clickable>
+
+              
+            </div>
           </div>
 
-        </Clickable>
-        
-        {datasetFilters.length > 0 && (
-          <div className="px-4 pb-3 pt-2 flex flex-col gap-2">
-            <div className="flex items-start gap-2">
-              <div className="flex flex-wrap gap-1.5 flex-1 min-w-0">
-                {datasetFilters.map(([key, value]) => {
+          {/* Active chips row: same structure as the Datasett chips row */}
+          {hasActiveFilters && (
+            <div className="mt-2 w-full">
+              <div className="flex flex-wrap items-start gap-1.5 w-full">
+                {activeFiltersForFacet.map(([key, value]) => {
                   const isExcluded = value.startsWith('!')
                   return (
                     <button
@@ -315,20 +355,82 @@ export default function FacetSection() {
                     </button>
                   )
                 })}
+                <div className="ml-auto" />
               </div>
-              {datasetFilters.length > 0 && (
-                <Clickable
-                  remove={['dataset']}
-                  className="text-sm py-1 px-2 text-neutral-700 hover:text-neutral-900 flex-shrink-0 self-end"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Nullstill
-                </Clickable>
-              )}
             </div>
+          )}
+        </div>
+      </li>
+    )
+  }
+
+  return (
+
+
+    <div className={`flex flex-col divide-y divide-neutral-200 border-b border-neutral-200 w-full ${isMobile ? 'pb-20' : 'pb-0'}`}>
+      {false && <RadiusFilter />}
+
+      {/* Primary facet section: Datasett + primary facets */}
+      <ul className="flex flex-col divide-y divide-neutral-200 list-none p-0 m-0">
+        <li>
+          <div className="w-full p-3 transition-colors bg-white">
+            <div className="flex items-center justify-between gap-3">
+              <span className={`text-base`}>Datasett</span>
+              <div className="flex items-center gap-4 flex-shrink-0">
+              {datasetFilters.length > 0 && (
+                  <Clickable
+                    remove={['dataset']}
+                    link
+                    className="text-sm text-neutral-700 hover:text-neutral-900 flex-shrink-0 no-underline"
+                    aria-label="Tøm filter for datasett"
+                  >
+                    Tøm
+                  </Clickable>
+                )}
+                <Clickable
+                  link
+                  className="text-sm text-neutral-700 hover:text-neutral-900 flex-shrink-0 no-underline"
+                  add={{ facet: facet == 'dataset' ? null : 'dataset' }}
+                  aria-label="Legg til filter for datasett"
+                >
+                  <span>Legg til</span>
+                </Clickable>
+
+               
+              </div>
+            </div>
+
+            {datasetFilters.length > 0 && (
+              <div className="mt-2 w-full">
+                <div className="flex flex-wrap items-start gap-1.5 w-full">
+                  {datasetFilters.map(([key, value]) => {
+                    const isExcluded = value.startsWith('!')
+                    return (
+                      <button
+                        key={`${key}__${value}`}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          removeFilter(key, value)
+                        }}
+                        className="px-2 py-1 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer text-sm hover:bg-neutral-50"
+                      >
+                        {isExcluded && (
+                          <PiProhibit
+                            className="text-sm text-neutral-800 flex-shrink-0"
+                            aria-hidden="true"
+                          />
+                        )}
+                        <span className="text-sm">{getChipValue(key, value)}</span>
+                        <PiX className="ml-0.5 text-sm" aria-hidden="true" />
+                      </button>
+                    )
+                  })}
+                  <div className="ml-auto" />
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
         </li>
 
 
@@ -350,76 +452,22 @@ export default function FacetSection() {
         </>
       )}
 
-      {availableFacets.filter(f => !f.child && f.key != 'dataset').map(f => {
-        const isExpanded = facet == f.key
-        const activeFiltersForFacet = facetFilters.filter(([key]) => key === f.key)
-        const hasActiveFilters = activeFiltersForFacet.length > 0
-        
-        return (
-          <li key={f.key} className={`space-y-1 ${facetsLoading ? 'opacity-50' : ''}`}>
-            <Clickable
-              className={`w-full flex justify-between px-4 py-3 transition-colors ${hasActiveFilters ? 'bg-accent-50' : 'bg-white'}`}
-              aria-controls={f.key + '-collapsible'}
-              add={{ facet: f.key }}>
-              <div className="flex flex-wrap gap-4">
-                <span className={`text-lg ${hasActiveFilters ? 'font-semibold text-accent-900' : ''}`}>{f.label}</span>
+      {primaryFacets.map(renderFacetRow)}
 
-                {filterDataset == 'all' && (f.datasets?.length || 0) == 1 && f.datasets?.[0] && <em className="text-neutral-700 text-sm self-center">{datasetTitles[f.datasets?.[0]]}</em>}
-                {filterDataset != 'all' && f.key.includes('rawData') ? <em className="text-neutral-700 text-sm self-center">Opphavlege data</em> : null}
-              </div>
-
-              <div className="flex items-center gap-2">
-                <PiCaretRightBold
-                  className={`inline self-center text-xl ${hasActiveFilters ? 'text-accent-900' : 'text-primary-700'}`}
-                  aria-hidden="true"
-                />
-              </div>
-            </Clickable>
-            
-            {hasActiveFilters && (
-              <div className="px-4 pb-3 pt-1 flex flex-col gap-2">
-                <div className="flex items-start gap-2">
-                  <div className="flex flex-wrap gap-1.5 flex-1 min-w-0">
-                    {activeFiltersForFacet.map(([key, value]) => {
-                      const isExcluded = value.startsWith('!')
-                      return (
-                        <button
-                          key={`${key}__${value}`}
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            removeFilter(key, value)
-                          }}
-                          className="px-2 py-1 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer text-sm hover:bg-neutral-50"
-                        >
-                          {isExcluded && (
-                            <PiProhibit
-                              className="text-sm text-neutral-800 flex-shrink-0"
-                              aria-hidden="true"
-                            />
-                          )}
-                          <span className="text-sm">{getChipValue(key, value)}</span>
-                          <PiX className="ml-0.5 text-sm" aria-hidden="true" />
-                        </button>
-                      )
-                    })}
-                  </div>
-                  {hasActiveFilters && (
-                    <Clickable
-                      remove={[f.key]}
-                      className="text-sm py-1 px-2 text-neutral-700 hover:text-neutral-900 flex-shrink-0 self-end"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      Nullstill
-                    </Clickable>
-                  )}
-                </div>
-              </div>
-            )}
-          </li>
-        )
-      })}
       </ul>
+
+      {/* Stadnamnsamlingar + secondary facets */}
+      {shouldShowSecondaryFacets && (
+        <div className="border-t border-neutral-200">
+          {/* Stadnamnsamlingar checkbox block */}
+          <MiscOptions />
+
+          {/* Secondary facets */}
+          <ul className="flex flex-col divide-y divide-neutral-200 list-none p-0 m-0">
+            {otherFacets.map(renderFacetRow)}
+          </ul>
+        </div>
+      )}
     </div>
 
   )

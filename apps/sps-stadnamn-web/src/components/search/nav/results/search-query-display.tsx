@@ -6,6 +6,8 @@ import useGroupData from "@/state/hooks/group-data"
 import { useSessionStore } from "@/state/zustand/session-store"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PiMagnifyingGlass, PiXBold } from "react-icons/pi"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
 
 export default function SearchQueryDisplay() {
   const searchParams = useSearchParams()
@@ -23,52 +25,47 @@ export default function SearchQueryDisplay() {
   const isFuzzy = searchParams.get('fuzzy') === 'on'
   const fulltext = searchParams.get('fulltext')
 
-  const handleFuzzyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newParams = new URLSearchParams(searchParams)
-    if (e.target.checked) {
-      newParams.set('fuzzy', 'on')
-    } else {
-      newParams.delete('fuzzy')
-    }
-    router.push(`?${newParams.toString()}`)
-  }
-
-  const handleFulltextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newParams = new URLSearchParams(searchParams)
-    if (e.target.checked) {
-      newParams.set('fulltext', 'on')
-    } else {
-      newParams.delete('fulltext')
-    }
-    router.push(`?${newParams.toString()}`)
-  }
-
   if (!searchQ) return null
 
   return (
     <section className={`p-3 flex flex-wrap gap-x-6 gap-y-3 items-center border-b border-neutral-200 bg-neutral-50`} aria-labelledby="search-query-title">
       <div className="flex items-center gap-3 text-sm flex-wrap">
         {isSingleWord && (
-          <label className="flex items-center gap-2 p-1">
-            <input
-              type="checkbox"
+          <div className="flex items-center gap-2 p-1">
+            <Switch
+              id="fuzzy-toggle"
+              size="sm"
               checked={isFuzzy}
-              onChange={handleFuzzyChange}
-              className="h-3 w-3 xl:h-4 xl:w-4"
+              onCheckedChange={(checked) => {
+                const newParams = new URLSearchParams(searchParams)
+                if (checked) {
+                  newParams.set('fuzzy', 'on')
+                } else {
+                  newParams.delete('fuzzy')
+                }
+                router.push(`?${newParams.toString()}`)
+              }}
             />
-            Omtrentleg
-          </label>
+            <Label htmlFor="fuzzy-toggle">Omtrentleg</Label>
+          </div>
         )}
-        <label className="flex items-center gap-2 p-1">
-          <input
-            type="checkbox"
+        <div className="flex items-center gap-2 p-1">
+          <Switch
+            id="fulltext-toggle"
+            size="sm"
             checked={!!fulltext}
-            onChange={handleFulltextChange}
-            className="h-3 w-3 xl:h-4 xl:w-4"
+            onCheckedChange={(checked) => {
+              const newParams = new URLSearchParams(searchParams)
+              if (checked) {
+                newParams.set('fulltext', 'on')
+              } else {
+                newParams.delete('fulltext')
+              }
+              router.push(`?${newParams.toString()}`)
+            }}
           />
-          Fulltekst
-        </label>
-        
+          <Label htmlFor="fulltext-toggle">Fulltekst</Label>
+        </div>
         {qParam && initHasCoordinates && init && (
               <div
                 className="ml-auto flex items-center gap-3 xl:gap-2 text-sm"

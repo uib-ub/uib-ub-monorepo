@@ -98,7 +98,7 @@ export default function MapToolbar() {
                     top: isMobile ? currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM ? "4.25rem" : `${4 - currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem` : "0.5rem",
                 }}
             >
-                {!isMobile && !tree && (
+                {!isMobile && !tree && isMobile &&  (
                     <FilterButton />
                 )}
                 <RoundIconButton
