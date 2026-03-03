@@ -16,13 +16,13 @@ import { panPointIntoView } from "@/lib/map-utils";
 import { useActivePoint, useGroup } from "@/lib/param-hooks";
 import DistanceBadge from "@/components/search/distance-badge";
 
-interface SourcesTabProps {
+interface Props {
     datasets: Record<string, any[]>;
     isFiltered: boolean;
     distanceMeters?: number | null;
 }
 
-export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabProps) => {
+export const ChildSources = ({ datasets, isFiltered, distanceMeters }: Props) => {
     const [showAll, setShowAll] = useState(false)
     // Parents whose children are fully expanded (show all bruk, not just 2)
     const [showAllChildrenParents, setShowAllChildrenParents] = useState<Set<string>>(new Set())
@@ -343,7 +343,7 @@ export const SourcesTab = ({ datasets, isFiltered, distanceMeters }: SourcesTabP
     )
 }
 
-interface FilteredSourcesTabProps {
+interface FilteredProps {
     datasets: Record<string, any[]>;
     activeYear: string | null;
     activeName: string | null;
@@ -351,14 +351,14 @@ interface FilteredSourcesTabProps {
     distanceMeters?: number | null;
 }
 
-// Component that filters datasets and renders SourcesTab
-export const FilteredSourcesTab = ({
+// Component that filters datasets and renders 
+export const Filtered = ({
     datasets,
     activeYear,
     activeName,
     isInitGroup,
     distanceMeters,
-}: FilteredSourcesTabProps) => {
+}: FilteredProps) => {
     const searchParams = useSearchParams()
     const activePoint = useActivePoint()
 
@@ -380,7 +380,7 @@ export const FilteredSourcesTab = ({
     const isFiltered = !!(activeYear || activeName || (isInitGroup && activePoint))
 
     return (
-        <SourcesTab
+        <
             datasets={filtered}
             isFiltered={isFiltered}
             distanceMeters={distanceMeters}
