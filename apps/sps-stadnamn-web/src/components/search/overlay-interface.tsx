@@ -164,6 +164,11 @@ export default function OverlayInterface() {
     const { showLeftPanel, showRightPanel, options, mapSettings, facet, showResults, tableOptions } = useOverlayParams()
     const { facetFilters, datasetFilters } = useSearchQuery()
     const filterCount = facetFilters.length + datasetFilters.length
+    // Count the number of unique facets (keys) that have active filters, including the dataset facet
+    const facetCount = new Set([
+        ...facetFilters.map(([key]) => key),
+        ...datasetFilters.map(([key]) => key),
+    ]).size
     const perspective = usePerspective()
     const setDebug = useDebugStore((s) => s.setDebug)
     const debugParam = searchParams.get('debug')
