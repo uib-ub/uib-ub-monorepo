@@ -10,7 +10,6 @@ import { useRouter, useSearchParams } from "next/navigation"
 
 import { useOverlayParams } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
-import { TitleBadge } from "../ui/badge"
 
 export function FilterButton() {
     const searchParams = useSearchParams()
