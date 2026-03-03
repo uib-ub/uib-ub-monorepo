@@ -305,7 +305,7 @@ export default function FacetSection() {
             </div>
 
             <div className="flex items-center gap-4 flex-shrink-0">
-            {hasActiveFilters && (
+            {activeFiltersForFacet.length > 1 && (
                 <Clickable
                   remove={[f.key]}
                   link

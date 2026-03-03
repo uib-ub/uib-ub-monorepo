@@ -188,7 +188,7 @@ export default function OverlayInterface() {
             <Clickable className="btn btn-outline btn-sm" add={{ options: 'on' }}>
                 Alle filter
             </Clickable>
-            {filterCount > 0 && (
+            {facetCount > 1 && (
                 <Clickable
                     className="btn btn-neutral btn-sm"
                     remove={[...facetFilters.map(([key]) => key), ...datasetFilters.map(([key]) => key)]}
