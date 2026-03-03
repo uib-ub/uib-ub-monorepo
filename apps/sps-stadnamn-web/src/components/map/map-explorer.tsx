@@ -743,6 +743,7 @@ export default function MapExplorer() {
               const newParams = new URLSearchParams(searchParams)
               newParams.delete('group')
               newParams.delete('init')
+              newParams.delete('activePoint')
 
               newParams.set('point', `${point.lat},${point.lng}`)
               router.push(`?${newParams.toString()}`)
