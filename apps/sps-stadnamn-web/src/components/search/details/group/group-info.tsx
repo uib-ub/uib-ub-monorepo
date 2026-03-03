@@ -280,6 +280,10 @@ export default function GroupInfo({
 
     return (
         <div id={id} className="relative flex min-w-0 flex-wrap items-center pb-4">
+            {iiifItems?.length > 0 && <>
+                    <Carousel items={iiifItems} />
+                </>
+                }
             {noGrouping && (
                 <div className="min-w-0 px-3 w-full">
                     <FilteredSourcesTab
@@ -316,10 +320,7 @@ export default function GroupInfo({
                         </div>
                     ))
                 }
-                {iiifItems?.length > 0 && <>
-                    <Carousel items={iiifItems} />
-                </>
-                }
+                
                 {textItems.length > 0 && <TextTab textItems={textItems} />}
 
             </>}
