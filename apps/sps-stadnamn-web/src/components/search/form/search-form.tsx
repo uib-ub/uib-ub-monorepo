@@ -33,6 +33,35 @@ export async function autocompleteQuery(searchFilterParamsString: string, inputS
     return data
 }
 
+function buildAutocompleteQueryStringFromHit(hit: any): string {
+    const label = hit?.fields?.label?.[0]?.trim() || ''
+    const adm2 = (
+        hit?.fields?.["group.adm2"]?.[0] ||
+        hit?.fields?.group?.adm2?.[0] ||
+        hit?.fields?.adm2?.[0] ||
+        hit?.adm2?.[0] ||
+        ''
+    ).trim()
+    const adm1 = (
+        hit?.fields?.["group.adm1"]?.[0] ||
+        hit?.fields?.group?.adm1?.[0] ||
+        hit?.fields?.adm1?.[0] ||
+        hit?.adm1?.[0] ||
+        ''
+    ).trim()
+
+    const firstSegmentParts = [label]
+    if (adm2 && adm2 !== label) {
+        firstSegmentParts.push(adm2)
+    }
+    const firstSegment = firstSegmentParts.join(' ').trim()
+
+    if (adm1 && adm1 !== firstSegment && adm1 !== adm2) {
+        return `${firstSegment}, ${adm1}`
+    }
+    return firstSegment
+}
+
 
 export default function SearchForm() {
     const pathname = usePathname()
@@ -196,10 +225,10 @@ export default function SearchForm() {
             setInputState(label)
             setSelectedGroup(null)
         } else {
-            const hit = data.hits.hits[index - 1]
-            const label = hit.fields.label[0]
-            inputValue.current = label
-            setInputState(label)
+            const hit = rankedHits[index - 1]
+            const queryString = buildAutocompleteQueryStringFromHit(hit)
+            inputValue.current = queryString
+            setInputState(queryString)
             const groupId = hit.fields["group.id"]?.[0]
             if (groupId) {
                 setSelectedGroup(stringToBase64Url(groupId))
@@ -393,7 +422,7 @@ export default function SearchForm() {
                 <li id={`autocomplete-option-0`} className={`cursor-pointer flex items-start gap-2 min-h-12 py-3 px-2 hover:bg-neutral-100 ${activeIndex === 0 ? 'bg-neutral-100' : ''}`}
                     tabIndex={-1}
                     role="option"
-                    onMouseDown={(event) => { dropdownSelect(event, rankedHits[0].fields.label[0]) }}
+                    onMouseDown={(event) => { dropdownSelect(event, buildAutocompleteQueryStringFromHit(rankedHits[0])) }}
                     data-autocomplete-option
                     aria-selected={activeIndex === 0}
                 >
@@ -412,7 +441,7 @@ export default function SearchForm() {
                             data-autocomplete-option
                             id={`autocomplete-option-${1 + index}`}
                             className={`cursor-pointer flex items-start gap-2 min-h-12 py-3 px-2 hover:bg-neutral-100 ${activeIndex === 1 + index ? 'bg-neutral-100' : ''}`}
-                            onMouseDown={(event) => { dropdownSelect(event, hit.fields.label[0], stringToBase64Url(hit.fields["group.id"][0]), hit.fields.location?.[0].coordinates) }}
+                            onMouseDown={(event) => { dropdownSelect(event, buildAutocompleteQueryStringFromHit(hit), stringToBase64Url(hit.fields["group.id"][0]), hit.fields.location?.[0].coordinates) }}
                             aria-selected={activeIndex === 1 + data.hits.hits.findIndex((x: any) => x._id === hit._id)}>
                             {hit.fields.location?.length ? (
                                 <span className="flex items-center h-6 flex-shrink-0">
