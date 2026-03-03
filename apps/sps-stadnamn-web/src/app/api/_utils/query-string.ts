@@ -27,22 +27,12 @@ const baseNameFields = [
 
 const fulltextFields = ["content.text", "content.html", "note"]
 const admFieldsWeighted = ["adm2^2", "group.adm2^2", "group.adm1^1.5", "adm1^1.5"]
-const admFieldsWeightedAfterComma = ["adm2^6", "group.adm2^6", "group.adm1^4", "adm1^4"]
-const baseNameFieldsAfterComma = [
-  "label^2",
-  "group.label^1.5",
-  "altLabels^1.5",
-  "attestations.label^1",
-]
 
 export function getQueryString(params: { [key: string]: string | null }) {
   const fulltext = params.fulltext == "on"
   const fuzzy = params.fuzzy == "on"
   const nameFields =
     fulltext ? [...baseNameFields, ...fulltextFields] : baseNameFields
-  const nameFieldsAfterComma = fulltext
-    ? [...baseNameFieldsAfterComma, "content.text^0.5", "content.html^0.5", "note^0.5"]
-    : baseNameFieldsAfterComma
 
   let simple_query_string: any = null
 
@@ -62,7 +52,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
         query_string: {
           query: modifyQuery(rawInput),
           allow_leading_wildcard: true,
-          default_operator: "OR",
+          default_operator: "AND",
           fields: nameFields,
         },
       }
@@ -91,66 +81,16 @@ export function getQueryString(params: { [key: string]: string | null }) {
       const raw = rawInput
 
       // If there is a comma, treat everything after the first comma as an
-      // adm-prioritised part, but still allow name matches.
+      // adm-prioritised part:
+      // - first token: name fields only
+      // - remaining tokens: name + adm fields
       if (raw.includes(",")) {
-        const [namePartRaw, admPartRaw] = raw.split(",", 2)
-        const namePart = namePartRaw.trim()
-        const admPart = admPartRaw.trim()
-        const nameTokens = namePart.split(/\s+/).filter(Boolean)
-        const admTokens = admPart.split(/\s+/).filter(Boolean)
+        const tokens = raw.replace(/,/g, " ").split(/\s+/).filter(Boolean)
+        const firstToken = tokens[0]
+        const trailingTokens = tokens.slice(1)
 
-        const makeTokenClause = (token: string, fields: string[]) => ({
-          query_string: {
-            query: modifyQuery(token),
-            allow_leading_wildcard: true,
-            default_operator: "OR",
-            fields,
-          },
-        })
-
-        const firstToken = nameTokens[0]
-        const trailingNameTokens = nameTokens.slice(1)
-
-        const mustClauses = [
-          ...(firstToken ? [makeTokenClause(firstToken, nameFields)] : []),
-          ...trailingNameTokens.map((token) =>
-            makeTokenClause(token, [...nameFields, ...admFieldsWeighted])
-          ),
-          ...admTokens.map((token) =>
-            makeTokenClause(token, [...nameFieldsAfterComma, ...admFieldsWeightedAfterComma])
-          ),
-        ]
-
-        simple_query_string =
-          mustClauses.length === 1
-            ? mustClauses[0]
-            : {
-                bool: {
-                  must: mustClauses,
-                },
-              }
-      } else {
-        // Quoted phrase: pass whole string so query_string can do phrase search
-        const isQuotedPhrase =
-          raw.length >= 2 && raw.startsWith('"') && raw.endsWith('"')
-
-        if (isQuotedPhrase) {
-          simple_query_string = {
-            query_string: {
-              query: modifyQuery(raw),
-              allow_leading_wildcard: true,
-              default_operator: "AND",
-              fields: nameFields,
-            },
-          }
-        } else {
-          const tokens = raw.split(/\s+/).filter(Boolean)
-
-          if (tokens.length > 1) {
-            const firstToken = tokens[0]
-            const trailingTokens = tokens.slice(1)
-
-            const firstTokenClause = {
+        const firstTokenClause = firstToken
+          ? {
               query_string: {
                 query: modifyQuery(firstToken),
                 allow_leading_wildcard: true,
@@ -158,32 +98,36 @@ export function getQueryString(params: { [key: string]: string | null }) {
                 fields: nameFields,
               },
             }
+          : null
 
-            const trailingClauses = trailingTokens.map((token) => ({
-              query_string: {
-                query: modifyQuery(token),
-                allow_leading_wildcard: true,
-                default_operator: "AND",
-                fields: [...nameFields, "adm2^2", "group.adm2^2", "group.adm1^1", "adm1^1"],
-              },
-            }))
+        const trailingClauses = trailingTokens.map((token) => ({
+          query_string: {
+            query: modifyQuery(token),
+            allow_leading_wildcard: true,
+            default_operator: "OR",
+            fields: [...nameFields, ...admFieldsWeighted],
+          },
+        }))
 
-            simple_query_string = {
-              bool: {
-                must: [firstTokenClause, ...trailingClauses],
-              },
-            }
-          } else {
-            // No comma and a single token: single query_string across name fields
-            simple_query_string = {
-              query_string: {
-                query: modifyQuery(raw),
-                allow_leading_wildcard: true,
-                default_operator: "AND",
-                fields: nameFields,
-              },
-            }
+        if (firstTokenClause && trailingClauses.length > 0) {
+          simple_query_string = {
+            bool: {
+              must: [firstTokenClause],
+              should: trailingClauses,
+              minimum_should_match: 1,
+            },
           }
+        } else {
+          simple_query_string = firstTokenClause
+        }
+      } else {
+        simple_query_string = {
+          query_string: {
+            query: modifyQuery(raw),
+            allow_leading_wildcard: true,
+            default_operator: "AND",
+            fields: nameFields,
+          },
         }
       }
     }
