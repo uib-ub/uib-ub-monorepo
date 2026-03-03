@@ -16,9 +16,10 @@ import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Fragment, useContext, useEffect, useRef, useState } from "react";
+import { Fragment, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiMagnifyingGlass, PiMapPinFill, PiNut, PiPencilSimpleBold, PiPlayFill, PiQuestion, PiStopFill, PiX, PiXBold } from "react-icons/pi";
 import GroupInfo from "../../details/group/group-info";
+import { getAlternativeInitLabels } from "../../details/group/group-utils";
 import ActiveFilters from "../../form/active-filters";
 import ResultItem from "./result-item";
 import SearchQueryDisplay from "./search-query-display";
@@ -162,6 +163,17 @@ export default function SearchResults() {
     !coordinateInfo &&
     !labelFilter &&
     additionalResultsCount === 0
+  const alternativeInitLabels = useMemo(() => {
+    if (!hasNoAdditionalResults) return []
+    return getAlternativeInitLabels({
+      ungrouped,
+      initDocData,
+      initGroupData,
+      currentQuery: qParam,
+      initSearchLabel,
+      maxLabels: 8,
+    })
+  }, [hasNoAdditionalResults, initDocData, initGroupData, initSearchLabel, qParam, ungrouped])
   const hasMaxResultsLimit = resultsParam > 0
   const initVisibleCount = ungrouped ? (init ? 1 : 0) : (initGroupId ? 1 : 0)
   const maxAdditionalVisible = hasMaxResultsLimit
@@ -563,8 +575,29 @@ export default function SearchResults() {
           </div>
         ) : hasNoAdditionalResults ? (
           <div className="flex justify-center">
-            <div role="status" aria-live="polite" className="text-neutral-950 pb-4">
-              Ingen fleire treff
+            <div role="status" aria-live="polite" className="flex flex-col items-center gap-2 text-neutral-950 pb-4">
+              <span>Ingen fleire treff</span>
+              <Link scroll={false} href="/help" className="flex items-center gap-2 px-4 py-3 rounded-md transition-colors no-underline text-neutral-900 hover:bg-accent-100">
+                <PiQuestion className="text-xl" aria-hidden="true" />Søketips
+              </Link>
+              {alternativeInitLabels.length > 0 && (
+                <div className="flex flex-wrap justify-center gap-2 max-w-full">
+                  {alternativeInitLabels.map((label) => (
+                    <Clickable
+                      key={`alternative-label-${label}`}
+                      add={{ q: label }}
+                      remove={['searchSort']}
+                      onClick={() => setSearchSettingsExpanded(false)}
+                      className="px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-2 cursor-pointer max-w-full min-w-0"
+                    >
+                      <PiMagnifyingGlass aria-hidden="true" />
+                      <span className="truncate max-w-[16rem]" title={label}>
+                        {label}
+                      </span>
+                    </Clickable>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         ) : null}

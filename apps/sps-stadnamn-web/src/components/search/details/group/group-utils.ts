@@ -41,3 +41,93 @@ export const pushNameYear = (nameToYears: Record<string, Set<string>>, name: str
     nameToYears[name].add(y)
 }
 
+type InitDocData = {
+    _source?: {
+        label?: unknown
+        altLabels?: unknown[]
+        attestations?: Array<{ label?: unknown } | null | undefined>
+    }
+} | null | undefined
+
+type InitGroupData = {
+    fields?: {
+        label?: unknown[]
+        altLabels?: unknown[]
+    }
+    sources?: Array<{
+        label?: unknown
+        altLabels?: unknown[]
+        attestations?: Array<{ label?: unknown } | null | undefined>
+    }>
+} | null | undefined
+
+type AlternativeInitLabelsArgs = {
+    ungrouped: boolean
+    initDocData?: InitDocData
+    initGroupData?: InitGroupData
+    currentQuery?: string | null
+    initSearchLabel?: string | null
+    maxLabels?: number
+}
+
+const getNormalizedLabel = (value: unknown): string | null => {
+    if (typeof value === "string") {
+        const trimmed = value.trim()
+        return trimmed || null
+    }
+    if (typeof value === "object" && value && "label" in value) {
+        const nested = (value as { label?: unknown }).label
+        if (typeof nested === "string") {
+            const trimmed = nested.trim()
+            return trimmed || null
+        }
+    }
+    return null
+}
+
+const pushUniqueLabel = (labels: string[], seen: Set<string>, value: unknown) => {
+    const label = getNormalizedLabel(value)
+    if (!label) return
+    const key = label.toLowerCase()
+    if (seen.has(key)) return
+    seen.add(key)
+    labels.push(label)
+}
+
+export const getAlternativeInitLabels = ({
+    ungrouped,
+    initDocData,
+    initGroupData,
+    currentQuery,
+    initSearchLabel,
+    maxLabels = 8,
+}: AlternativeInitLabelsArgs): string[] => {
+    const labels: string[] = []
+    const seen = new Set<string>()
+
+    if (ungrouped) {
+        const source = initDocData?._source
+        pushUniqueLabel(labels, seen, source?.label)
+        ;(source?.altLabels ?? []).forEach((value) => pushUniqueLabel(labels, seen, value))
+        ;(source?.attestations ?? []).forEach((att) => pushUniqueLabel(labels, seen, att?.label))
+    } else {
+        pushUniqueLabel(labels, seen, initGroupData?.fields?.label?.[0])
+        ;(initGroupData?.fields?.altLabels ?? []).forEach((value) => pushUniqueLabel(labels, seen, value))
+        ;(initGroupData?.sources ?? []).forEach((source) => {
+            pushUniqueLabel(labels, seen, source?.label)
+            ;(source?.altLabels ?? []).forEach((value) => pushUniqueLabel(labels, seen, value))
+            ;(source?.attestations ?? []).forEach((att) => pushUniqueLabel(labels, seen, att?.label))
+        })
+    }
+
+    const queryKey = (currentQuery || "").trim().toLowerCase()
+    const initLabelKey = (initSearchLabel || "").trim().toLowerCase()
+
+    return labels
+        .filter((label) => {
+            const key = label.toLowerCase()
+            return key !== queryKey && key !== initLabelKey
+        })
+        .slice(0, Math.max(maxLabels, 0))
+}
+
