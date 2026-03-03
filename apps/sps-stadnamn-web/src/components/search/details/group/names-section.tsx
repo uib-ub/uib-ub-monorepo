@@ -6,6 +6,7 @@ import { PiInfoBold, PiInfoFill, PiX } from "react-icons/pi";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import InfoPopover from "@/components/ui/info-popover";
+import WarningMessage from "./warning-message";
 
 interface NamesSectionProps {
     datasets: Record<string, any[]>;
@@ -290,7 +291,9 @@ export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
 
     return (
         <div className="flex flex-col gap-3">
-            {labelFilter && <p className="text-neutral-900">Filtreringsalternativa baserer seg på namneformer Språksamlingane har henta ut frå kjeldene, eventuelt med tidlegaste registrerte år. Lista er ikkje naudsynlegvis komplett, og kan innehalde feil.</p>}
+            {labelFilter && (
+                <WarningMessage message="Filtreringsalternativa baserer seg på namneformer Språksamlingane har henta ut frå kjeldene, eventuelt med tidlegaste registrerte år. Lista er ikkje naudsynlegvis komplett, og kan innehalde feil." messageId="names-section-warning" />
+            )}
             
 
             <div>

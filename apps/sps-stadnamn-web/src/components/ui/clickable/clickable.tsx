@@ -65,7 +65,7 @@ export default function Clickable({ children, remove, add, only, link, href, rep
                 router.replace("?" + stringParams)
             }
             else {
-                router.push("?" + stringParams)
+                router.push("?" + stringParams, { scroll: false })
             }
         }
         return <button type="button" {...rest} onClick={handleClick} >{children}</button>

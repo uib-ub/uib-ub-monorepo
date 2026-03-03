@@ -1,7 +1,7 @@
 'use client'
 
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
-import { useMode, useOverlayParams, usePerspective } from "@/lib/param-hooks";
+import { useGroup, useMode, useOverlayParams, usePerspective } from "@/lib/param-hooks";
 import { useSearchQuery } from "@/lib/search-params";
 import useGroupData from "@/state/hooks/group-data";
 import useSearchData from "@/state/hooks/search-data";
@@ -10,7 +10,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { PiBook, PiBookOpen, PiCaretDownBold, PiCaretLeftBold, PiCaretUpBold, PiX } from "react-icons/pi";
 import MapSettings from "../map/map-settings";
 import { Badge, TitleBadge } from "../ui/badge";
@@ -76,6 +76,7 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
     const facet = searchParams.get('facet')
     const mapSettings = searchParams.get('mapSettings') == 'on'
     const overlaySelector = searchParams.get('overlaySelector') === 'on'
+    const { initCode } =  useGroup()
 
     const mode = useMode()
 
@@ -139,11 +140,23 @@ function LeftWindow({ children, bottomContent }: { children: React.ReactNode, bo
 function RightWindow({ children }: { children: React.ReactNode }) {
     const { isMobile } = useContext(GlobalContext)
     const searchParams = useSearchParams()
+    const { initCode } =  useGroup()
+    const mapSettings = searchParams.get('mapSettings') == 'on'
+    const overlaySelector = searchParams.get('overlaySelector') == 'on'
+    const facet = searchParams.get('facet')
+    const options = searchParams.get('options') == 'on'
+    // Include facet and options in the hash if isMobile. Use it to control when the right panel is updated.
+    // Don't use window.hash
+    const updateCode = useMemo(() => {
+        return `${initCode}-${mapSettings ? '1' : '0'}-${overlaySelector ? '1' : '0'}-${facet ? '1' : '0'}-${options ? '1' : '0'}`
+    }, [initCode, mapSettings, overlaySelector, facet, options])
+
+
     const maxResults = searchParams.get('maxResults')
     if (isMobile) {
         return <>{children}</>
     }
-    return <section className={`bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] z-[3001] max-h-[calc(100svh-2rem)] rounded-md flex flex-col overflow-y-scroll`}
+    return <section key={updateCode} className={`bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] z-[3001] max-h-[calc(100svh-2rem)] rounded-md flex flex-col overflow-y-scroll`}
         aria-labelledby="right-title">{children}</section>
 }
 

@@ -1,4 +1,5 @@
 import Spinner from "@/components/svg/Spinner";
+import AudioPlayerList from "@/components/audio/audio-player-list";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { datasetTitles } from "@/config/metadata-config";
@@ -12,13 +13,14 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, type ReactNode } from "react";
-import { PiAnchor, PiAnchorSimple, PiArchive, PiCaretLeftBold, PiCaretRightBold, PiCheck, PiGps, PiMapPin, PiMapTrifold, PiPushPin, PiX } from "react-icons/pi";
+import { PiAnchor, PiAnchorSimple, PiCaretLeftBold, PiCaretRightBold, PiCheck, PiGps, PiMapPin, PiMapTrifold, PiPushPin, PiX } from "react-icons/pi";
 import { detailsRenderer } from "@/lib/text-utils";
 import { getValueByPath } from "@/lib/utils";
 import Carousel from "../../nav/results/carousel";
+import DocInfo from "../doc/doc-info";
 import { TextTab } from "./text-tab";
 import { NamesSection } from "./names-section";
-import { FilteredSourcesTab, SourcesTab } from "./sources-tab";
+import { FilteredChildSources } from "./filtered-child-sources";
 import { matchesActiveYear, matchesActiveName, pushNameYear } from "./group-utils";
 
 export default function GroupInfo({
@@ -82,10 +84,6 @@ export default function GroupInfo({
         const datasets: Record<string, any[]> = {}
         const coordSet = new Set<string>()
         let sources = groupData?.sources
-
-        if (ungrouped) {
-            sources = docData ? [docData] : []
-        }
 
         const normalizedSources = (sources || []).map((rawSource: any) => {
             const sourceObject = rawSource?._source || rawSource || {}
@@ -177,7 +175,7 @@ export default function GroupInfo({
 
 
         return { iiifItems, textItems, audioItems, datasets, uniqueCoordinates: Array.from(coordSet) }
-    }, [groupData, searchDatasets, docData, ungrouped])
+    }, [groupData, searchDatasets])
 
     const markerCoords = groupData?.fields?.location?.[0]?.coordinates
     const groupMarkerPosition: [number, number] | null =
@@ -316,10 +314,14 @@ export default function GroupInfo({
         }
     }
 
+    if (ungrouped) {
+        return <DocInfo id={id} docData={docData} />
+    }
+
 
     return (
         <div id={id} className="relative flex min-w-0 flex-wrap items-center pb-4">
-            {iiifItems?.length > 0 && !labelFilter && <>
+            {iiifItems?.length > 0 && !labelFilter && !coordinateInfo && <>
                     <Carousel items={iiifItems} />
                 </>
                 }
@@ -328,24 +330,11 @@ export default function GroupInfo({
 
                 {
                     audioItems?.map((audioItem) => (
-                        <div key={audioItem.uuid + 'audio'}>
-                            {(Array.isArray(audioItem.recordings) ? audioItem.recordings : []).map((recording: any, index: number) => (
-                                <div key={"audio-" + recording.uuid} className="flex items-center p-2">
-                                    <audio
-                                        controls
-                                        aria-label={`Lydopptak${audioItems.length > 1 ? ` ${index + 1} av ${audioItem.recordings.length}` : ''}`}
-                                        src={`https://iiif.spraksamlingane.no/iiif/audio/hord/${recording.file}`}
-                                        className="h-10 rounded-md
-                                    [&::-webkit-media-controls-enclosure]:bg-transparent 
-                                    [&::-webkit-media-controls-current-time-display]:text-neutral-800 
-                                    [&::-webkit-media-controls-time-remaining-display]:text-neutral-800"
-                                    />
-                                    <Link href={`/iiif/${recording.manifest}`} className="ml-1 p-2 rounded-full aspect-square">
-                                        <PiArchive className="text-md text-neutral-800" aria-hidden="true" />
-                                    </Link>
-                                </div>
-                            ))}
-                        </div>
+                        <AudioPlayerList
+                            key={audioItem.uuid + "audio"}
+                            recordings={Array.isArray(audioItem.recordings) ? audioItem.recordings : []}
+                            showArchiveLink
+                        />
                     ))
                 }
                 
@@ -461,19 +450,13 @@ export default function GroupInfo({
 
                 {/* min-w-0 so width is constrained by panel, not by expanded content */}
                 <div className="min-w-0 px-3">
-                    {ungrouped ? (
-                        <SourcesTab
-                            datasets={datasets}
-                            isFiltered={false}
-                        />
-                    ) : (
-                        <FilteredSourcesTab
+                    {!ungrouped && <FilteredChildSources
                             datasets={datasets}
                             activeYear={activeYear}
                             activeName={activeName}
                             isInitGroup={activeGroupValue === groupData.group.id}
                         />
-                    )}
+                    }
                 </div>
             </div>
 

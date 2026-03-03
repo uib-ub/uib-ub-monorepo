@@ -352,7 +352,7 @@ interface FilteredProps {
 }
 
 // Component that filters datasets and renders 
-export const Filtered = ({
+export const FilteredChildSources = ({
     datasets,
     activeYear,
     activeName,
@@ -380,7 +380,7 @@ export const Filtered = ({
     const isFiltered = !!(activeYear || activeName || (isInitGroup && activePoint))
 
     return (
-        <
+        <ChildSources
             datasets={filtered}
             isFiltered={isFiltered}
             distanceMeters={distanceMeters}
