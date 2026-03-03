@@ -40,9 +40,10 @@ export default function useGroupData(overrideGroupCode?: string | null) {
         sourcesQuery = searchQ
     }
     else {
-        const newQuery = new URLSearchParams(searchQueryString)
-        newQuery.delete('q')
-        sourcesQuery = newQuery.toString()
+        //const newQuery = new URLSearchParams(searchQueryString)
+        //newQuery.delete('q')
+        //sourcesQuery = newQuery.toString()
+        
 
     }
 
