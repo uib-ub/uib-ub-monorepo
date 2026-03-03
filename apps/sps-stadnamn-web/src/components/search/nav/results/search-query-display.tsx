@@ -5,9 +5,11 @@ import { stringToBase64Url } from "@/lib/param-utils"
 import useGroupData from "@/state/hooks/group-data"
 import { useSessionStore } from "@/state/zustand/session-store"
 import { useRouter, useSearchParams } from "next/navigation"
-import { PiMagnifyingGlass, PiXBold } from "react-icons/pi"
+import { PiCaretRightBold, PiMagnifyingGlass, PiXBold } from "react-icons/pi"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import Clickable from "@/components/ui/clickable/clickable"
+import { defaultMaxResultsParam } from "@/config/max-results"
 
 export default function SearchQueryDisplay() {
   const searchParams = useSearchParams()
@@ -25,18 +27,20 @@ export default function SearchQueryDisplay() {
   const isFuzzy = searchParams.get('fuzzy') === 'on'
   const fulltext = searchParams.get('fulltext')
 
-  if (!searchQ) return null
+  const initSearchLabel = initGroupData?.group?.label
+  const expandedMaxResultsParam = searchParams.get('maxResults') || defaultMaxResultsParam
 
   return (
-    <section className={`p-3 flex flex-wrap gap-x-6 gap-y-3 items-center border-b border-neutral-200 bg-neutral-50`} aria-labelledby="search-query-title">
+    <section id="search-settings" className={`p-3 flex flex-wrap gap-x-6 gap-y-3 items-center border-b border-neutral-200 bg-neutral-50`} aria-labelledby="search-query-title">
       <div className="flex items-center gap-3 text-sm flex-wrap">
         {isSingleWord && (
           <div className="flex items-center gap-2 p-1">
-            <Switch
+            <input
               id="fuzzy-toggle"
-              size="sm"
+              type="checkbox"
               checked={isFuzzy}
-              onCheckedChange={(checked) => {
+              onChange={(e) => {
+                const checked = e.target.checked;
                 const newParams = new URLSearchParams(searchParams)
                 if (checked) {
                   newParams.set('fuzzy', 'on')
@@ -45,16 +49,18 @@ export default function SearchQueryDisplay() {
                 }
                 router.push(`?${newParams.toString()}`)
               }}
+              className="form-checkbox h-4 w-4 accent-accent-700"
             />
             <Label htmlFor="fuzzy-toggle">Omtrentleg</Label>
           </div>
         )}
         <div className="flex items-center gap-2 p-1">
-          <Switch
+          <input
             id="fulltext-toggle"
-            size="sm"
+            type="checkbox"
             checked={!!fulltext}
-            onCheckedChange={(checked) => {
+            onChange={(e) => {
+              const checked = e.target.checked;
               const newParams = new URLSearchParams(searchParams)
               if (checked) {
                 newParams.set('fulltext', 'on')
@@ -63,6 +69,7 @@ export default function SearchQueryDisplay() {
               }
               router.push(`?${newParams.toString()}`)
             }}
+            className="form-checkbox h-4 w-4 accent-accent-700"
           />
           <Label htmlFor="fulltext-toggle">Fulltekst</Label>
         </div>
@@ -101,6 +108,21 @@ export default function SearchQueryDisplay() {
               </div>
             )}
       </div>
+          
+          {qParam != initSearchLabel && init && (
+            <Clickable
+              link
+              add={{ q: initSearchLabel, maxResults: expandedMaxResultsParam }}
+              className="ml-auto rounded-md flex items-center gap-1 cursor-pointer no-underline max-w-full min-w-0"
+            >
+              <PiMagnifyingGlass aria-hidden="true" className="flex-shrink-0" />
+              <span className="ml-1 truncate flex-1 min-w-0">
+                {initSearchLabel}
+              </span>
+
+            </Clickable>
+          )}
+        
     </section>
   )
 }
