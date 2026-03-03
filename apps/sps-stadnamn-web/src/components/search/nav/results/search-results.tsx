@@ -16,7 +16,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { PiCaretRightBold, PiCheck, PiFunnel, PiMagnifyingGlass, PiMapPinFill, PiPencilSimpleBold, PiPlayFill, PiQuestion, PiStopFill, PiX, PiXBold } from "react-icons/pi";
+import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiMagnifyingGlass, PiMapPinFill, PiNut, PiPencilSimpleBold, PiPlayFill, PiQuestion, PiStopFill, PiX, PiXBold } from "react-icons/pi";
 import GroupInfo from "../../details/group/group-info";
 import ActiveFilters from "../../form/active-filters";
 import ResultItem from "./result-item";
@@ -53,6 +53,27 @@ const CollapsibleResultItem = ({ hit, activeGroupValue }: { hit: any; activeGrou
   )
 }
 
+
+// TODO: implement doc based group info
+const DocResultItem = ({ hit }: { hit: any }) => {
+  const uuid = hit._source?.uuid ?? hit.uuid
+  const distanceMeters = typeof hit.distance === 'number' ? hit.distance : null
+
+  if (!uuid) {
+    return null
+  }
+
+  return (
+    <li className="relative" key={uuid}>
+      <GroupInfo
+        id={`group-info-${uuid}`}
+        overrideGroupCode={uuid}
+        distanceMeters={distanceMeters}
+      />
+    </li>
+  )
+}
+
 export default function SearchResults() {
   const { searchError } = useSearchData()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
@@ -84,6 +105,10 @@ export default function SearchResults() {
   const labelFilter = searchParams.get('labelFilter') === 'on'
   const [playingPreviewId, setPlayingPreviewId] = useState<string | null>(null)
   const audioPreviewRef = useRef<HTMLAudioElement | null>(null)
+  const searchSort = searchParams.get('searchSort')
+  const fuzzy = searchParams.get('fuzzy')
+  const fulltext = searchParams.get('fulltext')
+  const [searchSettingsExpanded, setSearchSettingsExpanded] = useState( searchSort == 'similarity' || fuzzy == 'on' || fulltext == 'on' )
 
 
 
@@ -122,6 +147,13 @@ export default function SearchResults() {
   // Check if there are no results
   const hasNoResults = collapsedStatus === 'success' && (!collapsedData?.pages || collapsedData.pages.length === 0 || collapsedData.pages[0].data?.length === 0);
   const hasOneResult = collapsedStatus === 'success' && collapsedData?.pages && collapsedData.pages.length === 1 && collapsedData.pages[0].data?.length === 1;
+  const additionalResultsCount = getAdditionalResultsCount()
+  const hasNoAdditionalResults =
+    collapsedStatus === 'success' &&
+    !!init &&
+    !coordinateInfo &&
+    !labelFilter &&
+    additionalResultsCount === 0
   const hasMaxResultsLimit = resultsParam > 0
   const maxAdditionalVisible = hasMaxResultsLimit
     ? Math.max(resultsParam - (initGroupId ? 1 : 0), 0)
@@ -343,14 +375,39 @@ export default function SearchResults() {
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
         </div>
       ) : (
-        <div className="w-full border-t border-neutral-200 bg-neutral-50 border-b-none pt-4 pb-2 xl:py-2 px-3 flex items-center gap-2 text-neutral-950 min-w-0 overflow-hidden">
-          {qParam && <Clickable remove={['q', 'searchSort']} add={{ q: null }} className="px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-2 cursor-pointer"><PiMagnifyingGlass className="" aria-hidden="true" />{qParam}<PiX className="text-lg" aria-hidden="true" /></Clickable>}
-          <span id="other-groups-title" className={`text-lg font-sans text-neutral-900 whitespace-nowrap ${qParam ? 'sr-only' : ''}`}>{noGrouping ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}</span>
+        <div className="w-full border-t border-neutral-200 bg-neutral-50 border-b-none pt-4 pb-2 xl:py-2 px-3 flex flex-col gap-2 text-neutral-950 min-w-0 overflow-hidden">
+          
+          <div className="flex items-center gap-2">
+          {qParam ? <>
             
-            {(!initSearchLabel || qParam != initSearchLabel) && init && (
-              <Clickable
-                link
-                add={{ q: initSearchLabel, maxResults: expandedMaxResultsParam }}
+            
+            <Clickable
+              remove={['q', 'searchSort']}
+              add={{ q: null }}
+              onClick={() => setSearchSettingsExpanded(false)}
+              className="px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-2 cursor-pointer max-w-full min-w-0"
+            >
+              <PiMagnifyingGlass className="" aria-hidden="true" />
+              <span
+                className="truncate flex-1 min-w-0 max-w-full block"
+                title={String(qParam)}
+              >
+                {qParam}
+              </span>
+              <PiX className="text-lg" aria-hidden="true" />
+            </Clickable>
+          
+          
+          <button aria-expanded={searchSettingsExpanded} aria-controls="search-settings"   type="button" className="flex items-center gap-1 justify-center ml-auto" onClick={() => setSearchSettingsExpanded(!searchSettingsExpanded)}>
+            {searchSettingsExpanded ? <PiCaretUpBold className="text-lg" aria-hidden="true" /> : <PiCaretDownBold className="text-lg" aria-hidden="true" />}
+            Søkealternativ            
+            </button>
+            </>
+            : 
+            <>
+            <span id="other-groups-title" className={`text-lg font-sans text-neutral-900 whitespace-nowrap`}>{noGrouping ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}</span>
+            
+            <Clickable add={{ q: initSearchLabel}}
                 className="ml-auto px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-1 cursor-pointer no-underline max-w-full min-w-0"
               >
                 {!(qParam && !identicalQuery) &&<PiMagnifyingGlass aria-hidden="true" className="flex-shrink-0" />}
@@ -359,16 +416,22 @@ export default function SearchResults() {
                 </span>
                 {qParam && !identicalQuery && <PiCaretRightBold aria-hidden="true" className="flex-shrink-0" />}
               </Clickable>
-            )}
+            </>
+            }</div>
+
           
         </div>
+         
       )) : null}
+      
+     
 
       {(!init || showOtherResults || isMobile || hasOneResult) && (!coordinateInfo && !labelFilter) && (
         <>
-          <SearchQueryDisplay />
+          {(searchSettingsExpanded || !init) && <SearchQueryDisplay />}
 
-          <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-300 ${init && !isMobile && showOtherResults ? 'border-b' : 'border-y'} border-neutral-200`}>
+          {!hasNoAdditionalResults && (
+            <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-300 ${init && !isMobile && showOtherResults ? 'border-b' : 'border-y'} border-neutral-200`}>
 
 
             {(initGroupLoading || collapsedLoading && collapsedInitialPage === 1) ? Array.from({ length: collapsedInitialPage === 1 ? 6 : 40 }).map((_, i) => (
@@ -438,7 +501,8 @@ export default function SearchResults() {
                   </Fragment>
                 )
               })})()}
-          </ul>
+            </ul>
+          )}
           {isMobile && (
                           <div className="mt-2 px-4">
                             <span className="text-sm text-neutral-900">Søkemodus</span>
@@ -449,7 +513,7 @@ export default function SearchResults() {
       )}
 
 
-      {(isMobile || searchError || collapsedError || hasNoResults) && (!labelFilter) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
+      {(isMobile || searchError || collapsedError || hasNoResults || hasNoAdditionalResults) && (!labelFilter) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
         {filterCount > 0 && showOtherResults && <div className="mx-2 mb-4">
 
           <ActiveFilters /></div>}
@@ -463,7 +527,7 @@ export default function SearchResults() {
               Det har oppstått ein feil
             </div>
           </div>
-        ) : hasNoResults && (
+        ) : hasNoResults ? (
           <div className="flex justify-center">
             <div role="status" aria-live="polite" className="flex flex-col items-center gap-2 text-neutral-950 pb-4">
               Ingen søkeresultat
@@ -472,7 +536,13 @@ export default function SearchResults() {
               </Link>
             </div>
           </div>
-        )}
+        ) : hasNoAdditionalResults ? (
+          <div className="flex justify-center">
+            <div role="status" aria-live="polite" className="text-neutral-950 pb-4">
+              Ingen fleire treff
+            </div>
+          </div>
+        ) : null}
       </div>}
     </div>
   )
