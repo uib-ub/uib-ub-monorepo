@@ -26,12 +26,23 @@ const baseNameFields = [
 ]
 
 const fulltextFields = ["content.text", "content.html", "note"]
+const admFieldsWeighted = ["adm2^2", "group.adm2^2", "group.adm1^1.5", "adm1^1.5"]
+const admFieldsWeightedAfterComma = ["adm2^6", "group.adm2^6", "group.adm1^4", "adm1^4"]
+const baseNameFieldsAfterComma = [
+  "label^2",
+  "group.label^1.5",
+  "altLabels^1.5",
+  "attestations.label^1",
+]
 
 export function getQueryString(params: { [key: string]: string | null }) {
   const fulltext = params.fulltext == "on"
   const fuzzy = params.fuzzy == "on"
   const nameFields =
     fulltext ? [...baseNameFields, ...fulltextFields] : baseNameFields
+  const nameFieldsAfterComma = fulltext
+    ? [...baseNameFieldsAfterComma, "content.text^0.5", "content.html^0.5", "note^0.5"]
+    : baseNameFieldsAfterComma
 
   let simple_query_string: any = null
 
@@ -51,7 +62,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
         query_string: {
           query: modifyQuery(rawInput),
           allow_leading_wildcard: true,
-          default_operator: "AND",
+          default_operator: "OR",
           fields: nameFields,
         },
       }
@@ -79,40 +90,36 @@ export function getQueryString(params: { [key: string]: string | null }) {
     } else {
       const raw = rawInput
 
-      // If there is a comma, treat everything after the first comma as "adm" part
+      // If there is a comma, treat everything after the first comma as an
+      // adm-prioritised part, but still allow name matches.
       if (raw.includes(",")) {
         const [namePartRaw, admPartRaw] = raw.split(",", 2)
         const namePart = namePartRaw.trim()
         const admPart = admPartRaw.trim()
+        const nameTokens = namePart.split(/\s+/).filter(Boolean)
+        const admTokens = admPart.split(/\s+/).filter(Boolean)
 
-        const nameQuery = namePart
-          ? {
-              query_string: {
-                query: modifyQuery(namePart),
-                allow_leading_wildcard: true,
-                default_operator: "AND",
-                fields: nameFields,
-              },
-            }
-          : null
+        const makeTokenClause = (token: string, fields: string[]) => ({
+          query_string: {
+            query: modifyQuery(token),
+            allow_leading_wildcard: true,
+            default_operator: "OR",
+            fields,
+          },
+        })
 
-        const admQuery = admPart
-          ? {
-              query_string: {
-                query: modifyQuery(admPart),
-                allow_leading_wildcard: true,
-                default_operator: "AND",
-                fields: [
-                  "adm2^2",
-                  "group.adm2^2",
-                  "group.adm1^1",
-                  "adm1^1",
-                ],
-              },
-            }
-          : null
+        const firstToken = nameTokens[0]
+        const trailingNameTokens = nameTokens.slice(1)
 
-        const mustClauses = [nameQuery, admQuery].filter(Boolean)
+        const mustClauses = [
+          ...(firstToken ? [makeTokenClause(firstToken, nameFields)] : []),
+          ...trailingNameTokens.map((token) =>
+            makeTokenClause(token, [...nameFields, ...admFieldsWeighted])
+          ),
+          ...admTokens.map((token) =>
+            makeTokenClause(token, [...nameFieldsAfterComma, ...admFieldsWeightedAfterComma])
+          ),
+        ]
 
         simple_query_string =
           mustClauses.length === 1

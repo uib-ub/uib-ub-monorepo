@@ -4,9 +4,9 @@ import { getSortArray } from '@/config/server-config';
 
 // Check if query contains special characters that should disable autocomplete
 function hasSpecialCharacters(query: string): boolean {
-  // Allow alphanumeric, spaces, and Norwegian characters (å, æ, ø)
+  // Allow alphanumeric, spaces, comma, and Norwegian characters (å, æ, ø)
   // Everything else is considered a special character
-  return /[^a-zæøå0-9\s]/i.test(query);
+  return /[^a-zæøå0-9,\s]/i.test(query);
 }
 
 export async function GET(request: Request) {
@@ -28,6 +28,7 @@ export async function GET(request: Request) {
   }
 
   const hasWhitespace = queryString.includes(' ')
+  const hasComma = queryString.includes(',')
 
   // Base prefix query:
   // - Match only on label/label.keyword (no adm fields)
@@ -101,17 +102,35 @@ export async function GET(request: Request) {
   //   - tn (last token): must match as a prefix on label or adm (label should
   //     be preferred; exact matches are later prioritised client-side).
   let queryClause: Record<string, any>
-  if (!hasWhitespace) {
+  if (!hasWhitespace && !hasComma) {
     queryClause = basePrefixQuery
   } else {
-    const parts = queryString.split(/\s+/).filter((p) => p.length > 0)
-    const rawParts = rawQueryString.split(/\s+/).filter((p) => p.length > 0)
+    const [beforeCommaRaw, afterCommaRaw = ""] = rawQueryString.split(",", 2)
+    const beforeCommaTokens = beforeCommaRaw
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((p) => p.length > 0)
+    const afterCommaTokens = afterCommaRaw
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((p) => p.length > 0)
+    const parts = hasComma
+      ? [...beforeCommaTokens, ...afterCommaTokens]
+      : queryString.split(/\s+/).filter((p) => p.length > 0)
+    const rawParts = hasComma
+      ? [...beforeCommaRaw.split(/\s+/).filter(Boolean), ...afterCommaRaw.split(/\s+/).filter(Boolean)]
+      : rawQueryString.split(/\s+/).filter((p) => p.length > 0)
 
     const firstToken = parts[0]
-    const lastToken = parts[parts.length - 1]
-    const middleTokens = parts.slice(1, -1)
     const rawLastToken = rawParts[rawParts.length - 1] || ""
     const firstPartRaw = rawParts.slice(0, -1).join(" ").trim()
+    const trailingBeforeCommaTokens = hasComma ? beforeCommaTokens.slice(1) : parts.slice(1, -1)
+    const lastToken =
+      hasComma && afterCommaTokens.length > 0
+        ? afterCommaTokens[afterCommaTokens.length - 1]
+        : parts[parts.length - 1]
+    const middleTokensAfterComma =
+      hasComma && afterCommaTokens.length > 1 ? afterCommaTokens.slice(0, -1) : []
 
     const admFields = ["adm1", "adm2", "group.adm1", "group.adm2"]
 
@@ -129,9 +148,14 @@ export async function GET(request: Request) {
       })
     }
 
-    // 2) Middle tokens must match either label or adm, with label preferred
+    // 2) Tokens between first and last (before comma) must match either label
+    //    or adm, with label preferred via scoring boosts.
+    //
+    // For comma queries:
+    // - tokens before comma (except the first) follow the same preference
+    // - tokens after comma are adm-prioritised but still allow label matches
     //    via scoring boosts.
-    middleTokens.forEach((token) => {
+    trailingBeforeCommaTokens.forEach((token) => {
       if (!token.length) return
 
       const shouldClauses: any[] = [
@@ -150,6 +174,38 @@ export async function GET(request: Request) {
               "query": token,
               "operator": "and",
               "boost": 1.0
+            }
+          }
+        }))
+      ]
+
+      mustClauses.push({
+        "bool": {
+          "should": shouldClauses,
+          "minimum_should_match": 1
+        }
+      })
+    })
+
+    middleTokensAfterComma.forEach((token) => {
+      if (!token.length) return
+
+      const shouldClauses: any[] = [
+        {
+          "match": {
+            "label": {
+              "query": token,
+              "operator": "and",
+              "boost": 1.5
+            }
+          }
+        },
+        ...admFields.map((field) => ({
+          "match": {
+            [field]: {
+              "query": token,
+              "operator": "and",
+              "boost": 3.0
             }
           }
         }))
@@ -267,11 +323,26 @@ export async function GET(request: Request) {
               }
           : null
 
+      const commaAdmPrefixWrapper =
+        hasComma && admPrefixClauses.length > 0
+          ? {
+              "bool": {
+                "should": admPrefixClauses,
+                "minimum_should_match": 1,
+                "boost": 2.5
+              }
+            }
+          : null
+
       mustClauses.push({
         "bool": {
           "should": [
             ...labelPrefixClauses,
-            ...(admPrefixWrapper ? [admPrefixWrapper] : [])
+            ...(commaAdmPrefixWrapper
+              ? [commaAdmPrefixWrapper]
+              : admPrefixWrapper
+                ? [admPrefixWrapper]
+                : [])
           ],
           "minimum_should_match": 1
         }
