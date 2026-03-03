@@ -85,9 +85,9 @@ export function useSearchQuery() {
         searchQuery.set('fuzzy', 'on')
     }
 
-    const noGrouping = searchParams.get('noGrouping')
-    if (noGrouping === 'on') {
-        searchQuery.set('noGrouping', 'on')
+    const ungrouped = searchParams.get('ungrouped')
+    if (ungrouped === 'on') {
+        searchQuery.set('ungrouped', 'on')
     }
 
     if (searchParams.get('radius') && searchParams.get('point')) {

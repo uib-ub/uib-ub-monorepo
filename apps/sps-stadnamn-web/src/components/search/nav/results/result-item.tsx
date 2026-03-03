@@ -46,7 +46,6 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const showScore = useDebugStore((s: any) => s.showScore)
     const isGrunnord = docDataset?.includes('_g')
-    const noGrouping = searchParams.get('noGrouping') === 'on'
 
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
     const { activeGroupValue, initValue } = useGroup()
@@ -56,14 +55,8 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
 
     if (!hit._index) return <div className="p-2">Det har oppstått ein feil: Kunne ikkje hente kjelder</div>
 
-    if (noGrouping) {
-        return null
-    }
 
-
-
-
-    return <div  {...rest} className={`w-full h-full ${initValue && initValue == hit.fields["group.id"][0] ? '' : 'bg-neutral-50'} aria-expanded:border-b aria-expanded:borderneutral-100 flex items-center group no-underline ${initValue == hit.fields["group.id"][0] ? 'pb-0' : ''}`}>
+    return <div  {...rest} className={`w-full h-full ${initValue && initValue == hit.fields["group.id"][0] ? '' : 'bg-neutral-50'} aria-expanded:border-b aria-expanded:border-neutral-100 flex items-center group no-underline ${initValue == hit.fields["group.id"][0] ? 'pb-0' : ''}`}>
 
         <Clickable ref={itemRef}
             notClickable={notClickable}

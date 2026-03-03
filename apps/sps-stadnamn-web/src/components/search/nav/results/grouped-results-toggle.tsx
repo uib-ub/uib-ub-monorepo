@@ -3,10 +3,10 @@
 import { useContext, useEffect, useRef } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { stringToBase64Url } from "@/lib/param-utils"
-import useGroupData from "@/state/hooks/group-data"
+import useInitData from "@/state/hooks/init-data"
 import ToggleButton from "@/components/ui/toggle-button"
 import { GlobalContext } from "@/state/providers/global-provider"
-import { PiBookOpen, PiSignpost, PiTreeView } from "react-icons/pi"
+import { PiBookOpen, PiSignpost } from "react-icons/pi"
 
 export default function GroupedResultsToggle() {
     const searchParams = useSearchParams()
@@ -14,21 +14,21 @@ export default function GroupedResultsToggle() {
     const { scrollableContentRef, isMobile } = useContext(GlobalContext)
 
     const init = searchParams.get('init')
-    const noGrouping = searchParams.get('noGrouping') === 'on'
-    const isGrouped = !noGrouping
+    const ungrouped = searchParams.get('ungrouped') === 'on'
+    const isGrouped = !ungrouped
 
 
     // Track previous mode so we only scroll when it actually changes
-    const previousNoGroupingRef = useRef(noGrouping)
+    const previousNoGroupingRef = useRef(ungrouped)
 
     useEffect(() => {
-        if (previousNoGroupingRef.current === noGrouping) {
+        if (previousNoGroupingRef.current === ungrouped) {
             // First run or no change – just sync the value
-            previousNoGroupingRef.current = noGrouping
+            previousNoGroupingRef.current = ungrouped
             return
         }
 
-        previousNoGroupingRef.current = noGrouping
+        previousNoGroupingRef.current = ungrouped
 
         if (scrollableContentRef.current) {
             scrollableContentRef.current.scrollTo({
@@ -36,26 +36,31 @@ export default function GroupedResultsToggle() {
                 behavior: 'auto',
             })
         }
-    }, [noGrouping, scrollableContentRef])
+    }, [ungrouped, scrollableContentRef])
 
-    // Reuse the same init-based group lookup logic that the rest of the UI uses.
-    const { groupData: initGroupData } = useGroupData(init)
+    const { groupedInitId, ungroupedInitUuid } = useInitData()
 
-    const handleToggle = (enableGrouping: boolean) => {
+    const toggleGrouping = (enableGrouping: boolean) => {
         const newParams = new URLSearchParams(searchParams.toString())
 
         if (enableGrouping) {
             // Enable grouped view ("Namnegrupper")
-            newParams.delete('noGrouping')
-            if (init && initGroupData?.group?.id) {
-                newParams.set('init', stringToBase64Url(initGroupData.group.id))
+            newParams.delete('ungrouped')
+            if (init) {
+                if (groupedInitId) {
+                    newParams.set('init', stringToBase64Url(groupedInitId))
+                } else if (ungrouped) {
+                    // Avoid carrying a uuid-based init into grouped mode.
+                    newParams.delete('init')
+                }
             }
         } else {
             // Disable grouped view ("Kjeldeoppslag")
-            newParams.set('noGrouping', 'on')
-            const initUuid = initGroupData?.fields?.["uuid"]?.[0]
-            if (init && initUuid) {
-                newParams.set('init', initUuid)
+            newParams.set('ungrouped', 'on')
+            if (init) {
+                if (ungroupedInitUuid) {
+                    newParams.set('init', ungroupedInitUuid)
+                }
             }
         }
 
@@ -70,7 +75,7 @@ export default function GroupedResultsToggle() {
                     isSelected={isGrouped}
                     role="radio"
                     ariaChecked={isGrouped}
-                    onClick={() => handleToggle(true)}
+                    onClick={() => toggleGrouping(true)}
                     small
                 >
                     <span className={!isMobile ? "sr-only 2xl:not-sr-only" : ""}>Namnegrupper</span>{!isMobile && <PiSignpost className="2xl:hidden" aria-hidden="true" />}
@@ -79,7 +84,7 @@ export default function GroupedResultsToggle() {
                     isSelected={!isGrouped}
                     role="radio"
                     ariaChecked={!isGrouped}
-                    onClick={() => handleToggle(false)}
+                    onClick={() => toggleGrouping(false)}
                     small
                 >
                     <span className={!isMobile ? "sr-only 2xl:not-sr-only" : ""}>Kjeldeoppslag</span>{!isMobile && <PiBookOpen className="2xl:hidden" aria-hidden="true" />}

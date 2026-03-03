@@ -35,11 +35,7 @@ export async function GET(request: Request) {
         "must": simple_query_string || { "match_all": {} },
         "filter": [{
           "term": {
-            ...reservedParams.noGrouping ? {
-              "uuid": groupValue
-            } : {
               "group.id": groupValue
-            }
           }
         }, ...termFilters]
       }

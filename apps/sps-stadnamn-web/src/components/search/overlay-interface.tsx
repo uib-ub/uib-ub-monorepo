@@ -157,7 +157,7 @@ export default function OverlayInterface() {
     const searchParams = useSearchParams()
     const { totalHits, docTotalHits, searchLoading } = useSearchData()
     const { groupData } = useGroupData()
-    const noGrouping = searchParams.get('noGrouping') === 'on'
+    const ungrouped = searchParams.get('ungrouped') === 'on'
 
     const drawerRef = useRef<HTMLDivElement>(null)
 
@@ -336,7 +336,7 @@ export default function OverlayInterface() {
                                             ) : (
                                                 <TitleBadge
                                                     className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`}
-                                                    count={noGrouping ? docTotalHits?.value ?? 0 : totalHits?.value ?? 0}
+                                                    count={ungrouped ? docTotalHits?.value ?? 0 : totalHits?.value ?? 0}
                                                 />
                                             )}
                                         </>

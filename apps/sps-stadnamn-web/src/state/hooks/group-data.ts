@@ -30,6 +30,7 @@ export default function useGroupData(overrideGroupCode?: string | null) {
     const groupCode = overrideGroupCode || activeGroupCode
     const groupValue = groupCode ? base64UrlToString(groupCode) : null
     const searchParams = useSearchParams()
+    const ungrouped = searchParams.get('ungrouped') === 'on'
 
     const debugChildren = useDebugStore((s) => s.debugChildren)
     const debug = useDebugStore((s) => s.debug);
@@ -55,10 +56,11 @@ export default function useGroupData(overrideGroupCode?: string | null) {
         isFetching: groupFetching,
         status,
     } = useQuery({
-        queryKey: ['group', sourcesQuery, groupCode, overrideGroupCode ? undefined : searchQueryString],
+        queryKey: ['group', sourcesQuery, groupCode, ungrouped, overrideGroupCode ? undefined : searchQueryString],
         queryFn: async () =>
             groupCode ? groupDataQuery(groupCode, sourcesQuery, debug ? debugChildren : []) : null,
         placeholderData: (overrideGroupCode || initCode == groupCode) ? undefined : (prevData: any) => prevData,
+        enabled: !!groupCode && !ungrouped,
 
     })
 

@@ -8,8 +8,9 @@ import { useGroup, usePoint } from "@/lib/param-hooks";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchQuery } from "@/lib/search-params";
 import { getSkeletonLength } from "@/lib/utils";
-import useCollapsedData, { SUBSEQUENT_PAGE_SIZE } from "@/state/hooks/collapsed-data";
 import useGroupData from "@/state/hooks/group-data";
+import useInitData from "@/state/hooks/init-data";
+import useResultsData from "@/state/hooks/results-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
@@ -29,8 +30,8 @@ import GroupedResultsToggle from "./grouped-results-toggle";
 const CollapsibleResultItem = ({ hit, activeGroupValue }: { hit: any; activeGroupValue: string | null }) => {
   const [expanded, setExpanded] = useState(activeGroupValue == hit.fields['group.id'][0])
   const searchParams = useSearchParams()
-  const noGrouping = searchParams.get('noGrouping') === 'on'
-  const groupCode = noGrouping ? hit.fields['uuid'][0] : stringToBase64Url(hit.fields['group.id'][0])
+  const ungrouped = searchParams.get('ungrouped') === 'on'
+  const groupCode = ungrouped ? hit.fields['uuid'][0] : stringToBase64Url(hit.fields['group.id'][0])
 
   const distanceMeters = typeof hit.distance === 'number' ? hit.distance : null
 
@@ -42,11 +43,10 @@ const CollapsibleResultItem = ({ hit, activeGroupValue }: { hit: any; activeGrou
         aria-controls={`group-info-${hit.fields['group.id'][0]}`}
         aria-expanded={expanded}
       />
-      {(expanded || noGrouping) && (
+      {(expanded || ungrouped) && (
         <GroupInfo
           id={`group-info-${hit.fields['group.id'][0]}`}
           overrideGroupCode={groupCode}
-          distanceMeters={noGrouping ? distanceMeters : null}
         />
       )}
     </li>
@@ -68,7 +68,7 @@ const DocResultItem = ({ hit }: { hit: any }) => {
       <GroupInfo
         id={`group-info-${uuid}`}
         overrideGroupCode={uuid}
-        distanceMeters={distanceMeters}
+        docData={hit}
       />
     </li>
   )
@@ -83,15 +83,21 @@ export default function SearchResults() {
   const group = searchParams.get('group')
   const qParam = searchParams.get('q')?.trim()
   const resultsParam = getClampedMaxResultsFromParam(searchParams.get('maxResults'))
+  const ungrouped = searchParams.get('ungrouped') === 'on'
+  const {
+    initData,
+    initLoading,
+    initSearchLabel,
+    initGroupData,
+    initDocData,
+  } = useInitData()
   const initValue = init ? base64UrlToString(init) : null
-  const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
   // In grouped view, init points to a group id (base64 encoded).
   // In non-grouped view, init points to a source uuid, so we must derive the
-  // corresponding group id from initGroupData to exclude it from the collapsed results.
-  const noGrouping = searchParams.get('noGrouping') === 'on'
+  // corresponding group id from grouped init data to exclude it from collapsed results.
   const initGroupId = init
-    ? (initGroupData?.group?.id ?? (!noGrouping ? initValue : null))
-    : (!noGrouping ? initValue : null)
+    ? (initGroupData?.group?.id ?? (!ungrouped ? initValue : null))
+    : (!ungrouped ? initValue : null)
   const { groupData: activeGroupData } = useGroupData()
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const { isMobile, sosiVocab, mapFunctionRef } = useContext(GlobalContext)
@@ -99,7 +105,6 @@ export default function SearchResults() {
   const { facetFilters, datasetFilters } = useSearchQuery()
   const filterCount = facetFilters.length + datasetFilters.length
   const router = useRouter()
-  const initSearchLabel = initGroupData?.fields?.label?.[0]?.trim()
   const identicalQuery = qParam?.toLowerCase() == initSearchLabel?.toLowerCase()
   const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
   const labelFilter = searchParams.get('labelFilter') === 'on'
@@ -124,39 +129,43 @@ export default function SearchResults() {
 
 
 
-  // Use the enhanced infinite query hook
   const {
-    collapsedData,
-    collapsedError,
-    collapsedLoading,
-    collapsedFetchNextPage,
-    collapsedHasNextPage,
-    isFetchingNextPage,
-    collapsedStatus,
-    collapsedInitialPage
-  } = useCollapsedData()
+    resultData,
+    resultError,
+    resultLoading,
+    resultFetchNextPage,
+    resultHasNextPage,
+    resultIsFetchingNextPage,
+    resultStatus,
+    resultInitialPage,
+    resultPageSize,
+  } = useResultsData()
 
   // Helper: count additional groups (excluding init group when present)
   const getAdditionalResultsCount = () => {
-    if (!collapsedData) return 0
-    const allHits = collapsedData.pages.flatMap((page: any) => page.data || [])
+    if (!resultData) return 0
+    const allHits = resultData.pages.flatMap((page: any) => page.data || [])
+    if (ungrouped && init) {
+      return allHits.filter((hit: any) => (hit._source?.uuid ?? hit.uuid) !== init).length
+    }
     if (!initGroupId) return allHits.length
     return allHits.filter((hit: any) => hit.fields?.["group.id"]?.[0] !== initGroupId).length
   }
 
   // Check if there are no results
-  const hasNoResults = collapsedStatus === 'success' && (!collapsedData?.pages || collapsedData.pages.length === 0 || collapsedData.pages[0].data?.length === 0);
-  const hasOneResult = collapsedStatus === 'success' && collapsedData?.pages && collapsedData.pages.length === 1 && collapsedData.pages[0].data?.length === 1;
+  const hasNoResults = resultStatus === 'success' && (!resultData?.pages || resultData.pages.length === 0 || resultData.pages[0].data?.length === 0);
+  const hasOneResult = resultStatus === 'success' && resultData?.pages && resultData.pages.length === 1 && resultData.pages[0].data?.length === 1;
   const additionalResultsCount = getAdditionalResultsCount()
   const hasNoAdditionalResults =
-    collapsedStatus === 'success' &&
+    resultStatus === 'success' &&
     !!init &&
     !coordinateInfo &&
     !labelFilter &&
     additionalResultsCount === 0
   const hasMaxResultsLimit = resultsParam > 0
+  const initVisibleCount = ungrouped ? (init ? 1 : 0) : (initGroupId ? 1 : 0)
   const maxAdditionalVisible = hasMaxResultsLimit
-    ? Math.max(resultsParam - (initGroupId ? 1 : 0), 0)
+    ? Math.max(resultsParam - initVisibleCount, 0)
     : Number.POSITIVE_INFINITY;
 
   // Derived: should "Fleire namnegrupper" and the list of other groups be visible?
@@ -349,19 +358,23 @@ export default function SearchResults() {
           </div>
         )
       }
-      {init && !coordinateInfo && !labelFilter && (initGroupLoading ? (
+      {init && !coordinateInfo && !labelFilter && (initLoading ? (
         <div className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-300">
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `10rem` }}></div>
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `16rem` }}></div>
         </div>
-      ) : initGroupData && (
+      ) : initData && (
         <div className="relative" key={`init-${initValue}`}>
-          <ResultItem hit={initGroupData} />
-          {initGroupData.fields?.['group.id'] ? (
+          {ungrouped ? (
+            <GroupInfo id={`group-info-${init}`} overrideGroupCode={init || undefined} docData={initDocData} />
+          ) : (
             <>
-              <GroupInfo id={`group-info-${initGroupData.fields['group.id']}`} overrideGroupCode={init || undefined} />
+              <ResultItem hit={initGroupData} />
+              {initGroupData.fields?.['group.id'] ? (
+                <GroupInfo id={`group-info-${initGroupData.fields['group.id']}`} overrideGroupCode={init || undefined} />
+              ) : null}
             </>
-          ) : null}
+          )}
         </div>
       ))}
 
@@ -369,7 +382,7 @@ export default function SearchResults() {
         <GroupInfo id={`group-info-${activeGroupValue}`} overrideGroupCode={activeGroupValue || undefined} />
       )}
 
-      {(init || (isMobile && qParam)) && !coordinateInfo && !labelFilter ? (initGroupLoading ? (
+      {(init || (isMobile && qParam)) && !coordinateInfo && !labelFilter ? (initLoading ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
@@ -405,7 +418,7 @@ export default function SearchResults() {
             </>
             : 
             <>
-            <span id="other-groups-title" className={`text-lg font-sans text-neutral-900 whitespace-nowrap`}>{noGrouping ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}</span>
+            <span id="other-groups-title" className={`text-lg font-sans text-neutral-900 whitespace-nowrap`}>{ungrouped ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}</span>
             
             <Clickable add={{ q: initSearchLabel}}
                 className="ml-auto px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-1 cursor-pointer no-underline max-w-full min-w-0"
@@ -434,7 +447,7 @@ export default function SearchResults() {
             <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-300 ${init && !isMobile && showOtherResults ? 'border-b' : 'border-y'} border-neutral-200`}>
 
 
-            {(initGroupLoading || collapsedLoading && collapsedInitialPage === 1) ? Array.from({ length: collapsedInitialPage === 1 ? 6 : 40 }).map((_, i) => (
+            {(initLoading || resultLoading && resultInitialPage === 1) ? Array.from({ length: resultInitialPage === 1 ? 6 : 40 }).map((_, i) => (
               <div key={`skeleton-${i}`} className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-200">
                 <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `${getSkeletonLength(i, 4, 10)}rem` }}></div>
                 <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `${getSkeletonLength(i, 10, 16)}rem` }}></div>
@@ -442,11 +455,23 @@ export default function SearchResults() {
             )) :
               (() => {
                 let renderedAdditional = 0
-                return collapsedData?.pages.map((page: any, pageIndex: number) => {
-                const isLastPage = pageIndex === (collapsedData?.pages.length || 0) - 1
+                return resultData?.pages.map((page: any, pageIndex: number) => {
+                const isLastPage = pageIndex === (resultData?.pages.length || 0) - 1
+
+
+
+
                 return (
                   <Fragment key={`page-${pageIndex}`}>
                     {page.data?.map((item: any) => {
+                      if (ungrouped) {
+                        const itemUuid = item._source?.uuid ?? item.uuid
+                        if (init && itemUuid === init) return null
+                        if (renderedAdditional >= maxAdditionalVisible) return null
+                        if (!itemUuid) return null
+                        renderedAdditional += 1
+                        return <DocResultItem key={itemUuid} hit={item} />
+                      }
                       if (initGroupId && item.fields["group.id"]?.[0] == initGroupId) return null;
                       if (renderedAdditional >= maxAdditionalVisible) return null;
                       if (!item.fields["group.id"]) {
@@ -463,23 +488,23 @@ export default function SearchResults() {
                       )
                     })}
                     {/* Vis meir button at the end of each page */}
-                    {isLastPage && collapsedHasNextPage && (
+                    {isLastPage && resultHasNextPage && (
                       <li className="flex flex-col gap-2 justify-center py-4">
                         <button
                           type="button"
                           onClick={() => {
-                            if (isFetchingNextPage) return
+                            if (resultIsFetchingNextPage) return
 
                             const currentAdditional = getAdditionalResultsCount()
-                            const base = initGroupId ? 1 : 0
-                            const newAdditional = currentAdditional + SUBSEQUENT_PAGE_SIZE
+                            const base = initVisibleCount
+                            const newAdditional = currentAdditional + resultPageSize
                             const newResultsValue = clampMaxResults(base + newAdditional)
 
                             const newParams = new URLSearchParams(searchParams)
                             newParams.set('maxResults', String(newResultsValue))
                             router.push(`?${newParams.toString()}`, { scroll: false })
 
-                            collapsedFetchNextPage()
+                            resultFetchNextPage()
                           }}
                           className={`
                     flex items-center gap-2
@@ -490,10 +515,10 @@ export default function SearchResults() {
                     px-4 py-2 rounded-full xl:rounded-md
                      mx-3
                     transition-colors
-                    ${isFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
+                    ${resultIsFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
                   `}
                         >
-                          {isFetchingNextPage && <Spinner className="text-white" status="Lastar" />} {isFetchingNextPage ? 'Lastar...' : 'Vis meir'}
+                          {resultIsFetchingNextPage && <Spinner className="text-white" status="Lastar" />} {resultIsFetchingNextPage ? 'Lastar...' : 'Vis meir'}
                         </button>
                         
                       </li>
@@ -513,7 +538,7 @@ export default function SearchResults() {
       )}
 
 
-      {(isMobile || searchError || collapsedError || hasNoResults || hasNoAdditionalResults) && (!labelFilter) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
+      {(isMobile || searchError || resultError || hasNoResults || hasNoAdditionalResults) && (!labelFilter) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
         {filterCount > 0 && showOtherResults && <div className="mx-2 mb-4">
 
           <ActiveFilters /></div>}
@@ -521,7 +546,7 @@ export default function SearchResults() {
 
 
         {/* Error and empty states */}
-        {searchError || collapsedError ? (
+        {searchError || resultError ? (
           <div className="flex justify-center">
             <div role="status" aria-live="polite" className="text-primary-700 pb-4">
               Det har oppstått ein feil

@@ -36,7 +36,7 @@ export const RESERVED_PARAMS = [
   'facetQuery',
   'mode',
   'geotile',
-  'noGrouping',
+  'ungrouped',
 
   'filterSources',
 
