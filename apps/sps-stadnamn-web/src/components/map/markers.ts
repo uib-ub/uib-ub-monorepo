@@ -190,8 +190,8 @@ export function getInitAnchorMarker(label?: string, active?: boolean) {
   return {
     className: '',
     html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: 32px;">
-              ${label ? `<div style="position: absolute; bottom: calc(100% + 20px); left: 50%; transform: translateX(-50%);">
-                <div class="px-2 py-0.5 text-sm tracking-wide rounded-md shadow-lg whitespace-nowrap max-w-32 truncate ${active ? 'text-white bg-accent-700' : 'text-black bg-white/90'}">${label}</div>
+              ${label && active ? `<div style="position: absolute; bottom: calc(100% + 20px); left: 50%; transform: translateX(-50%);">
+                <div class="px-2 py-0.5 text-sm tracking-wide rounded-md shadow-lg whitespace-nowrap max-w-32 truncate text-white bg-accent-700">${label}</div>
               </div>` : ''}
               <img
                 src="/currentLocation.svg"
