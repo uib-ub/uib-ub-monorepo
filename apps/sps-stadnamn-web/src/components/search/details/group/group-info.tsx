@@ -13,7 +13,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, type ReactNode } from "react";
-import { PiAnchor, PiAnchorSimple, PiCaretLeftBold, PiCaretRightBold, PiCheck, PiGps, PiMapPin, PiMapTrifold, PiPushPin, PiX } from "react-icons/pi";
+import { PiAnchor, PiAnchorSimple, PiCaretLeftBold, PiCaretRightBold, PiCheck, PiGps, PiMapPin, PiMapTrifold, PiPerson, PiPushPin, PiX } from "react-icons/pi";
 import { detailsRenderer } from "@/lib/text-utils";
 import { getValueByPath } from "@/lib/utils";
 import Carousel from "../../nav/results/carousel";
@@ -66,7 +66,6 @@ export default function GroupInfo({
     // Scroll to top when init group changes (when clicking "vel" button)
     useEffect(() => {
         if (groupData?.group?.id && initValue === groupData.group.id && scrollableContentRef.current) {
-            // Use requestAnimationFrame to ensure scroll happens after render
             requestAnimationFrame(() => {
                 scrollableContentRef.current?.scrollTo({
                     top: 0,
@@ -493,7 +492,7 @@ export default function GroupInfo({
                     }
 
                     <ClickableIcon
-                        label={`${isInit ? "Fjern som startpunkt" : "Vel som startpunkt"}`}
+                        label={`${isInit ? "Fjern som startpunkt" : "Gå hit"}`}
                         onClick={() => {
                             // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
                             // The subsequent URL param update can remount components quickly, so do this eagerly.
@@ -512,7 +511,7 @@ export default function GroupInfo({
                         }}
                         className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
                     >
-                        {isInit ? <PiX aria-hidden="true" className="text-2xl text-neutral-800" /> : <PiGps aria-hidden="true" className="text-2xl text-neutral-800" />}
+                        {isInit ? <PiX aria-hidden="true" className="text-2xl text-neutral-800" /> : <PiPerson aria-hidden="true" className="text-2xl text-neutral-800" />}
                     </ClickableIcon>
 
                 </div>

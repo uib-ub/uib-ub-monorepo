@@ -20,6 +20,7 @@ import { Fragment, useContext, useEffect, useMemo, useRef, useState } from "reac
 import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiMagnifyingGlass, PiMapPinFill, PiNut, PiPencilSimpleBold, PiPlayFill, PiQuestion, PiStopFill, PiX, PiXBold } from "react-icons/pi";
 import GroupInfo from "../../details/group/group-info";
 import { getAlternativeInitLabels } from "../../details/group/group-utils";
+import SourceTitle from "../../details/shared/source-title";
 import ActiveFilters from "../../form/active-filters";
 import ResultItem from "./result-item";
 import SearchQueryDisplay from "./search-query-display";
@@ -107,7 +108,7 @@ export default function SearchResults() {
   const filterCount = facetFilters.length + datasetFilters.length
   const router = useRouter()
   const identicalQuery = qParam?.toLowerCase() == initSearchLabel?.toLowerCase()
-  const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
+  const coordinateInfo = searchParams.get('coordinateInfo') == 'on' && !ungrouped
   const labelFilter = searchParams.get('labelFilter') === 'on'
   const [playingPreviewId, setPlayingPreviewId] = useState<string | null>(null)
   const audioPreviewRef = useRef<HTMLAudioElement | null>(null)
@@ -299,12 +300,14 @@ export default function SearchResults() {
 
     return <div className="px-2 h-[100vh]">
       <div className="flex items-center gap-2">
-        <strong className="text-xl">{label}</strong>
-        {sosiTypes.length > 0 && (
-          <span className="text-neutral-700 text-sm truncate">
-            {sosiTypes.slice(0, 3).join(', ')}{sosiTypes.length > 3 && '...'}
-          </span>
-        )}
+        <SourceTitle
+          label={label}
+          sosiTypes={sosiTypes}
+          sosiLimit={3}
+          className="min-w-0 flex-1"
+          labelClassName="text-xl truncate"
+          sosiClassName="truncate"
+        />
         {audioItems.length > 0 && (
           <div className="flex gap-1 ml-auto flex-shrink-0 border border-neutral-200 rounded-md p-1 mr-2">
             {audioItems.map((audioItem, index: number) =>
@@ -348,7 +351,7 @@ export default function SearchResults() {
         (point && !init) && !coordinateInfo && !labelFilter && (
           <div className="p-3 flex flex-col gap-2">
             <div className="flex items-center gap-2 justify-between">
-              <IconButton label="Gå til koordinat" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/markerPrimaryCheck.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" /></IconButton>
+              <IconButton label="Gå til koordinat" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" /></IconButton>
                
                 <span className="flex-1">
                   {point ? (

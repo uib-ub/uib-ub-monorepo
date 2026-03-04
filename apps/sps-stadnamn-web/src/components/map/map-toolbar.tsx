@@ -92,7 +92,7 @@ export default function MapToolbar() {
 
             }
             <div
-                className={`flex gap-3 absolute lg: z-[5000] ${isMobile ? 'right-3 flex-col' : 'right-[calc(25svw+1.25rem)]'}`}
+                className={`flex gap-3 absolute lg: z-[5000] ${isMobile ? 'right-3 flex-col' : (tree ? 'right-[calc(40svw+1.25rem)]' : 'right-[calc(25svw+1.25rem)]')} `}
                 style={{
                     top: isMobile ? currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM ? "4.25rem" : `${4 - currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem` : "0.5rem",
                 }}

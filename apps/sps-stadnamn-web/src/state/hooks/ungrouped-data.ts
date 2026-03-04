@@ -1,4 +1,6 @@
 'use client'
+import { calculateDistance } from '@/lib/map-utils';
+import { usePoint } from '@/lib/param-hooks';
 import { useSearchQuery } from '@/lib/search-params';
 import { parseTreeParam } from '@/lib/tree-param';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -11,14 +13,14 @@ export const SUBSEQUENT_PAGE_SIZE = 40;
 const ungroupedQuery = async ({
     pageParam = 0,
     searchQueryString,
-    desc,
-    asc,
+    searchSort,
+    point,
     within,
 }: {
     pageParam?: number;
     searchQueryString: string;
-    desc: string | null;
-    asc: string | null;
+    searchSort: string | null;
+    point: [number, number] | null;
     within: string | null;
 }) => {
     const isFirstPage = pageParam === 0;
@@ -29,8 +31,8 @@ const ungroupedQuery = async ({
     params.delete('ungrouped');
     params.set('size', size.toString());
     params.set('from', from.toString());
-    if (desc) params.set('desc', desc);
-    if (asc) params.set('asc', asc);
+    if (searchSort) params.set('searchSort', searchSort);
+    if (point) params.set('point', `${point[0]},${point[1]}`);
     if (within) params.set('within', within);
 
     const res = await fetch(`/api/search/table?${params.toString()}`);
@@ -40,6 +42,17 @@ const ungroupedQuery = async ({
 
     const data = await res.json();
     const hits = data?.hits?.hits || [];
+
+    if (point) {
+        const [initLat, initLon] = point;
+        hits.forEach((hit: any) => {
+            const hitLocation = hit._source?.location?.coordinates || hit.fields?.location?.[0]?.coordinates;
+            if (hitLocation && hitLocation.length === 2) {
+                const [hitLon, hitLat] = hitLocation;
+                hit.distance = calculateDistance(initLat, initLon, hitLat, hitLon);
+            }
+        });
+    }
 
     return {
         data: hits,
@@ -52,8 +65,8 @@ export default function useUngroupedData() {
     const searchParams = useSearchParams();
     const initialPage = parseInt(searchParams.get('page') || '1');
     const initialPageRef = useRef(initialPage);
-    const desc = searchParams.get('desc');
-    const asc = searchParams.get('asc');
+    const searchSort = searchParams.get('searchSort');
+    const point = usePoint();
     const tree = searchParams.get('tree');
     const doc = searchParams.get('doc');
     const treeUuid = parseTreeParam(searchParams.get('tree')).uuid;
@@ -70,13 +83,13 @@ export default function useUngroupedData() {
         isLoading,
         status,
     } = useInfiniteQuery({
-        queryKey: ['ungroupedData', searchQueryString, desc, asc, cadastreDoc],
+        queryKey: ['ungroupedData', searchQueryString, searchSort, point, cadastreDoc],
         queryFn: ({ pageParam }: { pageParam: number }) =>
             ungroupedQuery({
                 pageParam,
                 searchQueryString,
-                desc,
-                asc,
+                searchSort,
+                point,
                 within: cadastreDoc,
             }),
         initialPageParam: initialPageRef.current - 1,

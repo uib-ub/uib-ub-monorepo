@@ -1,6 +1,20 @@
 // Helper function to calculate bounds from zoom level and center point
 export const EARTH_CIRCUMFERENCE = 40075016.686;
 
+// Haversine formula to calculate distance between two coordinates in meters
+export const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371000; // Earth's radius in meters
+    const φ1 = lat1 * Math.PI / 180;
+    const φ2 = lat2 * Math.PI / 180;
+    const Δφ = (lat2 - lat1) * Math.PI / 180;
+    const Δλ = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+        Math.cos(φ1) * Math.cos(φ2) *
+        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+};
+
 export const MAP_DRAWER_BOTTOM_HEIGHT_REM = 8
 export const MAP_DRAWER_MAX_HEIGHT_SVH = 60
 export const MAP_DRAWER_TOP_SUBTRACT_REM = 4

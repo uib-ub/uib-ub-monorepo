@@ -74,6 +74,7 @@ export function useActivePoint(): [number, number] | null {
 }
 
 
+
 export function useMode() {
     const searchParams = useSearchParams()
     const datasetTag = searchParams.get('datasetTag')
@@ -97,10 +98,12 @@ export function useOverlayParams() {
     const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
     const maxResults = searchParams.get('maxResults')
+    const tree = searchParams.get('tree')
 
     const tableOptions = mode == 'table' && !options
 
     let showLeftPanel: boolean
+
 
     if (isMobile) {
         // On mobile, when map settings are open, give them priority and hide the left panel
@@ -110,6 +113,10 @@ export function useOverlayParams() {
         showLeftPanel = mode === 'table'
             ? (!!options || !!facet || !!tableOptions)
             : true
+    }
+
+    if (tree) {
+        showLeftPanel = false
     }
 
     const showResults = mode != 'table' && (maxResults || (isMobile && !showLeftPanel))

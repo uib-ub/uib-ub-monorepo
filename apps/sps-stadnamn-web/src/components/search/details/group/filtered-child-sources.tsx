@@ -3,13 +3,14 @@
 import { Fragment, useContext, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PiBookOpen, PiCheck, PiCheckCircle, PiFile, PiFileFill, PiGps, PiInfoFill, PiMapPin, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
+import { PiBookOpen, PiCheck, PiCheckCircle, PiFile, PiFileFill, PiGps, PiInfoFill, PiMapPin, PiMapPinFill, PiPerson, PiX, PiXBold } from "react-icons/pi";
 import { datasetTitles } from "@/config/metadata-config";
 import { defaultResultRenderer, resultRenderers } from "@/config/result-renderers";
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { matchesActiveYear, matchesActiveName } from "./group-utils";
 import CoordinateTypeInfo from "../doc/coordinate-type-info";
+import SourceTitle from "../shared/source-title";
 import SubtleLink from "@/components/ui/clickable/subtle-link";
 import { treeSettings } from "@/config/server-config";
 import { panPointIntoView } from "@/lib/map-utils";
@@ -148,21 +149,13 @@ export const ChildSources = ({ datasets, isFiltered, distanceMeters }: Props) =>
                             className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md py-1 !px-3 btn btn-outline btn-compact text-lg shrink-0 max-w-sm"
                             href={"/uuid/" + s.uuid}
                         >
-                            <span className="flex items-baseline gap-1 min-w-0 max-w-full">
-                                {cadastrePrefix && (
-                                    <span className="shrink-0 text-neutral-950">
-                                        {cadastrePrefix}
-                                    </span>
-                                )}
-                                <strong className="truncate min-w-0 text-neutral-950">
-                                    {s.label}
-                                </strong>
-                                {sosiTypesDisplay && (
-                                    <span className="text-neutral-900 text-sm truncate min-w-0">
-                                        {sosiTypesDisplay}
-                                    </span>
-                                )}
-                            </span>
+                            <SourceTitle
+                                label={s.label}
+                                cadastrePrefix={cadastrePrefix}
+                                sosiTypes={sosiTypes}
+                                labelClassName="truncate"
+                                sosiClassName="truncate"
+                            />
                         </Link>
 
                         {additionalLabels && <span className="text-neutral-900">{additionalLabels}</span>}
@@ -241,17 +234,6 @@ export const ChildSources = ({ datasets, isFiltered, distanceMeters }: Props) =>
                                 <span className="text-neutral-800 uppercase traciking-wider">{datasetTitles[ds] || ds}</span>
                                 <div className="ml-auto flex items-center gap-1">
                                     {showDistance && <DistanceBadge meters={distanceMeters} />}
-
-                                    { ungrouped && <>
-                                    <ClickableIcon
-                                    label={initValue === items[0].uuid ? "Fjern utgangspunkt" : "Sett som utgangspunkt"}
-                                    add={{ init: initValue === items[0].uuid ? null : items[0].uuid }}
-                                    className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900"
-                                >
-                                    {initValue == items[0].uuid ? <PiXBold aria-hidden="true" /> : <PiGps aria-hidden="true" />}
-                                </ClickableIcon>
-
-                                </>}
                                 </div>
                             </div>
               

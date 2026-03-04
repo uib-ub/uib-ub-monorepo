@@ -13,6 +13,7 @@ import { parseTreeParam } from "@/lib/tree-param";
 import { getBnr, getGnr, indexToCode } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
 import useGroupData from "@/state/hooks/group-data";
+import useInitData from "@/state/hooks/init-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useMapSettings } from '@/state/zustand/persistent-map-settings';
@@ -60,6 +61,7 @@ export default function MapExplorer() {
   const { activeGroupValue, initValue, initCode } = useGroup()
   const { groupLoading, groupData } = useGroupData()
   const { groupData: initGroupData } = useGroupData(initCode)
+  const { initSearchLabel } = useInitData()
   const { docData, docDataset } = useDocData()
 
   const { isMobile, mapFunctionRef, scrollableContentRef, scrollToBrukRef } = useContext(GlobalContext)
@@ -85,6 +87,7 @@ export default function MapExplorer() {
   const debug = useDebugStore((s) => s.debug)
   const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
   const showDebugGroups = searchParams.get('debugGroups') == 'on';
+  const ungrouped = searchParams.get('ungrouped') == 'on'
 
   const getDisplayLabel = (fields?: Record<string, any> | null): string => {
     const label = fields?.label?.[0]
@@ -97,6 +100,14 @@ export default function MapExplorer() {
       ) || '[utan namn]'
     )
   }
+
+  const areSamePoint = (a: [number, number] | null, b: [number, number] | null) =>
+    Boolean(
+      a &&
+      b &&
+      Math.abs(a[0] - b[0]) < 0.000001 &&
+      Math.abs(a[1] - b[1]) < 0.000001
+    )
 
   const treeDataset = treeState?.dataset
   const treeUuid = treeState?.uuid
@@ -1001,12 +1012,23 @@ export default function MapExplorer() {
                 //if (activePoint) return null
                 if (selected || selectedInCadastre) return null
 
-                const isInit = initValue && item.fields?.["group.id"]?.[0] == initValue
-                if (hasGroupParam && isInit) return null
+                const isInit = Boolean(
+                  initValue &&
+                  (
+                    ungrouped
+                      ? item.fields?.["uuid"]?.[0] == initValue
+                      : item.fields?.["group.id"]?.[0] == initValue
+                  )
+                )
+                const activePointDiffersFromPoint = Boolean(point && activePoint && searchParams.get('point') != searchParams.get('activePoint'))
+                if (hasGroupParam && isInit && !activePointDiffersFromPoint) return null
                 const markerColor = isInit ? 'black' : 'white'
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
-                const labelText = getDisplayLabel(item.fields)
+                const labelText =
+                  (ungrouped && isInit)
+                    ? (item.fields?.label?.[0] || '[utan namn]')
+                    : getDisplayLabel(item.fields)
                 const pointMarkerTooltip = (!isMobile) ? (
                   <Tooltip direction="top" offset={[0, -20]} opacity={1} className="point-marker-tooltip">
                     <div className="px-2 py-0.5 text-sm tracking-wide text-black bg-white/90 rounded-md shadow-lg whitespace-nowrap">
@@ -1103,7 +1125,7 @@ export default function MapExplorer() {
 
 
 
-            {groupData && !coordinateInfo && activePoint && (
+            {groupData && !coordinateInfo && activePoint && searchParams.get('group') && searchParams.get('group') !== searchParams.get('init') && (
               <Marker
                 zIndexOffset={2000}
                 icon={new leaflet.DivIcon(
@@ -1132,47 +1154,36 @@ export default function MapExplorer() {
               >
               </Marker>
             )}
-            { !coordinateInfo && point && !initCode && activePoint && activePoint != point && (
-              <Marker
-                zIndexOffset={1500}
-                icon={new leaflet.DivIcon(getInitAnchorMarker())}
-                position={point}
-                eventHandlers={{
-                  click: () => {
-                    const newParams = new URLSearchParams(searchParams)
-                    newParams.delete('group')
-                    newParams.delete('activePoint')
-                    router.push(`?${newParams.toString()}`)
-                    if (scrollableContentRef?.current) {
-                      requestAnimationFrame(() => {
-                        scrollableContentRef.current?.scrollTo({
-                          top: 0,
-                          behavior: 'smooth'
-                        })
-                      })
-                    }
-                  },
-                  keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
-                    const key = e.originalEvent?.key ?? e.key
-                    if (key === 'Enter' || key === ' ') {
-                      ;(e.originalEvent ?? e).preventDefault()
+            { !coordinateInfo && point && initValue && (() => {
+              const initIsActive = !searchParams.get('group') || searchParams.get('group') === searchParams.get('init')
+              return (
+                <Marker
+                  zIndexOffset={1500}
+                  icon={new leaflet.DivIcon(getInitAnchorMarker(initSearchLabel, initIsActive))}
+                  position={point}
+                  eventHandlers={{
+                    click: () => {
                       const newParams = new URLSearchParams(searchParams)
-                      newParams.delete('activePoint')
                       newParams.delete('group')
+                      newParams.delete('activePoint')
                       router.push(`?${newParams.toString()}`)
-                      if (scrollableContentRef?.current) {
-                        requestAnimationFrame(() => {
-                          scrollableContentRef.current?.scrollTo({
-                            top: 0,
-                            behavior: 'smooth'
-                          })
-                        })
+                      scrollableContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+                    },
+                    keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                      const key = e.originalEvent?.key ?? e.key
+                      if (key === 'Enter' || key === ' ') {
+                        ;(e.originalEvent ?? e).preventDefault()
+                        const newParams = new URLSearchParams(searchParams)
+                        newParams.delete('activePoint')
+                        newParams.delete('group')
+                        router.push(`?${newParams.toString()}`)
+                        scrollableContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
                       }
                     }
-                  }
-                }}
-              />
-            )}
+                  }}
+                />
+              )
+            })()}
 
             {
               // When a single document representing a gård is active (via `doc`) but
@@ -1680,8 +1691,8 @@ export default function MapExplorer() {
             {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" interactive={false} />}
             {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" interactive={false} />}
             {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" interactive={false} />}
-            {point && !initValue && !activeGroupHasArea && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
-            {coordinateInfo && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} 
+            {point && !initValue && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
+            {(coordinateInfo || (ungrouped && searchParams.get('activePoint'))) && activePoint && <Marker icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} 
             eventHandlers={{
               click: () => {
                 // Center view

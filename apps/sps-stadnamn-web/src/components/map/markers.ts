@@ -183,16 +183,21 @@ export function getUnlabeledMarker(color: string, selected?: boolean) {
  * Special marker for the pinned init group.
  * Visually similar to other unlabeled pin markers, but slightly larger and
  * with an anchor symbol in the pin to mirror the "Vel namnegruppe" button.
+ * Accepts an optional label to display above the icon, positioned like the
+ * standard label markers (same offset as tooltip).
  */
-export function getInitAnchorMarker() {
+export function getInitAnchorMarker(label?: string, active?: boolean) {
   return {
     className: '',
     html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: 32px;">
-                <img
-                  src="/markerPrimaryCheck.svg"
-                  alt=""
-                  aria-hidden="true"
-                  style="position:absolute; bottom:26px; height:32px" />
+              ${label ? `<div style="position: absolute; bottom: calc(100% + 20px); left: 50%; transform: translateX(-50%);">
+                <div class="px-2 py-0.5 text-sm tracking-wide rounded-md shadow-lg whitespace-nowrap max-w-32 truncate ${active ? 'text-white bg-accent-700' : 'text-black bg-white/90'}">${label}</div>
+              </div>` : ''}
+              <img
+                src="/currentLocation.svg"
+                alt=""
+                aria-hidden="true"
+                style="position:absolute; bottom:26px; height:32px" />
             </div>`
   }
 }
