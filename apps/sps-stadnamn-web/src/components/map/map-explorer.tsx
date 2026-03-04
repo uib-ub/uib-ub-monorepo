@@ -1132,7 +1132,7 @@ export default function MapExplorer() {
               >
               </Marker>
             )}
-            {hasGroupParam && !coordinateInfo && point && (point != activePoint) && (
+            { !coordinateInfo && point && !initCode && activePoint && activePoint != point && (
               <Marker
                 zIndexOffset={1500}
                 icon={new leaflet.DivIcon(getInitAnchorMarker())}
