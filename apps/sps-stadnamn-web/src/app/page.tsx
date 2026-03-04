@@ -11,6 +11,7 @@ import HomeNavCards from "./home-nav-cards";
 import { fetchStats } from "./api/_utils/stats";
 import { headers } from "next/headers";
 import Header from "./header";
+import { defaultMaxResultsParam } from "@/config/max-results";
 
 export default async function Home() {
   const { iiifStats, datasets, totalHits, groupCount } = await fetchStats()
@@ -51,7 +52,7 @@ export default async function Home() {
       name="q" 
       type="text"
     />
-    <input type="hidden" name="nav" value="maxResults"/>
+    <input type="hidden" name="maxResults" value={defaultMaxResultsParam}/>
     <button 
       className="bg-red-700 hover:bg-red-800 text-white rounded-lg h-14 lg:h-12 w-14 lg:w-12 flex items-center justify-center transition-colors duration-200 flex-shrink-0" 
       type="submit" 
