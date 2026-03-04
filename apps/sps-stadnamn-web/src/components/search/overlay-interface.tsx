@@ -10,8 +10,9 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
-import { useContext, useEffect, useMemo, useRef } from "react";
-import { PiBook, PiBookOpen, PiCaretDownBold, PiCaretLeftBold, PiCaretUpBold, PiX } from "react-icons/pi";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { PiBook, PiBookOpen, PiCaretDownBold, PiCaretLeftBold, PiCaretUp, PiCaretUpBold, PiX } from "react-icons/pi";
+import { RoundIconButton } from "../ui/clickable/round-icon-button";
 import MapSettings from "../map/map-settings";
 import { Badge, TitleBadge } from "../ui/badge";
 import Clickable from "../ui/clickable/clickable";
@@ -138,26 +139,65 @@ function LeftWindow({ children, bottomContent }: { children: React.ReactNode, bo
 }
 
 function RightWindow({ children }: { children: React.ReactNode }) {
-    const { isMobile } = useContext(GlobalContext)
+    const { isMobile, scrollableContentRef } = useContext(GlobalContext)
     const searchParams = useSearchParams()
     const { initCode } =  useGroup()
     const mapSettings = searchParams.get('mapSettings') == 'on'
     const overlaySelector = searchParams.get('overlaySelector') == 'on'
     const facet = searchParams.get('facet')
     const options = searchParams.get('options') == 'on'
+    const tree = searchParams.get('tree')
     // Include facet and options in the hash if isMobile. Use it to control when the right panel is updated.
     // Don't use window.hash
     const updateCode = useMemo(() => {
         return `${initCode}-${mapSettings ? '1' : '0'}-${overlaySelector ? '1' : '0'}-${facet ? '1' : '0'}-${options ? '1' : '0'}`
     }, [initCode, mapSettings, overlaySelector, facet, options])
 
+    const [showScrollToTop, setShowScrollToTop] = useState(false)
+
+    useEffect(() => {
+        const el = scrollableContentRef?.current
+        if (!el || isMobile) return
+
+        const onScroll = () => {
+            setShowScrollToTop(el.scrollTop > 300)
+        }
+
+        el.addEventListener('scroll', onScroll, { passive: true })
+        onScroll()
+
+        return () => {
+            el.removeEventListener('scroll', onScroll)
+        }
+    }, [scrollableContentRef, isMobile, updateCode])
+
+    const scrollToTop = () => {
+        scrollableContentRef?.current?.scrollTo({ top: 0, behavior: 'smooth' })
+    }
 
     const maxResults = searchParams.get('maxResults')
     if (isMobile) {
         return <>{children}</>
     }
-    return <section key={updateCode} className={`bg-white shadow-lg absolute right-2 top-[0.5rem] w-[25svw] z-[3001] max-h-[calc(100svh-2rem)] rounded-md flex flex-col overflow-y-scroll`}
-        aria-labelledby="right-title">{children}</section>
+    return <div className={`absolute right-2 top-[0.5rem] ${tree ? 'w-[40svw]' : 'w-[25svw]'} z-[3001] max-h-[calc(100svh-2rem)]`}>
+        <section ref={scrollableContentRef} key={updateCode} className="bg-white shadow-lg rounded-md overflow-y-scroll max-h-[calc(100svh-2rem)]"
+            aria-labelledby="right-title">
+            <div className={`flex flex-col ${showScrollToTop ? 'pb-20' : ''}`}>
+                {children}
+            </div>
+        </section>
+        {showScrollToTop && (
+            <RoundIconButton
+                type="button"
+                className="absolute right-3 bottom-3 z-10 p-3"
+                onClick={scrollToTop}
+                label="Til toppen"
+                side="top"
+            >
+                <PiCaretUp className="text-2xl" />
+            </RoundIconButton>
+        )}
+    </div>
 }
 
 export default function OverlayInterface() {
@@ -201,7 +241,7 @@ export default function OverlayInterface() {
 
     const isDesktopMap = !isMobile && mode !== 'table'
 
-    const desktopMapButtons = isDesktopMap && !options && !facet ? (
+    const desktopMapButtons = isDesktopMap && !options && !facet && !tree ? (
         <div className="flex gap-2">
             <Clickable className="btn btn-outline btn-sm" add={{ options: 'on' }}>
                 Alle filter
@@ -375,9 +415,6 @@ export default function OverlayInterface() {
                             {showResults && (
                                 <div
                                     id="results-panel"
-                                    // On desktop, this is the actual scroll container for the right panel.
-                                    // Wire it to the shared ref so components (e.g. GroupInfo) can scroll to top.
-                                    ref={isMobile ? undefined : scrollableContentRef}
                                     className={!isMobile ? "flex-1 min-h-0" : ""}
                                 >
                                     {showDebugGroups ? <DebugToggle /> : <SearchResults />}
