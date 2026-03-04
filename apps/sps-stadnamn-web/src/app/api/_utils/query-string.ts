@@ -28,6 +28,42 @@ const baseNameFields = [
 const fulltextFields = ["content.text", "content.html", "note"]
 const admFieldsWeighted = ["adm2^2", "group.adm2^2", "group.adm1^1.5", "adm1^1.5"]
 
+function tokenizeWithQuotes(raw: string): string[] {
+  const tokens: string[] = []
+  let current = ""
+  let inQuotes = false
+
+  for (let i = 0; i < raw.length; i++) {
+    const char = raw[i]
+
+    if (char === '"') {
+      inQuotes = !inQuotes
+      current += char
+    } else if (!inQuotes && (char === "," || /\s/.test(char))) {
+      if (current.trim()) {
+        tokens.push(current.trim())
+      }
+      current = ""
+    } else {
+      current += char
+    }
+  }
+
+  if (current.trim()) {
+    tokens.push(current.trim())
+  }
+
+  // As an extra safety measure, strip unmatched quotes which can
+  // cause Elasticsearch query_string parse errors.
+  return tokens.map((token) => {
+    const quoteCount = (token.match(/"/g) || []).length
+    if (quoteCount % 2 !== 0) {
+      return token.replace(/"/g, "")
+    }
+    return token
+  })
+}
+
 export function getQueryString(params: { [key: string]: string | null }) {
   const fulltext = params.fulltext == "on"
   const fuzzy = params.fuzzy == "on"
@@ -85,7 +121,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
       // - first token: name fields only
       // - remaining tokens: name + adm fields
       if (raw.includes(",")) {
-        const tokens = raw.replace(/,/g, " ").split(/\s+/).filter(Boolean)
+        const tokens = tokenizeWithQuotes(raw)
         const firstToken = tokens[0]
         const trailingTokens = tokens.slice(1)
 
