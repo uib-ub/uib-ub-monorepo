@@ -75,10 +75,20 @@ export function getQueryString(params: { [key: string]: string | null }) {
   if (params.q) {
     const rawInput = params.q.trim()
 
+    // Strip unclosed (unpaired) double quotes from the full query string,
+    // since dangling quotes can cause Elasticsearch query_string parse errors.
+    const totalQuoteCount = (rawInput.match(/"/g) || []).length
+    const sanitizedInput =
+      totalQuoteCount % 2 === 0 ? rawInput : rawInput.replace(/"/g, "")
+
     const isSimpleToken =
-      !rawInput.includes(",") &&
-      !/\s/.test(rawInput) &&
-      !(rawInput.length >= 2 && rawInput.startsWith('"') && rawInput.endsWith('"'))
+      !sanitizedInput.includes(",") &&
+      !/\s/.test(sanitizedInput) &&
+      !(
+        sanitizedInput.length >= 2 &&
+        sanitizedInput.startsWith('"') &&
+        sanitizedInput.endsWith('"')
+      )
 
     // Når fuzzy er på for eit enkelt ord, kombinerer vi:
     // - ein vanleg query_string (styrer relevans-score)
@@ -86,7 +96,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
     if (fuzzy && isSimpleToken) {
       const baseQueryString = {
         query_string: {
-          query: modifyQuery(rawInput),
+          query: modifyQuery(sanitizedInput),
           allow_leading_wildcard: true,
           default_operator: "AND",
           fields: nameFields,
@@ -114,7 +124,7 @@ export function getQueryString(params: { [key: string]: string | null }) {
         },
       }
     } else {
-      const raw = rawInput
+      const raw = sanitizedInput
 
       // If there is a comma, treat everything after the first comma as an
       // adm-prioritised part:
