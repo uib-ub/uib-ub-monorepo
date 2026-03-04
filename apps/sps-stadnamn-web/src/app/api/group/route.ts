@@ -15,8 +15,6 @@ type OutputData = {
 export async function GET(request: Request) {
   const { termFilters, reservedParams } = extractFacets(request)
   const { simple_query_string } = getQueryString(reservedParams)
-  console.log("USING GET (SERVER)")
-
   const perspective = reservedParams.perspective || 'all'
 
   // Grunnord ids (e.g. grunnord_berg) may be sent raw or base64-encoded; accept both

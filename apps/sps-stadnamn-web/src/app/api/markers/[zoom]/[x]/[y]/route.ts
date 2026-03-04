@@ -16,7 +16,6 @@ export async function GET(
   const perspective = reservedParams.perspective || 'all'
   const totalHits = reservedParams.totalHits ? parseInt(reservedParams.totalHits) : undefined
 
-  console.log("DEBUG IN GRID", reservedParams.debug)
 
   const query: Record<string, any> = {
     size: 0,
@@ -78,7 +77,6 @@ export async function GET(
       query.query.bool.filter.push(...termFilters)
     }
   }
-  console.log("PERSPECTIVE", perspective)
 
 
   const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
