@@ -492,7 +492,7 @@ export default function GroupInfo({
                     }
 
                     <ClickableIcon
-                        label={`${isInit ? "Fjern som startpunkt" : "Gå hit"}`}
+                        label={`${isInit ? "Fjern som startpunkt" : "Bruk som utgangspunkt"}`}
                         onClick={() => {
                             // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
                             // The subsequent URL param update can remount components quickly, so do this eagerly.

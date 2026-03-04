@@ -14,6 +14,7 @@ import Carousel from "../../nav/results/carousel";
 import { TextTab } from "../group/text-tab";
 import { useSearchParams } from "next/navigation";
 import Clickable from "@/components/ui/clickable/clickable";
+import DistanceBadge from "@/components/search/distance-badge";
 
 export default function DocInfo({
     id,
@@ -93,56 +94,27 @@ export default function DocInfo({
         if (token.startsWith("/uuid/")) return `${base}${token}`;
         return `${base}/uuid/${token}`;
     }, [uuidToken]);
+    const distanceMeters = typeof docData?.distance === "number" ? docData.distance : null;
 
     return (
         <div id={id} className="relative flex min-w-0 flex-wrap items-center pb-4">
             <div className="absolute right-3 top-3 z-10 flex items-center gap-2">
-                <IconButton
-                    label={linkCopied ? "Lenke kopiert" : "Kopier lenke"}
-                    onClick={async () => {
-                        if (!uuidUrl || !navigator?.clipboard) return;
-                        await navigator.clipboard.writeText(uuidUrl);
-                        setLinkCopied(true);
-                        setTimeout(() => setLinkCopied(false), 2000);
-                    }}
-                    disabled={!uuidUrl}
-                    className={`inline-flex items-center justify-center w-8 h-8 rounded-full border btn btn-outline shrink-0 ${
-                        linkCopied ? "border-accent-800 bg-accent-800 text-white" : "border-neutral-300"
-                    }`}
-                >
-                    {linkCopied ? (
-                        <PiCheck aria-hidden="true" className="text-lg" />
-                    ) : (
-                        <PiLinkSimple aria-hidden="true" className="text-lg" />
-                    )}
-                </IconButton>
-                
-                <ClickableIcon
-                    label={isInit ? "Fjern som utgangspunkt" : "Gå hit"}
-                    remove={["group", "point", "activePoint", "activeYear", "activeName"]}
-                    add={{
-                        init: nextInitParam,
-                        point: !isInit && docMarkerPosition
-                            ? `${docMarkerPosition[0]},${docMarkerPosition[1]}`
-                            : null,
-                    }}
-                    onClick={() => {
-                        if (!isInit && docMarkerPosition) {
-                            mapFunctionRef.current?.flyTo(docMarkerPosition, 15, {
-                                duration: 0.25,
-                                maxZoom: 18,
-                                padding: [50, 50],
-                            });
-                        }       
-                    }}
-                    className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-neutral-300 btn btn-outline shrink-0"
-                >
-                    {isInit ? (
+                {!isInit && typeof distanceMeters === "number" && (
+                    <DistanceBadge meters={distanceMeters} />
+                )}
+                {isInit && (
+                    <ClickableIcon
+                        label="Fjern som utgangspunkt"
+                        remove={["group", "point", "activePoint", "activeYear", "activeName"]}
+                        add={{
+                            init: null,
+                            point: null,
+                        }}
+                        className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-neutral-300 btn btn-outline shrink-0"
+                    >
                         <PiX aria-hidden="true" className="text-lg text-neutral-800" />
-                    ) : (
-                        <PiPerson aria-hidden="true" className="text-lg text-neutral-800" />
-                    )}
-                </ClickableIcon>
+                    </ClickableIcon>
+                )}
             </div>
             <div className="min-w-0 w-full flex flex-col px-3 py-4">
                 {(!searchParams.get('dataset') || searchParams.getAll('dataset')?.length > 1) && <span className="text-neutral-800 uppercase tracking-wider">
@@ -181,39 +153,82 @@ export default function DocInfo({
                                 )}
                             </div>
                         )}
-                        <ClickableIcon
-                            label="Gå til koordinatet"
-                            add={{ activePoint: `${docMarkerPosition[0]},${docMarkerPosition[1]}` }}
-                            onClick={() => {
-                                mapFunctionRef.current?.flyTo(docMarkerPosition, 15, {
-                                    duration: 0.25,
-                                    maxZoom: 18,
-                                    padding: [50, 50],
-                                });
-                            }}
-                            className={`inline-flex items-center justify-center w-8 h-8 rounded-full border btn btn-outline shrink-0 ${
-                                isActivePoint
-                                    ? "border-accent-800 bg-accent-800 text-white"
-                                    : "border-neutral-300"
-                            }`}
-                        >
-                            {isActivePoint ? (
-                                <PiMapPinFill aria-hidden="true" className="text-xl text-white" />
-                            ) : (
-                                <PiMapPin aria-hidden="true" className="text-xl text-neutral-800" />
-                            )}
-                        </ClickableIcon>
                         {isActivePoint && <span className="basis-full h-0" aria-hidden="true" />}
-                        <Clickable
-                            link={true}
-                            href={uuidUrl || ''}
-                            disabled={!uuidUrl}
-                            className={`inline-flex items-center justify-center h-8 rounded-full border border-neutral-300 btn btn-outline shrink-0 ml-auto ${
-                                isActivePoint ? "mt-1" : ""
-                            }`}
-                >
-                    Opne infoside
-                </Clickable>
+                        <div className={`ml-auto flex items-center gap-2 ${isActivePoint ? "mt-1" : ""}`}>
+                            {!isInit && (
+                                <ClickableIcon
+                                    label="Bruk som utgangspunkt"
+                                    remove={["group", "point", "activePoint", "activeYear", "activeName"]}
+                                    add={{
+                                        init: nextInitParam,
+                                        point: docMarkerPosition
+                                            ? `${docMarkerPosition[0]},${docMarkerPosition[1]}`
+                                            : null,
+                                    }}
+                                    onClick={() => {
+                                        if (docMarkerPosition) {
+                                            mapFunctionRef.current?.flyTo(docMarkerPosition, 15, {
+                                                duration: 0.25,
+                                                maxZoom: 18,
+                                                padding: [50, 50],
+                                            });
+                                        }
+                                    }}
+                                    className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-neutral-300 btn btn-outline shrink-0"
+                                >
+                                    <PiPerson aria-hidden="true" className="text-lg text-neutral-800" />
+                                </ClickableIcon>
+                            )}
+                            <ClickableIcon
+                                label="Gå til koordinatet"
+                                add={{ activePoint: `${docMarkerPosition[0]},${docMarkerPosition[1]}` }}
+                                onClick={() => {
+                                    mapFunctionRef.current?.flyTo(docMarkerPosition, 15, {
+                                        duration: 0.25,
+                                        maxZoom: 18,
+                                        padding: [50, 50],
+                                    });
+                                }}
+                                className={`inline-flex items-center justify-center w-8 h-8 rounded-full border btn btn-outline shrink-0 ${
+                                    isActivePoint
+                                        ? "border-accent-800 bg-accent-800 text-white"
+                                        : "border-neutral-300"
+                                }`}
+                            >
+                                {isActivePoint ? (
+                                    <PiMapPinFill aria-hidden="true" className="text-xl text-white" />
+                                ) : (
+                                    <PiMapPin aria-hidden="true" className="text-xl text-neutral-800" />
+                                )}
+                            </ClickableIcon>
+                            <IconButton
+                                label={linkCopied ? "Lenke kopiert" : "Kopier lenke"}
+                                onClick={async () => {
+                                    if (!uuidUrl || !navigator?.clipboard) return;
+                                    await navigator.clipboard.writeText(uuidUrl);
+                                    setLinkCopied(true);
+                                    setTimeout(() => setLinkCopied(false), 2000);
+                                }}
+                                disabled={!uuidUrl}
+                                className={`inline-flex items-center justify-center w-8 h-8 rounded-full border btn btn-outline shrink-0 ${
+                                    linkCopied ? "border-accent-800 bg-accent-800 text-white" : "border-neutral-300"
+                                }`}
+                            >
+                                {linkCopied ? (
+                                    <PiCheck aria-hidden="true" className="text-lg" />
+                                ) : (
+                                    <PiLinkSimple aria-hidden="true" className="text-lg" />
+                                )}
+                            </IconButton>
+                            <Clickable
+                                link={true}
+                                href={uuidUrl || ''}
+                                disabled={!uuidUrl}
+                                className="inline-flex items-center justify-center h-8 rounded-full border border-neutral-300 btn btn-outline shrink-0"
+                            >
+                                Opne infoside
+                            </Clickable>
+                        </div>
                     </div>
                 </div>
             )}
