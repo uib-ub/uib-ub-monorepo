@@ -40,9 +40,6 @@ const collapsedDataQuery = async ({
     const size = isFirstPage ? INITIAL_PAGE_SIZE : SUBSEQUENT_PAGE_SIZE;
     const from = isFirstPage ? 0 : INITIAL_PAGE_SIZE + (pageParam - 1) * SUBSEQUENT_PAGE_SIZE;
 
-    console.log(`📄 Fetching page ${pageParam}:`, { isFirstPage, size, from, expectedRange: `${from}-${from + size - 1}` });
-
-
     // `location` in Elasticsearch is stored as [lon, lat].
     // Group data already uses that order, but `point` from the URL is [lat, lon],
     // so we need to flip it before sending it as `initLocation`.
