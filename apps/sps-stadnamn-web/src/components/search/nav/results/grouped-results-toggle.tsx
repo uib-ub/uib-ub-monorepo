@@ -43,6 +43,7 @@ export default function GroupedResultsToggle() {
     const toggleGrouping = (enableGrouping: boolean) => {
         const newParams = new URLSearchParams(searchParams.toString())
         newParams.delete('init')
+        newParams.delete('activePoint')
 
         if (enableGrouping) {
             // Enable grouped view ("Namnegrupper")
