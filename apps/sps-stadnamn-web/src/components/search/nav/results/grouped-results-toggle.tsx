@@ -42,26 +42,15 @@ export default function GroupedResultsToggle() {
 
     const toggleGrouping = (enableGrouping: boolean) => {
         const newParams = new URLSearchParams(searchParams.toString())
+        newParams.delete('init')
 
         if (enableGrouping) {
             // Enable grouped view ("Namnegrupper")
             newParams.delete('ungrouped')
-            if (init) {
-                if (groupedInitId) {
-                    newParams.set('init', stringToBase64Url(groupedInitId))
-                } else if (ungrouped) {
-                    // Avoid carrying a uuid-based init into grouped mode.
-                    newParams.delete('init')
-                }
-            }
         } else {
             // Disable grouped view ("Kjeldeoppslag")
             newParams.set('ungrouped', 'on')
-            if (init) {
-                if (ungroupedInitUuid) {
-                    newParams.set('init', ungroupedInitUuid)
-                }
-            }
+
         }
 
         router.push(`?${newParams.toString()}`)
