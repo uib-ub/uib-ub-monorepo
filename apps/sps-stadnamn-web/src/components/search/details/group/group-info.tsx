@@ -504,7 +504,6 @@ export default function GroupInfo({
                         remove={['group', 'point', 'activePoint', 'activeYear', 'activeName']}
                         add={{
                             // When pinning a group ("vel"), treat it as a fresh init selection.
-                            q: searchParams.get('q') ? groupData.fields.label[0] : null,
                             init: isInit ? null : ungrouped ? groupData.fields["uuid"][0] : stringToBase64Url(groupData.group.id),
                             point: (!isInit && preferredFlyTarget) ? `${preferredFlyTarget?.[0]},${preferredFlyTarget?.[1]}` : null,
                             maxResults: defaultMaxResultsParam
