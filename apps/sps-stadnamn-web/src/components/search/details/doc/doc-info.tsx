@@ -182,7 +182,7 @@ export default function DocInfo({
                             </div>
                         )}
                         <ClickableIcon
-                            label="Koordinat"
+                            label="Gå til koordinatet"
                             add={{ activePoint: `${docMarkerPosition[0]},${docMarkerPosition[1]}` }}
                             onClick={() => {
                                 mapFunctionRef.current?.flyTo(docMarkerPosition, 15, {
