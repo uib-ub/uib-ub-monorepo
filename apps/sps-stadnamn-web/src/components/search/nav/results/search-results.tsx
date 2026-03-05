@@ -351,7 +351,7 @@ export default function SearchResults() {
         (point && !init) && !coordinateInfo && !labelFilter && (
           <div className="p-3 flex flex-col gap-2">
             <div className="flex items-center gap-2 justify-between">
-              <IconButton label="Gå til koordinat" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" /></IconButton>
+              <IconButton label="Zoom til startpunktet" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" /></IconButton>
                
                 <span className="flex-1">
                   {point ? (
