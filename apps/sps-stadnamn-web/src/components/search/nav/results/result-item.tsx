@@ -49,6 +49,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
 
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
     const { activeGroupValue, initValue } = useGroup()
+    const isInit = initValue == hit.fields["group.id"][0]
 
     const label = hit.fields?.label?.[0] || ''
 
@@ -56,7 +57,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
     if (!hit._index) return <div className="p-2">Det har oppstått ein feil: Kunne ikkje hente kjelder</div>
 
 
-    return <div  {...rest} className={`w-full h-full ${initValue && initValue == hit.fields["group.id"][0] ? '' : 'bg-neutral-50'} aria-expanded:border-b aria-expanded:border-neutral-100 flex items-center group no-underline ${initValue == hit.fields["group.id"][0] ? 'pb-0' : ''}`}>
+    return <div  {...rest} className={`w-full h-full ${isInit ? '' : 'bg-neutral-50'} aria-expanded:border-b aria-expanded:border-neutral-100 flex items-center group no-underline ${isInit ? 'pb-0' : ''}`}>
 
         <Clickable ref={itemRef}
             notClickable={notClickable}
@@ -81,9 +82,9 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
             className="w-full text-left p-3">
             <div className="flex items-center justify-between gap-x-2 whitespace-normal w-full text-xl">
                 <div className="inline-flex items-center flex-wrap gap-x-2 w-full">
+                { isInit && <img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" />}
                     {isGrunnord && (
                         <div className="inline-flex items-center gap-x-2 w-full">
-                            
 
                             <span className="font-semibold">
                                 {hit.fields.label?.[0]}
