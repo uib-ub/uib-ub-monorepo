@@ -49,7 +49,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
 
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
     const { activeGroupValue, initValue } = useGroup()
-    const isInit = initValue == hit.fields["group.id"][0]
+    const isInit = initValue == hit.fields?.["group.id"]?.[0]
 
     const label = hit.fields?.label?.[0] || ''
 
