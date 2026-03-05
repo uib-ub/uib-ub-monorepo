@@ -3,6 +3,7 @@ import { extractFacets } from '../_utils/facets'
 import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';
 import { base64UrlToString } from '@/lib/param-utils';
+import { fetchDoc } from '../_utils/actions';
 
 
 type OutputData = {
@@ -12,30 +13,18 @@ type OutputData = {
 
 };
 
-export async function GET(request: Request) {
-  const { termFilters, reservedParams } = extractFacets(request)
-  const { simple_query_string } = getQueryString(reservedParams)
-  const perspective = reservedParams.perspective || 'all'
-
-  // Grunnord ids (e.g. grunnord_berg) may be sent raw or base64-encoded; accept both
-  const rawGroup = reservedParams.group ?? ''
-  const groupValue =
-    rawGroup.startsWith('grunnord_')
-      ? rawGroup
-      : base64UrlToString(reservedParams.group)
-
-  const query: Record<string, any> = {
+const buildGroupQuery = (groupValue: string) => {
+  return ({
     "size": 1000,
     "fields": ["group.adm1", "group.adm2", "adm1", "adm2", "group.label", "label", "group.id", "uuid", "boost", "location"],
 
     "query": {
       "bool": {
-        "must": simple_query_string || { "match_all": {} },
         "filter": [{
           "term": {
               "group.id": groupValue
           }
-        }, ...termFilters]
+        }]
       }
     },
     "track_scores": false,
@@ -49,9 +38,31 @@ export async function GET(request: Request) {
     ],
     "track_total_hits": false,
     "_source": ["uuid", "label", "attestations", "year", "boost", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area", "misc.Enhetsnummer", "misc.MNR", "misc.LNR", "ssr", "within", "cadastre", "adm1", "adm2"],
-  }
+  })
+}
 
-  const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
+export async function GET(request: Request) {
+  const { reservedParams } = extractFacets(request)
+
+  const perspective = reservedParams.perspective || 'all'
+
+  // Grunnord ids (e.g. grunnord_berg) may be sent raw or base64-encoded; accept both
+  const rawGroup = reservedParams.group ?? ''
+  const groupValue =
+    rawGroup.startsWith('grunnord_')
+      ? rawGroup
+      : base64UrlToString(reservedParams.group)
+
+
+  let [data, status] = await postQuery(perspective, buildGroupQuery(groupValue), "dfs_query_then_fetch")
+
+  // Find group if the doc has been demoted within the group
+  if (data.hits?.hits.length === 0) {
+    const doc = await fetchDoc({ uuid: groupValue })
+    if (doc) {
+      [data, status] = await postQuery(perspective, buildGroupQuery(doc._source.group.id), "dfs_query_then_fetch")
+    }
+  }
 
   const sources: any[] = []
   const topDoc = {
