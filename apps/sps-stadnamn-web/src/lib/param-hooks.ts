@@ -66,7 +66,7 @@ export function usePoint(): [number, number] | null {
 
 export function useActivePoint(): [number, number] | null {
     const searchParams = useSearchParams()
-    const rawPoint = searchParams.get('activePoint') || searchParams.get('point')
+    const rawPoint = searchParams.get('activePoint')
     if (!rawPoint) {
         return null
     }

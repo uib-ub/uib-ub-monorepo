@@ -1004,19 +1004,20 @@ export default function MapExplorer() {
                 return null;
               }
               else {
+                const isAtPoint = Boolean(point && areSamePoint([lat, lng], point))
+                const isAtActivePoint = Boolean(activePoint && areSamePoint([lat, lng], activePoint))
+
                 const selected = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == groupData?.fields?.["group.id"]?.[0] && !groupLoading)
                 const selectedInCadastre = Boolean(tree && docData && item.fields?.["uuid"]?.[0] == docData._source.uuid)
                 const isActiveGroupMarker = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue)
-                const isAtActivePoint = Boolean(activePoint && Math.abs(lat - activePoint[0]) < 0.000001 && Math.abs(lng - activePoint[1]) < 0.000001)
                 const shouldHideUnlabeledActiveAreaMarker = activeGroupHasArea && (isActiveGroupMarker || isAtActivePoint)
                 if (selected || selectedInCadastre) return null
 
                 // Any result marker that ends up exactly at either the anchor point
                 // (`point`) or the current `activePoint` should not be rendered,
                 // to avoid duplicate markers on top of the anchor/active icons.
-                const isAtPointLocation = Boolean(point && areSamePoint([lat, lng], point))
-                const isAtActivePointLocation = Boolean(activePoint && areSamePoint([lat, lng], activePoint))
-                if (isAtPointLocation || isAtActivePointLocation) return null
+                
+                if (isAtPoint || isAtActivePoint) return null
 
                 const isInit = Boolean(
                   initValue &&
@@ -1160,7 +1161,7 @@ export default function MapExplorer() {
               </Marker>
             )}
             { !coordinateInfo && point && initValue && (() => {
-              const initIsActive = !searchParams.get('group') || searchParams.get('group') === searchParams.get('init')
+              const initIsActive = ungrouped ? !activePoint : (!searchParams.get('group') || searchParams.get('group') === searchParams.get('init'))
               // In ungrouped mode, the init anchor marker should be inactive when there
               // is an active marker at a different coordinate than `point`.
               const hasOtherActivePoint = Boolean(
@@ -1706,7 +1707,7 @@ export default function MapExplorer() {
             {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" interactive={false} />}
             {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" interactive={false} />}
             {point && !initValue && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
-            {(coordinateInfo || (ungrouped && searchParams.get('activePoint'))) && activePoint && <Marker 
+            {(coordinateInfo || ungrouped) && activePoint && <Marker 
             zIndexOffset={2500}
             icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} 
             eventHandlers={{
