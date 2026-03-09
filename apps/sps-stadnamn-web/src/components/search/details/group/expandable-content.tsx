@@ -34,14 +34,14 @@ export const ExpandableContent = ({
     }
     if (!html && !text) return null;
     const searchParams = useSearchParams()
-    const ungrouped = searchParams.get('ungrouped') === 'on'
+    const sourceView = searchParams.get('sourceView') === 'on'
 
     const processedHtml = html ? processHtmlContent(html, isExpanded) : null;
 
     return (
         <>
             <span style={clampStyle}>
-                {!ungrouped && leading}
+                {!sourceView && leading}
                 {processedHtml || text}
             </span>
             {isLong && showToggle && forceExpanded === undefined && (

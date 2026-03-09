@@ -36,7 +36,7 @@ export const ChildSources = ({ datasets, isFiltered, distanceMeters }: Props) =>
     const zoom = searchParams.get('zoom')
     const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
     const labelFilter = searchParams.get('labelFilter') === 'on'
-    const ungrouped = searchParams.get('ungrouped') === 'on'
+    const sourceView = searchParams.get('sourceView') === 'on'
     const activePoint = useActivePoint()
     // If not filtered: show 2 datasets if more than 3, otherwise show all
     // If filtered: show 4 datasets if more than 5, otherwise show all
@@ -129,7 +129,7 @@ export const ChildSources = ({ datasets, isFiltered, distanceMeters }: Props) =>
         return (
             <li key={s.uuid} className="flex flex-col gap-1" style={indentStyle}>
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-2 leading-6 min-h-6">
-                        {ungrouped && (
+                        {sourceView && (
                             <div className="flex items-center shrink-0 -mr-2">
                                 
                                 {lat != null && lng != null && (
@@ -165,7 +165,7 @@ export const ChildSources = ({ datasets, isFiltered, distanceMeters }: Props) =>
                         {links}
                     </div>
 
-                    {(coordinateInfo || (ungrouped && activePoint && activePoint[0] === lat && activePoint[1] === lng)) && lat && lng && (
+                    {(coordinateInfo || (sourceView && activePoint && activePoint[0] === lat && activePoint[1] === lng)) && lat && lng && (
                         <div className="mt-0.5 min-w-0 w-full rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1">
                             {s.coordinateType ? (
                                 <CoordinateTypeInfo coordinateType={s.coordinateType} />
@@ -225,7 +225,7 @@ export const ChildSources = ({ datasets, isFiltered, distanceMeters }: Props) =>
 
                 const hasNesting = childrenMap.size > 0
 
-                const showDistance = ungrouped && typeof distanceMeters === 'number';
+                const showDistance = sourceView && typeof distanceMeters === 'number';
 
                 return (
                     <li key={`sources-ds-${ds}`} className="flex flex-col w-full gap-4">

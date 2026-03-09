@@ -87,7 +87,7 @@ export default function MapExplorer() {
   const debug = useDebugStore((s) => s.debug)
   const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
   const showDebugGroups = searchParams.get('debugGroups') == 'on';
-  const ungrouped = searchParams.get('ungrouped') == 'on'
+  const sourceView = searchParams.get('sourceView') == 'on'
 
   const getDisplayLabel = (fields?: Record<string, any> | null): string => {
     const label = fields?.label?.[0]
@@ -1022,7 +1022,7 @@ export default function MapExplorer() {
                 const isInit = Boolean(
                   initValue &&
                   (
-                    ungrouped
+                    sourceView
                       ? item.fields?.["uuid"]?.[0] == initValue
                       : item.fields?.["group.id"]?.[0] == initValue
                   )
@@ -1032,7 +1032,7 @@ export default function MapExplorer() {
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const labelText =
-                  (ungrouped && isInit)
+                  (sourceView && isInit)
                     ? (item.fields?.label?.[0] || '[utan namn]')
                     : getDisplayLabel(item.fields)
                 const pointMarkerTooltip = (!isMobile) ? (
@@ -1707,7 +1707,7 @@ export default function MapExplorer() {
             {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" interactive={false} />}
             {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" interactive={false} />}
             {point && !initValue && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
-            {(coordinateInfo || ungrouped) && activePoint && <Marker 
+            {(coordinateInfo || sourceView) && activePoint && <Marker 
             zIndexOffset={2500}
             icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} 
             eventHandlers={{

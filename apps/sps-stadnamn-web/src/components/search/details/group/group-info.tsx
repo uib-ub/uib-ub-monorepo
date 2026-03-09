@@ -313,7 +313,7 @@ export default function GroupInfo({
         }
     }
 
-    if (ungrouped) {
+    if (sourceView) {
         return <DocInfo id={id} docData={docData} />
     }
 

@@ -1,6 +1,7 @@
 'use client'
 import { calculateDistance } from '@/lib/map-utils';
 import { usePoint } from '@/lib/param-hooks';
+import { base64UrlToString } from '@/lib/param-utils';
 import { useSearchQuery } from '@/lib/search-params';
 import { parseTreeParam } from '@/lib/tree-param';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -10,30 +11,33 @@ import { useRef } from 'react';
 export const INITIAL_PAGE_SIZE = 10;
 export const SUBSEQUENT_PAGE_SIZE = 40;
 
-const ungroupedQuery = async ({
+const sourceViewQuery = async ({
     pageParam = 0,
     searchQueryString,
     searchSort,
     point,
     within,
+    group,
 }: {
     pageParam?: number;
     searchQueryString: string;
     searchSort: string | null;
     point: [number, number] | null;
     within: string | null;
+    group: string | null;
 }) => {
     const isFirstPage = pageParam === 0;
     const size = isFirstPage ? INITIAL_PAGE_SIZE : SUBSEQUENT_PAGE_SIZE;
     const from = isFirstPage ? 0 : INITIAL_PAGE_SIZE + (pageParam - 1) * SUBSEQUENT_PAGE_SIZE;
 
     const params = new URLSearchParams(searchQueryString);
-    params.delete('ungrouped');
+    params.delete('sourceView');
     params.set('size', size.toString());
     params.set('from', from.toString());
     if (searchSort) params.set('searchSort', searchSort);
     if (point) params.set('point', `${point[0]},${point[1]}`);
     if (within) params.set('within', within);
+    if (group) params.set('group', group);
 
     const res = await fetch(`/api/search/table?${params.toString()}`);
     if (!res.ok) {
@@ -71,7 +75,8 @@ export default function useUngroupedData() {
     const doc = searchParams.get('doc');
     const treeUuid = parseTreeParam(searchParams.get('tree')).uuid;
     const cadastreDoc = tree ? (treeUuid || doc) : null;
-    const ungrouped = searchParams.get('ungrouped') === 'on';
+    const sourceView = searchParams.get('sourceView') === 'on';
+    const group = searchParams.get('group');
 
     const {
         data,
@@ -83,31 +88,32 @@ export default function useUngroupedData() {
         isLoading,
         status,
     } = useInfiniteQuery({
-        queryKey: ['ungroupedData', searchQueryString, searchSort, point, cadastreDoc],
+        queryKey: ['sourceViewData', searchQueryString, searchSort, point, cadastreDoc],
         queryFn: ({ pageParam }: { pageParam: number }) =>
-            ungroupedQuery({
+            sourceViewQuery({
                 pageParam,
                 searchQueryString,
                 searchSort,
                 point,
                 within: cadastreDoc,
+                group,
             }),
         initialPageParam: initialPageRef.current - 1,
         getNextPageParam: (lastPage: any) => lastPage.nextCursor,
         refetchOnWindowFocus: false,
-        enabled: ungrouped,
+        enabled: sourceView,
         staleTime: 1000 * 60 * 5,
     });
 
     return {
-        ungroupedData: data,
-        ungroupedError: error,
-        ungroupedFetchNextPage: fetchNextPage,
-        ungroupedHasNextPage: hasNextPage,
-        ungroupedIsFetchingNextPage: isFetchingNextPage,
-        ungroupedFetching: isFetching,
-        ungroupedLoading: isLoading,
-        ungroupedStatus: status,
-        ungroupedInitialPage: initialPageRef.current,
+        sourceViewData: data,
+        sourceViewError: error,
+        sourceViewFetchNextPage: fetchNextPage,
+        sourceViewHasNextPage: hasNextPage,
+        sourceViewIsFetchingNextPage: isFetchingNextPage,
+        sourceViewFetching: isFetching,
+        sourceViewLoading: isLoading,
+        sourceViewStatus: status,
+        sourceViewInitialPage: initialPageRef.current,
     };
 }

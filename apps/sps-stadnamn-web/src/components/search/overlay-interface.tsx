@@ -210,7 +210,7 @@ export default function OverlayInterface() {
     const searchParams = useSearchParams()
     const { totalHits, docTotalHits, searchLoading } = useSearchData()
     const { groupData } = useGroupData()
-    const ungrouped = searchParams.get('ungrouped') === 'on'
+    const sourceView = searchParams.get('sourceView') === 'on'
 
     const drawerRef = useRef<HTMLDivElement>(null)
 
@@ -241,7 +241,7 @@ export default function OverlayInterface() {
 
     const isDesktopMap = !isMobile && mode !== 'table'
 
-    const desktopMapButtons = isDesktopMap && !options && !facet && !tree ? (
+    const desktopMapButtons = isDesktopMap && sourceView && !options && !facet && !tree ? (
         <div className="flex gap-2">
             <Clickable className="btn btn-outline btn-sm" add={{ options: 'on' }}>
                 Alle filter
@@ -291,7 +291,7 @@ export default function OverlayInterface() {
                         </div>
                     )}
 
-                    {!tableOptions && !facet && (
+                    {!tableOptions && !facet && (sourceView || mode == 'table') && (
                         <>
                             {options && (
                                 <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
@@ -389,7 +389,7 @@ export default function OverlayInterface() {
                                             ) : (
                                                 <TitleBadge
                                                     className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`}
-                                                    count={ungrouped ? docTotalHits?.value ?? 0 : totalHits?.value ?? 0}
+                                                    count={sourceView ? docTotalHits?.value ?? 0 : totalHits?.value ?? 0}
                                                 />
                                             )}
                                         </>

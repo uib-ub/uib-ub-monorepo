@@ -1,11 +1,11 @@
 'use client'
 import useCollapsedData, { SUBSEQUENT_PAGE_SIZE } from '@/state/hooks/collapsed-data';
-import useUngroupedData, { SUBSEQUENT_PAGE_SIZE as UNGROUPED_SUBSEQUENT_PAGE_SIZE } from '@/state/hooks/ungrouped-data';
+import useUngroupedData, { SUBSEQUENT_PAGE_SIZE as UNGROUPED_SUBSEQUENT_PAGE_SIZE } from '@/state/hooks/source-view-data';
 import { useSearchParams } from 'next/navigation';
 
 export default function useResultsData() {
     const searchParams = useSearchParams();
-    const ungrouped = searchParams.get('ungrouped') === 'on';
+    const sourceView = searchParams.get('sourceView') === 'on';
 
     const {
         collapsedData,
@@ -19,25 +19,25 @@ export default function useResultsData() {
     } = useCollapsedData();
 
     const {
-        ungroupedData,
-        ungroupedError,
-        ungroupedLoading,
-        ungroupedFetchNextPage,
-        ungroupedHasNextPage,
-        ungroupedIsFetchingNextPage,
-        ungroupedStatus,
-        ungroupedInitialPage,
+        sourceViewData,
+        sourceViewError,
+        sourceViewLoading,
+        sourceViewFetchNextPage,
+        sourceViewHasNextPage,
+        sourceViewIsFetchingNextPage,
+        sourceViewStatus,
+        sourceViewInitialPage,
     } = useUngroupedData();
 
     return {
-        resultData: ungrouped ? ungroupedData : collapsedData,
-        resultError: ungrouped ? ungroupedError : collapsedError,
-        resultLoading: ungrouped ? ungroupedLoading : collapsedLoading,
-        resultFetchNextPage: ungrouped ? ungroupedFetchNextPage : collapsedFetchNextPage,
-        resultHasNextPage: ungrouped ? ungroupedHasNextPage : collapsedHasNextPage,
-        resultIsFetchingNextPage: ungrouped ? ungroupedIsFetchingNextPage : isFetchingNextPage,
-        resultStatus: ungrouped ? ungroupedStatus : collapsedStatus,
-        resultInitialPage: ungrouped ? ungroupedInitialPage : collapsedInitialPage,
-        resultPageSize: ungrouped ? UNGROUPED_SUBSEQUENT_PAGE_SIZE : SUBSEQUENT_PAGE_SIZE,
+        resultData: sourceView ? sourceViewData : collapsedData,
+        resultError: sourceView ? sourceViewError : collapsedError,
+        resultLoading: sourceView ? sourceViewLoading : collapsedLoading,
+        resultFetchNextPage: sourceView ? sourceViewFetchNextPage : collapsedFetchNextPage,
+        resultHasNextPage: sourceView ? sourceViewHasNextPage : collapsedHasNextPage,
+        resultIsFetchingNextPage: sourceView ? sourceViewIsFetchingNextPage : isFetchingNextPage,
+        resultStatus: sourceView ? sourceViewStatus : collapsedStatus,
+        resultInitialPage: sourceView ? sourceViewInitialPage : collapsedInitialPage,
+        resultPageSize: sourceView ? UNGROUPED_SUBSEQUENT_PAGE_SIZE : SUBSEQUENT_PAGE_SIZE,
     };
 }

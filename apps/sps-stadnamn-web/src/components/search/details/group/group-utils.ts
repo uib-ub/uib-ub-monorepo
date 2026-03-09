@@ -62,7 +62,7 @@ type InitGroupData = {
 } | null | undefined
 
 type AlternativeInitLabelsArgs = {
-    ungrouped: boolean
+    sourceView: boolean
     initDocData?: InitDocData
     initGroupData?: InitGroupData
     currentQuery?: string | null
@@ -95,7 +95,7 @@ const pushUniqueLabel = (labels: string[], seen: Set<string>, value: unknown) =>
 }
 
 export const getAlternativeInitLabels = ({
-    ungrouped,
+    sourceView,
     initDocData,
     initGroupData,
     currentQuery,
@@ -105,7 +105,7 @@ export const getAlternativeInitLabels = ({
     const labels: string[] = []
     const seen = new Set<string>()
 
-    if (ungrouped) {
+    if (sourceView) {
         const source = initDocData?._source
         pushUniqueLabel(labels, seen, source?.label)
         ;(source?.altLabels ?? []).forEach((value) => pushUniqueLabel(labels, seen, value))
