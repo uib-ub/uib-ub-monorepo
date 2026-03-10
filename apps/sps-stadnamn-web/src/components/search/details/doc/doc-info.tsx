@@ -4,7 +4,10 @@ import AudioPlayerList from "@/components/audio/audio-player-list";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import IconButton from "@/components/ui/icon-button";
 import { datasetTitles } from "@/config/metadata-config";
+import { treeSettings } from "@/config/server-config";
 import { useActivePoint, useGroup } from "@/lib/param-hooks";
+import { buildTreeParam } from "@/lib/tree-param";
+import { getBnr, getGnr, getValueByPath } from "@/lib/utils";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useContext, useMemo, useState } from "react";
 import { PiBookOpen, PiCheck, PiGps, PiLinkSimple, PiMapPin, PiMapPinFill, PiPerson, PiPersonSimple, PiX } from "react-icons/pi";
@@ -43,7 +46,9 @@ export default function DocInfo({
     const sosiTypes = (Array.isArray(source.sosi) ? source.sosi : source.sosi ? [source.sosi] : [])
         .map((item: unknown) => (typeof item === "string" ? sosiVocab[item]?.label || item : ""))
         .filter(Boolean);
+    const isTreeDataset = !!treeSettings[dataset];
     const cadastrePrefix = (() => {
+        if (isTreeDataset) return "";
         const firstCadastre = Array.isArray(source.cadastre) ? source.cadastre[0] : source.cadastre;
         const gnr = firstCadastre?.gnr;
         if (gnr == null) return "";
@@ -54,6 +59,13 @@ export default function DocInfo({
     const adm2 = toText(source.adm2);
     const adm3 = toText(source.adm3);
     const admText = `${adm3}${adm3 ? " - " : ""}${adm2 && adm1 && adm2 !== adm1 ? `${adm2}, ` : ""}${adm1}`.trim();
+    const gnr = isTreeDataset ? getGnr(docData, dataset) : null;
+    const bnr = isTreeDataset ? getBnr(docData, dataset) : null;
+    const isLeaf = isTreeDataset && !!source.within;
+    const gardUuid = isLeaf ? source.within : (source.uuid || null);
+    const gardName = isTreeDataset
+        ? (getValueByPath(source, treeSettings[dataset]?.parentName) || (!isLeaf ? label : null) || null)
+        : null;
     const recordings = Array.isArray(source.recordings)
         ? source.recordings
         : source.audio
@@ -87,13 +99,13 @@ export default function DocInfo({
     const nextInitParam = isInit ? null : initTarget;
     const uuidToken = useMemo(() => source.uuid || docData?._id || null, [docData?._id, source.uuid]);
     const uuidUrl = useMemo(() => {
-        if (!uuidToken) return null;
-        const token = String(uuidToken).trim();
+        if (!source.uuid) return null;
+        const token = String(source.uuid).trim();
         const base = process.env.NODE_ENV == "development" ? "" : "https://stadnamn.no";
         if (token.startsWith("http://") || token.startsWith("https://")) return token;
         if (token.startsWith("/uuid/")) return `${base}${token}`;
         return `${base}/uuid/${token}`;
-    }, [uuidToken]);
+    }, [source.uuid]);
     const distanceMeters = typeof docData?.distance === "number" ? docData.distance : null;
 
     return (
@@ -129,7 +141,50 @@ export default function DocInfo({
                         labelClassName="text-lg truncate"
                         sosiClassName="text-lg truncate"
                     />
-                    {admText && <div className="text-sm text-neutral-700">{admText}</div>}
+
+                    {isTreeDataset ? (
+                        (adm1 || gnr) && (
+                            <div className="text-sm text-neutral-700 flex items-center gap-1 flex-wrap">
+                                {adm1 && (
+                                    <Clickable link className="breadcrumb-link" add={{ tree: buildTreeParam({ dataset, adm1 }) }}>
+                                        {adm1}
+                                    </Clickable>
+                                )}
+                                {adm1 && adm2 && <span className="text-neutral-400">/</span>}
+                                {adm2 && (
+                                    <Clickable link className="breadcrumb-link" add={{ tree: buildTreeParam({ dataset, adm1, adm2 }) }}>
+                                        {adm2}
+                                    </Clickable>
+                                )}
+                                {gnr && gardUuid && (
+                                    <>
+                                        <span className="text-neutral-400">/</span>
+                                        <Clickable
+                                            link
+                                            className="breadcrumb-link"
+                                            add={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }), doc: isLeaf ? source.within : undefined }}
+                                        >
+                                            {gnr}{gardName ? ` ${gardName}` : ''}
+                                        </Clickable>
+                                    </>
+                                )}
+                                {isLeaf && bnr && (
+                                    <>
+                                        <span className="text-neutral-400">/</span>
+                                        <Clickable
+                                            link
+                                            className="breadcrumb-link"
+                                            add={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: source.within }) }}
+                                        >
+                                            {bnr}{label ? ` ${label}` : ''}
+                                        </Clickable>
+                                    </>
+                                )}
+                            </div>
+                        )
+                    ) : (
+                        admText && <div className="text-sm text-neutral-700">{admText}</div>
+                    )}
                 </div>
             </div>
 
@@ -139,7 +194,7 @@ export default function DocInfo({
             
             {textItems.length > 0 && <TextTab textItems={textItems} />}
 
-            {docMarkerPosition && (
+            { (
                 <div className="w-full px-3 mt-auto">
                     <div className="flex items-center gap-2 flex-wrap">
                         {isActivePoint && (
@@ -153,16 +208,16 @@ export default function DocInfo({
                                 )}
                             </div>
                         )}
-                        {isActivePoint && <span className="basis-full h-0" aria-hidden="true" />}
+                        {isActivePoint && false && <span className="basis-full h-0" aria-hidden="true" />}
                         <div className={`ml-auto flex items-center gap-2 ${isActivePoint ? "mt-1" : ""}`}>
-                            {!isInit && (
+                            {!isInit && docMarkerPosition && false && (
                                 <ClickableIcon
                                     label="Bruk som utgangspunkt"
                                     remove={["group", "point", "activePoint", "activeYear", "activeName"]}
                                     add={{
                                         init: nextInitParam,
                                         point: docMarkerPosition
-                                            ? `${docMarkerPosition[0]},${docMarkerPosition[1]}`
+                                            ? `${docMarkerPosition?.[0]},${docMarkerPosition?.[1]}`
                                             : null,
                                     }}
                                     onClick={() => {
@@ -179,7 +234,7 @@ export default function DocInfo({
                                     <PiPerson aria-hidden="true" className="text-lg text-neutral-800" />
                                 </ClickableIcon>
                             )}
-                            <ClickableIcon
+                            {docMarkerPosition && <ClickableIcon
                                 label="Gå til koordinatet"
                                 add={{ activePoint: `${docMarkerPosition[0]},${docMarkerPosition[1]}` }}
                                 onClick={() => {
@@ -200,7 +255,7 @@ export default function DocInfo({
                                 ) : (
                                     <PiMapPin aria-hidden="true" className="text-xl text-neutral-800" />
                                 )}
-                            </ClickableIcon>
+                            </ClickableIcon>}
                             <IconButton
                                 label={linkCopied ? "Lenke kopiert" : "Kopier lenke"}
                                 onClick={async () => {
