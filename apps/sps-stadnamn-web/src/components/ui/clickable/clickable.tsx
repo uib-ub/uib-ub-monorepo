@@ -1,6 +1,7 @@
 'use client'
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
+import { cn } from "@/lib/utils"
 import { ParamProps } from "./param-types"
 
 function normalizeSearchParams(params: URLSearchParams) {
@@ -24,9 +25,13 @@ function normalizeSearchParams(params: URLSearchParams) {
 export default function Clickable({ children, remove, add, only, link, href, replace, notClickable, ...rest }: ParamProps) {
     const searchParams = useSearchParams()
     const router = useRouter()
+
     if (notClickable) {
         return <div {...rest}>{children}</div>
     }
+
+    const { className, ...restProps } = rest
+    const clickableClassName = cn("cursor-pointer", className)
 
     const newParams = new URLSearchParams(only ? undefined : searchParams)
     if (only) {
@@ -54,12 +59,21 @@ export default function Clickable({ children, remove, add, only, link, href, rep
     const stringParams = normalizeSearchParams(newParams).toString()
 
     if (link) {
-        return <Link replace={replace} href={`${href ? href : ''}${stringParams ? `?${stringParams}` : ''}`} {...rest}>{children}</Link>
+        return (
+            <Link
+                replace={replace}
+                href={`${href ? href : ''}${stringParams ? `?${stringParams}` : ''}`}
+                className={clickableClassName}
+                {...restProps}
+            >
+                {children}
+            </Link>
+        )
     }
     else {
         const handleClick = (event: React.MouseEvent) => {
-            if (rest.onClick) {
-                rest.onClick(event)
+            if (restProps.onClick) {
+                restProps.onClick(event)
             }
             if (replace) {
                 router.replace("?" + stringParams)
@@ -68,6 +82,15 @@ export default function Clickable({ children, remove, add, only, link, href, rep
                 router.push("?" + stringParams, { scroll: false })
             }
         }
-        return <button type="button" {...rest} onClick={handleClick} >{children}</button>
+        return (
+            <button
+                type="button"
+                className={clickableClassName}
+                {...restProps}
+                onClick={handleClick}
+            >
+                {children}
+            </button>
+        )
     }
 }

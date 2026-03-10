@@ -512,8 +512,7 @@ export default function SearchResults() {
                     {/* Vis meir button at the end of each page */}
                     {isLastPage && resultHasNextPage && (
                       <li className="flex flex-col gap-2 justify-center py-4">
-                        <button
-                          type="button"
+                        <Clickable
                           onClick={() => {
                             if (resultIsFetchingNextPage) return
 
@@ -541,7 +540,7 @@ export default function SearchResults() {
                   `}
                         >
                           {resultIsFetchingNextPage && <Spinner className="text-white" status="Lastar" />} {resultIsFetchingNextPage ? 'Lastar...' : 'Vis meir'}
-                        </button>
+                        </Clickable>
                         
                       </li>
                     )}
