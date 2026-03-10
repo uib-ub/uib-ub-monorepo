@@ -77,7 +77,7 @@ export default function useCollapsedData() {
     const initialPage = parseInt(searchParams.get('page') || '1')
     const initialPageRef = useRef(initialPage)
     const { searchQueryString } = useSearchQuery()
-    const ungrouped = searchParams.get('ungrouped') === 'on'
+    const sourceView = searchParams.get('sourceView') === 'on'
     const initGroupCode = searchParams.get('init')
     const point = usePoint()
     const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(initGroupCode)
@@ -106,7 +106,7 @@ export default function useCollapsedData() {
         initialPageParam: initialPageRef.current - 1,
         getNextPageParam: (lastPage: any) => lastPage.nextCursor,
         refetchOnWindowFocus: false,
-        enabled: !initGroupLoading && !ungrouped,
+        enabled: !initGroupLoading && !sourceView,
         staleTime: 1000 * 60 * 5, // 5 minutes
     })
 

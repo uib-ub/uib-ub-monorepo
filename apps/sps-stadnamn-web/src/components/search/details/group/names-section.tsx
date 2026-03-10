@@ -7,18 +7,19 @@ import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import InfoPopover from "@/components/ui/info-popover";
 import WarningMessage from "./warning-message";
+import useGroupData from "@/state/hooks/group-data";
 
-interface NamesSectionProps {
-    datasets: Record<string, any[]>;
-    groupCode?: string | null;
-}
 
-export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
+export const GroupFilters = () => {
     const [showAll, setShowAll] = useState(false)
     const searchParams = useSearchParams()
     const activeYear = searchParams.get('activeYear')
     const activeName = searchParams.get('activeName')
     const labelFilter = searchParams.get('labelFilter') === 'on'
+    const { groupData } = useGroupData()
+    const datasets = groupData?.datasets || {}
+    
+    const groupCode = groupData?.group?.id
 
     const { yearsOrdered, namesByYear, namesWithoutYear, nameCounts } = useMemo(() => {
         // Helper functions to check if source matches filters
@@ -66,7 +67,7 @@ export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
         }
 
         Object.entries(datasets).forEach(([, sources]) => {
-            sources.forEach((source: any) => {
+            (sources as any[]).forEach((source: any) => {
                 // Labels and altLabels, regardless of whether source.year exists.
                 // If year is missing or invalid, the name will still be collected
                 // and end up under "Namneformer utan år".
@@ -129,7 +130,7 @@ export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
         const filteredNameToYears: Record<string, Set<string>> = {}
 
         Object.entries(datasets).forEach(([, sources]) => {
-            sources.forEach((source: any) => {
+            (sources as any[]).forEach((source: any) => {
                 // Process labels and altLabels with source.year
                 // Only include if: (1) source has a valid year (not starting with 0),
                 // (2) if activeYear is set, source.year matches,
@@ -292,7 +293,7 @@ export const NamesSection = ({ datasets, groupCode }: NamesSectionProps) => {
     return (
         <div className="flex flex-col gap-3">
             {labelFilter && (
-                <WarningMessage message="Filtreringsalternativa baserer seg på namneformer Språksamlingane har henta ut frå kjeldene, eventuelt med tidlegaste registrerte år. Lista er ikkje naudsynlegvis komplett, og kan innehalde feil." messageId="names-section-warning" />
+                <WarningMessage messageId="label-filter-1772701354" message="Filtreringsalternativa baserer seg på namneformer Språksamlingane har henta ut frå kjeldene, eventuelt med tidlegaste registrerte år. Lista er ikkje naudsynlegvis komplett, og kan innehalde feil." />
             )}
             
 

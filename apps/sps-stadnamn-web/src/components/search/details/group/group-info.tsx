@@ -2,7 +2,6 @@ import Spinner from "@/components/svg/Spinner";
 import AudioPlayerList from "@/components/audio/audio-player-list";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
-import { datasetTitles } from "@/config/metadata-config";
 import { defaultMaxResultsParam } from "@/config/max-results";
 import { fitBoundsToGroupSources } from "@/lib/map-utils";
 import { useGroup } from "@/lib/param-hooks";
@@ -13,15 +12,16 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, type ReactNode } from "react";
-import { PiAnchor, PiAnchorSimple, PiCaretLeftBold, PiCaretRightBold, PiCheck, PiGps, PiMapPin, PiMapTrifold, PiPerson, PiPushPin, PiX } from "react-icons/pi";
+import { PiAnchor, PiAnchorSimple, PiCaretLeftBold, PiCaretRightBold, PiCheck, PiGps, PiMapPin, PiMapPinFill, PiMapTrifold, PiPerson, PiPushPin, PiX } from "react-icons/pi";
 import { detailsRenderer } from "@/lib/text-utils";
 import { getValueByPath } from "@/lib/utils";
 import Carousel from "../../nav/results/carousel";
 import DocInfo from "../doc/doc-info";
 import { TextTab } from "./text-tab";
-import { NamesSection } from "./names-section";
+import { GroupFilters } from "./names-section";
 import { FilteredChildSources } from "./filtered-child-sources";
 import { matchesActiveYear, matchesActiveName, pushNameYear } from "./group-utils";
+import { DatasetSummary } from "../../dataset-summary";
 
 export default function GroupInfo({
     id,
@@ -42,7 +42,7 @@ export default function GroupInfo({
     const activePoint = searchParams.get('activePoint')
     const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
     const labelFilter = searchParams.get('labelFilter') === 'on'
-    const ungrouped = searchParams.get('ungrouped') === 'on'
+    const sourceView = searchParams.get('sourceView') === 'on'
     const isInit = initValue == groupData?.group?.id || initValue == groupData?.fields?.["uuid"]?.[0]
 
     const roundCoordString = (value: string, decimals: number) => {
@@ -82,39 +82,8 @@ export default function GroupInfo({
         const allCoordinates: any[] = []
         const datasets: Record<string, any[]> = {}
         const coordSet = new Set<string>()
-        let sources = groupData?.sources
 
-        const normalizedSources = (sources || []).map((rawSource: any) => {
-            const sourceObject = rawSource?._source || rawSource || {}
-            const getSourceValue = (path: string, sourcePath?: string) => {
-                const direct = getValueByPath(rawSource, path)
-                if (direct !== undefined && direct !== null) return direct
-                const fromSource = getValueByPath(sourceObject, sourcePath || path)
-                if (fromSource !== undefined && fromSource !== null) return fromSource
-                return undefined
-            }
-            const firstScalar = (value: any) => (Array.isArray(value) ? value[0] : value)
-            const dataset = rawSource?._index?.split('-')?.[2] ?? rawSource?.dataset
-            const textId = firstScalar(getSourceValue('textId', 'misc.Enhetsnummer'))
-
-            return {
-                ...sourceObject,
-                dataset,
-                boost: firstScalar(getSourceValue('boost')),
-                textId,
-                content: getSourceValue('content'),
-                iiif: firstScalar(getSourceValue('iiif')),
-                uuid: firstScalar(getSourceValue('uuid')),
-                recordings: Array.isArray(getSourceValue('recordings')) ? getSourceValue('recordings') : [],
-                location: getSourceValue('location'),
-                label: firstScalar(getSourceValue('label')),
-                altLabels: getSourceValue('altLabels'),
-                year: firstScalar(getSourceValue('year')),
-                attestations: getSourceValue('attestations'),
-            }
-        })
-
-        normalizedSources.sort((a: any, b: any) => {
+        groupData?.sources?.sort((a: any, b: any) => {
             const aInSearch = searchDatasets.includes(a.dataset);
             const bInSearch = searchDatasets.includes(b.dataset);
 
@@ -137,7 +106,7 @@ export default function GroupInfo({
 
 
 
-        normalizedSources.forEach((source: any) => {
+        groupData?.sources?.forEach((source: any) => {
             if (!source.textId || !seenTextIds.has(source.textId)) {
 
                 if (source.content?.html) {
@@ -154,7 +123,7 @@ export default function GroupInfo({
                 iiifItems.push(source)
                 if (source.uuid) seenIiifUuids.add(source.iiif)
             }
-            if (Array.isArray(source.recordings) && source.recordings.length > 0) {
+            if (source.recordings) {
                 audioItems.push(source)
             }
             if (source.location) {
@@ -166,10 +135,8 @@ export default function GroupInfo({
                     coordSet.add(`${lat},${lng}`)
                 }
             }
-            
             datasets[source.dataset] = datasets[source.dataset] || []
             datasets[source.dataset].push(source)
-            
         })
 
 
@@ -257,7 +224,7 @@ export default function GroupInfo({
 
     // Check if label filter should be shown
     const shouldShowLabelFilter = useMemo(() => {
-        if (ungrouped) {
+        if (sourceView) {
             return false
         }
         // Count total sources across all datasets
@@ -290,9 +257,9 @@ export default function GroupInfo({
         }
 
         return showNamesTab
-    }, [datasets, activeYear, activeName, showNamesTab, ungrouped])
+    }, [datasets, activeYear, activeName, showNamesTab, sourceView])
 
-    if (!ungrouped) {
+    if (!sourceView) {
         if (groupLoading) return (
             <div className="flex justify-center items-center w-full py-8">
                 <Spinner status="Laster" className="animate-spin rounded-full h-8 w-8"></Spinner>
@@ -319,7 +286,7 @@ export default function GroupInfo({
 
 
     return (
-        <div id={id} className="relative flex min-w-0 flex-wrap items-center pb-4">
+        <div id={id} className="relative flex min-w-0 flex-wrap items-center pb-4 pt-2 gap-3">
             {iiifItems?.length > 0 && !labelFilter && !coordinateInfo && <>
                     <Carousel items={iiifItems} />
                 </>
@@ -341,7 +308,7 @@ export default function GroupInfo({
 
             </>}
 
-            <div className="min-w-0 w-full flex flex-col">
+            {(labelFilter || coordinateInfo) && <div className="min-w-0 w-full flex flex-col">
                 {/* Filtering / coordinate sticky headers */}
                 {labelFilter && !coordinateInfo && (
                     <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 pt-2 pb-2">
@@ -437,19 +404,16 @@ export default function GroupInfo({
                     </div>
                 )}
 
-                {/* Names section (includes timeline) - show for all eligible groups, hide only in coordinate view */}
-                {shouldShowLabelFilter && !coordinateInfo && !ungrouped && (
+                {/* Group filters (timeline, datasets, coordinates) - hidden only in coordinate view */}
+                {shouldShowLabelFilter && !coordinateInfo && !sourceView && (
                     <div className={`px-3 ${initValue === groupData.group.id ? 'pt-2' : 'pt-6'}`}>
-                        <NamesSection
-                            datasets={datasets}
-                            groupCode={stringToBase64Url(groupData.group.id)}
-                        />
+                        <GroupFilters/>
                     </div>
                 )}
 
                 {/* min-w-0 so width is constrained by panel, not by expanded content */}
                 <div className="min-w-0 px-3">
-                    {!ungrouped && <FilteredChildSources
+                    {!sourceView && false && <FilteredChildSources
                             datasets={datasets}
                             activeYear={activeYear}
                             activeName={activeName}
@@ -457,10 +421,13 @@ export default function GroupInfo({
                         />
                     }
                 </div>
+            </div>}
+            <div className="px-3 text-neutral-900">
+                <DatasetSummary datasetKeys={Object.keys(datasets)} />
             </div>
 
 
-            {!coordinateInfo && !labelFilter && !ungrouped && <div className="px-3 ml-auto mt-auto">
+            {!coordinateInfo && !labelFilter && !sourceView && <div className="px-3 ml-auto mt-auto">
                 <div className="flex flex-row items-center gap-2">
 
 
@@ -471,7 +438,7 @@ export default function GroupInfo({
                         :
 
                         <ClickableIcon
-                            label="Kartfesting"
+                            label="Gå til koordinat"
                             onClick={() => {
                                 mapFunctionRef.current?.flyTo(
                                     preferredFlyTarget,
@@ -483,35 +450,18 @@ export default function GroupInfo({
                                 }
                             }}
                             remove={['group', 'activePoint']}
-                            add={{ group: initValue == activeGroupValue ? null : stringToBase64Url(groupData.group.id), activePoint: preferredFlyTarget?.toString(), coordinateInfo: 'on' }}
-                            className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
+                            add={{ group: initValue == activeGroupValue ? null : stringToBase64Url(groupData.group.id), activePoint: preferredFlyTarget?.toString() }}
+                            className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-neutral-300 btn btn-outline"
                         >
-                            <PiMapTrifold aria-hidden="true" className="text-2xl text-neutral-800" />
+                            <PiMapPinFill aria-hidden="true" className="text-xl text-neutral-800" />
 
                         </ClickableIcon>
                     }
 
-                    <ClickableIcon
-                        label={`${isInit ? "Fjern som startpunkt" : "Bruk som utgangspunkt"}`}
-                        onClick={() => {
-                            // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
-                            // The subsequent URL param update can remount components quickly, so do this eagerly.
-                            if (preferredFlyTarget) {
-                                mapFunctionRef.current?.flyTo(preferredFlyTarget, 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-                            }
-
-                        }}
-                        remove={['group', 'point', 'activePoint', 'activeYear', 'activeName']}
-                        add={{
-                            // When pinning a group ("vel"), treat it as a fresh init selection.
-                            init: isInit ? null : ungrouped ? groupData.fields["uuid"][0] : stringToBase64Url(groupData.group.id),
-                            point: (!isInit && preferredFlyTarget) ? `${preferredFlyTarget?.[0]},${preferredFlyTarget?.[1]}` : null,
-                            maxResults: defaultMaxResultsParam
-                        }}
-                        className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
-                    >
-                        {isInit ? <PiX aria-hidden="true" className="text-2xl text-neutral-800" /> : <PiPerson aria-hidden="true" className="text-2xl text-neutral-800" />}
-                    </ClickableIcon>
+                    
+                    {groupData.sources.length > 0 && <Clickable className="btn btn-outline btn-compact rounded-full items-center gap-1 pr-2" add={{ activePoint: preferredFlyTarget?.toString() || null, sourceView: 'on', group: stringToBase64Url(groupData.group.id) }}>
+                    {groupData.sources.length} oppslag<PiCaretRightBold aria-hidden="true" className="text-primary-700" />
+                </Clickable>}
 
                 </div>
             </div>}

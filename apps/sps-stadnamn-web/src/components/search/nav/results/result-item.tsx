@@ -11,7 +11,7 @@ import { useDebugStore } from '@/state/zustand/debug-store';
 import { useSessionStore } from '@/state/zustand/session-store';
 import { useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useRef } from 'react';
-import { PiXBold } from 'react-icons/pi';
+import { PiX, PiXBold } from 'react-icons/pi';
 import DistanceBadge from '@/components/search/distance-badge';
 
 const uniqueLabels = (hit: any) => {
@@ -57,21 +57,11 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
     if (!hit._index) return <div className="p-2">Det har oppstått ein feil: Kunne ikkje hente kjelder</div>
 
 
-    return <div  {...rest} className={`w-full h-full ${isInit ? '' : 'bg-neutral-50'} aria-expanded:border-b aria-expanded:border-neutral-100 flex items-center group no-underline ${isInit ? 'pb-0' : ''}`}>
+    return <div  {...rest} className={`w-full h-full ${(isInit || notClickable) ? '' : 'bg-neutral-50'} aria-expanded:border-b aria-expanded:border-neutral-100 flex items-center group no-underline ${isInit ? 'pb-0' : ''}`}>
 
         <Clickable ref={itemRef}
             notClickable={notClickable}
-            onClick={() => {
-                onClick?.()
-                if (!hit.fields?.location?.[0].coordinates) return;
-                const map = mapFunctionRef.current;
-                if (!map || snappedPosition == 'top') return;
-
-
-                const [lng, lat] = hit.fields.location[0].coordinates;
-
-                panPointIntoView(map, [lat, lng], isMobile, isMobile);
-            }}
+            onClick={() => !notClickable && onClick?.()}
             remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
             add={{ group: activeGroupValue == hit.fields["group.id"][0] ? null : stringToBase64Url(hit.fields["group.id"][0]),
                 activePoint: hit.fields.location ? `${hit.fields.location[0].coordinates[1]},${hit.fields.location[0].coordinates[0]}` : null
@@ -82,7 +72,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
             className="w-full text-left p-3">
             <div className="flex items-center justify-between gap-x-2 whitespace-normal w-full text-xl">
                 <div className="inline-flex items-center flex-wrap gap-x-2 w-full">
-                { isInit && <img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" />}
+                { isInit && <img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-6 h-6 mb-1 self-center" />}
                     {isGrunnord && (
                         <div className="inline-flex items-center gap-x-2 w-full">
 
@@ -106,6 +96,14 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                     <span className="text-neutral-900">{detailsRenderer(hit)}</span>
                 </div>
                 <DistanceBadge meters={hit.distance} />
+                {isInit && <ClickableIcon
+                        label={`Fjern som startpunkt`}
+
+                        remove={['group', 'init', 'point', 'activePoint', 'activeYear', 'activeName']}
+                        className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-neutral-300 btn btn-outline"
+                    >
+                        <PiX aria-hidden="true" className="text-xl text-neutral-800" /> 
+                    </ClickableIcon>}
             </div>
             {hit.highlight && <>{formatHighlight(hit.highlight['content.html']?.[0] || hit.highlight['content.text']?.[0])}</>}
             

@@ -40,7 +40,7 @@ export const TextTab = ({ textItems }: TextTabProps) => {
                 const showToggle = !hasMultipleItems;
 
                 return (
-                    <div className="py-3 px-3 max-w-[calc(100%-1rem)]" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
+                    <div className="px-3 max-w-[calc(100%-1rem)]" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
                         <ExpandableContent
                             leading={<><strong className="text-neutral-950">{datasetTitles[textItem.dataset]}</strong> | </>}
                             html={(textItem.content.html ? textItem.content.html.replace(/<\/?p>/g, '') : textItem.content.html) || null}
@@ -55,7 +55,7 @@ export const TextTab = ({ textItems }: TextTabProps) => {
             {hasMultipleItems && (
                 <button
                     type="button"
-                    className="mx-3 flex items-center gap-1 text-neutral-900 text-lg"
+                    className="mx-3 mb-3 flex items-center gap-1 text-neutral-900 text-lg"
                     aria-expanded={showAll}
                     aria-controls={`text-items-${textItems.length}`}
                     onClick={showAll ? () => {

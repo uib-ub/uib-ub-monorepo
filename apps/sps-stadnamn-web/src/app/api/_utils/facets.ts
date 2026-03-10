@@ -87,6 +87,9 @@ export function extractFacets(request: Request) {
           datasets.push(...Object.keys(datasetTitles).filter(key => key.endsWith('_g')))
         }
       }
+      else if (key == 'group') {
+        termFilters.push({ "term": { "group.id": base64UrlToString(value) } })
+      }
     } else {
       // Check for comparison operators (_gt, _gte, _lt, _lte)
       const comparisonMatch = key.match(/^(.+)_(gt|gte|lt|lte)$/);

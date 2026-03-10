@@ -21,7 +21,7 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
     const movedRef = useRef(0)
     const { isMobile } = useContext(GlobalContext)
     const searchParams = useSearchParams()
-    const ungrouped = searchParams.get('ungrouped') === 'on'
+    const sourceView = searchParams.get('sourceView') === 'on'
 
     const SWIPE_ACTIVATE_THRESHOLD = 10     // px before deciding direction
     const SWIPE_NAV_THRESHOLD = 40          // px to trigger navigation on release
@@ -139,7 +139,7 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
     return (
         <div
             ref={containerRef}
-            className={`flex flex-row h-28 xl:h-32 2xl:h-48 relative select-none overflow-hidden group w-full bg-neutral-50 p-2 ${ungrouped ? 'mt-4' : ''}`}
+            className={`flex flex-row h-28 xl:h-32 2xl:h-48 relative select-none overflow-hidden group w-full bg-neutral-50 p-2 ${sourceView ? 'mt-4' : ''}`}
             data-carousel="true"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -185,7 +185,7 @@ export default function Carousel({ items }: { items: CarouselItem[] }) {
                     </div>
                 )}
             </div>
-            {!ungrouped && <strong className="absolute top-0 left-0 text-sm px-1 text-black bg-white/70 backdrop-blur-sm m-1 py-0 rounded-md">{datasetTitles[items[currentIndex].dataset]}</strong>}
+            {!sourceView && <strong className="absolute top-0 left-0 text-sm px-1 text-black bg-white/70 backdrop-blur-sm m-1 py-0 rounded-md">{datasetTitles[items[currentIndex].dataset]}</strong>}
             <div className="absolute top-0 right-0 flex gap-0">
                 {items.length > 1 && (
                     <div className={`bg-neutral-950/70 flex items-center text-white backdrop-blur-sm text-sm px-2 py-0 rounded-md m-1`}>

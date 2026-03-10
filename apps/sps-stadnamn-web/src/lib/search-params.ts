@@ -1,6 +1,7 @@
 import { fieldConfig } from '@/config/search-config';
 import { useSearchParams } from 'next/navigation';
 import { usePerspective } from './param-hooks';
+import { base64UrlToString } from './param-utils';
 
 
 
@@ -20,6 +21,8 @@ export function useSearchQuery() {
     const searchQuery = new URLSearchParams()
     const size = parseInt(searchParams.get('size') || "20")
     const datasetTag = searchParams.get('datasetTag')
+    const group = searchParams.get('group')
+    const sourceView = searchParams.get('sourceView')
 
 
 
@@ -74,7 +77,11 @@ export function useSearchQuery() {
         searchQuery.set('datasetTag', urlDatasetTag)
     }
 
+    
+
     // Params that aren't considered filters
+
+
     const fulltext = searchParams.get('fulltext')
     if (fulltext && !tree && searchParams.get('q')) {
         searchQuery.set('fulltext', 'on')
@@ -85,9 +92,11 @@ export function useSearchQuery() {
         searchQuery.set('fuzzy', 'on')
     }
 
-    const ungrouped = searchParams.get('ungrouped')
-    if (ungrouped === 'on') {
-        searchQuery.set('ungrouped', 'on')
+    if (sourceView === 'on') {
+        searchQuery.set('sourceView', 'on')
+        if (group) {
+            searchQuery.set('group', group)
+        }
     }
 
     if (searchParams.get('radius') && searchParams.get('point')) {

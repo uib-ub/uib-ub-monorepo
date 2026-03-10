@@ -14,21 +14,21 @@ export default function GroupedResultsToggle() {
     const { scrollableContentRef, isMobile } = useContext(GlobalContext)
 
     const init = searchParams.get('init')
-    const ungrouped = searchParams.get('ungrouped') === 'on'
-    const isGrouped = !ungrouped
+    const sourceView = searchParams.get('sourceView') === 'on'
+    const isGrouped = !sourceView
 
 
     // Track previous mode so we only scroll when it actually changes
-    const previousNoGroupingRef = useRef(ungrouped)
+    const previousNoGroupingRef = useRef(sourceView)
 
     useEffect(() => {
-        if (previousNoGroupingRef.current === ungrouped) {
+        if (previousNoGroupingRef.current === sourceView) {
             // First run or no change – just sync the value
-            previousNoGroupingRef.current = ungrouped
+            previousNoGroupingRef.current = sourceView
             return
         }
 
-        previousNoGroupingRef.current = ungrouped
+        previousNoGroupingRef.current = sourceView
 
         if (scrollableContentRef.current) {
             scrollableContentRef.current.scrollTo({
@@ -36,9 +36,9 @@ export default function GroupedResultsToggle() {
                 behavior: 'auto',
             })
         }
-    }, [ungrouped, scrollableContentRef])
+    }, [sourceView, scrollableContentRef])
 
-    const { groupedInitId, ungroupedInitUuid } = useInitData()
+    const { groupedInitId, sourceViewInitUuid } = useInitData()
 
     const toggleGrouping = (enableGrouping: boolean) => {
         const newParams = new URLSearchParams(searchParams.toString())
@@ -47,10 +47,10 @@ export default function GroupedResultsToggle() {
 
         if (enableGrouping) {
             // Enable grouped view ("Namnegrupper")
-            newParams.delete('ungrouped')
+            newParams.delete('sourceView')
         } else {
             // Disable grouped view ("Kjeldeoppslag")
-            newParams.set('ungrouped', 'on')
+            newParams.set('sourceView', 'on')
 
         }
 

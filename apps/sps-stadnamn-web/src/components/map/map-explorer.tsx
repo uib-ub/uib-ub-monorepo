@@ -1161,11 +1161,11 @@ export default function MapExplorer() {
               </Marker>
             )}
             { !coordinateInfo && point && initValue && (() => {
-              const initIsActive = ungrouped ? !activePoint : (!searchParams.get('group') || searchParams.get('group') === searchParams.get('init'))
-              // In ungrouped mode, the init anchor marker should be inactive when there
+              const initIsActive = sourceView ? !activePoint : (!searchParams.get('group') || searchParams.get('group') === searchParams.get('init'))
+              // In sourceView mode, the init anchor marker should be inactive when there
               // is an active marker at a different coordinate than `point`.
               const hasOtherActivePoint = Boolean(
-                ungrouped &&
+                sourceView &&
                 point &&
                 activePoint &&
                 !areSamePoint(point, activePoint)

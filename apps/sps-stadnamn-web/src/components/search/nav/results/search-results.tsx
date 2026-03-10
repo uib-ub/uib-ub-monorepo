@@ -2,7 +2,6 @@
 import Spinner from "@/components/svg/Spinner";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
-import { datasetTitles } from "@/config/metadata-config";
 import { clampMaxResults, expandedMaxResultsParam, getClampedMaxResultsFromParam } from "@/config/max-results";
 import { useGroup, usePoint } from "@/lib/param-hooks";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
@@ -26,26 +25,33 @@ import ResultItem from "./result-item";
 import SearchQueryDisplay from "./search-query-display";
 import IconButton from "@/components/ui/icon-button";
 import GroupedResultsToggle from "./grouped-results-toggle";
+import { GroupFilters } from "../../details/group/names-section";
+import { DatasetSummary } from "../../dataset-summary";
 
 
 
-const CollapsibleResultItem = ({ hit, activeGroupValue }: { hit: any; activeGroupValue: string | null }) => {
-  const [expanded, setExpanded] = useState(activeGroupValue == hit.fields['group.id'][0])
+const CollapsibleResultItem = ({ hit, activeGroupValue }: { hit: any; activeGroupValue: string | null }) => {  
   const searchParams = useSearchParams()
-  const ungrouped = searchParams.get('ungrouped') === 'on'
-  const groupCode = ungrouped ? hit.fields['uuid'][0] : stringToBase64Url(hit.fields['group.id'][0])
-
-  const distanceMeters = typeof hit.distance === 'number' ? hit.distance : null
+  const isMobile = useContext(GlobalContext).isMobile
+  const init = searchParams.get('init')
+  const notClickable = isMobile || !init
+  const [expanded, setExpanded] = useState(!searchParams.get('init')) // useState(activeGroupValue == hit.fields['group.id'][0])
+  const sourceView = searchParams.get('sourceView') === 'on'
+  const groupCode = sourceView ? hit.fields['uuid'][0] : stringToBase64Url(hit.fields['group.id'][0])
+  
 
   return (
-    <li className="relative" key={hit.fields['group.id'][0]}>
+    <li className={`relative`} key={hit.fields['group.id'][0]}>
       <ResultItem
         hit={hit}
-        onClick={() => setExpanded(!expanded)}
-        aria-controls={`group-info-${hit.fields['group.id'][0]}`}
-        aria-expanded={expanded}
+        notClickable={notClickable}
+        {...(!notClickable && { 
+          'onClick': () => setExpanded(!expanded),
+          'aria-expanded': expanded,
+          'aria-controls': `group-info-${hit.fields['group.id'][0]}`
+        })}
       />
-      {(expanded || ungrouped) && (
+      {(notClickable || expanded) && (
         <GroupInfo
           id={`group-info-${hit.fields['group.id'][0]}`}
           overrideGroupCode={groupCode}
@@ -85,7 +91,7 @@ export default function SearchResults() {
   const group = searchParams.get('group')
   const qParam = searchParams.get('q')?.trim()
   const resultsParam = getClampedMaxResultsFromParam(searchParams.get('maxResults'))
-  const ungrouped = searchParams.get('ungrouped') === 'on'
+  const sourceView = searchParams.get('sourceView') === 'on'
   const {
     initData,
     initLoading,
@@ -93,13 +99,14 @@ export default function SearchResults() {
     initGroupData,
     initDocData,
   } = useInitData()
+  const { groupData } = useGroupData(group)
   const initValue = init ? base64UrlToString(init) : null
   // In grouped view, init points to a group id (base64 encoded).
   // In non-grouped view, init points to a source uuid, so we must derive the
   // corresponding group id from grouped init data to exclude it from collapsed results.
   const initGroupId = init
-    ? (initGroupData?.group?.id ?? (!ungrouped ? initValue : null))
-    : (!ungrouped ? initValue : null)
+    ? (initGroupData?.group?.id ?? (!sourceView ? initValue : null))
+    : (!sourceView ? initValue : null)
   const { groupData: activeGroupData } = useGroupData()
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const { isMobile, sosiVocab, mapFunctionRef } = useContext(GlobalContext)
@@ -108,7 +115,7 @@ export default function SearchResults() {
   const filterCount = facetFilters.length + datasetFilters.length
   const router = useRouter()
   const identicalQuery = qParam?.toLowerCase() == initSearchLabel?.toLowerCase()
-  const coordinateInfo = searchParams.get('coordinateInfo') == 'on' && !ungrouped
+  const coordinateInfo = searchParams.get('coordinateInfo') == 'on' && !sourceView
   const labelFilter = searchParams.get('labelFilter') === 'on'
   const [playingPreviewId, setPlayingPreviewId] = useState<string | null>(null)
   const audioPreviewRef = useRef<HTMLAudioElement | null>(null)
@@ -147,7 +154,7 @@ export default function SearchResults() {
   const getAdditionalResultsCount = () => {
     if (!resultData) return 0
     const allHits = resultData.pages.flatMap((page: any) => page.data || [])
-    if (ungrouped && init) {
+    if (sourceView && init) {
       return allHits.filter((hit: any) => (hit._source?.uuid ?? hit.uuid) !== init).length
     }
     if (!initGroupId) return allHits.length
@@ -167,16 +174,16 @@ export default function SearchResults() {
   const alternativeInitLabels = useMemo(() => {
     if (!hasNoAdditionalResults) return []
     return getAlternativeInitLabels({
-      ungrouped,
+      sourceView,
       initDocData,
       initGroupData,
       currentQuery: qParam,
       initSearchLabel,
       maxLabels: 8,
     })
-  }, [hasNoAdditionalResults, initDocData, initGroupData, initSearchLabel, qParam, ungrouped])
+  }, [hasNoAdditionalResults, initDocData, initGroupData, initSearchLabel, qParam, sourceView])
   const hasMaxResultsLimit = resultsParam > 0
-  const initVisibleCount = ungrouped ? (init ? 1 : 0) : (initGroupId ? 1 : 0)
+  const initVisibleCount = sourceView ? (init ? 1 : 0) : (initGroupId ? 1 : 0)
   const maxAdditionalVisible = hasMaxResultsLimit
     ? Math.max(resultsParam - initVisibleCount, 0)
     : Number.POSITIVE_INFINITY;
@@ -255,15 +262,6 @@ export default function SearchResults() {
       }
     })
 
-    let secondaryTitle = "";
-    if (datasets.length > 1) {
-      const firstDs = datasets[0]!;
-      const restCount = datasets.length - 1;
-      secondaryTitle = `${datasetTitles[firstDs] || firstDs} +${restCount}`;
-    } else {
-      secondaryTitle = datasetTitles[datasets[0]!] || datasets[0]!;
-    }
-
     const handlePlayAudio = (recording: any) => {
       // Toggle pause if the same recording is already playing
       if (audioPreviewRef.current && playingPreviewId === recording.uuid) {
@@ -328,10 +326,12 @@ export default function SearchResults() {
       </div>
 
       {/* Display name variants and datasets under the title */}
-      {(otherLabels.length > 0 || secondaryTitle) && (
+      {(otherLabels.length > 0 || datasets.length > 0) && (
         <div className="mt-2 text-sm text-neutral-700">
-          {secondaryTitle && <span>{secondaryTitle}</span>}
-          {secondaryTitle && otherLabels.length > 0 && <span className="mx-1">|</span>}
+          {datasets.length > 0 && (
+            <DatasetSummary datasetKeys={datasets} />
+          )}
+          {datasets.length > 0 && otherLabels.length > 0 && <span className="mx-1">|</span>}
           {otherLabels.length > 0 && (
             <span>
               {otherLabels.join(', ')}
@@ -348,7 +348,7 @@ export default function SearchResults() {
   return (
     <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
       {
-        (point && !init) && !coordinateInfo && !labelFilter && (
+        (point && !init) && !coordinateInfo && !labelFilter && !sourceView && (
           <div className="p-3 flex flex-col gap-2">
             <div className="flex items-center gap-2 justify-between">
               <IconButton label="Zoom til startpunktet" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" /></IconButton>
@@ -373,6 +373,11 @@ export default function SearchResults() {
           </div>
         )
       }
+      {
+        group && sourceView && groupData && (
+          <GroupFilters />
+        )
+      }
       {init && !coordinateInfo && !labelFilter && (initLoading ? (
         <div className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-300">
           <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `10rem` }}></div>
@@ -380,11 +385,11 @@ export default function SearchResults() {
         </div>
       ) : initData && (
         <div className="relative" key={`init-${initValue}`}>
-          {ungrouped ? (
+          {sourceView ? (
             <GroupInfo id={`group-info-${init}`} overrideGroupCode={init || undefined} docData={initDocData} />
           ) : (
             <>
-              <ResultItem hit={initGroupData} />
+              <ResultItem hit={initGroupData} notClickable={true} />
               {initGroupData.fields?.['group.id'] ? (
                 <GroupInfo id={`group-info-${initGroupData.fields['group.id']}`} overrideGroupCode={init || undefined} />
               ) : null}
@@ -433,7 +438,7 @@ export default function SearchResults() {
             </>
             : 
             <>
-            <span id="other-groups-title" className={`text-lg font-sans text-neutral-900 whitespace-nowrap`}>{ungrouped ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}</span>
+            <span id="other-groups-title" className={`text-lg font-sans text-neutral-900 whitespace-nowrap`}>{sourceView ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}</span>
             
             <Clickable add={{ q: initSearchLabel}}
                 className="ml-auto px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-1 cursor-pointer no-underline max-w-full min-w-0"
@@ -479,7 +484,7 @@ export default function SearchResults() {
                 return (
                   <Fragment key={`page-${pageIndex}`}>
                     {page.data?.map((item: any) => {
-                      if (ungrouped) {
+                      if (sourceView) {
                         const itemUuid = item._source?.uuid ?? item.uuid
                         if (init && itemUuid === init) return null
                         if (renderedAdditional >= maxAdditionalVisible) return null
