@@ -30,9 +30,9 @@ export default function useInitData() {
     const initLoading = sourceView ? initDocLoading : initGroupLoading
     const initSearchLabel = sourceView
         ? initDocData?._source?.label?.trim()
-        : initGroupData?.fields?.label?.[0]?.trim()
-    const groupedInitId = sourceView ? initDocData?._source?.group?.id : initGroupData?.group?.id
-    const sourceViewInitUuid = sourceView ? init : initGroupData?.fields?.['uuid']?.[0]
+        : initGroupData?.label?.trim()
+    const groupedInitId = sourceView ? initDocData?._source?.group?.id : initGroupData?.id
+    const sourceViewInitUuid = sourceView ? init : initGroupData?.id
 
     return {
         init,

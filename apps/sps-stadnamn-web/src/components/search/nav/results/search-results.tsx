@@ -105,7 +105,7 @@ export default function SearchResults() {
   // In non-grouped view, init points to a source uuid, so we must derive the
   // corresponding group id from grouped init data to exclude it from collapsed results.
   const initGroupId = init
-    ? (initGroupData?.group?.id ?? (!sourceView ? initValue : null))
+    ? (initGroupData?.id ?? (!sourceView ? initValue : null))
     : (!sourceView ? initValue : null)
   const { groupData: activeGroupData } = useGroupData()
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
@@ -202,7 +202,7 @@ export default function SearchResults() {
     const summaryGroupData = init ? initGroupData : activeGroupData
     if (!summaryGroupData) return null;
 
-    const label = summaryGroupData?.fields?.label?.[0]
+    const label = summaryGroupData?.label
     const datasets: string[] = []
     const seenDatasets = new Set<string>()
     const audioItems: any[] = []
@@ -562,7 +562,7 @@ export default function SearchResults() {
 
 
         {/* Error and empty states */}
-        {searchError || resultError ? (
+        {(searchError || resultError) ? (
           <div className="flex justify-center">
             <div role="status" aria-live="polite" className="text-primary-700 pb-4">
               Det har oppstått ein feil

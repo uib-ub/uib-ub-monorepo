@@ -92,13 +92,7 @@ export default function MapExplorer() {
   const getDisplayLabel = (fields?: Record<string, any> | null): string => {
     const label = fields?.label?.[0]
     const groupLabel = fields?.["group.label"]?.[0]
-    return (
-      (
-        singleDatasetSelected
-          ? (label || groupLabel)
-          : (groupLabel || label)
-      ) || '[utan namn]'
-    )
+    return (groupLabel || label || '[utan namn]')
   }
 
   const areSamePoint = (a: [number, number] | null, b: [number, number] | null) =>
@@ -891,16 +885,7 @@ export default function MapExplorer() {
 
 
         const focusGroupMarker = () => {
-          console.log("focusGroupMarker", activeMarkerMode, point, groupData?.fields?.location?.[0]?.coordinates)
-          const pointFocusTarget =
-            (activeMarkerMode === 'labels' || activeMarkerMode === 'points') && point
-              ? point
-              : null
-          const groupFocusTarget = groupData?.fields?.location?.[0]?.coordinates
-            ? [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]] as [number, number]
-            : null
-
-          const focusTarget = pointFocusTarget || groupFocusTarget
+          const focusTarget = groupData?.coordinates
           if (!focusTarget) return
 
           if (mapInstance.current) {
@@ -1198,9 +1183,9 @@ export default function MapExplorer() {
                 zIndexOffset={2000}
                 icon={new leaflet.DivIcon(
                   activeGroupHasArea
-                    ? getAreaLabelMarkerIcon(getDisplayLabel(groupData.fields))
+                    ? getAreaLabelMarkerIcon(groupData.label || '[utan namn]')
                     : getLabelMarkerIcon(
-                      getDisplayLabel(groupData.fields),
+                      groupData.label || '[utan namn]',
                       'accent',
                       undefined,
                       true,

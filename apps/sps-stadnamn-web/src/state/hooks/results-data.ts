@@ -29,6 +29,10 @@ export default function useResultsData() {
         sourceViewInitialPage,
     } = useUngroupedData();
 
+    if (collapsedError) { 
+        console.error("collapsedError", collapsedError)
+    }
+
     return {
         resultData: sourceView ? sourceViewData : collapsedData,
         resultError: sourceView ? sourceViewError : collapsedError,

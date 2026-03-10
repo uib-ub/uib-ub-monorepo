@@ -18,6 +18,7 @@ type OutputData = {
   labels: string[],
   sosi: string[],
   coordinates: number[],
+  fields: Record<string, any>,
   
 };
 
@@ -26,6 +27,8 @@ const buildGroupQuery = (groupValue: string) => {
     "size": 1,
     "fields": [
       "group.label",
+      "group.id",
+      "location"
     ],
     "collapse": {
       "field": "group.id",
@@ -170,7 +173,23 @@ export async function GET(request: Request) {
     "id": data?.hits?.hits?.[0]?.fields?.['group.id']?.[0],
     "label": data?.hits?.hits?.[0]?.fields?.['group.label']?.[0],
     "total": data?.hits?.total?.value,
+    "fields": data?.hits?.hits?.[0]?.fields,
   };
+  if (data?.hits?.hits?.[0]?.fields?.['location']?.[0]?.coordinates) {
+    outputData.fields = {
+      ...outputData.fields,
+      location: data?.hits?.hits?.[0]?.fields?.['location']?.[0]?.coordinates
+    }
+  } else {
+    // FInd the first on in inner hits
+    const altLocation = data?.hits?.hits?.find((hit: any) => hit.fields?.['location']?.[0]?.coordinates)?.fields?.['location']?.[0]?.coordinates;
+    if (altLocation) {
+      outputData.fields = {
+        ...outputData.fields,
+        location: altLocation
+      }
+    }
+  }
   if (iiifItems.length > 0) outputData.iiifItems = iiifItems;
   if (textItems.length > 0) outputData.textItems = textItems;
   if (audioItems.length > 0) outputData.audioItems = audioItems;

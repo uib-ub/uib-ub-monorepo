@@ -30,9 +30,9 @@ const collapsedDataQuery = async ({
     // Group data already uses that order, but `point` from the URL is [lat, lon],
     // so we need to flip it before sending it as `initLocation`.
     const initLocation =
-        initGroupData?.fields?.location?.[0]?.coordinates ||
+        initGroupData?.coordinates ||
         (point ? [point[1], point[0]] as [number, number] : null)
-    const initLabel = initGroupData?.sources[0]?.label || undefined
+    const initLabel = initGroupData?.label || undefined
 
     const res = await fetch(`/api/search/collapsed?${searchQueryString}${searchSort ? `&searchSort=${searchSort}` : ''}`, {
         method: 'POST',

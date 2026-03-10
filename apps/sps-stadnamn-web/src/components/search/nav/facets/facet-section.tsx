@@ -34,17 +34,19 @@ const RadiusFilter = () => {
   const submittedRadius = searchParams.get('radius')
   const point = usePoint()
 
-  // Get the current location (either from point or group)
-  const currentLocation = point || (groupData?.sources?.find((source: any) => source.location?.coordinates)?.location?.coordinates ?
-    [groupData.sources.find((source: any) => source.location?.coordinates).location.coordinates[1],
-    groupData.sources.find((source: any) => source.location?.coordinates).location.coordinates[0]] as [number, number] :
-    null)
+  // Get the current location (either from point or group center coordinates)
+  const rawGroupCoords = (groupData as any)?.coordinates as number[] | undefined
+  const groupLocation: [number, number] | null =
+    Array.isArray(rawGroupCoords) && rawGroupCoords.length >= 2
+      ? [rawGroupCoords[1], rawGroupCoords[0]]
+      : null
+  const currentLocation = point || groupLocation
 
   if (!currentLocation) return null
 
   const handleRadiusChange = (value: string) => {
     setDisplayRadius(value ? parseInt(value) : null)
-    setDisplayPoint(point || (groupData?.fields?.location?.[0]?.coordinates ? [groupData.fields.location[0].coordinates[1], groupData.fields.location[0].coordinates[0]] as [number, number] : null))
+    setDisplayPoint(point || groupLocation)
   }
 
 

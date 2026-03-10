@@ -18,7 +18,9 @@ export default function SearchQueryDisplay() {
   const init = searchParams.get('init')
   const { groupData: initGroupData } = useGroupData(init)
   const qParam = searchParams.get('q')
-  const initHasCoordinates = !!initGroupData?.sources?.some((source: any) => source.location?.coordinates)
+  const initHasCoordinates =
+    Array.isArray((initGroupData as any)?.coordinates) &&
+    (initGroupData as any).coordinates.length >= 2
   const searchSort = searchParams.get('searchSort')
 
 
@@ -27,7 +29,7 @@ export default function SearchQueryDisplay() {
   const isFuzzy = searchParams.get('fuzzy') === 'on'
   const fulltext = searchParams.get('fulltext')
 
-  const initSearchLabel = initGroupData?.group?.label
+  const initSearchLabel = initGroupData?.label
   const expandedMaxResultsParam = searchParams.get('maxResults') || defaultMaxResultsParam
 
   return (

@@ -84,18 +84,15 @@ export default function GroupInfo({
 
 
 
-    const markerCoords = groupData?.fields?.location?.[0]?.coordinates
-    const groupMarkerPosition: [number, number] | null =
-        (Array.isArray(markerCoords) && markerCoords.length >= 2)
-            ? (() => {
-                const lat = Number(markerCoords[1])
-                const lng = Number(markerCoords[0])
-                return Number.isFinite(lat) && Number.isFinite(lng) ? [lat, lng] : null
-            })()
-            : null
-    // Match the marker position after selecting this group ("Forankre namnegruppe").
-    // The new accent marker should be the group's marker coordinate.
-    const preferredFlyTarget: [number, number] | null = groupMarkerPosition
+    // Group coordinates are stored as [lon, lat]; convert to [lat, lon] for the map.
+    const rawGroupCoordinates = groupData?.coordinates
+    const hasGroupCoordinates = Array.isArray(rawGroupCoordinates) && rawGroupCoordinates.length >= 2
+    const groupLatLng: [number, number] | null = hasGroupCoordinates
+        ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])]
+        : null
+    const activePointValue = hasGroupCoordinates
+        ? `${rawGroupCoordinates[1]},${rawGroupCoordinates[0]}`
+        : null
 
 
 
@@ -137,14 +134,14 @@ export default function GroupInfo({
                 {
                     audioItems?.map((audioItem: any) => (
                         <AudioPlayerList
-                            key={audioItem.uuid + "audio"}
+                            key={audioItem.uuid + "-audio"}
                             recordings={Array.isArray(audioItem.recordings) ? audioItem.recordings : []}
                             showArchiveLink
                         />
                     ))
                 }
                 
-                {textItems.length > 0 && <TextTab textItems={textItems} />}
+                {textItems?.length > 0 && <TextTab textItems={textItems} />}
 
             
 
@@ -254,7 +251,7 @@ export default function GroupInfo({
                 <div className="flex flex-row items-center gap-2">
 
 
-                    {!preferredFlyTarget ?
+                    {!groupData?.coordinates?.length ?
                         <span className="text-sm text-neutral-700 px-2 whitespace-nowrap">
                             Utan koordinat
                         </span>
@@ -264,7 +261,7 @@ export default function GroupInfo({
                             label="Gå til koordinat"
                             onClick={() => {
                                 mapFunctionRef.current?.flyTo(
-                                    preferredFlyTarget,
+                                    groupLatLng,
                                     15,
                                     { duration: 0.25, maxZoom: 18, padding: [50, 50] }
                                 );
@@ -273,7 +270,7 @@ export default function GroupInfo({
                                 }
                             }}
                             remove={['group', 'activePoint']}
-                            add={{ group: initValue == activeGroupValue ? null : stringToBase64Url(groupData.id), activePoint: preferredFlyTarget?.toString() }}
+                            add={{ group: initValue == activeGroupValue ? null : stringToBase64Url(groupData.id), activePoint: activePointValue }}
                             className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-neutral-300 btn btn-outline"
                         >
                             <PiMapPinFill aria-hidden="true" className="text-xl text-neutral-800" />
@@ -282,7 +279,7 @@ export default function GroupInfo({
                     }
 
                     
-                    {groupTotal > 0 && <Clickable className="btn btn-outline btn-compact rounded-full items-center gap-1 pr-2" add={{ activePoint: preferredFlyTarget?.toString() || null, sourceView: 'on', group: stringToBase64Url(groupData.id) }}>
+                    {groupTotal > 0 && <Clickable className="btn btn-outline btn-compact rounded-full items-center gap-1 pr-2" add={{ activePoint: activePointValue, sourceView: 'on', group: stringToBase64Url(groupData.id) }}>
                     {groupTotal} oppslag<PiCaretRightBold aria-hidden="true" className="text-primary-700" />
                 </Clickable>}
 

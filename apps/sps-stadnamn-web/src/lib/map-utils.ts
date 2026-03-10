@@ -464,11 +464,18 @@ export function fitBoundsToGroupSources(
       ],
       fitOptions
     );
-  } else if (sourcesWithCoords.length === 1 || groupData.fields?.location?.[0]?.coordinates) {
+  } else if (
+    sourcesWithCoords.length === 1 ||
+    Array.isArray((groupData as any).coordinates) && (groupData as any).coordinates.length === 2 ||
+    groupData.fields?.location?.[0]?.coordinates
+  ) {
     // Default: fly to group location at zoom 15
-    const coords = sourcesWithCoords.length === 1
-      ? sourcesWithCoords[0].location.coordinates
-      : groupData.fields.location[0].coordinates;
+    const coords =
+      sourcesWithCoords.length === 1
+        ? sourcesWithCoords[0].location.coordinates
+        : (Array.isArray((groupData as any).coordinates) && (groupData as any).coordinates.length === 2
+          ? (groupData as any).coordinates
+          : groupData.fields.location[0].coordinates);
     if (paddingTopLeft && paddingBottomRight) {
       // Use flyToBounds with a tiny epsilon so asymmetric padding is applied for sidebar-aware centering
       const lat = coords[1], lng = coords[0];

@@ -54,7 +54,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
     const label = hit.fields?.label?.[0] || ''
 
 
-    if (!hit._index) return <div className="p-2">Det har oppstått ein feil: Kunne ikkje hente kjelder</div>
+    if (!hit) return <div className="p-2">Det har oppstått ein feil: Kunne ikkje hente kjelder</div>
 
 
     return <div  {...rest} className={`w-full h-full ${(isInit || notClickable) ? '' : 'bg-neutral-50'} aria-expanded:border-b aria-expanded:border-neutral-100 flex items-center group no-underline ${isInit ? 'pb-0' : ''}`}>
@@ -63,8 +63,8 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
             notClickable={notClickable}
             onClick={() => !notClickable && onClick?.()}
             remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
-            add={{ group: activeGroupValue == hit.fields["group.id"][0] ? null : stringToBase64Url(hit.fields["group.id"][0]),
-                activePoint: hit.fields.location ? `${hit.fields.location[0].coordinates[1]},${hit.fields.location[0].coordinates[0]}` : null
+            add={{ group: activeGroupValue == hit.fields["group.id"]?.[0] ? null : stringToBase64Url(hit.fields["group.id"]?.[0]),
+                activePoint: hit.fields?.location?.[0]?.coordinates ? `${hit.fields?.location?.[0]?.coordinates[1]},${hit.fields?.location?.[0]?.coordinates[0]}` : null
 
             }}
 
@@ -77,7 +77,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                         <div className="inline-flex items-center gap-x-2 w-full">
 
                             <span className="font-semibold">
-                                {hit.fields.label?.[0]}
+                                {hit.fields.label?.[0] || hit.fields?.["group.label"]?.[0]}
                             </span>
                             {!perspectiveIsGrunnord && (
                                 <em className="text-neutral-800 ml-auto">
@@ -91,7 +91,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                     {!isGrunnord && (
                         <span className="font-semibold flex items-center gap-x-2">
                             { isInit && <img src="/currentLocation.svg" alt="" aria-hidden="true" className="h-6 mb-1 self-center " />}
-                            {label}
+                            {label || hit.fields?.["group.label"]?.[0]}
                         </span>
                     )}
                     <span className="text-neutral-900">{detailsRenderer(hit)}</span>
@@ -109,7 +109,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
             {hit.highlight && <>{formatHighlight(hit.highlight['content.html']?.[0] || hit.highlight['content.text']?.[0])}</>}
             
         </Clickable>
-        {(false && initValue && initValue == hit.fields["group.id"][0]) && (
+        {(false && initValue && initValue == hit.fields["group.id"]?.[0]) && (
             <div className="p-3">
                 <ClickableIcon className="h-6 w-6 p-0 rounded-full btn btn-outline text-neutral-700" label="Lukk namnegruppe" remove={['init', 'activePoint', 'point' ]}>
                     <PiXBold />

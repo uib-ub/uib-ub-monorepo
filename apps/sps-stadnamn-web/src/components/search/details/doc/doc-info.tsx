@@ -192,7 +192,7 @@ export default function DocInfo({
 
             <AudioPlayerList recordings={recordings} showArchiveLink />
             
-            {textItems.length > 0 && <TextTab textItems={textItems} />}
+            {textItems?.length > 0 && <TextTab textItems={textItems} />}
 
             { (
                 <div className="w-full px-3 mt-auto">
