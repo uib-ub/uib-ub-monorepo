@@ -163,6 +163,8 @@ export default function SearchForm() {
             .sort((a, b) => (b.__clientScore ?? 0) - (a.__clientScore ?? 0))
     }, [data, inputState])
 
+    const tree = searchParams.get('tree')
+
     const dropdownSelect = (event: React.MouseEvent<HTMLLIElement>, inputString: string, group?: string, coordinates?: [number, number]) => {
         inputValue.current = inputString
         if (group) {
@@ -170,7 +172,7 @@ export default function SearchForm() {
             setInputState(inputString)
             if (coordinates?.length == 2) {
                 const [lon, lat] = coordinates
-                panPointIntoView(mapFunctionRef.current, [lat, lon], isMobile, false)
+                panPointIntoView(mapFunctionRef.current, [lat, lon], isMobile, false, undefined, tree ? 0.40 : 0.25)
                 setSubmittedPoint(`${lat},${lon}`)
             }
         }
@@ -236,7 +238,7 @@ export default function SearchForm() {
             const coords = hit.fields.location?.[0]?.coordinates
             if (coords?.length === 2) {
                 const [lon, lat] = coords
-                panPointIntoView(mapFunctionRef.current, [lat, lon], isMobile, false)
+                panPointIntoView(mapFunctionRef.current, [lat, lon], isMobile, false, undefined, tree ? 0.40 : 0.25)
                 setSubmittedPoint(`${lat},${lon}`)
             }
         }

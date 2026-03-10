@@ -6,8 +6,11 @@ import { buildTreeParam } from "@/lib/tree-param"
 import { useQueryClient } from "@tanstack/react-query"
 import CadastralTable from "../details/doc/cadastral-table"
 import { stringToBase64Url } from "@/lib/param-utils"
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
+import { panPointIntoView } from "@/lib/map-utils"
+import { GlobalContext } from "@/state/providers/global-provider"
+import { useSessionStore } from "@/state/zustand/session-store"
 
 const getTreeData = async (dataset: string | null, adm1?: string | null, adm2?: string | null) => {
     const params = new URLSearchParams()
@@ -39,6 +42,8 @@ export default function TreeList({
 }) {
     const searchParams = useSearchParams()
     const tree = searchParams.get('tree')
+    const { mapFunctionRef, isMobile } = useContext(GlobalContext)
+    const snappedPosition = useSessionStore((s) => s.snappedPosition)
 
     const { data: treeData } = useQuery({
         queryKey: ['treeData', dataset, adm1, adm2],
@@ -105,7 +110,12 @@ export default function TreeList({
                                 link
                                 id={itemUuid ? `tree-item-${itemUuid}` : undefined}
                                 remove={ ['activePoint']}
-  
+                                onClick={() => {
+                                    if (coords?.length === 2 && !isExpanded) {
+                                        const [lng, lat] = coords as [number, number]
+                                        panPointIntoView(mapFunctionRef.current, [lat, lng], isMobile, snappedPosition === 'middle', undefined, 0.40, 0)
+                                    }
+                                }}
                                 add={{
                                     doc: itemUuid != docUuid ? itemUuid : null,
                                     tree: itemUuid == expandedUuid ? buildTreeParam({ dataset, adm1, adm2}) :  buildTreeParam({ dataset, adm1, adm2, uuid: itemUuid })

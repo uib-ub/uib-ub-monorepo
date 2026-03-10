@@ -363,7 +363,9 @@ export function panPointIntoView(
   point: [number, number],
   isMobile: boolean,
   maxDrawer?: boolean,
-  reset?: boolean
+  reset?: boolean,
+  padRightFrac?: number,
+  padLeftFrac?: number
 ) {
   if (!map || !point) return false;
 
@@ -382,9 +384,9 @@ export function panPointIntoView(
     // Bottom reserved only when drawer is at max height
     padBottom = maxDrawer ? Math.round(size.y * (MAP_DRAWER_MAX_HEIGHT_SVH / 100)) : 0;
   } else {
-    // Desktop: 25% left/right, small symmetric y padding
-    padLeft = Math.round(size.x * 0.25);
-    padRight = Math.round(size.x * 0.25);
+    // Desktop: left panel default 25svw (absent in tree view), right panel variable (default 25%, 40% in tree view)
+    padLeft = Math.round(size.x * (padLeftFrac ?? 0.25));
+    padRight = Math.round(size.x * (padRightFrac ?? 0.25));
     const yPad = Math.round(Math.min(120, size.y * 0.1));
     padTop = yPad;
     padBottom = yPad;
@@ -422,12 +424,14 @@ export function fitBoundsToGroupSources(
   options?: {
     duration?: number;
     padding?: [number, number];
+    paddingTopLeft?: [number, number];
+    paddingBottomRight?: [number, number];
     maxZoom?: number;
   }
 ) {
   if (!mapInstance || !groupData) return;
 
-  const { duration = 0.25, padding = [50, 50], maxZoom = 18 } = options || {};
+  const { duration = 0.25, padding = [50, 50], paddingTopLeft, paddingBottomRight, maxZoom = 18 } = options || {};
 
   // Filter sources with valid coordinates
   const sourcesWithCoords = groupData.sources.filter(
@@ -445,20 +449,37 @@ export function fitBoundsToGroupSources(
       if (lng > maxLng) maxLng = lng;
     });
 
-    // Fly to bounds with padding
+    const fitOptions: Record<string, any> = { duration, maxZoom };
+    if (paddingTopLeft && paddingBottomRight) {
+      fitOptions.paddingTopLeft = paddingTopLeft;
+      fitOptions.paddingBottomRight = paddingBottomRight;
+    } else {
+      fitOptions.padding = padding;
+    }
+
     mapInstance.flyToBounds(
       [
         [minLat, minLng],
         [maxLat, maxLng]
       ],
-      { duration, padding, maxZoom }
+      fitOptions
     );
   } else if (sourcesWithCoords.length === 1 || groupData.fields?.location?.[0]?.coordinates) {
     // Default: fly to group location at zoom 15
     const coords = sourcesWithCoords.length === 1
       ? sourcesWithCoords[0].location.coordinates
       : groupData.fields.location[0].coordinates;
-    mapInstance.flyTo([coords[1], coords[0]], 15, { duration });
+    if (paddingTopLeft && paddingBottomRight) {
+      // Use flyToBounds with a tiny epsilon so asymmetric padding is applied for sidebar-aware centering
+      const lat = coords[1], lng = coords[0];
+      const eps = 1e-6;
+      mapInstance.flyToBounds(
+        [[lat + eps, lng - eps], [lat - eps, lng + eps]],
+        { duration, maxZoom: 15, paddingTopLeft, paddingBottomRight }
+      );
+    } else {
+      mapInstance.flyTo([coords[1], coords[0]], 15, { duration });
+    }
   }
 }
 

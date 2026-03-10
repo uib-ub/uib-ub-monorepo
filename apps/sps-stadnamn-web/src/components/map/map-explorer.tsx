@@ -179,6 +179,7 @@ export default function MapExplorer() {
 
     if (!sources.length) return
 
+    const rightPanelPx = isMobile ? 0 : Math.round(window.innerWidth * 0.40)
     fitBoundsToGroupSources(
       mapInstance.current,
       {
@@ -187,7 +188,12 @@ export default function MapExplorer() {
           ? { fields: { location: [{ coordinates: treeUnitDoc.location.coordinates }] } }
           : {}),
       },
-      { duration: 0.25, padding: [50, 50], maxZoom: 18 }
+      {
+        duration: 0.25,
+        maxZoom: 18,
+        paddingTopLeft: [20, 20],
+        paddingBottomRight: [rightPanelPx + 20, 20],
+      }
     )
     lastTreeFitKeyRef.current = key
   }, [treeDataset, treeUuid, treeUnitDoc, treeSubunitsData])

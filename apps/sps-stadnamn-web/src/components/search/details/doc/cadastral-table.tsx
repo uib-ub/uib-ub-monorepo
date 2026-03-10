@@ -19,6 +19,7 @@ import { useSearchParams } from 'next/navigation'
 import { useSessionStore } from '@/state/zustand/session-store'
 import { GlobalContext } from '@/state/providers/global-provider'
 import SubtleLink from '@/components/ui/clickable/subtle-link'
+import { panPointIntoView } from '@/lib/map-utils'
 
 interface CadastralTableProps {
   dataset: string
@@ -34,7 +35,8 @@ interface CadastralTableProps {
 
 export default function CadastralTable({ dataset, uuid, list, groupId: parentGroupId, gnr, adm1, adm2, flush, showMarkers = true }: CadastralTableProps) {
   const searchParams = useSearchParams()
-  const { scrollToBrukRef } = useContext(GlobalContext)
+  const { scrollToBrukRef, mapFunctionRef, isMobile } = useContext(GlobalContext)
+  const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const activePointParam = searchParams.get('activePoint')
   const rowRefs = useRef<Record<string, HTMLTableRowElement>>({})
   const clearTreeSavedQuery = useSessionStore((s) => s.clearTreeSavedQuery)
@@ -181,6 +183,12 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
                                     link
                                     add={{ activePoint }}
                                     aria-pressed={isActiveMarker}
+                                    onClick={() => {
+                                      if (coords?.length === 2) {
+                                        const [lng, lat] = coords as [number, number]
+                                        panPointIntoView(mapFunctionRef.current, [lat, lng], isMobile, snappedPosition === 'middle', undefined, 0.40, 0)
+                                      }
+                                    }}
                                     className={`inline-flex items-center justify-center ${flush ? "w-7 h-7" : "w-8 h-8"} rounded transition-colors ${isActiveMarker
                                       ? "text-accent-800 bg-accent-50 outline outline-1 outline-accent-700 hover:bg-accent-100"
                                       : "text-neutral-700 hover:bg-neutral-100"
