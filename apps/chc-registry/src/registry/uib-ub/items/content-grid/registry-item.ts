@@ -18,7 +18,7 @@ export const blocks: Registry['items'] = [
       },
     ],
     dependencies: [
-      '@radix-ui/react-slot',
+      'radix-ui',
       'next',
     ],
     css: {

@@ -4,7 +4,7 @@
   "title": "Content Grid",
   "description": "Content Grid",
   "dependencies": [
-    "@radix-ui/react-slot",
+    "radix-ui",
     "next"
   ],
   "files": [

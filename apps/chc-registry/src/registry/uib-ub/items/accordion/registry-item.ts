@@ -2,13 +2,13 @@ import type { Registry } from 'shadcn/schema';
 
 export const blocks: Registry['items'] = [
   {
-    name: 'button',
+    name: 'accordion',
     type: 'registry:ui',
-    title: 'Button',
-    description: 'Button',
+    title: 'Accordion',
+    description: 'Accordion',
     files: [
       {
-        path: 'uib-ub/items/button/components/button.tsx',
+        path: 'uib-ub/items/accordion/components/accordion.tsx',
         type: 'registry:ui',
       },
     ],
@@ -17,16 +17,15 @@ export const blocks: Registry['items'] = [
     ],
   },
   {
-    name: 'button-demo',
+    name: 'accordion-demo',
     type: 'registry:example',
-    title: 'Button',
-    description: 'Button',
+    title: 'Accordion',
+    description: 'Accordion',
     files: [
       {
-        path: 'uib-ub/items/button/examples/button-demo.tsx',
+        path: 'uib-ub/items/accordion/examples/accordion-demo.tsx',
         type: 'registry:example',
       },
     ],
-    registryDependencies: ['https://chc-registry.vercel.app/r/button.json'],
   },
 ];

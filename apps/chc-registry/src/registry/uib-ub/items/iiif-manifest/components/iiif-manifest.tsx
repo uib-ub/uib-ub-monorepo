@@ -25,29 +25,29 @@ const customTheme = {
      * Black and dark grays in a light theme.
      * All must contrast to 4.5 or greater with `secondary`.
      */
-    primary: "var(--color-neutral-800)",
-    primaryMuted: "var(--color-neutral-600)",
-    primaryAlt: "var(--color-neutral-700)",
+    primary: "var(--color-bg-6)",
+    primaryMuted: "var(--color-bg-4)",
+    primaryAlt: "var(--color-bg-5)",
 
     /**
      * Key brand color(s).
      * `accent` must contrast to 4.5 or greater with `secondary`.
      */
-    accent: "var(--color-red-600)",
-    accentMuted: "var(--color-red-400)",
-    accentAlt: "var(--color-red-500)",
+    accent: "var(--color-fg-4)",
+    accentMuted: "var(--color-fg-2)",
+    accentAlt: "var(--color-fg-3)",
 
     /**
      * White and light grays in a light theme.
      * All must must contrast to 4.5 or greater with `primary` and  `accent`.
      */
-    secondary: "var(--color-neutral-100)",
+    secondary: "var(--color-neutral-50)",
     secondaryMuted: "var(--color-neutral-200)",
     secondaryAlt: "var(--color-neutral-300)",
   },
   fonts: {
-    sans: "'Open Sans', sans-serif",
-    display: "Optima, Georgia, Arial, sans-serif",
+    sans: "'Myriad Pro', 'Open Sans', sans-serif",
+    display: "'EB Garamond', Georgia, serif",
   },
 };
 

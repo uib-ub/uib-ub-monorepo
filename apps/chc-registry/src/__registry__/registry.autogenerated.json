@@ -45,7 +45,7 @@
       "title": "Content Grid",
       "description": "Content Grid",
       "dependencies": [
-        "@radix-ui/react-slot",
+        "radix-ui",
         "next"
       ],
       "files": [
@@ -65,20 +65,46 @@
       "type": "registry:block"
     },
     {
+      "name": "card",
+      "title": "Card",
+      "description": "Card",
+      "files": [
+        {
+          "path": "src/registry/uib-ub/items/card/components/card.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "type": "registry:ui"
+    },
+    {
       "name": "button",
       "title": "Button",
       "description": "Button",
       "dependencies": [
-        "@radix-ui/react-slot",
-        "next"
+        "@base-ui/react"
       ],
       "files": [
         {
           "path": "src/registry/uib-ub/items/button/components/button.tsx",
-          "type": "registry:component"
+          "type": "registry:ui"
         }
       ],
-      "type": "registry:block"
+      "type": "registry:ui"
+    },
+    {
+      "name": "accordion",
+      "title": "Accordion",
+      "description": "Accordion",
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "files": [
+        {
+          "path": "src/registry/uib-ub/items/accordion/components/accordion.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "type": "registry:ui"
     }
   ]
 }

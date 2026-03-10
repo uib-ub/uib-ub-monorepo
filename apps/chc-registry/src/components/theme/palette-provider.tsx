@@ -1,6 +1,6 @@
 "use client";
 
-import React, {
+import {
   createContext,
   useContext,
   useEffect,
@@ -8,7 +8,8 @@ import React, {
   type ReactNode,
 } from "react";
 
-const PALETTES = ["red", "blue", "green"] as const;
+// Only provide "red" as an available palette option
+const PALETTES = ["grayscale", "red"] as const;
 
 export type Palette = (typeof PALETTES)[number];
 
@@ -39,8 +40,11 @@ export function PaletteProvider({ children }: { children: ReactNode }) {
     if (typeof document === "undefined") return;
     const root = document.documentElement;
 
-    PALETTES.forEach((p) => root.classList.remove(`palette-${p}`));
-    root.classList.add(`palette-${palette}`);
+    // Remove palette-red class, then add if needed (only "red" palette available)
+    root.classList.remove("palette-red");
+    if (palette === "red") {
+      root.classList.add("palette-red");
+    }
 
     window.localStorage.setItem("uib-palette", palette);
   }, [palette]);
@@ -61,4 +65,3 @@ export function usePalette() {
   }
   return ctx;
 }
-

@@ -1,5 +1,5 @@
 import { type Registry } from 'shadcn/schema';
-import glob from 'glob';
+import { glob } from 'glob';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 

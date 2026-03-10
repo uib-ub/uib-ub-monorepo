@@ -7,9 +7,8 @@ import { cn } from "@/lib/utils"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const LABELS: Record<Palette, string> = {
+  grayscale: "Grayscale",
   red: "Red",
-  blue: "Blue",
-  green: "Green",
 }
 
 type PaletteSwitcherProps = {
