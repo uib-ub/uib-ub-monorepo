@@ -432,8 +432,9 @@ export default function MapExplorer() {
         })
       } else {
         countItems.push(bucket)
-        maxDocCount = Math.max(maxDocCount, bucket.doc_count)
-        minDocCount = Math.min(minDocCount, bucket.doc_count)
+        const clusterCount = sourceView ? bucket.doc_count : (bucket.group_count?.value ?? bucket.doc_count)
+        maxDocCount = Math.max(maxDocCount, clusterCount)
+        minDocCount = Math.min(minDocCount, clusterCount)
 
       }
     })
@@ -446,7 +447,10 @@ export default function MapExplorer() {
         return ({ tile: key, ...item })
       })
     )
-    const clusters = countItems.map((item: any) => ({ ...item, radius: calculateRadius(item.doc_count, maxDocCount, minDocCount) }))
+    const clusters = countItems.map((item: any) => {
+      const clusterCount = sourceView ? item.doc_count : (item.group_count?.value ?? item.doc_count)
+      return { ...item, clusterCount, radius: calculateRadius(clusterCount, maxDocCount, minDocCount) }
+    })
 
     //console.log("MARKERS", markers)
     //console.log("CLUSTERS", clusters)
@@ -460,7 +464,7 @@ export default function MapExplorer() {
     markerResultsRef.current = allMarkers
 
     return allMarkers
-  }, [markerResults, activeMarkerMode, zoomState])
+  }, [markerResults, activeMarkerMode, zoomState, sourceView])
 
 
 
@@ -943,7 +947,8 @@ export default function MapExplorer() {
 
 
 
-                const clusterIcon = new leaflet.DivIcon(getClusterMarker(item.doc_count, item.radius * 2 + (item.doc_count > 99 ? item.doc_count.toString().length / 4 : 0),
+                const count = item.clusterCount ?? item.doc_count
+                const clusterIcon = new leaflet.DivIcon(getClusterMarker(count, item.radius * 2 + (count > 99 ? count.toString().length / 4 : 0),
                   item.radius * 2,
                   item.radius * 0.8))
 

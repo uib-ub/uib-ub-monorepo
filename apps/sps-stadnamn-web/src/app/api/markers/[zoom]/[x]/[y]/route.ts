@@ -44,6 +44,12 @@ export async function GET(
           precision: precision == "0" ? 6 : parseInt(precision) + 3
         },
         "aggs": {
+          "group_count": {
+            "cardinality": {
+              "field": "group.id",
+              "precision_threshold": 3000
+            }
+          },
           "groups": {
             "terms": {
               "field": "group.id",
