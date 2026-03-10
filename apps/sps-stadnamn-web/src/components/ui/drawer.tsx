@@ -7,6 +7,7 @@ import Clickable from "./clickable/clickable"
 import { usePathname, useSearchParams } from "next/navigation"
 import { useSearchQuery } from "@/lib/search-params"
 import { FilterButton } from "../map/map-toolbar"
+import { useMode } from "@/lib/param-hooks"
 
 
 
@@ -59,8 +60,10 @@ export default function Drawer({
     const options = searchParams.get('options') == 'on'
     const mapSettings = searchParams.get('mapSettings') == 'on'
     const { facetFilters, datasetFilters } = useSearchQuery()
-    const filterCount = facetFilters.length + datasetFilters.length
-    const showFilterButton = !isIiifRoute && !options && !mapSettings && !coordinateInfo && !labelFilter && snappedPosition != 'bottom'
+    const sourceView = searchParams.get('sourceView') === 'on'
+    const mode = useMode()
+
+    const showFilterButton = (sourceView || mode == 'table') && !isIiifRoute && !options && !mapSettings && !coordinateInfo && !labelFilter && snappedPosition != 'bottom'
 
 
 

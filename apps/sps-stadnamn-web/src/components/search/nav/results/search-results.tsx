@@ -550,12 +550,6 @@ export default function SearchResults() {
               })})()}
             </ul>
           )}
-          {isMobile && (
-                          <div className="mt-2 px-4">
-                            <span className="text-sm text-neutral-900">Søkemodus</span>
-                            <GroupedResultsToggle />
-                          </div>
-                        )}
         </>
       )}
 

@@ -295,7 +295,7 @@ export default function OverlayInterface() {
                         <>
                             {options && (
                                 <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
-                                    <div className="flex items-center gap-2 xl:px-1 w-full">
+                                    <div className="flex items-center gap-1 xl:px-1 w-full">
                                         <div id={isMobile ? 'drawer-title' : 'left-title'} className="text-base xl:text-lg text-neutral-900 font-sans">
                                             Filter
                                         </div>
@@ -359,11 +359,11 @@ export default function OverlayInterface() {
                         <TreeWindow />
                     ) : (
                         <>
-                            <div className={` flex items-center w-full ${isMobile ? 'h-8 min-h-8' : 'h-12 min-h-12'} px-2 py-1 xl:px-0 gap-2 xl:pl-2`}>
+                            <div className={` flex items-center w-full ${isMobile ? 'h-8 min-h-8' : 'h-12 min-h-12'} px-2 py-1  gap-2`}>
                                 <Clickable
                                     aria-expanded={!!maxResults}
                                     aria-controls="results-panel"
-                                    className="flex items-center gap-2 xl:px-1"
+                                    className="flex items-center gap-1 xl:px-1"
                                     // When opening, use default results count. When closing, remove param.
                                     add={{ maxResults: maxResults ? null : defaultMaxResultsParam }}
                                     remove={["maxResults", ...(isMobile ? ['options'] : [])]}
@@ -378,8 +378,8 @@ export default function OverlayInterface() {
                                         </span>
                                     )}
 
-                                    <div id={isMobile ? 'drawer-title' : 'right-title'} className={`text-base xl:text-lg text-neutral-900 font-sans ${isMobile ? 'w-full flex justify-end' : ''}`}>
-                                        {coordinateInfo && `Kartfesting` || labelFilter && 'Namneformer' || 'Treff'}
+                                    <div id={isMobile ? 'drawer-title' : 'right-title'} className={`text-sm xl:text-lg text-neutral-900 font-sans ${isMobile ? 'w-full flex justify-end' : ''}`}>
+                                        { sourceView && 'Kjeldeoppslag' || 'Namnegrupper'}
                                     </div>
 
                                     {!coordinateInfo && !labelFilter && (
@@ -406,11 +406,12 @@ export default function OverlayInterface() {
                                     </ClickableIcon>
                                 )}
 
-                                {!coordinateInfo && !labelFilter && !isMobile && (
-                                    <div className="ml-auto mr-4">
+                                {(
+                                    <div className="ml-auto">
                                         <GroupedResultsToggle />
                                     </div>
                                 )}
+
                             </div>
                             {showResults && (
                                 <div

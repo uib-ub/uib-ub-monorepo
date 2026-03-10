@@ -410,17 +410,6 @@ export default function GroupInfo({
                         <GroupFilters/>
                     </div>
                 )}
-
-                {/* min-w-0 so width is constrained by panel, not by expanded content */}
-                <div className="min-w-0 px-3">
-                    {!sourceView && false && <FilteredChildSources
-                            datasets={datasets}
-                            activeYear={activeYear}
-                            activeName={activeName}
-                            isInitGroup={activeGroupValue === groupData.group.id}
-                        />
-                    }
-                </div>
             </div>}
             <div className="px-3 text-neutral-900">
                 <DatasetSummary datasetKeys={Object.keys(datasets)} />

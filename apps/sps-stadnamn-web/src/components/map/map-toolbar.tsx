@@ -54,7 +54,8 @@ export default function MapToolbar() {
     const { mapSettings } = useOverlayParams()
     const tree = searchParams.get('tree')
     const router = useRouter()
-
+    const sourceView = searchParams.get('sourceView') === 'on'
+    
     const svhToRem = (svh: number) => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return 0
         const windowHeight = window.visualViewport?.height || window.innerHeight
@@ -97,7 +98,7 @@ export default function MapToolbar() {
                     top: isMobile ? currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM ? "4.25rem" : `${4 - currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem` : "0.5rem",
                 }}
             >
-                {!isMobile && !tree && isMobile &&  (
+                {!isMobile && !tree && isMobile && sourceView && (
                     <FilterButton />
                 )}
                 <RoundIconButton

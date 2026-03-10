@@ -39,7 +39,7 @@ export default function DocInfo({
     }
 
     const toText = (value: unknown): string => {
-        if (Array.isArray(value)) return value.filter(Boolean).join("/");
+        if (Array.isArray(value)) return value.filter(Boolean).join(" | ");
         return typeof value === "string" ? value : "";
     };
     const label = toText(source.label) || toText(source.title) || toText(source.name);
