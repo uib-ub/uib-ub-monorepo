@@ -17,7 +17,8 @@ type OutputData = {
   datasets: string[],
   labels: string[],
   sosi: string[],
-
+  coordinates: number[],
+  
 };
 
 const buildGroupQuery = (groupValue: string) => {
@@ -33,6 +34,7 @@ const buildGroupQuery = (groupValue: string) => {
         "size": 1000,
         "fields": [
           "iiif",
+          "location",
           "uuid",
           "label",
           "links",
@@ -102,6 +104,7 @@ export async function GET(request: Request) {
   const seenTextIds = new Set<string>()
   const labels = new Set<string>()
   const sosi = new Set<string>()
+  let coordinates: number[] | null = null
 
   const innerHits =
     data?.hits?.hits?.[0]?.inner_hits?.items?.hits &&
@@ -113,6 +116,10 @@ export async function GET(request: Request) {
     const index_name: string = hit._index
     const dataset: string = indexToCode(index_name)[0]
     if (dataset) datasets.add(dataset)
+    
+    if (!coordinates && Array.isArray(hit.fields?.['location'])) {
+      coordinates = hit.fields?.['location']?.[0]?.coordinates
+    }
 
     if (hit.fields?.['label']?.[0]) labels.add(hit.fields?.['label']?.[0])
     if (hit.fields?.['altLabels.label']?.[0]) labels.add(hit.fields?.['altLabels.label']?.[0])
@@ -149,6 +156,7 @@ export async function GET(request: Request) {
     if (hit.fields?.['audio.file']?.[0]) {
       audioItems.push({
         file: hit.fields?.['audio.file']?.[0],
+        uuid: hit.fields?.['uuid']?.[0],
         manifest: hit.fields?.['audio.manifest']?.[0],
         dataset
       })
@@ -169,6 +177,7 @@ export async function GET(request: Request) {
   if (datasets.size > 0) outputData.datasets = Array.from(datasets);
   if (labels.size > 0) outputData.labels = Array.from(labels);
   if (sosi.size > 0) outputData.sosi = Array.from(sosi);
+  if (coordinates) outputData.coordinates = coordinates;
 
 
 
