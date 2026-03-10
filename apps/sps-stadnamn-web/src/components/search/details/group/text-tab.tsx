@@ -4,6 +4,7 @@ import { useState } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { ExpandableContent } from "./expandable-content";
 import SourceLink from "./source-link";
+import Clickable from "@/components/ui/clickable/clickable";
 
 interface TextTabProps {
     textItems: any[];
@@ -93,9 +94,9 @@ export const TextTab = ({ textItems }: TextTabProps) => {
                 );
             })}
             {hasMultipleItems && (
-                <button
+                <Clickable
                     type="button"
-                    className="mx-3 mb-3 flex items-center gap-1 text-neutral-900 text-lg"
+                    className="mx-3 mb-3 flex items-center gap-1 text-neutral-900 text-sm"
                     aria-expanded={showAll}
                     aria-controls={`text-items-${textItems.length}`}
                     onClick={showAll ? () => {
@@ -103,8 +104,8 @@ export const TextTab = ({ textItems }: TextTabProps) => {
                         setFirstItemExpanded(false);
                     } : handleShowAll}
                 >
-                    {showAll ? <>Vis mindre tekstinnhald</> : <>Vis meir tekstinnhald (+{textItems.length - 1})</>}
-                </button>
+                    {showAll ? <>Vis færre</> : <>Vis fleire (+{textItems.length - 1})</>}
+                </Clickable>
             )}
         </>
     );
