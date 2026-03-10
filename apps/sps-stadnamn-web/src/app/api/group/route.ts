@@ -4,20 +4,49 @@ import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';
 import { base64UrlToString } from '@/lib/param-utils';
 import { fetchDoc } from '../_utils/actions';
+import { indexToCode } from '@/lib/utils';
 
 
 type OutputData = {
-  boost: number,
-  placeScore: number,
-  sources: Record<string, any>[],
+  id: string,
+  label: string,
+  total: number,
+  iiifItems: Record<string, any>[],
+  textItems: Record<string, any>[],
+  audioItems: Record<string, any>[],
+  datasets: string[],
+  labels: string[],
+  sosi: string[],
 
 };
 
 const buildGroupQuery = (groupValue: string) => {
   return ({
-    "size": 1000,
-    "fields": ["group.adm1", "group.adm2", "adm1", "adm2", "group.label", "label", "group.id", "uuid", "boost", "location"],
-
+    "size": 1,
+    "fields": [
+      "group.label",
+    ],
+    "collapse": {
+      "field": "group.id",
+      "inner_hits": {
+        "name": "items",
+        "size": 1000,
+        "fields": [
+          "iiif",
+          "uuid",
+          "label",
+          "links",
+          "altLabels.label",
+          "sosi",
+          "content.html",
+          "content.text",
+          "audio.file",
+          "audio.manifest",
+          "area",
+          "misc.Enhetsnummer",
+        ]
+      }
+    },
     "query": {
       "bool": {
         "filter": [{
@@ -28,6 +57,7 @@ const buildGroupQuery = (groupValue: string) => {
       }
     },
     "track_scores": false,
+    "_source": false,
     "sort": [
       {
         boost: {
@@ -36,8 +66,8 @@ const buildGroupQuery = (groupValue: string) => {
         }
       },
     ],
-    "track_total_hits": false,
-    "_source": ["uuid", "label", "attestations", "year", "boost", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area", "misc.Enhetsnummer", "misc.MNR", "misc.LNR", "ssr", "within", "cadastre", "adm1", "adm2"],
+
+    //"track_total_hits": false,
   })
 }
 
@@ -64,53 +94,83 @@ export async function GET(request: Request) {
     }
   }
 
-  const sources: any[] = []
-  const topDoc = {
-    boost: -1,
-    placeScore: -1,
-    group: data.hits?.hits[0]?._source?.group,
-    fields: data.hits?.hits[0]?.fields,
-    _index: data.hits?.hits[0]?._index
-  }
+  const iiifItems: any[] = []
+  const seenIiif = new Set<string>()
+  const textItems: any[] = []
+  const audioItems: any[] = []
+  const datasets: Set<string> = new Set()
+  const seenTextIds = new Set<string>()
+  const labels = new Set<string>()
+  const sosi = new Set<string>()
 
-  data?.hits?.hits.forEach((hit: any) => {
-    sources.push({
-      dataset: hit._index.split('-')[2],
-      uuid: hit._source.uuid,
-      label: hit._source.label,
-      misc: hit._source.misc,
-      textId: hit._source.misc?.Enhetsnummer,
-      attestations: hit._source.attestations,
-      year: hit._source.year,
-      sosi: hit._source.sosi,
-      content: hit._source.content,
-      iiif: hit._source.iiif,
-      recordings: hit._source.recordings,
-      location: hit._source.location,
-      coordinateType: hit._source.coordinateType,
-      area: hit._source.area,
-      links: hit._source.links,
-      link: hit._source.link,
-      ssr: hit._source.ssr,
-      boost: hit._source.boost,
-      within: hit._source.within,
-      cadastre: hit._source.cadastre,
-      // Needed by the "Opne matrikkelvisning" button (tree param), and these are NOT `group.adm1/adm2`.
-      adm1: hit._source.adm1,
-      adm2: hit._source.adm2,
-    })
+  const innerHits =
+    data?.hits?.hits?.[0]?.inner_hits?.items?.hits &&
+    Array.isArray((data.hits.hits[0] as any).inner_hits.items.hits)
+      ? (data.hits.hits[0] as any).inner_hits.items.hits
+      : (data?.hits?.hits?.[0]?.inner_hits?.items?.hits as any)?.hits ?? []
+
+  innerHits?.forEach((hit: any) => {
+    const index_name: string = hit._index
+    const dataset: string = indexToCode(index_name)[0]
+    if (dataset) datasets.add(dataset)
+
+    if (hit.fields?.['label']?.[0]) labels.add(hit.fields?.['label']?.[0])
+    if (hit.fields?.['altLabels.label']?.[0]) labels.add(hit.fields?.['altLabels.label']?.[0])
+    if (hit.fields?.['sosi']?.[0]) sosi.add(hit.fields?.['sosi']?.[0])
+
+    const textId = hit.fields?.['misc.Enhetsnummer']?.[0]
+
+    if (hit.fields?.['iiif']?.[0] && !seenIiif.has(hit.fields?.['iiif']?.[0])) {
+      seenIiif.add(hit.fields?.['iiif']?.[0])
+      iiifItems.push({
+        iiif: hit.fields?.['iiif']?.[0],
+        dataset
+      })
+    }
+    if (!textId || !seenTextIds.has(textId)) {
+      if (hit.fields?.['content.html']?.[0]) {
+        seenTextIds.add(textId)
+        textItems.push({
+          text: hit.fields?.['content.html']?.[0],
+          uuid: hit.fields?.['uuid']?.[0],
+          links: hit.fields?.['links']?.[0],
+          dataset
+        })
+      }
+      else if (hit.fields?.['content.text']?.[0]) {
+        textItems.push({
+          text: hit.fields?.['content.text']?.[0],
+          uuid: hit.fields?.['uuid']?.[0],
+          links: hit.fields?.['links']?.[0],
+          dataset
+        })
+      }
+    }
+    if (hit.fields?.['audio.file']?.[0]) {
+      audioItems.push({
+        file: hit.fields?.['audio.file']?.[0],
+        manifest: hit.fields?.['audio.manifest']?.[0],
+        dataset
+      })
+    }
+
 
 
   })
 
+  const outputData: Partial<OutputData> = {
+    "id": data?.hits?.hits?.[0]?.fields?.['group.id']?.[0],
+    "label": data?.hits?.hits?.[0]?.fields?.['group.label']?.[0],
+    "total": data?.hits?.total?.value,
+  };
+  if (iiifItems.length > 0) outputData.iiifItems = iiifItems;
+  if (textItems.length > 0) outputData.textItems = textItems;
+  if (audioItems.length > 0) outputData.audioItems = audioItems;
+  if (datasets.size > 0) outputData.datasets = Array.from(datasets);
+  if (labels.size > 0) outputData.labels = Array.from(labels);
+  if (sosi.size > 0) outputData.sosi = Array.from(sosi);
 
 
-
-  const outputData: OutputData = {
-    ...topDoc,
-    sources,
-    //viewport: data.aggregations?.viewport?.bounds,
-  }
 
 
 

@@ -11,7 +11,7 @@ import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useContext, useEffect, useMemo, type ReactNode } from "react";
+import { useContext, useEffect, useMemo, useRef, type ReactNode } from "react";
 import { PiAnchor, PiAnchorSimple, PiCaretLeftBold, PiCaretRightBold, PiCheck, PiGps, PiMapPin, PiMapPinFill, PiMapTrifold, PiPerson, PiPushPin, PiX } from "react-icons/pi";
 import { detailsRenderer } from "@/lib/text-utils";
 import { getValueByPath } from "@/lib/utils";
@@ -32,18 +32,23 @@ export default function GroupInfo({
     overrideGroupCode?: string;
     docData?: Record<string, any>;
 }) {
-    const { groupData, groupLoading } = useGroupData(overrideGroupCode)
-    const snappedPosition = useSessionStore(state => state.snappedPosition)
-    const setSnappedPosition = useSessionStore(state => state.setSnappedPosition)
+    const { groupData, groupLoading, groupTotal } = useGroupData(overrideGroupCode)
+    const iiifItems = groupData?.iiifItems
+    const textItems = groupData?.textItems
+    const audioItems = groupData?.audioItems
+    const datasets = groupData?.datasets
+    const uniqueCoordinates = groupData?.uniqueCoordinates
     const searchParams = useSearchParams()
-    const searchDatasets = searchParams.getAll('dataset')
-    const { mapFunctionRef, scrollableContentRef, isMobile } = useContext(GlobalContext)
-    const { initValue, activeGroupValue } = useGroup()
-    const activePoint = searchParams.get('activePoint')
-    const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
-    const labelFilter = searchParams.get('labelFilter') === 'on'
+    const { initValue } = useGroup()
+    const scrollableContentRef = useRef<HTMLDivElement>(null)
+    const { mapFunctionRef, isMobile } = useContext(GlobalContext)
     const sourceView = searchParams.get('sourceView') === 'on'
-    const isInit = initValue == groupData?.group?.id || initValue == groupData?.fields?.["uuid"]?.[0]
+    const snappedPosition = useSessionStore((s) => s.snappedPosition)
+    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
+    const activePoint = searchParams.get('activePoint')
+
+
+    const activeGroupValue = groupData?.group?.id
 
     const roundCoordString = (value: string, decimals: number) => {
         const n = Number(value)
@@ -65,7 +70,7 @@ export default function GroupInfo({
     const groupLabel = groupData?.fields?.label?.[0]
     // Scroll to top when init group changes (when clicking "vel" button)
     useEffect(() => {
-        if (groupData?.group?.id && initValue === groupData.group.id && scrollableContentRef.current) {
+        if (groupData?.group?.id && initValue === groupData.id && scrollableContentRef.current) {
             requestAnimationFrame(() => {
                 scrollableContentRef.current?.scrollTo({
                     top: 0,
@@ -75,73 +80,9 @@ export default function GroupInfo({
         }
     }, [initValue, groupData?.group?.id, scrollableContentRef]);
 
-    const { iiifItems, textItems, audioItems, datasets, uniqueCoordinates } = useMemo(() => {
-        const iiifItems: any[] = []
-        const textItems: any[] = []
-        const audioItems: any[] = []
-        const allCoordinates: any[] = []
-        const datasets: Record<string, any[]> = {}
-        const coordSet = new Set<string>()
-
-        groupData?.sources?.sort((a: any, b: any) => {
-            const aInSearch = searchDatasets.includes(a.dataset);
-            const bInSearch = searchDatasets.includes(b.dataset);
-
-            if (aInSearch && !bInSearch) return -1;
-            if (!aInSearch && bInSearch) return 1;
-
-            // Both are in the same category, sort by boost (descending)
-            const boostA = typeof a.boost === "number" ? a.boost : -Infinity;
-            const boostB = typeof b.boost === "number" ? b.boost : -Infinity;
-            if (boostA !== boostB) return boostB - boostA;
-
-            // If boost is equal, fall back to original (optional: keep stable)
-            return 0;
-        })
-
-
-        const seenTextIds = new Set<string>()
-        const seenIiifUuids = new Set<string>()
 
 
 
-
-        groupData?.sources?.forEach((source: any) => {
-            if (!source.textId || !seenTextIds.has(source.textId)) {
-
-                if (source.content?.html) {
-
-                    textItems.push(source)
-                    if (source.textId) seenTextIds.add(source.textId)
-                }
-                else if (source.content?.text) {
-                    textItems.push(source)
-                    if (source.textId) seenTextIds.add(source.textId)
-                }
-            }
-            if (source.iiif && (!source.uuid || !seenIiifUuids.has(source.iiif))) {
-                iiifItems.push(source)
-                if (source.uuid) seenIiifUuids.add(source.iiif)
-            }
-            if (source.recordings) {
-                audioItems.push(source)
-            }
-            if (source.location) {
-                allCoordinates.push(source)
-                // Collect unique coordinates
-                const lat = source.location?.coordinates?.[1]
-                const lng = source.location?.coordinates?.[0]
-                if (lat != null && lng != null) {
-                    coordSet.add(`${lat},${lng}`)
-                }
-            }
-            datasets[source.dataset] = datasets[source.dataset] || []
-            datasets[source.dataset].push(source)
-        })
-
-
-        return { iiifItems, textItems, audioItems, datasets, uniqueCoordinates: Array.from(coordSet) }
-    }, [groupData, searchDatasets])
 
     const markerCoords = groupData?.fields?.location?.[0]?.coordinates
     const groupMarkerPosition: [number, number] | null =
@@ -156,108 +97,8 @@ export default function GroupInfo({
     // The new accent marker should be the group's marker coordinate.
     const preferredFlyTarget: [number, number] | null = groupMarkerPosition
 
-    const showNamesTab = useMemo(() => {
-        // Replicate NamesTab's filter determinism: timeline or names without year
-        const totalSources = Object.values(datasets).reduce((sum, sources) => sum + sources.length, 0)
-        if (totalSources < 6) {
-            return false
-        }
-        const nameToYears: Record<string, Set<string>> = {}
-        Object.values(datasets).forEach((sources: any[]) => {
-            sources.forEach((source: any) => {
-                if (source?.year) {
-                    pushNameYear(nameToYears, source.label, source.year)
-                    if (Array.isArray(source?.altLabels)) {
-                        source.altLabels.forEach((alt: any) => pushNameYear(nameToYears, typeof alt === 'string' ? alt : alt?.label, source.year))
-                    }
-                }
-                if (Array.isArray(source?.attestations)) {
-                    source.attestations.forEach((att: any) => pushNameYear(nameToYears, att?.label, att?.year))
-                }
-            })
-        })
-        const namesByYear: Record<string, string[]> = {}
-        const namesWithoutYear: string[] = []
-        Object.entries(nameToYears).forEach(([name, yearsSet]) => {
-            const years = Array.from(yearsSet)
-            if (years.length === 0) {
-                namesWithoutYear.push(name)
-                return
-            }
-            const numeric = years
-                .map((y) => ({ raw: y, num: Number(y) }))
-                .filter((y) => !Number.isNaN(y.num))
-                .sort((a, b) => a.num - b.num)
-            const earliest = numeric.length ? numeric[0].raw : years.sort()[0]
-            namesByYear[earliest] = namesByYear[earliest] || []
-            namesByYear[earliest].push(name)
-        })
-        const yearsOrdered = Object.keys(namesByYear)
-        const totalUniqueNames = Object.keys(nameToYears).length
-        const totalYears = yearsOrdered.length
-
-        // Don't show if the number of unique labels or the number of years is the same as the number of sources
-        if (totalUniqueNames === totalSources) {
-            return false
-        }
-        if (totalYears === totalSources) {
-            return false
-        }
 
 
-
-
-        // Don't show filter if there's only one filter option total
-        // (one year and one name, or one name with no years, or one year with no names)
-        if (totalYears === 1 && totalUniqueNames === 1) {
-            return false
-        }
-        if (totalYears === 0 && totalUniqueNames === 1) {
-            return false
-        }
-        if (totalYears === 1 && totalUniqueNames === 0) {
-            return false
-        }
-
-        return (yearsOrdered.length > 1) || (namesWithoutYear.length > 0)
-    }, [datasets])
-
-    // Check if label filter should be shown
-    const shouldShowLabelFilter = useMemo(() => {
-        if (sourceView) {
-            return false
-        }
-        // Count total sources across all datasets
-        const totalSources = Object.values(datasets).reduce((sum, sources) => sum + sources.length, 0)
-
-        // If there's only one result, don't show the filter
-        if (totalSources <= 1) {
-            return false
-        }
-
-        // Check if all sources match all active filters
-        const hasActiveFilters = !!(activeYear || activeName)
-        if (!hasActiveFilters) {
-            //return showNamesTab // Show if there are multiple names/years to filter by
-        }
-
-        // Count how many sources match the active filters
-        let matchingCount = 0
-        Object.values(datasets).forEach((sources: any[]) => {
-            sources.forEach((source: any) => {
-                if (matchesActiveYear(source, activeYear) && matchesActiveName(source, activeName)) {
-                    matchingCount++
-                }
-            })
-        })
-
-        // If all sources match all filters, don't show the filter
-        if (matchingCount === totalSources) {
-            //return false
-        }
-
-        return showNamesTab
-    }, [datasets, activeYear, activeName, showNamesTab, sourceView])
 
     if (!sourceView) {
         if (groupLoading) return (
@@ -266,7 +107,7 @@ export default function GroupInfo({
             </div>
         )
 
-        if (!groupData?.group?.id) {
+        if (!groupData?.["id"]) {
             console.log("Group ID not found")
             const props = {
                 message: `Group ID not found: ${JSON.stringify(groupData)}}`
@@ -287,15 +128,14 @@ export default function GroupInfo({
 
     return (
         <div id={id} className="relative flex min-w-0 flex-wrap items-center pb-4 pt-2 gap-3">
-            {iiifItems?.length > 0 && !labelFilter && !coordinateInfo && <>
+            {iiifItems?.length > 0 && <>
                     <Carousel items={iiifItems} />
                 </>
                 }
 
-            {!shouldShowLabelFilter && !coordinateInfo && <>
 
                 {
-                    audioItems?.map((audioItem) => (
+                    audioItems?.map((audioItem: any) => (
                         <AudioPlayerList
                             key={audioItem.uuid + "audio"}
                             recordings={Array.isArray(audioItem.recordings) ? audioItem.recordings : []}
@@ -306,11 +146,11 @@ export default function GroupInfo({
                 
                 {textItems.length > 0 && <TextTab textItems={textItems} />}
 
-            </>}
+            
 
-            {(labelFilter || coordinateInfo) && <div className="min-w-0 w-full flex flex-col">
+            {(false) && <div className="min-w-0 w-full flex flex-col">
                 {/* Filtering / coordinate sticky headers */}
-                {labelFilter && !coordinateInfo && (
+                {false && false && (
                     <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 pt-2 pb-2">
                         <div className="flex min-w-0 items-center justify-between gap-3 gap-y-2">
                             <div className="min-w-0 flex-1 flex items-center gap-2 text-base text-neutral-900">
@@ -333,13 +173,13 @@ export default function GroupInfo({
                     </div>
                 )}
 
-                {coordinateInfo && (
+                {false && (
                     <div className="w-full shrink-0 border-b border-neutral-100 bg-white px-3 py-3">
                         <div className="flex flex-col min-w-0 gap-y-3">
                             <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
                                 {(() => {
                                     const total = uniqueCoordinates.length
-                                    const activeIndexRaw = uniqueCoordinates.findIndex((c) => c === activePoint)
+                                    const activeIndexRaw = uniqueCoordinates.findIndex((c: string) => c === activePoint)
                                     const activeIndex = activeIndexRaw >= 0 ? activeIndexRaw : 0
                                     const coord = uniqueCoordinates[activeIndex]
                                     const [latStr, lngStr] = coord ? coord.split(',') : ['', '']
@@ -404,19 +244,13 @@ export default function GroupInfo({
                     </div>
                 )}
 
-                {/* Group filters (timeline, datasets, coordinates) - hidden only in coordinate view */}
-                {shouldShowLabelFilter && !coordinateInfo && !sourceView && (
-                    <div className={`px-3 ${initValue === groupData.group.id ? 'pt-2' : 'pt-6'}`}>
-                        <GroupFilters/>
-                    </div>
-                )}
             </div>}
             <div className="px-3 text-neutral-900">
-                <DatasetSummary datasetKeys={Object.keys(datasets)} />
+                <DatasetSummary datasetKeys={datasets} />
             </div>
 
 
-            {!coordinateInfo && !labelFilter && !sourceView && <div className="px-3 ml-auto mt-auto">
+            {!sourceView && <div className="px-3 ml-auto mt-auto">
                 <div className="flex flex-row items-center gap-2">
 
 
@@ -439,7 +273,7 @@ export default function GroupInfo({
                                 }
                             }}
                             remove={['group', 'activePoint']}
-                            add={{ group: initValue == activeGroupValue ? null : stringToBase64Url(groupData.group.id), activePoint: preferredFlyTarget?.toString() }}
+                            add={{ group: initValue == activeGroupValue ? null : stringToBase64Url(groupData.id), activePoint: preferredFlyTarget?.toString() }}
                             className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-neutral-300 btn btn-outline"
                         >
                             <PiMapPinFill aria-hidden="true" className="text-xl text-neutral-800" />
@@ -448,8 +282,8 @@ export default function GroupInfo({
                     }
 
                     
-                    {groupData.sources.length > 0 && <Clickable className="btn btn-outline btn-compact rounded-full items-center gap-1 pr-2" add={{ activePoint: preferredFlyTarget?.toString() || null, sourceView: 'on', group: stringToBase64Url(groupData.group.id) }}>
-                    {groupData.sources.length} oppslag<PiCaretRightBold aria-hidden="true" className="text-primary-700" />
+                    {groupTotal > 0 && <Clickable className="btn btn-outline btn-compact rounded-full items-center gap-1 pr-2" add={{ activePoint: preferredFlyTarget?.toString() || null, sourceView: 'on', group: stringToBase64Url(groupData.id) }}>
+                    {groupTotal} oppslag<PiCaretRightBold aria-hidden="true" className="text-primary-700" />
                 </Clickable>}
 
                 </div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { ExpandableContent } from "./expandable-content";
+import SourceLink from "./source-link";
 
 interface TextTabProps {
     textItems: any[];
@@ -39,16 +40,55 @@ export const TextTab = ({ textItems }: TextTabProps) => {
                 // If there are multiple items, don't show toggle on first item
                 const showToggle = !hasMultipleItems;
 
+                const rawContent =
+                    textItem.content?.html ??
+                    textItem.content?.text ??
+                    textItem.html ??
+                    textItem.text ??
+                    "";
+                const hasHtmlTags = /<[^>]+>/.test(rawContent);
+                const html = hasHtmlTags ? rawContent.replace(/<\/?p>/g, "") : "";
+                const text = hasHtmlTags ? "" : rawContent;
+
+                const links = textItem.links;
+                const firstLink =
+                    Array.isArray(links) && links.length > 0
+                        ? links[0]
+                        : typeof links === "string" && links
+                            ? links
+                            : null;
+                const remainingLinks =
+                    Array.isArray(links) && links.length > 1 ? links.slice(1) : [];
+
+                const datasetLabel = datasetTitles[textItem.dataset] || textItem.dataset;
+
                 return (
                     <div className="px-3 max-w-[calc(100%-1rem)]" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
                         <ExpandableContent
-                            leading={<><strong className="text-neutral-950">{datasetTitles[textItem.dataset]}</strong> | </>}
-                            html={(textItem.content.html ? textItem.content.html.replace(/<\/?p>/g, '') : textItem.content.html) || null}
-                            text={textItem.content?.text || null}
+                            leading={
+                                <>
+                                    {firstLink ? (
+                                        <SourceLink url={firstLink} label={datasetLabel} />
+                                    ) : (
+                                        <strong className="text-neutral-950">{datasetLabel}</strong>
+                                    )}
+                                    {" | "}
+                                </>
+                            }
+                            html={html}
+                            text={text}
                             forceExpanded={shouldForceExpand}
                             showToggle={showToggle}
                         />
-
+                        {remainingLinks.length > 0 && (
+                            <div className="mt-1 text-sm text-neutral-900">
+                                {remainingLinks.map((link: string) => (
+                                    <div key={link}>
+                                        <SourceLink url={link} />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 );
             })}

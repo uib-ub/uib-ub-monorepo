@@ -976,7 +976,7 @@ export default function MapExplorer() {
             {processedMarkerResults?.map((item: any) => {
 
               if (item.doc_count) {
-                console.log(item)
+                //console.log(item)
 
                 const clusterBounds = geotileKeyToBounds(item.key)
 
