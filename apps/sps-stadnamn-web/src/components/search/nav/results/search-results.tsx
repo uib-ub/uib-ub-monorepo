@@ -348,11 +348,11 @@ export default function SearchResults() {
   return (
     <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
       {
-        (point && !init) && !coordinateInfo && !labelFilter && !sourceView && (
+        (point && !init) && !coordinateInfo && !labelFilter && (
           <div className="p-3 flex flex-col gap-2">
-            <div className="flex items-center gap-2 justify-between">
+            <div className="flex items-center gap-2">
               <IconButton label="Zoom til startpunktet" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" /></IconButton>
-               
+               <div className="flex flex-col">
                 <span className="flex-1">
                   {point ? (
                     <>
@@ -360,16 +360,18 @@ export default function SearchResults() {
                     </>
                   ) : 'Ukjent'}
                 </span>
-                
-              <div className="flex items-center gap-2">
+                <span className="text-neutral-800 text-sm">{isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"}</span>
+                </div>
+              <div className="flex items-center ml-auto">
                 <ClickableIcon className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900" label="Fjern startpunkt" remove={['point', 'radius']}>
                   <PiXBold aria-hidden="true" />
                 </ClickableIcon>
               </div>
               
+              
             </div>
 
-              <span className="text-neutral-800 text-sm">{isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"}</span>
+              
           </div>
         )
       }

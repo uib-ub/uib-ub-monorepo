@@ -110,8 +110,11 @@ export default function MapExplorer() {
     )
 
   const treeDataset = treeState?.dataset
+  const treeAdm1 = treeState?.adm1
+  const treeAdm2 = treeState?.adm2
   const treeUuid = treeState?.uuid
   const lastTreeFitKeyRef = useRef<string | null>(null)
+  const lastAdmFitKeyRef = useRef<string | null>(null)
   const areaSource = useMemo(
     () =>
       (doc
@@ -197,6 +200,54 @@ export default function MapExplorer() {
     )
     lastTreeFitKeyRef.current = key
   }, [treeDataset, treeUuid, treeUnitDoc, treeSubunitsData])
+
+  // Fetch representative items for the current adm level (county or municipality) when no uuid is selected
+  const { data: treeAdmData } = useQuery({
+    queryKey: ['treeData', treeDataset, treeAdm1, treeAdm2],
+    enabled: !!treeDataset && !!treeAdm1 && !treeUuid,
+    queryFn: async () => {
+      const params = new URLSearchParams({ dataset: treeDataset as string })
+      if (treeAdm1) params.set('adm1', treeAdm1)
+      if (treeAdm2) params.set('adm2', treeAdm2)
+      const res = await fetch(`/api/tree?${params.toString()}`)
+      if (!res.ok) return null
+      return res.json()
+    },
+    staleTime: 1000 * 60 * 5,
+  })
+
+  // In tree mode, fit bounds to all items at the current adm level when navigating to a county or municipality
+  useEffect(() => {
+    if (!mapInstance.current || !treeDataset || !treeAdm1 || treeUuid) return
+
+    const key = `${treeDataset}:${treeAdm1}:${treeAdm2 || ''}`
+    if (lastAdmFitKeyRef.current === key) return
+
+    const hits: any[] = treeAdmData?.hits?.hits || []
+    const sources = hits.flatMap((h: any) => {
+      const coords = h?.fields?.location?.[0]?.coordinates
+      if (Array.isArray(coords) && coords.length === 2) {
+        const [lng, lat] = coords as [number, number]
+        return [{ location: { coordinates: [lng, lat] as [number, number] } }]
+      }
+      return []
+    })
+
+    if (!sources.length) return
+
+    const rightPanelPx = isMobile ? 0 : Math.round(window.innerWidth * 0.40)
+    fitBoundsToGroupSources(
+      mapInstance.current,
+      { sources },
+      {
+        duration: 0.25,
+        maxZoom: 14,
+        paddingTopLeft: [20, 20],
+        paddingBottomRight: [rightPanelPx + 20, 20],
+      }
+    )
+    lastAdmFitKeyRef.current = key
+  }, [treeDataset, treeAdm1, treeAdm2, treeUuid, treeAdmData, isMobile])
 
 
 
