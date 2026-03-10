@@ -1222,9 +1222,9 @@ export default function MapExplorer() {
               >
               </Marker>
             )}
-            { !coordinateInfo && point && initValue && (() => {
+            { point && initValue && (() => {
               const initIsActive = sourceView ? !activePoint : (!searchParams.get('group') || searchParams.get('group') === searchParams.get('init'))
-              // In sourceView mode, the init anchor marker should be inactive when there
+              // In sourceView mode, the init marker should be inactive when there
               // is an active marker at a different coordinate than `point`.
               const hasOtherActivePoint = Boolean(
                 sourceView &&
@@ -1233,10 +1233,60 @@ export default function MapExplorer() {
                 !areSamePoint(point, activePoint)
               )
               const anchorIsActive = initIsActive && !hasOtherActivePoint
+
+              // When there is an activePoint at a *different* coordinate, show the
+              // anchor/current-location style marker at the init point instead of
+              // the black label marker.
+              const showAnchorIcon = Boolean(activePoint && !areSamePoint(point, activePoint))
+              if (showAnchorIcon) {
+                return (
+                  <Marker
+                    zIndexOffset={1500}
+                    icon={new leaflet.DivIcon(getInitAnchorMarker())}
+                    position={point}
+                    eventHandlers={{
+                      click: () => {
+                        const newParams = new URLSearchParams(searchParams)
+                        newParams.delete('group')
+                        newParams.delete('activePoint')
+                        router.push(`?${newParams.toString()}`)
+                        scrollableContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+                      },
+                      keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                        const key = e.originalEvent?.key ?? e.key
+                        if (key === 'Enter' || key === ' ') {
+                          ;(e.originalEvent ?? e).preventDefault()
+                          const newParams = new URLSearchParams(searchParams)
+                          newParams.delete('activePoint')
+                          newParams.delete('group')
+                          router.push(`?${newParams.toString()}`)
+                          scrollableContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+                        }
+                      }
+                    }}
+                  />
+                )
+              }
+
+              const isLoadingLabel = !initSearchLabel
+              const loadingPlaceholder = '...'
+              const label = isLoadingLabel ? loadingPlaceholder : initSearchLabel!
+              const color = anchorIsActive ? 'accent' : 'black'
+
               return (
                 <Marker
                   zIndexOffset={1500}
-                  icon={new leaflet.DivIcon(getInitAnchorMarker(initSearchLabel, anchorIsActive))}
+                  icon={new leaflet.DivIcon(
+                    getLabelMarkerIcon(
+                      label,
+                      color,
+                      undefined,
+                      true,
+                      false,
+                      true,
+                      isLoadingLabel
+                    )
+                  )}
                   position={point}
                   eventHandlers={{
                     click: () => {

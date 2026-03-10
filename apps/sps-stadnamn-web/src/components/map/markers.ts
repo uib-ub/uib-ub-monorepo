@@ -105,17 +105,25 @@ const buildMultiMarker = (color: string, style: string) => {
 
 
 
-export function getLabelMarkerIcon(label: string, color: string, docCount?: number, selected?: boolean, hideLabel?: boolean, showPin?: boolean) {
+export function getLabelMarkerIcon(
+  label: string,
+  color: string,
+  docCount?: number,
+  selected?: boolean,
+  hideLabel?: boolean,
+  showPin?: boolean,
+  isLoading?: boolean
+) {
   const colorValue = colorMapping[color] || color
   return {
     className: '',
     html: `
-        <div class="map-marker group" role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: 2rem;">
+        <div class="map-marker group" role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: 2rem;${isLoading ? ' opacity: 0.5;' : ''}">
           <div class="absolute -top-6 left-1/2 -translate-x-1/2">
             <div class="flex flex-col items-center">
               <div class="flex items-center ${color == 'white' ? 'text-black' : 'text-white'} tracking-wide whitespace-nowrap rounded-md text-center text-sm py-0.5 px-1.5 shadow-lg" style="background-color: ${color == 'accent' ? colorValue : `${colorValue}e6`}; border-color: ${colorValue}e6;">
                 <div class="max-w-32 min-w-0 block truncate">${label}</div>
-                ${docCount ? `<span class="ml-1 text-xs bg-neutral-100  flex items-center py-0 my-0.5 text-neutral-950 rounded-full px-1 text-center font-normal">+${docCount}</span>` : ''}
+                ${docCount && !isLoading ? `<span class="ml-1 text-xs bg-neutral-100  flex items-center py-0 my-0.5 text-neutral-950 rounded-full px-1 text-center font-normal">+${docCount}</span>` : ''}
               </div>
               ${showPin ? `<div class="w-0 h-0 drop-shadow-lg" style="border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid ${colorValue}; margin-top: 0px;"></div>` : ''}
             </div>
@@ -180,19 +188,13 @@ export function getUnlabeledMarker(color: string, selected?: boolean) {
 }
 
 /**
- * Special marker for the pinned init group.
- * Visually similar to other unlabeled pin markers, but slightly larger and
- * with an anchor symbol in the pin to mirror the "Vel namnegruppe" button.
- * Accepts an optional label to display above the icon, positioned like the
- * standard label markers (same offset as tooltip).
+ * Current-location style marker (no label).
+ * Used to show the user's selected point on the map, without any text bubble.
  */
-export function getInitAnchorMarker(label?: string, active?: boolean) {
+export function getInitAnchorMarker(_label?: string, _active?: boolean) {
   return {
     className: '',
     html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: 32px;">
-              ${label && active ? `<div style="position: absolute; bottom: calc(100% + 20px); left: 50%; transform: translateX(-50%);">
-                <div class="px-2 py-0.5 text-sm tracking-wide rounded-md shadow-lg whitespace-nowrap max-w-32 truncate text-white bg-accent-700">${label}</div>
-              </div>` : ''}
               <img
                 src="/currentLocation.svg"
                 alt=""
