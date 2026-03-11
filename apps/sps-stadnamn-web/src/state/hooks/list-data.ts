@@ -52,10 +52,6 @@ const listDataQuery = async ({
     }
     const data = await res.json()
 
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/3164a639-c116-4cd2-ba92-2b3ea77931e2',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'416e5c'},body:JSON.stringify({sessionId:'416e5c',runId:'pre-fix',hypothesisId:'H2',location:'list-data.ts:55',message:'listDataQuery response',data:{totalHits:data.hits?.total,returned:(data.hits?.hits || []).length},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion agent log
-
     // Calculate distances if initLocation exists
     const hits = data.hits?.hits || [];
     if (initLocation && initLocation.length === 2) {
