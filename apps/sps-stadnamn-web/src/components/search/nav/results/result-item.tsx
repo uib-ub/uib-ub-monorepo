@@ -57,14 +57,14 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
     if (!hit) return <div className="p-2">Det har oppstått ein feil: Kunne ikkje hente kjelder</div>
 
 
-    return <div  {...rest} className={`w-full h-full ${(isInit || notClickable) ? '' : 'bg-neutral-50'} aria-expanded:border-b aria-expanded:border-neutral-100 flex items-center group no-underline ${isInit ? 'pb-0' : ''}`}>
+    return <div  {...rest} className={`w-full h-full aria-expanded:border-b aria-expanded:border-neutral-100 flex items-center group no-underline ${isInit ? 'pb-0' : ''}`}>
 
         <Clickable ref={itemRef}
             notClickable={notClickable}
             onClick={() => !notClickable && onClick?.()}
-            remove={['docIndex', 'doc', 'group', 'parent', ...(isMobile ? ['nav'] : [])]}
-            add={{ group: activeGroupValue == hit.fields["group.id"]?.[0] ? null : stringToBase64Url(hit.fields["group.id"]?.[0]),
-                activePoint: hit.fields?.location?.[0]?.coordinates ? `${hit.fields?.location?.[0]?.coordinates[1]},${hit.fields?.location?.[0]?.coordinates[0]}` : null
+            remove={['doc', 'group', 'activePoint']}
+            add={{ init: stringToBase64Url(hit.fields["group.id"]?.[0]),
+                point: hit.fields?.location?.[0]?.coordinates ? `${hit.fields?.location?.[0]?.coordinates[1]},${hit.fields?.location?.[0]?.coordinates[0]}` : null
 
             }}
 
