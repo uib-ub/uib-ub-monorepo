@@ -26,26 +26,6 @@ import { DatasetSummary } from "../../dataset-summary";
 import useListData from "@/state/hooks/list-data";
 
 
-// TODO: implement doc based group info
-const DocResultItem = ({ hit }: { hit: any }) => {
-  const uuid = hit._source?.uuid ?? hit.uuid
-  const distanceMeters = typeof hit.distance === 'number' ? hit.distance : null
-
-  if (!uuid) {
-    return null
-  }
-
-  return (
-    <li className="relative" key={uuid}>
-      <GroupInfo
-        id={`group-info-${uuid}`}
-        overrideGroupCode={uuid}
-        docData={hit}
-      />
-    </li>
-  )
-}
-
 export default function SearchResults() {
   const { searchError, groupTotalHits } = useSearchData()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
@@ -442,15 +422,15 @@ export default function SearchResults() {
                   <Fragment key={`page-${pageIndex}`}>
                     {page.data?.map((item: any, idx: number) => {
                       if (renderedAdditional >= maxAdditionalVisible) return null;
-                      if (!item.fields["group.id"]) {
+                      if (!sourceView && !item.fields["group.id"]) {
                         console.log("No group ID", item);
                         return null
                       }
                       renderedAdditional += 1
                       const groupId = item.fields['group.id']?.[0]
                       const uuid = item.fields['uuid']?.[0]
-                      const groupCode = sourceView ? (groupId || uuid) : groupId
-                      const domId = uuid || groupCode
+                      const groupCode = sourceView ? uuid : groupId
+                      const domId = uuid || groupId
                       return <li className={`relative`} key={domId}>
                         {(isMobile || !init) ?
                           <GroupInfo
