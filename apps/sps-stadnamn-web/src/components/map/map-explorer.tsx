@@ -13,7 +13,6 @@ import { parseTreeParam } from "@/lib/tree-param";
 import { getBnr, getGnr, indexToCode } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
 import useGroupData from "@/state/hooks/group-data";
-import useInitData from "@/state/hooks/init-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useMapSettings } from '@/state/zustand/persistent-map-settings';
@@ -61,7 +60,6 @@ export default function MapExplorer() {
   const { activeGroupValue, initValue, initCode } = useGroup()
   const { groupLoading, groupData } = useGroupData()
   const { groupData: initGroupData } = useGroupData(initCode)
-  const { initSearchLabel } = useInitData()
   const { docData, docDataset } = useDocData()
 
   const { isMobile, mapFunctionRef, scrollableContentRef, scrollToBrukRef } = useContext(GlobalContext)
@@ -1253,9 +1251,9 @@ export default function MapExplorer() {
                 )
               }
 
-              const isLoadingLabel = !initSearchLabel
+              const isLoadingLabel = !initGroupData?.label
               const loadingPlaceholder = '...'
-              const label = isLoadingLabel ? loadingPlaceholder : initSearchLabel!
+              const label = isLoadingLabel ? loadingPlaceholder : initGroupData?.label!
               const color = anchorIsActive ? 'accent' : 'black'
 
               return (

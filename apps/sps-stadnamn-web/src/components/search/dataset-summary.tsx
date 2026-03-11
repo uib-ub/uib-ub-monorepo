@@ -14,12 +14,10 @@ export function DatasetSummary({ datasetKeys, className }: DatasetSummaryProps) 
   let text = ""
   if (titles.length === 1) {
     text = titles[0]!
-  } else if (titles.length === 2) {
-    text = `${titles[0]} og ${titles[1]}`
   } else {
     const first = titles[0]!
     const restCount = titles.length - 1
-    text = `${first} +${restCount} andre`
+    text = `${first} +${restCount}`
   }
 
   return <span className={className}>{text}</span>

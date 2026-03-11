@@ -9,7 +9,7 @@ import { usePoint } from '@/lib/param-hooks';
 import { calculateDistance } from '@/lib/map-utils';
 
 export const INITIAL_PAGE_SIZE = 10;
-export const SUBSEQUENT_PAGE_SIZE = 40;
+export const SUBSEQUENT_PAGE_SIZE = 20;
 
 
 const listDataQuery = async ({
@@ -52,6 +52,10 @@ const listDataQuery = async ({
     }
     const data = await res.json()
 
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/3164a639-c116-4cd2-ba92-2b3ea77931e2',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'416e5c'},body:JSON.stringify({sessionId:'416e5c',runId:'pre-fix',hypothesisId:'H2',location:'list-data.ts:55',message:'listDataQuery response',data:{totalHits:data.hits?.total,returned:(data.hits?.hits || []).length},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion agent log
+
     // Calculate distances if initLocation exists
     const hits = data.hits?.hits || [];
     if (initLocation && initLocation.length === 2) {
@@ -73,7 +77,7 @@ const listDataQuery = async ({
     }
 }
 
-export default function useCollapsedData() {
+export default function useListData() {
     const searchParams = useSearchParams()
     const initialPage = parseInt(searchParams.get('page') || '1')
     const initialPageRef = useRef(initialPage)
@@ -83,7 +87,6 @@ export default function useCollapsedData() {
     const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(initGroupCode)
     const searchSort = searchParams.get('searchSort')
     const collapsed = searchParams.get('sourceView') != 'on'
-    
 
     const {
         data,
@@ -95,7 +98,7 @@ export default function useCollapsedData() {
         isLoading,
         status
     } = useInfiniteQuery({
-        queryKey: ['listData', searchQueryString, searchSort, initGroupLoading, initGroupCode, point],
+        queryKey: ['listData', searchQueryString, searchSort, collapsed, initGroupLoading, initGroupCode, point],
         queryFn: ({ pageParam }: { pageParam: number }) => listDataQuery({
             pageParam,
             searchQueryString,
@@ -118,13 +121,14 @@ export default function useCollapsedData() {
         listError: error,
         listFetchNextPage: fetchNextPage,
         listHasNextPage: hasNextPage,
-        isFetchingNextPage: isFetchingNextPage,
+        listIsFetchingNextPage: isFetchingNextPage,
         listFetching: isFetching,
         listLoading: isLoading,
         listStatus: status,
         listInitialPage: initialPageRef.current,
         initGroupData: initGroupData,
         initGroupLoading: initGroupLoading,
+        listPageSize: SUBSEQUENT_PAGE_SIZE,
 
 
     }

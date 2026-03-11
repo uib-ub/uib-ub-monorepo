@@ -9,10 +9,14 @@ import { useDebugStore } from '../zustand/debug-store';
 const groupDataQuery = async (
     group: string,
     sourcesQuery: string,
+    sourceView: boolean,
     debugChildren?: any[]
 ) => {
     const newParams = new URLSearchParams(sourcesQuery);
     newParams.set('group', group);
+    if (sourceView) {
+        newParams.set('sourceView', 'on');
+    }
 
     const res = await fetch(`/api/group?${newParams.toString()}`);
 
@@ -58,7 +62,7 @@ export default function useGroupData(overrideGroupCode?: string | null) {
     } = useQuery({
         queryKey: ['group', sourcesQuery, groupCode, sourceView, overrideGroupCode ? undefined : searchQueryString],
         queryFn: async () =>
-            groupCode ? groupDataQuery(groupCode, sourcesQuery, debug ? debugChildren : []) : null,
+            groupCode ? groupDataQuery(groupCode, sourcesQuery, sourceView, debug ? debugChildren : []) : null,
         placeholderData: (overrideGroupCode || initCode == groupCode) ? undefined : (prevData: any) => prevData,
         enabled: !!groupCode,
 

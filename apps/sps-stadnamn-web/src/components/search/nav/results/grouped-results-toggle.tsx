@@ -3,7 +3,6 @@
 import { useContext, useEffect, useRef } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { stringToBase64Url } from "@/lib/param-utils"
-import useInitData from "@/state/hooks/init-data"
 import ToggleButton from "@/components/ui/toggle-button"
 import { GlobalContext } from "@/state/providers/global-provider"
 import { PiBookOpen, PiCaretLeft, PiCaretLeftBold, PiCaretRightBold, PiSignpost } from "react-icons/pi"
@@ -22,6 +21,7 @@ export default function GroupedResultsToggle() {
     const isGrouped = !sourceView
     const center = searchParams.get('center')
     const zoom = searchParams.get('zoom')
+    const q = searchParams.get('q')
 
     // Track previous mode so we only scroll when it actually changes
     const previousNoGroupingRef = useRef(sourceView)
@@ -61,10 +61,11 @@ export default function GroupedResultsToggle() {
 
         router.push(`?${newParams.toString()}`)
     }
+    
 
     return (
         <div className="flex items-center gap-2 text-sm text-neutral-900">
-            { sourceView ? <Clickable className="flex items-center gap-2" only={{ center, zoom, init, group, maxResults: group ? maxResults : defaultMaxResultsParam }}>
+            { sourceView ? <Clickable className="flex items-center gap-2" only={{ q, center, zoom, init, group, maxResults: group ? maxResults : defaultMaxResultsParam }}>
             <PiCaretLeftBold aria-hidden="true" className="text-primary-700"/> {group ? 'Tilbake' : 'Namnegrupper'} 
             
             </Clickable>

@@ -61,14 +61,6 @@ type InitGroupData = {
     }>
 } | null | undefined
 
-type AlternativeInitLabelsArgs = {
-    sourceView: boolean
-    initDocData?: InitDocData
-    initGroupData?: InitGroupData
-    currentQuery?: string | null
-    initSearchLabel?: string | null
-    maxLabels?: number
-}
 
 const getNormalizedLabel = (value: unknown): string | null => {
     if (typeof value === "string") {
@@ -92,42 +84,5 @@ const pushUniqueLabel = (labels: string[], seen: Set<string>, value: unknown) =>
     if (seen.has(key)) return
     seen.add(key)
     labels.push(label)
-}
-
-export const getAlternativeInitLabels = ({
-    sourceView,
-    initDocData,
-    initGroupData,
-    currentQuery,
-    initSearchLabel,
-    maxLabels = 8,
-}: AlternativeInitLabelsArgs): string[] => {
-    const labels: string[] = []
-    const seen = new Set<string>()
-
-    if (sourceView) {
-        const source = initDocData?._source
-        pushUniqueLabel(labels, seen, source?.label)
-        ;(source?.altLabels ?? []).forEach((value) => pushUniqueLabel(labels, seen, value))
-        ;(source?.attestations ?? []).forEach((att) => pushUniqueLabel(labels, seen, att?.label))
-    } else {
-        pushUniqueLabel(labels, seen, initGroupData?.fields?.label?.[0])
-        ;(initGroupData?.fields?.altLabels ?? []).forEach((value) => pushUniqueLabel(labels, seen, value))
-        ;(initGroupData?.sources ?? []).forEach((source) => {
-            pushUniqueLabel(labels, seen, source?.label)
-            ;(source?.altLabels ?? []).forEach((value) => pushUniqueLabel(labels, seen, value))
-            ;(source?.attestations ?? []).forEach((att) => pushUniqueLabel(labels, seen, att?.label))
-        })
-    }
-
-    const queryKey = (currentQuery || "").trim().toLowerCase()
-    const initLabelKey = (initSearchLabel || "").trim().toLowerCase()
-
-    return labels
-        .filter((label) => {
-            const key = label.toLowerCase()
-            return key !== queryKey && key !== initLabelKey
-        })
-        .slice(0, Math.max(maxLabels, 0))
 }
 

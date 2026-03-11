@@ -19,48 +19,50 @@ type OutputData = {
   sosi: string[],
   coordinates: number[],
   fields: Record<string, any>,
-  
 };
 
-const buildGroupQuery = (groupValue: string) => {
-  return ({
+const INNER_HIT_FIELDS = [
+  "iiif",
+  "location",
+  "uuid",
+  "label",
+  "links",
+  "altLabels.label",
+  "sosi",
+  "content.html",
+  "content.text",
+  "audio.file",
+  "audio.manifest",
+  "area",
+  "misc.Enhetsnummer",
+];
+
+const buildGroupQuery = (groupValue: string, useInnerHits: boolean) => {
+  const baseFields = [
+    "group.label",
+    "group.id",
+    "group.adm1",
+    "group.adm2",
+    "group.adm3",
+    "location",
+    "adm1",
+    "adm2",
+    "adm3",
+    "sosi",
+    "coordinateType",
+    "uuid",
+  ];
+
+  const fields = useInnerHits ? baseFields : [...baseFields, ...INNER_HIT_FIELDS];
+
+  const query: any = {
     "size": 1,
-    "fields": [
-      "group.label",
-      "group.id",
-      "group.adm1",
-      "group.adm2",
-      "location",
-      "adm1",
-      "adm2",
-    ],
-    "collapse": {
-      "field": "group.id",
-      "inner_hits": {
-        "name": "items",
-        "size": 1000,
-        "fields": [
-          "iiif",
-          "location",
-          "uuid",
-          "label",
-          "links",
-          "altLabels.label",
-          "sosi",
-          "content.html",
-          "content.text",
-          "audio.file",
-          "audio.manifest",
-          "area",
-          "misc.Enhetsnummer",
-        ]
-      }
-    },
+    "fields": fields,
     "query": {
       "bool": {
         "filter": [{
           "term": {
-              "group.id": groupValue
+            "group.id": groupValue
           }
         }]
       }
@@ -75,15 +77,36 @@ const buildGroupQuery = (groupValue: string) => {
         }
       },
     ],
+  };
 
-    //"track_total_hits": false,
-  })
+  if (useInnerHits) {
+    query.collapse = {
+      "field": "group.id",
+      "inner_hits": {
+        "name": "items",
+        "size": 1000,
+        "sort": [
+          {
+            "boost": {
+              "order": "desc",
+              "missing": "_last"
+            }
+          }
+        ],
+        "fields": INNER_HIT_FIELDS,
+      }
+    };
+  }
+
+  return query;
 }
 
 export async function GET(request: Request) {
   const { reservedParams } = extractFacets(request)
 
   const perspective = reservedParams.perspective || 'all'
+  const isSourceView = reservedParams.sourceView === 'on'
+  const useInnerHits = !isSourceView
 
   // Grunnord ids (e.g. grunnord_berg) may be sent raw or base64-encoded; accept both
   const rawGroup = reservedParams.group ?? ''
@@ -92,14 +115,13 @@ export async function GET(request: Request) {
       ? rawGroup
       : base64UrlToString(reservedParams.group)
 
-
-  let [data, status] = await postQuery(perspective, buildGroupQuery(groupValue), "dfs_query_then_fetch")
+  let [data, status] = await postQuery(perspective, buildGroupQuery(groupValue, useInnerHits), "dfs_query_then_fetch")
 
   // Find group if the doc has been demoted within the group
-  if (data.hits?.hits.length === 0) {
+  if (useInnerHits && data.hits?.hits.length === 0) {
     const doc = await fetchDoc({ uuid: groupValue })
     if (doc) {
-      [data, status] = await postQuery(perspective, buildGroupQuery(doc._source.group.id), "dfs_query_then_fetch")
+      [data, status] = await postQuery(perspective, buildGroupQuery(doc._source.group.id, useInnerHits), "dfs_query_then_fetch")
     }
   }
 
@@ -107,22 +129,32 @@ export async function GET(request: Request) {
   const seenIiif = new Set<string>()
   const textItems: any[] = []
   const audioItems: any[] = []
-  const datasets: Set<string> = new Set()
+  const seenDatasets = new Set<string>()
+  const datasets: string[] = []
   const seenTextIds = new Set<string>()
   const labels = new Set<string>()
   const sosi = new Set<string>()
-  let location = data?.hits?.hits?.[0]?.fields?.['location']?.[0]
+  const topHit = data?.hits?.hits?.[0]
+  let location = topHit?.fields?.['location']?.[0]
 
   const innerHits =
-    data?.hits?.hits?.[0]?.inner_hits?.items?.hits &&
+    useInnerHits &&
+    topHit?.inner_hits?.items?.hits &&
     Array.isArray((data.hits.hits[0] as any).inner_hits.items.hits)
       ? (data.hits.hits[0] as any).inner_hits.items.hits
-      : (data?.hits?.hits?.[0]?.inner_hits?.items?.hits as any)?.hits ?? []
+      : (useInnerHits ? ((data?.hits?.hits?.[0]?.inner_hits?.items?.hits as any)?.hits ?? []) : [])
 
-  innerHits?.forEach((hit: any) => {
+  const hits: any[] = isSourceView
+    ? (topHit ? [topHit] : [])
+    : (innerHits ?? [])
+
+  hits?.forEach((hit: any) => {
     const index_name: string = hit._index
     const dataset: string = indexToCode(index_name)[0]
-    if (dataset) datasets.add(dataset)
+    if (dataset && !seenDatasets.has(dataset)) {
+      datasets.push(dataset)
+      seenDatasets.add(dataset)
+    }
     
     if (!location && hit.fields?.['location']?.[0]) {
       location = hit.fields?.['location']?.[0]
@@ -193,7 +225,7 @@ export async function GET(request: Request) {
   if (iiifItems.length > 0) outputData.iiifItems = iiifItems;
   if (textItems.length > 0) outputData.textItems = textItems;
   if (audioItems.length > 0) outputData.audioItems = audioItems;
-  if (datasets.size > 0) outputData.datasets = Array.from(datasets);
+  if (datasets.length > 0) outputData.datasets = datasets;
   if (labels.size > 0) outputData.labels = Array.from(labels);
 
 

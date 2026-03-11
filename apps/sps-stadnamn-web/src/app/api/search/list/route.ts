@@ -3,6 +3,7 @@
 import { extractFacets } from '../../_utils/facets';
 import { postQuery } from '../../_utils/post';
 import { getQueryString } from '../../_utils/query-string';
+import { base64UrlToString } from '@/lib/param-utils';
 
 export async function POST(request: Request) {
   const { size, from, initLocation, collapsed, searchQueryString, searchSort } = await request.json()
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
     ...from ? { from } : {},
     ...highlight ? { highlight } : {},
     "track_scores": true,
-    "fields": ["group.adm1", "group.adm2", "adm1", "adm2", "group.label", "uuid", "boost", "label", "location"],
+    "fields": ["group.adm1", "group.adm2", "group.id", "adm1", "adm2", "group.label", "uuid", "boost", "label", "location"],
     ...(collapsed ? {
       "collapse": {
         "field": "group.id",
@@ -100,6 +101,36 @@ export async function POST(request: Request) {
       "bool": {
         "must": { "match_all": {} }
       }
+    }
+  }
+
+  // Exclude the init from the result list:
+  // - In source view (document mode), `init` is a UUID and we omit that document.
+  // - In grouped mode (normal search), `init` points to a group id (raw or base64),
+  //   and we omit that entire group from the list.
+  if (reservedParams.init && baseQuery?.bool) {
+    const isSourceView = reservedParams.sourceView === 'on';
+    const exclusions: any[] = [];
+
+    if (isSourceView) {
+      exclusions.push({ term: { "uuid": reservedParams.init } });
+    } else {
+      let groupId = reservedParams.init;
+      try {
+        if (!groupId.startsWith('grunnord_')) {
+          groupId = base64UrlToString(groupId);
+        }
+      } catch {
+        // If decoding fails, fall back to the raw value.
+      }
+      exclusions.push({ term: { "group.id": groupId } });
+    }
+
+    if (exclusions.length) {
+      const existingMustNot = baseQuery.bool.must_not
+        ? (Array.isArray(baseQuery.bool.must_not) ? baseQuery.bool.must_not : [baseQuery.bool.must_not])
+        : [];
+      baseQuery.bool.must_not = [...existingMustNot, ...exclusions];
     }
   }
 

@@ -3,6 +3,7 @@ import useCollapsedData, { SUBSEQUENT_PAGE_SIZE } from '@/state/hooks/collapsed-
 import useUngroupedData, { SUBSEQUENT_PAGE_SIZE as UNGROUPED_SUBSEQUENT_PAGE_SIZE } from '@/state/hooks/source-view-data';
 import { useSearchParams } from 'next/navigation';
 
+
 export default function useResultsData() {
     const searchParams = useSearchParams();
     const sourceView = searchParams.get('sourceView') === 'on';

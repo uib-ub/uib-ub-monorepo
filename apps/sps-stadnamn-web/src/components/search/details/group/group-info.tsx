@@ -1,26 +1,20 @@
-import Spinner from "@/components/svg/Spinner";
 import AudioPlayerList from "@/components/audio/audio-player-list";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
-import { defaultMaxResultsParam } from "@/config/max-results";
-import { fitBoundsToGroupSources } from "@/lib/map-utils";
+import { treeSettings } from "@/config/server-config";
 import { useGroup } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
+import { buildTreeParam } from "@/lib/tree-param";
+import { getBnr, getGnr, getValueByPath } from "@/lib/utils";
 import useGroupData from "@/state/hooks/group-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useContext, useEffect, useMemo, useRef, type ReactNode } from "react";
-import { PiAnchor, PiAnchorSimple, PiCaretLeftBold, PiCaretRightBold, PiCheck, PiGps, PiMapPin, PiMapPinFill, PiMapTrifold, PiPerson, PiPushPin, PiX } from "react-icons/pi";
-import { detailsRenderer } from "@/lib/text-utils";
-import { getValueByPath } from "@/lib/utils";
+import { useContext, useEffect, useRef, type ReactNode } from "react";
+import { PiCaretLeftBold, PiCaretRightBold, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
 import Carousel from "../../nav/results/carousel";
-import DocInfo from "../doc/doc-info";
+import SourceTitle from "../shared/source-title";
 import { TextTab } from "./text-tab";
-import { GroupFilters } from "./names-section";
-import { FilteredChildSources } from "./filtered-child-sources";
-import { matchesActiveYear, matchesActiveName, pushNameYear } from "./group-utils";
 import { DatasetSummary } from "../../dataset-summary";
 
 export default function GroupInfo({
@@ -36,19 +30,53 @@ export default function GroupInfo({
     const iiifItems = groupData?.iiifItems
     const textItems = groupData?.textItems
     const audioItems = groupData?.audioItems
-    const datasets = groupData?.datasets
     const uniqueCoordinates = groupData?.uniqueCoordinates
     const searchParams = useSearchParams()
     const { initValue } = useGroup()
     const scrollableContentRef = useRef<HTMLDivElement>(null)
-    const { mapFunctionRef, isMobile } = useContext(GlobalContext)
-    const sourceView = searchParams.get('sourceView') === 'on'
+    const { mapFunctionRef, isMobile, sosiVocab } = useContext(GlobalContext)
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
     const activePoint = searchParams.get('activePoint')
-
+    const sourceView = searchParams.get('sourceView') === 'on'
+    const isGrouped = !sourceView
 
     const activeGroupValue = groupData?.group?.id
+
+    const toText = (value: unknown): string => {
+        if (Array.isArray(value)) return value.filter(Boolean).join(" | ");
+        return typeof value === "string" ? value : "";
+    };
+
+    const fields = groupData?.fields || {};
+    const datasets = groupData?.datasets;
+
+    const dataset = Array.isArray(datasets) && datasets.length > 0 ? datasets[0] : (docData?._index?.split("-")?.[2] as string | undefined);
+    const source = docData?._source || docData;
+    const label =
+        (groupData?.fields?.label?.[0] ??
+            groupData?.fields?.["group.label"]?.[0] ??
+            toText(fields.label)) ||
+        toText(fields["group.label"]) ||
+        (source ? (Array.isArray(source.label) ? source.label[0] : (source.label as string | undefined)) : "");
+
+    // Prefer group.* for grouped header, fall back to plain adm* fields
+    const groupAdm1 = toText(fields["group.adm1"]);
+    const groupAdm2 = toText(fields["group.adm2"]);
+    const groupAdm3 = toText(fields["group.adm3"]);
+    const plainAdm1 = toText(fields.adm1);
+    const plainAdm2 = toText(fields.adm2);
+    const plainAdm3 = toText(fields.adm3);
+
+    const adm1 = groupAdm1 || plainAdm1 || plainAdm3 || groupAdm3 || (source ? toText((source as any).adm1) : "");
+    const adm2 = groupAdm2 || plainAdm2 || (source ? toText((source as any).adm2) : "");
+    const admText = `${adm2 && adm1 && adm2 !== adm1 ? `${adm2}, ` : ""}${adm1}`.trim();
+
+    const rawSosi = source?.sosi ?? fields.sosi;
+    const sosiArray = Array.isArray(rawSosi) ? rawSosi : rawSosi ? [rawSosi] : [];
+    const sosiTypes = sosiArray
+        .map((item: unknown) => (typeof item === "string" ? sosiVocab[item]?.label || item : ""))
+        .filter(Boolean);
 
     const roundCoordString = (value: string, decimals: number) => {
         const n = Number(value)
@@ -67,7 +95,8 @@ export default function GroupInfo({
     // Read activeYear and activeName from URL params
     const activeYear = searchParams.get('activeYear')
     const activeName = searchParams.get('activeName')
-    const groupLabel = groupData?.fields?.label?.[0]
+    const groupLabel = label
+    const isInit = Boolean(initValue && groupData?.id && initValue === groupData.id)
     // Scroll to top when init group changes (when clicking "vel" button)
     useEffect(() => {
         if (groupData?.group?.id && initValue === groupData.id && scrollableContentRef.current) {
@@ -88,7 +117,6 @@ export default function GroupInfo({
     const rawGroupCoordinates = groupData?.fields?.location?.coordinates
     const groupLatLng: [number, number] | null = rawGroupCoordinates ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])] : null
     const activePointValue = rawGroupCoordinates ? `${rawGroupCoordinates[1]},${rawGroupCoordinates[0]}` : null
-
 
     if (!sourceView) {
         if (groupLoading) return (
@@ -112,13 +140,98 @@ export default function GroupInfo({
         }
     }
 
-    if (sourceView) {
-        return <DocInfo id={id} docData={docData} />
-    }
+
 
 
     return (
         <div id={id} className="relative flex min-w-0 flex-col pb-4 pt-2 gap-3">
+            <div className="min-w-0 w-full flex flex-col px-3 pt-2 pb-3 gap-1">
+                <div className="flex items-center gap-2">
+                    {datasets && datasets.length > 0 && (
+                        <DatasetSummary datasetKeys={datasets} className="text-sm uppercase tracking-[0.12em] text-neutral-700" />
+                    )}
+                    {isInit && (
+                        <div className="ml-auto flex items-center gap-2">
+                            <ClickableIcon
+                                label="Fjern som utgangspunkt"
+                                remove={["group", "point", "activePoint", "activeYear", "activeName"]}
+                                add={{ init: null, point: null }}
+                                className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-neutral-300 btn btn-outline shrink-0"
+                            >
+                                <PiXBold aria-hidden="true" className="text-base text-neutral-800" />
+                            </ClickableIcon>
+                        </div>
+                    )}
+                </div>
+                {label && (
+                    <SourceTitle
+                        label={label}
+                        cadastrePrefix=""
+                        sosiTypes={sosiTypes}
+                        labelClassName="text-lg truncate"
+                        sosiClassName="text-sm text-neutral-700 truncate ml-2"
+                    />
+                )}
+                {dataset && treeSettings[dataset] && source ? (
+                    (() => {
+                        const isTreeDataset = !!treeSettings[dataset];
+                        const gnr = isTreeDataset ? getGnr(docData, dataset) : null;
+                        const bnr = isTreeDataset ? getBnr(docData, dataset) : null;
+                        const isLeaf = isTreeDataset && !!(source as any).within;
+                        const gardUuid = isLeaf ? (source as any).within : ((source as any).uuid || null);
+                        const gardName = isTreeDataset
+                            ? (getValueByPath(source, treeSettings[dataset]?.parentName) || (!isLeaf ? label : null) || null)
+                            : null;
+
+                        return (adm1 || gnr) ? (
+                            <div className="text-sm text-neutral-700 flex items-center gap-1 flex-wrap">
+                                {adm1 && (
+                                    <Clickable link className="breadcrumb-link" add={{ tree: buildTreeParam({ dataset, adm1 }) }}>
+                                        {adm1}
+                                    </Clickable>
+                                )}
+                                {adm1 && adm2 && <span className="text-neutral-400">/</span>}
+                                {adm2 && (
+                                    <Clickable link className="breadcrumb-link" add={{ tree: buildTreeParam({ dataset, adm1, adm2 }) }}>
+                                        {adm2}
+                                    </Clickable>
+                                )}
+                                {gnr && gardUuid && (
+                                    <>
+                                        <span className="text-neutral-400">/</span>
+                                        <Clickable
+                                            link
+                                            className="breadcrumb-link"
+                                            add={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }), doc: isLeaf ? (source as any).within : undefined }}
+                                        >
+                                            {gnr}{gardName ? ` ${gardName}` : ''}
+                                        </Clickable>
+                                    </>
+                                )}
+                                {isLeaf && bnr && (
+                                    <>
+                                        <span className="text-neutral-400">/</span>
+                                        <Clickable
+                                            link
+                                            className="breadcrumb-link"
+                                            add={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: (source as any).within }) }}
+                                        >
+                                            {bnr}{label ? ` ${label}` : ''}
+                                        </Clickable>
+                                    </>
+                                )}
+                            </div>
+                        ) : null;
+                    })()
+                ) : (
+                    admText && (
+                        <div className="text-sm text-neutral-700">
+                            {admText}
+                        </div>
+                    )
+                )}
+            </div>
+
             {iiifItems?.length > 0 && <>
                     <Carousel items={iiifItems} />
                 </>
@@ -149,7 +262,7 @@ export default function GroupInfo({
                                     {groupLabel}
                                 </span>
                                 <span className="truncate text-neutral-900">
-                                    {detailsRenderer(groupData)}
+                                    {/* detailsRenderer removed */}
                                 </span>
                             </div>
                             <Clickable
@@ -236,10 +349,6 @@ export default function GroupInfo({
                 )}
 
             </div>}
-            {(datasets?.length > 1 || !(textItems?.length > 0 || audioItems?.length > 0 || iiifItems?.length > 0)) && <div className="px-3 text-neutral-900">
-                <DatasetSummary datasetKeys={datasets} />
-            </div>}
-
 
             {!sourceView && <div className="px-3 ml-auto mt-auto">
                 <div className="flex flex-row items-center gap-2">

@@ -13,6 +13,7 @@ import { useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useRef } from 'react';
 import { PiX, PiXBold } from 'react-icons/pi';
 import DistanceBadge from '@/components/search/distance-badge';
+import { DEFAULT_MAX_RESULTS } from '@/config/max-results';
 
 const uniqueLabels = (hit: any) => {
     const labels = new Set<string>();
@@ -49,13 +50,13 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
 
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
     const { activeGroupValue, initValue } = useGroup()
-    const isInit = initValue == hit.fields?.["group.id"]?.[0]
+    const sourceView = searchParams.get('sourceView') === 'on'
+    const isInit = sourceView ? initValue && initValue == hit.fields?.["uuid"]?.[0] : initValue && initValue == hit.fields?.["group.id"]?.[0]
 
     const label = hit.fields?.label?.[0] || ''
 
 
     if (!hit) return <div className="p-2">Det har oppstått ein feil: Kunne ikkje hente kjelder</div>
-
 
     return <div  {...rest} className={`w-full h-full aria-expanded:border-b aria-expanded:border-neutral-100 flex items-center group no-underline ${isInit ? 'pb-0' : ''}`}>
 
@@ -63,7 +64,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
             notClickable={notClickable}
             onClick={() => !notClickable && onClick?.()}
             remove={['doc', 'group', 'activePoint']}
-            add={{ init: stringToBase64Url(hit.fields["group.id"]?.[0]),
+            add={{ maxResults: DEFAULT_MAX_RESULTS, init: stringToBase64Url(hit.fields["group.id"]?.[0]),
                 point: hit.fields?.location?.[0]?.coordinates ? `${hit.fields?.location?.[0]?.coordinates[1]},${hit.fields?.location?.[0]?.coordinates[0]}` : null
 
             }}
