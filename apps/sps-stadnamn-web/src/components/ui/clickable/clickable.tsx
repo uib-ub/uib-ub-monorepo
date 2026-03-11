@@ -62,7 +62,7 @@ export default function Clickable({ children, remove, add, only, link, href, rep
         return (
             <Link
                 replace={replace}
-                href={`${href ? href : ''}${stringParams ? `?${stringParams}` : ''}`}
+                href={`${href ? href : ''}${stringParams && (only || remove || add) ? `?${stringParams}` : ''}`}
                 className={clickableClassName}
                 {...restProps}
             >
