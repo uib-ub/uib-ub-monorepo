@@ -85,23 +85,17 @@ export default function GroupInfo({
 
 
     // Group coordinates are stored as [lon, lat]; convert to [lat, lon] for the map.
-    const rawGroupCoordinates = groupData?.coordinates
-    const hasGroupCoordinates = Array.isArray(rawGroupCoordinates) && rawGroupCoordinates.length >= 2
-    const groupLatLng: [number, number] | null = hasGroupCoordinates
-        ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])]
-        : null
-    const activePointValue = hasGroupCoordinates
-        ? `${rawGroupCoordinates[1]},${rawGroupCoordinates[0]}`
-        : null
-
-
+    const rawGroupCoordinates = groupData?.fields?.location?.coordinates
+    const groupLatLng: [number, number] | null = rawGroupCoordinates ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])] : null
+    const activePointValue = rawGroupCoordinates ? `${rawGroupCoordinates[1]},${rawGroupCoordinates[0]}` : null
 
 
     if (!sourceView) {
         if (groupLoading) return (
-            <div className="flex justify-center items-center w-full py-8">
-                <Spinner status="Laster" className="animate-spin rounded-full h-8 w-8"></Spinner>
-            </div>
+            <div className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-300">
+          <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `10rem` }}></div>
+          <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `16rem` }}></div>
+        </div>
         )
 
         if (!groupData?.["id"]) {
@@ -124,7 +118,7 @@ export default function GroupInfo({
 
 
     return (
-        <div id={id} className="relative flex min-w-0 flex-wrap items-center pb-4 pt-2 gap-3">
+        <div id={id} className="relative flex min-w-0 flex-col pb-4 pt-2 gap-3">
             {iiifItems?.length > 0 && <>
                     <Carousel items={iiifItems} />
                 </>
@@ -242,16 +236,16 @@ export default function GroupInfo({
                 )}
 
             </div>}
-            <div className="px-3 text-neutral-900">
+            {(datasets?.length > 1 || !(textItems?.length > 0 || audioItems?.length > 0 || iiifItems?.length > 0)) && <div className="px-3 text-neutral-900">
                 <DatasetSummary datasetKeys={datasets} />
-            </div>
+            </div>}
 
 
             {!sourceView && <div className="px-3 ml-auto mt-auto">
                 <div className="flex flex-row items-center gap-2">
 
 
-                    {!groupData?.coordinates?.length ?
+                    {!groupLatLng ?
                         <span className="text-sm text-neutral-700 px-2 whitespace-nowrap">
                             Utan koordinat
                         </span>

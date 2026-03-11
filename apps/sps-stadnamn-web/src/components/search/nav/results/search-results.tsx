@@ -376,7 +376,7 @@ export default function SearchResults() {
         )
       }
       {
-        group && sourceView && groupData && (
+        group && sourceView && groupData && false && (
           <GroupFilters />
         )
       }
@@ -440,6 +440,7 @@ export default function SearchResults() {
             </>
             : 
             <>
+           {false && <pre>{JSON.stringify(resultData, null, 2)}</pre>}
             <span id="other-groups-title" className={`text-lg font-sans text-neutral-900 whitespace-nowrap`}>{sourceView ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}</span>
             
             <Clickable add={{ q: initSearchLabel}}
@@ -466,7 +467,7 @@ export default function SearchResults() {
           {(searchSettingsExpanded || !init) && <SearchQueryDisplay />}
 
           {!hasNoAdditionalResults && (
-            <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-300 ${init && !isMobile && showOtherResults ? 'border-b' : 'border-y'} border-neutral-200`}>
+            <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
 
 
             {(initLoading || resultLoading && resultInitialPage === 1) ? Array.from({ length: resultInitialPage === 1 ? 6 : 40 }).map((_, i) => (

@@ -97,7 +97,6 @@ export default function DocInfo({
     const initTarget = docUuid;
     const isInit = Boolean(initValue && initTarget && initValue === initTarget);
     const nextInitParam = isInit ? null : initTarget;
-    const uuidToken = useMemo(() => source.uuid || docData?._id || null, [docData?._id, source.uuid]);
     const uuidUrl = useMemo(() => {
         if (!source.uuid) return null;
         const token = String(source.uuid).trim();

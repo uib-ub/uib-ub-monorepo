@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { processHtmlContent } from "./group-utils";
 import { useSearchParams } from "next/navigation";
+import Clickable from "@/components/ui/clickable/clickable";
 
 interface ExpandableContentProps {
     html: string;
@@ -45,14 +46,13 @@ export const ExpandableContent = ({
                 {processedHtml || text}
             </span>
             {isLong && showToggle && forceExpanded === undefined && (
-                <button
-                    type="button"
+                <Clickable
                     className="text-sm text-neutral-900 mt-1.5 mb-0 mr-2 flex items-center gap-1"
                     aria-expanded={expanded}
                     onClick={() => setExpanded(!expanded)}
                 >
                     {expanded ? 'Vis mindre' : 'Vis heile'}
-                </button>
+                </Clickable>
             )}
         </>
     )

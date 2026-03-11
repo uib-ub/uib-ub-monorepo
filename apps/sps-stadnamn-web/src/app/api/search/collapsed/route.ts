@@ -57,6 +57,12 @@ export async function POST(request: Request) {
     "fields": ["group.adm1", "group.adm2", "adm1", "adm2", "group.label", "uuid", "boost", "label", "location"],
     "collapse": {
       "field": "group.id",
+      // Enable detecting whether a group has more than one item
+      "inner_hits": {
+        "name": "occurences",
+        "size": 1,
+        "_source": false
+      }
     },
     "sort": baseSort,
     "_source": false

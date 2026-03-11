@@ -28,7 +28,11 @@ const buildGroupQuery = (groupValue: string) => {
     "fields": [
       "group.label",
       "group.id",
-      "location"
+      "group.adm1",
+      "group.adm2",
+      "location",
+      "adm1",
+      "adm2",
     ],
     "collapse": {
       "field": "group.id",
@@ -107,7 +111,7 @@ export async function GET(request: Request) {
   const seenTextIds = new Set<string>()
   const labels = new Set<string>()
   const sosi = new Set<string>()
-  let coordinates: number[] | null = null
+  let location = data?.hits?.hits?.[0]?.fields?.['location']?.[0]
 
   const innerHits =
     data?.hits?.hits?.[0]?.inner_hits?.items?.hits &&
@@ -120,8 +124,8 @@ export async function GET(request: Request) {
     const dataset: string = indexToCode(index_name)[0]
     if (dataset) datasets.add(dataset)
     
-    if (!coordinates && Array.isArray(hit.fields?.['location'])) {
-      coordinates = hit.fields?.['location']?.[0]?.coordinates
+    if (!location && hit.fields?.['location']?.[0]) {
+      location = hit.fields?.['location']?.[0]
     }
 
     if (hit.fields?.['label']?.[0]) labels.add(hit.fields?.['label']?.[0])
@@ -171,32 +175,26 @@ export async function GET(request: Request) {
 
   const outputData: Partial<OutputData> = {
     "id": data?.hits?.hits?.[0]?.fields?.['group.id']?.[0],
-    "label": data?.hits?.hits?.[0]?.fields?.['group.label']?.[0],
+    //"label": data?.hits?.hits?.[0]?.fields?.['group.label']?.[0],
     "total": data?.hits?.total?.value,
     "fields": data?.hits?.hits?.[0]?.fields,
   };
-  if (data?.hits?.hits?.[0]?.fields?.['location']?.[0]?.coordinates) {
-    outputData.fields = {
-      ...outputData.fields,
-      location: data?.hits?.hits?.[0]?.fields?.['location']?.[0]?.coordinates
-    }
-  } else {
-    // FInd the first on in inner hits
-    const altLocation = data?.hits?.hits?.find((hit: any) => hit.fields?.['location']?.[0]?.coordinates)?.fields?.['location']?.[0]?.coordinates;
-    if (altLocation) {
-      outputData.fields = {
-        ...outputData.fields,
-        location: altLocation
-      }
-    }
+
+
+  outputData.fields = {
+    //...(!)
+    ...outputData.fields,
+    ...(location ? { location } : {}),
+    ...(sosi.size > 0 ? { sosi: Array.from(sosi) } : {}),
   }
+
+
+
   if (iiifItems.length > 0) outputData.iiifItems = iiifItems;
   if (textItems.length > 0) outputData.textItems = textItems;
   if (audioItems.length > 0) outputData.audioItems = audioItems;
   if (datasets.size > 0) outputData.datasets = Array.from(datasets);
   if (labels.size > 0) outputData.labels = Array.from(labels);
-  if (sosi.size > 0) outputData.sosi = Array.from(sosi);
-  if (coordinates) outputData.coordinates = coordinates;
 
 
 

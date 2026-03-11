@@ -98,9 +98,9 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                 </div>
                 <DistanceBadge meters={hit.distance} />
                 {isInit && <ClickableIcon
-                        label={`Fjern som startpunkt`}
+                        label={`Lukk`}
 
-                        remove={['group', 'init', 'point', 'activePoint', 'activeYear', 'activeName']}
+                        remove={['group', 'init', 'activePoint', 'activeYear', 'activeName']}
                         className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-neutral-300 btn btn-outline"
                     >
                         <PiX aria-hidden="true" className="text-xl text-neutral-800" /> 
@@ -109,13 +109,6 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
             {hit.highlight && <>{formatHighlight(hit.highlight['content.html']?.[0] || hit.highlight['content.text']?.[0])}</>}
             
         </Clickable>
-        {(false && initValue && initValue == hit.fields["group.id"]?.[0]) && (
-            <div className="p-3">
-                <ClickableIcon className="h-6 w-6 p-0 rounded-full btn btn-outline text-neutral-700" label="Lukk namnegruppe" remove={['init', 'activePoint', 'point' ]}>
-                    <PiXBold />
-                </ClickableIcon>
-            </div>
-        )}
 
 
 
