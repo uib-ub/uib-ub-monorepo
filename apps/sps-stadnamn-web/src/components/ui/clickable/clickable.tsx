@@ -3,6 +3,7 @@ import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { ParamProps } from "./param-types"
+import { useSessionStore } from "@/state/zustand/session-store"
 
 function normalizeSearchParams(params: URLSearchParams) {
     const entries = Array.from(params.entries()).sort(
@@ -25,6 +26,8 @@ function normalizeSearchParams(params: URLSearchParams) {
 export default function Clickable({ children, remove, add, only, link, href, replace, notClickable, ...rest }: ParamProps) {
     const searchParams = useSearchParams()
     const router = useRouter()
+    const treeSavedQuery = useSessionStore((s) => s.treeSavedQuery)
+    const setTreeSavedQuery = useSessionStore((s) => s.setTreeSavedQuery)
 
     if (notClickable) {
         return <div {...rest}>{children}</div>
@@ -56,6 +59,24 @@ export default function Clickable({ children, remove, add, only, link, href, rep
         })
     }
 
+    const hasTreeNow = !!searchParams.get('tree')
+    const nextTreeValue =
+        (only && (only as any).tree != null && (only as any).tree !== '')
+            ? (only as any).tree
+            : (add && (add as any).tree != null && (add as any).tree !== '')
+                ? (add as any).tree
+                : null
+
+    const willEnterTree = !hasTreeNow && !!nextTreeValue
+
+    const saveTreeQueryIfNeeded = () => {
+        if (!willEnterTree || treeSavedQuery) return
+        if (typeof window === 'undefined') return
+        const currentSearch = window.location.search || ''
+        if (!currentSearch) return
+        setTreeSavedQuery(currentSearch)
+    }
+
     const stringParams = normalizeSearchParams(newParams).toString()
 
     if (link) {
@@ -64,6 +85,12 @@ export default function Clickable({ children, remove, add, only, link, href, rep
                 replace={replace}
                 href={`${href ? href : ''}${stringParams && (only || remove || add) ? `?${stringParams}` : ''}`}
                 className={clickableClassName}
+                onClick={(event) => {
+                    if ((restProps as any).onClick) {
+                        (restProps as any).onClick(event)
+                    }
+                    saveTreeQueryIfNeeded()
+                }}
                 {...restProps}
             >
                 {children}
@@ -75,6 +102,7 @@ export default function Clickable({ children, remove, add, only, link, href, rep
             if (restProps.onClick) {
                 restProps.onClick(event)
             }
+            saveTreeQueryIfNeeded()
             if (replace) {
                 router.replace("?" + stringParams)
             }

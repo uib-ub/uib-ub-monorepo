@@ -5,14 +5,18 @@ import { treeSettings } from "@/config/server-config";
 import { buildTreeParam, parseTreeParam } from "@/lib/tree-param";
 import { getValueByPath } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
-import { PiHouseFill, PiX } from "react-icons/pi";
+import { useRouter, useSearchParams } from "next/navigation";
+import { PiCaretLeftBold, PiHouseFill, PiX } from "react-icons/pi";
 import DatasetFacet from "./facets/dataset-facet";
 import TreeList from "./tree-list";
 import Clickable from "@/components/ui/clickable/clickable";
+import { useSessionStore } from "@/state/zustand/session-store";
 
 export default function TreeWindow() {
     const searchParams = useSearchParams()
+    const router = useRouter()
+    const treeSavedQuery = useSessionStore((s) => s.treeSavedQuery)
+    const clearTreeSavedQuery = useSessionStore((s) => s.clearTreeSavedQuery)
     const { dataset, adm1, adm2, uuid } = parseTreeParam(searchParams.get('tree'))
 
     const { data: selectedDoc, isLoading: selectedDocLoading, isError: selectedDocError } = useQuery({
@@ -36,13 +40,20 @@ export default function TreeWindow() {
 
 
     return (<>
-        <div className="flex p-2 border-b border-neutral-200 shrink-0">
-            <div id="right-title" className="text-black text-xl mr-auto mx-1">
+        <div className="flex p-2 border-b border-neutral-200 shrink-0 items-center gap-2">
+            <div id="right-title" className="text-black text-xl mx-1">
                 Matrikkelvising
             </div>
-            {
-
-            }
+            {treeSavedQuery && <div className="ml-auto flex items-center">
+                <Clickable
+                    className="flex items-center gap-2 text-sm text-neutral-900 no-underline"
+                    link
+                    href={`/search?${treeSavedQuery}`}
+                >
+                    <PiCaretLeftBold aria-hidden="true" className="text-primary-700" />
+                    Stadnamnsøk
+                </Clickable>
+            </div>}
         </div>
         <div className="flex-1 overflow-y-auto stable-scrollbar min-h-0">
             {/* Breadcrumbs driven by `tree` */}
