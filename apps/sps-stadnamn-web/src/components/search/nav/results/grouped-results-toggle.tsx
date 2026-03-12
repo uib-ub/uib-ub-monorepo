@@ -65,8 +65,8 @@ export default function GroupedResultsToggle() {
 
     return (
         <div className="flex items-center gap-2 text-sm text-neutral-900">
-            { sourceView ? <Clickable className="flex items-center gap-2" only={{ q, center, zoom, init, group, maxResults: group ? maxResults : defaultMaxResultsParam }}>
-            <PiCaretLeftBold aria-hidden="true" className="text-primary-700"/> {group ? 'Tilbake' : 'Namnegrupper'} 
+            { sourceView ? <Clickable className="flex items-center gap-2" only={{ q, center, zoom, init, group: null, maxResults }}>
+            <PiCaretLeftBold aria-hidden="true" className="text-primary-700"/>Namnegrupper
             
             </Clickable>
             :

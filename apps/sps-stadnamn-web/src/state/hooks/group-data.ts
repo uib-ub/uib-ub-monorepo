@@ -63,7 +63,6 @@ export default function useGroupData(overrideGroupCode?: string | null) {
         queryFn: async () =>
             groupCode ? groupDataQuery(groupCode, sourcesQuery, sourceView) : null,
         placeholderData: (overrideGroupCode || initCode == groupCode) ? undefined : (prevData: any) => prevData,
-        enabled: !!groupCode,
 
     })
 

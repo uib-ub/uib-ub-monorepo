@@ -20,6 +20,7 @@ const listDataQuery = async ({
     point,
     searchSort,
     collapsed,
+    includeGroup,
 }: {
     pageParam?: number;
     searchQueryString: string;
@@ -29,6 +30,7 @@ const listDataQuery = async ({
     point: [number, number] | null;
     searchSort: string | null;
     collapsed: boolean;
+    includeGroup: boolean;
 }) => {
 
     // Determine size and from based on page number
@@ -54,6 +56,7 @@ const listDataQuery = async ({
             searchSort,
             collapsed,
             init: initValue,
+            includeGroup,
         })
     })
     if (!res.ok) {
@@ -93,6 +96,7 @@ export default function useListData() {
     const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(initGroupCode)
     const searchSort = searchParams.get('searchSort')
     const collapsed = searchParams.get('sourceView') != 'on'
+    const includeGroup = Boolean(!collapsed && searchParams.get('group'))
 
     // Decode `init` once for the list API body. If it's valid base64, use the
     // decoded value; otherwise, fall back to the raw value (UUID in source view).
@@ -124,7 +128,8 @@ export default function useListData() {
             initValue: decodedInit,
             point,
             searchSort,
-            collapsed
+            collapsed,
+            includeGroup
         }),
         //placeholderData: (prevData: any) => prevData,
         initialPageParam: initialPageRef.current - 1,

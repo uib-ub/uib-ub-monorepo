@@ -1,6 +1,7 @@
 import AudioPlayerList from "@/components/audio/audio-player-list";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
+import type { ParamProps } from "@/components/ui/clickable/param-types";
 import IconButton from "@/components/ui/icon-button";
 import { datasetTitles } from "@/config/metadata-config";
 import { treeSettings } from "@/config/server-config";
@@ -56,6 +57,34 @@ function SosiInline({
     );
 }
 
+type CoordinateButtonProps = {
+    isActive: boolean;
+} & Omit<ParamProps, "children" | "label">;
+
+function CoordinateButton({ isActive, className, ...rest }: CoordinateButtonProps) {
+    return (
+        <ClickableIcon
+            label="Gå til koordinatet"
+            className={`inline-flex items-center justify-center w-8 h-8 rounded-full border btn btn-outline shrink-0 ${
+                isActive ? "border-accent-800 bg-accent-800 text-white" : "border-neutral-300"
+            } ${className ?? ""}`}
+            {...rest}
+        >
+            {isActive ? (
+                <PiMapPinFill
+                    aria-hidden="true"
+                    className="text-xl text-white"
+                />
+            ) : (
+                <PiMapPin
+                    aria-hidden="true"
+                    className="text-xl text-neutral-800"
+                />
+            )}
+        </ClickableIcon>
+    );
+}
+
 function GroupBottomToolbarMulti({
     groupData,
     groupTotal,
@@ -69,6 +98,7 @@ function GroupBottomToolbarMulti({
     const { mapFunctionRef, isMobile } = useContext(GlobalContext);
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
+    const activePointCoords = useActivePoint();
 
     if (!groupData || sourceView || !groupTotal || groupTotal === 1) {
         return null;
@@ -82,6 +112,11 @@ function GroupBottomToolbarMulti({
     const activePointValue = rawGroupCoordinates
         ? `${rawGroupCoordinates[1]},${rawGroupCoordinates[0]}`
         : null;
+    const isActivePoint =
+        !!activePointCoords &&
+        !!groupLatLng &&
+        Math.abs(activePointCoords[0] - groupLatLng[0]) < 0.000001 &&
+        Math.abs(activePointCoords[1] - groupLatLng[1]) < 0.000001;
 
     return (
         <div className="px-3 ml-auto mt-auto">
@@ -91,8 +126,8 @@ function GroupBottomToolbarMulti({
                         Utan koordinat
                     </span>
                 ) : (
-                    <ClickableIcon
-                        label="Gå til koordinat"
+                    <CoordinateButton
+                        isActive={isActivePoint}
                         onClick={() => {
                             mapFunctionRef.current?.flyTo(groupLatLng, 15, {
                                 duration: 0.25,
@@ -111,13 +146,7 @@ function GroupBottomToolbarMulti({
                                     : stringToBase64Url(groupData.id),
                             activePoint: activePointValue,
                         }}
-                        className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-neutral-300 btn btn-outline"
-                    >
-                        <PiMapPinFill
-                            aria-hidden="true"
-                            className="text-xl text-neutral-800"
-                        />
-                    </ClickableIcon>
+                    />
                 )}
 
                 {groupTotal > 0 && (
@@ -207,8 +236,8 @@ function GroupBottomToolbarSingle({
                 )}
                 <div className={`ml-auto flex items-center gap-2 ${isActivePoint ? "mt-1" : ""}`}>
                     {groupLatLng && (
-                        <ClickableIcon
-                            label="Gå til koordinatet"
+                        <CoordinateButton
+                            isActive={isActivePoint}
                             add={{ activePoint: `${groupLatLng[0]},${groupLatLng[1]}` }}
                             onClick={() => {
                                 mapFunctionRef.current?.flyTo(groupLatLng, 15, {
@@ -220,24 +249,7 @@ function GroupBottomToolbarSingle({
                                     setSnappedPosition("bottom");
                                 }
                             }}
-                            className={`inline-flex items-center justify-center w-8 h-8 rounded-full border btn btn-outline shrink-0 ${
-                                isActivePoint
-                                    ? "border-accent-800 bg-accent-800 text-white"
-                                    : "border-neutral-300"
-                            }`}
-                        >
-                            {isActivePoint ? (
-                                <PiMapPinFill
-                                    aria-hidden="true"
-                                    className="text-xl text-white"
-                                />
-                            ) : (
-                                <PiMapPin
-                                    aria-hidden="true"
-                                    className="text-xl text-neutral-800"
-                                />
-                            )}
-                        </ClickableIcon>
+                        />
                     )}
                     <IconButton
                         label={linkCopied ? "Lenke kopiert" : "Kopier lenke"}
@@ -293,7 +305,7 @@ export default function GroupInfo({
     const { isMobile, sosiVocab } = useContext(GlobalContext);
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const sourceView = searchParams.get("sourceView") === "on";
-    const isGrouped = !sourceView;
+    const group = searchParams.get('group');
     const mobilePreview = Boolean(snappedPosition === "bottom" && initValue && isMobile);
 
     const toText = (value: unknown): string => {
@@ -347,7 +359,7 @@ export default function GroupInfo({
     const activeYear = searchParams.get('activeYear')
     const activeName = searchParams.get('activeName')
     const groupLabel = label
-    const isInit = Boolean(initValue && groupData?.id && initValue === groupData.id)
+    const isInit = Boolean(!group && initValue && groupData?.id && initValue === groupData.id)
     // Scroll to top when init group changes (when clicking "vel" button)
     useEffect(() => {
         if (groupData?.group?.id && initValue === groupData.id && scrollableContentRef.current) {
@@ -533,17 +545,12 @@ export default function GroupInfo({
                     <Carousel items={iiifItems} />
                 </>
                 }
-
-
-                {
-                    audioItems?.map((audioItem: any) => (
-                        <AudioPlayerList
-                            key={audioItem.uuid + "-audio"}
-                            recordings={Array.isArray(audioItem.recordings) ? audioItem.recordings : []}
-                            showArchiveLink
-                        />
-                    ))
-                }
+                {Array.isArray(audioItems) && audioItems.length > 0 && (
+                    <AudioPlayerList
+                        recordings={audioItems}
+                        showArchiveLink
+                    />
+                )}
                 
                 {textItems?.length > 0 && <TextTab textItems={textItems} />}
 

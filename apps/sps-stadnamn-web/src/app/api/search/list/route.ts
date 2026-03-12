@@ -5,7 +5,7 @@ import { postQuery } from '../../_utils/post';
 import { getQueryString } from '../../_utils/query-string';
 
 export async function POST(request: Request) {
-  const { size, from, initLocation, collapsed, searchQueryString, searchSort, init } = await request.json()
+  const { size, from, initLocation, collapsed, searchQueryString, searchSort, init, includeGroup } = await request.json()
   const { termFilters, reservedParams } = extractFacets(request)
   const { highlight, simple_query_string } = getQueryString(reservedParams)
 
@@ -107,7 +107,8 @@ export async function POST(request: Request) {
   //   and we omit that entire group from the list.
   // - When `collapsed` is false (source view / kjeldeoppslag), `init` is a UUID
   //   and we omit that document from the list.
-  if (init && baseQuery?.bool) {
+  // - When `includeGroup` is true, we keep the group/document even if it matches `init`.
+  if (init && baseQuery?.bool && !includeGroup) {
     const exclusions: any[] = [];
 
     if (collapsed) {

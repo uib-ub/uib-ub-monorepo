@@ -71,7 +71,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
 
 
             className="w-full text-left p-3">
-            <div className="flex items-center justify-between gap-x-2 whitespace-normal w-full text-xl">
+            <div className="flex items-center justify-between gap-x-2 whitespace-normal w-full">
                 <div className="inline-flex items-center flex-wrap gap-x-2 w-full">
                 
                     {isGrunnord && (

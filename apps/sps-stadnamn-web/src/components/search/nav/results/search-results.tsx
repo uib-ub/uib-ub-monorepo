@@ -315,30 +315,18 @@ export default function SearchResults() {
           <GroupFilters />
         )
       }
-      {init && !coordinateInfo && !labelFilter && (initGroupLoading ? (
+      {init && !group && !coordinateInfo && !labelFilter && (initGroupLoading ? (
         <div className="relative">
           <GroupInfoSkeleton />
         </div>
       ) : initGroupData && (
         <div className="relative" key={`init-${initValue}`}>
-          {sourceView ? (
-            <GroupInfo id={`group-info-${init}`} overrideGroupCode={init || undefined} />
-          ) : (
-            <>
-              
-              {initGroupData.fields?.['group.id'] ? (
-                <GroupInfo id={`group-info-${initGroupData.fields['group.id']}`} overrideGroupCode={init || undefined} />
-              ) : null}
-            </>
-          )}
+          <GroupInfo id={`group-info-${init}`} overrideGroupCode={init || undefined} />
         </div>
       ))}
 
-      {(coordinateInfo || labelFilter) && (
-        <GroupInfo id={`group-info-${activeGroupValue}`} overrideGroupCode={activeGroupValue || undefined} />
-      )}
 
-      {(init || (isMobile && qParam)) && !coordinateInfo && !labelFilter ? (initGroupLoading ? (
+      {(init || (isMobile && qParam)) ? (initGroupLoading ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
@@ -404,7 +392,7 @@ export default function SearchResults() {
 
             {(listLoading && listInitialPage === 1) ? Array.from({ length: listInitialPage === 1 ? 6 : 40 }).map((_, i) => (
               <li key={`skeleton-${i}`} className="relative">
-                {(isMobile || !init)
+                {(isMobile || !init || group)
                   ? <GroupInfoSkeleton />
                   : <ResultItemSkeleton />
                 }
@@ -433,7 +421,7 @@ export default function SearchResults() {
                       const domId = uuid || groupId
                       const hasIiif = !!item.fields['iiif']?.[0]
                       return <li className={`relative`} key={domId}>
-                        {(isMobile || !init) ?
+                        {(isMobile || !init || group) ?
                           <GroupInfo
                             id={`group-info-${domId}`}
                             overrideGroupCode={groupCode}
@@ -467,7 +455,7 @@ export default function SearchResults() {
                           }}
                           className={`
                     flex items-center gap-2
-                    btn-neutral btn
+                   ${init ? 'btn-outline' : 'btn-neutral'} btn
                     justify-center
                     text-lg
 
