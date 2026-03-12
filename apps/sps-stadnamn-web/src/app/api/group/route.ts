@@ -15,7 +15,7 @@ type OutputData = {
   textItems: Record<string, any>[],
   audioItems: Record<string, any>[],
   datasets: string[],
-  labels: string[],
+  additionalLabels: string[],
   sosi: string[],
   coordinates: number[],
   fields: Record<string, any>,
@@ -28,6 +28,7 @@ const INNER_HIT_FIELDS = [
   "label",
   "links",
   "altLabels.label",
+  "attestations.label",
   "sosi",
   "content.html",
   "content.text",
@@ -61,11 +62,10 @@ const buildGroupQuery = (groupValue: string, useInnerHits: boolean, filterField:
     "within",
   ];
 
-  const fields = useInnerHits ? baseFields : [...baseFields, ...INNER_HIT_FIELDS];
 
   const query: any = {
     "size": 1,
-    "fields": fields,
+    "fields": baseFields,
     "query": {
       "bool": {
         "filter": [{
@@ -105,6 +105,9 @@ const buildGroupQuery = (groupValue: string, useInnerHits: boolean, filterField:
       }
     };
   }
+  else {
+    query.fields = [...baseFields, ...INNER_HIT_FIELDS]
+  }
 
   return query;
 }
@@ -141,36 +144,47 @@ export async function GET(request: Request) {
   const seenDatasets = new Set<string>()
   const datasets: string[] = []
   const seenTextIds = new Set<string>()
-  const labels = new Set<string>()
+  const seenAudioFiles = new Set<string>()
+  const additionalLabels = new Set<string>()
   const sosi = new Set<string>()
   const topHit = data?.hits?.hits?.[0]
   let location = topHit?.fields?.['location']?.[0]
 
-  const innerHits =
-    useInnerHits &&
-    topHit?.inner_hits?.items?.hits &&
-    Array.isArray((data.hits.hits[0] as any).inner_hits.items.hits)
-      ? (data.hits.hits[0] as any).inner_hits.items.hits
-      : (useInnerHits ? ((data?.hits?.hits?.[0]?.inner_hits?.items?.hits as any)?.hits ?? []) : [])
+  const innerHitsContainer = topHit?.inner_hits?.items?.hits
+  const innerHits: any[] =
+    Array.isArray(innerHitsContainer)
+      ? innerHitsContainer
+      : (Array.isArray((innerHitsContainer as any)?.hits) ? (innerHitsContainer as any).hits : [])
 
   const hits: any[] = isSourceView
     ? (topHit ? [topHit] : [])
-    : (innerHits ?? [])
+    : innerHits
 
-  hits?.forEach((hit: any) => {
+  hits.forEach((hit: any) => {
     const index_name: string = hit._index
     const dataset: string = indexToCode(index_name)[0]
     if (dataset && !seenDatasets.has(dataset)) {
       datasets.push(dataset)
       seenDatasets.add(dataset)
     }
-    
+
+    if (hit.fields?.['uuid'][0] == topHit?.fields?.['uuid'][0]) {
+      console.error("Duplicate UUID found in group data", hit.fields?.['uuid'][0])
+    }
+
     if (!location && hit.fields?.['location']?.[0]) {
       location = hit.fields?.['location']?.[0]
     }
 
-    if (hit.fields?.['label']?.[0]) labels.add(hit.fields?.['label']?.[0])
-    if (hit.fields?.['altLabels.label']?.[0]) labels.add(hit.fields?.['altLabels.label']?.[0])
+    if (hit.fields?.['label']?.[0]) additionalLabels.add(hit.fields?.['label']?.[0])
+
+    hit.fields?.['attestations.label']?.forEach((label: string) => {
+        additionalLabels.add(label)
+      })
+    hit.fields?.['altLabels']?.forEach((label: string) => {
+      additionalLabels.add(label)
+    })
+
     if (hit.fields?.['sosi']?.[0]) sosi.add(hit.fields?.['sosi']?.[0])
 
     const textId = hit.fields?.['misc.Enhetsnummer']?.[0]
@@ -202,12 +216,15 @@ export async function GET(request: Request) {
       }
     }
     if (hit.fields?.['audio.file']?.[0]) {
-      audioItems.push({
-        file: hit.fields?.['audio.file']?.[0],
-        uuid: hit.fields?.['uuid']?.[0],
-        manifest: hit.fields?.['audio.manifest']?.[0],
-        dataset
-      })
+      if (!seenAudioFiles.has(hit.fields?.['audio.file']?.[0])) {
+        seenAudioFiles.add(hit.fields?.['audio.file']?.[0])
+        audioItems.push({
+          file: hit.fields?.['audio.file']?.[0],
+          uuid: hit.fields?.['uuid']?.[0],
+          manifest: hit.fields?.['audio.manifest']?.[0],
+          dataset
+        })
+      }
     }
 
 
@@ -222,6 +239,9 @@ export async function GET(request: Request) {
     total: data?.hits?.total?.value,
     fields: topFields,
   };
+
+  // Remove first label from additional labels
+  additionalLabels.delete(data?.hits?.hits?.[0]?.fields?.['label']?.[0])
 
   outputData.fields = {
     ...outputData.fields,
@@ -239,7 +259,7 @@ export async function GET(request: Request) {
   if (textItems.length > 0) outputData.textItems = textItems;
   if (audioItems.length > 0) outputData.audioItems = audioItems;
   if (datasets.length > 0) outputData.datasets = datasets;
-  if (labels.size > 0) outputData.labels = Array.from(labels);
+  if (additionalLabels.size > 0) outputData.additionalLabels = Array.from(additionalLabels);
 
 
 

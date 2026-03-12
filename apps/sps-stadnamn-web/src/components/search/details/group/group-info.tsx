@@ -17,6 +17,41 @@ import SourceTitle from "../shared/source-title";
 import { TextTab } from "./text-tab";
 import { DatasetSummary } from "../../dataset-summary";
 
+function SosiInline({
+    rawSosi,
+    sosiVocab,
+}: {
+    rawSosi: unknown;
+    sosiVocab: Record<string, { label?: string }>;
+}) {
+    const sosiArray = Array.isArray(rawSosi) ? rawSosi : rawSosi ? [rawSosi] : [];
+    const sosiTypes = sosiArray.reduce((acc: Record<string, string>, item: string) => {
+        const key = String(item);
+        acc[key] = sosiVocab[key]?.label || key;
+        return acc;
+    }, {});
+    const sosiTypeKeys = Object.keys(sosiTypes);
+    if (!sosiTypeKeys.length) return null;
+
+    const showAllSosi = sosiTypeKeys.length <= 3;
+    const visibleSosiTypeKeys = showAllSosi ? sosiTypeKeys : sosiTypeKeys.slice(0, 2);
+    const additionalSosiCount = showAllSosi ? 0 : sosiTypeKeys.length - visibleSosiTypeKeys.length;
+
+    return (
+        <>
+            <span className="text-neutral-400 px-1">|</span>
+            <span className="inline-flex items-center gap-1 text-sm text-neutral-700">
+                <span>{visibleSosiTypeKeys.map((typeKey) => sosiTypes[typeKey]).join(", ")}</span>
+                {additionalSosiCount > 0 && (
+                    <span className="inline-flex items-baseline py-0.5 rounded-full text-xs text-neutral-700 whitespace-nowrap">
+                        + {additionalSosiCount}
+                    </span>
+                )}
+            </span>
+        </>
+    );
+}
+
 export default function GroupInfo({
     id,
     overrideGroupCode,
@@ -38,6 +73,7 @@ export default function GroupInfo({
     const activePoint = searchParams.get('activePoint')
     const sourceView = searchParams.get('sourceView') === 'on'
     const isGrouped = !sourceView
+    const mobilePreview = snappedPosition == 'bottom' && initValue
 
     const activeGroupValue = groupData?.group?.id
 
@@ -74,12 +110,6 @@ export default function GroupInfo({
     const admText = `${adm2 && adm1 && adm2 !== adm1 ? `${adm2}, ` : ""}${adm1}`.trim();
 
     const rawSosi = source?.sosi ?? fields.sosi;
-    const sosiArray = Array.isArray(rawSosi) ? rawSosi : rawSosi ? [rawSosi] : [];
-    // types as key, labels as value
-    const sosiTypes = sosiArray.reduce((acc: Record<string, string>, item: string) => {
-        acc[item] = sosiVocab[item]?.label || item
-        return acc
-    }, {})
 
     const roundCoordString = (value: string, decimals: number) => {
         const n = Number(value)
@@ -158,11 +188,11 @@ export default function GroupInfo({
 
 
     return (
-        <div id={id} className="relative flex min-w-0 flex-col pb-4 pt-2 gap-3">
-            <div className="min-w-0 w-full flex flex-col px-3 gap-3">
-                <div className="flex items-center gap-2">
+        <div id={id} className={`relative flex min-w-0 flex-col  ${mobilePreview ? 'gap-1 flex-wrap' : 'gap-3 pt-2 pb-4'}`}>
+            <div className={`min-w-0 w-full flex flex-col px-3  ${mobilePreview ? 'gap-1 flex-wrap' : 'gap-3'}`}>
+                <div className={`flex items-center gap-2 ${mobilePreview ? 'flex-wrap' : ''}`}>
                     {datasets && datasets.length > 0 && (
-                        <DatasetSummary datasetKeys={datasets} className="text-sm uppercase tracking-[0.12em] text-neutral-700" />
+                        <DatasetSummary datasetKeys={datasets} className={`uppercase tracking-[0.12em] text-neutral-700 ${mobilePreview ? 'text-xs' : 'text-sm'}`} />
                     )}
                     {isInit && (
                         <div className="ml-auto flex items-center gap-2">
@@ -179,32 +209,17 @@ export default function GroupInfo({
                 </div>
 
                 <div className="flex flex-col gap-1">
-                
-                <div className="flex items-center gap-3">
-                    <SourceTitle
-                        label={label}
-                        cadastrePrefix=""
-                        labelClassName="text-xl truncate"
-                    />
-                    {Object.keys(sosiTypes).length > 0 && (
-                        <div className="flex flex-wrap items-baseline gap-1">
-                            {Object.keys(sosiTypes).map((typeKey) => (
-                                <Clickable
-                                    key={typeKey}
-                                    only={{
-                                        "group": groupData?.id,
-                                        "sosi": typeKey
-                                    }}
-                                    className="inline-flex items-baseline px-2 py-0.5 rounded-full border border-neutral-300 bg-neutral-50 text-xs text-neutral-800 hover:bg-neutral-100 whitespace-nowrap"
-                                >
-                                    {sosiTypes[typeKey]}
-                                </Clickable>
-                            ))}
-                        </div>
-                    )}
-                </div>
-                
-                
+                    <div className="flex items-center gap-3">
+                        <SourceTitle
+                            label={label}
+                            cadastrePrefix=""
+                            labelClassName={` truncate ${mobilePreview ? 'text-base' : 'text-xl'}`}
+                        />
+                        {groupData?.additionalLabels?.map((l: string) => (
+                            <span key={l} className="text-sm text-neutral-700">{l}</span>
+                        ))}
+                    </div>
+
                 {dataset && treeSettings[dataset] ? (
                     (() => {
                         const isTreeDataset = !!treeSettings[dataset];
@@ -230,7 +245,9 @@ export default function GroupInfo({
                             )
                             : null;
 
-                        return (adm1 || gnr) ? (
+                        const hasAdm = Boolean(adm1 || gnr);
+
+                        return (hasAdm || (sourceView && rawSosi)) ? (
                             <div className="text-sm text-neutral-700 flex items-center gap-1 flex-wrap">
                                 {adm1 && (
                                     <Clickable
@@ -279,18 +296,22 @@ export default function GroupInfo({
                                         </Clickable>
                                     </>
                                 )}
+                                {sourceView && <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />}
                             </div>
                         ) : null;
                     })()
                 ) : (
                     admText && (
-                        <div className="text-sm text-neutral-700">
-                            {admText}
+                        <div className="text-sm text-neutral-700 flex items-center gap-1 flex-wrap">
+                            <span>{admText}</span>
+                            {sourceView && <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />}
                         </div>
                     )
                 )}
                 </div>
+                
             </div>
+            
 
             {iiifItems?.length > 0 && <>
                     <Carousel items={iiifItems} />

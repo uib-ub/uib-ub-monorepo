@@ -359,7 +359,7 @@ export default function OverlayInterface() {
                         <TreeWindow />
                     ) : (
                         <>
-                            <div className={` flex items-center w-full ${isMobile ? 'h-8 min-h-8' : 'h-12 min-h-12'} px-2 py-1  gap-2`}>
+                            <div className={` flex items-center w-full ${isMobile ? 'h-8 min-h-8 px-3' : 'h-12 min-h-12 px-2 '} py-1  gap-2`}>
                                 <Clickable
                                     aria-expanded={!!maxResults}
                                     aria-controls="results-panel"

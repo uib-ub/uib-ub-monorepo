@@ -133,7 +133,7 @@ export default function SearchResults() {
 
   // On mobile, show a compact summary for the "init" group when pinned,
   // otherwise fall back to the currently active group.
-  if (isMobile && snappedPosition == 'bottom' && !coordinateInfo && !labelFilter && (init || activeGroupValue)) {
+  if (false && isMobile && snappedPosition == 'bottom' && !coordinateInfo && !labelFilter && (init || activeGroupValue)) {
 
     const summaryGroupData = initGroupData
     if (!summaryGroupData) return null;
@@ -489,7 +489,7 @@ export default function SearchResults() {
       )}
 
 
-      {(isMobile || searchError || listError || hasNoResults || hasNoAdditionalResults) && (!labelFilter) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
+      {( isMobile || searchError || listError || hasNoResults || hasNoAdditionalResults) && (!labelFilter) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
         {filterCount > 0 && showOtherResults && <div className="mx-2 mb-4">
 
           <ActiveFilters /></div>}

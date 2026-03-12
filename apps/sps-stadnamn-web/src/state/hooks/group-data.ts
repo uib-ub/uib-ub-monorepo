@@ -10,7 +10,6 @@ const groupDataQuery = async (
     group: string,
     sourcesQuery: string,
     sourceView: boolean,
-    debugChildren?: any[]
 ) => {
     const newParams = new URLSearchParams(sourcesQuery);
     newParams.set('group', group);
@@ -62,7 +61,7 @@ export default function useGroupData(overrideGroupCode?: string | null) {
     } = useQuery({
         queryKey: ['group', sourcesQuery, groupCode, sourceView, overrideGroupCode ? undefined : searchQueryString],
         queryFn: async () =>
-            groupCode ? groupDataQuery(groupCode, sourcesQuery, sourceView, debug ? debugChildren : []) : null,
+            groupCode ? groupDataQuery(groupCode, sourcesQuery, sourceView) : null,
         placeholderData: (overrideGroupCode || initCode == groupCode) ? undefined : (prevData: any) => prevData,
         enabled: !!groupCode,
 
