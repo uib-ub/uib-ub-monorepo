@@ -216,7 +216,7 @@ export default function GroupInfo({
                             labelClassName={` truncate ${mobilePreview ? 'text-base' : 'text-xl'}`}
                         />
                         {groupData?.additionalLabels?.map((l: string) => (
-                            <span key={l} className="text-sm text-neutral-700">{l}</span>
+                            <em key={l} className="text-neutral-700">{l}</em>
                         ))}
                     </div>
 
