@@ -112,6 +112,17 @@ export default function GroupInfo({
         }
     }, [initValue, groupData?.group?.id, scrollableContentRef]);
 
+    const treeSavedQuery = useSessionStore((s) => s.treeSavedQuery)
+    const setTreeSavedQuery = useSessionStore((s) => s.setTreeSavedQuery)
+
+    const handleEnterTreeFromBreadcrumb = () => {
+        if (treeSavedQuery) return
+        if (typeof window === "undefined") return
+        const currentSearch = window.location.search || ""
+        if (!currentSearch) return
+        setTreeSavedQuery(currentSearch)
+    }
+
 
 
 
@@ -222,13 +233,23 @@ export default function GroupInfo({
                         return (adm1 || gnr) ? (
                             <div className="text-sm text-neutral-700 flex items-center gap-1 flex-wrap">
                                 {adm1 && (
-                                    <Clickable link className="breadcrumb-link" add={{ tree: buildTreeParam({ dataset, adm1 }) }}>
+                                    <Clickable
+                                        link
+                                        className="breadcrumb-link"
+                                        add={{ tree: buildTreeParam({ dataset, adm1 }) }}
+                                        onClick={handleEnterTreeFromBreadcrumb}
+                                    >
                                         {adm1}
                                     </Clickable>
                                 )}
                                 {adm1 && adm2 && <span className="text-neutral-400">/</span>}
                                 {adm2 && (
-                                    <Clickable link className="breadcrumb-link" add={{ tree: buildTreeParam({ dataset, adm1, adm2 }) }}>
+                                    <Clickable
+                                        link
+                                        className="breadcrumb-link"
+                                        add={{ tree: buildTreeParam({ dataset, adm1, adm2 }) }}
+                                        onClick={handleEnterTreeFromBreadcrumb}
+                                    >
                                         {adm2}
                                     </Clickable>
                                 )}
@@ -239,6 +260,7 @@ export default function GroupInfo({
                                             link
                                             className="breadcrumb-link"
                                             add={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }) }}
+                                            onClick={handleEnterTreeFromBreadcrumb}
                                         >
                                             {gnr}{gardName ? ` ${gardName}` : ''}
                                         </Clickable>
@@ -251,6 +273,7 @@ export default function GroupInfo({
                                             link
                                             className="breadcrumb-link"
                                             add={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }) }}
+                                            onClick={handleEnterTreeFromBreadcrumb}
                                         >
                                             {bnr}{label ? ` ${label}` : ''}
                                         </Clickable>
