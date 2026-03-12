@@ -40,91 +40,95 @@ export default function TreeWindow() {
 
 
     return (<>
-        <div className="flex p-2 border-b border-neutral-200 shrink-0 items-center gap-2">
-            <div id="right-title" className="text-black text-xl mx-1">
-                Matrikkelvising
-            </div>
-            {treeSavedQuery && <div className="ml-auto flex items-center">
-                <Clickable
-                    className="flex items-center gap-2 text-sm text-neutral-900 no-underline"
-                    link
-                    href={`/search?${treeSavedQuery}`}
-                >
-                    <PiCaretLeftBold aria-hidden="true" className="text-primary-700" />
-                    Stadnamnsøk
-                </Clickable>
-            </div>}
-        </div>
-        <div className="flex-1 overflow-y-auto stable-scrollbar min-h-0">
-            {/* Breadcrumbs driven by `tree` */}
-            {dataset && (
-                <div className="sticky top-0 z-10 bg-white px-3 pt-2 pb-1 text-sm flex flex-wrap gap-2 border-b border-neutral-200">
-                    <ClickableIcon
-                        link
-                        label="Matriklar"
-                        className="breadcrumb-link"
-                        remove={['doc', 'activePoint']}
-                        add={{ tree: 'root' }}
-                    >
-                        <PiHouseFill aria-hidden="true" className="inline" />
-                    </ClickableIcon>
-                    {dataset && (
-                        <>
-                            <span>/</span>
-                            <Clickable
-                                link
-                                className="breadcrumb-link"
-                                add={{ tree: buildTreeParam({ dataset }) }}
-                            >
-                                {datasetTitles[dataset] || dataset}
-                            </Clickable>
-                        </>
-                    )}
-                    {dataset && adm1 && (
-                        <>
-                            <span>/</span>
-                            <Clickable
-                                link
-                                className="breadcrumb-link"
-                                remove={['doc', 'activePoint']}
-                                add={{ tree: buildTreeParam({ dataset, adm1 }) }}
-                            >
-                                {adm1}
-                            </Clickable>
-                        </>
-                    )}
-                    {dataset && adm1 && adm2 && (
-                        <>
-                            <span>/</span>
-                            <Clickable
-                                link
-                                className="breadcrumb-link"
-                                remove={['doc', 'activePoint']}
-                                add={{ tree: buildTreeParam({ dataset, adm1, adm2 }) }}
-                            >
-                                {adm2}
-                            </Clickable>
-                        </>
-                    )}
-                    {dataset && adm1 && adm2 && uuid && (
-                        <>
-                            <span>/</span>
-                            <span className="text-neutral-900">
-                                {`${selectedNumber ? `${selectedNumber} ` : ''}${selectedDoc?.label || (selectedDocLoading ? '…' : '')}`.trim()}
-                            </span>
-                        </>
-                    )}
+        <div className="flex flex-col h-full">
+            <div className="sticky top-0 z-10 bg-white border-b border-neutral-300">
+                <div className="flex p-2 border-b border-neutral-200 shrink-0 items-center gap-2">
+                    <div id="right-title" className="text-black text-xl mx-1">
+                        Matrikkelvising
+                    </div>
+                    {treeSavedQuery && <div className="ml-auto flex items-center">
+                        <Clickable
+                            className="flex items-center gap-2 text-sm text-neutral-900 no-underline"
+                            link
+                            href={`/search?${treeSavedQuery}`}
+                        >
+                            <PiCaretLeftBold aria-hidden="true" className="text-primary-700" />
+                            Stadnamnsøk
+                        </Clickable>
+                    </div>}
                 </div>
-            )}
+                {/* Breadcrumbs driven by `tree` */}
+                {dataset && (
+                    <div className="bg-white px-3 pt-2 pb-1 text-sm flex flex-wrap gap-2 border-b border-neutral-200">
+                        <ClickableIcon
+                            link
+                            label="Matriklar"
+                            className="breadcrumb-link"
+                            remove={['doc', 'activePoint']}
+                            add={{ tree: 'root' }}
+                        >
+                            <PiHouseFill aria-hidden="true" className="inline" />
+                        </ClickableIcon>
+                        {dataset && (
+                            <>
+                                <span>/</span>
+                                <Clickable
+                                    link
+                                    className="breadcrumb-link"
+                                    add={{ tree: buildTreeParam({ dataset }) }}
+                                >
+                                    {datasetTitles[dataset] || dataset}
+                                </Clickable>
+                            </>
+                        )}
+                        {dataset && adm1 && (
+                            <>
+                                <span>/</span>
+                                <Clickable
+                                    link
+                                    className="breadcrumb-link"
+                                    remove={['doc', 'activePoint']}
+                                    add={{ tree: buildTreeParam({ dataset, adm1 }) }}
+                                >
+                                    {adm1}
+                                </Clickable>
+                            </>
+                        )}
+                        {dataset && adm1 && adm2 && (
+                            <>
+                                <span>/</span>
+                                <Clickable
+                                    link
+                                    className="breadcrumb-link"
+                                    remove={['doc', 'activePoint']}
+                                    add={{ tree: buildTreeParam({ dataset, adm1, adm2 }) }}
+                                >
+                                    {adm2}
+                                </Clickable>
+                            </>
+                        )}
+                        {dataset && adm1 && adm2 && uuid && (
+                            <>
+                                <span>/</span>
+                                <span className="text-neutral-900">
+                                    {`${selectedNumber ? `${selectedNumber} ` : ''}${selectedDoc?.label || (selectedDocLoading ? '…' : '')}`.trim()}
+                                </span>
+                            </>
+                        )}
+                    </div>
+                )}
+            </div>
 
-            {/* State machine driven by `tree` */}
-            {!dataset && <DatasetFacet />}
-            {dataset && !treeSettings[dataset] && (
-                <div className="p-3 text-neutral-900">Datasettet har ikkje matrikkelvising.</div>
-            )}
-            {dataset && treeSettings[dataset] && (
-                <TreeList dataset={dataset} adm1={adm1} adm2={adm2} expandedUuid={uuid} docUuid={searchParams.get('doc')} />
-            )}
+            <div className="flex-1 min-h-0">
+                {/* State machine driven by `tree` */}
+                {!dataset && <DatasetFacet />}
+                {dataset && !treeSettings[dataset] && (
+                    <div className="p-3 text-neutral-900">Datasettet har ikkje matrikkelvising.</div>
+                )}
+                {dataset && treeSettings[dataset] && (
+                    <TreeList dataset={dataset} adm1={adm1} adm2={adm2} expandedUuid={uuid} docUuid={searchParams.get('doc')} />
+                )}
+            </div>
         </div>
     </>)
 }
