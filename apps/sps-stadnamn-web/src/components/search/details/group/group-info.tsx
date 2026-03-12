@@ -19,6 +19,7 @@ import SourceTitle from "../shared/source-title";
 import { TextTab } from "./text-tab";
 import { DatasetSummary } from "../../dataset-summary";
 import CoordinateTypeInfo from "../doc/coordinate-type-info";
+import { GroupInfoSkeleton } from "../shared/group-header-skeleton";
 
 function SosiInline({
     rawSosi,
@@ -378,26 +379,25 @@ export default function GroupInfo({
         ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])]
         : null;
 
-    if (!sourceView) {
-        if (groupLoading) return (
-            <div className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-300">
-          <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `10rem` }}></div>
-          <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `16rem` }}></div>
-        </div>
-        )
+    if (groupLoading) {
+        return <GroupInfoSkeleton />;
+    }
 
-        if (!groupData?.["id"]) {
-            console.log("Group ID not found")
-            const props = {
-                message: `Group ID not found: ${JSON.stringify(groupData)}}`
-            }
+    if (!sourceView && !groupData?.["id"]) {
+        console.log("Group ID not found");
+        const props = {
+            message: `Group ID not found: ${JSON.stringify(groupData)}}`,
+        };
 
-            fetch('/api/error', {
-                method: 'POST',
-                body: JSON.stringify(props)
-            })
-            return <div className="p-2">Kunne ikkje lasta inn gruppe {JSON.stringify(groupData)} {overrideGroupCode}</div>
-        }
+        fetch("/api/error", {
+            method: "POST",
+            body: JSON.stringify(props),
+        });
+        return (
+            <div className="p-2">
+                Kunne ikkje lasta inn gruppe {JSON.stringify(groupData)} {overrideGroupCode}
+            </div>
+        );
     }
 
 

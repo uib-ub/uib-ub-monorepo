@@ -24,6 +24,7 @@ import IconButton from "@/components/ui/icon-button";
 import { GroupFilters } from "../../details/group/names-section";
 import { DatasetSummary } from "../../dataset-summary";
 import useListData from "@/state/hooks/list-data";
+import ResultItemSkeleton, { GroupInfoSkeleton } from "../../details/shared/group-header-skeleton";
 
 
 export default function SearchResults() {
@@ -317,9 +318,8 @@ export default function SearchResults() {
         )
       }
       {init && !coordinateInfo && !labelFilter && (initGroupLoading ? (
-        <div className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-300">
-          <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `10rem` }}></div>
-          <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `16rem` }}></div>
+        <div className="relative">
+          <GroupInfoSkeleton />
         </div>
       ) : initGroupData && (
         <div className="relative" key={`init-${initValue}`}>
@@ -405,10 +405,13 @@ export default function SearchResults() {
 
 
             {(initGroupLoading || listLoading && listInitialPage === 1) ? Array.from({ length: listInitialPage === 1 ? 6 : 40 }).map((_, i) => (
-              <div key={`skeleton-${i}`} className="h-14 flex flex-col mx-2 flex-grow justify-center gap-1 divide-y divide-neutral-200">
-                <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `${getSkeletonLength(i, 4, 10)}rem` }}></div>
-                <div className="bg-neutral-900/10 rounded-full h-4 animate-pulse" style={{ width: `${getSkeletonLength(i, 10, 16)}rem` }}></div>
-              </div>
+              <li key={`skeleton-${i}`} className="relative">
+                {(isMobile || !init) ? (
+                  <GroupInfoSkeleton />
+                ) : (
+                  <ResultItemSkeleton />
+                )}
+              </li>
             )) :
               (() => {
                 let renderedAdditional = 0
