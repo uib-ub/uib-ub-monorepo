@@ -20,11 +20,9 @@ import { DatasetSummary } from "../../dataset-summary";
 export default function GroupInfo({
     id,
     overrideGroupCode,
-    docData,
 }: {
     id: string;
     overrideGroupCode?: string;
-    docData?: Record<string, any>;
 }) {
     const { groupData, groupLoading, groupTotal } = useGroupData(overrideGroupCode)
     const iiifItems = groupData?.iiifItems
@@ -51,8 +49,11 @@ export default function GroupInfo({
     const fields = groupData?.fields || {};
     const datasets = groupData?.datasets;
 
-    const dataset = Array.isArray(datasets) && datasets.length > 0 ? datasets[0] : (docData?._index?.split("-")?.[2] as string | undefined);
-    const source = docData?._source || docData;
+    const dataset = Array.isArray(datasets) && datasets.length > 0
+        ? datasets[0]
+        : undefined;
+    // Use group fields as primary data source; docData is deprecated and no longer required.
+    const source = undefined as any;
     const label =
         (groupData?.fields?.label?.[0] ??
             groupData?.fields?.["group.label"]?.[0] ??
@@ -74,9 +75,11 @@ export default function GroupInfo({
 
     const rawSosi = source?.sosi ?? fields.sosi;
     const sosiArray = Array.isArray(rawSosi) ? rawSosi : rawSosi ? [rawSosi] : [];
-    const sosiTypes = sosiArray
-        .map((item: unknown) => (typeof item === "string" ? sosiVocab[item]?.label || item : ""))
-        .filter(Boolean);
+    // types as key, labels as value
+    const sosiTypes = sosiArray.reduce((acc: Record<string, string>, item: string) => {
+        acc[item] = sosiVocab[item]?.label || item
+        return acc
+    }, {})
 
     const roundCoordString = (value: string, decimals: number) => {
         const n = Number(value)
@@ -145,7 +148,7 @@ export default function GroupInfo({
 
     return (
         <div id={id} className="relative flex min-w-0 flex-col pb-4 pt-2 gap-3">
-            <div className="min-w-0 w-full flex flex-col px-3 pt-2 pb-3 gap-1">
+            <div className="min-w-0 w-full flex flex-col px-3 gap-3">
                 <div className="flex items-center gap-2">
                     {datasets && datasets.length > 0 && (
                         <DatasetSummary datasetKeys={datasets} className="text-sm uppercase tracking-[0.12em] text-neutral-700" />
@@ -163,24 +166,57 @@ export default function GroupInfo({
                         </div>
                     )}
                 </div>
-                {label && (
+
+                <div className="flex flex-col gap-1">
+                
+                <div className="flex items-center gap-2">
                     <SourceTitle
                         label={label}
                         cadastrePrefix=""
-                        sosiTypes={sosiTypes}
                         labelClassName="text-lg truncate"
-                        sosiClassName="text-sm text-neutral-700 truncate ml-2"
                     />
-                )}
-                {dataset && treeSettings[dataset] && source ? (
+                    {Object.keys(sosiTypes).length > 0 && (
+                        <div className="flex flex-wrap items-baseline gap-1">
+                            {Object.keys(sosiTypes).map((typeKey) => (
+                                <Clickable
+                                    key={typeKey}
+                                    only={{
+                                        "group": groupData?.id,
+                                        "sosi": typeKey
+                                    }}
+                                    className="inline-flex items-baseline px-2 py-0.5 rounded-full border border-neutral-300 bg-neutral-50 text-xs text-neutral-800 hover:bg-neutral-100 whitespace-nowrap"
+                                >
+                                    {sosiTypes[typeKey]}
+                                </Clickable>
+                            ))}
+                        </div>
+                    )}
+                </div>
+                
+                
+                {dataset && treeSettings[dataset] ? (
                     (() => {
                         const isTreeDataset = !!treeSettings[dataset];
-                        const gnr = isTreeDataset ? getGnr(docData, dataset) : null;
-                        const bnr = isTreeDataset ? getBnr(docData, dataset) : null;
-                        const isLeaf = isTreeDataset && !!(source as any).within;
-                        const gardUuid = isLeaf ? (source as any).within : ((source as any).uuid || null);
+                        // Build a minimal "hit" object from group fields for helpers.
+                        const cadastreHit: any = {
+                            fields,
+                        };
+
+                        const gnr = isTreeDataset ? getGnr(cadastreHit, dataset) : null;
+                        const bnr = isTreeDataset ? getBnr(cadastreHit, dataset) : null;
+
+                        const withinField = (fields as any)?.within?.[0];
+                        const uuidField = (fields as any)?.uuid?.[0] ?? (source as any)?.uuid;
+                        const isLeaf = isTreeDataset && !!withinField;
+                        const gardUuid = isLeaf ? withinField : (uuidField || null);
+
                         const gardName = isTreeDataset
-                            ? (getValueByPath(source, treeSettings[dataset]?.parentName) || (!isLeaf ? label : null) || null)
+                            ? (
+                                getValueByPath(fields, treeSettings[dataset]?.parentName) ||
+                                (source ? getValueByPath(source, treeSettings[dataset]?.parentName) : "") ||
+                                (!isLeaf ? label : null) ||
+                                null
+                            )
                             : null;
 
                         return (adm1 || gnr) ? (
@@ -202,7 +238,7 @@ export default function GroupInfo({
                                         <Clickable
                                             link
                                             className="breadcrumb-link"
-                                            add={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }), doc: isLeaf ? (source as any).within : undefined }}
+                                            add={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }) }}
                                         >
                                             {gnr}{gardName ? ` ${gardName}` : ''}
                                         </Clickable>
@@ -214,7 +250,7 @@ export default function GroupInfo({
                                         <Clickable
                                             link
                                             className="breadcrumb-link"
-                                            add={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: (source as any).within }) }}
+                                            add={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }) }}
                                         >
                                             {bnr}{label ? ` ${label}` : ''}
                                         </Clickable>
@@ -230,6 +266,7 @@ export default function GroupInfo({
                         </div>
                     )
                 )}
+                </div>
             </div>
 
             {iiifItems?.length > 0 && <>

@@ -16,10 +16,20 @@ const listDataQuery = async ({
     pageParam = 0,
     searchQueryString,
     initGroupData,
+    initValue,
     point,
     searchSort,
     collapsed,
-}: { pageParam?: number; searchQueryString: string, initGroupCode: string | null, initGroupData: Record<string, any> | null, point: [number, number] | null, searchSort: string | null, collapsed: boolean }) => {
+}: {
+    pageParam?: number;
+    searchQueryString: string;
+    initGroupCode: string | null;
+    initGroupData: Record<string, any> | null;
+    initValue: string | null;
+    point: [number, number] | null;
+    searchSort: string | null;
+    collapsed: boolean;
+}) => {
 
     // Determine size and from based on page number
     const isFirstPage = pageParam === 0;
@@ -34,7 +44,7 @@ const listDataQuery = async ({
         (point ? [point[1], point[0]] as [number, number] : null)
     const initLabel = initGroupData?.label || undefined
 
-    const res = await fetch(`/api/search/list${searchQueryString? `?${searchQueryString}` : ''}`, {
+    const res = await fetch(`/api/search/list${searchQueryString ? `?${searchQueryString}` : ''}`, {
         method: 'POST',
         body: JSON.stringify({
             size: size,
@@ -42,8 +52,8 @@ const listDataQuery = async ({
             initLocation,
             initLabel,
             searchSort,
-            collapsed
-
+            collapsed,
+            init: initValue,
         })
     })
     if (!res.ok) {
@@ -84,6 +94,17 @@ export default function useListData() {
     const searchSort = searchParams.get('searchSort')
     const collapsed = searchParams.get('sourceView') != 'on'
 
+    // Decode `init` once for the list API body. If it's valid base64, use the
+    // decoded value; otherwise, fall back to the raw value (UUID in source view).
+    let decodedInit: string | null = null
+    if (initGroupCode) {
+        try {
+            decodedInit = base64UrlToString(initGroupCode)
+        } catch {
+            decodedInit = initGroupCode
+        }
+    }
+
     const {
         data,
         error,
@@ -100,6 +121,7 @@ export default function useListData() {
             searchQueryString,
             initGroupCode: initGroupCode,
             initGroupData: initGroupCode ? initGroupData : null,
+            initValue: decodedInit,
             point,
             searchSort,
             collapsed

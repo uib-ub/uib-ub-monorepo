@@ -37,9 +37,10 @@ const INNER_HIT_FIELDS = [
   "misc.Enhetsnummer",
 ];
 
-const buildGroupQuery = (groupValue: string, useInnerHits: boolean) => {
+const buildGroupQuery = (groupValue: string, useInnerHits: boolean, filterField: 'group.id' | 'uuid') => {
   const baseFields = [
     "group.label",
+    "label",
     "group.id",
     "group.adm1",
     "group.adm2",
@@ -51,6 +52,13 @@ const buildGroupQuery = (groupValue: string, useInnerHits: boolean) => {
     "sosi",
     "coordinateType",
     "uuid",
+    // Cadastre / farm-name related fields needed for breadcrumbs.
+    // NOTE: when requesting from Elasticsearch, nested fields use dots,
+    // while our helper paths use double underscore.
+    "cadastre.gnr",
+    "cadastre.bnr",
+    "misc.Gardsnamn",
+    "within",
   ];
 
   const fields = useInnerHits ? baseFields : [...baseFields, ...INNER_HIT_FIELDS];
@@ -62,7 +70,7 @@ const buildGroupQuery = (groupValue: string, useInnerHits: boolean) => {
       "bool": {
         "filter": [{
           "term": {
-            "group.id": groupValue
+            [filterField]: groupValue
           }
         }]
       }
@@ -107,6 +115,7 @@ export async function GET(request: Request) {
   const perspective = reservedParams.perspective || 'all'
   const isSourceView = reservedParams.sourceView === 'on'
   const useInnerHits = !isSourceView
+  const filterField: 'group.id' | 'uuid' = isSourceView ? 'uuid' : 'group.id'
 
   // Grunnord ids (e.g. grunnord_berg) may be sent raw or base64-encoded; accept both
   const rawGroup = reservedParams.group ?? ''
@@ -115,13 +124,13 @@ export async function GET(request: Request) {
       ? rawGroup
       : base64UrlToString(reservedParams.group)
 
-  let [data, status] = await postQuery(perspective, buildGroupQuery(groupValue, useInnerHits), "dfs_query_then_fetch")
+  let [data, status] = await postQuery(perspective, buildGroupQuery(groupValue, useInnerHits, filterField), "dfs_query_then_fetch")
 
   // Find group if the doc has been demoted within the group
   if (useInnerHits && data.hits?.hits.length === 0) {
     const doc = await fetchDoc({ uuid: groupValue })
     if (doc) {
-      [data, status] = await postQuery(perspective, buildGroupQuery(doc._source.group.id, useInnerHits), "dfs_query_then_fetch")
+      [data, status] = await postQuery(perspective, buildGroupQuery(doc._source.group.id, useInnerHits, 'group.id'), "dfs_query_then_fetch")
     }
   }
 
@@ -205,17 +214,21 @@ export async function GET(request: Request) {
 
   })
 
+  const topFields = data?.hits?.hits?.[0]?.fields || {};
+
   const outputData: Partial<OutputData> = {
-    "id": data?.hits?.hits?.[0]?.fields?.['group.id']?.[0],
-    //"label": data?.hits?.hits?.[0]?.fields?.['group.label']?.[0],
-    "total": data?.hits?.total?.value,
-    "fields": data?.hits?.hits?.[0]?.fields,
+    id: topFields["group.id"]?.[0],
+    //"label": topFields['group.label']?.[0],
+    total: data?.hits?.total?.value,
+    fields: topFields,
   };
 
-
   outputData.fields = {
-    //...(!)
     ...outputData.fields,
+    // Expose a synthetic cadastre__gnr / cadastre__bnr so helpers that
+    // expect the double-underscore convention keep working.
+    ...(topFields["cadastre.gnr"] ? { "cadastre__gnr": topFields["cadastre.gnr"] } : {}),
+    ...(topFields["cadastre.bnr"] ? { "cadastre__bnr": topFields["cadastre.bnr"] } : {}),
     ...(location ? { location } : {}),
     ...(sosi.size > 0 ? { sosi: Array.from(sosi) } : {}),
   }

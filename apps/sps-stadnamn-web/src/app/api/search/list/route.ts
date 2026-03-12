@@ -3,10 +3,9 @@
 import { extractFacets } from '../../_utils/facets';
 import { postQuery } from '../../_utils/post';
 import { getQueryString } from '../../_utils/query-string';
-import { base64UrlToString } from '@/lib/param-utils';
 
 export async function POST(request: Request) {
-  const { size, from, initLocation, collapsed, searchQueryString, searchSort } = await request.json()
+  const { size, from, initLocation, collapsed, searchQueryString, searchSort, init } = await request.json()
   const { termFilters, reservedParams } = extractFacets(request)
   const { highlight, simple_query_string } = getQueryString(reservedParams)
 
@@ -59,7 +58,6 @@ export async function POST(request: Request) {
     ...(collapsed ? {
       "collapse": {
         "field": "group.id",
-        // Enable detecting whether a group has more than one item
         "inner_hits": {
           "name": "occurences",
           "size": 1,
@@ -105,33 +103,23 @@ export async function POST(request: Request) {
   }
 
   // Exclude the init from the result list:
-  // - In source view (document mode), `init` is a UUID and we omit that document.
-  // - In grouped mode (normal search), `init` points to a group id (raw or base64),
+  // - When `collapsed` is true (grouped / namnegrupper), `init` is a group id
   //   and we omit that entire group from the list.
-  if (reservedParams.init && baseQuery?.bool) {
-    const isSourceView = reservedParams.sourceView === 'on';
+  // - When `collapsed` is false (source view / kjeldeoppslag), `init` is a UUID
+  //   and we omit that document from the list.
+  if (init && baseQuery?.bool) {
     const exclusions: any[] = [];
 
-    if (isSourceView) {
-      exclusions.push({ term: { "uuid": reservedParams.init } });
+    if (collapsed) {
+      exclusions.push({ term: { "group.id": init } });
     } else {
-      let groupId = reservedParams.init;
-      try {
-        if (!groupId.startsWith('grunnord_')) {
-          groupId = base64UrlToString(groupId);
-        }
-      } catch {
-        // If decoding fails, fall back to the raw value.
-      }
-      exclusions.push({ term: { "group.id": groupId } });
+      exclusions.push({ term: { "uuid": init } });
     }
 
-    if (exclusions.length) {
-      const existingMustNot = baseQuery.bool.must_not
-        ? (Array.isArray(baseQuery.bool.must_not) ? baseQuery.bool.must_not : [baseQuery.bool.must_not])
-        : [];
-      baseQuery.bool.must_not = [...existingMustNot, ...exclusions];
-    }
+    const existingMustNot = baseQuery.bool.must_not
+      ? (Array.isArray(baseQuery.bool.must_not) ? baseQuery.bool.must_not : [baseQuery.bool.must_not])
+      : [];
+    baseQuery.bool.must_not = [...existingMustNot, ...exclusions];
   }
 
   query.query = baseQuery;
