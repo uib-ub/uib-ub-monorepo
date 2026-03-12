@@ -1,8 +1,10 @@
 import AudioPlayerList from "@/components/audio/audio-player-list";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
+import IconButton from "@/components/ui/icon-button";
+import { datasetTitles } from "@/config/metadata-config";
 import { treeSettings } from "@/config/server-config";
-import { useGroup } from "@/lib/param-hooks";
+import { useActivePoint, useGroup } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { buildTreeParam } from "@/lib/tree-param";
 import { getBnr, getGnr, getValueByPath } from "@/lib/utils";
@@ -10,12 +12,13 @@ import useGroupData from "@/state/hooks/group-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { useSearchParams } from "next/navigation";
-import { useContext, useEffect, useRef, type ReactNode } from "react";
-import { PiCaretLeftBold, PiCaretRightBold, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
+import { useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { PiCaretLeftBold, PiCaretRightBold, PiCheck, PiLinkSimple, PiMapPin, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
 import Carousel from "../../nav/results/carousel";
 import SourceTitle from "../shared/source-title";
 import { TextTab } from "./text-tab";
 import { DatasetSummary } from "../../dataset-summary";
+import CoordinateTypeInfo from "../doc/coordinate-type-info";
 
 function SosiInline({
     rawSosi,
@@ -52,6 +55,224 @@ function SosiInline({
     );
 }
 
+function GroupBottomToolbarMulti({
+    groupData,
+    groupTotal,
+}: {
+    groupData: any;
+    groupTotal?: number;
+}) {
+    const searchParams = useSearchParams();
+    const sourceView = searchParams.get("sourceView") === "on";
+    const { initValue } = useGroup();
+    const { mapFunctionRef, isMobile } = useContext(GlobalContext);
+    const snappedPosition = useSessionStore((s) => s.snappedPosition);
+    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
+
+    if (!groupData || sourceView || !groupTotal || groupTotal === 1) {
+        return null;
+    }
+
+    const activeGroupValue = groupData?.group?.id;
+    const rawGroupCoordinates = groupData?.fields?.location?.coordinates;
+    const groupLatLng: [number, number] | null = rawGroupCoordinates
+        ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])]
+        : null;
+    const activePointValue = rawGroupCoordinates
+        ? `${rawGroupCoordinates[1]},${rawGroupCoordinates[0]}`
+        : null;
+
+    return (
+        <div className="px-3 ml-auto mt-auto">
+            <div className="flex flex-row items-center gap-2">
+                {!groupLatLng ? (
+                    <span className="text-sm text-neutral-700 px-2 whitespace-nowrap">
+                        Utan koordinat
+                    </span>
+                ) : (
+                    <ClickableIcon
+                        label="Gå til koordinat"
+                        onClick={() => {
+                            mapFunctionRef.current?.flyTo(groupLatLng, 15, {
+                                duration: 0.25,
+                                maxZoom: 18,
+                                padding: [50, 50],
+                            });
+                            if (isMobile && snappedPosition !== "bottom") {
+                                setSnappedPosition("bottom");
+                            }
+                        }}
+                        remove={["group", "activePoint"]}
+                        add={{
+                            group:
+                                initValue == activeGroupValue
+                                    ? null
+                                    : stringToBase64Url(groupData.id),
+                            activePoint: activePointValue,
+                        }}
+                        className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-neutral-300 btn btn-outline"
+                    >
+                        <PiMapPinFill
+                            aria-hidden="true"
+                            className="text-xl text-neutral-800"
+                        />
+                    </ClickableIcon>
+                )}
+
+                {groupTotal > 0 && (
+                    <Clickable
+                        className="btn btn-outline btn-compact rounded-full items-center gap-1 pr-2"
+                        add={{
+                            activePoint: activePointValue,
+                            sourceView: "on",
+                            group: stringToBase64Url(groupData.id),
+                        }}
+                    >
+                        {groupTotal} oppslag
+                        <PiCaretRightBold
+                            aria-hidden="true"
+                            className="text-primary-700"
+                        />
+                    </Clickable>
+                )}
+            </div>
+        </div>
+    );
+}
+
+function GroupBottomToolbarSingle({
+    groupData,
+    isSingleSource,
+}: {
+    groupData: any;
+    isSingleSource: boolean;
+}) {
+    const { mapFunctionRef, isMobile } = useContext(GlobalContext);
+    const snappedPosition = useSessionStore((s) => s.snappedPosition);
+    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
+    const activePointCoords = useActivePoint();
+    const [linkCopied, setLinkCopied] = useState(false);
+
+    if (!groupData || !isSingleSource) {
+        return null;
+    }
+
+    const fields = groupData.fields || {};
+    const datasets = groupData.datasets as string[] | undefined;
+    const dataset = Array.isArray(datasets) && datasets.length > 0 ? datasets[0] : undefined;
+
+    const rawGroupCoordinates = fields?.location?.coordinates;
+    const groupLatLng: [number, number] | null = rawGroupCoordinates
+        ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])]
+        : null;
+
+    const isActivePoint =
+        !!activePointCoords &&
+        !!groupLatLng &&
+        Math.abs(activePointCoords[0] - groupLatLng[0]) < 0.000001 &&
+        Math.abs(activePointCoords[1] - groupLatLng[1]) < 0.000001;
+
+    const coordinateType = Array.isArray((fields as any)["coordinateType"])
+        ? (fields as any)["coordinateType"]?.[0]
+        : (fields as any)?.coordinateType;
+
+    const docUuid = (groupData as any)?.fields?.uuid?.[0] ?? null;
+    const uuidUrl = (() => {
+        if (!docUuid) return null;
+        const token = String(docUuid).trim();
+        const base = process.env.NODE_ENV == "development" ? "" : "https://stadnamn.no";
+        if (token.startsWith("http://") || token.startsWith("https://")) return token;
+        if (token.startsWith("/uuid/")) return `${base}${token}`;
+        return `${base}/uuid/${token}`;
+    })();
+
+    return (
+        <div className="w-full px-3 mt-auto">
+            <div className="flex items-center gap-2 flex-wrap">
+                {isActivePoint && (
+                    <div className="min-w-0 flex-1 rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1">
+                        {coordinateType ? (
+                            <CoordinateTypeInfo coordinateType={coordinateType} />
+                        ) : (
+                            <span className="text-sm text-neutral-700">
+                                Opphavleg koordinat i{" "}
+                                {dataset ? datasetTitles[dataset] || dataset : "kjelde"}
+                            </span>
+                        )}
+                    </div>
+                )}
+                {isActivePoint && false && (
+                    <span className="basis-full h-0" aria-hidden="true" />
+                )}
+                <div className={`ml-auto flex items-center gap-2 ${isActivePoint ? "mt-1" : ""}`}>
+                    {groupLatLng && (
+                        <ClickableIcon
+                            label="Gå til koordinatet"
+                            add={{ activePoint: `${groupLatLng[0]},${groupLatLng[1]}` }}
+                            onClick={() => {
+                                mapFunctionRef.current?.flyTo(groupLatLng, 15, {
+                                    duration: 0.25,
+                                    maxZoom: 18,
+                                    padding: [50, 50],
+                                });
+                                if (isMobile && snappedPosition !== "bottom") {
+                                    setSnappedPosition("bottom");
+                                }
+                            }}
+                            className={`inline-flex items-center justify-center w-8 h-8 rounded-full border btn btn-outline shrink-0 ${
+                                isActivePoint
+                                    ? "border-accent-800 bg-accent-800 text-white"
+                                    : "border-neutral-300"
+                            }`}
+                        >
+                            {isActivePoint ? (
+                                <PiMapPinFill
+                                    aria-hidden="true"
+                                    className="text-xl text-white"
+                                />
+                            ) : (
+                                <PiMapPin
+                                    aria-hidden="true"
+                                    className="text-xl text-neutral-800"
+                                />
+                            )}
+                        </ClickableIcon>
+                    )}
+                    <IconButton
+                        label={linkCopied ? "Lenke kopiert" : "Kopier lenke"}
+                        onClick={async () => {
+                            if (!uuidUrl || !navigator?.clipboard) return;
+                            await navigator.clipboard.writeText(uuidUrl);
+                            setLinkCopied(true);
+                            setTimeout(() => setLinkCopied(false), 2000);
+                        }}
+                        disabled={!uuidUrl}
+                        className={`inline-flex items-center justify-center w-8 h-8 rounded-full border btn btn-outline shrink-0 ${
+                            linkCopied
+                                ? "border-accent-800 bg-accent-800 text-white"
+                                : "border-neutral-300"
+                        }`}
+                    >
+                        {linkCopied ? (
+                            <PiCheck aria-hidden="true" className="text-lg" />
+                        ) : (
+                            <PiLinkSimple aria-hidden="true" className="text-lg" />
+                        )}
+                    </IconButton>
+                    <Clickable
+                        link={true}
+                        href={uuidUrl || ""}
+                        disabled={!uuidUrl}
+                        className="inline-flex items-center justify-center h-8 rounded-full border border-neutral-300 btn btn-outline shrink-0"
+                    >
+                        Opne infoside
+                    </Clickable>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function GroupInfo({
     id,
     overrideGroupCode,
@@ -59,23 +280,18 @@ export default function GroupInfo({
     id: string;
     overrideGroupCode?: string;
 }) {
-    const { groupData, groupLoading, groupTotal } = useGroupData(overrideGroupCode)
-    const iiifItems = groupData?.iiifItems
-    const textItems = groupData?.textItems
-    const audioItems = groupData?.audioItems
-    const uniqueCoordinates = groupData?.uniqueCoordinates
-    const searchParams = useSearchParams()
-    const { initValue } = useGroup()
-    const scrollableContentRef = useRef<HTMLDivElement>(null)
-    const { mapFunctionRef, isMobile, sosiVocab } = useContext(GlobalContext)
-    const snappedPosition = useSessionStore((s) => s.snappedPosition)
-    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
-    const activePoint = searchParams.get('activePoint')
-    const sourceView = searchParams.get('sourceView') === 'on'
-    const isGrouped = !sourceView
-    const mobilePreview = snappedPosition == 'bottom' && initValue
-
-    const activeGroupValue = groupData?.group?.id
+    const { groupData, groupLoading, groupTotal } = useGroupData(overrideGroupCode);
+    const iiifItems = groupData?.iiifItems;
+    const textItems = groupData?.textItems;
+    const audioItems = groupData?.audioItems;
+    const searchParams = useSearchParams();
+    const { initValue } = useGroup();
+    const scrollableContentRef = useRef<HTMLDivElement>(null);
+    const { isMobile, sosiVocab } = useContext(GlobalContext);
+    const snappedPosition = useSessionStore((s) => s.snappedPosition);
+    const sourceView = searchParams.get("sourceView") === "on";
+    const isGrouped = !sourceView;
+    const mobilePreview = snappedPosition === "bottom" && initValue && isMobile;
 
     const toText = (value: unknown): string => {
         if (Array.isArray(value)) return value.filter(Boolean).join(" | ");
@@ -85,9 +301,8 @@ export default function GroupInfo({
     const fields = groupData?.fields || {};
     const datasets = groupData?.datasets;
 
-    const dataset = Array.isArray(datasets) && datasets.length > 0
-        ? datasets[0]
-        : undefined;
+    const dataset = Array.isArray(datasets) && datasets.length > 0 ? datasets[0] : undefined;
+    const hasSingleSource = groupTotal === 1;
     // Use group fields as primary data source; docData is deprecated and no longer required.
     const source = undefined as any;
     const label =
@@ -158,9 +373,10 @@ export default function GroupInfo({
 
 
     // Group coordinates are stored as [lon, lat]; convert to [lat, lon] for the map.
-    const rawGroupCoordinates = groupData?.fields?.location?.coordinates
-    const groupLatLng: [number, number] | null = rawGroupCoordinates ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])] : null
-    const activePointValue = rawGroupCoordinates ? `${rawGroupCoordinates[1]},${rawGroupCoordinates[0]}` : null
+    const rawGroupCoordinates = groupData?.fields?.location?.coordinates;
+    const groupLatLng: [number, number] | null = rawGroupCoordinates
+        ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])]
+        : null;
 
     if (!sourceView) {
         if (groupLoading) return (
@@ -362,68 +578,7 @@ export default function GroupInfo({
                     <div className="w-full shrink-0 border-b border-neutral-100 bg-white px-3 py-3">
                         <div className="flex flex-col min-w-0 gap-y-3">
                             <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
-                                {(() => {
-                                    const total = uniqueCoordinates.length
-                                    const activeIndexRaw = uniqueCoordinates.findIndex((c: string) => c === activePoint)
-                                    const activeIndex = activeIndexRaw >= 0 ? activeIndexRaw : 0
-                                    const coord = uniqueCoordinates[activeIndex]
-                                    const [latStr, lngStr] = coord ? coord.split(',') : ['', '']
-                                    const coordText = coord ? formatCoordText(latStr, lngStr) : 'koordinater'
-
-                                    const NavBtn = ({
-                                        label,
-                                        targetIndex,
-                                        disabled,
-                                        children
-                                    }: {
-                                        label: string
-                                        targetIndex: number
-                                        disabled: boolean
-                                        children: ReactNode
-                                    }) => {
-                                        const c = uniqueCoordinates[targetIndex]
-                                        const [lat, lng] = c.split(',').map(parseFloat)
-                                        return (
-                                            <Clickable
-                                                add={{ activePoint: c }}
-                                                disabled={disabled}
-                                                onClick={() => {
-                                                    if (disabled) return
-                                                    setTimeout(() => {
-                                                        mapFunctionRef.current?.flyTo([lat, lng], 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] })
-                                                    }, 0)
-                                                }}
-                                                className={`h-9 w-9 shrink-0 inline-flex items-center justify-center rounded-md text-sm transition-colors border border-neutral-200 ${disabled
-                                                    ? 'bg-neutral-100 text-neutral-400 cursor-not-allowed'
-                                                    : 'bg-white text-neutral-900 hover:bg-neutral-200'
-                                                    }`}
-                                                aria-label={label}
-                                                title={label}
-                                            >
-                                                {children}
-                                            </Clickable>
-                                        )
-                                    }
-
-                                    return (
-                                        <>
-                                            <span className="min-w-0 flex-1 truncate text-base text-neutral-900" title={coordText}>
-                                                {coordText}
-                                            </span>
-                                            {total > 1 && <div className="flex shrink-0 items-center gap-1.5">
-                                                <NavBtn label="Førre koordinat" targetIndex={Math.max(0, activeIndex - 1)} disabled={activeIndex === 0}>
-                                                    <PiCaretLeftBold aria-hidden="true" />
-                                                </NavBtn>
-                                                <span className="text-neutral-700 text-sm tabular-nums text-center px-2" aria-hidden="true">
-                                                    {activeIndex + 1} av {total}
-                                                </span>
-                                                <NavBtn label="Neste koordinat" targetIndex={Math.min(total - 1, activeIndex + 1)} disabled={activeIndex === total - 1}>
-                                                    <PiCaretRightBold aria-hidden="true" />
-                                                </NavBtn>
-                                            </div>}
-                                        </>
-                                    )
-                                })()}
+                                {null}
                             </div>
                         </div>
                     </div>
@@ -431,44 +586,8 @@ export default function GroupInfo({
 
             </div>}
 
-            {!sourceView && <div className="px-3 ml-auto mt-auto">
-                <div className="flex flex-row items-center gap-2">
-
-
-                    {!groupLatLng ?
-                        <span className="text-sm text-neutral-700 px-2 whitespace-nowrap">
-                            Utan koordinat
-                        </span>
-                        :
-
-                        <ClickableIcon
-                            label="Gå til koordinat"
-                            onClick={() => {
-                                mapFunctionRef.current?.flyTo(
-                                    groupLatLng,
-                                    15,
-                                    { duration: 0.25, maxZoom: 18, padding: [50, 50] }
-                                );
-                                if (isMobile && snappedPosition !== 'bottom') {
-                                    setSnappedPosition('bottom');
-                                }
-                            }}
-                            remove={['group', 'activePoint']}
-                            add={{ group: initValue == activeGroupValue ? null : stringToBase64Url(groupData.id), activePoint: activePointValue }}
-                            className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-neutral-300 btn btn-outline"
-                        >
-                            <PiMapPinFill aria-hidden="true" className="text-xl text-neutral-800" />
-
-                        </ClickableIcon>
-                    }
-
-                    
-                    {groupTotal > 0 && <Clickable className="btn btn-outline btn-compact rounded-full items-center gap-1 pr-2" add={{ activePoint: activePointValue, sourceView: 'on', group: stringToBase64Url(groupData.id)}}>
-                    {groupTotal} oppslag<PiCaretRightBold aria-hidden="true" className="text-primary-700" />
-                </Clickable>}
-
-                </div>
-            </div>}
+            <GroupBottomToolbarMulti groupData={groupData} groupTotal={groupTotal} />
+            <GroupBottomToolbarSingle groupData={groupData} isSingleSource={hasSingleSource} />
 
         </div>
     );
