@@ -147,11 +147,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     const facet = searchParams.get('facet')
     const options = searchParams.get('options') == 'on'
     const tree = searchParams.get('tree')
-    // Include facet and options in the hash if isMobile. Use it to control when the right panel is updated.
-    // Don't use window.hash
-    const updateCode = useMemo(() => {
-        return `${initCode}-${mapSettings ? '1' : '0'}-${overlaySelector ? '1' : '0'}-${facet ? '1' : '0'}-${options ? '1' : '0'}`
-    }, [initCode, mapSettings, overlaySelector, facet, options])
+
 
     const [showScrollToTop, setShowScrollToTop] = useState(false)
 
@@ -169,7 +165,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
         return () => {
             el.removeEventListener('scroll', onScroll)
         }
-    }, [scrollableContentRef, isMobile, updateCode])
+    }, [scrollableContentRef, isMobile])
 
     const scrollToTop = () => {
         scrollableContentRef?.current?.scrollTo({ top: 0, behavior: 'smooth' })
@@ -180,7 +176,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
         return <>{children}</>
     }
     return <div className={`absolute right-2 top-[0.5rem] ${tree ? 'w-[40svw]' : 'w-[25svw]'} z-[3001] max-h-[calc(100svh-2rem)]`}>
-        <section ref={scrollableContentRef} key={updateCode} className="bg-white shadow-lg rounded-md overflow-y-scroll max-h-[calc(100svh-2rem)]"
+        <section ref={scrollableContentRef} className="bg-white shadow-lg rounded-md overflow-y-scroll max-h-[calc(100svh-2rem)]"
             aria-labelledby="right-title">
             <div className={`flex flex-col ${showScrollToTop ? 'pb-20' : ''}`}>
                 {children}
