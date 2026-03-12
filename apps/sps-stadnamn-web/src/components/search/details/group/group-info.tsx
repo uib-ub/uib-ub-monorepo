@@ -442,7 +442,7 @@ export default function GroupInfo({
                     }
 
                     
-                    {groupTotal > 0 && <Clickable className="btn btn-outline btn-compact rounded-full items-center gap-1 pr-2" add={{ activePoint: activePointValue, sourceView: 'on', group: stringToBase64Url(groupData.id) }}>
+                    {groupTotal > 0 && <Clickable className="btn btn-outline btn-compact rounded-full items-center gap-1 pr-2" add={{ activePoint: activePointValue, sourceView: 'on', group: stringToBase64Url(groupData.id)}}>
                     {groupTotal} oppslag<PiCaretRightBold aria-hidden="true" className="text-primary-700" />
                 </Clickable>}
 

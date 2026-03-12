@@ -8,6 +8,10 @@ export const useSessionStore = create<{
 	autocompleteOpen: boolean,
 	setAutocompleteOpen: (open: boolean) => void,
 	toggleAutocompleteOpen: () => void,
+	autocompleteActiveIndex: number,
+	setAutocompleteActiveIndex: (index: number) => void,
+	autocompleteHasResults: boolean,
+	setAutocompleteHasResults: (hasResults: boolean) => void,
 
 	myLocation: [number, number] | null,
 	setMyLocation: (location: [number, number] | null) => void,
@@ -65,6 +69,10 @@ export const useSessionStore = create<{
 	setTreeSavedQuery: (query: string) => set({ treeSavedQuery: query }),
 	clearTreeSavedQuery: () => set({ treeSavedQuery: null }),
 
+	autocompleteActiveIndex: -1,
+	setAutocompleteActiveIndex: (index: number) => set({ autocompleteActiveIndex: index }),
+	autocompleteHasResults: false,
+	setAutocompleteHasResults: (hasResults: boolean) => set({ autocompleteHasResults: hasResults }),
 
 	autocompleteOpen: false,
 	setAutocompleteOpen: (open) => set({ autocompleteOpen: open }),
