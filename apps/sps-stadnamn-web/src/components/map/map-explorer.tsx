@@ -320,8 +320,6 @@ export default function MapExplorer() {
     ? (searchParams.get('q') ? (zoomState < 14 ? 'counts' : 'points') : 'labels')
     : (markerMode === 'circles' ? 'points' : markerMode)
 
-
-
   const markerResults = useQueries({
     queries: markerCells.map(cell => {
       const key = `${cell.precision}/${cell.x}/${cell.y}`
@@ -331,34 +329,39 @@ export default function MapExplorer() {
         placeHolder: (prevData: any) => coordinateInfo ? null : prevData,
         enabled: !coordinateInfo && !showDebugGroups && (!tree || tree.split('_').length < 4),
         queryFn: async () => {
-          const existingParams = new URLSearchParams(searchQueryString)
+          // In tree mode, marker queries must be driven solely by the `tree`
+          // param (dataset/adm) and not by the regular search query.
+          const newParams = new URLSearchParams()
 
-          const newParams = existingParams.toString() ? existingParams : new URLSearchParams()
-          if (searchFilterParamsString) {
-            newParams.set('totalHits', totalHits.value)
-          }
-          else if (tree) {
+          if (tree) {
+            // Tree mode: markers are always limited to cadastral farms.
             newParams.set('sosi', 'gard')
-            if (tree == 'root') {
-              // Add a dataset param for each dataset in treeSettings
-              Object.keys(treeSettings).forEach((dataset) => {
-                newParams.append('dataset', dataset)
+
+            if (tree === 'root') {
+              // Root: fetch from all datasets that support tree/cadastral view.
+              Object.keys(treeSettings).forEach((datasetKey) => {
+                newParams.append('dataset', datasetKey)
               })
+            } else if (treeDataset && treeSettings[treeDataset]) {
+              // Tree mode with a valid tree dataset: restrict by dataset + optional adm1/adm2 from the tree param.
+              newParams.set('dataset', treeDataset)
+              if (treeAdm1) newParams.set('adm1', treeAdm1)
+              if (treeAdm2) newParams.set('adm2', treeAdm2)
+            } else {
+              // Dataset in the tree param does not support tree view: do not fetch markers.
+              return []
             }
-            else {
-              const parts = tree.split('_')
-              //if (parts.length > 3) return {}
-              const [dataset, adm1, adm2] = parts
-
-              newParams.set('dataset', dataset)
-              
-              if (adm1) newParams.set('adm1', adm1)
-              if (adm2) newParams.set('adm2', adm2)
+          } else {
+            // Non-tree mode: fall back to the regular search-driven marker query.
+            const existingParams = new URLSearchParams(searchQueryString)
+            const baseParams = existingParams.toString() ? existingParams : new URLSearchParams()
+            if (searchFilterParamsString) {
+              baseParams.set('totalHits', totalHits.value)
             }
-            
+            baseParams.forEach((value, key) => {
+              newParams.append(key, value)
+            })
           }
-
-
 
           const res = await fetch(`/api/markers/${cell.precision}/${cell.x}/${cell.y}${newParams.toString() ? `?${newParams.toString()}` : ''}`, { signal: controllerRef.current.signal })
           const data = await res.json()
