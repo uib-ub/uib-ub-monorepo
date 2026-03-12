@@ -180,11 +180,11 @@ export default function GroupInfo({
 
                 <div className="flex flex-col gap-1">
                 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                     <SourceTitle
                         label={label}
                         cadastrePrefix=""
-                        labelClassName="text-lg truncate"
+                        labelClassName="text-xl truncate"
                     />
                     {Object.keys(sosiTypes).length > 0 && (
                         <div className="flex flex-wrap items-baseline gap-1">
