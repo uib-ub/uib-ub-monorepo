@@ -291,7 +291,7 @@ export default function GroupInfo({
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const sourceView = searchParams.get("sourceView") === "on";
     const isGrouped = !sourceView;
-    const mobilePreview = snappedPosition === "bottom" && initValue && isMobile;
+    const mobilePreview = Boolean(snappedPosition === "bottom" && initValue && isMobile);
 
     const toText = (value: unknown): string => {
         if (Array.isArray(value)) return value.filter(Boolean).join(" | ");
@@ -425,15 +425,13 @@ export default function GroupInfo({
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-wrap">
                         <SourceTitle
                             label={label}
                             cadastrePrefix=""
-                            labelClassName={` truncate ${mobilePreview ? 'text-base' : 'text-xl'}`}
+                            mobilePreview={mobilePreview}
+                            additionalLabels={groupData?.additionalLabels as string[] | undefined ?? []}
                         />
-                        {groupData?.additionalLabels?.map((l: string) => (
-                            <em key={l} className="text-neutral-700">{l}</em>
-                        ))}
                     </div>
 
                 {dataset && treeSettings[dataset] ? (

@@ -77,12 +77,3 @@ const getNormalizedLabel = (value: unknown): string | null => {
     return null
 }
 
-const pushUniqueLabel = (labels: string[], seen: Set<string>, value: unknown) => {
-    const label = getNormalizedLabel(value)
-    if (!label) return
-    const key = label.toLowerCase()
-    if (seen.has(key)) return
-    seen.add(key)
-    labels.push(label)
-}
-

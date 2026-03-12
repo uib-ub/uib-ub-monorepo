@@ -2,40 +2,45 @@
 
 import { cn } from "@/lib/utils";
 
-interface SourceTitleProps {
-    label?: string | null;
-    cadastrePrefix?: string | null;
-    sosiTypes?: string[];
-    sosiLimit?: number;
-    className?: string;
-    labelClassName?: string;
-    sosiClassName?: string;
-}
 
 export default function SourceTitle({
     label,
     cadastrePrefix,
-    sosiTypes = [],
-    sosiLimit,
-    className,
-    labelClassName,
-    sosiClassName,
-}: SourceTitleProps) {
+    mobilePreview,
+    additionalLabels,
+}: {
+    label: string;
+    cadastrePrefix: string;
+    mobilePreview: boolean;
+    additionalLabels: string[];
+}) {
     const trimmedLabel = (label || "").trim() || "Utan namn";
-    const visibleSosi =
-        typeof sosiLimit === "number" && sosiLimit >= 0 ? sosiTypes.slice(0, sosiLimit) : sosiTypes;
-    const hasMoreSosi = typeof sosiLimit === "number" && sosiLimit >= 0 && sosiTypes.length > sosiLimit;
-    const sosiText = visibleSosi.join(", ");
+    const safeAdditionalLabels = Array.isArray(additionalLabels)
+        ? (additionalLabels.filter(Boolean) as string[])
+        : [];
+    const showAllAdditionalLabels = safeAdditionalLabels.length <= 4;
+    const visibleAdditionalLabels = showAllAdditionalLabels
+        ? safeAdditionalLabels
+        : safeAdditionalLabels.slice(0, 3);
+    const remainingAdditionalLabelsCount = showAllAdditionalLabels
+        ? 0
+        : safeAdditionalLabels.length - visibleAdditionalLabels.length;
+
 
     return (
-        <span className={cn("flex items-baseline gap-1 min-w-0 max-w-full", className)}>
+        <span className={cn("flex items-baseline gap-2 min-w-0 max-w-full", ` ${mobilePreview ? 'text-base' : 'text-xl'}`)}>
             {cadastrePrefix && <span className="shrink-0 text-neutral-950">{cadastrePrefix}</span>}
-            <strong className={cn("min-w-0 text-neutral-950", labelClassName)}>{trimmedLabel}</strong>
-            {sosiText && (
-                <span className={cn("min-w-0 text-neutral-700", sosiClassName)}>
-                    {sosiText}
-                    {hasMoreSosi ? "..." : ""}
-                </span>
+            <strong className={cn("min-w-0 text-neutral-950", ` ${mobilePreview ? 'text-base' : 'text-xl'}`)}>{trimmedLabel}</strong>
+
+            {visibleAdditionalLabels.map((l) => (
+                <em key={l} className="text-neutral-700">
+                    {l}
+                </em>
+            ))}
+            {remainingAdditionalLabelsCount > 0 && (
+                <em className="text-neutral-700">
+                    + {remainingAdditionalLabelsCount} andre
+                </em>
             )}
         </span>
     );
