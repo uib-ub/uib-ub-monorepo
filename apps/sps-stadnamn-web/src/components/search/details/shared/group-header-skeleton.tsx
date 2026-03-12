@@ -13,7 +13,7 @@ export function ResultItemSkeleton() {
     );
 }
 
-export function GroupInfoSkeleton() {
+export function GroupInfoSkeleton({ hasIiif }: { hasIiif?: boolean }) {
     return (
         <div className="relative flex min-w-0 flex-col gap-3 pt-2 pb-4">
             <div className="min-w-0 w-full flex flex-col px-3 gap-3">
@@ -23,6 +23,11 @@ export function GroupInfoSkeleton() {
                     <div className="bg-neutral-900/10 rounded-full h-4 w-28 animate-pulse" />
                 </div>
             </div>
+            {hasIiif && (
+                <div className="mt-2">
+                    <div className="w-full bg-neutral-900/10 rounded-md h-40 animate-pulse" />
+                </div>
+            )}
         </div>
     );
 }

@@ -2,18 +2,24 @@
 
 import { cn } from "@/lib/utils";
 
+type SourceTitleProps = {
+    label: string;
+    cadastrePrefix: string;
+    mobilePreview: boolean;
+    additionalLabels: string[];
+    className?: string;
+    labelClassName?: string;
+    sosiTypes?: string[];
+    sosiLimit?: number;
+    sosiClassName?: string;
+};
 
 export default function SourceTitle({
     label,
     cadastrePrefix,
     mobilePreview,
     additionalLabels,
-}: {
-    label: string;
-    cadastrePrefix: string;
-    mobilePreview: boolean;
-    additionalLabels: string[];
-}) {
+}: SourceTitleProps) {
     const trimmedLabel = (label || "").trim() || "Utan namn";
     const safeAdditionalLabels = Array.isArray(additionalLabels)
         ? (additionalLabels.filter(Boolean) as string[])

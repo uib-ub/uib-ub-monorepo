@@ -237,11 +237,9 @@ export default function SearchResults() {
       <div className="flex items-center gap-2">
         <SourceTitle
           label={label}
-          sosiTypes={sosiTypes}
-          sosiLimit={3}
-          className="min-w-0 flex-1"
-          labelClassName="text-xl truncate"
-          sosiClassName="truncate"
+          cadastrePrefix=""
+          mobilePreview={false}
+          additionalLabels={otherLabels}
         />
         {audioItems.length > 0 && (
           <div className="flex gap-1 ml-auto flex-shrink-0 border border-neutral-200 rounded-md p-1 mr-2">
@@ -404,13 +402,12 @@ export default function SearchResults() {
             <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
 
 
-            {(initGroupLoading || listLoading && listInitialPage === 1) ? Array.from({ length: listInitialPage === 1 ? 6 : 40 }).map((_, i) => (
+            {(listLoading && listInitialPage === 1) ? Array.from({ length: listInitialPage === 1 ? 6 : 40 }).map((_, i) => (
               <li key={`skeleton-${i}`} className="relative">
-                {(isMobile || !init) ? (
-                  <GroupInfoSkeleton />
-                ) : (
-                  <ResultItemSkeleton />
-                )}
+                {(isMobile || !init)
+                  ? <GroupInfoSkeleton />
+                  : <ResultItemSkeleton />
+                }
               </li>
             )) :
               (() => {
@@ -434,11 +431,13 @@ export default function SearchResults() {
                       const uuid = item.fields['uuid']?.[0]
                       const groupCode = sourceView ? uuid : groupId
                       const domId = uuid || groupId
+                      const hasIiif = !!item.fields['iiif']?.[0]
                       return <li className={`relative`} key={domId}>
                         {(isMobile || !init) ?
                           <GroupInfo
                             id={`group-info-${domId}`}
                             overrideGroupCode={groupCode}
+                            hasIiif={hasIiif}
                           />
                           :
                           <ResultItem

@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     ...from ? { from } : {},
     ...highlight ? { highlight } : {},
     "track_scores": true,
-    "fields": ["group.adm1", "group.adm2", "group.id", "adm1", "adm2", "group.label", "uuid", "boost", "label", "location"],
+    "fields": ["group.adm1", "group.adm2", "group.id", "adm1", "adm2", "group.label", "uuid", "boost", "label", "location", "iiif"],
     ...(collapsed ? {
       "collapse": {
         "field": "group.id",

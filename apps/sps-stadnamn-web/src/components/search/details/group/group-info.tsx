@@ -277,9 +277,11 @@ function GroupBottomToolbarSingle({
 export default function GroupInfo({
     id,
     overrideGroupCode,
+    hasIiif,
 }: {
     id: string;
     overrideGroupCode?: string;
+    hasIiif?: boolean;
 }) {
     const { groupData, groupLoading, groupTotal } = useGroupData(overrideGroupCode);
     const iiifItems = groupData?.iiifItems;
@@ -380,7 +382,7 @@ export default function GroupInfo({
         : null;
 
     if (groupLoading) {
-        return <GroupInfoSkeleton />;
+        return <GroupInfoSkeleton hasIiif={hasIiif} />;
     }
 
     if (!sourceView && !groupData?.["id"]) {
