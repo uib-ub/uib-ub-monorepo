@@ -98,14 +98,6 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                     <span className="text-neutral-900">{detailsRenderer(hit)}</span>
                 </div>
                 <DistanceBadge meters={hit.distance} />
-                {isInit && <ClickableIcon
-                        label={`Lukk`}
-
-                        remove={['group', 'init', 'activePoint', 'activeYear', 'activeName']}
-                        className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-neutral-300 btn btn-outline"
-                    >
-                        <PiX aria-hidden="true" className="text-xl text-neutral-800" /> 
-                    </ClickableIcon>}
             </div>
             {hit.highlight && <>{formatHighlight(hit.highlight['content.html']?.[0] || hit.highlight['content.text']?.[0])}</>}
             
