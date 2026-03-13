@@ -464,7 +464,7 @@ export default function GroupInfo({
                     </div>
 
                     {groupAdmText && (groupTotal ?? 0) > 1 && (
-                        <div className="text-sm text-neutral-700 flex items-center gap-1 flex-wrap">
+                        <div className="text-sm text-neutral-800 flex items-center gap-1 flex-wrap">
                             <span>{groupAdmText}</span>
                         </div>
                     )}
@@ -499,7 +499,7 @@ export default function GroupInfo({
                                     const hasAdm = Boolean(adm1 || gnr);
 
                                     return (hasAdm || (sourceView && rawSosi)) ? (
-                                        <div className="text-sm text-neutral-700 flex items-center gap-1 flex-wrap">
+                                        <div className="text-sm text-neutral-800 flex items-center gap-1 flex-wrap">
                                             {adm1 && (
                                                 <Clickable
                                                     link
@@ -553,7 +553,7 @@ export default function GroupInfo({
                                 })()
                             ) : (
                                 admText && (
-                                    <div className="text-sm text-neutral-700 flex items-center gap-1 flex-wrap">
+                                    <div className="text-sm text-neutral-800 flex items-center gap-1 flex-wrap">
                                         <span>{admText}</span>
                                         {sourceView && <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />}
                                     </div>

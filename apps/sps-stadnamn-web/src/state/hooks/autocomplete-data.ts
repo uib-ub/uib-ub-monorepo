@@ -30,31 +30,7 @@ export async function autocompleteQuery(
 
 export function buildAutocompleteQueryStringFromHit(hit: any): string {
     const label = hit?.fields?.label?.[0]?.trim() || '';
-    const adm2 = (
-        hit?.fields?.['group.adm2']?.[0] ||
-        hit?.fields?.group?.adm2?.[0] ||
-        hit?.fields?.adm2?.[0] ||
-        hit?.adm2?.[0] ||
-        ''
-    ).trim();
-    const adm1 = (
-        hit?.fields?.['group.adm1']?.[0] ||
-        hit?.fields?.group?.adm1?.[0] ||
-        hit?.fields?.adm1?.[0] ||
-        hit?.adm1?.[0] ||
-        ''
-    ).trim();
-
-    const firstSegmentParts = [label];
-    if (adm2 && adm2 !== label) {
-        firstSegmentParts.push(adm2);
-    }
-    const firstSegment = firstSegmentParts.join(' ').trim();
-
-    if (adm1 && adm1 !== firstSegment && adm1 !== adm2) {
-        return `${firstSegment}, ${adm1}`;
-    }
-    return firstSegment;
+    return label;
 }
 
 export function getAutocompleteSelection(

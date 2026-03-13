@@ -92,7 +92,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
   wikidata: {
     ...required, adm, adm1, adm2, sosi,
     "misc.placeType": { label: "Lokalitetstype", table, facet },
-    "misc.overordnetSted": { label: "Overordnet sted2", table, facet },
+    "misc.overordnetSted": { label: "Overordnet sted QID", table, facet },
     "misc.adm": { label: "Overordnet sted", table, facet },
     "misc.lokaltNavn": { label: "Lokalt navn", table, facet },
   },
