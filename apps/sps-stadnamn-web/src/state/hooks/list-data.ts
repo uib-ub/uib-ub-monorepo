@@ -21,6 +21,7 @@ const listDataQuery = async ({
     searchSort,
     collapsed,
     includeGroup,
+    includeNoLocation,
 }: {
     pageParam?: number;
     searchQueryString: string;
@@ -31,6 +32,7 @@ const listDataQuery = async ({
     searchSort: string | null;
     collapsed: boolean;
     includeGroup: boolean;
+    includeNoLocation: boolean;
 }) => {
 
     // Determine size and from based on page number
@@ -57,6 +59,7 @@ const listDataQuery = async ({
             collapsed,
             init: initValue,
             includeGroup,
+            includeNoLocation,
         })
     })
     if (!res.ok) {
@@ -97,6 +100,7 @@ export default function useListData() {
     const searchSort = searchParams.get('searchSort')
     const collapsed = searchParams.get('sourceView') != 'on'
     const includeGroup = Boolean(!collapsed && searchParams.get('group'))
+    const includeNoLocation = searchParams.get('showNoLocation') === 'on'
 
     // Decode `init` once for the list API body. If it's valid base64, use the
     // decoded value; otherwise, fall back to the raw value (UUID in source view).
@@ -119,7 +123,7 @@ export default function useListData() {
         isLoading,
         status
     } = useInfiniteQuery({
-        queryKey: ['listData', searchQueryString, searchSort, collapsed, initGroupLoading, initGroupCode, point],
+        queryKey: ['listData', searchQueryString, searchSort, collapsed, initGroupLoading, initGroupCode, point, includeNoLocation],
         queryFn: ({ pageParam }: { pageParam: number }) => listDataQuery({
             pageParam,
             searchQueryString,
@@ -129,7 +133,8 @@ export default function useListData() {
             point,
             searchSort,
             collapsed,
-            includeGroup
+            includeGroup,
+            includeNoLocation,
         }),
         //placeholderData: (prevData: any) => prevData,
         initialPageParam: initialPageRef.current - 1,

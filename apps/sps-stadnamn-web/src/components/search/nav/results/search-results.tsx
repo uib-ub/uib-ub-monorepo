@@ -2,6 +2,7 @@
 import Spinner from "@/components/svg/Spinner";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
+import { Badge } from "@/components/ui/badge";
 import { clampMaxResults, getClampedMaxResultsFromParam } from "@/config/max-results";
 import { useGroup, usePoint } from "@/lib/param-hooks";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
@@ -27,7 +28,7 @@ import ResultItemSkeleton, { GroupInfoSkeleton } from "../../details/shared/grou
 
 
 export default function SearchResults() {
-  const { searchError, groupTotalHits } = useSearchData()
+  const { searchError, groupTotalHits, noLocationGroupCount } = useSearchData()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
   const { activeGroupValue } = useGroup()
   const searchParams = useSearchParams()
@@ -45,6 +46,7 @@ export default function SearchResults() {
   const initGroupId = init
     ? (initGroupData?.id ?? (!sourceView ? initValue : null))
     : (!sourceView ? initValue : null)
+  const initHasCoordinates = initGroupData?.fields?.location?.coordinates?.length >= 2
   const { groupData: activeGroupData } = useGroupData()
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const { isMobile, sosiVocab, mapFunctionRef } = useContext(GlobalContext)
@@ -54,12 +56,9 @@ export default function SearchResults() {
   const router = useRouter()
   const coordinateInfo = searchParams.get('coordinateInfo') == 'on' && !sourceView
   const labelFilter = searchParams.get('labelFilter') === 'on'
+  const showNoLocation = searchParams.get('showNoLocation') === 'on'
   const [playingPreviewId, setPlayingPreviewId] = useState<string | null>(null)
   const audioPreviewRef = useRef<HTMLAudioElement | null>(null)
-  const searchSort = searchParams.get('searchSort')
-  const fuzzy = searchParams.get('fuzzy')
-  const fulltext = searchParams.get('fulltext')
-  const [searchSettingsExpanded, setSearchSettingsExpanded] = useState( searchSort == 'similarity' || fuzzy == 'on' || fulltext == 'on' )
 
 
 
@@ -124,12 +123,44 @@ export default function SearchResults() {
   // If no valid param is present, show everything that has been loaded.
   const maxVisibleResults = resultsParam > 0 ? resultsParam : Number.POSITIVE_INFINITY;
 
+  // Derived: do all currently rendered results have coordinates?
+  // We mirror the same maxVisibleResults cut-off as the renderer.
+  const allVisibleHaveLocation = useMemo(() => {
+    if (!listData) return false;
+    let seen = 0;
+    for (const page of (listData as any).pages || []) {
+      for (const item of page.data || []) {
+        if (seen >= maxVisibleResults) {
+          return true;
+        }
+        const loc = item.fields?.location?.[0]?.coordinates;
+        if (!Array.isArray(loc) || loc.length !== 2) {
+          return false;
+        }
+        seen += 1;
+      }
+    }
+    // If we have rendered at least one item and none lacked coordinates,
+    // treat this as "all visible have location".
+    return seen > 0;
+  }, [listData, maxVisibleResults]);
+
+  // Whether to show the "Utan koordinatar" filter control in the options row.
+  const showNoLocationToggle =
+    !!init &&
+    initHasCoordinates &&
+    !sourceView &&
+    !coordinateInfo &&
+    !labelFilter &&
+    !!noLocationGroupCount &&
+    noLocationGroupCount > 0 &&
+    (showNoLocation || allVisibleHaveLocation);
+
   // Derived: should "Fleire namnegrupper" and the list of other groups be visible?
   // For init on desktop, this is controlled solely by resultsParam (>1 means expanded).
   const showOtherResults = (!init || isMobile || hasOneResult)
     ? true
     : hasMaxResultsParam;
-
 
   // On mobile, show a compact summary for the "init" group when pinned,
   // otherwise fall back to the currently active group.
@@ -328,17 +359,12 @@ export default function SearchResults() {
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
         </div>
       ) : (
-        <div className="w-full border-t border-neutral-200 bg-neutral-50 border-b-none pt-4 pb-2 xl:py-2 px-3 flex flex-col gap-2 text-neutral-950 min-w-0 overflow-hidden">
-          
-          <div className="flex items-center gap-2">
-          {qParam ? <>
-            
-            
+        <div className="w-full border-t border-neutral-200 flex flex-wrap items-center bg-neutral-50 border-b-none pt-4 pb-2 xl:py-2 px-3 gap-3 text-neutral-950 min-w-0 overflow-hidden">
+          {qParam ? (
             <Clickable
               remove={['q', 'searchSort']}
               add={{ q: null }}
-              onClick={() => setSearchSettingsExpanded(false)}
-              className="px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-2 cursor-pointer max-w-full min-w-0"
+              className="h-9 px-3 rounded-md bg-white border border-neutral-200 flex items-center gap-2 cursor-pointer max-w-full min-w-0"
             >
               <PiMagnifyingGlass className="" aria-hidden="true" />
               <span className="truncate flex-1 min-w-0 max-w-full block">
@@ -346,39 +372,39 @@ export default function SearchResults() {
               </span>
               <PiX className="text-lg" aria-hidden="true" />
             </Clickable>
-          
-          
-          <button aria-expanded={searchSettingsExpanded} aria-controls="search-settings"   type="button" className="flex items-center gap-1 justify-center ml-auto" onClick={() => setSearchSettingsExpanded(!searchSettingsExpanded)}>
-            {searchSettingsExpanded ? <PiCaretUpBold className="text-lg" aria-hidden="true" /> : <PiCaretDownBold className="text-lg" aria-hidden="true" />}
-            Søkealternativ            
-            </button>
-            </>
-            : 
+          ) : (
             <>
-            <span id="other-groups-title" className={`text-lg font-sans text-neutral-900 whitespace-nowrap`}>{sourceView ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}</span>
-            
-            {initGroupData?.label && <Clickable add={{ q: initGroupData?.label}}
-                className="ml-auto px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-1 cursor-pointer no-underline max-w-full min-w-0"
+              <span
+                id="other-groups-title"
+                className={`text-lg font-sans text-neutral-900 whitespace-nowrap`}
               >
-                <PiMagnifyingGlass aria-hidden="true" className="flex-shrink-0" />
-                <span className="ml-1 truncate flex-1 min-w-0">
-                  {initGroupData?.label}
-                </span>              </Clickable>}
+                {sourceView ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}
+              </span>
+
+              {initGroupData?.label && (
+                <Clickable
+                  add={{ q: initGroupData?.label }}
+                  className="h-9 px-3 rounded-md bg-white border border-neutral-200 flex items-center gap-1 cursor-pointer no-underline max-w-full min-w-0"
+                >
+                  <PiMagnifyingGlass aria-hidden="true" className="flex-shrink-0" />
+                  <span className="ml-1 truncate flex-1 min-w-0">
+                    {initGroupData?.label}
+                  </span>
+                </Clickable>
+              )}
             </>
-            }</div>
+          )}
 
-          
+          {/* Toolbar items share the same flex row as the chip so they wrap together. */}
+          {qParam && <SearchQueryDisplay
+            showNoLocationToggle={showNoLocationToggle}
+            noLocationGroupCount={noLocationGroupCount ?? 0}
+          />}
         </div>
-         
       )) : null}
-
-      
-     
 
       {(!init || showOtherResults || isMobile || hasOneResult) && (
         <>
-          {searchSettingsExpanded  && <SearchQueryDisplay />}
-
           {!hasNoAdditionalResults && (
             <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
 
@@ -442,6 +468,7 @@ export default function SearchResults() {
                           className={`
                     flex items-center gap-2
                     text-neutral-900
+                    bg-neutral-50
                     p-3
                     justify-center w-full
                                          rounded-full xl:rounded-md

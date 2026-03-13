@@ -5,7 +5,7 @@ import { postQuery } from '../../_utils/post';
 import { getQueryString } from '../../_utils/query-string';
 
 export async function POST(request: Request) {
-  const { size, from, initLocation, collapsed, searchQueryString, searchSort, init, includeGroup } = await request.json()
+  const { size, from, initLocation, collapsed, searchQueryString, searchSort, init, includeGroup, includeNoLocation } = await request.json()
   const { termFilters, reservedParams } = extractFacets(request)
   const { highlight, simple_query_string } = getQueryString(reservedParams)
 
@@ -121,6 +121,21 @@ export async function POST(request: Request) {
       ? (Array.isArray(baseQuery.bool.must_not) ? baseQuery.bool.must_not : [baseQuery.bool.must_not])
       : [];
     baseQuery.bool.must_not = [...existingMustNot, ...exclusions];
+  }
+
+  // When we have an init location (group with coordinates or a map point)
+  // and the client explicitly asks for items *without* coordinates,
+  // we add a must_not clause so only documents lacking `location` are returned.
+  // By default, we do not filter on `location` at all, so results with and
+  // without coordinates are included together.
+  if (initLocation && baseQuery?.bool && includeNoLocation) {
+    const existingMustNot = baseQuery.bool.must_not
+      ? (Array.isArray(baseQuery.bool.must_not) ? baseQuery.bool.must_not : [baseQuery.bool.must_not])
+      : [];
+    baseQuery.bool.must_not = [
+      ...existingMustNot,
+      { exists: { field: "location" } },
+    ];
   }
 
   query.query = baseQuery;
