@@ -32,7 +32,7 @@ export default function SearchQueryDisplay() {
 
   return (
     <section id="search-settings" className={`p-3 flex flex-wrap gap-x-6 gap-y-3 items-center border-b border-neutral-200 bg-neutral-50`} aria-labelledby="search-query-title">
-      <div className="flex items-center gap-3 text-sm flex-wrap">
+      <div className="flex items-center gap-3 text-sm flex-wrap w-full">
         {isSingleWord && (
           <div className="flex items-center gap-2 p-1">
             <input
@@ -111,19 +111,6 @@ export default function SearchQueryDisplay() {
             )}
       </div>
           
-          {qParam != initSearchLabel && init && (
-            <Clickable
-              link
-              add={{ q: initSearchLabel, maxResults: expandedMaxResultsParam }}
-              className="ml-auto rounded-md flex items-center gap-1 cursor-pointer no-underline max-w-full min-w-0"
-            >
-              <PiMagnifyingGlass aria-hidden="true" className="flex-shrink-0" />
-              <span className="ml-1 truncate flex-1 min-w-0">
-                {initSearchLabel}
-              </span>
-
-            </Clickable>
-          )}
         
     </section>
   )
