@@ -331,16 +331,22 @@ export default function GroupInfo({
         toText(fields["group.label"]) ||
         (source ? (Array.isArray(source.label) ? source.label[0] : (source.label as string | undefined)) : "");
 
-    // Prefer group.* for grouped header, fall back to plain adm* fields
+    // Group-level adm* (for header when there are multiple sources)
     const groupAdm1 = toText(fields["group.adm1"]);
     const groupAdm2 = toText(fields["group.adm2"]);
     const groupAdm3 = toText(fields["group.adm3"]);
+
+    const groupAdmPrimary = groupAdm1 || groupAdm2 || groupAdm3 || "";
+    const groupAdmText =
+        groupAdmPrimary &&
+        `${groupAdm2 && groupAdm1 && groupAdm2 !== groupAdm1 ? `${groupAdm2}, ` : ""}${groupAdmPrimary}`.trim();
+
+    // For breadcrumbs: always use the item's own adm*, not group.*
     const plainAdm1 = toText(fields.adm1);
     const plainAdm2 = toText(fields.adm2);
-    const plainAdm3 = toText(fields.adm3);
 
-    const adm1 = groupAdm1 || plainAdm1 || plainAdm3 || groupAdm3 || (source ? toText((source as any).adm1) : "");
-    const adm2 = groupAdm2 || plainAdm2 || (source ? toText((source as any).adm2) : "");
+    const adm1 = plainAdm1 || (source ? toText((source as any).adm1) : "");
+    const adm2 = plainAdm2 || (source ? toText((source as any).adm2) : "");
     const admText = `${adm2 && adm1 && adm2 !== adm1 ? `${adm2}, ` : ""}${adm1}`.trim();
 
     const rawSosi = source?.sosi ?? fields.sosi;
@@ -457,94 +463,104 @@ export default function GroupInfo({
                         />
                     </div>
 
-                {dataset && treeSettings[dataset] ? (
-                    (() => {
-                        const isTreeDataset = !!treeSettings[dataset];
-                        // Build a minimal "hit" object from group fields for helpers.
-                        const cadastreHit: any = {
-                            fields,
-                        };
-
-                        const gnr = isTreeDataset ? getGnr(cadastreHit, dataset) : null;
-                        const bnr = isTreeDataset ? getBnr(cadastreHit, dataset) : null;
-
-                        const withinField = (fields as any)?.within?.[0];
-                        const uuidField = (fields as any)?.uuid?.[0] ?? (source as any)?.uuid;
-                        const isLeaf = isTreeDataset && !!withinField;
-                        const gardUuid = isLeaf ? withinField : (uuidField || null);
-
-                        const gardName = isTreeDataset
-                            ? (
-                                getValueByPath(fields, treeSettings[dataset]?.parentName) ||
-                                (source ? getValueByPath(source, treeSettings[dataset]?.parentName) : "") ||
-                                (!isLeaf ? label : null) ||
-                                null
-                            )
-                            : null;
-
-                        const hasAdm = Boolean(adm1 || gnr);
-
-                        return (hasAdm || (sourceView && rawSosi)) ? (
-                            <div className="text-sm text-neutral-700 flex items-center gap-1 flex-wrap">
-                                {adm1 && (
-                                    <Clickable
-                                        link
-                                        className="breadcrumb-link"
-                                        only={{ tree: buildTreeParam({ dataset, adm1 }) }}
-                                        onClick={handleEnterTreeFromBreadcrumb}
-                                    >
-                                        {adm1}
-                                    </Clickable>
-                                )}
-                                {adm1 && adm2 && <span className="text-neutral-400">/</span>}
-                                {adm2 && (
-                                    <Clickable
-                                        link
-                                        className="breadcrumb-link"
-                                        only={{ tree: buildTreeParam({ dataset, adm1, adm2 }) }}
-                                        onClick={handleEnterTreeFromBreadcrumb}
-                                    >
-                                        {adm2}
-                                    </Clickable>
-                                )}
-                                {gnr && gardUuid && (
-                                    <>
-                                        <span className="text-neutral-400">/</span>
-                                        <Clickable
-                                            link
-                                            className="breadcrumb-link"
-                                            only={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }), doc: gardUuid }}
-                                            onClick={handleEnterTreeFromBreadcrumb}
-                                        >
-                                            {gnr}{gardName ? ` ${gardName}` : ''}
-                                        </Clickable>
-                                    </>
-                                )}
-                                {isLeaf && bnr && (
-                                    <>
-                                        <span className="text-neutral-400">/</span>
-                                        <Clickable
-                                            link
-                                            className="breadcrumb-link"
-                                            only={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }), doc: gardUuid }}
-                                            onClick={handleEnterTreeFromBreadcrumb}
-                                        >
-                                            {bnr}{label ? ` ${label}` : ''}
-                                        </Clickable>
-                                    </>
-                                )}
-                                {sourceView && <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />}
-                            </div>
-                        ) : null;
-                    })()
-                ) : (
-                    admText && (
+                    {groupAdmText && (groupTotal ?? 0) > 1 && (
                         <div className="text-sm text-neutral-700 flex items-center gap-1 flex-wrap">
-                            <span>{admText}</span>
-                            {sourceView && <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />}
+                            <span>{groupAdmText}</span>
                         </div>
-                    )
-                )}
+                    )}
+
+                    {hasSingleSource && (
+                        <>
+                            {dataset && treeSettings[dataset] ? (
+                                (() => {
+                                    const isTreeDataset = !!treeSettings[dataset];
+                                    // Build a minimal "hit" object from group fields for helpers.
+                                    const cadastreHit: any = {
+                                        fields,
+                                    };
+
+                                    const gnr = isTreeDataset ? getGnr(cadastreHit, dataset) : null;
+                                    const bnr = isTreeDataset ? getBnr(cadastreHit, dataset) : null;
+
+                                    const withinField = (fields as any)?.within?.[0];
+                                    const uuidField = (fields as any)?.uuid?.[0] ?? (source as any)?.uuid;
+                                    const isLeaf = isTreeDataset && !!withinField;
+                                    const gardUuid = isLeaf ? withinField : (uuidField || null);
+
+                                    const gardName = isTreeDataset
+                                        ? (
+                                            getValueByPath(fields, treeSettings[dataset]?.parentName) ||
+                                            (source ? getValueByPath(source, treeSettings[dataset]?.parentName) : "") ||
+                                            (!isLeaf ? label : null) ||
+                                            null
+                                        )
+                                        : null;
+
+                                    const hasAdm = Boolean(adm1 || gnr);
+
+                                    return (hasAdm || (sourceView && rawSosi)) ? (
+                                        <div className="text-sm text-neutral-700 flex items-center gap-1 flex-wrap">
+                                            {adm1 && (
+                                                <Clickable
+                                                    link
+                                                    className="breadcrumb-link"
+                                                    only={{ tree: buildTreeParam({ dataset, adm1 }) }}
+                                                    onClick={handleEnterTreeFromBreadcrumb}
+                                                >
+                                                    {adm1}
+                                                </Clickable>
+                                            )}
+                                            {adm1 && adm2 && <span className="text-neutral-400">/</span>}
+                                            {adm2 && (
+                                                <Clickable
+                                                    link
+                                                    className="breadcrumb-link"
+                                                    only={{ tree: buildTreeParam({ dataset, adm1, adm2 }) }}
+                                                    onClick={handleEnterTreeFromBreadcrumb}
+                                                >
+                                                    {adm2}
+                                                </Clickable>
+                                            )}
+                                            {gnr && gardUuid && (
+                                                <>
+                                                    <span className="text-neutral-400">/</span>
+                                                    <Clickable
+                                                        link
+                                                        className="breadcrumb-link"
+                                                        only={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }), doc: gardUuid }}
+                                                        onClick={handleEnterTreeFromBreadcrumb}
+                                                    >
+                                                        {gnr}{gardName ? ` ${gardName}` : ''}
+                                                    </Clickable>
+                                                </>
+                                            )}
+                                            {isLeaf && bnr && (
+                                                <>
+                                                    <span className="text-neutral-400">/</span>
+                                                    <Clickable
+                                                        link
+                                                        className="breadcrumb-link"
+                                                        only={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }), doc: gardUuid }}
+                                                        onClick={handleEnterTreeFromBreadcrumb}
+                                                    >
+                                                        {bnr}{label ? ` ${label}` : ''}
+                                                    </Clickable>
+                                                </>
+                                            )}
+                                            {sourceView && <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />}
+                                        </div>
+                                    ) : null;
+                                })()
+                            ) : (
+                                admText && (
+                                    <div className="text-sm text-neutral-700 flex items-center gap-1 flex-wrap">
+                                        <span>{admText}</span>
+                                        {sourceView && <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />}
+                                    </div>
+                                )
+                            )}
+                        </>
+                    )}
                 </div>
                 
             </div>

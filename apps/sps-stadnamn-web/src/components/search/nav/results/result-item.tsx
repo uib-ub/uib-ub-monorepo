@@ -5,7 +5,7 @@ import { datasetTitles } from '@/config/metadata-config';
 import { panPointIntoView } from '@/lib/map-utils';
 import { useGroup, usePerspective } from '@/lib/param-hooks';
 import { stringToBase64Url } from '@/lib/param-utils';
-import { detailsRenderer, formatHighlight } from '@/lib/text-utils';
+import { formatHighlight } from '@/lib/text-utils';
 import { GlobalContext } from '@/state/providers/global-provider';
 import { useDebugStore } from '@/state/zustand/debug-store';
 import { useSessionStore } from '@/state/zustand/session-store';
@@ -14,36 +14,14 @@ import { useContext, useEffect, useRef } from 'react';
 import { PiX, PiXBold } from 'react-icons/pi';
 import DistanceBadge from '@/components/search/distance-badge';
 import { SMALL_BASE_MAX_RESULTS } from '@/config/max-results';
-
-const uniqueLabels = (hit: any) => {
-    const labels = new Set<string>();
-    const hits = hit.inner_hits?.group?.hits?.hits || [];
-    for (const innerHit of hits) {
-        for (const label of innerHit.fields?.label || []) {
-            if (labels.size < 3) labels.add(label);
-            if (labels.size === 3) break;
-        }
-        if (labels.size === 3) break;
-        for (const label of innerHit.fields?.altLabels || []) {
-            if (labels.size < 3) labels.add(label);
-            if (labels.size === 3) break;
-        }
-        if (labels.size === 3) break;
-    }
-    return Array.from(labels).map((label, idx) => (
-        <span key={label + idx}>
-            {label}
-            {idx < Array.from(labels).length - 1 && <span>, </span>}
-        </span>
-    ));
-}
+import AdmInfo from '../../shared/adm-info';
 
 export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hit: any, onClick?: () => void, notClickable?: boolean } & Record<string, any>) {
     const perspective = usePerspective()
     const searchParams = useSearchParams()
     const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit._index?.split('-')?.[2]
-    const { isMobile, mapFunctionRef } = useContext(GlobalContext)
+    const { isMobile, mapFunctionRef, sosiVocab } = useContext(GlobalContext)
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const showScore = useDebugStore((s: any) => s.showScore)
     const isGrunnord = docDataset?.includes('_g')
@@ -53,7 +31,18 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
     const sourceView = searchParams.get('sourceView') === 'on'
     const isInit = sourceView ? initValue && initValue == hit.fields?.["uuid"]?.[0] : initValue && initValue == hit.fields?.["group.id"]?.[0]
 
-    const label = hit.fields?.label?.[0] || ''
+    const label = (sourceView || isGrunnord) ? hit.fields?.label?.[0] : hit.fields?.["group.label"]?.[0] || ''
+    const otherLabel = !sourceView && hit.fields?.label?.[0] != label ? hit.fields?.label?.[0] : null
+
+    const rawSosi = hit.fields?.sosi
+    const sosiArray = Array.isArray(rawSosi) ? rawSosi : rawSosi ? [rawSosi] : []
+    const sosiTypes = sosiArray.reduce((acc: Record<string, string>, item: string) => {
+        const key = String(item)
+        acc[key] = (sosiVocab as any)?.[key]?.label || key
+        return acc
+    }, {} as Record<string, string>)
+    const sosiTypeKeys = Object.keys(sosiTypes)
+    const showSosi = sosiTypeKeys.length > 0
 
 
     if (!hit) return <div className="p-2">Det har oppstått ein feil: Kunne ikkje hente kjelder</div>
@@ -64,12 +53,10 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
             notClickable={notClickable}
             onClick={() => !notClickable && onClick?.()}
             remove={['doc', 'group', 'activePoint']}
-            add={{ maxResults: SMALL_BASE_MAX_RESULTS, init: stringToBase64Url(hit.fields["group.id"]?.[0]),
+            add={{ maxResults: SMALL_BASE_MAX_RESULTS, init: sourceView ? hit.fields.uuid[0] : stringToBase64Url(hit.fields["group.id"]?.[0]),
                 point: hit.fields?.location?.[0]?.coordinates ? `${hit.fields?.location?.[0]?.coordinates[1]},${hit.fields?.location?.[0]?.coordinates[0]}` : null
 
             }}
-
-
             className="w-full text-left p-3">
             <div className="flex items-center justify-between gap-x-2 whitespace-normal w-full">
                 <div className="inline-flex items-center flex-wrap gap-x-2 w-full">
@@ -78,7 +65,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                         <div className="inline-flex items-center gap-x-2 w-full">
 
                             <span className="font-semibold">
-                                {hit.fields.label?.[0] || hit.fields?.["group.label"]?.[0]}
+                                {label}
                             </span>
                             {!perspectiveIsGrunnord && (
                                 <em className="text-neutral-800 ml-auto">
@@ -90,15 +77,44 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                     )}
                     {showScore && hit._score}
                     {!isGrunnord && (
-                        <span className="font-semibold flex items-center gap-x-2">
+                        <span className="flex items-center gap-x-2">
                             { isInit && <img src="/currentLocation.svg" alt="" aria-hidden="true" className="h-6 mb-1 self-center " />}
-                            {label || hit.fields?.["group.label"]?.[0]}
+                            <strong>{label}</strong> {otherLabel && <em className="text-neutral-700 text-sm whitespace-nowrap text-base">{otherLabel}</em>}
                         </span>
                     )}
-                    <span className="text-neutral-900">{detailsRenderer(hit)}</span>
+
+
+                {sourceView && (
+                        (docDataset || showSosi) && (
+                            <span className="text-neutral-700 text-sm">
+                                {docDataset && (
+                                    <span>{datasetTitles[docDataset] || docDataset}</span>
+                                )}
+                                {docDataset && showSosi && (
+                                    <span className="text-neutral-400 px-1">|</span>
+                                )}
+                                {showSosi && (
+                                    <span>
+                                        {sosiTypeKeys
+                                            .slice(0, 3)
+                                            .map((typeKey) => sosiTypes[typeKey])
+                                            .join(", ")}
+                                    </span>
+                                )}
+                            </span>
+                        )
+                    )}
+                    
+                        
+                    
                 </div>
+                
                 <DistanceBadge meters={hit.distance} />
             </div>
+            <span className="text-sm text-neutral-700 inline-flex items-center gap-1 flex-wrap">
+                            <AdmInfo hit={hit} />
+                        </span>
+            
             {hit.highlight && <>{formatHighlight(hit.highlight['content.html']?.[0] || hit.highlight['content.text']?.[0])}</>}
             
         </Clickable>

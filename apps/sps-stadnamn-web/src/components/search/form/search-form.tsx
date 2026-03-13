@@ -6,7 +6,6 @@ import { MAP_DRAWER_BOTTOM_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils'
 import { useMode, usePerspective } from '@/lib/param-hooks';
 import { stringToBase64Url } from '@/lib/param-utils';
 import { useSearchQuery } from '@/lib/search-params';
-import { detailsRenderer } from '@/lib/text-utils';
 import { formatNumber } from '@/lib/utils';
 import { GlobalContext } from '@/state/providers/global-provider';
 import { useSessionStore } from '@/state/zustand/session-store';

@@ -1,6 +1,6 @@
 'use client'
 
-import { detailsRenderer } from '@/lib/text-utils';
+import AdmInfo from '@/components/search/shared/adm-info';
 import { useMode } from '@/lib/param-hooks';
 import { useSearchQuery } from '@/lib/search-params';
 import useAutocompleteData, {
@@ -284,7 +284,7 @@ export default function AutocompleteDropdown({
                                     `(${hit.fields['group.label']?.[0]})`}{' '}
                             </strong>{' '}
                             <span className="text-neutral-900">
-                                {detailsRenderer(hit)}
+                                <AdmInfo hit={hit} />
                             </span>
                         </div>
                     </li>
