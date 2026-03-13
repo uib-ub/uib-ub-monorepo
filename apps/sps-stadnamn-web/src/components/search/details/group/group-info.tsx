@@ -490,7 +490,7 @@ export default function GroupInfo({
                                     <Clickable
                                         link
                                         className="breadcrumb-link"
-                                        add={{ tree: buildTreeParam({ dataset, adm1 }) }}
+                                        only={{ tree: buildTreeParam({ dataset, adm1 }) }}
                                         onClick={handleEnterTreeFromBreadcrumb}
                                     >
                                         {adm1}
@@ -501,7 +501,7 @@ export default function GroupInfo({
                                     <Clickable
                                         link
                                         className="breadcrumb-link"
-                                        add={{ tree: buildTreeParam({ dataset, adm1, adm2 }) }}
+                                        only={{ tree: buildTreeParam({ dataset, adm1, adm2 }) }}
                                         onClick={handleEnterTreeFromBreadcrumb}
                                     >
                                         {adm2}
@@ -513,7 +513,7 @@ export default function GroupInfo({
                                         <Clickable
                                             link
                                             className="breadcrumb-link"
-                                            add={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }) }}
+                                            only={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }), doc: gardUuid }}
                                             onClick={handleEnterTreeFromBreadcrumb}
                                         >
                                             {gnr}{gardName ? ` ${gardName}` : ''}
@@ -526,7 +526,7 @@ export default function GroupInfo({
                                         <Clickable
                                             link
                                             className="breadcrumb-link"
-                                            add={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }) }}
+                                            only={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: gardUuid }), doc: gardUuid }}
                                             onClick={handleEnterTreeFromBreadcrumb}
                                         >
                                             {bnr}{label ? ` ${label}` : ''}
