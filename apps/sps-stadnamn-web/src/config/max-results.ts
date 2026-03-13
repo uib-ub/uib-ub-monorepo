@@ -1,12 +1,11 @@
-export const DEFAULT_MAX_RESULTS = 5
-export const MIN_MAX_RESULTS = 5
-export const EXPANDED_MAX_RESULTS = 10
+export const SMALL_BASE_MAX_RESULTS = 3
+export const LARGE_BASE_MAX_RESULTS = 10
 
-export const defaultMaxResultsParam = String(DEFAULT_MAX_RESULTS)
-export const expandedMaxResultsParam = String(EXPANDED_MAX_RESULTS)
+export const defaultMaxResultsParam = String(SMALL_BASE_MAX_RESULTS)
+export const expandedMaxResultsParam = String(LARGE_BASE_MAX_RESULTS)
 
 export function clampMaxResults(value: number): number {
-  return Math.max(Math.trunc(value), MIN_MAX_RESULTS)
+  return Math.max(Math.trunc(value), SMALL_BASE_MAX_RESULTS)
 }
 
 export function getClampedMaxResultsFromParam(value: string | null): number {

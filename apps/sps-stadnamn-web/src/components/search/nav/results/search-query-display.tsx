@@ -18,9 +18,7 @@ export default function SearchQueryDisplay() {
   const init = searchParams.get('init')
   const { groupData: initGroupData } = useGroupData(init)
   const qParam = searchParams.get('q')
-  const initHasCoordinates =
-    Array.isArray((initGroupData as any)?.coordinates) &&
-    (initGroupData as any).coordinates.length >= 2
+  const initHasCoordinates = initGroupData?.fields?.location?.coordinates?.length >= 2
   const searchSort = searchParams.get('searchSort')
 
 
@@ -86,6 +84,7 @@ export default function SearchQueryDisplay() {
                   isSelected={!searchSort}
                   onClick={() => {
                     const newParams = new URLSearchParams(searchParams)
+                    newParams.set('maxResults', defaultMaxResultsParam)
                     newParams.delete('searchSort')
                     router.push(`?${newParams.toString()}`)
                   }}
@@ -100,6 +99,7 @@ export default function SearchQueryDisplay() {
                   onClick={() => {
                     const newParams = new URLSearchParams(searchParams)
                     newParams.set('searchSort', 'similarity')
+                    newParams.set('maxResults', defaultMaxResultsParam)
                     router.push(`?${newParams.toString()}`)
                   }}
                   role="radio"

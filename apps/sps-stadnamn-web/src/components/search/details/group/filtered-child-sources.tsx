@@ -149,13 +149,7 @@ export const ChildSources = ({ datasets, isFiltered, distanceMeters }: Props) =>
                             className="no-underline flex items-center gap-1 hover:bg-neutral-100 rounded-md py-1 !px-3 btn btn-outline btn-compact text-lg shrink-0 max-w-sm"
                             href={"/uuid/" + s.uuid}
                         >
-                            <SourceTitle
-                                label={s.label}
-                                cadastrePrefix={cadastrePrefix}
-                                sosiTypes={sosiTypes}
-                                labelClassName="truncate"
-                                sosiClassName="truncate"
-                            />
+
                         </Link>
 
                         {additionalLabels && <span className="text-neutral-900">{additionalLabels}</span>}

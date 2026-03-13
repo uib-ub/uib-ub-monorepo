@@ -2,7 +2,7 @@
 import Spinner from "@/components/svg/Spinner";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
-import { clampMaxResults, expandedMaxResultsParam, getClampedMaxResultsFromParam } from "@/config/max-results";
+import { clampMaxResults, getClampedMaxResultsFromParam } from "@/config/max-results";
 import { useGroup, usePoint } from "@/lib/param-hooks";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchQuery } from "@/lib/search-params";
@@ -22,7 +22,6 @@ import ResultItem from "./result-item";
 import SearchQueryDisplay from "./search-query-display";
 import IconButton from "@/components/ui/icon-button";
 import { GroupFilters } from "../../details/group/names-section";
-import { DatasetSummary } from "../../dataset-summary";
 import useListData from "@/state/hooks/list-data";
 import ResultItemSkeleton, { GroupInfoSkeleton } from "../../details/shared/group-header-skeleton";
 
@@ -119,17 +118,17 @@ export default function SearchResults() {
     !coordinateInfo &&
     !labelFilter &&
     additionalResultsCount === 0
-  const hasMaxResultsLimit = resultsParam > 0
-  const initVisibleCount = sourceView ? (init ? 1 : 0) : (initGroupId ? 1 : 0)
-  const maxAdditionalVisible = hasMaxResultsLimit
-    ? Math.max(resultsParam - initVisibleCount, 0)
-    : Number.POSITIVE_INFINITY;
+  const hasMaxResultsParam = resultsParam > 0
+
+  // Maximum number of list items to show, driven directly by the maxResults URL param.
+  // If no valid param is present, show everything that has been loaded.
+  const maxVisibleResults = resultsParam > 0 ? resultsParam : Number.POSITIVE_INFINITY;
 
   // Derived: should "Fleire namnegrupper" and the list of other groups be visible?
   // For init on desktop, this is controlled solely by resultsParam (>1 means expanded).
   const showOtherResults = (!init || isMobile || hasOneResult)
     ? true
-    : (resultsParam > 1);
+    : hasMaxResultsParam;
 
 
   // On mobile, show a compact summary for the "init" group when pinned,
@@ -263,9 +262,6 @@ export default function SearchResults() {
       {/* Display name variants and datasets under the title */}
       {(otherLabels.length > 0 || datasets.length > 0) && (
         <div className="mt-2 text-sm text-neutral-700">
-          {datasets.length > 0 && (
-            <DatasetSummary datasetKeys={datasets} />
-          )}
           {datasets.length > 0 && otherLabels.length > 0 && <span className="mx-1">|</span>}
           {otherLabels.length > 0 && (
             <span>
@@ -284,7 +280,7 @@ export default function SearchResults() {
     <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
       {
         (point && !init) && !coordinateInfo && !labelFilter && (
-          <div className="p-3 flex flex-col gap-2">
+          <div className="p-3 flex flex-col gap-2 relative">
             <div className="flex items-center gap-2">
               <IconButton label="Zoom til startpunktet" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" /></IconButton>
                <div className="flex flex-col">
@@ -297,7 +293,7 @@ export default function SearchResults() {
                 </span>
                 <span className="text-neutral-800 text-sm">{isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"}</span>
                 </div>
-              <div className="flex items-center ml-auto">
+              <div className="absolute right-2 top-3">
                 <ClickableIcon className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900" label="Fjern startpunkt" remove={['point', 'radius']}>
                   <PiXBold aria-hidden="true" />
                 </ClickableIcon>
@@ -326,7 +322,7 @@ export default function SearchResults() {
       ))}
 
 
-      {(init || (isMobile && qParam)) ? (initGroupLoading ? (
+      {(init || isMobile || qParam)? (initGroupLoading ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
@@ -345,10 +341,7 @@ export default function SearchResults() {
               className="px-3 py-1.5 rounded-md bg-white border border-neutral-200 flex items-center gap-2 cursor-pointer max-w-full min-w-0"
             >
               <PiMagnifyingGlass className="" aria-hidden="true" />
-              <span
-                className="truncate flex-1 min-w-0 max-w-full block"
-                title={String(qParam)}
-              >
+              <span className="truncate flex-1 min-w-0 max-w-full block">
                 {qParam}
               </span>
               <PiX className="text-lg" aria-hidden="true" />
@@ -384,13 +377,13 @@ export default function SearchResults() {
 
       {(!init || showOtherResults || isMobile || hasOneResult) && (
         <>
-          {(searchSettingsExpanded || !init) && <SearchQueryDisplay />}
+          {searchSettingsExpanded  && <SearchQueryDisplay />}
 
           {!hasNoAdditionalResults && (
             <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
 
 
-            {(listLoading && listInitialPage === 1) ? Array.from({ length: listInitialPage === 1 ? 6 : 40 }).map((_, i) => (
+            {(listLoading && listInitialPage === 1) ? Array.from({ length: listInitialPage === 1 ? 3 : 20  }).map((_, i) => (
               <li key={`skeleton-${i}`} className="relative">
                 {(isMobile || !init || group)
                   ? <GroupInfoSkeleton />
@@ -399,7 +392,7 @@ export default function SearchResults() {
               </li>
             )) :
               (() => {
-                let renderedAdditional = 0
+                let renderedCount = 0
                 return listData?.pages.map((page: any, pageIndex: number) => {
                 const isLastPage = pageIndex === (listData?.pages.length || 0) - 1
 
@@ -409,12 +402,12 @@ export default function SearchResults() {
                 return (
                   <Fragment key={`page-${pageIndex}`}>
                     {page.data?.map((item: any, idx: number) => {
-                      if (renderedAdditional >= maxAdditionalVisible) return null;
+                      if (renderedCount >= maxVisibleResults) return null
                       if (!sourceView && !item.fields["group.id"]) {
                         console.log("No group ID", item);
                         return null
                       }
-                      renderedAdditional += 1
+                      renderedCount += 1
                       const groupId = item.fields['group.id']?.[0]
                       const uuid = item.fields['uuid']?.[0]
                       const groupCode = sourceView ? uuid : groupId
@@ -426,6 +419,7 @@ export default function SearchResults() {
                             id={`group-info-${domId}`}
                             overrideGroupCode={groupCode}
                             hasIiif={hasIiif}
+                            distanceMeters={item.distance}
                           />
                           :
                           <ResultItem
@@ -436,37 +430,28 @@ export default function SearchResults() {
                     })}
                     {/* Vis meir button at the end of each page */}
                     {isLastPage && listHasNextPage && (
-                      <li className="flex flex-col gap-2 justify-center py-4">
-                        <button
+                      <li className="flex flex-col gap-2 justify-center">
+                        <Clickable
                         type="button"
-                          onClick={() => {
-                            if (listIsFetchingNextPage) return
-
-                            const currentAdditional = additionalResultsCount
-                            const base = initVisibleCount
-                            const newAdditional = currentAdditional + listPageSize
-                            const newResultsValue = clampMaxResults(base + newAdditional)
-
-                            const newParams = new URLSearchParams(searchParams)
-                            newParams.set('maxResults', String(newResultsValue))
-                            router.push(`?${newParams.toString()}`, { scroll: false })
-
+                        add={{ maxResults: String(clampMaxResults((resultsParam || 0) + listPageSize)) }}
+                        onClick={() => {
+                          if (!listIsFetchingNextPage && listHasNextPage) {
                             listFetchNextPage()
-                          }}
+                          }
+                        }}                         
                           className={`
                     flex items-center gap-2
-                   ${init ? 'btn-outline' : 'btn-neutral'} btn
-                    justify-center
-                    text-lg
-
-                    px-4 py-2 rounded-full xl:rounded-md
-                     mx-3
+                    text-neutral-900
+                    p-3
+                    justify-center w-full
+                                         rounded-full xl:rounded-md
+                     
                     transition-colors
                     ${listIsFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
                   `}
                         >
                           {listIsFetchingNextPage && <Spinner className="text-white" status="Lastar" />} {listIsFetchingNextPage ? 'Lastar...' : 'Vis meir'}
-                        </button>
+                        </Clickable>
                         
                       </li>
                     )}

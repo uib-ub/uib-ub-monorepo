@@ -18,9 +18,10 @@ import { PiCaretLeftBold, PiCaretRightBold, PiCheck, PiLinkSimple, PiMapPin, PiM
 import Carousel from "../../nav/results/carousel";
 import SourceTitle from "../shared/source-title";
 import { TextTab } from "./text-tab";
-import { DatasetSummary } from "../../dataset-summary";
 import CoordinateTypeInfo from "../doc/coordinate-type-info";
 import { GroupInfoSkeleton } from "../shared/group-header-skeleton";
+import DistanceBadge from "../../distance-badge";
+import { defaultMaxResultsParam, SMALL_BASE_MAX_RESULTS } from "@/config/max-results";
 
 function SosiInline({
     rawSosi,
@@ -290,10 +291,12 @@ export default function GroupInfo({
     id,
     overrideGroupCode,
     hasIiif,
+    distanceMeters,
 }: {
     id: string;
     overrideGroupCode?: string;
     hasIiif?: boolean;
+    distanceMeters?: number | null;
 }) {
     const { groupData, groupLoading, groupTotal } = useGroupData(overrideGroupCode);
     const iiifItems = groupData?.iiifItems;
@@ -306,6 +309,7 @@ export default function GroupInfo({
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const sourceView = searchParams.get("sourceView") === "on";
     const group = searchParams.get('group');
+    const point = searchParams.get('point');
     const mobilePreview = Boolean(snappedPosition === "bottom" && initValue && isMobile);
 
     const toText = (value: unknown): string => {
@@ -419,24 +423,29 @@ export default function GroupInfo({
 
     return (
         <div id={id} className={`relative flex min-w-0 flex-col  ${mobilePreview ? 'gap-1 flex-wrap' : 'gap-3 pt-2 pb-4'}`}>
-            <div className={`min-w-0 w-full flex flex-col px-3  ${mobilePreview ? 'gap-1 flex-wrap' : 'gap-3'}`}>
-                <div className={`flex items-center gap-2 ${mobilePreview ? 'flex-wrap' : ''}`}>
-                    {datasets && datasets.length > 0 && (
-                        <DatasetSummary datasetKeys={datasets} className={`uppercase tracking-[0.12em] text-neutral-700 ${mobilePreview ? 'text-xs' : 'text-sm'}`} />
+            <div className={`min-w-0 w-full flex flex-col px-3 ${mobilePreview ? 'gap-1 flex-wrap' : 'gap-3'}`}>
+                {datasets && datasets.length == 1 && <div className={`flex items-center gap-2 ${mobilePreview ? 'flex-wrap' : ''}`}>
+                    {datasets && datasets.length == 1 && (
+                        <span className={`uppercase tracking-wider text-neutral-700 ${mobilePreview ? 'text-xs' : 'text-sm'}`}>{datasetTitles[datasets[0]] || datasets[0]}</span>
                     )}
-                    {isInit && (
-                        <div className="ml-auto flex items-center gap-2">
-                            <ClickableIcon
-                                label="Fjern som utgangspunkt"
-                                remove={["group", "point", "activePoint", "activeYear", "activeName"]}
-                                add={{ init: null, point: null }}
-                                className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-neutral-300 btn btn-outline shrink-0"
-                            >
-                                <PiXBold aria-hidden="true" className="text-base text-neutral-800" />
-                            </ClickableIcon>
-                        </div>
-                    )}
-                </div>
+                    
+                </div>}
+                {isInit && (
+                    <div className="absolute right-2 top-3">
+                        <ClickableIcon
+                            label="Lukk framheva gruppe"
+                            remove={["group", "activePoint", "activeYear", "activeName", "init"]}
+                            add={{ maxResults: SMALL_BASE_MAX_RESULTS }}
+
+                            className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900"
+                        >
+                            <PiXBold aria-hidden="true" className="text-neutral-800" />
+                        </ClickableIcon>
+                    </div>
+                )}
+                {!isInit && point && typeof distanceMeters === "number" && Number.isFinite(distanceMeters) && (
+                    <DistanceBadge className="absolute right-2 top-3" meters={distanceMeters} />
+                )}
 
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-3 flex-wrap">

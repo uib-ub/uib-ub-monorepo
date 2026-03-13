@@ -1,6 +1,6 @@
 export function ResultItemSkeleton() {
     return (
-        <div className="h-14 flex flex-col flex-grow justify-center gap-1 divide-y divide-neutral-300">
+        <div className="h-14 w-full p-3 flex flex-col flex-grow justify-center gap-1 divide-y divide-neutral-300">
             <div
                 className="bg-neutral-900/10 rounded-full h-4 animate-pulse"
                 style={{ width: "10rem" }}
