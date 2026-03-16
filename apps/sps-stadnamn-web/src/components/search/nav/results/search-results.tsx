@@ -49,6 +49,7 @@ export default function SearchResults() {
   const initHasCoordinates = initGroupData?.fields?.location?.coordinates?.length >= 2
   const { groupData: activeGroupData } = useGroupData()
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
+  const setInitGroupLabel = useSessionStore((s) => s.setInitGroupLabel)
   const { isMobile, sosiVocab, mapFunctionRef } = useContext(GlobalContext)
   const point = usePoint()
   const { facetFilters, datasetFilters } = useSearchQuery()
@@ -71,8 +72,26 @@ export default function SearchResults() {
     }
   }, [])
 
-
-
+  // Ensure the map has a label available for the init anchor marker even
+  // when init/point come from URL or list interactions (not just map clicks).
+  // We tie the cached label to the current point; the map will only render
+  // the anchor when both label and point match its own props.
+  useEffect(() => {
+    if (!init || !point) {
+      setInitGroupLabel(null, null)
+      return
+    }
+    const label =
+      initGroupData?.label ??
+      initGroupData?.fields?.label?.[0] ??
+      initGroupData?.fields?.["group.label"]?.[0] ??
+      null
+    if (typeof label === "string" && label.trim()) {
+      setInitGroupLabel(label, point)
+    } else {
+      setInitGroupLabel(null, null)
+    }
+  }, [init, point, initGroupData?.label, initGroupData?.fields, setInitGroupLabel])
 
   const {
     listData,
