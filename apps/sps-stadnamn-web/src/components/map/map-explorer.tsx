@@ -905,33 +905,6 @@ export default function MapExplorer() {
         }
 
 
-        const focusGroupMarker = () => {
-          const focusTarget = groupData?.coordinates
-          if (!focusTarget) return
-
-          if (mapInstance.current) {
-            const currentZoom = mapInstance.current.getZoom?.() ?? 18
-            const maxZoom = mapInstance.current.getMaxZoom?.() ?? 20
-            const nextZoom = Math.min(currentZoom + 2, maxZoom)
-            mapInstance.current.setView(focusTarget, nextZoom)
-          }
-
-          const newParams = new URLSearchParams(searchParams)
-          const hasMaxResults = newParams.has('maxResults')
-          const hasMapSettings = newParams.has('mapSettings')
-
-          if (!hasMaxResults) {
-            newParams.set('maxResults', defaultMaxResultsParam)
-          }
-          if (hasMapSettings) {
-            newParams.delete('mapSettings')
-          }
-
-          if (!hasMaxResults || hasMapSettings) {
-            router.push(`?${newParams.toString()}`)
-          }
-        }
-
         return (
 
           <>
@@ -1216,35 +1189,6 @@ export default function MapExplorer() {
 
 
 
-            {groupData && !coordinateInfo && activePoint && searchParams.get('group') && searchParams.get('group') !== searchParams.get('init') && (
-              <Marker
-                zIndexOffset={2000}
-                icon={new leaflet.DivIcon(
-                  activeGroupHasArea
-                    ? getAreaLabelMarkerIcon(groupData.label || '[utan namn]')
-                    : getLabelMarkerIcon(
-                      groupData.label || '[utan namn]',
-                      'accent',
-                      undefined,
-                      true,
-                      false,
-                      true
-                    )
-                )}
-                position={activePoint}
-                eventHandlers={{
-                  click: focusGroupMarker,
-                  keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
-                    const key = e.originalEvent?.key ?? e.key
-                    if (key === 'Enter' || key === ' ') {
-                      ;(e.originalEvent ?? e).preventDefault()
-                      focusGroupMarker()
-                    }
-                  }
-                }}
-              >
-              </Marker>
-            )}
             { point && (() => {
               const initIsActive = sourceView ? !activePoint : (!searchParams.get('group') || searchParams.get('group') === searchParams.get('init'))
               // In sourceView mode, the init marker should be inactive when there
@@ -1852,27 +1796,32 @@ export default function MapExplorer() {
             {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" interactive={false} />}
             {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" interactive={false} />}
             {point && !initValue && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
-            {(coordinateInfo || sourceView) && activePoint && <Marker 
-            zIndexOffset={2500}
-            icon={new leaflet.DivIcon(getUnlabeledMarker("accent"))} position={activePoint} 
-            eventHandlers={{
-              click: () => {
-                // Center view
-                if (mapInstance.current) {
-                  mapInstance.current.setView(activePoint, 18);
-                }
-              },
-              keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
-                const key = e.originalEvent?.key ?? e.key
-                if (key === 'Enter' || key === ' ') {
-                  ;(e.originalEvent ?? e).preventDefault()
-                  if (mapInstance.current) {
-                    mapInstance.current.setView(activePoint, 18);
-                  }
-                }
-              }
-            }}
-            />}
+            { activePoint && (
+              <>
+                <Marker
+                  zIndexOffset={2500}
+                  icon={new leaflet.DivIcon(getUnlabeledMarker("accent", { activeOval: true }))}
+                  position={activePoint}
+                  eventHandlers={{
+                    click: () => {
+                      // Center view
+                      if (mapInstance.current) {
+                        mapInstance.current.setView(activePoint, 18);
+                      }
+                    },
+                    keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                      const key = e.originalEvent?.key ?? e.key
+                      if (key === 'Enter' || key === ' ') {
+                        ;(e.originalEvent ?? e).preventDefault()
+                        if (mapInstance.current) {
+                          mapInstance.current.setView(activePoint, 18);
+                        }
+                      }
+                    }
+                  }}
+                />
+              </>
+            )}
 
           </>)
       }}
