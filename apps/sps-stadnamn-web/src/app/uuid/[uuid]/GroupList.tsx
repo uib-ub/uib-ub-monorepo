@@ -25,7 +25,11 @@ const toPrefix = (v: any) => {
 const BATCH_SIZE = 5
 
 const getGroupData = async (groupId: string, size: number, currentUuid?: string) => {
-  const res = await fetch(`/api/group?group=${groupId}&size=${size}`)
+  // Fetch all documents in this group via the table search
+  // endpoint, filtered by group.id. This avoids depending on
+  // the specialised /api/group route, which now focuses on
+  // aggregated group metadata instead of returning members.
+  const res = await fetch(`/api/search/table?group=${groupId}&size=${size}`)
   if (!res.ok) {
     throw new Error('Failed to fetch group')
   }
