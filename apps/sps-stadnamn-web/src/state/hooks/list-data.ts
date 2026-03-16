@@ -24,7 +24,7 @@ const listDataQuery = async ({
     includeNoLocation,
 }: {
     pageParam?: number;
-    searchQueryString: string;
+    searchQueryString: string | null;
     initGroupCode: string | null;
     initGroupData: Record<string, any> | null;
     initValue: string | null;
@@ -101,6 +101,7 @@ export default function useListData() {
     const collapsed = searchParams.get('sourceView') != 'on'
     const includeGroup = Boolean(!collapsed && searchParams.get('group'))
     const includeNoLocation = searchParams.get('noLocation') === 'on'
+    const group = searchParams.get('group')
 
     // Decode `init` once for the list API body. If it's valid base64, use the
     // decoded value; otherwise, fall back to the raw value (UUID in source view).
@@ -126,7 +127,7 @@ export default function useListData() {
         queryKey: ['listData', searchQueryString, searchSort, collapsed, initGroupLoading, initGroupCode, point, includeNoLocation],
         queryFn: ({ pageParam }: { pageParam: number }) => listDataQuery({
             pageParam,
-            searchQueryString,
+            searchQueryString: group ? null : searchQueryString,
             initGroupCode: initGroupCode,
             initGroupData: initGroupCode ? initGroupData : null,
             initValue: decodedInit,
