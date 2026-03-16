@@ -428,7 +428,7 @@ export default function GroupInfo({
 
 
     return (
-        <div id={id} className={`relative flex min-w-0 flex-col  ${mobilePreview ? 'gap-1 flex-wrap' : 'gap-3 pt-2 pb-4'}`}>
+        <div id={id} className={`relative flex min-w-0 flex-col  ${mobilePreview ? 'gap-1 flex-wrap' : 'gap-3 py-4'}`}>
             <div className={`min-w-0 w-full flex flex-col px-3 ${mobilePreview ? 'gap-1 flex-wrap' : 'gap-3'}`}>
                 {datasets && datasets.length == 1 && <div className={`flex items-center gap-2 ${mobilePreview ? 'flex-wrap' : ''}`}>
                     {datasets && datasets.length == 1 && (

@@ -66,12 +66,12 @@ export default function GroupedResultsToggle() {
     return (
         <div className="flex items-center gap-2 text-sm text-neutral-900">
             { sourceView ? <Clickable className="flex items-center gap-2" only={{ q, center, zoom, init, group: null, maxResults }}>
-            <PiCaretLeftBold aria-hidden="true" className="text-primary-700"/>Namnegrupper
+            <PiCaretLeftBold aria-hidden="true" className="text-primary-700"/>{group ? 'Gruppe' : 'Gruppert søk'}
             
             </Clickable>
             :
 <Clickable className="flex items-center gap-2" add={{ sourceView: 'on', maxResults: defaultMaxResultsParam }}>
-Kjeldeoppslag <PiCaretRightBold aria-hidden="true" className="text-primary-700"/>
+Avansert søk <PiCaretRightBold aria-hidden="true" className="text-primary-700"/>
 </Clickable>
 
             }

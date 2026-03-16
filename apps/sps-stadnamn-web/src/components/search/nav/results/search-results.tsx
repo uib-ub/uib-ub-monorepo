@@ -56,7 +56,7 @@ export default function SearchResults() {
   const router = useRouter()
   const coordinateInfo = searchParams.get('coordinateInfo') == 'on' && !sourceView
   const labelFilter = searchParams.get('labelFilter') === 'on'
-  const showNoLocation = searchParams.get('showNoLocation') === 'on'
+  const noLocation = searchParams.get('noLocation') === 'on'
   const [playingPreviewId, setPlayingPreviewId] = useState<string | null>(null)
   const audioPreviewRef = useRef<HTMLAudioElement | null>(null)
 
@@ -154,7 +154,7 @@ export default function SearchResults() {
     !labelFilter &&
     !!noLocationGroupCount &&
     noLocationGroupCount > 0 &&
-    (showNoLocation || allVisibleHaveLocation);
+    (noLocation || allVisibleHaveLocation);
 
   // Derived: should "Fleire namnegrupper" and the list of other groups be visible?
   // For init on desktop, this is controlled solely by resultsParam (>1 means expanded).
@@ -396,10 +396,10 @@ export default function SearchResults() {
           )}
 
           {/* Toolbar items share the same flex row as the chip so they wrap together. */}
-          {qParam && <SearchQueryDisplay
+          <SearchQueryDisplay
             showNoLocationToggle={showNoLocationToggle}
             noLocationGroupCount={noLocationGroupCount ?? 0}
-          />}
+          />
         </div>
       )) : null}
 
@@ -469,6 +469,8 @@ export default function SearchResults() {
                     flex items-center gap-2
                     text-neutral-900
                     bg-neutral-50
+                    font-semibold
+                    text-xl
                     p-3
                     justify-center w-full
                                          rounded-full xl:rounded-md

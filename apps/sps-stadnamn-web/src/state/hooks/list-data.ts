@@ -100,7 +100,7 @@ export default function useListData() {
     const searchSort = searchParams.get('searchSort')
     const collapsed = searchParams.get('sourceView') != 'on'
     const includeGroup = Boolean(!collapsed && searchParams.get('group'))
-    const includeNoLocation = searchParams.get('showNoLocation') === 'on'
+    const includeNoLocation = searchParams.get('noLocation') === 'on'
 
     // Decode `init` once for the list API body. If it's valid base64, use the
     // decoded value; otherwise, fall back to the raw value (UUID in source view).

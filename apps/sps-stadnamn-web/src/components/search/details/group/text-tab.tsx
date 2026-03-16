@@ -51,45 +51,24 @@ export const TextTab = ({ textItems }: TextTabProps) => {
                 const html = hasHtmlTags ? rawContent.replace(/<\/?p>/g, "") : "";
                 const text = hasHtmlTags ? "" : rawContent;
 
-                const links = textItem.links;
-                const firstLink =
-                    Array.isArray(links) && links.length > 0
-                        ? links[0]
-                        : typeof links === "string" && links
-                            ? links
-                            : null;
-                const remainingLinks =
-                    Array.isArray(links) && links.length > 1 ? links.slice(1) : [];
+                const rawLinks = textItem.links;
+                const links: string[] =
+                    Array.isArray(rawLinks) ? rawLinks :
+                        typeof rawLinks === "string" && rawLinks ? [rawLinks] : [];
 
                 const datasetLabel = datasetTitles[textItem.dataset] || textItem.dataset;
+                const leadingLabel = hasMultipleItems && showAll ? datasetLabel : undefined;
 
                 return (
                     <div className="px-3 max-w-[calc(100%-1rem)]" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
                         <ExpandableContent
-                            leading={
-                                <>
-                                    {firstLink ? (
-                                        <SourceLink url={firstLink} label={datasetLabel} />
-                                    ) : (
-                                        <strong className="text-neutral-950">{datasetLabel}</strong>
-                                    )}
-                                    {" | "}
-                                </>
-                            }
                             html={html}
                             text={text}
+                            links={links}
+                            leadingLabel={leadingLabel}
                             forceExpanded={shouldForceExpand}
                             showToggle={showToggle}
                         />
-                        {remainingLinks.length > 0 && (
-                            <div className="mt-1 text-sm text-neutral-900">
-                                {remainingLinks.map((link: string) => (
-                                    <div key={link}>
-                                        <SourceLink url={link} />
-                                    </div>
-                                ))}
-                            </div>
-                        )}
                     </div>
                 );
             })}
