@@ -110,7 +110,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                                     <span>{datasetTitles[docDataset] || docDataset}</span>
                                 )}
                                 {docDataset && showSosi && (
-                                    <span className="text-neutral-400 px-1">|</span>
+                                    <span className="text-neutral-700 px-1">|</span>
                                 )}
                                 {showSosi && (
                                     <span>
