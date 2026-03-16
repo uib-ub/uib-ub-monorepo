@@ -60,6 +60,9 @@ export default function MapExplorer() {
   const { activeGroupValue, initValue, initCode } = useGroup()
   const { groupLoading, groupData } = useGroupData()
   const { groupData: initGroupData } = useGroupData(initCode)
+  const initGroupLabel = useSessionStore((s) => s.initGroupLabel)
+  const initGroupPoint = useSessionStore((s) => s.initGroupPoint)
+  const setInitGroupLabel = useSessionStore((s) => s.setInitGroupLabel)
   const { docData, docDataset } = useDocData()
 
   const { isMobile, mapFunctionRef, scrollableContentRef, scrollToBrukRef } = useContext(GlobalContext)
@@ -681,7 +684,8 @@ export default function MapExplorer() {
         newQueryParams.delete('mapSettings')
         //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
         newQueryParams.delete('doc')
-        newQueryParams.set('init', stringToBase64Url(fields["group.id"][0]))
+        const newInit = stringToBase64Url(fields["group.id"][0])
+        newQueryParams.set('init', newInit)
         newQueryParams.delete('group')
         newQueryParams.delete('activePoint')
         newQueryParams.delete('activeYear')
@@ -689,12 +693,15 @@ export default function MapExplorer() {
         newQueryParams.delete('labelFilter')
         newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
 
+        // Immediately cache label + init + point for the anchor marker so we
+        // can render it without waiting for group-data. This cache is keyed
+        // by both init and point to avoid any flicker on old markers.
+        const clickedLabel =
+          fields["group.label"]?.[0] ??
+          fields.label?.[0] ??
+          '[utan namn]'
+        setInitGroupLabel(clickedLabel, markerPoint)
       }
-
-
-
-
-
 
       router.push(`?${newQueryParams.toString()}`)
 
@@ -801,11 +808,7 @@ export default function MapExplorer() {
             },
 
             contextmenu: (event: any) => {
-
-
-
               const point = event.latlng
-
 
               const newParams = new URLSearchParams(searchParams)
               newParams.delete('group')
@@ -814,8 +817,6 @@ export default function MapExplorer() {
 
               newParams.set('point', `${point.lat},${point.lng}`)
               router.push(`?${newParams.toString()}`)
-
-
             },
 
 
@@ -1119,9 +1120,22 @@ export default function MapExplorer() {
                         />
                       ))
                     }
-                    {(activeMarkerMode === 'points' || activeGroupValue != item.fields?.["group.id"]?.[0]) && (
-                      <>
-                        {activeMarkerMode === 'points' ? (
+                    {activeMarkerMode === 'points'
+                      ? (
+                        shouldHideUnlabeledActiveAreaMarker ? null : (
+                          <Marker
+                            key={`result-${item.fields.uuid[0]}`}
+                            position={[lat, lng]}
+                            icon={new leaflet.DivIcon(getUnlabeledMarker('black'))}
+                            riseOnHover={true}
+                            eventHandlers={selectDocHandler(item, [lat, lng])}
+                          >
+                            {pointMarkerTooltip}
+                          </Marker>
+                        )
+                      )
+                      : activeMarkerMode === 'counts' && item.isClusterSingleton
+                        ? (
                           shouldHideUnlabeledActiveAreaMarker ? null : (
                             <Marker
                               key={`result-${item.fields.uuid[0]}`}
@@ -1133,19 +1147,8 @@ export default function MapExplorer() {
                               {pointMarkerTooltip}
                             </Marker>
                           )
-                        ) : activeMarkerMode === 'counts' && item.isClusterSingleton ? (
-                          shouldHideUnlabeledActiveAreaMarker ? null : (
-                            <Marker
-                              key={`result-${item.fields.uuid[0]}`}
-                              position={[lat, lng]}
-                              icon={new leaflet.DivIcon(getUnlabeledMarker('black'))}
-                              riseOnHover={true}
-                              eventHandlers={selectDocHandler(item, [lat, lng])}
-                            >
-                              {pointMarkerTooltip}
-                            </Marker>
-                          )
-                        ) : (
+                        )
+                        : (
                           <Marker
                             key={`result-${item.fields.uuid[0]}`}
                             position={[lat, lng]}
@@ -1153,9 +1156,8 @@ export default function MapExplorer() {
                             riseOnHover={true}
                             eventHandlers={selectDocHandler(item, [lat, lng])}
                           />
-                        )}
-                      </>
-                    )}
+                        )
+                    }
                   </Fragment>
                 )
               }
@@ -1254,9 +1256,19 @@ export default function MapExplorer() {
                 )
               }
 
-              const isLoadingLabel = !initGroupData?.label
-              const loadingPlaceholder = '...'
-              const label = isLoadingLabel ? loadingPlaceholder : initGroupData?.label!
+              // Use the session-scoped init group label instead of a loading
+              // placeholder. Only render when the cached point matches the
+              // current point; this avoids ever showing a stale label on an
+              // old marker.
+              if (
+                !initGroupLabel ||
+                !initGroupPoint ||
+                !areSamePoint(point, initGroupPoint)
+              ) {
+                return null
+              }
+
+              const label = initGroupLabel
               const color = anchorIsActive ? 'accent' : 'black'
 
               return (
@@ -1270,7 +1282,7 @@ export default function MapExplorer() {
                       true,
                       false,
                       true,
-                      isLoadingLabel
+                      false
                     )
                   )}
                   position={point}

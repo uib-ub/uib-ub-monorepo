@@ -39,6 +39,13 @@ export const useSessionStore = create<{
 	setTreeSavedQuery: (query: string) => void,
 	clearTreeSavedQuery: () => void,
 
+	// Persist the init group's label for use in the map anchor marker,
+	// keyed by the point coordinate so we avoid showing a stale label
+	// at the wrong position.
+	initGroupLabel: string | null,
+	initGroupPoint: [number, number] | null,
+	setInitGroupLabel: (label: string | null, point: [number, number] | null) => void,
+
 }>()((set) => ({
 	menuOpen: false,
 	setMenuOpen: (open) => set({ menuOpen: open }),
@@ -68,6 +75,11 @@ export const useSessionStore = create<{
 	treeSavedQuery: null,
 	setTreeSavedQuery: (query: string) => set({ treeSavedQuery: query }),
 	clearTreeSavedQuery: () => set({ treeSavedQuery: null }),
+
+	initGroupLabel: null,
+	initGroupPoint: null,
+	setInitGroupLabel: (label: string | null, point: [number, number] | null) =>
+		set({ initGroupLabel: label, initGroupPoint: point }),
 
 	autocompleteActiveIndex: -1,
 	setAutocompleteActiveIndex: (index: number) => set({ autocompleteActiveIndex: index }),
