@@ -473,13 +473,23 @@ export default function SearchResults() {
                     {isLastPage && listHasNextPage && (
                       <li className="flex flex-col gap-2 justify-center">
                         <Clickable
-                        type="button"
-                        add={{ maxResults: String(clampMaxResults((resultsParam || 0) + listPageSize)) }}
-                        onClick={() => {
-                          if (!listIsFetchingNextPage && listHasNextPage) {
-                            listFetchNextPage()
-                          }
-                        }}                         
+                          type="button"
+                          add={{
+                            maxResults: String(
+                              clampMaxResults(
+                                (() => {
+                                  const current = resultsParam || listPageSize
+                                  const increase = Math.min(Math.round(current * 1.5), 100)
+                                  return current + increase
+                                })()
+                              )
+                            ),
+                          }}
+                          onClick={() => {
+                            if (!listIsFetchingNextPage && listHasNextPage) {
+                              listFetchNextPage()
+                            }
+                          }}
                           className={`
                     flex items-center gap-2
                     text-neutral-900
@@ -493,10 +503,10 @@ export default function SearchResults() {
                     transition-colors
                     ${listIsFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
                   `}
-                        >
-                          {listIsFetchingNextPage && <Spinner className="text-white" status="Lastar" />} {listIsFetchingNextPage ? 'Lastar...' : 'Vis meir'}
-                        </Clickable>
-                        
+                          >
+                            {listIsFetchingNextPage && <Spinner className="text-white" status="Lastar" />}{' '}
+                            {listIsFetchingNextPage ? 'Lastar...' : 'Vis meir'}
+                          </Clickable>
                       </li>
                     )}
                   </Fragment>
