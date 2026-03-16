@@ -262,7 +262,7 @@ export default function FacetSection() {
       return hasCount || isFiltered;
     });
 
-  const primaryFacetKeys = ['adm']
+  const primaryFacetKeys = group ? ['sosi'] : ['adm']
   const prioritizedFacetKeys = new Set<string>([
     ...primaryFacetKeys,
     ...facetFilters.map(([key]) => key),
