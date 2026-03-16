@@ -319,9 +319,20 @@ export default function MapExplorer() {
   // Cluster mode
   // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
+  const hasQuery = Boolean(searchParams.get('q'))
+
   const activeMarkerMode = markerMode === 'auto'
-    ? (searchParams.get('q') ? (zoomState < 14 ? 'counts' : 'points') : 'labels')
+    ? (hasQuery ? (zoomState < 14 ? 'counts' : 'points') : 'labels')
     : (markerMode === 'circles' ? 'points' : markerMode)
+
+  // Result markers (from the search query) should only be labeled when:
+  // - marker mode is "labels" (Etikettar), OR
+  // - there is no search query (q) AND marker mode is not "points" (Punkter).
+  //
+  // In all other situations (including "auto" and "counts" with an active q),
+  // the result markers should be rendered without labels.
+  const shouldShowLabelMarkers =
+    markerMode === 'labels' || (!hasQuery && markerMode !== 'points')
 
   const markerResults = useQueries({
     queries: markerCells.map(cell => {
@@ -1157,13 +1168,29 @@ export default function MapExplorer() {
                           )
                         )
                         : (
-                          <Marker
-                            key={`result-${item.fields.uuid[0]}`}
-                            position={[lat, lng]}
-                            icon={new leaflet.DivIcon(icon)}
-                            riseOnHover={true}
-                            eventHandlers={selectDocHandler(item, [lat, lng])}
-                          />
+                          shouldShowLabelMarkers
+                            ? (
+                              <Marker
+                                key={`result-${item.fields.uuid[0]}`}
+                                position={[lat, lng]}
+                                icon={new leaflet.DivIcon(icon)}
+                                riseOnHover={true}
+                                eventHandlers={selectDocHandler(item, [lat, lng])}
+                              />
+                            )
+                            : (
+                              shouldHideUnlabeledActiveAreaMarker ? null : (
+                                <Marker
+                                  key={`result-${item.fields.uuid[0]}`}
+                                  position={[lat, lng]}
+                                  icon={new leaflet.DivIcon(getUnlabeledMarker('black'))}
+                                  riseOnHover={true}
+                                  eventHandlers={selectDocHandler(item, [lat, lng])}
+                                >
+                                  {pointMarkerTooltip}
+                                </Marker>
+                              )
+                            )
                         )
                     }
                   </Fragment>
