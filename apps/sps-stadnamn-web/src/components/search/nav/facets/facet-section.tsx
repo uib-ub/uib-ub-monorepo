@@ -369,7 +369,7 @@ export default function FacetSection() {
   return (
 
 
-    <div className={`flex flex-col divide-y divide-neutral-200 border-b border-neutral-200 w-full ${isMobile ? 'pb-20' : 'pb-0'}`}>
+    <div className={`flex flex-col divide-y divide-neutral-200 border-b border-neutral-200 w-full ${isMobile ? 'pb-36' : 'pb-0'}`}>
       {false && <RadiusFilter />}
 
       {/* Primary facet section: Datasett + primary facets */}
