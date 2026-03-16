@@ -52,7 +52,7 @@ export default function useGroupData(overrideGroupCode?: string | null) {
     }
 
     const {
-        data: processedData,
+        data: rawData,
         error: groupError,
         isLoading: groupLoading,
         isRefetching: groupRefetching,
@@ -66,7 +66,26 @@ export default function useGroupData(overrideGroupCode?: string | null) {
 
     })
 
-
+    // Normalize the shape so existing components can rely on
+    // `groupData.label` and `groupData.coordinates` even if the API
+    // response only exposes these via `fields`/`sources`.
+    const processedData = rawData
+        ? {
+            ...rawData,
+            label:
+                (rawData as any).label
+                ?? (rawData as any).fields?.label?.[0]
+                ?? (rawData as any).fields?.["group.label"]?.[0]
+                ?? undefined,
+            coordinates:
+                (rawData as any).coordinates
+                ?? (Array.isArray((rawData as any).fields?.location?.coordinates)
+                    ? (rawData as any).fields.location.coordinates
+                    : Array.isArray((rawData as any).sources?.[0]?.location?.coordinates)
+                        ? (rawData as any).sources[0].location.coordinates
+                        : undefined),
+        }
+        : null
 
     return {
         groupData: processedData,

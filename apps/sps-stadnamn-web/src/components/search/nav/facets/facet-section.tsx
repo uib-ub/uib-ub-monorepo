@@ -311,7 +311,7 @@ export default function FacetSection() {
                 <Clickable
                   remove={[f.key]}
                   link
-                  className="text-sm text-neutral-700 hover:text-neutral-900 flex-shrink-0 no-underline"
+                  className="btn btn-compact btn-neutral"
                   aria-label={`Tøm filter for ${f.label}`}
                 >
                   Tøm
@@ -319,7 +319,7 @@ export default function FacetSection() {
               )}
               <Clickable
                 link
-                className="text-sm text-neutral-700 hover:text-neutral-900 flex-shrink-0 no-underline"
+                className="btn btn-compact btn-primary"
                 aria-controls={f.key + '-collapsible'}
                 add={{ facet: f.key }}
               >
@@ -378,12 +378,12 @@ export default function FacetSection() {
           <div className="w-full p-3 transition-colors bg-white">
             <div className="flex items-center justify-between gap-3">
               <span className={`text-base`}>Datasett</span>
-              <div className="flex items-center gap-4 flex-shrink-0">
+              <div className="flex items-center gap-2 flex-shrink-0">
               {datasetFilters.length > 0 && (
                   <Clickable
                     remove={['dataset']}
                     link
-                    className="text-sm text-neutral-700 hover:text-neutral-900 flex-shrink-0 no-underline"
+                    className="btn btn-compact btn-neutral"
                     aria-label="Tøm filter for datasett"
                   >
                     Tøm
@@ -391,7 +391,7 @@ export default function FacetSection() {
                 )}
                 <Clickable
                   link
-                  className="text-sm text-neutral-700 hover:text-neutral-900 flex-shrink-0 no-underline"
+                  className="btn btn-compact btn-primary"
                   add={{ facet: facet == 'dataset' ? null : 'dataset' }}
                   aria-label="Legg til filter for datasett"
                 >
