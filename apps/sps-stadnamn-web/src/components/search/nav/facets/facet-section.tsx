@@ -295,7 +295,7 @@ export default function FacetSection() {
           {/* Header row: title + actions (Legg til + Tøm) */}
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="text-base truncate">{f.label}</span>
+              <span className="text-base truncate font-semibold">{f.label}</span>
               {filterDataset == 'all' && (f.datasets?.length || 0) == 1 && f.datasets?.[0] && (
                 <em className="text-neutral-700 text-sm truncate">
                   {datasetTitles[f.datasets?.[0]]}
@@ -306,7 +306,7 @@ export default function FacetSection() {
               ) : null}
             </div>
 
-            <div className="flex items-center gap-4 flex-shrink-0">
+            <div className="flex items-center  gap-2 flex-shrink-0">
             {activeFiltersForFacet.length > 1 && (
                 <Clickable
                   remove={[f.key]}
@@ -319,7 +319,7 @@ export default function FacetSection() {
               )}
               <Clickable
                 link
-                className="btn btn-compact btn-primary"
+                className="btn btn-compact btn-neutral"
                 aria-controls={f.key + '-collapsible'}
                 add={{ facet: f.key }}
               >
@@ -377,7 +377,7 @@ export default function FacetSection() {
         <li>
           <div className="w-full p-3 transition-colors bg-white">
             <div className="flex items-center justify-between gap-3">
-              <span className={`text-base`}>Datasett</span>
+              <span className={`text-base font-semibold`}>Datasett</span>
               <div className="flex items-center gap-2 flex-shrink-0">
               {datasetFilters.length > 0 && (
                   <Clickable
@@ -391,7 +391,7 @@ export default function FacetSection() {
                 )}
                 <Clickable
                   link
-                  className="btn btn-compact btn-primary"
+                  className="btn btn-compact btn-neutral"
                   add={{ facet: facet == 'dataset' ? null : 'dataset' }}
                   aria-label="Legg til filter for datasett"
                 >
@@ -441,7 +441,7 @@ export default function FacetSection() {
           {Array.from({ length: 3 }).map((_, index) => (
             <li key={index}>
               <div className="w-full flex justify-between p-3">
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-wrap gap-2">
                   <div
                     style={{ width: getSkeletonLength(index, 8, 14) + 'rem' }}
                     className="h-6 bg-neutral-900/10 rounded-full animate-pulse"
