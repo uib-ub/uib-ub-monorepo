@@ -46,10 +46,21 @@ export default function AutocompleteDropdown({
     const { rankedHits } = useAutocompleteData(inputState);
     const optionRefs = useRef<Array<HTMLLIElement | null>>([]);
     const optionsCount = rankedHits.length ? 1 + rankedHits.length : 0;
+    const hasMountedRef = useRef(false);
 
     // Open/close autocomplete when input value changes and reset active index.
+    // Skip the initial run so that a pre-filled `q` from the URL does not
+    // automatically open the autocomplete before any user interaction.
     useEffect(() => {
         const trimmed = inputState.trim();
+
+        if (!hasMountedRef.current) {
+            hasMountedRef.current = true;
+            setAutocompleteOpen(false);
+            setActiveIndex(-1);
+            return;
+        }
+
         if (!isTableMode && trimmed) {
             setAutocompleteOpen(true);
         } else {
@@ -57,6 +68,21 @@ export default function AutocompleteDropdown({
         }
         setActiveIndex(-1);
     }, [inputState, isTableMode, setAutocompleteOpen, setActiveIndex]);
+
+    // Open autocomplete when the user focuses the input and there is text.
+    useEffect(() => {
+        const el = inputRef.current;
+        if (!el) return;
+
+        const handleFocus = () => {
+            if (!isTableMode && inputState.trim()) {
+                setAutocompleteOpen(true);
+            }
+        };
+
+        el.addEventListener('focus', handleFocus);
+        return () => el.removeEventListener('focus', handleFocus);
+    }, [inputRef, inputState, isTableMode, setAutocompleteOpen]);
 
     useEffect(() => {
         if (!autocompleteOpen) return;
