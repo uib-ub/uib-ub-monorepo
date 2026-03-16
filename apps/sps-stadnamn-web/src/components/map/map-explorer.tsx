@@ -1245,7 +1245,7 @@ export default function MapExplorer() {
               >
               </Marker>
             )}
-            { point && initValue && (() => {
+            { point && (() => {
               const initIsActive = sourceView ? !activePoint : (!searchParams.get('group') || searchParams.get('group') === searchParams.get('init'))
               // In sourceView mode, the init marker should be inactive when there
               // is an active marker at a different coordinate than `point`.

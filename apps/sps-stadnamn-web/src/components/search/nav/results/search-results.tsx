@@ -81,6 +81,13 @@ export default function SearchResults() {
       setInitGroupLabel(null, null)
       return
     }
+
+    // If the init group data is still loading, keep any label that might have
+    // been set by a map click so the anchor marker can render immediately.
+    if (initGroupLoading) {
+      return
+    }
+
     const label =
       initGroupData?.label ??
       initGroupData?.fields?.label?.[0] ??
@@ -91,7 +98,7 @@ export default function SearchResults() {
     } else {
       setInitGroupLabel(null, null)
     }
-  }, [init, point, initGroupData?.label, initGroupData?.fields, setInitGroupLabel])
+  }, [init, point, initGroupLoading, initGroupData?.label, initGroupData?.fields, setInitGroupLabel])
 
   const {
     listData,
