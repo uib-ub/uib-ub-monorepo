@@ -134,7 +134,7 @@ function LeftWindow({ children, bottomContent }: { children: React.ReactNode, bo
     return (
         <div className="absolute left-2 top-[4rem] z-[3001] w-[calc(30svw-1rem)] lg:w-[calc(25svw-1rem)] flex flex-col items-start gap-2 max-h-[calc(100svh-4.5rem)]">
             <section className="bg-white shadow-lg flex flex-col w-full rounded-md overflow-y-scroll min-h-0"
-                aria-labelledby="left-title">{children}</section>
+                aria-label="Søkefilter">{children}</section>
             {bottomContent}
         </div>
     )

@@ -345,7 +345,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
             <button
               type="button"
               onClick={() => setLimit(limit + PAGE_SIZE)}
-              className="text-neutral-700 hover:text-neutral-600 decoration-1 underline-offset-2 hover:underline text-xs"
+              className="text-neutral-700 hover:text-neutral-800 decoration-1 underline-offset-2 hover:underline text-xs"
             >
               Vis fleire ({hits.length - limit} til)
             </button>
