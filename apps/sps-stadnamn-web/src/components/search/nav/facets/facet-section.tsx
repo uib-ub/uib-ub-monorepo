@@ -153,6 +153,7 @@ export default function FacetSection() {
   const searchParams = useSearchParams()
   const facet = searchParams.get('facet')
   const datasets = searchParams.getAll('dataset')
+  const group = searchParams.get('group')
   const filterDataset = perspective == 'all' ? datasets.length == 1 ? datasets[0] : 'all' : perspective
   const { facetFilters, datasetFilters, searchQuery } = useSearchQuery()
 
