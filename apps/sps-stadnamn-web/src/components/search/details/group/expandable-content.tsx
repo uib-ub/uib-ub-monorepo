@@ -27,12 +27,7 @@ export const ExpandableContent = ({
     const plain = typeof html === 'string' ? html.replace(/<[^>]*>/g, '') : ''
     const isLong = (plain || '').length > 300
     const isExpanded = forceExpanded !== undefined ? forceExpanded : expanded
-    const clampStyle = isExpanded || !isLong ? {} : {
-        display: '-webkit-box',
-        WebkitLineClamp: String(clampLines),
-        WebkitBoxOrient: 'vertical' as const,
-        overflow: 'hidden'
-    }
+
     if (!html && !text) return null;
     const searchParams = useSearchParams()
     const sourceView = searchParams.get('sourceView') === 'on'
@@ -41,7 +36,7 @@ export const ExpandableContent = ({
 
     return (
         <>
-            <span style={clampStyle}>
+            <span>
                 {!sourceView && leading}
                 {processedHtml || text}
             </span>
