@@ -177,8 +177,40 @@ export function getClusterMarker(docCount: number, width: number, height: number
 }
 
 
-export function getUnlabeledMarker(color: string, selected?: boolean) {
-  const sizeAdjustment = selected ? 1.5 : 1;
+type UnlabeledMarkerOptions = {
+  selected?: boolean
+  /** Draws a 2:1 ellipse ring behind the marker (used for active point). */
+  activeOval?: boolean
+}
+
+export function getUnlabeledMarker(color: string, selectedOrOptions?: boolean | UnlabeledMarkerOptions) {
+  const options: UnlabeledMarkerOptions =
+    typeof selectedOrOptions === 'boolean' ? { selected: selectedOrOptions } : (selectedOrOptions ?? {})
+
+  const sizeAdjustment = options.selected ? 1.5 : 1
+
+  // Active variant: define explicit size/anchor so the oval can be placed at the map point (the pin tip).
+  if (options.activeOval) {
+    const height = 32 * sizeAdjustment
+    // Pin SVG uses viewBox 13.229166 x 21.695834
+    const width = Math.round(height * (13.229166 / 21.695834))
+    const anchorX = Math.round(width / 2)
+    const anchorY = height
+
+    return {
+      className: '',
+      iconSize: [width, height],
+      iconAnchor: [anchorX, anchorY],
+      html: `<div role="button" tabindex="0" style="position: relative; width: ${width}px; height: ${height}px;">
+                <svg aria-hidden="true" width="20" height="10" viewBox="0 0 20 10"
+                  style="position:absolute; left:${anchorX}px; top:${anchorY}px; transform: translate(-50%, -50%); pointer-events:none; overflow: visible;">
+                  <ellipse cx="10" cy="5" rx="9" ry="4" fill="none" stroke="#0061ab" stroke-width="3" />
+                </svg>
+                ${buildMarker(color, `position:absolute;left:50%;bottom:0;height:${height}px;transform:translateX(-50%);`)}
+              </div>`
+    }
+  }
+
   return {
     className: '',
     html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: ${32 * sizeAdjustment}px;">
