@@ -22,7 +22,7 @@ export default function GroupedResultsToggle() {
     const center = searchParams.get('center')
     const zoom = searchParams.get('zoom')
     const q = searchParams.get('q')
-
+    const point = searchParams.get('point')
     // Track previous mode so we only scroll when it actually changes
     const previousNoGroupingRef = useRef(sourceView)
 
@@ -65,8 +65,8 @@ export default function GroupedResultsToggle() {
 
     return (
         <div className="flex items-center gap-2 text-sm text-neutral-900">
-            { sourceView ? <Clickable className="flex items-center gap-2" only={{ q, center, zoom, init, group: null, maxResults }}>
-            <PiCaretLeftBold aria-hidden="true" className="text-primary-700"/>{group ? 'Gruppe' : 'Gruppert søk'}
+            { sourceView ? <Clickable className="flex items-center gap-2" only={{ q, center, zoom, group: null, maxResults, init, point}}>
+            <PiCaretLeftBold aria-hidden="true" className="text-primary-700"/>{(group && group == init) ? 'Gruppe' : 'Gruppert søk'}
             
             </Clickable>
             :
