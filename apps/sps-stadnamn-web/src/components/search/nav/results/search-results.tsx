@@ -28,7 +28,7 @@ import ResultItemSkeleton, { GroupInfoSkeleton } from "../../details/shared/grou
 
 
 export default function SearchResults() {
-  const { searchError, groupTotalHits, noLocationGroupCount } = useSearchData()
+  const { searchError, groupTotalHits, noGeoGroupCount } = useSearchData()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
   const { activeGroupValue } = useGroup()
   const searchParams = useSearchParams()
@@ -57,7 +57,7 @@ export default function SearchResults() {
   const router = useRouter()
   const coordinateInfo = searchParams.get('coordinateInfo') == 'on' && !sourceView
   const labelFilter = searchParams.get('labelFilter') === 'on'
-  const noLocation = searchParams.get('noLocation') === 'on'
+  const noGeo = searchParams.get('noGeo') === 'on'
   const [playingPreviewId, setPlayingPreviewId] = useState<string | null>(null)
   const audioPreviewRef = useRef<HTMLAudioElement | null>(null)
 
@@ -186,9 +186,9 @@ export default function SearchResults() {
     !sourceView &&
     !coordinateInfo &&
     !labelFilter &&
-    !!noLocationGroupCount &&
-    noLocationGroupCount > 0 &&
-    (noLocation || allVisibleHaveLocation);
+    !!noGeoGroupCount &&
+    noGeoGroupCount > 0 &&
+    (noGeo || allVisibleHaveLocation);
 
   // Derived: should "Fleire namnegrupper" and the list of other groups be visible?
   // For init on desktop, this is controlled solely by resultsParam (>1 means expanded).
@@ -421,7 +421,7 @@ export default function SearchResults() {
           {/* Toolbar items share the same flex row as the chip so they wrap together. */}
           {searchParams.get('q') && <SearchQueryDisplay
             showNoLocationToggle={showNoLocationToggle}
-            noLocationGroupCount={noLocationGroupCount ?? 0}
+            noGeoGroupCount={noGeoGroupCount ?? 0}
           />}
         </div>
       )) : null}

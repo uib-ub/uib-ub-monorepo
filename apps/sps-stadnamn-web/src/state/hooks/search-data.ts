@@ -53,10 +53,10 @@ export default function useSearchData() {
         data?.aggregations?.groups?.unique_group_ids?.value ??
         data?.aggregations?.groups?.value
 
-    const noLocationCount =
+    const noGeoCount =
         data?.aggregations?.no_location?.doc_count ?? null
 
-    const noLocationGroupCount =
+    const noGeoGroupCount =
         data?.aggregations?.no_location_groups?.groups?.value ?? null
 
     const rawTotalHits = data?.hits?.total || null
@@ -78,8 +78,8 @@ export default function useSearchData() {
         totalHits,
         groupTotalHits,
         docTotalHits,
-        noLocationCount,
-        noLocationGroupCount,
+        noGeoCount,
+        noGeoGroupCount,
         searchError: error,
         searchLoading: isLoading,
         searchBounds: data?.limitedBounds || null,

@@ -14,10 +14,10 @@ import { Badge, FacetBadge, TitleBadge } from "@/components/ui/badge"
 
 export default function SearchQueryDisplay({
   showNoLocationToggle = false,
-  noLocationGroupCount = 0,
+  noGeoGroupCount = 0,
 }: {
   showNoLocationToggle?: boolean
-  noLocationGroupCount?: number
+  noGeoGroupCount?: number
 }) {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -33,7 +33,7 @@ export default function SearchQueryDisplay({
   const isSingleWord = searchQ ? /^\p{L}+$/u.test(searchQ) : false
   const isFuzzy = searchParams.get('fuzzy') === 'on'
   const fulltext = searchParams.get('fulltext')
-  const noLocation = searchParams.get('noLocation') === 'on'
+  const noGeo = searchParams.get('noGeo') === 'on'
 
   const initSearchLabel = initGroupData?.label
   const expandedMaxResultsParam = searchParams.get('maxResults') || defaultMaxResultsParam
@@ -87,26 +87,26 @@ export default function SearchQueryDisplay({
           <input
             id="no-location-toggle"
             type="checkbox"
-            checked={noLocation}
+            checked={noGeo}
             onChange={(e) => {
               const checked = e.target.checked
               const newParams = new URLSearchParams(searchParams)
               if (checked) {
-                newParams.set('noLocation', 'on')
+                newParams.set('noGeo', 'on')
               } else {
-                newParams.delete('noLocation')
+                newParams.delete('noGeo')
               }
               router.push(`?${newParams.toString()}`)
             }}
             className="form-checkbox h-4 w-4 accent-accent-700"
           />
           <Label htmlFor="no-location-toggle">
-            Utan koordinatar <TitleBadge count={noLocationGroupCount} className={`${noLocation ? 'bg-neutral-700 text-white p-0.5 px-1 rounded-full' : 'text-white bg-primary-700 p-0.5 px-1 rounded-full'}`} />
+            Utan koordinatar <TitleBadge count={noGeoGroupCount} className={`${noGeo ? 'bg-neutral-700 text-white p-0.5 px-1 rounded-full' : 'text-white bg-primary-700 p-0.5 px-1 rounded-full'}`} />
           </Label>
         </div>
       )}
 
-      {qParam && initHasCoordinates && init && isFuzzy && !noLocation && (
+      {qParam && initHasCoordinates && init && isFuzzy && !noGeo && (
         <div
           className="flex items-center gap-2 ml-auto flex-wrap text-sm"
           role="radiogroup"
