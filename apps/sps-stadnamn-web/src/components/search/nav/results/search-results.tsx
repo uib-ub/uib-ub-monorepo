@@ -400,25 +400,14 @@ export default function SearchResults() {
                 {sourceView ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}
               </span>
 
-              {initGroupData?.label && (
-                <Clickable
-                  add={{ q: initGroupData?.label }}
-                  className="h-9 px-3 rounded-md bg-white border border-neutral-200 flex items-center gap-1 cursor-pointer no-underline max-w-full min-w-0"
-                >
-                  <PiMagnifyingGlass aria-hidden="true" className="flex-shrink-0" />
-                  <span className="ml-1 truncate flex-1 min-w-0">
-                    {initGroupData?.label}
-                  </span>
-                </Clickable>
-              )}
             </>
           )}
 
           {/* Toolbar items share the same flex row as the chip so they wrap together. */}
-          <SearchQueryDisplay
+          {searchParams.get('q') && <SearchQueryDisplay
             showNoLocationToggle={showNoLocationToggle}
             noLocationGroupCount={noLocationGroupCount ?? 0}
-          />
+          />}
         </div>
       )) : null}
 
