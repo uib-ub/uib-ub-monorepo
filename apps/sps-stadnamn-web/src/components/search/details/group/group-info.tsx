@@ -100,7 +100,8 @@ function GroupBottomToolbarMulti({
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const activePointCoords = useActivePoint();
-
+    const init = searchParams.get('init')
+    
     if (!groupData || sourceView || !groupTotal || groupTotal === 1) {
         return null;
     }
@@ -126,8 +127,8 @@ function GroupBottomToolbarMulti({
                     <span className="text-sm text-neutral-700 px-2 whitespace-nowrap">
                         Utan koordinat
                     </span>
-                ) : (
-                    <CoordinateButton
+                ) : 
+                    init ? null : <CoordinateButton
                         isActive={isActivePoint}
                         onClick={() => {
                             mapFunctionRef.current?.flyTo(groupLatLng, 15, {
@@ -148,7 +149,9 @@ function GroupBottomToolbarMulti({
                             activePoint: activePointValue,
                         }}
                     />
-                )}
+
+                }
+                    
 
                 {groupTotal > 0 && (
                     <Clickable
@@ -183,6 +186,8 @@ function GroupBottomToolbarSingle({
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const activePointCoords = useActivePoint();
     const [linkCopied, setLinkCopied] = useState(false);
+    const searchParams = useSearchParams();
+    const init = searchParams.get('init')
 
     if (!groupData || !isSingleSource) {
         return null;
@@ -225,7 +230,7 @@ function GroupBottomToolbarSingle({
                     <span className="basis-full h-0" aria-hidden="true" />
                 )}
                 <div className={`ml-auto flex items-center gap-2 ${isActivePoint ? "mt-1" : ""}`}>
-                    {groupLatLng && (
+                    {groupLatLng && !init && (
                         <CoordinateButton
                             isActive={isActivePoint}
                             add={{ activePoint: `${groupLatLng[0]},${groupLatLng[1]}` }}
