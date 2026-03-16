@@ -1,7 +1,9 @@
 'use client'
+import ClickableIcon from "@/components/ui/clickable/clickable-icon"
+import IconButton from "@/components/ui/icon-button"
 import { GlobalContext } from "@/state/providers/global-provider"
 import { useContext, useState } from "react"
-import { PiCaretDown, PiCaretRight } from "react-icons/pi"
+import { PiCaretDown, PiCaretRight, PiX } from "react-icons/pi"
 
 interface CoordinateTypeInfoProps {
   coordinateType: string
@@ -19,8 +21,8 @@ export default function CoordinateTypeInfo({ coordinateType, className = '' }: C
   if (!coordinateType) return null
   
   return (
-    <div className={`min-w-0 w-full ${className}`}>
-      <button
+    <div className={`min-w-0 w-full`}>
+      <span className="flex"><button
         type="button"
         onClick={() => setExpanded(!expanded)}
         className="flex w-full items-center gap-1 text-left text-sm text-neutral-700 hover:text-neutral-900 transition-colors"
@@ -30,6 +32,7 @@ export default function CoordinateTypeInfo({ coordinateType, className = '' }: C
         </span>
         <span className="text-neutral-900 min-w-0 truncate">{label}</span>
       </button>
+      </span>
       {expanded && definition && (
         <p className="mt-1 ml-4 min-w-0 break-words text-sm text-neutral-800">
           {definition}
