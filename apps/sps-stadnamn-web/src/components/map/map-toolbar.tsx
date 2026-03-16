@@ -154,7 +154,7 @@ export default function MapToolbar() {
                 )}
 
                 
-                {isMobile && (
+                {isMobile && sourceView && (
                     <FilterButton />
                 )}
             </div>
