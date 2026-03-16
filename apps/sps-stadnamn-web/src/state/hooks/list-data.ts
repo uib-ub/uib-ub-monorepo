@@ -15,24 +15,21 @@ export const SUBSEQUENT_PAGE_SIZE = 20;
 const listDataQuery = async ({
     pageParam = 0,
     searchQueryString,
-    initGroupData,
-    initValue,
+    init,
+    groupValue,
     point,
     searchSort,
-    collapsed,
-    includeGroup,
-    includeNoLocation,
+    sourceView,
+    noGeo,
 }: {
     pageParam?: number;
     searchQueryString: string | null;
-    initGroupCode: string | null;
-    initGroupData: Record<string, any> | null;
-    initValue: string | null;
+    init: string | null;
+    groupValue: string | null;
     point: [number, number] | null;
     searchSort: string | null;
-    collapsed: boolean;
-    includeGroup: boolean;
-    includeNoLocation: boolean;
+    sourceView: boolean;
+    noGeo: boolean;
 }) => {
 
     // Determine size and from based on page number
@@ -40,26 +37,21 @@ const listDataQuery = async ({
     const size = isFirstPage ? INITIAL_PAGE_SIZE : SUBSEQUENT_PAGE_SIZE;
     const from = isFirstPage ? 0 : INITIAL_PAGE_SIZE + (pageParam - 1) * SUBSEQUENT_PAGE_SIZE;
 
-    // `location` in Elasticsearch is stored as [lon, lat].
-    // Group data already uses that order, but `point` from the URL is [lat, lon],
-    // so we need to flip it before sending it as `initLocation`.
-    const initLocation =
-        initGroupData?.coordinates ||
-        (point ? [point[1], point[0]] as [number, number] : null)
-    const initLabel = initGroupData?.label || undefined
+    const sortPoint = !groupValue && point ? [point[1], point[0]] as [number, number] : null
+    const exclude = init && !groupValue ? init : null
+    const idField = groupValue ? null : (sourceView ? 'uuid' : 'group.id')
 
     const res = await fetch(`/api/search/list${searchQueryString ? `?${searchQueryString}` : ''}`, {
         method: 'POST',
         body: JSON.stringify({
             size: size,
             from: from,
-            initLocation,
-            initLabel,
+            sortPoint,
             searchSort,
-            collapsed,
-            init: initValue,
-            includeGroup,
-            includeNoLocation,
+            noGeo,
+            exclude,
+            idField,
+            groupValue,
         })
     })
     if (!res.ok) {
@@ -70,8 +62,8 @@ const listDataQuery = async ({
 
     // Calculate distances if initLocation exists
     const hits = data.hits?.hits || [];
-    if (initLocation && initLocation.length === 2) {
-        const [initLon, initLat] = initLocation;
+    if (sortPoint && sortPoint.length === 2) {
+        const [initLon, initLat] = sortPoint;
         hits.forEach((hit: any) => {
             const hitLocation = hit.fields?.location?.[0]?.coordinates;
             if (hitLocation && hitLocation.length === 2) {
@@ -94,25 +86,13 @@ export default function useListData() {
     const initialPage = parseInt(searchParams.get('page') || '1')
     const initialPageRef = useRef(initialPage)
     const { searchQueryString } = useSearchQuery()
-    const initGroupCode = searchParams.get('init')
     const point = usePoint()
-    const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(initGroupCode)
     const searchSort = searchParams.get('searchSort')
-    const collapsed = searchParams.get('sourceView') != 'on'
-    const includeGroup = Boolean(!collapsed && searchParams.get('group'))
-    const includeNoLocation = searchParams.get('noLocation') === 'on'
+    const sourceView = searchParams.get('sourceView') == 'on'
+    const noGeo = searchParams.get('noGeo') === 'on'
     const group = searchParams.get('group')
-
-    // Decode `init` once for the list API body. If it's valid base64, use the
-    // decoded value; otherwise, fall back to the raw value (UUID in source view).
-    let decodedInit: string | null = null
-    if (initGroupCode) {
-        try {
-            decodedInit = base64UrlToString(initGroupCode)
-        } catch {
-            decodedInit = initGroupCode
-        }
-    }
+    const init = searchParams.get('init')
+    const groupValue = group ? base64UrlToString(group) : null
 
     const {
         data,
@@ -124,24 +104,21 @@ export default function useListData() {
         isLoading,
         status
     } = useInfiniteQuery({
-        queryKey: ['listData', searchQueryString, searchSort, collapsed, initGroupLoading, initGroupCode, point, includeNoLocation],
+        queryKey: ['listData', searchQueryString, searchSort, init, group, point, noGeo],
         queryFn: ({ pageParam }: { pageParam: number }) => listDataQuery({
             pageParam,
             searchQueryString: group ? null : searchQueryString,
-            initGroupCode: initGroupCode,
-            initGroupData: initGroupCode ? initGroupData : null,
-            initValue: decodedInit,
+            init,
+            groupValue,
             point,
             searchSort,
-            collapsed,
-            includeGroup,
-            includeNoLocation,
+            sourceView,
+            noGeo
         }),
         //placeholderData: (prevData: any) => prevData,
         initialPageParam: initialPageRef.current - 1,
         getNextPageParam: (lastPage: any) => lastPage.nextCursor,
         refetchOnWindowFocus: false,
-        enabled: !initGroupLoading,
         staleTime: 1000 * 60 * 5, // 5 minutes
     })
 
@@ -155,8 +132,6 @@ export default function useListData() {
         listLoading: isLoading,
         listStatus: status,
         listInitialPage: initialPageRef.current,
-        initGroupData: initGroupData,
-        initGroupLoading: initGroupLoading,
         listPageSize: SUBSEQUENT_PAGE_SIZE,
 
 

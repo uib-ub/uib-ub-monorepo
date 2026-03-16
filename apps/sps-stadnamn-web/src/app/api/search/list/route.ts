@@ -1,22 +1,30 @@
 //export the runtime = 'edge'
 
+import { base64UrlToString } from '@/lib/param-utils';
 import { extractFacets } from '../../_utils/facets';
 import { postQuery } from '../../_utils/post';
 import { getQueryString } from '../../_utils/query-string';
 
 export async function POST(request: Request) {
-  const { size, from, initLocation, collapsed, searchQueryString, searchSort, init, includeGroup, includeNoLocation } = await request.json()
+  const { size, from, 
+          sortPoint,
+          searchSort,
+          groupValue,
+          noGeo,
+          exclude,
+          idField,
+          sourceView,
+  } = await request.json()
   const { termFilters, reservedParams } = extractFacets(request)
   const { highlight, simple_query_string } = getQueryString(reservedParams)
 
-  const sortPreference = searchSort === 'similarity' ? 'similarity' : 'distance'
 
   const baseSort: any[] = []
 
   if (reservedParams.datasetTag == 'base') {
     baseSort.push({ 'group.id': "asc" }, { 'label.keyword': "asc" })
   } else {
-    if (sortPreference === 'similarity') {
+    if (searchSort === 'similarity') {
       // Likskap: 1. score, 2. boost
       if (reservedParams.q) {
         baseSort.push({ _score: "desc" })
@@ -29,10 +37,13 @@ export async function POST(request: Request) {
       })
     } else {
       // Avstand: 1. avstand, 2. boost, 3. score
-      if (initLocation) {
+      if (sortPoint) {
         baseSort.push({
           _geo_distance: {
-            location: initLocation,
+            location: {
+              type: 'Point',
+              coordinates: sortPoint
+            },
             order: "asc"
           }
         })
@@ -55,18 +66,34 @@ export async function POST(request: Request) {
     ...highlight ? { highlight } : {},
     "track_scores": true,
     "fields": ["group.adm1", "group.adm2", "group.id", "adm1", "adm2", "group.label", "uuid", "boost", "label", "location", "iiif", "sosi"],
-    ...(collapsed ? {
+    ...(!sourceView && !groupValue ? {
       "collapse": {
         "field": "group.id",
-        "inner_hits": {
-          "name": "occurences",
-          "size": 1,
-          "_source": false
-        }
       }
     } : {}),
     "sort": baseSort,
     "_source": false
+  }
+
+  if (exclude && idField) {
+    const exclusion: any = {
+      "terms": {
+        [idField as string]: [exclude]
+      }
+    };
+
+    termFilters.push({
+      "bool": {
+        "must_not": exclusion
+      }
+    } as any);
+  }
+  if (noGeo) {
+    termFilters.push({ "bool": { "must_not": { "exists": { "field": "location" } } } });
+  }
+
+  if (groupValue) {
+    termFilters.push({ "term": { "group.id": groupValue } });
   }
 
   // Construct the query part
@@ -102,46 +129,14 @@ export async function POST(request: Request) {
     }
   }
 
-  // Exclude the init from the result list:
-  // - When `collapsed` is true (grouped / namnegrupper), `init` is a group id
-  //   and we omit that entire group from the list.
-  // - When `collapsed` is false (source view / kjeldeoppslag), `init` is a UUID
-  //   and we omit that document from the list.
-  // - When `includeGroup` is true, we keep the group/document even if it matches `init`.
-  if (init && baseQuery?.bool && !includeGroup) {
-    const exclusions: any[] = [];
-
-    if (collapsed) {
-      exclusions.push({ term: { "group.id": init } });
-    } else {
-      exclusions.push({ term: { "uuid": init } });
-    }
-
-    const existingMustNot = baseQuery.bool.must_not
-      ? (Array.isArray(baseQuery.bool.must_not) ? baseQuery.bool.must_not : [baseQuery.bool.must_not])
-      : [];
-    baseQuery.bool.must_not = [...existingMustNot, ...exclusions];
-  }
-
-  // When we have an init location (group with coordinates or a map point)
-  // and the client explicitly asks for items *without* coordinates,
-  // we add a must_not clause so only documents lacking `location` are returned.
-  // By default, we do not filter on `location` at all, so results with and
-  // without coordinates are included together.
-  if (initLocation && baseQuery?.bool && includeNoLocation) {
-    const existingMustNot = baseQuery.bool.must_not
-      ? (Array.isArray(baseQuery.bool.must_not) ? baseQuery.bool.must_not : [baseQuery.bool.must_not])
-      : [];
-    baseQuery.bool.must_not = [
-      ...existingMustNot,
-      { exists: { field: "location" } },
-    ];
-  }
 
   query.query = baseQuery;
 
+  console.log("QUERY", JSON.stringify(query, null, 2));
+
 
   const [data, status] = await postQuery('all', query, "dfs_query_then_fetch")
+  console.log("DATA", JSON.stringify(data, null, 2));
   return Response.json(data, { status: status })
 
 }
