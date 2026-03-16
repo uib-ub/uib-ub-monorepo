@@ -375,7 +375,7 @@ export default function OverlayInterface() {
                                     )}
 
                                     <div id={isMobile ? 'drawer-title' : 'right-title'} className={`text-sm xl:text-lg text-neutral-900 font-sans ${isMobile ? 'w-full flex justify-end' : ''}`}>
-                                        { sourceView && 'Oppslag' || 'Grupper'}
+                                        Treff
                                     </div>
 
                                     {!coordinateInfo && !labelFilter && (
