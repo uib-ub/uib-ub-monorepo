@@ -12,7 +12,7 @@ import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { PiBook, PiBookOpen, PiCaretDownBold, PiCaretLeftBold, PiCaretUp, PiCaretUpBold, PiX } from "react-icons/pi";
-import { RoundIconButton } from "../ui/clickable/round-icon-button";
+import { overlayButtonShadowClass, RoundIconButton } from "../ui/clickable/round-icon-button";
 import MapSettings from "../map/map-settings";
 import { Badge, TitleBadge } from "../ui/badge";
 import Clickable from "../ui/clickable/clickable";
@@ -31,6 +31,7 @@ import WikiAdmFacet from "./nav/facets/wikiAdm-facet";
 import DebugToggle from "./nav/results/debug-toggle";
 import TableOptions from "./table/table-options";
 import TreeWindow from "./nav/tree-window";
+import { twMerge } from "tailwind-merge";;
 
 
 
@@ -59,13 +60,14 @@ function ShowResultsButton() {
     const mode = useMode()
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
     if (snappedPosition == 'bottom') return null
-    return <div className="p-2 fixed bottom-2 left-0 right-0 z-[3001]">
+    return <div className="p-3 fixed bottom-2 left-0 right-0 z-[3001]">
         <Clickable remove={["facet", "options"]}
             // results: integer – minimum is 5 and controls expanded results.
             add={{ maxResults: defaultMaxResultsParam }}
             onClick={() => mode == 'table' ? setSnappedPosition('bottom') : null}
-            className="w-full h-12 btn text-xl relative rounded-full">
-            Vis resultat <Badge className="bg-primary-50 text-neutral-800 font-semibold px-2 absolute right-4" count={totalHits?.value || 0} /></Clickable></div>
+            className={twMerge("w-full h-12 btn text-xl relative rounded-full btn btn-primary", overlayButtonShadowClass)}>
+
+            Vis resultat <Badge className="bg-primary-50 text-primary-800 font-semibold px-2 absolute right-4" count={totalHits?.value || 0} /></Clickable></div>
 
 }
 
@@ -207,6 +209,7 @@ export default function OverlayInterface() {
     const { totalHits, docTotalHits, searchLoading } = useSearchData()
     const { groupData } = useGroupData()
     const sourceView = searchParams.get('sourceView') === 'on'
+    const group = searchParams.get('group')
 
     const drawerRef = useRef<HTMLDivElement>(null)
 
@@ -375,7 +378,7 @@ export default function OverlayInterface() {
                                     )}
 
                                     <div id={isMobile ? 'drawer-title' : 'right-title'} className={`text-sm xl:text-lg text-neutral-900 font-sans ${isMobile ? 'w-full flex justify-end' : ''}`}>
-                                        Treff
+                                        {group ? 'Kjelder' : 'Treff'}
                                     </div>
 
                                     {!coordinateInfo && !labelFilter && (
