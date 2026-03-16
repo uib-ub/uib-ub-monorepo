@@ -149,6 +149,14 @@ export default function SearchResults() {
   // If no valid param is present, show everything that has been loaded.
   const maxVisibleResults = resultsParam > 0 ? resultsParam : Number.POSITIVE_INFINITY;
 
+  // Total number of results that have been loaded from the API so far.
+  const totalLoadedResults = useMemo(() => {
+    if (!listData) return 0;
+    return (listData.pages as any[]).reduce((acc, page: any) => {
+      return acc + (page.data?.length ?? 0);
+    }, 0);
+  }, [listData]);
+
   // Derived: do all currently rendered results have coordinates?
   // We mirror the same maxVisibleResults cut-off as the renderer.
   const allVisibleHaveLocation = useMemo(() => {
@@ -470,7 +478,7 @@ export default function SearchResults() {
                       </li>
                     })}
                     {/* Vis meir button at the end of each page */}
-                    {isLastPage && listHasNextPage && (
+                    {isLastPage && (listHasNextPage || totalLoadedResults > maxVisibleResults) && (
                       <li className="flex flex-col gap-2 justify-center">
                         <Clickable
                           type="button"
