@@ -437,7 +437,7 @@ export default function GroupInfo({
                     
                 </div>}
                 {isInit && (
-                    <div className="absolute right-2 top-3">
+                    <div className="absolute right-3 top-3">
                         <ClickableIcon
                             label="Lukk framheva gruppe"
                             remove={["group", "activePoint", "activeYear", "activeName", "init"]}
@@ -450,7 +450,7 @@ export default function GroupInfo({
                     </div>
                 )}
                 {!isInit && point && typeof distanceMeters === "number" && Number.isFinite(distanceMeters) && (
-                    <DistanceBadge className="absolute right-2 top-3" meters={distanceMeters} />
+                    <DistanceBadge className="absolute right-3 top-3" meters={distanceMeters} />
                 )}
 
                 <div className="flex flex-col gap-1">

@@ -350,7 +350,7 @@ export default function SearchResults() {
                 </span>
                 <span className="text-neutral-800 text-sm">{isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"}</span>
                 </div>
-              <div className="absolute right-2 top-3">
+              <div className="absolute right-3 top-3">
                 <ClickableIcon className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900" label="Fjern startpunkt" remove={['point', 'radius']}>
                   <PiXBold aria-hidden="true" />
                 </ClickableIcon>
