@@ -239,9 +239,6 @@ export default function OverlayInterface() {
 
     const desktopMapButtons = isDesktopMap && sourceView && !options && !facet && !tree ? (
         <div className="flex gap-2">
-            <Clickable className="btn btn-outline btn-sm" add={{ options: 'on' }}>
-                Alle filter
-            </Clickable>
             {facetCount > 1 && (
                 <Clickable
                     className="btn btn-neutral btn-sm"
@@ -250,6 +247,9 @@ export default function OverlayInterface() {
                     Tøm
                 </Clickable>
             )}
+            <Clickable className="btn btn-primary btn-sm" add={{ options: 'on' }}>
+                Alle filter
+            </Clickable>
         </div>
     ) : undefined
 
