@@ -47,6 +47,25 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
 
     if (!hit) return <div className="p-2">Det har oppstått ein feil: Kunne ikkje hente kjelder</div>
 
+    const handleClick = () => {
+        if (notClickable) return
+
+        const coords = hit.fields?.location?.[0]?.coordinates
+        if (coords && mapFunctionRef.current) {
+            const lat = coords[1]
+            const lng = coords[0]
+            panPointIntoView(
+                mapFunctionRef.current,
+                [lat, lng],
+                isMobile,
+                isMobile ? snappedPosition === 'top' : undefined,
+                true
+            )
+        }
+
+        onClick?.()
+    }
+
     return <div  {...rest} className={`w-full h-full aria-expanded:border-b aria-expanded:border-neutral-100 flex items-center group no-underline ${isInit ? 'pb-0' : ''}`}>
 
         <Clickable ref={itemRef}
