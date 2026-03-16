@@ -396,7 +396,16 @@ export default function MapExplorer() {
     const seenGroups = new Set<string>()
 
     buckets.forEach((bucket: any) => {
-      if (zoomState > 15 || activeMarkerMode == 'labels' || activeMarkerMode == 'points' || bucket.doc_count == 1) {
+      const clusterCount = sourceView
+        ? bucket.doc_count
+        : (bucket.group_count?.value ?? bucket.doc_count)
+
+      if (
+        zoomState > 15 ||
+        activeMarkerMode === 'labels' ||
+        activeMarkerMode === 'points' ||
+        clusterCount === 1
+      ) {
 
 
         const [z, x, y] = bucket.key.split('/').map(Number);
@@ -487,7 +496,6 @@ export default function MapExplorer() {
         })
       } else {
         countItems.push(bucket)
-        const clusterCount = sourceView ? bucket.doc_count : (bucket.group_count?.value ?? bucket.doc_count)
         maxDocCount = Math.max(maxDocCount, clusterCount)
         minDocCount = Math.min(minDocCount, clusterCount)
 
