@@ -157,9 +157,10 @@ function GroupBottomToolbarMulti({
                     <Clickable
                         className="btn btn-outline btn-compact rounded-full items-center gap-1 pr-2"
                         add={{
-                            activePoint: activePointValue,
                             sourceView: "on",
                             group: stringToBase64Url(groupData.id),
+                            maxResults: LG_BASE_MAX_RESULTS,
+                            init
                         }}
                     >
                         {groupTotal} oppslag
@@ -452,7 +453,7 @@ export default function GroupInfo({
                         <ClickableIcon
                             label="Lukk framheva gruppe"
                             remove={["group", "activePoint", "activeYear", "activeName", "init"]}
-                            add={{ maxResults: SMALL_BASE_MAX_RESULTS }}
+                            add={{ maxResults: SM_BASE_MAX_RESULTS }}
 
                             className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900"
                         >

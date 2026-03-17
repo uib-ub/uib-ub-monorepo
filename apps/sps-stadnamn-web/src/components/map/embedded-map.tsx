@@ -1,7 +1,7 @@
 'use client'
 import { baseMapLookup } from "@/config/basemap-config";
 import { baseLayerKeys } from "@/config/basemap-config";
-import { defaultMaxResultsParam } from "@/config/max-results";
+import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
 import dynamic from 'next/dynamic';
 import { getUnlabeledMarker } from "./markers";
 import { stringToBase64Url } from "@/lib/param-utils";
@@ -40,10 +40,10 @@ export default function EmbeddedMap({
                 newParams.set('q', source.label);
             }
             newParams.set('point', `${coordinate[0]},${coordinate[1]}`);
-            newParams.set('maxResults', defaultMaxResultsParam);
+            newParams.set('maxResults', String(SM_BASE_MAX_RESULTS));
         } else {
             newParams.set('init', stringToBase64Url(source?.group?.id));
-            newParams.set('maxResults', defaultMaxResultsParam);
+            newParams.set('maxResults', String(SM_BASE_MAX_RESULTS));
             newParams.set('activePoint', `${coordinate[0]},${coordinate[1]}`);
         }
         router.push(`/search?${newParams.toString()}`);

@@ -3,7 +3,7 @@
 
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
-import { defaultMaxResultsParam } from '@/config/max-results'
+import { SM_BASE_MAX_RESULTS } from '@/lib/utils'
 import { stringToBase64Url } from '@/lib/param-utils'
 import EmbeddedMap from '@/components/map/embedded-map'
 
@@ -160,7 +160,7 @@ export default function LegacyChildren({ source }: { source: Record<string, any>
           <ul className="!m-0 !p-0 !list-none space-y-1">
             {groups.map((g) => (
               <li key={g.id} className="flex items-center justify-between gap-2">
-                <Link className="no-underline" href={`/search?init=${encodeURIComponent(stringToBase64Url(g.id))}&maxResults=${defaultMaxResultsParam}`}>
+                <Link className="no-underline" href={`/search?init=${encodeURIComponent(stringToBase64Url(g.id))}&maxResults=${String(SM_BASE_MAX_RESULTS)}`}>
                   {g.label || g.id}
                 </Link>
                 {typeof g.distanceMeters === 'number' && (

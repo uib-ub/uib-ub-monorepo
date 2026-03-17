@@ -1,6 +1,6 @@
 'use client'
 import Clickable from "@/components/ui/clickable/clickable";
-import { defaultMaxResultsParam } from "@/config/max-results";
+import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
 import { useMode } from "@/lib/param-hooks";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -95,7 +95,7 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 onClick={() => setMenuOpen(false)}
                                 aria-current={isMapActive ? 'page' : undefined}
                                 remove={['mode', 'tree', 'activePoint', 'group', 'doc']}
-                                add={{ maxResults: defaultMaxResultsParam, init: searchParams.get('group') }}
+                                add={{ maxResults: SM_BASE_MAX_RESULTS, init: searchParams.get('group') }}
                                 className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
                                 ${isMapActive
                                         ? 'bg-accent-800 text-white font-semibold'

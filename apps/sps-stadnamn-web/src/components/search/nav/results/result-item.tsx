@@ -13,7 +13,7 @@ import { useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useRef } from 'react';
 import { PiX, PiXBold } from 'react-icons/pi';
 import DistanceBadge from '@/components/search/distance-badge';
-import { SMALL_BASE_MAX_RESULTS } from '@/config/max-results';
+import { SM_BASE_MAX_RESULTS } from '@/lib/utils';
 import AdmInfo from '../../shared/adm-info';
 
 export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hit: any, onClick?: () => void, notClickable?: boolean } & Record<string, any>) {
@@ -72,7 +72,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
             notClickable={notClickable}
             onClick={handleClick}
             remove={['doc', 'group', 'activePoint']}
-            add={{ maxResults: SMALL_BASE_MAX_RESULTS, init: sourceView ? hit.fields.uuid[0] : stringToBase64Url(hit.fields["group.id"]?.[0]),
+            add={{ maxResults: SM_BASE_MAX_RESULTS, init: sourceView ? hit.fields.uuid[0] : stringToBase64Url(hit.fields["group.id"]?.[0]),
                 point: hit.fields?.location?.[0]?.coordinates ? `${hit.fields?.location?.[0]?.coordinates[1]},${hit.fields?.location?.[0]?.coordinates[0]}` : null
 
             }}

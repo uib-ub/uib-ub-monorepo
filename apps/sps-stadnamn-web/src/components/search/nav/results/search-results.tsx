@@ -3,7 +3,7 @@ import Spinner from "@/components/svg/Spinner";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { Badge } from "@/components/ui/badge";
-import { clampMaxResults, getClampedMaxResultsFromParam } from "@/config/max-results";
+import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
 import { useGroup, usePoint } from "@/lib/param-hooks";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchQuery } from "@/lib/search-params";
@@ -35,7 +35,7 @@ export default function SearchResults() {
   const init = searchParams.get('init')
   const group = searchParams.get('group')
   const qParam = searchParams.get('q')?.trim()
-  const resultsParam = getClampedMaxResultsFromParam(searchParams.get('maxResults'))
+  const resultsParam = parseInt(searchParams.get('maxResults') || '0')
   const sourceView = searchParams.get('sourceView') === 'on'
   const { groupData } = useGroupData(group)
   const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
@@ -147,7 +147,7 @@ export default function SearchResults() {
 
   // Maximum number of list items to show, driven directly by the maxResults URL param.
   // If no valid param is present, show everything that has been loaded.
-  const maxVisibleResults = resultsParam > 0 ? resultsParam : Number.POSITIVE_INFINITY;
+  const maxVisibleResults = resultsParam > 0 ? resultsParam : SM_BASE_MAX_RESULTS;
 
   // Total number of results that have been loaded from the API so far.
   const totalLoadedResults = useMemo(() => {
@@ -484,13 +484,12 @@ export default function SearchResults() {
                           type="button"
                           add={{
                             maxResults: String(
-                              clampMaxResults(
                                 (() => {
                                   const current = resultsParam || listPageSize
                                   const increase = Math.min(Math.round(current * 1.5), 100)
                                   return current + increase
                                 })()
-                              )
+                              
                             ),
                           }}
                           onClick={() => {

@@ -7,7 +7,7 @@ import ToggleButton from "@/components/ui/toggle-button"
 import { GlobalContext } from "@/state/providers/global-provider"
 import { PiBookOpen, PiCaretLeft, PiCaretLeftBold, PiCaretRightBold, PiSignpost } from "react-icons/pi"
 import Clickable from "@/components/ui/clickable/clickable"
-import { defaultMaxResultsParam } from "@/config/max-results"
+import { SM_BASE_MAX_RESULTS } from "@/lib/utils"
 
 export default function GroupedResultsToggle() {
     const searchParams = useSearchParams()
@@ -70,7 +70,7 @@ export default function GroupedResultsToggle() {
             
             </Clickable>
             :
-<Clickable className="flex items-center gap-2" add={{ sourceView: 'on', maxResults: defaultMaxResultsParam }}>
+<Clickable className="flex items-center gap-2" add={{ sourceView: 'on', maxResults: String(SM_BASE_MAX_RESULTS) }}>
 Avansert søk <PiCaretRightBold aria-hidden="true" className="text-primary-700"/>
 </Clickable>
 

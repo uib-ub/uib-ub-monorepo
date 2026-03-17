@@ -1,6 +1,5 @@
 'use client'
 import { baseMapLookup } from "@/config/basemap-config";
-import { defaultMaxResultsParam } from "@/config/max-results";
 import { useSearchQuery } from "@/lib/search-params";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -10,7 +9,7 @@ import { boundsFromZoomAndCenter, calculateRadius, fitBoundsToGroupSources, getG
 import { useActivePoint, useGroup, usePoint } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { parseTreeParam } from "@/lib/tree-param";
-import { getBnr, getGnr, indexToCode } from "@/lib/utils";
+import { getBnr, getGnr, indexToCode, SM_BASE_MAX_RESULTS } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
 import useGroupData from "@/state/hooks/group-data";
 import useSearchData from "@/state/hooks/search-data";
@@ -699,7 +698,7 @@ export default function MapExplorer() {
         console.log("SELECED", selected)
       }
       else {
-        newQueryParams.set('maxResults', defaultMaxResultsParam)
+        newQueryParams.set('maxResults', String(SM_BASE_MAX_RESULTS))
         newQueryParams.delete('mapSettings')
         //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
         newQueryParams.delete('doc')
@@ -1332,7 +1331,7 @@ export default function MapExplorer() {
                         click: () => {
                           const newParams = new URLSearchParams(searchParams);
                           newParams.set('activePoint', `${centralLat},${centralLng}`);
-                          newParams.set('maxResults', defaultMaxResultsParam);
+                          newParams.set('maxResults', String(SM_BASE_MAX_RESULTS));
                           router.push(`?${newParams.toString()}`);
                         },
                         keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
@@ -1341,7 +1340,7 @@ export default function MapExplorer() {
                             ;(e.originalEvent ?? e).preventDefault()
                             const newParams = new URLSearchParams(searchParams);
                             newParams.set('activePoint', `${centralLat},${centralLng}`);
-                            newParams.set('maxResults', defaultMaxResultsParam);
+                            newParams.set('maxResults', String(SM_BASE_MAX_RESULTS));
                             router.push(`?${newParams.toString()}`);
                           }
                         }
@@ -1504,7 +1503,7 @@ export default function MapExplorer() {
                               click: () => {
                                 const newParams = new URLSearchParams(searchParams);
                                 newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                newParams.set('maxResults', defaultMaxResultsParam);
+                                newParams.set('maxResults', String(SM_BASE_MAX_RESULTS));
                                 router.push(`?${newParams.toString()}`);
                               },
                               keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
@@ -1513,7 +1512,7 @@ export default function MapExplorer() {
                                   ;(e.originalEvent ?? e).preventDefault()
                                   const newParams = new URLSearchParams(searchParams);
                                   newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                  newParams.set('maxResults', defaultMaxResultsParam);
+                                  newParams.set('maxResults', String(SM_BASE_MAX_RESULTS));
                                   router.push(`?${newParams.toString()}`);
                                 }
                               }

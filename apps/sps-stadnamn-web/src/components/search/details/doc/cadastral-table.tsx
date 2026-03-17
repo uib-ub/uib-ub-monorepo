@@ -1,6 +1,6 @@
 'use client'
 import Clickable from '@/components/ui/clickable/clickable'
-import { defaultMaxResultsParam } from '@/config/max-results'
+import { SM_BASE_MAX_RESULTS } from '@/lib/utils'
 import {
   Tooltip,
   TooltipContent,
@@ -241,7 +241,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
             </div>
           </TooltipProvider>
         </div>
-        {parentGroupId && <SubtleLink link className="px-3 py-1" only={{init: stringToBase64Url(parentGroupId), maxResults: defaultMaxResultsParam, center, zoom }}>Vis i stadnamnsøk </SubtleLink>}
+        {parentGroupId && <SubtleLink link className="px-3 py-1" only={{init: stringToBase64Url(parentGroupId), maxResults: String(SM_BASE_MAX_RESULTS), center, zoom }}>Vis i stadnamnsøk </SubtleLink>}
       </div>
     )
   }

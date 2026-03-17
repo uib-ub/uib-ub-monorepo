@@ -9,7 +9,7 @@ import { PiCaretRightBold, PiMagnifyingGlass, PiXBold } from "react-icons/pi"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import Clickable from "@/components/ui/clickable/clickable"
-import { defaultMaxResultsParam } from "@/config/max-results"
+import { SM_BASE_MAX_RESULTS } from "@/lib/utils"
 import { Badge, FacetBadge, TitleBadge } from "@/components/ui/badge"
 
 export default function SearchQueryDisplay({
@@ -34,9 +34,6 @@ export default function SearchQueryDisplay({
   const isFuzzy = searchParams.get('fuzzy') === 'on'
   const fulltext = searchParams.get('fulltext')
   const noGeo = searchParams.get('noGeo') === 'on'
-
-  const initSearchLabel = initGroupData?.label
-  const expandedMaxResultsParam = searchParams.get('maxResults') || defaultMaxResultsParam
 
   return (
     <>
@@ -117,7 +114,7 @@ export default function SearchQueryDisplay({
             isSelected={!searchSort}
             onClick={() => {
               const newParams = new URLSearchParams(searchParams)
-              newParams.set('maxResults', defaultMaxResultsParam)
+              newParams.set('maxResults', String(SM_BASE_MAX_RESULTS))
               newParams.delete('searchSort')
               router.push(`?${newParams.toString()}`)
             }}
@@ -132,7 +129,7 @@ export default function SearchQueryDisplay({
             onClick={() => {
               const newParams = new URLSearchParams(searchParams)
               newParams.set('searchSort', 'similarity')
-              newParams.set('maxResults', defaultMaxResultsParam)
+              newParams.set('maxResults', String(SM_BASE_MAX_RESULTS))
               router.push(`?${newParams.toString()}`)
             }}
             role="radio"

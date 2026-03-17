@@ -8,10 +8,9 @@ import Footer from '../components/layout/footer';
 import Form from "next/form";
 import React from 'react';
 import HomeNavCards from "./home-nav-cards";
-import { fetchStats } from "./api/_utils/stats";
-import { headers } from "next/headers";
+import { fetchStats } from "./api/_utils/stats";  
 import Header from "./header";
-import { defaultMaxResultsParam } from "@/config/max-results";
+import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
 
 export default async function Home() {
   const { iiifStats, datasets, totalHits, groupCount } = await fetchStats()
@@ -52,7 +51,7 @@ export default async function Home() {
       name="q" 
       type="text"
     />
-    <input type="hidden" name="maxResults" value={defaultMaxResultsParam}/>
+    <input type="hidden" name="maxResults" value={SM_BASE_MAX_RESULTS}/>
     <button 
       className="bg-red-700 hover:bg-red-800 text-white rounded-lg h-14 lg:h-12 w-14 lg:w-12 flex items-center justify-center transition-colors duration-200 flex-shrink-0" 
       type="submit" 

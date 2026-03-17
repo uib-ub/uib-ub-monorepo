@@ -22,7 +22,7 @@ import GroupedResultsToggle from "./nav/results/grouped-results-toggle";
 import SearchResults from "./nav/results/search-results";
 
 import { fieldConfig } from "@/config/search-config";
-import { defaultMaxResultsParam } from "@/config/max-results";
+import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
 import Spinner from "../svg/Spinner";
 import ClientFacet from "./nav/facets/client-facet";
 import DatasetFacet from "./nav/facets/dataset-facet";
@@ -63,7 +63,7 @@ function ShowResultsButton() {
     return <div className="p-3 fixed bottom-2 left-0 right-0 z-[3001]">
         <Clickable remove={["facet", "options"]}
             // results: integer – minimum is 5 and controls expanded results.
-            add={{ maxResults: defaultMaxResultsParam }}
+            add={{ maxResults: SM_BASE_MAX_RESULTS }}
             onClick={() => mode == 'table' ? setSnappedPosition('bottom') : null}
             className={twMerge("w-full h-12 btn text-xl relative rounded-full btn btn-primary", overlayButtonShadowClass)}>
 
@@ -364,7 +364,7 @@ export default function OverlayInterface() {
                                     aria-controls="results-panel"
                                     className="flex items-center gap-1 xl:px-1"
                                     // When opening, use default results count. When closing, remove param.
-                                    add={{ maxResults: maxResults ? null : defaultMaxResultsParam }}
+                                    add={{ maxResults: maxResults ? null : String(SM_BASE_MAX_RESULTS) }}
                                     remove={["maxResults", ...(isMobile ? ['options'] : [])]}
                                 >
                                     {!coordinateInfo && !labelFilter && !isMobile && (

@@ -1,6 +1,11 @@
 import { treeSettings } from "@/config/server-config";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+export const SM_BASE_MAX_RESULTS = 3
+export const MD_BASE_MAX_RESULTS = 5
+export const LG_BASE_MAX_RESULTS = 10
+export const XL_BASE_MAX_RESULTS = 20
+
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

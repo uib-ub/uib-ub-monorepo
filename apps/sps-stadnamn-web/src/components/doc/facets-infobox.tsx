@@ -1,6 +1,6 @@
 'use client'
 import { getValueByPath } from "@/lib/utils";
-import { expandedMaxResultsParam } from "@/config/max-results";
+import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { PiMagnifyingGlass } from "react-icons/pi";
@@ -31,7 +31,7 @@ export default function FacetsInfobox({
   const buildSearchUrl = (params: Record<string, string>) => {
     const urlParams = new URLSearchParams();
 
-    urlParams.set('maxResults', expandedMaxResultsParam);
+    urlParams.set('maxResults', String(SM_BASE_MAX_RESULTS));
 
     // Preserve datasetTag if it exists in current URL
     const currentDatasetTag = searchParams.get('datasetTag');

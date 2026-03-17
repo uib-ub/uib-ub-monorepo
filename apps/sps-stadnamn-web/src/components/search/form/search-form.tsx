@@ -1,6 +1,6 @@
 'use client'
 import Menu from '@/app/menu';
-import { defaultMaxResultsParam } from '@/config/max-results';
+import { SM_BASE_MAX_RESULTS } from '@/lib/utils';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
 import { useMode, usePerspective } from '@/lib/param-hooks';
@@ -184,9 +184,9 @@ export default function SearchForm() {
             {selectedGroup && <input type="hidden" name="init" value={selectedGroup} />}
             {/* results: integer – minimum is 5 when present. */}
             {options && <input type="hidden" name="options" value={'on'} />}
-            {searchParams.get('sourceView') && <input type="hidden" name="sourceView" value={'on'} />}
+            {searchParams.get('sourceView') && !group && <input type="hidden" name="sourceView" value={'on'} />}
             {!submittedPoint && !searchParams.get('init') && searchParams.get('point') && <input type="hidden" name="point" value={searchParams.get('point') || ''} />}
-            <input type="hidden" name="maxResults" value={defaultMaxResultsParam} />
+            <input type="hidden" name="maxResults" value={String(SM_BASE_MAX_RESULTS)} />
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
             {searchParams.get('fuzzy') && <input type="hidden" name="fuzzy" value={searchParams.get('fuzzy') || ''} />}
