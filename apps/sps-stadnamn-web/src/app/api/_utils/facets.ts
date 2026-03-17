@@ -32,13 +32,11 @@ export const RESERVED_PARAMS = [
   'coordinateInfo',
   'activeYear',
   'activeName',
-  'radius',
+  'radius', // Not in use yet
   'facetQuery',
   'mode',
   'geotile',
   'sourceView',
-
-  'filterSources',
 
   'init',
   'group',
@@ -49,7 +47,6 @@ export const RESERVED_PARAMS = [
   'debug',
   'debugGroups',
   'includeSuppressed',
-  'locations', // Lokaliteter - tab that enables nested markers
   'searchSort'
 
 ] as const;
