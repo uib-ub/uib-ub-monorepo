@@ -1,4 +1,6 @@
 
+import type { ClientOnlySearchParamKey } from '@/lib/reserved-param-types';
+
 export interface FieldConfigItem {
   label?: string;
   result?: boolean; // Show in result list
@@ -24,6 +26,11 @@ export interface FieldConfigItem {
   specialFacet?: boolean; // Special facet, e. g. adm client facet
   facetOperator?: 'AND' | 'OR'; // How multiple values for this facet are combined (default OR)
 }
+
+type DatasetFieldConfig = Record<string, FieldConfigItem> & {
+  // Prevent accidental config keys that are really client-only search params (e.g. "page", "zoom", "display").
+  [K in ClientOnlySearchParamKey]?: never;
+};
 
 interface FacetConfigItem extends FieldConfigItem {
   key: string;
@@ -80,7 +87,7 @@ const labelDefaults = {
 }
 const required = { uuid, boost, label, dataset } //, resources }
 
-export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
+export const fieldConfig: Record<string, DatasetFieldConfig> = {
 
   core_gnidu: {
     label
@@ -474,6 +481,7 @@ export const baseAllConfig: Record<string, FieldConfigItem> = {
 };
 
 fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
+  console.log("ADDING FACET CONFIG FOR DATASET: ", dataset)
 
   Object.entries(fields).forEach(([key, config]) => {
     if (!config.label) return; // Skip fields without labels

@@ -2,54 +2,7 @@ import { datasetTitles } from "@/config/metadata-config";
 import { baseAllConfig } from "@/config/search-config";
 import { treeSettings } from "@/config/server-config";
 import { base64UrlToString } from "@/lib/param-utils";
-
-export const RESERVED_PARAMS = [
-  'q',
-  'display',
-  'perspective',
-  'datasetTag',
-  'page',
-  'groupPage',
-  'asc',
-  'desc',
-  'fulltext',
-  'fuzzy',
-  'facetSort',
-  'fields',
-  'size',
-  'from',
-  'topLeftLat',
-  'topLeftLng',
-  'bottomRightLat',
-  'bottomRightLng',
-  'doc',
-  'facetSearch',
-  'totalHits',
-  'facets',
-  'zoom',
-  'point',
-  'activePoint',
-  'coordinateInfo',
-  'activeYear',
-  'activeName',
-  'radius', // Not in use yet
-  'facetQuery',
-  'mode',
-  'geotile',
-  'sourceView',
-
-  'init',
-  'group',
-  'options',
-  'maxResults',
-  'mapSettings',
-  'overlaySelector',
-  'debug',
-  'debugGroups',
-  'includeSuppressed',
-  'searchSort'
-
-] as const;
+import { RESERVED_SEARCH_PARAM_KEY_SET } from "@/lib/reserved-param-types";
 
 export function extractFacets(request: Request) {
   const urlParams = new URL(request.url).searchParams;
@@ -77,7 +30,7 @@ export function extractFacets(request: Request) {
 
 
   for (const [key, value] of urlParams.entries()) {
-    if (RESERVED_PARAMS.includes(key as any)) {
+    if (RESERVED_SEARCH_PARAM_KEY_SET.has(key)) {
       reservedParams[key] = value
       if (key == 'datasetTag' && !urlParams.get('dataset')) { // Don't add datasets to the search if dataset is already set
         if (value == 'base') {

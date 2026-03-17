@@ -2,6 +2,7 @@ import { fieldConfig } from '@/config/search-config';
 import { useSearchParams } from 'next/navigation';
 import { usePerspective } from './param-hooks';
 import { base64UrlToString } from './param-utils';
+import { isClientOnlySearchParamKey } from './reserved-param-types';
 
 
 
@@ -15,7 +16,7 @@ import { base64UrlToString } from './param-utils';
 export function useSearchQuery() {
     const searchParams = useSearchParams()
     const perspective = usePerspective()
-    const validFields = ['q', ...Object.keys(fieldConfig[perspective])]
+    const validFields = new Set(Object.keys(fieldConfig[perspective]))
     const facetFilters: [string, string][] = []
     const datasetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
@@ -27,23 +28,20 @@ export function useSearchQuery() {
 
 
     searchParams.forEach((value, key) => {
-        if (validFields.includes(key)) {
-            if (key == 'dataset') {
-                datasetFilters.push([key, value])
-            }
-            /*else if (key == 'datasetTag') {
-                datasetFilters.push([key, value])
-                
-            }*/
-            else if (key != 'q') {
-                searchQuery.append(key, value)
-                facetFilters.push([key, value])
-            }
-            else {
-                searchQuery.append(key, value)
-            }
+        if (key == 'q') {
+            searchQuery.append('q', value)
         }
-        else if (!validFields.includes(key) && (key.startsWith('rawData') || key.startsWith('misc'))) {
+        if (key == 'dataset') {
+            datasetFilters.push([key, value])
+        }
+        else if (isClientOnlySearchParamKey(key)) {
+            return
+        }
+        else if (validFields.has(key)) {
+            searchQuery.append(key, value)
+            
+        }
+        else if ((key.startsWith('rawData') || key.startsWith('misc'))) {
             searchQuery.append(key, value)
             facetFilters.push([key, value])
         } else {
@@ -51,7 +49,7 @@ export function useSearchQuery() {
             const comparisonMatch = key.match(/^(.+)_(gt|gte|lt|lte)$/);
             if (comparisonMatch) {
                 const [, fieldName] = comparisonMatch;
-                if (fieldName != 'boost' && validFields.includes(fieldName)) {
+                if (fieldName != 'boost' && validFields.has(fieldName)) {
                     searchQuery.append(key, value)
                     //facetFilters.push([key, value])
                 }
