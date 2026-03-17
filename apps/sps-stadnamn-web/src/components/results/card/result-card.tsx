@@ -19,7 +19,7 @@ import { PiCaretLeftBold, PiCaretRightBold, PiCheck, PiLinkSimple, PiMapPin, PiM
 import Carousel from "@/components/results/carousel";
 import ResultCardTitle from "@/components/results/card/result-card-title";
 import { TextItemsSection } from "@/components/results/card/text-items-section";
-import CoordinateTypeInfo from "../doc/coordinate-type-info";
+import CoordinateTypeInfo from "@/components/results/card/coordinate-type-info";
 import { ResultCardSkeleton } from "@/components/results/card/card-skeletons";
 import DistanceBadge from "@/components/results/distance-badge";
 
