@@ -44,7 +44,7 @@ function SosiInline({
 
     return (
         <>
-            <span className="text-neutral-400 px-1">|</span>
+            <span className="text-neutral-700 px-1">|</span>
             <span className="inline-flex items-center gap-1 text-sm text-neutral-700">
                 <span>{visibleSosiTypeKeys.map((typeKey) => sosiTypes[typeKey]).join(", ")}</span>
                 {additionalSosiCount > 0 && (
