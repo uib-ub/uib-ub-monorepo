@@ -47,6 +47,7 @@ export default function SearchResults() {
     : (!sourceView ? initValue : null)
   const initHasCoordinates = initGroupData?.fields?.location?.coordinates?.length >= 2
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
+  const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
   const setInitGroupLabel = useSessionStore((s) => s.setInitGroupLabel)
   const { isMobile, mapFunctionRef } = useContext(GlobalContext)
   const point = usePoint()
@@ -55,6 +56,7 @@ export default function SearchResults() {
   const coordinateInfo = searchParams.get('coordinateInfo') == 'on' && !sourceView
   const labelFilter = searchParams.get('labelFilter') === 'on'
   const noGeo = searchParams.get('noGeo') === 'on'
+
 
   // Ensure the map has a label available for the init anchor marker even
   // when init/point come from URL or list interactions (not just map clicks).
@@ -197,8 +199,10 @@ export default function SearchResults() {
                 <span className="text-neutral-800 text-sm">{isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"}</span>
                 </div>
               <div className="absolute right-3 top-3">
-                <ClickableIcon className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900" label="Fjern startpunkt" remove={['point', 'radius']}>
-                  <PiXBold aria-hidden="true" />
+                <ClickableIcon className="p-1 btn btn-outline rounded-full text-neutral-900" label="Fjern startpunkt" remove={['point', 'radius']} onClick={() => {
+                  if (snappedPosition == 'top') setSnappedPosition("bottom");
+                }}>
+                  <PiXBold aria-hidden="true" className="text-xl" />
                 </ClickableIcon>
               </div>
               

@@ -461,7 +461,7 @@ export default function GroupInfo({
                             remove={["group", "activePoint", "activeYear", "activeName", "init"]}
                             add={{ maxResults: SM_BASE_MAX_RESULTS }}
                             onClick={() => {
-                                setSnappedPosition("bottom");
+                                if (snappedPosition == 'top') setSnappedPosition("bottom");
                             }}
 
                             className="p-2 btn btn-outline rounded-full text-neutral-900"
