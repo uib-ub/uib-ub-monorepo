@@ -55,19 +55,6 @@ export default function SearchResults() {
   const coordinateInfo = searchParams.get('coordinateInfo') == 'on' && !sourceView
   const labelFilter = searchParams.get('labelFilter') === 'on'
   const noGeo = searchParams.get('noGeo') === 'on'
-  const [playingPreviewId, setPlayingPreviewId] = useState<string | null>(null)
-  const audioPreviewRef = useRef<HTMLAudioElement | null>(null)
-
-
-
-  useEffect(() => {
-    return () => {
-      if (audioPreviewRef.current) {
-        audioPreviewRef.current.pause()
-        audioPreviewRef.current = null
-      }
-    }
-  }, [])
 
   // Ensure the map has a label available for the init anchor marker even
   // when init/point come from URL or list interactions (not just map clicks).
