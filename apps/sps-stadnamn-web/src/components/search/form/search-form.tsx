@@ -31,6 +31,7 @@ export default function SearchForm() {
     const datasetTag = searchParams.get('datasetTag')
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
     const options = searchParams.get('options')
+    const group = searchParams.get('group')
 
 
     const input = useRef<HTMLInputElement | null>(null)
