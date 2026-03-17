@@ -1,4 +1,5 @@
 import AudioPlayerList from "@/components/audio/audio-player-list";
+import AudioPreviewButtons from "@/components/audio/audio-preview-buttons";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import type { ParamProps } from "@/components/ui/clickable/param-types";
@@ -441,7 +442,7 @@ export default function GroupInfo({
 
 
     return (
-        <div id={id} className={`relative flex min-w-0 flex-col  ${mobilePreview ? 'gap-1 flex-wrap mb-30' : 'gap-3 py-4'}`}>
+        <div id={id} className={`relative flex min-w-0 flex-col  ${mobilePreview ? 'gap-1 flex-wrap pb-8' : 'gap-3 py-4'}`}>
             <div className={`min-w-0 w-full flex flex-col px-3 ${mobilePreview ? 'gap-1 flex-wrap' : 'gap-3'}`}>
                 {datasets && datasets.length == 1 && <div className={`flex items-center gap-2 ${mobilePreview ? 'flex-wrap' : ''}`}>
                     {datasets && datasets.length == 1 && (
@@ -450,15 +451,18 @@ export default function GroupInfo({
                     
                 </div>}
                 {isInit && (
-                    <div className="absolute right-3 top-3">
+                    <div className="absolute right-3 top-3 flex items-center gap-2">
+                        {mobilePreview && Array.isArray(audioItems) && audioItems.length > 0 && (
+                            <AudioPreviewButtons recordings={audioItems} />
+                        )}
                         <ClickableIcon
                             label="Lukk framheva gruppe"
                             remove={["group", "activePoint", "activeYear", "activeName", "init"]}
                             add={{ maxResults: SM_BASE_MAX_RESULTS }}
 
-                            className="h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900"
+                            className="p-2 btn btn-outline rounded-full text-neutral-900"
                         >
-                            <PiXBold aria-hidden="true" className="text-neutral-800" />
+                            <PiXBold aria-hidden="true" className="text-neutral-800 text-lg" />
                         </ClickableIcon>
                     </div>
                 )}
@@ -583,7 +587,7 @@ export default function GroupInfo({
                     <Carousel items={iiifItems} />
                 </>
                 }
-                {Array.isArray(audioItems) && audioItems.length > 0 && (
+                {!mobilePreview && Array.isArray(audioItems) && audioItems.length > 0 && (
                     <AudioPlayerList
                         recordings={audioItems}
                         showArchiveLink
