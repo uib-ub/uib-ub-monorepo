@@ -274,7 +274,7 @@ function GroupBottomToolbarSingle({
                         disabled={!uuidUrl}
                         className="inline-flex items-center justify-center h-8 rounded-full border border-neutral-300 btn btn-outline shrink-0"
                     >
-                        Opne infoside
+                        Detaljar
                     </Clickable>
                 </div>
             </div>

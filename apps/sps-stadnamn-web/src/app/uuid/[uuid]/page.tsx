@@ -3,7 +3,7 @@ import CadastralTable from '@/components/results/doc/cadastral-table'
 import CollapsibleHeading from '@/components/doc/collapsible-heading'
 import ErrorMessage from '@/components/ui/notifications/error-message'
 import Thumbnail from '@/components/image-viewer/thumbnail'
-import CoordinateInfo from '@/components/results/doc/coordinate-info'
+import CoordinateInfo from './coordinate-info'
 import { infoPageRenderers } from '@/config/info-renderers'
 import { datasetPresentation, datasetShortDescriptions, datasetTitles } from '@/config/metadata-config'
 import { facetConfig, fieldConfig } from '@/config/search-config'
@@ -128,7 +128,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
   // TODO: create tabs for info, json, geojson and jsonld
   return (
     <div className="page-info lg:grid lg:grid-cols-[1fr_24rem] lg:gap-12">
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-12">
         {docData?._source?.within && docDataset && <ServerCadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName} />}
         <div>
           <div className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans pb-4"> {datasetTitles[docDataset]}</div>
