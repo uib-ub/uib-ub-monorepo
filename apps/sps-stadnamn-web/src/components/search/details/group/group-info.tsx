@@ -521,7 +521,7 @@ export default function GroupInfo({
                                                     {adm1}
                                                 </Clickable>
                                             )}
-                                            {adm1 && adm2 && <span className="text-neutral-400">/</span>}
+                                            {adm1 && adm2 && <span className="text-neutral-700">/</span>}
                                             {adm2 && (
                                                 <Clickable
                                                     link
@@ -534,7 +534,7 @@ export default function GroupInfo({
                                             )}
                                             {gnr && gardUuid && (
                                                 <>
-                                                    <span className="text-neutral-400">/</span>
+                                                    <span className="text-neutral-700">/</span>
                                                     <Clickable
                                                         link
                                                         className="breadcrumb-link"
@@ -547,7 +547,7 @@ export default function GroupInfo({
                                             )}
                                             {isLeaf && bnr && (
                                                 <>
-                                                    <span className="text-neutral-400">/</span>
+                                                    <span className="text-neutral-700">/</span>
                                                     <Clickable
                                                         link
                                                         className="breadcrumb-link"
