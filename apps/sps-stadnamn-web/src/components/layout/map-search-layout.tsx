@@ -17,20 +17,20 @@ import MapSettings from "../map/map-settings";
 import { Badge, TitleBadge } from "../ui/badge";
 import Clickable from "../ui/clickable/clickable";
 import ClickableIcon from "../ui/clickable/clickable-icon";
-import FacetSection from "./nav/facets/facet-section";
-import GroupedResultsToggle from "./nav/results/grouped-results-toggle";
-import SearchResults from "./nav/results/search-results";
+import FacetSection from "@/components/facets/facet-section";
+import GroupedResultsToggle from "@/components/results/grouped-results-toggle";
+import SearchResults from "@/components/results/search-results";
 
 import { fieldConfig } from "@/config/search-config";
 import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
 import Spinner from "../svg/Spinner";
-import ClientFacet from "./nav/facets/client-facet";
-import DatasetFacet from "./nav/facets/dataset-facet";
-import ServerFacet from "./nav/facets/server-facet";
-import WikiAdmFacet from "./nav/facets/wikiAdm-facet";
-import DebugToggle from "./nav/results/debug-toggle";
-import TableOptions from "./table/table-options";
-import TreeWindow from "./tree/tree-window";
+import ClientFacet from "@/components/facets/client-facet";
+import DatasetFacet from "@/components/facets/dataset-facet";
+import ServerFacet from "@/components/facets/server-facet";
+import WikiAdmFacet from "@/components/facets/wikiAdm-facet";
+import DebugToggle from "@/components/results/debug-toggle";
+import TableOptions from "@/components/table/table-options";
+import TreeWindow from "@/components/tree/tree-window";
 import { twMerge } from "tailwind-merge";;
 
 
@@ -198,7 +198,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     </div>
 }
 
-export default function OverlayInterface() {
+export default function MapSearchLayout() {
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const currentPosition = useSessionStore((s) => s.currentPosition);

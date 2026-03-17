@@ -1,6 +1,6 @@
 'use client'
 
-import AdmInfo from '@/components/search/shared/adm-info';
+import AdmInfo from '@/components/shared/adm-info';
 import { useMode } from '@/lib/param-hooks';
 import { useSearchQuery } from '@/lib/search-params';
 import useAutocompleteData, {

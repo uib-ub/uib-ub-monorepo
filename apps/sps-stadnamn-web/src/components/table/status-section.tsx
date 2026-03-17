@@ -6,8 +6,7 @@ import { GlobalContext } from '@/state/providers/global-provider';
 import { useSearchParams } from 'next/navigation';
 import { useContext } from 'react';
 import { PiInfoFill, PiWarningFill } from 'react-icons/pi';
-import ActiveFilters from './form/active-filters';
-import SortSelector from './sort/sort-selector';
+import SortSelector from '@/components/table/sort-selector';
 
 export default function StatusSection() {
   const { searchBounds, searchLoading, searchError, totalHits } = useSearchData()

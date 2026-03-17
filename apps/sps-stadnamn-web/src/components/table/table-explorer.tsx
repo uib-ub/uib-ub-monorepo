@@ -16,7 +16,7 @@ import { useSessionStore } from "@/state/zustand/session-store"
 import { useSearchParams } from "next/navigation"
 import { Fragment, useContext } from "react"
 import { PiFunnel, PiMapPinFill, PiMapTrifold } from "react-icons/pi"
-import StatusSection from "../status-section"
+import StatusSection from "@/components/table/status-section"
 import { DownloadButton } from "./download-button"
 import SortHeader from "./sort-header"
 

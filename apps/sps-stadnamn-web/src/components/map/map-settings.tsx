@@ -12,7 +12,7 @@ import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiInfoFill, PiMagnify
 import { useSearchParams } from "next/navigation";
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "../ui/clickable/clickable-icon";
-import WarningMessage from "../search/details/group/warning-message";
+import WarningMessage from "@/components/ui/notifications/warning-message";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 

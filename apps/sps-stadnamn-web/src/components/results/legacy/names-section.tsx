@@ -2,11 +2,9 @@
 
 import { Fragment, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { PiInfoBold, PiInfoFill, PiX } from "react-icons/pi";
+import { PiX } from "react-icons/pi";
 import Clickable from "@/components/ui/clickable/clickable";
-import ClickableIcon from "@/components/ui/clickable/clickable-icon";
-import InfoPopover from "@/components/ui/info-popover";
-import WarningMessage from "./warning-message";
+import WarningMessage from "@/components/ui/notifications/warning-message";
 import useGroupData from "@/state/hooks/group-data";
 
 

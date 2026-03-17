@@ -16,12 +16,12 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { PiCaretLeftBold, PiCaretRightBold, PiCheck, PiLinkSimple, PiMapPin, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
-import Carousel from "../../nav/results/carousel";
+import Carousel from "@/components/results/carousel";
 import SourceTitle from "../shared/source-title";
 import { TextTab } from "./text-tab";
 import CoordinateTypeInfo from "../doc/coordinate-type-info";
 import { GroupInfoSkeleton } from "../shared/group-header-skeleton";
-import DistanceBadge from "../../distance-badge";
+import DistanceBadge from "@/components/results/distance-badge";
 
 function SosiInline({
     rawSosi,

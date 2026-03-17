@@ -7,7 +7,7 @@ import { getValueByPath } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PiCaretLeftBold, PiHouseFill, PiX } from "react-icons/pi";
-import DatasetFacet from "../nav/facets/dataset-facet";
+import DatasetFacet from "@/components/facets/dataset-facet";
 import TreeList from "./tree-list";
 import Clickable from "@/components/ui/clickable/clickable";
 import { useSessionStore } from "@/state/zustand/session-store";

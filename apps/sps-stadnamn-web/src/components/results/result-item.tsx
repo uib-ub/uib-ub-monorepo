@@ -12,9 +12,9 @@ import { useSessionStore } from '@/state/zustand/session-store';
 import { useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useRef } from 'react';
 import { PiX, PiXBold } from 'react-icons/pi';
-import DistanceBadge from '@/components/search/distance-badge';
+import DistanceBadge from '@/components/results/distance-badge';
 import { SM_BASE_MAX_RESULTS } from '@/lib/utils';
-import AdmInfo from '../../shared/adm-info';
+import AdmInfo from '@/components/shared/adm-info';
 
 export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hit: any, onClick?: () => void, notClickable?: boolean } & Record<string, any>) {
     const perspective = usePerspective()

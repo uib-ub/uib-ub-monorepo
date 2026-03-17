@@ -1,9 +1,9 @@
 import { fetchDoc } from '@/app/api/_utils/actions'
-import CadastralTable from '@/components/search/details/doc/cadastral-table'
+import CadastralTable from '@/components/results/doc/cadastral-table'
 import CollapsibleHeading from '@/components/doc/collapsible-heading'
-import ErrorMessage from '@/components/error-message'
+import ErrorMessage from '@/components/ui/notifications/error-message'
 import Thumbnail from '@/components/image-viewer/thumbnail'
-import CoordinateInfo from '@/components/search/details/doc/coordinate-info'
+import CoordinateInfo from '@/components/results/doc/coordinate-info'
 import { infoPageRenderers } from '@/config/info-renderers'
 import { datasetPresentation, datasetShortDescriptions, datasetTitles } from '@/config/metadata-config'
 import { facetConfig, fieldConfig } from '@/config/search-config'
@@ -17,7 +17,6 @@ import sanitizeHtml from 'sanitize-html'
 import GroupAside from './group-aside'
 import OriginalData from './original-data'
 import ServerCadastreBreadcrumb from './server-cadastre-breadcrumb'
-import IconButton from '@/components/ui/icon-button'
 
 const normalizeText = (text: string) => text.replace(/\s+/g, ' ').trim()
 

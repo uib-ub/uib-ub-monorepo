@@ -1,7 +1,7 @@
-import SourceLink from '@/components/search/details/group/source-link';
+import SourceLink from '@/components/results/card/source-link';
 import Clickable from '@/components/ui/clickable/clickable';
 import InfoPopover from '@/components/ui/info-popover';
-import LegacyChildren from '@/components/search/details/doc/legacy-children';
+import LegacyChildren from '@/components/results/doc/legacy-children';
 import parse from 'html-react-parser';
 import Link from 'next/link';
 import { Fragment, ReactElement } from 'react';

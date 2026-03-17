@@ -2,29 +2,25 @@
 import Spinner from "@/components/svg/Spinner";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
-import { Badge } from "@/components/ui/badge";
 import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
-import { useGroup, usePoint } from "@/lib/param-hooks";
+import { usePoint } from "@/lib/param-hooks";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchQuery } from "@/lib/search-params";
-import { getSkeletonLength } from "@/lib/utils";
 import useGroupData from "@/state/hooks/group-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Fragment, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiMagnifyingGlass, PiMapPinFill, PiNut, PiPencilSimpleBold, PiPlayFill, PiQuestion, PiStopFill, PiX, PiXBold } from "react-icons/pi";
-import GroupInfo from "../../details/group/group-info";
-import SourceTitle from "../../details/shared/source-title";
-import ActiveFilters from "../../form/active-filters";
+import { useSearchParams } from "next/navigation";
+import { Fragment, useContext, useEffect, useMemo, useRef } from "react";
+import { PiMagnifyingGlass, PiQuestion, PiX, PiXBold } from "react-icons/pi";
+import GroupInfo from "@/components/results/card/group-info";
+import ActiveFilters from "@/components/results/active-filters";
 import ResultItem from "./result-item";
 import SearchQueryDisplay from "./search-query-display";
 import IconButton from "@/components/ui/icon-button";
-import { GroupFilters } from "../../details/group/names-section";
 import useListData from "@/state/hooks/list-data";
-import ResultItemSkeleton, { GroupInfoSkeleton } from "../../details/shared/group-header-skeleton";
+import ResultItemSkeleton, { GroupInfoSkeleton } from "@/components/results/shared/group-header-skeleton";
 
 
 export default function SearchResults() {
@@ -211,11 +207,6 @@ export default function SearchResults() {
 
               
           </div>
-        )
-      }
-      {
-        group && sourceView && groupData && false && (
-          <GroupFilters />
         )
       }
       {init && !group && !coordinateInfo && !labelFilter && (initGroupLoading ? (
