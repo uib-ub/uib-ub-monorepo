@@ -321,6 +321,7 @@ export default function GroupInfo({
     const scrollableContentRef = useRef<HTMLDivElement>(null);
     const { isMobile, sosiVocab } = useContext(GlobalContext);
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
+    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const sourceView = searchParams.get("sourceView") === "on";
     const group = searchParams.get('group');
     const point = searchParams.get('point');
@@ -459,6 +460,9 @@ export default function GroupInfo({
                             label="Lukk framheva gruppe"
                             remove={["group", "activePoint", "activeYear", "activeName", "init"]}
                             add={{ maxResults: SM_BASE_MAX_RESULTS }}
+                            onClick={() => {
+                                setSnappedPosition("bottom");
+                            }}
 
                             className="p-2 btn btn-outline rounded-full text-neutral-900"
                         >
