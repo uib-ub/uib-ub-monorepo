@@ -14,7 +14,7 @@ import { headers } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'
 import { PiBracketsCurlyBold } from 'react-icons/pi'
 import sanitizeHtml from 'sanitize-html'
-import GroupList from './GroupList'
+import GroupAside from './group-aside'
 import OriginalData from './original-data'
 import ServerCadastreBreadcrumb from './server-cadastre-breadcrumb'
 import IconButton from '@/components/ui/icon-button'
@@ -274,7 +274,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
 
 
 
-        <GroupList docData={docData} />
+        <GroupAside docData={docData} />
 
 
 

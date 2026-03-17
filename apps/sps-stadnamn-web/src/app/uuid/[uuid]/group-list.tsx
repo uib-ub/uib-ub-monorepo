@@ -1,6 +1,6 @@
 'use client'
 import Clickable from '@/components/ui/clickable/clickable'
-import { defaultMaxResultsParam } from '@/config/max-results'
+import { MD_BASE_MAX_RESULTS } from '@/lib/utils'
 import { datasetTitles } from '@/config/metadata-config'
 import { defaultResultRenderer, resultRenderers } from '@/config/result-renderers'
 import { stringToBase64Url } from '@/lib/param-utils'
@@ -97,40 +97,6 @@ const getGroupData = async (groupId: string, size: number, currentUuid?: string)
   return { groupedByDataset, total, visibleCount: visibleItems.length }
 }
 
-// Skeleton component for loading state
-const GroupListSkeleton = () => (
-  <aside className="bg-neutral-50 shadow-md !text-neutral-950 px-4 pb-4 pt-0 rounded-md">
-    <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Grupperte stadnamn</h2>
-    <div className="flex flex-col gap-2">
-      {/* Skeleton for dataset groups */}
-      {[1, 2].map((groupIndex) => (
-        <div key={groupIndex} className="mt-2">
-          {/* Dataset title skeleton */}
-          <div className="h-6 bg-neutral-200 rounded animate-pulse mb-2 w-3/4"></div>
-          <ul className="!p-0 !list-none divide-y divide-neutral-200 gap-2">
-            {/* Skeleton for list items */}
-            {[1, 2, 3].map((itemIndex) => (
-              <li key={itemIndex} className="flex flex-grow !p-0 !m-0">
-                <div className="w-full h-full flex items-center gap-2 py-1">
-                  {/* Icon skeleton */}
-                  <div className="w-6 h-6 bg-neutral-200 rounded-full animate-pulse"></div>
-                  {/* Text skeleton */}
-                  <div className="flex-1">
-                    <div className="h-4 bg-neutral-200 rounded animate-pulse mb-1 w-full"></div>
-                    <div className="h-3 bg-neutral-200 rounded animate-pulse w-2/3"></div>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-
-      {/* Show more button skeleton */}
-      <div className="h-10 bg-neutral-200 rounded animate-pulse mt-2"></div>
-    </div>
-  </aside>
-)
 
 export default function GroupList({ docData }: { docData: Record<string, any> }) {
   const [size, setSize] = useState(BATCH_SIZE)
@@ -149,10 +115,7 @@ export default function GroupList({ docData }: { docData: Record<string, any> })
     setSize(1000)
   }
 
-  // Show skeleton while loading
-  if (isLoading && !data) {
-    return <GroupListSkeleton />
-  }
+
 
   // If the document has no group, or the group only contains a single item,
   // don't render an empty or trivial "Namnegruppe" box.
@@ -162,7 +125,7 @@ export default function GroupList({ docData }: { docData: Record<string, any> })
 
   return <aside className="bg-neutral-50 shadow-md !text-neutral-950 px-4 pb-4 pt-0 rounded-md relative">
     <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Namnegruppe</h2>
-    <Clickable link className="no-underline flex absolute top-0 right-0 py-2 px-4 items-center gap-1" href={'/search'} add={{ init: stringToBase64Url(groupId) , maxResults: defaultMaxResultsParam}}><PiMapTrifold aria-hidden="true" />Vis i kartet</Clickable>
+    <Clickable link className="no-underline flex absolute top-0 right-0 py-2 px-4 items-center gap-1" href={'/search'} add={{ init: stringToBase64Url(groupId) , maxResults: MD_BASE_MAX_RESULTS}}><PiMapTrifold aria-hidden="true" />Vis i kartet</Clickable>
     {data && <div className="flex flex-col gap-2">
       {Object.entries(data.groupedByDataset).map(([docDataset, hits]) => {
         const sourceTitle = resultRenderers[docDataset]?.sourceTitle || defaultResultRenderer.sourceTitle
