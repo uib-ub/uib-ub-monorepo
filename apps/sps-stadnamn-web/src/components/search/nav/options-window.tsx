@@ -3,7 +3,7 @@ import ActiveFilters from "../form/active-filters"
 import ClientFacet from "./facets/client-facet"
 import FacetSection from "./facets/facet-section"
 import ServerFacet from "./facets/server-facet"
-import TreeWindow from "./tree-window"
+import TreeWindow from "../tree/tree-window"
 
 
 

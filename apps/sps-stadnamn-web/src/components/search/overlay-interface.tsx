@@ -30,7 +30,7 @@ import ServerFacet from "./nav/facets/server-facet";
 import WikiAdmFacet from "./nav/facets/wikiAdm-facet";
 import DebugToggle from "./nav/results/debug-toggle";
 import TableOptions from "./table/table-options";
-import TreeWindow from "./nav/tree-window";
+import TreeWindow from "./tree/tree-window";
 import { twMerge } from "tailwind-merge";;
 
 
