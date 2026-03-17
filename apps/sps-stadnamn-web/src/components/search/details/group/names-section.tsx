@@ -489,7 +489,7 @@ export const GroupFilters = () => {
                     )}
                     {visibleItems.filter(item => item.type === 'noYear').length > 0 && !activeName && (
                         <div className={visibleYearItems.length > 0 ? 'mt-3' : undefined}>
-                            <div className="text-sm font-medium text-neutral-600 mb-1.5">Namneformer utan år</div>
+                            <div className="text-sm font-medium text-neutral-700 mb-1.5">Namneformer utan år</div>
                             <div className="flex flex-wrap gap-2">
                                 {visibleItems
                                     .filter(item => item.type === 'noYear')
