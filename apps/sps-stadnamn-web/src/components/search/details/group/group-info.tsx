@@ -8,7 +8,7 @@ import { treeSettings } from "@/config/server-config";
 import { useActivePoint, useGroup } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { buildTreeParam } from "@/lib/tree-param";
-import { getBnr, getGnr, getValueByPath, LG_BASE_MAX_RESULTS, SM_BASE_MAX_RESULTS } from "@/lib/utils";
+import { getBnr, getGnr, getValueByPath } from "@/lib/utils";
 import useGroupData from "@/state/hooks/group-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
@@ -163,7 +163,7 @@ function GroupBottomToolbarMulti({
                             init
                         }}
                     >
-                        {groupTotal} oppslag
+                        {groupTotal} kjelder
                         <PiCaretRightBold
                             aria-hidden="true"
                             className="text-primary-700"
