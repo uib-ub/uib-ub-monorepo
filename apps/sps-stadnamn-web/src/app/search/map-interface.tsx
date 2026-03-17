@@ -12,18 +12,18 @@ import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { PiBook, PiBookOpen, PiCaretDownBold, PiCaretLeftBold, PiCaretUp, PiCaretUpBold, PiX } from "react-icons/pi";
-import { overlayButtonShadowClass, RoundIconButton } from "../ui/clickable/round-icon-button";
-import MapSettings from "../map/map-settings";
-import { Badge, TitleBadge } from "../ui/badge";
-import Clickable from "../ui/clickable/clickable";
-import ClickableIcon from "../ui/clickable/clickable-icon";
+import { overlayButtonShadowClass, RoundIconButton } from "@/components/ui/clickable/round-icon-button";
+import MapSettings from "@/components/map/map-settings";
+import { Badge, TitleBadge } from "@/components/ui/badge";
+import Clickable from "@/components/ui/clickable/clickable";
+import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import FacetSection from "@/components/facets/facet-section";
 import GroupedResultsToggle from "@/components/results/grouped-results-toggle";
 import SearchResults from "@/components/results/search-results";
 
 import { fieldConfig } from "@/config/search-config";
 import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
-import Spinner from "../svg/Spinner";
+import Spinner from "@/components/svg/Spinner";
 import ClientFacet from "@/components/facets/client-facet";
 import DatasetFacet from "@/components/facets/dataset-facet";
 import ServerFacet from "@/components/facets/server-facet";
@@ -35,7 +35,7 @@ import { twMerge } from "tailwind-merge";;
 
 
 
-const Drawer = dynamic(() => import("../ui/drawer"), {
+const Drawer = dynamic(() => import("@/components/ui/drawer"), {
     ssr: false
 });
 
@@ -198,7 +198,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     </div>
 }
 
-export default function MapSearchLayout() {
+export default function MapInterface() {
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const currentPosition = useSessionStore((s) => s.currentPosition);
