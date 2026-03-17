@@ -30,7 +30,6 @@ import ResultItemSkeleton, { GroupInfoSkeleton } from "../../details/shared/grou
 export default function SearchResults() {
   const { searchError, groupTotalHits, noGeoGroupCount } = useSearchData()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
-  const { activeGroupValue } = useGroup()
   const searchParams = useSearchParams()
   const init = searchParams.get('init')
   const group = searchParams.get('group')
@@ -47,14 +46,12 @@ export default function SearchResults() {
     ? (initGroupData?.id ?? (!sourceView ? initValue : null))
     : (!sourceView ? initValue : null)
   const initHasCoordinates = initGroupData?.fields?.location?.coordinates?.length >= 2
-  const { groupData: activeGroupData } = useGroupData()
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const setInitGroupLabel = useSessionStore((s) => s.setInitGroupLabel)
-  const { isMobile, sosiVocab, mapFunctionRef } = useContext(GlobalContext)
+  const { isMobile, mapFunctionRef } = useContext(GlobalContext)
   const point = usePoint()
   const { facetFilters, datasetFilters } = useSearchQuery()
   const filterCount = facetFilters.length + datasetFilters.length
-  const router = useRouter()
   const coordinateInfo = searchParams.get('coordinateInfo') == 'on' && !sourceView
   const labelFilter = searchParams.get('labelFilter') === 'on'
   const noGeo = searchParams.get('noGeo') === 'on'
@@ -191,149 +188,6 @@ export default function SearchResults() {
   const showOtherResults = (!init || isMobile || hasOneResult)
     ? true
     : hasMaxResultsParam;
-
-  // On mobile, show a compact summary for the "init" group when pinned,
-  // otherwise fall back to the currently active group.
-  if (false && isMobile && snappedPosition == 'bottom' && !coordinateInfo && !labelFilter && (init || activeGroupValue)) {
-
-    const summaryGroupData = initGroupData
-    if (!summaryGroupData) return null;
-
-    const label = summaryGroupData?.label
-    const datasets: string[] = []
-    const seenDatasets = new Set<string>()
-    const audioItems: any[] = []
-
-    // Collect other labels with priority: source.label > altLabels > attestation labels (if list isn't too long)
-    const mainLabel = label
-
-    // First: Collect source.label values that differ from the main label
-    const sourceLabels = Array.from(new Set(
-      (activeGroupData?.sources || [])
-        .map((src: any) => src.label)
-        .filter((label: string) => label && label !== mainLabel)
-    ))
-
-    // Second: Add altLabels from fields
-    const altLabels = activeGroupData?.fields?.altLabels || []
-
-    // Combine source labels and alt labels first
-    const otherLabels = [...sourceLabels, ...altLabels]
-      .filter(label => label && label !== mainLabel)
-
-    // Third: Add attestation labels only if the list isn't too long already (limit to 5 total)
-    const attestationLabels = (activeGroupData?.sources || []).flatMap((src: any) =>
-      src.attestations?.map((att: any) => att.label) ?? []
-    )
-
-    const uniqueAttestationLabels = Array.from(new Set(attestationLabels))
-      .filter(label => label && label !== mainLabel && !otherLabels.includes(label))
-
-    // Add attestation labels one by one until we reach the limit
-    for (const attestLabel of uniqueAttestationLabels) {
-      if (otherLabels.length < 5) {
-        otherLabels.push(attestLabel)
-      } else {
-        break
-      }
-    }
-
-    // Collect unique sosi place types from all sources and map to vocabulary
-    const sosiTypesRaw = Array.from(new Set(
-      (summaryGroupData?.sources || [])
-        .flatMap((src: any) => {
-          if (!src.sosi) return []
-          return Array.isArray(src.sosi) ? src.sosi : [src.sosi]
-        })
-        .filter((sosi: string) => sosi)
-    )) as string[]
-    const sosiTypes = sosiTypesRaw.map((type: string) => sosiVocab[type]?.label || type)
-
-    summaryGroupData?.sources?.forEach((source: any) => {
-      if (!seenDatasets.has(source.dataset)) {
-        datasets.push(source.dataset)
-        seenDatasets.add(source.dataset)
-      }
-      if (source.recordings) {
-        audioItems.push(source)
-      }
-    })
-
-    const handlePlayAudio = (recording: any) => {
-      // Toggle pause if the same recording is already playing
-      if (audioPreviewRef.current && playingPreviewId === recording.uuid) {
-        if (!audioPreviewRef.current.paused) {
-          audioPreviewRef.current.pause()
-          setPlayingPreviewId(null)
-          return
-        }
-      }
-
-      // Stop any previous preview
-      if (audioPreviewRef.current) {
-        audioPreviewRef.current.pause()
-        audioPreviewRef.current = null
-      }
-
-      const audio = new Audio(`https://iiif.spraksamlingane.no/iiif/audio/hord/${recording.file}`)
-      audioPreviewRef.current = audio
-      setPlayingPreviewId(recording.uuid)
-
-      audio.addEventListener('ended', () => {
-        setPlayingPreviewId((current) => (current === recording.uuid ? null : current))
-      })
-
-      audio.play().catch((error) => {
-        // Ignore AbortError caused by a pause() interrupting play()
-        if ((error as any)?.name === 'AbortError') {
-          return
-        }
-        console.error(error)
-        setPlayingPreviewId((current) => (current === recording.uuid ? null : current))
-      })
-    }
-
-    return <div className="px-2 h-[100vh]">
-      <div className="flex items-center gap-2">
-        <SourceTitle
-          label={label}
-          cadastrePrefix=""
-          mobilePreview={false}
-          additionalLabels={otherLabels}
-        />
-        {audioItems.length > 0 && (
-          <div className="flex gap-1 ml-auto flex-shrink-0 border border-neutral-200 rounded-md p-1 mr-2">
-            {audioItems.map((audioItem, index: number) =>
-              audioItem.recordings.map((recording: any) => (
-                <button
-                  key={"audio-preview-" + recording.uuid}
-                  onClick={() => handlePlayAudio(recording)}
-                  className={`p-1 rounded-md text-neutral-900`}
-                  aria-label={`Lydopptak${audioItems.length > 1 ? ` ${index + 1} av ${audioItems.length}` : ''}${playingPreviewId === recording.uuid ? ' (stoppar)' : ''}`}
-                  aria-pressed={playingPreviewId === recording.uuid}
-                >
-                  {playingPreviewId === recording.uuid ? <PiStopFill className="text-lg" aria-hidden="true" /> : <PiPlayFill className="text-lg" aria-hidden="true" />}
-                </button>
-              ))
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Display name variants and datasets under the title */}
-      {(otherLabels.length > 0 || datasets.length > 0) && (
-        <div className="mt-2 text-sm text-neutral-700">
-          {datasets.length > 0 && otherLabels.length > 0 && <span className="mx-1">|</span>}
-          {otherLabels.length > 0 && (
-            <span>
-              {otherLabels.join(', ')}
-            </span>
-          )}
-        </div>
-      )}
-    </div>
-  }
-
 
 
 
