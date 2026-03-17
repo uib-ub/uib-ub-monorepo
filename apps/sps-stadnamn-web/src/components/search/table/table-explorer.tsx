@@ -1,5 +1,5 @@
 'use client'
-import Pagination from "@/components/results/pagination"
+import Pagination from "./pagination"
 import { TitleBadge } from "@/components/ui/badge"
 import Clickable from "@/components/ui/clickable/clickable"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"

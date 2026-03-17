@@ -2,7 +2,7 @@
 import useSearchData from '@/state/hooks/search-data';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeft, PiCaretRight } from 'react-icons/pi';
-import ClickableIcon from '../ui/clickable/clickable-icon';
+import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 
 export default function Pagination() {
   const router = useRouter()
