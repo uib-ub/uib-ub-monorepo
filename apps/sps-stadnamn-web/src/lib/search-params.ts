@@ -20,7 +20,6 @@ export function useSearchQuery() {
     const datasetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
     const size = parseInt(searchParams.get('size') || "20")
-    const datasetTag = searchParams.get('datasetTag')
     const group = searchParams.get('group')
     const sourceView = searchParams.get('sourceView')
 
