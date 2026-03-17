@@ -6,11 +6,8 @@ import { ExpandableContent } from "./expandable-content";
 import SourceLink from "./source-link";
 import Clickable from "@/components/ui/clickable/clickable";
 
-interface TextTabProps {
-    textItems: any[];
-}
 
-export const TextTab = ({ textItems }: TextTabProps) => {
+export const TextItemsSection = ({ textItems }: { textItems: any[] }) => {
     const [showAll, setShowAll] = useState(false);
     const [firstItemExpanded, setFirstItemExpanded] = useState(false);
 

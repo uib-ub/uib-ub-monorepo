@@ -17,10 +17,10 @@ import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { PiCaretLeftBold, PiCaretRightBold, PiCheck, PiLinkSimple, PiMapPin, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
 import Carousel from "@/components/results/carousel";
-import SourceTitle from "../shared/source-title";
-import { TextTab } from "./text-tab";
+import ResultCardTitle from "@/components/results/card/result-card-title";
+import { TextItemsSection } from "@/components/results/card/text-items-section";
 import CoordinateTypeInfo from "../doc/coordinate-type-info";
-import { GroupInfoSkeleton } from "../shared/group-header-skeleton";
+import { ResultCardSkeleton } from "@/components/results/card/card-skeletons";
 import DistanceBadge from "@/components/results/distance-badge";
 
 function SosiInline({
@@ -299,7 +299,7 @@ function GroupBottomToolbarSingle({
     );
 }
 
-export default function GroupInfo({
+export default function ResultCard({
     id,
     overrideGroupCode,
     hasIiif,
@@ -419,7 +419,7 @@ export default function GroupInfo({
         : null;
 
     if (groupLoading) {
-        return <GroupInfoSkeleton hasIiif={hasIiif} />;
+        return <ResultCardSkeleton hasIiif={hasIiif} />;
     }
 
     if (!sourceView && !groupData?.["id"]) {
@@ -476,7 +476,7 @@ export default function GroupInfo({
 
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-3 flex-wrap">
-                        <SourceTitle
+                        <ResultCardTitle
                             label={label}
                             cadastrePrefix=""
                             mobilePreview={mobilePreview}
@@ -598,7 +598,7 @@ export default function GroupInfo({
                     />
                 )}
                 
-                {textItems?.length > 0 && <TextTab textItems={textItems} />}
+                {textItems?.length > 0 && <TextItemsSection textItems={textItems} />}
 
             
 

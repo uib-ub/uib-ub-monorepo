@@ -13,7 +13,7 @@ export function ResultItemSkeleton() {
     );
 }
 
-export function GroupInfoSkeleton({ hasIiif }: { hasIiif?: boolean }) {
+export function ResultCardSkeleton({ hasIiif }: { hasIiif?: boolean }) {
     return (
         <div className="relative flex min-w-0 flex-col gap-3 pt-2 pb-4">
             <div className="min-w-0 w-full flex flex-col px-3 gap-3">

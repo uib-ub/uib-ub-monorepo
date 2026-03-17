@@ -14,14 +14,13 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useContext, useEffect, useMemo, useRef } from "react";
 import { PiMagnifyingGlass, PiQuestion, PiX, PiXBold } from "react-icons/pi";
-import GroupInfo from "@/components/results/card/group-info";
+import ResultCard from "@/components/results/card/result-card";
 import ActiveFilters from "@/components/results/active-filters";
 import ResultItem from "./result-item";
 import SearchQueryDisplay from "./search-query-display";
 import IconButton from "@/components/ui/icon-button";
 import useListData from "@/state/hooks/list-data";
-import ResultItemSkeleton, { GroupInfoSkeleton } from "@/components/results/shared/group-header-skeleton";
-
+import { ResultCardSkeleton, ResultItemSkeleton } from "@/components/results/card/card-skeletons";
 
 export default function SearchResults() {
   const { searchError, groupTotalHits, noGeoGroupCount } = useSearchData()
@@ -211,11 +210,11 @@ export default function SearchResults() {
       }
       {init && !group && !coordinateInfo && !labelFilter && (initGroupLoading ? (
         <div className="relative">
-          <GroupInfoSkeleton hasIiif={initGroupData?.iiifItems?.length > 0} />
+          <ResultCardSkeleton hasIiif={initGroupData?.iiifItems?.length > 0} />
         </div>
       ) : initGroupData && (
         <div className="relative" key={`init-${initValue}`}>
-          <GroupInfo id={`group-info-${init}`} overrideGroupCode={init || undefined} hasIiif={initGroupData?.iiifItems?.length > 0} mobilePreview={mobilePreview} />
+          <ResultCard id={`result-card-${init}`} overrideGroupCode={init || undefined} hasIiif={initGroupData?.iiifItems?.length > 0} mobilePreview={mobilePreview} />
         </div>
       ))}
 
@@ -268,7 +267,7 @@ export default function SearchResults() {
             {(listLoading && listInitialPage === 1) ? Array.from({ length: listInitialPage === 1 ? 3 : 20  }).map((_, i) => (
               <li key={`skeleton-${i}`} className="relative">
                 {(isMobile || !init || group)
-                  ? <GroupInfoSkeleton />
+                  ? <ResultCardSkeleton />
                   : <ResultItemSkeleton />
                 }
               </li>
@@ -297,8 +296,8 @@ export default function SearchResults() {
                       const hasIiif = !!item.fields['iiif']?.[0]
                       return <li className={`relative`} key={domId}>
                         {(isMobile || !init || group) ?
-                          <GroupInfo
-                            id={`group-info-${domId}`}
+                          <ResultCard
+                            id={`result-card-${domId}`}
                             overrideGroupCode={groupCode}
                             hasIiif={hasIiif}
                             distanceMeters={item.distance}

@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-type SourceTitleProps = {
+type ResultCardTitleProps = {
     label: string;
     cadastrePrefix: string;
     mobilePreview: boolean | undefined;
@@ -14,12 +14,12 @@ type SourceTitleProps = {
     sosiClassName?: string;
 };
 
-export default function SourceTitle({
+export default function ResultCardTitle({
     label,
     cadastrePrefix,
     mobilePreview,
     additionalLabels,
-}: SourceTitleProps) {
+}: ResultCardTitleProps) {
     const trimmedLabel = (label || "").trim() || "Utan namn";
     const safeAdditionalLabels = Array.isArray(additionalLabels)
         ? (additionalLabels.filter(Boolean) as string[])
