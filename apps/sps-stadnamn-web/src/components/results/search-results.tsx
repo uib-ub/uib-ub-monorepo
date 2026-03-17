@@ -48,8 +48,6 @@ export default function SearchResults() {
   const point = usePoint()
   const { facetFilters, datasetFilters } = useSearchQuery()
   const filterCount = facetFilters.length + datasetFilters.length
-  const coordinateInfo = searchParams.get('coordinateInfo') == 'on' && !sourceView
-  const labelFilter = searchParams.get('labelFilter') === 'on'
   const noGeo = searchParams.get('noGeo') === 'on'
 
 
@@ -179,7 +177,7 @@ export default function SearchResults() {
   return (
     <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
       {
-        (point && !init) && !coordinateInfo && !labelFilter && (
+        (point && !init) && (
           <div className="p-3 flex flex-col gap-2 relative">
             <div className="flex items-center gap-2">
               <IconButton label="Zoom til startpunktet" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" /></IconButton>
@@ -208,7 +206,7 @@ export default function SearchResults() {
           </div>
         )
       }
-      {init && !group && !coordinateInfo && !labelFilter && (initGroupLoading ? (
+      {init && !group && (initGroupLoading ? (
         <div className="relative">
           <ResultCardSkeleton hasIiif={initGroupData?.iiifItems?.length > 0} />
         </div>
@@ -356,7 +354,7 @@ export default function SearchResults() {
       )}
 
 
-      {( isMobile || searchError || listError || hasNoResults || hasNoAdditionalResults) && (!labelFilter) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
+      {( isMobile || searchError || listError || hasNoResults || hasNoAdditionalResults) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
         {filterCount > 0 && showOtherResults && <div className="mx-2 mb-4">
 
           <ActiveFilters /></div>}

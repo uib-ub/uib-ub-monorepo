@@ -77,7 +77,6 @@ export default function MapExplorer() {
   const hasGroupParam = Boolean(searchParams.get('group'))
   const point = usePoint()
   const activePoint = useActivePoint()
-  const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
   const urlRadius = searchParams.get('radius') ? parseInt(searchParams.get('radius')!) : null
   const displayRadius = useSessionStore((s) => s.displayRadius)
   const displayPoint = useSessionStore((s) => s.displayPoint)
@@ -338,9 +337,9 @@ export default function MapExplorer() {
       const key = `${cell.precision}/${cell.x}/${cell.y}`
 
       return ({
-        queryKey: ['markerResults', key, searchQueryString, showDebugGroups, tree, coordinateInfo],
-        placeHolder: (prevData: any) => coordinateInfo ? null : prevData,
-        enabled: !coordinateInfo && !showDebugGroups && (!tree || tree.split('_').length < 4),
+        queryKey: ['markerResults', key, searchQueryString, showDebugGroups, tree],
+        placeHolder: (prevData: any) => prevData,
+        enabled: !showDebugGroups && (!tree || tree.split('_').length < 4),
         queryFn: async () => {
           // In tree mode, marker queries must be driven solely by the `tree`
           // param (dataset/adm) and not by the regular search query.
@@ -708,7 +707,6 @@ export default function MapExplorer() {
         newQueryParams.delete('activePoint')
         newQueryParams.delete('activeYear')
         newQueryParams.delete('activeName')
-        newQueryParams.delete('labelFilter')
         newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
 
         // Immediately cache label + init + point for the anchor marker so we
@@ -1602,7 +1600,7 @@ export default function MapExplorer() {
                 }
 
                 // Default mode: show lines and dots for the current group (falls back to init when no group param is set)
-                if (!coordinateInfo || !groupData?.sources) return null;
+                if (!groupData?.sources) return null;
 
                 // Find the first source with coordinates - this is the central coordinate
                 const centralSource = groupData.sources.find((source: Record<string, any>) =>
@@ -1720,7 +1718,7 @@ export default function MapExplorer() {
             {debug && <DynamicDebugLayers mapInstance={mapInstance} Polygon={Polygon} Rectangle={Rectangle} CircleMarker={CircleMarker} geotileKeyToBounds={geotileKeyToBounds} markerCells={markerCells} />}
 
             {(() => {
-              if (!areaSource?.area || coordinateInfo) return null;
+              if (!areaSource?.area) return null;
 
               try {
                 const geoJSON = wkt.parse(areaSource.area);

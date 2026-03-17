@@ -395,15 +395,6 @@ export default function MapInterface() {
                                     )}
                                 </Clickable>
 
-                                {coordinateInfo && (
-                                    <ClickableIcon
-                                        label="Lukk"
-                                        className="ml-auto mr-2 p-2"
-                                        remove={["coordinateInfo", "activePoint"]}
-                                    >
-                                        <PiX className="text-black text-2xl" />
-                                    </ClickableIcon>
-                                )}
 
                                 {(
                                     <div className="ml-auto">

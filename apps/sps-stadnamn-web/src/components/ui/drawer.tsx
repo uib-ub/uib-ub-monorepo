@@ -55,15 +55,13 @@ export default function Drawer({
     const searchParams = useSearchParams()
     const pathname = usePathname()
     const isIiifRoute = pathname?.startsWith('/iiif')
-    const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
-    const labelFilter = searchParams.get('labelFilter') === 'on'
     const options = searchParams.get('options') == 'on'
     const mapSettings = searchParams.get('mapSettings') == 'on'
     const { facetFilters, datasetFilters } = useSearchQuery()
     const sourceView = searchParams.get('sourceView') === 'on'
     const mode = useMode()
 
-    const showFilterButton = (sourceView || mode == 'table') && !isIiifRoute && !options && !mapSettings && !coordinateInfo && !labelFilter && snappedPosition != 'bottom'
+    const showFilterButton = (sourceView || mode == 'table') && !isIiifRoute && !options && !mapSettings && snappedPosition != 'bottom'
 
 
 
