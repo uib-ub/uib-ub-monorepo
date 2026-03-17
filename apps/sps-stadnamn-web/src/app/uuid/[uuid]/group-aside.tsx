@@ -98,7 +98,7 @@ const getGroupData = async (groupId: string, size: number, currentUuid?: string)
 }
 
 
-export default function GroupList({ docData }: { docData: Record<string, any> }) {
+export default function GroupAside({ docData }: { docData: Record<string, any> }) {
   const [size, setSize] = useState(BATCH_SIZE)
   const groupId: string | undefined = docData?._source?.group?.id
   const currentUuid: string | undefined = docData?._source?.uuid
