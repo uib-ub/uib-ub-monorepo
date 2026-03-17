@@ -21,7 +21,6 @@ import { TextTab } from "./text-tab";
 import CoordinateTypeInfo from "../doc/coordinate-type-info";
 import { GroupInfoSkeleton } from "../shared/group-header-skeleton";
 import DistanceBadge from "../../distance-badge";
-import { defaultMaxResultsParam, SMALL_BASE_MAX_RESULTS } from "@/config/max-results";
 
 function SosiInline({
     rawSosi,
