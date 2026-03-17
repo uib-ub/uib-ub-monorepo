@@ -303,11 +303,13 @@ export default function GroupInfo({
     overrideGroupCode,
     hasIiif,
     distanceMeters,
+    mobilePreview,
 }: {
     id: string;
     overrideGroupCode?: string;
     hasIiif?: boolean;
     distanceMeters?: number | null;
+    mobilePreview?: boolean | undefined;
 }) {
     const { groupData, groupLoading, groupTotal } = useGroupData(overrideGroupCode);
     const iiifItems = groupData?.iiifItems;
@@ -321,7 +323,7 @@ export default function GroupInfo({
     const sourceView = searchParams.get("sourceView") === "on";
     const group = searchParams.get('group');
     const point = searchParams.get('point');
-    const mobilePreview = Boolean(snappedPosition === "bottom" && initValue && isMobile);
+    
 
     const toText = (value: unknown): string => {
         if (Array.isArray(value)) return value.filter(Boolean).join(" | ");
@@ -439,7 +441,7 @@ export default function GroupInfo({
 
 
     return (
-        <div id={id} className={`relative flex min-w-0 flex-col  ${mobilePreview ? 'gap-1 flex-wrap' : 'gap-3 py-4'}`}>
+        <div id={id} className={`relative flex min-w-0 flex-col  ${mobilePreview ? 'gap-1 flex-wrap mb-30' : 'gap-3 py-4'}`}>
             <div className={`min-w-0 w-full flex flex-col px-3 ${mobilePreview ? 'gap-1 flex-wrap' : 'gap-3'}`}>
                 {datasets && datasets.length == 1 && <div className={`flex items-center gap-2 ${mobilePreview ? 'flex-wrap' : ''}`}>
                     {datasets && datasets.length == 1 && (
@@ -629,8 +631,10 @@ export default function GroupInfo({
 
             </div>}
 
-            <GroupBottomToolbarMulti groupData={groupData} groupTotal={groupTotal} />
-            <GroupBottomToolbarSingle groupData={groupData} isSingleSource={hasSingleSource} />
+            {!mobilePreview && <>
+                <GroupBottomToolbarMulti groupData={groupData} groupTotal={groupTotal} />
+                <GroupBottomToolbarSingle groupData={groupData} isSingleSource={hasSingleSource} />
+            </>}
 
         </div>
     );

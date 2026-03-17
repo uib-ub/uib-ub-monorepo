@@ -3,10 +3,12 @@ import { base64UrlToString } from '@/lib/param-utils';
 import { useSearchQuery } from '@/lib/search-params';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
 import useGroupData from './group-data';
 import { usePoint } from '@/lib/param-hooks';
 import { calculateDistance } from '@/lib/map-utils';
+import { useSessionStore } from '../zustand/session-store';
+import { GlobalContext } from '../providers/global-provider';
 
 export const INITIAL_PAGE_SIZE = 10;
 export const SUBSEQUENT_PAGE_SIZE = 20;
@@ -93,7 +95,8 @@ export default function useListData() {
     const group = searchParams.get('group')
     const init = searchParams.get('init')
     const groupValue = group ? base64UrlToString(group) : null
-
+    const snappedPosition = useSessionStore((s) => s.snappedPosition)
+    const { isMobile } = useContext(GlobalContext)
     const {
         data,
         error,
@@ -118,6 +121,7 @@ export default function useListData() {
         //placeholderData: (prevData: any) => prevData,
         initialPageParam: initialPageRef.current - 1,
         getNextPageParam: (lastPage: any) => lastPage.nextCursor,
+        enabled: !Boolean(isMobile && snappedPosition == 'bottom'),
         refetchOnWindowFocus: false,
         staleTime: 1000 * 60 * 5, // 5 minutes
     })

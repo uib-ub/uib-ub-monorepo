@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 type SourceTitleProps = {
     label: string;
     cadastrePrefix: string;
-    mobilePreview: boolean;
+    mobilePreview: boolean | undefined;
     additionalLabels: string[];
     className?: string;
     labelClassName?: string;

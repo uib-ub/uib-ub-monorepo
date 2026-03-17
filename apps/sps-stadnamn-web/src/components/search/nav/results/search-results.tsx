@@ -118,9 +118,9 @@ export default function SearchResults() {
     if (!listData) return 0
 
     // In source-view (document mode), fall back to counting documents excluding the init uuid.
-    if (sourceView && init) {
+    if (sourceView) {
       const allHits = listData.pages.flatMap((page: any) => page.data || [])
-      return allHits.filter((hit: any) => (hit._source?.uuid ?? hit.uuid) !== init).length
+      return allHits.length
     }
 
     // In grouped mode, use the unique group cardinality when available.
@@ -140,8 +140,6 @@ export default function SearchResults() {
   const hasNoAdditionalResults =
     listStatus === 'success' &&
     !!init &&
-    !coordinateInfo &&
-    !labelFilter &&
     additionalResultsCount === 0
   const hasMaxResultsParam = resultsParam > 0
 
@@ -184,8 +182,6 @@ export default function SearchResults() {
     !!init &&
     initHasCoordinates &&
     !sourceView &&
-    !coordinateInfo &&
-    !labelFilter &&
     !!noGeoGroupCount &&
     noGeoGroupCount > 0 &&
     (noGeo || allVisibleHaveLocation);
@@ -378,11 +374,11 @@ export default function SearchResults() {
       }
       {init && !group && !coordinateInfo && !labelFilter && (initGroupLoading ? (
         <div className="relative">
-          <GroupInfoSkeleton />
+          <GroupInfoSkeleton hasIiif={initGroupData?.iiifItems?.length > 0} />
         </div>
       ) : initGroupData && (
         <div className="relative" key={`init-${initValue}`}>
-          <GroupInfo id={`group-info-${init}`} overrideGroupCode={init || undefined} />
+          <GroupInfo id={`group-info-${init}`} overrideGroupCode={init || undefined} hasIiif={initGroupData?.iiifItems?.length > 0} mobilePreview={Boolean(isMobile && snappedPosition == 'bottom')} />
         </div>
       ))}
 
@@ -426,7 +422,7 @@ export default function SearchResults() {
         </div>
       )) : null}
 
-      {(!init || showOtherResults || isMobile || hasOneResult) && (
+      {(!init || showOtherResults || isMobile || hasOneResult) && !Boolean(isMobile && snappedPosition == 'bottom') && (
         <>
           {!hasNoAdditionalResults && (
             <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
@@ -505,7 +501,6 @@ export default function SearchResults() {
                     text-xl
                     p-3
                     justify-center w-full
-                                         rounded-full xl:rounded-md
                      
                     transition-colors
                     ${listIsFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
