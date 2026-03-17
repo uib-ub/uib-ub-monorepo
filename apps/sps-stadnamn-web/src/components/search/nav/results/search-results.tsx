@@ -94,6 +94,7 @@ export default function SearchResults() {
     listStatus,
     listInitialPage,
     listPageSize,
+    mobilePreview,
   } = useListData()
 
   // Helper: count additional results.
@@ -219,7 +220,7 @@ export default function SearchResults() {
         </div>
       ) : initGroupData && (
         <div className="relative" key={`init-${initValue}`}>
-          <GroupInfo id={`group-info-${init}`} overrideGroupCode={init || undefined} hasIiif={initGroupData?.iiifItems?.length > 0} mobilePreview={Boolean(isMobile && snappedPosition == 'bottom')} />
+          <GroupInfo id={`group-info-${init}`} overrideGroupCode={init || undefined} hasIiif={initGroupData?.iiifItems?.length > 0} mobilePreview={mobilePreview} />
         </div>
       ))}
 
@@ -263,7 +264,7 @@ export default function SearchResults() {
         </div>
       )) : null}
 
-      {(!init || showOtherResults || isMobile || hasOneResult) && !Boolean(isMobile && snappedPosition == 'bottom') && (
+      {(!init || showOtherResults || isMobile || hasOneResult) && !mobilePreview && (
         <>
           {!hasNoAdditionalResults && (
             <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>

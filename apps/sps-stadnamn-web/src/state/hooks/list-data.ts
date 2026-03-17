@@ -97,6 +97,9 @@ export default function useListData() {
     const groupValue = group ? base64UrlToString(group) : null
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const { isMobile } = useContext(GlobalContext)
+    const mobilePreview = Boolean(init && isMobile && snappedPosition == 'bottom')
+
+
     const {
         data,
         error,
@@ -121,7 +124,7 @@ export default function useListData() {
         //placeholderData: (prevData: any) => prevData,
         initialPageParam: initialPageRef.current - 1,
         getNextPageParam: (lastPage: any) => lastPage.nextCursor,
-        enabled: !Boolean(isMobile && snappedPosition == 'bottom'),
+        enabled: !mobilePreview,
         refetchOnWindowFocus: false,
         staleTime: 1000 * 60 * 5, // 5 minutes
     })
@@ -137,6 +140,7 @@ export default function useListData() {
         listStatus: status,
         listInitialPage: initialPageRef.current,
         listPageSize: SUBSEQUENT_PAGE_SIZE,
+        mobilePreview: mobilePreview,
 
 
     }
