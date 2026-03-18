@@ -6,7 +6,7 @@ import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
 import { usePoint } from "@/lib/param-hooks";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchQuery } from "@/lib/search-params";
-import useGroupData from "@/state/hooks/group-data";
+import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
@@ -31,16 +31,15 @@ export default function SearchResults() {
   const qParam = searchParams.get('q')?.trim()
   const resultsParam = parseInt(searchParams.get('maxResults') || '0')
   const sourceView = searchParams.get('sourceView') === 'on'
-  const { groupData } = useGroupData(group)
-  const { groupData: initGroupData, groupLoading: initGroupLoading } = useGroupData(init)
+  const { resultCardData: initResultCardData, resultCardLoading: initResultCardLoading } = useResultCardData()
   const initValue = init ? base64UrlToString(init) : null
   // In grouped view, init points to a group id (base64 encoded).
   // In non-grouped view, init points to a source uuid, so we must derive the
   // corresponding group id from grouped init data to exclude it from collapsed results.
   const initGroupId = init
-    ? (initGroupData?.id ?? (!sourceView ? initValue : null))
+    ? (initResultCardData?.id ?? (!sourceView ? initValue : null))
     : (!sourceView ? initValue : null)
-  const initHasCoordinates = initGroupData?.fields?.location?.coordinates?.length >= 2
+  const initHasCoordinates = initResultCardData?.fields?.location?.coordinates?.length >= 2
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
   const setInitGroupLabel = useSessionStore((s) => s.setInitGroupLabel)
@@ -63,21 +62,21 @@ export default function SearchResults() {
 
     // If the init group data is still loading, keep any label that might have
     // been set by a map click so the anchor marker can render immediately.
-    if (initGroupLoading) {
+    if (initResultCardLoading) {
       return
     }
 
     const label =
-      initGroupData?.label ??
-      initGroupData?.fields?.label?.[0] ??
-      initGroupData?.fields?.["group.label"]?.[0] ??
+      initResultCardData?.label ??
+      initResultCardData?.fields?.label?.[0] ??
+      initResultCardData?.fields?.["group.label"]?.[0] ??
       null
     if (typeof label === "string" && label.trim()) {
       setInitGroupLabel(label, point)
     } else {
       setInitGroupLabel(null, null)
     }
-  }, [init, point, initGroupLoading, initGroupData?.label, initGroupData?.fields, setInitGroupLabel])
+  }, [init, point, initResultCardLoading, initResultCardData?.label, initResultCardData?.fields, setInitGroupLabel])
 
   const {
     listData,
@@ -206,18 +205,18 @@ export default function SearchResults() {
           </div>
         )
       }
-      {init && !group && (initGroupLoading ? (
+      {init && !group && (initResultCardLoading ? (
         <div className="relative">
-          <ResultCardSkeleton hasIiif={initGroupData?.iiifItems?.length > 0} />
+          <ResultCardSkeleton hasIiif={initResultCardData?.iiifItems?.length > 0} />
         </div>
-      ) : initGroupData && (
+      ) : initResultCardData && (
         <div className="relative" key={`init-${initValue}`}>
-          <ResultCard id={`result-card-${init}`} overrideGroupCode={init || undefined} hasIiif={initGroupData?.iiifItems?.length > 0} mobilePreview={mobilePreview} />
+          <ResultCard id={`result-card-${init}`} overrideGroupCode={init || undefined} hasIiif={initResultCardData?.iiifItems?.length > 0} mobilePreview={mobilePreview} />
         </div>
       ))}
 
 
-      {(init || qParam)? (initGroupLoading ? (
+      {(init || qParam)? (initResultCardLoading ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>

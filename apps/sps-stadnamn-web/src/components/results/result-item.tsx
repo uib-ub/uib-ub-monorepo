@@ -3,7 +3,7 @@ import Clickable from '@/components/ui/clickable/clickable';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { datasetTitles } from '@/config/metadata-config';
 import { panPointIntoView } from '@/lib/map-utils';
-import { useGroup, usePerspective } from '@/lib/param-hooks';
+import { useInitDecoded, usePerspective, useSourceViewOn } from '@/lib/param-hooks';
 import { stringToBase64Url } from '@/lib/param-utils';
 import { formatHighlight } from '@/lib/text-utils';
 import { GlobalContext } from '@/state/providers/global-provider';
@@ -27,12 +27,12 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
     const isGrunnord = docDataset?.includes('_g')
 
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
-    const { activeGroupValue, initValue } = useGroup()
-    const sourceView = searchParams.get('sourceView') === 'on'
-    const isInit = sourceView ? initValue && initValue == hit.fields?.["uuid"]?.[0] : initValue && initValue == hit.fields?.["group.id"]?.[0]
+    const initDecoded = useInitDecoded();
+    const sourceViewOn = useSourceViewOn();
+    const isInit = sourceViewOn ? initDecoded && initDecoded == hit.fields?.["uuid"]?.[0] : initDecoded && initDecoded == hit.fields?.["group.id"]?.[0]
 
-    const label = (sourceView || isGrunnord) ? hit.fields?.label?.[0] : hit.fields?.["group.label"]?.[0] || ''
-    const otherLabel = !sourceView && hit.fields?.label?.[0] != label ? hit.fields?.label?.[0] : null
+    const label = (sourceViewOn || isGrunnord) ? hit.fields?.label?.[0] : hit.fields?.["group.label"]?.[0] || ''
+    const otherLabel = !sourceViewOn && hit.fields?.label?.[0] != label ? hit.fields?.label?.[0] : null
 
     const rawSosi = hit.fields?.sosi
     const sosiArray = Array.isArray(rawSosi) ? rawSosi : rawSosi ? [rawSosi] : []
@@ -72,7 +72,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
             notClickable={notClickable}
             onClick={handleClick}
             remove={['doc', 'group', 'activePoint']}
-            add={{ maxResults: SM_BASE_MAX_RESULTS, init: sourceView ? hit.fields.uuid[0] : stringToBase64Url(hit.fields["group.id"]?.[0]),
+            add={{ maxResults: SM_BASE_MAX_RESULTS, init: sourceViewOn ? hit.fields.uuid[0] : stringToBase64Url(hit.fields["group.id"]?.[0]),
                 point: hit.fields?.location?.[0]?.coordinates ? `${hit.fields?.location?.[0]?.coordinates[1]},${hit.fields?.location?.[0]?.coordinates[0]}` : null
 
             }}
@@ -103,7 +103,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                     )}
 
 
-                {sourceView && (
+                {sourceViewOn && (
                         (docDataset || showSosi) && (
                             <span className="text-neutral-700 text-sm">
                                 {docDataset && (

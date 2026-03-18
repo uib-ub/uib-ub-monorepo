@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { PiX } from "react-icons/pi";
 import Clickable from "@/components/ui/clickable/clickable";
 import WarningMessage from "@/components/ui/notifications/warning-message";
-import useGroupData from "@/state/hooks/group-data";
+import useResultCardData from "@/state/hooks/result-card-data";
 
 
 export const GroupFilters = () => {
@@ -14,10 +14,10 @@ export const GroupFilters = () => {
     const activeYear = searchParams.get('activeYear')
     const activeName = searchParams.get('activeName')
     const labelFilter = searchParams.get('labelFilter') === 'on'
-    const { groupData } = useGroupData()
-    const datasets = groupData?.datasets || {}
+    const { resultCardData } = useResultCardData()
+    const datasets = resultCardData?.datasets || {}
     
-    const groupCode = groupData?.group?.id
+    const groupId = resultCardData?.group?.id
 
     const { yearsOrdered, namesByYear, namesWithoutYear, nameCounts } = useMemo(() => {
         // Helper functions to check if source matches filters
@@ -303,7 +303,7 @@ export const GroupFilters = () => {
                             <Clickable
                                 replace
                                 remove={['activeYear']}
-                                add={groupCode ? { group: groupCode } : {}}
+                                add={groupId ? { group: groupId } : {}}
                                 className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer"
                             >
                                 <span className="text-sm">År: {activeYear}</span>
@@ -314,7 +314,7 @@ export const GroupFilters = () => {
                             <Clickable
                                 replace
                                 remove={['activeName']}
-                                add={groupCode ? { group: groupCode } : {}}
+                                add={groupId ? { group: groupId } : {}}
                                 className="px-3 py-1.5 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer"
                             >
                                 <span className="text-sm">Namneform: {activeName}</span>
@@ -325,7 +325,7 @@ export const GroupFilters = () => {
                             <Clickable
                                 replace
                                 remove={['activeYear', 'activeName']}
-                                add={groupCode ? { group: groupCode } : {}}
+                                add={groupId ? { group: groupId } : {}}
                                 className="px-2 py-1.5 text-sm text-neutral-800 hover:text-accent-800 underline underline-offset-2 ml-1"
                             >
                                 Nullstill
@@ -348,7 +348,7 @@ export const GroupFilters = () => {
                                         add={{
                                             activeYear: isYearSelected ? null : item.year,
                                             labelFilter: 'on',
-                                            ...(groupCode ? { group: groupCode } : {}),
+                                            ...(groupId ? { group: groupId } : {}),
                                         }}
                                         className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isYearSelected
                                             ? 'bg-accent-800 text-white'
@@ -402,7 +402,7 @@ export const GroupFilters = () => {
                                                 add={{
                                                     activeYear: isYearSelected ? null : item.year,
                                                     labelFilter: 'on',
-                                                    ...(groupCode ? { group: groupCode } : {}),
+                                                    ...(groupId ? { group: groupId } : {}),
                                                 }}
                                                 className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isYearSelected
                                                     ? 'bg-accent-800 text-white'
@@ -425,7 +425,7 @@ export const GroupFilters = () => {
                                                                 add={{
                                                                     activeName: isNameSelected ? null : nameKey,
                                                                     labelFilter: 'on',
-                                                                    ...(groupCode ? { group: groupCode } : {}),
+                                                                    ...(groupId ? { group: groupId } : {}),
                                                                 }}
                                                                 className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors max-w-full overflow-hidden ${isNameSelected
                                                                     ? 'bg-accent-800 text-white'
@@ -501,7 +501,7 @@ export const GroupFilters = () => {
                                                 add={{
                                                     activeName: isNameSelected ? null : item.name,
                                                     labelFilter: 'on',
-                                                    ...(groupCode ? { group: groupCode } : {}),
+                                                    ...(groupId ? { group: groupId } : {}),
                                                 }}
                                                 className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isNameSelected
                                                     ? 'bg-accent-800 text-white'
@@ -530,7 +530,7 @@ export const GroupFilters = () => {
                                     add={{
                                         activeName: nameKey,
                                         labelFilter: 'on',
-                                        ...(groupCode ? { group: groupCode } : {}),
+                                        ...(groupId ? { group: groupId } : {}),
                                     }}
                                     className="flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
                                 >

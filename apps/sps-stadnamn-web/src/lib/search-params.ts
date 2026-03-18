@@ -41,7 +41,7 @@ export function useSearchQuery() {
             searchQuery.append(key, value)
             
         }
-        else if ((key.startsWith('rawData') || key.startsWith('misc'))) {
+        else if ((key.startsWith('group.') || key.startsWith('rawData.') || key.startsWith('misc.'))) {
             searchQuery.append(key, value)
             facetFilters.push([key, value])
         } else {

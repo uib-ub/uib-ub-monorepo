@@ -1,6 +1,5 @@
 
 import { extractFacets } from '../_utils/facets'
-import { getQueryString } from '../_utils/query-string';
 import { postQuery } from '../_utils/post';
 import { base64UrlToString } from '@/lib/param-utils';
 import { fetchDoc } from '../_utils/actions';
@@ -38,7 +37,7 @@ const INNER_HIT_FIELDS = [
   "misc.Enhetsnummer",
 ];
 
-const buildGroupQuery = (groupValue: string, useInnerHits: boolean, filterField: 'group.id' | 'uuid') => {
+const buildResultCardQuery = (id: string, useInnerHits: boolean, filterField: 'group.id' | 'uuid') => {
   const baseFields = [
     "group.label",
     "label",
@@ -70,7 +69,7 @@ const buildGroupQuery = (groupValue: string, useInnerHits: boolean, filterField:
       "bool": {
         "filter": [{
           "term": {
-            [filterField]: groupValue
+            [filterField]: id
           }
         }]
       }
@@ -120,20 +119,15 @@ export async function GET(request: Request) {
   const useInnerHits = !isSourceView
   const filterField: 'group.id' | 'uuid' = isSourceView ? 'uuid' : 'group.id'
 
-  // Grunnord ids (e.g. grunnord_berg) may be sent raw or base64-encoded; accept both
-  const rawGroup = reservedParams.group ?? ''
-  const groupValue =
-    rawGroup.startsWith('grunnord_')
-      ? rawGroup
-      : base64UrlToString(reservedParams.group)
+  const idDecoded  = base64UrlToString(reservedParams.id ?? '')
 
-  let [data, status] = await postQuery(perspective, buildGroupQuery(groupValue, useInnerHits, filterField), "dfs_query_then_fetch")
+  let [data, status] = await postQuery(perspective, buildResultCardQuery(idDecoded, useInnerHits, filterField), "dfs_query_then_fetch")
 
   // Find group if the doc has been demoted within the group
   if (useInnerHits && data.hits?.hits.length === 0) {
-    const doc = await fetchDoc({ uuid: groupValue })
+    const doc = await fetchDoc({ uuid: idDecoded })
     if (doc) {
-      [data, status] = await postQuery(perspective, buildGroupQuery(doc._source.group.id, useInnerHits, 'group.id'), "dfs_query_then_fetch")
+      [data, status] = await postQuery(perspective, buildResultCardQuery(doc._source.group.id, useInnerHits, 'group.id'), "dfs_query_then_fetch")
     }
   }
 

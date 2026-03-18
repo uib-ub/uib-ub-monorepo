@@ -6,12 +6,12 @@ import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState
 import { getAreaLabelMarkerIcon, getClusterMarker, getInitAnchorMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 
 import { boundsFromZoomAndCenter, calculateRadius, fitBoundsToGroupSources, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
-import { useActivePoint, useGroup, usePoint } from "@/lib/param-hooks";
+import { useActivePoint, useInitDecoded, useMapSettingsOn, usePoint, useSourceViewOn } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { parseTreeParam } from "@/lib/tree-param";
 import { getBnr, getGnr, indexToCode, SM_BASE_MAX_RESULTS } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
-import useGroupData from "@/state/hooks/group-data";
+import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useMapSettings } from '@/state/zustand/persistent-map-settings';
@@ -56,9 +56,7 @@ export default function MapExplorer() {
   const urlZoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
   const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
   const allowFitBounds = useRef(false)
-  const { activeGroupValue, initValue, initCode } = useGroup()
-  const { groupLoading, groupData } = useGroupData()
-  const { groupData: initGroupData } = useGroupData(initCode)
+  const { resultCardLoading, resultCardData } = useResultCardData()
   const initGroupLabel = useSessionStore((s) => s.initGroupLabel)
   const initGroupPoint = useSessionStore((s) => s.initGroupPoint)
   const setInitGroupLabel = useSessionStore((s) => s.setInitGroupLabel)
@@ -67,14 +65,10 @@ export default function MapExplorer() {
   const { isMobile, mapFunctionRef, scrollableContentRef, scrollToBrukRef } = useContext(GlobalContext)
   const mapInstance = useRef<any>(null)
   const doc = searchParams.get('doc')
-  const datasetTag = searchParams.get('datasetTag')
-  const datasetParams = searchParams.getAll('dataset')
-  const singleDatasetSelected = datasetParams.length === 1
   const tree = searchParams.get('tree')
   const treeState = useMemo(() => parseTreeParam(tree), [tree])
   const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
-  const mapSettings = searchParams.get('mapSettings') == 'on'
-  const hasGroupParam = Boolean(searchParams.get('group'))
+  const mapSettingsOn = useMapSettingsOn()
   const point = usePoint()
   const activePoint = useActivePoint()
   const urlRadius = searchParams.get('radius') ? parseInt(searchParams.get('radius')!) : null
@@ -86,7 +80,9 @@ export default function MapExplorer() {
   const debug = useDebugStore((s) => s.debug)
   const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
   const showDebugGroups = searchParams.get('debugGroups') == 'on';
-  const sourceView = searchParams.get('sourceView') == 'on'
+  const sourceViewOn = useSourceViewOn()
+
+  const initDecoded = useInitDecoded()
 
   const getDisplayLabel = (fields?: Record<string, any> | null): string => {
     const label = fields?.label?.[0]
@@ -111,12 +107,12 @@ export default function MapExplorer() {
   const areaSource = useMemo(
     () =>
       (doc
-        ? groupData?.sources?.find((source: Record<string, any>) => source.uuid === doc && source.area)
+        ? resultCardData?.sources?.find((source: Record<string, any>) => source.uuid === doc && source.area)
         : undefined) ??
-      groupData?.sources?.find((source: Record<string, any>) => source.area),
-    [doc, groupData?.sources]
+      resultCardData?.sources?.find((source: Record<string, any>) => source.area),
+    [doc, resultCardData?.sources]
   )
-  const activeGroupHasArea = Boolean(areaSource?.area)
+  const activeResultCardHasArea = Boolean(areaSource?.area)
 
   // Tree mode overlay data: selected cadastral unit + its subunits (bruk)
   const { data: treeUnitDoc } = useQuery({
@@ -405,7 +401,7 @@ export default function MapExplorer() {
     const seenGroups = new Set<string>()
 
     buckets.forEach((bucket: any) => {
-      const clusterCount = sourceView
+      const clusterCount = sourceViewOn
         ? bucket.doc_count
         : (bucket.group_count?.value ?? bucket.doc_count)
 
@@ -520,7 +516,7 @@ export default function MapExplorer() {
       })
     )
     const clusters = countItems.map((item: any) => {
-      const clusterCount = sourceView ? item.doc_count : (item.group_count?.value ?? item.doc_count)
+      const clusterCount = sourceViewOn ? item.doc_count : (item.group_count?.value ?? item.doc_count)
       return { ...item, clusterCount, radius: calculateRadius(clusterCount, maxDocCount, minDocCount) }
     })
 
@@ -536,7 +532,7 @@ export default function MapExplorer() {
     markerResultsRef.current = allMarkers
 
     return allMarkers
-  }, [markerResults, activeMarkerMode, zoomState, sourceView])
+  }, [markerResults, activeMarkerMode, zoomState, sourceViewOn])
 
 
 
@@ -819,7 +815,7 @@ export default function MapExplorer() {
               tapHoldRef.current = null
               const attribution = map.attributionControl;
               if (attribution) {
-                attribution.getContainer().style.display = mapSettings ? "block" : "none";
+                attribution.getContainer().style.display = mapSettingsOn ? "block" : "none";
               }
             },
 
@@ -1045,10 +1041,10 @@ export default function MapExplorer() {
                 const isAtPoint = Boolean(point && areSamePoint([lat, lng], point))
                 const isAtActivePoint = Boolean(activePoint && areSamePoint([lat, lng], activePoint))
 
-                const selected = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == groupData?.fields?.["group.id"]?.[0] && !groupLoading)
+                const selected = Boolean(initDecoded && item.fields?.["group.id"]?.[0] == resultCardData?.fields?.["group.id"]?.[0] && !resultCardLoading)
                 const selectedInCadastre = Boolean(tree && docData && item.fields?.["uuid"]?.[0] == docData._source.uuid)
-                const isActiveGroupMarker = Boolean(activeGroupValue && item.fields?.["group.id"]?.[0] == activeGroupValue)
-                const shouldHideUnlabeledActiveAreaMarker = activeGroupHasArea && (isActiveGroupMarker || isAtActivePoint)
+                const isActiveGroupMarker = Boolean(initDecoded && item.fields?.["group.id"]?.[0] == initDecoded)
+                const shouldHideUnlabeledActiveAreaMarker = activeResultCardHasArea && (isActiveGroupMarker || isAtActivePoint)
                 if (selected || selectedInCadastre) return null
 
                 // Any result marker that ends up exactly at either the anchor point
@@ -1058,11 +1054,11 @@ export default function MapExplorer() {
                 if (isAtPoint || isAtActivePoint) return null
 
                 const isInit = Boolean(
-                  initValue &&
+                  initDecoded &&
                   (
-                    sourceView
-                      ? item.fields?.["uuid"]?.[0] == initValue
-                      : item.fields?.["group.id"]?.[0] == initValue
+                    sourceViewOn
+                      ? item.fields?.["uuid"]?.[0] == initDecoded
+                      : item.fields?.["group.id"]?.[0] == initDecoded
                   )
                 )
 
@@ -1070,7 +1066,7 @@ export default function MapExplorer() {
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const labelText =
-                  (sourceView && isInit)
+                  (sourceViewOn && isInit)
                     ? (item.fields?.label?.[0] || '[utan namn]')
                     : getDisplayLabel(item.fields)
                 const pointMarkerTooltip = (!isMobile) ? (
@@ -1187,11 +1183,11 @@ export default function MapExplorer() {
 
 
             { point && (() => {
-              const initIsActive = sourceView ? !activePoint : (!searchParams.get('group') || searchParams.get('group') === searchParams.get('init'))
+              const initIsActive = sourceViewOn ? !activePoint : (!searchParams.get('group') || searchParams.get('group') === searchParams.get('init'))
               // In sourceView mode, the init marker should be inactive when there
               // is an active marker at a different coordinate than `point`.
               const hasOtherActivePoint = Boolean(
-                sourceView &&
+                sourceViewOn &&
                 point &&
                 activePoint &&
                 !areSamePoint(point, activePoint)
@@ -1598,120 +1594,6 @@ export default function MapExplorer() {
                     </>
                   )
                 }
-
-                // Default mode: show lines and dots for the current group (falls back to init when no group param is set)
-                if (!groupData?.sources) return null;
-
-                // Find the first source with coordinates - this is the central coordinate
-                const centralSource = groupData.sources.find((source: Record<string, any>) =>
-                  source?.location?.coordinates?.length === 2
-                );
-
-                if (!centralSource) return null;
-
-                const centralLat = centralSource.location.coordinates[1];
-                const centralLng = centralSource.location.coordinates[0];
-
-                // Collect all unique coordinates to check if there are multiple
-                const uniqueCoordinates = new Set<string>();
-                groupData.sources.forEach((source: Record<string, any>) => {
-                  if (source?.location?.coordinates?.length === 2) {
-                    const lat = source.location.coordinates[1];
-                    const lng = source.location.coordinates[0];
-                    uniqueCoordinates.add(`${lat},${lng}`);
-                  }
-                });
-
-                // Only show lines and dots if there are multiple coordinates
-                if (uniqueCoordinates.size < 2) return null;
-
-                // Create a set of unique coordinates for rendering
-                const coordinatesToRender = new Set<string>();
-                groupData.sources.forEach((source: Record<string, any>) => {
-                  if (source?.location?.coordinates?.length === 2) {
-                    const lat = source.location.coordinates[1];
-                    const lng = source.location.coordinates[0];
-                    coordinatesToRender.add(`${lat},${lng}`);
-                  }
-                });
-
-                return (
-                  <>
-                    {/* Render all lines first (so they appear behind) */}
-                    {groupData.sources.map((source: Record<string, any>, index: number) => {
-                      if (!source?.location?.coordinates?.length) {
-                        return null;
-                      }
-                      const lat = source.location.coordinates[1];
-                      const lng = source.location.coordinates[0];
-
-                      const isCentral = centralLat === lat && centralLng === lng;
-
-                      // Only render line if not central
-                      if (isCentral) return null;
-
-                      return (
-                        <Polyline
-                          key={`line-${index}`}
-                          positions={[[lat, lng], [centralLat, centralLng]]}
-                          pathOptions={{
-                            color: '#000000',
-                            weight: 3,
-                            opacity: 0.5
-                          }}
-                        />
-                      );
-                    })}
-                    {/* Render all dots after lines (so they appear on top) */}
-                    {groupData.sources.map((source: Record<string, any>, index: number) => {
-                      if (!source?.location?.coordinates?.length) {
-                        return null;
-                      }
-                      const lat = source.location.coordinates[1];
-                      const lng = source.location.coordinates[0];
-
-                      // Create a unique key for this coordinate
-                      const coordKey = `${lat},${lng}`;
-
-                      // Skip if we've already rendered this coordinate (remove from set as we render)
-                      if (!coordinatesToRender.has(coordKey)) {
-                        return null;
-                      }
-
-                      // Remove from set so we only render each unique coordinate once
-                      coordinatesToRender.delete(coordKey);
-
-                      return (
-                        <CircleMarker
-                          key={`marker-${index}`}
-                          center={[lat, lng]}
-                          radius={6}
-                          weight={2}
-                          opacity={1}
-                          fillOpacity={1}
-                          color="#000000"
-                          fillColor="white"
-                          eventHandlers={{
-                            click: () => {
-                              const newParams = new URLSearchParams(searchParams);
-                              newParams.set('activePoint', `${lat},${lng}`);
-                              router.push(`?${newParams.toString()}`);
-                            },
-                            keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
-                              const key = e.originalEvent?.key ?? e.key
-                              if (key === 'Enter' || key === ' ') {
-                                ;(e.originalEvent ?? e).preventDefault()
-                                const newParams = new URLSearchParams(searchParams);
-                                newParams.set('activePoint', `${lat},${lng}`);
-                                router.push(`?${newParams.toString()}`);
-                              }
-                            }
-                          }}
-                        />
-                      );
-                    })}
-                  </>
-                );
               })()
             }
 
@@ -1792,7 +1674,7 @@ export default function MapExplorer() {
             {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" interactive={false} />}
             {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" interactive={false} />}
             {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" interactive={false} />}
-            {point && !initValue && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
+            {point && !initDecoded && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
             { activePoint && (
               <>
                 <Marker

@@ -8,12 +8,13 @@ import { GlobalContext } from "@/state/providers/global-provider"
 import { PiBookOpen, PiCaretLeft, PiCaretLeftBold, PiCaretRightBold, PiSignpost } from "react-icons/pi"
 import Clickable from "@/components/ui/clickable/clickable"
 import { SM_BASE_MAX_RESULTS } from "@/lib/utils"
+import { useMaxResults } from "@/lib/param-hooks"
 
 export default function GroupedResultsToggle() {
     const searchParams = useSearchParams()
     const router = useRouter()
     const { scrollableContentRef, isMobile } = useContext(GlobalContext)
-    const maxResults = searchParams.get('maxResults')
+    const maxResults = useMaxResults()
 
     const init = searchParams.get('init')
     const group = searchParams.get('group')

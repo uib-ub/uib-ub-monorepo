@@ -2,13 +2,14 @@ import { datasetTitles } from "@/config/metadata-config";
 import { baseAllConfig } from "@/config/search-config";
 import { treeSettings } from "@/config/server-config";
 import { base64UrlToString } from "@/lib/param-utils";
-import { RESERVED_SEARCH_PARAM_KEY_SET } from "@/lib/reserved-param-types";
+import { isServerAllowedSearchParamKey } from "@/lib/reserved-param-types";
+import type { ServerAllowedParams } from "@/lib/reserved-param-types";
 
 export function extractFacets(request: Request) {
   const urlParams = new URL(request.url).searchParams;
 
   const termFilters = []
-  const reservedParams: { [key: string]: string } = {};
+  const reservedParams: ServerAllowedParams = {};
   const datasets: string[] = []
 
   const clientFacets: { [key: string]: string[] } = {};
@@ -30,7 +31,7 @@ export function extractFacets(request: Request) {
 
 
   for (const [key, value] of urlParams.entries()) {
-    if (RESERVED_SEARCH_PARAM_KEY_SET.has(key)) {
+    if (isServerAllowedSearchParamKey(key)) {
       reservedParams[key] = value
       if (key == 'datasetTag' && !urlParams.get('dataset')) { // Don't add datasets to the search if dataset is already set
         if (value == 'base') {
@@ -331,7 +332,7 @@ export function extractFacets(request: Request) {
   }
 
   // Exclude group.id "suppressed" and "noname" from all queries unless tree/cadastral view or includeSuppressed
-  if (!urlParams.get('tree') && reservedParams.includeSuppressed !== '1' && reservedParams.includeSuppressed !== 'true') {
+  if (reservedParams.includeSuppressed !== 'on') {
     termFilters.push({
       bool: { must_not: { terms: { 'group.id': ['suppressed', 'noname'] } } }
     });

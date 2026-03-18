@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   const { size, from, 
           sortPoint,
           searchSort,
-          groupValue,
+          groupId,
           noGeo,
           exclude,
           idField,
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     ...highlight ? { highlight } : {},
     "track_scores": true,
     "fields": ["group.adm1", "group.adm2", "group.id", "adm1", "adm2", "group.label", "uuid", "boost", "label", "location", "iiif", "sosi"],
-    ...(!sourceView && !groupValue ? {
+    ...(!sourceView && !groupId ? {
       "collapse": {
         "field": "group.id",
       }

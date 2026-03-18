@@ -4,7 +4,6 @@ import { useSearchQuery } from '@/lib/search-params';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useContext, useRef } from 'react';
-import useGroupData from './group-data';
 import { usePoint } from '@/lib/param-hooks';
 import { calculateDistance } from '@/lib/map-utils';
 import { useSessionStore } from '../zustand/session-store';

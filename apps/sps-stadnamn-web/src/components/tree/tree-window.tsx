@@ -23,7 +23,7 @@ export default function TreeWindow() {
         queryKey: ['treeSelectedDoc', dataset, uuid],
         enabled: !!dataset && !!uuid,
         queryFn: async () => {
-            const params = new URLSearchParams({ uuid: uuid as string, dataset: dataset as string })
+            const params = new URLSearchParams({ uuid: uuid as string, dataset: dataset as string, includeSuppressed: 'on' })
             const res = await fetch(`/api/tree?${params.toString()}`)
             if (!res.ok) return null
             const data = await res.json()

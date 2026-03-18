@@ -1,9 +1,8 @@
 'use client'
-
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
-import { useGroup, useMode, useOverlayParams, usePerspective } from "@/lib/param-hooks";
+import { useDebugParamOn, useFacetParam, useMapSettingsOn, useMaxResults, useMode, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useTreeParam } from "@/lib/param-hooks";
 import { useSearchQuery } from "@/lib/search-params";
-import useGroupData from "@/state/hooks/group-data";
+import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
@@ -31,7 +30,7 @@ import WikiAdmFacet from "@/components/facets/wikiAdm-facet";
 import DebugToggle from "@/components/results/debug-toggle";
 import TableOptions from "@/components/table/table-options";
 import TreeWindow from "@/components/tree/tree-window";
-import { twMerge } from "tailwind-merge";;
+import { twMerge } from "tailwind-merge";
 
 
 
@@ -51,7 +50,7 @@ export interface DrawerProps {
     bottomHeightRem?: number
     middleHeightSvh?: number,
     scrollContainerRef?: React.RefObject<HTMLDivElement | null>,
-    groupData?: any
+    resultCardData?: any
 }
 
 function ShowResultsButton() {
@@ -63,7 +62,6 @@ function ShowResultsButton() {
     return <div className="p-3 fixed bottom-2 left-0 right-0 z-[3001]">
         <Clickable remove={["facet", "options"]}
             // results: integer – minimum is 5 and controls expanded results.
-            add={{ maxResults: SM_BASE_MAX_RESULTS }}
             onClick={() => mode == 'table' ? setSnappedPosition('bottom') : null}
             className={twMerge("w-full h-12 btn text-xl relative rounded-full btn btn-primary", overlayButtonShadowClass)}>
 
@@ -71,16 +69,13 @@ function ShowResultsButton() {
 
 }
 
-function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
+function DrawerWrapper({ children, resultCardData, ...rest }: DrawerProps) {
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const resetEnabled = useRef<boolean>(false);
-    const searchParams = useSearchParams()
-    const facet = searchParams.get('facet')
-    const mapSettings = searchParams.get('mapSettings') == 'on'
-    const overlaySelector = searchParams.get('overlaySelector') === 'on'
-    const { initCode } =  useGroup()
-
+    const facet = useFacetParam()
+    const mapSettingsOn = useMapSettingsOn()
+    const overlaySelectorOn = useOverlaySelectorOn()
     const mode = useMode()
 
     useEffect(() => {
@@ -88,8 +83,8 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
         // When map settings or the overlay selector are open, avoid auto-panning the map
         // so that explicit map interactions (like fitting to an overlay) are not overridden
         // when the drawer position changes.
-        if (mapSettings || overlaySelector) return
-        const point = groupData?.sources?.[0]?.location?.coordinates
+        if (mapSettingsOn || overlaySelectorOn) return
+        const point = resultCardData?.coordinates
         if (!point) return
 
         const wasAdjusted = panPointIntoView(mapFunctionRef.current, [point[1], point[0]], true, snappedPosition === 'middle', resetEnabled.current)
@@ -97,13 +92,13 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
             resetEnabled.current = !resetEnabled.current
         }
 
-    }, [isMobile, snappedPosition, groupData, mapFunctionRef, mode, mapSettings, overlaySelector])
+    }, [isMobile, snappedPosition, resultCardData, mapFunctionRef, mode, mapSettingsOn, overlaySelectorOn])
 
     if (!isMobile) {
         return <>{children}</>
     }
 
-    if (isMobile && (facet || (mapSettings && overlaySelector))) {
+    if (isMobile && (facet || (mapSettingsOn && overlaySelectorOn))) {
         return (
             <div className="fixed top-0 left-0 w-full h-full z-[10001] bg-white">
                 <div className="h-[100svh] overflow-y-auto stable-scrollbar">
@@ -123,12 +118,10 @@ function DrawerWrapper({ children, groupData, ...rest }: DrawerProps) {
 
 function LeftWindow({ children, bottomContent }: { children: React.ReactNode, bottomContent?: React.ReactNode }) {
     const { isMobile } = useContext(GlobalContext)
-    const searchParams = useSearchParams()
-
-    const mapSettings = searchParams.get('mapSettings') == 'on'
-    const maxResults = searchParams.get('maxResults')
+    const mapSettingsOn = useMapSettingsOn()
+    const maxResults = useMaxResults()
     if (isMobile) {
-        if (mapSettings && maxResults) return null
+        if (mapSettingsOn && maxResults) return null
         return <>{children}</>
     }
     return (
@@ -142,13 +135,7 @@ function LeftWindow({ children, bottomContent }: { children: React.ReactNode, bo
 
 function RightWindow({ children }: { children: React.ReactNode }) {
     const { isMobile, scrollableContentRef } = useContext(GlobalContext)
-    const searchParams = useSearchParams()
-    const { initCode } =  useGroup()
-    const mapSettings = searchParams.get('mapSettings') == 'on'
-    const overlaySelector = searchParams.get('overlaySelector') == 'on'
-    const facet = searchParams.get('facet')
-    const options = searchParams.get('options') == 'on'
-    const tree = searchParams.get('tree')
+    const tree = useTreeParam()
 
 
     const [showScrollToTop, setShowScrollToTop] = useState(false)
@@ -173,7 +160,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
         scrollableContentRef?.current?.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
-    const maxResults = searchParams.get('maxResults')
+    const maxResults = useMaxResults()
     if (isMobile) {
         return <>{children}</>
     }
@@ -207,13 +194,13 @@ export default function MapInterface() {
     const { isMobile, scrollableContentRef } = useContext(GlobalContext)
     const searchParams = useSearchParams()
     const { totalHits, docTotalHits, searchLoading } = useSearchData()
-    const { groupData } = useGroupData()
+    const { resultCardData } = useResultCardData()
     const sourceView = searchParams.get('sourceView') === 'on'
     const group = searchParams.get('group')
 
     const drawerRef = useRef<HTMLDivElement>(null)
 
-    const { showLeftPanel, showRightPanel, options, mapSettings, facet, showResults, tableOptions } = useOverlayParams()
+    const { showLeftPanel, showRightPanel, optionsOn, mapSettingsOn, overlaySelectorOn, facet, showResults, tableOptions } = useOverlayParams()
     const { facetFilters, datasetFilters } = useSearchQuery()
     const filterCount = facetFilters.length + datasetFilters.length
     // Count the number of unique facets (keys) that have active filters, including the dataset facet
@@ -223,24 +210,22 @@ export default function MapInterface() {
     ]).size
     const perspective = usePerspective()
     const setDebug = useDebugStore((s) => s.setDebug)
-    const debugParam = searchParams.get('debug')
+    const debugOn = useDebugParamOn()
     const showDebugGroups = searchParams.get('debugGroups') == 'on'
-    const maxResults = searchParams.get('maxResults')
-    const tree = searchParams.get('tree')
-    const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
-    const labelFilter = searchParams.get('labelFilter') === 'on'
+    const maxResults = useMaxResults()
+    const tree = useTreeParam()
     const mode = useMode()
 
     useEffect(() => {
-        if (debugParam == 'on') {
+        if (debugOn) {
             setDebug(true)
         }
 
-    }, [debugParam, setDebug])
+    }, [debugOn, setDebug])
 
     const isDesktopMap = !isMobile && mode !== 'table'
 
-    const desktopMapButtons = isDesktopMap && sourceView && !options && !facet && !tree ? (
+    const desktopMapButtons = isDesktopMap && sourceView && !optionsOn && !facet && !tree ? (
         <div className="flex gap-2">
             {facetCount > 1 && (
                 <Clickable
@@ -261,7 +246,7 @@ export default function MapInterface() {
         <div ref={drawerRef} className="scroll-container">
             <DrawerWrapper
                 drawerOpen={true}
-                groupData={groupData}
+                resultCardData={resultCardData}
                 dismissable={false}
                 setDrawerOpen={setDrawerOpen}
                 snappedPosition={snappedPosition}
@@ -292,7 +277,7 @@ export default function MapInterface() {
 
                     {!tableOptions && !facet && (sourceView || mode == 'table') && (
                         <>
-                            {options && (
+                            {optionsOn && (
                                 <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
                                     <div className="flex items-center gap-1 xl:px-1 w-full">
                                         <div id={isMobile ? 'drawer-title' : 'left-title'} className={`${isMobile ? 'sr-only' : 'text-base xl:text-lg text-neutral-900 font-sans'}`}>
@@ -333,7 +318,7 @@ export default function MapInterface() {
 
                 {showRightPanel && <RightWindow>
                     {/* Map settings should be available even when tree view is active */}
-                    {mapSettings ? (
+                    {mapSettingsOn ? (
                         <>
                             <div className={`w-full sticky flex items-center pl-3 ${isMobile ? 'h-8' : 'h-12'} xl:px-0 gap-2`} id="map-settings-panel">
                                 <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-xl text-neutral-900 xl:px-4">
@@ -365,9 +350,9 @@ export default function MapInterface() {
                                     className="flex items-center gap-1 xl:px-1"
                                     // When opening, use default results count. When closing, remove param.
                                     add={{ maxResults: maxResults ? null : String(SM_BASE_MAX_RESULTS) }}
-                                    remove={["maxResults", ...(isMobile ? ['options'] : [])]}
+                                    remove={[...(isMobile ? ['options'] : [])]}
                                 >
-                                    {!coordinateInfo && !labelFilter && !isMobile && (
+                                    {!isMobile && (
                                         <span className="flex w-6 justify-center">
                                             {showResults ? (
                                                 <PiCaretUpBold className="text-lg" />
@@ -381,7 +366,6 @@ export default function MapInterface() {
                                         {group ? 'Kjelder' : 'Treff'}
                                     </div>
 
-                                    {!coordinateInfo && !labelFilter && (
                                         <>
                                             {searchLoading ? (
                                                 <Spinner status="Laster resultat" className="text-lg" />
@@ -392,7 +376,7 @@ export default function MapInterface() {
                                                 />
                                             )}
                                         </>
-                                    )}
+                                    
                                 </Clickable>
 
 

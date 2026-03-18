@@ -6,11 +6,11 @@ import type { ParamProps } from "@/components/ui/clickable/param-types";
 import IconButton from "@/components/ui/icon-button";
 import { datasetTitles } from "@/config/metadata-config";
 import { treeSettings } from "@/config/server-config";
-import { useActivePoint, useGroup } from "@/lib/param-hooks";
+import { useActivePoint, useGroupParam, useInitDecoded, useSourceViewOn } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { buildTreeParam } from "@/lib/tree-param";
 import { getBnr, getGnr, getValueByPath, LG_BASE_MAX_RESULTS, SM_BASE_MAX_RESULTS } from "@/lib/utils";
-import useGroupData from "@/state/hooks/group-data";
+import useResultCardData from "@/state/hooks/result-card-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { useSearchParams } from "next/navigation";
@@ -94,19 +94,17 @@ function GroupBottomToolbarMulti({
     groupTotal?: number;
 }) {
     const searchParams = useSearchParams();
-    const sourceView = searchParams.get("sourceView") === "on";
-    const { initValue } = useGroup();
+    const sourceViewOn = useSourceViewOn();
     const { mapFunctionRef, isMobile } = useContext(GlobalContext);
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
-    const activePointCoords = useActivePoint();
+    const activePoint = useActivePoint();
     const init = searchParams.get('init')
     
-    if (!groupData || sourceView || !groupTotal || groupTotal === 1) {
+    if (!groupData || sourceViewOn || !groupTotal || groupTotal === 1) {
         return null;
     }
 
-    const activeGroupValue = groupData?.group?.id;
     const rawGroupCoordinates = groupData?.fields?.location?.coordinates;
     const groupLatLng: [number, number] | null = rawGroupCoordinates
         ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])]
@@ -115,10 +113,10 @@ function GroupBottomToolbarMulti({
         ? `${rawGroupCoordinates[1]},${rawGroupCoordinates[0]}`
         : null;
     const isActivePoint =
-        !!activePointCoords &&
+        !!activePoint &&
         !!groupLatLng &&
-        Math.abs(activePointCoords[0] - groupLatLng[0]) < 0.000001 &&
-        Math.abs(activePointCoords[1] - groupLatLng[1]) < 0.000001;
+        Math.abs(activePoint[0] - groupLatLng[0]) < 0.000001 &&
+        Math.abs(activePoint[1] - groupLatLng[1]) < 0.000001;
 
     return (
         <div className="px-3 ml-auto mt-auto">
@@ -140,12 +138,8 @@ function GroupBottomToolbarMulti({
                                 setSnappedPosition("bottom");
                             }
                         }}
-                        remove={["group", "activePoint"]}
+                        remove={["activePoint"]}
                         add={{
-                            group:
-                                initValue == activeGroupValue
-                                    ? null
-                                    : stringToBase64Url(groupData.id),
                             activePoint: activePointValue,
                         }}
                     />
@@ -312,18 +306,18 @@ export default function ResultCard({
     distanceMeters?: number | null;
     mobilePreview?: boolean | undefined;
 }) {
-    const { groupData, groupLoading, groupTotal } = useGroupData(overrideGroupCode);
-    const iiifItems = groupData?.iiifItems;
-    const textItems = groupData?.textItems;
-    const audioItems = groupData?.audioItems;
+    const { resultCardData, resultCardLoading, resultCardTotal } = useResultCardData(overrideGroupCode);
+    const iiifItems = resultCardData?.iiifItems;
+    const textItems = resultCardData?.textItems;
+    const audioItems = resultCardData?.audioItems;
     const searchParams = useSearchParams();
-    const { initValue } = useGroup();
     const scrollableContentRef = useRef<HTMLDivElement>(null);
-    const { isMobile, sosiVocab } = useContext(GlobalContext);
+    const { sosiVocab } = useContext(GlobalContext);
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const sourceView = searchParams.get("sourceView") === "on";
-    const group = searchParams.get('group');
+    const group = useGroupParam();
+    const initDecoded = useInitDecoded();
     const point = searchParams.get('point');
     
 
@@ -332,16 +326,16 @@ export default function ResultCard({
         return typeof value === "string" ? value : "";
     };
 
-    const fields = groupData?.fields || {};
-    const datasets = groupData?.datasets;
+    const fields = resultCardData?.fields || {};
+    const datasets = resultCardData?.datasets;
 
     const dataset = Array.isArray(datasets) && datasets.length > 0 ? datasets[0] : undefined;
-    const hasSingleSource = groupTotal === 1;
+    const hasSingleSource = resultCardTotal === 1;
     // Use group fields as primary data source; docData is deprecated and no longer required.
     const source = undefined as any;
     const label =
-        (groupData?.fields?.label?.[0] ??
-            groupData?.fields?.["group.label"]?.[0] ??
+        (resultCardData?.fields?.label?.[0] ??
+            resultCardData?.fields?.["group.label"]?.[0] ??
             toText(fields.label)) ||
         toText(fields["group.label"]) ||
         (source ? (Array.isArray(source.label) ? source.label[0] : (source.label as string | undefined)) : "");
@@ -384,10 +378,10 @@ export default function ResultCard({
     const activeYear = searchParams.get('activeYear')
     const activeName = searchParams.get('activeName')
     const groupLabel = label
-    const isInit = Boolean(!group && initValue && groupData?.id && initValue === groupData.id)
+    const isInit = Boolean(!group && initDecoded && resultCardData?.id && initDecoded === resultCardData.id)
     // Scroll to top when init group changes (when clicking "vel" button)
     useEffect(() => {
-        if (groupData?.group?.id && initValue === groupData.id && scrollableContentRef.current) {
+        if (resultCardData?.group?.id && initDecoded === resultCardData.id && scrollableContentRef.current) {
             requestAnimationFrame(() => {
                 scrollableContentRef.current?.scrollTo({
                     top: 0,
@@ -395,7 +389,7 @@ export default function ResultCard({
                 });
             });
         }
-    }, [initValue, groupData?.group?.id, scrollableContentRef]);
+    }, [initDecoded, resultCardData?.group?.id, scrollableContentRef]);
 
     const treeSavedQuery = useSessionStore((s) => s.treeSavedQuery)
     const setTreeSavedQuery = useSessionStore((s) => s.setTreeSavedQuery)
@@ -413,19 +407,19 @@ export default function ResultCard({
 
 
     // Group coordinates are stored as [lon, lat]; convert to [lat, lon] for the map.
-    const rawGroupCoordinates = groupData?.fields?.location?.coordinates;
+    const rawGroupCoordinates = resultCardData?.fields?.location?.coordinates;
     const groupLatLng: [number, number] | null = rawGroupCoordinates
         ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])]
         : null;
 
-    if (groupLoading) {
+    if (resultCardLoading) {
         return <ResultCardSkeleton hasIiif={hasIiif} />;
     }
 
-    if (!sourceView && !groupData?.["id"]) {
+    if (!sourceView && !resultCardData?.["id"]) {
         console.log("Group ID not found");
         const props = {
-            message: `Group ID not found: ${JSON.stringify(groupData)}}`,
+            message: `Group ID not found: ${JSON.stringify(resultCardData)}}`,
         };
 
         fetch("/api/error", {
@@ -434,7 +428,7 @@ export default function ResultCard({
         });
         return (
             <div className="p-2">
-                Kunne ikkje lasta inn gruppe {JSON.stringify(groupData)} {overrideGroupCode}
+                Kunne ikkje lasta inn gruppe {JSON.stringify(resultCardData)} {overrideGroupCode}
             </div>
         );
     }
@@ -480,11 +474,11 @@ export default function ResultCard({
                             label={label}
                             cadastrePrefix=""
                             mobilePreview={mobilePreview}
-                            additionalLabels={groupData?.additionalLabels as string[] | undefined ?? []}
+                            additionalLabels={resultCardData?.additionalLabels as string[] | undefined ?? []}
                         />
                     </div>
 
-                    {groupAdmText && (groupTotal ?? 0) > 1 && (
+                    {groupAdmText && (resultCardTotal ?? 0) > 1 && (
                         <div className="text-sm text-neutral-800 flex items-center gap-1 flex-wrap">
                             <span>{groupAdmText}</span>
                         </div>
@@ -640,8 +634,8 @@ export default function ResultCard({
             </div>}
 
             {!mobilePreview && <>
-                <GroupBottomToolbarMulti groupData={groupData} groupTotal={groupTotal} />
-                <GroupBottomToolbarSingle groupData={groupData} isSingleSource={hasSingleSource} />
+                <GroupBottomToolbarMulti groupData={resultCardData} groupTotal={resultCardTotal} />
+                <GroupBottomToolbarSingle groupData={resultCardData} isSingleSource={hasSingleSource} />
             </>}
 
         </div>

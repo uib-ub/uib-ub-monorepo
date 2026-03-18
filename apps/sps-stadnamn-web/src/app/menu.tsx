@@ -1,7 +1,7 @@
 'use client'
 import Clickable from "@/components/ui/clickable/clickable";
 import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
-import { useMode } from "@/lib/param-hooks";
+import { useCenterParam, useTreeParam, useZoomParam, useQParam, useMode } from "@/lib/param-hooks";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useRef } from "react";
@@ -15,20 +15,17 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
     const menuRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const { currentUrl, isMobile } = useContext(GlobalContext)
-    const fulltext = searchParams.get('fulltext')
+    const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
     const modeOutsideSearch = pathname == '/search' ? mode : null
-    const tree = searchParams.get('tree')
+    const tree = useTreeParam()
     const isTreeActive = pathname === '/search' && !!tree
     const isMapActive = modeOutsideSearch === 'map' && !isTreeActive
     const isTableActive = modeOutsideSearch === 'table' && !isTreeActive
-    const router = useRouter()
-    const q = searchParams.get("q")
-    const datasetTag = searchParams.get("datasetTag")
+    const q = useQParam()
     const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
-    const zoom = searchParams.get('zoom')
-    const center = searchParams.get('center')
+    const zoom = useZoomParam()
+    const center = useCenterParam()
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -95,7 +92,7 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 onClick={() => setMenuOpen(false)}
                                 aria-current={isMapActive ? 'page' : undefined}
                                 remove={['mode', 'tree', 'activePoint', 'group', 'doc']}
-                                add={{ maxResults: SM_BASE_MAX_RESULTS, init: searchParams.get('group') }}
+                                add={{ maxResults: SM_BASE_MAX_RESULTS }}
                                 className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
                                 ${isMapActive
                                         ? 'bg-accent-800 text-white font-semibold'

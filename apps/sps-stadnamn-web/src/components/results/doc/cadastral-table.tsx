@@ -54,7 +54,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
       const params = new URLSearchParams({
         perspective: dataset,
         within: uuid,
-        includeSuppressed: '1',
+        includeSuppressed: 'on',
         size: '1000',
         asc: sortFields
       })
@@ -71,7 +71,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
           'adm1': adm1,
           'adm2': adm2,
           'within': '_true', // Only items that have 'within' field (i.e., bruk, not farms)
-          includeSuppressed: '1',
+          includeSuppressed: 'on',
           size: '1000',
           asc: sortFields
         })

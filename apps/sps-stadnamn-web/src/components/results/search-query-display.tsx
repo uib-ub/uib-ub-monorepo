@@ -2,7 +2,7 @@
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import ToggleButton from "@/components/ui/toggle-button"
 import { stringToBase64Url } from "@/lib/param-utils"
-import useGroupData from "@/state/hooks/group-data"
+import useResultCardData from "@/state/hooks/result-card-data"
 import { useSessionStore } from "@/state/zustand/session-store"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PiCaretRightBold, PiMagnifyingGlass, PiXBold } from "react-icons/pi"
@@ -23,9 +23,9 @@ export default function SearchQueryDisplay({
   const router = useRouter()
   const searchQ = searchParams.get('q')
   const init = searchParams.get('init')
-  const { groupData: initGroupData } = useGroupData(init)
+  const { resultCardData: initResultCardData } = useResultCardData(init)
   const qParam = searchParams.get('q')
-  const initHasCoordinates = initGroupData?.fields?.location?.coordinates?.length >= 2
+  const initHasCoordinates = initResultCardData?.fields?.location?.coordinates?.length >= 2
   const searchSort = searchParams.get('searchSort')
 
 

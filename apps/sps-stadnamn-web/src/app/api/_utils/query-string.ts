@@ -64,7 +64,11 @@ function tokenizeWithQuotes(raw: string): string[] {
   })
 }
 
-export function getQueryString(params: { [key: string]: string | null }) {
+import type { ServerAllowedParams } from "@/lib/reserved-param-types";
+
+export function getQueryString(
+  params: ServerAllowedParams,
+) {
   const fulltext = params.fulltext == "on"
   const fuzzy = params.fuzzy == "on"
   const nameFields =

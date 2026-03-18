@@ -3,16 +3,16 @@ import MiscOptions from "@/app/misc-options"
 import Clickable from "@/components/ui/clickable/clickable"
 import { datasetTitles } from "@/config/metadata-config"
 import { facetConfig } from "@/config/search-config"
-import { useGroup, useMode, usePerspective, usePoint } from "@/lib/param-hooks"
+import { useMode, usePerspective, usePoint, useRadiusParam } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import { getSkeletonLength } from "@/lib/utils"
-import useGroupData from "@/state/hooks/group-data"
+import useResultCardData from "@/state/hooks/result-card-data"
 import { GlobalContext } from "@/state/providers/global-provider"
 import { useSessionStore } from "@/state/zustand/session-store"
 import { useQuery } from "@tanstack/react-query"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useContext } from "react"
-import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiFunnel, PiProhibit, PiX } from "react-icons/pi"
+import { PiProhibit, PiX } from "react-icons/pi"
 
 const getFacetFieldCounts = async (searchQueryString: string) => {
   const response = await fetch(`/api/fieldsPresent?${searchQueryString}`)
@@ -23,30 +23,18 @@ const getFacetFieldCounts = async (searchQueryString: string) => {
 }
 
 const RadiusFilter = () => {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const { activeGroupCode } = useGroup()
-  const { groupData } = useGroupData()
   const displayRadius = useSessionStore((s) => s.displayRadius)
   const setDisplayRadius = useSessionStore((s) => s.setDisplayRadius)
   const setDisplayPoint = useSessionStore((s) => s.setDisplayPoint)
   const displayPoint = useSessionStore((s) => s.displayPoint)
-  const submittedRadius = searchParams.get('radius')
+  const submittedRadius = useRadiusParam()
   const point = usePoint()
 
-  // Get the current location (either from point or group center coordinates)
-  const rawGroupCoords = (groupData as any)?.coordinates as number[] | undefined
-  const groupLocation: [number, number] | null =
-    Array.isArray(rawGroupCoords) && rawGroupCoords.length >= 2
-      ? [rawGroupCoords[1], rawGroupCoords[0]]
-      : null
-  const currentLocation = point || groupLocation
-
-  if (!currentLocation) return null
+  if (!point) return null
 
   const handleRadiusChange = (value: string) => {
     setDisplayRadius(value ? parseInt(value) : null)
-    setDisplayPoint(point || groupLocation)
+    setDisplayPoint(point)
   }
 
 
@@ -121,7 +109,7 @@ const RadiusFilter = () => {
         {/* Fjern radius */}
         {submittedRadius && (
           <Clickable
-            remove={["radius", ...activeGroupCode ? ["point"] : []]}
+            remove={["radius"]}
             className="btn btn-outline"
           >
             Fjern radius

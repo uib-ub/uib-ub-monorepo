@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   const groupValue =
     rawGroup.startsWith('grunnord_')
       ? rawGroup
-      : base64UrlToString(reservedParams.group)
+      : base64UrlToString(rawGroup)
 
     const query: any = {
     "size": 1000,

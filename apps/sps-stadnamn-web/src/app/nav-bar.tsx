@@ -1,12 +1,12 @@
 'use client'
 import Clickable from "@/components/ui/clickable/clickable"
+import { useTreeParam } from "@/lib/param-hooks"
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 
 export default function NavBar({ handleBlur, ...props }: any) {
     const pathname = usePathname()
-    const searchParams = useSearchParams()
-    const tree = searchParams.get('tree')
+    const tree = useTreeParam()
 
     return (
         <nav id="top" {...props}>
