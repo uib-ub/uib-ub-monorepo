@@ -65,8 +65,7 @@ export function useInitParam() {
 export function useInitDecoded() {
     const init = useInitParam()
     const initValue = init ? base64UrlToString(init) : null
-    const initCode = init ? init : null
-    return { initValue, initCode }
+    return initValue
 }
 
 
@@ -85,9 +84,13 @@ const validatePoint = (point: string): [number, number] | null => {
 
 
 
+export function usePointParam() {
+    return useGetParam('point')
+}
+
 
 export function usePoint(): [number, number] | null {
-    const point = useGetParam('point')
+    const point = usePointParam()
     if (!point) {
         return null
     }
@@ -138,11 +141,28 @@ export function useZoomParam() {
     return useGetParam('zoom')
 }
 
+export function useZoomNumber() {
+    const zoom = useZoomParam()
+    if (!zoom) {
+        return null
+    }
+    return parseInt(zoom)
+}
+
+
 export function useCenterParam() {
     return useGetParam('center')
 }
 
-export function useDatasetTag() {
+export function useCenterNumber() {
+    const center = useCenterParam()
+    if (!center) {
+        return null
+    }
+    return center.split(',').map(parseFloat) as [number, number]
+}
+
+export function useDatasetTagParam() {
     return useGetParam('datasetTag')
 }
 
@@ -152,6 +172,10 @@ export function useFulltextOn() {
 
 export function useOptionsOn() {
     return useGetParam('options') == 'on'
+}
+
+export function useOptionsParam() {
+    return useGetParam('options')
 }
 
 export function useDebugParamOn() {
@@ -166,14 +190,30 @@ export function useRadiusParam() {
     return useGetParam('radius')
 }
 
+export function useRadiusNumber() {
+    const radius = useRadiusParam()
+    if (!radius) {
+        return null
+    }
+    return parseInt(radius)
+}
+
 export function useSourceViewOn() {
     return useGetParam('sourceView') == 'on'
+}
+
+export function useFuzzyOn() {
+    return useGetParam('fuzzy') == 'on'
+}
+
+export function useDocParam() {
+    return useGetParam('doc')
 }
 
 
 
 export function useMode() {
-    const datasetTag = useDatasetTag()
+    const datasetTag = useDatasetTagParam()
     const perspective = usePerspective()
     const mode = useGetParam('mode')
 
