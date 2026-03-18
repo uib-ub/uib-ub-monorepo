@@ -8,13 +8,14 @@
  * NOTE: This is also used on the server (API routes) to separate filter params
  * from "control" params.
  */
+
+
 export const RESERVED_SEARCH_PARAM_KEYS = [
   'q',
-  'display',
+  //'dataset', TODO: add dataset and adm
   'perspective',
   'datasetTag',
   'page',
-  'groupPage',
   'asc',
   'desc',
   'fulltext',
@@ -36,7 +37,7 @@ export const RESERVED_SEARCH_PARAM_KEYS = [
   'activePoint',
   'activeYear',
   'activeName',
-  'radius',
+  'radius', // Not in use yet
   'facetQuery',
   'mode',
   'geotile',
