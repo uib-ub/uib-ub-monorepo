@@ -1,6 +1,6 @@
 'use client'
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
-import { useDebugParamOn, useFacetParam, useMapSettingsOn, useMaxResults, useMode, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useTreeParam } from "@/lib/param-hooks";
+import { useDebugGroupsOn, useDebugParamOn, useFacetParam, useGroupParam, useMapSettingsOn, useMaxResults, useMode, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useSourceViewOn, useTreeParam } from "@/lib/param-hooks";
 import { useSearchQuery } from "@/lib/search-params";
 import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
@@ -192,11 +192,10 @@ export default function MapInterface() {
     const setCurrentPosition = useSessionStore((s) => s.setCurrentPosition);
     const setDrawerOpen = useSessionStore((s) => s.setDrawerOpen);
     const { isMobile, scrollableContentRef } = useContext(GlobalContext)
-    const searchParams = useSearchParams()
     const { totalHits, docTotalHits, searchLoading } = useSearchData()
     const { resultCardData } = useResultCardData()
-    const sourceView = searchParams.get('sourceView') === 'on'
-    const group = searchParams.get('group')
+    const sourceView = useSourceViewOn()
+    const group = useGroupParam()
 
     const drawerRef = useRef<HTMLDivElement>(null)
 
@@ -211,7 +210,7 @@ export default function MapInterface() {
     const perspective = usePerspective()
     const setDebug = useDebugStore((s) => s.setDebug)
     const debugOn = useDebugParamOn()
-    const showDebugGroups = searchParams.get('debugGroups') == 'on'
+    const showDebugGroupsOn = useDebugGroupsOn()
     const maxResults = useMaxResults()
     const tree = useTreeParam()
     const mode = useMode()
@@ -322,10 +321,10 @@ export default function MapInterface() {
                         <>
                             <div className={`w-full sticky flex items-center pl-3 ${isMobile ? 'h-8' : 'h-12'} xl:px-0 gap-2`} id="map-settings-panel">
                                 <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-xl text-neutral-900 xl:px-4">
-                                    {searchParams.get('overlaySelector') === 'on' ? 'Kartlag' : 'Kartinnstillingar'}
+                                    {overlaySelectorOn ? 'Kartlag' : 'Kartinnstillingar'}
                                 </div>
                                 <div className="flex items-center gap-1 ml-auto">
-                                    {searchParams.get('overlaySelector') === 'on' ? (
+                                    {overlaySelectorOn ? (
                                         <Clickable className="flex items-center gap-1 px-2" label="Tilbake" remove={["overlaySelector"]}>
                                             <PiCaretLeftBold className="text-black text-lg" />
                                             Tilbake
@@ -392,7 +391,7 @@ export default function MapInterface() {
                                     id="results-panel"
                                     className={!isMobile ? "flex-1 min-h-0" : ""}
                                 >
-                                    {showDebugGroups ? <DebugToggle /> : <SearchResults />}
+                                    {showDebugGroupsOn ? <DebugToggle /> : <SearchResults />}
                                 </div>
                             )}
                         </>

@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   const { size, from, 
           sortPoint,
           searchSort,
-          groupId,
+          selectedGroup,
           noGeo,
           exclude,
           idField,
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     ...highlight ? { highlight } : {},
     "track_scores": true,
     "fields": ["group.adm1", "group.adm2", "group.id", "adm1", "adm2", "group.label", "uuid", "boost", "label", "location", "iiif", "sosi"],
-    ...(!sourceView && !groupId ? {
+    ...(!sourceView && !selectedGroup ? {
       "collapse": {
         "field": "group.id",
       }
@@ -92,8 +92,8 @@ export async function POST(request: Request) {
     termFilters.push({ "bool": { "must_not": { "exists": { "field": "location" } } } });
   }
 
-  if (groupValue) {
-    termFilters.push({ "term": { "group.id": groupValue } });
+  if (selectedGroup) {
+    termFilters.push({ "term": { "group.id": selectedGroup } });
   }
 
   // Construct the query part

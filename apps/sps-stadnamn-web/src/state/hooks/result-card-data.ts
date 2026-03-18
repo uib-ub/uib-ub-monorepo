@@ -3,7 +3,7 @@ import { base64UrlToString } from '@/lib/param-utils';
 import { useSearchQuery } from '@/lib/search-params';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
-import { useGroupParam, useInitParam } from '@/lib/param-hooks';
+import { useGroupParam, useInitParam, useQParam } from '@/lib/param-hooks';
 
 const resultCardDataQuery = async (
     id: string,
@@ -16,6 +16,8 @@ const resultCardDataQuery = async (
         newParams.set('sourceView', 'on');
     }
 
+    console.log("DEBUG", newParams.toString());
+
     const res = await fetch(`/api/card?${newParams.toString()}`);
 
     if (!res.ok) {
@@ -26,19 +28,19 @@ const resultCardDataQuery = async (
     return data;
 };
 
-export default function useResultCardData(overrideId?: string | null) {
+export default function useResultCardData(itemId?: string | null) {
     const { searchQueryString } = useSearchQuery()
     const init = useInitParam()
     const group = useGroupParam()
-    const id = overrideId || init || group
+    const id = itemId || init || group
     const idDecoded = id && [init, group].includes(id) ? base64UrlToString(id) : id
     const searchParams = useSearchParams()
     const sourceView = searchParams.get('sourceView') === 'on'
-    const searchQ = searchParams.get('q') || ""
+    const searchQ = useQParam() || ""
     let sourcesQuery = ""
 
     if (idDecoded?.startsWith('grunnord_')) {
-        sourcesQuery = searchQ
+        //sourcesQuery = searchQ
     }
     else {
         //const newQuery = new URLSearchParams(searchQueryString)
@@ -59,7 +61,7 @@ export default function useResultCardData(overrideId?: string | null) {
         queryKey: ['result-card', sourcesQuery, id, sourceView, searchQueryString],
         queryFn: async () =>
             idDecoded ? resultCardDataQuery(idDecoded, sourcesQuery, sourceView) : null,
-        placeholderData: (overrideId || init == id) ? undefined : (prevData: any) => prevData,
+        placeholderData: (itemId || init == id) ? undefined : (prevData: any) => prevData,
 
     })
 

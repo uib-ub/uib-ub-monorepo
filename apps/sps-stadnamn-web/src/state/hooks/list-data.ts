@@ -17,7 +17,7 @@ const listDataQuery = async ({
     pageParam = 0,
     searchQueryString,
     init,
-    groupValue,
+    selectedGroup,
     point,
     searchSort,
     sourceView,
@@ -26,7 +26,7 @@ const listDataQuery = async ({
     pageParam?: number;
     searchQueryString: string | null;
     init: string | null;
-    groupValue: string | null;
+    selectedGroup: string | null;
     point: [number, number] | null;
     searchSort: string | null;
     sourceView: boolean;
@@ -38,9 +38,9 @@ const listDataQuery = async ({
     const size = isFirstPage ? INITIAL_PAGE_SIZE : SUBSEQUENT_PAGE_SIZE;
     const from = isFirstPage ? 0 : INITIAL_PAGE_SIZE + (pageParam - 1) * SUBSEQUENT_PAGE_SIZE;
 
-    const sortPoint = !groupValue && point ? [point[1], point[0]] as [number, number] : null
-    const exclude = init && !groupValue ? init : null
-    const idField = groupValue ? null : (sourceView ? 'uuid' : 'group.id')
+    const sortPoint = !selectedGroup && point ? [point[1], point[0]] as [number, number] : null
+    const exclude = init && !selectedGroup ? init : null
+    const idField = selectedGroup ? null : (sourceView ? 'uuid' : 'group.id')
 
     const res = await fetch(`/api/search/list${searchQueryString ? `?${searchQueryString}` : ''}`, {
         method: 'POST',
@@ -52,7 +52,7 @@ const listDataQuery = async ({
             noGeo,
             exclude,
             idField,
-            groupValue,
+            selectedGroup,
         })
     })
     if (!res.ok) {
@@ -93,7 +93,7 @@ export default function useListData() {
     const noGeo = searchParams.get('noGeo') === 'on'
     const group = searchParams.get('group')
     const init = searchParams.get('init')
-    const groupValue = group ? base64UrlToString(group) : null
+    const selectedGroup = group ? base64UrlToString(group) : null
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const { isMobile } = useContext(GlobalContext)
     const mobilePreview = Boolean(init && isMobile && snappedPosition == 'bottom')
@@ -114,7 +114,7 @@ export default function useListData() {
             pageParam,
             searchQueryString: group ? null : searchQueryString,
             init,
-            groupValue,
+            selectedGroup,
             point,
             searchSort,
             sourceView,

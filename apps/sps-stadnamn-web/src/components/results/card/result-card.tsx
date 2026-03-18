@@ -294,19 +294,17 @@ function GroupBottomToolbarSingle({
 }
 
 export default function ResultCard({
-    id,
-    overrideGroupCode,
+    itemId,
     hasIiif,
     distanceMeters,
     mobilePreview,
 }: {
-    id: string;
-    overrideGroupCode?: string;
+    itemId: string | null;
     hasIiif?: boolean;
     distanceMeters?: number | null;
     mobilePreview?: boolean | undefined;
 }) {
-    const { resultCardData, resultCardLoading, resultCardTotal } = useResultCardData(overrideGroupCode);
+    const { resultCardData, resultCardLoading, resultCardTotal } = useResultCardData(itemId);
     const iiifItems = resultCardData?.iiifItems;
     const textItems = resultCardData?.textItems;
     const audioItems = resultCardData?.audioItems;
@@ -360,36 +358,10 @@ export default function ResultCard({
 
     const rawSosi = source?.sosi ?? fields.sosi;
 
-    const roundCoordString = (value: string, decimals: number) => {
-        const n = Number(value)
-        if (!Number.isFinite(n)) return value.trim()
-        const fixed = n.toFixed(decimals)
-        // Trim trailing zeros (and possible trailing dot) for nicer display
-        return fixed.replace(/\.?0+$/, '')
-    }
 
-    const formatCoordText = (lat: string, lng: string) => {
-        // Light rounding for readability (selection is by index, so no ambiguity)
-        const d = 6
-        return `N ${roundCoordString(lat, d)}°, Ø ${roundCoordString(lng, d)}°`
-    }
-
-    // Read activeYear and activeName from URL params
-    const activeYear = searchParams.get('activeYear')
-    const activeName = searchParams.get('activeName')
-    const groupLabel = label
     const isInit = Boolean(!group && initDecoded && resultCardData?.id && initDecoded === resultCardData.id)
     // Scroll to top when init group changes (when clicking "vel" button)
-    useEffect(() => {
-        if (resultCardData?.group?.id && initDecoded === resultCardData.id && scrollableContentRef.current) {
-            requestAnimationFrame(() => {
-                scrollableContentRef.current?.scrollTo({
-                    top: 0,
-                    behavior: 'auto'
-                });
-            });
-        }
-    }, [initDecoded, resultCardData?.group?.id, scrollableContentRef]);
+
 
     const treeSavedQuery = useSessionStore((s) => s.treeSavedQuery)
     const setTreeSavedQuery = useSessionStore((s) => s.setTreeSavedQuery)
@@ -419,7 +391,7 @@ export default function ResultCard({
     if (!sourceView && !resultCardData?.["id"]) {
         console.log("Group ID not found");
         const props = {
-            message: `Group ID not found: ${JSON.stringify(resultCardData)}}`,
+            message: `Group ID not found: ${JSON.stringify(resultCardData)} ${itemId}`,
         };
 
         fetch("/api/error", {
@@ -428,7 +400,7 @@ export default function ResultCard({
         });
         return (
             <div className="p-2">
-                Kunne ikkje lasta inn gruppe {JSON.stringify(resultCardData)} {overrideGroupCode}
+                Kunne ikkje lasta inn gruppe {JSON.stringify(resultCardData)} {itemId}
             </div>
         );
     }
@@ -437,7 +409,7 @@ export default function ResultCard({
 
 
     return (
-        <div id={id} className={`relative flex min-w-0 flex-col  ${mobilePreview ? 'gap-1 flex-wrap pb-8' : 'gap-3 py-4'}`}>
+        <div className={`relative flex min-w-0 flex-col  ${mobilePreview ? 'gap-1 flex-wrap pb-8' : 'gap-3 py-4'}`}>
             <div className={`min-w-0 w-full flex flex-col px-3 ${mobilePreview ? 'gap-1 flex-wrap' : 'gap-3'}`}>
                 {datasets && datasets.length == 1 && <div className={`flex items-center gap-2 ${mobilePreview ? 'flex-wrap' : ''}`}>
                     {datasets && datasets.length == 1 && (
@@ -593,45 +565,6 @@ export default function ResultCard({
                 )}
                 
                 {textItems?.length > 0 && <TextItemsSection textItems={textItems} />}
-
-            
-
-            {(false) && <div className="min-w-0 w-full flex flex-col">
-                {/* Filtering / coordinate sticky headers */}
-                {false && false && (
-                    <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 pt-2 pb-2">
-                        <div className="flex min-w-0 items-center justify-between gap-3 gap-y-2">
-                            <div className="min-w-0 flex-1 flex items-center gap-2 text-base text-neutral-900">
-                                <span className="font-semibold truncate">
-                                    {groupLabel}
-                                </span>
-                                <span className="truncate text-neutral-900">
-                                    {/* detailsRenderer removed */}
-                                </span>
-                            </div>
-                            <Clickable
-                                remove={['labelFilter', 'activeName', 'activeYear']}
-                                aria-label="Tilbake"
-                                className="inline-flex shrink-0 items-center gap-1.5 text-neutral-800 hover:text-neutral-900"
-                            >
-                                <PiCaretLeftBold className="text-base shrink-0" aria-hidden="true" />
-                                <span className="whitespace-nowrap">Tilbake</span>
-                            </Clickable>
-                        </div>
-                    </div>
-                )}
-
-                {false && (
-                    <div className="w-full shrink-0 border-b border-neutral-100 bg-white px-3 py-3">
-                        <div className="flex flex-col min-w-0 gap-y-3">
-                            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
-                                {null}
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-            </div>}
 
             {!mobilePreview && <>
                 <GroupBottomToolbarMulti groupData={resultCardData} groupTotal={resultCardTotal} />

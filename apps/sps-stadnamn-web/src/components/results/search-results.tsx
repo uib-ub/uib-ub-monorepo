@@ -211,7 +211,7 @@ export default function SearchResults() {
         </div>
       ) : initResultCardData && (
         <div className="relative" key={`init-${initValue}`}>
-          <ResultCard id={`result-card-${init}`} overrideGroupCode={init || undefined} hasIiif={initResultCardData?.iiifItems?.length > 0} mobilePreview={mobilePreview} />
+          <ResultCard itemId={init} hasIiif={initResultCardData?.iiifItems?.length > 0} mobilePreview={mobilePreview} />
         </div>
       ))}
 
@@ -288,14 +288,13 @@ export default function SearchResults() {
                       renderedCount += 1
                       const groupId = item.fields['group.id']?.[0]
                       const uuid = item.fields['uuid']?.[0]
-                      const groupCode = sourceView ? uuid : groupId
+                      const itemId = sourceView ? uuid : groupId
                       const domId = uuid || groupId
                       const hasIiif = !!item.fields['iiif']?.[0]
                       return <li className={`relative`} key={domId}>
                         {(isMobile || !init || group) ?
                           <ResultCard
-                            id={`result-card-${domId}`}
-                            overrideGroupCode={groupCode}
+                            itemId={itemId}
                             hasIiif={hasIiif}
                             distanceMeters={item.distance}
                           />

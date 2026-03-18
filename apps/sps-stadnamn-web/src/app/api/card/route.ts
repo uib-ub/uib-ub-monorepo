@@ -118,14 +118,13 @@ export async function GET(request: Request) {
   const isSourceView = reservedParams.sourceView === 'on'
   const useInnerHits = !isSourceView
   const filterField: 'group.id' | 'uuid' = isSourceView ? 'uuid' : 'group.id'
+  const itemId = reservedParams.id || ''
 
-  const idDecoded  = base64UrlToString(reservedParams.id ?? '')
-
-  let [data, status] = await postQuery(perspective, buildResultCardQuery(idDecoded, useInnerHits, filterField), "dfs_query_then_fetch")
+  let [data, status] = await postQuery(perspective, buildResultCardQuery(itemId, useInnerHits, filterField), "dfs_query_then_fetch")
 
   // Find group if the doc has been demoted within the group
   if (useInnerHits && data.hits?.hits.length === 0) {
-    const doc = await fetchDoc({ uuid: idDecoded })
+    const doc = await fetchDoc({ uuid: itemId })
     if (doc) {
       [data, status] = await postQuery(perspective, buildResultCardQuery(doc._source.group.id, useInnerHits, 'group.id'), "dfs_query_then_fetch")
     }
@@ -254,9 +253,6 @@ export async function GET(request: Request) {
   if (audioItems.length > 0) outputData.audioItems = audioItems;
   if (datasets.length > 0) outputData.datasets = datasets;
   if (additionalLabels.size > 0) outputData.additionalLabels = Array.from(additionalLabels);
-
-
-
 
 
   return Response.json(outputData, { status: status })
