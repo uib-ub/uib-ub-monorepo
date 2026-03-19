@@ -1,7 +1,6 @@
 import { fieldConfig } from '@/config/search-config';
 import { useSearchParams } from 'next/navigation';
-import { usePerspective } from './param-hooks';
-import { base64UrlToString } from './param-utils';
+import { useDatasetTagParam, useFulltextOn, useFuzzyOn, useGroupParam, usePerPageNumber, usePerspective, usePointParam, useQParam, useRadiusParam, useSourceViewOn, useTreeParam } from './param-hooks';
 import { isClientOnlySearchParamKey } from './reserved-param-types';
 
 
@@ -20,9 +19,16 @@ export function useSearchQuery() {
     const facetFilters: [string, string][] = []
     const datasetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
-    const size = parseInt(searchParams.get('size') || "20")
-    const group = searchParams.get('group')
-    const sourceView = searchParams.get('sourceView')
+    const size = usePerPageNumber()
+    const group = useGroupParam()
+    const sourceViewOn = useSourceViewOn()
+    const tree = useTreeParam()
+    const datasetTag = useDatasetTagParam()
+    const qParam = useQParam()
+    const fuzzyOn = useFuzzyOn()
+    const fulltextOn = useFulltextOn()
+    const radius = useRadiusParam()
+    const point = usePointParam()
 
 
 
@@ -65,13 +71,12 @@ export function useSearchQuery() {
 
 
     const searchFilterParamsString = searchQuery.toString()
-    const urlDatasetTag = searchParams.get('datasetTag')
-    const tree = searchParams.get('tree')
+
     // Only include datasetTag in API query strings when it's relevant:
     // - always include non-tree datasetTags (e.g. 'deep', 'base')
     // - include 'tree' only when `tree` is present (tree param is the source of truth)
-    if (urlDatasetTag && (urlDatasetTag !== 'tree' || !!tree)) {
-        searchQuery.set('datasetTag', urlDatasetTag)
+    if (datasetTag && (datasetTag !== 'tree' || !!tree)) {
+        searchQuery.set('datasetTag', datasetTag)
     }
 
     
@@ -79,26 +84,24 @@ export function useSearchQuery() {
     // Params that aren't considered filters
 
 
-    const fulltext = searchParams.get('fulltext')
-    if (fulltext && !tree && searchParams.get('q')) {
+    if (fulltextOn && !tree && qParam) {
         searchQuery.set('fulltext', 'on')
     }
 
-    const fuzzy = searchParams.get('fuzzy')
-    if (fuzzy === 'on' && searchParams.get('q')) {
+    if (fuzzyOn && qParam) {
         searchQuery.set('fuzzy', 'on')
     }
 
-    if (sourceView === 'on') {
+    if (sourceViewOn) {
         searchQuery.set('sourceView', 'on')
         if (group) {
             searchQuery.set('group', group)
         }
     }
 
-    if (searchParams.get('radius') && searchParams.get('point')) {
-        searchQuery.set('radius', searchParams.get('radius')!)
-        searchQuery.set('point', searchParams.get('point')!)
+    if (radius && point) {
+        searchQuery.set('radius', radius)
+        searchQuery.set('point', point)
     }
 
     const removeFilterParams = (key: string | string[], keep?: string[]) => {

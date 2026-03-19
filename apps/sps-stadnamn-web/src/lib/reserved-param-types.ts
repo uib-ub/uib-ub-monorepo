@@ -43,7 +43,9 @@ export const SERVER_ALLOWED_SEARCH_PARAM_KEYS = [
   'facet',
   'facetSearch',
   'facetSort', // Not currently in use?
+  'within',
   'doc' // to be deprecated?
+
 
   //'dataset', TODO: add dataset and adm
 

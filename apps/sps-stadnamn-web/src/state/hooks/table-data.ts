@@ -1,5 +1,5 @@
 'use client'
-import { useMaxResults } from "@/lib/param-hooks";
+import { useAscParam, useDescParam, useMaxResults, usePageNumber, usePageParam, usePerPageNumber, useWithinParam } from "@/lib/param-hooks";
 import { useSearchQuery } from "@/lib/search-params";
 import { parseTreeParam } from "@/lib/tree-param";
 import { useQuery } from "@tanstack/react-query";
@@ -48,21 +48,16 @@ const tableQuery = async ({
 
 
 export default function useTableData() {
-
     const { searchQueryString } = useSearchQuery()
-    const searchParams = useSearchParams()
-    const page = searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1
-    const perPage = searchParams.get('perPage') ? parseInt(searchParams.get('perPage')!) : 10
-    const desc = searchParams.get('desc')
-    const asc = searchParams.get('asc')
-    const tree = searchParams.get('tree')
-    const doc = searchParams.get('doc')
-    const treeUuid = parseTreeParam(searchParams.get('tree')).uuid
-    const cadastreDoc = tree ? (treeUuid || doc) : null
+    const page = usePageNumber()
+    const perPage = usePerPageNumber()
+    const desc = useDescParam()
+    const asc = useAscParam()
+    const within = useWithinParam()
 
     const { data, error, isLoading, isFetching, refetch, dataUpdatedAt } = useQuery({
-        queryKey: ['tableData', page, perPage, searchQueryString, desc, asc, cadastreDoc],
-        queryFn: () => tableQuery({ page, perPage, searchQueryString, desc, asc, within: cadastreDoc }),
+        queryKey: ['tableData', page, perPage, searchQueryString, desc, asc, within],
+        queryFn: () => tableQuery({ page, perPage, searchQueryString, desc, asc, within }),
         placeholderData: (prevData) => prevData,
         refetchOnWindowFocus: false,
         staleTime: 1000 * 60 * 5, // 5 minutes

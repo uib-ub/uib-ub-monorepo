@@ -1,7 +1,7 @@
 import Clickable from "@/components/ui/clickable/clickable";
 import { facetConfig } from "@/config/search-config";
 import { contentSettings } from "@/config/server-config";
-import { usePerspective } from '@/lib/param-hooks';
+import { useAscParam, useDescParam, usePageParam, usePerspective } from '@/lib/param-hooks';
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSearchParams } from "next/navigation";
 import { useContext, useState } from "react";
@@ -12,10 +12,11 @@ import { PiArrowCounterClockwise, PiFunnel } from "react-icons/pi";
 export default function TableOptions() {
     const perspective = usePerspective()
     const localStorageKey = `visibleColumns_${perspective}`;
-    const searchParams = useSearchParams()
 
     const { isMobile, visibleColumns, setVisibleColumns } = useContext(GlobalContext)
     const [columnFilter, setColumnFilter] = useState('')
+    const asc = useAscParam()
+    const desc = useDescParam()
 
 
 
@@ -53,7 +54,7 @@ export default function TableOptions() {
         <div className='flex gap-2 mt-2 xl:mt-0'>
 
 
-            {(searchParams.get('asc') || searchParams.get('desc')) &&
+            {(asc || desc) &&
                 <Clickable type="button" className='btn btn-outline btn-compact pl-2' add={{ asc: null, desc: null }}>
                     <PiArrowCounterClockwise className='text-xl mr-2' aria-hidden="true" />
                     Tilbakestill sortering

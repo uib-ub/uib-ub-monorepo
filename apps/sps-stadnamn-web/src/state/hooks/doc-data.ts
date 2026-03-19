@@ -1,4 +1,5 @@
 'use client'
+import { useDocParam } from '@/lib/param-hooks';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 
@@ -34,15 +35,12 @@ const docDataQuery = async (docUuid: string, docParams?: { docData: Record<strin
 
 export default function useDocData(docParams?: { docData: Record<string, any>, docDataset?: string }) {
     const searchParams = useSearchParams()
-    const doc = searchParams.get('doc')
-
-
-    const docUuid = searchParams.get('doc')
+    const doc = useDocParam()
 
     const { data, error: docError, isLoading: docLoading, isRefetching: docRefetching, isFetchedAfterMount: docFetchedAfterMount } = useQuery({
-        queryKey: ['doc', doc, docUuid],
+        queryKey: ['doc', doc],
         placeholderData: (prevData) => prevData,
-        queryFn: async () => docUuid ? docDataQuery(docUuid, docParams) : null
+        queryFn: async () => doc ? docDataQuery(doc, docParams) : null
     })
 
     const { docData, docAdm, docDataset, docGroup } = data || {}

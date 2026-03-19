@@ -2,13 +2,12 @@ import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { facetConfig } from "@/config/search-config";
 import { contentSettings } from "@/config/server-config";
-import { usePerspective } from '@/lib/param-hooks';
+import { useAscParam, useDescParam, usePerspective } from '@/lib/param-hooks';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { useSearchParams } from "next/navigation";
 import { PiCaretDownBold, PiSortAscending, PiSortDescending, PiTrash } from "react-icons/pi";
 
 export default function SortSelector() {
-    const searchParams = useSearchParams()
     const asc = useAscParam()
     const desc = useDescParam()
     const perspective = usePerspective()

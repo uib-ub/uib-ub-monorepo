@@ -4,7 +4,7 @@ import { useSearchQuery } from '@/lib/search-params';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useContext, useRef } from 'react';
-import { usePoint } from '@/lib/param-hooks';
+import { useInitParam, useGroupParam, useNoGeoOn, usePoint, useSourceViewOn, useSearchSortParam, usePageParam, usePageNumber } from '@/lib/param-hooks';
 import { calculateDistance } from '@/lib/map-utils';
 import { useSessionStore } from '../zustand/session-store';
 import { GlobalContext } from '../providers/global-provider';
@@ -20,7 +20,7 @@ const listDataQuery = async ({
     selectedGroup,
     point,
     searchSort,
-    sourceView,
+    sourceViewOn,
     noGeo,
 }: {
     pageParam?: number;
@@ -29,7 +29,7 @@ const listDataQuery = async ({
     selectedGroup: string | null;
     point: [number, number] | null;
     searchSort: string | null;
-    sourceView: boolean;
+    sourceViewOn: boolean;
     noGeo: boolean;
 }) => {
 
@@ -40,7 +40,7 @@ const listDataQuery = async ({
 
     const sortPoint = !selectedGroup && point ? [point[1], point[0]] as [number, number] : null
     const exclude = init && !selectedGroup ? init : null
-    const idField = selectedGroup ? null : (sourceView ? 'uuid' : 'group.id')
+    const idField = selectedGroup ? null : (sourceViewOn ? 'uuid' : 'group.id')
 
     const res = await fetch(`/api/search/list${searchQueryString ? `?${searchQueryString}` : ''}`, {
         method: 'POST',
@@ -83,16 +83,15 @@ const listDataQuery = async ({
 }
 
 export default function useListData() {
-    const searchParams = useSearchParams()
-    const initialPage = parseInt(searchParams.get('page') || '1')
+    const initialPage = usePageNumber()
     const initialPageRef = useRef(initialPage)
     const { searchQueryString } = useSearchQuery()
     const point = usePoint()
-    const searchSort = searchParams.get('searchSort')
-    const sourceView = searchParams.get('sourceView') == 'on'
-    const noGeo = searchParams.get('noGeo') === 'on'
-    const group = searchParams.get('group')
-    const init = searchParams.get('init')
+    const searchSort = useSearchSortParam()
+    const noGeo = useNoGeoOn()
+    const group = useGroupParam()
+    const init = useInitParam()
+    const sourceViewOn = useSourceViewOn()
     const selectedGroup = group ? base64UrlToString(group) : null
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const { isMobile } = useContext(GlobalContext)
@@ -117,7 +116,7 @@ export default function useListData() {
             selectedGroup,
             point,
             searchSort,
-            sourceView,
+            sourceViewOn,
             noGeo
         }),
         //placeholderData: (prevData: any) => prevData,
@@ -140,8 +139,6 @@ export default function useListData() {
         listInitialPage: initialPageRef.current,
         listPageSize: SUBSEQUENT_PAGE_SIZE,
         mobilePreview: mobilePreview,
-
-
     }
 }
 

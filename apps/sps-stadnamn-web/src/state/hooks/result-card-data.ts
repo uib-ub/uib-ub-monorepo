@@ -3,7 +3,7 @@ import { base64UrlToString } from '@/lib/param-utils';
 import { useSearchQuery } from '@/lib/search-params';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
-import { useGroupParam, useInitParam, useQParam } from '@/lib/param-hooks';
+import { useGroupParam, useInitParam, useQParam, useSourceViewOn } from '@/lib/param-hooks';
 
 const resultCardDataQuery = async (
     id: string,
@@ -34,9 +34,7 @@ export default function useResultCardData(itemId?: string | null) {
     const group = useGroupParam()
     const id = itemId || init || group
     const idDecoded = id && [init, group].includes(id) ? base64UrlToString(id) : id
-    const searchParams = useSearchParams()
-    const sourceView = searchParams.get('sourceView') === 'on'
-    const searchQ = useQParam() || ""
+    const sourceViewOn = useSourceViewOn()    
     let sourcesQuery = ""
 
     if (idDecoded?.startsWith('grunnord_')) {
@@ -58,9 +56,9 @@ export default function useResultCardData(itemId?: string | null) {
         isFetching: resultCardFetching,
         status,
     } = useQuery({
-        queryKey: ['result-card', sourcesQuery, id, sourceView, searchQueryString],
+        queryKey: ['result-card', sourcesQuery, id, sourceViewOn, searchQueryString],
         queryFn: async () =>
-            idDecoded ? resultCardDataQuery(idDecoded, sourcesQuery, sourceView) : null,
+            idDecoded ? resultCardDataQuery(idDecoded, sourcesQuery, sourceViewOn) : null,
         placeholderData: (itemId || init == id) ? undefined : (prevData: any) => prevData,
 
     })

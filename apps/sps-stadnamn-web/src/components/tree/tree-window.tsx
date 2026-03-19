@@ -11,13 +11,13 @@ import DatasetFacet from "@/components/facets/dataset-facet";
 import TreeList from "./tree-list";
 import Clickable from "@/components/ui/clickable/clickable";
 import { useSessionStore } from "@/state/zustand/session-store";
+import { useDocParam, useTreeParam } from "@/lib/param-hooks";
 
 export default function TreeWindow() {
-    const searchParams = useSearchParams()
-    const router = useRouter()
     const treeSavedQuery = useSessionStore((s) => s.treeSavedQuery)
-    const clearTreeSavedQuery = useSessionStore((s) => s.clearTreeSavedQuery)
-    const { dataset, adm1, adm2, uuid } = parseTreeParam(searchParams.get('tree'))
+    const tree = useTreeParam()
+    const { dataset, adm1, adm2, uuid } = parseTreeParam(tree)
+    const doc = useDocParam()
 
     const { data: selectedDoc, isLoading: selectedDocLoading, isError: selectedDocError } = useQuery({
         queryKey: ['treeSelectedDoc', dataset, uuid],
@@ -126,7 +126,7 @@ export default function TreeWindow() {
                     <div className="p-3 text-neutral-900">Datasettet har ikkje matrikkelvising.</div>
                 )}
                 {dataset && treeSettings[dataset] && (
-                    <TreeList dataset={dataset} adm1={adm1} adm2={adm2} expandedUuid={uuid} docUuid={searchParams.get('doc')} />
+                    <TreeList dataset={dataset} adm1={adm1} adm2={adm2} expandedUuid={uuid} docUuid={doc} />
                 )}
             </div>
         </div>

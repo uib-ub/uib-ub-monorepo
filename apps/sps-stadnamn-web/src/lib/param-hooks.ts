@@ -265,6 +265,10 @@ export function useAscParam() {
     return useGetParam('asc')
 }
 
+export function useWithinParam() {
+    return useGetParam('within')
+}
+
 
 export function useOverlayParams() {
     const optionsOn = useOptionsOn()

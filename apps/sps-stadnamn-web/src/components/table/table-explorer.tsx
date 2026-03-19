@@ -23,7 +23,6 @@ import SortHeader from "./sort-header"
 
 export default function TableExplorer() {
     const perspective = usePerspective()
-    const searchParams = useSearchParams()
     const { totalHits, searchLoading } = useSearchData()
     const doc = useDocParam()
     const tree = useTreeParam()
@@ -133,7 +132,7 @@ export default function TableExplorer() {
                                     <Fragment key={hit._id}>
                                         <tr className={`${tableLoading ? 'opacity-50' : ''}`}>
                                             {/* TODO: investigate whether rowgroup is still needed */}
-                                            <th id={"rowHeader_" + hit._id} scope={searchParams.get('expanded') == hit._source?.uuid ? 'rowgroup' : 'row'} className="!p-0">
+                                            <th id={"rowHeader_" + hit._id} scope={'row'} className="!p-0">
                                                 <div className="flex gap-1 items-center">
                                                     <Clickable className="flex group items-center gap-2 p-2 no-underline"
                                                         link
