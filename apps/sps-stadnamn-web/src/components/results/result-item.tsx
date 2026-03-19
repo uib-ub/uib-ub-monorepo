@@ -70,7 +70,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
         <Clickable ref={itemRef}
             notClickable={notClickable}
             onClick={handleClick}
-            remove={['doc', 'group', 'activePoint']}
+            remove={['doc', 'group', 'activePoint', 'resultLimit']}
             add={{ init: sourceViewOn ? hit.fields.uuid[0] : stringToBase64Url(hit.fields["group.id"]?.[0]),
                 point: hit.fields?.location?.[0]?.coordinates ? `${hit.fields?.location?.[0]?.coordinates[1]},${hit.fields?.location?.[0]?.coordinates[0]}` : null
 
