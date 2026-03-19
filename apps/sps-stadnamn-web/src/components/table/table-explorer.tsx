@@ -3,12 +3,13 @@ import Pagination from "./pagination"
 import { TitleBadge } from "@/components/ui/badge"
 import Clickable from "@/components/ui/clickable/clickable"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
+import { datasetTitles } from "@/config/metadata-config"
 import { formatCadastre } from "@/config/result-renderers"
 import { facetConfig } from "@/config/search-config"
 import { contentSettings, treeSettings } from "@/config/server-config"
 import { useDocParam, usePerspective, useTreeParam } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
-import { getGnr, getSkeletonLength, getValueByPath } from "@/lib/utils"
+import { getGnr, getSkeletonLength, getValueByPath, indexToCode } from "@/lib/utils"
 import useSearchData from "@/state/hooks/search-data"
 import useTableData from "@/state/hooks/table-data"
 import { GlobalContext } from "@/state/providers/global-provider"
@@ -37,7 +38,27 @@ export default function TableExplorer() {
 
     const joinWithSlash = (adm: string | string[]) => Array.isArray(adm) ? adm.join('/') : adm;
 
-    function getValueByKeyPath(key: string, source: Record<string, any>): any {
+    const formatArea = (source: Record<string, any>) => {
+        const adm2 = joinWithSlash(source?.adm2) || '';
+        const adm3 = source?.adm3?.length ? ` - ${joinWithSlash(source.adm3)}` : '';
+        const adm1 = joinWithSlash(source?.adm1) || '';
+        const comma = adm2 ? ', ' : '';
+        const area = `${adm2}${adm3}${comma}${adm1}`.trim();
+
+        return area || '-';
+    };
+
+    const getDatasetTitle = (index?: string) => {
+        if (!index) return '-';
+        const dataset = indexToCode(index)?.[0];
+        return (dataset && datasetTitles[dataset]) || dataset || '-';
+    };
+
+    function getValueByKeyPath(key: string, source: Record<string, any>, index?: string): any {
+        if (key === 'dataset') {
+            return getDatasetTitle(index);
+        }
+
         let value = key.split('.').reduce((o: Record<string, any> | undefined, k: string) => (o || {})[k], source);
 
         if (value && key == 'datasets') {
@@ -137,8 +158,7 @@ export default function TableExplorer() {
                                                 </div>
                                             </th>
                                             {
-                                                visibleColumnsArray.includes('adm') && <td>{joinWithSlash(hit._source.adm2)}{hit._source.adm3?.length && ' - ' + joinWithSlash(hit._source.adm3)}{joinWithSlash(hit._source.adm2) && ', '}{joinWithSlash(hit._source.adm1)}</td>
-                                            }
+                                                visibleColumnsArray.includes('adm') && <td>{formatArea(hit._source)}</td>                                            }
                                             {showCadastre && visibleColumnsArray.includes('cadastre') &&
                                                 <td>
                                                     {hit._source.cadastre && formatCadastre(hit._source.cadastre)}
@@ -152,8 +172,10 @@ export default function TableExplorer() {
                                                             .join(', ')}
                                                     </td>
                                                     :
-                                                    <td key={facet.key}>
-                                                        {getValueByKeyPath(facet.key, hit._source)}
+                                                    <td key={facet.key} title={facet.key === 'dataset' ? getDatasetTitle(hit._index) : undefined}>
+                                                        {facet.key === 'dataset'
+                                                            ? <span className="block truncate max-w-80">{getValueByKeyPath(facet.key, hit._source, hit._index)}</span>
+                                                            : getValueByKeyPath(facet.key, hit._source, hit._index)}
                                                     </td>
                                             ))}
                                         </tr>
