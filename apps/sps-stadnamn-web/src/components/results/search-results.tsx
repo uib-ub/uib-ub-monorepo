@@ -92,6 +92,38 @@ export default function SearchResults() {
   // Defaults are handled inside `useResultLimit()`.
   const maxVisibleResults = Number.isFinite(resultLimit) ? resultLimit : 0;
 
+  // Cap the visible results further based on total hit count.
+  //
+  // - When `init` is present: default is `5`, but if there are more than 5
+  //   additional results we only render `3` initially.
+  // - When `init` is NOT present: default is `10`, but if there are more than 10
+  //   results we only render `5` initially.
+  //
+  // This avoids a pointless "Vis meir" interaction when there are only
+  // a few extra items.
+  const totalResultsCountForCap = useMemo(() => {
+    // In source view we currently only have a reliable count for the loaded hits,
+    // so we fall back to the already-derived value.
+    if (sourceViewOn) return additionalResultsCount
+    const totalGroups = groupTotalHits?.value ?? 0
+    return initGroupId ? Math.max(totalGroups - 1, 0) : totalGroups
+  }, [sourceViewOn, additionalResultsCount, groupTotalHits, initGroupId])
+
+  const effectiveMaxVisibleResults = useMemo(() => {
+    const DEFAULT_INIT_VISIBLE = 5
+    const DEFAULT_NO_INIT_VISIBLE = 10
+
+    if (init && maxVisibleResults === DEFAULT_INIT_VISIBLE && totalResultsCountForCap > DEFAULT_INIT_VISIBLE) {
+      return 3
+    }
+
+    if (!init && maxVisibleResults === DEFAULT_NO_INIT_VISIBLE && totalResultsCountForCap > DEFAULT_NO_INIT_VISIBLE) {
+      return 5
+    }
+
+    return maxVisibleResults
+  }, [init, maxVisibleResults, totalResultsCountForCap])
+
   // Total number of results that have been loaded from the API so far.
   const totalLoadedResults = useMemo(() => {
     if (!listData) return 0;
@@ -100,42 +132,16 @@ export default function SearchResults() {
     }, 0);
   }, [listData]);
 
-  // Derived: do all currently rendered results have coordinates?
-  // We mirror the same maxVisibleResults cut-off as the renderer.
-  const allVisibleHaveLocation = useMemo(() => {
-    if (!listData) return false;
-    let seen = 0;
-    for (const page of (listData as any).pages || []) {
-      for (const item of page.data || []) {
-        if (seen >= maxVisibleResults) {
-          return true;
-        }
-        // Keep counting logic consistent with the renderer:
-        // items without a group id are skipped and should not count towards
-        // the visible max.
-        if (!sourceViewOn && !item.fields?.["group.id"]) {
-          continue;
-        }
-        const loc = item.fields?.location?.[0]?.coordinates;
-        if (!Array.isArray(loc) || loc.length !== 2) {
-          return false;
-        }
-        seen += 1;
-      }
-    }
-    // If we have rendered at least one item and none lacked coordinates,
-    // treat this as "all visible have location".
-    return seen > 0;
-  }, [listData, maxVisibleResults]);
+
 
   // Whether to show the "Utan koordinatar" filter control in the options row.
+  // Purpose: 
+  const firstHasLocation = listData?.pages[0]?.data?.[0]?.fields?.location?.[0]?.coordinates?.length === 2
   const showNoLocationToggle =
-    !!init &&
-    initHasCoordinates &&
-    !sourceViewOn &&
+    (!!init || !point) && // results without coordinates are irrelevant if you have a start point but no init
     !!noGeoGroupCount &&
     noGeoGroupCount > 0 &&
-    (noGeoOn || allVisibleHaveLocation);
+    (noGeoOn || firstHasLocation);
 
   return (
     <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
@@ -244,7 +250,7 @@ export default function SearchResults() {
                 return (
                   <Fragment key={`page-${pageIndex}`}>
                     {page.data?.map((item: any, idx: number) => {
-                      if (renderedCount >= maxVisibleResults) return null
+                      if (renderedCount >= effectiveMaxVisibleResults) return null
                       if (!sourceViewOn && !item.fields["group.id"]) {
                         console.log("No group ID", item);
                         return null
@@ -270,14 +276,14 @@ export default function SearchResults() {
                       </li>
                     })}
                     {/* Vis meir button at the end of each page */}
-                    {isLastPage && (listHasNextPage || totalLoadedResults > maxVisibleResults) && (
+                    {isLastPage && (listHasNextPage || totalLoadedResults > effectiveMaxVisibleResults) && (
                       <li className="flex flex-col gap-2 justify-center">
                         <Clickable
                           type="button"
                           add={{
                             resultLimit: String(
                                 (() => {
-                                  const current = maxVisibleResults
+                                  const current = effectiveMaxVisibleResults
                                   const increase = Math.min(Math.round(current * 1.5), 100)
                                   const next = current + increase
                                   return Math.min(next, 100)
