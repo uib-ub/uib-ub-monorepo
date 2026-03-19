@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { getAreaLabelMarkerIcon, getClusterMarker, getInitAnchorMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 
-import { boundsFromZoomAndCenter, calculateRadius, fitBoundsToGroupSources, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
+import { boundsFromZoomAndCenter, calculateRadius, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
 import { useActivePoint, useCenterNumber, useDebugGroupsOn, useDocParam, useGroupParam, useMapSettingsOn, usePoint, useQParam, useRadiusNumber, useSourceViewOn, useTreeParam, useZoomNumber, useInitDecoded, useInitParam } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { parseTreeParam } from "@/lib/tree-param";
@@ -16,7 +16,7 @@ import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useMapSettings } from '@/state/zustand/persistent-map-settings';
 import { useSessionStore } from "@/state/zustand/session-store";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import wkt from 'wellknown';
@@ -24,6 +24,7 @@ import { useDebugStore } from '../../state/zustand/debug-store';
 import DynamicMap from "./leaflet/dynamic-map";
 import MapToolbar from "./map-toolbar";
 import { treeSettings } from "@/config/server-config";
+import useTreeModeMapData from "./hooks/use-tree-mode-map-data";
 
 const DynamicDebugLayers = dynamic(() => import('@/components/map/debug-layers'), {
   ssr: false
@@ -106,8 +107,14 @@ export default function MapExplorer() {
   const treeAdm1 = treeState?.adm1
   const treeAdm2 = treeState?.adm2
   const treeUuid = treeState?.uuid
-  const lastTreeFitKeyRef = useRef<string | null>(null)
-  const lastAdmFitKeyRef = useRef<string | null>(null)
+  const { treeUnitDoc, treeSubunitsData } = useTreeModeMapData({
+    mapInstance,
+    isMobile,
+    treeDataset,
+    treeAdm1,
+    treeAdm2,
+    treeUuid,
+  })
   const areaSource = useMemo(
     () =>
       (doc
@@ -117,132 +124,6 @@ export default function MapExplorer() {
     [doc, resultCardData?.sources]
   )
   const activeResultCardHasArea = Boolean(areaSource?.area)
-
-  // Tree mode overlay data: selected cadastral unit + its subunits (bruk)
-  const { data: treeUnitDoc } = useQuery({
-    queryKey: ['treeSelectedDoc', treeDataset, treeUuid],
-    enabled: !!treeDataset && !!treeUuid,
-    queryFn: async () => {
-      const params = new URLSearchParams({ uuid: treeUuid as string, dataset: treeDataset as string })
-      const res = await fetch(`/api/tree?${params.toString()}`)
-      if (!res.ok) return null
-      const data = await res.json()
-      return data?.hits?.hits?.[0]?._source || null
-    },
-    staleTime: 1000 * 60 * 5,
-  })
-
-  const { data: treeSubunitsData } = useQuery({
-    queryKey: ['cadastral', treeDataset, treeUuid],
-    enabled: !!treeDataset && !!treeUuid,
-    queryFn: async () => {
-      const params = new URLSearchParams({
-        perspective: treeDataset as string,
-        within: treeUuid as string,
-        size: '1000',
-      })
-      const res = await fetch(`/api/search/table?${params.toString()}`)
-      if (!res.ok) return null
-      return res.json()
-    },
-    staleTime: 1000 * 60 * 5,
-  })
-
-  // In tree mode, fit bounds to the selected cadastral unit + its subunits,
-  // similar to how selecting a collapsed result fits to a group's sources.
-  useEffect(() => {
-    if (!mapInstance.current) return
-    if (!treeDataset || !treeUuid) return
-
-    const key = `${treeDataset}:${treeUuid}`
-    if (lastTreeFitKeyRef.current === key) return
-
-    const sources: Array<{ location: { coordinates: [number, number] } }> = []
-
-    if (treeUnitDoc?.location?.coordinates?.length === 2) {
-      const [lng, lat] = treeUnitDoc.location.coordinates as [number, number]
-      sources.push({ location: { coordinates: [lng, lat] } })
-    }
-
-    const subHits: any[] = treeSubunitsData?.hits?.hits || []
-    subHits.forEach((h: any) => {
-      const coords = h?._source?.location?.coordinates
-      if (coords?.length === 2) {
-        const [lng, lat] = coords as [number, number]
-        sources.push({ location: { coordinates: [lng, lat] } })
-      }
-    })
-
-    if (!sources.length) return
-
-    const rightPanelPx = isMobile ? 0 : Math.round(window.innerWidth * 0.40)
-    fitBoundsToGroupSources(
-      mapInstance.current,
-      {
-        sources,
-        ...(treeUnitDoc?.location?.coordinates?.length === 2
-          ? { fields: { location: [{ coordinates: treeUnitDoc.location.coordinates }] } }
-          : {}),
-      },
-      {
-        duration: 0.25,
-        maxZoom: 18,
-        paddingTopLeft: [20, 20],
-        paddingBottomRight: [rightPanelPx + 20, 20],
-      }
-    )
-    lastTreeFitKeyRef.current = key
-  }, [treeDataset, treeUuid, treeUnitDoc, treeSubunitsData])
-
-  // Fetch representative items for the current adm level (county or municipality) when no uuid is selected
-  const { data: treeAdmData } = useQuery({
-    queryKey: ['treeData', treeDataset, treeAdm1, treeAdm2],
-    enabled: !!treeDataset && !!treeAdm1 && !treeUuid,
-    queryFn: async () => {
-      const params = new URLSearchParams({ dataset: treeDataset as string })
-      if (treeAdm1) params.set('adm1', treeAdm1)
-      if (treeAdm2) params.set('adm2', treeAdm2)
-      const res = await fetch(`/api/tree?${params.toString()}`)
-      if (!res.ok) return null
-      return res.json()
-    },
-    staleTime: 1000 * 60 * 5,
-  })
-
-  // In tree mode, fit bounds to all items at the current adm level when navigating to a county or municipality
-  useEffect(() => {
-    if (!mapInstance.current || !treeDataset || !treeAdm1 || treeUuid) return
-
-    const key = `${treeDataset}:${treeAdm1}:${treeAdm2 || ''}`
-    if (lastAdmFitKeyRef.current === key) return
-
-    const hits: any[] = treeAdmData?.hits?.hits || []
-    const sources = hits.flatMap((h: any) => {
-      const coords = h?.fields?.location?.[0]?.coordinates
-      if (Array.isArray(coords) && coords.length === 2) {
-        const [lng, lat] = coords as [number, number]
-        return [{ location: { coordinates: [lng, lat] as [number, number] } }]
-      }
-      return []
-    })
-
-    if (!sources.length) return
-
-    const rightPanelPx = isMobile ? 0 : Math.round(window.innerWidth * 0.40)
-    fitBoundsToGroupSources(
-      mapInstance.current,
-      { sources },
-      {
-        duration: 0.25,
-        maxZoom: 14,
-        paddingTopLeft: [20, 20],
-        paddingBottomRight: [rightPanelPx + 20, 20],
-      }
-    )
-    lastAdmFitKeyRef.current = key
-  }, [treeDataset, treeAdm1, treeAdm2, treeUuid, treeAdmData, isMobile])
-
-
 
   const defaultZoom = isMobile ? 4 : 5
   const defaultCenter: [number, number] = isMobile ? [62, 16] : [62, 16]
@@ -1056,7 +937,7 @@ export default function MapExplorer() {
                   return
                 }
 
-                const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
+                const childCount = zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const labelText = getDisplayLabel(item.fields)
                 const pointMarkerTooltip = (!isMobile) ? (
                   <Tooltip direction="top" offset={[0, -20]} opacity={1} className="point-marker-tooltip">
@@ -1482,7 +1363,7 @@ export default function MapExplorer() {
               </>
             )}
             {point && init && !activePoint && !init && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
-            {point && !activePoint && init && <Marker icon={new leaflet.DivIcon(
+            {point && !activePoint && init && <Marker zIndexOffset={1000} icon={new leaflet.DivIcon(
               activeMarkerMode != 'points'
                 ? getLabelMarkerIcon(
                     (
