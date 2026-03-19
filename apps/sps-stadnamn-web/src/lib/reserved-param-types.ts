@@ -64,8 +64,6 @@ export const SERVER_ALLOWED_SEARCH_PARAM_KEYS = [
     'perPage',
     'mapSettings',
     'overlaySelector',
-    'maxResults',
-    'collapsed',
     'init',
     'activePoint',
     'tree',
@@ -74,18 +72,11 @@ export const SERVER_ALLOWED_SEARCH_PARAM_KEYS = [
     'debug',
     'debugGroups',
     'noGeo', // passed in request body
+    'hideResults',
+    'resultLimit'
 
 
     /*
-
-  'page',
-  'activePoint',
-  'activeName',
-  'geotile',
-  'mapSettings',
-  'overlaySelector',
-  'debug',
-  'debugGroups',
   'results'
   */
 ] as const
@@ -99,6 +90,14 @@ export const RESERVED_SEARCH_PARAM_KEYS = [
   ...SERVER_ALLOWED_SEARCH_PARAM_KEYS,
   ...CLIENT_ONLY_SEARCH_PARAM_KEYS,
 ] as const
+
+// Compile-time safeguard: server-allowed and client-only keys must never overlap.
+type SearchParamKeyOverlap = Extract<
+  (typeof SERVER_ALLOWED_SEARCH_PARAM_KEYS)[number],
+  (typeof CLIENT_ONLY_SEARCH_PARAM_KEYS)[number]
+>
+type AssertNoSearchParamKeyOverlap<T extends never> = T
+type _NoSearchParamKeyOverlapCheck = AssertNoSearchParamKeyOverlap<SearchParamKeyOverlap>
 
 export type ServerAllowedSearchParamKey = (typeof SERVER_ALLOWED_SEARCH_PARAM_KEYS)[number]
 export const SERVER_ALLOWED_SEARCH_PARAM_KEY_SET: ReadonlySet<string> = new Set(

@@ -581,6 +581,7 @@ export default function MapExplorer() {
             : fields["group.id"][0]
         )
         newQueryParams.set('init', newInit)
+        newQueryParams.delete('resultLimit')
         newQueryParams.delete('group')
         newQueryParams.delete('activePoint')
         newQueryParams.delete('activeYear')

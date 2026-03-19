@@ -91,8 +91,7 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 href="/search"
                                 onClick={() => setMenuOpen(false)}
                                 aria-current={isMapActive ? 'page' : undefined}
-                                remove={['mode', 'tree', 'activePoint', 'group', 'doc']}
-                                add={{ maxResults: SM_BASE_MAX_RESULTS }}
+                                only={{ zoom, center }}
                                 className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
                                 ${isMapActive
                                         ? 'bg-accent-800 text-white font-semibold'

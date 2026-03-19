@@ -2,17 +2,15 @@
 import Spinner from "@/components/svg/Spinner";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
-import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
-import { useGroupParam, useInitParam, useMaxResults, useNoGeoOn, usePoint, useQParam, useSourceViewOn } from "@/lib/param-hooks";
-import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
+import { useGroupParam, useInitParam, useNoGeoOn, usePoint, useQParam, useResultLimit, useSourceViewOn } from "@/lib/param-hooks";
+import { base64UrlToString } from "@/lib/param-utils";
 import { useSearchQuery } from "@/lib/search-params";
 import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { Fragment, useContext, useEffect, useMemo, useRef } from "react";
+import { Fragment, useContext, useMemo, useRef } from "react";
 import { PiMagnifyingGlass, PiQuestion, PiX, PiXBold } from "react-icons/pi";
 import ResultCard from "@/components/results/card/result-card";
 import ActiveFilters from "@/components/results/active-filters";
@@ -25,11 +23,9 @@ import { ResultCardSkeleton, ResultItemSkeleton } from "@/components/results/car
 export default function SearchResults() {
   const { searchError, groupTotalHits, noGeoGroupCount } = useSearchData()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
-  const searchParams = useSearchParams()
   const init = useInitParam()
   const group = useGroupParam()
   const qParam = useQParam()
-  const resultsParam = useMaxResults()
   const sourceViewOn = useSourceViewOn()
   const { resultCardData: initResultCardData, resultCardLoading: initResultCardLoading } = useResultCardData()
   const initValue = init ? base64UrlToString(init) : null
@@ -42,12 +38,12 @@ export default function SearchResults() {
   const initHasCoordinates = initResultCardData?.fields?.location?.coordinates?.length >= 2
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
-  const setInitGroupLabel = useSessionStore((s) => s.setInitGroupLabel)
   const { isMobile, mapFunctionRef } = useContext(GlobalContext)
   const point = usePoint()
   const { facetFilters, datasetFilters } = useSearchQuery()
   const filterCount = facetFilters.length + datasetFilters.length
   const noGeoOn = useNoGeoOn()
+  const resultLimit = useResultLimit()
 
 
 
@@ -60,7 +56,6 @@ export default function SearchResults() {
     listIsFetchingNextPage,
     listStatus,
     listInitialPage,
-    listPageSize,
     mobilePreview,
   } = useListData()
 
@@ -88,16 +83,14 @@ export default function SearchResults() {
 
   // Check if there are no results
   const hasNoResults = listStatus === 'success' && (!listData?.pages || listData.pages.length === 0 || listData.pages[0].data?.length === 0);
-  const hasOneResult = listStatus === 'success' && listData?.pages && listData.pages.length === 1 && listData.pages[0].data?.length === 1;
   const hasNoAdditionalResults =
     listStatus === 'success' &&
     !!init &&
     additionalResultsCount === 0
-  const hasMaxResultsParam = resultsParam > 0
 
-  // Maximum number of list items to show, driven directly by the maxResults URL param.
-  // If no valid param is present, show everything that has been loaded.
-  const maxVisibleResults = resultsParam > 0 ? resultsParam : SM_BASE_MAX_RESULTS;
+  // Maximum number of list items to render.
+  // Defaults are handled inside `useResultLimit()`.
+  const maxVisibleResults = Number.isFinite(resultLimit) ? resultLimit : 0;
 
   // Total number of results that have been loaded from the API so far.
   const totalLoadedResults = useMemo(() => {
@@ -116,6 +109,12 @@ export default function SearchResults() {
       for (const item of page.data || []) {
         if (seen >= maxVisibleResults) {
           return true;
+        }
+        // Keep counting logic consistent with the renderer:
+        // items without a group id are skipped and should not count towards
+        // the visible max.
+        if (!sourceViewOn && !item.fields?.["group.id"]) {
+          continue;
         }
         const loc = item.fields?.location?.[0]?.coordinates;
         if (!Array.isArray(loc) || loc.length !== 2) {
@@ -137,14 +136,6 @@ export default function SearchResults() {
     !!noGeoGroupCount &&
     noGeoGroupCount > 0 &&
     (noGeoOn || allVisibleHaveLocation);
-
-  // Derived: should "Fleire namnegrupper" and the list of other groups be visible?
-  // For init on desktop, this is controlled solely by resultsParam (>1 means expanded).
-  const showOtherResults = (!init || isMobile || hasOneResult)
-    ? true
-    : hasMaxResultsParam;
-
-
 
   return (
     <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
@@ -228,7 +219,7 @@ export default function SearchResults() {
         </div>
       )) : null}
 
-      {(!init || showOtherResults || isMobile || hasOneResult) && !mobilePreview && (
+      {!mobilePreview && (
         <>
           {!hasNoAdditionalResults && (
             <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
@@ -284,11 +275,12 @@ export default function SearchResults() {
                         <Clickable
                           type="button"
                           add={{
-                            maxResults: String(
+                            resultLimit: String(
                                 (() => {
-                                  const current = resultsParam || listPageSize
+                                  const current = maxVisibleResults
                                   const increase = Math.min(Math.round(current * 1.5), 100)
-                                  return current + increase
+                                  const next = current + increase
+                                  return Math.min(next, 100)
                                 })()
                               
                             ),
@@ -325,8 +317,8 @@ export default function SearchResults() {
       )}
 
 
-      {( isMobile || searchError || listError || hasNoResults || hasNoAdditionalResults) && <div className={`flex flex-col gap-4 ${(init && !isMobile && !showOtherResults) ? '' : 'py-4 pb-8 xl:pb-4'}`}>
-        {filterCount > 0 && showOtherResults && <div className="mx-2 mb-4">
+      {( isMobile || searchError || listError || hasNoResults || hasNoAdditionalResults) && <div className={`flex flex-col gap-4 py-4 pb-8 xl:pb-4`}>
+        {filterCount > 0 && <div className="mx-2 mb-4">
 
           <ActiveFilters /></div>}
 

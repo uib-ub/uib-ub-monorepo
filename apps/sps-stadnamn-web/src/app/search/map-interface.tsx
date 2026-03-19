@@ -1,6 +1,6 @@
 'use client'
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
-import { useDebugGroupsOn, useDebugParamOn, useFacetParam, useGroupParam, useMapSettingsOn, useMaxResults, useMode, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useSourceViewOn, useTreeParam } from "@/lib/param-hooks";
+import { useDebugGroupsOn, useDebugParamOn, useFacetParam, useGroupParam, useHideResultsOn, useMapSettingsOn, useMode, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useSourceViewOn, useTreeParam } from "@/lib/param-hooks";
 import { useSearchQuery } from "@/lib/search-params";
 import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
@@ -119,9 +119,9 @@ function DrawerWrapper({ children, resultCardData, ...rest }: DrawerProps) {
 function LeftWindow({ children, bottomContent }: { children: React.ReactNode, bottomContent?: React.ReactNode }) {
     const { isMobile } = useContext(GlobalContext)
     const mapSettingsOn = useMapSettingsOn()
-    const maxResults = useMaxResults()
+    const hideResultsOn = useHideResultsOn()
     if (isMobile) {
-        if (mapSettingsOn && maxResults) return null
+        if (mapSettingsOn && hideResultsOn) return null
         return <>{children}</>
     }
     return (
@@ -160,7 +160,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
         scrollableContentRef?.current?.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
-    const maxResults = useMaxResults()
+    const hideResultsOn = useHideResultsOn()
     if (isMobile) {
         return <>{children}</>
     }
@@ -211,7 +211,7 @@ export default function MapInterface() {
     const setDebug = useDebugStore((s) => s.setDebug)
     const debugOn = useDebugParamOn()
     const showDebugGroupsOn = useDebugGroupsOn()
-    const maxResults = useMaxResults()
+    const hideResultsOn = useHideResultsOn()
     const tree = useTreeParam()
     const mode = useMode()
 
@@ -344,11 +344,11 @@ export default function MapInterface() {
                         <>
                             <div className={` flex items-center w-full ${isMobile ? 'h-8 min-h-8 px-3' : 'h-12 min-h-12 px-2 '} py-1  gap-2`}>
                                 <Clickable
-                                    aria-expanded={!!maxResults}
+                                    aria-expanded={!hideResultsOn}
                                     aria-controls="results-panel"
                                     className="flex items-center gap-1 xl:px-1"
                                     // When opening, use default results count. When closing, remove param.
-                                    add={{ maxResults: maxResults ? null : String(SM_BASE_MAX_RESULTS) }}
+                                    add={{ hideResults: hideResultsOn ? null : 'on' }}
                                     remove={[...(isMobile ? ['options'] : [])]}
                                 >
                                     {!isMobile && (

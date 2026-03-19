@@ -106,17 +106,6 @@ export function useActivePoint(): [number, number] | null {
 }
 
 
-export function useMaxResults() {
-    const maxResults = useGetParam('maxResults')
-    return parseInt(maxResults || "10")
-
-}
-
-export function useResultsCollapsed() {
-    const resultsCollapsed = useGetParam('collapsed')
-    return resultsCollapsed == 'on'
-}
-
 export function useTreeParam() {
     return useGetParam('tree')
 }
@@ -210,6 +199,18 @@ export function useDocParam() {
     return useGetParam('doc')
 }
 
+export function useHideResultsOn() {
+    return useGetParam('hideResults') == 'on'
+}
+
+export function useResultLimit() {
+    const resultLimit = useGetParam('resultLimit')
+    const init = useInitParam()
+    if (!resultLimit) {
+        return init ? 5 : 10
+    }
+    return parseInt(resultLimit)
+}
 
 
 export function useMode() {
@@ -277,8 +278,8 @@ export function useOverlayParams() {
     const facet = useFacetParam()
     const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
-    const maxResults = useMaxResults()
     const tree = useTreeParam()
+    const hideResultsOn = useHideResultsOn()
 
     const tableOptions = mode == 'table' && !optionsOn
 
@@ -299,7 +300,7 @@ export function useOverlayParams() {
         showLeftPanel = false
     }
 
-    const showResults = mode != 'table' && (maxResults || (isMobile && !showLeftPanel))
+    const showResults = mode != 'table' && (!hideResultsOn || (isMobile && !showLeftPanel))
     // On mobile, always show the right panel if map settings are active, even if the left panel would otherwise be visible
     const showRightPanel = mode != 'table' && (isMobile ? (mapSettingsOn || !showLeftPanel) : true)
 

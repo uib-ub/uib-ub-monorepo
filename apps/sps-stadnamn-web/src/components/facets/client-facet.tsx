@@ -7,7 +7,7 @@ import { SM_BASE_MAX_RESULTS } from '@/lib/utils';
 import { PiFunnel } from 'react-icons/pi';
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/state/providers/global-provider';
-import { useFacetParam, useMaxResults, usePerspective } from '@/lib/param-hooks';
+import { useFacetParam, usePerspective } from '@/lib/param-hooks';
 import { FacetBadge } from '@/components/ui/badge';
 import { usePreferences } from '@/state/zustand/persistent-preferences';
 

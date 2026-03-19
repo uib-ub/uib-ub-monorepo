@@ -51,7 +51,6 @@ export default async function Home() {
       name="q" 
       type="text"
     />
-    <input type="hidden" name="maxResults" value={SM_BASE_MAX_RESULTS}/>
     <button 
       className="bg-red-700 hover:bg-red-800 text-white rounded-lg h-14 lg:h-12 w-14 lg:w-12 flex items-center justify-center transition-colors duration-200 flex-shrink-0" 
       type="submit" 
