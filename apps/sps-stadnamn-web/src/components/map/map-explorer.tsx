@@ -1354,7 +1354,7 @@ export default function MapExplorer() {
                 />
               </>
             )}
-            {point && init && !activePoint && !init && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
+            {point && !activePoint && !init && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
             {point && !activePoint && init && <Marker zIndexOffset={1000} icon={new leaflet.DivIcon(
               activeMarkerMode != 'points'
                 ? getLabelMarkerIcon(
