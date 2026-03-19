@@ -51,7 +51,7 @@ export default function useResultCardData(itemId?: string | null) {
     }
 
     const {
-        data: rawData,
+        data: returnedData,
         error: resultCardError,
         isLoading: resultCardLoading,
         isRefetching: resultCardRefetching,
@@ -68,20 +68,21 @@ export default function useResultCardData(itemId?: string | null) {
     // Normalize the shape so existing components can rely on
     // `groupData.label` and `groupData.coordinates` even if the API
     // response only exposes these via `fields`/`sources`.
-    const processedData = rawData
+    const processedData = returnedData
         ? {
-            ...rawData,
+            ...returnedData,
+            id: sourceView ? (returnedData as any).fields?.["uuid"]?.[0] : (returnedData as any).fields["group.id"][0],
             label:
-                (rawData as any).label
-                ?? (rawData as any).fields?.label?.[0]
-                ?? (rawData as any).fields?.["group.label"]?.[0]
+                (returnedData as any).label
+                ?? (returnedData as any).fields?.label?.[0]
+                ?? (returnedData as any).fields?.["group.label"]?.[0]
                 ?? undefined,
             coordinates:
-                (rawData as any).coordinates
-                ?? (Array.isArray((rawData as any).fields?.location?.coordinates)
-                    ? (rawData as any).fields.location.coordinates
-                    : Array.isArray((rawData as any).sources?.[0]?.location?.coordinates)
-                        ? (rawData as any).sources[0].location.coordinates
+                (returnedData as any).coordinates
+                ?? (Array.isArray((returnedData as any).fields?.location?.coordinates)
+                    ? (returnedData as any).fields.location.coordinates
+                    : Array.isArray((returnedData as any).sources?.[0]?.location?.coordinates)
+                        ? (returnedData as any).sources[0].location.coordinates
                         : undefined),
         }
         : null

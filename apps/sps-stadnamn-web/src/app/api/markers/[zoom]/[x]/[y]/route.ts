@@ -15,6 +15,8 @@ export async function GET(
   const { simple_query_string } = getQueryString(reservedParams)
   const perspective = reservedParams.perspective || 'all'
   const totalHits = reservedParams.totalHits ? parseInt(reservedParams.totalHits) : undefined
+  const sourceView = reservedParams.sourceView === 'on'
+  const markerIdField = sourceView ? 'uuid' : 'group.id'
 
 
   const query: Record<string, any> = {
@@ -46,15 +48,15 @@ export async function GET(
         "aggs": {
           "group_count": {
             "cardinality": {
-              "field": "group.id",
+              "field": markerIdField,
               "precision_threshold": 3000
             }
           },
           "groups": {
             "terms": {
-              "field": "group.id",
+              "field": markerIdField,
               "order": { "max_placeScore": "desc" },
-              size: (Number(precision) > 17 || (totalHits && totalHits < 10000)) ? 500 : 10,
+              size: (Number(precision) > 16 || (totalHits && totalHits < 10000)) ? 500 : Number(precision) > 17  ? 1000 : 5,
             },
             "aggs": {
               "max_placeScore": {
