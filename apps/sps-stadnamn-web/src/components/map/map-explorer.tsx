@@ -193,6 +193,7 @@ export default function MapExplorer() {
   }
 
   const [markerCells, setMarkerCells] = useState<GeotileCell[]>([])
+  const [hideMarkersDuringGridTransition, setHideMarkersDuringGridTransition] = useState(false)
 
   // Cluster if:
   // Cluster mode
@@ -270,6 +271,9 @@ export default function MapExplorer() {
 
   const processedMarkerResults = useMemo(() => {
     if (markerResults.some((result: any) => result.isLoading)) {
+      if (hideMarkersDuringGridTransition) {
+        return []
+      }
       return markerResultsRef?.current
     }
 
@@ -419,7 +423,14 @@ export default function MapExplorer() {
     markerResultsRef.current = allMarkers
 
     return allMarkers
-  }, [markerResults, activeMarkerMode, zoomState, sourceViewOn])
+  }, [markerResults, activeMarkerMode, zoomState, sourceViewOn, hideMarkersDuringGridTransition])
+
+  useEffect(() => {
+    if (!hideMarkersDuringGridTransition) return
+    if (markerResults.length === 0) return
+    if (markerResults.some((result: any) => result.isLoading)) return
+    setHideMarkersDuringGridTransition(false)
+  }, [markerResults, hideMarkersDuringGridTransition])
 
 
 
@@ -432,6 +443,9 @@ export default function MapExplorer() {
     if (liveZoom <= 4 || gridSize === 1) {
       // Set marker cells to whole world if it isn't already one cell covering the world
       if (currentCells.length === 0 || currentCells[0]?.key != '0/0/0') {
+        if (currentCells.length > 0 && currentCells[0]?.precision !== 0) {
+          setHideMarkersDuringGridTransition(true)
+        }
         setMarkerCells([{
           key: '0/0/0',
           precision: 0,
@@ -491,6 +505,10 @@ export default function MapExplorer() {
     }
 
     suspendMarkerDiscoveryRef.current = false
+    const precisionChanged = currentCells.length > 0 && currentCells[0]?.precision !== precision
+    if (precisionChanged) {
+      setHideMarkersDuringGridTransition(true)
+    }
     setMarkerCells(newCells);
   }, [setMarkerCells]);
 
