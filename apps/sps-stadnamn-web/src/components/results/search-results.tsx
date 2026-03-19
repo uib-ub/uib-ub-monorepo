@@ -281,15 +281,7 @@ export default function SearchResults() {
                         <Clickable
                           type="button"
                           add={{
-                            resultLimit: String(
-                                (() => {
-                                  const current = effectiveMaxVisibleResults
-                                  const increase = Math.min(Math.round(current * 1.5), 100)
-                                  const next = current + increase
-                                  return Math.min(next, 100)
-                                })()
-                              
-                            ),
+                            resultLimit: resultLimit + 20
                           }}
                           onClick={() => {
                             if (!listIsFetchingNextPage && listHasNextPage) {
