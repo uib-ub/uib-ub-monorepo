@@ -6,16 +6,15 @@ import type { ParamProps } from "@/components/ui/clickable/param-types";
 import IconButton from "@/components/ui/icon-button";
 import { datasetTitles } from "@/config/metadata-config";
 import { treeSettings } from "@/config/server-config";
-import { useActivePoint, useGroupParam, useInitDecoded, useInitParam, useSourceViewOn } from "@/lib/param-hooks";
+import { useActivePoint, useGroupParam, useInitDecoded, useInitParam, usePoint, useSourceViewOn } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { buildTreeParam } from "@/lib/tree-param";
 import { getBnr, getGnr, getValueByPath, LG_BASE_MAX_RESULTS, SM_BASE_MAX_RESULTS } from "@/lib/utils";
 import useResultCardData from "@/state/hooks/result-card-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
-import { useSearchParams } from "next/navigation";
-import { useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { PiCaretLeftBold, PiCaretRightBold, PiCheck, PiLinkSimple, PiMapPin, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
+import { useContext, useState } from "react";
+import { PiCaretRightBold, PiCheck, PiLinkSimple, PiMapPin, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
 import Carousel from "@/components/results/carousel";
 import ResultCardTitle from "@/components/results/card/result-card-title";
 import { TextItemsSection } from "@/components/results/card/text-items-section";
@@ -93,13 +92,12 @@ function GroupBottomToolbarMulti({
     groupData: any;
     groupTotal?: number;
 }) {
-    const searchParams = useSearchParams();
     const sourceViewOn = useSourceViewOn();
     const { mapFunctionRef, isMobile } = useContext(GlobalContext);
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const activePoint = useActivePoint();
-    const init = searchParams.get('init')
+    const init = useInitParam()
     
     if (!groupData || sourceViewOn || !groupTotal || groupTotal === 1) {
         return null;
@@ -181,8 +179,7 @@ function GroupBottomToolbarSingle({
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const activePointCoords = useActivePoint();
     const [linkCopied, setLinkCopied] = useState(false);
-    const searchParams = useSearchParams();
-    const init = searchParams.get('init')
+    const init = useInitParam()
 
     if (!groupData || !isSingleSource) {
         return null;
@@ -308,14 +305,12 @@ export default function ResultCard({
     const iiifItems = resultCardData?.iiifItems;
     const textItems = resultCardData?.textItems;
     const audioItems = resultCardData?.audioItems;
-    const searchParams = useSearchParams();
-    const scrollableContentRef = useRef<HTMLDivElement>(null);
     const { sosiVocab } = useContext(GlobalContext);
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
-    const sourceView = searchParams.get("sourceView") === "on";
+    const sourceViewOn = useSourceViewOn();
     const group = useGroupParam();
-    const point = searchParams.get('point');
+    const point = usePoint();
     const initDecoded = useInitDecoded();
     
 
@@ -387,7 +382,7 @@ export default function ResultCard({
         return <ResultCardSkeleton hasIiif={hasIiif} />;
     }
 
-    if (!sourceView && !resultCardData?.["id"]) {
+    if (!sourceViewOn && !resultCardData?.["id"]) {
         console.log("Group ID not found");
         const props = {
             message: `Group ID not found: ${JSON.stringify(resultCardData)} ${itemId}`,
@@ -485,7 +480,7 @@ export default function ResultCard({
 
                                     const hasAdm = Boolean(adm1 || gnr);
 
-                                    return (hasAdm || (sourceView && rawSosi)) ? (
+                                    return (hasAdm || (sourceViewOn && rawSosi)) ? (
                                         <div className="text-sm text-neutral-800 flex items-center gap-1 flex-wrap">
                                             {adm1 && (
                                                 <Clickable
@@ -534,7 +529,7 @@ export default function ResultCard({
                                                     </Clickable>
                                                 </>
                                             )}
-                                            {sourceView && <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />}
+                                            {sourceViewOn && <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />}
                                         </div>
                                     ) : null;
                                 })()
@@ -542,7 +537,7 @@ export default function ResultCard({
                                 admText && (
                                     <div className="text-sm text-neutral-800 flex items-center gap-1 flex-wrap">
                                         <span>{admText}</span>
-                                        {sourceView && <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />}
+                                        {sourceViewOn && <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />}
                                     </div>
                                 )
                             )}

@@ -58,6 +58,8 @@ export const SERVER_ALLOWED_SEARCH_PARAM_KEYS = [
     export const CLIENT_ONLY_SEARCH_PARAM_KEYS = [
     'options',
     'mode',
+    'page',
+    'perPage',
     'mapSettings',
     'overlaySelector',
     'maxResults',
@@ -69,28 +71,15 @@ export const SERVER_ALLOWED_SEARCH_PARAM_KEYS = [
     'zoom',
     'debug',
     'debugGroups',
+    'noGeo', // passed in request body
 
 
     /*
 
-      'maxResults', passed in body
-  'noGeo', // passed in body
-  'collapsed',
-
-
   'page',
-  'groupPage',
-  'facetSort',
-  'facetSearch',
-  'totalHits',
-  'facets',
-  'zoom',
   'activePoint',
-  'activeYear',
   'activeName',
-  'mode',
   'geotile',
-  'init',
   'mapSettings',
   'overlaySelector',
   'debug',

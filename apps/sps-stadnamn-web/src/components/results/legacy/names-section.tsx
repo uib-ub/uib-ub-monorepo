@@ -13,7 +13,6 @@ export const GroupFilters = () => {
     const searchParams = useSearchParams()
     const activeYear = searchParams.get('activeYear')
     const activeName = searchParams.get('activeName')
-    const labelFilter = searchParams.get('labelFilter') === 'on'
     const { resultCardData } = useResultCardData()
     const datasets = resultCardData?.datasets || {}
     
@@ -242,7 +241,7 @@ export const GroupFilters = () => {
     }, [filteredYearsOrdered, filteredNamesByYear, filteredNamesWithoutYear, nameCounts])
 
     const hasActiveFilter = !!(activeYear || activeName)
-    const preventCollapse = hasActiveFilter || labelFilter
+    const preventCollapse = hasActiveFilter
 
     const allItems = [...yearsOrdered.map(y => ({ type: 'year' as const, year: y, names: namesByYear[y] || [] })), ...namesWithoutYear.map(n => ({ type: 'noYear' as const, name: n, count: nameCounts[n] || 0 }))]
     const allYearItems = filteredItems.filter(item => item.type === 'year')
@@ -290,7 +289,7 @@ export const GroupFilters = () => {
 
     return (
         <div className="flex flex-col gap-3">
-            {labelFilter && (
+            {true && (
                 <WarningMessage messageId="label-filter-1772701354" message="Filtreringsalternativa baserer seg på namneformer Språksamlingane har henta ut frå kjeldene, eventuelt med tidlegaste registrerte år. Lista er ikkje naudsynlegvis komplett, og kan innehalde feil." />
             )}
             

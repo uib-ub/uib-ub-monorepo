@@ -9,8 +9,8 @@ import { PiCaretDownBold, PiSortAscending, PiSortDescending, PiTrash } from "rea
 
 export default function SortSelector() {
     const searchParams = useSearchParams()
-    const asc = searchParams.get('asc')
-    const desc = searchParams.get('desc')
+    const asc = useAscParam()
+    const desc = useDescParam()
     const perspective = usePerspective()
 
     // Build sort options from facet config

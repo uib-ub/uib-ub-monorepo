@@ -3,14 +3,15 @@ import useSearchData from '@/state/hooks/search-data';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PiCaretDoubleLeft, PiCaretDoubleRight, PiCaretLeft, PiCaretRight } from 'react-icons/pi';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
+import { usePageNumber, usePerPageNumber } from '@/lib/param-hooks';
 
 export default function Pagination() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
   // Get current values from URL or use defaults
-  const perPage = Number(searchParams.get('perPage')) || 10
-  const page = Number(searchParams.get('page')) || 1
+  const perPage = usePerPageNumber()
+  const page = usePageNumber()
   const { totalHits } = useSearchData()
   const totalPages = Math.ceil(totalHits?.value / perPage)
   const cappedTotalPages = Math.min(totalPages, Math.ceil(10000 / perPage))

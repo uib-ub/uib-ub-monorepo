@@ -15,6 +15,7 @@ import ClickableIcon from "../ui/clickable/clickable-icon";
 import WarningMessage from "@/components/ui/notifications/warning-message";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
+import { useOverlaySelectorOn } from "@/lib/param-hooks";
 
 const MapDebugSettings = dynamic(() => import("./map-debug-settings"), { ssr: false });
 
@@ -34,7 +35,7 @@ export default function MapSettings() {
   const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
   const debug = useDebugStore((s) => s.debug);
   const [overlaySearch, setOverlaySearch] = useState('');
-  const overlaySelectorOpen = searchParams.get('overlaySelector') === 'on';
+  const overlaySelectorOn = useOverlaySelectorOn();
   const { mapFunctionRef } = useContext(GlobalContext);
 
   // Add state for h3 resolution
@@ -74,7 +75,7 @@ export default function MapSettings() {
     );
   }, []);
 
-  if (overlaySelectorOpen) {
+  if (overlaySelectorOn) {
     return (
         <section className="flex flex-col gap-8 pb-4 xl:px-2">
           <fieldset className="border-0 p-0 m-0">

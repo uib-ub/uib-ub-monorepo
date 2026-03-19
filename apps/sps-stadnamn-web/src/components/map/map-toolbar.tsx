@@ -8,36 +8,32 @@ import { RoundIconButton, RoundIconClickable, RoundIconClickableWithBadge } from
 import { useRouter, useSearchParams } from "next/navigation"
 
 
-import { useOverlayParams } from "@/lib/param-hooks"
+import { useOverlayParams, useSourceViewOn, useTreeParam } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 
 export function FilterButton() {
-    const searchParams = useSearchParams()
-    const router = useRouter()
-    const treeSavedQuery = useSessionStore((s) => s.treeSavedQuery)
-    const clearTreeSavedQuery = useSessionStore((s) => s.clearTreeSavedQuery)
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
     const { facetFilters, datasetFilters } = useSearchQuery()
     const filterCount = facetFilters.length + datasetFilters.length
-    const { options } = useOverlayParams()
+    const { optionsOn } = useOverlayParams()
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const { isMobile } = useContext(GlobalContext)
 
     return (
         <RoundIconClickableWithBadge
-            className={`relative p-3 ${options ? 'bg-accent-800 text-white' : ''}`}
+            className={`relative p-3 ${optionsOn ? 'bg-accent-800 text-white' : ''}`}
             label="Filter"
             aria-controls="options-panel"
-            aria-expanded={options}
-            add={{ options: options ? null : 'on' }}
+            aria-expanded={optionsOn}
+            add={{ options: optionsOn ? null : 'on' }}
             remove={isMobile ? ['mapSettings'] : []}
-            isActive={options}
+            isActive={optionsOn}
             onClick={() => {
-                !options && snappedPosition !== 'middle' && setSnappedPosition('middle')
+                !optionsOn && snappedPosition !== 'middle' && setSnappedPosition('middle')
             }}
             count={filterCount}
         >
-            {options ? <PiFunnelFill className="text-2xl" /> : <PiFunnel className="text-2xl" />}
+            {optionsOn ? <PiFunnelFill className="text-2xl" /> : <PiFunnel className="text-2xl" />}
         </RoundIconClickableWithBadge>
     )
 }
@@ -50,11 +46,10 @@ export default function MapToolbar() {
     const setMyLocation = useSessionStore((s) => s.setMyLocation)
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const { totalHits, searchBounds, searchLoading, searchError } = useSearchData()
-    const { options } = useOverlayParams()
-    const { mapSettings } = useOverlayParams()
-    const tree = searchParams.get('tree')
+    const { mapSettingsOn } = useOverlayParams()
+    const tree = useTreeParam()
     const router = useRouter()
-    const sourceView = searchParams.get('sourceView') === 'on'
+    const sourceViewOn = useSourceViewOn()
     
     const svhToRem = (svh: number) => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return 0
@@ -119,13 +114,13 @@ export default function MapToolbar() {
                     <PiGpsFix className="text-2xl" />
                 </RoundIconButton>
                 <RoundIconClickable
-                    className={`p-3 ${mapSettings ? 'bg-accent-800 text-white' : ''}`}
+                    className={`p-3 ${mapSettingsOn ? 'bg-accent-800 text-white' : ''}`}
                     aria-controls="map-settings-panel"
-                    aria-expanded={mapSettings}
+                    aria-expanded={mapSettingsOn}
                     label="Kartinnstillingar"
                     remove={['overlaySelector', ...(isMobile ? ['options'] : [])]}
-                    add={{ mapSettings: mapSettings ? null : 'on' }}
-                    onClick={() => !mapSettings && setSnappedPosition('middle')}
+                    add={{ mapSettings: mapSettingsOn ? null : 'on' }}
+                    onClick={() => !mapSettingsOn && setSnappedPosition('middle')}
                 >
                     <PiStackPlus className="text-2xl" />
                 </RoundIconClickable>
@@ -151,7 +146,7 @@ export default function MapToolbar() {
                 )}
 
                 
-                {isMobile && sourceView && (
+                {isMobile && sourceViewOn && (
                     <FilterButton />
                 )}
             </div>

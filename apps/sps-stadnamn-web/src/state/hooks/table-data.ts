@@ -1,4 +1,5 @@
 'use client'
+import { useMaxResults } from "@/lib/param-hooks";
 import { useSearchQuery } from "@/lib/search-params";
 import { parseTreeParam } from "@/lib/tree-param";
 import { useQuery } from "@tanstack/react-query";
@@ -8,7 +9,7 @@ import { useSearchParams } from "next/navigation";
 
 const tableQuery = async ({
     page = 1,
-    perPage = 10,
+    perPage = useMaxResults(),
     searchQueryString = '',
     desc = null,
     asc = null,

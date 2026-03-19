@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { Label } from "@/components/ui/label"
 import { SM_BASE_MAX_RESULTS } from "@/lib/utils"
 import { TitleBadge } from "@/components/ui/badge"
+import { useFulltextOn, useFuzzyOn, useInitParam, useNoGeoOn, useQParam, useSearchSortParam } from "@/lib/param-hooks"
 
 export default function SearchQueryDisplay({
   showNoLocationToggle = false,
@@ -13,21 +14,20 @@ export default function SearchQueryDisplay({
   showNoLocationToggle?: boolean
   noGeoGroupCount?: number
 }) {
-  const searchParams = useSearchParams()
   const router = useRouter()
-  const searchQ = searchParams.get('q')
-  const init = searchParams.get('init')
+  const searchParams = useSearchParams()
+  const init = useInitParam()
   const { resultCardData: initResultCardData } = useResultCardData(init)
-  const qParam = searchParams.get('q')
+  const qParam = useQParam()
   const initHasCoordinates = initResultCardData?.fields?.location?.coordinates?.length >= 2
-  const searchSort = searchParams.get('searchSort')
+  const searchSort = useSearchSortParam()
 
 
   // Check if query is single word (only letters) for fuzzy search toggle
-  const isSingleWord = searchQ ? /^\p{L}+$/u.test(searchQ) : false
-  const isFuzzy = searchParams.get('fuzzy') === 'on'
-  const fulltext = searchParams.get('fulltext')
-  const noGeo = searchParams.get('noGeo') === 'on'
+  const isSingleWord = qParam ? /^\p{L}+$/u.test(qParam) : false
+  const fuzzyOn = useFuzzyOn()
+  const fulltextOn = useFulltextOn()
+  const noGeoOn = useNoGeoOn()
 
   return (
     <>
@@ -36,7 +36,7 @@ export default function SearchQueryDisplay({
           <input
             id="fuzzy-toggle"
             type="checkbox"
-            checked={isFuzzy}
+            checked={fuzzyOn}
             onChange={(e) => {
               const checked = e.target.checked;
               const newParams = new URLSearchParams(searchParams)
@@ -57,7 +57,7 @@ export default function SearchQueryDisplay({
         <input
           id="fulltext-toggle"
           type="checkbox"
-          checked={!!fulltext}
+          checked={fulltextOn}
           onChange={(e) => {
             const checked = e.target.checked;
             const newParams = new URLSearchParams(searchParams)
@@ -78,7 +78,7 @@ export default function SearchQueryDisplay({
           <input
             id="no-location-toggle"
             type="checkbox"
-            checked={noGeo}
+            checked={noGeoOn}
             onChange={(e) => {
               const checked = e.target.checked
               const newParams = new URLSearchParams(searchParams)
@@ -92,12 +92,12 @@ export default function SearchQueryDisplay({
             className="form-checkbox h-4 w-4 accent-accent-700"
           />
           <Label htmlFor="no-location-toggle">
-            Utan koordinatar <TitleBadge count={noGeoGroupCount} className={`${noGeo ? 'bg-neutral-700 text-white p-0.5 px-1 rounded-full' : 'text-white bg-primary-700 p-0.5 px-1 rounded-full'}`} />
+            Utan koordinatar <TitleBadge count={noGeoGroupCount} className={`${noGeoOn ? 'bg-neutral-700 text-white p-0.5 px-1 rounded-full' : 'text-white bg-primary-700 p-0.5 px-1 rounded-full'}`} />
           </Label>
         </div>
       )}
 
-      {qParam && initHasCoordinates && init && isFuzzy && !noGeo && (
+      {qParam && initHasCoordinates && init && fuzzyOn && !noGeoOn && (
         <div
           className="flex items-center gap-2 ml-auto flex-wrap text-sm"
           role="radiogroup"

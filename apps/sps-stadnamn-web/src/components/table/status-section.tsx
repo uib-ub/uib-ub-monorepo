@@ -1,39 +1,25 @@
 'use client'
-import { useMode } from '@/lib/param-hooks';
+import { useDatasetTagParam, useDocParam, useGroupParam, useMode } from '@/lib/param-hooks';
 import { useSearchQuery } from '@/lib/search-params';
 import useSearchData from '@/state/hooks/search-data';
-import { GlobalContext } from '@/state/providers/global-provider';
-import { useSearchParams } from 'next/navigation';
-import { useContext } from 'react';
 import { PiInfoFill, PiWarningFill } from 'react-icons/pi';
 import SortSelector from '@/components/table/sort-selector';
 
 export default function StatusSection() {
   const { searchBounds, searchLoading, searchError, totalHits } = useSearchData()
   const mode = useMode()
-  const { isMobile } = useContext(GlobalContext)
-  const searchParams = useSearchParams()
-  const doc = searchParams.get('doc')
-  const group = searchParams.get('group')
-  const datasetTag = searchParams.get('datasetTag')
+  const doc = useDocParam()
+  const group = useGroupParam()
+  const datasetTag = useDatasetTagParam()
   const { facetFilters, datasetFilters } = useSearchQuery()
-  const fulltext = searchParams.get('fulltext')
 
 
 
   return <div className={`flex flex-col gap-2 ${mode == 'map' ? '' : 'px-2 pt-4 pb-2'}`}>
     <div className={`flex gap-1 items-start`}>
 
-
-
-
-
-
     </div>
     {mode == 'list' && (!doc && !group) && datasetTag != 'base' && <div className="flex flex-wrap xl:flex-row h-full p-2 px-6 gap-1"><SortSelector /></div>}
-
-
-
 
     {mode == 'map' && (!searchLoading && !searchBounds?.length && !searchError && totalHits?.value > 0) &&
       <div

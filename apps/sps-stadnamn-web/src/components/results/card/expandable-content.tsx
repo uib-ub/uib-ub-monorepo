@@ -41,7 +41,6 @@ export const ExpandableContent = ({
     if (!html && !text) return null;
 
     const searchParams = useSearchParams();
-    const sourceView = searchParams.get("sourceView") === "on";
 
     // Only render processed HTML when fully expanded or when content is short
     const processedHtml = html ? processHtmlContent(html, isExpanded || !isLong) : null;

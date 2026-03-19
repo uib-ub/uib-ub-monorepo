@@ -3,7 +3,7 @@ import Spinner from "@/components/svg/Spinner";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
-import { usePoint } from "@/lib/param-hooks";
+import { useGroupParam, useInitParam, useMaxResults, useNoGeoOn, usePoint, useQParam, useSourceViewOn } from "@/lib/param-hooks";
 import { base64UrlToString, stringToBase64Url } from "@/lib/param-utils";
 import { useSearchQuery } from "@/lib/search-params";
 import useResultCardData from "@/state/hooks/result-card-data";
@@ -26,19 +26,19 @@ export default function SearchResults() {
   const { searchError, groupTotalHits, noGeoGroupCount } = useSearchData()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
   const searchParams = useSearchParams()
-  const init = searchParams.get('init')
-  const group = searchParams.get('group')
-  const qParam = searchParams.get('q')?.trim()
-  const resultsParam = parseInt(searchParams.get('maxResults') || '0')
-  const sourceView = searchParams.get('sourceView') === 'on'
+  const init = useInitParam()
+  const group = useGroupParam()
+  const qParam = useQParam()
+  const resultsParam = useMaxResults()
+  const sourceViewOn = useSourceViewOn()
   const { resultCardData: initResultCardData, resultCardLoading: initResultCardLoading } = useResultCardData()
   const initValue = init ? base64UrlToString(init) : null
   // In grouped view, init points to a group id (base64 encoded).
   // In non-grouped view, init points to a source uuid, so we must derive the
   // corresponding group id from grouped init data to exclude it from collapsed results.
   const initGroupId = init
-    ? (initResultCardData?.id ?? (!sourceView ? initValue : null))
-    : (!sourceView ? initValue : null)
+    ? (initResultCardData?.id ?? (!sourceViewOn ? initValue : null))
+    : (!sourceViewOn ? initValue : null)
   const initHasCoordinates = initResultCardData?.fields?.location?.coordinates?.length >= 2
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
@@ -47,7 +47,7 @@ export default function SearchResults() {
   const point = usePoint()
   const { facetFilters, datasetFilters } = useSearchQuery()
   const filterCount = facetFilters.length + datasetFilters.length
-  const noGeo = searchParams.get('noGeo') === 'on'
+  const noGeoOn = useNoGeoOn()
 
 
 
@@ -70,7 +70,7 @@ export default function SearchResults() {
     if (!listData) return 0
 
     // In source-view (document mode), fall back to counting documents excluding the init uuid.
-    if (sourceView) {
+    if (sourceViewOn) {
       const allHits = listData.pages.flatMap((page: any) => page.data || [])
       return allHits.length
     }
@@ -133,10 +133,10 @@ export default function SearchResults() {
   const showNoLocationToggle =
     !!init &&
     initHasCoordinates &&
-    !sourceView &&
+    !sourceViewOn &&
     !!noGeoGroupCount &&
     noGeoGroupCount > 0 &&
-    (noGeo || allVisibleHaveLocation);
+    (noGeoOn || allVisibleHaveLocation);
 
   // Derived: should "Fleire namnegrupper" and the list of other groups be visible?
   // For init on desktop, this is controlled solely by resultsParam (>1 means expanded).
@@ -214,14 +214,14 @@ export default function SearchResults() {
                 id="other-groups-title"
                 className={`text-lg font-sans text-neutral-900 whitespace-nowrap`}
               >
-                {sourceView ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}
+                {sourceViewOn ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}
               </span>
 
             </>
           )}
 
           {/* Toolbar items share the same flex row as the chip so they wrap together. */}
-          {searchParams.get('q') && <SearchQueryDisplay
+          {qParam && <SearchQueryDisplay
             showNoLocationToggle={showNoLocationToggle}
             noGeoGroupCount={noGeoGroupCount ?? 0}
           />}
@@ -254,14 +254,14 @@ export default function SearchResults() {
                   <Fragment key={`page-${pageIndex}`}>
                     {page.data?.map((item: any, idx: number) => {
                       if (renderedCount >= maxVisibleResults) return null
-                      if (!sourceView && !item.fields["group.id"]) {
+                      if (!sourceViewOn && !item.fields["group.id"]) {
                         console.log("No group ID", item);
                         return null
                       }
                       renderedCount += 1
                       const groupId = item.fields['group.id']?.[0]
                       const uuid = item.fields['uuid']?.[0]
-                      const itemId = sourceView ? uuid : groupId
+                      const itemId = sourceViewOn ? uuid : groupId
                       const domId = uuid || groupId
                       const hasIiif = !!item.fields['iiif']?.[0]
                       return <li className={`relative`} key={domId}>

@@ -6,7 +6,7 @@ import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import { formatCadastre } from "@/config/result-renderers"
 import { facetConfig } from "@/config/search-config"
 import { contentSettings, treeSettings } from "@/config/server-config"
-import { usePerspective } from "@/lib/param-hooks"
+import { useDocParam, usePerspective, useTreeParam } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import { getGnr, getSkeletonLength, getValueByPath } from "@/lib/utils"
 import useSearchData from "@/state/hooks/search-data"
@@ -24,20 +24,11 @@ export default function TableExplorer() {
     const perspective = usePerspective()
     const searchParams = useSearchParams()
     const { totalHits, searchLoading } = useSearchData()
-
-
-
-    const doc = searchParams.get('doc')
-    const tree = searchParams.get('tree')
-
+    const doc = useDocParam()
+    const tree = useTreeParam()
     const { tableData, tableLoading } = useTableData()
-    const currentPosition = useSessionStore((s) => s.currentPosition)
-
     const { facetFilters, datasetFilters } = useSearchQuery()
     const filterCount = facetFilters.length + datasetFilters.length
-
-
-
     const { visibleColumns } = useContext(GlobalContext)
     const visibleColumnsArray = visibleColumns[perspective] || ['adm', ...facetConfig[perspective].filter(item => item.table).map(facet => facet.key)]
 

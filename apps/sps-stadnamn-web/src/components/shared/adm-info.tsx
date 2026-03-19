@@ -1,17 +1,16 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation';
+import { useSourceViewOn } from '@/lib/param-hooks';
 
 export default function AdmInfo({ hit }: { hit: any }) {
-  const searchParams = useSearchParams();
-  const sourceView = searchParams.get('sourceView') === 'on';
+  const sourceViewOn = useSourceViewOn();
 
   const groupAdm1 = hit.fields?.['group.adm1']?.[0] || hit.fields?.group?.adm1?.[0];
   const groupAdm2 = hit.fields?.['group.adm2']?.[0] || hit.fields?.group?.adm2?.[0];
   const directAdm1 = hit.fields?.adm1?.[0] || hit.adm1?.[0];
   const directAdm2 = hit.fields?.adm2?.[0] || hit.adm2?.[0];
 
-  const useGroupAdm = !sourceView;
+  const useGroupAdm = !sourceViewOn;
 
   // When sourceView is OFF: prefer group-level adm, fallback to direct.
   // When sourceView is ON: prefer direct adm, fallback to group-level.

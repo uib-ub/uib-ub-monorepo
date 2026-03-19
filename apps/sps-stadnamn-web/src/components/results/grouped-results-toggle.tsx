@@ -5,36 +5,30 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { stringToBase64Url } from "@/lib/param-utils"
 import ToggleButton from "@/components/ui/toggle-button"
 import { GlobalContext } from "@/state/providers/global-provider"
-import { PiBookOpen, PiCaretLeft, PiCaretLeftBold, PiCaretRightBold, PiSignpost } from "react-icons/pi"
+import { PiCaretLeftBold, PiCaretRightBold } from "react-icons/pi"
 import Clickable from "@/components/ui/clickable/clickable"
-import { SM_BASE_MAX_RESULTS } from "@/lib/utils"
-import { useMaxResults } from "@/lib/param-hooks"
+import { useInitParam, useSourceViewOn, useGroupParam, useCenterParam, useZoomParam, useQParam, usePointParam } from "@/lib/param-hooks"
 
 export default function GroupedResultsToggle() {
-    const searchParams = useSearchParams()
-    const router = useRouter()
-    const { scrollableContentRef, isMobile } = useContext(GlobalContext)
-    const maxResults = useMaxResults()
-
-    const init = searchParams.get('init')
-    const group = searchParams.get('group')
-    const sourceView = searchParams.get('sourceView') === 'on'
-    const isGrouped = !sourceView
-    const center = searchParams.get('center')
-    const zoom = searchParams.get('zoom')
-    const q = searchParams.get('q')
-    const point = searchParams.get('point')
+    const { scrollableContentRef } = useContext(GlobalContext)
+    const init = useInitParam()
+    const group = useGroupParam()
+    const sourceViewOn = useSourceViewOn()
+    const center = useCenterParam()
+    const zoom = useZoomParam()
+    const q = useQParam()
+    const point = usePointParam()
     // Track previous mode so we only scroll when it actually changes
-    const previousNoGroupingRef = useRef(sourceView)
+    const previousNoGroupingRef = useRef(sourceViewOn)
 
     useEffect(() => {
-        if (previousNoGroupingRef.current === sourceView) {
+        if (previousNoGroupingRef.current === sourceViewOn) {
             // First run or no change – just sync the value
-            previousNoGroupingRef.current = sourceView
+            previousNoGroupingRef.current = sourceViewOn
             return
         }
 
-        previousNoGroupingRef.current = sourceView
+        previousNoGroupingRef.current = sourceViewOn
 
         if (scrollableContentRef.current) {
             scrollableContentRef.current.scrollTo({
@@ -42,38 +36,20 @@ export default function GroupedResultsToggle() {
                 behavior: 'auto',
             })
         }
-    }, [sourceView, scrollableContentRef])
+    }, [sourceViewOn, scrollableContentRef])
 
-
-
-    const toggleGrouping = (enableGrouping: boolean) => {
-        const newParams = new URLSearchParams(searchParams.toString())
-        newParams.delete('init')
-        newParams.delete('activePoint')
-
-        if (enableGrouping) {
-            // Enable grouped view ("Namnegrupper")
-            newParams.delete('sourceView')
-        } else {
-            // Disable grouped view ("Kjeldeoppslag")
-            newParams.set('sourceView', 'on')
-
-        }
-
-        router.push(`?${newParams.toString()}`)
-    }
     
 
     return (
         <div className="flex items-center gap-2 text-sm text-neutral-900">
-            { sourceView ? <Clickable className="flex items-center gap-2" only={{ q, center, zoom, group: null, maxResults, init, point}}>
+            { sourceViewOn ? <Clickable className="flex items-center gap-2" only={{ q, center, zoom, group: null, init, point}}>
             <PiCaretLeftBold aria-hidden="true" className="text-primary-700"/>{(group && group == init) ? 'Gruppe' : 'Gruppert søk'}
             
             </Clickable>
             :
-<Clickable className="flex items-center gap-2" add={{ sourceView: 'on', maxResults: String(SM_BASE_MAX_RESULTS) }}>
-Avansert søk <PiCaretRightBold aria-hidden="true" className="text-primary-700"/>
-</Clickable>
+            <Clickable className="flex items-center gap-2" add={{ sourceView: 'on'}}>
+            Avansert søk <PiCaretRightBold aria-hidden="true" className="text-primary-700"/>
+            </Clickable>
 
             }
         </div>

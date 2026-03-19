@@ -1,7 +1,7 @@
 import Clickable from "@/components/ui/clickable/clickable"
+import { useQParam } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import { GlobalContext } from "@/state/providers/global-provider"
-import { useSearchParams } from "next/navigation"
 import { useContext } from "react"
 import { PiMagnifyingGlass, PiTilde, PiTrash } from "react-icons/pi"
 
@@ -19,8 +19,7 @@ const Suggestion = ({ q }: { q: string }) => {
 }
 
 export default function SearchSuggestions({ initGroupData }: { initGroupData: any }) {
-    const searchParams = useSearchParams()
-    const searchQ = searchParams.get('q')
+    const searchQ = useQParam()
     const initLabel = initGroupData?.fields?.label?.[0]
     const { facetFilters, datasetFilters } = useSearchQuery()
     const { isMobile } = useContext(GlobalContext)

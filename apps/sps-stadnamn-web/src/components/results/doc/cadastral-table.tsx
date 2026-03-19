@@ -15,11 +15,11 @@ import { useRef, useEffect, useState, useContext } from 'react'
 import { stringToBase64Url } from '@/lib/param-utils'
 import { PiCaretRightBold, PiMapPinFill } from "react-icons/pi"
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 import { useSessionStore } from '@/state/zustand/session-store'
 import { GlobalContext } from '@/state/providers/global-provider'
 import SubtleLink from '@/components/ui/clickable/subtle-link'
 import { panPointIntoView } from '@/lib/map-utils'
+import { useActivePoint, useCenterParam, useZoomParam } from '@/lib/param-hooks'
 
 interface CadastralTableProps {
   dataset: string
@@ -34,14 +34,13 @@ interface CadastralTableProps {
 }
 
 export default function CadastralTable({ dataset, uuid, list, groupId: parentGroupId, gnr, adm1, adm2, flush, showMarkers = true }: CadastralTableProps) {
-  const searchParams = useSearchParams()
   const { scrollToBrukRef, mapFunctionRef, isMobile } = useContext(GlobalContext)
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
-  const activePointParam = searchParams.get('activePoint')
+  const activePointParam = useActivePoint()
   const rowRefs = useRef<Record<string, HTMLTableRowElement>>({})
   const clearTreeSavedQuery = useSessionStore((s) => s.clearTreeSavedQuery)
-  const center = searchParams.get('center')
-  const zoom = searchParams.get('zoom')
+  const center = useCenterParam()
+  const zoom = useZoomParam()
   
   const { data: cadastralData, isLoading: cadastralLoading, error: cadastralError } = useQuery({
     queryKey: ['cadastral', dataset, uuid, gnr, adm1, adm2],
@@ -162,26 +161,27 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
                     const brukUuid = hit._source?.uuid
                     const bnrText = getBnr(hit, dataset)
                     const coords = hit._source?.location?.coordinates
-                    const activePoint =
+                    const ownPoint =
                       Array.isArray(coords) && coords.length === 2
                         ? `${coords[1]},${coords[0]}`
                         : undefined
-                    const isActiveMarker = !!activePoint && !!activePointParam && activePointParam === activePoint
+                    const activePointString = activePointParam ? `${activePointParam[1]},${activePointParam[0]}` : undefined
+                    const isActiveMarker = !!ownPoint && !!activePointString && ownPoint === activePointString
 
                     return (
                       <tr
                         key={hit._id}
-                        ref={activePoint ? (el) => { if (el) rowRefs.current[activePoint] = el; else delete rowRefs.current[activePoint] } : undefined}
+                        ref={ownPoint ? (el) => { if (el) rowRefs.current[ownPoint] = el; else delete rowRefs.current[ownPoint] } : undefined}
                         className="border-t border-neutral-100"
                       >
                         {showMarkers && (
                           <td className={`px-2 ${cellPadY} align-middle`}>
-                            {activePoint ? (
+                            {ownPoint ? (
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <Clickable
                                     link
-                                    add={{ activePoint }}
+                                    add={{ activePoint: ownPoint }}
                                     aria-pressed={isActiveMarker}
                                     onClick={() => {
                                       if (coords?.length === 2) {

@@ -3,7 +3,8 @@ import Clickable from "@/components/ui/clickable/clickable"
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import { datasetTitles } from "@/config/metadata-config"
 import { fieldConfig } from "@/config/search-config"
-import { usePerspective } from "@/lib/param-hooks"
+import { useMode, useFacetParam, useOptionsParam, usePerspective, useQParam, useFulltextOn } from "@/lib/param-hooks"
+import { ReservedSearchParamKey } from "@/lib/reserved-param-types"
 import { useSearchQuery } from "@/lib/search-params"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PiProhibit, PiX } from "react-icons/pi"
@@ -14,26 +15,29 @@ export default function ActiveFilters() {
   const { searchQuery, facetFilters, datasetFilters } = useSearchQuery()
   const searchParams = useSearchParams()
   const perspective = usePerspective()
-  const datasetTag = searchParams.get('datasetTag')
-  const tree = searchParams.get('tree')
-  const hasTree = !!searchParams.get('tree')
 
-  const fulltext = searchParams.get('fulltext')
+  const fulltextOn = useFulltextOn()
 
-  const showClearButton = (facetFilters.length + datasetFilters.length + Number(fulltext == 'on') + Number(searchParams.get('q') != null)) > 0
+  const showClearButton = (facetFilters.length + datasetFilters.length + Number(fulltextOn) + Number(useQParam() != null)) > 0
 
   const removeFilter = (key: string, value: string) => {
     const newSearchParams = new URLSearchParams(searchQuery)
     const values = newSearchParams.getAll(key)
+    const mode = useMode()
+    const facet = useFacetParam()
+    const options = useOptionsParam()
 
     // Remove all values for this key
     newSearchParams.delete(key)
 
     // Add back mode, nav and facet params if they exist
-    const keptParams = ['mode', 'facet', 'options', 'maxResults']
-    keptParams.forEach((param: string) => {
-      const value = searchParams.get(param)
-      if (value) newSearchParams.set(param, value)
+    const keptParams: Partial<Record<ReservedSearchParamKey, string | null>> = {
+      mode, 
+      facet,
+      options
+    }
+    Object.entries(keptParams).forEach(([key, value]) => {
+      if (value) newSearchParams.set(key, value)
     })
 
     // Add back all values except the one we want to remove

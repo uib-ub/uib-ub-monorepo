@@ -9,13 +9,14 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useAscParam, useDescParam, usePageParam } from "@/lib/param-hooks"
 
 
 export default function SortHeader({ field, label, description }: { field: string, label: string, description?: string }) {
     const searchParams = useSearchParams()
-    const desc = searchParams.get('desc')
-    const asc = searchParams.get('asc')
-    const page = searchParams.get('page')
+    const desc = useDescParam()
+    const asc = useAscParam()
+    const page = usePageParam()
 
 
     const sortToggle = (field: string): Record<string, string | null> => {
@@ -37,12 +38,12 @@ export default function SortHeader({ field, label, description }: { field: strin
                 <TooltipTrigger asChild>
                     <Clickable className="flex gap-1 items-center" add={sortToggle(field)}>
                         <span className="uppercase"> {label}</span>
-                        {searchParams.get('asc') == field && <PiSortAscending className='text-xl inline ml-2' aria-hidden="true" />}
-                        {searchParams.get('desc') == field && <PiSortDescending className='text-xl inline ml-2' aria-hidden="true" />}
+                        {asc == field && <PiSortAscending className='text-xl inline ml-2' aria-hidden="true" />}
+                        {desc == field && <PiSortDescending className='text-xl inline ml-2' aria-hidden="true" />}
                     </Clickable>
                 </TooltipTrigger>
                 <TooltipContent>
-                    {description ? description + ": " : ''}{searchParams.get('asc') == field && 'Sorter synkende' || searchParams.get('desc') == field && 'Fjern sortering' || 'Sorter stigende'}
+                    {description ? description + ": " : ''}{asc == field && 'Sorter synkende' || desc == field && 'Fjern sortering' || 'Sorter stigende'}
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>

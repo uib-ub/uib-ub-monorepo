@@ -225,6 +225,46 @@ export function useMode() {
     return mode || contentSettings[perspective]?.display || 'map'
 }
 
+export function useSearchSortParam() {
+    return useGetParam('searchSort')
+}
+
+export function useNoGeoOn() {
+    return useGetParam('noGeo') == 'on'
+}
+
+export function usePageParam() {
+    return useGetParam('page')
+}
+
+export function usePerPageParam() {
+    return useGetParam('perPage')
+}
+
+export function usePageNumber() {
+    const page = usePageParam()
+    if (!page) {
+        return 1
+    }
+    return parseInt(page) || 1
+}
+
+export function usePerPageNumber() {
+    const perPage = usePerPageParam()
+    if (!perPage) {
+        return 10
+    }
+    return parseInt(perPage) || 10
+}
+
+export function useDescParam() {
+    return useGetParam('desc')
+}
+
+export function useAscParam() {
+    return useGetParam('asc')
+}
+
 
 export function useOverlayParams() {
     const optionsOn = useOptionsOn()
