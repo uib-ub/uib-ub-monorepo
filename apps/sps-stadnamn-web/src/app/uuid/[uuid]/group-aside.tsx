@@ -1,6 +1,5 @@
 'use client'
 import Clickable from '@/components/ui/clickable/clickable'
-import { MD_BASE_MAX_RESULTS } from '@/lib/utils'
 import { datasetTitles } from '@/config/metadata-config'
 import { defaultResultRenderer, resultRenderers } from '@/config/result-renderers'
 import { stringToBase64Url } from '@/lib/param-utils'
