@@ -571,7 +571,6 @@ export default function MapExplorer() {
         setInitGroupLabel(clickedLabel, markerPoint)
 
 
-        newQueryParams.set('maxResults', String(SM_BASE_MAX_RESULTS))
         newQueryParams.delete('mapSettings')
         //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
         newQueryParams.delete('doc')
@@ -702,6 +701,7 @@ export default function MapExplorer() {
               newParams.delete('group')
               newParams.delete('init')
               newParams.delete('activePoint')
+              newParams.delete('resultLimit')
 
               newParams.set('point', `${point.lat},${point.lng}`)
               router.push(`?${newParams.toString()}`)
@@ -1150,7 +1150,6 @@ export default function MapExplorer() {
                               click: () => {
                                 const newParams = new URLSearchParams(searchParams);
                                 newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                newParams.set('maxResults', String(SM_BASE_MAX_RESULTS));
                                 router.push(`?${newParams.toString()}`);
                               },
                               keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
@@ -1159,7 +1158,6 @@ export default function MapExplorer() {
                                   ;(e.originalEvent ?? e).preventDefault()
                                   const newParams = new URLSearchParams(searchParams);
                                   newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                  newParams.set('maxResults', String(SM_BASE_MAX_RESULTS));
                                   router.push(`?${newParams.toString()}`);
                                 }
                               }

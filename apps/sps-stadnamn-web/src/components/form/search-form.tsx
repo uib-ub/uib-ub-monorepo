@@ -191,7 +191,6 @@ export default function SearchForm() {
             {optionsOn && <input type="hidden" name="options" value={'on'} />}
             {sourceViewOn && !group && <input type="hidden" name="sourceView" value={'on'} />}
             {!submittedPoint && !init && pointParam && <input type="hidden" name="point" value={pointParam || ''} />}
-            <input type="hidden" name="maxResults" value={String(SM_BASE_MAX_RESULTS)} />
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {fulltextOn && <input type="hidden" name="fulltext" value={'on'} />}
             {fuzzyOn && <input type="hidden" name="fuzzy" value={'on'} />}

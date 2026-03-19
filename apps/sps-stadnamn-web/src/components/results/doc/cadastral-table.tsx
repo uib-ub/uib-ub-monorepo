@@ -241,7 +241,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
             </div>
           </TooltipProvider>
         </div>
-        {parentGroupId && <SubtleLink link className="px-3 py-1" only={{init: stringToBase64Url(parentGroupId), maxResults: String(SM_BASE_MAX_RESULTS), center, zoom }}>Vis i stadnamnsøk </SubtleLink>}
+        {parentGroupId && <SubtleLink link className="px-3 py-1" only={{init: stringToBase64Url(parentGroupId), center, zoom }}>Vis i stadnamnsøk </SubtleLink>}
       </div>
     )
   }

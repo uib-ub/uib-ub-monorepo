@@ -148,10 +148,10 @@ function GroupBottomToolbarMulti({
                 {groupTotal > 0 && (
                     <Clickable
                         className="btn btn-outline btn-compact rounded-full items-center gap-1 pr-2"
+                        remove={["resultLimit"]}
                         add={{
                             sourceView: "on",
                             group: stringToBase64Url(groupData.id),
-                            maxResults: LG_BASE_MAX_RESULTS,
                             init
                         }}
                     >
@@ -419,8 +419,7 @@ export default function ResultCard({
                         )}
                         <ClickableIcon
                             label="Lukk framheva gruppe"
-                            remove={["group", "activePoint", "activeYear", "activeName", "init"]}
-                            add={{ maxResults: SM_BASE_MAX_RESULTS }}
+                            remove={["group", "activePoint", "activeYear", "activeName", "init", "resultLimit"]}
                             onClick={() => {
                                 if (snappedPosition == 'top') setSnappedPosition("bottom");
                             }}

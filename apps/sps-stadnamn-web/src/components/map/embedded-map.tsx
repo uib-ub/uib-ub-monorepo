@@ -40,10 +40,8 @@ export default function EmbeddedMap({
                 newParams.set('q', source.label);
             }
             newParams.set('point', `${coordinate[0]},${coordinate[1]}`);
-            newParams.set('maxResults', String(SM_BASE_MAX_RESULTS));
         } else {
             newParams.set('init', stringToBase64Url(source?.group?.id));
-            newParams.set('maxResults', String(SM_BASE_MAX_RESULTS));
             newParams.set('activePoint', `${coordinate[0]},${coordinate[1]}`);
         }
         router.push(`/search?${newParams.toString()}`);

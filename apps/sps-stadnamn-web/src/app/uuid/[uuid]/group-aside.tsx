@@ -125,7 +125,7 @@ export default function GroupAside({ docData }: { docData: Record<string, any> }
 
   return <aside className="bg-neutral-50 shadow-md !text-neutral-950 px-4 pb-4 pt-0 rounded-md relative">
     <h2 className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans !m-0">Namnegruppe</h2>
-    <Clickable link className="no-underline flex absolute top-0 right-0 py-2 px-4 items-center gap-1" href={'/search'} add={{ init: stringToBase64Url(groupId) , maxResults: MD_BASE_MAX_RESULTS}}><PiMapTrifold aria-hidden="true" />Vis i kartet</Clickable>
+    <Clickable link className="no-underline flex absolute top-0 right-0 py-2 px-4 items-center gap-1" href={'/search'} add={{ init: stringToBase64Url(groupId)}}><PiMapTrifold aria-hidden="true" />Vis i kartet</Clickable>
     {data && <div className="flex flex-col gap-2">
       {Object.entries(data.groupedByDataset).map(([docDataset, hits]) => {
         const sourceTitle = resultRenderers[docDataset]?.sourceTitle || defaultResultRenderer.sourceTitle

@@ -108,7 +108,6 @@ export default function SearchQueryDisplay({
             isSelected={!searchSort}
             onClick={() => {
               const newParams = new URLSearchParams(searchParams)
-              newParams.set('maxResults', String(SM_BASE_MAX_RESULTS))
               newParams.delete('searchSort')
               router.push(`?${newParams.toString()}`)
             }}
@@ -123,7 +122,6 @@ export default function SearchQueryDisplay({
             onClick={() => {
               const newParams = new URLSearchParams(searchParams)
               newParams.set('searchSort', 'similarity')
-              newParams.set('maxResults', String(SM_BASE_MAX_RESULTS))
               router.push(`?${newParams.toString()}`)
             }}
             role="radio"
