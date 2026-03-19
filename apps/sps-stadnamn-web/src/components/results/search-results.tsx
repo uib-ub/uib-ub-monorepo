@@ -9,14 +9,10 @@ import {
   usePoint,
   useQParam,
   useResultLimit,
+  useResultLimitParam,
+  useResultLimitUiConfig,
   useSourceViewOn,
 } from "@/lib/param-hooks";
-import {
-  DEFAULT_COLLAPSED_RESULT_LIMIT_INIT,
-  DEFAULT_COLLAPSED_RESULT_LIMIT_NO_INIT,
-  DEFAULT_RESULT_LIMIT_INIT,
-  DEFAULT_RESULT_LIMIT_NO_INIT,
-} from "@/lib/utils";
 import { base64UrlToString } from "@/lib/param-utils";
 import { useSearchQuery } from "@/lib/search-params";
 import useResultCardData from "@/state/hooks/result-card-data";
@@ -24,7 +20,7 @@ import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
-import { Fragment, useContext, useMemo, useRef } from "react";
+import { Fragment, useContext, useEffect, useMemo, useRef } from "react";
 import { PiMagnifyingGlass, PiQuestion, PiX, PiXBold } from "react-icons/pi";
 import ResultCard from "@/components/results/card/result-card";
 import ActiveFilters from "@/components/results/active-filters";
@@ -58,6 +54,16 @@ export default function SearchResults() {
   const filterCount = facetFilters.length + datasetFilters.length
   const noGeoOn = useNoGeoOn()
   const resultLimit = useResultLimit()
+  const explicitResultLimitParam = useResultLimitParam()
+  const isExplicitResultLimit = explicitResultLimitParam !== null
+  const {
+    maxResultLimit: MAX_RESULT_LIMIT,
+    resultLimitIncrement,
+    defaultResultLimit,
+    defaultCollapsedResultLimit,
+  } = useResultLimitUiConfig()
+  const numericResultLimit = Number.isFinite(resultLimit) ? resultLimit : 0
+  const cappedResultLimit = Math.max(0, Math.min(numericResultLimit, MAX_RESULT_LIMIT))
 
 
 
@@ -104,7 +110,7 @@ export default function SearchResults() {
 
   // Maximum number of list items to render.
   // Defaults are handled inside `useResultLimit()`.
-  const maxVisibleResults = Number.isFinite(resultLimit) ? resultLimit : 0;
+  const maxVisibleResults = Number.isFinite(cappedResultLimit) ? cappedResultLimit : 0;
 
   // Cap the visible results further based on total hit count.
   //
@@ -125,23 +131,15 @@ export default function SearchResults() {
 
   const effectiveMaxVisibleResults = useMemo(() => {
     if (
-      init &&
-      maxVisibleResults === DEFAULT_RESULT_LIMIT_INIT &&
-      totalResultsCountForCap > DEFAULT_RESULT_LIMIT_INIT
+      maxVisibleResults === defaultResultLimit &&
+      !isExplicitResultLimit &&
+      totalResultsCountForCap > defaultResultLimit
     ) {
-      return DEFAULT_COLLAPSED_RESULT_LIMIT_INIT
-    }
-
-    if (
-      !init &&
-      maxVisibleResults === DEFAULT_RESULT_LIMIT_NO_INIT &&
-      totalResultsCountForCap > DEFAULT_RESULT_LIMIT_NO_INIT
-    ) {
-      return DEFAULT_COLLAPSED_RESULT_LIMIT_NO_INIT
+      return defaultCollapsedResultLimit
     }
 
     return maxVisibleResults
-  }, [init, maxVisibleResults, totalResultsCountForCap])
+  }, [maxVisibleResults, totalResultsCountForCap, defaultResultLimit, defaultCollapsedResultLimit, isExplicitResultLimit])
 
   // Total number of results that have been loaded from the API so far.
   const totalLoadedResults = useMemo(() => {
@@ -152,6 +150,35 @@ export default function SearchResults() {
   }, [listData]);
 
 
+
+  // If `resultLimit` was explicitly provided in the URL, auto-load pages until
+  // we have enough results to satisfy that limit (no need to click "Vis meir").
+  useEffect(() => {
+    if (!isExplicitResultLimit) return
+    if (!Number.isFinite(resultLimit) || resultLimit <= 0) return
+    if (mobilePreview) return
+    if (listStatus !== "success") return
+    if (totalLoadedResults >= effectiveMaxVisibleResults) return
+    if (!listHasNextPage) return
+    if (listIsFetchingNextPage) return
+
+    listFetchNextPage()
+  }, [
+    isExplicitResultLimit,
+    resultLimit,
+    mobilePreview,
+    listStatus,
+    totalLoadedResults,
+    effectiveMaxVisibleResults,
+    listHasNextPage,
+    listIsFetchingNextPage,
+    listFetchNextPage,
+  ])
+
+  const shouldShowCappedAtMaxTableViewCta =
+    maxVisibleResults === MAX_RESULT_LIMIT &&
+    totalResultsCountForCap > MAX_RESULT_LIMIT &&
+    totalLoadedResults >= MAX_RESULT_LIMIT
 
   // Whether to show the "Utan koordinatar" filter control in the options row.
   // Purpose: 
@@ -294,13 +321,71 @@ export default function SearchResults() {
                         }
                       </li>
                     })}
+                    {/* Table CTA when we cap at `resultLimit=100` */}
+                    {isLastPage && shouldShowCappedAtMaxTableViewCta && <>
+                    <li className="text-neutral-700 p-4 text-center">
+
+                     Resultata er avgrensa til {MAX_RESULT_LIMIT}.
+                     <span className="block mt-1">Gå til tabellvising for å sjå inntil 10 000 treff, eller legg til søkefilter{!sourceViewOn && ' i avansert søk'}.</span>
+                   </li>
+                      <li className="flex flex-col gap-2 justify-center">
+                       
+                        <Clickable
+                          type="button"
+                          add={{ mode: 'table', page: '1' }}
+                          remove={['resultLimit']}
+                          className={`
+                            flex items-center gap-2
+                            text-neutral-900
+                            bg-neutral-50
+                            font-semibold
+                            text-xl
+                            p-3
+                            justify-center w-full
+                            transition-colors
+                          `}
+                        >
+                          Tabellvising
+                        </Clickable>
+                      </li>
+                      { !sourceViewOn && (
+                      <li className="flex flex-col gap-2 justify-center">
+
+                        <Clickable
+                          type="button"
+                          add={{ mode: 'table', page: '1' }}
+                          remove={['resultLimit']}
+                          className={`
+                            flex items-center gap-2
+                            text-neutral-900
+                            bg-neutral-50
+                            font-semibold
+                            text-xl
+                            p-3
+                            justify-center w-full
+                            transition-colors
+                          `}
+                        >
+                          Avansert søk
+                        </Clickable>
+                      </li>
+                    )}
+                    </>}
+                    
+
                     {/* Vis meir button at the end of each page */}
-                    {isLastPage && (listHasNextPage || totalLoadedResults > effectiveMaxVisibleResults) && (
+                    {isLastPage &&
+                      !shouldShowCappedAtMaxTableViewCta &&
+                      effectiveMaxVisibleResults < MAX_RESULT_LIMIT &&
+                      (listHasNextPage || totalLoadedResults > effectiveMaxVisibleResults) && (
                       <li className="flex flex-col gap-2 justify-center">
                         <Clickable
                           type="button"
                           add={{
-                            resultLimit: resultLimit + 20
+                            resultLimit: Math.min(
+                              numericResultLimit + resultLimitIncrement,
+                              MAX_RESULT_LIMIT
+                            )
                           }}
                           onClick={() => {
                             if (!listIsFetchingNextPage && listHasNextPage) {

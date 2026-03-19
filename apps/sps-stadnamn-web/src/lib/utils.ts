@@ -1,14 +1,6 @@
 import { treeSettings } from "@/config/server-config";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-// Shared defaults for result list pagination ("Vis meir").
-// Kept in one place so both `useResultLimit()` and UI logic stay consistent.
-export const DEFAULT_RESULT_LIMIT_INIT = 5
-export const DEFAULT_RESULT_LIMIT_NO_INIT = 10
-export const DEFAULT_COLLAPSED_RESULT_LIMIT_INIT = 3
-export const DEFAULT_COLLAPSED_RESULT_LIMIT_NO_INIT = 5
-
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }

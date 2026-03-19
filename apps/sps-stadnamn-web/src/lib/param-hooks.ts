@@ -20,12 +20,6 @@ import { GlobalContext } from "@/state/providers/global-provider"
 import { useSearchParams } from "next/navigation"
 import { useContext } from "react"
 import { base64UrlToString } from "./param-utils"
-import {
-    DEFAULT_COLLAPSED_RESULT_LIMIT_INIT,
-    DEFAULT_COLLAPSED_RESULT_LIMIT_NO_INIT,
-    DEFAULT_RESULT_LIMIT_INIT,
-    DEFAULT_RESULT_LIMIT_NO_INIT,
-} from "./utils"
 import type { ReservedSearchParamKey } from "./reserved-param-types"
 
 export const useGetParam = (key: ReservedSearchParamKey) => {
@@ -213,9 +207,39 @@ export function useResultLimit() {
     const resultLimit = useGetParam('resultLimit')
     const init = useInitParam()
     if (!resultLimit) {
-        return init ? DEFAULT_RESULT_LIMIT_INIT : DEFAULT_RESULT_LIMIT_NO_INIT
+        return init ? RESULT_LIMIT_DEFAULT_COMPACT : RESULT_LIMIT_DEFAULT_FULL
     }
     return parseInt(resultLimit)
+}
+
+export function useResultLimitParam() {
+    return useGetParam('resultLimit')
+}
+
+const RESULT_LIMIT_MAX = 100
+const RESULT_LIMIT_DEFAULT_COMPACT = 5
+const RESULT_LIMIT_DEFAULT_FULL = 10
+const RESULT_LIMIT_COLLAPSED_DEFAULT_COMPACT = 3
+const RESULT_LIMIT_COLLAPSED_DEFAULT_FULL = 5
+const RESULT_LIMIT_INCREMENT_COMPACT = 20
+const RESULT_LIMIT_INCREMENT_FULL = 100
+
+// Centralized UI config for the result list limit.
+// - Hard cap at 100 results for performance.
+// - When we render compact "links" (same condition as `init` being present),
+//   "Vis meir" increases by 20.
+// - When we render full cards (no `init`), "Vis meir" increases by 100.
+export function useResultLimitUiConfig() {
+    const init = useInitParam()
+    return {
+        maxResultLimit: RESULT_LIMIT_MAX,
+        // `init` presence means we render compact "links" instead of full cards.
+        resultLimitIncrement: init ? RESULT_LIMIT_INCREMENT_COMPACT : RESULT_LIMIT_INCREMENT_FULL,
+        defaultResultLimit: init ? RESULT_LIMIT_DEFAULT_COMPACT : RESULT_LIMIT_DEFAULT_FULL,
+        defaultCollapsedResultLimit: init
+            ? RESULT_LIMIT_COLLAPSED_DEFAULT_COMPACT
+            : RESULT_LIMIT_COLLAPSED_DEFAULT_FULL,
+    }
 }
 
 
