@@ -1,16 +1,10 @@
 'use client'
-import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import ToggleButton from "@/components/ui/toggle-button"
-import { stringToBase64Url } from "@/lib/param-utils"
 import useResultCardData from "@/state/hooks/result-card-data"
-import { useSessionStore } from "@/state/zustand/session-store"
 import { useRouter, useSearchParams } from "next/navigation"
-import { PiCaretRightBold, PiMagnifyingGlass, PiXBold } from "react-icons/pi"
-import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import Clickable from "@/components/ui/clickable/clickable"
 import { SM_BASE_MAX_RESULTS } from "@/lib/utils"
-import { Badge, FacetBadge, TitleBadge } from "@/components/ui/badge"
+import { TitleBadge } from "@/components/ui/badge"
 
 export default function SearchQueryDisplay({
   showNoLocationToggle = false,
