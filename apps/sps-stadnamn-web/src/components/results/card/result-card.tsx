@@ -6,7 +6,7 @@ import type { ParamProps } from "@/components/ui/clickable/param-types";
 import IconButton from "@/components/ui/icon-button";
 import { datasetTitles } from "@/config/metadata-config";
 import { treeSettings } from "@/config/server-config";
-import { useActivePoint, useGroupParam, useInitDecoded, useSourceViewOn } from "@/lib/param-hooks";
+import { useActivePoint, useGroupParam, useInitDecoded, useInitParam, useSourceViewOn } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { buildTreeParam } from "@/lib/tree-param";
 import { getBnr, getGnr, getValueByPath, LG_BASE_MAX_RESULTS, SM_BASE_MAX_RESULTS } from "@/lib/utils";
@@ -315,8 +315,8 @@ export default function ResultCard({
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const sourceView = searchParams.get("sourceView") === "on";
     const group = useGroupParam();
-    const initDecoded = useInitDecoded();
     const point = searchParams.get('point');
+    const initDecoded = useInitDecoded();
     
 
     const toText = (value: unknown): string => {
@@ -359,7 +359,9 @@ export default function ResultCard({
     const rawSosi = source?.sosi ?? fields.sosi;
 
 
-    const isInit = Boolean(!group && initDecoded && resultCardData?.id && initDecoded === resultCardData.id)
+    const isInit = Boolean(!group && initDecoded && itemId === initDecoded)
+
+    
     // Scroll to top when init group changes (when clicking "vel" button)
 
 
@@ -404,6 +406,7 @@ export default function ResultCard({
             </div>
         );
     }
+
 
 
 

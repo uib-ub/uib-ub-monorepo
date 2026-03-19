@@ -3,7 +3,8 @@ import MiscOptions from "@/app/misc-options"
 import Clickable from "@/components/ui/clickable/clickable"
 import { datasetTitles } from "@/config/metadata-config"
 import { facetConfig } from "@/config/search-config"
-import { useMode, usePerspective, usePoint, useRadiusParam } from "@/lib/param-hooks"
+import { useFacetParam, useGetAllParam, useGetParam, useGroupParam, useMode, useOptionsOn, useOptionsParam, usePerspective, usePoint, useRadiusParam } from "@/lib/param-hooks"
+import { ReservedSearchParamKey } from "@/lib/reserved-param-types"
 import { useSearchQuery } from "@/lib/search-params"
 import { getSkeletonLength } from "@/lib/utils"
 import useResultCardData from "@/state/hooks/result-card-data"
@@ -139,14 +140,15 @@ export default function FacetSection() {
   const mode = useMode()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const facet = searchParams.get('facet')
+  const facet = useFacetParam()
   const datasets = searchParams.getAll('dataset')
-  const group = searchParams.get('group')
+  const group = useGroupParam()
   const filterDataset = perspective == 'all' ? datasets.length == 1 ? datasets[0] : 'all' : perspective
   const { facetFilters, datasetFilters, searchQuery } = useSearchQuery()
 
   const { isMobile } = useContext(GlobalContext)
-  const optionsOpen = searchParams.get('options') === 'on'
+  const optionsOn = useOptionsOn()
+  const options = useOptionsParam()
 
   const removeFilter = (key: string, value: string) => {
     const newSearchParams = new URLSearchParams(searchQuery)
@@ -156,10 +158,13 @@ export default function FacetSection() {
     newSearchParams.delete(key)
 
     // Add back mode, nav and facet params if they exist
-    const keptParams = ['mode', 'facet', 'options', 'maxResults']
-    keptParams.forEach((param: string) => {
-      const value = searchParams.get(param)
-      if (value) newSearchParams.set(param, value)
+    const keptParams: Partial<Record<ReservedSearchParamKey, string | null>> = {
+      mode, 
+      facet,
+      options
+    }
+    Object.entries(keptParams).forEach(([key, value]) => {
+      if (value) newSearchParams.set(key, value)
     })
 
     // Add back all values except the one we want to remove
@@ -272,7 +277,7 @@ export default function FacetSection() {
   // - on mobile (when the filter panel is open)
   // - in table mode (desktop behaves like mobile)
   // - on desktop map view when options are open (options toggled via "Fleire filter")
-  const shouldShowSecondaryFacets = isMobile || mode === 'table' || optionsOpen
+  const shouldShowSecondaryFacets = isMobile || mode === 'table' || optionsOn
 
   const renderFacetRow = (f: (typeof availableFacets)[number]) => {
     const activeFiltersForFacet = facetFilters.filter(([key]) => key === f.key)

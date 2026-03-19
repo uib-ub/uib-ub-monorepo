@@ -1,4 +1,5 @@
 'use client'
+import { useDatasetTagParam } from "@/lib/param-hooks";
 import { getValueByPath } from "@/lib/utils";
 import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
 import Link from "next/link";
@@ -24,8 +25,6 @@ export default function FacetsInfobox({
   docDataset: string | null;
   filteredFacets: any[];
 }) {
-  const searchParams = useSearchParams();
-
   if (!docDataset) return null;
 
   const buildSearchUrl = (params: Record<string, string>) => {
@@ -34,7 +33,7 @@ export default function FacetsInfobox({
     urlParams.set('maxResults', String(SM_BASE_MAX_RESULTS));
 
     // Preserve datasetTag if it exists in current URL
-    const currentDatasetTag = searchParams.get('datasetTag');
+    const currentDatasetTag = useDatasetTagParam();
     if (currentDatasetTag) {
       urlParams.set('datasetTag', currentDatasetTag);
     }

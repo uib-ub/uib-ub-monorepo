@@ -2,7 +2,7 @@
 import IconButton from "@/components/ui/icon-button";
 import ToggleButton from "@/components/ui/toggle-button";
 import { facetConfig } from "@/config/search-config";
-import { usePerspective } from "@/lib/param-hooks";
+import { useFacetParam, usePerspective } from "@/lib/param-hooks";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { usePreferences } from "@/state/zustand/persistent-preferences";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -11,9 +11,9 @@ import { PiFunnelSimple, PiSortAscending, PiSortDescending } from "react-icons/p
 
 export default function FacetToolbar() {
     const perspective = usePerspective()
-    const { facetOptions, updateFacetOption } = useContext(GlobalContext)
+    const { facetOptions } = useContext(GlobalContext)
     const searchParams = useSearchParams()
-    const facet = searchParams.get('facet') || 'adm'
+    const facet = useFacetParam() || 'adm'
     const router = useRouter()
 
     const facetSort = usePreferences((state) => state.facetSort)

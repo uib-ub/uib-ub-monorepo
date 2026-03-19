@@ -1,5 +1,5 @@
 'use client'
-import { useMode } from "@/lib/param-hooks";
+import { useFulltextOn, useMode } from "@/lib/param-hooks";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -10,14 +10,18 @@ import { PiCheck, PiFaders } from "react-icons/pi";
 
 export default function Options() {
     const searchParams = useSearchParams()
-    const fulltext = searchParams.get('fulltext') || 'off'
+    const fulltextOn = useFulltextOn()
     const router = useRouter()
     const mode = useMode()
     const { isMobile } = useContext(GlobalContext)
 
     const toggleFulltext = () => {
         const params = new URLSearchParams(searchParams);
-        params.set('fulltext', fulltext == 'on' ? 'off' : 'on');
+        if (fulltextOn) {
+            params.delete('fulltext');
+        } else {
+            params.set('fulltext', 'on');
+        }
         router.push(`?${params.toString()}`);
     };
 
@@ -39,13 +43,13 @@ export default function Options() {
             <DropdownMenuLabel className="font-semibold px-4 py-2">Søk i:</DropdownMenuLabel>
             <DropdownMenuSeparator />
 
-            <DropdownMenuRadioGroup value={fulltext} onValueChange={toggleFulltext}>
+            <DropdownMenuRadioGroup value={fulltextOn ? 'on' : 'off'} onValueChange={toggleFulltext}>
                 <DropdownMenuRadioItem key="default" value="" className="text-nowrap cursor-pointer px-4 py-2">
-                    Stadnamn {fulltext == 'off' && <span className="ml-auto"><PiCheck className="text-lg inline" aria-hidden="true" /></span>}
+                    Stadnamn {!fulltextOn && <span className="ml-auto"><PiCheck className="text-lg inline" aria-hidden="true" /></span>}
                 </DropdownMenuRadioItem>
 
                 <DropdownMenuRadioItem key="fulltext" value="on" className="text-nowrap cursor-pointer px-4 py-2">
-                    Fulltekst {fulltext == 'on' && <span className="ml-auto"><PiCheck className="text-lg inline" aria-hidden="true" /></span>}
+                    Fulltekst {fulltextOn && <span className="ml-auto"><PiCheck className="text-lg inline" aria-hidden="true" /></span>}
                 </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
 

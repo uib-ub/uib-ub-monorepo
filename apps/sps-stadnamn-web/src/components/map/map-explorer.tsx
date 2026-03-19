@@ -6,7 +6,7 @@ import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState
 import { getAreaLabelMarkerIcon, getClusterMarker, getInitAnchorMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 
 import { boundsFromZoomAndCenter, calculateRadius, fitBoundsToGroupSources, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
-import { useActivePoint, useInitDecoded, useMapSettingsOn, usePoint, useSourceViewOn } from "@/lib/param-hooks";
+import { useActivePoint, useCenterNumber, useDebugGroupsOn, useDocParam, useGroupParam, useMapSettingsOn, usePoint, useQParam, useRadiusNumber, useSourceViewOn, useTreeParam, useZoomNumber, useInitDecoded, useInitParam } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { parseTreeParam } from "@/lib/tree-param";
 import { getBnr, getGnr, indexToCode, SM_BASE_MAX_RESULTS } from "@/lib/utils";
@@ -50,28 +50,28 @@ export default function MapExplorer() {
 
 
   const controllerRef = useRef(new AbortController());
-  const { baseMap, overlayMaps, markerMode, initializeSettings } = useMapSettings()
+  const { baseMap, overlayMaps, markerMode, setMarkerMode, initializeSettings } = useMapSettings()
   const searchParams = useSearchParams()
   const { searchQueryString, searchFilterParamsString } = useSearchQuery()
-  const urlZoom = searchParams.get('zoom') ? parseInt(searchParams.get('zoom')!) : null
-  const urlCenter = searchParams.get('center') ? (searchParams.get('center')!.split(',').map(parseFloat) as [number, number]) : null
+  const urlZoom = useZoomNumber()
+  const urlCenter = useCenterNumber()
   const allowFitBounds = useRef(false)
-  const { resultCardLoading, resultCardData } = useResultCardData()
+  const { resultCardData } = useResultCardData()
   const initGroupLabel = useSessionStore((s) => s.initGroupLabel)
   const initGroupPoint = useSessionStore((s) => s.initGroupPoint)
   const setInitGroupLabel = useSessionStore((s) => s.setInitGroupLabel)
   const { docData, docDataset } = useDocData()
 
-  const { isMobile, mapFunctionRef, scrollableContentRef, scrollToBrukRef } = useContext(GlobalContext)
+  const { isMobile, mapFunctionRef, scrollToBrukRef } = useContext(GlobalContext)
   const mapInstance = useRef<any>(null)
-  const doc = searchParams.get('doc')
-  const tree = searchParams.get('tree')
+  const doc = useDocParam()
+  const tree = useTreeParam()
   const treeState = useMemo(() => parseTreeParam(tree), [tree])
   const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
   const mapSettingsOn = useMapSettingsOn()
   const point = usePoint()
   const activePoint = useActivePoint()
-  const urlRadius = searchParams.get('radius') ? parseInt(searchParams.get('radius')!) : null
+  const urlRadius = useRadiusNumber()
   const displayRadius = useSessionStore((s) => s.displayRadius)
   const displayPoint = useSessionStore((s) => s.displayPoint)
 
@@ -79,15 +79,19 @@ export default function MapExplorer() {
   const setDebugChildren = useDebugStore((s) => s.setDebugChildren)
   const debug = useDebugStore((s) => s.debug)
   const showGeotileGrid = useDebugStore(state => state.showGeotileGrid);
-  const showDebugGroups = searchParams.get('debugGroups') == 'on';
+  const showDebugGroupsOn = useDebugGroupsOn()
   const sourceViewOn = useSourceViewOn()
-
   const initDecoded = useInitDecoded()
+  const init = useInitParam()
+
 
   const getDisplayLabel = (fields?: Record<string, any> | null): string => {
-    const label = fields?.label?.[0]
+    const individualLabel = fields?.label?.[0]
+    if (sourceViewOn) {
+      return individualLabel ?? '[utan namn]'
+    }
     const groupLabel = fields?.["group.label"]?.[0]
-    return (groupLabel || label || '[utan namn]')
+    return (groupLabel || individualLabel || '[utan namn]')
   }
 
   const areSamePoint = (a: [number, number] | null, b: [number, number] | null) =>
@@ -313,29 +317,27 @@ export default function MapExplorer() {
   // Cluster mode
   // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
-  const hasQuery = Boolean(searchParams.get('q'))
+  const hasQuery = Boolean(useQParam())
+
+
+  if (markerMode === 'circles') {
+    setMarkerMode('points')
+  }
+
 
   const activeMarkerMode = markerMode === 'auto'
-    ? (hasQuery ? (zoomState < 14 ? 'counts' : 'points') : 'labels')
-    : (markerMode === 'circles' ? 'points' : markerMode)
+    ? (hasQuery ? (zoomState < 15 ? 'counts' : 'points') : 'labels')
+     : markerMode
 
-  // Result markers (from the search query) should only be labeled when:
-  // - marker mode is "labels" (Etikettar), OR
-  // - there is no search query (q) AND marker mode is not "points" (Punkter).
-  //
-  // In all other situations (including "auto" and "counts" with an active q),
-  // the result markers should be rendered without labels.
-  const shouldShowLabelMarkers =
-    markerMode === 'labels' || (!hasQuery && markerMode !== 'points')
 
   const markerResults = useQueries({
     queries: markerCells.map(cell => {
       const key = `${cell.precision}/${cell.x}/${cell.y}`
 
       return ({
-        queryKey: ['markerResults', key, searchQueryString, showDebugGroups, tree],
+        queryKey: ['markerResults', key, searchQueryString, showDebugGroupsOn, tree],
         placeHolder: (prevData: any) => prevData,
-        enabled: !showDebugGroups && (!tree || tree.split('_').length < 4),
+        enabled: !showDebugGroupsOn && (!tree || tree.split('_').length < 4),
         queryFn: async () => {
           // In tree mode, marker queries must be driven solely by the `tree`
           // param (dataset/adm) and not by the regular search query.
@@ -398,7 +400,7 @@ export default function MapExplorer() {
     let minDocCount = Infinity
     let maxDocCount = 0
     const labeledMarkersLookup: Record<string, Record<string, any>[]> = {}
-    const seenGroups = new Set<string>()
+    const seenMarkerIds = new Set<string>()
 
     buckets.forEach((bucket: any) => {
       const clusterCount = sourceViewOn
@@ -458,10 +460,14 @@ export default function MapExplorer() {
             // In cluster mode, singletons should render as black pin markers.
             isClusterSingleton: activeMarkerMode === 'counts' && bucket.doc_count === 1,
           }
-          if (seenGroups.has(top_hit.fields["group.id"]?.[0])) {
+          const dedupeKey = sourceViewOn
+            ? top_hit.fields?.uuid?.[0]
+            : top_hit.fields?.["group.id"]?.[0]
+          if (!dedupeKey) return
+          if (seenMarkerIds.has(dedupeKey)) {
             return
           }
-          seenGroups.add(top_hit.fields["group.id"]?.[0])
+          seenMarkerIds.add(dedupeKey)
 
           // Points mode: no overlap logic – show every group as its own marker, allow them close together.
           if (activeMarkerMode === 'points') {
@@ -533,16 +539,6 @@ export default function MapExplorer() {
 
     return allMarkers
   }, [markerResults, activeMarkerMode, zoomState, sourceViewOn])
-
-
-
-
-
-  if (searchParams.get('error') == 'true') {
-    throw new Error('Simulated client side error');
-  }
-
-
 
 
 
@@ -672,10 +668,14 @@ export default function MapExplorer() {
 
 
 
-  const selectDocHandler = (selected: Record<string, any>, markerPoint: [number, number], hits?: Record<string, any>[]) => {
+  const selectDocHandler = (selected: Record<string, any>, markerPoint: [number, number], showLabel: Boolean) => {
     const openMarker = () => {
       const newQueryParams = new URLSearchParams(searchParams)
       const fields = selected.fields || {}
+
+      
+
+
       if (selected._source?.misc?.children && debug) {
         setDebugChildren(selected._source?.misc?.children)
       }
@@ -697,7 +697,11 @@ export default function MapExplorer() {
         newQueryParams.delete('mapSettings')
         //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
         newQueryParams.delete('doc')
-        const newInit = stringToBase64Url(fields["group.id"][0])
+        const newInit = stringToBase64Url(
+          sourceViewOn
+            ? fields["uuid"][0]
+            : fields["group.id"][0]
+        )
         newQueryParams.set('init', newInit)
         newQueryParams.delete('group')
         newQueryParams.delete('activePoint')
@@ -708,10 +712,9 @@ export default function MapExplorer() {
         // Immediately cache label + init + point for the anchor marker so we
         // can render it without waiting for group-data. This cache is keyed
         // by both init and point to avoid any flicker on old markers.
-        const clickedLabel =
-          fields["group.label"]?.[0] ??
-          fields.label?.[0] ??
-          '[utan namn]'
+        const clickedLabel = sourceViewOn
+          ? (fields.label?.[0] ?? fields["group.label"]?.[0] ?? '[utan namn]')
+          : (fields["group.label"]?.[0] ?? fields.label?.[0] ?? '[utan namn]')
         setInitGroupLabel(clickedLabel, markerPoint)
       }
 
@@ -1040,19 +1043,6 @@ export default function MapExplorer() {
               else {
                 const isAtPoint = Boolean(point && areSamePoint([lat, lng], point))
                 const isAtActivePoint = Boolean(activePoint && areSamePoint([lat, lng], activePoint))
-
-                const selected = Boolean(initDecoded && item.fields?.["group.id"]?.[0] == resultCardData?.fields?.["group.id"]?.[0] && !resultCardLoading)
-                const selectedInCadastre = Boolean(tree && docData && item.fields?.["uuid"]?.[0] == docData._source.uuid)
-                const isActiveGroupMarker = Boolean(initDecoded && item.fields?.["group.id"]?.[0] == initDecoded)
-                const shouldHideUnlabeledActiveAreaMarker = activeResultCardHasArea && (isActiveGroupMarker || isAtActivePoint)
-                if (selected || selectedInCadastre) return null
-
-                // Any result marker that ends up exactly at either the anchor point
-                // (`point`) or the current `activePoint` should not be rendered,
-                // to avoid duplicate markers on top of the anchor/active icons.
-                
-                if (isAtPoint || isAtActivePoint) return null
-
                 const isInit = Boolean(
                   initDecoded &&
                   (
@@ -1062,13 +1052,12 @@ export default function MapExplorer() {
                   )
                 )
 
-                const markerColor = isInit ? 'black' : 'white'
+                if (isInit || isAtPoint || isAtActivePoint) {
+                  return
+                }
 
                 const childCount = undefined //zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
-                const labelText =
-                  (sourceViewOn && isInit)
-                    ? (item.fields?.label?.[0] || '[utan namn]')
-                    : getDisplayLabel(item.fields)
+                const labelText = getDisplayLabel(item.fields)
                 const pointMarkerTooltip = (!isMobile) ? (
                   <Tooltip direction="top" offset={[0, -20]} opacity={1} className="point-marker-tooltip">
                     <div className="px-2 py-0.5 text-sm tracking-wide text-black bg-white/90 rounded-md shadow-lg whitespace-nowrap">
@@ -1077,8 +1066,8 @@ export default function MapExplorer() {
                   </Tooltip>
                 ) : null
                 
-                const icon = getLabelMarkerIcon(labelText, markerColor, childCount, false, false, false)
-
+                const showLabel = activeMarkerMode != 'points' && (!hasQuery || activeMarkerMode === 'labels')
+                const icon = showLabel ? getLabelMarkerIcon(labelText, 'white', childCount, false, false, false):  getUnlabeledMarker('black')
 
                 return (
                   <Fragment key={`result-frag-${item.fields.uuid[0]}`}>
@@ -1105,60 +1094,17 @@ export default function MapExplorer() {
                         />
                       ))
                     }
-                    {activeMarkerMode === 'points'
-                      ? (
-                        shouldHideUnlabeledActiveAreaMarker ? null : (
+
                           <Marker
                             key={`result-${item.fields.uuid[0]}`}
                             position={[lat, lng]}
-                            icon={new leaflet.DivIcon(getUnlabeledMarker('black'))}
+                            icon={new leaflet.DivIcon(icon)}
                             riseOnHover={true}
-                            eventHandlers={selectDocHandler(item, [lat, lng])}
+                            eventHandlers={selectDocHandler(item, [lat, lng], showLabel)}
                           >
-                            {pointMarkerTooltip}
+                            {showLabel ? null : pointMarkerTooltip }
                           </Marker>
-                        )
-                      )
-                      : activeMarkerMode === 'counts' && item.isClusterSingleton
-                        ? (
-                          shouldHideUnlabeledActiveAreaMarker ? null : (
-                            <Marker
-                              key={`result-${item.fields.uuid[0]}`}
-                              position={[lat, lng]}
-                              icon={new leaflet.DivIcon(getUnlabeledMarker('black'))}
-                              riseOnHover={true}
-                              eventHandlers={selectDocHandler(item, [lat, lng])}
-                            >
-                              {pointMarkerTooltip}
-                            </Marker>
-                          )
-                        )
-                        : (
-                          shouldShowLabelMarkers
-                            ? (
-                              <Marker
-                                key={`result-${item.fields.uuid[0]}`}
-                                position={[lat, lng]}
-                                icon={new leaflet.DivIcon(icon)}
-                                riseOnHover={true}
-                                eventHandlers={selectDocHandler(item, [lat, lng])}
-                              />
-                            )
-                            : (
-                              shouldHideUnlabeledActiveAreaMarker ? null : (
-                                <Marker
-                                  key={`result-${item.fields.uuid[0]}`}
-                                  position={[lat, lng]}
-                                  icon={new leaflet.DivIcon(getUnlabeledMarker('black'))}
-                                  riseOnHover={true}
-                                  eventHandlers={selectDocHandler(item, [lat, lng])}
-                                >
-                                  {pointMarkerTooltip}
-                                </Marker>
-                              )
-                            )
-                        )
-                    }
+
                   </Fragment>
                 )
               }
@@ -1179,171 +1125,6 @@ export default function MapExplorer() {
                 }}
               />
             }))}
-
-
-
-            { point && (() => {
-              const initIsActive = sourceViewOn ? !activePoint : (!searchParams.get('group') || searchParams.get('group') === searchParams.get('init'))
-              // In sourceView mode, the init marker should be inactive when there
-              // is an active marker at a different coordinate than `point`.
-              const hasOtherActivePoint = Boolean(
-                sourceViewOn &&
-                point &&
-                activePoint &&
-                !areSamePoint(point, activePoint)
-              )
-              const anchorIsActive = initIsActive && !hasOtherActivePoint
-
-              // When there is an activePoint at a *different* coordinate, show the
-              // anchor/current-location style marker at the init point instead of
-              // the black label marker.
-              const showAnchorIcon = Boolean(activePoint && !areSamePoint(point, activePoint))
-              if (showAnchorIcon) {
-                return (
-                  <Marker
-                    zIndexOffset={1500}
-                    icon={new leaflet.DivIcon(getInitAnchorMarker())}
-                    position={point}
-                    eventHandlers={{
-                      click: () => {
-                        const newParams = new URLSearchParams(searchParams)
-                        newParams.delete('group')
-                        newParams.delete('activePoint')
-                        router.push(`?${newParams.toString()}`)
-                        scrollableContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
-                      },
-                      keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
-                        const key = e.originalEvent?.key ?? e.key
-                        if (key === 'Enter' || key === ' ') {
-                          ;(e.originalEvent ?? e).preventDefault()
-                          const newParams = new URLSearchParams(searchParams)
-                          newParams.delete('activePoint')
-                          newParams.delete('group')
-                          router.push(`?${newParams.toString()}`)
-                          scrollableContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
-                        }
-                      }
-                    }}
-                  />
-                )
-              }
-
-              // Use the session-scoped init group label instead of a loading
-              // placeholder. Only render when the cached point matches the
-              // current point; this avoids ever showing a stale label on an
-              // old marker.
-              if (
-                !initGroupLabel ||
-                !initGroupPoint ||
-                !areSamePoint(point, initGroupPoint)
-              ) {
-                return null
-              }
-
-              const label = initGroupLabel
-              const color = anchorIsActive ? 'accent' : 'black'
-
-              return (
-                <Marker
-                  zIndexOffset={1500}
-                  icon={new leaflet.DivIcon(
-                    getLabelMarkerIcon(
-                      label,
-                      color,
-                      undefined,
-                      true,
-                      false,
-                      true,
-                      false
-                    )
-                  )}
-                  position={point}
-                  eventHandlers={{
-                    click: () => {
-                      const newParams = new URLSearchParams(searchParams)
-                      newParams.delete('group')
-                      newParams.delete('activePoint')
-                      router.push(`?${newParams.toString()}`)
-                      scrollableContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
-                    },
-                    keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
-                      const key = e.originalEvent?.key ?? e.key
-                      if (key === 'Enter' || key === ' ') {
-                        ;(e.originalEvent ?? e).preventDefault()
-                        const newParams = new URLSearchParams(searchParams)
-                        newParams.delete('activePoint')
-                        newParams.delete('group')
-                        router.push(`?${newParams.toString()}`)
-                        scrollableContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
-                      }
-                    }
-                  }}
-                />
-              )
-            })()}
-
-            {
-              // When a single document representing a gård is active (via `doc`) but
-              // no specific tree selection (with uuid) is active, show the same farm
-              // label marker at the document's coordinate so the highlighted gård is
-              // visible on the map.
-              (() => {
-                const hasTreeSelection = !!tree && !!treeDataset && !!treeUuid
-                if (hasTreeSelection) return null
-                if (!docData?._source) return null
-                if (docData._source.sosi !== 'gard') return null
-                if (!docDataset || !treeSettings[docDataset]) return null
-                const coords = docData._source.location?.coordinates
-                if (!coords || coords.length !== 2) return null
-
-                const centralLat = coords[1]
-                const centralLng = coords[0]
-
-                const labelText =
-                  `${getGnr({ _source: docData._source }, docDataset) || ''} ${docData._source.label || '[utan namn]'}`
-                    .trim() || '[utan namn]'
-
-                return (
-                  <>
-                    {/* Farm (cadastral unit) marker when only `doc` is active */}
-                    <Marker
-                      key={`doc-farm-label-${docData._source.uuid}`}
-                      zIndexOffset={2500}
-                      pane="treeLabelPane"
-                      icon={new leaflet.DivIcon(
-                        getLabelMarkerIcon(
-                          labelText,
-                          'black',
-                          undefined,
-                          true,
-                          false,
-                          true
-                        )
-                      )}
-                      position={[centralLat, centralLng]}
-                      eventHandlers={{
-                        click: () => {
-                          const newParams = new URLSearchParams(searchParams);
-                          newParams.set('activePoint', `${centralLat},${centralLng}`);
-                          newParams.set('maxResults', String(SM_BASE_MAX_RESULTS));
-                          router.push(`?${newParams.toString()}`);
-                        },
-                        keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
-                          const key = e.originalEvent?.key ?? e.key
-                          if (key === 'Enter' || key === ' ') {
-                            ;(e.originalEvent ?? e).preventDefault()
-                            const newParams = new URLSearchParams(searchParams);
-                            newParams.set('activePoint', `${centralLat},${centralLng}`);
-                            newParams.set('maxResults', String(SM_BASE_MAX_RESULTS));
-                            router.push(`?${newParams.toString()}`);
-                          }
-                        }
-                      }}
-                    />
-                  </>
-                )
-              })()
-            }
 
             {
               (() => {
@@ -1674,13 +1455,14 @@ export default function MapExplorer() {
             {myLocation && <CircleMarker center={myLocation} radius={10} color="#cf3c3a" interactive={false} />}
             {urlRadius && point && <Circle center={point} radius={urlRadius} color="#0061ab" interactive={false} />}
             {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" interactive={false} />}
-            {point && !initDecoded && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
+
+            
             { activePoint && (
               <>
                 <Marker
                   zIndexOffset={2500}
                   icon={new leaflet.DivIcon(getUnlabeledMarker("accent", { activeOval: true }))}
-                  position={activePoint}
+                  position={activePoint }
                   eventHandlers={{
                     click: () => {
                       // Center view
@@ -1701,6 +1483,29 @@ export default function MapExplorer() {
                 />
               </>
             )}
+            {point && init && !activePoint && !init && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
+            {point && !activePoint && init && <Marker icon={new leaflet.DivIcon(
+              activeMarkerMode != 'points'
+                ? getLabelMarkerIcon(
+                    (
+                      initGroupLabel &&
+                      initGroupPoint &&
+                      areSamePoint(initGroupPoint, point)
+                    )
+                      ? initGroupLabel
+                      : (
+                        resultCardData?.label ??
+                        resultCardData?.fields?.label?.[0] ??
+                        resultCardData?.fields?.["group.label"]?.[0] ??
+                        null
+                      ),
+                    'accent',
+                    undefined,
+                    false,
+                    false,
+                    true
+                  )
+                : getUnlabeledMarker('accent', { activeOval: true }))} position={point} />}
 
           </>)
       }}

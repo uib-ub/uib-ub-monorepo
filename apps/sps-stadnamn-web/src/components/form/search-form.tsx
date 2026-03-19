@@ -3,8 +3,7 @@ import Menu from '@/app/menu';
 import { SM_BASE_MAX_RESULTS } from '@/lib/utils';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
-import { useMode, usePerspective } from '@/lib/param-hooks';
-import { stringToBase64Url } from '@/lib/param-utils';
+import { useDatasetTagParam, useFacetParam, useFulltextOn, useFuzzyOn, useGroupParam, useInitParam, useMode, useOptionsOn, usePerspective, usePoint, usePointParam, useQParam, useSourceViewOn, useTreeParam } from '@/lib/param-hooks';
 import { useSearchQuery } from '@/lib/search-params';
 import { formatNumber } from '@/lib/utils';
 import { GlobalContext } from '@/state/providers/global-provider';
@@ -28,10 +27,16 @@ export default function SearchForm() {
     const setDrawerOpen = useSessionStore((s) => s.setDrawerOpen)
     const snappedPosition = useSessionStore((s: any) => s.snappedPosition)
     const currentPosition = useSessionStore((s: any) => s.currentPosition)
-    const datasetTag = searchParams.get('datasetTag')
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
-    const options = searchParams.get('options')
-    const group = searchParams.get('group')
+    const optionsOn = useOptionsOn()
+    const group = useGroupParam()
+    const fuzzyOn = useFuzzyOn()
+    const sourceViewOn = useSourceViewOn()
+    const init = useInitParam()
+    const pointParam = usePointParam()
+    const facet = useFacetParam()
+    const fulltextOn = useFulltextOn()
+    const datasetTag = useDatasetTagParam()
 
 
     const input = useRef<HTMLInputElement | null>(null)
@@ -43,14 +48,13 @@ export default function SearchForm() {
 
 
     const mode = useMode()
-    const isTableMode = mode === 'table'
 
     // Initialize from URL params - this is the source of truth
-    const urlQuery = searchParams.get('q') || ''
+    const urlQuery = useQParam() || ''
     const [inputState, setInputState] = useState<string>(urlQuery)
     const [submittedPoint, setSubmittedPoint] = useState<string | null>(null)
 
-    const tree = searchParams.get('tree')
+    const tree = useTreeParam()
 
     const dropdownSelect = (inputString: string, group?: string | null, coordinates?: [number, number]) => {
         inputValue.current = inputString
@@ -140,7 +144,7 @@ export default function SearchForm() {
             <div className={`flex w-full h-full pr-1 bg-white ${isMobile ? 'shadow-lg' : `shadow-l-none rounded-l-none ${autocompleteOpen && autocompleteHasResults ? 'rounded-tr-md' : 'rounded-r-md'} shadow-lg`} items-center relative group`}>
 
                 <label htmlFor="search-input" className="sr-only">Søk</label>
-                {false && !(isMobile && autocompleteOpen) && <ClickableIcon onClick={() => { setSnappedPosition('middle') }} add={{ options: options ? null : 'on' }} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
+                {false && !(isMobile && autocompleteOpen) && <ClickableIcon onClick={() => { setSnappedPosition('middle') }} add={{ options: optionsOn ? null : 'on' }} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
                     <PiSliders className="text-3xl xl:text-2xl" aria-hidden="true" />
                     {filterCount > 0 && <span className={`results-badge bg-primary-500 absolute top-1 left-1 rounded-full text-white text-xs ${filterCount < 10 ? 'px-1.5' : 'px-1'}`}>
                         {formatNumber(filterCount)}
@@ -173,24 +177,24 @@ export default function SearchForm() {
 
                 {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset} />)}
                 {submittedPoint && <input type="hidden" name="point" value={submittedPoint} />}
-                {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''} />}
+                {datasetTag && <input type="hidden" name="datasetTag" value={datasetTag || ''} />}
 
-                {(inputState || searchParams.get('q')) && !menuOpen &&
+                {(inputState || urlQuery) && !menuOpen &&
                     <ClickableIcon label="Tøm" remove={['q']} replace onClick={() => { clearQuery() }}>
                         <PiX className="text-3xl lg:text-2xl text-neutral-800 group-focus-within:text-neutral-800 m-1" /></ClickableIcon>}
                 <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800" aria-hidden="true" /></button>
             </div>
 
-            {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''} />}
+            {facet && <input type="hidden" name="facet" value={facet || ''} />}
             {selectedGroup && <input type="hidden" name="init" value={selectedGroup} />}
             {/* results: integer – minimum is 5 when present. */}
-            {options && <input type="hidden" name="options" value={'on'} />}
-            {searchParams.get('sourceView') && !group && <input type="hidden" name="sourceView" value={'on'} />}
-            {!submittedPoint && !searchParams.get('init') && searchParams.get('point') && <input type="hidden" name="point" value={searchParams.get('point') || ''} />}
+            {optionsOn && <input type="hidden" name="options" value={'on'} />}
+            {sourceViewOn && !group && <input type="hidden" name="sourceView" value={'on'} />}
+            {!submittedPoint && !init && pointParam && <input type="hidden" name="point" value={pointParam || ''} />}
             <input type="hidden" name="maxResults" value={String(SM_BASE_MAX_RESULTS)} />
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
-            {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
-            {searchParams.get('fuzzy') && <input type="hidden" name="fuzzy" value={searchParams.get('fuzzy') || ''} />}
+            {fulltextOn && <input type="hidden" name="fulltext" value={'on'} />}
+            {fuzzyOn && <input type="hidden" name="fuzzy" value={'on'} />}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
             {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''} />}
             <AutocompleteDropdown

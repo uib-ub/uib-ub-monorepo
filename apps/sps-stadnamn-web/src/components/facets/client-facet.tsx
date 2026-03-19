@@ -7,7 +7,7 @@ import { SM_BASE_MAX_RESULTS } from '@/lib/utils';
 import { PiFunnel } from 'react-icons/pi';
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/state/providers/global-provider';
-import { usePerspective } from '@/lib/param-hooks';
+import { useFacetParam, useMaxResults, usePerspective } from '@/lib/param-hooks';
 import { FacetBadge } from '@/components/ui/badge';
 import { usePreferences } from '@/state/zustand/persistent-preferences';
 
@@ -21,7 +21,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   const paramsExceptFacet = useMemo(() => removeFilterParams(facetName), [removeFilterParams, facetName])
   const searchParams = useSearchParams()
   const { facetOptions } = useContext(GlobalContext)
-  const currentFacet = searchParams.get('facet') || 'adm'
+  const currentFacet = useFacetParam() || 'adm'
   const facetCountMode = usePreferences((state) => state.facetCountMode);
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
@@ -92,9 +92,6 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
       return true
     })
 
-    if (searchParams.get('maxResults')) {
-      newParams.push(['maxResults', String(SM_BASE_MAX_RESULTS)])
-    }
 
 
 

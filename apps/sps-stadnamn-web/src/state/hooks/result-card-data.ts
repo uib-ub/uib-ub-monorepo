@@ -4,6 +4,8 @@ import { useSearchQuery } from '@/lib/search-params';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useGroupParam, useInitParam, useQParam } from '@/lib/param-hooks';
+import { useContext } from 'react';
+import { GlobalContext } from '../providers/global-provider';
 
 const resultCardDataQuery = async (
     id: string,
@@ -30,6 +32,7 @@ const resultCardDataQuery = async (
 
 export default function useResultCardData(itemId?: string | null) {
     const { searchQueryString } = useSearchQuery()
+    const { activeMarkerRef } = useContext(GlobalContext)
     const init = useInitParam()
     const group = useGroupParam()
     const id = itemId || init || group
@@ -68,6 +71,8 @@ export default function useResultCardData(itemId?: string | null) {
     // Normalize the shape so existing components can rely on
     // `groupData.label` and `groupData.coordinates` even if the API
     // response only exposes these via `fields`/`sources`.
+
+
     const processedData = returnedData
         ? {
             ...returnedData,
@@ -86,6 +91,7 @@ export default function useResultCardData(itemId?: string | null) {
                         : undefined),
         }
         : null
+
 
     return {
         resultCardData: processedData,

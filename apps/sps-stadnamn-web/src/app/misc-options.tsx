@@ -1,5 +1,5 @@
 'use client'
-import { useDatasetTag } from '@/lib/param-hooks'
+import { useDatasetTagParam } from '@/lib/param-hooks'
 import { useRouter, useSearchParams } from 'next/navigation'
 export default function MiscOptions() {
   const searchParams = useSearchParams()
@@ -10,7 +10,7 @@ export default function MiscOptions() {
         type="checkbox"
         name="datasetTag"
         value="deep"
-        checked={useDatasetTag() == 'deep'}
+        checked={useDatasetTagParam() == 'deep'}
         className="mt-1 h-3 w-3 xl:h-4 xl:w-4"
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           const newUrl = new URLSearchParams(searchParams);

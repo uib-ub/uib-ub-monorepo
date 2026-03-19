@@ -10,7 +10,7 @@ import { FacetBadge } from '@/components/ui/badge';
 import Clickable from '@/components/ui/clickable/clickable';
 import IconButton from '@/components/ui/icon-button';
 import { treeSettings } from '@/config/server-config';
-import { useMode, usePerspective } from '@/lib/param-hooks';
+import { useDatasetTagParam, useMode, usePerspective, useTreeParam } from '@/lib/param-hooks';
 import { getSkeletonLength } from '@/lib/utils';
 import Link from 'next/link';
 import FacetToolbar from './facet-toolbar';
@@ -45,8 +45,7 @@ export default function DatasetFacet() {
   const availableFacets = useMemo(() => facetConfig[perspective], [perspective]);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
   const paramsExceptFacet = removeFilterParams('dataset')
-  const datasetTag = searchParams.get('datasetTag')
-  const isCadastral = !!searchParams.get('tree')
+  const isCadastral = !!useTreeParam()
   const facetCountMode = usePreferences((state) => state.facetCountMode);
   const mode = useMode()
 
@@ -141,7 +140,7 @@ export default function DatasetFacet() {
         </div>}
 
       </div>
-      { mode == 'map' && !searchParams.get('tree') && <FacetToolbar />}
+      { mode == 'map' && !useTreeParam() && <FacetToolbar />}
 
 
 

@@ -8,7 +8,7 @@ import { datasetTitles } from '@/config/metadata-config';
 
 import { FacetBadge } from '@/components/ui/badge';
 import Clickable from '@/components/ui/clickable/clickable';
-import { usePerspective } from '@/lib/param-hooks';
+import { useFacetParam, usePerspective } from '@/lib/param-hooks';
 import { getSkeletonLength } from '@/lib/utils';
 import FacetToolbar from './facet-toolbar';
 import { usePreferences } from '@/state/zustand/persistent-preferences';
@@ -26,7 +26,7 @@ export default function ServerFacet() {
   const [facetSearch, setFacetSearch] = useState('');
   const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
   const availableFacets = useMemo(() => facetConfig[perspective], [perspective]);
-  const facet = searchParams.get('facet')
+  const facet = useFacetParam()
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
   const paramsExceptFacet = facet ? removeFilterParams(facet) : searchParams.toString()
   const currentValue = facet && searchParams.get(facet)
