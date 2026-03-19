@@ -77,7 +77,7 @@ const resources: FieldConfigItem = {
 }
 
 const boost = { numeric }
-const dataset = { label: "Datasett" }
+const dataset = { label: "Datasett", facet, table }
 const coordinateType = { label: "Koordinattype", facet }
 const ssr = { label: "SSR Stadnummer", facet, keyword }
 
