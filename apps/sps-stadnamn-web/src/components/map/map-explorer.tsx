@@ -1067,7 +1067,7 @@ export default function MapExplorer() {
                 ) : null
                 
                 const showLabel = activeMarkerMode != 'points' && (!hasQuery || activeMarkerMode === 'labels')
-                const icon = showLabel ? getLabelMarkerIcon(labelText, 'white', childCount, false, false, false):  getUnlabeledMarker('black')
+                const icon = showLabel ? getLabelMarkerIcon(labelText, 'white', childCount, false):  getUnlabeledMarker('black')
 
                 return (
                   <Fragment key={`result-frag-${item.fields.uuid[0]}`}>
@@ -1238,8 +1238,6 @@ export default function MapExplorer() {
                               .trim() || '[utan namn]',
                             'black',
                             undefined,
-                            true,
-                            false,
                             false
                           )
                         )}
@@ -1501,8 +1499,6 @@ export default function MapExplorer() {
                       ),
                     'accent',
                     undefined,
-                    false,
-                    false,
                     true
                   )
                 : getUnlabeledMarker('accent', { activeOval: true }))} position={point} />}

@@ -109,8 +109,6 @@ export function getLabelMarkerIcon(
   label: string,
   color: string,
   docCount?: number,
-  selected?: boolean,
-  hideLabel?: boolean,
   showPin?: boolean,
   isLoading?: boolean
 ) {
