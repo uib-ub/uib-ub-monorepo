@@ -77,7 +77,7 @@ const resources: FieldConfigItem = {
 }
 
 const boost = { numeric }
-const dataset = { label: "Datasett" }
+const dataset = { label: "Datasett", facet, table }
 const coordinateType = { label: "Koordinattype", facet }
 const ssr = { label: "SSR Stadnummer", facet, keyword }
 
@@ -147,8 +147,8 @@ export const fieldConfig: Record<string, DatasetFieldConfig> = {
   },
   rygh_g: {
     ...required, ...text,
-    "rawData.språk": { label: "Språk", facet, table},
-    "rawData.kjelde": { label: "Kjelde", facet, table },
+    "rawData.språk": { label: "Språk", facet },
+    "rawData.kjelde": { label: "Kjelde", facet },
   },
   leks: {
     ...required, adm, adm1, adm2, ...html,
