@@ -80,7 +80,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
             }}
             className="w-full text-left p-3">
             <div className="flex items-center justify-between gap-x-2 whitespace-normal w-full">
-                <div className="inline-flex items-center flex-wrap gap-x-2 w-full">
+                <div className="inline-flex items-center flex-wrap gap-x-2 flex-1 min-w-0">
                 
                     {isGrunnord && (
                         <div className="inline-flex items-center gap-x-2 w-full">
@@ -98,9 +98,9 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                     )}
                     {showScore && hit._score}
                     {!isGrunnord && (
-                        <span className="flex items-center gap-x-2">
+                        <span className="flex items-center gap-x-2 flex-wrap min-w-0">
                             { isInit && <img src="/currentLocation.svg" alt="" aria-hidden="true" className="h-6 mb-1 self-center " />}
-                            <strong>{label}</strong> {otherLabel && <em className="text-neutral-700 text-sm whitespace-nowrap text-base">{otherLabel}</em>}
+                            <strong>{label}</strong> {otherLabel && <em className="text-neutral-700 text-sm text-base whitespace-normal break-words">{otherLabel}</em>}
                         </span>
                     )}
 
