@@ -435,7 +435,7 @@ export default function MapExplorer() {
 
 
 
-  const updateMarkerGrid = useCallback((liveBounds: [[number, number], [number, number]], liveZoom: number, gridSizeData: { gridSize: number, precision: number }, currentCells: GeotileCell[]) => {
+  const updateMarkerGrid = useCallback((liveBounds: [[number, number], [number, number]], liveZoom: number, gridSizeData: { gridSize: number, precision: number }, currentCells: GeotileCell[], hideDuringTransition = false) => {
     // console.log("UPDATE MARKER GRID", liveBounds, liveZoom, gridSizeData, currentCells)
     const { gridSize, precision } = gridSizeData
     const [[north, west], [south, east]] = liveBounds
@@ -443,7 +443,7 @@ export default function MapExplorer() {
     if (liveZoom <= 4 || gridSize === 1) {
       // Set marker cells to whole world if it isn't already one cell covering the world
       if (currentCells.length === 0 || currentCells[0]?.key != '0/0/0') {
-        if (currentCells.length > 0 && currentCells[0]?.precision !== 0) {
+        if (hideDuringTransition && currentCells.length > 0 && currentCells[0]?.precision !== 0) {
           setHideMarkersDuringGridTransition(true)
         }
         setMarkerCells([{
@@ -506,7 +506,7 @@ export default function MapExplorer() {
 
     suspendMarkerDiscoveryRef.current = false
     const precisionChanged = currentCells.length > 0 && currentCells[0]?.precision !== precision
-    if (precisionChanged) {
+    if (hideDuringTransition && precisionChanged) {
       setHideMarkersDuringGridTransition(true)
     }
     setMarkerCells(newCells);
@@ -519,7 +519,7 @@ export default function MapExplorer() {
   }, [])
 
   useEffect(() => {
-    updateMarkerGrid(snappedBounds, zoomState, gridSizeRef.current, markerCells)
+    updateMarkerGrid(snappedBounds, zoomState, gridSizeRef.current, markerCells, false)
     //console.log("INITIALIZE MARKER GRID")
   }, [])
 
@@ -768,7 +768,8 @@ export default function MapExplorer() {
 
                 // Always update marker grid after zoom
                 //console.log("ZOOM UPDATE")
-                updateMarkerGrid([[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]], mapZoom, gridSizeRef.current, markerCells);
+                const zoomingOut = mapZoom < zoomState
+                updateMarkerGrid([[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]], mapZoom, gridSizeRef.current, markerCells, zoomingOut);
                 setZoomState(mapZoom);
               }
               else if (!mapBoundsPoints.every((point) => {
@@ -780,7 +781,7 @@ export default function MapExplorer() {
                 });
               })) {
                 //console.log("MOVE UPDATE - map bounds not fully covered by current cells")
-                updateMarkerGrid([[north, west], [south, east]], map.getZoom(), gridSizeRef.current, markerCells);
+                updateMarkerGrid([[north, west], [south, east]], map.getZoom(), gridSizeRef.current, markerCells, false);
               }
 
 
