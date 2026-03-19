@@ -147,8 +147,8 @@ export const fieldConfig: Record<string, DatasetFieldConfig> = {
   },
   rygh_g: {
     ...required, ...text,
-    "rawData.språk": { label: "Språk", facet },
-    "rawData.kjelde": { label: "Kjelde", facet },
+    "rawData.språk": { label: "Språk", facet, table},
+    "rawData.kjelde": { label: "Kjelde", facet, table },
   },
   leks: {
     ...required, adm, adm1, adm2, ...html,
@@ -471,7 +471,7 @@ export const fieldConfig: Record<string, DatasetFieldConfig> = {
 // TODO: refactor so that required is not needed in the individual configs
 export const baseAllConfig: Record<string, FieldConfigItem> = {
   ...required, adm, wikiAdm, adm1, adm2, sosi, ...cadastre,
-  "dataset": { label: "Datasett", facet },
+  "dataset": { label: "Datasett", facet, table },
   "cadastralIndex": { label: "Hierarki" },
   ...text,
   ...html,
