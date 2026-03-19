@@ -1356,8 +1356,11 @@ export default function MapExplorer() {
             )}
             {point && !activePoint && !init && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
             {point && !activePoint && init && <Marker zIndexOffset={1000} icon={new leaflet.DivIcon(
-              activeMarkerMode != 'points'
-                ? getLabelMarkerIcon(
+              (activeMarkerMode == 'points' || (activeMarkerMode == 'counts' && hasQuery))
+                ? 
+                getUnlabeledMarker('accent', { activeOval: true })
+                :
+                getLabelMarkerIcon(
                     (
                       initGroupLabel &&
                       initGroupPoint &&
@@ -1379,8 +1382,7 @@ export default function MapExplorer() {
                     'accent',
                     undefined,
                     true
-                  )
-                : getUnlabeledMarker('accent', { activeOval: true }))} position={point} />}
+                  ) )} position={point} />}
 
           </>)
       }}
