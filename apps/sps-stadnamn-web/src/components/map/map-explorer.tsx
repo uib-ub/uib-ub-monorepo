@@ -87,12 +87,13 @@ export default function MapExplorer() {
 
 
   const getDisplayLabel = (fields?: Record<string, any> | null): string => {
-    const individualLabel = fields?.label?.[0]
     if (sourceViewOn) {
-      return individualLabel ?? '[utan namn]'
+      return fields?.label?.[0] ?? '[utan namn]'
     }
-    const groupLabel = fields?.["group.label"]?.[0]
-    return (groupLabel || individualLabel || '[utan namn]')
+    else {
+      return fields?.["group.label"]?.[0] ?? '[utan namn]'
+    }
+
   }
 
   const areSamePoint = (a: [number, number] | null, b: [number, number] | null) =>
@@ -526,43 +527,12 @@ export default function MapExplorer() {
 
 
 
-  // Fly to doc
-  /*
-  useEffect(() => {
-    if (!mapInstance.current || searchLoading) return
-
-    if (docData?._source?.location?.coordinates?.length && (docData?._source?.group?.id == groupValue || docData?._source?.uuid == doc)) {
-      const currentBounds = mapInstance.current.getBounds();
-      const center = [docData?._source?.location?.coordinates[1], docData?._source?.location?.coordinates[0]]
-      if (currentBounds && !currentBounds.contains(center)) {
-        mapInstance.current.setView(center, mapInstance.current.getZoom());
-      }
-    }
-
-  }, [mapInstance, searchLoading, groupValue, docData, doc])
-  */
 
   // Fly to results
   useEffect(() => {
     allowFitBounds.current = true
   }, [searchUpdatedAt])
 
-
-  /*
-  useEffect(() => {
-    if (!allowFitBounds.current || markerResults.some(result => result.isSuccess && result.data.aggregations?.grid.buckets.length > 0)) {
-      return
-    }
-    else if (markerResults.every(result => result.isSuccess)) {
-      allowFitBounds.current = false
-      if (searchBounds?.length) {
-        mapInstance.current?.flyToBounds(searchBounds, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
-      }
-    }
-
-
-  }, [markerResults, searchBounds])
-  */
 
 
 
@@ -572,8 +542,7 @@ export default function MapExplorer() {
       const newQueryParams = new URLSearchParams(searchParams)
       const fields = selected.fields || {}
 
-      
-
+    
 
       if (selected._source?.misc?.children && debug) {
         setDebugChildren(selected._source?.misc?.children)
@@ -592,6 +561,16 @@ export default function MapExplorer() {
         console.log("SELECED", selected)
       }
       else {
+
+        // Immediately cache label + init + point for the anchor marker so we
+        // can render it without waiting for group-data. This cache is keyed
+        // by both init and point to avoid any flicker on old markers.
+        const clickedLabel = sourceViewOn
+          ? (fields.label?.[0] ?? fields["group.label"]?.[0] ?? '[utan namn]')
+          : (fields["group.label"]?.[0] ?? fields.label?.[0] ?? '[utan namn]')
+        setInitGroupLabel(clickedLabel, markerPoint)
+
+
         newQueryParams.set('maxResults', String(SM_BASE_MAX_RESULTS))
         newQueryParams.delete('mapSettings')
         //newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
@@ -608,13 +587,7 @@ export default function MapExplorer() {
         newQueryParams.delete('activeName')
         newQueryParams.set('point', `${markerPoint[0]},${markerPoint[1]}`)
 
-        // Immediately cache label + init + point for the anchor marker so we
-        // can render it without waiting for group-data. This cache is keyed
-        // by both init and point to avoid any flicker on old markers.
-        const clickedLabel = sourceViewOn
-          ? (fields.label?.[0] ?? fields["group.label"]?.[0] ?? '[utan namn]')
-          : (fields["group.label"]?.[0] ?? fields.label?.[0] ?? '[utan namn]')
-        setInitGroupLabel(clickedLabel, markerPoint)
+        
       }
 
       router.push(`?${newQueryParams.toString()}`)
@@ -1392,10 +1365,16 @@ export default function MapExplorer() {
                     )
                       ? initGroupLabel
                       : (
-                        resultCardData?.label ??
-                        resultCardData?.fields?.label?.[0] ??
-                        resultCardData?.fields?.["group.label"]?.[0] ??
-                        null
+                        sourceViewOn
+                          ? (
+                            resultCardData?.label ??
+                            resultCardData?.fields?.label?.[0] ??
+                            null
+                          )
+                          : (
+                            resultCardData?.fields?.["group.label"]?.[0] ??
+                            null
+                          )
                       ),
                     'accent',
                     undefined,

@@ -332,10 +332,7 @@ export default function ResultCard({
     // Use group fields as primary data source; docData is deprecated and no longer required.
     const source = undefined as any;
     const label =
-        (resultCardData?.fields?.label?.[0] ??
-            resultCardData?.fields?.["group.label"]?.[0] ??
-            toText(fields.label)) ||
-        toText(fields["group.label"]) ||
+        resultCardData?.label ||
         (source ? (Array.isArray(source.label) ? source.label[0] : (source.label as string | undefined)) : "");
 
     // Group-level adm* (for header when there are multiple sources)

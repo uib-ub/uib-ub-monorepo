@@ -50,33 +50,6 @@ export default function SearchResults() {
   const noGeo = searchParams.get('noGeo') === 'on'
 
 
-  // Ensure the map has a label available for the init anchor marker even
-  // when init/point come from URL or list interactions (not just map clicks).
-  // We tie the cached label to the current point; the map will only render
-  // the anchor when both label and point match its own props.
-  useEffect(() => {
-    if (!init || !point) {
-      setInitGroupLabel(null, null)
-      return
-    }
-
-    // If the init group data is still loading, keep any label that might have
-    // been set by a map click so the anchor marker can render immediately.
-    if (initResultCardLoading) {
-      return
-    }
-
-    const label =
-      initResultCardData?.label ??
-      initResultCardData?.fields?.label?.[0] ??
-      initResultCardData?.fields?.["group.label"]?.[0] ??
-      null
-    if (typeof label === "string" && label.trim()) {
-      setInitGroupLabel(label, point)
-    } else {
-      setInitGroupLabel(null, null)
-    }
-  }, [init, point, initResultCardLoading, initResultCardData?.label, initResultCardData?.fields, setInitGroupLabel])
 
   const {
     listData,

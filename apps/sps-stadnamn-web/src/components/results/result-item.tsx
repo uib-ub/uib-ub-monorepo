@@ -24,6 +24,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
     const { isMobile, mapFunctionRef, sosiVocab } = useContext(GlobalContext)
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const showScore = useDebugStore((s: any) => s.showScore)
+    const setInitGroupLabel = useSessionStore((s) => s.setInitGroupLabel)
     const isGrunnord = docDataset?.includes('_g')
 
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
@@ -62,6 +63,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                 true
             )
         }
+        setInitGroupLabel(label, coords ? [coords[1], coords[0]] : null)
 
         onClick?.()
     }

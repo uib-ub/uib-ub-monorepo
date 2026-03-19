@@ -4,8 +4,6 @@ import { useSearchQuery } from '@/lib/search-params';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useGroupParam, useInitParam, useQParam } from '@/lib/param-hooks';
-import { useContext } from 'react';
-import { GlobalContext } from '../providers/global-provider';
 
 const resultCardDataQuery = async (
     id: string,
@@ -32,7 +30,6 @@ const resultCardDataQuery = async (
 
 export default function useResultCardData(itemId?: string | null) {
     const { searchQueryString } = useSearchQuery()
-    const { activeMarkerRef } = useContext(GlobalContext)
     const init = useInitParam()
     const group = useGroupParam()
     const id = itemId || init || group
@@ -76,12 +73,8 @@ export default function useResultCardData(itemId?: string | null) {
     const processedData = returnedData
         ? {
             ...returnedData,
-            id: sourceView ? (returnedData as any).fields?.["uuid"]?.[0] : (returnedData as any).fields["group.id"][0],
-            label:
-                (returnedData as any).label
-                ?? (returnedData as any).fields?.label?.[0]
-                ?? (returnedData as any).fields?.["group.label"]?.[0]
-                ?? undefined,
+            id: (returnedData as any).id,
+            label: (returnedData as any).label,
             coordinates:
                 (returnedData as any).coordinates
                 ?? (Array.isArray((returnedData as any).fields?.location?.coordinates)

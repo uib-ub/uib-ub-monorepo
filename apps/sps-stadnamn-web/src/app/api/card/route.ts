@@ -227,14 +227,14 @@ export async function GET(request: Request) {
   const topFields = data?.hits?.hits?.[0]?.fields || {};
 
   const outputData: Partial<OutputData> = {
-    id: topFields["group.id"]?.[0],
-    //"label": topFields['group.label']?.[0],
+    id: isSourceView ? topFields["uuid"]?.[0] : topFields["group.id"]?.[0],
+    label: isSourceView ? topFields["label"]?.[0] : topFields["group.label"]?.[0] || topFields?.["label"]?.[0],
     total: data?.hits?.total?.value,
     fields: topFields,
   };
 
   // Remove first label from additional labels
-  additionalLabels.delete(data?.hits?.hits?.[0]?.fields?.['label']?.[0])
+  additionalLabels.delete(outputData.label || '')
 
   outputData.fields = {
     ...outputData.fields,
