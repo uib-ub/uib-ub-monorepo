@@ -216,13 +216,13 @@ export function useResultLimitParam() {
     return useGetParam('resultLimit')
 }
 
-const RESULT_LIMIT_MAX = 100
+const RESULT_LIMIT_MAX = 200
 const RESULT_LIMIT_DEFAULT_COMPACT = 5
 const RESULT_LIMIT_DEFAULT_FULL = 10
 const RESULT_LIMIT_COLLAPSED_DEFAULT_COMPACT = 3
 const RESULT_LIMIT_COLLAPSED_DEFAULT_FULL = 5
-const RESULT_LIMIT_INCREMENT_COMPACT = 20
-const RESULT_LIMIT_INCREMENT_FULL = 100
+const RESULT_LIMIT_INCREMENT_COMPACT = 100
+const RESULT_LIMIT_INCREMENT_FULL = 20
 
 // Centralized UI config for the result list limit.
 // - Hard cap at 100 results for performance.
