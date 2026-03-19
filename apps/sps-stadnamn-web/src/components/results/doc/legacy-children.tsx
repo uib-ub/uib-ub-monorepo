@@ -3,7 +3,6 @@
 
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
-import { SM_BASE_MAX_RESULTS } from '@/lib/utils'
 import { stringToBase64Url } from '@/lib/param-utils'
 import EmbeddedMap from '@/components/map/embedded-map'
 

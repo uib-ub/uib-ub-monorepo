@@ -2,8 +2,6 @@ import { useState, useContext, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchQuery } from '@/lib/search-params';
-import { SM_BASE_MAX_RESULTS } from '@/lib/utils';
-
 import { PiFunnel } from 'react-icons/pi';
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/state/providers/global-provider';

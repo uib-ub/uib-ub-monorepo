@@ -1,9 +1,7 @@
 'use client'
 import { useDatasetTagParam } from "@/lib/param-hooks";
 import { getValueByPath } from "@/lib/utils";
-import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { PiMagnifyingGlass } from "react-icons/pi";
 
 interface FacetItem {

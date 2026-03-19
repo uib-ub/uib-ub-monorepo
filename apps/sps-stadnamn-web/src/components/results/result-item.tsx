@@ -1,6 +1,5 @@
 'use client'
 import Clickable from '@/components/ui/clickable/clickable';
-import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { datasetTitles } from '@/config/metadata-config';
 import { panPointIntoView } from '@/lib/map-utils';
 import { useInitDecoded, usePerspective, useSourceViewOn } from '@/lib/param-hooks';
@@ -10,10 +9,8 @@ import { GlobalContext } from '@/state/providers/global-provider';
 import { useDebugStore } from '@/state/zustand/debug-store';
 import { useSessionStore } from '@/state/zustand/session-store';
 import { useSearchParams } from 'next/navigation';
-import { useContext, useEffect, useRef } from 'react';
-import { PiX, PiXBold } from 'react-icons/pi';
+import { useContext, useRef } from 'react';
 import DistanceBadge from '@/components/results/distance-badge';
-import { SM_BASE_MAX_RESULTS } from '@/lib/utils';
 import AdmInfo from '@/components/shared/adm-info';
 
 export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hit: any, onClick?: () => void, notClickable?: boolean } & Record<string, any>) {

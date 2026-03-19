@@ -9,7 +9,7 @@ import { boundsFromZoomAndCenter, calculateRadius, getGridSize, getLabelBounds, 
 import { useActivePoint, useCenterNumber, useDebugGroupsOn, useDocParam, useGroupParam, useMapSettingsOn, usePoint, useQParam, useRadiusNumber, useSourceViewOn, useTreeParam, useZoomNumber, useInitDecoded, useInitParam } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { parseTreeParam } from "@/lib/tree-param";
-import { getBnr, getGnr, indexToCode, SM_BASE_MAX_RESULTS } from "@/lib/utils";
+import { getBnr, getGnr, indexToCode } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
 import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";

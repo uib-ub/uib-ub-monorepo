@@ -6,11 +6,9 @@ import Link from 'next/link';
 import { datasetTitles, datasetPresentation, publishDates, datasetShortDescriptions } from '@/config/metadata-config';
 import Footer from '../components/layout/footer';
 import Form from "next/form";
-import React from 'react';
 import HomeNavCards from "./home-nav-cards";
 import { fetchStats } from "./api/_utils/stats";  
 import Header from "./header";
-import { SM_BASE_MAX_RESULTS } from "@/lib/utils";
 
 export default async function Home() {
   const { iiifStats, datasets, totalHits, groupCount } = await fetchStats()

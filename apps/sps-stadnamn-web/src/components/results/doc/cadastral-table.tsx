@@ -1,6 +1,5 @@
 'use client'
 import Clickable from '@/components/ui/clickable/clickable'
-import { SM_BASE_MAX_RESULTS } from '@/lib/utils'
 import {
   Tooltip,
   TooltipContent,

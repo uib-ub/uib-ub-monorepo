@@ -2,7 +2,21 @@
 import Spinner from "@/components/svg/Spinner";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
-import { useGroupParam, useInitParam, useNoGeoOn, usePoint, useQParam, useResultLimit, useSourceViewOn } from "@/lib/param-hooks";
+import {
+  useGroupParam,
+  useInitParam,
+  useNoGeoOn,
+  usePoint,
+  useQParam,
+  useResultLimit,
+  useSourceViewOn,
+} from "@/lib/param-hooks";
+import {
+  DEFAULT_COLLAPSED_RESULT_LIMIT_INIT,
+  DEFAULT_COLLAPSED_RESULT_LIMIT_NO_INIT,
+  DEFAULT_RESULT_LIMIT_INIT,
+  DEFAULT_RESULT_LIMIT_NO_INIT,
+} from "@/lib/utils";
 import { base64UrlToString } from "@/lib/param-utils";
 import { useSearchQuery } from "@/lib/search-params";
 import useResultCardData from "@/state/hooks/result-card-data";
@@ -110,15 +124,20 @@ export default function SearchResults() {
   }, [sourceViewOn, additionalResultsCount, groupTotalHits, initGroupId])
 
   const effectiveMaxVisibleResults = useMemo(() => {
-    const DEFAULT_INIT_VISIBLE = 5
-    const DEFAULT_NO_INIT_VISIBLE = 10
-
-    if (init && maxVisibleResults === DEFAULT_INIT_VISIBLE && totalResultsCountForCap > DEFAULT_INIT_VISIBLE) {
-      return 3
+    if (
+      init &&
+      maxVisibleResults === DEFAULT_RESULT_LIMIT_INIT &&
+      totalResultsCountForCap > DEFAULT_RESULT_LIMIT_INIT
+    ) {
+      return DEFAULT_COLLAPSED_RESULT_LIMIT_INIT
     }
 
-    if (!init && maxVisibleResults === DEFAULT_NO_INIT_VISIBLE && totalResultsCountForCap > DEFAULT_NO_INIT_VISIBLE) {
-      return 5
+    if (
+      !init &&
+      maxVisibleResults === DEFAULT_RESULT_LIMIT_NO_INIT &&
+      totalResultsCountForCap > DEFAULT_RESULT_LIMIT_NO_INIT
+    ) {
+      return DEFAULT_COLLAPSED_RESULT_LIMIT_NO_INIT
     }
 
     return maxVisibleResults

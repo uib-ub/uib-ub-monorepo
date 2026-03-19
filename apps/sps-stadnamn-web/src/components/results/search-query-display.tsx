@@ -3,7 +3,6 @@ import ToggleButton from "@/components/ui/toggle-button"
 import useResultCardData from "@/state/hooks/result-card-data"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Label } from "@/components/ui/label"
-import { SM_BASE_MAX_RESULTS } from "@/lib/utils"
 import { TitleBadge } from "@/components/ui/badge"
 import { useFulltextOn, useFuzzyOn, useInitParam, useNoGeoOn, useQParam, useSearchSortParam } from "@/lib/param-hooks"
 

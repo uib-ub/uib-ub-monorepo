@@ -20,6 +20,12 @@ import { GlobalContext } from "@/state/providers/global-provider"
 import { useSearchParams } from "next/navigation"
 import { useContext } from "react"
 import { base64UrlToString } from "./param-utils"
+import {
+    DEFAULT_COLLAPSED_RESULT_LIMIT_INIT,
+    DEFAULT_COLLAPSED_RESULT_LIMIT_NO_INIT,
+    DEFAULT_RESULT_LIMIT_INIT,
+    DEFAULT_RESULT_LIMIT_NO_INIT,
+} from "./utils"
 import type { ReservedSearchParamKey } from "./reserved-param-types"
 
 export const useGetParam = (key: ReservedSearchParamKey) => {
@@ -207,7 +213,7 @@ export function useResultLimit() {
     const resultLimit = useGetParam('resultLimit')
     const init = useInitParam()
     if (!resultLimit) {
-        return init ? 5 : 10
+        return init ? DEFAULT_RESULT_LIMIT_INIT : DEFAULT_RESULT_LIMIT_NO_INIT
     }
     return parseInt(resultLimit)
 }
