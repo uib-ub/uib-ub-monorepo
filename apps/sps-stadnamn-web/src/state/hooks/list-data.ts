@@ -8,10 +8,7 @@ import { useInitParam, useGroupParam, useNoGeoOn, usePoint, useSourceViewOn, use
 import { calculateDistance } from '@/lib/map-utils';
 import { useSessionStore } from '../zustand/session-store';
 import { GlobalContext } from '../providers/global-provider';
-
-export const INITIAL_PAGE_SIZE = 10;
-export const SUBSEQUENT_PAGE_SIZE = 20;
-
+import { BATCH_SIZE, STARTING_BATCH_SIZE } from '@/lib/result-limits';
 
 const listDataQuery = async ({
     pageParam = 0,
@@ -22,6 +19,8 @@ const listDataQuery = async ({
     searchSort,
     sourceViewOn,
     noGeo,
+    size,
+    from,
 }: {
     pageParam?: number;
     searchQueryString: string | null;
@@ -31,12 +30,9 @@ const listDataQuery = async ({
     searchSort: string | null;
     sourceViewOn: boolean;
     noGeo: boolean;
+    size: number;
+    from: number;
 }) => {
-
-    // Determine size and from based on page number
-    const isFirstPage = pageParam === 0;
-    const size = isFirstPage ? INITIAL_PAGE_SIZE : SUBSEQUENT_PAGE_SIZE;
-    const from = isFirstPage ? 0 : INITIAL_PAGE_SIZE + (pageParam - 1) * SUBSEQUENT_PAGE_SIZE;
 
     const sortPoint = !selectedGroup && point ? [point[1], point[0]] as [number, number] : null
     const exclude = init && !selectedGroup ? init : null
@@ -45,8 +41,8 @@ const listDataQuery = async ({
     const res = await fetch(`/api/search/list${searchQueryString ? `?${searchQueryString}` : ''}`, {
         method: 'POST',
         body: JSON.stringify({
-            size: size,
-            from: from,
+            size,
+            from,
             sortPoint,
             searchSort,
             noGeo,
@@ -76,6 +72,8 @@ const listDataQuery = async ({
         });
     }
 
+    console.log(data)
+
     return {
         data: hits,
         nextCursor: hits.length === size ? pageParam + 1 : undefined
@@ -83,8 +81,7 @@ const listDataQuery = async ({
 }
 
 export default function useListData() {
-    const initialPage = usePageNumber()
-    const initialPageRef = useRef(initialPage)
+    
     const { searchQueryString } = useSearchQuery()
     const point = usePoint()
     const searchSort = useSearchSortParam()
@@ -96,6 +93,7 @@ export default function useListData() {
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const { isMobile } = useContext(GlobalContext)
     const mobilePreview = Boolean(init && isMobile && snappedPosition == 'bottom')
+
 
 
     const {
@@ -117,18 +115,23 @@ export default function useListData() {
             point,
             searchSort,
             sourceViewOn,
-            noGeo
+            noGeo,
+            // The first page is smaller for performance, so offsets must shift accordingly.
+            size: pageParam === 0 ? STARTING_BATCH_SIZE : BATCH_SIZE,
+            from: pageParam === 0 ? 0 : STARTING_BATCH_SIZE + (pageParam - 1) * BATCH_SIZE,
         }),
         //placeholderData: (prevData: any) => prevData,
-        initialPageParam: initialPageRef.current - 1,
+        initialPageParam: 0,
         getNextPageParam: (lastPage: any) => lastPage.nextCursor,
         enabled: !mobilePreview,
         refetchOnWindowFocus: false,
         staleTime: 1000 * 60 * 5, // 5 minutes
     })
 
+
     return {
         listData: data,
+        listLoadedCount: data?.pages.reduce((acc: number, page: any) => acc + page.data.length, 0),
         listError: error,
         listFetchNextPage: fetchNextPage,
         listHasNextPage: hasNextPage,
@@ -136,8 +139,6 @@ export default function useListData() {
         listFetching: isFetching,
         listLoading: isLoading,
         listStatus: status,
-        listInitialPage: initialPageRef.current,
-        listPageSize: SUBSEQUENT_PAGE_SIZE,
         mobilePreview: mobilePreview,
     }
 }

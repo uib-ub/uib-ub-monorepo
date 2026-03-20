@@ -8,9 +8,7 @@ import {
   useNoGeoOn,
   usePoint,
   useQParam,
-  useResultLimit,
-  useResultLimitParam,
-  useResultLimitUiConfig,
+  useResultLimitNumber,
   useSourceViewOn,
 } from "@/lib/param-hooks";
 import { base64UrlToString } from "@/lib/param-utils";
@@ -28,10 +26,13 @@ import ResultItem from "./result-item";
 import SearchQueryDisplay from "./search-query-display";
 import IconButton from "@/components/ui/icon-button";
 import useListData from "@/state/hooks/list-data";
-import { ResultCardSkeleton, ResultItemSkeleton } from "@/components/results/card/card-skeletons";
+import { ResultCardSkeleton, ResultItemSkeleton } from "@/components/results/result-skeletons";
+
+import { useSearchParams, useRouter } from "next/navigation";
+import { BATCH_SIZE, FIRST_VISIBLE_RESULTS, STARTING_BATCH_SIZE } from "@/lib/result-limits";
 
 export default function SearchResults() {
-  const { searchError, groupTotalHits, noGeoGroupCount } = useSearchData()
+  const { searchError, groupTotalHits, totalHits, noGeoGroupCount } = useSearchData()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
   const init = useInitParam()
   const group = useGroupParam()
@@ -53,132 +54,26 @@ export default function SearchResults() {
   const { facetFilters, datasetFilters } = useSearchQuery()
   const filterCount = facetFilters.length + datasetFilters.length
   const noGeoOn = useNoGeoOn()
-  const resultLimit = useResultLimit()
-  const explicitResultLimitParam = useResultLimitParam()
-  const isExplicitResultLimit = explicitResultLimitParam !== null
-  const {
-    maxResultLimit: MAX_RESULT_LIMIT,
-    resultLimitIncrement,
-    defaultResultLimit,
-    defaultCollapsedResultLimit,
-  } = useResultLimitUiConfig()
-  const numericResultLimit = Number.isFinite(resultLimit) ? resultLimit : 0
-  const cappedResultLimit = Math.max(0, Math.min(numericResultLimit, MAX_RESULT_LIMIT))
-
+  const resultLimitNumber = useResultLimitNumber()
+  const resultCount = sourceViewOn ? totalHits?.value ?? 0 : groupTotalHits?.value ?? 0
+  const resultCountExceptInit = resultCount - (init ? 1 : 0)
 
 
   const {
     listData,
+    listLoadedCount,
     listError,
     listLoading,
     listFetchNextPage,
     listHasNextPage,
     listIsFetchingNextPage,
     listStatus,
-    listInitialPage,
     mobilePreview,
   } = useListData()
 
-  // Helper: count additional results.
-  // In grouped mode we can rely on cardinality: total groups minus the init group.
-  const additionalResultsCount = useMemo(() => {
-    if (!listData) return 0
-
-    // In source-view (document mode), fall back to counting documents excluding the init uuid.
-    if (sourceViewOn) {
-      const allHits = listData.pages.flatMap((page: any) => page.data || [])
-      return allHits.length
-    }
-
-    // In grouped mode, use the unique group cardinality when available.
-    const totalGroups = groupTotalHits?.value ?? 0
-    if (initGroupId) {
-      // We only care about whether there are groups beyond the init group,
-      // so effectively checking if total - 1 is greater than zero.
-      return Math.max(totalGroups - 1, 0)
-    }
-
-    return totalGroups
-  }, [listData, groupTotalHits, initGroupId])
-
-  // Check if there are no results
-  const hasNoResults = listStatus === 'success' && (!listData?.pages || listData.pages.length === 0 || listData.pages[0].data?.length === 0);
-  const hasNoAdditionalResults =
-    listStatus === 'success' &&
-    !!init &&
-    additionalResultsCount === 0
-
-  // Maximum number of list items to render.
-  // Defaults are handled inside `useResultLimit()`.
-  const maxVisibleResults = Number.isFinite(cappedResultLimit) ? cappedResultLimit : 0;
-
-  // Cap the visible results further based on total hit count.
-  //
-  // - When `init` is present: default is `5`, but if there are more than 5
-  //   additional results we only render `3` initially.
-  // - When `init` is NOT present: default is `10`, but if there are more than 10
-  //   results we only render `5` initially.
-  //
-  // This avoids a pointless "Vis meir" interaction when there are only
-  // a few extra items.
-  const totalResultsCountForCap = useMemo(() => {
-    // In source view we currently only have a reliable count for the loaded hits,
-    // so we fall back to the already-derived value.
-    if (sourceViewOn) return additionalResultsCount
-    const totalGroups = groupTotalHits?.value ?? 0
-    return initGroupId ? Math.max(totalGroups - 1, 0) : totalGroups
-  }, [sourceViewOn, additionalResultsCount, groupTotalHits, initGroupId])
-
-  const effectiveMaxVisibleResults = useMemo(() => {
-    if (
-      maxVisibleResults === defaultResultLimit &&
-      !isExplicitResultLimit &&
-      totalResultsCountForCap > defaultResultLimit
-    ) {
-      return defaultCollapsedResultLimit
-    }
-
-    return maxVisibleResults
-  }, [maxVisibleResults, totalResultsCountForCap, defaultResultLimit, defaultCollapsedResultLimit, isExplicitResultLimit])
-
-  // Total number of results that have been loaded from the API so far.
-  const totalLoadedResults = useMemo(() => {
-    if (!listData) return 0;
-    return (listData.pages as any[]).reduce((acc, page: any) => {
-      return acc + (page.data?.length ?? 0);
-    }, 0);
-  }, [listData]);
 
 
 
-  // If `resultLimit` was explicitly provided in the URL, auto-load pages until
-  // we have enough results to satisfy that limit (no need to click "Vis meir").
-  useEffect(() => {
-    if (!isExplicitResultLimit) return
-    if (!Number.isFinite(resultLimit) || resultLimit <= 0) return
-    if (mobilePreview) return
-    if (listStatus !== "success") return
-    if (totalLoadedResults >= effectiveMaxVisibleResults) return
-    if (!listHasNextPage) return
-    if (listIsFetchingNextPage) return
-
-    listFetchNextPage()
-  }, [
-    isExplicitResultLimit,
-    resultLimit,
-    mobilePreview,
-    listStatus,
-    totalLoadedResults,
-    effectiveMaxVisibleResults,
-    listHasNextPage,
-    listIsFetchingNextPage,
-    listFetchNextPage,
-  ])
-
-  const shouldShowCappedAtMaxTableViewCta =
-    maxVisibleResults === MAX_RESULT_LIMIT &&
-    totalResultsCountForCap > MAX_RESULT_LIMIT &&
-    totalLoadedResults >= MAX_RESULT_LIMIT
 
   // Whether to show the "Utan koordinatar" filter control in the options row.
   // Purpose: 
@@ -273,186 +168,116 @@ export default function SearchResults() {
 
       {!mobilePreview && (
         <>
-          {!hasNoAdditionalResults && (
             <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
-
-
-            {(listLoading && listInitialPage === 1) ? Array.from({ length: listInitialPage === 1 ? 3 : 20  }).map((_, i) => (
-              <li key={`skeleton-${i}`} className="relative">
-                {(isMobile || !init || group)
-                  ? <ResultCardSkeleton />
-                  : <ResultItemSkeleton />
-                }
-              </li>
-            )) :
-              (() => {
-                let renderedCount = 0
-                return listData?.pages.map((page: any, pageIndex: number) => {
-                const isLastPage = pageIndex === (listData?.pages.length || 0) - 1
-
-
-
-
-                return (
-                  <Fragment key={`page-${pageIndex}`}>
-                    {page.data?.map((item: any, idx: number) => {
-                      if (renderedCount >= effectiveMaxVisibleResults) return null
-                      if (!sourceViewOn && !item.fields["group.id"]) {
-                        console.log("No group ID", item);
-                        return null
-                      }
-                      renderedCount += 1
-                      const groupId = item.fields['group.id']?.[0]
-                      const uuid = item.fields['uuid']?.[0]
-                      const itemId = sourceViewOn ? uuid : groupId
-                      const domId = uuid || groupId
-                      const hasIiif = !!item.fields['iiif']?.[0]
-                      return <li className={`relative`} key={domId}>
-                        {(isMobile || !init || group) ?
-                          <ResultCard
-                            itemId={itemId}
-                            hasIiif={hasIiif}
-                            distanceMeters={item.distance}
-                          />
-                          :
-                          <ResultItem
-                            hit={item}
-                          />
-                        }
-                      </li>
-                    })}
-                    {/* Table CTA when we cap at `resultLimit=100` */}
-                    {isLastPage && shouldShowCappedAtMaxTableViewCta && <>
-                    <li className="text-neutral-700 p-4 text-center">
-
-                     Resultata er avgrensa til {MAX_RESULT_LIMIT}.
-                     <span className="block mt-1">Gå til tabellvising for å sjå inntil 10 000 treff, eller legg til søkefilter{!sourceViewOn && ' i avansert søk'}.</span>
-                   </li>
-                      <li className="flex flex-col gap-2 justify-center">
-                       
-                        <Clickable
-                          type="button"
-                          add={{ mode: 'table', page: '1' }}
-                          remove={['resultLimit']}
-                          className={`
-                            flex items-center gap-2
-                            text-neutral-900
-                            bg-neutral-50
-                            font-semibold
-                            text-xl
-                            p-3
-                            justify-center w-full
-                            transition-colors
-                          `}
-                        >
-                          Tabellvising
-                        </Clickable>
-                      </li>
-                      { !sourceViewOn && (
-                      <li className="flex flex-col gap-2 justify-center">
-
-                        <Clickable
-                          type="button"
-                          add={{ mode: 'table', page: '1' }}
-                          remove={['resultLimit']}
-                          className={`
-                            flex items-center gap-2
-                            text-neutral-900
-                            bg-neutral-50
-                            font-semibold
-                            text-xl
-                            p-3
-                            justify-center w-full
-                            transition-colors
-                          `}
-                        >
-                          Avansert søk
-                        </Clickable>
-                      </li>
-                    )}
-                    </>}
-                    
-
-                    {/* Vis meir button at the end of each page */}
-                    {isLastPage &&
-                      !shouldShowCappedAtMaxTableViewCta &&
-                      effectiveMaxVisibleResults < MAX_RESULT_LIMIT &&
-                      (listHasNextPage || totalLoadedResults > effectiveMaxVisibleResults) && (
-                      <li className="flex flex-col gap-2 justify-center">
-                        <Clickable
-                          type="button"
-                          add={{
-                            resultLimit: Math.min(
-                              numericResultLimit + resultLimitIncrement,
-                              MAX_RESULT_LIMIT
-                            )
-                          }}
-                          onClick={() => {
-                            if (!listIsFetchingNextPage && listHasNextPage) {
-                              listFetchNextPage()
-                            }
-                          }}
-                          className={`
-                    flex items-center gap-2
-                    text-neutral-900
-                    bg-neutral-50
-                    font-semibold
-                    text-xl
-                    p-3
-                    justify-center w-full
-                     
-                    transition-colors
-                    ${listIsFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
-                  `}
-                          >
-                            {listIsFetchingNextPage && <Spinner className="text-white" status="Lastar" />}{' '}
-                            {listIsFetchingNextPage ? 'Lastar...' : 'Vis meir'}
-                          </Clickable>
-                      </li>
-                    )}
-                  </Fragment>
+            { Array.from({
+              length: resultLimitNumber ||
+                Math.min(
+                  resultCountExceptInit,
+                  (init ? FIRST_VISIBLE_RESULTS : STARTING_BATCH_SIZE) + 1
                 )
-              })})()}
-            </ul>
-          )}
+            }).map((_, i) => {
+
+
+              let body = null
+              const hasMoreResults = listLoadedCount && listLoadedCount < resultCount
+              const nextButtonSlotIndex = resultLimitNumber ? resultLimitNumber -1 : (init ? FIRST_VISIBLE_RESULTS : STARTING_BATCH_SIZE)
+
+              if (i > nextButtonSlotIndex) {
+                return <div key={`result-${i}`} className="relative">TOMT</div>
+              }
+
+              const isNextButton = i == nextButtonSlotIndex && hasMoreResults
+
+              // `useListData` loads page 0 with `STARTING_BATCH_SIZE`, and subsequent pages with `BATCH_SIZE`.
+              const calculatedPageIndex =
+                i < STARTING_BATCH_SIZE
+                  ? 0
+                  : 1 + Math.floor((i - STARTING_BATCH_SIZE) / BATCH_SIZE)
+              const page = listData?.pages[calculatedPageIndex]
+              const pageStartIndex =
+                calculatedPageIndex === 0
+                  ? 0
+                  : STARTING_BATCH_SIZE + (calculatedPageIndex - 1) * BATCH_SIZE
+              const localIndex = i - pageStartIndex
+              const itemData = page?.data?.[localIndex]
+              const hasIiif = !!itemData?.fields?.iiif?.[0]
+
+
+              if (isNextButton) {
+                body = (
+
+                  <Clickable
+                    type="button"
+                    add={{
+                      resultLimit: (resultLimitNumber ?? STARTING_BATCH_SIZE) + BATCH_SIZE
+                    }}
+                    onClick={() => {
+                      listFetchNextPage()
+                    }}
+                    className={`
+              flex items-center gap-2
+              text-neutral-900
+              bg-neutral-50
+              font-semibold
+              text-xl
+              p-3
+              justify-center w-full
+               
+              transition-colors
+              ${listIsFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
+            `}
+                    >
+                      {listIsFetchingNextPage && <Spinner className="text-white" status="Lastar" />}{' '}
+                      Vis meir
+                    </Clickable>
+
+                    
+                );
+              }
+              else if (itemData) {
+                if (isMobile || !init || group) {
+                  body = (
+                    <ResultCard
+                      itemId={itemData.fields.uuid[0]}
+                      hasIiif={hasIiif}
+                      distanceMeters={itemData.distance}
+                    />
+                  );
+                } else {
+                  body = (
+                    <ResultItem
+                      hit={itemData}
+                    />
+                  );
+                }
+              }
+              else if (listLoading) {
+                body = <>{(isMobile || !init || group)
+                  ? <ResultCardSkeleton hasIiif={hasIiif} />
+                  : <ResultItemSkeleton />
+                }</>
+              }
+              else {
+                return <div key={`result-${i}`} className="relative">TOMT</div>
+              }
+
+
+
+
+              return (
+                <li key={`result-${i}`} className="relative">
+                  {i}
+                  {body || <>mangler</>}
+                </li>
+              )
+
+
+              
+            })}
+
+          </ul>
         </>
       )}
-
-
-      {( isMobile || searchError || listError || hasNoResults || hasNoAdditionalResults) && <div className={`flex flex-col gap-4 py-4 pb-8 xl:pb-4`}>
-        {filterCount > 0 && <div className="mx-2 mb-4">
-
-          <ActiveFilters /></div>}
-
-
-
-        {/* Error and empty states */}
-        {(searchError || listError) ? (
-          <div className="flex justify-center">
-            <div role="status" aria-live="polite" className="text-primary-700 pb-4">
-              Det har oppstått ein feil
-            </div>
-          </div>
-        ) : hasNoResults ? (
-          <div className="flex justify-center">
-            <div role="status" aria-live="polite" className="flex flex-col items-center gap-2 text-neutral-950 pb-4">
-              Ingen søkeresultat
-              <Link scroll={false} href="/help" className="flex items-center gap-2 px-4 py-3 rounded-md transition-colors no-underline text-neutral-900 hover:bg-accent-100">
-                <PiQuestion className="text-xl" aria-hidden="true" />Søketips
-              </Link>
-            </div>
-          </div>
-        ) : hasNoAdditionalResults ? (
-          <div className="flex justify-center">
-            <div role="status" aria-live="polite" className="flex flex-col items-center gap-2 text-neutral-950 pb-4">
-              <span>Ingen fleire treff</span>
-              <Link scroll={false} href="/help" className="flex items-center gap-2 px-4 py-3 rounded-md transition-colors no-underline text-neutral-900 hover:bg-accent-100">
-                <PiQuestion className="text-xl" aria-hidden="true" />Søketips
-              </Link>
-            </div>
-          </div>
-        ) : null}
-      </div>}
     </div>
   )
 }
