@@ -102,7 +102,7 @@ export default function SearchResults() {
           <div className="p-3 flex flex-col gap-2 relative">
             <div className="flex items-center gap-2">
               <IconButton label="Zoom til startpunktet" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" /></IconButton>
-               <div className="flex flex-col">
+              <div className="flex flex-col">
                 <span className="flex-1">
                   {point ? (
                     <>
@@ -111,7 +111,7 @@ export default function SearchResults() {
                   ) : 'Ukjent'}
                 </span>
                 <span className="text-neutral-800 text-sm">{isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"}</span>
-                </div>
+              </div>
               <div className="absolute right-3 top-3">
                 <ClickableIcon className="p-1 btn btn-outline rounded-full text-neutral-900" label="Fjern startpunkt" remove={['point', 'radius']} onClick={() => {
                   if (snappedPosition == 'top') setSnappedPosition("bottom");
@@ -119,11 +119,11 @@ export default function SearchResults() {
                   <PiXBold aria-hidden="true" className="text-xl" />
                 </ClickableIcon>
               </div>
-              
-              
+
+
             </div>
 
-              
+
           </div>
         )
       }
@@ -138,7 +138,7 @@ export default function SearchResults() {
       ))}
 
 
-      {(init || qParam)? (initResultCardLoading ? (
+      {(init || qParam) ? (initResultCardLoading ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
@@ -179,8 +179,8 @@ export default function SearchResults() {
 
       {!mobilePreview && (
         <>
-            <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
-            { Array.from({
+          <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
+            {Array.from({
               length: resultLimitNumber ||
                 Math.min(
                   resultCountExceptInit,
@@ -191,11 +191,11 @@ export default function SearchResults() {
 
               let body = null
               const hasMoreResults = listLoadedCount && listLoadedCount < resultCount
-              const nextButtonSlotIndex = resultLimitNumber ? resultLimitNumber -1 : (init ? FIRST_VISIBLE_RESULTS : STARTING_BATCH_SIZE)
+              const nextButtonSlotIndex = resultLimitNumber ? resultLimitNumber - 1 : (init ? FIRST_VISIBLE_RESULTS : STARTING_BATCH_SIZE)
 
-              if (i > nextButtonSlotIndex) {
-                return <div key={`result-${i}`} className="relative">TOMT</div>
-              }
+              //if (i > nextButtonSlotIndex) {
+              //  return <div key={`result-${i}`} className="relative">TOMT</div>
+              //}
 
               const isNextButton = i == nextButtonSlotIndex && hasMoreResults
 
@@ -236,13 +236,10 @@ export default function SearchResults() {
                
               transition-colors
               ${listIsFetchingNextPage ? 'opacity-60 pointer-events-none' : ''}
-            `}
-                    >
-                      {listIsFetchingNextPage && <Spinner className="text-white" status="Lastar" />}{' '}
-                      Vis meir
-                    </Clickable>
+            `}>
+                    Vis meir
+                  </Clickable>
 
-                    
                 );
               }
               else if (itemData) {
@@ -262,28 +259,22 @@ export default function SearchResults() {
                   );
                 }
               }
-              else if (listLoading) {
-                body = <>{(isMobile || !init || group)
+              else if (listIsFetchingNextPage || listLoading) {
+                body = <div className="bg-primary-400">{(isMobile || !init || group)
                   ? <ResultCardSkeleton hasIiif={hasIiif} />
                   : <ResultItemSkeleton />
-                }</>
+                }</div>
               }
               else {
-                return <div key={`result-${i}`} className="relative">TOMT</div>
+                return null
+                //body = <div key={`result-${i}`} className="relative">TOMT</div>
               }
 
-
-
-
               return (
-                <li key={`result-${i}`} className="relative">
-                  {i}
-                  {body || <>mangler</>}
+                <li key={`result-${i}-${itemData?.fields?.uuid?.[0]}`} className="relative">
+                  {body}
                 </li>
               )
-
-
-              
             })}
 
           </ul>
@@ -292,59 +283,59 @@ export default function SearchResults() {
             listError ||
             hasNoResults ||
             hasNoAdditionalResults) && (
-            <div className={`flex flex-col gap-4 py-4 pb-8 xl:pb-4`}>
-              {filterCount > 0 && (
-                <div className="mx-2 mb-4">
-                  <ActiveFilters />
-                </div>
-              )}
+              <div className={`flex flex-col gap-4 py-4 pb-8 xl:pb-4`}>
+                {filterCount > 0 && (
+                  <div className="mx-2 mb-4">
+                    <ActiveFilters />
+                  </div>
+                )}
 
-              {/* Error and empty states */}
-              {searchError || listError ? (
-                <div className="flex justify-center">
-                  <div role="status" aria-live="polite" className="text-primary-700 pb-4">
-                    Det har oppstått ein feil
+                {/* Error and empty states */}
+                {searchError || listError ? (
+                  <div className="flex justify-center">
+                    <div role="status" aria-live="polite" className="text-primary-700 pb-4">
+                      Det har oppstått ein feil
+                    </div>
                   </div>
-                </div>
-              ) : hasNoResults ? (
-                <div className="flex justify-center">
-                  <div
-                    role="status"
-                    aria-live="polite"
-                    className="flex flex-col items-center gap-2 text-neutral-950 pb-4"
-                  >
-                    Ingen søkeresultat
-                    <Link
-                      scroll={false}
-                      href="/help"
-                      className="flex items-center gap-2 px-4 py-3 rounded-md transition-colors no-underline text-neutral-900 hover:bg-accent-100"
+                ) : hasNoResults ? (
+                  <div className="flex justify-center">
+                    <div
+                      role="status"
+                      aria-live="polite"
+                      className="flex flex-col items-center gap-2 text-neutral-950 pb-4"
                     >
-                      <PiQuestion className="text-xl" aria-hidden="true" />
-                      Søketips
-                    </Link>
+                      Ingen søkeresultat
+                      <Link
+                        scroll={false}
+                        href="/help"
+                        className="flex items-center gap-2 px-4 py-3 rounded-md transition-colors no-underline text-neutral-900 hover:bg-accent-100"
+                      >
+                        <PiQuestion className="text-xl" aria-hidden="true" />
+                        Søketips
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              ) : hasNoAdditionalResults ? (
-                <div className="flex justify-center">
-                  <div
-                    role="status"
-                    aria-live="polite"
-                    className="flex flex-col items-center gap-2 text-neutral-950 pb-4"
-                  >
-                    <span>Ingen fleire treff</span>
-                    <Link
-                      scroll={false}
-                      href="/help"
-                      className="flex items-center gap-2 px-4 py-3 rounded-md transition-colors no-underline text-neutral-900 hover:bg-accent-100"
+                ) : hasNoAdditionalResults ? (
+                  <div className="flex justify-center">
+                    <div
+                      role="status"
+                      aria-live="polite"
+                      className="flex flex-col items-center gap-2 text-neutral-950 pb-4"
                     >
-                      <PiQuestion className="text-xl" aria-hidden="true" />
-                      Søketips
-                    </Link>
+                      <span>Ingen fleire treff</span>
+                      <Link
+                        scroll={false}
+                        href="/help"
+                        className="flex items-center gap-2 px-4 py-3 rounded-md transition-colors no-underline text-neutral-900 hover:bg-accent-100"
+                      >
+                        <PiQuestion className="text-xl" aria-hidden="true" />
+                        Søketips
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              ) : null}
-            </div>
-          )}
+                ) : null}
+              </div>
+            )}
         </>
       )}
     </div>

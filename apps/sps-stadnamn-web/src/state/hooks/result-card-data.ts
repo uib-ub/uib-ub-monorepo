@@ -16,8 +16,6 @@ const resultCardDataQuery = async (
         newParams.set('sourceView', 'on');
     }
 
-    console.log("DEBUG", newParams.toString());
-
     const res = await fetch(`/api/card?${newParams.toString()}`);
 
     if (!res.ok) {

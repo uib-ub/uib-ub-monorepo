@@ -2,9 +2,8 @@
 import { base64UrlToString } from '@/lib/param-utils';
 import { useSearchQuery } from '@/lib/search-params';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
-import { useContext, useRef } from 'react';
-import { useInitParam, useGroupParam, useNoGeoOn, usePoint, useSourceViewOn, useSearchSortParam, usePageParam, usePageNumber } from '@/lib/param-hooks';
+import { useContext, useEffect } from 'react';
+import { useInitParam, useGroupParam, useNoGeoOn, usePoint, useResultLimitNumber, useSourceViewOn, useSearchSortParam } from '@/lib/param-hooks';
 import { calculateDistance } from '@/lib/map-utils';
 import { useSessionStore } from '../zustand/session-store';
 import { GlobalContext } from '../providers/global-provider';
@@ -89,10 +88,18 @@ export default function useListData() {
     const group = useGroupParam()
     const init = useInitParam()
     const sourceViewOn = useSourceViewOn()
+    const resultLimitNumber = useResultLimitNumber()
     const selectedGroup = group ? base64UrlToString(group) : null
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const { isMobile } = useContext(GlobalContext)
     const mobilePreview = Boolean(init && isMobile && snappedPosition == 'bottom')
+
+    // `SearchResults` reserves the last rendered slot for a "Vis meir" CTA (when there are more results).
+    // So when `resultLimit` is set, we need to load `resultLimit - 1` actual result items to avoid "mangler".
+    const targetLoadedCount =
+        typeof resultLimitNumber === 'number' && Number.isFinite(resultLimitNumber)
+            ? Math.max(0, resultLimitNumber - 1)
+            : null
 
 
 
@@ -106,7 +113,7 @@ export default function useListData() {
         isLoading,
         status
     } = useInfiniteQuery({
-        queryKey: ['listData', searchQueryString, searchSort, init, group, point, noGeo],
+        queryKey: ['listData', searchQueryString, searchSort, init, group, point, noGeo, sourceViewOn],
         queryFn: ({ pageParam }: { pageParam: number }) => listDataQuery({
             pageParam,
             searchQueryString: group ? null : searchQueryString,
@@ -128,10 +135,31 @@ export default function useListData() {
         staleTime: 1000 * 60 * 5, // 5 minutes
     })
 
+    const listLoadedCount =
+        data?.pages?.reduce((acc: number, page: any) => acc + (page?.data?.length ?? 0), 0) ?? 0
+
+    useEffect(() => {
+        if (mobilePreview) return
+        if (targetLoadedCount === null) return
+        if (status !== 'success') return
+        if (!hasNextPage) return
+        if (isFetchingNextPage) return
+        if (listLoadedCount >= targetLoadedCount) return
+
+        fetchNextPage()
+    }, [
+        mobilePreview,
+        targetLoadedCount,
+        status,
+        hasNextPage,
+        isFetchingNextPage,
+        listLoadedCount,
+        fetchNextPage,
+    ])
 
     return {
         listData: data,
-        listLoadedCount: data?.pages.reduce((acc: number, page: any) => acc + page.data.length, 0),
+        listLoadedCount,
         listError: error,
         listFetchNextPage: fetchNextPage,
         listHasNextPage: hasNextPage,
