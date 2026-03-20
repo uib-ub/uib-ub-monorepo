@@ -277,6 +277,7 @@ export function useWithinParam() {
 
 
 export function useOverlayParams() {
+    const searchParams = useSearchParams()
     const optionsOn = useOptionsOn()
     const mapSettingsOn = useMapSettingsOn()
     const overlaySelectorOn = useOverlaySelectorOn()
@@ -285,6 +286,8 @@ export function useOverlayParams() {
     const mode = useMode()
     const tree = useTreeParam()
     const hideResultsOn = useHideResultsOn()
+    const qParam = useQParam()
+    const hideResultsOff = searchParams.get('hideResults') == 'off'
 
     const tableOptions = mode == 'table' && !optionsOn
 
@@ -305,7 +308,7 @@ export function useOverlayParams() {
         showLeftPanel = false
     }
 
-    const showResults = mode != 'table' && (!hideResultsOn || (isMobile && !showLeftPanel))
+    const showResults = mode != 'table' && (qParam || hideResultsOff) && (!hideResultsOn || (isMobile && !showLeftPanel))
     // On mobile, always show the right panel if map settings are active, even if the left panel would otherwise be visible
     const showRightPanel = mode != 'table' && (isMobile ? (mapSettingsOn || !showLeftPanel) : true)
 

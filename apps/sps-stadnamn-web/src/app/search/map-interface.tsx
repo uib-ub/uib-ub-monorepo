@@ -1,6 +1,6 @@
 'use client'
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
-import { useDebugGroupsOn, useDebugParamOn, useFacetParam, useGroupParam, useHideResultsOn, useMapSettingsOn, useMode, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useSourceViewOn, useTreeParam } from "@/lib/param-hooks";
+import { useDebugGroupsOn, useDebugParamOn, useFacetParam, useGroupParam, useHideResultsOn, useMapSettingsOn, useMode, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useQParam, useSourceViewOn, useTreeParam } from "@/lib/param-hooks";
 import { useSearchQuery } from "@/lib/search-params";
 import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
@@ -157,7 +157,6 @@ function RightWindow({ children }: { children: React.ReactNode }) {
         scrollableContentRef?.current?.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
-    const hideResultsOn = useHideResultsOn()
     if (isMobile) {
         return <>{children}</>
     }
@@ -193,6 +192,7 @@ export default function MapInterface() {
     const { resultCardData } = useResultCardData()
     const sourceView = useSourceViewOn()
     const group = useGroupParam()
+    const qParam = useQParam()
 
     const drawerRef = useRef<HTMLDivElement>(null)
 
@@ -345,7 +345,7 @@ export default function MapInterface() {
                                     aria-controls="results-panel"
                                     className="flex items-center gap-1 xl:px-1"
                                     // When opening, use default results count. When closing, remove param.
-                                    add={{ hideResults: hideResultsOn ? null : 'on' }}
+                                    add={{ hideResults: hideResultsOn ? (qParam ? null : 'off') : 'on' }}
                                     remove={[...(isMobile ? ['options'] : [])]}
                                 >
                                     {!isMobile && (
