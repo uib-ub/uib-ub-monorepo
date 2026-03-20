@@ -75,6 +75,17 @@ export default function SearchResults() {
 
 
 
+  // Empty-state helpers (kept intentionally simple to leverage existing total results numbers).
+  const hasNoResults =
+    listStatus === 'success' &&
+    (!listData?.pages ||
+      listData.pages.length === 0 ||
+      listData.pages[0].data?.length === 0)
+
+  // When `init` is present we render it separately, so "additional" means anything beyond the init item.
+  const hasNoAdditionalResults =
+    listStatus === 'success' && !!init && resultCountExceptInit <= 0
+
   // Whether to show the "Utan koordinatar" filter control in the options row.
   // Purpose: 
   const firstHasLocation = listData?.pages[0]?.data?.[0]?.fields?.location?.[0]?.coordinates?.length === 2
@@ -276,6 +287,64 @@ export default function SearchResults() {
             })}
 
           </ul>
+          {(isMobile ||
+            searchError ||
+            listError ||
+            hasNoResults ||
+            hasNoAdditionalResults) && (
+            <div className={`flex flex-col gap-4 py-4 pb-8 xl:pb-4`}>
+              {filterCount > 0 && (
+                <div className="mx-2 mb-4">
+                  <ActiveFilters />
+                </div>
+              )}
+
+              {/* Error and empty states */}
+              {searchError || listError ? (
+                <div className="flex justify-center">
+                  <div role="status" aria-live="polite" className="text-primary-700 pb-4">
+                    Det har oppstått ein feil
+                  </div>
+                </div>
+              ) : hasNoResults ? (
+                <div className="flex justify-center">
+                  <div
+                    role="status"
+                    aria-live="polite"
+                    className="flex flex-col items-center gap-2 text-neutral-950 pb-4"
+                  >
+                    Ingen søkeresultat
+                    <Link
+                      scroll={false}
+                      href="/help"
+                      className="flex items-center gap-2 px-4 py-3 rounded-md transition-colors no-underline text-neutral-900 hover:bg-accent-100"
+                    >
+                      <PiQuestion className="text-xl" aria-hidden="true" />
+                      Søketips
+                    </Link>
+                  </div>
+                </div>
+              ) : hasNoAdditionalResults ? (
+                <div className="flex justify-center">
+                  <div
+                    role="status"
+                    aria-live="polite"
+                    className="flex flex-col items-center gap-2 text-neutral-950 pb-4"
+                  >
+                    <span>Ingen fleire treff</span>
+                    <Link
+                      scroll={false}
+                      href="/help"
+                      className="flex items-center gap-2 px-4 py-3 rounded-md transition-colors no-underline text-neutral-900 hover:bg-accent-100"
+                    >
+                      <PiQuestion className="text-xl" aria-hidden="true" />
+                      Søketips
+                    </Link>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          )}
         </>
       )}
     </div>
