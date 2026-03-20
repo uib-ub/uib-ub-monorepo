@@ -21,6 +21,7 @@ import { useSearchParams } from "next/navigation"
 import { useContext } from "react"
 import { base64UrlToString } from "./param-utils"
 import type { ReservedSearchParamKey } from "./reserved-param-types"
+import { useSearchQuery } from "./search-params"
 
 export const useGetParam = (key: ReservedSearchParamKey) => {
     const searchParams = useSearchParams()
@@ -286,8 +287,9 @@ export function useOverlayParams() {
     const mode = useMode()
     const tree = useTreeParam()
     const hideResultsOn = useHideResultsOn()
-    const qParam = useQParam()
+    const { searchQueryString} = useSearchQuery()
     const hideResultsOff = searchParams.get('hideResults') == 'off'
+    const point = usePointParam()
 
     const tableOptions = mode == 'table' && !optionsOn
 
@@ -308,7 +310,7 @@ export function useOverlayParams() {
         showLeftPanel = false
     }
 
-    const showResults = mode != 'table' && (qParam || hideResultsOff) && (!hideResultsOn || (isMobile && !showLeftPanel))
+    const showResults = mode != 'table' && (searchQueryString || point || hideResultsOff || isMobile) && (!hideResultsOn || (isMobile && !showLeftPanel))
     // On mobile, always show the right panel if map settings are active, even if the left panel would otherwise be visible
     const showRightPanel = mode != 'table' && (isMobile ? (mapSettingsOn || !showLeftPanel) : true)
 

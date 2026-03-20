@@ -30,9 +30,11 @@ import { ResultCardSkeleton, ResultItemSkeleton } from "@/components/results/res
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { BATCH_SIZE, FIRST_VISIBLE_RESULTS, STARTING_BATCH_SIZE } from "@/lib/result-limits";
+import ResultsHeader from "./results-header";
+import InfoMessage from "../ui/notifications/info-message";
 
 export default function SearchResults() {
-  const { searchError, groupTotalHits, totalHits, noGeoGroupCount } = useSearchData()
+  const { searchError, groupTotalHits, docTotalHits, noGeoGroupCount } = useSearchData()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
   const init = useInitParam()
   const group = useGroupParam()
@@ -55,7 +57,7 @@ export default function SearchResults() {
   const filterCount = facetFilters.length + datasetFilters.length
   const noGeoOn = useNoGeoOn()
   const resultLimitNumber = useResultLimitNumber()
-  const resultCount = sourceViewOn ? totalHits?.value ?? 0 : groupTotalHits?.value ?? 0
+  const resultCount = sourceViewOn ? docTotalHits?.value ?? 0 : groupTotalHits?.value ?? 0
   const resultCountExceptInit = resultCount - (init ? 1 : 0)
 
 
@@ -99,24 +101,21 @@ export default function SearchResults() {
     <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
       {
         (point && !init) && (
-          <div className="p-3 flex flex-col gap-2 relative">
-            <div className="flex items-center gap-2">
-              <IconButton label="Zoom til startpunktet" className="flex items-center justify-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}><img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-8 h-8 mb-1 self-center" /></IconButton>
-              <div className="flex flex-col">
-                <span className="flex-1">
-                  {point ? (
-                    <>
-                      {`${Math.abs(point[0]).toFixed(6)}°${point[0] >= 0 ? 'N' : 'S'}, ${Math.abs(point[1]).toFixed(6)}°${point[1] >= 0 ? 'Ø' : 'V'}`}
-                    </>
-                  ) : 'Ukjent'}
-                </span>
-                <span className="text-neutral-800 text-sm">{isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"}</span>
-              </div>
-              <div className="absolute right-3 top-3">
+          <div className={`flex px-3 flex-col gap-2 relative ${isMobile ? 'text-sm py-3 ' : 'text-base px-3 pb-4'}`}>
+            <div className="flex items-center gap-1">
+              <ClickableIcon label="Flytt startpunktet" className="flex items-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}>
+                <img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-6 h-6 mb-1 self-center" />
+              </ClickableIcon>
+
+                     {`${Math.abs(point[0]).toFixed(6)}°${point[0] >= 0 ? 'N' : 'S'}, ${Math.abs(point[1]).toFixed(6)}°${point[1] >= 0 ? 'Ø' : 'V'}`}
+
+              
+              <InfoMessage message={isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"} messageId="start-point-tip" />
+              <div className={`absolute right-3 ${isMobile ? 'top-3' : 'top-0'}`}>
                 <ClickableIcon className="p-1 btn btn-outline rounded-full text-neutral-900" label="Fjern startpunkt" remove={['point', 'radius']} onClick={() => {
                   if (snappedPosition == 'top') setSnappedPosition("bottom");
                 }}>
-                  <PiXBold aria-hidden="true" className="text-xl" />
+                  <PiXBold aria-hidden="true" className="text-base" />
                 </ClickableIcon>
               </div>
 
@@ -144,11 +143,14 @@ export default function SearchResults() {
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
         </div>
       ) : (
-        <div className="w-full border-t border-neutral-200 flex flex-wrap items-center bg-neutral-50 border-b-none pt-4 pb-2 xl:py-2 px-3 gap-3 text-neutral-950 min-w-0 overflow-hidden">
+        <div className="w-full border-t border-neutral-200 flex flex-wrap items-center bg-neutral-50 border-b-none py-2 px-3 gap-3 text-neutral-950 min-w-0 overflow-hidden">
+          {
+            isMobile && <div className="w-full flex"> <ResultsHeader /></div>
+          }
           {qParam ? (
             <Clickable
               remove={['q', 'searchSort']}
-              add={{ q: null }}
+              add={{ q: null  }}
               className="h-9 px-3 rounded-md bg-white border border-neutral-200 flex items-center gap-2 cursor-pointer max-w-full min-w-0"
             >
               <PiMagnifyingGlass className="" aria-hidden="true" />
@@ -157,17 +159,7 @@ export default function SearchResults() {
               </span>
               <PiX className="text-lg" aria-hidden="true" />
             </Clickable>
-          ) : (
-            <>
-              <span
-                id="other-groups-title"
-                className={`text-lg font-sans text-neutral-900 whitespace-nowrap`}
-              >
-                {sourceViewOn ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'}
-              </span>
-
-            </>
-          )}
+          ) : null}
 
           {/* Toolbar items share the same flex row as the chip so they wrap together. */}
           {qParam && <SearchQueryDisplay
@@ -179,7 +171,7 @@ export default function SearchResults() {
 
       {!mobilePreview && (
         <>
-          <ul id="result_list" aria-labelledby="other-groups-title" className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
+          <ul id="result_list" aria-label= {sourceViewOn ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'} className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
             {Array.from({
               length: resultLimitNumber ||
                 Math.min(

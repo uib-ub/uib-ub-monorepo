@@ -67,7 +67,7 @@
      };
  
      return (
-         <div className={`flex gap-1 flex-shrink-0 ${className ?? ""}`}>
+         <div className={`flex gap-2 flex-shrink-0 ${className ?? ""}`}>
              {safeRecordings.map((recording, index) => {
                  const id = String(recording.uuid || `${recording.file}-${index}`);
                  const isPlaying = playingPreviewId === id;
@@ -76,16 +76,16 @@
                          key={`audio-preview-${id}`}
                          type="button"
                          onClick={() => handlePlayAudio(recording, `${recording.file}-${index}`)}
-                         className="rounded-full text-neutral-900 border border-neutral-200 rounded-full p-2"
+                         className="rounded-full text-neutral-900 border border-neutral-200 rounded-full p-1"
                          aria-label={`Lydopptak${safeRecordings.length > 1 ? ` ${index + 1} av ${safeRecordings.length}` : ""}${
                              isPlaying ? " (stoppar)" : ""
                          }`}
                          aria-pressed={isPlaying}
                      >
                          {isPlaying ? (
-                             <PiStopFill className="text-lg" aria-hidden="true" />
+                             <PiStopFill aria-hidden="true" />
                          ) : (
-                             <PiPlayFill className="text-lg" aria-hidden="true" />
+                             <PiPlayFill aria-hidden="true" />
                          )}
                      </button>
                  );

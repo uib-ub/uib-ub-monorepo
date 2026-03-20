@@ -404,7 +404,7 @@ export default function ResultCard({
 
 
     return (
-        <div className={`relative flex min-w-0 flex-col  ${mobilePreview ? 'gap-1 flex-wrap pb-8' : 'gap-3 py-4'}`}>
+        <div className={`relative flex min-w-0 flex-col  ${mobilePreview ? 'gap-1 flex-wrap pb-8 pt-3' : 'gap-3 py-4'}`}>
             <div className={`min-w-0 w-full flex flex-col px-3 ${mobilePreview ? 'gap-1 flex-wrap' : 'gap-3'}`}>
                 {datasets && datasets.length == 1 && <div className={`flex items-center gap-2 ${mobilePreview ? 'flex-wrap' : ''}`}>
                     {datasets && datasets.length == 1 && (
@@ -413,21 +413,22 @@ export default function ResultCard({
                     
                 </div>}
                 {isInit && (
-                    <div className="absolute right-3 top-3 flex items-center gap-2">
-                        {mobilePreview && Array.isArray(audioItems) && audioItems.length > 0 && (
-                            <AudioPreviewButtons recordings={audioItems} />
-                        )}
-                        <ClickableIcon
+                    <div className={`absolute flex items-end gap-2 ${mobilePreview ? 'top-3 right-3 flex-col items-end' : 'gap-2 items-center right-3 top-3'}`}>
+                                                <ClickableIcon
                             label="Lukk framheva gruppe"
                             remove={["group", "activePoint", "activeYear", "activeName", "init", "resultLimit"]}
                             onClick={() => {
                                 if (snappedPosition == 'top') setSnappedPosition("bottom");
                             }}
 
-                            className="p-2 btn btn-outline rounded-full text-neutral-900"
+                            className={`btn btn-outline rounded-full text-neutral-900 ${mobilePreview ? 'p-1' : 'p-2'}`}
                         >
-                            <PiXBold aria-hidden="true" className="text-neutral-800 text-lg" />
+                            <PiXBold aria-hidden="true" className={`${mobilePreview ? 'text-base' : 'text-lg'} text-neutral-800`} />
                         </ClickableIcon>
+                        {mobilePreview && Array.isArray(audioItems) && audioItems.length > 0 && (
+                            <AudioPreviewButtons recordings={audioItems} />
+                        )}
+
                     </div>
                 )}
                 {!isInit && point && typeof distanceMeters === "number" && Number.isFinite(distanceMeters) && (

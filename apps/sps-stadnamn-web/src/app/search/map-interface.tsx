@@ -1,6 +1,6 @@
 'use client'
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
-import { useDebugGroupsOn, useDebugParamOn, useFacetParam, useGroupParam, useHideResultsOn, useMapSettingsOn, useMode, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useQParam, useSourceViewOn, useTreeParam } from "@/lib/param-hooks";
+import { useDebugGroupsOn, useDebugParamOn, useFacetParam, useGroupParam, useHideResultsOn, useInitParam, useMapSettingsOn, useMode, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useQParam, useSourceViewOn, useTreeParam } from "@/lib/param-hooks";
 import { useSearchQuery } from "@/lib/search-params";
 import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
@@ -28,8 +28,7 @@ import DebugToggle from "@/components/results/debug-toggle";
 import TableOptions from "@/components/table/table-options";
 import TreeWindow from "@/components/tree/tree-window";
 import { twMerge } from "tailwind-merge";
-
-
+import ResultsHeader from "@/components/results/results-header";
 
 const Drawer = dynamic(() => import("@/components/ui/drawer"), {
     ssr: false
@@ -65,6 +64,8 @@ function ShowResultsButton() {
             Vis resultat <Badge className="bg-primary-50 text-primary-800 font-semibold px-2 absolute right-4" count={totalHits?.value || 0} /></Clickable></div>
 
 }
+
+
 
 function DrawerWrapper({ children, resultCardData, ...rest }: DrawerProps) {
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
@@ -188,11 +189,8 @@ export default function MapInterface() {
     const setCurrentPosition = useSessionStore((s) => s.setCurrentPosition);
     const setDrawerOpen = useSessionStore((s) => s.setDrawerOpen);
     const { isMobile, scrollableContentRef } = useContext(GlobalContext)
-    const { totalHits, docTotalHits, searchLoading } = useSearchData()
     const { resultCardData } = useResultCardData()
     const sourceView = useSourceViewOn()
-    const group = useGroupParam()
-    const qParam = useQParam()
 
     const drawerRef = useRef<HTMLDivElement>(null)
 
@@ -211,6 +209,7 @@ export default function MapInterface() {
     const hideResultsOn = useHideResultsOn()
     const tree = useTreeParam()
     const mode = useMode()
+    const init = useInitParam()
 
     useEffect(() => {
         if (debugOn) {
@@ -339,50 +338,7 @@ export default function MapInterface() {
                         <TreeWindow />
                     ) : (
                         <>
-                            <div className={` flex items-center w-full ${isMobile ? 'h-8 min-h-8 px-3' : 'h-12 min-h-12 px-2 '} py-1  gap-2`}>
-                                <Clickable
-                                    aria-expanded={!hideResultsOn}
-                                    aria-controls="results-panel"
-                                    className="flex items-center gap-1 xl:px-1"
-                                    // When opening, use default results count. When closing, remove param.
-                                    add={{ hideResults: hideResultsOn ? (qParam ? null : 'off') : 'on' }}
-                                    remove={[...(isMobile ? ['options'] : [])]}
-                                >
-                                    {!isMobile && (
-                                        <span className="flex w-6 justify-center">
-                                            {showResults ? (
-                                                <PiCaretUpBold className="text-lg" />
-                                            ) : (
-                                                <PiCaretDownBold className="text-lg" />
-                                            )}
-                                        </span>
-                                    )}
-
-                                    <div id={isMobile ? 'drawer-title' : 'right-title'} className={`text-sm xl:text-lg text-neutral-900 font-sans ${isMobile ? 'w-full flex justify-end' : ''}`}>
-                                        {group ? 'Kjelder' : 'Treff'}
-                                    </div>
-
-                                        <>
-                                            {searchLoading ? (
-                                                <Spinner status="Laster resultat" className="text-lg" />
-                                            ) : (
-                                                <TitleBadge
-                                                    className={` text-sm xl:text-base ${showResults ? 'bg-accent-100 text-accent-900 ' : 'bg-primary-700 text-white '}`}
-                                                    count={sourceView ? docTotalHits?.value ?? 0 : totalHits?.value ?? 0}
-                                                />
-                                            )}
-                                        </>
-                                    
-                                </Clickable>
-
-
-                                {(
-                                    <div className="ml-auto">
-                                        <GroupedResultsToggle />
-                                    </div>
-                                )}
-
-                            </div>
+                            { (!isMobile) && <div className={` flex items-center w-full ${isMobile ? 'h-8 min-h-8 px-3 justify-end' : 'h-12 min-h-12 px-2 '} py-1  gap-2`}><ResultsHeader/></div>}
                             {showResults && (
                                 <div
                                     id="results-panel"

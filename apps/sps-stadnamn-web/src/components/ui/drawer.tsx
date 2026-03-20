@@ -409,7 +409,7 @@ export default function Drawer({
             >
                 {/* Grip */}
                 <div
-                    className={`absolute top-0 left-1/2 -translate-x-1/2 order-b border-none border-primary-600 flex z-[6001] pb-2 px-4  rounded-b-lg  bg-white`}
+                    className={`absolute top-0 left-1/2 -translate-x-1/2 order-b border-none border-primary-600 flex z-[6001] pb-2 px-4  rounded-b-lg  bg-transparent`}
                 >
 
                     <div className={`${scrolled ? 'bg-neutral-600' : 'bg-neutral-300'} w-16 h-1.5 rounded-full m-1`}></div>

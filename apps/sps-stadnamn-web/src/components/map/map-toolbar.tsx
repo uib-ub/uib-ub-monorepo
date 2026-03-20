@@ -21,7 +21,7 @@ export function FilterButton() {
 
     return (
         <RoundIconClickableWithBadge
-            className={`relative p-3 ${optionsOn ? 'bg-accent-800 text-white' : ''}`}
+            className={`relative p-3 ${optionsOn ? 'bg-accent-800 text-white' : 'bg-primary-700 text-white'}`}
             label="Filter"
             aria-controls="options-panel"
             aria-expanded={optionsOn}

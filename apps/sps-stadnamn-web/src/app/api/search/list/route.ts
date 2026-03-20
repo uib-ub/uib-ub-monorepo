@@ -13,7 +13,7 @@ export async function POST(request: Request) {
           noGeo,
           exclude,
           idField,
-          sourceView,
+          sourceViewOn,
   } = await request.json()
   const { termFilters, reservedParams } = extractFacets(request)
   const { highlight, simple_query_string } = getQueryString(reservedParams)
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     ...highlight ? { highlight } : {},
     "track_scores": true,
     "fields": ["group.adm1", "group.adm2", "group.id", "adm1", "adm2", "group.label", "uuid", "boost", "label", "location", "iiif", "sosi"],
-    ...(!sourceView && !selectedGroup ? {
+    ...(!sourceViewOn && !selectedGroup ? {
       "collapse": {
         "field": "group.id",
       }
@@ -133,6 +133,7 @@ export async function POST(request: Request) {
   query.query = baseQuery;
 
   const [data, status] = await postQuery('all', query, "dfs_query_then_fetch")
+
   return Response.json(data, { status: status })
 
 }
