@@ -260,10 +260,10 @@ export default function SearchResults() {
                 }
               }
               else if (listIsFetchingNextPage || listLoading) {
-                body = <div className="bg-primary-400">{(isMobile || !init || group)
+                body = <>{(isMobile || !init || group)
                   ? <ResultCardSkeleton hasIiif={hasIiif} />
                   : <ResultItemSkeleton />
-                }</div>
+                }</>
               }
               else {
                 return null
