@@ -193,7 +193,7 @@ export default function SearchForm() {
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {fulltextOn && <input type="hidden" name="fulltext" value={'on'} />}
             {fuzzyOn && <input type="hidden" name="fuzzy" value={'on'} />}
-            {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
+            {mode && mode != 'map' && <input type="hidden" name="mode" value={mode || ''} />}
             {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''} />}
             <AutocompleteDropdown
                 inputState={inputState}
