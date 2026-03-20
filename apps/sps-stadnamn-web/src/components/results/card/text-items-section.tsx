@@ -38,15 +38,10 @@ export const TextItemsSection = ({ textItems }: { textItems: any[] }) => {
                 // If there are multiple items, don't show toggle on first item
                 const showToggle = !hasMultipleItems;
 
-                const rawContent =
-                    textItem.content?.html ??
-                    textItem.content?.text ??
-                    textItem.html ??
-                    textItem.text ??
-                    "";
+                const rawContent = textItem.text;
                 const hasHtmlTags = /<[^>]+>/.test(rawContent);
-                const html = hasHtmlTags ? rawContent.replace(/<\/?p>/g, "") : "";
-                const text = hasHtmlTags ? "" : rawContent;
+                const text = hasHtmlTags ? rawContent.replace(/<\/?p>/g, "") : rawContent;
+
 
                 const rawLinks = textItem.links;
                 const links: string[] =
@@ -59,8 +54,8 @@ export const TextItemsSection = ({ textItems }: { textItems: any[] }) => {
                 return (
                     <div className="px-3 max-w-[calc(100%-1rem)]" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
                         <ExpandableContent
-                            html={''}
                             text={text}
+                            hasHtmlTags={false}
                             links={links}
                             leadingLabel={leadingLabel}
                             forceExpanded={shouldForceExpand}

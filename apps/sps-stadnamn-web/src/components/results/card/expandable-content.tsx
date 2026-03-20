@@ -7,8 +7,8 @@ import Clickable from "@/components/ui/clickable/clickable";
 import SourceLink from "./source-link";
 
 interface ExpandableContentProps {
-    html: string;
     text: string;
+    hasHtmlTags: boolean;
     links?: string[];
     leadingLabel?: string;
     forceExpanded?: boolean;
@@ -17,8 +17,8 @@ interface ExpandableContentProps {
 
 // Collapses long content by truncating the text itself
 export const ExpandableContent = ({
-    html,
     text,
+    hasHtmlTags,
     links,
     leadingLabel,
     forceExpanded,
@@ -26,52 +26,39 @@ export const ExpandableContent = ({
 }: ExpandableContentProps) => {
     const [expanded, setExpanded] = useState(false);
 
-    const fullPlain = (() => {
-        if (typeof html === "string" && html) {
-            return html.replace(/<[^>]*>/g, "");
-        }
-        return text || "";
-    })();
 
     const CHAR_THRESHOLD = 300;
     // Only consider it "long" if expanding will at least double the visible text
-    const isLong = fullPlain.length > CHAR_THRESHOLD * 2;
+    const isLong = text.length > CHAR_THRESHOLD * 2;
     const isExpanded = forceExpanded !== undefined ? forceExpanded : expanded;
+    const clampStyle = isExpanded || !isLong ? {} : {
+        display: '-webkit-box',
+        WebkitLineClamp: String(4),
+        WebkitBoxOrient: 'vertical' as const,
+        overflow: 'hidden'
+    }
 
-    if (!html && !text) return null;
+    if (!text) return null;
 
-    const searchParams = useSearchParams();
 
     // Only render processed HTML when fully expanded or when content is short
-    const processedHtml = html ? processHtmlContent(html, isExpanded || !isLong) : null;
+    const processedText = hasHtmlTags ? processHtmlContent(text, isExpanded || !isLong) : text.replace(/<[^>]*>/g, "");
 
-    const truncatedText = isLong
-        ? (() => {
-            const slice = fullPlain.slice(0, CHAR_THRESHOLD);
-            // Avoid cutting in the middle of a word
-            return slice.replace(/\s+\S*$/, "");
-        })()
-        : fullPlain;
+
 
     const shouldShowToggle = isLong && showToggle && forceExpanded === undefined;
 
-    const content = (() => {
-        if (isLong && !isExpanded) {
-            return `${truncatedText}…`;
-        }
-        return processedHtml || fullPlain;
-    })();
 
     return (
         <>
-            <span>
+            <span style={clampStyle}>
                 {leadingLabel && (
                     <>
                         <span className="font-semibold text-neutral-950">{leadingLabel}</span>
                         <span className="text-neutral-500"> | </span>
                     </>
                 )}
-                {content}
+                {processedText}
                 {Array.isArray(links) && links.length > 0 && (
                     <>
                         &nbsp;|&nbsp;
