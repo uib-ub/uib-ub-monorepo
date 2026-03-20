@@ -59,7 +59,7 @@ export const TextItemsSection = ({ textItems }: { textItems: any[] }) => {
                 return (
                     <div className="px-3 max-w-[calc(100%-1rem)]" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
                         <ExpandableContent
-                            html={html}
+                            html={''}
                             text={text}
                             links={links}
                             leadingLabel={leadingLabel}
