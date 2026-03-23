@@ -57,7 +57,7 @@ const buildResultCardQuery = (id: string, useInnerHits: boolean, filterField: 'g
     // while our helper paths use double underscore.
     "cadastre.gnr",
     "cadastre.bnr",
-    "misc.Gardsnamn",
+    "misc.gardLabel",
     "within",
   ];
 
@@ -228,7 +228,7 @@ export async function GET(request: Request) {
 
   const outputData: Partial<OutputData> = {
     id: isSourceView ? topFields["uuid"]?.[0] : topFields["group.id"]?.[0],
-    label: isSourceView ? topFields["label"]?.[0] : topFields["group.label"]?.[0] || topFields?.["label"]?.[0],
+    label: isSourceView ? topFields["label"]?.[0] : (topFields["group.label"]?.[0] || topFields?.["label"]?.[0]),
     total: data?.hits?.total?.value,
     fields: topFields,
   };

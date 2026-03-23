@@ -3,7 +3,7 @@ import { baseMapLookup } from "@/config/basemap-config";
 import { useSearchQuery } from "@/lib/search-params";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { getAreaLabelMarkerIcon, getClusterMarker, getInitAnchorMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
+import { getAreaLabelMarkerIcon, getBrukMarkerIcon, getClusterMarker, getInitAnchorMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 
 import { boundsFromZoomAndCenter, calculateRadius, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
 import { useActivePoint, useCenterNumber, useDebugGroupsOn, useDocParam, useGroupParam, useMapSettingsOn, usePoint, useQParam, useRadiusNumber, useSourceViewOn, useTreeParam, useZoomNumber, useInitDecoded, useInitParam } from "@/lib/param-hooks";
@@ -87,11 +87,11 @@ export default function MapExplorer() {
 
 
   const getDisplayLabel = (fields?: Record<string, any> | null): string => {
-    if (sourceViewOn) {
+    if (sourceViewOn || tree) {
       return fields?.label?.[0] ?? '[utan namn]'
     }
     else {
-      return fields?.["group.label"]?.[0] ?? '[utan namn]'
+      return fields?.["group.label"]?.[0] || fields?.["label"]?.[0] || '[utan namn]'
     }
 
   }
@@ -1005,6 +1005,7 @@ export default function MapExplorer() {
                 // When tree mode is active (and a cadastral unit is selected), show connected markers for
                 // the cadastral unit (gård) and its subunits (bruk) instead of "sources in init group".
                 const isTreeActive = !!tree && !!treeDataset && !!treeUuid
+                
 
                 const subunitHits: any[] = treeSubunitsData?.hits?.hits || []
                 const subunitWithCoords = subunitHits.filter((h: any) => h?._source?.location?.coordinates?.length === 2)
@@ -1048,132 +1049,13 @@ export default function MapExplorer() {
                     subunitsByCoord[key].hits.push(hit)
                   }
 
-                  const getBrukMarkerIcon = (
-                    value: string,
-                    options?: { isActive?: boolean; isMulti?: boolean }
-                  ) => {
-                    const isActive = options?.isActive ?? false
-                    const isMulti = options?.isMulti ?? false
-
-                    const bg = isActive ? '#0061ab' : '#ffffff'
-                    const fg = isActive ? '#ffffff' : '#000000'
-                    const border = '#000000'
-
-                    const baseSize = isActive ? 28 : 22
-                    const textLength = value?.length ?? 0
-                    const usePill = isMulti || textLength > 3
-
-                    const height = baseSize
-                    const width = usePill
-                      ? Math.max(baseSize, baseSize + Math.max(0, textLength - 3) * 6)
-                      : baseSize
-
-                    const fontSize = isActive ? 13 : 12
-
-                    return new leaflet.DivIcon({
-                      className: '',
-                      html: `
-                        <div role="button" tabindex="0" style="
-                          min-width: ${width}px;
-                          height: ${height}px;
-                          padding: 0 4px;
-                          border-radius: 9999px;
-                          border: 2px solid ${border};
-                          background: ${bg};
-                          color: ${fg};
-                          display: inline-flex;
-                          align-items: center;
-                          justify-content: center;
-                          font-size: ${fontSize}px;
-                          font-weight: 700;
-                          box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-                          transform: translate(-50%, -50%);
-                        ">
-                          ${value}
-                        </div>
-                      `,
-                      iconSize: [width, height],
-                      iconAnchor: [0, 0],
-                    })
-                  }
-
                   return (
                     <>
-                      {/* Farm (cadastral unit) marker */}
-                      <Marker
-                        key={`tree-farm-label-${treeUuid ?? treeCentralSource?.uuid ?? 'doc'}`}
-                        zIndexOffset={2500}
-                        pane="treeLabelPane"
-                        icon={new leaflet.DivIcon(
-                          getLabelMarkerIcon(
-                            `${(treeDataset ?? docDataset)
-                              ? (getGnr({ _source: treeCentralSource }, (treeDataset ?? docDataset) as string) || '')
-                              : ''} ${treeCentralSource?.label || '[utan namn]'}`
-                              .trim() || '[utan namn]',
-                            'black',
-                            undefined,
-                            false
-                          )
-                        )}
-                        position={[centralLat, centralLng]}
-                        eventHandlers={{
-                          click: () => {
-                            const newParams = new URLSearchParams(searchParams);
-                            newParams.set('activePoint', `${centralLat},${centralLng}`);
-                            router.push(`?${newParams.toString()}`);
-                          },
-                          keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
-                            const key = e.originalEvent?.key ?? e.key
-                            if (key === 'Enter' || key === ' ') {
-                              ;(e.originalEvent ?? e).preventDefault()
-                              const newParams = new URLSearchParams(searchParams);
-                              newParams.set('activePoint', `${centralLat},${centralLng}`);
-                              router.push(`?${newParams.toString()}`);
-                            }
-                          }
-                        }}
-                      />
-                      {farmCoord && (
-                        <>
-                          {/* Circle (dot) at farm coordinate */}
-                          <CircleMarker
-                            key={`tree-farm-dot-${treeUuid}`}
-                            center={[centralLat, centralLng]}
-                            radius={7}
-                            weight={3}
-                            opacity={1}
-                            fillOpacity={1}
-                            color="#000000"
-                            fillColor="#ffffff"
-                            pane="treeCirclePane"
-                            eventHandlers={{
-                              click: () => {
-                                const newParams = new URLSearchParams(searchParams);
-                                newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                router.push(`?${newParams.toString()}`);
-                              },
-                              keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
-                                const key = e.originalEvent?.key ?? e.key
-                                if (key === 'Enter' || key === ' ') {
-                                  ;(e.originalEvent ?? e).preventDefault()
-                                  const newParams = new URLSearchParams(searchParams);
-                                  newParams.set('activePoint', `${centralLat},${centralLng}`);
-                                  router.push(`?${newParams.toString()}`);
-                                }
-                              }
-                            }}
-                          />
-
-                          {/* Label marker (number + label) */}
-
-                        </>
-                      )}
-
                       {/* Lines + subunit markers */}
                       {Object.entries(subunitsByCoord).map(([coordKey, group], index) => {
                         const { lat, lng, hits } = group
                         const isCentral = lat === centralLat && lng === centralLng
-                        if (isCentral) return null
+                        //if (isCentral) return null
 
                         const bnrs = treeDataset
                           ? hits
@@ -1194,22 +1076,22 @@ export default function MapExplorer() {
 
                         return (
                           <Fragment key={`tree-subunit-${index}-${coordKey}`}>
-                            <Polyline
+                            {isActiveBruk && <Polyline
                               key={`tree-line-${index}-${coordKey}`}
                               positions={[[lat, lng], [centralLat, centralLng]]}
                               pane="treeLinePane"
                               pathOptions={{
                                 color: isActiveBruk ? '#0061ab' : '#000000',
-                                weight: isActiveBruk ? 4 : 3,
-                                opacity: 0.5
+                                weight: 3,
+                                opacity: 0.75
                               }}
-                            />
+                            />}
                             <Marker
                               key={`tree-marker-${index}-${coordKey}`}
                               position={[lat, lng]}
                               pane="treeCirclePane"
                               zIndexOffset={isActiveBruk ? 100 : 0}
-                              icon={getBrukMarkerIcon(displayText, { isActive: isActiveBruk, isMulti: hasMultiple })}
+                              icon={new leaflet.DivIcon(getBrukMarkerIcon(displayText, { isActive: isActiveBruk, isMulti: hasMultiple }))}
                               eventHandlers={{
                                 click: () => {
                                   const activePointStr = `${lat},${lng}`;
@@ -1327,7 +1209,7 @@ export default function MapExplorer() {
             {displayRadius && (point || displayPoint) && <Circle center={point || displayPoint} radius={displayRadius} color="#cf3c3a" interactive={false} />}
 
             
-            { activePoint && (
+            { activePoint && !tree && (
               <>
                 <Marker
                   zIndexOffset={2500}

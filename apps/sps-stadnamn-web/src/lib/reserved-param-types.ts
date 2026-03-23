@@ -43,12 +43,16 @@ export const SERVER_ALLOWED_SEARCH_PARAM_KEYS = [
   'facet',
   'facetSearch',
   'facetSort', // Not currently in use?
-  'within',
+  //'within',
   'doc' // to be deprecated?
 
 
   //'dataset', TODO: add dataset and adm
 
+] as const
+
+export const SPECIAL_CASE_FIELDS = [
+  'within',
 ] as const
 
 /**
@@ -88,6 +92,7 @@ export const SERVER_ALLOWED_SEARCH_PARAM_KEYS = [
  */
 export const RESERVED_SEARCH_PARAM_KEYS = [
   ...SERVER_ALLOWED_SEARCH_PARAM_KEYS,
+  ...SPECIAL_CASE_FIELDS,
   ...CLIENT_ONLY_SEARCH_PARAM_KEYS,
 ] as const
 

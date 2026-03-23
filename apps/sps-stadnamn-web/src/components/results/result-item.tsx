@@ -97,7 +97,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
                     {!isGrunnord && (
                         <span className="flex items-center gap-x-2 flex-wrap min-w-0">
                             { isInit && <img src="/currentLocation.svg" alt="" aria-hidden="true" className="h-6 mb-1 self-center " />}
-                            <strong>{label}</strong> {otherLabel && <em className="text-neutral-700 text-sm text-base whitespace-normal break-words">{otherLabel}</em>}
+                            <strong>{label}</strong> {otherLabel && <span className="text-neutral-700 text-sm text-base whitespace-normal break-words">{otherLabel}</span>}
                         </span>
                     )}
 

@@ -41,7 +41,6 @@ const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, 
 const sosi = { label: "Namneobjekttype", description: "Stadtype etter SOSI-standarden", facet, table, result, noInfobox, keyword }
 const placeType = { label: "Lokalitetstype", table, facet, result, noInfobox }
 const cadastre = {
-  "within": { label: "Gard", result },
   "cadastre__gnr": { label: "Gardsnummer", result, sort: "asc" as const, type: "integer" as const },
   "cadastre__bnr": { label: "Bruksnummer", result, sort: "asc" as const, type: "integer" as const }
 }
@@ -170,18 +169,16 @@ export const fieldConfig: Record<string, DatasetFieldConfig> = {
   mu1950: {
     ...required, adm, adm1, adm2, sosi,
     ...cadastre,
-    "within": { label: "Gard", result },
     "knr": { label: "Knr", table, facet, result },
     "misc.GNR": { label: "Gnr", table, facet, result, additionalParams: ["knr"] },
     "misc.BNR": { label: "Bnr", table, facet, result, additionalParams: ["knr", "misc.GNR"] },
     "misc.Eigar": { label: "Eigar", table, facet, cadastreTable },
-    "misc.Mark": { label: "Skyldmark", table, facet },
-    "misc.Øre": { label: "Skyldøre", table, facet },
+    "misc.Mark": { label: "Skyldmark", table, facet, cadastreTable },
+    "misc.Øre": { label: "Skyldøre", table, facet, cadastreTable },
     ...identifiers,
   },
   m1838: {
     ...required, sosi, adm,
-    "within": { label: "Gard" },
     "misc.MNR": { label: "Matrikkelnummer", result, table, facet },
     "knr": { label: "Kommunenummer", facet, result },
 

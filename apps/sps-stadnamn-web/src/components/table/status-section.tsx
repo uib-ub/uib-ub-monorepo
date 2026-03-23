@@ -25,7 +25,7 @@ export default function StatusSection() {
       <div
         role="status"
         aria-live="polite"
-        className="bg-neutral-900 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit"
+        className="bg-neutral-700 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit"
       >
         <PiInfoFill className="inline text-xl" aria-hidden="true" /> Ingen treff med koordinater
       </div>

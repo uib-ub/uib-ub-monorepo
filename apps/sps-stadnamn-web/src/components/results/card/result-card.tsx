@@ -6,7 +6,7 @@ import type { ParamProps } from "@/components/ui/clickable/param-types";
 import IconButton from "@/components/ui/icon-button";
 import { datasetTitles } from "@/config/metadata-config";
 import { treeSettings } from "@/config/server-config";
-import { useActivePoint, useGroupParam, useInitDecoded, useInitParam, usePoint, useSourceViewOn } from "@/lib/param-hooks";
+import { useActivePoint, useCenterParam, useGroupParam, useInitDecoded, useInitParam, usePoint, useSourceViewOn, useZoomParam } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { buildTreeParam } from "@/lib/tree-param";
 import { getBnr, getGnr, getValueByPath } from "@/lib/utils";
@@ -93,12 +93,14 @@ function GroupBottomToolbarMulti({
     groupTotal?: number;
 }) {
     const sourceViewOn = useSourceViewOn();
-    const { mapFunctionRef, isMobile } = useContext(GlobalContext);
+    const { mapFunctionRef, isMobile, currentUrl } = useContext(GlobalContext);
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const activePoint = useActivePoint();
     const init = useInitParam()
-    
+    const center = useCenterParam()
+    const zoom = useZoomParam()
+    const setSourceViewResetUrl = useSessionStore((s) => s.setSourceViewResetUrl)
     if (!groupData || sourceViewOn || !groupTotal || groupTotal === 1) {
         return null;
     }
@@ -117,7 +119,7 @@ function GroupBottomToolbarMulti({
         Math.abs(activePoint[1] - groupLatLng[1]) < 0.000001;
 
     return (
-        <div className="px-3 ml-auto mt-auto">
+        <div className={`px-0 ml-auto mt-auto ${isMobile ? 'px-3' : 'px-2'}`}>
             <div className="flex flex-row items-center gap-2">
                 {!groupLatLng ? (
                     <span className="text-sm text-neutral-700 px-2 whitespace-nowrap">
@@ -148,14 +150,18 @@ function GroupBottomToolbarMulti({
                 {groupTotal > 0 && (
                     <Clickable
                         className="btn btn-outline btn-compact rounded-full items-center gap-1 pr-2"
-                        remove={["resultLimit"]}
-                        add={{
+                        only={{
                             sourceView: "on",
                             group: stringToBase64Url(groupData.id),
-                            init
+                            center,
+                            zoom
+                        }}
+                        onClick={() => {
+                            if (!currentUrl.current) return
+                            setSourceViewResetUrl(currentUrl.current)
                         }}
                     >
-                        {groupTotal} kjelder
+                        {groupTotal} underoppslag
                         <PiCaretRightBold
                             aria-hidden="true"
                             className="text-primary-700"
@@ -312,7 +318,7 @@ export default function ResultCard({
     const group = useGroupParam();
     const point = usePoint();
     const initDecoded = useInitDecoded();
-    
+    const { isMobile } = useContext(GlobalContext);
 
     const toText = (value: unknown): string => {
         if (Array.isArray(value)) return value.filter(Boolean).join(" | ");
@@ -326,10 +332,7 @@ export default function ResultCard({
     const hasSingleSource = resultCardTotal === 1;
     // Use group fields as primary data source; docData is deprecated and no longer required.
     const source = undefined as any;
-    const label =
-        resultCardData?.label ||
-        (source ? (Array.isArray(source.label) ? source.label[0] : (source.label as string | undefined)) : "");
-
+    const label = resultCardData?.label
     // Group-level adm* (for header when there are multiple sources)
     const groupAdm1 = toText(fields["group.adm1"]);
     const groupAdm2 = toText(fields["group.adm2"]);
@@ -413,7 +416,7 @@ export default function ResultCard({
                     
                 </div>}
                 {isInit && (
-                    <div className={`absolute flex items-end gap-2 ${mobilePreview ? 'top-3 right-3 flex-col items-end' : 'gap-2 items-center right-3 top-3'}`}>
+                    <div className={`absolute flex items-end gap-2 ${isMobile ? 'top-3 right-3 flex-col items-end' : 'gap-2 items-center right-2 top-2'}`}>
                                                 <ClickableIcon
                             label="Lukk framheva gruppe"
                             remove={["group", "activePoint", "activeYear", "activeName", "init", "resultLimit"]}
@@ -438,6 +441,7 @@ export default function ResultCard({
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-3 flex-wrap">
                         <ResultCardTitle
+                            isInit={isInit}
                             label={label}
                             cadastrePrefix=""
                             mobilePreview={mobilePreview}

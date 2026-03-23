@@ -247,6 +247,57 @@ export function getPointMarker(color: string, selected?: boolean) {
   }
 }
 
+type BrukMarkerOptions = {
+  isActive?: boolean
+  isMulti?: boolean
+}
+
+export function getBrukMarkerIcon(value: string, options?: BrukMarkerOptions) {
+  const isActive = options?.isActive ?? false
+  const isMulti = options?.isMulti ?? false
+
+  const bg = isActive ? '#0061ab' : '#ffffff'
+  const fg = isActive ? '#ffffff' : '#000000'
+  const border = '#000000'
+
+  const baseSize = isActive ? 28 : 22
+  const textLength = value?.length ?? 0
+  const usePill = isMulti || textLength > 3
+
+  const height = baseSize
+  const width = usePill
+    ? Math.max(baseSize, baseSize + Math.max(0, textLength - 3) * 6)
+    : baseSize
+
+  const fontSize = isActive ? 13 : 12
+
+  return {
+    className: '',
+    html: `
+      <div role="button" tabindex="0" style="
+        min-width: ${width}px;
+        height: ${height}px;
+        padding: 0 4px;
+        border-radius: 0.25rem;
+        border: 1px solid ${border};
+        background: ${bg};
+        color: ${fg};
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: ${fontSize}px;
+        font-weight: 700;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        transform: translate(-50%, -50%);
+      ">
+        ${value}
+      </div>
+    `,
+    iconSize: [width, height] as [number, number],
+    iconAnchor: [0, 0] as [number, number],
+  }
+}
+
 
 
 export function getMultiMarker(docCount: number, label: string, color: string) {

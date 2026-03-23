@@ -231,7 +231,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
   m2010: (source: any) => {
     return <>
       <div className='space-y-2'>
-        <strong>Opphavleg:</strong><InfoPopover>Oppslagsorda i GAB-registeret hadde alle store bokstavar, og fleire av dei inneheldt romartal. Tilpassingane Språksamlingane har gjort kan innehalde feil. </InfoPopover>&nbsp;&nbsp;
+        <strong>Opphavleg:</strong><InfoPopover>Oppslagsorda i GAB-registeret hadde berre store bokstavar, og fleire av dei inneheldt romartal. Det kan førekoma feil i tilpassingane Språksamlingane har gjort for å vise dei utan romartal og med både store og små bokstavar.</InfoPopover>&nbsp;&nbsp;
         {source.sosi == 'gard' ? source.misc.Gardsnamn : source.misc.Bruksnamn}
       </div>
     </>

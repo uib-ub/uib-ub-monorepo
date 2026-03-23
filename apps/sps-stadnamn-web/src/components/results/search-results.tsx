@@ -1,9 +1,9 @@
 'use client'
-import Spinner from "@/components/svg/Spinner";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import {
   useGroupParam,
+  useHideResultsOn,
   useInitParam,
   useNoGeoOn,
   usePoint,
@@ -18,20 +18,17 @@ import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
-import { Fragment, useContext, useEffect, useMemo, useRef } from "react";
+import { useContext, useRef } from "react";
 import { PiMagnifyingGlass, PiQuestion, PiX, PiXBold } from "react-icons/pi";
 import ResultCard from "@/components/results/card/result-card";
 import ActiveFilters from "@/components/results/active-filters";
 import ResultItem from "./result-item";
 import SearchQueryDisplay from "./search-query-display";
-import IconButton from "@/components/ui/icon-button";
 import useListData from "@/state/hooks/list-data";
 import { ResultCardSkeleton, ResultItemSkeleton } from "@/components/results/result-skeletons";
 
-import { useSearchParams, useRouter } from "next/navigation";
 import { BATCH_SIZE, FIRST_VISIBLE_RESULTS, STARTING_BATCH_SIZE } from "@/lib/result-limits";
 import ResultsHeader from "./results-header";
-import InfoMessage from "../ui/notifications/info-message";
 
 export default function SearchResults() {
   const { searchError, groupTotalHits, docTotalHits, noGeoGroupCount } = useSearchData()
@@ -42,13 +39,6 @@ export default function SearchResults() {
   const sourceViewOn = useSourceViewOn()
   const { resultCardData: initResultCardData, resultCardLoading: initResultCardLoading } = useResultCardData()
   const initValue = init ? base64UrlToString(init) : null
-  // In grouped view, init points to a group id (base64 encoded).
-  // In non-grouped view, init points to a source uuid, so we must derive the
-  // corresponding group id from grouped init data to exclude it from collapsed results.
-  const initGroupId = init
-    ? (initResultCardData?.id ?? (!sourceViewOn ? initValue : null))
-    : (!sourceViewOn ? initValue : null)
-  const initHasCoordinates = initResultCardData?.fields?.location?.coordinates?.length >= 2
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
   const { isMobile, mapFunctionRef } = useContext(GlobalContext)
@@ -59,6 +49,7 @@ export default function SearchResults() {
   const resultLimitNumber = useResultLimitNumber()
   const resultCount = sourceViewOn ? docTotalHits?.value ?? 0 : groupTotalHits?.value ?? 0
   const resultCountExceptInit = resultCount - (init ? 1 : 0)
+  const hideResultsOn = useHideResultsOn()
 
 
   const {
@@ -94,38 +85,11 @@ export default function SearchResults() {
   const showNoLocationToggle =
     (!!init || !point) && // results without coordinates are irrelevant if you have a start point but no init
     !!noGeoGroupCount &&
-    noGeoGroupCount > 0 &&
+    noGeoGroupCount > 0  && 
     (noGeoOn || firstHasLocation);
 
   return (
     <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
-      {
-        (point && !init) && (
-          <div className={`flex px-3 flex-col gap-2 relative ${isMobile ? 'text-sm py-3 ' : 'text-base px-3 pb-4'}`}>
-            <div className="flex items-center gap-1">
-              <ClickableIcon label="Flytt startpunktet" className="flex items-center" onClick={() => point && mapFunctionRef.current?.flyTo([point[0], point[1]], 15, { duration: 0.25 })}>
-                <img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-6 h-6 mb-1 self-center" />
-              </ClickableIcon>
-
-                     {`${Math.abs(point[0]).toFixed(6)}°${point[0] >= 0 ? 'N' : 'S'}, ${Math.abs(point[1]).toFixed(6)}°${point[1] >= 0 ? 'Ø' : 'V'}`}
-
-              
-              <InfoMessage message={isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"} messageId="start-point-tip" />
-              <div className={`absolute right-3 ${isMobile ? 'top-3' : 'top-0'}`}>
-                <ClickableIcon className="p-1 btn btn-outline rounded-full text-neutral-900" label="Fjern startpunkt" remove={['point', 'radius']} onClick={() => {
-                  if (snappedPosition == 'top') setSnappedPosition("bottom");
-                }}>
-                  <PiXBold aria-hidden="true" className="text-base" />
-                </ClickableIcon>
-              </div>
-
-
-            </div>
-
-
-          </div>
-        )
-      }
       {init && !group && (initResultCardLoading ? (
         <div className="relative">
           <ResultCardSkeleton hasIiif={initResultCardData?.iiifItems?.length > 0} />
@@ -137,39 +101,50 @@ export default function SearchResults() {
       ))}
 
 
-      {(init || qParam || isMobile) ? (initResultCardLoading ? (
+      {(true) ? (initResultCardLoading ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
         </div>
       ) : (
-        <div className="w-full border-t border-neutral-200 flex flex-wrap items-center bg-neutral-50 border-b-none py-2 px-3 gap-3 text-neutral-950 min-w-0 overflow-hidden">
-          {
-            isMobile && <div className="w-full flex"> <ResultsHeader /></div>
-          }
+        <div className={`w-full flex flex-wrap items-center bg-neutral-50 py-2 px-2 gap-2 text-neutral-950 min-w-0 overflow-hidden ${init ? 'border-t border-neutral-200' : ''}`}>
+          
+          <div className="w-full flex"> <ResultsHeader /></div>
+          {!hideResultsOn && <>
           {qParam ? (
             <Clickable
               remove={['q', 'searchSort']}
               add={{ q: null  }}
-              className="h-9 px-3 rounded-md bg-white border border-neutral-200 flex items-center gap-2 cursor-pointer max-w-full min-w-0"
+              className="h-9 px-2 rounded-md bg-white border border-neutral-200 flex items-center gap-1 cursor-pointer max-w-full min-w-0"
             >
-              <PiMagnifyingGlass className="" aria-hidden="true" />
+              <PiMagnifyingGlass className="text-lg" aria-hidden="true" />
               <span className="truncate flex-1 min-w-0 max-w-full block">
                 {qParam}
               </span>
               <PiX className="text-lg" aria-hidden="true" />
             </Clickable>
           ) : null}
+          { point && !init && (
+            <Clickable
+              remove={['point']}
+              className="h-9 px-2 rounded-md bg-white border border-neutral-200 flex items-center gap-1 cursor-pointer max-w-full min-w-0"
+            >
+              <img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-6 h-6 mb-1 self-center" />
+              <span className="truncate flex-1 min-w-0 max-w-full block">Startpunkt</span>
+              <PiX className="text-lg" aria-hidden="true" />
+            </Clickable>
+          )}
 
           {/* Toolbar items share the same flex row as the chip so they wrap together. */}
           {qParam && <SearchQueryDisplay
             showNoLocationToggle={showNoLocationToggle}
             noGeoGroupCount={noGeoGroupCount ?? 0}
           />}
+          </>}
         </div>
       )) : null}
 
-      {!mobilePreview && (
+      {!mobilePreview && !hideResultsOn && (
         <>
           <ul id="result_list" aria-label= {sourceViewOn ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'} className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
             {Array.from({
@@ -283,20 +258,17 @@ export default function SearchResults() {
                 )}
 
                 {/* Error and empty states */}
-                {searchError || listError ? (
+                {(searchError || listError) ? (
                   <div className="flex justify-center">
                     <div role="status" aria-live="polite" className="text-primary-700 pb-4">
                       Det har oppstått ein feil
                     </div>
                   </div>
-                ) : hasNoResults ? (
+                ) : 
                   <div className="flex justify-center">
                     <div
-                      role="status"
-                      aria-live="polite"
-                      className="flex flex-col items-center gap-2 text-neutral-950 pb-4"
+                      className="flex flex-col items-center gap-2 text-neutral-950"
                     >
-                      Ingen søkeresultat
                       <Link
                         scroll={false}
                         href="/help"
@@ -307,25 +279,9 @@ export default function SearchResults() {
                       </Link>
                     </div>
                   </div>
-                ) : hasNoAdditionalResults ? (
-                  <div className="flex justify-center">
-                    <div
-                      role="status"
-                      aria-live="polite"
-                      className="flex flex-col items-center gap-2 text-neutral-950 pb-4"
-                    >
-                      <span>Ingen fleire treff</span>
-                      <Link
-                        scroll={false}
-                        href="/help"
-                        className="flex items-center gap-2 px-4 py-3 rounded-md transition-colors no-underline text-neutral-900 hover:bg-accent-100"
-                      >
-                        <PiQuestion className="text-xl" aria-hidden="true" />
-                        Søketips
-                      </Link>
-                    </div>
-                  </div>
-                ) : null}
+                }
+
+                
               </div>
             )}
         </>

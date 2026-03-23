@@ -1,5 +1,6 @@
 "use client";
 
+import { useInitParam } from "@/lib/param-hooks";
 import { cn } from "@/lib/utils";
 
 type ResultCardTitleProps = {
@@ -12,6 +13,7 @@ type ResultCardTitleProps = {
     sosiTypes?: string[];
     sosiLimit?: number;
     sosiClassName?: string;
+    isInit?: boolean;
 };
 
 export default function ResultCardTitle({
@@ -19,6 +21,7 @@ export default function ResultCardTitle({
     cadastrePrefix,
     mobilePreview,
     additionalLabels,
+    isInit,
 }: ResultCardTitleProps) {
     const trimmedLabel = (label || "").trim() || "Utan namn";
     const safeAdditionalLabels = Array.isArray(additionalLabels)
@@ -33,20 +36,23 @@ export default function ResultCardTitle({
         : safeAdditionalLabels.length - visibleAdditionalLabels.length;
 
 
+
+
     return (
         <span className={cn("flex items-baseline flex-wrap gap-2 min-w-0 max-w-full", ` ${mobilePreview ? 'text-base' : 'text-xl'}`)}>
             {cadastrePrefix && <span className="shrink-0 text-neutral-950">{cadastrePrefix}</span>}
-            <strong className="min-w-0 text-neutral-950">{trimmedLabel}</strong>
+            {isInit ? <h1 className="min-w-0 text-neutral-950 mr-2">{trimmedLabel}</h1>
+            : <strong className="min-w-0 text-neutral-950">{trimmedLabel}</strong>}
 
-            {visibleAdditionalLabels.map((l) => (
-                <em key={l} className={`text-neutral-700 whitespace-nowrap ${mobilePreview ? 'text-sm' : 'text-base'}`}>
-                    {l}
-                </em>
+            {visibleAdditionalLabels.map((l, i) => (
+                <span key={l} className={`text-neutral-800 whitespace-nowrap ${mobilePreview ? 'text-sm' : 'text-base'}`}>
+                    {l}{i < visibleAdditionalLabels.length - 1 && ' | '}
+                </span>
             ))}
             {remainingAdditionalLabelsCount > 0 && (
-                <em className={`text-neutral-700 whitespace-nowrap ${mobilePreview ? 'text-sm' : 'text-base'}`}>
+                <span className={`text-neutral-800 whitespace-nowrap ${mobilePreview ? 'text-sm' : 'text-base'}`}>
                     + {remainingAdditionalLabelsCount} andre
-                </em>
+                </span>
             )}
         </span>
     );

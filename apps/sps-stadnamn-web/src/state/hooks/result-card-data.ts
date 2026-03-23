@@ -7,13 +7,16 @@ import { useGroupParam, useInitParam, useQParam, useSourceViewOn } from '@/lib/p
 
 const resultCardDataQuery = async (
     id: string,
-    sourcesQuery: string,
     sourceView: boolean,
+    group: string | null,
 ) => {
-    const newParams = new URLSearchParams(sourcesQuery);
+    const newParams = new URLSearchParams();
     newParams.set('id', id);
     if (sourceView) {
         newParams.set('sourceView', 'on');
+    }
+    if (group) {
+        newParams.delete('q');
     }
 
     const res = await fetch(`/api/card?${newParams.toString()}`);
@@ -26,25 +29,18 @@ const resultCardDataQuery = async (
     return data;
 };
 
-export default function useResultCardData(itemId?: string | null) {
+type UseResultCardDataOptions = {
+    forceGroupLookup?: boolean
+}
+
+export default function useResultCardData(itemId?: string | null, options?: UseResultCardDataOptions) {
     const { searchQueryString } = useSearchQuery()
     const init = useInitParam()
     const group = useGroupParam()
     const id = itemId || init || group
     const idDecoded = id && [init, group].includes(id) ? base64UrlToString(id) : id
     const sourceViewOn = useSourceViewOn()    
-    let sourcesQuery = ""
-
-    if (idDecoded?.startsWith('grunnord_')) {
-        //sourcesQuery = searchQ
-    }
-    else {
-        //const newQuery = new URLSearchParams(searchQueryString)
-        //newQuery.delete('q')
-        //sourcesQuery = newQuery.toString()
-        
-
-    }
+    const effectiveSourceView = options?.forceGroupLookup ? false : sourceViewOn
 
     const {
         data: returnedData,
@@ -54,9 +50,9 @@ export default function useResultCardData(itemId?: string | null) {
         isFetching: resultCardFetching,
         status,
     } = useQuery({
-        queryKey: ['result-card', sourcesQuery, id, sourceViewOn, searchQueryString],
+        queryKey: ['result-card', id, effectiveSourceView, searchQueryString],
         queryFn: async () =>
-            idDecoded ? resultCardDataQuery(idDecoded, sourcesQuery, sourceViewOn) : null,
+            idDecoded ? resultCardDataQuery(idDecoded, effectiveSourceView, group) : null,
         placeholderData: (itemId || init == id) ? undefined : (prevData: any) => prevData,
 
     })

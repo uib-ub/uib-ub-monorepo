@@ -4,7 +4,7 @@ import useResultCardData from "@/state/hooks/result-card-data"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Label } from "@/components/ui/label"
 import { TitleBadge } from "@/components/ui/badge"
-import { useFulltextOn, useFuzzyOn, useInitParam, useNoGeoOn, useQParam, useSearchSortParam } from "@/lib/param-hooks"
+import { useFulltextOn, useFuzzyOn, useInitParam, useNoGeoOn, useQParam, useSearchSortParam, useSourceViewOn } from "@/lib/param-hooks"
 
 export default function SearchQueryDisplay({
   showNoLocationToggle = false,
@@ -27,10 +27,11 @@ export default function SearchQueryDisplay({
   const fuzzyOn = useFuzzyOn()
   const fulltextOn = useFulltextOn()
   const noGeoOn = useNoGeoOn()
+  const sourceViewOn = useSourceViewOn()
 
   return (
     <>
-      {isSingleWord && (
+      {isSingleWord && sourceViewOn && (
         <div className="flex items-center gap-2 text-sm h-9 px-3 rounded-md border border-neutral-200 bg-transparent">
           <input
             id="fuzzy-toggle"
@@ -91,7 +92,7 @@ export default function SearchQueryDisplay({
             className="form-checkbox h-4 w-4 accent-accent-700"
           />
           <Label htmlFor="no-location-toggle">
-            Utan koordinatar <TitleBadge count={noGeoGroupCount} className={`${noGeoOn ? 'bg-neutral-700 text-white p-0.5 px-1 rounded-full' : 'text-white bg-primary-700 p-0.5 px-1 rounded-full'}`} />
+            Utan koordinatar <TitleBadge count={noGeoGroupCount} className={`text-white bg-neutral-700 p-0.5 px-1 rounded-full`} />
           </Label>
         </div>
       )}

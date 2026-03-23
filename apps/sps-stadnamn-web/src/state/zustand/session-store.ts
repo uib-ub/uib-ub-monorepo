@@ -39,6 +39,12 @@ export const useSessionStore = create<{
 	setTreeSavedQuery: (query: string) => void,
 	clearTreeSavedQuery: () => void,
 
+	// Store the full URL before entering source view ("kjelder"),
+	// so controls can reset back to the previous search state.
+	sourceViewResetUrl: string | null,
+	setSourceViewResetUrl: (url: string) => void,
+	clearSourceViewResetUrl: () => void,
+
 	// Persist the init group's label for use in the map anchor marker,
 	// keyed by the point coordinate so we avoid showing a stale label
 	// at the wrong position.
@@ -75,6 +81,10 @@ export const useSessionStore = create<{
 	treeSavedQuery: null,
 	setTreeSavedQuery: (query: string) => set({ treeSavedQuery: query }),
 	clearTreeSavedQuery: () => set({ treeSavedQuery: null }),
+
+	sourceViewResetUrl: null,
+	setSourceViewResetUrl: (url: string) => set({ sourceViewResetUrl: url }),
+	clearSourceViewResetUrl: () => set({ sourceViewResetUrl: null }),
 
 	initGroupLabel: null,
 	initGroupPoint: null,

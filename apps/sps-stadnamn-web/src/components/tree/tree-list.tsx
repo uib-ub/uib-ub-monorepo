@@ -129,7 +129,7 @@ export default function TreeList({
                             {isExpanded && (
                                 <div className="pb-3">
                                     <div className="ml-0 mt-1">
-                                        <CadastralTable dataset={dataset} uuid={itemUuid} list={true} flush={true} groupId={groupId} gnr={gnr} adm1={adm1} adm2={adm2} />
+                                        <CadastralTable dataset={dataset} uuid={itemUuid} list={true} flush={true} groupId={groupId} gnr={gnr} adm1={adm1} adm2={adm2} point={activePoint} />
                                     </div>
                                 </div>
                             )}

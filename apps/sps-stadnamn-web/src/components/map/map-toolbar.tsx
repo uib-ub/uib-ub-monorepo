@@ -8,16 +8,17 @@ import { RoundIconButton, RoundIconClickable, RoundIconClickableWithBadge } from
 import { useRouter, useSearchParams } from "next/navigation"
 
 
-import { useOverlayParams, useSourceViewOn, useTreeParam } from "@/lib/param-hooks"
+import { useInitParam, useSourceViewOn, useTreeParam, useMapSettingsOn, usePointParam, useOptionsOn } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 
 export function FilterButton() {
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
     const { facetFilters, datasetFilters } = useSearchQuery()
     const filterCount = facetFilters.length + datasetFilters.length
-    const { optionsOn } = useOverlayParams()
+    const optionsOn = useOptionsOn()
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const { isMobile } = useContext(GlobalContext)
+
 
     return (
         <RoundIconClickableWithBadge
@@ -46,10 +47,12 @@ export default function MapToolbar() {
     const setMyLocation = useSessionStore((s) => s.setMyLocation)
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const { totalHits, searchBounds, searchLoading, searchError } = useSearchData()
-    const { mapSettingsOn } = useOverlayParams()
+    const mapSettingsOn = useMapSettingsOn()
     const tree = useTreeParam()
     const router = useRouter()
     const sourceViewOn = useSourceViewOn()
+    const point = usePointParam()
+    const init = useInitParam()
     
     const svhToRem = (svh: number) => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return 0
@@ -72,7 +75,7 @@ export default function MapToolbar() {
                 <div
                     role="status"
                     aria-live="polite"
-                    className="bg-neutral-900 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit absolute left-2 lg:left-[25svw] z-[3001] transition-opacity duration-300"
+                    className="bg-neutral-800 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit absolute left-2 lg:left-[25svw] z-[3001] transition-opacity duration-300"
                     style={{
                         top: isMobile ?
                             currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM ? "4rem" :
@@ -87,6 +90,11 @@ export default function MapToolbar() {
                 </div>
 
             }
+            { point && !init && <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit absolute left-2 lg:left-[25svw] z-[3001] transition-opacity duration-300">
+                <PiInfoFill className="inline text-xl" /> {isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"} </div>
+            }
+                
+
             <div
                 className={`flex gap-3 absolute lg: z-[5000] ${isMobile ? 'right-3 flex-col' : (tree ? 'right-[calc(40svw+1.25rem)]' : 'right-[calc(25svw+1.25rem)]')} `}
                 style={{

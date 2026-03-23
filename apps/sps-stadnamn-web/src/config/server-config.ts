@@ -47,7 +47,7 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
   },
   m2010: {
     subunit: "cadastre__gnr",
-    parentName: "misc.Gardsnamn",
+    parentName: "misc.gardLabel",
     leaf: "cadastre__bnr",
     sort: ["cadastre__gnr", "cadastre__bnr"],
     aggSort: "knr.keyword",

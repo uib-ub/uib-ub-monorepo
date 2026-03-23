@@ -23,6 +23,7 @@ import { base64UrlToString } from "./param-utils"
 import type { ReservedSearchParamKey } from "./reserved-param-types"
 import { useSearchQuery } from "./search-params"
 
+
 export const useGetParam = (key: ReservedSearchParamKey) => {
     const searchParams = useSearchParams()
     return searchParams.get(key)
@@ -201,7 +202,8 @@ export function useDocParam() {
 }
 
 export function useHideResultsOn() {
-    return useGetParam('hideResults') == 'on'
+    const { isMobile } = useContext(GlobalContext)
+    return !isMobile && useGetParam('hideResults') == 'on'
 }
 
 

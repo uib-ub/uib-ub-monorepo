@@ -1,20 +1,23 @@
 'use client'
 import Menu from '@/app/menu';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
+import Clickable from '@/components/ui/clickable/clickable';
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
 import { useDatasetTagParam, useFacetParam, useFulltextOn, useFuzzyOn, useGroupParam, useInitParam, useMode, useOptionsOn, usePerspective, usePoint, usePointParam, useQParam, useSourceViewOn, useTreeParam } from '@/lib/param-hooks';
 import { useSearchQuery } from '@/lib/search-params';
 import { formatNumber } from '@/lib/utils';
+import useResultCardData from '@/state/hooks/result-card-data';
 import { GlobalContext } from '@/state/providers/global-provider';
 import { useSessionStore } from '@/state/zustand/session-store';
 import AutocompleteDropdown from './autocomplete-dropdown';
 import Form from 'next/form';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { PiCaretLeftBold, PiMagnifyingGlass, PiSliders, PiX } from 'react-icons/pi';
 export default function SearchForm() {
     const pathname = usePathname()
+    const router = useRouter()
     const searchParams = useSearchParams()
     const { isMobile, preferredTabs, inputValue, mapFunctionRef } = useContext(GlobalContext)
     const menuOpen = useSessionStore((s: any) => s.menuOpen)
@@ -26,6 +29,8 @@ export default function SearchForm() {
     const setDrawerOpen = useSessionStore((s) => s.setDrawerOpen)
     const snappedPosition = useSessionStore((s: any) => s.snappedPosition)
     const currentPosition = useSessionStore((s: any) => s.currentPosition)
+    const sourceViewResetUrl = useSessionStore((s: any) => s.sourceViewResetUrl)
+    const clearSourceViewResetUrl = useSessionStore((s: any) => s.clearSourceViewResetUrl)
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
     const optionsOn = useOptionsOn()
     const group = useGroupParam()
@@ -50,6 +55,8 @@ export default function SearchForm() {
 
     // Initialize from URL params - this is the source of truth
     const urlQuery = useQParam() || ''
+    const { resultCardData: groupCardData } = useResultCardData(group, { forceGroupLookup: true })
+    const showGroupChip = Boolean(group)
     const [inputState, setInputState] = useState<string>(urlQuery)
     const [submittedPoint, setSubmittedPoint] = useState<string | null>(null)
 
@@ -96,6 +103,19 @@ export default function SearchForm() {
         }
     }, [isMobile]);
 
+    const handleGroupChipReset = () => {
+        if (sourceViewResetUrl) {
+            router.replace(sourceViewResetUrl, { scroll: false })
+            clearSourceViewResetUrl()
+            return
+        }
+
+        const nextParams = new URLSearchParams(searchParams.toString())
+        nextParams.delete('group')
+        nextParams.delete('sourceView')
+        router.replace(`?${nextParams.toString()}`, { scroll: false })
+    }
+
 
     if (pathname != "/search") {
         return <div className="flex gap-6">
@@ -141,7 +161,6 @@ export default function SearchForm() {
             }}>
 
             <div className={`flex w-full h-full pr-1 bg-white ${isMobile ? 'shadow-lg' : `shadow-l-none rounded-l-none ${autocompleteOpen && autocompleteHasResults ? 'rounded-tr-md' : 'rounded-r-md'} shadow-lg`} items-center relative group`}>
-
                 <label htmlFor="search-input" className="sr-only">Søk</label>
                 {false && !(isMobile && autocompleteOpen) && <ClickableIcon onClick={() => { setSnappedPosition('middle') }} add={{ options: optionsOn ? null : 'on' }} label={`Filter: ${filterCount}`} className={`flex items-center justify-center relative py-2 px-3`}>
                     <PiSliders className="text-3xl xl:text-2xl" aria-hidden="true" />
@@ -150,6 +169,18 @@ export default function SearchForm() {
                     </span>}
                 </ClickableIcon>}
                 {isMobile && autocompleteOpen && <ClickableIcon label="Tilbake" onClick={() => setAutocompleteOpen(false)} className={`flex items-center justify-center relative py-2 px-3`}><PiCaretLeftBold className="text-3xl xl:text-2xl" aria-hidden="true" /></ClickableIcon>}
+
+                {showGroupChip && (
+                    <button
+                        type="button"
+                        onClick={handleGroupChipReset}
+                        className="h-8 px-2 ml-2 rounded-md bg-neutral-100 border border-neutral-200 flex items-center gap-1 shrink-0 max-w-[60%]"
+                        aria-label="Fjern gruppafilter"
+                    >
+                        <span className="truncate min-w-0">{groupCardData?.label || '...'}</span>
+                        <PiX className="text-base shrink-0" aria-hidden="true" />
+                    </button>
+                )}
 
 
                 <input
@@ -171,15 +202,15 @@ export default function SearchForm() {
                         inputValue.current = v
                         setInputState(v)
                     }}
-                    className={`bg-transparent pr-2 ${autocompleteOpen && isMobile ? 'px-1' : 'px-4'} focus:outline-none flex w-full shrink text-lg xl:text-base`}
+                    className={`bg-transparent pr-2 ${autocompleteOpen && isMobile ? 'px-1' : 'px-4'} focus:outline-none flex w-full shrink text-lg xl:text-base ${showGroupChip ? 'pl-2' : ''}`}
                 />
 
                 {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset} />)}
                 {submittedPoint && <input type="hidden" name="point" value={submittedPoint} />}
                 {datasetTag && <input type="hidden" name="datasetTag" value={datasetTag || ''} />}
 
-                {(inputState || urlQuery) && !menuOpen &&
-                    <ClickableIcon label="Tøm" remove={['q', 'resultLimit']} replace onClick={() => { clearQuery() }}>
+                {(inputState || urlQuery || group) && !menuOpen &&
+                    <ClickableIcon label="Tøm" remove={ ['q', 'resultLimit']} replace onClick={() => { clearQuery() }}>
                         <PiX className="text-3xl lg:text-2xl text-neutral-800 group-focus-within:text-neutral-800 m-1" /></ClickableIcon>}
                 <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800" aria-hidden="true" /></button>
             </div>
@@ -188,7 +219,8 @@ export default function SearchForm() {
             {selectedGroup && <input type="hidden" name="init" value={selectedGroup} />}
             {/* results: integer – minimum is 5 when present. */}
             {optionsOn && <input type="hidden" name="options" value={'on'} />}
-            {sourceViewOn && !group && <input type="hidden" name="sourceView" value={'on'} />}
+            {group && <input type="hidden" name="group" value={group} />}
+            {sourceViewOn && <input type="hidden" name="sourceView" value={'on'} />}
             {!submittedPoint && !init && pointParam && <input type="hidden" name="point" value={pointParam || ''} />}
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {fulltextOn && <input type="hidden" name="fulltext" value={'on'} />}

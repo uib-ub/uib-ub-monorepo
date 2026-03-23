@@ -12,7 +12,7 @@ import { getBnr, getFieldValue } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
 import { useRef, useEffect, useState, useContext } from 'react'
 import { stringToBase64Url } from '@/lib/param-utils'
-import { PiCaretRightBold, PiMapPinFill } from "react-icons/pi"
+import { PiCaretRightBold, PiMapPin, PiMapPinFill } from "react-icons/pi"
 import Link from 'next/link'
 import { useSessionStore } from '@/state/zustand/session-store'
 import { GlobalContext } from '@/state/providers/global-provider'
@@ -28,11 +28,12 @@ interface CadastralTableProps {
   gnr?: string | number | null // Garden number for fallback query
   adm1?: string | null
   adm2?: string | null
+  point?: string | null
   flush?: boolean // Remove outer padding/border wrappers (used on /uuid page)
   showMarkers?: boolean // Show marker buttons/column (default: true)
 }
 
-export default function CadastralTable({ dataset, uuid, list, groupId: parentGroupId, gnr, adm1, adm2, flush, showMarkers = true }: CadastralTableProps) {
+export default function CadastralTable({ dataset, uuid, list, groupId: parentGroupId, gnr, adm1, adm2, point, flush, showMarkers = true }: CadastralTableProps) {
   const { scrollToBrukRef, mapFunctionRef, isMobile } = useContext(GlobalContext)
   const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const activePointParam = useActivePoint()
@@ -57,27 +58,12 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
         asc: sortFields
       })
 
+      console.log("PARAMS", params.toString())
+
       const res = await fetch(`/api/search/table?${params.toString()}`)
       if (!res.ok) throw new Error('Failed to fetch cadastral data')
       const data = await res.json()
       
-      // If no results and we have gnr/adm info, try fallback query by cadastre number
-      if ((!data?.hits?.hits?.length) && gnr && adm1 && adm2) {
-        const fallbackParams = new URLSearchParams({
-          perspective: dataset,
-          'cadastre__gnr': String(gnr),
-          'adm1': adm1,
-          'adm2': adm2,
-          'within': '_true', // Only items that have 'within' field (i.e., bruk, not farms)
-          includeSuppressed: 'on',
-          size: '1000',
-          asc: sortFields
-        })
-        
-        const fallbackRes = await fetch(`/api/search/table?${fallbackParams.toString()}`)
-        if (!fallbackRes.ok) throw new Error('Failed to fetch cadastral data')
-        return fallbackRes.json()
-      }
       
       return data
     },
@@ -113,6 +99,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
     return (
       <div className="text-sm text-neutral-800 px-3 py-2">
         Ingen underordna bruk.
+        {parentGroupId && <SubtleLink link className="px-3 py-1" only={{init: stringToBase64Url(parentGroupId), center: center ?? null, zoom: zoom ?? null, point: point ?? null}}>Vis i stadnamnsøk </SubtleLink>}
       </div>
     )
   }
@@ -164,7 +151,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
                       Array.isArray(coords) && coords.length === 2
                         ? `${coords[1]},${coords[0]}`
                         : undefined
-                    const activePointString = activePointParam ? `${activePointParam[1]},${activePointParam[0]}` : undefined
+                    const activePointString = activePointParam ? `${activePointParam[0]},${activePointParam[1]}` : undefined
                     const isActiveMarker = !!ownPoint && !!activePointString && ownPoint === activePointString
 
                     return (
@@ -194,7 +181,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
                                       }`}
                                     aria-label="Vis punkt på kart"
                                   >
-                                    <PiMapPinFill className="text-lg" aria-hidden="true" />
+                                    {isActiveMarker ? <PiMapPinFill className="text-lg" aria-hidden="true" /> : <PiMapPin className="text-lg" aria-hidden="true" />}
                                   </Clickable>
                                 </TooltipTrigger>
                                 <TooltipContent>Vis punkt på kart</TooltipContent>

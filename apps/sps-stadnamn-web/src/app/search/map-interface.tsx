@@ -338,8 +338,8 @@ export default function MapInterface() {
                         <TreeWindow />
                     ) : (
                         <>
-                            { (!isMobile) && <div className={` flex items-center w-full ${isMobile ? 'h-8 min-h-8 px-3 justify-end' : 'h-12 min-h-12 px-2 '} py-1  gap-2`}><ResultsHeader/></div>}
-                            {showResults && (
+                            
+                            { (
                                 <div
                                     id="results-panel"
                                     className={!isMobile ? "flex-1 min-h-0" : ""}
