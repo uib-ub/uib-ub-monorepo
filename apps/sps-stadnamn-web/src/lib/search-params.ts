@@ -45,7 +45,9 @@ export function useSearchQuery() {
         }
         else if (validFields.has(key)) {
             searchQuery.append(key, value)
-            
+            if (fieldConfig[perspective]?.[key]?.facet) {
+                facetFilters.push([key, value])
+            }
         }
         else if ((key.startsWith('group.') || key.startsWith('rawData.') || key.startsWith('misc.'))) {
             searchQuery.append(key, value)
