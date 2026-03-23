@@ -2,7 +2,7 @@ import { facetConfig, fieldConfig } from '@/config/search-config';
 import { useSearchQuery } from '@/lib/search-params';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { PiMagnifyingGlass, PiProhibit } from 'react-icons/pi';
+import { PiMagnifyingGlass, PiProhibit, PiX } from 'react-icons/pi';
 
 import { datasetTitles } from '@/config/metadata-config';
 
@@ -116,6 +116,26 @@ export default function ServerFacet() {
     return existingValues.includes(`!${itemKey.toString()}`);
   };
 
+  const removeFacetValue = (facet: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const existingValues = params.getAll(facet);
+    params.delete(facet);
+
+    params.delete('page');
+
+    // reset because different markers should be shown
+    params.delete('zoom');
+    params.delete('center');
+    params.delete('doc');
+    params.delete('init');
+
+    existingValues
+      .filter((v) => v !== value)
+      .forEach((v) => params.append(facet, v));
+
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
   const toggleExclude = (facet: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
 
@@ -164,6 +184,8 @@ export default function ServerFacet() {
     };
   })();
 
+  const activeFacetValues = facet ? searchParams.getAll(facet) : [];
+
   return (
     <>
       <div className="flex flex-col gap-2">
@@ -183,6 +205,34 @@ export default function ServerFacet() {
             </div>
 
             <FacetToolbar />
+            {activeFacetValues.length > 0 && (
+              <div className="px-2">
+                <div className="flex flex-wrap items-start gap-1.5 w-full">
+                  {activeFacetValues.map((value) => {
+                    const isExcludedValue = value.startsWith('!');
+                    const normalizedValue = isExcludedValue ? value.slice(1) : value;
+                    return (
+                      <button
+                        key={`${facet}__${value}`}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeFacetValue(facet, value);
+                        }}
+                        className="px-2 py-1 rounded-md border border-neutral-200 flex items-center gap-1 cursor-pointer text-sm hover:bg-neutral-50"
+                      >
+                        {isExcludedValue && (
+                          <PiProhibit className="text-sm text-neutral-800 flex-shrink-0" aria-hidden="true" />
+                        )}
+                        <span className="text-sm">{renderLabel(facet, normalizedValue)}</span>
+                        <PiX className="ml-0.5 text-sm" aria-hidden="true" />
+                      </button>
+                    );
+                  })}
+                  <div className="ml-auto" />
+                </div>
+              </div>
+            )}
 
             {(facetLoading || facetAggregation?.buckets.length) ?
               <fieldset>
