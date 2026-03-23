@@ -29,7 +29,7 @@ export default function ResultsHeader() {
             notClickable={isMobile}
             className="flex items-center gap-1 xl:px-1"
             // When opening, use default results count. When closing, remove param.
-            add={{ hideResults: hideResultsOn ? (qParam ? null : 'off') : 'on' }}
+            add={{ hideResults: showResults ? 'on': 'off' }}
             remove={[...(isMobile ? ['options'] : [])]}
         >
             {!isMobile && (
