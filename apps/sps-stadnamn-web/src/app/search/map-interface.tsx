@@ -194,7 +194,7 @@ export default function MapInterface() {
 
     const drawerRef = useRef<HTMLDivElement>(null)
 
-    const { showLeftPanel, showRightPanel, optionsOn, mapSettingsOn, overlaySelectorOn, facet, showResults, tableOptions } = useOverlayParams()
+    const { showLeftPanel, showRightPanel, optionsOn, mapSettingsOn, overlaySelectorOn, facet, tableOptions } = useOverlayParams()
     const { facetFilters, datasetFilters } = useSearchQuery()
     const filterCount = facetFilters.length + datasetFilters.length
     // Count the number of unique facets (keys) that have active filters, including the dataset facet

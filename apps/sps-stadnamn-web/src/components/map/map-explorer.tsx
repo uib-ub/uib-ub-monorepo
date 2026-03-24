@@ -84,6 +84,7 @@ export default function MapExplorer() {
   const sourceViewOn = useSourceViewOn()
   const initDecoded = useInitDecoded()
   const init = useInitParam()
+  const group = useGroupParam()
 
 
   const getDisplayLabel = (fields?: Record<string, any> | null): string => {
@@ -208,7 +209,7 @@ export default function MapExplorer() {
   }
 
 
-  const activeMarkerMode = markerMode === 'auto'
+  const activeMarkerMode = group ? 'points' : markerMode === 'auto'
     ? (hasQuery ? (zoomState < 15 ? 'counts' : 'points') : 'labels')
      : markerMode
 

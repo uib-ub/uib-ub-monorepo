@@ -7,7 +7,7 @@ import { datasetTitles } from "@/config/metadata-config"
 import { formatCadastre } from "@/config/result-renderers"
 import { facetConfig } from "@/config/search-config"
 import { contentSettings, treeSettings } from "@/config/server-config"
-import { useDocParam, usePerspective, useTreeParam } from "@/lib/param-hooks"
+import { useDocParam, useOptionsOn, usePerspective, useTreeParam } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import { getGnr, getSkeletonLength, getValueByPath, indexToCode } from "@/lib/utils"
 import useSearchData from "@/state/hooks/search-data"
@@ -16,10 +16,11 @@ import { GlobalContext } from "@/state/providers/global-provider"
 import { useSessionStore } from "@/state/zustand/session-store"
 import { useSearchParams } from "next/navigation"
 import { Fragment, useContext } from "react"
-import { PiFunnel, PiMapPinFill, PiMapTrifold } from "react-icons/pi"
+import { PiFunnel, PiFunnelFill, PiMapPinFill, PiMapTrifold } from "react-icons/pi"
 import StatusSection from "@/components/table/status-section"
 import { DownloadButton } from "./download-button"
 import SortHeader from "./sort-header"
+import SearchQueryDisplay from "../results/search-query-display"
 
 export default function TableExplorer() {
     const perspective = usePerspective()
@@ -31,6 +32,7 @@ export default function TableExplorer() {
     const filterCount = facetFilters.length + datasetFilters.length
     const { visibleColumns } = useContext(GlobalContext)
     const visibleColumnsArray = visibleColumns[perspective] || ['adm', ...facetConfig[perspective].filter(item => item.table).map(facet => facet.key)]
+    const optionsOn = useOptionsOn()
 
     // Hide adm if only one value is present and it has no sublevels
     const showCadastre = contentSettings[perspective]?.cadastre
@@ -85,10 +87,13 @@ export default function TableExplorer() {
                 {totalHits.value.toLocaleString('no-NO')} treff{totalHits.relation != 'eq' ? '+' : ''}
             </div>
         }
+        <div className="flex items-center flex-wrap gap-2 ml-auto">
+        <SearchQueryDisplay/>
 
 
-        <Clickable className="flex items-center gap-2 btn btn-outline ml-auto" add={{ options: 'on' }}><PiFunnel className="text-lg" aria-hidden="true" /><span className="sr-only lg:not-sr-only">Filter</span>{filterCount > 0 && <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} />}</Clickable>
-        <Clickable className="flex items-center gap-2 btn btn-neutral" remove={['mode', 'tableOptions']}><PiMapTrifold className="text-lg" aria-hidden="true" /><span className="sr-only lg:not-sr-only">Kartvisning</span></Clickable></div>
+        <Clickable className="flex items-center gap-2 btn btn-outline h-9" add={{ options: 'on' }}>{optionsOn ? <PiFunnelFill className="text-lg text-accent-700" aria-hidden="true" /> : <PiFunnel className="text-lg" aria-hidden="true" />}<span className="sr-only lg:not-sr-only">Filter</span>{filterCount > 0 && <TitleBadge className="bg-neutral-700 text-white text-sm" count={filterCount} />}</Clickable>
+        <Clickable className="flex items-center gap-2 btn btn-neutral h-9" add={{sourceView: 'on'}} remove={['mode', 'tableOptions']}><PiMapTrifold className="text-lg" aria-hidden="true" /><span className="sr-only lg:not-sr-only">Kartvisning</span></Clickable></div>
+        </div>
         <div className='flex flex-col py-2 gap-y-4 h-full bg-white'>
             <div className='flex  flex-col gap-4 xl:gap-2 !mx-2'>
                 {tree && doc && tableData?.[0]?._source && treeSettings[perspective] && <div className="text-xl px-1">{`${getGnr(tableData?.[0], perspective) || getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.subunit) || ""} ${getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.parentName) || tableData?.[0]?._source?.label || ""}`}</div>}

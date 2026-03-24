@@ -4,7 +4,7 @@ import useResultCardData from "@/state/hooks/result-card-data"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Label } from "@/components/ui/label"
 import { TitleBadge } from "@/components/ui/badge"
-import { useFulltextOn, useFuzzyOn, useInitParam, useNoGeoOn, useQParam, useSearchSortParam, useSourceViewOn } from "@/lib/param-hooks"
+import { useFulltextOn, useFuzzyOn, useInitParam, useNoGeoOn, useQParam, useSearchSortParam, useSourceViewOn, useMode } from "@/lib/param-hooks"
 
 export default function SearchQueryDisplay({
   showNoLocationToggle = false,
@@ -28,10 +28,11 @@ export default function SearchQueryDisplay({
   const fulltextOn = useFulltextOn()
   const noGeoOn = useNoGeoOn()
   const sourceViewOn = useSourceViewOn()
+  const mode = useMode()
 
   return (
     <>
-      {isSingleWord && sourceViewOn && (
+      {isSingleWord && (sourceViewOn || mode == 'table') && (
         <div className="flex items-center gap-2 text-sm h-9 px-3 rounded-md border border-neutral-200 bg-transparent">
           <input
             id="fuzzy-toggle"

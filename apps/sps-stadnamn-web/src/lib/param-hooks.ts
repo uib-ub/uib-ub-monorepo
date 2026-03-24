@@ -222,16 +222,8 @@ export function useResultLimitNumber() {
 
 
 export function useMode() {
-    const datasetTag = useDatasetTagParam()
-    const perspective = usePerspective()
     const mode = useGetParam('mode')
-
-    if (datasetTag == 'base') {
-        return 'list'
-    }
-
-
-    return mode || contentSettings[perspective]?.display || 'map'
+    return mode || 'map'
 }
 
 export function useSearchSortParam() {

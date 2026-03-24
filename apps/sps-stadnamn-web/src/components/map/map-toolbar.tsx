@@ -10,6 +10,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 
 import { useInitParam, useSourceViewOn, useTreeParam, useMapSettingsOn, usePointParam, useOptionsOn } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
+import Clickable from "../ui/clickable/clickable"
 
 export function FilterButton() {
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
@@ -86,13 +87,29 @@ export default function MapToolbar() {
                             : 1
                     }}
                 >
-                    <PiInfoFill className="inline text-xl" /> Ingen treff med koordinater
+                    <PiInfoFill className="inline text-xl" /> Ingen treff med koordinater <Clickable className='ml-2' add={{ mode: 'table' }} remove={['group', 'init', 'zoom', 'center', 'point', 'activePoint', 'facet']} link href="/search">Vis tabell</Clickable>
                 </div>
 
             }
-            { point && !init && <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit absolute left-2 lg:left-[25svw] z-[3001] transition-opacity duration-300">
-                <PiInfoFill className="inline text-xl" /> {isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"} </div>
-            }
+            {point && !init && (
+                <div
+                    role="status"
+                    aria-live="polite"
+                    className="bg-neutral-800 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit absolute left-2 lg:left-[25svw] z-[3001] transition-opacity duration-300"
+                    style={{
+                        top: isMobile
+                            ? currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM
+                                ? "7.25rem"
+                                : `${Math.max(3.5, 7.25 - currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM)}rem`
+                            : "3.75rem",
+                        opacity: isMobile
+                            ? currentPosition > middleRem ? 0 : 1
+                            : 1
+                    }}
+                >
+                    <PiInfoFill className="inline text-xl" /> {isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"}
+                </div>
+            )}
                 
 
             <div
