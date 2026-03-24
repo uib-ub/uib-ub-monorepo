@@ -50,7 +50,17 @@ export default function TableOptions() {
 
 
 
-    return <div className="flex flex-col gap-2 px-4 py-2">
+    return <div className="flex flex-col pb-6">
+        <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
+            <div className="flex items-center gap-1 xl:px-1 w-full">
+                <div
+                    id={isMobile ? 'drawer-title' : 'left-title'}
+                    className="text-base xl:text-lg text-neutral-900 font-sans"
+                >
+                    Kolonner
+                </div>
+            </div>
+        </div>
         <div className='flex gap-2 mt-2 xl:mt-0'>
 
 
@@ -62,10 +72,7 @@ export default function TableOptions() {
             }
         </div>
 
-        <section className="flex flex-col gap-2" aria-labelledby="table-options-columns-title">
-        <div className="flex items-center gap-2">
-            <div id="table-options-columns-title" className="text-lg">Kolonner</div>
-        </div>
+        <section className="flex flex-col gap-2 px-3" aria-labelledby={isMobile ? 'drawer-title' : 'left-title'}>
         <div className='relative'>
             <input
                 type="text"
