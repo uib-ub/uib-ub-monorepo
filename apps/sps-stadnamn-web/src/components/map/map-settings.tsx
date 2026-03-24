@@ -7,13 +7,13 @@ import Clickable from "@/components/ui/clickable/clickable";
 import IconButton from "@/components/ui/icon-button";
 import dynamic from "next/dynamic";
 import { useDebugStore } from "@/state/zustand/debug-store";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiInfoFill, PiMagnifyingGlass, PiPlusBold, PiX } from "react-icons/pi";
 import { useSearchParams } from "next/navigation";
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "../ui/clickable/clickable-icon";
-import WarningMessage from "@/components/ui/notifications/warning-message";
 import { useSessionStore } from "@/state/zustand/session-store";
+import { useNotificationStore } from "@/state/zustand/notification-store";
 import Link from "next/link";
 import { useOverlaySelectorOn } from "@/lib/param-hooks";
 
@@ -33,6 +33,8 @@ export default function MapSettings() {
   } = useMapSettings();
   const searchParams = useSearchParams();
   const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
+  const addNotification = useNotificationStore((s) => s.addNotification);
+  const removeNotification = useNotificationStore((s) => s.removeNotification);
   const debug = useDebugStore((s) => s.debug);
   const [overlaySearch, setOverlaySearch] = useState('');
   const overlaySelectorOn = useOverlaySelectorOn();
@@ -74,6 +76,21 @@ export default function MapSettings() {
       {}
     );
   }, []);
+
+  useEffect(() => {
+    if (selectedOverlays.length > 2) {
+      addNotification({
+        id: "overlay-performance-warning",
+        message: "Mange ekstra kartlag kan gjere kartet tregare å bruke.",
+        permanentDismiss: true,
+        variant: "warning"
+      });
+    } else {
+      removeNotification("overlay-performance-warning");
+    }
+
+    return () => removeNotification("overlay-performance-warning");
+  }, [addNotification, removeNotification, selectedOverlays.length]);
 
   if (overlaySelectorOn) {
     return (
@@ -271,13 +288,6 @@ export default function MapSettings() {
           </div>
           </div>
           <div className="px-2 py-1 flex flex-col gap-3">
-            {selectedOverlays.length > 2 && (
-              <WarningMessage
-                message="Mange ekstra kartlag kan gjere kartet tregare å bruke."
-                messageId="overlay-performance-warning"
-              />
-            )}
-
             {selectedOverlays.length > 0 && (
               <fieldset>
                 <legend className="sr-only">Aktive kartlag</legend>

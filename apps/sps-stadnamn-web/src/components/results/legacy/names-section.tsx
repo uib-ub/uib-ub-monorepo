@@ -4,7 +4,7 @@ import { Fragment, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { PiX } from "react-icons/pi";
 import Clickable from "@/components/ui/clickable/clickable";
-import WarningMessage from "@/components/ui/notifications/warning-message";
+import { WarningSnackbar } from "@/components/ui/snackbar";
 import useResultCardData from "@/state/hooks/result-card-data";
 
 
@@ -290,7 +290,7 @@ export const GroupFilters = () => {
     return (
         <div className="flex flex-col gap-3">
             {true && (
-                <WarningMessage messageId="label-filter-1772701354" message="Filtreringsalternativa baserer seg på namneformer Språksamlingane har henta ut frå kjeldene, eventuelt med tidlegaste registrerte år. Lista er ikkje naudsynlegvis komplett, og kan innehalde feil." />
+                <WarningSnackbar id="label-filter-1772701354" message="Filtreringsalternativa baserer seg på namneformer Språksamlingane har henta ut frå kjeldene, eventuelt med tidlegaste registrerte år. Lista er ikkje naudsynlegvis komplett, og kan innehalde feil." />
             )}
             
 

@@ -7,9 +7,10 @@ import { stringToBase64Url } from '@/lib/param-utils';
 import { formatHighlight } from '@/lib/text-utils';
 import { GlobalContext } from '@/state/providers/global-provider';
 import { useDebugStore } from '@/state/zustand/debug-store';
+import { useNotificationStore } from '@/state/zustand/notification-store';
 import { useSessionStore } from '@/state/zustand/session-store';
 import { useSearchParams } from 'next/navigation';
-import { useContext, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import DistanceBadge from '@/components/results/distance-badge';
 import AdmInfo from '@/components/shared/adm-info';
 
@@ -17,11 +18,13 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
     const perspective = usePerspective()
     const searchParams = useSearchParams()
     const itemRef = useRef<HTMLAnchorElement>(null)
-    const docDataset = hit._index?.split('-')?.[2]
+    const docDataset = hit?._index?.split('-')?.[2]
     const { isMobile, mapFunctionRef, sosiVocab } = useContext(GlobalContext)
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const showScore = useDebugStore((s: any) => s.showScore)
     const setInitGroupLabel = useSessionStore((s) => s.setInitGroupLabel)
+    const addNotification = useNotificationStore((s) => s.addNotification)
+    const removeNotification = useNotificationStore((s) => s.removeNotification)
     const isGrunnord = docDataset?.includes('_g')
 
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective == 'base'
@@ -43,7 +46,20 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
     const showSosi = sosiTypeKeys.length > 0
 
 
-    if (!hit) return <div className="p-2">Det har oppstått ein feil: Kunne ikkje hente kjelder</div>
+    useEffect(() => {
+        if (!hit) {
+            addNotification({
+                id: "result-item-missing-hit",
+                variant: "error",
+                message: "Det har oppstått ein feil: Kunne ikkje hente kjelder"
+            })
+        } else {
+            removeNotification("result-item-missing-hit")
+        }
+        return () => removeNotification("result-item-missing-hit")
+    }, [addNotification, hit, removeNotification])
+
+    if (!hit) return null
 
     const handleClick = () => {
         if (notClickable) return

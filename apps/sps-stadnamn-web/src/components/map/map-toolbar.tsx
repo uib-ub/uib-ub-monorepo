@@ -1,9 +1,10 @@
-import { getMyLocation, MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH } from "@/lib/map-utils"
+import { getMyLocation, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils"
 import useSearchData from "@/state/hooks/search-data"
 import { GlobalContext } from "@/state/providers/global-provider"
 import { useSessionStore } from "@/state/zustand/session-store"
-import { useContext } from "react"
-import { PiFunnel, PiFunnelFill, PiGpsFix, PiInfoFill, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus } from "react-icons/pi"
+import { useNotificationStore } from "@/state/zustand/notification-store"
+import { useContext, useEffect } from "react"
+import { PiFunnel, PiFunnelFill, PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus } from "react-icons/pi"
 import { RoundIconButton, RoundIconClickable, RoundIconClickableWithBadge } from "../ui/clickable/round-icon-button"
 import { useRouter, useSearchParams } from "next/navigation"
 
@@ -11,6 +12,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useInitParam, useSourceViewOn, useTreeParam, useMapSettingsOn, usePointParam, useOptionsOn } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import Clickable from "../ui/clickable/clickable"
+import NotificationStack from "../ui/notification-stack";
 
 export function FilterButton() {
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
@@ -46,6 +48,8 @@ export default function MapToolbar() {
     const currentPosition = useSessionStore((s) => s.currentPosition)
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
     const setMyLocation = useSessionStore((s) => s.setMyLocation)
+    const addNotification = useNotificationStore((s) => s.addNotification)
+    const removeNotification = useNotificationStore((s) => s.removeNotification)
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const { totalHits, searchBounds, searchLoading, searchError } = useSearchData()
     const mapSettingsOn = useMapSettingsOn()
@@ -54,16 +58,37 @@ export default function MapToolbar() {
     const sourceViewOn = useSourceViewOn()
     const point = usePointParam()
     const init = useInitParam()
+    const showNoCoordinatesNotice = !searchLoading && !searchBounds?.length && !searchError && totalHits?.value > 0 && snappedPosition !== 'top'
+    const notificationTop = isMobile
+        ? currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM
+            ? "4rem"
+            : `${Math.max(0.25, 4 - currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM)}rem`
+        : "0.5rem"
     
-    const svhToRem = (svh: number) => {
-        if (typeof window === 'undefined' || typeof document === 'undefined') return 0
-        const windowHeight = window.visualViewport?.height || window.innerHeight
-        const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
-        return ((svh / 100) * windowHeight) / rootFontSize
-    }
+    useEffect(() => {
+        if (showNoCoordinatesNotice) {
+            addNotification({
+                id: "no-coordinates",
+                message: <><span>Ingen treff med koordinater</span> <Clickable className='ml-2' add={{ mode: 'table' }} remove={['group', 'init', 'zoom', 'center', 'point', 'activePoint', 'facet']} link href="/search">Vis tabell</Clickable></>,
+            })
+        } else {
+            removeNotification("no-coordinates")
+        }
+        return () => removeNotification("no-coordinates")
+    }, [addNotification, removeNotification, showNoCoordinatesNotice])
 
-    const middleRem = svhToRem(MAP_DRAWER_MAX_HEIGHT_SVH)
-
+    useEffect(() => {
+        if (point && !init) {
+            addNotification({
+                id: "point-hint",
+                message: isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet",
+                variant: "tooltip",
+            })
+        } else {
+            removeNotification("point-hint")
+        }
+        return () => removeNotification("point-hint")
+    }, [addNotification, init, isMobile, point, removeNotification])
 
     // If the map is not ready, don't show the toolbar
     //if (!mapFunctionRef?.current) return null
@@ -71,45 +96,10 @@ export default function MapToolbar() {
 
     return (
         <>
-            {!searchLoading && !searchBounds?.length && !searchError && totalHits?.value > 0 && snappedPosition !== 'top' &&
-
-                <div
-                    role="status"
-                    aria-live="polite"
-                    className="bg-neutral-800 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit absolute left-2 lg:left-[25svw] z-[3001] transition-opacity duration-300"
-                    style={{
-                        top: isMobile ?
-                            currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM ? "4rem" :
-                                `${Math.max(0.25, 4 - currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM)}rem`
-                            : "0.5rem",
-                        opacity: isMobile ?
-                            currentPosition > middleRem ? 0 : 1
-                            : 1
-                    }}
-                >
-                    <PiInfoFill className="inline text-xl" /> Ingen treff med koordinater <Clickable className='ml-2' add={{ mode: 'table' }} remove={['group', 'init', 'zoom', 'center', 'point', 'activePoint', 'facet']} link href="/search">Vis tabell</Clickable>
-                </div>
-
-            }
-            {point && !init && (
-                <div
-                    role="status"
-                    aria-live="polite"
-                    className="bg-neutral-800 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit absolute left-2 lg:left-[25svw] z-[3001] transition-opacity duration-300"
-                    style={{
-                        top: isMobile
-                            ? currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM
-                                ? "7.25rem"
-                                : `${Math.max(3.5, 7.25 - currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM)}rem`
-                            : "3.75rem",
-                        opacity: isMobile
-                            ? currentPosition > middleRem ? 0 : 1
-                            : 1
-                    }}
-                >
-                    <PiInfoFill className="inline text-xl" /> {isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet"}
-                </div>
-            )}
+            <NotificationStack
+                className="absolute left-2 lg:left-[25svw] z-[3001] w-fit"
+                style={{ top: notificationTop }}
+            />
                 
 
             <div

@@ -16,9 +16,10 @@ import { useSearchQuery } from "@/lib/search-params";
 import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
+import { useNotificationStore } from "@/state/zustand/notification-store";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { PiMagnifyingGlass, PiQuestion, PiX, PiXBold } from "react-icons/pi";
 import ResultCard from "@/components/results/card/result-card";
 import ActiveFilters from "@/components/results/active-filters";
@@ -50,6 +51,8 @@ export default function SearchResults() {
   const resultCount = sourceViewOn ? docTotalHits?.value ?? 0 : groupTotalHits?.value ?? 0
   const resultCountExceptInit = resultCount - (init ? 1 : 0)
   const hideResultsOn = useHideResultsOn()
+  const addNotification = useNotificationStore((s) => s.addNotification)
+  const removeNotification = useNotificationStore((s) => s.removeNotification)
 
 
   const {
@@ -87,6 +90,20 @@ export default function SearchResults() {
     !!noGeoGroupCount &&
     noGeoGroupCount > 0  && 
     (noGeoOn || firstHasLocation);
+  const hasResultsError = !!(searchError || listError)
+
+  useEffect(() => {
+    if (hasResultsError) {
+      addNotification({
+        id: "results-fetch-error",
+        variant: "error",
+        message: "Det har oppstått ein feil: kunne ikkje gjennomføre søket"
+      })
+    } else {
+      removeNotification("results-fetch-error")
+    }
+    return () => removeNotification("results-fetch-error")
+  }, [addNotification, hasResultsError, removeNotification])
 
   return (
     <div ref={resultsContainerRef} className="mb-28 xl:mb-0">
@@ -260,14 +277,8 @@ export default function SearchResults() {
                   </div>
                 )}
 
-                {/* Error and empty states */}
-                {(searchError || listError) ? (
-                  <div className="flex justify-center">
-                    <div role="status" aria-live="polite" className="text-primary-700 pb-4">
-                      Det har oppstått ein feil
-                    </div>
-                  </div>
-                ) : 
+                {/* Empty states */}
+                {!hasResultsError &&
                   <div className="flex justify-center">
                     <div
                       className="flex flex-col items-center gap-2 text-neutral-950"
