@@ -32,7 +32,6 @@ export const SERVER_ALLOWED_SEARCH_PARAM_KEYS = [
   'fields',
   'sourceView',
   'sort',
-  'group',
   'id', // group id or uuid for result card
   'totalHits',
   'searchSort',
@@ -43,17 +42,13 @@ export const SERVER_ALLOWED_SEARCH_PARAM_KEYS = [
   'facet',
   'facetSearch',
   'facetSort', // Not currently in use?
-  //'within',
-  'doc' // to be deprecated?
-
+  'doc', // Still used in table explorer
+  'within' // Also a field in elasticsearch
 
   //'dataset', TODO: add dataset and adm
 
 ] as const
 
-export const SPECIAL_CASE_FIELDS = [
-  'within',
-] as const
 
 /**
  * Client-only UI state keys.
@@ -92,7 +87,6 @@ export const SPECIAL_CASE_FIELDS = [
  */
 export const RESERVED_SEARCH_PARAM_KEYS = [
   ...SERVER_ALLOWED_SEARCH_PARAM_KEYS,
-  ...SPECIAL_CASE_FIELDS,
   ...CLIENT_ONLY_SEARCH_PARAM_KEYS,
 ] as const
 

@@ -1,8 +1,9 @@
 
-import type { ClientOnlySearchParamKey } from '@/lib/reserved-param-types';
+import type { ReservedSearchParamKey } from '@/lib/reserved-param-types';
 
 export interface FieldConfigItem {
   label?: string;
+  fields?: string[]; // Optional ES fields for virtual/composite facets
   result?: boolean; // Show in result list
   description?: string; // Description of field
   fulltext?: boolean; // Can be selected as search field
@@ -27,10 +28,8 @@ export interface FieldConfigItem {
   facetOperator?: 'AND' | 'OR'; // How multiple values for this facet are combined (default OR)
 }
 
-type DatasetFieldConfig = Record<string, FieldConfigItem> & {
-  // Prevent accidental config keys that are really client-only search params (e.g. "page", "zoom", "display").
-  [K in ClientOnlySearchParamKey]?: never;
-};
+type DatasetFieldConfig = Record<string, FieldConfigItem>
+type DatasetFieldConfigWithNoReservedKeys = DatasetFieldConfig & Partial<Record<ReservedSearchParamKey, never>>
 
 interface FacetConfigItem extends FieldConfigItem {
   key: string;
@@ -79,14 +78,16 @@ const boost = { numeric }
 const dataset = { label: "Datasett", facet, table }
 const coordinateType = { label: "Koordinattype", facet }
 const ssr = { label: "SSR Stadnummer", facet, keyword }
+const name = { label: "Namn", facet, keyword, fields: ["label.keyword", "altLabels.keyword", "attestations.label.keyword"] }
+const year = { label: "År", facet, fields: ["year", "attestations.year"] }
 
 const labelDefaults = {
   "altLabels": { label: "Andre namn", table, facet, result },
   "attestations": { label: "Kjeldeformer", table, result },
-}
-const required = { uuid, boost, label, dataset } //, resources }
+} satisfies DatasetFieldConfigWithNoReservedKeys
+const required = { uuid, boost, label, dataset, name, year} //, resources }
 
-export const fieldConfig: Record<string, DatasetFieldConfig> = {
+const rawFieldConfig = {
 
   core_gnidu: {
     label
@@ -462,7 +463,9 @@ export const fieldConfig: Record<string, DatasetFieldConfig> = {
     ...required, adm, adm1, adm2,
     ...identifiers,
   }
-}
+} satisfies Record<string, DatasetFieldConfigWithNoReservedKeys>
+
+export const fieldConfig: Record<string, DatasetFieldConfig> = rawFieldConfig
 
 // First, store the original _index configuration
 // TODO: refactor so that required is not needed in the individual configs

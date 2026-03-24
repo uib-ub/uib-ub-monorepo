@@ -56,7 +56,7 @@ export default function GroupedResultsToggle() {
             {(group && sourceViewResetUrl) ? <Clickable className="flex items-center gap-2" href={sourceViewResetUrl} onClick={handleCloseGroup}>
                 <PiCaretLeftBold aria-hidden="true" className="text-primary-700"/>
                 Tilbake
-            </Clickable> :  sourceViewOn ? <Clickable className="flex items-center gap-2" only={{ q, center, zoom, group: null, init, point}}>
+            </Clickable> :  sourceViewOn ? <Clickable className="flex items-center gap-2" only={{ q, center, zoom, point, init: group}}>
             <PiCaretLeftBold aria-hidden="true" className="text-primary-700"/>{(group && group == init) ? 'Gruppe' : 'Gruppert søk'}
             
             </Clickable>

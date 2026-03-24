@@ -18,6 +18,7 @@ import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import FacetSection from "@/components/facets/facet-section";
 import GroupedResultsToggle from "@/components/results/grouped-results-toggle";
 import SearchResults from "@/components/results/search-results";
+import NamesSection from "@/components/results/names-section";
 import { fieldConfig } from "@/config/search-config";
 import Spinner from "@/components/svg/Spinner";
 import ClientFacet from "@/components/facets/client-facet";
@@ -210,6 +211,7 @@ export default function MapInterface() {
     const tree = useTreeParam()
     const mode = useMode()
     const init = useInitParam()
+    const group = useGroupParam()
 
     useEffect(() => {
         if (debugOn) {
@@ -289,6 +291,7 @@ export default function MapInterface() {
                             )}
 
                             <div id="options-panel" className="flex flex-col gap-2">
+                                {group && <NamesSection />}
                                 <FacetSection />
                                 {isMobile && <ShowResultsButton />}
                             </div>

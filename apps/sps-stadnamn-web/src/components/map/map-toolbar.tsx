@@ -64,6 +64,10 @@ export default function MapToolbar() {
             ? "4rem"
             : `${Math.max(0.25, 4 - currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM)}rem`
         : "0.5rem"
+    // Reserve space on the right so snackbars never overlap toolbar controls.
+    const notificationRight = isMobile
+        ? "5rem"
+        : `calc(${tree ? "40svw" : "25svw"} + 16rem)`
     
     useEffect(() => {
         if (showNoCoordinatesNotice) {
@@ -97,8 +101,8 @@ export default function MapToolbar() {
     return (
         <>
             <NotificationStack
-                className="absolute left-2 lg:left-[25svw] z-[3001] w-fit"
-                style={{ top: notificationTop }}
+                className={`absolute z-[3001] ${isMobile ? "left-2" : "left-[25svw]"}`}
+                style={{ top: notificationTop, right: notificationRight }}
             />
                 
 

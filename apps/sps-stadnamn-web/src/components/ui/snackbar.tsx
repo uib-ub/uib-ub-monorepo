@@ -7,11 +7,12 @@ import { useNotificationStore } from "@/state/zustand/notification-store";
 import ClickableIcon from "./clickable/clickable-icon";
 
 const snackbarBaseClass =
-  "rounded-md min-h-12 px-4 py-3 text-white flex gap-2 items-center w-fit relative transition-opacity duration-300 shadow-md";
-const infoSnackbarClass = "bg-neutral-900 text-white";
-const warningSnackbarClass = "bg-accent-900 text-white";
-const tooltipSnackbarClass = "bg-neutral-200 text-neutral-900";
-const errorSnackbarClass = "bg-primary-900 text-white";
+  "box-border rounded-md min-h-12 px-4 py-3 text-white flex items-start justify-between gap-3 w-full max-w-[80%] relative transition-opacity duration-300 shadow-md border";
+/** Border one palette step darker than fill (tailwind.config.ts). */
+const infoSnackbarClass = "bg-neutral-900 border-neutral-950 text-white";
+const warningSnackbarClass = "bg-accent-900 border-accent-950 text-white";
+const tooltipSnackbarClass = "bg-neutral-200 border-neutral-300 text-neutral-900";
+const errorSnackbarClass = "bg-primary-900 border-primary-950 text-white";
 
 type SnackbarProps = {
   id?: string;
@@ -32,7 +33,7 @@ export function Snackbar({
   className,
   style,
   dismissTooltip = "Lukk melding",
-  dismissButtonClassName = "absolute right-2 top-1/2 -translate-y-1/2"
+  dismissButtonClassName = "shrink-0 self-start mt-0.5"
 }: SnackbarProps) {
   const [expanded, setExpanded] = useState(false);
   const detailsId = useId();
@@ -40,8 +41,8 @@ export function Snackbar({
 
   return (
     <div role="status" aria-live="polite" className={cn(snackbarBaseClass, className)} style={style}>
-      <div className={`min-w-0 ${id ? "pr-8" : ""}`}>
-        <div className="flex items-center gap-2">
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start gap-2 min-w-0">
           {children}
           {details ? (
             <button
@@ -101,8 +102,8 @@ export function WarningSnackbar({
       dismissTooltip="Lukk advarsel"
       details={children}
     >
-      <span className="text-xl shrink-0" aria-hidden="true"><PiWarningFill /></span>
-      <span>{message}</span>
+      <span className="text-xl shrink-0 mt-0.5" aria-hidden="true"><PiWarningFill /></span>
+      <span className="min-w-0 flex-1 whitespace-normal break-words">{message}</span>
     </Snackbar>
   );
 }
@@ -124,8 +125,8 @@ export function InfoSnackbar({
       dismissTooltip="Lukk informasjon"
       details={children}
     >
-      <span className="text-xl shrink-0" aria-hidden="true"><PiInfoFill /></span>
-      <span>{message}</span>
+      <span className="text-xl shrink-0 mt-0.5" aria-hidden="true"><PiInfoFill /></span>
+      <span className="min-w-0 flex-1 whitespace-normal break-words">{message}</span>
     </Snackbar>
   );
 }
@@ -146,8 +147,8 @@ export function TooltipSnackbar({
       dismissTooltip="Lukk verktøytips"
       details={children}
     >
-      <span className="text-xl shrink-0" aria-hidden="true"><PiQuestionFill /></span>
-      <span>{message}</span>
+      <span className="text-xl shrink-0 mt-0.5" aria-hidden="true"><PiQuestionFill /></span>
+      <span className="min-w-0 flex-1 whitespace-normal break-words">{message}</span>
     </Snackbar>
   );
 }
@@ -168,8 +169,8 @@ export function ErrorSnackbar({
       dismissTooltip="Lukk feilmelding"
       details={children}
     >
-      <span className="text-xl text-red-100 shrink-0" aria-hidden="true"><PiWarningOctagonFill /></span>
-      <span>{message}</span>
+      <span className="text-xl text-red-100 shrink-0 mt-0.5" aria-hidden="true"><PiWarningOctagonFill /></span>
+      <span className="min-w-0 flex-1 whitespace-normal break-words">{message}</span>
     </Snackbar>
   );
 }

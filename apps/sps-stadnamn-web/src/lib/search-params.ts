@@ -101,10 +101,8 @@ export function useSearchQuery() {
         }
     }
 
-    if (radius && point) {
-        searchQuery.set('radius', radius)
-        searchQuery.set('point', point)
-    }
+
+
 
     const removeFilterParams = (key: string | string[], keep?: string[]) => {
         const outputUrl = new URLSearchParams(searchQuery)

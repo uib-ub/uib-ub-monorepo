@@ -41,6 +41,11 @@ export function extractFacets(request: Request) {
       else if (key == 'group') {
         termFilters.push({ "term": { "group.id": base64UrlToString(value) } })
       }
+      else if (key == 'within') {
+        termFilters.push({
+          "term": { "within.keyword": reservedParams.within }
+        });
+      }
     } else {
       // Check for comparison operators (_gt, _gte, _lt, _lte)
       const comparisonMatch = key.match(/^(.+)_(gt|gte|lt|lte)$/);
@@ -212,6 +217,8 @@ export function extractFacets(request: Request) {
         (value) => value !== "_false" && value !== "_true" && !value.startsWith("!")
       );
       const fieldName = `${key}${(baseAllConfig[key as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}`;
+      const configuredFields = (baseAllConfig[key as keyof typeof baseAllConfig]?.fields as string[] | undefined)?.filter(Boolean);
+      const fieldNames = configuredFields?.length ? configuredFields : [fieldName];
       const facetOperator = baseAllConfig[key as keyof typeof baseAllConfig]?.facetOperator || 'OR';
 
 
@@ -260,17 +267,35 @@ export function extractFacets(request: Request) {
           // Require that all selected values are present on the field
           termFilters.push({
             "bool": {
-              "must": filteredValues.map(value => ({
-                "term": { [fieldName]: value }
-              })),
+              "must": filteredValues.map(value => (
+                fieldNames.length === 1
+                  ? { "term": { [fieldNames[0]]: value } }
+                  : {
+                    "bool": {
+                      "should": fieldNames.map((name: string) => ({
+                        "term": { [name]: value }
+                      })),
+                      "minimum_should_match": 1
+                    }
+                  }
+              )),
               ...(excludedValues.length
                 ? {
                   "must_not": [
-                    {
-                      "terms": {
-                        [fieldName]: excludedValues
-                      }
-                    }
+                    ...(fieldNames.length === 1
+                      ? [{
+                        "terms": {
+                          [fieldNames[0]]: excludedValues
+                        }
+                      }]
+                      : [{
+                        "bool": {
+                          "should": fieldNames.map((name: string) => ({
+                            "terms": { [name]: excludedValues }
+                          })),
+                          "minimum_should_match": 1
+                        }
+                      }])
                   ]
                 }
                 : {})
@@ -280,18 +305,51 @@ export function extractFacets(request: Request) {
           termFilters.push({
             "bool": {
               "should": [
-                ...(hasFalse ? [{ "bool": { "must_not": { "exists": { "field": fieldName } } } }] : []),
-                ...(hasTrue ? [{ "exists": { "field": fieldName } }] : []),
-                ...(filteredValues.length ? [{ "terms": { [fieldName]: filteredValues } }] : [])
+                ...(hasFalse
+                  ? [{
+                    "bool": {
+                      "must_not": fieldNames.map((name: string) => ({ "exists": { "field": name } }))
+                    }
+                  }]
+                  : []),
+                ...(hasTrue
+                  ? [{
+                    "bool": {
+                      "should": fieldNames.map((name: string) => ({ "exists": { "field": name } })),
+                      "minimum_should_match": 1
+                    }
+                  }]
+                  : []),
+                ...(filteredValues.length
+                  ? [fieldNames.length === 1
+                    ? { "terms": { [fieldNames[0]]: filteredValues } }
+                    : {
+                      "bool": {
+                        "should": fieldNames.map((name: string) => ({
+                          "terms": { [name]: filteredValues }
+                        })),
+                        "minimum_should_match": 1
+                      }
+                    }]
+                  : [])
               ],
               ...(excludedValues.length
                 ? {
                   "must_not": [
-                    {
-                      "terms": {
-                        [fieldName]: excludedValues
-                      }
-                    }
+                    ...(fieldNames.length === 1
+                      ? [{
+                        "terms": {
+                          [fieldNames[0]]: excludedValues
+                        }
+                      }]
+                      : [{
+                        "bool": {
+                          "should": fieldNames.map((name: string) => ({
+                            "terms": { [name]: excludedValues }
+                          })),
+                          "minimum_should_match": 1
+                        }
+                      }])
                   ]
                 }
                 : {}),
