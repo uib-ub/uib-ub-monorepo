@@ -75,7 +75,12 @@ export default function Clickable({ children, remove, add, only, link, href, rep
             if (restProps.onClick) {
                 restProps.onClick(event)
             }
-            const newUrl = stringParams && (only || remove || add) ? "?" + stringParams : href
+            if (!(href || only || remove || add)) {
+                return
+            }
+
+            let newUrl = (href ? href : '/search') + stringParams && (only || remove || add) ? "?" + stringParams : href
+
             
             if (replace) {
                 router.replace(newUrl || '')
