@@ -49,6 +49,8 @@ export const SERVER_ALLOWED_SEARCH_PARAM_KEYS = [
 
 ] as const
 
+export const SPECIAL_CASE_FACETS = ['name', 'year'] as const
+
 
 /**
  * Client-only UI state keys.

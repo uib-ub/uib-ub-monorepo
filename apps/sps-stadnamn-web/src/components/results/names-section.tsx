@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import Clickable from "@/components/ui/clickable/clickable";
-import { useGroupParam } from "@/lib/param-hooks";
+import { useGetAllParam, useGroupParam } from "@/lib/param-hooks";
 import { useSearchQuery } from "@/lib/search-params";
 import { useNotificationStore } from "@/state/zustand/notification-store";
 
@@ -55,8 +55,8 @@ export default function NamesSection() {
   const searchParams = useSearchParams();
   const { searchQueryString } = useSearchQuery();
   const [showAll, setShowAll] = useState(false);
-  const activeYears = searchParams.getAll('year');
-  const activeNames = searchParams.getAll('name');
+  const names = useGetAllParam('name');
+  const years = useGetAllParam('year');
 
   const toggleFacetValue = (key: 'year' | 'name', value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -203,7 +203,7 @@ export default function NamesSection() {
     <div className="w-full p-3 transition-colors bg-white">
       <div className="mb-3 flex items-center justify-between gap-3">
         <span className="text-base font-semibold">Kjeldeformer</span>
-        <Clickable
+        { (years?.length > 0 || names.length > 0) && <Clickable
           replace
           remove={['year', 'name']}
           add={group ? { group } : {}}
@@ -211,13 +211,13 @@ export default function NamesSection() {
           aria-label="Tøm gruppefilter"
         >
           Tøm
-        </Clickable>
+        </Clickable>}
       </div>
 
       <ul className="relative !mx-0 !py-1 !pr-0 !pl-2" role="list">
         {visibleYears.map((year, index) => {
           const isLast = index === visibleYears.length - 1;
-          const isYearSelected = activeYears.includes(year);
+          const isYearSelected = years.includes(year);
           const namesForYear = namesByYear[year] || [];
 
           return (
@@ -243,7 +243,7 @@ export default function NamesSection() {
                 {namesForYear.length > 0 && (
                   <div className="flex-1 min-w-0 flex flex-wrap gap-2">
                     {namesForYear.map((name) => {
-                      const isNameSelected = activeNames.includes(name);
+                      const isNameSelected = names.includes(name);
                       return (
                         <button
                           type="button"
@@ -269,7 +269,7 @@ export default function NamesSection() {
           <div className="text-sm font-medium text-neutral-700 mb-1.5">Namneformer utan år</div>
           <div className="flex flex-wrap gap-2">
             {namesWithoutYear.map((name) => {
-              const isNameSelected = activeNames.includes(name);
+              const isNameSelected = names.includes(name);
               return (
               <button
                 type="button"

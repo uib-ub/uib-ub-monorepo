@@ -20,16 +20,18 @@ import { GlobalContext } from "@/state/providers/global-provider"
 import { useSearchParams } from "next/navigation"
 import { useContext } from "react"
 import { base64UrlToString } from "./param-utils"
-import type { ReservedSearchParamKey } from "./reserved-param-types"
+import { SPECIAL_CASE_FACETS, type ReservedSearchParamKey } from "./reserved-param-types"
 import { useSearchQuery } from "./search-params"
 
+/** Keys accepted by {@link useGetParam} / {@link useGetAllParam} (reserved params + facet keys that double as URL params). */
+export type ParamHookKey = ReservedSearchParamKey | (typeof SPECIAL_CASE_FACETS)[number]
 
-export const useGetParam = (key: ReservedSearchParamKey) => {
+export const useGetParam = (key: ParamHookKey) => {
     const searchParams = useSearchParams()
     return searchParams.get(key)
 }
 
-export const useGetAllParam = (keys: ReservedSearchParamKey) => {
+export const useGetAllParam = (keys: ParamHookKey) => {
     const searchParams = useSearchParams()
     return searchParams.getAll(keys) as string[]
 }
