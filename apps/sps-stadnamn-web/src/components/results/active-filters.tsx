@@ -17,15 +17,17 @@ export default function ActiveFilters() {
   const perspective = usePerspective()
 
   const fulltextOn = useFulltextOn()
+  const qParam = useQParam()
+  const mode = useMode()
+  const facet = useFacetParam()
+  const options = useOptionsParam()
 
-  const showClearButton = (facetFilters.length + datasetFilters.length + Number(fulltextOn) + Number(useQParam() != null)) > 0
+  const showClearButton =
+    (facetFilters.length + datasetFilters.length + Number(fulltextOn) + Number(qParam != null)) > 0
 
   const removeFilter = (key: string, value: string) => {
     const newSearchParams = new URLSearchParams(searchQuery)
     const values = newSearchParams.getAll(key)
-    const mode = useMode()
-    const facet = useFacetParam()
-    const options = useOptionsParam()
 
     // Remove all values for this key
     newSearchParams.delete(key)

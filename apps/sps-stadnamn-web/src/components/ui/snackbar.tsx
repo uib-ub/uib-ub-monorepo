@@ -134,14 +134,15 @@ export function InfoSnackbar({
 export function TooltipSnackbar({
   message,
   id,
+  persistentDismiss = false,
   className,
   style,
   children
-}: StaticDismissSnackbarProps) {
+}: StyledSnackbarProps) {
   return (
     <Snackbar
       id={id}
-      persistentDismiss={false}
+      persistentDismiss={persistentDismiss}
       className={cn(tooltipSnackbarClass, className)}
       style={style}
       dismissTooltip="Lukk verktøytips"

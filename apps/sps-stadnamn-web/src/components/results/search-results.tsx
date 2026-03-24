@@ -124,7 +124,7 @@ export default function SearchResults() {
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
         </div>
       ) : (
-        <div className={`w-full flex flex-wrap items-center bg-neutral-50 py-2 px-2 gap-2 text-neutral-950 min-w-0 overflow-hidden ${init ? 'border-t border-neutral-200' : ''}`}>
+        <div className={`w-full flex flex-wrap items-center bg-neutral-50 py-2 px-2 xl:gap-y-3 gap-2 text-neutral-950 min-w-0 overflow-hidden ${init ? 'border-t border-neutral-200' : ''}`}>
           
           <div className={`w-full flex ${isMobile ? 'pb-1' : ''}`}> <ResultsHeader /></div>
           {!hideResultsOn && <>

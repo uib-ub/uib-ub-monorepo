@@ -75,7 +75,7 @@ export default function NotificationStack({ className, style }: NotificationStac
         })}
         {topItem.variant === "warning" ? <WarningSnackbar {...snackbarPropsWithPermanentDismiss} /> : null}
         {topItem.variant === "error" ? <ErrorSnackbar {...snackbarProps} /> : null}
-        {topItem.variant === "tooltip" ? <TooltipSnackbar {...snackbarProps} /> : null}
+        {topItem.variant === "tooltip" ? <TooltipSnackbar {...snackbarPropsWithPermanentDismiss} /> : null}
         {!topItem.variant || topItem.variant === "info" ? <InfoSnackbar {...snackbarPropsWithPermanentDismiss} /> : null}
       </div>
     </div>
