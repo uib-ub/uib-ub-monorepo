@@ -5,6 +5,7 @@ import { processHtmlContent } from "./group-utils";
 import { useSearchParams } from "next/navigation";
 import Clickable from "@/components/ui/clickable/clickable";
 import SourceLink from "./source-link";
+import { formatHighlight } from "@/lib/text-utils";
 
 interface ExpandableContentProps {
     text: string;
@@ -13,6 +14,7 @@ interface ExpandableContentProps {
     leadingLabel?: string;
     forceExpanded?: boolean;
     showToggle?: boolean;
+    isHighlight?: boolean;
 }
 
 // Collapses long content by truncating the text itself
@@ -23,6 +25,7 @@ export const ExpandableContent = ({
     leadingLabel,
     forceExpanded,
     showToggle = true,
+    isHighlight = false,
 }: ExpandableContentProps) => {
     const [expanded, setExpanded] = useState(false);
 
@@ -42,7 +45,11 @@ export const ExpandableContent = ({
 
 
     // Only render processed HTML when fully expanded or when content is short
-    const processedText = hasHtmlTags ? processHtmlContent(text, isExpanded || !isLong) : text.replace(/<[^>]*>/g, "");
+    const processedText = isHighlight
+        ? formatHighlight(text)
+        : hasHtmlTags
+            ? processHtmlContent(text, isExpanded || !isLong)
+            : text.replace(/<[^>]*>/g, "");
 
 
 

@@ -301,11 +301,13 @@ export default function ResultCard({
     hasIiif,
     distanceMeters,
     mobilePreview,
+    highlight,
 }: {
     itemId: string | null;
     hasIiif?: boolean;
     distanceMeters?: number | null;
     mobilePreview?: boolean | undefined;
+    highlight?: any;
 }) {
     const { resultCardData, resultCardLoading, resultCardTotal } = useResultCardData(itemId);
     const iiifItems = resultCardData?.iiifItems;
@@ -563,7 +565,7 @@ export default function ResultCard({
                     />
                 )}
                 
-                {textItems?.length > 0 && <TextItemsSection textItems={textItems} />}
+                {textItems?.length > 0 && <TextItemsSection textItems={textItems} highlight={highlight} />}
 
             {!mobilePreview && <>
                 <GroupBottomToolbarMulti groupData={resultCardData} groupTotal={resultCardTotal} />

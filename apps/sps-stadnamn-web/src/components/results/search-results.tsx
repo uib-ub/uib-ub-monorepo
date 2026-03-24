@@ -96,7 +96,7 @@ export default function SearchResults() {
         </div>
       ) : initResultCardData && (
         <div className="relative" key={`init-${initValue}`}>
-          <ResultCard itemId={init} hasIiif={initResultCardData?.iiifItems?.length > 0} mobilePreview={mobilePreview} />
+          <ResultCard itemId={init} highlight={initResultCardData.highlight} hasIiif={initResultCardData?.iiifItems?.length > 0} mobilePreview={mobilePreview} />
         </div>
       ))}
 
@@ -216,6 +216,7 @@ export default function SearchResults() {
                       itemId={itemData.fields.uuid[0]}
                       hasIiif={hasIiif}
                       distanceMeters={itemData.distance}
+                      highlight={itemData.highlight}
                     />
                   );
                 } else {

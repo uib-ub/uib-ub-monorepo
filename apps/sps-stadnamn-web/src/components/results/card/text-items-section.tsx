@@ -3,42 +3,42 @@
 import { useState } from "react";
 import { datasetTitles } from "@/config/metadata-config";
 import { ExpandableContent } from "./expandable-content";
-import SourceLink from "./source-link";
 import Clickable from "@/components/ui/clickable/clickable";
 
 
-export const TextItemsSection = ({ textItems }: { textItems: any[] }) => {
+export const TextItemsSection = ({ textItems, highlight }: { textItems: any[], highlight?: any }) => {
     const [showAll, setShowAll] = useState(false);
-    const [firstItemExpanded, setFirstItemExpanded] = useState(false);
 
     if (!textItems || textItems.length === 0) return null;
 
-    const visibleItems = showAll ? textItems : textItems.slice(0, 1);
     const hasMultipleItems = textItems.length > 1;
+    const highlightedFirstText =
+        typeof highlight === "string"
+            ? highlight
+            : highlight?.["content.html"]?.[0] || highlight?.["content.text"]?.[0];
+    const hasHighlightPreview = Boolean(highlightedFirstText);
+    const hasHighlightedFirstText = Boolean(!showAll && highlightedFirstText);
+
+    const firstVisibleItem =
+        !showAll && highlightedFirstText
+            ? { ...textItems[0], text: highlightedFirstText }
+            : textItems[0];
+
+    const visibleItems = showAll ? textItems : [firstVisibleItem];
+    const hasShowAllControl = hasMultipleItems || hasHighlightPreview;
 
     const handleShowAll = () => {
         setShowAll(true);
-        // Expand the first item when showing all
-        setFirstItemExpanded(true);
     };
 
     return (
         <>
             {visibleItems.map((textItem, index) => {
                 const isFirstItem = index === 0;
-                const isHiddenItem = hasMultipleItems && showAll && index > 0;
-                // For the first item: if there are multiple items and we've clicked "show all", expand it
-                // For hidden items (index > 0 when showAll is true): always show fully expanded (no shortening)
-                const shouldForceExpand = hasMultipleItems && showAll && isFirstItem
-                    ? firstItemExpanded
-                    : isHiddenItem
-                        ? true
-                        : undefined;
-                // Show "Vis heile" toggle only if there's a single item
-                // If there are multiple items, don't show toggle on first item
-                const showToggle = !hasMultipleItems;
+                const shouldForceExpand = showAll ? true : undefined;
+                const showToggle = !hasShowAllControl;
 
-                const rawContent = textItem.text;
+                const rawContent = typeof textItem.text === "string" ? textItem.text : "";
                 const hasHtmlTags = /<[^>]+>/.test(rawContent);
                 const text = hasHtmlTags ? rawContent.replace(/<\/?p>/g, "") : rawContent;
 
@@ -55,16 +55,17 @@ export const TextItemsSection = ({ textItems }: { textItems: any[] }) => {
                     <div className="px-3 max-w-[calc(100%-1rem)]" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
                         <ExpandableContent
                             text={text}
-                            hasHtmlTags={false}
+                            hasHtmlTags={hasHtmlTags}
                             links={links}
                             leadingLabel={leadingLabel}
                             forceExpanded={shouldForceExpand}
                             showToggle={showToggle}
+                            isHighlight={hasHighlightedFirstText && isFirstItem}
                         />
                     </div>
                 );
             })}
-            {hasMultipleItems && (
+            {hasShowAllControl && (
                 <Clickable
                     type="button"
                     className="mx-3 mb-3 flex items-center gap-1 text-neutral-900 text-sm"
@@ -72,10 +73,15 @@ export const TextItemsSection = ({ textItems }: { textItems: any[] }) => {
                     aria-controls={`text-items-${textItems.length}`}
                     onClick={showAll ? () => {
                         setShowAll(false);
-                        setFirstItemExpanded(false);
                     } : handleShowAll}
                 >
-                    {showAll ? <>Vis færre</> : <>Vis fleire (+{textItems.length - 1})</>}
+                    {showAll ? (
+                        <>Vis mindre</>
+                    ) : hasMultipleItems ? (
+                        <>Vis meir (+{textItems.length - 1})</>
+                    ) : (
+                        <>Vis meir</>
+                    )}
                 </Clickable>
             )}
         </>
