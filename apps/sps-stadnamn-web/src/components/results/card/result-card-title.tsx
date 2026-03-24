@@ -27,10 +27,10 @@ export default function ResultCardTitle({
     const safeAdditionalLabels = Array.isArray(additionalLabels)
         ? (additionalLabels.filter(Boolean) as string[])
         : [];
-    const showAllAdditionalLabels = safeAdditionalLabels.length <= 3;
+    const showAllAdditionalLabels = safeAdditionalLabels.length <= 4;
     const visibleAdditionalLabels = showAllAdditionalLabels
         ? safeAdditionalLabels
-        : safeAdditionalLabels.slice(0, 2);
+        : safeAdditionalLabels.slice(0, 3);
     const remainingAdditionalLabelsCount = showAllAdditionalLabels
         ? 0
         : safeAdditionalLabels.length - visibleAdditionalLabels.length;
@@ -51,7 +51,7 @@ export default function ResultCardTitle({
             ))}
             {remainingAdditionalLabelsCount > 0 && (
                 <span className={`text-neutral-800 whitespace-nowrap ${mobilePreview ? 'text-sm' : 'text-base'}`}>
-                    + {remainingAdditionalLabelsCount} andre
+                    + {remainingAdditionalLabelsCount}
                 </span>
             )}
         </span>
