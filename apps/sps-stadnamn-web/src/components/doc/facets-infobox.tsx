@@ -23,14 +23,12 @@ export default function FacetsInfobox({
   docDataset: string | null;
   filteredFacets: any[];
 }) {
+  const currentDatasetTag = useDatasetTagParam();
   if (!docDataset) return null;
 
   const buildSearchUrl = (params: Record<string, string>) => {
     const urlParams = new URLSearchParams();
-
-
     // Preserve datasetTag if it exists in current URL
-    const currentDatasetTag = useDatasetTagParam();
     if (currentDatasetTag) {
       urlParams.set('datasetTag', currentDatasetTag);
     }

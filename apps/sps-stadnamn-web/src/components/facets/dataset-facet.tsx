@@ -140,7 +140,7 @@ export default function DatasetFacet() {
         </div>}
 
       </div>
-      { mode == 'map' && !useTreeParam() && <FacetToolbar />}
+      { mode == 'map' && !isCadastral && <FacetToolbar />}
 
 
 
