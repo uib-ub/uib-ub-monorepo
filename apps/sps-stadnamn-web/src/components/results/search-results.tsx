@@ -109,7 +109,7 @@ export default function SearchResults() {
       ) : (
         <div className={`w-full flex flex-wrap items-center bg-neutral-50 py-2 px-2 gap-2 text-neutral-950 min-w-0 overflow-hidden ${init ? 'border-t border-neutral-200' : ''}`}>
           
-          <div className="w-full flex"> <ResultsHeader /></div>
+          <div className={`w-full flex ${isMobile ? 'pb-1' : ''}`}> <ResultsHeader /></div>
           {!hideResultsOn && <>
           {qParam ? (
             <Clickable
@@ -157,7 +157,8 @@ export default function SearchResults() {
 
 
               let body = null
-              const hasMoreResults = listLoadedCount && listLoadedCount < resultCount
+              const targetResultCount = init ? resultCountExceptInit : resultCount
+              const hasMoreResults = listLoadedCount && listLoadedCount < targetResultCount
               const nextButtonSlotIndex = resultLimitNumber ? resultLimitNumber - 1 : (init ? FIRST_VISIBLE_RESULTS : STARTING_BATCH_SIZE)
 
               //if (i > nextButtonSlotIndex) {
