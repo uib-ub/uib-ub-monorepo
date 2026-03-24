@@ -214,33 +214,9 @@ export function extractFacets(request: Request) {
       const fieldName = `${key}${(baseAllConfig[key as keyof typeof baseAllConfig]?.keyword ?? false) ? '' : '.keyword'}`;
       const facetOperator = baseAllConfig[key as keyof typeof baseAllConfig]?.facetOperator || 'OR';
 
-      if (key == 'group') {
-        termFilters.push({
-          "bool": {
-            "should": values.map(value => ({
-              "term": { "group.id": base64UrlToString(value) }
-            })),
-            "minimum_should_match": 1
-          }
-        });
-      }
-
-      // Handle 'within' field - try both with and without .keyword suffix
-      // since different datasets may have different mappings
-      else if (key == 'within') {
-        termFilters.push({
-          "bool": {
-            "should": filteredValues.flatMap(value => [
-              { "term": { "within": value } },
-              { "term": { "within.keyword": value } }
-            ]),
-            "minimum_should_match": 1
-          }
-        });
-      }
 
       // Handle nested properties
-      else if (key.includes('__')) {
+      if (key.includes('__')) {
         const [base, nested] = key.split('__');
         termFilters.push({
           "nested": {
