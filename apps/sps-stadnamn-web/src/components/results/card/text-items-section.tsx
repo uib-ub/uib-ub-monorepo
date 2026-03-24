@@ -16,7 +16,12 @@ export const TextItemsSection = ({ textItems, highlight }: { textItems: any[], h
         typeof highlight === "string"
             ? highlight
             : highlight?.["content.html"]?.[0] || highlight?.["content.text"]?.[0];
+    const originalFirstText = typeof textItems[0]?.text === "string" ? textItems[0].text : "";
+    const stripHtml = (value: string) => value.replace(/<[^>]*>/g, "");
     const hasHighlightPreview = Boolean(highlightedFirstText);
+    const shouldShowAllForHighlight =
+        hasHighlightPreview &&
+        stripHtml(originalFirstText).length > stripHtml(highlightedFirstText).length;
     const hasHighlightedFirstText = Boolean(!showAll && highlightedFirstText);
 
     const firstVisibleItem =
@@ -25,7 +30,7 @@ export const TextItemsSection = ({ textItems, highlight }: { textItems: any[], h
             : textItems[0];
 
     const visibleItems = showAll ? textItems : [firstVisibleItem];
-    const hasShowAllControl = hasMultipleItems || hasHighlightPreview;
+    const hasShowAllControl = hasMultipleItems || shouldShowAllForHighlight;
 
     const handleShowAll = () => {
         setShowAll(true);
