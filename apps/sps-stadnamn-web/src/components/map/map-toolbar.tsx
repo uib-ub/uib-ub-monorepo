@@ -20,7 +20,6 @@ import { useSearchQuery } from "@/lib/search-params"
 import Clickable from "../ui/clickable/clickable"
 import NotificationStack from "../ui/notification-stack"
 import { cn } from "@/lib/utils"
-import ClickableIcon from "../ui/clickable/clickable-icon"
 
 export function FilterButton() {
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
@@ -40,6 +39,7 @@ export function FilterButton() {
             add={{ options: optionsOn ? null : 'on' }}
             remove={isMobile ? ['mapSettings'] : []}
             isActive={optionsOn}
+            badgeVariant={snappedPosition === "bottom" ? "compact" : "default"}
             onClick={() => {
                 !optionsOn && snappedPosition !== 'middle' && setSnappedPosition('middle')
             }}
