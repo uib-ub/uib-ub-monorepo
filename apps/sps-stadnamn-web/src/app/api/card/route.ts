@@ -138,10 +138,34 @@ export async function GET(request: Request) {
   const datasets: string[] = []
   const seenTextIds = new Set<string>()
   const seenAudioFiles = new Set<string>()
-  const additionalLabels = new Set<string>()
+  const additionalLabelsByKey = new Map<string, string>()
   const sosi = new Set<string>()
   const topHit = data?.hits?.hits?.[0]
   let location = topHit?.fields?.['location']?.[0]
+
+  const labelKey = (label: string) => label.trim().toLowerCase()
+
+  const isAllUppercase = (label: string) => {
+    // Only treat it as "all uppercase" if it actually contains letters.
+    const hasLetters = /[A-Za-zÆØÅæøå]/.test(label)
+    return hasLetters && label === label.toUpperCase()
+  }
+
+  const pickPreferredLabel = (a: string, b: string) => {
+    const aUpper = isAllUppercase(a)
+    const bUpper = isAllUppercase(b)
+    if (aUpper !== bUpper) return aUpper ? b : a
+    // Stable fallback (keep existing) when both have same "upper-ness"
+    return a
+  }
+
+  const addAdditionalLabel = (label: string | undefined) => {
+    const trimmed = (label || '').trim()
+    if (!trimmed) return
+    const key = labelKey(trimmed)
+    const existing = additionalLabelsByKey.get(key)
+    additionalLabelsByKey.set(key, existing ? pickPreferredLabel(existing, trimmed) : trimmed)
+  }
 
   const innerHitsContainer = topHit?.inner_hits?.items?.hits
   const innerHits: any[] =
@@ -169,13 +193,13 @@ export async function GET(request: Request) {
       location = hit.fields?.['location']?.[0]
     }
 
-    if (hit.fields?.['label']?.[0]) additionalLabels.add(hit.fields?.['label']?.[0])
+    addAdditionalLabel(hit.fields?.['label']?.[0])
 
     hit.fields?.['attestations.label']?.forEach((label: string) => {
-        additionalLabels.add(label)
+        addAdditionalLabel(label)
       })
-    hit.fields?.['altLabels']?.forEach((label: string) => {
-      additionalLabels.add(label)
+    hit.fields?.['altLabels.label']?.forEach((label: string) => {
+      addAdditionalLabel(label)
     })
 
     if (hit.fields?.['sosi']?.[0]) sosi.add(hit.fields?.['sosi']?.[0])
@@ -226,15 +250,24 @@ export async function GET(request: Request) {
 
   const topFields = data?.hits?.hits?.[0]?.fields || {};
 
+  const rawMainLabel =
+    (isSourceView ? topFields["label"]?.[0] : (topFields["group.label"]?.[0] || topFields?.["label"]?.[0])) || ''
+
+  // Ensure casing variants (e.g. "BERG" vs "Berg") are deduped and that the
+  // best-cased one is preferred both in additional labels and as the main label.
+  addAdditionalLabel(rawMainLabel)
+  const mainLabelKey = rawMainLabel ? labelKey(rawMainLabel) : ''
+  const mainLabel = (mainLabelKey ? additionalLabelsByKey.get(mainLabelKey) : undefined) || rawMainLabel
+
   const outputData: Partial<OutputData> = {
     id: isSourceView ? topFields["uuid"]?.[0] : topFields["group.id"]?.[0],
-    label: isSourceView ? topFields["label"]?.[0] : (topFields["group.label"]?.[0] || topFields?.["label"]?.[0]),
+    label: mainLabel || undefined,
     total: data?.hits?.total?.value,
     fields: topFields,
   };
 
-  // Remove first label from additional labels
-  additionalLabels.delete(outputData.label || '')
+  // Remove main label from additional labels (case-insensitive).
+  if (outputData.label) additionalLabelsByKey.delete(labelKey(outputData.label))
 
   outputData.fields = {
     ...outputData.fields,
@@ -252,7 +285,7 @@ export async function GET(request: Request) {
   if (textItems.length > 0) outputData.textItems = textItems;
   if (audioItems.length > 0) outputData.audioItems = audioItems;
   if (datasets.length > 0) outputData.datasets = datasets;
-  if (additionalLabels.size > 0) outputData.additionalLabels = Array.from(additionalLabels);
+  if (additionalLabelsByKey.size > 0) outputData.additionalLabels = Array.from(additionalLabelsByKey.values());
 
 
   return Response.json(outputData, { status: status })
