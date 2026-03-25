@@ -112,7 +112,7 @@ export default function MapToolbar() {
         if (point && !init) {
             addNotification({
                 id: "point-hint",
-                message: isMobile ? "Trykk og hald i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet",
+                message: isMobile ? "Trykk og hold i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet",
                 variant: "tooltip",
                 permanentDismiss: true,
             })

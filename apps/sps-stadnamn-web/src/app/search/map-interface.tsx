@@ -323,21 +323,33 @@ export default function MapInterface() {
                     {/* Map settings should be available even when tree view is active */}
                     {mapSettingsOn ? (
                         <>
-                            <div className={`w-full sticky flex items-center pl-3 ${isMobile ? 'h-8' : 'h-12'} xl:px-0 gap-2`} id="map-settings-panel">
-                                <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-base xl:text-xl text-neutral-900 xl:px-4">
-                                    {overlaySelectorOn ? 'Kartlag' : 'Kartinnstillingar'}
-                                </div>
-                                <div className="flex items-center gap-1 ml-auto">
-                                    {overlaySelectorOn ? (
-                                        <Clickable className="flex items-center gap-1 px-2" label="Tilbake" remove={["overlaySelector"]}>
-                                            <PiCaretLeftBold className="text-black text-lg" />
-                                            Tilbake
-                                        </Clickable>
-                                    ) : (
-                                        <ClickableIcon label="Lukk" className="p-2" remove={["mapSettings", "overlaySelector"]}>
-                                            <PiX className="text-black text-3xl" />
-                                        </ClickableIcon>
-                                    )}
+                            <div
+                                id="map-settings-panel"
+                                className="w-full sticky flex flex-wrap items-center bg-neutral-50 py-2 px-2 xl:gap-y-3 gap-2 text-neutral-950 min-w-0 overflow-hidden border-b border-neutral-200"
+                            >
+                                <div className="w-full flex">
+                                    <div className="relative flex items-center gap-2 xl:px-1 w-full">
+                                        <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-sm xl:text-lg text-neutral-900 font-sans pr-10">
+                                            {overlaySelectorOn ? 'Kartlag' : 'Kartinnstillingar'}
+                                        </div>
+
+                                        {overlaySelectorOn ? (
+                                            <div className="ml-auto">
+                                                <Clickable className="flex items-center gap-2" label="Tilbake" remove={["overlaySelector"]}>
+                                                    <PiCaretLeftBold className="text-primary-700" />
+                                                    Tilbake
+                                                </Clickable>
+                                            </div>
+                                        ) : (
+                                            <ClickableIcon
+                                                label="Lukk"
+                                                className="absolute right-0 inset-y-0 flex items-center justify-center"
+                                                remove={["mapSettings", "overlaySelector"]}
+                                            >
+                                                <PiX className="text-neutral-800 text-3xl lg:text-2xl" aria-hidden="true" />
+                                            </ClickableIcon>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                             <MapSettings />

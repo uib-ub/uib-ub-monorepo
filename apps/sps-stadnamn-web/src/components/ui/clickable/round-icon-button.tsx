@@ -73,7 +73,23 @@ export function RoundButton({ children, className, ...rest }: { children: React.
     );
 }
 
-export function RoundIconClickableWithBadge({ children, label, count, isActive, className, ...rest }: { children: React.ReactNode, label: string, count: number, isActive: boolean, className?: string, [x: string]: any }) {
+export function RoundIconClickableWithBadge({
+    children,
+    label,
+    count,
+    isActive,
+    className,
+    badgeVariant = "default",
+    ...rest
+}: {
+    children: React.ReactNode
+    label: string
+    count: number
+    isActive: boolean
+    className?: string
+    badgeVariant?: "default" | "compact"
+    [x: string]: any
+}) {
     return (
         <RoundIconClickable label={label} className={className} {...rest}>
             {children}
@@ -81,10 +97,12 @@ export function RoundIconClickableWithBadge({ children, label, count, isActive, 
                 <TitleBadge
                     count={count}
                     className={twMerge(
-                        "text-xs absolute -top-1 -right-1 bg-white shadow-md",
-                        isActive
-                            ? "border border-accent-800 text-accent-800"
-                            : "border border-primary-700 text-primary-700",
+                        // Default keeps existing (large button) placement unchanged.
+                        // Compact adjusts offsets for the reduced-size variant.
+                        badgeVariant === "compact"
+                            ? "text-xs absolute top-0 right-0 -translate-y-1/3 translate-x-1/3 bg-white text-neutral-900 border border-neutral-300 shadow-none"
+                            : "text-xs absolute top-0 right-0 -translate-y-1/6 translate-x-1/6 bg-white text-neutral-900 border border-neutral-300 shadow-none",
+                        isActive ? "border-neutral-400" : "",
                     )}
                 />
             )}

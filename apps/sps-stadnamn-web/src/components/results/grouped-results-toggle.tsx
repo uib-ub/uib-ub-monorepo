@@ -1,19 +1,15 @@
 'use client'
 
 import { useContext, useEffect, useRef } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
 import { GlobalContext } from "@/state/providers/global-provider"
 import { PiCaretLeftBold, PiCaretRightBold, PiX } from "react-icons/pi"
 import Clickable from "@/components/ui/clickable/clickable"
 import { useInitParam, useSourceViewOn, useGroupParam, useCenterParam, useZoomParam, useQParam, usePointParam, useFulltextOn, useNoGeoOn } from "@/lib/param-hooks"
 import ClickableIcon from "../ui/clickable/clickable-icon"
 import { useSessionStore } from "@/state/zustand/session-store"
-import DynamicClickable from "../ui/clickable/dynamic-clickable"
 
 export default function GroupedResultsToggle() {
     const { scrollableContentRef } = useContext(GlobalContext)
-    const router = useRouter()
-    const searchParams = useSearchParams()
     const init = useInitParam()
     const group = useGroupParam()
     const sourceViewOn = useSourceViewOn()
@@ -54,11 +50,17 @@ export default function GroupedResultsToggle() {
     }
 
     return (
-        <div className="flex items-center gap-2 text-sm text-neutral-900">
-            {(group && sourceViewResetUrl) ? <Clickable className="flex items-center gap-2" href={sourceViewResetUrl} onClick={handleCloseGroup}>
-                <PiCaretLeftBold aria-hidden="true" className="text-primary-700"/>
-                Tilbake
-            </Clickable> :  sourceViewOn ? <Clickable className="flex items-center gap-2" only={{ q, center, zoom, point, init: group, fulltext: fulltextOn ? 'on' : null, noGeo: noGeoOn ? 'on' : null}}>
+        <div className="relative flex items-center gap-2 text-sm text-neutral-900">
+            {(group && sourceViewResetUrl) ? (
+                <ClickableIcon
+                    className="absolute right-0 inset-y-0 flex items-center justify-center"
+                    href={sourceViewResetUrl}
+                    onClick={handleCloseGroup}
+                    label="Tilbake"
+                >
+                    <PiX aria-hidden="true" className="text-3xl lg:text-2xl text-neutral-800" />
+                </ClickableIcon>
+            ) : sourceViewOn ? <Clickable className="flex items-center gap-2" only={{ q, center, zoom, point, init: group, fulltext: fulltextOn ? 'on' : null, noGeo: noGeoOn ? 'on' : null}}>
             <PiCaretLeftBold aria-hidden="true" className="text-primary-700"/>{(group && group == init) ? 'Gruppe' : 'Gruppert søk'}
             
             </Clickable>
