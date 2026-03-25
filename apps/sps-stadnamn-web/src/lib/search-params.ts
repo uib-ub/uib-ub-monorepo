@@ -84,9 +84,9 @@ export function useSearchQuery() {
     
 
     // Params that aren't considered filters
+    // Fulltext is silently enabled when a group is selected
 
-
-    if (fulltextOn && !tree && qParam) {
+    if ((fulltextOn || group) && !tree && qParam) {
         searchQuery.set('fulltext', 'on')
     }
 
