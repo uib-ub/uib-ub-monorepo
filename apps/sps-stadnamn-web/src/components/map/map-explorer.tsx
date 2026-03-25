@@ -15,6 +15,7 @@ import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useMapSettings } from '@/state/zustand/persistent-map-settings';
+import { useNotificationStore } from "@/state/zustand/notification-store";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { useQueries } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
@@ -685,6 +686,7 @@ export default function MapExplorer() {
 
         function EventHandlers() {
           const map = useMap();
+          const dismissNotification = useNotificationStore((s) => s.dismissNotification);
           // In case the map remounts, ensure panes exist.
           useEffect(() => {
             ensureTreeOverlayPanes(map)
@@ -700,6 +702,8 @@ export default function MapExplorer() {
 
             contextmenu: (event: any) => {
               const point = event.latlng
+              // User actively chose a new point; hide the "how to move point" hint.
+              dismissNotification("point-hint", true)
 
               const newParams = new URLSearchParams(searchParams)
               newParams.delete('group')
