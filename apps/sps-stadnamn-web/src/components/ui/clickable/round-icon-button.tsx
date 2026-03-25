@@ -80,7 +80,12 @@ export function RoundIconClickableWithBadge({ children, label, count, isActive, 
             {count > 0 && (
                 <TitleBadge
                     count={count}
-                    className={`text-xs absolute bottom-1.5 right-1.5 ${isActive ? 'bg-white border border-accent-800 text-accent-800' : 'bg-primary-700 text-white'}`}
+                    className={twMerge(
+                        "text-xs absolute -top-1 -right-1 bg-white shadow-md",
+                        isActive
+                            ? "border border-accent-800 text-accent-800"
+                            : "border border-primary-700 text-primary-700",
+                    )}
                 />
             )}
         </RoundIconClickable>
