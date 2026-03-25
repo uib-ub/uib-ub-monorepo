@@ -25,12 +25,14 @@ function variantStackShellClass(variant?: NotificationItem["variant"]) {
 type NotificationStackProps = {
   className?: string;
   style?: CSSProperties;
+  /** When true, show only the front snackbar (no layered shells / offset transforms). */
+  disableStackEffect?: boolean;
 };
 
-export default function NotificationStack({ className, style }: NotificationStackProps) {
+export default function NotificationStack({ className, style, disableStackEffect }: NotificationStackProps) {
   const notifications = useNotificationStore((s) => s.notifications);
   const topItem = notifications[0];
-  const stackDepth = notifications.length - 1;
+  const stackDepth = disableStackEffect ? 0 : notifications.length - 1;
 
   if (!topItem) {
     return null;
@@ -45,6 +47,8 @@ export default function NotificationStack({ className, style }: NotificationStac
     style: stackTransform,
     id: topItem.id,
     message: topItem.message,
+    title: topItem.title,
+    link: topItem.link,
   };
   const snackbarPropsWithPermanentDismiss = {
     ...snackbarProps,
@@ -52,9 +56,9 @@ export default function NotificationStack({ className, style }: NotificationStac
   };
 
   return (
-    <div className={className} style={style}>
-      <div className="relative w-full max-w-[80%]">
-        {Array.from({ length: stackDepth }, (_, i) => {
+    <div className={className} style={style} data-notification-stack="true">
+      <div className="relative w-full max-w-full xl:max-w-[calc(100%-2rem)]">
+        {!disableStackEffect && Array.from({ length: stackDepth }, (_, i) => {
           const indexInStack = notifications.length - 1 - i;
           const item = notifications[indexInStack]!;
           const step = notifications.length - 1 - indexInStack;
@@ -64,7 +68,7 @@ export default function NotificationStack({ className, style }: NotificationStac
               key={item.id}
               aria-hidden="true"
               className={cn(
-                "pointer-events-none absolute inset-0 z-0 rounded-md min-h-12 shadow-md",
+                "pointer-events-none absolute inset-0 z-0 rounded-none lg:rounded-md min-h-14 lg:min-h-12 shadow-sm",
                 variantStackShellClass(item.variant)
               )}
               style={{
@@ -73,10 +77,18 @@ export default function NotificationStack({ className, style }: NotificationStac
             />
           );
         })}
-        {topItem.variant === "warning" ? <WarningSnackbar {...snackbarPropsWithPermanentDismiss} /> : null}
-        {topItem.variant === "error" ? <ErrorSnackbar {...snackbarProps} /> : null}
-        {topItem.variant === "tooltip" ? <TooltipSnackbar {...snackbarPropsWithPermanentDismiss} /> : null}
-        {!topItem.variant || topItem.variant === "info" ? <InfoSnackbar {...snackbarPropsWithPermanentDismiss} /> : null}
+        {topItem.variant === "warning" ? (
+          <WarningSnackbar {...snackbarPropsWithPermanentDismiss}>{topItem.details}</WarningSnackbar>
+        ) : null}
+        {topItem.variant === "error" ? (
+          <ErrorSnackbar {...snackbarProps}>{topItem.details}</ErrorSnackbar>
+        ) : null}
+        {topItem.variant === "tooltip" ? (
+          <TooltipSnackbar {...snackbarPropsWithPermanentDismiss}>{topItem.details}</TooltipSnackbar>
+        ) : null}
+        {!topItem.variant || topItem.variant === "info" ? (
+          <InfoSnackbar {...snackbarPropsWithPermanentDismiss}>{topItem.details}</InfoSnackbar>
+        ) : null}
       </div>
     </div>
   );

@@ -45,7 +45,7 @@ export default async function Home() {
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
     <input 
       id="search_input" 
-      className="flex-1 rounded-lg h-14 lg:h-12 border border-gray-300 text-lg lg:text-base px-4 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all" 
+      className="flex-1 rounded-lg h-14 bg-white lg:h-12 border border-gray-300 text-lg lg:text-base px-4 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all" 
       name="q" 
       type="text"
     />

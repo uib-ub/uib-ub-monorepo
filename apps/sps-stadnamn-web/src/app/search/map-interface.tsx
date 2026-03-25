@@ -274,21 +274,26 @@ export default function MapInterface() {
 
                     {!tableOptions && !facet && (sourceView || mode == 'table') && (
                         <>
-                            {optionsOn && (
-                                <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
-                                    <div className="flex items-center gap-1 xl:px-1 w-full">
-                                        <div id={isMobile ? 'drawer-title' : 'left-title'} className={`${isMobile ? 'sr-only' : 'text-base xl:text-lg text-neutral-900 font-sans'}`}>
-                                            Filter
+                            {optionsOn &&
+                                (isMobile ? (
+                                    <span id="drawer-title" className="sr-only">
+                                        Filter
+                                    </span>
+                                ) : (
+                                    <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
+                                        <div className="flex items-center gap-1 xl:px-1 w-full">
+                                            <div id="left-title" className="text-base xl:text-lg text-neutral-900 font-sans">
+                                                Filter
+                                            </div>
+                                            {filterCount ? (
+                                                <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} />
+                                            ) : null}
+                                            <ClickableIcon className="ml-auto" label="Lukk" remove={["options"]}>
+                                                <PiX className="text-black text-3xl" />
+                                            </ClickableIcon>
                                         </div>
-                                        {filterCount ? (
-                                            <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} />
-                                        ) : null}
-                                        {!isMobile && <ClickableIcon className="ml-auto" label="Lukk" remove={["options"]}>
-                                            <PiX className="text-black text-3xl" />
-                                        </ClickableIcon>}
                                     </div>
-                                </div>
-                            )}
+                                ))}
 
                             <div id="options-panel" className="flex flex-col gap-2">
                                 {group && <NamesSection />}

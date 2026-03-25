@@ -426,13 +426,10 @@ export default function ResultCard({
                                 if (snappedPosition == 'top') setSnappedPosition("bottom");
                             }}
 
-                            className={`btn btn-outline rounded-full text-neutral-900 ${mobilePreview ? 'p-1' : 'p-2'}`}
+                            className={`btn btn-outline rounded-full text-neutral-900 p-2`}
                         >
-                            <PiXBold aria-hidden="true" className={`${mobilePreview ? 'text-base' : 'text-lg'} text-neutral-800`} />
+                            <PiXBold aria-hidden="true" className={`${'text-lg'} text-neutral-800`} />
                         </ClickableIcon>
-                        {mobilePreview && Array.isArray(audioItems) && audioItems.length > 0 && (
-                            <AudioPreviewButtons recordings={audioItems} />
-                        )}
 
                     </div>
                 )}
@@ -448,8 +445,10 @@ export default function ResultCard({
                             cadastrePrefix=""
                             mobilePreview={mobilePreview}
                             additionalLabels={resultCardData?.additionalLabels as string[] | undefined ?? []}
+                            audioItems={audioItems}
                         />
                     </div>
+                    
 
                     {groupAdmText && (resultCardTotal ?? 0) > 1 && (
                         <div className="text-sm text-neutral-800 flex items-center gap-1 flex-wrap">

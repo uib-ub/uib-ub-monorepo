@@ -67,7 +67,7 @@
      };
  
      return (
-         <div className={`flex gap-2 flex-shrink-0 ${className ?? ""}`}>
+         <div className={`flex gap-2 flex-shrink-0 self-center px-2 ${className ?? ""}`}>
              {safeRecordings.map((recording, index) => {
                  const id = String(recording.uuid || `${recording.file}-${index}`);
                  const isPlaying = playingPreviewId === id;

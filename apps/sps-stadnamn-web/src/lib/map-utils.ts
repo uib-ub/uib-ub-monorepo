@@ -19,6 +19,49 @@ export const MAP_DRAWER_BOTTOM_HEIGHT_REM = 8
 export const MAP_DRAWER_MAX_HEIGHT_SVH = 60
 export const MAP_DRAWER_TOP_SUBTRACT_REM = 4
 
+/**
+ * Distance from the mobile search chrome wrapper’s top to the bottom of the search row.
+ * On mobile, menu + `#search-form` are both `h-14` with no `top-2` offset on the form
+ * (see search-form.tsx). Used to stack UI flush under the search row.
+ */
+export const MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM = 3.5
+
+/** Space above the fixed “Vis resultat” strip (`bottom-2` + `p-3` + `h-12`). */
+export const MOBILE_RESULTS_FOOTER_CLEARANCE_REM = 5.5
+
+export type MobileDrawerSnap = 'bottom' | 'middle' | 'top'
+
+/**
+ * `top` for the search chrome wrapper when `position: absolute` — keep in sync with search-form.tsx.
+ */
+export function mobileSearchChromeWrapperTopStyle(
+  currentPosition: number,
+  snappedPosition: MobileDrawerSnap,
+): string | undefined {
+  if (currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM) {
+    return undefined
+  }
+  if (snappedPosition === 'top') {
+    return '0rem'
+  }
+  return `calc(${-currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem * (1 - max(0, min(1, (${currentPosition}rem - 60svh) / (100svh - 60svh - 8rem)))))`
+}
+
+/**
+ * `top` for layers that should sit directly under the mobile search row (e.g. notification stack)
+ * while the search header moves with the drawer.
+ */
+export function mobileStackBelowSearchChromeTopStyle(
+  currentPosition: number,
+  snappedPosition: MobileDrawerSnap,
+): string {
+  const wrapperTop = mobileSearchChromeWrapperTopStyle(currentPosition, snappedPosition)
+  if (wrapperTop === undefined || wrapperTop === '0rem') {
+    return `${MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM}rem`
+  }
+  return `calc(${-currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem * (1 - max(0, min(1, (${currentPosition}rem - 60svh) / (100svh - 60svh - 8rem)))) + ${MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM}rem)`
+}
+
 // Web-Mercator helpers (Leaflet's default CRS: EPSG:3857)
 const R = 6378137; // Earth radius used by Spherical Mercator (meters)
 const D2R = Math.PI / 180;

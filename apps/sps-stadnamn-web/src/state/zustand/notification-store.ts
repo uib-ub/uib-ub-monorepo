@@ -4,6 +4,12 @@ import { create } from 'zustand'
 export type NotificationItem = {
   id: string
   message: ReactNode
+  /** One-line row when set with `details`; row shows `title ?? message`. */
+  title?: ReactNode
+  /** Expandable body (opens under «Vis detaljer»). */
+  details?: ReactNode
+  /** Primary action in the row, in place of «Vis detaljer» (no expand panel). */
+  link?: ReactNode
   permanentDismiss?: boolean
   variant?: 'info' | 'warning' | 'error' | 'tooltip'
 }

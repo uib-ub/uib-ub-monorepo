@@ -155,9 +155,11 @@ export default function NamesSection() {
 
       // Dataset-level labels use dataset year.
       pushLabelYearPair(toName(source.label), datasetYear);
+
       source.altLabels?.forEach((altLabel) => {
         pushLabelYearPair(toName(altLabel), datasetYear);
       });
+    
 
       // Attestations use their own year, not dataset year.
       source.attestations?.forEach((attestation) => {
@@ -185,7 +187,9 @@ export default function NamesSection() {
     addNotification({
       id: "group-label-filter-info",
       variant: "warning",
-      message: "Filtreringsalternativa for kjeldeformer er ikkje naudsynlegvis komplette, og kan innehalde ord som eigentleg ikkje er namn.",
+      message: "Kjeldeformer kan innehalde feil",
+      details:
+        "Filtreringsalternativa for kjeldeformer er ikkje naudsynlegvis komplette, og dei kan innehalde ord som eigentleg ikkje er namn. Det er berre mein som eit verktøy for å filtrere namnegrupper med mange kjelder, og kvar namneform visast på det tidlegaste året vi har fått henta ut frå datasetta.",
       permanentDismiss: true,
     });
 
@@ -201,7 +205,7 @@ export default function NamesSection() {
 
   return (
     <div className="w-full p-3 transition-colors bg-white">
-      <div className="mb-3 flex items-center justify-between gap-3">
+      <div className="mb-3 flex items-center justify-between gap-3 h-8">
         <span className="text-base font-semibold">Kjeldeformer</span>
         { (years?.length > 0 || names.length > 0) && <Clickable
           replace
