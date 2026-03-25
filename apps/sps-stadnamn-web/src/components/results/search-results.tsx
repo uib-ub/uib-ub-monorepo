@@ -120,7 +120,7 @@ export default function SearchResults() {
         <div className={`w-full flex flex-wrap items-center bg-neutral-50 py-2 px-2 gap-y-3 gap-x-2 text-neutral-950 min-w-0 overflow-hidden ${init ? 'border-t border-neutral-200' : ''}`}>
           
           <div className={`w-full flex`}> <ResultsHeader /></div>
-          {!hideResultsOn && <>
+          {!hideResultsOn && !group && (sourceViewOn || point || init) && <>
           {qParam ? (
             <Clickable
               remove={['q', 'searchSort']}

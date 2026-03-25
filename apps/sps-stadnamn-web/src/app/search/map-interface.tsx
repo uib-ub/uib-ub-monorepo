@@ -295,7 +295,7 @@ export default function MapInterface() {
                                     </div>
                                 ))}
 
-                            <div id="options-panel" className="flex flex-col gap-2">
+                            <div id="options-panel" className="flex flex-col divide-y divide-neutral-200">
                                 {group && <NamesSection />}
                                 <FacetSection />
                                 {isMobile && <ShowResultsButton />}
