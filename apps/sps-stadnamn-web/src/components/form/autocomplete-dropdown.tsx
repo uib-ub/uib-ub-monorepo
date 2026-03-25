@@ -14,6 +14,8 @@ import { PiMagnifyingGlass, PiMapPinFill, PiWall } from 'react-icons/pi';
 
 export type AutocompleteSelection = {
     inputString: string;
+    /** When set, submit this as `q` without changing the input value. */
+    submitQ?: string;
     group: string | null;
     coordinates?: [number, number];
     clearGroup?: boolean;
@@ -630,7 +632,8 @@ export default function AutocompleteDropdown({
                                 ];
                             if (opt?.value) {
                                 onSelect({
-                                    inputString: opt.value,
+                                    inputString: inputState,
+                                    submitQ: opt.value,
                                     group: null,
                                     coordinates: undefined,
                                     forceFulltext: false,
@@ -876,7 +879,8 @@ export default function AutocompleteDropdown({
                                 onMouseDown={() => {
                                     if (!opt.value) return;
                                     onSelect({
-                                        inputString: opt.value,
+                                        inputString: inputState,
+                                        submitQ: opt.value,
                                         group: null,
                                         coordinates: undefined,
                                         forceFulltext: false,

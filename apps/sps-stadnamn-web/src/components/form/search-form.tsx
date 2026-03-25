@@ -42,6 +42,7 @@ export default function SearchForm() {
 
     const input = useRef<HTMLInputElement | null>(null)
     const form = useRef<HTMLFormElement | null>(null)
+    const submitQRef = useRef<HTMLInputElement | null>(null)
     const perspective = usePerspective()
 
     const { facetFilters, datasetFilters } = useSearchQuery()
@@ -57,7 +58,12 @@ export default function SearchForm() {
 
     const tree = useTreeParam()
 
-    const dropdownSelect = (inputString: string, group?: string | null, coordinates?: [number, number]) => {
+    const dropdownSelect = (
+        inputString: string,
+        group?: string | null,
+        coordinates?: [number, number],
+        submitQ?: string,
+    ) => {
         inputValue.current = inputString
         if (group) {
             setSelectedGroup(group)
@@ -73,7 +79,22 @@ export default function SearchForm() {
             input.current.value = inputString // ensure the form control has the new value
         }
         if (form.current) {
+            if (submitQ && submitQRef.current && input.current) {
+                // Submit a different `q` than what’s shown in the input.
+                submitQRef.current.disabled = false
+                submitQRef.current.value = submitQ
+                input.current.removeAttribute('name')
+            }
+
             requestAnimationFrame(() => form.current?.requestSubmit())
+
+            if (submitQ && submitQRef.current && input.current) {
+                setTimeout(() => {
+                    submitQRef.current!.disabled = true
+                    // Restore default: submit whatever the user typed.
+                    if (inputState.trim()) input.current!.name = 'q'
+                }, 0)
+            }
         }
     }
 
@@ -174,6 +195,7 @@ export default function SearchForm() {
                     }}
                     className={`bg-transparent px-4 focus:outline-none flex w-full shrink text-lg xl:text-base`}
                 />
+                <input ref={submitQRef} type="hidden" name="q" defaultValue="" disabled />
 
                 {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset} />)}
                 {submittedPoint && <input type="hidden" name="point" value={submittedPoint} />}
@@ -205,6 +227,7 @@ export default function SearchForm() {
                         selection.inputString,
                         selection.group,
                         selection.coordinates,
+                        selection.submitQ,
                     )
                 }
             />
