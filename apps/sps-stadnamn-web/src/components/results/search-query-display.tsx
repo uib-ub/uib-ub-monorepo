@@ -4,7 +4,7 @@ import useResultCardData from "@/state/hooks/result-card-data"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Label } from "@/components/ui/label"
 import { TitleBadge } from "@/components/ui/badge"
-import { useFulltextOn, useFuzzyOn, useInitParam, useNoGeoOn, useQParam, useSearchSortParam, useSourceViewOn, useMode } from "@/lib/param-hooks"
+import { useFulltextOn, useFuzzyOn, useInitParam, useNoGeoOn, useQParam, useSearchSortParam, useSourceViewOn, useMode, useGroupParam } from "@/lib/param-hooks"
 
 export default function SearchQueryDisplay({
   showNoLocationToggle = false,
@@ -20,6 +20,7 @@ export default function SearchQueryDisplay({
   const qParam = useQParam()
   const initHasCoordinates = initResultCardData?.fields?.location?.coordinates?.length >= 2
   const searchSort = useSearchSortParam()
+  const group = useGroupParam()
 
 
   // Check if query is single word (only letters) for fuzzy search toggle
@@ -32,7 +33,7 @@ export default function SearchQueryDisplay({
 
   return (
     <>
-      {isSingleWord && (sourceViewOn || mode == 'table') && (
+      {isSingleWord && (sourceViewOn || mode == 'table') && !group && (
         <div className="flex items-center gap-2 text-sm h-9 px-3 rounded-md border border-neutral-200 bg-transparent">
           <input
             id="fuzzy-toggle"
@@ -54,7 +55,7 @@ export default function SearchQueryDisplay({
         </div>
       )}
 
-      <div className="flex items-center gap-2 text-sm h-9 px-3 rounded-md border border-neutral-200 bg-transparent">
+      {sourceViewOn && !group && <div className="flex items-center gap-2 text-sm h-9 px-3 rounded-md border border-neutral-200 bg-transparent">
         <input
           id="fulltext-toggle"
           type="checkbox"
@@ -72,7 +73,7 @@ export default function SearchQueryDisplay({
           className="form-checkbox h-4 w-4 accent-accent-700"
         />
         <Label htmlFor="fulltext-toggle">Fulltekst</Label>
-      </div>
+      </div>}
 
       {showNoLocationToggle && (
         <div className="flex items-center gap-2 text-sm h-9 px-3 rounded-md border border-neutral-200 bg-transparent">
