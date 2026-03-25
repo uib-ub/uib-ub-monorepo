@@ -20,7 +20,7 @@ import { useNotificationStore } from "@/state/zustand/notification-store";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useContext, useEffect, useRef } from "react";
-import { PiMagnifyingGlass, PiQuestion, PiX, PiXBold } from "react-icons/pi";
+import { PiCaretLeftBold, PiMagnifyingGlass, PiQuestion, PiX, PiXBold } from "react-icons/pi";
 import ResultCard from "@/components/results/card/result-card";
 import ActiveFilters from "@/components/results/active-filters";
 import ResultItem from "./result-item";
@@ -32,7 +32,7 @@ import { BATCH_SIZE, FIRST_VISIBLE_RESULTS, STARTING_BATCH_SIZE } from "@/lib/re
 import ResultsHeader from "./results-header";
 
 export default function SearchResults() {
-  const { searchError, groupTotalHits, docTotalHits, noGeoGroupCount } = useSearchData()
+  const { searchError, groupTotalHits, docTotalHits, noGeoGroupCount, totalHits } = useSearchData()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
   const init = useInitParam()
   const group = useGroupParam()
@@ -53,6 +53,7 @@ export default function SearchResults() {
   const hideResultsOn = useHideResultsOn()
   const addNotification = useNotificationStore((s) => s.addNotification)
   const removeNotification = useNotificationStore((s) => s.removeNotification)
+  const sourceViewResetUrl = useSessionStore((s) => s.sourceViewResetUrl)
 
 
   const {
@@ -69,14 +70,6 @@ export default function SearchResults() {
 
 
 
-
-
-  // Empty-state helpers (kept intentionally simple to leverage existing total results numbers).
-  const hasNoResults =
-    listStatus === 'success' &&
-    (!listData?.pages ||
-      listData.pages.length === 0 ||
-      listData.pages[0].data?.length === 0)
 
   // When `init` is present we render it separately, so "additional" means anything beyond the init item.
   const hasNoAdditionalResults =
@@ -268,7 +261,7 @@ export default function SearchResults() {
           {(isMobile ||
             searchError ||
             listError ||
-            hasNoResults ||
+            totalHits?.value == 0 ||
             hasNoAdditionalResults) && (
               <div className={`flex flex-col gap-4 py-4 pb-8 xl:pb-4`}>
                 {filterCount > 0 && (
@@ -279,7 +272,17 @@ export default function SearchResults() {
 
                 {/* Empty states */}
                 {!hasResultsError &&
-                  <div className="flex justify-center">
+                  <div className="flex justify-center flex-col">
+                    {
+                      group && totalHits?.value == 0 && <div className="flex justify-center">
+                      <div className="flex flex-col items-center gap-2 text-neutral-950">
+                        <p className="text-neutral-950">Ingen resultat i denne namnegruppa.</p>
+                        {sourceViewResetUrl && <Clickable className="flex items-center gap-2" href={sourceViewResetUrl ?? undefined}>
+                          <PiCaretLeftBold aria-hidden="true" className="text-primary-700"/>
+                          Tilbake til overordna søk
+                        </Clickable>}
+                      </div>
+                    </div>}
                     <div
                       className="flex flex-col items-center gap-2 text-neutral-950"
                     >

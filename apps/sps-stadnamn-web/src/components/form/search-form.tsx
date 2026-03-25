@@ -6,7 +6,6 @@ import { MAP_DRAWER_BOTTOM_HEIGHT_REM, mobileSearchChromeWrapperTopStyle, panPoi
 import { useDatasetTagParam, useFacetParam, useFulltextOn, useFuzzyOn, useGroupParam, useInitParam, useMode, useOptionsOn, usePerspective, usePoint, usePointParam, useQParam, useSourceViewOn, useTreeParam } from '@/lib/param-hooks';
 import { useSearchQuery } from '@/lib/search-params';
 import { formatNumber } from '@/lib/utils';
-import useResultCardData from '@/state/hooks/result-card-data';
 import { GlobalContext } from '@/state/providers/global-provider';
 import { useSessionStore } from '@/state/zustand/session-store';
 import AutocompleteDropdown from './autocomplete-dropdown';
@@ -29,8 +28,6 @@ export default function SearchForm() {
     const setDrawerOpen = useSessionStore((s) => s.setDrawerOpen)
     const snappedPosition = useSessionStore((s: any) => s.snappedPosition)
     const currentPosition = useSessionStore((s: any) => s.currentPosition)
-    const sourceViewResetUrl = useSessionStore((s: any) => s.sourceViewResetUrl)
-    const clearSourceViewResetUrl = useSessionStore((s: any) => s.clearSourceViewResetUrl)
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
     const optionsOn = useOptionsOn()
     const group = useGroupParam()
@@ -55,8 +52,6 @@ export default function SearchForm() {
 
     // Initialize from URL params - this is the source of truth
     const urlQuery = useQParam() || ''
-    const { resultCardData: groupCardData } = useResultCardData(group, { forceGroupLookup: true })
-    const showGroupChip = Boolean(group)
     const [inputState, setInputState] = useState<string>(urlQuery)
     const [submittedPoint, setSubmittedPoint] = useState<string | null>(null)
 
@@ -102,19 +97,6 @@ export default function SearchForm() {
             input.current.select();
         }
     }, [isMobile]);
-
-    const handleGroupChipReset = () => {
-        if (sourceViewResetUrl) {
-            router.replace(sourceViewResetUrl, { scroll: false })
-            clearSourceViewResetUrl()
-            return
-        }
-
-        const nextParams = new URLSearchParams(searchParams.toString())
-        nextParams.delete('group')
-        nextParams.delete('sourceView')
-        router.replace(`?${nextParams.toString()}`, { scroll: false })
-    }
 
 
     if (pathname != "/search") {
@@ -172,19 +154,6 @@ export default function SearchForm() {
                 </ClickableIcon>}
                 {isMobile && autocompleteOpen && <ClickableIcon label="Tilbake" onClick={() => setAutocompleteOpen(false)} className={`flex items-center justify-center relative py-2 px-3`}><PiCaretLeftBold className="text-3xl xl:text-2xl" aria-hidden="true" /></ClickableIcon>}
 
-                {showGroupChip && (
-                    <button
-                        type="button"
-                        onClick={handleGroupChipReset}
-                        className="h-8 px-2 ml-2 rounded-md bg-neutral-100 border border-neutral-200 flex items-center gap-1 shrink-0 max-w-[60%]"
-                        aria-label="Fjern gruppafilter"
-                    >
-                        <span className="truncate min-w-0">{groupCardData?.label || '...'}</span>
-                        <PiX className="text-base shrink-0" aria-hidden="true" />
-                    </button>
-                )}
-
-
                 <input
                     id="search-input"
                     type="text"
@@ -204,7 +173,7 @@ export default function SearchForm() {
                         inputValue.current = v
                         setInputState(v)
                     }}
-                    className={`bg-transparent pr-2 ${autocompleteOpen && isMobile ? 'px-1' : 'px-4'} focus:outline-none flex w-full shrink text-lg xl:text-base ${showGroupChip ? 'pl-2' : ''}`}
+                    className={`bg-transparent pr-2 ${autocompleteOpen && isMobile ? 'px-1' : 'px-4'} focus:outline-none flex w-full shrink text-lg xl:text-base`}
                 />
 
                 {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset} />)}
