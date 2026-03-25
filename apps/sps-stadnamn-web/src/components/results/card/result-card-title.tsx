@@ -44,8 +44,8 @@ export default function ResultCardTitle({
     return (
         <div className={"flex items-baseline flex-wrap min-w-0 max-w-[calc(100%-2rem)] whitespace-nowrap text-lg xl:text-xl"}>
             {cadastrePrefix && <span className="shrink-0 text-neutral-950">{cadastrePrefix}</span>}
-            {isInit ? <h1 className="min-w-0 text-neutral-950 font-sans font-semibold text-lg xl:text-xl">{trimmedLabel}</h1>
-            : <strong className="min-w-0 text-neutral-950">{trimmedLabel}</strong>}{visibleAdditionalLabels.length > 0 && <span className="text-neutral-700 whitespace-nowrap">&nbsp;&nbsp;|&nbsp;&nbsp; </span>}
+            {isInit ? <h1 className="min-w-0 text-neutral-950 font-sans font-semibold text-lg xl:text-xl max-w-full truncate">{trimmedLabel}</h1>
+            : <strong className="min-w-0 text-neutral-950 max-w-full truncate">{trimmedLabel}</strong>}{visibleAdditionalLabels.length > 0 && <span className="text-neutral-700 whitespace-nowrap">&nbsp;&nbsp;|&nbsp;&nbsp; </span>}
 
             {visibleAdditionalLabels.map((l, i) => (
                 <span key={l} className={`text-neutral-700 whitespace-nowrap`}>
