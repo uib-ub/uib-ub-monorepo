@@ -706,7 +706,6 @@ export default function MapExplorer() {
               dismissNotification("point-hint", true)
 
               const newParams = new URLSearchParams(searchParams)
-              newParams.delete('group')
               newParams.delete('init')
               newParams.delete('activePoint')
               newParams.delete('resultLimit')
