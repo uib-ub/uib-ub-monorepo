@@ -272,14 +272,14 @@ export default function SearchResults() {
 
                 {/* Empty states */}
                 {!hasResultsError &&
-                  <div className="flex justify-center flex-col">
+                  <div className="flex justify-center flex-col gap-4">
                     {
                       group && totalHits?.value == 0 && <div className="flex justify-center">
-                      <div className="flex flex-col items-center gap-2 text-neutral-950">
-                        <p className="text-neutral-950">Ingen resultat i denne namnegruppa.</p>
-                        {sourceViewResetUrl && <Clickable className="flex items-center gap-2" href={sourceViewResetUrl ?? undefined}>
-                          <PiCaretLeftBold aria-hidden="true" className="text-primary-700"/>
-                          Tilbake til overordna søk
+                      <div className="flex flex-col items-center gap-4 text-neutral-950">
+                        <p className="text-neutral-950">Ingen resultat i denne namnegruppa</p>
+                        {sourceViewResetUrl && <Clickable className="flex items-center gap-2 btn btn-neutral" remove={['group', 'sourceView']}>
+                          <PiMagnifyingGlass aria-hidden="true" className="text-white"/>
+                          Søk utanfor namnegruppa
                         </Clickable>}
                       </div>
                     </div>}
