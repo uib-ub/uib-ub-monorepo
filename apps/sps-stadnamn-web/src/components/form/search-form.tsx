@@ -152,7 +152,7 @@ export default function SearchForm() {
                         {formatNumber(filterCount)}
                     </span>}
                 </ClickableIcon>}
-                {isMobile && autocompleteOpen && <ClickableIcon label="Tilbake" onClick={() => setAutocompleteOpen(false)} className={`flex items-center justify-center relative py-2 px-3`}><PiCaretLeftBold className="text-3xl xl:text-2xl" aria-hidden="true" /></ClickableIcon>}
+                {isMobile && autocompleteOpen && <ClickableIcon label="Tilbake" onClick={() => setAutocompleteOpen(false)} className={`flex shrink-0 items-center justify-end relative py !h-14 !w-14 border-r border-transparent`}><PiCaretLeftBold className="text-3xl xl:text-2xl" aria-hidden="true" /></ClickableIcon>}
 
                 <input
                     id="search-input"
@@ -164,7 +164,6 @@ export default function SearchForm() {
                     maxLength={200}
                     ref={input}
                     name={inputState.trim() ? 'q' : undefined}
-                    key={urlQuery}
                     defaultValue={urlQuery}
                     autoComplete="off"
                     autoFocus={!isMobile && pathname == '/search'}
@@ -173,7 +172,7 @@ export default function SearchForm() {
                         inputValue.current = v
                         setInputState(v)
                     }}
-                    className={`bg-transparent pr-2 ${autocompleteOpen && isMobile ? 'px-1' : 'px-4'} focus:outline-none flex w-full shrink text-lg xl:text-base`}
+                    className={`bg-transparent px-4 focus:outline-none flex w-full shrink text-lg xl:text-base`}
                 />
 
                 {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset} />)}
