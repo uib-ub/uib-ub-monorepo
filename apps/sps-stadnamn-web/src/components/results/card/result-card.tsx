@@ -162,7 +162,7 @@ function GroupBottomToolbarMulti({
                             setSourceViewResetUrl(currentUrl.current)
                         }}
                     >
-                        <span className="text-sm">Kjelder</span><Badge count={groupTotal} className="bg-primary-700 text-white" />
+                        <span className="text-sm">Underoppslag</span><Badge count={groupTotal} className="bg-primary-700 text-white" />
                     </Clickable>
                 )}
             </div>
