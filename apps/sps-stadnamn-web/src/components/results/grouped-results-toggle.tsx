@@ -73,7 +73,7 @@ export default function GroupedResultsToggle() {
                         <PiArrowElbowLeftUpBold aria-hidden="true" className="text-xl" />
                     </ClickableIcon>
                 ) : (
-                    <Clickable className="flex items-center gap-2" only={{ q, center, zoom, point, init: group, fulltext: fulltextOn ? 'on' : null, noGeo: noGeoOn ? 'on' : null }}>
+                    <Clickable className="flex items-center gap-2" only={{ q, center, zoom, point, init: group, noGeo: noGeoOn ? 'on' : null }}>
                         <PiCaretLeftBold aria-hidden="true" className="text-primary-700" />
                         Gruppert søk
                     </Clickable>
