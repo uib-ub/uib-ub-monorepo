@@ -65,7 +65,7 @@ type CoordinateButtonProps = {
 function CoordinateButton({ isActive, className, ...rest }: CoordinateButtonProps) {
     return (
         <ClickableIcon
-            label="Gå til koordinatet"
+            label="Vis i kartet"
             className={`inline-flex items-center justify-center w-8 h-8 rounded-full border btn btn-outline shrink-0 ${
                 isActive ? "border-accent-800 bg-accent-800 text-white" : "border-neutral-300"
             } ${className ?? ""}`}
@@ -127,7 +127,7 @@ function GroupBottomToolbarMulti({
                         Utan koordinat
                     </span>
                 ) : 
-                    init ? null : <CoordinateButton
+                    <CoordinateButton
                         isActive={isActivePoint}
                         onClick={() => {
                             mapFunctionRef.current?.flyTo(groupLatLng, 15, {
@@ -141,11 +141,13 @@ function GroupBottomToolbarMulti({
                         }}
                         remove={["activePoint"]}
                         add={{
-                            activePoint: activePointValue,
+                            ...isMobile ? { init: groupData.id, point: activePointValue } : { activePoint: activePointValue },
                         }}
                     />
-
                 }
+
+
+                
                     
 
                 {groupTotal > 0 && (
@@ -217,6 +219,8 @@ function GroupBottomToolbarSingle({
         return `${base}/uuid/${token}`;
     })();
 
+    const activePointValue = groupLatLng ? `${groupLatLng[0]},${groupLatLng[1]}` : null;
+
     return (
         <div className="w-full px-3 mt-auto flex flex-col gap-2">
             <div className="flex items-center gap-2 flex-wrap">
@@ -225,10 +229,10 @@ function GroupBottomToolbarSingle({
                     <span className="basis-full h-0" aria-hidden="true" />
                 )}
                 <div className={`ml-auto flex items-center gap-2 ${isActivePoint ? "mt-1" : ""}`}>
-                    {groupLatLng && !init && (
+                    {groupLatLng && (
                         <CoordinateButton
                             isActive={isActivePoint}
-                            add={{ activePoint: `${groupLatLng[0]},${groupLatLng[1]}` }}
+                            add={ isMobile ? { init: groupData.id, point: activePointValue } : { activePoint: activePointValue }}
                             onClick={() => {
                                 mapFunctionRef.current?.flyTo(groupLatLng, 15, {
                                     duration: 0.25,
