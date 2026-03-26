@@ -56,22 +56,17 @@ export function extractFacets(request: Request) {
         }
         rangeFilters[fieldName][operator] = value;
       }
-      else if (value == '_true') {
+      else if (value == '_true' || value == '_false') {
         if (key == 'adm') {
           if (!clientFacets.adm) clientFacets.adm = [];
           clientFacets.adm.push(value);
         } else {
-          termFilters.push({ "exists": { "field": key } });
-        }
-      }
-      else if (value == '_false') {
-        if (key == 'adm') {
-          if (!clientFacets.adm) clientFacets.adm = [];
-          clientFacets.adm.push(value);
-        } else {
-          termFilters.push({
-            "bool": { "must_not": { "exists": { "field": key } } }
-          });
+          // Keep _true/_false with regular facet values so they can be OR-combined
+          // (e.g. field missing OR field has one of selected values).
+          if (!serverFacets[key]) {
+            serverFacets[key] = [];
+          }
+          serverFacets[key].push(value);
         }
       }
       // Explicitly exclude the "[ingen verdi]" bucket: require that the field exists

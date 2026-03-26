@@ -29,7 +29,6 @@ export default function ServerFacet() {
   const facet = useFacetParam()
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
   const paramsExceptFacet = facet ? removeFilterParams(facet) : searchParams.toString()
-  const currentValue = facet && searchParams.get(facet)
 
   const allCount = facetAggregation?.buckets ? facetAggregation.buckets.reduce((sum: number, item: { doc_count: number }) => sum + item.doc_count, 0) : 0;
 
@@ -189,88 +188,87 @@ export default function ServerFacet() {
   return (
     <>
       <div className="flex flex-col gap-2">
-        {currentValue != '_true' && currentValue != '_false' &&
-          <div className='flex flex-col gap-2'>
-            <div className='flex gap-2 px-2 pt-1'>
-              <div className='w-full h-10 relative'>
-                <input
-                  aria-label="Søk i fasett"
-                  onChange={(e) => facet == 'datasets' ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
-                  className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"
-                />
-                <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                  <PiMagnifyingGlass aria-hidden={true} className='text-neutral-700 text-xl' />
-                </span>
-              </div>
+        <div className='flex flex-col gap-2'>
+          <div className='flex gap-2 px-2 pt-1'>
+            <div className='w-full h-10 relative'>
+              <input
+                aria-label="Søk i fasett"
+                onChange={(e) => facet == 'datasets' ? setClientSearch(e.target.value) : setFacetSearch(e.target.value)}
+                className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"
+              />
+              <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                <PiMagnifyingGlass aria-hidden={true} className='text-neutral-700 text-xl' />
+              </span>
             </div>
+          </div>
 
-            <FacetToolbar />
+          <FacetToolbar />
 
 
-            {(facetLoading || facetAggregation?.buckets.length) ?
-              <fieldset>
-                <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[perspective][facet].label}`}</legend>
-                <ul aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200'>
-                  {facetAggregation?.buckets.length ? facetAggregation?.buckets
-                    .map((item: any, index: number) => {
-                      const displayCount =
-                        facetCountMode === 'percent' && allCount > 0
-                          ? Math.round((item.doc_count / allCount) * 100)
-                          : item.doc_count;
+          {(facetLoading || facetAggregation?.buckets.length) ?
+            <fieldset>
+              <legend className="sr-only">{`Filtreringsalternativer for ${fieldConfig[perspective][facet].label}`}</legend>
+              <ul aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200'>
+                {facetAggregation?.buckets.length ? facetAggregation?.buckets
+                  .map((item: any, index: number) => {
+                    const displayCount =
+                      facetCountMode === 'percent' && allCount > 0
+                        ? Math.round((item.doc_count / allCount) * 100)
+                        : item.doc_count;
 
-                      return (!clientSearch?.length || createSearchRegex(clientSearch)?.test(renderLabel(facet, item.key))) && (
-                        <li key={index} className='py-3'>
-                          <div className="flex items-center gap-2 px-2">
-                            <label className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0">
-                              <input
-                                type="checkbox"
-                                checked={isChecked(facet, item.key)}
-                                className="mr-2 flex-shrink-0"
-                                name={facet}
-                                value={item.key}
-                                onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
-                              />
-                              <span className="text-neutral-950 break-words lg:text-sm xl:text-base min-w-0">
-                                {renderLabel(facet, item.key)} <FacetBadge count={displayCount} mode={facetCountMode} />
-                              </span>
-                            </label>
-                            <button
-                              type="button"
-                              className={`ml-1 flex-shrink-0 rounded-full p-1 text-lg ${isExcluded(facet, item.key)
-                                ? 'text-accent-700 bg-accent-50 outline outline-1 outline-accent-700'
-                                : 'text-neutral-700 hover:text-accent-700 hover:bg-accent-50'
-                                }`}
-                              aria-label={`${isExcluded(facet, item.key) ? 'Fjern utestenging av' : 'Utesteng'} ${renderLabel(facet, item.key)}`}
-                              aria-pressed={isExcluded(facet, item.key)}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                toggleExclude(facet, item.key);
-                              }}
-                            >
-                              <PiProhibit aria-hidden={true} />
-                            </button>
-                          </div>
-                        </li>
-                      )
-                    })
-                    : <li>
-                      <div className="flex flex-col gap-6 my-3">
-                        {Array.from({ length: 6 }).map((_, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <div className="w-4 h-4 bg-neutral-900/10 rounded-md animate-pulse"></div>
-                            <div style={{ width: getSkeletonLength(index, 8, 16) + 'rem' }} className="h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
-                            <div className="w-6 h-6 ml-auto bg-neutral-900/10 rounded-full animate-pulse"></div>
-                          </div>
-                        ))}
-                      </div>
-                    </li>
-                  }
-                </ul>
-              </fieldset>
-              : <div role="status" aria-live="polite" className='px-2 p-2'>Ingen treff</div>
-            }
-          </div>}
+                    return (!clientSearch?.length || createSearchRegex(clientSearch)?.test(renderLabel(facet, item.key))) && (
+                      <li key={index} className='py-3'>
+                        <div className="flex items-center gap-2 px-2">
+                          <label className="flex items-center gap-2 lg:gap-1 xl:gap-2 flex-1 min-w-0">
+                            <input
+                              type="checkbox"
+                              checked={isChecked(facet, item.key)}
+                              className="mr-2 flex-shrink-0"
+                              name={facet}
+                              value={item.key}
+                              onChange={(e) => { toggleFilter(e.target.checked, e.target.name, e.target.value) }}
+                            />
+                            <span className="text-neutral-950 break-words lg:text-sm xl:text-base min-w-0">
+                              {renderLabel(facet, item.key)} <FacetBadge count={displayCount} mode={facetCountMode} />
+                            </span>
+                          </label>
+                          <button
+                            type="button"
+                            className={`ml-1 flex-shrink-0 rounded-full p-1 text-lg ${isExcluded(facet, item.key)
+                              ? 'text-accent-700 bg-accent-50 outline outline-1 outline-accent-700'
+                              : 'text-neutral-700 hover:text-accent-700 hover:bg-accent-50'
+                              }`}
+                            aria-label={`${isExcluded(facet, item.key) ? 'Fjern utestenging av' : 'Utesteng'} ${renderLabel(facet, item.key)}`}
+                            aria-pressed={isExcluded(facet, item.key)}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              toggleExclude(facet, item.key);
+                            }}
+                          >
+                            <PiProhibit aria-hidden={true} />
+                          </button>
+                        </div>
+                      </li>
+                    )
+                  })
+                  : <li>
+                    <div className="flex flex-col gap-6 my-3">
+                      {Array.from({ length: 6 }).map((_, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <div className="w-4 h-4 bg-neutral-900/10 rounded-md animate-pulse"></div>
+                          <div style={{ width: getSkeletonLength(index, 8, 16) + 'rem' }} className="h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
+                          <div className="w-6 h-6 ml-auto bg-neutral-900/10 rounded-full animate-pulse"></div>
+                        </div>
+                      ))}
+                    </div>
+                  </li>
+                }
+              </ul>
+            </fieldset>
+            : <div role="status" aria-live="polite" className='px-2 p-2'>Ingen treff</div>
+          }
+        </div>
       </div>
     </>)
 
