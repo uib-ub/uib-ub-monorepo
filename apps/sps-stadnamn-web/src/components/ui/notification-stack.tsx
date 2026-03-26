@@ -57,7 +57,7 @@ export default function NotificationStack({ className, style, disableStackEffect
 
   return (
     <div className={className} style={style} data-notification-stack="true">
-      <div className="relative w-full max-w-full xl:max-w-[calc(100%-2rem)]">
+      <div className="relative w-full lg:w-max max-w-full">
         {!disableStackEffect && Array.from({ length: stackDepth }, (_, i) => {
           const indexInStack = notifications.length - 1 - i;
           const item = notifications[indexInStack]!;

@@ -81,7 +81,7 @@ export default function MapSettings() {
     if (selectedOverlays.length > 2) {
       addNotification({
         id: "overlay-performance-warning",
-        message: "Mange ekstra kartlag kan gjere kartet tregare å bruke.",
+        message: "Fleire kartlag kan påverke ytinga",
         permanentDismiss: true,
         variant: "warning"
       });
@@ -203,7 +203,7 @@ export default function MapSettings() {
   }
 
   return (
-    <div className="flex flex-col gap-4 pb-4 xl:px-2">
+    <div className="flex flex-col gap-4 py-4 xl:px-2">
       {/* Marker Mode Section */}
       <section>
         <fieldset className="border-0 p-0 m-0">

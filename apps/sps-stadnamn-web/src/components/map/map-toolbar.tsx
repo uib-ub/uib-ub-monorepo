@@ -10,7 +10,7 @@ import { GlobalContext } from "@/state/providers/global-provider"
 import { useSessionStore } from "@/state/zustand/session-store"
 import { useNotificationStore } from "@/state/zustand/notification-store"
 import { useContext, useEffect } from "react"
-import { PiFunnel, PiFunnelFill, PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus, PiXBold } from "react-icons/pi"
+import { PiChatCircleText, PiFunnel, PiFunnelFill, PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus, PiXBold } from "react-icons/pi"
 import { RoundIconButton, RoundIconClickable, RoundIconClickableWithBadge } from "../ui/clickable/round-icon-button"
 import { useRouter, useSearchParams } from "next/navigation"
 
@@ -18,6 +18,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useInitParam, useSourceViewOn, useTreeParam, useMapSettingsOn, usePointParam, useOptionsOn } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import Clickable from "../ui/clickable/clickable"
+import DynamicClickable from "../ui/clickable/dynamic-clickable"
 import NotificationStack from "../ui/notification-stack"
 import { cn } from "@/lib/utils"
 
@@ -74,7 +75,6 @@ export default function MapToolbar() {
     const notificationTop = isMobile
         ? mobileStackBelowSearchChromeTopStyle(currentPosition, snappedPosition)
         : "0.5rem"
-    const notificationRight = isMobile ? undefined : `calc(${tree ? "40svw" : "25svw"} + 16rem)`
 
     // When dragging from bottom -> middle, the stack should move up until it reaches the top and then stop.
     const clampedNotificationTop = isMobile ? `max(0rem, ${notificationTop})` : notificationTop
@@ -128,19 +128,43 @@ export default function MapToolbar() {
 
     return (
         <>
-            {notifications.length > 0 && (
+            {notifications.length > 0 ? (
                 <NotificationStack
                     disableStackEffect={isMobile}
                     className={cn(
                         isMobile
                             ? "absolute inset-x-0 z-[5100]"
-                            : "absolute left-[25svw] z-[3001]",
+                            : cn(
+                                "absolute left-[25svw] z-[3001] w-max max-w-full",
+                                // Desktop available width is only affected by the tree drawer width.
+                                tree
+                                    ? "max-w-[calc(100vw-25svw-40svw-16rem)]"
+                                    : "max-w-[calc(100vw-25svw-25svw-16rem)]",
+                            ),
                     )}
                     style={{
                         top: clampedNotificationTop,
-                        ...(notificationRight != null ? { right: notificationRight } : {}),
                     }}
                 />
+            ) : (
+                <DynamicClickable
+                    link
+                    label="Tilbakemelding"
+                    href="https://skjemaker.app.uib.no/view.php?id=16665712"
+                    className={cn(
+                        "btn btn-outline rounded-md inline-flex items-center gap-2",
+                        "h-12 p-2  lg:px-3 absolute left-[25svw] z-[3001]",
+                        isMobile
+                            ? " z-[5100] w-12"
+                            : 'z-[3001]'
+                    )}
+                    style={{
+                        top: clampedNotificationTop
+                    }}
+                >
+                    <PiChatCircleText className="text-xl" aria-hidden="true" />
+                    <span className="hidden lg:inline">Tilbakemelding</span>
+                </DynamicClickable>
             )}
                 
 
