@@ -85,6 +85,16 @@ export default function MapToolbar() {
     const showMobileToolbarButtons = true
     const notificationRowHeightRem = 3.5
     const toolbarNotificationGapRem = 0.25
+
+    const mobileControlsTop = (() => {
+        if (!isMobile) return undefined
+        const baseTop =
+            currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM
+                ? "4.25rem"
+                : `${4 - currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem`
+        if (notifications.length === 0) return baseTop
+        return `calc(${baseTop} + ${notificationRowHeightRem + toolbarNotificationGapRem}rem)`
+    })()
     
     useEffect(() => {
         if (showNoCoordinatesNotice) {
@@ -146,41 +156,31 @@ export default function MapToolbar() {
                         top: clampedNotificationTop,
                     }}
                 />
-            ) : (
-                <DynamicClickable
+            ) : null}
+
+            {notifications.length === 0 && (!isMobile || snappedPosition === "bottom") ? (
+                <Clickable
                     link
                     label="Tilbakemelding"
                     href="https://skjemaker.app.uib.no/view.php?id=16665712"
                     className={cn(
-                        "btn btn-outline rounded-md inline-flex items-center gap-2",
-                        "h-12 p-2  lg:px-3 absolute left-[25svw] z-[3001]",
-                        isMobile
-                            ? " z-[5100] w-12"
-                            : 'z-[3001]'
+                        "btn btn-outline rounded-md inline-flex items-center gap-2 override-external-icon transition-none",
+                        "absolute",
+                        isMobile ? "left-2 z-[5100]" : "left-[25svw] z-[3001] h-12 top-2",
                     )}
-                    style={{
-                        top: clampedNotificationTop
-                    }}
+                    style={isMobile ? { top: mobileControlsTop } : undefined}
                 >
                     <PiChatCircleText className="text-xl" aria-hidden="true" />
-                    <span className="hidden lg:inline">Tilbakemelding</span>
-                </DynamicClickable>
-            )}
+                    Tilbakemelding
+                </Clickable>
+            ) : null}
                 
 
             {showMobileToolbarButtons && (
                 <div
                     className={`flex gap-3 absolute lg: z-[5000] ${isMobile ? 'right-3 flex-col' : (tree ? 'right-[calc(40svw+1.25rem)]' : 'right-[calc(25svw+1.25rem)]')} `}
                     style={{
-                        top: (() => {
-                            if (!isMobile) return "0.5rem"
-                            const baseTop =
-                                currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM
-                                    ? "4.25rem"
-                                    : `${4 - currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem`
-                            if (notifications.length === 0) return baseTop
-                            return `calc(${baseTop} + ${notificationRowHeightRem + toolbarNotificationGapRem}rem)`
-                        })(),
+                        top: isMobile ? mobileControlsTop : "0.5rem",
                     }}
                 >
                 <RoundIconButton

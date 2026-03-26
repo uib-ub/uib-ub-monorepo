@@ -70,16 +70,13 @@ export function Snackbar({
 
   const showDetails = Boolean(details);
   const showLink = !showDetails && Boolean(link);
-  const hasCompactRow = showDetails || showLink;
-  const rowText = message !== undefined ? (hasCompactRow ? (title ?? message) : message) : undefined;
+  const rowText = message !== undefined ? (title ?? message) : undefined;
   const rowContent =
     message !== undefined ? (
-      <span className="flex h-full min-w-0 items-center gap-2">
+      <span className="flex h-full min-w-0 items-center gap-3">
         <span
           className={cn(
-            "inline-flex h-full shrink-0 items-center justify-center leading-none [&_svg]:block",
-            // Compact rows use text-sm; match icon size to avoid optical misalignment.
-            hasCompactRow ? "text-base lg:text-lg" : "text-xl",
+            "inline-flex h-full shrink-0 items-center justify-center text-xl leading-none [&_svg]:block",
             iconClassName
           )}
           aria-hidden="true"
@@ -88,10 +85,7 @@ export function Snackbar({
         </span>
         <span
           className={cn(
-            "flex h-full min-w-0 items-center",
-            hasCompactRow
-              ? "truncate text-sm leading-none whitespace-nowrap"
-              : "flex-auto whitespace-normal break-words lg:break-normal"
+            "flex h-full min-w-0 items-center flex-auto whitespace-normal xl:text-lg break-words lg:break-normal"
           )}
         >
           {rowText}
@@ -101,119 +95,89 @@ export function Snackbar({
       children
     );
 
+  const dismissControl = id ? (
+    <ClickableIcon
+      className={dismissButtonClassName ?? "inline-flex shrink-0 items-center justify-center p-0"}
+      onClick={() => dismissNotification(id, persistentDismiss)}
+      label={dismissTooltip}
+    >
+      <PiX className="text-2xl align-middle transition-transform" aria-hidden="true" />
+    </ClickableIcon>
+  ) : null;
+
   return (
     <div
       role="status"
       aria-live="polite"
       data-expanded={showDetails ? (expanded ? "true" : "false") : undefined}
       className={cn(
-        showDetails
-          ? cn(
-            "box-border flex flex-col overflow-hidden border text-white shadow-sm transition-opacity duration-300",
-            snackbarRadiusClass,
-            // Total height matches search bar (h-14 / h-12); border is inside this box, not added on top.
-            !expanded ? snackbarSearchBarHeightClass : undefined,
-          )
-          : showLink
-            ? cn(
-              "box-border flex items-center justify-between gap-4 overflow-hidden border px-4 text-white shadow-sm transition-opacity duration-300",
-              snackbarRadiusClass,
-              snackbarSearchBarHeightClass,
-            )
-            : cn(snackbarBaseClass, message !== undefined ? "items-center" : "items-start"),
+        "box-border overflow-hidden border shadow-sm  flex items-center transition-opacity duration-300",
+        snackbarRadiusClass,
+        showDetails ? "flex flex-col" : undefined,
+        // One-row snackbars always match the search bar height.
+        !showDetails ? snackbarSearchBarHeightClass : undefined,
+        // Expandable snackbars match the search bar height when collapsed.
+        showDetails && !expanded ? snackbarSearchBarHeightClass : undefined,
         className
       )}
       style={style}
     >
-      {showDetails ? (
-        <>
-          <div
-            className={cn(
-              "box-border flex w-full min-w-0 shrink-0 items-center justify-between gap-4 px-3",
-              // Keep row height stable between collapsed/expanded to avoid baseline jumps.
-              snackbarSearchBarHeightClass
-            )}
-          >
-            <div className="min-w-0 flex-1 h-full">
-              <Clickable
-                notClickable={!showDetails}
-                className={cn(
-                  // Don't stretch to the X; button ends at caret.
-                  "inline-flex h-full w-fit min-h-0 min-w-0 max-w-full items-center gap-2 text-left",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/35 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-                )}
-                aria-expanded={expanded}
-                aria-controls={detailsId}
-                aria-label="detaljar"
-                onClick={() => {
-                  if (!expanded && snappedPosition === "top") {
-                    setSnappedPosition("bottom");
-                  }
-                  setExpanded((prev) => !prev);
-                }}
-              >
-                {rowContent}
-                <span className="inline-flex shrink-0 items-center justify-center">
-                  {expanded ? <PiCaretUp className="text-lg" /> : <PiCaretDown className="text-lg" />}
-                </span>
-              </Clickable>
-            </div>
-            {id ? (
-              <ClickableIcon
-                className={dismissButtonClassName ?? "inline-flex h-8 shrink-0 items-center justify-center self-center p-0"}
-                onClick={() => dismissNotification(id, persistentDismiss)}
-                label={dismissTooltip}
-              >
-                <PiX className="text-lg align-middle transition-transform lg:text-2xl" aria-hidden="true" />
-              </ClickableIcon>
-            ) : null}
-          </div>
-          {expanded ? (
-            <div
-              id={detailsId}
-              className="border-t border-current/15 px-4 pb-3 pt-2 text-sm opacity-95"
+      <div
+        className={cn(
+          "box-border flex w-full min-w-0 items-center justify-between gap-4",
+          // Expandable snackbars historically used slightly tighter horizontal padding.
+          showDetails ? "px-3" : "px-4",
+          // Keep row height stable between collapsed/expanded for expandable snackbars.
+          showDetails ? snackbarSearchBarHeightClass : undefined,
+          // One-row snackbars need the same vertical padding regardless of link.
+          !showDetails ? "py-3" : undefined
+        )}
+      >
+        <div className={cn("min-w-0 flex-1", showDetails ? "h-full" : undefined)}>
+          {showDetails ? (
+            <Clickable
+              className={cn(
+                // Don't stretch to the X; button ends at caret.
+                "inline-flex h-full w-fit min-h-0 min-w-0 max-w-full items-center gap-2 text-left",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/35 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+              )}
+              aria-expanded={expanded}
+              aria-controls={detailsId}
+              aria-label="detaljar"
+              onClick={() => {
+                if (!expanded && snappedPosition === "top") {
+                  setSnappedPosition("bottom");
+                }
+                setExpanded((prev) => !prev);
+              }}
             >
-              {details}
-            </div>
-          ) : null}
-        </>
-      ) : showLink ? (
-        <>
-          <div className="flex min-h-0 min-w-0 flex-1 h-full items-center gap-2">
-            {rowContent}
-            <span className="inline-flex shrink-0 items-center text-sm [&_a]:underline opacity-90 transition-opacity hover:opacity-100 [&_a]:text-inherit [&_a]:leading-none">
-              {link}
-            </span>
-          </div>
-          {id ? (
-            <ClickableIcon
-              className={dismissButtonClassName ?? "inline-flex shrink-0 items-center justify-center p-0"}
-              onClick={() => dismissNotification(id, persistentDismiss)}
-              label={dismissTooltip}
-            >
-              <PiX className="text-xl align-middle transition-transform lg:text-2xl" aria-hidden="true" />
-            </ClickableIcon>
-          ) : null}
-        </>
-      ) : (
-        <>
-          <div className="min-w-0 flex-1">
-            <div className={cn("flex min-w-0 gap-2", message !== undefined ? "items-center" : "items-start")}>
               {rowContent}
+              <span className="inline-flex shrink-0 items-center justify-center">
+                {expanded ? <PiCaretUp className="text-lg" /> : <PiCaretDown className="text-lg" />}
+              </span>
+            </Clickable>
+          ) : (
+            <div className="flex min-h-0 min-w-0 items-center gap-2">
+              {rowContent}
+              {showLink ? (
+                <span className="inline-flex shrink-0 items-center [&_a]:underline opacity-90 transition-opacity hover:opacity-100 [&_a]:text-inherit [&_a]:leading-none">
+                  {link}
+                </span>
+              ) : null}
             </div>
-          </div>
+          )}
+        </div>
+        {dismissControl}
+      </div>
 
-          {id ? (
-            <ClickableIcon
-              className={dismissButtonClassName ?? "inline-flex shrink-0 self-start p-0.5 mt-0.5"}
-              onClick={() => dismissNotification(id, persistentDismiss)}
-              label={dismissTooltip}
-            >
-              <PiX className="text-lg align-middle transition-transform lg:text-2xl" aria-hidden="true" />
-            </ClickableIcon>
-          ) : null}
-        </>
-      )}
+      {showDetails && expanded ? (
+        <div
+          id={detailsId}
+          className="border-t border-current/15 px-4 pb-3 pt-2 text-sm opacity-95"
+        >
+          {details}
+        </div>
+      ) : null}
     </div>
   );
 }

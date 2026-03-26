@@ -81,7 +81,7 @@ export default function MapSettings() {
     if (selectedOverlays.length > 2) {
       addNotification({
         id: "overlay-performance-warning",
-        message: "Fleire kartlag kan påverke ytinga",
+        message: "Fleire kartlag kan redusere ytinga",
         permanentDismiss: true,
         variant: "warning"
       });
