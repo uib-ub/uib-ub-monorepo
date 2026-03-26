@@ -21,6 +21,7 @@ import { TextItemsSection } from "@/components/results/card/text-items-section";
 import CoordinateTypeInfo from "@/components/results/card/coordinate-type-info";
 import { ResultCardSkeleton } from "@/components/results/result-skeletons";
 import DistanceBadge from "@/components/results/distance-badge";
+import { Badge, TitleBadge } from "@/components/ui/badge";
 
 function SosiInline({
     rawSosi,
@@ -149,7 +150,7 @@ function GroupBottomToolbarMulti({
 
                 {groupTotal > 0 && (
                     <Clickable
-                        className="btn btn-outline btn-compact rounded-full items-center gap-1 px-3"
+                        className="btn btn-outline btn-compact rounded-full items-center gap-1 !pr-1 flex"
                         only={{
                             sourceView: "on",
                             group: stringToBase64Url(groupData.id),
@@ -161,7 +162,7 @@ function GroupBottomToolbarMulti({
                             setSourceViewResetUrl(currentUrl.current)
                         }}
                     >
-                        {groupTotal} underoppslag
+                        <span className="text-sm">Kjelder</span><Badge count={groupTotal} className="bg-primary-700 text-white" />
                     </Clickable>
                 )}
             </div>
