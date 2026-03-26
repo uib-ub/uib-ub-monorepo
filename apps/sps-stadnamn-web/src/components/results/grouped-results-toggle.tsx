@@ -70,8 +70,8 @@ export default function GroupedResultsToggle() {
                 inGroupMode ? (
                     <ClickableIcon
                         className={`absolute right-0 top-1/2 -translate-y-1/2 ${roundedIconButtonClassName}`}
-                        label="Tilbake til gruppert søk"
-                        only={{ q, center, zoom, point, init: group, fulltext: fulltextOn ? 'on' : null, noGeo: noGeoOn ? 'on' : null }}
+                        label="Gruppert søk"
+                        only={{ q, center, zoom, point, fulltext: fulltextOn ? 'on' : null, noGeo: noGeoOn ? 'on' : null }}
                     >
                         <PiArrowElbowLeftUpBold aria-hidden="true" className="text-xl" />
                     </ClickableIcon>
