@@ -7,10 +7,13 @@ import Clickable from "@/components/ui/clickable/clickable"
 import { useInitParam, useSourceViewOn, useGroupParam, useCenterParam, useZoomParam, useQParam, usePointParam, useFulltextOn, useNoGeoOn } from "@/lib/param-hooks"
 import ClickableIcon from "../ui/clickable/clickable-icon"
 import { useSessionStore } from "@/state/zustand/session-store"
+import useResultCardData from "@/state/hooks/result-card-data"
+import { stringToBase64Url } from "@/lib/param-utils"
 
 export default function GroupedResultsToggle() {
     const { scrollableContentRef } = useContext(GlobalContext)
     const init = useInitParam()
+    const { resultCardData: initResultCardData } = useResultCardData(init)
     const group = useGroupParam()
     const sourceViewOn = useSourceViewOn()
     const center = useCenterParam()
@@ -73,14 +76,15 @@ export default function GroupedResultsToggle() {
                         <PiArrowElbowLeftUpBold aria-hidden="true" className="text-xl" />
                     </ClickableIcon>
                 ) : (
-                    <Clickable className="flex items-center gap-2" only={{ q, center, zoom, point, init: group, noGeo: noGeoOn ? 'on' : null }}>
+                    <Clickable className="flex items-center gap-2" only={{ q, center, zoom, point, init: group || initResultCardData?.fields?.['group.id']?.[0] ? stringToBase64Url(initResultCardData.fields["group.id"][0]) : null, noGeo: noGeoOn ? 'on' : null }}>
                         <PiCaretLeftBold aria-hidden="true" className="text-primary-700" />
                         Gruppert søk
                     </Clickable>
+                    
                 )
             )
             :
-            <Clickable className="flex items-center gap-2" add={{ sourceView: 'on'}}>
+            <Clickable className="flex items-center gap-2" add={{ sourceView: 'on', init: initResultCardData?.fields?.uuid?.[0] ? stringToBase64Url(initResultCardData.fields.uuid[0]) : null }}>
             Avansert søk <PiCaretRightBold aria-hidden="true" className="text-primary-700"/>
             </Clickable>
 

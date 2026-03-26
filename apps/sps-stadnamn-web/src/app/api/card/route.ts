@@ -120,6 +120,7 @@ export async function GET(request: Request) {
   const filterField: 'group.id' | 'uuid' = isSourceView ? 'uuid' : 'group.id'
   const itemId = reservedParams.id || ''
 
+
   let [data, status] = await postQuery(perspective, buildResultCardQuery(itemId, useInnerHits, filterField), "dfs_query_then_fetch")
 
   // Find group if the doc has been demoted within the group
