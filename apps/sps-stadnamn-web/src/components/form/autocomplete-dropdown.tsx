@@ -904,7 +904,7 @@ export default function AutocompleteDropdown({
                                         </strong>
                                         {opt.isMain ? (
                                             <em className="text-neutral-800 ml-auto">
-                                                Hovudoppslag
+                                                Hovudoppslagsord
                                             </em>
                                         ) : null}
                                     </div>
@@ -958,7 +958,7 @@ export default function AutocompleteDropdown({
                                             />
                                         </strong>
                                         <em className="text-neutral-700 ml-auto">
-                                            fulltekst
+                                            Fulltekst
                                         </em>
                                     </div>
                                 </div>

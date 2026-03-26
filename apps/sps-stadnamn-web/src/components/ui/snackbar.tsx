@@ -15,9 +15,9 @@ const snackbarSearchBarHeightClass = "h-14 lg:h-12";
 const snackbarRadiusClass = "rounded-none lg:rounded-md";
 
 const snackbarBaseClass =
-  `box-border min-h-12 px-4 py-3 text-white flex justify-between gap-4 ${snackbarRadiusClass} relative transition-opacity duration-300 shadow-md border`;
+  `box-border min-h-12 px-4 py-3 text-white flex justify-between gap-4 ${snackbarRadiusClass} relative duration-300 shadow-md border`;
 /** Border one palette step darker than fill (tailwind.config.ts). */
-const infoSnackbarClass = "bg-neutral-900 border-neutral-950 text-white";
+const infoSnackbarClass = "bg-neutral-800 border-neutral-900 text-white";
 const warningSnackbarClass = "bg-accent-900 border-accent-950 text-white";
 const tooltipSnackbarClass = "bg-neutral-200 border-neutral-300 text-neutral-900";
 const errorSnackbarClass = "bg-primary-900 border-primary-950 text-white";
@@ -111,7 +111,7 @@ export function Snackbar({
       aria-live="polite"
       data-expanded={showDetails ? (expanded ? "true" : "false") : undefined}
       className={cn(
-        "box-border overflow-hidden border shadow-sm  flex items-center transition-opacity duration-300",
+        "box-border overflow-hidden border shadow-sm  flex items-center duration-300",
         snackbarRadiusClass,
         showDetails ? "flex flex-col" : undefined,
         // One-row snackbars always match the search bar height.
@@ -160,7 +160,7 @@ export function Snackbar({
             <div className="flex min-h-0 min-w-0 items-center gap-2">
               {rowContent}
               {showLink ? (
-                <span className="inline-flex shrink-0 items-center [&_a]:underline opacity-90 transition-opacity hover:opacity-100 [&_a]:text-inherit [&_a]:leading-none">
+                <span className="inline-flex shrink-0 items-center [&_a]:underline [&_a]:text-inherit [&_a]:leading-none">
                   {link}
                 </span>
               ) : null}
@@ -173,7 +173,7 @@ export function Snackbar({
       {showDetails && expanded ? (
         <div
           id={detailsId}
-          className="border-t border-current/15 px-4 pb-3 pt-2 text-sm opacity-95"
+          className="border-t border-current/15 px-4 pb-3 pt-2"
         >
           {details}
         </div>

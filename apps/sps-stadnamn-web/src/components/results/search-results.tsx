@@ -279,7 +279,7 @@ export default function SearchResults() {
                         <p className="text-neutral-950">Ingen resultat i denne namnegruppa</p>
                         {sourceViewResetUrl && <Clickable className="flex items-center gap-2 btn btn-neutral" remove={['group', 'sourceView']}>
                           <PiMagnifyingGlass aria-hidden="true" className="text-white"/>
-                          Søk utanfor namnegruppa
+                          Søk i alle namnegrupper
                         </Clickable>}
                       </div>
                     </div>}

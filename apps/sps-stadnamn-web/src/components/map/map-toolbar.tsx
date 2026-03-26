@@ -166,7 +166,7 @@ export default function MapToolbar() {
                     className={cn(
                         "btn btn-outline rounded-md inline-flex items-center gap-2 override-external-icon transition-none",
                         "absolute",
-                        isMobile ? "left-2 z-[5100]" : "left-[25svw] z-[3001] h-12 top-2",
+                        isMobile ? "left-3 z-[5100]" : "left-[25svw] z-[3001] h-12 top-2",
                     )}
                     style={isMobile ? { top: mobileControlsTop } : undefined}
                 >

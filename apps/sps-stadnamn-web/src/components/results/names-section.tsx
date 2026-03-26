@@ -182,8 +182,13 @@ export default function NamesSection() {
     };
   }, [sources]);
 
+  const hasTimeline = yearsOrdered.length > 1;
+  const onlyYear = yearsOrdered.length === 1 ? yearsOrdered[0] : null;
+  const onlyYearNames = onlyYear ? (namesByYear[onlyYear] || []) : [];
+  const shouldShowFacet = !!group && (hasTimeline || onlyYearNames.length > 1);
+
   useEffect(() => {
-    if (!group) return;
+    if (!shouldShowFacet) return;
     addNotification({
       id: "group-label-filter-info",
       variant: "warning",
@@ -194,9 +199,13 @@ export default function NamesSection() {
     });
 
     return () => removeNotification("group-label-filter-info");
-  }, [group, addNotification, removeNotification]);
+  }, [shouldShowFacet, addNotification, removeNotification]);
 
-  if (!group || (yearsOrdered.length === 0 && namesWithoutYear.length === 0)) return null;
+  // Hide the facet if it doesn't provide meaningful filtering.
+  // - Timeline should only appear when there is more than one year.
+  // - Without a timeline, only show anything if there are multiple labels for that single year.
+  if (!group) return null;
+  if (!hasTimeline && onlyYearNames.length <= 1) return null;
 
   const hasMore = yearsOrdered.length > 3;
   const visibleYears = showAll
@@ -218,86 +227,108 @@ export default function NamesSection() {
         </Clickable>}
       </div>
 
-      <ul className="relative !mx-0 !py-1 !pr-0 !pl-2" role="list">
-        {visibleYears.map((year, index) => {
-          const isLast = index === visibleYears.length - 1;
-          const isYearSelected = years.includes(year);
-          const namesForYear = namesByYear[year] || [];
+      {hasTimeline ? (
+        <>
+          <ul className="relative !mx-0 !py-1 !pr-0 !pl-2" role="list">
+            {visibleYears.map((year, index) => {
+              const isLast = index === visibleYears.length - 1;
+              const isYearSelected = years.includes(year);
+              const namesForYear = namesByYear[year] || [];
 
-          return (
-            <li key={year} className="flex items-start !pb-4 !pt-0 relative">
-              <div
-                className={`bg-primary-300 absolute w-1 left-2 ${isLast ? 'top-4 h-2' : 'top-4 h-[calc(100%-0.25rem)]'}`}
-                aria-hidden="true"
-              />
-              <div
-                className={`w-4 h-4 rounded-full absolute left-0.5 top-2 transition-colors ${isYearSelected ? 'bg-accent-800' : 'bg-primary-500'}`}
-                aria-hidden="true"
-              />
-
-              <div className="ml-6 flex items-start gap-2 min-w-0 flex-1">
-                <button
-                  type="button"
-                  onClick={() => toggleFacetValue('year', year)}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isYearSelected ? 'bg-accent-800 text-white' : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'}`}
-                >
-                  {year}
-                </button>
-
-                {namesForYear.length > 0 && (
-                  <div className="flex-1 min-w-0 flex flex-wrap gap-2">
-                    {namesForYear.map((name) => {
-                      const isNameSelected = names.includes(name);
-                      return (
-                        <button
-                          type="button"
-                          key={name}
-                          onClick={() => toggleFacetValue('name', name)}
-                          className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors max-w-full overflow-hidden ${isNameSelected ? 'bg-accent-800 text-white' : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'}`}
-                          title={name}
-                        >
-                          <span className="truncate max-w-full">{name}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-
-      {namesWithoutYear.length > 0 && (
-        <div className="mt-2">
-          <div className="text-sm font-medium text-neutral-700 mb-1.5">Namneformer utan år</div>
-          <div className="flex flex-wrap gap-2">
-            {namesWithoutYear.map((name) => {
-              const isNameSelected = names.includes(name);
               return (
+                <li key={year} className="flex items-start !pb-4 !pt-0 relative">
+                  <div
+                    className={`bg-primary-300 absolute w-1 left-2 ${isLast ? 'top-4 h-2' : 'top-4 h-[calc(100%-0.25rem)]'}`}
+                    aria-hidden="true"
+                  />
+                  <div
+                    className={`w-4 h-4 rounded-full absolute left-0.5 top-2 transition-colors ${isYearSelected ? 'bg-accent-800' : 'bg-primary-500'}`}
+                    aria-hidden="true"
+                  />
+
+                  <div className="ml-6 flex items-start gap-2 min-w-0 flex-1">
+                    <button
+                      type="button"
+                      onClick={() => toggleFacetValue('year', year)}
+                      className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors min-w-[2.5rem] whitespace-nowrap ${isYearSelected ? 'bg-accent-800 text-white' : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'}`}
+                    >
+                      {year}
+                    </button>
+
+                    {namesForYear.length > 0 && (
+                      <div className="flex-1 min-w-0 flex flex-wrap gap-2">
+                        {namesForYear.map((name) => {
+                          const isNameSelected = names.includes(name);
+                          return (
+                            <button
+                              type="button"
+                              key={name}
+                              onClick={() => toggleFacetValue('name', name)}
+                              className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors max-w-full overflow-hidden ${isNameSelected ? 'bg-accent-800 text-white' : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'}`}
+                              title={name}
+                            >
+                              <span className="truncate max-w-full">{name}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+
+          {namesWithoutYear.length > 0 && (
+            <div className="mt-2">
+              <div className="text-sm font-medium text-neutral-700 mb-1.5">Namneformer utan år</div>
+              <div className="flex flex-wrap gap-2">
+                {namesWithoutYear.map((name) => {
+                  const isNameSelected = names.includes(name);
+                  return (
+                    <button
+                      type="button"
+                      key={name}
+                      onClick={() => toggleFacetValue('name', name)}
+                      className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors ${isNameSelected ? 'bg-accent-800 text-white' : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'}`}
+                    >
+                      <span>{name}</span>
+                      <span className="text-sm opacity-75 ml-1">({nameCounts[name] || 0})</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {hasMore && (
+            <div className="mt-2">
+              <button
+                type="button"
+                className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
+                onClick={() => setShowAll((prev) => !prev)}
+              >
+                {showAll ? 'Vis færre' : `Vis fleire (+${yearsOrdered.length - 3})`}
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {onlyYearNames.map((name) => {
+            const isNameSelected = names.includes(name);
+            return (
               <button
                 type="button"
                 key={name}
                 onClick={() => toggleFacetValue('name', name)}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors ${isNameSelected ? 'bg-accent-800 text-white' : 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200'}`}
+                title={name}
               >
-                <span>{name}</span>
-                <span className="text-sm opacity-75 ml-1">({nameCounts[name] || 0})</span>
+                <span className="truncate max-w-full">{name}</span>
               </button>
-            )})}
-          </div>
-        </div>
-      )}
-
-      {hasMore && (
-        <div className="mt-2">
-          <button
-            type="button"
-            className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
-            onClick={() => setShowAll((prev) => !prev)}
-          >
-            {showAll ? 'Vis færre' : `Vis fleire (+${yearsOrdered.length - 3})`}
-          </button>
+            );
+          })}
         </div>
       )}
     </div>
