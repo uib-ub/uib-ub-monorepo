@@ -149,7 +149,7 @@ function GroupBottomToolbarMulti({
 
                 {groupTotal > 0 && (
                     <Clickable
-                        className="btn btn-outline btn-compact rounded-full items-center gap-1 pr-2"
+                        className="btn btn-outline btn-compact rounded-full items-center gap-1 px-3"
                         only={{
                             sourceView: "on",
                             group: stringToBase64Url(groupData.id),
@@ -162,10 +162,6 @@ function GroupBottomToolbarMulti({
                         }}
                     >
                         {groupTotal} underoppslag
-                        <PiCaretRightBold
-                            aria-hidden="true"
-                            className="text-primary-700"
-                        />
                     </Clickable>
                 )}
             </div>
@@ -269,9 +265,13 @@ function GroupBottomToolbarSingle({
                         link={true}
                         href={uuidUrl || ""}
                         disabled={!uuidUrl}
-                        className="inline-flex items-center justify-center h-8 rounded-full border border-neutral-300 btn btn-outline shrink-0"
+                        className="inline-flex pr-2 items-center justify-center h-8 rounded-full border border-neutral-300 btn btn-outline shrink-0"
                     >
                         Detaljar
+                        <PiCaretRightBold
+                            aria-hidden="true"
+                            className="text-primary-700"
+                        />
                     </Clickable>
                 </div>
             </div>
