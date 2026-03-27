@@ -106,12 +106,6 @@ function DrawerWrapper({ children, resultCardData, ...rest }: DrawerProps) {
             </div>
         )
     }
-    if (mode == 'list') {
-        return <div className="bg-white absolute top-14 left-0 right-0 h-[calc(100svh-3.5rem)] z-[3001] overflow-y-scroll">
-
-            {children}
-        </div>
-    }
     return <Drawer {...rest} bottomHeightRem={MAP_DRAWER_BOTTOM_HEIGHT_REM} middleHeightSvh={MAP_DRAWER_MAX_HEIGHT_SVH}>{children}</Drawer>
 }
 
