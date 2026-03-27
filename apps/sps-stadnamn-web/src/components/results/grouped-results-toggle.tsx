@@ -53,7 +53,7 @@ export default function GroupedResultsToggle() {
     }
 
     const inGroupMode = !!group
-    const roundedIconButtonClassName = "btn btn-neutral text-white rounded-md p-2 h-9 w-9"
+    const roundedIconButtonClassName = "btn btn-neutral text-white rounded-md h-6 w-12 xl:h-9 xl:w-9"
 
     return (
         <div className="relative flex items-center gap-2 text-sm">
