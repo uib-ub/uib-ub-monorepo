@@ -7,7 +7,7 @@ import { TitleBadge } from "../badge";
 
 export const overlayButtonShadowClass = "[box-shadow:0_2px_8px_-1px_rgb(0_0_0_/_0.25),0_1px_3px_-1px_rgb(0_0_0_/_0.35),inset_0_1px_0_rgb(0_0_0_/_0.08)]";
 
-export const roundButtonStyling = "rounded-full bg-white text-neutral-900 p-2 lg:p-3" +
+export const roundButtonStyling = "inline-flex items-center justify-center aspect-square shrink-0 rounded-full bg-white text-neutral-900 p-2 lg:p-3" +
     " " + overlayButtonShadowClass;
 
 

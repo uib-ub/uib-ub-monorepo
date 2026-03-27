@@ -36,16 +36,18 @@ export default function ResultsHeader() {
             remove={[...(isMobile ? ['options'] : [])]}
         >
             {!isMobile && (
-                <span className="flex w-6 justify-center">
+                <span className={`flex w-6 justify-center lg:rotate-180`}>
                     {showResults ? (
-                        <PiCaretUpBold className="text-lg" />
-                    ) : (
                         <PiCaretDownBold className="text-lg" />
+                        
+                    ) : (
+                        
+                        <PiCaretUpBold className="text-lg" />
                     )}
                 </span>
             )}
 
-            <div id={isMobile ? 'drawer-title' : 'right-title'} className={`text-sm xl:text-lg text-neutral-900 font-sans ${init ? 'py-1' : ''} ${isMobile ? 'w-full flex justify-end' : ''}`}>
+            <div id={isMobile ? 'drawer-title' : 'right-title'} className={`text-sm xl:text-lg text-neutral-900 font-sans font-semibold ${init ? 'py-1' : ''} ${isMobile ? 'w-full flex justify-end' : ''}`}>
                 {sourceView
                     ? (init ? "Andre kjeldeoppslag" : (group ? "Underoppslag" : "Kjeldeoppslag"))
                     : (init ? "Andre namnegrupper" : "Namnegrupper")

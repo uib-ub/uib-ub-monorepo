@@ -113,12 +113,13 @@ function LeftWindow({ children, bottomContent }: { children: React.ReactNode, bo
     const { isMobile } = useContext(GlobalContext)
     const mapSettingsOn = useMapSettingsOn()
     const hideResultsOn = useHideResultsOn()
+    const optionsOn = useOptionsOn()
     if (isMobile) {
         if (mapSettingsOn && hideResultsOn) return null
         return <>{children}</>
     }
     return (
-        <div className="absolute left-2 top-[4rem] z-[3001] w-[calc(30svw-1rem)] lg:w-[calc(25svw-1rem)] flex flex-col items-start gap-2 max-h-[calc(100svh-4.5rem)]">
+        <div className={`${optionsOn ? '' : 'invisible lg:visible'} absolute left-2 bottom-2 right-2 top-[4rem] z-[3001] w-full lg:w-[calc(30svw-1rem)] xl:w-[calc(25svw-1rem)] top-[50svh] lg:top-16 flex flex-col items-start gap-2 max-h-[calc(100svh-4.5rem)]`}>
             <section className="bg-white shadow-lg flex flex-col w-full rounded-md overflow-y-scroll min-h-0"
                 aria-label="Søkefilter">{children}</section>
             {bottomContent}
@@ -129,6 +130,8 @@ function LeftWindow({ children, bottomContent }: { children: React.ReactNode, bo
 function RightWindow({ children }: { children: React.ReactNode }) {
     const { isMobile, scrollableContentRef } = useContext(GlobalContext)
     const tree = useTreeParam()
+    const optionsOn = useOptionsOn()
+    const hideResultsOn = useHideResultsOn()
 
 
     const [showScrollToTop, setShowScrollToTop] = useState(false)
@@ -156,8 +159,8 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     if (isMobile) {
         return <>{children}</>
     }
-    return <div className={`absolute right-2 top-[0.5rem] ${tree ? 'w-[40svw]' : 'w-[25svw]'} z-[3001] max-h-[calc(100svh-2rem)]`}>
-        <section ref={scrollableContentRef} className={`bg-white shadow-lg rounded-md ${isMobile ? 'hidden-scrollbar' : ''} overflow-y-auto max-h-[calc(100svh-2rem)]`}
+    return <div className={`absolute lg:top-2 right-2 bottom-2 ${hideResultsOn ? 'top-[calc(100svh-2.5rem)]' : 'top-1/2 '} w-[calc(100svw-1rem)] ${optionsOn ? 'invisible lg:visible' : ''} lg:w-[40svw] ${tree ? '' : 'xl:w-[25svw]'} z-[3001] max-h-[calc(100svh-2rem)]`}>
+        <section ref={scrollableContentRef} className={`bg-white shadow-lg rounded-md ${isMobile ? 'hidden-scrollbar' : ''} overflow-y-auto max-h-[50svh] lg:max-h-[calc(100svh-2rem)]`}
             aria-labelledby="right-title">
             <div className={`flex flex-col ${showScrollToTop ? 'pb-20' : ''}`}>
                 {children}
@@ -254,7 +257,7 @@ export default function MapInterface() {
 
                     {!tableOptions && facet && (
                         <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
-                            <div id={isMobile ? 'drawer-title' : 'left-title'} className="text-lg text-neutral-900 px-1">
+                            <div id={isMobile ? 'drawer-title' : 'left-title'} className="text-lg text-neutral-900 px-1 font-semibold">
                                 {fieldConfig[perspective][facet]?.label}
                             </div>
                             <div className="flex items-center gap-1 ml-auto">
@@ -276,7 +279,7 @@ export default function MapInterface() {
                                 ) : (
                                     <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
                                         <div className="flex items-center gap-1 xl:px-1 w-full">
-                                            <div id="left-title" className="text-base xl:text-lg text-neutral-900 font-sans">
+                                            <div id="left-title" className="text-base xl:text-lg text-neutral-900 font-sans font-semibold">
                                                 Filter
                                             </div>
                                             {filterCount ? (
@@ -323,7 +326,7 @@ export default function MapInterface() {
                             >
                                 <div className="w-full flex">
                                     <div className="relative flex items-center gap-2 xl:px-1 w-full">
-                                        <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-sm xl:text-lg text-neutral-900 font-sans pr-10">
+                                        <div id={isMobile ? 'drawer-title' : 'right-title'} className="text-sm xl:text-lg text-neutral-900 font-sans pr-10 font-semibold">
                                             {overlaySelectorOn ? 'Kartlag' : 'Kartinnstillingar'}
                                         </div>
 

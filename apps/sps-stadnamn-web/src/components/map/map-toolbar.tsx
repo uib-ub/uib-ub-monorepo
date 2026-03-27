@@ -15,7 +15,7 @@ import { RoundIconButton, RoundIconClickable, RoundIconClickableWithBadge } from
 import { useRouter, useSearchParams } from "next/navigation"
 
 
-import { useInitParam, useSourceViewOn, useTreeParam, useMapSettingsOn, usePointParam, useOptionsOn } from "@/lib/param-hooks"
+import { useInitParam, useSourceViewOn, useTreeParam, useMapSettingsOn, usePointParam, useOptionsOn, useHideResultsOn } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import Clickable from "../ui/clickable/clickable"
 import DynamicClickable from "../ui/clickable/dynamic-clickable"
@@ -67,10 +67,12 @@ export default function MapToolbar() {
     const router = useRouter()
     const sourceViewOn = useSourceViewOn()
     const optionsOn = useOptionsOn()
+    const hideResultsOn = useHideResultsOn()
     const point = usePointParam()
     const init = useInitParam()
     const showNoCoordinatesNotice =
         !searchLoading && !searchBounds?.length && !searchError && totalHits?.value > 0
+
     // Mobile: under search while drawer is collapsed; fixed bottom (above “Vis resultat”) when middle/top.
     const notificationTop = isMobile
         ? mobileStackBelowSearchChromeTopStyle(currentPosition, snappedPosition)
@@ -166,21 +168,24 @@ export default function MapToolbar() {
                     className={cn(
                         "btn btn-outline rounded-md inline-flex items-center gap-2 override-external-icon transition-none",
                         "absolute",
-                        isMobile ? "left-3 z-[5100]" : "left-[25svw] z-[3001] h-12 top-2",
+                        isMobile ? "left-3 z-[5100]" : "right-2 lg:right-auto lg:left-[25svw] z-[3001] h-12 top-2 aspect-square",
                     )}
                     style={isMobile ? { top: mobileControlsTop } : undefined}
                 >
                     <PiChatCircleText className="text-xl" aria-hidden="true" />
-                    Tilbakemelding
+                    <span className="sr-only lg:not-sr-only">Tilbakemelding</span>
                 </Clickable>
             ) : null}
                 
 
             {showMobileToolbarButtons && (
                 <div
-                    className={`flex gap-3 absolute lg: z-[5000] ${isMobile ? 'right-3 flex-col' : (tree ? 'right-[calc(40svw+1.25rem)]' : 'right-[calc(25svw+1.25rem)]')} `}
+                    className={`flex gap-3 absolute z-[5000] ${isMobile
+                        ? 'right-3 flex-col'
+                        : `top-14 mt-2 left-1/2 -translate-x-1/2 lg:top-auto lg:bottom-4 lg:m-0`
+                        }`}
                     style={{
-                        top: isMobile ? mobileControlsTop : "0.5rem",
+                        top: isMobile ? mobileControlsTop : undefined,
                     }}
                 >
                 <RoundIconButton
@@ -220,6 +225,7 @@ export default function MapToolbar() {
                             onClick={() => mapFunctionRef?.current?.zoomIn(2)}
                             side="top"
                             label="Zoom inn"
+                            className="w-12 h-12"
                         >
                             <PiMagnifyingGlassPlusFill className="text-2xl" />
                         </RoundIconButton>
@@ -228,6 +234,7 @@ export default function MapToolbar() {
                             onClick={() => mapFunctionRef?.current?.zoomOut(2)}
                             side="top"
                             label="Zoom ut"
+                            className="w-12 h-12"
                         >
                             <PiMagnifyingGlassMinusFill className="text-2xl" />
                         </RoundIconButton>

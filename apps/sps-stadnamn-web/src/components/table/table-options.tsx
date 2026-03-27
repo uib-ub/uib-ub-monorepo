@@ -55,7 +55,7 @@ export default function TableOptions() {
             <div className="flex items-center gap-1 xl:px-1 w-full">
                 <div
                     id={isMobile ? 'drawer-title' : 'left-title'}
-                    className="text-base xl:text-lg text-neutral-900 font-sans"
+                    className="text-base xl:text-lg text-neutral-900 font-sans font-semibold"
                 >
                     Kolonner
                 </div>
