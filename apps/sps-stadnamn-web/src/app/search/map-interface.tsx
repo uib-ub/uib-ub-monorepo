@@ -157,7 +157,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
         return <>{children}</>
     }
     return <div className={`absolute right-2 top-[0.5rem] ${tree ? 'w-[40svw]' : 'w-[25svw]'} z-[3001] max-h-[calc(100svh-2rem)]`}>
-        <section ref={scrollableContentRef} className="bg-white shadow-lg rounded-md overflow-y-scroll max-h-[calc(100svh-2rem)]"
+        <section ref={scrollableContentRef} className={`bg-white shadow-lg rounded-md ${isMobile ? 'hidden-scrollbar' : ''} overflow-y-auto max-h-[calc(100svh-2rem)]`}
             aria-labelledby="right-title">
             <div className={`flex flex-col ${showScrollToTop ? 'pb-20' : ''}`}>
                 {children}

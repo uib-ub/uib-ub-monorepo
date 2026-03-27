@@ -88,8 +88,11 @@
   }
 
   * {
-    scrollbar-color: #8e8580 transparent;
-    scrollbar-width: thin;
+    scrollbar-color: theme('colors.neutral.800') theme('colors.neutral.50');
+  }
+
+  .hidden-scrollbar {
+    scrollbar-width: none;    
   }
 
   input[type='checkbox'],
