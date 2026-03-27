@@ -89,7 +89,11 @@ export async function POST(request: Request) {
     } as any);
   }
   if (noGeo) {
-    termFilters.push({ "bool": { "must_not": { "exists": { "field": "location" } } } });
+    termFilters.push({
+      "bool": {
+        "must_not": { "exists": { "field": "location" } }
+      }
+    } as any);
   }
 
   if (selectedGroup) {
