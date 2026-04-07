@@ -76,7 +76,7 @@
                          key={`audio-preview-${id}`}
                          type="button"
                          onClick={() => handlePlayAudio(recording, `${recording.file}-${index}`)}
-                         className="rounded-full text-neutral-900 border border-neutral-200 rounded-full p-1"
+                         className="rounded-full text-neutral-900 border border-neutral-200 rounded-full p-1 text-sm"
                          aria-label={`Lydopptak${safeRecordings.length > 1 ? ` ${index + 1} av ${safeRecordings.length}` : ""}${
                              isPlaying ? " (stoppar)" : ""
                          }`}
