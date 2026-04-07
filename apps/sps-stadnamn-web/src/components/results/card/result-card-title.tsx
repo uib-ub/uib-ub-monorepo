@@ -54,7 +54,7 @@ export default function ResultCardTitle({
             ))}
             {remainingAdditionalLabelsCount > 0 && (
                 <span className={`text-neutral-700 whitespace-nowrap`}>
-                    + {remainingAdditionalLabelsCount}
+                  &nbsp;+&nbsp;{remainingAdditionalLabelsCount}
                 </span>
             )}
             {mobilePreview && Array.isArray(audioItems) && audioItems.length > 0 && (
