@@ -26,6 +26,7 @@ import DynamicMap from "./leaflet/dynamic-map";
 import MapToolbar from "./map-toolbar";
 import { treeSettings } from "@/config/server-config";
 import useTreeModeMapData from "./hooks/use-tree-mode-map-data";
+import useGroupModeMapData from "./hooks/use-group-mode-map-data";
 
 const DynamicDebugLayers = dynamic(() => import('@/components/map/debug-layers'), {
   ssr: false
@@ -117,6 +118,11 @@ export default function MapExplorer() {
     treeAdm1,
     treeAdm2,
     treeUuid,
+  })
+  const { groupMembersData } = useGroupModeMapData({
+    mapInstance,
+    isMobile,
+    groupEncoded: group,
   })
   const areaSource = useMemo(
     () =>
@@ -222,7 +228,7 @@ export default function MapExplorer() {
       return ({
         queryKey: ['markerResults', key, searchQueryString, showDebugGroupsOn, tree],
         placeHolder: (prevData: any) => prevData,
-        enabled: !showDebugGroupsOn && (!tree || tree.split('_').length < 4),
+        enabled: !group && !showDebugGroupsOn && (!tree || tree.split('_').length < 4),
         queryFn: async () => {
           // In tree mode, marker queries must be driven solely by the `tree`
           // param (dataset/adm) and not by the regular search query.
@@ -1136,6 +1142,67 @@ export default function MapExplorer() {
                 }
               })()
             }
+
+            {(() => {
+              if (!group || !groupMembersData) return null
+              const hits: any[] = groupMembersData?.hits?.hits || []
+              const withCoords = hits.filter((h: any) => h?._source?.location?.coordinates?.length === 2)
+              if (!withCoords.length) return null
+
+              return (
+                <>
+                  {withCoords.map((hit: any, index: number) => {
+                    const coords = hit._source.location.coordinates
+                    const lat = coords[1]
+                    const lng = coords[0]
+                    const isAtActivePoint = Boolean(
+                      activePoint &&
+                      Math.abs(lat - activePoint[0]) < 0.000001 &&
+                      Math.abs(lng - activePoint[1]) < 0.000001
+                    )
+                    const label = hit._source?.label || '[utan namn]'
+                    const uuid = hit._source?.uuid
+
+                    const pointMarkerTooltip = (!isMobile) ? (
+                      <Tooltip direction="top" offset={[0, -20]} opacity={1} className="point-marker-tooltip">
+                        <div className="px-2 py-0.5 text-sm tracking-wide text-black bg-white/90 rounded-md shadow-lg whitespace-nowrap">
+                          {label}
+                        </div>
+                      </Tooltip>
+                    ) : null
+
+                    return (
+                      <Marker
+                        key={`group-member-${uuid || index}`}
+                        position={[lat, lng]}
+                        zIndexOffset={isAtActivePoint ? 100 : 0}
+                        icon={new leaflet.DivIcon(getUnlabeledMarker(isAtActivePoint ? 'accent' : 'black'))}
+                        eventHandlers={{
+                          click: () => {
+                            const newParams = new URLSearchParams(searchParams)
+                            if (uuid) newParams.set('doc', uuid)
+                            newParams.set('activePoint', `${lat},${lng}`)
+                            router.push(`?${newParams.toString()}`)
+                          },
+                          keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
+                            const key = e.originalEvent?.key ?? e.key
+                            if (key === 'Enter' || key === ' ') {
+                              ;(e.originalEvent ?? e).preventDefault()
+                              const newParams = new URLSearchParams(searchParams)
+                              if (uuid) newParams.set('doc', uuid)
+                              newParams.set('activePoint', `${lat},${lng}`)
+                              router.push(`?${newParams.toString()}`)
+                            }
+                          }
+                        }}
+                      >
+                        {pointMarkerTooltip}
+                      </Marker>
+                    )
+                  })}
+                </>
+              )
+            })()}
 
             {debug && <DynamicDebugLayers mapInstance={mapInstance} Polygon={Polygon} Rectangle={Rectangle} CircleMarker={CircleMarker} geotileKeyToBounds={geotileKeyToBounds} markerCells={markerCells} />}
 
