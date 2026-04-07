@@ -36,6 +36,9 @@ export const TextItemsSection = ({ textItems, highlight }: { textItems: any[], h
         setShowAll(true);
     };
 
+    return <div className="h-[300px]">
+    </div>
+
     return (
         <>
             {visibleItems.map((textItem, index) => {
