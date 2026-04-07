@@ -51,7 +51,7 @@ function SosiInline({
                 <span>{visibleSosiTypeKeys.map((typeKey) => sosiTypes[typeKey]).join(", ")}</span>
                 {additionalSosiCount > 0 && (
                     <span className="inline-flex items-baseline py-0.5 rounded-full text-xs text-neutral-700 whitespace-nowrap">
-                        + {additionalSosiCount}
+                    &nbsp;+&nbsp;{additionalSosiCount}
                     </span>
                 )}
             </span>
