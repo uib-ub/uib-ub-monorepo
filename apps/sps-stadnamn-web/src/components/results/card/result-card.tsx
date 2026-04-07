@@ -8,6 +8,7 @@ import { datasetTitles } from "@/config/metadata-config";
 import { treeSettings } from "@/config/server-config";
 import { useActivePoint, useCenterParam, useGroupParam, useInitDecoded, useInitParam, usePoint, useSourceViewOn, useZoomParam } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
+import { panPointIntoView } from "@/lib/map-utils";
 import { buildTreeParam } from "@/lib/tree-param";
 import { getBnr, getGnr, getValueByPath } from "@/lib/utils";
 import useResultCardData from "@/state/hooks/result-card-data";
@@ -86,6 +87,32 @@ function CoordinateButton({ isActive, className, ...rest }: CoordinateButtonProp
     );
 }
 
+function focusPointWithoutZoomOut(
+    map: any,
+    point: [number, number],
+    isMobile: boolean,
+    snappedPosition: "bottom" | "middle" | "top",
+) {
+    if (!map) return;
+
+    const currentZoom = typeof map.getZoom === "function" ? (map.getZoom() as number) : undefined;
+    const targetZoom = Math.max(currentZoom ?? 15, 15);
+
+    // If the user is zoomed out, zoom in to a useful level without ever zooming out.
+    if (currentZoom === undefined || currentZoom < 15) {
+        map.flyTo?.(point, targetZoom, {
+            duration: 0.25,
+            maxZoom: 18,
+            padding: [50, 50],
+        });
+        return;
+    }
+
+    // Otherwise only pan when the point is outside the padded viewport.
+    const maxDrawer = snappedPosition !== "bottom";
+    panPointIntoView(map, point, isMobile, maxDrawer);
+}
+
 function GroupBottomToolbarMulti({
     groupData,
     groupTotal,
@@ -130,11 +157,7 @@ function GroupBottomToolbarMulti({
                     <CoordinateButton
                         isActive={isActivePoint}
                         onClick={() => {
-                            mapFunctionRef.current?.flyTo(groupLatLng, 15, {
-                                duration: 0.25,
-                                maxZoom: 18,
-                                padding: [50, 50],
-                            });
+                            focusPointWithoutZoomOut(mapFunctionRef.current, groupLatLng, isMobile, snappedPosition);
                             if (isMobile && snappedPosition !== "bottom") {
                                 setSnappedPosition("bottom");
                             }
@@ -234,11 +257,7 @@ function GroupBottomToolbarSingle({
                             isActive={isActivePoint}
                             add={ isMobile ? { init: groupData.id, point: activePointValue } : { activePoint: activePointValue }}
                             onClick={() => {
-                                mapFunctionRef.current?.flyTo(groupLatLng, 15, {
-                                    duration: 0.25,
-                                    maxZoom: 18,
-                                    padding: [50, 50],
-                                });
+                                focusPointWithoutZoomOut(mapFunctionRef.current, groupLatLng, isMobile, snappedPosition);
                                 if (isMobile && snappedPosition !== "bottom") {
                                     setSnappedPosition("bottom");
                                 }
