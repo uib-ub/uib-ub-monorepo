@@ -119,10 +119,10 @@ function LeftWindow({ children, bottomContent }: { children: React.ReactNode, bo
         return <>{children}</>
     }
     return (
-        <div className={`${optionsOn ? '' : 'invisible lg:visible'} absolute left-2 bottom-2 right-2 top-[4rem] z-[3001] w-full lg:w-[calc(30svw-1rem)] xl:w-[calc(25svw-1rem)] top-[50svh] lg:top-16 flex flex-col items-start gap-2 max-h-[calc(100svh-4.5rem)]`}>
-            <section className="bg-white shadow-lg flex flex-col w-full rounded-md overflow-y-scroll min-h-0"
+        <div className={`${optionsOn ? '' : 'invisible lg:visible'} pointer-events-none absolute left-2 bottom-2 right-2 top-[4rem] z-[3001] w-full lg:w-[calc(30svw-1rem)] xl:w-[calc(25svw-1rem)] top-[50svh] lg:top-16 flex flex-col items-start gap-2 max-h-[calc(100svh-4.5rem)]`}>
+            <section className="pointer-events-auto bg-white shadow-lg flex flex-col w-full rounded-md overflow-y-scroll min-h-0"
                 aria-label="Søkefilter">{children}</section>
-            {bottomContent}
+            {bottomContent ? <div className="pointer-events-auto">{bottomContent}</div> : null}
         </div>
     )
 }
@@ -159,8 +159,8 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     if (isMobile) {
         return <>{children}</>
     }
-    return <div className={`absolute lg:top-2 right-2 bottom-2 ${hideResultsOn ? 'top-[calc(100svh-2.5rem)]' : 'top-1/2 '} w-[calc(100svw-1rem)] ${optionsOn ? 'invisible lg:visible' : ''} lg:w-[40svw] ${tree ? '' : 'xl:w-[25svw]'} z-[3001] max-h-[calc(100svh-2rem)]`}>
-        <section ref={scrollableContentRef} className={`bg-white shadow-lg rounded-md ${isMobile ? 'hidden-scrollbar' : ''} overflow-y-auto max-h-[50svh] lg:max-h-[calc(100svh-2rem)]`}
+    return <div className={`pointer-events-none absolute lg:top-2 right-2 bottom-2 ${hideResultsOn ? 'top-[calc(100svh-2.5rem)]' : 'top-1/2 '} w-[calc(100svw-1rem)] ${optionsOn ? 'invisible lg:visible' : ''} lg:w-[40svw] ${tree ? '' : 'xl:w-[25svw]'} z-[3001] max-h-[calc(100svh-2rem)]`}>
+        <section ref={scrollableContentRef} className={`pointer-events-auto bg-white shadow-lg rounded-md ${isMobile ? 'hidden-scrollbar' : ''} overflow-y-auto max-h-[50svh] lg:max-h-[calc(100svh-2rem)]`}
             aria-labelledby="right-title">
             <div className={`flex flex-col ${showScrollToTop ? 'pb-20' : ''}`}>
                 {children}
@@ -169,7 +169,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
         {showScrollToTop && (
             <RoundIconButton
                 type="button"
-                className="absolute right-3 bottom-3 z-10 p-3"
+                className="pointer-events-auto absolute right-3 bottom-3 z-10 p-3"
                 onClick={scrollToTop}
                 label="Til toppen"
                 side="top"
