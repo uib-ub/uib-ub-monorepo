@@ -3,9 +3,6 @@ import { PiArchiveFill, PiArticle, PiBank, PiFile, PiSpeakerHigh } from "react-i
 import { resolveLanguage } from "../iiif-utils";
 import IIIFExpandSummary from "./iiif-expand-summary";
 import IIIFMetadataPanel from "./iiif-metadata-panel";
-import Breadcrumbs from "@/components/layout/breadcrumbs";
-
-import Link from "next/link";
 
 export default function IIIFInfoSection({ manifest, manifestDataset, stats }: { manifest: any, manifestDataset: string, stats: any }) {
 
@@ -15,18 +12,6 @@ export default function IIIFInfoSection({ manifest, manifestDataset, stats }: { 
 
         <h1>{manifest ? resolveLanguage(manifest.label) : 'Arkiv'}</h1>
 
-        {manifest?.type === "Manifest" && manifest?.collections?.length > 0 && (
-
-                <div className="mt-2 overflow-x-auto">
-                    <Breadcrumbs
-                        homeUrl="/iiif"
-                        homeLabel="Arkiv"
-                        parentUrl={manifest.collections?.slice().reverse().map((item: any) => item.uuid)}
-                        parentName={manifest.collections?.slice().reverse().map((item: any) => resolveLanguage(item.label))}
-                        currentName={resolveLanguage(manifest.label)}
-                    />
-                </div>
-        )}
         <div id="iiif-info-collapsible" className="flex flex-col gap-6">
             {manifest?.summary &&
                 <div>

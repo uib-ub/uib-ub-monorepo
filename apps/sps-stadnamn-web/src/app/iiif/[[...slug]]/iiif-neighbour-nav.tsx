@@ -12,12 +12,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { RoundIconButton } from "@/components/ui/clickable/round-icon-button";
 import IconLink from "@/components/ui/icon-link";
+import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useIIIFSessionStore } from '@/state/zustand/iiif-session-store';
 import dynamic from 'next/dynamic';
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useState } from "react";
-import { PiArrowElbowLeftUpBold, PiCaretLeftBold, PiCaretLineLeftBold, PiCaretLineRightBold, PiCaretRightBold, PiDotsThreeBold, PiDownloadSimpleBold, PiX, PiXBold } from "react-icons/pi";
+import { PiArchiveBold, PiArrowElbowLeftUpBold, PiCaretLeftBold, PiCaretLineLeftBold, PiCaretLineRightBold, PiCaretRightBold, PiDotsThreeBold, PiDownloadSimpleBold, PiX, PiXBold } from "react-icons/pi";
 import { resolveLanguage } from '../iiif-utils';
 
 const IIIFDownloader = dynamic(() => import('@/components/download/iiif-downloader'), { ssr: false })
@@ -51,6 +52,11 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
         hasSearch &&
         (!!searchContext?.query) &&
         (!isCollection || searchCollectionUuid !== currentKey)
+    const showBreadcrumbs =
+        manifest?.type === "Manifest" &&
+        Array.isArray(manifest?.collections) &&
+        manifest.collections.length > 0
+    const [breadcrumbsOpen, setBreadcrumbsOpen] = useState(false)
 
     const backToSearchHref = !hasSearch
         ? undefined
@@ -108,7 +114,40 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
 
     return (
         <>
-            <nav className={`flex items-center gap-2 w-full ${manifest.type == 'Manifest' ? `absolute top-14 ${isMobile ? 'left-0' : 'left-[20svw]'} m-2` : ''}`}>
+            <nav className={`flex items-center gap-2 w-full ${manifest.type == 'Manifest' ? `absolute top-14 ${isMobile ? 'left-0' : 'left-[20svw]'} m-2` : isMobile ? 'px-3' : ''}`}>
+                {showBreadcrumbs && (!isMobile || !navOpen || isCollection) && (
+                    <div className="relative">
+                        <RoundIconButton
+                            onClick={() => setBreadcrumbsOpen(!breadcrumbsOpen)}
+                            aria-expanded={breadcrumbsOpen}
+                            aria-controls="iiif-breadcrumbs-nav"
+                            label={breadcrumbsOpen ? "Skjul brødsmulesti" : "Vis brødsmulesti"}
+                        >
+                            {breadcrumbsOpen ? (
+                                <PiX className="text-xl xl:text-base" />
+                            ) : (
+                                <PiArchiveBold className="text-xl xl:text-base" />
+                            )}
+                        </RoundIconButton>
+                        {breadcrumbsOpen && (
+                            <div
+                                id="iiif-breadcrumbs-nav"
+                                className="absolute left-0 top-full mt-2 w-[min(92vw,44rem)] max-w-[44rem] rounded-3xl bg-white px-4 py-3 text-neutral-950 shadow-lg"
+                            >
+                                <div className="overflow-x-auto">
+                                    <Breadcrumbs
+                                        homeUrl="/iiif"
+                                        homeLabel="Arkiv"
+                                        parentUrl={manifest.collections.slice().reverse().map((item: any) => item.uuid)}
+                                        parentName={manifest.collections.slice().reverse().map((item: any) => resolveLanguage(item.label))}
+                                        currentName={resolveLanguage(manifest.label)}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 {/* Collection link (hidden on mobile when neighbour nav is open) */}
                 {(!isMobile || !navOpen || isCollection) && !hasBannerBackToSearchLink && (
                     <RoundIconButton
