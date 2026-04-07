@@ -175,7 +175,7 @@ function GroupBottomToolbarMulti({
 
                 {groupTotal > 0 && (
                     <Clickable
-                        className="btn btn-outline btn-compact rounded-full items-center gap-1 !pr-1 flex"
+                        className="btn btn-outline btn-compact rounded-full items-center gap-2 !pr-1 flex"
                         only={{
                             sourceView: "on",
                             group: stringToBase64Url(groupData.id),
