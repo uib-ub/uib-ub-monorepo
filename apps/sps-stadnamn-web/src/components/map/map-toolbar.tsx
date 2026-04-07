@@ -173,7 +173,7 @@ export default function MapToolbar() {
                     style={isMobile ? { top: mobileControlsTop } : undefined}
                 >
                     <PiChatCircleText className="text-xl" aria-hidden="true" />
-                    <span className="sr-only lg:not-sr-only">Tilbakemelding</span>
+                    <span className={isMobile ? '' : "sr-only lg:not-sr-only"}>Tilbakemelding</span>
                 </Clickable>
             ) : null}
                 
