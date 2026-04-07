@@ -40,10 +40,11 @@ export default async function Home() {
     <div className="flex flex-col gap-6 lg:mt-32">
   <h1 className="self-center text-5xl text-neutral-950 sr-only md:not-sr-only !px-2 font-serif">Stadnamnsøk</h1>
   
-  <Form id="search-form" className="flex items-center justify-center gap-2 w-full" action="search">
+  <Form suppressHydrationWarning={true} id="search-form" className="flex items-center justify-center gap-2 w-full" action="search">
    
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
     <input 
+    suppressHydrationWarning={true}
       id="search_input" 
       className="flex-1 rounded-lg h-14 bg-white lg:h-12 border border-gray-300 text-lg lg:text-base px-4 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all" 
       name="q" 
