@@ -34,7 +34,7 @@ export const ExpandableContent = ({
     // Only consider it "long" if expanding will at least double the visible text
     const isLong = text.length > CHAR_THRESHOLD * 2;
     const isExpanded = forceExpanded !== undefined ? forceExpanded : expanded;
-    const clampStyle = (true || isExpanded || !isLong) ? {} : {
+    const clampStyle = (isExpanded || !isLong) ? {} : {
         display: '-webkit-box',
         WebkitLineClamp: String(4),
         WebkitBoxOrient: 'vertical' as const,
