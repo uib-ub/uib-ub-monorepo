@@ -447,7 +447,7 @@ export default function ResultCard({
                             label="Lukk framheva gruppe"
                             remove={["group", "activePoint", "activeYear", "activeName", "init", "resultLimit"]}
                             onClick={() => {
-                                if (snappedPosition == 'top') setSnappedPosition("bottom");
+                               setSnappedPosition("bottom");
                             }}
 
                             className={`btn btn-outline rounded-full text-neutral-900 p-2`}
