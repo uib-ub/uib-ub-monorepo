@@ -580,15 +580,14 @@ export default function ResultCard({
             {iiifItems?.length > 0 && <>
                     <Carousel items={iiifItems} />
                 </>
-                }
-                {!mobilePreview && Array.isArray(audioItems) && audioItems.length > 0 && (
-                    <AudioPlayerList
-                        recordings={audioItems}
-                        showArchiveLink
-                    />
-                )}
-                
-                {textItems?.length > 0 && <TextItemsSection textItems={textItems} highlight={highlight} />}
+            }
+            {!mobilePreview && Array.isArray(audioItems) && audioItems.length > 0 && (
+                <AudioPlayerList
+                    recordings={audioItems}
+                    showArchiveLink
+                />
+            )}                
+            {textItems?.length > 0 && <TextItemsSection textItems={textItems} highlight={highlight} />}
 
             {!mobilePreview && <>
                 <GroupBottomToolbarMulti groupData={resultCardData} groupTotal={resultCardTotal} />

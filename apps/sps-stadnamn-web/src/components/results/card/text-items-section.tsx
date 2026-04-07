@@ -57,7 +57,11 @@ export const TextItemsSection = ({ textItems, highlight }: { textItems: any[], h
                 const leadingLabel = hasMultipleItems && showAll ? datasetLabel : undefined;
 
                 return (
-                    <div className="px-3 max-w-[calc(100%-1rem)]" key={textItem.uuid + 'text'} id={`text-item-${textItem.uuid}`}>
+                    <div
+                        className="px-3 max-w-[calc(100%-1rem)] [touch-action:pan-y] select-none [-webkit-user-select:none] [-webkit-touch-callout:none]"
+                        key={textItem.uuid + 'text'}
+                        id={`text-item-${textItem.uuid}`}
+                    >
                         <ExpandableContent
                             text={text}
                             hasHtmlTags={hasHtmlTags}

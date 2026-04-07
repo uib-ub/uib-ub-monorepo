@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { processHtmlContent } from "./group-utils";
-import { useSearchParams } from "next/navigation";
 import Clickable from "@/components/ui/clickable/clickable";
 import SourceLink from "./source-link";
 import { formatHighlight } from "@/lib/text-utils";
@@ -45,31 +44,7 @@ export const ExpandableContent = ({
 
 
     // Only render processed HTML when fully expanded or when content is short
-    const processedText = true ? 
-
-    `Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-    Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-     ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
-      in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-    Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-     ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
-      in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-    Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-     ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
-      in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-    `
-    
-    
-    
-    : isHighlight
+    const processedText = isHighlight
         ? formatHighlight(text)
         : hasHtmlTags
             ? processHtmlContent(text, isExpanded || !isLong)
@@ -82,14 +57,19 @@ export const ExpandableContent = ({
 
     return (
         <>
-            <span style={clampStyle}>
+            <div>
                 {leadingLabel && (
                     <>
                         <span className="font-semibold text-neutral-950">{leadingLabel}</span>
                         <span className="text-neutral-500"> | </span>
                     </>
                 )}
-                {processedText}
+                <div
+                    className="[touch-action:pan-y] select-none [-webkit-user-select:none] [-webkit-touch-callout:none] pointer-events-none"
+                    style={clampStyle}
+                >
+                    {processedText}
+                </div>
                 {Array.isArray(links) && links.length > 0 && (
                     <>
                         &nbsp;|&nbsp;
@@ -99,7 +79,7 @@ export const ExpandableContent = ({
                         ))}
                     </>
                 )}
-            </span>
+            </div>
             {shouldShowToggle && (
                 <Clickable
                     className="text-sm text-neutral-900 mt-1.5 mb-0 mr-2 flex items-center gap-1"
