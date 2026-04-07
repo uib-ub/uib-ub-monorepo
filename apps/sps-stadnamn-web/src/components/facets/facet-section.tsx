@@ -203,7 +203,7 @@ export default function FacetSection() {
     }
 
     // Handle special cases
-    if (values[0] == "_false" && name == "adm") {
+    if (values[0] == "_false" && (name == "adm" || name == "group.adm")) {
       if (values.length == 1) return "[inga verdi]"
       return values[1] + " (utan underinndeling)"
     }
@@ -280,8 +280,12 @@ export default function FacetSection() {
   const shouldShowSecondaryFacets = isMobile || mode === 'table' || optionsOn
 
   const renderFacetRow = (f: (typeof availableFacets)[number]) => {
-    const activeFiltersForFacet = facetFilters.filter(([key]) => key === f.key)
+    const activeFilterKeys = f.key === 'adm' ? ['adm', 'group.adm'] : [f.key]
+    const activeFiltersForFacet = facetFilters.filter(([key]) => activeFilterKeys.includes(key))
     const hasActiveFilters = activeFiltersForFacet.length > 0
+    const openFacetKey = f.key === 'adm'
+      ? (datasets.length === 1 ? 'adm' : 'group.adm')
+      : f.key
 
     return (
       <li key={f.key} className={facetsLoading ? 'opacity-50' : ''}>
@@ -303,7 +307,7 @@ export default function FacetSection() {
             <div className="flex items-center  gap-2 flex-shrink-0">
             {activeFiltersForFacet.length > 1 && (
                 <Clickable
-                  remove={[f.key]}
+                  remove={activeFilterKeys}
                   link
                   className="btn btn-compact btn-neutral"
                   aria-label={`Tøm filter for ${f.label}`}
@@ -315,7 +319,7 @@ export default function FacetSection() {
                 link
                 className="btn btn-compact btn-neutral"
                 aria-controls={f.key + '-collapsible'}
-                add={{ facet: f.key }}
+                add={{ facet: openFacetKey }}
               >
                 <span>Legg til</span>
               </Clickable>
@@ -346,7 +350,7 @@ export default function FacetSection() {
                           aria-hidden="true"
                         />
                       )}
-                      <span className="text-sm">{getChipValue(key, value)}</span>
+                      <span className={`text-sm ${key === 'adm' ? 'italic' : ''}`}>{getChipValue(key, value)}</span>
                       <PiX className="ml-0.5 text-sm" aria-hidden="true" />
                     </button>
                   )

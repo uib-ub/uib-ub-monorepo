@@ -258,7 +258,9 @@ export default function MapInterface() {
                     {!tableOptions && facet && (
                         <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
                             <div id={isMobile ? 'drawer-title' : 'left-title'} className="text-lg text-neutral-900 px-1 font-semibold">
-                                {fieldConfig[perspective][facet]?.label}
+                                {facet === 'group.adm'
+                                    ? (fieldConfig[perspective]['adm']?.label || fieldConfig.all['adm']?.label)
+                                    : fieldConfig[perspective][facet]?.label}
                             </div>
                             <div className="flex items-center gap-1 ml-auto">
                                 <Clickable className="flex items-center gap-1 px-2" label="Tilbake" remove={["facet"]}>
@@ -301,7 +303,7 @@ export default function MapInterface() {
                     )}
 
                     {facet && <div className="flex flex-col gap-2 pb-20">
-                        {facet == 'adm' ? (
+                        {facet == 'adm' || facet == 'group.adm' ? (
                             <ClientFacet facetName={facet} />
                         ) : facet == 'wikiAdm' ? (
                             <WikiAdmFacet />

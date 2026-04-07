@@ -6,7 +6,7 @@ import { PiFunnel } from 'react-icons/pi';
 import FacetToolbar from './facet-toolbar';
 import { GlobalContext } from '@/state/providers/global-provider';
 import { useFacetParam, usePerspective } from '@/lib/param-hooks';
-import { FacetBadge } from '@/components/ui/badge';
+import { FacetBadge, TitleBadge } from '@/components/ui/badge';
 import { usePreferences } from '@/state/zustand/persistent-preferences';
 
 
@@ -18,9 +18,16 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
   const paramsExceptFacet = useMemo(() => removeFilterParams(facetName), [removeFilterParams, facetName])
   const searchParams = useSearchParams()
+  const showSourceToggle = searchParams.getAll('dataset').length === 1 || searchParams.has('adm')
+  const admCount = searchParams.getAll('adm').length
+  const groupAdmCount = searchParams.getAll('group.adm').length
   const { facetOptions } = useContext(GlobalContext)
   const currentFacet = useFacetParam() || 'adm'
   const facetCountMode = usePreferences((state) => state.facetCountMode);
+  const facetBaseName = 'adm';
+  const sourcePrefix = facetName === 'group.adm' ? 'group.' : '';
+  const facetFields = `${sourcePrefix}adm1,${sourcePrefix}adm2,${sourcePrefix}adm3`;
+  const rootAggregation = `${sourcePrefix}${facetBaseName}1`;
 
   // Will for instance include "Hordaland" in addition to "Hordaland_Bergen" if the latter is checked
   const expandedFacets = new Set<string>();
@@ -43,11 +50,11 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     */
 
   const { data: facetData, isLoading: facetIsLoading } = useQuery({
-    queryKey: ['facet', perspective, paramsExceptFacet],
+    queryKey: ['facet', perspective, paramsExceptFacet, facetName],
     queryFn: async () => {
-      const response = await fetch(`/api/facet?perspective=${perspective}&facets=group.adm1,group.adm2,group.adm3${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`)
+      const response = await fetch(`/api/facet?perspective=${perspective}&facets=${facetFields}${paramsExceptFacet ? '&' + paramsExceptFacet : ''}`)
       const es_data = await response.json()
-      return es_data.aggregations?.["group.adm1"]
+      return es_data.aggregations?.[rootAggregation]
     }
   })
 
@@ -142,7 +149,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     if (!facetSearchQuery && level == 1) return true
     if (facetSearchQuery && createSearchRegex(facetSearchQuery)?.test(item.key.replace("-", " "))) return true
     const childLevel = level + 1
-    if (item["group." + baseName + childLevel]?.buckets.some((subitem: any) => facetSearch(subitem, baseName, childLevel))) {
+    if (item[sourcePrefix + baseName + childLevel]?.buckets.some((subitem: any) => facetSearch(subitem, baseName, childLevel))) {
       return true
     }
     return false
@@ -155,8 +162,8 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     : 0;
 
   const listItem = (item: any, index: number, baseName: string, path: string[], parentChecked: boolean) => {
-    const childAggregation = 'group.' + baseName + (path.length + 1);
-    const checked = isChecked(baseName, path);
+    const childAggregation = sourcePrefix + baseName + (path.length + 1);
+    const checked = isChecked(facetName, path);
     let children = item[childAggregation]?.buckets
     children = children?.some((child: any) => child.key[0] != "_") ? children : []
     const filteredChildren = facetSearchQuery && children?.filter((subitem: any) => facetSearch(subitem, baseName, path.length + 1))
@@ -176,7 +183,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
           <input
             type="checkbox"
             checked={checked}
-            onChange={(e) => { toggleAdm(e.target.checked, baseName, path) }}
+            onChange={(e) => { toggleAdm(e.target.checked, facetName, path) }}
             className="mr-2 flex-shrink-0"
           />
           <span className="text-neutral-950 break-words lg:text-sm xl:text-base min-w-0">
@@ -204,6 +211,47 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     <>
       {true &&
         <div className="flex flex-col gap-2 pb-2 ">
+          {showSourceToggle && (
+            <div className="px-2 pt-1">
+              <span className="sr-only">Vel områdeinndelingstype</span>
+              <div className="inline-flex items-center gap-1 p-1 rounded-lg border border-neutral-200 bg-neutral-50" role="tablist" aria-label="Vel områdeinndelingstype">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={facetName === 'adm'}
+                  className={`inline-flex items-center gap-1 px-2 py-1 text-xs rounded-md ${facetName === 'adm'
+                      ? 'bg-white text-neutral-950 font-semibold shadow-sm'
+                      : 'text-neutral-700 hover:text-neutral-950 hover:bg-white/70'
+                    }`}
+                  onClick={() => {
+                    const params = new URLSearchParams(searchParams.toString())
+                    params.set('facet', 'adm')
+                    router.push(`?${params.toString()}`, { scroll: false })
+                  }}
+                >
+                  Opphavleg
+                  {admCount > 0 && <TitleBadge count={admCount} className="bg-neutral-700 text-white text-[0.7rem]" />}
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={facetName === 'group.adm'}
+                  className={`inline-flex items-center gap-1 px-2 py-1 text-xs rounded-md ${facetName === 'group.adm'
+                      ? 'bg-white text-neutral-950 font-semibold shadow-sm'
+                      : 'text-neutral-700 hover:text-neutral-950 hover:bg-white/70'
+                    }`}
+                  onClick={() => {
+                    const params = new URLSearchParams(searchParams.toString())
+                    params.set('facet', 'group.adm')
+                    router.push(`?${params.toString()}`, { scroll: false })
+                  }}
+                >
+                  Dagens
+                  {groupAdmCount > 0 && <TitleBadge count={groupAdmCount} className="bg-neutral-700 text-white text-[0.7rem]" />}
+                </button>
+              </div>
+            </div>
+          )}
           <div className='flex gap-2 px-2 pt-1'>
             <div className='relative w-full h-10'>
               <input aria-label="Søk i områdefilter" onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())}
@@ -220,8 +268,8 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
             <fieldset>
               <legend className="sr-only">{`Filtreringsalternativer for områdeinndeling`}</legend>
               <ul aria-live="polite" className='flex flex-col px-2 divide-y divide-neutral-200'>
-                {sortBuckets(facetAggregation?.buckets).filter(item => facetSearch(item, facetName, 1)).map((item, index) => (
-                  listItem(item, index, facetName, [item.key], false)
+                {sortBuckets(facetAggregation?.buckets).filter(item => facetSearch(item, facetBaseName, 1)).map((item, index) => (
+                  listItem(item, index, facetBaseName, [item.key], false)
                 ))}
               </ul>
             </fieldset>

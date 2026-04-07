@@ -54,16 +54,17 @@ export default function ActiveFilters() {
 
   const getFieldLabel = (name: string, value: string) => {
 
-    const fieldSettings = fieldConfig[perspective]?.[name] || {}
+    const normalizedName = name === 'group.adm' ? 'adm' : name
+    const fieldSettings = fieldConfig[perspective]?.[normalizedName] || {}
     const label = (fieldSettings as any).label || name
-    const omitLabel = fieldSettings?.omitLabel || name == 'adm'
+    const omitLabel = fieldSettings?.omitLabel || normalizedName == 'adm'
 
     const isExcluded = value.startsWith('!')
     const normalizedValue = isExcluded ? value.slice(1) : value
     const values = normalizedValue.split('__')
 
     // Add any special cases here
-    if (values[0] == "_false" && name == "adm") {
+    if (values[0] == "_false" && (name == "adm" || name == "group.adm")) {
       if (values.length == 1) return "[inga verdi]"
       return values[1] + " (utan underinndeling)"
     }
@@ -150,7 +151,7 @@ export default function ActiveFilters() {
                   aria-hidden="true"
                 />
               )}
-              <span className="text-sm">{label}</span>
+              <span className={`text-sm ${key === 'adm' ? 'italic' : ''}`}>{label}</span>
               <PiX className="ml-auto text-lg" aria-hidden="true" />
             </button>
           )

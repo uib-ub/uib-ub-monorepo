@@ -16,6 +16,8 @@ export function extractFacets(request: Request) {
   const serverFacets: { [key: string]: string[] } = {};
   const rangeFilters: { [key: string]: { [operator: string]: string } } = {};
 
+  const isHierarchicalAdmFacet = (key: string) => key === 'adm' || key === 'group.adm';
+
   if (urlParams.get('datasetTag') == 'deep') {
     // add boost_gt: '3'
     urlParams.set('boost_gt', '3')
@@ -57,9 +59,9 @@ export function extractFacets(request: Request) {
         rangeFilters[fieldName][operator] = value;
       }
       else if (value == '_true' || value == '_false') {
-        if (key == 'adm') {
-          if (!clientFacets.adm) clientFacets.adm = [];
-          clientFacets.adm.push(value);
+        if (isHierarchicalAdmFacet(key)) {
+          if (!clientFacets[key]) clientFacets[key] = [];
+          clientFacets[key].push(value);
         } else {
           // Keep _true/_false with regular facet values so they can be OR-combined
           // (e.g. field missing OR field has one of selected values).
@@ -71,16 +73,16 @@ export function extractFacets(request: Request) {
       }
       // Explicitly exclude the "[ingen verdi]" bucket: require that the field exists
       else if (value === '!_false') {
-        if (key == 'adm') {
+        if (isHierarchicalAdmFacet(key)) {
           // For adm, treat as requiring any adm value (equivalent to _true)
-          if (!clientFacets.adm) clientFacets.adm = [];
-          clientFacets.adm.push('_true');
+          if (!clientFacets[key]) clientFacets[key] = [];
+          clientFacets[key].push('_true');
         } else {
           termFilters.push({ "exists": { "field": key } });
         }
       }
       else {
-        const facets = key == 'adm' ? clientFacets : serverFacets;
+        const facets = isHierarchicalAdmFacet(key) ? clientFacets : serverFacets;
         if (!facets[key]) {
           facets[key] = [];
         }
@@ -118,8 +120,10 @@ export function extractFacets(request: Request) {
 
   // Hierarchical facets (adm is not a real ES field; handle _true/_false and paths here)
   if (Object.keys(clientFacets).length) {
-    if (clientFacets.adm) {
-      const admValues = clientFacets.adm;
+    for (const admFacetKey of ['adm', 'group.adm']) {
+      const admValues = clientFacets[admFacetKey];
+      if (!admValues?.length) continue;
+      const admFieldPrefix = admFacetKey === 'group.adm' ? 'group.' : '';
       const isAdmPath = (v: string) => v !== '_true' && v.slice(0, 6) !== '_false';
       const isAdmFalse = (v: string) => v.slice(0, 6) === '_false';
 
@@ -128,14 +132,14 @@ export function extractFacets(request: Request) {
           "should": [
             // adm=_true: docs that have group.adm1
             ...admValues.filter((v: string) => v === '_true').map(() => ({
-              "exists": { "field": "group.adm1.keyword" }
+              "exists": { "field": `${admFieldPrefix}adm1.keyword` }
             })),
             // adm=_false (top-level "[inga verdi]"): docs that have neither group.adm1 nor group.adm2
             ...admValues.filter((v: string) => v === '_false').map(() => ({
               "bool": {
                 "must_not": [
-                  { "exists": { "field": "group.adm1.keyword" } },
-                  { "exists": { "field": "group.adm2.keyword" } }
+                  { "exists": { "field": `${admFieldPrefix}adm1.keyword` } },
+                  { "exists": { "field": `${admFieldPrefix}adm2.keyword` } }
                 ]
               }
             })),
@@ -143,13 +147,13 @@ export function extractFacets(request: Request) {
             ...admValues.filter((v: string) => isAdmFalse(v) && v.length > 8).map((value: string) => {
               const levels = value.slice(8).split('__').filter(val => val.length).reverse();
               const mustClauses = levels.map((level: string, index: number) => ({
-                "term": { [`group.adm${index + 1}.keyword`]: level }
+                "term": { [`${admFieldPrefix}adm${index + 1}.keyword`]: level }
               }));
               const lastLevelIndex = levels.length + 1;
               return {
                 "bool": {
                   "must": mustClauses,
-                  "must_not": [{ "exists": { "field": `group.adm${lastLevelIndex}.keyword` } }]
+                  "must_not": [{ "exists": { "field": `${admFieldPrefix}adm${lastLevelIndex}.keyword` } }]
                 }
               };
             }),
@@ -157,7 +161,7 @@ export function extractFacets(request: Request) {
             ...admValues.filter(isAdmPath).map((value: string) => ({
               "bool": {
                 "filter": value.split("__").reverse().map((val: string, index: number) => ({
-                  "term": { [`group.adm${index + 1}.keyword`]: val }
+                  "term": { [`${admFieldPrefix}adm${index + 1}.keyword`]: val }
                 }))
               }
             }))
