@@ -12,7 +12,7 @@ import Clickable from "./clickable/clickable"
 import { usePathname, useSearchParams } from "next/navigation"
 import { useSearchQuery } from "@/lib/search-params"
 import { FilterButton } from "../map/map-toolbar"
-import { useMapSettingsOn, useMode, useOptionsOn, useSourceViewOn } from "@/lib/param-hooks"
+import { useInitParam, useMapSettingsOn, useMode, useOptionsOn, useSourceViewOn } from "@/lib/param-hooks"
 import { useNotificationStore } from "@/state/zustand/notification-store"
 
 
@@ -66,6 +66,7 @@ export default function Drawer({
     const sourceViewOn = useSourceViewOn()
     const mode = useMode()
     const notifications = useNotificationStore((s) => s.notifications)
+    const init = useInitParam()
 
     const showFilterButton = (sourceViewOn || mode == 'table') && !isIiifRoute && !optionsOn && !mapSettingsOn
 
@@ -474,7 +475,7 @@ export default function Drawer({
                     </RoundIconButton>
                 )}
 
-                {showFilterButton && (
+                {showFilterButton && (snappedPosition !== 'bottom' || !init) && (
                     <div className={`absolute ${snappedPosition === 'bottom' ? 'right-3 bottom-6' : 'right-3 bottom-6'} z-[6001]`}>
                        <FilterButton />
                     </div>
