@@ -438,7 +438,7 @@ export default function Drawer({
                 aria-labelledby="drawer-title"
                 ref={outerRef}
                 className={`fixed w-full left-0 drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''} flex flex-col`}
-                style={{ bottom: '-0.5rem', height: `${drawerOpen ? currentPosition : 0}rem`, pointerEvents: drawerOpen ? 'auto' : 'none', zIndex: 6000, touchAction: atMiddle() ? 'auto' : 'none', overscrollBehaviorY: 'none' as any }}
+                style={{ bottom: '-0.5rem', height: `${drawerOpen ? currentPosition : 0}rem`, pointerEvents: drawerOpen ? 'auto' : 'none', zIndex: 6000, touchAction: (atMiddle() || atTop()) ? 'pan-y' : 'none', overscrollBehaviorY: 'none' as any }}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
