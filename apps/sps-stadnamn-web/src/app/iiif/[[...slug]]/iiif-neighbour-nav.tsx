@@ -12,10 +12,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { RoundIconButton } from "@/components/ui/clickable/round-icon-button";
 import IconLink from "@/components/ui/icon-link";
+import { GlobalContext } from "@/state/providers/global-provider";
 import { useIIIFSessionStore } from '@/state/zustand/iiif-session-store';
 import dynamic from 'next/dynamic';
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useContext, useState } from "react";
 import { PiArrowElbowLeftUpBold, PiCaretLeftBold, PiCaretLineLeftBold, PiCaretLineRightBold, PiCaretRightBold, PiDotsThreeBold, PiDownloadSimpleBold, PiX, PiXBold } from "react-icons/pi";
 import { resolveLanguage } from '../iiif-utils';
 
@@ -32,6 +33,8 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
     const setNavOpen = useIIIFSessionStore((s) => s.setNavOpen)
     const searchContext = useIIIFSessionStore((s) => s.searchContext)
     const setReturnFocusUuid = useIIIFSessionStore((s) => s.setReturnFocusUuid)
+    const { currentUrl } = useContext(GlobalContext)
+    const pathname = usePathname()
     const router = useRouter()
 
     if (!manifest) return null
@@ -54,6 +57,7 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
         : (searchCollectionUuid
             ? `/iiif/${searchCollectionUuid}?q=${encodeURIComponent(searchContext!.query)}`
             : `/iiif?q=${encodeURIComponent(searchContext!.query)}`)
+    const hasBannerBackToSearchLink = pathname !== "/" && pathname !== "/search" && !!currentUrl?.current
 
     const handleDownload = async (format: string) => {
         try {
@@ -106,7 +110,7 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
         <>
             <nav className={`flex items-center gap-2 w-full ${manifest.type == 'Manifest' ? `absolute top-14 ${isMobile ? 'left-0' : 'left-[20svw]'} m-2` : ''}`}>
                 {/* Collection link (hidden on mobile when neighbour nav is open) */}
-                {(!isMobile || !navOpen || isCollection) && (
+                {(!isMobile || !navOpen || isCollection) && !hasBannerBackToSearchLink && (
                     <RoundIconButton
                         href={`/iiif${manifest.partOf ? `/${manifest.partOf}` : ''}`}
                         label="Gå til overordna samling">

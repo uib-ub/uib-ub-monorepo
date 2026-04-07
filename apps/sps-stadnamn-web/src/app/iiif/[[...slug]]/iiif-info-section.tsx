@@ -3,6 +3,7 @@ import { PiArchiveFill, PiArticle, PiBank, PiFile, PiSpeakerHigh } from "react-i
 import { resolveLanguage } from "../iiif-utils";
 import IIIFExpandSummary from "./iiif-expand-summary";
 import IIIFMetadataPanel from "./iiif-metadata-panel";
+import Breadcrumbs from "@/components/layout/breadcrumbs";
 
 import Link from "next/link";
 
@@ -13,28 +14,18 @@ export default function IIIFInfoSection({ manifest, manifestDataset, stats }: { 
     return <div className={`flex-1 flex flex-col gap-2 p-4 pb-24 w-full`}>
 
         <h1>{manifest ? resolveLanguage(manifest.label) : 'Arkiv'}</h1>
-        {manifest?.collections?.length > 0 && (
-            (() => {
-                const collections = manifest.collections as any[];
-                const institution = collections?.[collections.length - 1];
-                const levelBelowInstitution = collections?.[collections.length - 2];
-                return (
-                    <div className="flex flex-col gap-1 text-lg">
-                        {institution ? (
-                            <Link key={institution.uuid + '-institution'} href={`/iiif/${institution.uuid}`} className="no-underline truncate flex items-center gap-1">
-                                <PiBank className="text-neutral-700" aria-hidden="true" />
-                                {resolveLanguage(institution.label)}
-                            </Link>
-                        ) : null}
-                        {levelBelowInstitution && levelBelowInstitution?.uuid !== institution?.uuid ? (
-                            <Link key={levelBelowInstitution.uuid + '-below-institution'} href={`/iiif/${levelBelowInstitution.uuid}`} className="no-underline truncate flex items-center gap-1">
-                                <PiArchiveFill className="text-neutral-700" aria-hidden="true" />
-                                {resolveLanguage(levelBelowInstitution.label)}
-                            </Link>
-                        ) : null}
-                    </div>
-                );
-            })()
+
+        {manifest?.type === "Manifest" && manifest?.collections?.length > 0 && (
+
+                <div className="mt-2 overflow-x-auto">
+                    <Breadcrumbs
+                        homeUrl="/iiif"
+                        homeLabel="Arkiv"
+                        parentUrl={manifest.collections?.slice().reverse().map((item: any) => item.uuid)}
+                        parentName={manifest.collections?.slice().reverse().map((item: any) => resolveLanguage(item.label))}
+                        currentName={resolveLanguage(manifest.label)}
+                    />
+                </div>
         )}
         <div id="iiif-info-collapsible" className="flex flex-col gap-6">
             {manifest?.summary &&
