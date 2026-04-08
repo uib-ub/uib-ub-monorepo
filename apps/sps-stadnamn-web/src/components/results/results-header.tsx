@@ -38,16 +38,16 @@ export default function ResultsHeader() {
             {!isMobile && (
                 <span className={`flex w-6 justify-center lg:rotate-180`}>
                     {showResults ? (
-                        <PiCaretDownBold className="text-lg" />
+                        <PiCaretDownBold className="text-base" />
                         
                     ) : (
                         
-                        <PiCaretUpBold className="text-lg" />
+                        <PiCaretUpBold className="text-base" />
                     )}
                 </span>
             )}
 
-            <div id={isMobile ? 'drawer-title' : 'right-title'} className={`text-sm xl:text-lg text-neutral-900 font-sans font-semibold ${init ? 'py-1' : ''} ${isMobile ? 'w-full flex justify-end' : ''}`}>
+            <div id={isMobile ? 'drawer-title' : 'right-title'} className={`text-sm xl:text-base text-neutral-900 font-sans font-semibold ${init ? 'py-1' : ''} ${isMobile ? 'w-full flex justify-end' : ''}`}>
                 {sourceView
                     ? (init ? "Andre kjeldeoppslag" : (group ? "Underoppslag" : "Kjeldeoppslag"))
                     : (init ? "Andre namnegrupper" : "Namnegrupper")
