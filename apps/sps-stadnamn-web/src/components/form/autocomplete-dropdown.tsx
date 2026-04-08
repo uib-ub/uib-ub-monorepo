@@ -1,7 +1,7 @@
 'use client'
 
 import AdmInfo from '@/components/shared/adm-info';
-import { useGroupParam, useMode, usePerspective } from '@/lib/param-hooks';
+import { useGroupParam, useMode } from '@/lib/param-hooks';
 import { useSearchQuery } from '@/lib/search-params';
 import useAutocompleteData, {
     getAutocompleteSelection,
@@ -227,9 +227,7 @@ export default function AutocompleteDropdown({
     const { isMobile } = useContext(GlobalContext);
     const { facetFilters, datasetFilters } = useSearchQuery();
     const mode = useMode();
-    const perspective = usePerspective();
     const isTableMode = mode === 'table';
-    const perspectiveIsGrunnord = perspective.includes('_g') || perspective === 'base';
     const group = useGroupParam();
     const autocompleteOpen = useSessionStore((s: any) => s.autocompleteOpen);
     const setAutocompleteOpen = useSessionStore(
@@ -1058,8 +1056,6 @@ export default function AutocompleteDropdown({
                     </li>
                     {rankedHits.map((hit: any, index: number) => {
                         const optionIndex = 1 + index;
-                        const isGrunnordSuggestion =
-                            hit?._index?.split('-')?.[2]?.endsWith('_g');
                         return (
                             <li
                                 key={hit._id}
@@ -1101,38 +1097,30 @@ export default function AutocompleteDropdown({
                                     </span>
                                 )}
                                 <div className="flex-1 leading-6">
-                                    <div className="inline-flex items-center gap-x-2 w-full">
-                                        <strong>
-                                            <HighlightedLabel
-                                                label={hit.fields.label[0]}
-                                                query={inputState}
-                                            />{' '}
-                                            {hit.fields['group.label'] &&
-                                                hit.fields['group.label']?.[0] !=
-                                                    hit.fields.label[0] &&
-                                                '('}
-                                            {hit.fields['group.label'] &&
-                                                hit.fields['group.label']?.[0] !=
-                                                    hit.fields.label[0] && (
-                                                    <HighlightedLabel
-                                                        label={
-                                                            hit.fields['group.label']?.[0]
-                                                        }
-                                                        query={inputState}
-                                                    />
-                                                )}
-                                            {hit.fields['group.label'] &&
-                                                hit.fields['group.label']?.[0] !=
-                                                    hit.fields.label[0] &&
-                                                ')'}{' '}
-                                        </strong>{' '}
-                                        {isGrunnordSuggestion &&
-                                        !perspectiveIsGrunnord ? (
-                                            <em className="text-neutral-800 ml-auto">
-                                                Grunnord
-                                            </em>
-                                        ) : null}
-                                    </div>
+                                    <strong>
+                                        <HighlightedLabel
+                                            label={hit.fields.label[0]}
+                                            query={inputState}
+                                        />{' '}
+                                        {hit.fields['group.label'] &&
+                                            hit.fields['group.label']?.[0] !=
+                                                hit.fields.label[0] &&
+                                            '('}
+                                        {hit.fields['group.label'] &&
+                                            hit.fields['group.label']?.[0] !=
+                                                hit.fields.label[0] && (
+                                                <HighlightedLabel
+                                                    label={
+                                                        hit.fields['group.label']?.[0]
+                                                    }
+                                                    query={inputState}
+                                                />
+                                            )}
+                                        {hit.fields['group.label'] &&
+                                            hit.fields['group.label']?.[0] !=
+                                                hit.fields.label[0] &&
+                                            ')'}{' '}
+                                    </strong>{' '}
                                     <span className="text-neutral-900">
                                         <AdmInfo hit={hit} query={inputState} />
                                     </span>
