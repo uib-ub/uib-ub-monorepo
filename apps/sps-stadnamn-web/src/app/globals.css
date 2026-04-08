@@ -110,7 +110,7 @@
   }
 
   mark {
-    @apply bg-accent-200 border border-accent-900 rounded-sm px-1;
+    @apply bg-accent-300/70 text-neutral-950 font-semibold rounded-[2px] border-0 px-0;
   }
 
   a[href^="http"]:not(.no-underline):not(.override-external-icon):not([aria-label]):not(a[href^="https://stadnamn.no"]):not(a[href^="https://stadnamn.no"]):after,

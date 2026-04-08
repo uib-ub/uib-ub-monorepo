@@ -51,7 +51,6 @@ function highlightText(value: string, query: string) {
           <mark
             // eslint-disable-next-line react/no-array-index-key
             key={idx}
-            className="bg-accent-100 text-inherit rounded px-0.5"
           >
             {part.text}
           </mark>
