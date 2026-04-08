@@ -1,7 +1,7 @@
 'use client'
 
 import AdmInfo from '@/components/shared/adm-info';
-import { useGroupParam, useMode } from '@/lib/param-hooks';
+import { useGroupParam, useMode, usePerspective } from '@/lib/param-hooks';
 import { useSearchQuery } from '@/lib/search-params';
 import useAutocompleteData, {
     getAutocompleteSelection,
@@ -227,7 +227,9 @@ export default function AutocompleteDropdown({
     const { isMobile } = useContext(GlobalContext);
     const { facetFilters, datasetFilters } = useSearchQuery();
     const mode = useMode();
+    const perspective = usePerspective();
     const isTableMode = mode === 'table';
+    const perspectiveIsGrunnord = perspective.includes('_g') || perspective === 'base';
     const group = useGroupParam();
     const autocompleteOpen = useSessionStore((s: any) => s.autocompleteOpen);
     const setAutocompleteOpen = useSessionStore(
@@ -1056,6 +1058,8 @@ export default function AutocompleteDropdown({
                     </li>
                     {rankedHits.map((hit: any, index: number) => {
                         const optionIndex = 1 + index;
+                        const isGrunnordSuggestion =
+                            hit?._index?.split('-')?.[2]?.endsWith('_g');
                         return (
                             <li
                                 key={hit._id}
@@ -1096,7 +1100,18 @@ export default function AutocompleteDropdown({
                                         <PiWall aria-hidden="true" />
                                     </span>
                                 )}
-                                <div className="flex-1 leading-6">
+                                <div
+                                    className={`flex-1 leading-6 ${
+                                        isGrunnordSuggestion && !perspectiveIsGrunnord
+                                            ? 'relative pr-24'
+                                            : ''
+                                    }`}
+                                >
+                                    {isGrunnordSuggestion && !perspectiveIsGrunnord ? (
+                                        <em className="text-neutral-800 absolute right-0 top-0">
+                                            Grunnord
+                                        </em>
+                                    ) : null}
                                     <strong>
                                         <HighlightedLabel
                                             label={hit.fields.label[0]}
