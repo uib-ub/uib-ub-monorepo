@@ -214,6 +214,110 @@ function HighlightedLabel({
     );
 }
 
+const HIGHLIGHT_START = '[[H]]';
+const HIGHLIGHT_END = '[[/H]]';
+
+function stripHighlightMarkers(value: string): string {
+    return value.split(HIGHLIGHT_START).join('').split(HIGHLIGHT_END).join('');
+}
+
+function HighlightedServerText({ value }: { value: string }) {
+    if (!value.includes(HIGHLIGHT_START) || !value.includes(HIGHLIGHT_END)) {
+        return <>{value}</>;
+    }
+
+    const parts: Array<{ text: string; highlighted: boolean }> = [];
+    let cursor = 0;
+    let inHighlight = false;
+
+    while (cursor < value.length) {
+        const startIdx = value.indexOf(HIGHLIGHT_START, cursor);
+        const endIdx = value.indexOf(HIGHLIGHT_END, cursor);
+
+        if (!inHighlight) {
+            if (startIdx < 0) {
+                parts.push({ text: value.slice(cursor), highlighted: false });
+                break;
+            }
+            if (startIdx > cursor) {
+                parts.push({
+                    text: value.slice(cursor, startIdx),
+                    highlighted: false,
+                });
+            }
+            cursor = startIdx + HIGHLIGHT_START.length;
+            inHighlight = true;
+            continue;
+        }
+
+        if (endIdx < 0) {
+            parts.push({ text: value.slice(cursor), highlighted: true });
+            break;
+        }
+
+        if (endIdx > cursor) {
+            parts.push({
+                text: value.slice(cursor, endIdx),
+                highlighted: true,
+            });
+        }
+        cursor = endIdx + HIGHLIGHT_END.length;
+        inHighlight = false;
+    }
+
+    return (
+        <>
+            {parts.map((part, idx) =>
+                part.highlighted ? (
+                    <mark
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={idx}
+                        className="bg-accent-100 text-inherit rounded px-0.5"
+                    >
+                        {part.text}
+                    </mark>
+                ) : (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <span key={idx}>{part.text}</span>
+                ),
+            )}
+        </>
+    );
+}
+
+function getHitHighlightedValue(
+    hit: any,
+    field: string,
+    fallback: string | undefined,
+): string {
+    const highlighted = hit?.highlight?.[field]?.[0];
+    if (!highlighted) return fallback || '';
+    if (!fallback) return highlighted;
+    return stripHighlightMarkers(highlighted) === fallback ? highlighted : fallback;
+}
+
+function HitFieldText({
+    hit,
+    field,
+    fallback,
+    query,
+}: {
+    hit: any;
+    field: string;
+    fallback: string | undefined;
+    query: string;
+}) {
+    const value = getHitHighlightedValue(hit, field, fallback);
+    const hasServerHighlight =
+        value.includes(HIGHLIGHT_START) && value.includes(HIGHLIGHT_END);
+
+    if (hasServerHighlight) {
+        return <HighlightedServerText value={value} />;
+    }
+
+    return <HighlightedLabel label={fallback || ''} query={query} />;
+}
+
 type AutocompleteDropdownProps = {
     inputState: string;
     onSelect: (selection: AutocompleteSelection) => void;
@@ -1049,7 +1153,12 @@ export default function AutocompleteDropdown({
                             />
                         </span>
                         <span className="flex-1 leading-6">
-                            {rankedHits[0].fields.label[0]}
+                            <HitFieldText
+                                hit={rankedHits[0]}
+                                field="label"
+                                fallback={rankedHits[0].fields.label[0]}
+                                query={inputState}
+                            />
                         </span>
                     </li>
                     {rankedHits.map((hit: any, index: number) => {
@@ -1096,15 +1205,47 @@ export default function AutocompleteDropdown({
                                 )}
                                 <div className="flex-1 leading-6">
                                     <strong>
-                                        {hit.fields.label[0]}{' '}
+                                        <HitFieldText
+                                            hit={hit}
+                                            field="label"
+                                            fallback={hit.fields.label[0]}
+                                            query={inputState}
+                                        />{' '}
                                         {hit.fields['group.label'] &&
                                             hit.fields['group.label']?.[0] !=
                                                 hit.fields.label[0] &&
-                                            `(${hit.fields['group.label']?.[0]})`}{' '}
+                                            '('}
+                                        {hit.fields['group.label'] &&
+                                            hit.fields['group.label']?.[0] !=
+                                                hit.fields.label[0] && (
+                                                <HitFieldText
+                                                    hit={hit}
+                                                    field="group.label"
+                                                    fallback={
+                                                        hit.fields['group.label']?.[0]
+                                                    }
+                                                    query={inputState}
+                                                />
+                                            )}
+                                        {hit.fields['group.label'] &&
+                                            hit.fields['group.label']?.[0] !=
+                                                hit.fields.label[0] &&
+                                            ')'}{' '}
                                     </strong>{' '}
                                     <span className="text-neutral-900">
                                         <AdmInfo hit={hit} />
                                     </span>
+                                    {hit.fields?.['cadastreText.path']?.[0] ? (
+                                        <div className="text-neutral-700 text-sm">
+                                            <HighlightedServerText
+                                                value={getHitHighlightedValue(
+                                                    hit,
+                                                    'cadastreText.path',
+                                                    hit.fields['cadastreText.path'][0],
+                                                )}
+                                            />
+                                        </div>
+                                    ) : null}
                                 </div>
                             </li>
                         );

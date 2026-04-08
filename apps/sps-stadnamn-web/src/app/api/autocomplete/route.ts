@@ -4,9 +4,9 @@ import { getSortArray } from '@/config/server-config';
 
 // Check if query contains special characters that should disable autocomplete
 function hasSpecialCharacters(query: string): boolean {
-  // Allow alphanumeric, spaces, comma, and Norwegian characters (å, æ, ø)
+  // Allow alphanumeric, spaces, comma, hyphen, slash, and Norwegian characters (å, æ, ø)
   // Everything else is considered a special character
-  return /[^a-zæøå0-9,\s]/i.test(query);
+  return /[^a-zæøå0-9,\s\/-]/i.test(query);
 }
 
 export async function GET(request: Request) {
@@ -21,6 +21,8 @@ export async function GET(request: Request) {
 
   const rawQueryString = reservedParams.q?.trim() || ""
   const queryString = rawQueryString.toLowerCase()
+  const startsWithNumber = /^\d/.test(queryString)
+  const normalizedCadastrePrefix = rawQueryString.replace(/[/-]+$/g, "")
   
   // If query contains special characters, return empty results
   if (queryString && hasSpecialCharacters(queryString)) {
@@ -43,6 +45,8 @@ export async function GET(request: Request) {
     rawQueryString.length > 0
       ? rawQueryString[0].toUpperCase() + rawQueryString.slice(1)
       : rawQueryString
+  const labelExactBoost = startsWithNumber ? 2.0 : 10.0
+  const labelPrefixBoost = startsWithNumber ? 1.0 : 5.0
 
   const basePrefixQuery = {
     "bool": {
@@ -51,7 +55,7 @@ export async function GET(request: Request) {
           "term": {
             "label.keyword": {
               "value": capitalizedQuery || queryString,
-              "boost": 10.0
+              "boost": labelExactBoost
             }
           }
         },
@@ -77,18 +81,91 @@ export async function GET(request: Request) {
                 ]
               }
             },
-            "boost": 5.0
+            "boost": labelPrefixBoost
           }
-        }
+        },
+        ...(startsWithNumber
+          ? [
+              {
+                "bool": {
+                  "should": [
+                    {
+                      "match_phrase": {
+                        "cadastreText.path": {
+                          "query": rawQueryString,
+                          "boost": 12.0
+                        }
+                      }
+                    },
+                    {
+                      "constant_score": {
+                        "filter": {
+                          "prefix": {
+                            "cadastreText.path": rawQueryString
+                          }
+                        },
+                        "boost": 8.0
+                      }
+                    },
+                    {
+                      "match_bool_prefix": {
+                        "cadastreText.path": {
+                          "query": rawQueryString,
+                          "operator": "and",
+                          "boost": 6.0
+                        }
+                      }
+                    },
+                    ...(normalizedCadastrePrefix && normalizedCadastrePrefix !== rawQueryString
+                      ? [
+                          {
+                            "match_phrase": {
+                              "cadastreText.path": {
+                                "query": normalizedCadastrePrefix,
+                                "boost": 10.0
+                              }
+                            }
+                          },
+                          {
+                            "constant_score": {
+                              "filter": {
+                                "prefix": {
+                                  "cadastreText.path": normalizedCadastrePrefix
+                                }
+                              },
+                              "boost": 7.0
+                            }
+                          },
+                          {
+                            "match_bool_prefix": {
+                              "cadastreText.path": {
+                                "query": normalizedCadastrePrefix,
+                                "operator": "and",
+                                "boost": 5.5
+                              }
+                            }
+                          }
+                        ]
+                      : [])
+                  ],
+                  "minimum_should_match": 1
+                }
+              }
+            ]
+          : [])
       ],
       "minimum_should_match": 1,
-      "must_not": [
-        {
-          "regexp": {
-            "label.keyword": ".*\\s.*"
-          }
-        }
-      ]
+      ...(startsWithNumber
+        ? {}
+        : {
+            "must_not": [
+              {
+                "regexp": {
+                  "label.keyword": ".*\\s.*"
+                }
+              }
+            ]
+          })
     }
   }
 
@@ -122,6 +199,8 @@ export async function GET(request: Request) {
       : rawQueryString.split(/\s+/).filter((p) => p.length > 0)
 
     const firstToken = parts[0]
+    const rawFirstToken = rawParts[0] || firstToken || ""
+    const normalizedFirstCadastrePrefix = rawFirstToken.replace(/[/-]+$/g, "")
     const rawLastToken = rawParts[rawParts.length - 1] || ""
     const firstPartRaw = rawParts.slice(0, -1).join(" ").trim()
     const trailingBeforeCommaTokens = hasComma ? beforeCommaTokens.slice(1) : parts.slice(1, -1)
@@ -132,20 +211,104 @@ export async function GET(request: Request) {
     const middleTokensAfterComma =
       hasComma && afterCommaTokens.length > 1 ? afterCommaTokens.slice(0, -1) : []
 
-    const admFields = ["adm1", "adm2", "group.adm1", "group.adm2"]
+    const admFields = [
+      "adm1",
+      "adm2",
+      "group.adm1",
+      "group.adm2",
+      ...(startsWithNumber ? ["cadastreText.path"] : [])
+    ]
 
     const mustClauses: any[] = []
 
-    // 1) First token must match label (and only label).
+    // 1) First token must match label. For numeric-leading input we also allow
+    //    cadastre path, since cadastral identifiers start with digits.
     if (firstToken?.length > 0) {
-      mustClauses.push({
-        "match": {
-          "label": {
-            "query": firstToken,
-            "operator": "and"
+      if (startsWithNumber) {
+        mustClauses.push({
+          "bool": {
+            "should": [
+              ...(rawFirstToken
+                ? [
+                    {
+                      "match_phrase": {
+                        "cadastreText.path": {
+                          "query": rawFirstToken,
+                          "boost": 10.0
+                        }
+                      }
+                    },
+                    {
+                      "prefix": {
+                        "cadastreText.path": {
+                          "value": rawFirstToken,
+                          "boost": 8.0
+                        }
+                      }
+                    },
+                    {
+                      "match_bool_prefix": {
+                        "cadastreText.path": {
+                          "query": rawFirstToken,
+                          "operator": "and",
+                          "boost": 6.0
+                        }
+                      }
+                    }
+                  ]
+                : []),
+              ...(normalizedFirstCadastrePrefix && normalizedFirstCadastrePrefix !== rawFirstToken
+                ? [
+                    {
+                      "match_phrase": {
+                        "cadastreText.path": {
+                          "query": normalizedFirstCadastrePrefix,
+                          "boost": 9.0
+                        }
+                      }
+                    },
+                    {
+                      "prefix": {
+                        "cadastreText.path": {
+                          "value": normalizedFirstCadastrePrefix,
+                          "boost": 7.0
+                        }
+                      }
+                    },
+                    {
+                      "match_bool_prefix": {
+                        "cadastreText.path": {
+                          "query": normalizedFirstCadastrePrefix,
+                          "operator": "and",
+                          "boost": 5.5
+                        }
+                      }
+                    }
+                  ]
+                : []),
+              {
+                "match": {
+                  "label": {
+                    "query": firstToken,
+                    "operator": "and",
+                    "boost": 0.5
+                  }
+                }
+              }
+            ],
+            "minimum_should_match": 1
           }
-        }
-      })
+        })
+      } else {
+        mustClauses.push({
+          "match": {
+            "label": {
+              "query": firstToken,
+              "operator": "and"
+            }
+          }
+        })
+      }
     }
 
     // 2) Tokens between first and last (before comma) must match either label
@@ -379,7 +542,34 @@ export async function GET(request: Request) {
     "query": finalQuery,
     "track_scores": true,
     "track_total_hits": false,
-    "fields": ["group.adm1", "group.adm2", "group.label", "adm1", "adm2", "uuid", "boost", "label", "location", "group.id"],
+    "fields": [
+      "group.adm1",
+      "group.adm2",
+      "group.label",
+      "adm1",
+      "adm2",
+      "cadastreText.path",
+      "uuid",
+      "boost",
+      "label",
+      "location",
+      "group.id"
+    ],
+    "highlight": {
+      "pre_tags": ["[[H]]"],
+      "post_tags": ["[[/H]]"],
+      "require_field_match": false,
+      "number_of_fragments": 0,
+      "fields": {
+        "label": {},
+        "group.label": {},
+        "adm1": {},
+        "adm2": {},
+        "group.adm1": {},
+        "group.adm2": {},
+        "cadastreText.path": {}
+      }
+    },
     "collapse": {
       "field": "group.suggest"
     },

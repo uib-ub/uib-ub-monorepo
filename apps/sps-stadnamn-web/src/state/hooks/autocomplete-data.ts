@@ -93,6 +93,8 @@ export default function useAutocompleteData(inputState: string) {
         const hits: any[] = (queryResult.data as any)?.hits?.hits || [];
         const q = (inputState || '').trim().toLowerCase();
         if (!q || !hits.length) return hits;
+        const startsWithNumber = /^\d/.test(q);
+        const normalizedCadastrePrefix = q.replace(/[/-]+$/g, '');
 
         const parts = q.split(/\s+/).filter(Boolean);
         const lastToken = parts[parts.length - 1] || '';
@@ -108,9 +110,12 @@ export default function useAutocompleteData(inputState: string) {
                     hit.fields?.adm2?.[0] ||
                     hit.fields?.['group.adm2']?.[0] ||
                     '';
+                const cadastrePath: string =
+                    hit.fields?.['cadastreText.path']?.[0] || '';
 
                 const labelLc = label.toLowerCase();
                 const adm2Lc = adm2.toLowerCase();
+                const cadastreLc = cadastrePath.toLowerCase();
 
                 let score = 0;
 
@@ -131,6 +136,27 @@ export default function useAutocompleteData(inputState: string) {
 
                 if (firstLower && labelLc.startsWith(firstLower)) score += 200;
                 if (lastLower && adm2Lc.startsWith(lastLower)) score += 150;
+
+                if (startsWithNumber && cadastreLc) {
+                    if (cadastreLc === q) score += 5000;
+
+                    if (
+                        normalizedCadastrePrefix &&
+                        normalizedCadastrePrefix !== q &&
+                        cadastreLc === normalizedCadastrePrefix
+                    ) {
+                        score += 4500;
+                    }
+
+                    if (cadastreLc.startsWith(q)) score += 1800;
+                    if (
+                        normalizedCadastrePrefix &&
+                        normalizedCadastrePrefix !== q &&
+                        cadastreLc.startsWith(normalizedCadastrePrefix)
+                    ) {
+                        score += 1600;
+                    }
+                }
 
                 score -= label.length * 0.01;
 
