@@ -555,21 +555,6 @@ export async function GET(request: Request) {
       "location",
       "group.id"
     ],
-    "highlight": {
-      "pre_tags": ["[[H]]"],
-      "post_tags": ["[[/H]]"],
-      "require_field_match": false,
-      "number_of_fragments": 0,
-      "fields": {
-        "label": {},
-        "group.label": {},
-        "adm1": {},
-        "adm2": {},
-        "group.adm1": {},
-        "group.adm2": {},
-        "cadastreText.path": {}
-      }
-    },
     "collapse": {
       "field": "group.suggest"
     },

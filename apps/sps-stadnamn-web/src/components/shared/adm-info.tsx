@@ -2,54 +2,51 @@
 
 import { useSourceViewOn } from '@/lib/param-hooks';
 
-const HIGHLIGHT_START = '[[H]]';
-const HIGHLIGHT_END = '[[/H]]';
-
-function stripHighlightMarkers(value: string): string {
-  return value.split(HIGHLIGHT_START).join('').split(HIGHLIGHT_END).join('');
+function normalizeWords(s: string): string[] {
+  return (s || '')
+    .trim()
+    .toLowerCase()
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(Boolean);
 }
 
-function HighlightedText({ value }: { value: string }) {
-  if (!value.includes(HIGHLIGHT_START) || !value.includes(HIGHLIGHT_END)) {
-    return <>{value}</>;
+function highlightText(value: string, query: string) {
+  const qWords = normalizeWords(query);
+  if (!qWords.length) return <>{value}</>;
+
+  const lower = value.toLowerCase();
+  const wordRe = /(^|[^\p{L}\p{N}]+)([\p{L}\p{N}]+)/gu;
+  const ranges: Array<{ start: number; end: number }> = [];
+
+  for (const m of lower.matchAll(wordRe)) {
+    const full = m[0] || '';
+    const token = m[2] || '';
+    if (!token) continue;
+    const start = (m.index ?? 0) + (full.length - token.length);
+
+    let bestLen = 0;
+    for (const q of qWords) {
+      if (token.startsWith(q) && q.length > bestLen) bestLen = q.length;
+    }
+    if (bestLen > 0) {
+      ranges.push({ start, end: start + bestLen });
+    }
   }
 
-  const parts: Array<{ text: string; highlighted: boolean }> = [];
-  let cursor = 0;
-  let inHighlight = false;
+  if (!ranges.length) return <>{value}</>;
 
-  while (cursor < value.length) {
-    const startIdx = value.indexOf(HIGHLIGHT_START, cursor);
-    const endIdx = value.indexOf(HIGHLIGHT_END, cursor);
-
-    if (!inHighlight) {
-      if (startIdx < 0) {
-        parts.push({ text: value.slice(cursor), highlighted: false });
-        break;
-      }
-      if (startIdx > cursor) {
-        parts.push({ text: value.slice(cursor, startIdx), highlighted: false });
-      }
-      cursor = startIdx + HIGHLIGHT_START.length;
-      inHighlight = true;
-      continue;
-    }
-
-    if (endIdx < 0) {
-      parts.push({ text: value.slice(cursor), highlighted: true });
-      break;
-    }
-
-    if (endIdx > cursor) {
-      parts.push({ text: value.slice(cursor, endIdx), highlighted: true });
-    }
-    cursor = endIdx + HIGHLIGHT_END.length;
-    inHighlight = false;
+  const out: Array<{ text: string; highlighted: boolean }> = [];
+  let i = 0;
+  for (const r of ranges) {
+    if (r.start > i) out.push({ text: value.slice(i, r.start), highlighted: false });
+    out.push({ text: value.slice(r.start, r.end), highlighted: true });
+    i = r.end;
   }
+  if (i < value.length) out.push({ text: value.slice(i), highlighted: false });
 
   return (
     <>
-      {parts.map((part, idx) =>
+      {out.map((part, idx) =>
         part.highlighted ? (
           <mark
             // eslint-disable-next-line react/no-array-index-key
@@ -67,22 +64,7 @@ function HighlightedText({ value }: { value: string }) {
   );
 }
 
-function pickBestHighlight(
-  rawValue: string | undefined,
-  highlights: Array<string | undefined>,
-): string | undefined {
-  if (!rawValue) return rawValue;
-  for (const candidate of highlights) {
-    if (!candidate) continue;
-    const clean = stripHighlightMarkers(candidate);
-    if (clean.localeCompare(rawValue, undefined, { sensitivity: 'accent' }) === 0) {
-      return candidate;
-    }
-  }
-  return rawValue;
-}
-
-export default function AdmInfo({ hit }: { hit: any }) {
+export default function AdmInfo({ hit, query = '' }: { hit: any; query?: string }) {
   const sourceViewOn = useSourceViewOn();
 
   const groupAdm1 = hit.fields?.['group.adm1']?.[0] || hit.fields?.group?.adm1?.[0];
@@ -107,42 +89,28 @@ export default function AdmInfo({ hit }: { hit: any }) {
 
   const isAdm1FromGroup = !!groupAdm1 && adm1 === groupAdm1;
   const isAdm2FromGroup = !!groupAdm2 && adm2 === groupAdm2;
-  const highlight = hit.highlight || {};
-
-  const adm1Display = pickBestHighlight(adm1, [
-    isAdm1FromGroup ? highlight['group.adm1']?.[0] : undefined,
-    isAdm1FromGroup ? undefined : highlight.adm1?.[0],
-    highlight['group.adm1']?.[0],
-    highlight.adm1?.[0],
-  ]);
-  const adm2Display = pickBestHighlight(adm2, [
-    isAdm2FromGroup ? highlight['group.adm2']?.[0] : undefined,
-    isAdm2FromGroup ? undefined : highlight.adm2?.[0],
-    highlight['group.adm2']?.[0],
-    highlight.adm2?.[0],
-  ]);
 
 
   return (
     <>
-      {adm2Display ? (
+      {adm2 ? (
         <>
           {isAdm2FromGroup ? (
-            <HighlightedText value={adm2Display} />
+            highlightText(adm2, query)
           ) : (
             <em>
-              <HighlightedText value={adm2Display} />
+              {highlightText(adm2, query)}
             </em>
           )}
           {', '}
         </>
       ) : null}
-      {adm1Display ? (
+      {adm1 ? (
         isAdm1FromGroup ? (
-          <HighlightedText value={adm1Display} />
+          highlightText(adm1, query)
         ) : (
           <em>
-            <HighlightedText value={adm1Display} />
+            {highlightText(adm1, query)}
           </em>
         )
       ) : null}
