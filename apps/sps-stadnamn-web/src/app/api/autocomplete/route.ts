@@ -39,14 +39,11 @@ export async function GET(request: Request) {
   //   not token based.
   // - Explicitly excludes any labels that contain whitespace, so messy
   //   multi-word labels do not interfere with single-token autocomplete.
-  // To keep these matches effectively case-insensitive against Title Case labels,
-  // we query both the raw input and a capitalised variant as prefixes.
-  const capitalizedQuery =
-    rawQueryString.length > 0
-      ? rawQueryString[0].toUpperCase() + rawQueryString.slice(1)
-      : rawQueryString
+  // Keep keyword exact/prefix matching case-insensitive via native
+  // case_insensitive term-level options.
   const labelExactBoost = startsWithNumber ? 2.0 : 10.0
   const labelPrefixBoost = startsWithNumber ? 1.0 : 5.0
+  const keywordQueryValue = rawQueryString || queryString
 
   const basePrefixQuery = {
     "bool": {
@@ -54,31 +51,20 @@ export async function GET(request: Request) {
         {
           "term": {
             "label.keyword": {
-              "value": capitalizedQuery || queryString,
-              "boost": labelExactBoost
+              "value": keywordQueryValue,
+              "boost": labelExactBoost,
+              "case_insensitive": true
             }
           }
         },
         {
           "constant_score": {
             "filter": {
-              "bool": {
-                "should": [
-                  {
-                    "prefix": {
-                      "label.keyword": rawQueryString
-                    }
-                  },
-                  ...(capitalizedQuery && capitalizedQuery !== rawQueryString
-                    ? [
-                        {
-                          "prefix": {
-                            "label.keyword": capitalizedQuery
-                          }
-                        }
-                      ]
-                    : [])
-                ]
+              "prefix": {
+                "label.keyword": {
+                  "value": keywordQueryValue,
+                  "case_insensitive": true
+                }
               }
             },
             "boost": labelPrefixBoost
@@ -390,71 +376,38 @@ export async function GET(request: Request) {
     //      prefix matches on both label and adm fields so queries like
     //      "indre berg troms" can use the last token to match adm names.
     if (lastToken?.length > 0) {
-      const lastTokenVariants = new Set<string>()
-      lastTokenVariants.add(lastToken)
-      if (rawLastToken && rawLastToken !== lastToken) {
-        lastTokenVariants.add(rawLastToken)
-      }
-      const capitalizedLast =
-        rawLastToken.length > 0
-          ? rawLastToken[0].toUpperCase() + rawLastToken.slice(1)
-          : ""
-      if (capitalizedLast && capitalizedLast !== rawLastToken) {
-        lastTokenVariants.add(capitalizedLast)
-      }
-
       const labelPrefixClauses: any[] = []
       const admPrefixClauses: any[] = []
+      const lastTokenValue = rawLastToken || lastToken
 
-      lastTokenVariants.forEach((value) => {
-        labelPrefixClauses.push({
-          "prefix": {
-            "label": value
+      labelPrefixClauses.push({
+        "prefix": {
+          "label": {
+            "value": lastTokenValue,
+            "case_insensitive": true
           }
-        })
-
-        admFields.forEach((field) => {
-          admPrefixClauses.push({
-            "prefix": {
-              [field]: value
-            }
-          })
-        })
+        }
       })
 
-      const buildLabelKeywordVariants = (value: string): string[] => {
-        const trimmed = value.trim()
-        if (!trimmed) return []
-        const variants = new Set<string>()
-        variants.add(trimmed)
-        variants.add(trimmed.toLowerCase())
-        variants.add(trimmed.toUpperCase())
-        variants.add(
-          trimmed
-            .split(/\s+/)
-            .map(
-              (word) =>
-                word.length > 0
-                  ? word[0].toUpperCase() + word.slice(1).toLowerCase()
-                  : word
-            )
-            .join(" ")
-        )
-        return Array.from(variants).filter((variant) => variant.length > 0)
-      }
+      admFields.forEach((field) => {
+        admPrefixClauses.push({
+          "prefix": {
+            [field]: {
+              "value": lastTokenValue,
+              "case_insensitive": true
+            }
+          }
+        })
+      })
 
       const labelEqualsFirstPartClause =
         firstPartRaw.length > 0
           ? {
-              "bool": {
-                "should": buildLabelKeywordVariants(firstPartRaw).map(
-                  (variant) => ({
-                    "term": {
-                      "label.keyword": variant
-                    }
-                  })
-                ),
-                "minimum_should_match": 1
+              "term": {
+                "label.keyword": {
+                  "value": firstPartRaw,
+                  "case_insensitive": true
+                }
               }
             }
           : null
@@ -571,7 +524,7 @@ export async function GET(request: Request) {
 
 
   // Only cache if no search string an no filters
-  const [data, status] = await postQuery(perspective, query)
+  const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
   return Response.json(data, { status: status })
 
 }
