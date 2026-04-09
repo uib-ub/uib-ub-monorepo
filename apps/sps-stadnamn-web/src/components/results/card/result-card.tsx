@@ -19,6 +19,7 @@ import { PiCaretRightBold, PiCheck, PiLinkSimple, PiMapPin, PiMapPinFill, PiX, P
 import Carousel from "@/components/results/carousel";
 import ResultCardTitle from "@/components/results/card/result-card-title";
 import { TextItemsSection } from "@/components/results/card/text-items-section";
+import { LinkItemsSection } from "@/components/results/card/link-items-section";
 import CoordinateTypeInfo from "@/components/results/card/coordinate-type-info";
 import { ResultCardSkeleton } from "@/components/results/result-skeletons";
 import DistanceBadge from "@/components/results/distance-badge";
@@ -336,6 +337,7 @@ export default function ResultCard({
     const { resultCardData, resultCardLoading, resultCardTotal } = useResultCardData(itemId);
     const iiifItems = resultCardData?.iiifItems;
     const textItems = resultCardData?.textItems;
+    const linkItems = resultCardData?.linkItems;
     const audioItems = resultCardData?.audioItems;
     const { sosiVocab } = useContext(GlobalContext);
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
@@ -587,7 +589,11 @@ export default function ResultCard({
                     showArchiveLink
                 />
             )}                
-            {textItems?.length > 0 && <TextItemsSection textItems={textItems} highlight={highlight} />}
+            {textItems?.length > 0 ? (
+                <TextItemsSection textItems={textItems} highlight={highlight} />
+            ) : (
+                linkItems?.length > 0 && <LinkItemsSection linkItems={linkItems} />
+            )}
 
             {!mobilePreview && <>
                 <GroupBottomToolbarMulti groupData={resultCardData} groupTotal={resultCardTotal} />

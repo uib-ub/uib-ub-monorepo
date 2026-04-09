@@ -12,6 +12,7 @@ type OutputData = {
   total: number,
   iiifItems: Record<string, any>[],
   textItems: Record<string, any>[],
+  linkItems: Record<string, any>[],
   audioItems: Record<string, any>[],
   datasets: string[],
   additionalLabels: string[],
@@ -134,10 +135,12 @@ export async function GET(request: Request) {
   const iiifItems: any[] = []
   const seenIiif = new Set<string>()
   const textItems: any[] = []
+  const linkItems: any[] = []
   const audioItems: any[] = []
   const seenDatasets = new Set<string>()
   const datasets: string[] = []
   const seenTextIds = new Set<string>()
+  const seenLinkItemKeys = new Set<string>()
   const seenAudioFiles = new Set<string>()
   const additionalLabelsByKey = new Map<string, string>()
   const sosi = new Set<string>()
@@ -206,6 +209,13 @@ export async function GET(request: Request) {
     if (hit.fields?.['sosi']?.[0]) sosi.add(hit.fields?.['sosi']?.[0])
 
     const textId = hit.fields?.['misc.Enhetsnummer']?.[0]
+    const rawLinks = hit.fields?.['links']?.[0]
+    const links: string[] =
+      Array.isArray(rawLinks)
+        ? rawLinks.filter((link: unknown): link is string => typeof link === 'string' && link.length > 0)
+        : typeof rawLinks === 'string' && rawLinks
+          ? [rawLinks]
+          : []
 
     if (hit.fields?.['iiif']?.[0] && !seenIiif.has(hit.fields?.['iiif']?.[0])) {
       seenIiif.add(hit.fields?.['iiif']?.[0])
@@ -220,7 +230,7 @@ export async function GET(request: Request) {
         textItems.push({
           text: hit.fields?.['content.html']?.[0],
           uuid: hit.fields?.['uuid']?.[0],
-          links: hit.fields?.['links']?.[0],
+          links: rawLinks,
           dataset
         })
       }
@@ -228,7 +238,19 @@ export async function GET(request: Request) {
         textItems.push({
           text: hit.fields?.['content.text']?.[0],
           uuid: hit.fields?.['uuid']?.[0],
-          links: hit.fields?.['links']?.[0],
+          links: rawLinks,
+          dataset
+        })
+      }
+    }
+    if (links.length > 0) {
+      const uuid = hit.fields?.['uuid']?.[0]
+      const linkItemKey = `${uuid || ''}|${links.join('|')}`
+      if (!seenLinkItemKeys.has(linkItemKey)) {
+        seenLinkItemKeys.add(linkItemKey)
+        linkItems.push({
+          uuid,
+          links,
           dataset
         })
       }
@@ -284,6 +306,7 @@ export async function GET(request: Request) {
 
   if (iiifItems.length > 0) outputData.iiifItems = iiifItems;
   if (textItems.length > 0) outputData.textItems = textItems;
+  if (linkItems.length > 0) outputData.linkItems = linkItems;
   if (audioItems.length > 0) outputData.audioItems = audioItems;
   if (datasets.length > 0) outputData.datasets = datasets;
   if (additionalLabelsByKey.size > 0) outputData.additionalLabels = Array.from(additionalLabelsByKey.values());
