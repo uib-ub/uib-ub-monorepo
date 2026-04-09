@@ -77,7 +77,7 @@ export async function GET(request: Request) {
                   "should": [
                     {
                       "match_phrase": {
-                        "cadastreText.path": {
+                        "cadastrePath": {
                           "query": rawQueryString,
                           "boost": 12.0
                         }
@@ -87,7 +87,7 @@ export async function GET(request: Request) {
                       "constant_score": {
                         "filter": {
                           "prefix": {
-                            "cadastreText.path": rawQueryString
+                            "cadastrePath": rawQueryString
                           }
                         },
                         "boost": 8.0
@@ -95,7 +95,7 @@ export async function GET(request: Request) {
                     },
                     {
                       "match_bool_prefix": {
-                        "cadastreText.path": {
+                        "cadastrePath": {
                           "query": rawQueryString,
                           "operator": "and",
                           "boost": 6.0
@@ -106,7 +106,7 @@ export async function GET(request: Request) {
                       ? [
                           {
                             "match_phrase": {
-                              "cadastreText.path": {
+                              "cadastrePath": {
                                 "query": normalizedCadastrePrefix,
                                 "boost": 10.0
                               }
@@ -116,7 +116,7 @@ export async function GET(request: Request) {
                             "constant_score": {
                               "filter": {
                                 "prefix": {
-                                  "cadastreText.path": normalizedCadastrePrefix
+                                  "cadastrePath": normalizedCadastrePrefix
                                 }
                               },
                               "boost": 7.0
@@ -124,7 +124,7 @@ export async function GET(request: Request) {
                           },
                           {
                             "match_bool_prefix": {
-                              "cadastreText.path": {
+                              "cadastrePath": {
                                 "query": normalizedCadastrePrefix,
                                 "operator": "and",
                                 "boost": 5.5
@@ -202,7 +202,7 @@ export async function GET(request: Request) {
       "adm2",
       "group.adm1",
       "group.adm2",
-      ...(startsWithNumber ? ["cadastreText.path"] : [])
+      ...(startsWithNumber ? ["cadastrePath"] : [])
     ]
 
     const mustClauses: any[] = []
@@ -218,7 +218,7 @@ export async function GET(request: Request) {
                 ? [
                     {
                       "match_phrase": {
-                        "cadastreText.path": {
+                        "cadastrePath": {
                           "query": rawFirstToken,
                           "boost": 10.0
                         }
@@ -226,7 +226,7 @@ export async function GET(request: Request) {
                     },
                     {
                       "prefix": {
-                        "cadastreText.path": {
+                        "cadastrePath": {
                           "value": rawFirstToken,
                           "boost": 8.0
                         }
@@ -234,7 +234,7 @@ export async function GET(request: Request) {
                     },
                     {
                       "match_bool_prefix": {
-                        "cadastreText.path": {
+                        "cadastrePath": {
                           "query": rawFirstToken,
                           "operator": "and",
                           "boost": 6.0
@@ -247,7 +247,7 @@ export async function GET(request: Request) {
                 ? [
                     {
                       "match_phrase": {
-                        "cadastreText.path": {
+                        "cadastrePath": {
                           "query": normalizedFirstCadastrePrefix,
                           "boost": 9.0
                         }
@@ -255,7 +255,7 @@ export async function GET(request: Request) {
                     },
                     {
                       "prefix": {
-                        "cadastreText.path": {
+                        "cadastrePath": {
                           "value": normalizedFirstCadastrePrefix,
                           "boost": 7.0
                         }
@@ -263,7 +263,7 @@ export async function GET(request: Request) {
                     },
                     {
                       "match_bool_prefix": {
-                        "cadastreText.path": {
+                        "cadastrePath": {
                           "query": normalizedFirstCadastrePrefix,
                           "operator": "and",
                           "boost": 5.5
@@ -501,7 +501,7 @@ export async function GET(request: Request) {
       "group.label",
       "adm1",
       "adm2",
-      "cadastreText.path",
+      "cadastrePath",
       "uuid",
       "boost",
       "label",

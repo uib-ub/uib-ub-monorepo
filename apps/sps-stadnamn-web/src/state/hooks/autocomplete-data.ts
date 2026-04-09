@@ -116,7 +116,7 @@ export default function useAutocompleteData(inputState: string) {
                     hit.fields?.['group.adm2']?.[0] ||
                     '';
                 const cadastrePath: string =
-                    hit.fields?.['cadastreText.path']?.[0] || '';
+                    hit.fields?.['cadastrePath']?.[0] || '';
 
                 const labelLc = label.toLowerCase();
                 const adm2Lc = adm2.toLowerCase();

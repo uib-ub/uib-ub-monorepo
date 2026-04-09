@@ -1056,10 +1056,10 @@ export default function AutocompleteDropdown({
                                     <span className="text-neutral-900">
                                         <AdmInfo hit={hit} query={inputState} />
                                     </span>
-                                    {hit.fields?.['cadastreText.path']?.[0] ? (
+                                    {hit.fields?.['cadastrePath']?.[0] ? (
                                         <div className="text-neutral-700 text-sm">
                                             <HighlightedLabel
-                                                label={hit.fields['cadastreText.path'][0]}
+                                                label={hit.fields['cadastrePath'][0]}
                                                 query={inputState}
                                             />
                                         </div>
