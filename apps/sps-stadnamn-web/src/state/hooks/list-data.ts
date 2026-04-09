@@ -116,7 +116,7 @@ export default function useListData() {
         queryKey: ['listData', searchQueryString, searchSort, init, group, point, noGeo, sourceViewOn],
         queryFn: ({ pageParam }: { pageParam: number }) => listDataQuery({
             pageParam,
-            searchQueryString: group ? null : searchQueryString,
+            searchQueryString,
             init,
             selectedGroup,
             point,
