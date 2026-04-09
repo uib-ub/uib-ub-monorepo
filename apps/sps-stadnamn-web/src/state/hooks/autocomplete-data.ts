@@ -1,6 +1,6 @@
 'use client'
 
-import { useGroupParam, useMode } from '@/lib/param-hooks';
+import { useMode } from '@/lib/param-hooks';
 import { useSearchQuery } from '@/lib/search-params';
 import { GlobalContext } from '@/state/providers/global-provider';
 import { useQuery } from '@tanstack/react-query';
@@ -80,11 +80,10 @@ export default function useAutocompleteData(inputState: string) {
     const { datasetFilters, searchFilterParamsString } = useSearchQuery();
     const mode = useMode();
     const isTableMode = mode === 'table';
-    const group = useGroupParam();
     
     const queryResult = useQuery({
         queryKey: ['autocomplete', inputState, datasetFilters, isTableMode],
-        enabled: !group && !isTableMode && !!inputState.trim(),
+        enabled: !isTableMode && !!inputState.trim(),
         placeholderData: (prevData: any) => prevData,
         queryFn: () =>
             autocompleteQuery(

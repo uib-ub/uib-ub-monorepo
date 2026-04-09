@@ -201,6 +201,7 @@ export default function SearchForm() {
                 {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset} />)}
                 {submittedPoint && <input type="hidden" name="point" value={submittedPoint} />}
                 {datasetTag && <input type="hidden" name="datasetTag" value={datasetTag || ''} />}
+                
 
                 {(inputState || urlQuery || group) && !menuOpen &&
                     <ClickableIcon label="Tøm" remove={ ['q', 'resultLimit']} replace onClick={() => { clearQuery() }}>
@@ -212,8 +213,8 @@ export default function SearchForm() {
             {selectedGroup && <input type="hidden" name="init" value={selectedGroup} />}
             {/* results: integer – minimum is 5 when present. */}
             {optionsOn && <input type="hidden" name="options" value={'on'} />}
-            {group && <input type="hidden" name="group" value={group} />}
-            {sourceViewOn && <input type="hidden" name="sourceView" value={'on'} />}
+            
+            {sourceViewOn && !group && <input type="hidden" name="sourceView" value={'on'} />}
             {!submittedPoint && !init && pointParam && <input type="hidden" name="point" value={pointParam || ''} />}
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {fulltextOn && <input type="hidden" name="fulltext" value={'on'} />}

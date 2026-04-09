@@ -7,6 +7,7 @@ import {
     usePerspective,
     useSourceViewOn,
 } from '@/lib/param-hooks';
+import { stringToBase64Url } from '@/lib/param-utils';
 import { useSearchQuery } from '@/lib/search-params';
 import useAutocompleteData, {
     getAutocompleteSelection,
@@ -476,15 +477,7 @@ export default function AutocompleteDropdown({
     ]);
 
     const optionRefs = useRef<Array<HTMLLIElement | null>>([]);
-    const optionsCount = group
-        ? groupLabelBucketsEffective.full.length +
-          groupFulltextPhraseOptions.length +
-          groupLabelBucketsEffective.tokenOnly.length +
-          groupFulltextWordOptions.length +
-          groupLabelBucketsEffective.nonMatching.length
-        : rankedHits.length
-            ? 1 + rankedHits.length
-            : 0;
+    const optionsCount = rankedHits.length ? 1 + rankedHits.length : 0;
     const hasMountedRef = useRef(false);
 
     // Open/close autocomplete when input value changes and reset active index.
@@ -584,9 +577,8 @@ export default function AutocompleteDropdown({
     }, [inputRef, setAutocompleteOpen]);
 
     useEffect(() => {
-        const hasResults = group ? optionsCount > 0 : !!rankedHits.length;
-        setHasResults(hasResults);
-    }, [group, optionsCount, rankedHits, setHasResults]);
+        setHasResults(!!rankedHits.length);
+    }, [rankedHits, setHasResults]);
 
     // Keyboard interaction hooked onto the input element.
     useEffect(() => {
@@ -604,104 +596,13 @@ export default function AutocompleteDropdown({
             if (e.key === 'Enter') {
                 if (autocompleteOpen && activeIndex >= 0) {
                     e.preventDefault();
-                    if (group) {
-                        const matchCount =
-                            groupLabelBucketsEffective.full.length +
-                            groupFulltextPhraseOptions.length +
-                            groupLabelBucketsEffective.tokenOnly.length;
-                        const fulltextOffset = matchCount;
-                        const nonMatchOffset = matchCount + groupFulltextWordOptions.length;
-                        const isFulltextWord =
-                            activeIndex >= fulltextOffset &&
-                            activeIndex < nonMatchOffset;
-                        const isNonMatchingLabel =
-                            activeIndex >= nonMatchOffset &&
-                            activeIndex <
-                                matchCount +
-                                    groupFulltextWordOptions.length +
-                                    groupLabelBucketsEffective.nonMatching.length;
-
-                        if (isFulltextWord) {
-                            const word =
-                                groupFulltextWordOptions[activeIndex - fulltextOffset];
-                            if (word) {
-                                onSelect({
-                                    inputString: word,
-                                    group: null,
-                                    coordinates: undefined,
-                                    forceFulltext: true,
-                                });
-                            }
-                        } else if (isNonMatchingLabel) {
-                            const opt =
-                                groupLabelBucketsEffective.nonMatching[
-                                    activeIndex - nonMatchOffset
-                                ];
-                            if (opt?.value) {
-                                onSelect({
-                                    inputString: inputState,
-                                    submitQ: opt.value,
-                                    group: null,
-                                    coordinates: undefined,
-                                    forceFulltext: false,
-                                });
-                            }
-                        } else {
-                            if (activeIndex < groupLabelBucketsEffective.full.length) {
-                                const opt =
-                                    groupLabelBucketsEffective.full[activeIndex];
-                                if (opt?.value) {
-                                    onSelect({
-                                        inputString: opt.value,
-                                        group: null,
-                                        coordinates: undefined,
-                                        forceFulltext: false,
-                                    });
-                                }
-                            } else if (
-                                activeIndex <
-                                groupLabelBucketsEffective.full.length +
-                                    groupFulltextPhraseOptions.length
-                            ) {
-                                const phrase =
-                                    groupFulltextPhraseOptions[
-                                        activeIndex -
-                                            groupLabelBucketsEffective.full.length
-                                    ];
-                                if (phrase) {
-                                    onSelect({
-                                        inputString: phrase,
-                                        group: null,
-                                        coordinates: undefined,
-                                        forceFulltext: true,
-                                    });
-                                }
-                            } else {
-                                const opt =
-                                    groupLabelBucketsEffective.tokenOnly[
-                                        activeIndex -
-                                            groupLabelBucketsEffective.full.length -
-                                            groupFulltextPhraseOptions.length
-                                    ];
-                                if (opt?.value) {
-                                    onSelect({
-                                        inputString: opt.value,
-                                        group: null,
-                                        coordinates: undefined,
-                                        forceFulltext: false,
-                                    });
-                                }
-                            }
-                        }
-                    } else {
-                        const selection = getAutocompleteSelection(
-                            rankedHits,
-                            activeIndex,
-                            sourceViewOn,
-                        );
-                        if (selection) {
-                            onSelect({ ...selection, forceFulltext: false });
-                        }
+                    const selection = getAutocompleteSelection(
+                        rankedHits,
+                        activeIndex,
+                        sourceViewOn,
+                    );
+                    if (selection) {
+                        onSelect({ ...selection, forceFulltext: false });
                     }
                     return;
                 }
@@ -764,7 +665,7 @@ export default function AutocompleteDropdown({
                     : 'top-[3rem] -left-12 x-[30svw] w-[calc(100svw-5rem)] lg:w-[calc(30svw-1rem)] xl:w-[calc(25svw-1rem)] shadow-lg rounded-lg rounded-t-none'
             } border-t border-neutral-200 max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 overflow-y-auto overscroll-none xl-p-2 xl divide-y divide-neutral-300`}
         >
-            {group ? (
+            {false ? (
                 <>
                     {groupLabelBucketsEffective.full.map(
                         (opt: any, index: number) => (
@@ -1068,6 +969,11 @@ export default function AutocompleteDropdown({
                         const optionIndex = 1 + index;
                         const isGrunnordSuggestion =
                             hit?._index?.split('-')?.[2]?.endsWith('_g');
+                        const hitGroupId = hit.fields?.['group.id']?.[0];
+                        const isCurrentGroupHit =
+                            !!group &&
+                            !!hitGroupId &&
+                            stringToBase64Url(hitGroupId) === group;
                         return (
                             <li
                                 key={hit._id}
@@ -1081,7 +987,9 @@ export default function AutocompleteDropdown({
                                 className={`cursor-pointer flex items-start gap-2 min-h-12 py-3 px-2 hover:bg-neutral-100 ${
                                     activeIndex === optionIndex
                                         ? 'bg-accent-100'
-                                        : ''
+                                        : isCurrentGroupHit
+                                          ? 'bg-primary-100'
+                                          : ''
                                 }`}
                                 onMouseDown={() => {
                                     const selection =

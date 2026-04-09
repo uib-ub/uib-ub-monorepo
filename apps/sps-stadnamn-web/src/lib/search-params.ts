@@ -34,7 +34,8 @@ export function useSearchQuery() {
 
 
     searchParams.forEach((value, key) => {
-        if (key == 'q') {
+        // In grouped/underoppslag view, `q` is UI state and should not affect API filters.
+        if (key == 'q' && !group) {
             searchQuery.append('q', value)
         }
         if (key == 'dataset') {
