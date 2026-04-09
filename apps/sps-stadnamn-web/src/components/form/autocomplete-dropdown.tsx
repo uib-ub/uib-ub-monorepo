@@ -1,7 +1,12 @@
 'use client'
 
 import AdmInfo from '@/components/shared/adm-info';
-import { useGroupParam, useMode, usePerspective } from '@/lib/param-hooks';
+import {
+    useGroupParam,
+    useMode,
+    usePerspective,
+    useSourceViewOn,
+} from '@/lib/param-hooks';
 import { useSearchQuery } from '@/lib/search-params';
 import useAutocompleteData, {
     getAutocompleteSelection,
@@ -228,6 +233,7 @@ export default function AutocompleteDropdown({
     const { facetFilters, datasetFilters } = useSearchQuery();
     const mode = useMode();
     const perspective = usePerspective();
+    const sourceViewOn = useSourceViewOn();
     const isTableMode = mode === 'table';
     const perspectiveIsGrunnord = perspective.includes('_g') || perspective === 'base';
     const group = useGroupParam();
@@ -691,6 +697,7 @@ export default function AutocompleteDropdown({
                         const selection = getAutocompleteSelection(
                             rankedHits,
                             activeIndex,
+                            sourceViewOn,
                         );
                         if (selection) {
                             onSelect({ ...selection, forceFulltext: false });
@@ -1035,6 +1042,7 @@ export default function AutocompleteDropdown({
                             const selection = getAutocompleteSelection(
                                 rankedHits,
                                 0,
+                                sourceViewOn,
                             );
                             if (selection) {
                                 onSelect(selection);
@@ -1080,6 +1088,7 @@ export default function AutocompleteDropdown({
                                         getAutocompleteSelection(
                                             rankedHits,
                                             optionIndex,
+                                            sourceViewOn,
                                         );
                                     if (selection) {
                                         onSelect(selection);

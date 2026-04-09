@@ -36,6 +36,7 @@ export function buildAutocompleteQueryStringFromHit(hit: any): string {
 export function getAutocompleteSelection(
     rankedHits: any[],
     index: number,
+    sourceViewOn = false,
 ): {
     inputString: string;
     group: string | null;
@@ -59,7 +60,12 @@ export function getAutocompleteSelection(
 
     const inputString = buildAutocompleteQueryStringFromHit(hit);
     const rawGroupId = hit.fields?.['group.id']?.[0] ?? null;
-    const group = rawGroupId ? stringToBase64Url(rawGroupId) : null;
+    const rawUuid = hit.fields?.uuid?.[0] ?? null;
+    const group = sourceViewOn
+        ? rawUuid
+        : rawGroupId
+            ? stringToBase64Url(rawGroupId)
+            : null;
     const coords = hit.fields?.location?.[0]?.coordinates;
 
     return {
