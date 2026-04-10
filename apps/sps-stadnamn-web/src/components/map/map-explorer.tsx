@@ -1072,7 +1072,7 @@ export default function MapExplorer() {
 
                         const bnrs = treeDataset
                           ? hits
-                            .map((h: any) => getBnr(h, treeDataset))
+                            .map((h: any) => getBnr(h))
                             .filter((b: any) => b !== null && b !== undefined && `${b}`.trim().length > 0)
                           : []
 

@@ -53,6 +53,12 @@ const buildResultCardQuery = (id: string, useInnerHits: boolean, filterField: 'g
     "sosi",
     "coordinateType",
     "uuid",
+    "gnr",
+    "mnr",
+    "bnr",
+    "lnr",
+    "knr",
+    "parentLabel",
     // Cadastre / farm-name related fields needed for breadcrumbs.
     // NOTE: when requesting from Elasticsearch, nested fields use dots,
     // while our helper paths use double underscore.

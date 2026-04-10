@@ -41,8 +41,19 @@ const sosi = { label: "Namneobjekttype", description: "Stadtype etter SOSI-stand
 const placeType = { label: "Lokalitetstype", table, facet, result, noInfobox }
 const cadastre = {
   "cadastre__gnr": { label: "Gardsnummer", result, sort: "asc" as const, type: "integer" as const },
-  "cadastre__bnr": { label: "Bruksnummer", result, sort: "asc" as const, type: "integer" as const }
+  "cadastre__bnr": { label: "Bruksnummer", result, sort: "asc" as const, type: "integer" as const },
 }
+const cadastreRaw = {
+  gnr: { label: "Gardsnummer", result, table, facet, sort: "asc" as const },
+  bnr: { label: "Bruksnummer", result, table, facet, sort: "asc" as const },
+}
+const oldCadastre = {
+  mnr: { label: "Matrikkelnummer", result, table, facet, sort: "asc" as const },
+  lnr: { label: "Løpenummer", result, table, facet, sort: "asc" as const },
+}
+
+const knr = { label: "Kommunenummer", result, facet, sort: "asc" as const }
+
 const uuid = { label: "UUID", result }
 const label = { label: "Namn", result }
 const adm = { label: "Områdeinndeling", facet, specialFacet, noInfobox }
@@ -139,9 +150,8 @@ const rawFieldConfig = {
     "misc.Lokalitetstype": { label: "Lokalitetstype", table, facet },
     "misc.Bind": { label: "Bind", table, facet },
     "misc.Side": { label: "Sidetall", table, facet, additionalParams: ["misc.Bind"] },
-    "misc.KNR": { label: "Kommunenummer", table, facet },
-    "misc.Gnr": { label: "Gardsnummer", table, facet, additionalParams: ["misc.KNR"] },
-    "misc.Bnr": { label: "Bruksnummer", table, facet, additionalParams: ["misc.KNR", "misc.Gnr"] },
+    knr,
+    ...cadastreRaw,
     ...identifiers,
 
   },
@@ -170,12 +180,11 @@ const rawFieldConfig = {
   mu1950: {
     ...required, adm, adm1, adm2, sosi,
     ...cadastre,
-    "knr": { label: "Knr", table, facet, result },
-    "misc.GNR": { label: "Gnr", table, facet, result, additionalParams: ["knr"] },
-    "misc.BNR": { label: "Bnr", table, facet, result, additionalParams: ["knr", "misc.GNR"] },
     "misc.Eigar": { label: "Eigar", table, facet, cadastreTable },
     "misc.Mark": { label: "Skyldmark", table, facet, cadastreTable },
     "misc.Øre": { label: "Skyldøre", table, facet, cadastreTable },
+    knr,
+    ...cadastreRaw,
     ...identifiers,
   },
   m1838: {
@@ -184,18 +193,18 @@ const rawFieldConfig = {
     "knr": { label: "Kommunenummer", facet, result },
 
     "misc.LNR": { label: "Løpenummer", result, table, facet },
-    "miac.1723_MNR": { label: "Matrikkelnummer 1723", table, facet },
+    "misc.1723_MNR": { label: "Matrikkelnummer 1723", table, facet },
     "adm1": { label: "Amt", result },
     "adm2": { label: "Prestegjeld", result },
+    ...oldCadastre,
     ...identifiers,
 
   },
   m1886: {
     ...required, sosi, adm, adm1, adm2,
-    "knr": { label: "Kommunenummer", table, facet, result },
-    "misc.GNR": { label: "Gardsnummer", table, facet, result, additionalParams: ["knr"] },
-    "misc.BNR": { label: "Bruksnummer", table, facet, result, additionalParams: ["knr", "misc.GNR"] },
+    knr,
     ...cadastre,
+    ...cadastreRaw,
     ...identifiers,
   },
   skul: {
@@ -334,6 +343,8 @@ const rawFieldConfig = {
   },
   m2010: {
     ...required, adm, adm1, adm2, sosi,
+    knr,
+    ...cadastreRaw,
     ...identifiers
   },
   frogn: {

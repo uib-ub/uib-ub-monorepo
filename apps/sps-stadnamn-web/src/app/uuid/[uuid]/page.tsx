@@ -4,6 +4,7 @@ import CollapsibleHeading from '@/components/doc/collapsible-heading'
 import ErrorMessage from '@/components/ui/notifications/error-message'
 import Thumbnail from '@/components/image-viewer/thumbnail'
 import CoordinateInfo from './coordinate-info'
+import CadastralSearchLinks from './cadastral-search-links'
 import { infoPageRenderers } from '@/config/info-renderers'
 import { datasetPresentation, datasetShortDescriptions, datasetTitles } from '@/config/metadata-config'
 import { facetConfig, fieldConfig } from '@/config/search-config'
@@ -159,6 +160,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
           </div>
 
         </div>
+        <CadastralSearchLinks source={docData?._source} dataset={docDataset} />
         {infoPageRenderers[docDataset] ? infoPageRenderers[docDataset](docData?._source) : null}
 
 

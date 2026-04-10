@@ -85,18 +85,18 @@ export function getFieldValue(hit: any, field: string) {
   return sourceValue ? (Array.isArray(sourceValue) ? sourceValue : [sourceValue]) : null;
 }
 
-export function getGnr(hit: any, dataset: string) {
+export function getGnr(hit: any) {
   const data = hit?._source || hit?.fields
-  if (!treeSettings[dataset] || !data) {
+  if (!data) {
     return null
   }
   return getFieldValue(hit, "gnr") || getFieldValue(hit, "mnr")
 
 }
 
-export function getBnr(hit: any, dataset: string) {
+export function getBnr(hit: any) {
   const data = hit?._source || hit?.fields
-  if (!treeSettings[dataset] || !data) {
+  if (!data) {
     return null
   }
   return getFieldValue(hit, "bnr") || getFieldValue(hit, "lnr")
