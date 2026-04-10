@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Clickable from "@/components/ui/clickable/clickable";
 import { PiMagnifyingGlass } from "react-icons/pi";
 
 type CadastralSearchLinksProps = {
@@ -12,74 +12,59 @@ const toFirst = (value: unknown): string => {
   return String(value).trim();
 };
 
-const toSearchHref = (params: Record<string, string>) => {
-  const search = new URLSearchParams();
-  Object.entries(params).forEach(([key, value]) => {
-    if (value) search.set(key, value);
-  });
-  return `/search?${search.toString()}`;
-};
-
-export default function CadastralSearchLinks({ source, dataset }: CadastralSearchLinksProps) {
+export default function CadastralSearchLinks({ source }: CadastralSearchLinksProps) {
   if (!source || source.within) return null;
 
   const knr = toFirst(source.knr) || toFirst(source?.misc?.KNR) || toFirst(source?.misc?.knr);
+  const toChip = (item: Record<string, any>, key: string) => {
+    const gnr = toFirst(item?.gnr);
+    const bnr = toFirst(item?.bnr);
+    const mnr = toFirst(item?.mnr);
+    const lnr = toFirst(item?.lnr);
+    const primary = gnr || mnr;
+    const secondary = bnr || lnr;
+    if (!primary && !secondary) return null;
 
-  const chipsFromCadastre = (Array.isArray(source.cadastre) ? source.cadastre : [])
-    .map((item: any, index: number) => {
-      const gnr = toFirst(item?.gnr);
-      const bnr = toFirst(item?.bnr);
-      const mnr = toFirst(item?.mnr);
-      const lnr = toFirst(item?.lnr);
-      const primary = gnr || mnr;
-      const secondary = bnr || lnr;
-      if (!primary && !secondary) return null;
-      const separator = (mnr || lnr) && !(gnr || bnr) ? "." : "/";
-      const baseLabel = secondary ? `${primary}${separator}${secondary}` : primary;
-      const label = knr ? `${knr}-${baseLabel}` : baseLabel;
-      const href = toSearchHref({
-        dataset,
+    const separator = (mnr || lnr) && !(gnr || bnr) ? "." : "/";
+    const baseLabel = secondary ? `${primary}${separator}${secondary}` : primary;
+    const label = knr ? `${knr}-${baseLabel}` : baseLabel;
+
+    return {
+      key: `${key}-${label}`,
+      label,
+      params: {
+        sourceView: "on",
         ...(gnr ? { gnr } : {}),
         ...(bnr ? { bnr } : {}),
         ...(mnr ? { mnr } : {}),
         ...(lnr ? { lnr } : {}),
         ...(knr ? { knr } : {}),
-      });
-      return { key: `${label}-${index}`, label, href };
-    })
-    .filter(Boolean) as { key: string; label: string; href: string }[];
+      },
+    };
+  };
 
-  const fallbackPrimary = toFirst(source.gnr) || toFirst(source.mnr);
-  const fallbackSecondary = toFirst(source.bnr) || toFirst(source.lnr);
-  const fallbackSeparator = (toFirst(source.mnr) || toFirst(source.lnr)) && !(toFirst(source.gnr) || toFirst(source.bnr)) ? "." : "/";
-  const fallbackBaseLabel = fallbackSecondary ? `${fallbackPrimary}${fallbackSeparator}${fallbackSecondary}` : fallbackPrimary;
-  const fallbackLabel = knr ? `${knr}-${fallbackBaseLabel}` : fallbackBaseLabel;
-  const fallbackChip = fallbackPrimary
-    ? [{
-      key: fallbackLabel,
-      label: fallbackLabel,
-      href: toSearchHref({
-        dataset,
-        ...(toFirst(source.gnr) ? { gnr: toFirst(source.gnr) } : {}),
-        ...(toFirst(source.bnr) ? { bnr: toFirst(source.bnr) } : {}),
-        ...(toFirst(source.mnr) ? { mnr: toFirst(source.mnr) } : {}),
-        ...(toFirst(source.lnr) ? { lnr: toFirst(source.lnr) } : {}),
-        ...(knr ? { knr } : {}),
-      }),
-    }]
-    : [];
+  const chipsFromCadastre = (Array.isArray(source.cadastre) ? source.cadastre : [])
+    .map((item: Record<string, any>, index: number) => toChip(item, String(index)))
+    .filter((chip): chip is NonNullable<ReturnType<typeof toChip>> => Boolean(chip));
 
-  const chips = chipsFromCadastre.length > 0 ? chipsFromCadastre : fallbackChip;
+  const fallbackChip = toChip(source, "fallback");
+  const chips = chipsFromCadastre.length > 0 ? chipsFromCadastre : fallbackChip ? [fallbackChip] : [];
   if (chips.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <h3 className="font-semibold !text-base !m-0 !p-0 !font-sans">Matrikkel:</h3>
+    <div className="flex flex-wrap gap-2 items-baseline">
+      <h3 className="font-semibold !text-base !m-0 !p-0 !font-sans leading-none">Matrikkel:</h3>
       {chips.map((chip) => (
-        <Link key={chip.key} href={chip.href} className="no-underline flex items-center gap-1">
+        <Clickable
+          key={chip.key}
+          link
+          href="/search"
+          only={chip.params}
+          className="no-underline inline-flex items-baseline gap-1 leading-none"
+        >
           {chip.label}
           <PiMagnifyingGlass className="text-primary-700" aria-hidden="true" />
-        </Link>
+        </Clickable>
       ))}
     </div>
   );
