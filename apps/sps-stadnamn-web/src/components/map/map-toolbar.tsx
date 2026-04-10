@@ -229,16 +229,16 @@ export default function MapToolbar() {
                                     )
                             )}
                         >
-                            <div className={cn("min-w-0 flex-1 flex flex-wrap gap-2 text-lg")}>
+                            <div className={cn("min-w-0 flex-1 flex items-center gap-2 text-lg")}>
                                 {isGroupLabelLoading ? (
                                     <>
                                         <span className="sr-only">Lastar namnegruppe</span>
                                         <span className="h-6 w-40 bg-neutral-900/10 rounded-full animate-pulse" aria-hidden="true" />
                                     </>
                                 ) : (
-                                    <span className="font-semibold truncate block">{groupLabel}</span>
+                                    <span className="font-semibold truncate min-w-0">{groupLabel}</span>
                                 )}
-                                {groupAdm ? <span className="text-neutral-700 truncate block">{groupAdm}</span> : null}
+                                {groupAdm ? <span className="text-neutral-700 truncate min-w-0 flex-1">{groupAdm}</span> : null}
                             </div>
                             <ClickableIcon
                                 label="Lukk namnegruppe"
