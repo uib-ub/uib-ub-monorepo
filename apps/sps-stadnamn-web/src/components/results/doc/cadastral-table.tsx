@@ -18,6 +18,7 @@ import { GlobalContext } from '@/state/providers/global-provider'
 import SubtleLink from '@/components/ui/clickable/subtle-link'
 import { panPointIntoView } from '@/lib/map-utils'
 import { useActivePoint, useCenterParam, useZoomParam } from '@/lib/param-hooks'
+import { buildTreeParam } from '@/lib/tree-param'
 import { usePathname } from 'next/navigation'
 
 interface CadastralTableProps {
@@ -42,6 +43,14 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
   const center = useCenterParam()
   const zoom = useZoomParam()
   const pathName = usePathname()
+  const isUuidPage = pathName.startsWith('/uuid')
+  const treeParam = buildTreeParam({
+    dataset,
+    adm1: adm1 ?? undefined,
+    adm2: adm2 ?? undefined,
+    // UUID can only be encoded when both admin levels are present.
+    uuid: adm1 && adm2 ? uuid : undefined,
+  })
   
   const { data: cadastralData, isLoading: cadastralLoading, error: cadastralError } = useQuery({
     queryKey: ['cadastral', dataset, uuid, gnr, adm1, adm2],
@@ -226,7 +235,8 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
             </div>
           </TooltipProvider>
         </div>
-        {parentGroupId && !pathName.startsWith('/uuid') && <SubtleLink link className="px-3 py-1" only={{init: stringToBase64Url(parentGroupId), center, zoom }}>Vis i stadnamnsøk </SubtleLink>}
+        {parentGroupId && !isUuidPage && <SubtleLink link className="px-3 py-1" only={{init: stringToBase64Url(parentGroupId), center, zoom }}>Vis i stadnamnsøk </SubtleLink>}
+        {parentGroupId && isUuidPage && treeParam && <SubtleLink link href="/search" className="px-3 py-1" only={{ tree: treeParam, doc: uuid }}>Vis i matrikkelvising </SubtleLink>}
       </div>
     )
   }
@@ -234,20 +244,6 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
   const cadastreTableFields = Object.entries(fieldConfig[dataset] || {})
     .filter(([_, cfg]) => cfg.cadastreTable)
     .map(([key, cfg]) => ({ key, label: cfg.label }))
-
-  // If no cadastreTable fields, use some common cadastral fields as fallback
-  const fallbackFields = [
-    { key: 'misc.MNR', label: 'Matrikkelnummer' },
-    { key: 'misc.LNR', label: 'Løpenummer' },
-    { key: 'misc.knr', label: 'Kommunenummer' },
-    { key: 'cadastre.gnr', label: 'Gardsnummer' },
-    { key: 'cadastre.bnr', label: 'Bruksnummer' }
-  ].filter(field => {
-    // Only include fields that exist in the fieldConfig for this dataset
-    return fieldConfig[dataset]?.[field.key]
-  })
-
-  const fields = cadastreTableFields.length > 0 ? cadastreTableFields : fallbackFields
 
   const visible = hits.slice(0, limit)
   const hasMore = hits.length > limit
@@ -268,7 +264,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
                   </TooltipContent>
                 </Tooltip>
               </th>
-              {fields.map((field) => (
+              {cadastreTableFields.map((field) => (
                 <th className="text-left py-2 font-semibold text-neutral-800" key={field.key}>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -302,7 +298,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
                       </TooltipContent>
                     </Tooltip>
                   </td>
-                  {fields.map((field, idx) => {
+                  {cadastreTableFields.map((field, idx) => {
                     const value = getFieldValue(hit, field.key)
                     const displayValue = Array.isArray(value) ? value.join(', ') : value || ''
 

@@ -112,6 +112,8 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
 
   const shouldShowCadastralSubdivisions =
     !!treeSettings[docDataset] && docData?._source?.sosi == 'gard'
+  const adm1 = Array.isArray(docData?._source?.adm1) ? docData?._source?.adm1?.[0] : docData?._source?.adm1
+  const adm2 = Array.isArray(docData?._source?.adm2) ? docData?._source?.adm2?.[0] : docData?._source?.adm2
 
   // `CadastralTable` fetches subunits itself; no need to prefetch children here.
 
@@ -228,6 +230,8 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
               list={true}
               flush={true}
               groupId={(docData as any)?._source?.group?.id}
+              adm1={adm1}
+              adm2={adm2}
               showMarkers={false}
             />
           </div>
