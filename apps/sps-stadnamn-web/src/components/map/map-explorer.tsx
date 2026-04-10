@@ -710,6 +710,7 @@ export default function MapExplorer() {
             },
 
             contextmenu: (event: any) => {
+              if (tree) return;
               const point = event.latlng
               // User actively chose a new point; hide the "how to move point" hint.
               dismissNotification("point-hint", true)
