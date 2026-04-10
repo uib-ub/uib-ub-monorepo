@@ -46,7 +46,7 @@ function SosiInline({
 
     return (
         <>
-            <span className="text-neutral-700 px-1">|</span>
+            <span className="text-neutral-700">|</span>
             <span className="inline-flex items-center gap-1 text-sm text-neutral-700">
                 <span>{visibleSosiTypeKeys.map((typeKey) => sosiTypes[typeKey]).join(", ")}</span>
                 {additionalSosiCount > 0 && (
@@ -395,8 +395,30 @@ export default function ResultCard({
     const finalCadastreSegment = [isBruk ? brukNumber : parentNumber, label].filter(Boolean).join(" ").trim() || (isBruk ? "Bruk" : "Gard");
     const docUuid = toText((fields as any)?.uuid).split(" | ")[0].trim();
     const noWithinSubtitle = [adm2, adm1].filter(Boolean).join(", ");
-    const hasCadastreInfo = Boolean(hasWithin || cadastre.gnr || cadastre.bnr || cadastre.mnr || cadastre.lnr || cadastre.parentLabel);
     const titleLabel = label || "Utan namn";
+    const flatSingleSubtitle = noWithinSubtitle || admText;
+    const hasGnrCadastre = Boolean(cadastre.gnr);
+    const primaryCadastreNumber = cadastre.gnr || cadastre.mnr;
+    const secondaryCadastreNumber = cadastre.bnr || cadastre.lnr;
+    const primaryCadastreLabel = hasGnrCadastre ? "Gardsnr" : "Matrikkelnr";
+    const secondaryCadastreLabel = hasGnrCadastre ? "Bruksnr" : "Løpenr";
+    const cadastreDisplayText = !primaryCadastreNumber
+        ? ""
+        : secondaryCadastreNumber && cadastre.parentLabel
+            ? `${primaryCadastreLabel}: ${primaryCadastreNumber} | ${secondaryCadastreNumber} ${cadastre.parentLabel}`
+            : secondaryCadastreNumber
+                ? `${primaryCadastreLabel}: ${primaryCadastreNumber} | ${secondaryCadastreLabel}: ${secondaryCadastreNumber}`
+                : `${primaryCadastreLabel}: ${primaryCadastreNumber}`;
+    const rawSosiArray = Array.isArray(rawSosi) ? rawSosi : rawSosi ? [rawSosi] : [];
+    const sosiLabels = rawSosiArray.map((item) => {
+        const key = String(item);
+        return (sosiVocab as any)?.[key]?.label || key;
+    });
+    const hasSosi = sosiLabels.length > 0;
+    const normalizedSosiLabels = sosiLabels.map((value) => value.trim().toLowerCase());
+    const hasSosiGard = normalizedSosiLabels.includes("gard");
+    const hasSosiBruk = normalizedSosiLabels.includes("bruk");
+    const replaceSosiWithCadastre = Boolean(cadastreDisplayText) && (hasSosiGard || (hasSosiBruk && Boolean(secondaryCadastreNumber)));
 
 
     const isInit = Boolean(initDecoded && itemId === initDecoded)
@@ -497,88 +519,114 @@ export default function ResultCard({
                     {groupAdmText && (resultCardTotal ?? 0) > 1 && (
                         <div className="text-sm text-neutral-800 flex items-center gap-1 flex-wrap">
                             <span>{groupAdmText}</span>
+                            {sourceViewOn && (
+                                replaceSosiWithCadastre ? (
+                                    <>
+                                        <span className="text-neutral-700">|</span>
+                                        <span>{cadastreDisplayText}</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />
+                                        {cadastreDisplayText && (
+                                            <>
+                                                <span className="text-neutral-700">{hasSosi ? "-" : "|"}</span>
+                                                <span>{cadastreDisplayText}</span>
+                                            </>
+                                        )}
+                                    </>
+                                )
+                            )}
                         </div>
                     )}
 
                     {hasSingleSource && (
                         <>
-                            {hasCadastreInfo ? (
+                            {hasWithin ? (
                                 <div className="text-sm text-neutral-800 flex items-center gap-1 flex-wrap">
-                                    {hasWithin ? (
-                                        <>
-                                            {adm1 && dataset ? (
-                                                <Clickable
-                                                    link
-                                                    className="breadcrumb-link"
-                                                    only={{ tree: buildTreeParam({ dataset, adm1 }) }}
-                                                    onClick={handleEnterTreeFromBreadcrumb}
-                                                >
-                                                    {adm1}
-                                                </Clickable>
-                                            ) : (
-                                                adm1 && <span>{adm1}</span>
-                                            )}
-                                            {adm1 && <span className="text-neutral-700">/</span>}
-                                            {adm2 && dataset ? (
-                                                <Clickable
-                                                    link
-                                                    className="breadcrumb-link"
-                                                    only={{ tree: buildTreeParam({ dataset, adm1, adm2 }) }}
-                                                    onClick={handleEnterTreeFromBreadcrumb}
-                                                >
-                                                    {adm2}
-                                                </Clickable>
-                                            ) : (
-                                                adm2 && <span>{adm2}</span>
-                                            )}
-                                            {(adm1 || adm2) && (isBruk ? gardSegment : finalCadastreSegment) && <span className="text-neutral-700">/</span>}
-                                            {isBruk && gardSegment && dataset ? (
-                                                <Clickable
-                                                    link
-                                                    className="breadcrumb-link"
-                                                    only={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: cadastre.within }), doc: cadastre.within }}
-                                                    onClick={handleEnterTreeFromBreadcrumb}
-                                                >
-                                                    {gardSegment}
-                                                </Clickable>
-                                            ) : (
-                                                isBruk && gardSegment && <span>{gardSegment}</span>
-                                            )}
-                                            {isBruk && gardSegment && <span className="text-neutral-700">/</span>}
-                                            {dataset && docUuid ? (
-                                                <Clickable
-                                                    link
-                                                    className="breadcrumb-link"
-                                                    only={{
-                                                        tree: buildTreeParam({
-                                                            dataset,
-                                                            adm1,
-                                                            adm2,
-                                                            uuid: isBruk ? cadastre.within : docUuid,
-                                                        }),
-                                                        doc: docUuid,
-                                                        activePoint: activePointValue,
-                                                    }}
-                                                    onClick={handleEnterTreeFromBreadcrumb}
-                                                >
-                                                    {finalCadastreSegment}
-                                                </Clickable>
-                                            ) : (
-                                                <span>{finalCadastreSegment}</span>
-                                            )}
-                                        </>
+                                    {adm1 && dataset ? (
+                                        <Clickable
+                                            link
+                                            className="breadcrumb-link"
+                                            only={{ tree: buildTreeParam({ dataset, adm1 }) }}
+                                            onClick={handleEnterTreeFromBreadcrumb}
+                                        >
+                                            {adm1}
+                                        </Clickable>
                                     ) : (
-                                        <>
-                                            {noWithinSubtitle && <span>{noWithinSubtitle}</span>}
-                                            {sourceViewOn && <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />}
-                                        </>
+                                        adm1 && <span>{adm1}</span>
+                                    )}
+                                    {adm1 && <span className="text-neutral-700">/</span>}
+                                    {adm2 && dataset ? (
+                                        <Clickable
+                                            link
+                                            className="breadcrumb-link"
+                                            only={{ tree: buildTreeParam({ dataset, adm1, adm2 }) }}
+                                            onClick={handleEnterTreeFromBreadcrumb}
+                                        >
+                                            {adm2}
+                                        </Clickable>
+                                    ) : (
+                                        adm2 && <span>{adm2}</span>
+                                    )}
+                                    {(adm1 || adm2) && (isBruk ? gardSegment : finalCadastreSegment) && <span className="text-neutral-700">/</span>}
+                                    {isBruk && gardSegment && dataset ? (
+                                        <Clickable
+                                            link
+                                            className="breadcrumb-link"
+                                            only={{ tree: buildTreeParam({ dataset, adm1, adm2, uuid: cadastre.within }), doc: cadastre.within }}
+                                            onClick={handleEnterTreeFromBreadcrumb}
+                                        >
+                                            {gardSegment}
+                                        </Clickable>
+                                    ) : (
+                                        isBruk && gardSegment && <span>{gardSegment}</span>
+                                    )}
+                                    {isBruk && gardSegment && <span className="text-neutral-700">/</span>}
+                                    {dataset && docUuid ? (
+                                        <Clickable
+                                            link
+                                            className="breadcrumb-link"
+                                            only={{
+                                                tree: buildTreeParam({
+                                                    dataset,
+                                                    adm1,
+                                                    adm2,
+                                                    uuid: isBruk ? cadastre.within : docUuid,
+                                                }),
+                                                doc: docUuid,
+                                                activePoint: activePointValue,
+                                            }}
+                                            onClick={handleEnterTreeFromBreadcrumb}
+                                        >
+                                            {finalCadastreSegment}
+                                        </Clickable>
+                                    ) : (
+                                        <span>{finalCadastreSegment}</span>
                                     )}
                                 </div>
                             ) : (
-                                admText && (
+                                flatSingleSubtitle && (
                                     <div className="text-sm text-neutral-800 flex items-center gap-1 flex-wrap">
-                                        <span>{admText}</span>
-                                        {sourceViewOn && <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />}
+                                        <span>{flatSingleSubtitle}</span>
+                                        {sourceViewOn && (
+                                            replaceSosiWithCadastre ? (
+                                                <>
+                                                    <span className="text-neutral-700">|</span>
+                                                    <span>{cadastreDisplayText}</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <SosiInline rawSosi={rawSosi} sosiVocab={sosiVocab as any} />
+                                                    {cadastreDisplayText && (
+                                                        <>
+                                                            <span className="text-neutral-700">{hasSosi ? "-" : "|"}</span>
+                                                            <span>{cadastreDisplayText}</span>
+                                                        </>
+                                                    )}
+                                                </>
+                                            )
+                                        )}
                                     </div>
                                 )
                             )}
