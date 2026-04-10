@@ -126,11 +126,14 @@ export default function MapExplorer() {
   })
   const areaSource = useMemo(
     () =>
-      (doc
-        ? resultCardData?.sources?.find((source: Record<string, any>) => source.uuid === doc && source.area)
+      (initDecoded
+        ? resultCardData?.sources?.find(
+            (source: Record<string, any>) =>
+              (source.uuid === initDecoded || source.group?.id === initDecoded) && source.area
+          )
         : undefined) ??
       resultCardData?.sources?.find((source: Record<string, any>) => source.area),
-    [doc, resultCardData?.sources]
+    [initDecoded, resultCardData?.sources]
   )
   const activeResultCardHasArea = Boolean(areaSource?.area)
 
@@ -1166,6 +1169,10 @@ export default function MapExplorer() {
                     )
                     const label = hit._source?.label || '[utan namn]'
                     const uuid = hit._source?.uuid
+                    const groupId = hit._source?.group?.id
+                    // Grouped-map markers represent concrete source records, so
+                    // init should prefer the source uuid (not group.id).
+                    const initId = uuid || groupId
 
                     const pointMarkerTooltip = (!isMobile) ? (
                       <Tooltip direction="top" offset={[0, -20]} opacity={1} className="point-marker-tooltip">
@@ -1184,7 +1191,7 @@ export default function MapExplorer() {
                         eventHandlers={{
                           click: () => {
                             const newParams = new URLSearchParams(searchParams)
-                            if (uuid) newParams.set('doc', uuid)
+                            if (initId) newParams.set('init', stringToBase64Url(initId))
                             newParams.set('activePoint', `${lat},${lng}`)
                             router.push(`?${newParams.toString()}`)
                           },
@@ -1193,7 +1200,7 @@ export default function MapExplorer() {
                             if (key === 'Enter' || key === ' ') {
                               ;(e.originalEvent ?? e).preventDefault()
                               const newParams = new URLSearchParams(searchParams)
-                              if (uuid) newParams.set('doc', uuid)
+                              if (initId) newParams.set('init', stringToBase64Url(initId))
                               newParams.set('activePoint', `${lat},${lng}`)
                               router.push(`?${newParams.toString()}`)
                             }

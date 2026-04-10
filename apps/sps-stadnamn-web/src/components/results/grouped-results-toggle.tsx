@@ -2,11 +2,9 @@
 
 import { useContext, useEffect, useRef } from "react"
 import { GlobalContext } from "@/state/providers/global-provider"
-import { PiArrowElbowLeftUpBold, PiCaretLeftBold, PiCaretRightBold, PiX } from "react-icons/pi"
+import { PiCaretLeftBold, PiCaretRightBold } from "react-icons/pi"
 import Clickable from "@/components/ui/clickable/clickable"
 import { useInitParam, useSourceViewOn, useGroupParam, useCenterParam, useZoomParam, useQParam, usePointParam, useFulltextOn, useNoGeoOn } from "@/lib/param-hooks"
-import ClickableIcon from "../ui/clickable/clickable-icon"
-import { useSessionStore } from "@/state/zustand/session-store"
 import useResultCardData from "@/state/hooks/result-card-data"
 import { stringToBase64Url } from "@/lib/param-utils"
 
@@ -22,8 +20,6 @@ export default function GroupedResultsToggle() {
     const point = usePointParam()
     const fulltextOn = useFulltextOn()
     const noGeoOn = useNoGeoOn()
-    const sourceViewResetUrl = useSessionStore((s) => s.sourceViewResetUrl)
-    const clearSourceViewResetUrl = useSessionStore((s) => s.clearSourceViewResetUrl)
     // Track previous mode so we only scroll when it actually changes
     const previousNoGroupingRef = useRef(sourceViewOn)
 
@@ -46,36 +42,12 @@ export default function GroupedResultsToggle() {
 
     
 
-    const handleCloseGroup = () => {
-        if (sourceViewResetUrl) {
-            clearSourceViewResetUrl()
-        }
-    }
-
     const inGroupMode = !!group
-    const roundedIconButtonClassName = "btn btn-neutral text-white rounded-md h-6 w-12 xl:h-9 xl:w-9"
 
     return (
         <div className="relative flex items-center gap-2 text-sm">
-            {(group && sourceViewResetUrl) ? (
-                <ClickableIcon
-                    className={`absolute right-0 top-1/2 -translate-y-1/2 ${roundedIconButtonClassName}`}
-                    href={sourceViewResetUrl}
-                    onClick={handleCloseGroup}
-                    label="Tilbake til gruppert søk"
-                >
-                    <PiArrowElbowLeftUpBold aria-hidden="true" className="text-2xl" />
-                </ClickableIcon>
-            ) : sourceViewOn ? (
-                inGroupMode ? (
-                    <ClickableIcon
-                        className={`absolute right-0 top-1/2 -translate-y-1/2 ${roundedIconButtonClassName}`}
-                        label="Gruppert søk"
-                        only={{ q, center, zoom, point, fulltext: fulltextOn ? 'on' : null, noGeo: noGeoOn ? 'on' : null }}
-                    >
-                        <PiArrowElbowLeftUpBold aria-hidden="true" className="text-xl" />
-                    </ClickableIcon>
-                ) : (
+            {sourceViewOn ? (
+                inGroupMode ? null : (
                     <Clickable className="flex items-center gap-2" only={{ q, center, zoom, point, init: group || initResultCardData?.fields?.['group.id']?.[0] ? stringToBase64Url(initResultCardData.fields["group.id"][0]) : null, noGeo: noGeoOn ? 'on' : null }}>
                         <PiCaretLeftBold aria-hidden="true" className="text-primary-700" />
                         Gruppert søk

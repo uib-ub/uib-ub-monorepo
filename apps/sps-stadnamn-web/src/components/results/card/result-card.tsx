@@ -163,9 +163,7 @@ function GroupBottomToolbarMulti({
                             }
                         }}
                         remove={["activePoint"]}
-                        add={{
-                            ...isMobile ? { init: groupData.id, point: activePointValue } : { activePoint: activePointValue },
-                        }}
+                        add={{ init: groupData.id, point: activePointValue }}
                     />
                 }
 
@@ -255,7 +253,7 @@ function GroupBottomToolbarSingle({
                     {groupLatLng && (
                         <CoordinateButton
                             isActive={isActivePoint}
-                            add={ isMobile ? { init: groupData.id, point: activePointValue } : { activePoint: activePointValue }}
+                            add={{ init: groupData.id, point: activePointValue }}
                             onClick={() => {
                                 focusPointWithoutZoomOut(mapFunctionRef.current, groupLatLng, isMobile, snappedPosition);
                                 if (isMobile && snappedPosition !== "bottom") {
@@ -264,7 +262,7 @@ function GroupBottomToolbarSingle({
                             }}
                         />
                     )}
-                    <IconButton
+                    {false &&<IconButton
                         label={linkCopied ? "Lenke kopiert" : "Kopier lenke"}
                         onClick={async () => {
                             if (!uuidUrl || !navigator?.clipboard) return;
@@ -284,7 +282,7 @@ function GroupBottomToolbarSingle({
                         ) : (
                             <PiLinkSimple aria-hidden="true" className="text-lg" />
                         )}
-                    </IconButton>
+                    </IconButton>}
                     <Clickable
                         link={true}
                         href={uuidUrl || ""}
@@ -397,7 +395,7 @@ export default function ResultCard({
     const titleLabel = label || "Utan namn";
 
 
-    const isInit = Boolean(!group && initDecoded && itemId === initDecoded)
+    const isInit = Boolean(initDecoded && itemId === initDecoded)
 
     
     // Scroll to top when init group changes (when clicking "vel" button)

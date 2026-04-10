@@ -662,7 +662,7 @@ export default function AutocompleteDropdown({
             className={`absolute ${
                 isMobile
                     ? 'top-[3.5rem] left-0 w-full'
-                    : 'top-[3rem] -left-12 x-[30svw] w-[calc(100svw-5rem)] lg:w-[calc(30svw-1rem)] xl:w-[calc(25svw-1rem)] shadow-lg rounded-lg rounded-t-none'
+                    : 'top-[3rem] -left-12 w-[calc(100%+3rem)] lg:-left-12 lg:w-[calc(30svw-1rem)] xl:w-[calc(25svw-1rem)] shadow-lg rounded-lg rounded-t-none'
             } border-t border-neutral-200 max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 overflow-y-auto overscroll-none xl-p-2 xl divide-y divide-neutral-300`}
         >
             {false ? (

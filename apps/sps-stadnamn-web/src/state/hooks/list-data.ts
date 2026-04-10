@@ -34,8 +34,9 @@ const listDataQuery = async ({
 }) => {
 
     const sortPoint = !selectedGroup && point ? [point[1], point[0]] as [number, number] : null
-    const exclude = init && !selectedGroup ? init : null
-    const idField = selectedGroup ? null : (sourceViewOn ? 'uuid' : 'group.id')
+    const exclude = init || null
+    // In selectedGroup mode, list items are source records, so exclude by uuid.
+    const idField = selectedGroup ? 'uuid' : (sourceViewOn ? 'uuid' : 'group.id')
 
     const res = await fetch(`/api/search/list${searchQueryString ? `?${searchQueryString}` : ''}`, {
         method: 'POST',

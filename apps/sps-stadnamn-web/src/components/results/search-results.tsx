@@ -100,7 +100,7 @@ export default function SearchResults() {
 
   return (
     <div ref={resultsContainerRef} className={isMobile ? 'mb-28' : 'mb-0'}>
-      {init && !group && (initResultCardLoading ? (
+      {init && (initResultCardLoading ? (
         <div className="relative">
           <ResultCardSkeleton hasIiif={initResultCardData?.iiifItems?.length > 0} />
         </div>
