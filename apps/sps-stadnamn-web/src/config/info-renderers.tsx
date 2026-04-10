@@ -147,7 +147,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
       {source.misc?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.misc?.merknad}</>}
       <div className="flex flex-wrap mt-3 gap-2">
         <Link href={source.link} className='rectangular-external-link'>Skanna</Link>
-        <Link href={source.misc.Lenke_til_digital_matrikkel} className='rectangular-external-link'>Digitalisert</Link>
+        <Link href={source.misc.Lenke_til_digital_matrikkel} className='rectangular-external-link'>Transkribert</Link>
       </div>
 
     </>
