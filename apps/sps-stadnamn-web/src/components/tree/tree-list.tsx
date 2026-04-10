@@ -91,7 +91,7 @@ export default function TreeList({
 
                 // If we're at adm2 level, show cadastral units (farms). Click goes to uuid level.
                 if (adm2) {
-                    const gnr = getGnr(item, dataset)
+                    const gnr = getGnr(item)
                     const farmName = fields.parentLabel?.[0] || fields[settings.parentName]?.[0] || fields.label?.[0]
                     const itemUuid = fields.uuid?.[0]
                     const isExpanded = !!expandedUuid && !!itemUuid && expandedUuid === itemUuid

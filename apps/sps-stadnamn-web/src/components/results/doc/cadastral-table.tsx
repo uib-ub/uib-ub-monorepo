@@ -95,6 +95,17 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
     }
   }, [list, scrollToBrukRef])
 
+  // When tree view opens with activePoint in URL, scroll to the first matching bruk row.
+  useEffect(() => {
+    if (!list || !activePointParam) return
+    if (!hits.length) return
+
+    requestAnimationFrame(() => {
+      const firstMatch = document.querySelector<HTMLTableRowElement>(`tr[data-active-point="${activePointParam[0]},${activePointParam[1]}"]`)
+      firstMatch?.scrollIntoView({ behavior: 'instant', block: 'center' })
+    })
+  }, [list, activePointParam, hits.length])
+
   if (cadastralLoading) return null
   if (cadastralError) {
     return (
@@ -153,7 +164,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
                 <tbody>
                   {hits.map((hit: any) => {
                     const brukUuid = hit._source?.uuid
-                    const bnrText = getBnr(hit, dataset)
+                    const bnrText = getBnr(hit)
                     const coords = hit._source?.location?.coordinates
                     const ownPoint =
                       Array.isArray(coords) && coords.length === 2
@@ -165,6 +176,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
                     return (
                       <tr
                         key={hit._id}
+                        data-active-point={ownPoint}
                         ref={ownPoint ? (el) => { if (el) rowRefs.current[ownPoint] = el; else delete rowRefs.current[ownPoint] } : undefined}
                         className="border-t border-neutral-100"
                       >
@@ -280,7 +292,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
           </thead>
           <tbody>
             {visible.map((hit: any, index: number) => {
-              const brukText = `${getBnr(hit, dataset)} ${getFieldValue(hit, 'label')?.[0] || ''}`.trim()
+              const brukText = `${getBnr(hit)} ${getFieldValue(hit, 'label')?.[0] || ''}`.trim()
 
               return (
                 <tr key={index} className="border-b border-neutral-100 last:border-b-0">

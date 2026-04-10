@@ -388,8 +388,12 @@ export default function ResultCard({
         parentLabel: toText((fields as any)?.parentLabel).split(" | ")[0].trim(),
     };
     const hasWithin = Boolean(cadastre.within);
-    const gardSegment = [cadastre.gnr, cadastre.parentLabel].filter(Boolean).join(" ").trim();
-    const brukSegment = [cadastre.bnr, label].filter(Boolean).join(" ").trim() || "Bruk";
+    const parentNumber = cadastre.gnr || cadastre.mnr;
+    const brukNumber = cadastre.bnr || cadastre.lnr;
+    const isBruk = Boolean(brukNumber);
+    const gardSegment = [parentNumber, cadastre.parentLabel].filter(Boolean).join(" ").trim();
+    const finalCadastreSegment = [isBruk ? brukNumber : parentNumber, label].filter(Boolean).join(" ").trim() || (isBruk ? "Bruk" : "Gard");
+    const docUuid = toText((fields as any)?.uuid).split(" | ")[0].trim();
     const noWithinSubtitle = [adm2, adm1].filter(Boolean).join(", ");
     const hasCadastreInfo = Boolean(hasWithin || cadastre.gnr || cadastre.bnr || cadastre.mnr || cadastre.lnr || cadastre.parentLabel);
     const titleLabel = label || "Utan namn";
@@ -421,6 +425,7 @@ export default function ResultCard({
     const groupLatLng: [number, number] | null = rawGroupCoordinates
         ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])]
         : null;
+    const activePointValue = groupLatLng ? `${groupLatLng[0]},${groupLatLng[1]}` : null;
 
     if (resultCardLoading) {
         return <ResultCardSkeleton hasIiif={hasIiif} />;
@@ -526,8 +531,8 @@ export default function ResultCard({
                                             ) : (
                                                 adm2 && <span>{adm2}</span>
                                             )}
-                                            {(adm1 || adm2) && gardSegment && <span className="text-neutral-700">/</span>}
-                                            {gardSegment && dataset ? (
+                                            {(adm1 || adm2) && (isBruk ? gardSegment : finalCadastreSegment) && <span className="text-neutral-700">/</span>}
+                                            {isBruk && gardSegment && dataset ? (
                                                 <Clickable
                                                     link
                                                     className="breadcrumb-link"
@@ -537,10 +542,30 @@ export default function ResultCard({
                                                     {gardSegment}
                                                 </Clickable>
                                             ) : (
-                                                gardSegment && <span>{gardSegment}</span>
+                                                isBruk && gardSegment && <span>{gardSegment}</span>
                                             )}
-                                            {gardSegment && <span className="text-neutral-700">/</span>}
-                                            <span>{brukSegment}</span>
+                                            {isBruk && gardSegment && <span className="text-neutral-700">/</span>}
+                                            {dataset && docUuid ? (
+                                                <Clickable
+                                                    link
+                                                    className="breadcrumb-link"
+                                                    only={{
+                                                        tree: buildTreeParam({
+                                                            dataset,
+                                                            adm1,
+                                                            adm2,
+                                                            uuid: isBruk ? cadastre.within : docUuid,
+                                                        }),
+                                                        doc: docUuid,
+                                                        activePoint: activePointValue,
+                                                    }}
+                                                    onClick={handleEnterTreeFromBreadcrumb}
+                                                >
+                                                    {finalCadastreSegment}
+                                                </Clickable>
+                                            ) : (
+                                                <span>{finalCadastreSegment}</span>
+                                            )}
                                         </>
                                     ) : (
                                         <>
