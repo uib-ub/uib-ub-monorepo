@@ -107,8 +107,6 @@ export default function ActiveFilters() {
 
 
 
-  //const gnr =  getGnr(parentData, perspective)
-
 
   if (!facetFilters.length && !datasetFilters.length) {
     return null

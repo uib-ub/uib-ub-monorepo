@@ -96,7 +96,7 @@ export default function TableExplorer() {
         </div>
         <div className='flex flex-col py-2 gap-y-4 h-full bg-white'>
             <div className='flex  flex-col gap-4 xl:gap-2 !mx-2'>
-                {tree && doc && tableData?.[0]?._source && treeSettings[perspective] && <div className="text-xl px-1">{`${getGnr(tableData?.[0], perspective) || getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.subunit) || ""} ${getValueByPath(tableData?.[0]?._source, treeSettings[perspective]?.parentName) || tableData?.[0]?._source?.label || ""}`}</div>}
+                {tree && doc && tableData?.[0]?._source && treeSettings[perspective] && <div className="text-xl px-1">{`${getGnr(tableData?.[0])} ${tableData?.[0]?._source.parentLabel || tableData?.[0]?._source?.label}`}</div>}
 
                 {tableData && tableData.length > 0 ?
                     <div className="border border-neutral-300 rounded-md">
