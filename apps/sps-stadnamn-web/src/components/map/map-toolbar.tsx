@@ -251,11 +251,9 @@ export default function MapToolbar() {
                     ) : (
                         <Clickable
                             link
-                            label="Tilbakemelding"
                             href="https://skjemaker.app.uib.no/view.php?id=16665712"
-                            className="btn btn-outline rounded-md inline-flex items-center gap-2 override-external-icon transition-none h-12 w-fit"
+                            className="btn btn-outline rounded-md inline-flex items-center gap-2 override-external-icon transition-none w-fit"
                         >
-                            <PiChatCircleText className="text-xl" aria-hidden="true" />
                             <span>Tilbakemelding</span>
                         </Clickable>
                     )}
