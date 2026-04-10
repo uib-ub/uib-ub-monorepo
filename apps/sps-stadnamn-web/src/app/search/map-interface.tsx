@@ -119,7 +119,7 @@ function LeftWindow({ children, bottomContent }: { children: React.ReactNode, bo
         return <>{children}</>
     }
     return (
-        <div className={`${optionsOn ? '' : 'invisible lg:visible'} pointer-events-none absolute left-2 bottom-2 right-2 top-[4rem] z-[3001] w-full lg:w-[calc(30svw-1rem)] xl:w-[calc(25svw-1rem)] top-[50svh] lg:top-16 flex flex-col items-start gap-2 max-h-[calc(100svh-4.5rem)]`}>
+        <div className={`${optionsOn ? '' : 'invisible lg:visible'} pointer-events-none absolute left-2 bottom-2 right-2 top-[4rem] z-[6000] w-full lg:w-[calc(30svw-1rem)] xl:w-[calc(25svw-1rem)] top-[50svh] lg:top-16 flex flex-col items-start gap-2 max-h-[calc(100svh-4.5rem)]`}>
             <section className="pointer-events-auto bg-white shadow-lg flex flex-col w-full rounded-md overflow-y-scroll min-h-0"
                 aria-label="Søkefilter">{children}</section>
             {bottomContent ? <div className="pointer-events-auto">{bottomContent}</div> : null}
@@ -167,7 +167,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
         : dockRightWindowToBottom
             ? ''
             : 'top-1/2'
-    return <div className={`pointer-events-none absolute lg:top-2 right-2 bottom-2 ${rightWindowTopClass} w-[calc(100svw-1rem)] ${optionsOn ? 'invisible lg:visible' : ''} lg:w-[40svw] ${tree ? '' : 'xl:w-[25svw]'} z-[3001] max-h-[calc(100svh-2rem)]`}>
+    return <div className={`pointer-events-none absolute lg:top-2 right-2 bottom-2 ${rightWindowTopClass} w-[calc(100svw-1rem)] ${optionsOn ? 'invisible lg:visible' : ''} lg:w-[40svw] ${tree ? '' : 'xl:w-[25svw]'} z-[6000] max-h-[calc(100svh-2rem)]`}>
         <section ref={scrollableContentRef} className={`pointer-events-auto bg-white shadow-lg rounded-md overflow-y-auto max-h-[50svh] lg:max-h-[calc(100svh-2rem)]`}
             aria-labelledby="right-title">
             <div className={`flex flex-col ${showScrollToTop ? 'pb-20' : ''}`}>
