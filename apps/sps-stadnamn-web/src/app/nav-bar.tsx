@@ -22,8 +22,8 @@ export default function NavBar({ handleBlur, ...props }: any) {
                 Matrikkelvising
             </Clickable>
             <Clickable onBlur={handleBlur} scroll={false} add={{ mode: 'table' }} link href="/search" className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0">Tabell</Clickable>
-            <Clickable onBlur={handleBlur} scroll={false} add={{ mode: 'list' }} link href="/search" className="py-3 lg:py-0 mb-4 justify-end lg:my-1 lg:px-4 lg:mx-0  xl:border-r-2 xl:border-primary-300">Liste</Clickable>
             <Link onBlur={handleBlur} scroll={false} className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0" href="/iiif">Arkiv</Link>
+            <Clickable onBlur={handleBlur} scroll={false} add={{ mode: 'list' }} link href="/search" className="py-3 lg:py-0 mb-4 justify-end lg:my-1 lg:px-4 lg:mx-0  xl:border-r-2 xl:border-primary-300">Liste</Clickable>
             <Link onBlur={handleBlur} scroll={false} className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0" href="/help">Søketips</Link>
             <Link onBlur={handleBlur} scroll={false} className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0 override-external-icon" href="https://skjemaker.app.uib.no/view.php?id=16665712">Tilbakemelding</Link>
             <Link onBlur={handleBlur} scroll={false} className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:pr-8 lg:mx-0" href="/info">Info</Link>

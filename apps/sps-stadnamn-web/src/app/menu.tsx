@@ -139,6 +139,13 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                     : <PiTableLight className="text-xl" aria-hidden="true" />}
                                 Tabellvising
                             </Clickable>
+                            <Link scroll={false}
+                                className={`flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 ${pathname === '/iiif' ? 'bg-accent-800 text-white font-semibold' : ''}`}
+                                href="/iiif"
+                                aria-current={pathname === '/iiif' ? 'page' : undefined}
+                            >
+                                <PiArchive className="text-xl" aria-hidden="true" />Arkiv
+                            </Link>
                         </div>
                         <hr className="w-full h-px bg-neutral-200 border-0 my-0" />
                         <div className="flex flex-col gap-0 w-full pb-0">
@@ -149,12 +156,12 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                             >
                                 <PiQuestion className="text-xl" aria-hidden="true" />Søketips
                             </Link>
-                            <Link scroll={false}
-                                className={`flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 ${pathname === '/iiif' ? 'bg-accent-800 text-white font-semibold' : ''}`}
-                                href="/iiif"
-                                aria-current={pathname === '/iiif' ? 'page' : undefined}
+                            <Link
+                                scroll={false}
+                                className="flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 override-external-icon"
+                                href="https://skjemaker.app.uib.no/view.php?id=16665712"
                             >
-                                <PiArchive className="text-xl" aria-hidden="true" />Arkiv
+                                <PiChatCircleText className="text-xl" aria-hidden="true" />Tilbakemelding
                             </Link>
                             <div className="flex flex-col w-full border-y border-neutral-200">
                                 <Link scroll={false}
