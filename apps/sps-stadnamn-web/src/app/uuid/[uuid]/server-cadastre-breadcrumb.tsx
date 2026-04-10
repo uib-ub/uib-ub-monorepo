@@ -9,9 +9,9 @@ const toText = (value: unknown): string => {
 }
 
 export default function ServerCadastreBreadcrumb({ source }: { source: Record<string, any> }) {
-  const parentNumber = toText(source.gnr)
+  const parentNumber = toText(source.gnr || source.mnr)
   const parentName = toText(source.parentLabel)
-  const brukNumber = toText(source.bnr)
+  const brukNumber = toText(source.bnr || source.lnr)
   const parentLabel = [parentNumber, parentName].filter(Boolean).join(" ")
   const currentName = [brukNumber, toText(source.label)].filter(Boolean).join(" ")
 

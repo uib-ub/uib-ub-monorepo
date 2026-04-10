@@ -18,6 +18,7 @@ import { GlobalContext } from '@/state/providers/global-provider'
 import SubtleLink from '@/components/ui/clickable/subtle-link'
 import { panPointIntoView } from '@/lib/map-utils'
 import { useActivePoint, useCenterParam, useZoomParam } from '@/lib/param-hooks'
+import { usePathname } from 'next/navigation'
 
 interface CadastralTableProps {
   dataset: string
@@ -40,6 +41,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
   const clearTreeSavedQuery = useSessionStore((s) => s.clearTreeSavedQuery)
   const center = useCenterParam()
   const zoom = useZoomParam()
+  const pathName = usePathname()
   
   const { data: cadastralData, isLoading: cadastralLoading, error: cadastralError } = useQuery({
     queryKey: ['cadastral', dataset, uuid, gnr, adm1, adm2],
@@ -193,7 +195,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
                               className="text-neutral-900 hover:text-neutral-700 decoration-1 underline-offset-2 hover:underline"
                             >
                               <span className="tabular-nums font-medium">{bnrText ? `${bnrText} ` : ''}</span>
-                              {hit._source?.label} {hit._source?.cadastralIndex}
+                              {hit._source?.label}
                             </Link>
                           ) : (
                             <span className="text-neutral-900">
@@ -224,7 +226,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
             </div>
           </TooltipProvider>
         </div>
-        {parentGroupId && <SubtleLink link className="px-3 py-1" only={{init: stringToBase64Url(parentGroupId), center, zoom }}>Vis i stadnamnsøk </SubtleLink>}
+        {parentGroupId && !pathName.startsWith('/uuid') && <SubtleLink link className="px-3 py-1" only={{init: stringToBase64Url(parentGroupId), center, zoom }}>Vis i stadnamnsøk </SubtleLink>}
       </div>
     )
   }

@@ -10,7 +10,6 @@ export interface TreeSettingsItem {
   subunit: string,
   subunitLabel?: string,
   sort: string[], // Sort cadastral units
-  aggSort: string, // Sort aggregated divisions above the cadastral unit (e. g. municipalities)
   filter?: any,
   showNumber?: boolean,
   leaf: string,
@@ -25,33 +24,30 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     parentName: "misc.gardLabel",
     leaf: "misc.LNR",
     sort: ["cadastralIndex"],
-    aggSort: "link.keyword",
-    geoSort: "misc.LNR.keyword"
+    geoSort: "lnr.keyword"
   },
   m1886: {
     subunit: "cadastre__gnr",
     parentName: "misc.Gardsnamn",
     leaf: "cadastre__bnr",
     sort: ["cadastralIndex"],
-    aggSort: "misc.GNR.keyword",
-    geoSort: "misc.BNR.keyword"
+    // Tree aggregation above farm-level should sort by municipality code.
+    geoSort: "bnr.keyword"
   },
   mu1950: {
     subunit: "cadastre__gnr",
     parentName: "misc.Gardsnamn",
     leaf: "cadastre__bnr",
     sort: ["cadastralIndex"],
-    aggSort: "knr.keyword",
     showNumber: true,
-    geoSort: "misc.BNR.keyword"
+    geoSort: "bnr.keyword"
   },
   m2010: {
     subunit: "cadastre__gnr",
     parentName: "misc.gardLabel",
     leaf: "cadastre__bnr",
     sort: ["cadastralIndex"],
-    aggSort: "knr.keyword",
-    geoSort: "misc.BNR.keyword"
+    geoSort: "bnr.keyword"
   },
   /*
   rygh: {

@@ -53,12 +53,9 @@ export async function GET(request: Request) {
                 ...(settings.filter ? { filter: [settings.filter] } : {})
             }
         },
-        sort: adm2 ?
+        sort:
             [{
                 cadastralIndex: { order: "asc" }
-            }] :
-            [{
-                [settings.aggSort]: { order: "asc" }
             }],
         fields: [
             "uuid",
@@ -67,9 +64,13 @@ export async function GET(request: Request) {
             "adm1",
             "adm2",
             "group.id",
-            settings.parentName,
-            settings.subunit.replace("__", "."),
-            settings.aggSort
+            //"cadastralIndex", // for debugging
+            "parentName",
+            "knr",
+            "gnr",
+            "bnr",
+            "mnr",
+            "lnr"
         ],
         ...(adm2 ? {} : {
             collapse: {

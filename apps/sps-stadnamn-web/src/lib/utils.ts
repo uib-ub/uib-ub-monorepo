@@ -90,19 +90,8 @@ export function getGnr(hit: any, dataset: string) {
   if (!treeSettings[dataset] || !data) {
     return null
   }
-  const m1838Mnr =
-    getFieldValue(hit, "mnr") ||
-    getFieldValue(hit, "misc.MNR") ||
-    data?.mnr ||
-    data?.misc?.MNR ||
-    data?.["misc.MNR"]
-  const gnr = dataset === "m1838"
-    ? (m1838Mnr || getFieldValue(hit, treeSettings[dataset]?.subunit))
-    : (getFieldValue(hit, "gnr") || getFieldValue(hit, treeSettings[dataset]?.subunit) || data?.cadastre?.[0]?.gnr)
-  if (Array.isArray(gnr)) {
-    return gnr.join(",")
-  }
-  return gnr
+  return getFieldValue(hit, "gnr") || getFieldValue(hit, "mnr")
+
 }
 
 export function getBnr(hit: any, dataset: string) {
@@ -110,19 +99,7 @@ export function getBnr(hit: any, dataset: string) {
   if (!treeSettings[dataset] || !data) {
     return null
   }
-  const m1838Lnr =
-    getFieldValue(hit, "lnr") ||
-    getFieldValue(hit, "misc.LNR") ||
-    data?.lnr ||
-    data?.misc?.LNR ||
-    data?.["misc.LNR"]
-  const bnr = dataset === "m1838"
-    ? (m1838Lnr || getFieldValue(hit, treeSettings[dataset]?.leaf))
-    : (getFieldValue(hit, "bnr") || getFieldValue(hit, treeSettings[dataset]?.leaf) || data?.cadastre?.[0]?.bnr)
-  if (Array.isArray(bnr)) {
-    return bnr.join(",")
-  }
-  return bnr
+  return getFieldValue(hit, "bnr") || getFieldValue(hit, "lnr")
 }
 
 

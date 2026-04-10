@@ -102,6 +102,35 @@ export async function GET(request: Request) {
     }
   }
 
+  // For cadastral child lookups (within=...), exclude parent garden docs from results.
+  if (reservedParams.within) {
+    const excludeGardFilter = {
+      bool: {
+        must_not: [
+          {
+            bool: {
+              should: [
+                { terms: { "sosi.keyword": ["gard"] } },
+                { terms: { sosi: ["gard"] } }
+              ],
+              minimum_should_match: 1
+            }
+          }
+        ]
+      }
+    }
+    const boolQuery = (query.query as any)?.bool
+    if (boolQuery) {
+      if (Array.isArray(boolQuery.filter)) {
+        boolQuery.filter.push(excludeGardFilter)
+      } else if (boolQuery.filter) {
+        boolQuery.filter = [boolQuery.filter, excludeGardFilter]
+      } else {
+        boolQuery.filter = [excludeGardFilter]
+      }
+    }
+  }
+
 
   const [data, status] = await postQuery(dataset, query)
 

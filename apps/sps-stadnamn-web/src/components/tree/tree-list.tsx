@@ -139,7 +139,7 @@ export default function TreeList({
 
                 // If we're at adm1 level, show municipalities. Click goes to adm2 level.
                 if (adm1) {
-                    const municipalityNumber = fields[settings.aggSort]?.[0]
+                    const municipalityNumber = fields.knr?.[0]
                     const municipalityName = fields['adm2']
                     return (
                         <li key={item._id}>
@@ -161,7 +161,7 @@ export default function TreeList({
 
                 // At dataset level, show counties. Click goes to adm1 level.
                 const countyName = fields.adm1?.[0]
-                const municipalityNumber = fields[settings.aggSort]?.[0]
+                const municipalityNumber = fields.knr?.[0]
                 const countyNumber = municipalityNumber?.substring(0, 2)
 
                 return (
