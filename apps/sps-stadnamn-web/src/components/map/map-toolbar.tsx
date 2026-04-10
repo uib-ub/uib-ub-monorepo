@@ -259,7 +259,7 @@ export default function MapToolbar() {
                 <div
                     className={`flex gap-3 absolute z-[5000] ${isMobile
                         ? 'right-3 flex-col'
-                        : `right-3 flex-col top-14 mt-2 lg:top-auto lg:bottom-4 lg:m-0 lg:left-1/2 lg:-translate-x-1/2 lg:flex-row`
+                        : `right-3 flex-col top-14 mt-2 lg:top-auto lg:bottom-4 lg:m-0 lg:left-1/2 lg:right-auto lg:-translate-x-1/2 lg:flex-row`
                         }`}
                     style={{
                         top: isMobile ? mobileControlsTop : undefined,
