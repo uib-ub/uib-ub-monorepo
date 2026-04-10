@@ -132,6 +132,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     const tree = useTreeParam()
     const optionsOn = useOptionsOn()
     const hideResultsOn = useHideResultsOn()
+    const init = useInitParam()
 
 
     const [showScrollToTop, setShowScrollToTop] = useState(false)
@@ -159,8 +160,15 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     if (isMobile) {
         return <>{children}</>
     }
-    return <div className={`pointer-events-none absolute lg:top-2 right-2 bottom-2 ${hideResultsOn ? 'top-[calc(100svh-2.5rem)]' : 'top-1/2 '} w-[calc(100svw-1rem)] ${optionsOn ? 'invisible lg:visible' : ''} lg:w-[40svw] ${tree ? '' : 'xl:w-[25svw]'} z-[3001] max-h-[calc(100svh-2rem)]`}>
-        <section ref={scrollableContentRef} className={`pointer-events-auto bg-white shadow-lg rounded-md ${isMobile ? 'hidden-scrollbar' : ''} overflow-y-auto max-h-[50svh] lg:max-h-[calc(100svh-2rem)]`}
+    const collapseRightWindow = hideResultsOn && !init
+    const dockRightWindowToBottom = hideResultsOn && !!init
+    const rightWindowTopClass = collapseRightWindow
+        ? 'top-[calc(100svh-2.5rem)]'
+        : dockRightWindowToBottom
+            ? ''
+            : 'top-1/2'
+    return <div className={`pointer-events-none absolute lg:top-2 right-2 bottom-2 ${rightWindowTopClass} w-[calc(100svw-1rem)] ${optionsOn ? 'invisible lg:visible' : ''} lg:w-[40svw] ${tree ? '' : 'xl:w-[25svw]'} z-[3001] max-h-[calc(100svh-2rem)]`}>
+        <section ref={scrollableContentRef} className={`pointer-events-auto bg-white shadow-lg rounded-md overflow-y-auto max-h-[50svh] lg:max-h-[calc(100svh-2rem)]`}
             aria-labelledby="right-title">
             <div className={`flex flex-col ${showScrollToTop ? 'pb-20' : ''}`}>
                 {children}
