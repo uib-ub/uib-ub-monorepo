@@ -9,7 +9,7 @@ import { boundsFromZoomAndCenter, calculateRadius, getGridSize, getLabelBounds, 
 import { useActivePoint, useCenterNumber, useDebugGroupsOn, useDocParam, useGroupParam, useMapSettingsOn, usePoint, useQParam, useRadiusNumber, useSourceViewOn, useTreeParam, useZoomNumber, useInitDecoded, useInitParam } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { parseTreeParam } from "@/lib/tree-param";
-import { getBnr, getGnr, indexToCode } from "@/lib/utils";
+import { getBnr, indexToCode } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
 import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
@@ -947,6 +947,13 @@ export default function MapExplorer() {
                   return
                 }
 
+                const markerUuid = item.fields?.uuid?.[0]
+                const isActiveDoc = Boolean(
+                  tree &&
+                  doc &&
+                  markerUuid &&
+                  doc.trim() === String(markerUuid).trim()
+                )
                 const childCount = zoomState > 15 && item.children?.length > 0 ? item.children?.length: undefined
                 const labelText = getDisplayLabel(item.fields)
                 const pointMarkerTooltip = (!isMobile) ? (
@@ -958,7 +965,9 @@ export default function MapExplorer() {
                 ) : null
                 
                 const showLabel = activeMarkerMode != 'points' && (!hasQuery || activeMarkerMode === 'labels')
-                const icon = showLabel ? getLabelMarkerIcon(labelText, 'white', childCount, false):  getUnlabeledMarker('black')
+                const icon = showLabel
+                  ? getLabelMarkerIcon(labelText, isActiveDoc ? 'accent' : 'white', childCount, false)
+                  : getUnlabeledMarker(isActiveDoc ? 'accent' : 'black')
 
                 return (
                   <Fragment key={`result-frag-${item.fields.uuid[0]}`}>
@@ -990,6 +999,7 @@ export default function MapExplorer() {
                             key={`result-${item.fields.uuid[0]}`}
                             position={[lat, lng]}
                             icon={new leaflet.DivIcon(icon)}
+                            zIndexOffset={isActiveDoc ? 200 : 0}
                             riseOnHover={true}
                             eventHandlers={selectDocHandler(item, [lat, lng], showLabel)}
                           >
