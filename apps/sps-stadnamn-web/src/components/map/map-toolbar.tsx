@@ -19,10 +19,10 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useCenterParam, useFulltextOn, useGroupParam, useHideResultsOn, useInitParam, useMapSettingsOn, useNoGeoOn, useOptionsOn, usePointParam, useQParam, useSourceViewOn, useTreeParam, useZoomParam } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import Clickable from "../ui/clickable/clickable"
+import ClickableIcon from "../ui/clickable/clickable-icon"
 import DynamicClickable from "../ui/clickable/dynamic-clickable"
 import NotificationStack from "../ui/notification-stack"
 import { cn } from "@/lib/utils"
-import { base64UrlToString } from "@/lib/param-utils"
 
 export function FilterButton() {
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
@@ -80,7 +80,11 @@ export default function MapToolbar() {
     const init = useInitParam()
     const sourceViewResetUrl = useSessionStore((s) => s.sourceViewResetUrl)
     const clearSourceViewResetUrl = useSessionStore((s) => s.clearSourceViewResetUrl)
-    const { resultCardData: groupResultCardData } = useResultCardData()
+    const {
+        resultCardData: groupResultCardData,
+        resultCardLoading: groupResultCardLoading,
+        resultCardFetching: groupResultCardFetching,
+    } = useResultCardData(group)
     const showNoCoordinatesNotice =
         !searchLoading && !searchBounds?.length && !searchError && totalHits?.value > 0
 
@@ -149,12 +153,13 @@ export default function MapToolbar() {
     //if (!mapFunctionRef?.current) return null
 
     const groupFields = groupResultCardData?.fields
-    const groupFallbackLabel = group ? base64UrlToString(group) : null
-    const groupLabel =
+    const groupLabelFromData =
         groupResultCardData?.label ||
         groupFields?.["group.label"]?.[0] ||
-        groupFields?.["label"]?.[0] ||
-        groupFallbackLabel ||
+        groupFields?.["label"]?.[0]
+    const isGroupLabelLoading = Boolean(group) && !groupLabelFromData && (groupResultCardLoading || groupResultCardFetching)
+    const groupLabel =
+        groupLabelFromData ||
         "Namnegruppe"
     const groupAdm1 = groupFields?.["group.adm1"]?.[0] || groupFields?.["adm1"]?.[0]
     const groupAdm2 = groupFields?.["group.adm2"]?.[0] || groupFields?.["adm2"]?.[0]
@@ -224,21 +229,24 @@ export default function MapToolbar() {
                                     )
                             )}
                         >
-                            <div className={cn("min-w-0 flex-1", isMobile ? "text-sm" : "text-lg flex flex-wrap gap-2")}>
-                                <span className="font-semibold truncate block">{groupLabel}</span>
+                            <div className={cn("min-w-0 flex-1 flex flex-wrap gap-2 text-lg")}>
+                                {isGroupLabelLoading ? (
+                                    <>
+                                        <span className="sr-only">Lastar namnegruppe</span>
+                                        <span className="h-6 w-40 bg-neutral-900/10 rounded-full animate-pulse" aria-hidden="true" />
+                                    </>
+                                ) : (
+                                    <span className="font-semibold truncate block">{groupLabel}</span>
+                                )}
                                 {groupAdm ? <span className="text-neutral-700 truncate block">{groupAdm}</span> : null}
                             </div>
-                            <Clickable
+                            <ClickableIcon
                                 label="Lukk namnegruppe"
                                 onClick={closeGroupBanner}
-                                className={cn(
-                                    "h-8 px-2 inline-flex items-center gap-1 shrink-0",
-                                    isMobile ? "btn btn-outline" : "btn btn-neutral ml-auto"
-                                )}
+                                className="ml-auto inline-flex items-center justify-center shrink-0"
                             >
-                                <PiX className={isMobile ? "text-base" : "text-lg"} aria-hidden="true" />
-                                <span className="text-sm">Lukk namnegruppe</span>
-                            </Clickable>
+                                <PiX className="text-neutral-800 text-3xl lg:text-2xl" aria-hidden="true" />
+                            </ClickableIcon>
                         </div>
                     ) : (
                         <Clickable
