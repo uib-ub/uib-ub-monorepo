@@ -4,9 +4,25 @@ import { getSortArray } from '@/config/server-config';
 
 // Check if query contains special characters that should disable autocomplete
 function hasSpecialCharacters(query: string): boolean {
-  // Allow alphanumeric, spaces, comma, hyphen, slash, and Norwegian characters (å, æ, ø)
+  // Allow alphanumeric, spaces, comma, hyphen, slash, dot, and Norwegian characters (å, æ, ø)
   // Everything else is considered a special character
-  return /[^a-zæøå0-9,\s\/-]/i.test(query);
+  return /[^a-zæøå0-9,\s\/\.-]/i.test(query);
+}
+
+function cadastrePathVariants(value: string): string[] {
+  const base = (value || "").trim()
+  if (!base) return []
+
+  const normalized = base.replace(/[\/\.-]+$/g, "")
+  const variants = new Set<string>([base, normalized].filter(Boolean))
+
+  // m1838 style: 0113-92.126 <-> standard: 0113-92/126
+  const dotVariant = normalized.replace(/^(\d{4}-\d+)\//, "$1.")
+  const slashVariant = normalized.replace(/^(\d{4}-\d+)\./, "$1/")
+  if (dotVariant) variants.add(dotVariant)
+  if (slashVariant) variants.add(slashVariant)
+
+  return Array.from(variants)
 }
 
 export async function GET(request: Request) {
@@ -22,7 +38,7 @@ export async function GET(request: Request) {
   const rawQueryString = reservedParams.q?.trim() || ""
   const queryString = rawQueryString.toLowerCase()
   const startsWithNumber = /^\d/.test(queryString)
-  const normalizedCadastrePrefix = rawQueryString.replace(/[/-]+$/g, "")
+  const queryCadastreVariants = cadastrePathVariants(rawQueryString)
   
   // If query contains special characters, return empty results
   if (queryString && hasSpecialCharacters(queryString)) {
@@ -78,7 +94,7 @@ export async function GET(request: Request) {
                     {
                       "match_phrase": {
                         "cadastrePath": {
-                          "query": rawQueryString,
+                          "query": queryCadastreVariants[0] || rawQueryString,
                           "boost": 12.0
                         }
                       }
@@ -87,7 +103,7 @@ export async function GET(request: Request) {
                       "constant_score": {
                         "filter": {
                           "prefix": {
-                            "cadastrePath": rawQueryString
+                            "cadastrePath": queryCadastreVariants[0] || rawQueryString
                           }
                         },
                         "boost": 8.0
@@ -96,43 +112,43 @@ export async function GET(request: Request) {
                     {
                       "match_bool_prefix": {
                         "cadastrePath": {
-                          "query": rawQueryString,
+                          "query": queryCadastreVariants[0] || rawQueryString,
                           "operator": "and",
                           "boost": 6.0
                         }
                       }
                     },
-                    ...(normalizedCadastrePrefix && normalizedCadastrePrefix !== rawQueryString
-                      ? [
-                          {
-                            "match_phrase": {
-                              "cadastrePath": {
-                                "query": normalizedCadastrePrefix,
-                                "boost": 10.0
-                              }
-                            }
-                          },
-                          {
-                            "constant_score": {
-                              "filter": {
-                                "prefix": {
-                                  "cadastrePath": normalizedCadastrePrefix
-                                }
-                              },
-                              "boost": 7.0
-                            }
-                          },
-                          {
-                            "match_bool_prefix": {
-                              "cadastrePath": {
-                                "query": normalizedCadastrePrefix,
-                                "operator": "and",
-                                "boost": 5.5
-                              }
+                    ...queryCadastreVariants
+                      .slice(1)
+                      .flatMap((variant) => ([
+                        {
+                          "match_phrase": {
+                            "cadastrePath": {
+                              "query": variant,
+                              "boost": 10.0
                             }
                           }
-                        ]
-                      : [])
+                        },
+                        {
+                          "constant_score": {
+                            "filter": {
+                              "prefix": {
+                                "cadastrePath": variant
+                              }
+                            },
+                            "boost": 7.0
+                          }
+                        },
+                        {
+                          "match_bool_prefix": {
+                            "cadastrePath": {
+                              "query": variant,
+                              "operator": "and",
+                              "boost": 5.5
+                            }
+                          }
+                        }
+                      ]))
                   ],
                   "minimum_should_match": 1
                 }
@@ -186,7 +202,7 @@ export async function GET(request: Request) {
 
     const firstToken = parts[0]
     const rawFirstToken = rawParts[0] || firstToken || ""
-    const normalizedFirstCadastrePrefix = rawFirstToken.replace(/[/-]+$/g, "")
+    const firstCadastreVariants = cadastrePathVariants(rawFirstToken)
     const rawLastToken = rawParts[rawParts.length - 1] || ""
     const firstPartRaw = rawParts.slice(0, -1).join(" ").trim()
     const trailingBeforeCommaTokens = hasComma ? beforeCommaTokens.slice(1) : parts.slice(1, -1)
@@ -219,7 +235,7 @@ export async function GET(request: Request) {
                     {
                       "match_phrase": {
                         "cadastrePath": {
-                          "query": rawFirstToken,
+                          "query": firstCadastreVariants[0] || rawFirstToken,
                           "boost": 10.0
                         }
                       }
@@ -227,7 +243,7 @@ export async function GET(request: Request) {
                     {
                       "prefix": {
                         "cadastrePath": {
-                          "value": rawFirstToken,
+                          "value": firstCadastreVariants[0] || rawFirstToken,
                           "boost": 8.0
                         }
                       }
@@ -235,7 +251,7 @@ export async function GET(request: Request) {
                     {
                       "match_bool_prefix": {
                         "cadastrePath": {
-                          "query": rawFirstToken,
+                          "query": firstCadastreVariants[0] || rawFirstToken,
                           "operator": "and",
                           "boost": 6.0
                         }
@@ -243,35 +259,35 @@ export async function GET(request: Request) {
                     }
                   ]
                 : []),
-              ...(normalizedFirstCadastrePrefix && normalizedFirstCadastrePrefix !== rawFirstToken
-                ? [
-                    {
-                      "match_phrase": {
-                        "cadastrePath": {
-                          "query": normalizedFirstCadastrePrefix,
-                          "boost": 9.0
-                        }
-                      }
-                    },
-                    {
-                      "prefix": {
-                        "cadastrePath": {
-                          "value": normalizedFirstCadastrePrefix,
-                          "boost": 7.0
-                        }
-                      }
-                    },
-                    {
-                      "match_bool_prefix": {
-                        "cadastrePath": {
-                          "query": normalizedFirstCadastrePrefix,
-                          "operator": "and",
-                          "boost": 5.5
-                        }
+              ...firstCadastreVariants
+                .slice(1)
+                .flatMap((variant) => ([
+                  {
+                    "match_phrase": {
+                      "cadastrePath": {
+                        "query": variant,
+                        "boost": 9.0
                       }
                     }
-                  ]
-                : []),
+                  },
+                  {
+                    "prefix": {
+                      "cadastrePath": {
+                        "value": variant,
+                        "boost": 7.0
+                      }
+                    }
+                  },
+                  {
+                    "match_bool_prefix": {
+                      "cadastrePath": {
+                        "query": variant,
+                        "operator": "and",
+                        "boost": 5.5
+                      }
+                    }
+                  }
+                ])),
               {
                 "match": {
                   "label": {

@@ -35,7 +35,7 @@ export default function TreeWindow() {
 
     const selectedNumber =
         dataset && uuid && treeSettings[dataset] && selectedDoc
-            ? ((selectedDoc as any)?.__treeNumber || (getValueByPath(selectedDoc, treeSettings[dataset].subunit) || ''))
+            ? ((selectedDoc as any)?.__treeNumber || selectedDoc?.gnr || (getValueByPath(selectedDoc, treeSettings[dataset].subunit) || ''))
             : ''
 
 

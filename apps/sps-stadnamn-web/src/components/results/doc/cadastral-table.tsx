@@ -7,7 +7,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { fieldConfig } from "@/config/search-config"
-import { treeSettings } from "@/config/server-config"
 import { getBnr, getFieldValue } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
 import { useRef, useEffect, useState, useContext } from 'react'
@@ -45,9 +44,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
   const { data: cadastralData, isLoading: cadastralLoading, error: cadastralError } = useQuery({
     queryKey: ['cadastral', dataset, uuid, gnr, adm1, adm2],
     queryFn: async () => {
-      const sortFields = treeSettings[dataset]?.sort?.length
-        ? treeSettings[dataset].sort.join(',')
-        : 'cadastre__gnr,cadastre__bnr'
+      const sortFields = 'cadastralIndex'
 
       // First try with 'within' field
       const params = new URLSearchParams({
@@ -196,7 +193,7 @@ export default function CadastralTable({ dataset, uuid, list, groupId: parentGro
                               className="text-neutral-900 hover:text-neutral-700 decoration-1 underline-offset-2 hover:underline"
                             >
                               <span className="tabular-nums font-medium">{bnrText ? `${bnrText} ` : ''}</span>
-                              {hit._source?.label}
+                              {hit._source?.label} {hit._source?.cadastralIndex}
                             </Link>
                           ) : (
                             <span className="text-neutral-900">

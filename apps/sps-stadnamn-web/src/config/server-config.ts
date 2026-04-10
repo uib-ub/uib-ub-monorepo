@@ -32,7 +32,7 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     subunit: "cadastre__gnr",
     parentName: "misc.Gardsnamn",
     leaf: "cadastre__bnr",
-    sort: ["cadastre__gnr", "cadastre__bnr"],
+    sort: ["cadastralIndex"],
     aggSort: "misc.GNR.keyword",
     geoSort: "misc.BNR.keyword"
   },
@@ -40,7 +40,7 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     subunit: "cadastre__gnr",
     parentName: "misc.Gardsnamn",
     leaf: "cadastre__bnr",
-    sort: ["cadastre__gnr", "cadastre__bnr"],
+    sort: ["cadastralIndex"],
     aggSort: "knr.keyword",
     showNumber: true,
     geoSort: "misc.BNR.keyword"
@@ -49,7 +49,7 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     subunit: "cadastre__gnr",
     parentName: "misc.gardLabel",
     leaf: "cadastre__bnr",
-    sort: ["cadastre__gnr", "cadastre__bnr"],
+    sort: ["cadastralIndex"],
     aggSort: "knr.keyword",
     geoSort: "misc.BNR.keyword"
   },
@@ -266,26 +266,7 @@ export const getSortArray = (dataset: string): (string | object)[] => {
   }
 
   if (datasetSettings.cadastre) {
-    sortArray.push({
-      "cadastre.gnr": {
-        "order": "asc", // or "desc" depending on your requirement
-        "mode": "min", // or "max", depending on how you want to sort multiple values within nested objects
-        "missing": "_last", // or "_last", depending on how you want to handle missing values
-        "nested": {
-          "path": "cadastre" // Specify the path to the nested field
-        }
-      }
-    })
-    sortArray.push({
-      "cadastre.bnr": {
-        "order": "asc", // or "desc", depending on your requirement
-        "mode": "min", // or "max", depending on how you want to sort multiple values within nested objects
-        "missing": "_first", // or "_last", depending on how you want to handle missing values
-        "nested": {
-          "path": "cadastre" // Specify the path to the nested field
-        }
-      }
-    })
+    sortArray.push("cadastralIndex")
   }
 
   return sortArray

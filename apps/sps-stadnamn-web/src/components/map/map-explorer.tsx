@@ -1076,9 +1076,13 @@ export default function MapExplorer() {
                             .filter((b: any) => b !== null && b !== undefined && `${b}`.trim().length > 0)
                           : []
 
+                        const fallbackLabel = hits
+                          .map((h: any) => h?._source?.label)
+                          .find((value: any) => typeof value === "string" && value.trim().length > 0)
+
                         const hasMultiple = hits.length > 1
                         const firstText = (bnrs[0] ?? '').toString().trim()
-                        const baseText = firstText || '?'
+                        const baseText = firstText || fallbackLabel || '?'
                         const displayText = hasMultiple ? `${baseText}…` : baseText
 
                         const isActiveBruk = Boolean(

@@ -16,7 +16,7 @@ export async function GET() {
     try {
         // Get alias information
         const aliasResponse = await fetch(`${endpoint}search-stadnamn-*/_alias`, {
-            cache: 'force-cache',
+            cache: 'no-store',
             next: {
                 tags: ["all"]
             },
@@ -29,7 +29,7 @@ export async function GET() {
 
         // Get stats information
         const statsResponse = await fetch(`${endpoint}search-stadnamn-*/_stats`, {
-            cache: 'force-cache',
+            cache: 'no-store',
             next: {
                 tags: ["all"]
             },
@@ -58,7 +58,7 @@ export async function GET() {
             Object.entries(aliasResult).map(async ([indexName, indexInfo]: [string, any]) => {
                 // Get count for this specific index
                 const indexCountResponse = await fetch(`${endpoint}${indexName}/_count`, {
-                    cache: 'force-cache',
+                    cache: 'no-store',
                     next: {
                         tags: ["all"]
                     },

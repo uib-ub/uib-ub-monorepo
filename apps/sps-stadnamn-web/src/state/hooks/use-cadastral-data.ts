@@ -11,7 +11,7 @@ const useCadastralData = (dataset: string | undefined, uuid: string | undefined)
         perspective: dataset,
         within: uuid,
         size: '1000',
-        asc: 'cadastre__gnr,cadastre__bnr'
+        asc: 'cadastralIndex'
       })
 
       const res = await fetch(`/api/search/table?${params.toString()}`)

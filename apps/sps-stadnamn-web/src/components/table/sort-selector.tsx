@@ -23,7 +23,7 @@ export default function SortSelector() {
         }] : []),
         // Add cadastre if configured
         ...(contentSettings[perspective]?.cadastre ? [{
-            field: 'cadastre__gnr,cadastre__bnr',
+            field: 'cadastralIndex',
             label: "Matrikkel"
         }] : []),
         // Add fields from facet config

@@ -115,7 +115,7 @@ export default function TableExplorer() {
                                     }
                                     {showCadastre && visibleColumnsArray.includes('cadastre') &&
                                         <th>
-                                            <SortHeader field='adm1.keyword,adm2.keyword,cadastre__gnr,cadastre__bnr' label="Matrikkel" description="Gnr/Bnr kommunevis" />
+                                            <SortHeader field='cadastralIndex' label="Matrikkel" description="Sortert etter matrikkelhierarki" />
                                         </th>
                                     }
                                     {facetConfig[perspective]?.filter(item => item.key && item.key !== 'adm' && visibleColumnsArray.includes(item.key))?.map((facet: any) => (

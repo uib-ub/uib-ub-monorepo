@@ -129,7 +129,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
   return (
     <div className="page-info lg:grid lg:grid-cols-[1fr_24rem] lg:gap-12">
       <div className="flex flex-col gap-12">
-        {docData?._source?.within && docDataset && <ServerCadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName} />}
+        {docData?._source?.within && docData?._source?.within !== docData?._source?.uuid && docDataset && <ServerCadastreBreadcrumb source={docData?._source} />}
         <div>
           <div className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans pb-4"> {datasetTitles[docDataset]}</div>
           <h1>{docData?._source?.label || docData?._source.uuid}</h1>

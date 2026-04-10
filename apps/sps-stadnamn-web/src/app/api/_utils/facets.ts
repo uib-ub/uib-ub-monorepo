@@ -45,7 +45,13 @@ export function extractFacets(request: Request) {
       }
       else if (key == 'within') {
         termFilters.push({
-          "term": { "within.keyword": reservedParams.within }
+          "bool": {
+            "should": [
+              { "term": { "within.keyword": reservedParams.within } },
+              { "term": { "within": reservedParams.within } }
+            ],
+            "minimum_should_match": 1
+          }
         });
       }
     } else {
