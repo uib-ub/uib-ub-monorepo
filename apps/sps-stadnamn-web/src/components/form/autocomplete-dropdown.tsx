@@ -249,7 +249,7 @@ export default function AutocompleteDropdown({
     const setHasResults = useSessionStore(
         (s: any) => s.setAutocompleteHasResults,
     );
-    const { rankedHits } = useAutocompleteData(inputState);
+    const { rankedHits, usingCadastralInfo } = useAutocompleteData(inputState);
     const { resultCardData } = useResultCardData(undefined, {
         forceGroupLookup: true,
     });
@@ -1056,7 +1056,8 @@ export default function AutocompleteDropdown({
                                     <span className="text-neutral-900">
                                         <AdmInfo hit={hit} query={inputState} />
                                     </span>
-                                    {hit.fields?.['cadastrePath']?.[0] ? (
+                                    {usingCadastralInfo &&
+                                    hit.fields?.['cadastrePath']?.[0] ? (
                                         <div className="text-neutral-700 text-sm">
                                             <HighlightedLabel
                                                 label={hit.fields['cadastrePath'][0]}

@@ -94,10 +94,10 @@ export default function useAutocompleteData(inputState: string) {
             ),
     });
 
-    const rankedHits = useMemo(() => {
+    const [rankedHits, usingCadastralInfo] = useMemo(() => {
         const hits: any[] = (queryResult.data as any)?.hits?.hits || [];
         const q = (inputState || '').trim().toLowerCase();
-        if (!q || !hits.length) return hits;
+        if (!q || !hits.length) return [hits, false];
         const startsWithNumber = /^\d/.test(q);
         const normalizedCadastrePrefix = q.replace(/[/-]+$/g, '');
 
@@ -108,7 +108,7 @@ export default function useAutocompleteData(inputState: string) {
         const firstLower = firstPart.toLowerCase();
         const lastLower = lastToken.toLowerCase();
 
-        return [...hits]
+        return [[...hits]
             .map((hit) => {
                 const label: string = hit.fields?.label?.[0] || '';
                 const adm2: string =
@@ -169,12 +169,13 @@ export default function useAutocompleteData(inputState: string) {
             })
             .sort(
                 (a, b) => (b.__clientScore ?? 0) - (a.__clientScore ?? 0),
-            );
+            ), startsWithNumber];
     }, [queryResult.data, inputState]);
 
     return {
         ...queryResult,
         rankedHits,
+        usingCadastralInfo,
     };
 }
 
