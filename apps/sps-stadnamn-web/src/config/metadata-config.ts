@@ -64,7 +64,7 @@ export const datasetTitles: DatasetTitles = {
   ft1910: "Folketeljinga 1910",
   m2010: "Matrikkelen 2010",
   frogn: "Frognmaterialet",
-  gjerd: "Gjerdrumundersøkelsen",
+  gjerd: "Gjerdrumundersøkinga",
   sorum: "Sørummaterialet",
   kven: "Kvenske stedsnavn",
   snor: "Stadnamn i Noreg (Språkrådet)",
