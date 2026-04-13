@@ -600,6 +600,7 @@ export default function AutocompleteDropdown({
                         rankedHits,
                         activeIndex,
                         sourceViewOn,
+                        inputState,
                     );
                     if (selection) {
                         onSelect({ ...selection, forceFulltext: false });
@@ -944,6 +945,7 @@ export default function AutocompleteDropdown({
                                 rankedHits,
                                 0,
                                 sourceViewOn,
+                                inputState,
                             );
                             if (selection) {
                                 onSelect(selection);
@@ -997,6 +999,7 @@ export default function AutocompleteDropdown({
                                             rankedHits,
                                             optionIndex,
                                             sourceViewOn,
+                                            inputState,
                                         );
                                     if (selection) {
                                         onSelect(selection);

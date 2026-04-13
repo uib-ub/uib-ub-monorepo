@@ -33,10 +33,53 @@ export function buildAutocompleteQueryStringFromHit(hit: any): string {
     return label;
 }
 
+function getLeadingToken(raw: string): string {
+    const trimmed = (raw || '').trim();
+    if (!trimmed) return '';
+
+    let i = 0;
+    while (i < trimmed.length && trimmed[i] !== ',' && !/\s/.test(trimmed[i])) {
+        i++;
+    }
+
+    return trimmed.slice(0, i).trim();
+}
+
+function isCadastreLeadingToken(token: string): boolean {
+    const normalized = (token || '').trim().replace(/[/-]+$/g, '');
+    if (!normalized) return false;
+
+    if (/^\d{4}-.+$/.test(normalized)) return true;
+    if (/^\d+\/\d+$/.test(normalized)) return true;
+    if (/^\d+\.\d+$/.test(normalized)) return true;
+    if (/^\d+$/.test(normalized)) {
+        return normalized.length < 4 || normalized.length === 4;
+    }
+
+    return false;
+}
+
+function buildPrefixedAutocompleteQuery(
+    currentInput: string,
+    hit: any,
+): string {
+    const label = buildAutocompleteQueryStringFromHit(hit);
+    if (!label) return '';
+
+    const token = getLeadingToken(currentInput);
+    const hasCadastreOnHit = Boolean(hit?.fields?.['cadastrePath']?.[0]);
+    if (!hasCadastreOnHit || !isCadastreLeadingToken(token)) {
+        return label;
+    }
+
+    return `${token} ${label}`.trim();
+}
+
 export function getAutocompleteSelection(
     rankedHits: any[],
     index: number,
     sourceViewOn = false,
+    currentInput = '',
 ): {
     inputString: string;
     group: string | null;
@@ -46,10 +89,11 @@ export function getAutocompleteSelection(
 
     // Index 0 is the "search for exactly this label" option.
     if (index === 0) {
-        const label = rankedHits[0]?.fields?.label?.[0];
-        if (!label) return null;
+        const firstHit = rankedHits[0];
+        const inputString = buildPrefixedAutocompleteQuery(currentInput, firstHit);
+        if (!inputString) return null;
         return {
-            inputString: label,
+            inputString,
             group: null,
             coordinates: undefined,
         };
@@ -58,7 +102,7 @@ export function getAutocompleteSelection(
     const hit = rankedHits[index - 1];
     if (!hit) return null;
 
-    const inputString = buildAutocompleteQueryStringFromHit(hit);
+    const inputString = buildPrefixedAutocompleteQuery(currentInput, hit);
     const rawGroupId = hit.fields?.['group.id']?.[0] ?? null;
     const rawUuid = hit.fields?.uuid?.[0] ?? null;
     const group = sourceViewOn
