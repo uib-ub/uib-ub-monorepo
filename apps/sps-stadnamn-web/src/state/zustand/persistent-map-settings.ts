@@ -22,6 +22,7 @@ type MapSettings = {
   baseMap: string
   overlayMaps: string[]
   markerMode: string
+  labelCollisionDetectionEnabled: boolean
   setBaseMap: (baseMap: string) => void
   addOverlayMap: (mapKey: string) => void
   removeOverlayMap: (mapKey: string) => void
@@ -29,6 +30,7 @@ type MapSettings = {
   toggleOverlayMap: (mapKey: string) => void
   clearOverlayMaps: () => void
   setMarkerMode: (mode: string) => void
+  setLabelCollisionDetectionEnabled: (enabled: boolean) => void
   initializeSettings: () => void
 }
 
@@ -38,6 +40,7 @@ export const useMapSettings = create<MapSettings>()(
       baseMap: defaultBaseMap,
       overlayMaps: [],
       markerMode: 'auto',
+      labelCollisionDetectionEnabled: true,
       setBaseMap: (baseMap: string) =>
         set(() => ({
           baseMap
@@ -83,6 +86,7 @@ export const useMapSettings = create<MapSettings>()(
           overlayMaps: []
         })),
       setMarkerMode: (mode: string) => set({ markerMode: mode }),
+      setLabelCollisionDetectionEnabled: (enabled: boolean) => set({ labelCollisionDetectionEnabled: enabled }),
       initializeSettings: () => {
         const state = get()
         const normalizedBaseMap = normalizeBaseMapKey(state.baseMap)
@@ -106,7 +110,7 @@ export const useMapSettings = create<MapSettings>()(
     }),
     {
       name: MAP_SETTINGS_STORAGE_KEY,
-      version: 6,
+      version: 7,
       onRehydrateStorage: () => {
         if (typeof window !== 'undefined') {
           window.localStorage.removeItem(LEGACY_MAP_SETTINGS_STORAGE_KEY)
@@ -162,13 +166,15 @@ export const useMapSettings = create<MapSettings>()(
             ...nextState,
             baseMap: migratedBaseMap as string,
             overlayMaps: migratedOverlays as string[],
-            markerMode: 'points'
+            markerMode: 'points',
+            labelCollisionDetectionEnabled: persistedState.labelCollisionDetectionEnabled ?? true
           }
         }
         return {
           ...nextState,
           baseMap: migratedBaseMap as string,
-          overlayMaps: migratedOverlays as string[]
+          overlayMaps: migratedOverlays as string[],
+          labelCollisionDetectionEnabled: persistedState.labelCollisionDetectionEnabled ?? true
         }
       }
     }

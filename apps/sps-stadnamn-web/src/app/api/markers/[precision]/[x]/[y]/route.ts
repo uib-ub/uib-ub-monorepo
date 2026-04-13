@@ -5,9 +5,9 @@ import { getQueryString } from '@/app/api/_utils/query-string'
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ zoom: string, x: string, y: string }> }
+  { params }: { params: Promise<{ precision: string, x: string, y: string }> }
 ) {
-  const { zoom: precision, x, y } = await params
+  const { precision, x, y } = await params
 
 
 
@@ -17,7 +17,19 @@ export async function GET(
   const totalHits = reservedParams.totalHits ? parseInt(reservedParams.totalHits) : undefined
   const sourceView = reservedParams.sourceView === 'on'
   const markerIdField = sourceView ? 'uuid' : 'group.id'
+  const precisionNumber = Number(precision)
+  
 
+  const precisionBreakpoints = (breakpointMap: Record<number, number>) => {
+    let size = 2
+    for (const [key, value] of Object.entries(breakpointMap)) {
+      if (precisionNumber > Number(key)) {
+        size = value
+      }
+    }
+    return size
+    
+  }
 
   const query: Record<string, any> = {
     size: 0,
@@ -43,7 +55,7 @@ export async function GET(
         geotile_grid: {
           field: "location",
           size: 200,
-          precision: precision == "0" ? 6 : parseInt(precision) + 3
+          precision: precisionNumber > 0 ? Math.max(8, precisionNumber + (precisionNumber > 5 ? 4 : 3)) : 5
         },
         "aggs": {
           "group_count": {
@@ -56,7 +68,14 @@ export async function GET(
             "terms": {
               "field": markerIdField,
               "order": { "max_placeScore": "desc" },
-              size: (Number(precision) > 16 || (totalHits && totalHits < 10000)) ? 500 : Number(precision) > 17  ? 1000 : 5,
+              "size": (
+                totalHits &&
+                (
+                  (totalHits < 1000 && 1000) ||
+                  (totalHits < 10000 && precisionBreakpoints({ 10: 100, 12: 200, 13: 1000 })) ||
+                  precisionBreakpoints({ 10: 10, 12: 200, 13: 1000 })
+                )
+              ) || precisionBreakpoints({ 10: 5, 12: 500, 13: 1000 })
             },
             "aggs": {
               "max_placeScore": {

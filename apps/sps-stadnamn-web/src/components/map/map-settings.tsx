@@ -24,12 +24,14 @@ export default function MapSettings() {
     baseMap,
     overlayMaps,
     markerMode,
+    labelCollisionDetectionEnabled,
     setBaseMap,
     addOverlayMap,
     removeOverlayMap,
     moveOverlayMap,
     clearOverlayMaps,
-    setMarkerMode
+    setMarkerMode,
+    setLabelCollisionDetectionEnabled
   } = useMapSettings();
   const searchParams = useSearchParams();
   const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
@@ -234,6 +236,18 @@ export default function MapSettings() {
               </div>
             </div>
           </legend>
+          <div className="px-3 pb-1">
+            <label className="inline-flex items-center gap-2 text-sm text-neutral-700 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={labelCollisionDetectionEnabled}
+                onChange={(e) => setLabelCollisionDetectionEnabled(e.target.checked)}
+                aria-label="Slå av eller på etikett-overlappshandtering"
+                className="h-4 w-4 accent-accent-800"
+              />
+              <span>Unngå overlappande etikettar</span>
+            </label>
+          </div>
         </fieldset>
       </section>
 

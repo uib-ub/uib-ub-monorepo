@@ -36,6 +36,7 @@ export default function DebugLayers({mapInstance,
     const selectedGroupRef = useRef<any>(null);
     const [selectedGnidu, setSelectedGnidu] = useState<any>(null);
     const [selectedChild, setSelectedChild] = useState<string | null>(null);
+    const [polygonPaneReady, setPolygonPaneReady] = useState(false);
     const childListItemRefs = useRef<Map<string, HTMLLIElement>>(new Map());
     
     // Preserve selected group data even when queries update
@@ -174,7 +175,10 @@ export default function DebugLayers({mapInstance,
         const polygonPane = map.createPane('polygonPane');
         polygonPane.style.zIndex = '300'; // Lower than default overlayPane (400)
       }
+      setPolygonPaneReady(true);
+      return;
     }
+    setPolygonPaneReady(false);
   }, [mapInstance]);
 
     return <>
@@ -182,7 +186,7 @@ export default function DebugLayers({mapInstance,
     
 
     {/* Geotile grid */}
-    { showGeotileGrid && markerCells.map((cell: any) => {
+    { polygonPaneReady && showGeotileGrid && markerCells.map((cell: any) => {
         const bounds = geotileKeyToBounds(cell.key)
         if (!bounds) return null;
         return <Rectangle
@@ -199,7 +203,7 @@ export default function DebugLayers({mapInstance,
     })}
 
     {/* H3 grid overlay */}
-    {showH3Grid && mapInstance.current && getH3Cells(mapInstance.current.getBounds()).map((polygon, index) => (
+    {polygonPaneReady && showH3Grid && mapInstance.current && getH3Cells(mapInstance.current.getBounds()).map((polygon, index) => (
               <Polygon
                 key={`h3-${index}`}
                 positions={polygon}
@@ -214,7 +218,7 @@ export default function DebugLayers({mapInstance,
             ))}
 
     {/* H3 cells for selected group - from children data */}
-    {selectedGroup && selectedGroup._source?.misc?.children?.length > 0 && filteredChildren.length > 0 && (() => {
+    {polygonPaneReady && selectedGroup && selectedGroup._source?.misc?.children?.length > 0 && filteredChildren.length > 0 && (() => {
       // Collect all unique H3 cell IDs from children
       const h3Cells = new Set<string>();
       filteredChildren.forEach((child: any) => {
@@ -233,7 +237,7 @@ export default function DebugLayers({mapInstance,
     })()}
 
     {/* GNIDU polygons - rendered before markers to appear behind */}
-    { gniduData?.hits?.hits?.filter((item: any) => item._source?.area).map((item: any) => {
+    { polygonPaneReady && gniduData?.hits?.hits?.filter((item: any) => item._source?.area).map((item: any) => {
             const areaWkt = item._source?.area;
             const isSelected = selectedGnidu?._id === item._id;
 

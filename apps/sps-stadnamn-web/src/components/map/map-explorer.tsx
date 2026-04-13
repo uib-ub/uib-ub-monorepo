@@ -53,7 +53,7 @@ export default function MapExplorer() {
 
 
   const controllerRef = useRef(new AbortController());
-  const { baseMap, overlayMaps, markerMode, setMarkerMode, initializeSettings } = useMapSettings()
+  const { baseMap, overlayMaps, markerMode, labelCollisionDetectionEnabled, setMarkerMode, initializeSettings } = useMapSettings()
   const searchParams = useSearchParams()
   const { searchQueryString, searchFilterParamsString } = useSearchQuery()
   const urlZoom = useZoomNumber()
@@ -366,8 +366,8 @@ export default function MapExplorer() {
           }
           seenMarkerIds.add(dedupeKey)
 
-          // Points mode: no overlap logic – show every group as its own marker, allow them close together.
-          if (activeMarkerMode === 'points') {
+          // Points mode and disabled collision handling: no overlap logic.
+          if (activeMarkerMode === 'points' || !labelCollisionDetectionEnabled) {
             if (!labeledMarkersLookup[bucket.key]) {
               labeledMarkersLookup[bucket.key] = []
             }
@@ -435,7 +435,7 @@ export default function MapExplorer() {
     markerResultsRef.current = allMarkers
 
     return allMarkers
-  }, [markerResults, activeMarkerMode, zoomState, sourceViewOn, hideMarkersDuringGridTransition])
+  }, [markerResults, activeMarkerMode, zoomState, sourceViewOn, hideMarkersDuringGridTransition, labelCollisionDetectionEnabled])
 
   useEffect(() => {
     if (!hideMarkersDuringGridTransition) return
