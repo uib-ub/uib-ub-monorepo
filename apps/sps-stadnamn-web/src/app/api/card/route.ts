@@ -32,6 +32,7 @@ const INNER_HIT_FIELDS = [
   "sosi",
   "content.html",
   "content.text",
+  "content.note",
   "audio.file",
   "audio.manifest",
   "area",
@@ -243,6 +244,14 @@ export async function GET(request: Request) {
       else if (hit.fields?.['content.text']?.[0]) {
         textItems.push({
           text: hit.fields?.['content.text']?.[0],
+          uuid: hit.fields?.['uuid']?.[0],
+          links: rawLinks,
+          dataset
+        })
+      }
+      else if (hit.fields?.['content.note']?.[0]) {
+        textItems.push({
+          text: hit.fields?.['content.note']?.[0],
           uuid: hit.fields?.['uuid']?.[0],
           links: rawLinks,
           dataset
