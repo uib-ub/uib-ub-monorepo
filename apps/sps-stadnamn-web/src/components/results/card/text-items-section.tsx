@@ -15,7 +15,7 @@ export const TextItemsSection = ({ textItems, highlight }: { textItems: any[], h
     const highlightedFirstText =
         typeof highlight === "string"
             ? highlight
-            : highlight?.["content.html"]?.[0] || highlight?.["content.text"]?.[0];
+            : highlight?.["content.html"]?.[0] || highlight?.["content.text"]?.[0] || highlight?.["content.note"]?.[0];
     const originalFirstText = typeof textItems[0]?.text === "string" ? textItems[0].text : "";
     const stripHtml = (value: string) => value.replace(/<[^>]*>/g, "");
     const hasHighlightPreview = Boolean(highlightedFirstText);
