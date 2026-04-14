@@ -43,10 +43,9 @@ const cadastre = {
   "cadastre__gnr": { label: "Gardsnummer", result, sort: "asc" as const, type: "integer" as const },
   "cadastre__bnr": { label: "Bruksnummer", result, sort: "asc" as const, type: "integer" as const },
 }
-const cadastreRaw = {
-  gnr: { label: "Gardsnummer", result, table, facet, sort: "asc" as const },
-  bnr: { label: "Bruksnummer", result, table, facet, sort: "asc" as const },
-}
+const gnr = { label: "Gardsnummer", result, table, facet, sort: "asc" as const }
+const bnr = { label: "Bruksnummer", result, table, facet, sort: "asc" as const }
+const cadastreRaw = {gnr, bnr}
 const oldCadastre = {
   mnr: { label: "Matrikkelnummer", result, table, facet, sort: "asc" as const },
   lnr: { label: "Løpenummer", result, table, facet, sort: "asc" as const },
@@ -143,6 +142,7 @@ const rawFieldConfig = {
     "rawData.oppskrivingsTid": { label: "Oppskrivingstid", table, facet },
     "rawData.bildeNr": { label: "Bildenummer", table, facet },
     ...cadastre,
+    ...cadastreRaw,
     ...identifiers,
   },
   rygh: {
@@ -250,8 +250,8 @@ const rawFieldConfig = {
   },
   ostf: {
     ...required, adm, adm1, adm2,
-    "rawData.Bindsortering": { label: "Bind", facet },
-    "rawData.GNID": { label: "GNID", facet, result },
+    "misc.Bindsortering": { label: "Bind", facet },
+    "misc.Lokalitetstype": { label: "Lokalitetstype", facet },
     ...identifiers,
   },
   tot: {
@@ -328,6 +328,7 @@ const rawFieldConfig = {
   },
   geonames: {
     ...required, adm, adm1, adm2, sosi, placeType,
+    gnr, knr, ...cadastre,    
     "lang": { label: "Språk", facet },
     "misc.featureClass": { label: "Geonames feature class", facet },
     "misc.featureCode": { label: "Geonames feature code", facet },

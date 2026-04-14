@@ -288,12 +288,12 @@ export default function MapInterface() {
                                     </span>
                                 ) : (
                                     <div className="w-full flex items-center px-2 py-1 xl:px-0 gap-2 xl:pl-2 xl:py-2">
-                                        <div className="flex items-center gap-1 xl:px-1 w-full">
+                                        <div className="flex items-center gap-2 xl:px-1 w-full">
                                             <div id="left-title" className="text-base xl:text-lg text-neutral-900 font-sans font-semibold">
                                                 Filter
                                             </div>
                                             {filterCount ? (
-                                                <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} />
+                                                <TitleBadge className="bg-primary-700 text-white text-sm xl:text-base" count={filterCount} />
                                             ) : null}
                                             <ClickableIcon className="ml-auto" label="Lukk" remove={["options"]}>
                                                 <PiX className="text-black text-3xl" />
