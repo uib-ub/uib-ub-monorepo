@@ -329,11 +329,11 @@ export default function MapExplorer() {
           }
 
           const medium = 100
-          const max = 2000
+          const max = 1000
           let clusterSize = 2
 
           if (activeMarkerMode != 'counts') {
-            if (totalHits.value < 1000 || zoomState > 13) {
+            if (totalHits.value < 1000 || zoomState > 14) {
               clusterSize = max
             }
             else if (totalHits.value < 10000 && zoomState > 9) {
