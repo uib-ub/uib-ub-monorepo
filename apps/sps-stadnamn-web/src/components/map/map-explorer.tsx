@@ -1069,9 +1069,9 @@ export default function MapExplorer() {
         }
       }}
       attributionControl={false}
-      zoomSnap={isMobile ? 0.5 : 0}
-      zoomDelta={isMobile ? 1 : 0.25}
-      wheelPxPerZoomLevel={30}
+      zoomSnap={0}
+      zoomDelta={isMobile ? 0.25 : 0.1}
+      wheelPxPerZoomLevel={isMobile ? 30 : 4}
       zoom={urlZoom || defaultZoom}
       center={urlCenter || defaultCenter}
       className={`absolute top-0 right-0 left-0 select-none`}
