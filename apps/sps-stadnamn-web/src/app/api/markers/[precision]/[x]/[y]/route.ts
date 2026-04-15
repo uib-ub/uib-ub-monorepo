@@ -14,13 +14,15 @@ export async function GET(
   const { termFilters, reservedParams } = extractFacets(request)
   const { simple_query_string } = getQueryString(reservedParams)
   const perspective = reservedParams.perspective || 'all'
+  const sourceView = reservedParams.sourceView === 'on'
+  const markerIdField = sourceView ? 'uuid' : 'group.id'
 
 
   const query: Record<string, any> = {
     size: 0,
 
     _source: false,
-    track_total_hits: false,
+    track_total_hits: true,
     track_scores: false,
     //sort: [{"group.placeScore": {order: "desc", missing: "_last"}}, { "boost": {order: "desc", missing: "_last"}}, { "group.id": {order: "asc", missing: "_last"}} ],
 
@@ -40,7 +42,7 @@ export async function GET(
         geotile_grid: {
           field: "location",
           size: 200,
-          precision: precision == "0" ? 5 : parseInt(precision) + 3
+          precision: precision == "0" ? 5 : parseInt(precision) + (reservedParams.isMobile === 'on' ? 2 : 3)
         },
         "aggs": {
           "centroid": {
@@ -50,12 +52,13 @@ export async function GET(
           },
           "group_count": {
             "cardinality": {
-              "field": "group.id"
+              "field": markerIdField,
+              "precision_threshold": 3000
             }
           },
           "groups": {
             "terms": {
-              "field": "group.id",
+              "field": markerIdField,
               "order": { "max_placeScore": "desc" },
               size: reservedParams.markerClusterSize
             },
@@ -86,8 +89,6 @@ export async function GET(
       query.query.bool.filter.push(...termFilters)
     }
   }
-  console.log("PERSPECTIVE", perspective)
-
 
   const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
   return Response.json(data, { status: status })

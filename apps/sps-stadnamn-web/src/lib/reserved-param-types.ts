@@ -33,7 +33,7 @@ export const SERVER_ALLOWED_SEARCH_PARAM_KEYS = [
   'sourceView',
   'sort',
   'id', // group id or uuid for result card
-  'totalHits',
+  'isMobile',
   'markerClusterSize',
   'searchSort',
   'facetQuery', // Only used in wikiAdm - deprecated?

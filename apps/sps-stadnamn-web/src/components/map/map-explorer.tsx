@@ -294,22 +294,40 @@ export default function MapExplorer() {
 
           const medium = 100
           const max = 2000
-          let clusterSize = 1
+          let clusterSize = 2
           console.log("TOTAL HITS", totalHits.value)
 
           if (activeMarkerMode != 'counts') {
-            if (totalHits.value < 1000 || zoomState > 15) {
+            if (totalHits.value < 1000 || zoomState > 13) {
               clusterSize = max
             }
             else if (totalHits.value < 10000 && zoomState > 9) {
               clusterSize = medium
             }
         }
-          newParams.set('markerClusterSize', String(clusterSize));
+          const fetchBuckets = async (size: number) => {
+            const p = new URLSearchParams(newParams)
+            p.set('markerClusterSize', String(size))
+            if (isMobile) {
+              p.set('isMobile', 'on')
+            }
+            const res = await fetch(
+              `/api/markers/${cell.precision}/${cell.x}/${cell.y}${p.toString() ? `?${p.toString()}` : ''}`,
+              { signal: controllerRef.current.signal }
+            )
+            const data = await res.json()
+            return { data, buckets: data?.aggregations?.grid?.buckets ?? [] }
+          }
 
-          const res = await fetch(`/api/markers/${cell.precision}/${cell.x}/${cell.y}${newParams.toString() ? `?${newParams.toString()}` : ''}`, { signal: controllerRef.current.signal })
-          const data = await res.json()
-          return data.aggregations.grid.buckets
+          const first = await fetchBuckets(clusterSize)
+          const totalInResponse = first.data?.hits?.total?.value
+
+          if (activeMarkerMode !== 'counts' && typeof totalInResponse === 'number' && totalInResponse < 100 && clusterSize !== max) {
+            const second = await fetchBuckets(max)
+            return second.buckets
+          }
+
+          return first.buckets
         }
       })
     })
@@ -317,6 +335,12 @@ export default function MapExplorer() {
 
 
   const markerResultsRef = useRef<any[]>([]) // Prevents empty array while loading new cells
+  const bucketDebugRef = useRef<Record<string, {
+    totalGroups: number
+    addedToTile: number
+    mergedIntoNeighbor: number
+    skippedSeenDuplicate: number
+  }>>({})
   //console.log("MARKER RESULTS", markerResults, markerResultsRef.current)
 
 
@@ -337,7 +361,25 @@ export default function MapExplorer() {
     let minDocCount = Infinity
     let maxDocCount = 0
     const labeledMarkersLookup: Record<string, Record<string, any>[]> = {}
-    const seenMarkerIds = new Set<string>()
+    const seenMarkerMeta = new Map<string, { tile: string; pos?: [number, number] }>()
+    const viewportBounds = mapInstance.current?.getBounds?.()
+    const isPosInView = (pos?: [number, number]) => {
+      if (!pos) return false
+      if (!viewportBounds) return true // if we can't read bounds, don't suppress
+      const [lat, lng] = pos
+      return (
+        lat <= viewportBounds.getNorth() &&
+        lat >= viewportBounds.getSouth() &&
+        lng >= viewportBounds.getWest() &&
+        lng <= viewportBounds.getEast()
+      )
+    }
+    const bucketDebug: Record<string, {
+      totalGroups: number
+      addedToTile: number
+      mergedIntoNeighbor: number
+      skippedSeenDuplicate: number
+    }> = {}
 
     buckets.forEach((bucket: any) => {
       const clusterCount = sourceViewOn
@@ -369,6 +411,9 @@ export default function MapExplorer() {
         clusterCount === 1 ||
         centroidMatchesTop
       ) {
+        if (!bucketDebug[bucket.key]) {
+          bucketDebug[bucket.key] = { totalGroups: 0, addedToTile: 0, mergedIntoNeighbor: 0, skippedSeenDuplicate: 0 }
+        }
 
 
         const [z, x, y] = bucket.key.split('/').map(Number);
@@ -410,7 +455,13 @@ export default function MapExplorer() {
           return { other: null, otherIndex: null }
         }
 
-        bucket.groups.buckets.forEach((group: any) => {
+        const groupBuckets = bucket?.groups?.buckets
+        if (!Array.isArray(groupBuckets) || groupBuckets.length === 0) {
+          return
+        }
+
+        groupBuckets.forEach((group: any) => {
+          bucketDebug[bucket.key].totalGroups += 1
           const top_hit: Record<string, any> = {
             ...group.top.hits.hits[0],
             // In cluster mode, singletons should render as black pin markers.
@@ -420,10 +471,105 @@ export default function MapExplorer() {
             ? top_hit.fields?.uuid?.[0]
             : top_hit.fields?.["group.id"]?.[0]
           if (!dedupeKey) return
-          if (seenMarkerIds.has(dedupeKey)) {
-            return
+          const prev = (seenMarkerMeta as any).get(dedupeKey) as any | undefined
+          const parseTile = (key: string): { z: number; x: number; y: number } | null => {
+            const parts = key.split('/').map(Number)
+            if (parts.length !== 3) return null
+            const [z, x, y] = parts
+            if (![z, x, y].every((n) => Number.isFinite(n))) return null
+            return { z, x, y }
           }
-          seenMarkerIds.add(dedupeKey)
+          const prevTile = prev?.tile ? parseTile(prev.tile) : null
+          const currTile = parseTile(bucket.key)
+          const isNeighborDuplicate = Boolean(
+            prev &&
+              prevTile &&
+              currTile &&
+              prevTile.z === currTile.z &&
+              Math.abs(prevTile.x - currTile.x) <= 1 &&
+              Math.abs(prevTile.y - currTile.y) <= 1
+          )
+
+          if (isNeighborDuplicate) {
+            bucketDebug[bucket.key].skippedSeenDuplicate += 1
+          }
+
+          const thisBoost = Number(top_hit?.fields?.boost ?? 0) || 0
+          const prevBoost = Number((prev as any)?.boost ?? 0) || 0
+
+          // Helper to annotate a marker object for debug rendering/tooltips.
+          const attachDebugDupMeta = (marker: any, opts: { supersededBy?: [number, number]; prevTile?: string; neighborDup: boolean; dx?: number; dy?: number }) => {
+            marker.__debugDuplicate = true
+            marker.__debugSupersededBy = opts.supersededBy
+            marker.__debugPrevTile = opts.prevTile
+            marker.__debugNeighborDuplicate = opts.neighborDup
+            if (Number.isFinite(opts.dx)) marker.__debugDx = opts.dx
+            if (Number.isFinite(opts.dy)) marker.__debugDy = opts.dy
+          }
+
+          // Neighbor-duplicate resolution should prefer higher boost.
+          if (prev && isNeighborDuplicate) {
+            const dx = prevTile && currTile && prevTile.z === currTile.z ? (currTile.x - prevTile.x) : undefined
+            const dy = prevTile && currTile && prevTile.z === currTile.z ? (currTile.y - prevTile.y) : undefined
+            const latHere = top_hit?.fields?.location?.[0]?.coordinates?.[1]
+            const lngHere = top_hit?.fields?.location?.[0]?.coordinates?.[0]
+            const thisPos = (typeof latHere === 'number' && typeof lngHere === 'number') ? ([latHere, lngHere] as [number, number]) : undefined
+            const thisInView = isPosInView(thisPos)
+            const prevInView = isPosInView((prev as any)?.pos)
+
+            // If the previous winner is stronger (or equal), suppress current in non-debug,
+            // and mark it as a duplicate in debug.
+            // But: restrict winners to markers within view. If the previous winner is out of view,
+            // never suppress a marker that is in view.
+            if (thisBoost <= prevBoost && (prevInView || !thisInView)) {
+              if (debug) {
+                attachDebugDupMeta(top_hit as any, { supersededBy: (prev as any)?.pos, prevTile: (prev as any)?.tile, neighborDup: true, dx, dy })
+              } else {
+                return
+              }
+            } else {
+              // Current is stronger: it should win. If we already placed a weaker winner,
+              // replace it in its tile array (non-debug). In debug, keep both, but mark
+              // the weaker as a duplicate superseded by this one.
+              const lat0 = top_hit?.fields?.location?.[0]?.coordinates?.[1]
+              const lng0 = top_hit?.fields?.location?.[0]?.coordinates?.[0]
+              const thisPos = (typeof lat0 === 'number' && typeof lng0 === 'number') ? ([lat0, lng0] as [number, number]) : undefined
+
+              const placed = (prev as any)?.placed as { tile: string; index: number } | undefined
+              if (placed && labeledMarkersLookup[placed.tile]?.[placed.index]) {
+                const old = labeledMarkersLookup[placed.tile][placed.index]
+                if (debug) {
+                  attachDebugDupMeta(old as any, { supersededBy: thisPos, prevTile: bucket.key, neighborDup: true, dx: -dx!, dy: -dy! })
+                  ;(top_hit as any).__debugDuplicate = false
+                  ;(top_hit as any).__debugNeighborDuplicate = false
+                } else {
+                  labeledMarkersLookup[placed.tile][placed.index] = top_hit
+                  bucketDebug[bucket.key].addedToTile += 1
+                  // Update winner meta and stop; we've already placed the winner by replacement.
+                  ;(seenMarkerMeta as any).set(dedupeKey, { tile: placed.tile, pos: thisPos, boost: thisBoost, placed })
+                  return
+                }
+              }
+
+              // Fall through: we couldn't replace (not placed yet), so allow current through,
+              // but update winner meta now.
+              ;(seenMarkerMeta as any).set(dedupeKey, { tile: bucket.key, pos: thisPos, boost: thisBoost })
+            }
+          }
+
+          // NOTE: We intentionally do NOT draw/mark non-neighbor duplicates.
+          // Only neighbor duplicates participate in seenMarkerIds-style suppression.
+
+          // Initialize winner meta when first seen.
+          // Only allow in-viewport markers to claim the winner slot.
+          if (!prev) {
+            const lat0 = top_hit?.fields?.location?.[0]?.coordinates?.[1]
+            const lng0 = top_hit?.fields?.location?.[0]?.coordinates?.[0]
+            const pos = (typeof lat0 === 'number' && typeof lng0 === 'number') ? ([lat0, lng0] as [number, number]) : undefined
+            if (isPosInView(pos)) {
+              ;(seenMarkerMeta as any).set(dedupeKey, { tile: bucket.key, pos, boost: thisBoost })
+            }
+          }
 
           // Points mode and disabled collision handling: no overlap logic.
           if (activeMarkerMode === 'points' || !labelCollisionDetectionEnabled) {
@@ -431,6 +577,13 @@ export default function MapExplorer() {
               labeledMarkersLookup[bucket.key] = []
             }
             labeledMarkersLookup[bucket.key].push(top_hit)
+            bucketDebug[bucket.key].addedToTile += 1
+            // Track where we placed the winner for possible boost-based replacement.
+            const currentMeta = (seenMarkerMeta as any).get(dedupeKey)
+            if (currentMeta && !currentMeta.placed) {
+              currentMeta.placed = { tile: bucket.key, index: labeledMarkersLookup[bucket.key].length - 1 }
+              ;(seenMarkerMeta as any).set(dedupeKey, currentMeta)
+            }
             return
           }
 
@@ -450,6 +603,7 @@ export default function MapExplorer() {
                 labeledMarkersLookup[neighborTile][otherIndex] = { ...other, children: [childlessTopHit, ...lostChildren] }
               }
               otherFound = true
+              bucketDebug[bucket.key].mergedIntoNeighbor += 1
               break
             }
           }
@@ -459,6 +613,12 @@ export default function MapExplorer() {
               labeledMarkersLookup[bucket.key] = []
             }
             labeledMarkersLookup[bucket.key].push(top_hit)
+            bucketDebug[bucket.key].addedToTile += 1
+            const currentMeta = (seenMarkerMeta as any).get(dedupeKey)
+            if (currentMeta && !currentMeta.placed) {
+              currentMeta.placed = { tile: bucket.key, index: labeledMarkersLookup[bucket.key].length - 1 }
+              ;(seenMarkerMeta as any).set(dedupeKey, currentMeta)
+            }
           }
         })
       } else {
@@ -573,10 +733,11 @@ export default function MapExplorer() {
     const allMarkers = [...markers, ...clusters]
 
 
+    bucketDebugRef.current = bucketDebug
     markerResultsRef.current = allMarkers
 
     return allMarkers
-  }, [markerResults, activeMarkerMode, zoomState, sourceViewOn, hideMarkersDuringGridTransition, labelCollisionDetectionEnabled])
+  }, [markerResults, activeMarkerMode, zoomState, sourceViewOn, hideMarkersDuringGridTransition, labelCollisionDetectionEnabled, debug])
 
   useEffect(() => {
     if (!hideMarkersDuringGridTransition) return
@@ -783,6 +944,14 @@ export default function MapExplorer() {
 
 
   return <>
+    {isMobile ? (
+      <div
+        className="absolute left-3 z-[5200] rounded-md bg-black/75 text-white text-xs px-2 py-1 shadow-sm"
+        style={{ top: "7.75rem" }}
+      >
+        zoom: {zoomState}
+      </div>
+    ) : null}
     <MapToolbar />
     <DynamicMap
       tapHold={true}
@@ -1067,12 +1236,55 @@ export default function MapExplorer() {
                 ) : null
                 
                 const showLabel = activeMarkerMode != 'points' && (!hasQuery || activeMarkerMode === 'labels')
+                const isDebugDuplicate = debug && Boolean((item as any)?.__debugDuplicate)
+                const supersededBy = debug ? ((item as any)?.__debugSupersededBy as ([number, number] | undefined)) : undefined
+                const isDebugNeighborDuplicate = debug && Boolean((item as any)?.__debugNeighborDuplicate)
+                // Debug styling:
+                // - neighborDup=true (would be suppressed in non-debug): highlight in primary
+                // - neighborDup=false (not suppressed): keep normal black marker + black line
+                const markerColor = isActiveDoc
+                  ? 'accent'
+                  : (isDebugDuplicate
+                      ? (isDebugNeighborDuplicate ? 'primary' : 'black')
+                      : (showLabel ? 'white' : 'black'))
                 const icon = showLabel
-                  ? getLabelMarkerIcon(labelText, isActiveDoc ? 'accent' : 'white', childCount, false)
-                  : getUnlabeledMarker(isActiveDoc ? 'accent' : 'black')
+                  ? getLabelMarkerIcon(labelText, markerColor, childCount, false)
+                  : getUnlabeledMarker(markerColor)
+
+                const debugDupMeta = (() => {
+                  if (!isDebugDuplicate) return null
+                  const prevTile = (item as any)?.__debugPrevTile
+                  const neigh = (item as any)?.__debugNeighborDuplicate
+                  const dx = (item as any)?.__debugDx
+                  const dy = (item as any)?.__debugDy
+                  const lines: string[] = []
+                  if (typeof prevTile === 'string') lines.push(`prev=${prevTile}`)
+                  if (typeof neigh === 'boolean') lines.push(`neighborDup=${neigh}`)
+                  if (Number.isFinite(dx) && Number.isFinite(dy)) lines.push(`d=(${dx},${dy})`)
+                  return lines.length ? lines.join(' • ') : null
+                })()
 
                 return (
                   <Fragment key={`result-frag-${item.fields.uuid[0]}`}>
+                    {debug && supersededBy && (
+                      <Polyline
+                        key={`debug-superseded-line-${item.fields.uuid[0]}`}
+                        positions={[[lat, lng], supersededBy]}
+                        pathOptions={{
+                          color: isDebugNeighborDuplicate ? '#cf3c3a' : '#000000',
+                          weight: 2,
+                          opacity: 0.85,
+                          dashArray: '4 3'
+                        }}
+                      />
+                    )}
+                    {debug && debugDupMeta && (
+                      <Tooltip direction="top" offset={[0, -10]} opacity={1} className="point-marker-tooltip">
+                        <div className="px-2 py-0.5 text-[10px] tracking-wide text-black bg-white/90 rounded-md shadow-lg whitespace-nowrap">
+                          {debugDupMeta}
+                        </div>
+                      </Tooltip>
+                    )}
                     {showMarkerBounds && item.labelBounds && (
                       <Rectangle
                         bounds={item.labelBounds}
@@ -1096,6 +1308,28 @@ export default function MapExplorer() {
                         />
                       ))
                     }
+                    {debug && item.children?.map((child: any) => {
+                      const childLat = child?.fields?.location?.[0]?.coordinates?.[1]
+                      const childLng = child?.fields?.location?.[0]?.coordinates?.[0]
+                      if (typeof childLat !== 'number' || typeof childLng !== 'number') return null
+
+                      return (
+                        <Fragment key={`child-debug-${child.fields.uuid[0]}`}>
+                          <Polyline
+                            key={`child-line-${child.fields.uuid[0]}`}
+                            positions={[[childLat, childLng], [lat, lng]]}
+                            pathOptions={{ color: '#cf3c3a', weight: 2, opacity: 0.85 }}
+                          />
+                          <Marker
+                            key={`child-marker-${child.fields.uuid[0]}`}
+                            position={[childLat, childLng]}
+                            icon={new leaflet.DivIcon(getUnlabeledMarker('primary'))}
+                            zIndexOffset={-10}
+                            interactive={false}
+                          />
+                        </Fragment>
+                      )
+                    })}
 
                           <Marker
                             key={`result-${item.fields.uuid[0]}`}
@@ -1117,16 +1351,79 @@ export default function MapExplorer() {
 
             {/* Debug: draw rectangle for each backend bucket/tile */}
             {debug && showGeotileGrid && processedMarkerResults && markerResults.map((result: any) => result.data?.map((bucket: any) => {
-              return <Rectangle
-                key={`bucket-${bucket.key}`}
-                bounds={geotileKeyToBounds(bucket.key)!}
-                pathOptions={{
-                  color: '#ff7800',
-                  weight: 1,
-                  opacity: 0.8,
-                  fillOpacity: 0
-                }}
-              />
+              const bounds = geotileKeyToBounds(bucket.key)
+              if (!bounds) return null
+
+              const [[north, west], [south, east]] = bounds
+              const center: [number, number] = [(north + south) / 2, (west + east) / 2]
+
+              const clusterCount = sourceViewOn
+                ? bucket.doc_count
+                : (bucket.group_count?.value ?? bucket.doc_count)
+
+              const centroidLat = bucket?.centroid?.location?.lat
+              const centroidLng = bucket?.centroid?.location?.lon
+              const centroidPos: [number, number] | null =
+                typeof centroidLat === 'number' && typeof centroidLng === 'number' ? [centroidLat, centroidLng] : null
+
+              const topHitCoords = bucket?.groups?.buckets?.[0]?.top?.hits?.hits?.[0]?.fields?.location?.[0]?.coordinates
+              const topHitPos: [number, number] | null =
+                Array.isArray(topHitCoords) && topHitCoords.length === 2
+                  ? [topHitCoords[1] as number, topHitCoords[0] as number]
+                  : null
+
+              const EPS = 1e-6
+              const centroidMatchesTop =
+                activeMarkerMode === 'counts' &&
+                Boolean(centroidPos && topHitPos) &&
+                Math.abs(centroidPos![0] - topHitPos![0]) < EPS &&
+                Math.abs(centroidPos![1] - topHitPos![1]) < EPS
+
+              // This mirrors the branching used when building markers vs clusters,
+              // so we can at least explain what *path* the bucket took.
+              const intendedRender =
+                (zoomState > 15 ||
+                  activeMarkerMode === 'labels' ||
+                  activeMarkerMode === 'points' ||
+                  clusterCount === 1 ||
+                  centroidMatchesTop)
+                  ? 'marker'
+                  : 'cluster'
+
+              const hasGroups = Array.isArray(bucket?.groups?.buckets) && bucket.groups.buckets.length > 0
+              const topHit = bucket?.groups?.buckets?.[0]?.top?.hits?.hits?.[0]
+              const hasTopHitLocation = Boolean(topHit?.fields?.location?.[0]?.coordinates?.length === 2)
+
+              const candidateLat = topHitPos?.[0]
+              const candidateLng = topHitPos?.[1]
+              const candidateInViewport =
+                typeof candidateLat === 'number' && typeof candidateLng === 'number'
+                  ? isPointInViewport(candidateLat, candidateLng)
+                  : false
+
+              const reasonParts: string[] = []
+              if (!hasGroups) reasonParts.push('no groups')
+              if (hasGroups && !topHit) reasonParts.push('no top hit')
+              if (topHit && !hasTopHitLocation) reasonParts.push('top hit missing location')
+              if (intendedRender === 'marker' && topHitPos && !candidateInViewport) reasonParts.push('top hit outside viewport')
+              if (centroidMatchesTop) reasonParts.push('centroid==top')
+
+              const reason = reasonParts.length ? reasonParts.join(', ') : 'ok'
+
+              return (
+                <Fragment key={`bucket-frag-${bucket.key}`}>
+                  <Rectangle
+                    key={`bucket-${bucket.key}`}
+                    bounds={bounds}
+                    pathOptions={{
+                      color: '#ff7800',
+                      weight: 1,
+                      opacity: 0.8,
+                      fillOpacity: 0
+                    }}
+                  />
+                </Fragment>
+              )
             }))}
 
             {
