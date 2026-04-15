@@ -245,7 +245,7 @@ export default function MapSettings() {
                 aria-label="Slå av eller på etikett-overlappshandtering"
                 className="h-4 w-4 accent-accent-800"
               />
-              <span>Unngå overlappande etikettar</span>
+              <span>Reduser overlappande etikettar</span>
             </label>
           </div>
         </fieldset>

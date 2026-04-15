@@ -18,6 +18,27 @@ export async function GET(
   const sourceView = reservedParams.sourceView === 'on'
   const markerIdField = sourceView ? 'uuid' : 'group.id'
   const precisionNumber = Number(precision)
+
+  const gridGranularity: Record<number, number> = {
+    0: 5,
+    1: 5,
+    2: 7,
+    3: 7,
+    4: 7,
+    5: 8,
+    6: 10,
+    7: 11,
+    8: 12,
+    9: 13,
+    10: 14,
+    11: 15,
+    12: 16,
+    13: 17,
+    14: 18,
+    15: 19,
+    16: 20,
+    17: 21,
+  }
   
 
   const precisionBreakpoints = (breakpointMap: Record<number, number>) => {
@@ -55,7 +76,7 @@ export async function GET(
         geotile_grid: {
           field: "location",
           size: 200,
-          precision: precisionNumber > 0 ? Math.max(8, precisionNumber + (precisionNumber > 5 ? 4 : 3)) : 5
+          precision: gridGranularity[precisionNumber] || 1
         },
         "aggs": {
           "group_count": {
@@ -72,10 +93,10 @@ export async function GET(
                 totalHits &&
                 (
                   (totalHits < 1000 && 1000) ||
-                  (totalHits < 10000 && precisionBreakpoints({ 10: 100, 12: 200, 13: 1000 })) ||
-                  precisionBreakpoints({ 10: 10, 12: 200, 13: 1000 })
+                  (totalHits < 10000 && precisionBreakpoints({ 10: 100, 11: 200, 13: 1000 })) ||
+                  precisionBreakpoints({ 10: 10, 11: 200, 13: 1000 })
                 )
-              ) || precisionBreakpoints({ 10: 5, 12: 500, 13: 1000 })
+              ) || precisionBreakpoints({ 10: 5, 11: 100, 13: 500 })
             },
             "aggs": {
               "max_placeScore": {

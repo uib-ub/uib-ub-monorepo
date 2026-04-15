@@ -493,7 +493,7 @@ export const baseAllConfig: Record<string, FieldConfigItem> = {
 };
 
 fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
-  console.log("ADDING FACET CONFIG FOR DATASET: ", dataset)
+  //console.log("ADDING FACET CONFIG FOR DATASET: ", dataset)
 
   Object.entries(fields).forEach(([key, config]) => {
     if (!config.label) return; // Skip fields without labels
