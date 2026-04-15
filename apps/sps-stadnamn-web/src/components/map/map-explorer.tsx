@@ -295,7 +295,6 @@ export default function MapExplorer() {
           const medium = 100
           const max = 2000
           let clusterSize = 2
-          console.log("TOTAL HITS", totalHits.value)
 
           if (activeMarkerMode != 'counts') {
             if (totalHits.value < 1000 || zoomState > 13) {
@@ -305,29 +304,18 @@ export default function MapExplorer() {
               clusterSize = medium
             }
         }
-          const fetchBuckets = async (size: number) => {
-            const p = new URLSearchParams(newParams)
-            p.set('markerClusterSize', String(size))
-            if (isMobile) {
-              p.set('isMobile', 'on')
-            }
-            const res = await fetch(
-              `/api/markers/${cell.precision}/${cell.x}/${cell.y}${p.toString() ? `?${p.toString()}` : ''}`,
-              { signal: controllerRef.current.signal }
-            )
-            const data = await res.json()
-            return { data, buckets: data?.aggregations?.grid?.buckets ?? [] }
+          const p = new URLSearchParams(newParams)
+          p.set('markerClusterSize', String(clusterSize))
+          if (isMobile) {
+            p.set('isMobile', 'on')
           }
-
-          const first = await fetchBuckets(clusterSize)
-          const totalInResponse = first.data?.hits?.total?.value
-
-          if (activeMarkerMode !== 'counts' && typeof totalInResponse === 'number' && totalInResponse < 100 && clusterSize !== max) {
-            const second = await fetchBuckets(max)
-            return second.buckets
-          }
-
-          return first.buckets
+          const res = await fetch(
+            `/api/markers/${cell.precision}/${cell.x}/${cell.y}${p.toString() ? `?${p.toString()}` : ''}`,
+            { signal: controllerRef.current.signal }
+          )
+          const data = await res.json()
+          const buckets = data?.aggregations?.grid?.buckets ?? []
+          return buckets
         }
       })
     })
