@@ -944,7 +944,7 @@ export default function MapExplorer() {
 
 
   return <>
-    {isMobile ? (
+    {isMobile && debug ? (
       <div
         className="absolute left-3 z-[5200] rounded-md bg-black/75 text-white text-xs px-2 py-1 shadow-sm"
         style={{ top: "7.75rem" }}
