@@ -1332,34 +1332,35 @@ export default function MapExplorer() {
               </>
             )}
             {point && !activePoint && !init && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
-            {point && !activePoint && init && <Marker zIndexOffset={1000} icon={new leaflet.DivIcon(
-              (activeMarkerMode == 'points' || (activeMarkerMode == 'counts' && hasQuery))
-                ? 
-                getUnlabeledMarker('accent', { activeOval: true })
-                :
-                getLabelMarkerIcon(
-                    (
-                      initGroupLabel &&
-                      initGroupPoint &&
-                      areSamePoint(initGroupPoint, point)
-                    )
-                      ? initGroupLabel
-                      : (
-                        sourceViewOn
-                          ? (
-                            resultCardData?.label ??
-                            resultCardData?.fields?.label?.[0] ??
-                            null
-                          )
-                          : (
-                            resultCardData?.fields?.["group.label"]?.[0] ??
-                            null
-                          )
-                      ),
-                    'accent',
-                    undefined,
-                    true
-                  ) )} position={point} />}
+            {point && !activePoint && init && (() => {
+              const cachedInitLabel =
+                initGroupLabel && initGroupPoint && areSamePoint(initGroupPoint, point)
+                  ? initGroupLabel
+                  : undefined
+
+              const resolvedInitLabel =
+                cachedInitLabel ??
+                (sourceViewOn
+                  ? (resultCardData?.label ?? resultCardData?.fields?.label?.[0])
+                  : (resultCardData?.fields?.["group.label"]?.[0] ?? resultCardData?.fields?.label?.[0]))
+
+              const shouldUseUnlabeled =
+                activeMarkerMode == 'points' ||
+                (activeMarkerMode == 'counts' && hasQuery) ||
+                !resolvedInitLabel
+
+              return (
+                <Marker
+                  zIndexOffset={1000}
+                  icon={new leaflet.DivIcon(
+                    shouldUseUnlabeled
+                      ? getUnlabeledMarker('accent', { activeOval: true })
+                      : getLabelMarkerIcon(resolvedInitLabel, 'accent', undefined, true)
+                  )}
+                  position={point}
+                />
+              )
+            })()}
 
           </>)
       }}
