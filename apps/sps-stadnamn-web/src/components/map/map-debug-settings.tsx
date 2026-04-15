@@ -10,6 +10,8 @@ export default function MapDebugSettings() {
   const toggleGeotileGrid = useDebugStore((s: any) => s.toggleGeotileGrid);
   const showMarkerBounds = useDebugStore((s: any) => s.showMarkerBounds);
   const toggleMarkerBounds = useDebugStore((s: any) => s.toggleMarkerBounds);
+  const showPaddedViewportBounds = useDebugStore((s: any) => s.showPaddedViewportBounds);
+  const togglePaddedViewportBounds = useDebugStore((s: any) => s.togglePaddedViewportBounds);
   const showH3Grid = useDebugStore((s: any) => s.showH3Grid);
   const setShowH3Grid = useDebugStore((s: any) => s.setShowH3Grid);
   const h3Resolution = useDebugStore((s: any) => s.h3Resolution);
@@ -81,6 +83,16 @@ export default function MapDebugSettings() {
                 className="accent-accent-800"
               />
               <span>Vis marker bounds</span>
+            </label>
+
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showPaddedViewportBounds}
+                onChange={togglePaddedViewportBounds}
+                className="accent-accent-800"
+              />
+              <span>Vis padded viewport</span>
             </label>
 
             <label className="flex items-center gap-2 cursor-pointer">

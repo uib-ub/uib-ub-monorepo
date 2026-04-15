@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { getAreaLabelMarkerIcon, getBrukMarkerIcon, getClusterMarker, getInitAnchorMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 
-import { boundsFromZoomAndCenter, calculateRadius, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
+import { boundsFromZoomAndCenter, calculateRadius, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM, MOBILE_RESULTS_FOOTER_CLEARANCE_REM, MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM } from "@/lib/map-utils";
 import { useActivePoint, useCenterNumber, useDebugGroupsOn, useDocParam, useGroupParam, useMapSettingsOn, usePoint, useQParam, useRadiusNumber, useSourceViewOn, useTreeParam, useZoomNumber, useInitDecoded, useInitParam } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { parseTreeParam } from "@/lib/tree-param";
@@ -13,6 +13,7 @@ import { getBnr, indexToCode } from "@/lib/utils";
 import useDocData from "@/state/hooks/doc-data";
 import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
+import useViewportCount from "@/state/hooks/viewport-count";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useMapSettings } from '@/state/zustand/persistent-map-settings';
 import { useNotificationStore } from "@/state/zustand/notification-store";
@@ -68,6 +69,7 @@ const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontS
 export default function MapExplorer() {
 
   const showMarkerBounds = useDebugStore(state => state.showMarkerBounds);
+  const showPaddedViewportBounds = useDebugStore(state => state.showPaddedViewportBounds);
   // Add state for H3 resolution
 
 
@@ -75,6 +77,8 @@ export default function MapExplorer() {
 
 
   const { totalHits, searchBounds, searchLoading, searchUpdatedAt } = useSearchData()
+  const [paddedViewportBounds, setPaddedViewportBounds] = useState<[[number, number], [number, number]] | null>(null)
+  const { viewportGroupCount, viewportCountLoading, viewportCountUpdatedAt } = useViewportCount(paddedViewportBounds)
   const myLocation = useSessionStore((s) => s.myLocation)
   const setMyLocation = useSessionStore((s) => s.setMyLocation)
 
@@ -256,7 +260,7 @@ export default function MapExplorer() {
       const key = `${cell.precision}/${cell.x}/${cell.y}`
 
       return ({
-        queryKey: ['markerResults', key, searchQueryString, showDebugGroupsOn, tree],
+        queryKey: ['markerResults', key, searchQueryString, showDebugGroupsOn, tree, activeMarkerMode],
         placeHolder: (prevData: any) => prevData,
         enabled: !group && !showDebugGroupsOn && (!tree || tree.split('_').length < 4),
         queryFn: async () => {
@@ -292,7 +296,7 @@ export default function MapExplorer() {
             })
           }
 
-          const medium = 100
+          const medium = 20
           const max = 2000
           let clusterSize = 2
 
@@ -302,6 +306,9 @@ export default function MapExplorer() {
             }
             else if (totalHits.value < 10000 && zoomState > 9) {
               clusterSize = medium
+            }
+            else if (activeMarkerMode == 'points') {
+              clusterSize = zoomState > 15 ? max : medium
             }
         }
           const p = new URLSearchParams(newParams)
@@ -834,6 +841,37 @@ export default function MapExplorer() {
     allowFitBounds.current = true
   }, [searchUpdatedAt])
 
+  const computePaddedViewportBounds = useCallback((map: any) => {
+    if (!map?.getSize || !map?.containerPointToLatLng) return null
+    const size = map.getSize()
+
+    // Paddings tuned to match UI chrome (not marker queries).
+    let padLeft = 0, padRight = 0, padTop = 0, padBottom = 0
+    if (isMobile) {
+      // Mobile: assume drawer is snapped to "bottom" for viewport-count.
+      // Pad extra at top to account for notifications and search chrome.
+      padTop = Math.round(rootFontSize * (2 * (MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM + 0.5)))
+
+      // Double x padding to avoid counting near edges.
+      const xPad = Math.round(size.x * 0.10)
+      padLeft = xPad
+      padRight = xPad
+      // Keep a small bottom clearance even at the bottom snap (e.g. "Vis resultat" strip).
+      padBottom = Math.round(rootFontSize * MOBILE_RESULTS_FOOTER_CLEARANCE_REM)
+    } else {
+      padLeft = Math.round(size.x * 0.25)
+      padRight = Math.round(size.x * 0.25)
+      const yPad = Math.round(Math.min(120, size.y * 0.1))
+      padTop = yPad
+      padBottom = yPad
+    }
+
+    const tl = map.containerPointToLatLng([padLeft, padTop])
+    const br = map.containerPointToLatLng([size.x - padRight, size.y - padBottom])
+    if (!tl || !br) return null
+    return [[tl.lat, tl.lng], [br.lat, br.lng]] as [[number, number], [number, number]]
+  }, [isMobile])
+
   // After a new search, if we ended up with *zero in-viewport markers/clusters*
   // while the search still has hits, auto-fit to the full result bounds.
   //
@@ -858,11 +896,35 @@ export default function MapExplorer() {
     const markersLoading = markerResults.some((r: any) => r?.isLoading)
     if (markersLoading || hideMarkersDuringGridTransition) return
 
-    const inViewportCount = processedMarkerResults?.length ?? 0
-    if (inViewportCount === 0) {
+    // Use backend aggregation for "results within padded viewport".
+    // Important: during a search transition, viewportCount may be stale (placeholderData)
+    // or missing (bounds not computed yet). In those cases we must NOT auto-fit.
+    if (!paddedViewportBounds) return
+    if (viewportCountLoading) return
+    if (typeof viewportGroupCount !== 'number') return
+    if (viewportCountUpdatedAt < searchUpdatedAt) return
+
+    const inPaddedViewport = viewportGroupCount > 0
+
+    if (!inPaddedViewport) {
       allowFitBounds.current = false
       const padding: [number, number] = isMobile ? [20, 20] : [60, 60]
-      mapInstance.current.fitBounds(searchBounds, { maxZoom: 18, padding })
+      const currentZoom = mapInstance.current?.getZoom?.()
+      const maxZoom = Number.isFinite(currentZoom) ? currentZoom : 18
+
+      // Important: on first load, this effect can fire before `useMapEvents`
+      // handlers are attached, so the ensuing `moveend` won't update marker cells.
+      // We therefore update `snappedBounds` + marker grid proactively.
+      mapInstance.current.fitBounds(searchBounds, { maxZoom, padding })
+
+      const liveZoom = mapInstance.current?.getZoom?.() ?? maxZoom
+      setSnappedBounds(searchBounds)
+      gridSizeRef.current = getGridSize(searchBounds, liveZoom)
+      updateMarkerGrid(searchBounds, liveZoom, gridSizeRef.current, markerCells, false)
+      if (liveZoom !== zoomState) setZoomState(liveZoom)
+      // Refresh padded viewport bounds after fit so viewportCount updates too.
+      const nextPadded = computePaddedViewportBounds(mapInstance.current)
+      if (nextPadded) setPaddedViewportBounds(nextPadded)
     } else {
       allowFitBounds.current = false
     }
@@ -872,12 +934,18 @@ export default function MapExplorer() {
     searchLoading,
     totalHits,
     markerResults,
-    processedMarkerResults,
+    viewportGroupCount,
+    viewportCountLoading,
+    viewportCountUpdatedAt,
     hideMarkersDuringGridTransition,
     isMobile,
     doc,
     group,
-    tree
+    tree,
+    computePaddedViewportBounds,
+    markerCells,
+    zoomState,
+    updateMarkerGrid
   ])
 
 
@@ -995,6 +1063,8 @@ export default function MapExplorer() {
           mapInstance.current = e.target;
           mapFunctionRef.current = e.target;
           ensureTreeOverlayPanes(e.target)
+          const padded = computePaddedViewportBounds(e.target)
+          if (padded) setPaddedViewportBounds(padded)
         }
       }}
       attributionControl={false}
@@ -1055,6 +1125,8 @@ export default function MapExplorer() {
               const mapZoom = map.getZoom();
               const newBounds: [[number, number], [number, number]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
               setSnappedBounds(newBounds)
+              const padded = computePaddedViewportBounds(map)
+              if (padded) setPaddedViewportBounds(padded)
 
               const [[north, west], [south, east]] = [[mapBounds.getNorth(), mapBounds.getWest()], [mapBounds.getSouth(), mapBounds.getEast()]]
 
@@ -1114,6 +1186,20 @@ export default function MapExplorer() {
           <>
             <AttributionControl prefix={false} position={isMobile ? "bottomleft" : "bottomright"} />
             <EventHandlers />
+
+            {/* Debug: visualize padded viewport bounds used for viewport-count */}
+            {debug && showPaddedViewportBounds && paddedViewportBounds && (
+              <Rectangle
+                bounds={paddedViewportBounds}
+                pathOptions={{
+                  color: '#7c3aed', // violet
+                  weight: 2,
+                  opacity: 0.9,
+                  fillOpacity: 0.05,
+                  dashArray: '6 4',
+                }}
+              />
+            )}
 
             {baseMap && baseMapLookup[baseMap] && (
               <TileLayer

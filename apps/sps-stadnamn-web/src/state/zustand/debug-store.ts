@@ -17,6 +17,10 @@ export const useDebugStore = create<{
     setShowMarkerBounds: (show: boolean) => void,
     toggleMarkerBounds: () => void,
 
+    showPaddedViewportBounds: boolean,
+    setShowPaddedViewportBounds: (show: boolean) => void,
+    togglePaddedViewportBounds: () => void,
+
     showH3Grid: boolean,
     setShowH3Grid: (show: boolean) => void,
     h3Resolution: number,
@@ -46,6 +50,10 @@ export const useDebugStore = create<{
             showMarkerBounds: false,
             setShowMarkerBounds: (show) => set({ showMarkerBounds: show }),
             toggleMarkerBounds: () => set((state) => ({ showMarkerBounds: !state.showMarkerBounds })),
+
+            showPaddedViewportBounds: false,
+            setShowPaddedViewportBounds: (show) => set({ showPaddedViewportBounds: show }),
+            togglePaddedViewportBounds: () => set((state) => ({ showPaddedViewportBounds: !state.showPaddedViewportBounds })),
 
             showH3Grid: false,
             setShowH3Grid: (show: boolean) => set({ showH3Grid: show }),
