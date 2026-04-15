@@ -834,6 +834,52 @@ export default function MapExplorer() {
     allowFitBounds.current = true
   }, [searchUpdatedAt])
 
+  // After a new search, if we ended up with *zero in-viewport markers/clusters*
+  // while the search still has hits, auto-fit to the full result bounds.
+  //
+  // This covers the "zoomed into an empty pocket inside the overall bounds" case,
+  // which an intersection check cannot detect.
+  useEffect(() => {
+    if (!allowFitBounds.current) return
+    if (searchLoading) return
+    if (!searchBounds?.length) return
+    if (!mapInstance.current?.fitBounds) return
+
+    // Don't auto-fit while inspecting a specific doc/group/tree view.
+    if (doc || group || tree) return
+
+    const hasHits = Boolean(totalHits && typeof totalHits.value === 'number' && totalHits.value > 0)
+    if (!hasHits) {
+      allowFitBounds.current = false
+      return
+    }
+
+    // Wait until marker queries settle; otherwise we may fit during loading flicker.
+    const markersLoading = markerResults.some((r: any) => r?.isLoading)
+    if (markersLoading || hideMarkersDuringGridTransition) return
+
+    const inViewportCount = processedMarkerResults?.length ?? 0
+    if (inViewportCount === 0) {
+      allowFitBounds.current = false
+      const padding: [number, number] = isMobile ? [20, 20] : [60, 60]
+      mapInstance.current.fitBounds(searchBounds, { maxZoom: 18, padding })
+    } else {
+      allowFitBounds.current = false
+    }
+  }, [
+    searchUpdatedAt,
+    searchBounds,
+    searchLoading,
+    totalHits,
+    markerResults,
+    processedMarkerResults,
+    hideMarkersDuringGridTransition,
+    isMobile,
+    doc,
+    group,
+    tree
+  ])
+
 
 
 
