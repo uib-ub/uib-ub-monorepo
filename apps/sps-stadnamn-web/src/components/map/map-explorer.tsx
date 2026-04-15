@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { getAreaLabelMarkerIcon, getBrukMarkerIcon, getClusterMarker, getInitAnchorMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 
-import { boundsFromZoomAndCenter, calculateRadius, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
+import { boundsFromZoomAndCenter, calculateRadius, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM, MOBILE_RESULTS_FOOTER_CLEARANCE_REM, MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM } from "@/lib/map-utils";
 import { useActivePoint, useCenterNumber, useDebugGroupsOn, useDocParam, useGroupParam, useMapSettingsOn, usePoint, useQParam, useRadiusNumber, useSourceViewOn, useTreeParam, useZoomNumber, useInitDecoded, useInitParam } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { parseTreeParam } from "@/lib/tree-param";
@@ -86,6 +86,7 @@ export default function MapExplorer() {
   const urlZoom = useZoomNumber()
   const urlCenter = useCenterNumber()
   const allowFitBounds = useRef(false)
+  const fitBoundsScheduledRef = useRef(false)
   const { resultCardData } = useResultCardData()
   const initGroupLabel = useSessionStore((s) => s.initGroupLabel)
   const initGroupPoint = useSessionStore((s) => s.initGroupPoint)
@@ -233,6 +234,41 @@ export default function MapExplorer() {
 
   const [markerCells, setMarkerCells] = useState<GeotileCell[]>([])
   const [hideMarkersDuringGridTransition, setHideMarkersDuringGridTransition] = useState(false)
+
+  const getIsLatLngInPaddedViewport = useCallback((map: any) => {
+    if (!map?.getSize || !map?.latLngToContainerPoint) return null
+    const size = map.getSize()
+
+    let padLeft = 0, padRight = 0, padTop = 0, padBottom = 0
+    if (isMobile) {
+      // Mobile padding:
+      // - assume drawer snapped to bottom
+      // - keep some bottom clearance
+      // - double top padding to account for notifications
+      // - double x padding
+      padTop = Math.round(rootFontSize * (2 * (MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM + 0.5)))
+      const xPad = Math.round(size.x * 0.10)
+      padLeft = xPad
+      padRight = xPad
+      padBottom = Math.round(rootFontSize * MOBILE_RESULTS_FOOTER_CLEARANCE_REM)
+    } else {
+      padLeft = Math.round(size.x * 0.25)
+      padRight = Math.round(size.x * 0.25)
+      const yPad = Math.round(Math.min(120, size.y * 0.1))
+      padTop = yPad
+      padBottom = yPad
+    }
+
+    return (lat: number, lng: number) => {
+      const pt = map.latLngToContainerPoint([lat, lng])
+      return (
+        pt.x >= padLeft &&
+        pt.x <= (size.x - padRight) &&
+        pt.y >= padTop &&
+        pt.y <= (size.y - padBottom)
+      )
+    }
+  }, [isMobile])
 
   // Cluster if:
   // Cluster mode
@@ -720,12 +756,90 @@ export default function MapExplorer() {
 
     const allMarkers = [...markers, ...clusters]
 
+    // --- Auto-fit to results (client-side, padded viewport) ---
+    // This runs when `processedMarkerResults` is (re)built after a search.
+    // `allowFitBounds.current` is set to true on `searchUpdatedAt`.
+    // First marker/cluster inside the padded viewport disables it.
+    // If still enabled after all markers are built, schedule a single fitBounds.
+    try {
+      const map = mapInstance.current
+      const hasHits = Boolean(totalHits && typeof totalHits.value === 'number' && totalHits.value > 0)
+      const canEvaluate =
+        Boolean(allowFitBounds.current) &&
+        !fitBoundsScheduledRef.current &&
+        !searchLoading &&
+        Boolean(searchBounds?.length) &&
+        Boolean(map?.fitBounds && map?.getZoom && map?.latLngToContainerPoint && map?.getSize) &&
+        !(doc || group || tree) &&
+        hasHits &&
+        !hideMarkersDuringGridTransition
+
+      if (canEvaluate) {
+        const isInPadded = getIsLatLngInPaddedViewport(map)
+        if (isInPadded) {
+          let found = false
+          for (const item of allMarkers as any[]) {
+            if (item?.doc_count && Array.isArray(item.position) && item.position.length === 2) {
+              const [lat, lng] = item.position
+              if (typeof lat === 'number' && typeof lng === 'number' && isInPadded(lat, lng)) {
+                found = true
+                break
+              }
+              continue
+            }
+            const lat = item?.fields?.location?.[0]?.coordinates?.[1]
+            const lng = item?.fields?.location?.[0]?.coordinates?.[0]
+            if (typeof lat === 'number' && typeof lng === 'number' && isInPadded(lat, lng)) {
+              found = true
+              break
+            }
+          }
+
+          if (found) {
+            allowFitBounds.current = false
+            fitBoundsScheduledRef.current = false
+          } else {
+            fitBoundsScheduledRef.current = true
+            // Mark consumed for this search to avoid repeat scheduling.
+            allowFitBounds.current = false
+            requestAnimationFrame(() => {
+              const m = mapInstance.current
+              if (!m?.fitBounds || !searchBounds?.length) return
+              const currentZoom = m?.getZoom?.()
+              const maxZoom = Number.isFinite(currentZoom) ? currentZoom : 18
+              const padding: [number, number] = isMobile ? [20, 20] : [60, 60]
+              m.fitBounds(searchBounds, { maxZoom, padding })
+            })
+          }
+        }
+      }
+    } catch {
+      // Never let auto-fit logic break marker rendering.
+    }
+
 
     bucketDebugRef.current = bucketDebug
     markerResultsRef.current = allMarkers
 
     return allMarkers
-  }, [markerResults, activeMarkerMode, zoomState, sourceViewOn, hideMarkersDuringGridTransition, labelCollisionDetectionEnabled, debug])
+  }, [
+    markerResults,
+    activeMarkerMode,
+    zoomState,
+    sourceViewOn,
+    hideMarkersDuringGridTransition,
+    labelCollisionDetectionEnabled,
+    debug,
+    // auto-fit dependencies
+    doc,
+    group,
+    tree,
+    totalHits,
+    searchBounds,
+    searchLoading,
+    isMobile,
+    getIsLatLngInPaddedViewport,
+  ])
 
   useEffect(() => {
     if (!hideMarkersDuringGridTransition) return
@@ -832,53 +946,10 @@ export default function MapExplorer() {
   // Fly to results
   useEffect(() => {
     allowFitBounds.current = true
+    fitBoundsScheduledRef.current = false
   }, [searchUpdatedAt])
 
-  // After a new search, if we ended up with *zero in-viewport markers/clusters*
-  // while the search still has hits, auto-fit to the full result bounds.
-  //
-  // This covers the "zoomed into an empty pocket inside the overall bounds" case,
-  // which an intersection check cannot detect.
-  useEffect(() => {
-    if (!allowFitBounds.current) return
-    if (searchLoading) return
-    if (!searchBounds?.length) return
-    if (!mapInstance.current?.fitBounds) return
-
-    // Don't auto-fit while inspecting a specific doc/group/tree view.
-    if (doc || group || tree) return
-
-    const hasHits = Boolean(totalHits && typeof totalHits.value === 'number' && totalHits.value > 0)
-    if (!hasHits) {
-      allowFitBounds.current = false
-      return
-    }
-
-    // Wait until marker queries settle; otherwise we may fit during loading flicker.
-    const markersLoading = markerResults.some((r: any) => r?.isLoading)
-    if (markersLoading || hideMarkersDuringGridTransition) return
-
-    const inViewportCount = processedMarkerResults?.length ?? 0
-    if (inViewportCount === 0) {
-      allowFitBounds.current = false
-      const padding: [number, number] = isMobile ? [20, 20] : [60, 60]
-      mapInstance.current.fitBounds(searchBounds, { maxZoom: 18, padding })
-    } else {
-      allowFitBounds.current = false
-    }
-  }, [
-    searchUpdatedAt,
-    searchBounds,
-    searchLoading,
-    totalHits,
-    markerResults,
-    processedMarkerResults,
-    hideMarkersDuringGridTransition,
-    isMobile,
-    doc,
-    group,
-    tree
-  ])
+  // (moved выше) getIsLatLngInPaddedViewport
 
 
 
@@ -1157,15 +1228,11 @@ export default function MapExplorer() {
 
             {/* Draw geotile query results */}
             {processedMarkerResults?.map((item: any) => {
-
               if (item.doc_count) {
                 //console.log(item)
 
                 const avgLocation: [number, number] = item.position
                 const zoomTarget: [[number, number], [number, number]] = item.zoomTarget
-
-
-
 
                 const count = item.clusterCount ?? item.doc_count
                 const clusterIcon = new leaflet.DivIcon(getClusterMarker(
@@ -1379,7 +1446,6 @@ export default function MapExplorer() {
                   </Fragment>
                 )
               }
-
 
             })}
 
@@ -1665,7 +1731,7 @@ export default function MapExplorer() {
               if (!areaSource?.area) return null;
 
               try {
-                const geoJSON = wkt.parse(areaSource.area);
+                const geoJSON: any = wkt.parse(areaSource.area) as any;
                 if (!geoJSON) return null;
                 const toLatLng = (coord: [number, number] | [number, number, number]): [number, number] => [coord[1], coord[0]];
 
@@ -1683,8 +1749,8 @@ export default function MapExplorer() {
                     />;
                   case 'MultiPolygon':
                     return <MultiPolygon
-                      positions={geoJSON.coordinates.map((polygon) =>
-                        polygon.map((ring) =>
+                      positions={geoJSON.coordinates.map((polygon: any) =>
+                        polygon.map((ring: any) =>
                           ring.map(toLatLng)
                         )
                       )}
@@ -1710,7 +1776,7 @@ export default function MapExplorer() {
                   case 'MultiLineString':
                     return (
                       <>
-                        {geoJSON.coordinates.map((lineCoords, index) => (
+                        {geoJSON.coordinates.map((lineCoords: any, index: any) => (
                           <Polyline
                             key={index}
                             positions={lineCoords.map(toLatLng)}
