@@ -139,7 +139,7 @@ export function useZoomNumber() {
     if (!zoom) {
         return null
     }
-    return parseInt(zoom)
+    return parseFloat(zoom)
 }
 
 
