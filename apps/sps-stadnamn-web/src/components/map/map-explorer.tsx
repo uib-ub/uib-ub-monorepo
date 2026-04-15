@@ -32,6 +32,33 @@ const DynamicDebugLayers = dynamic(() => import('@/components/map/debug-layers')
   ssr: false
 });
 
+function geotileKeyToBoundsRaw(key: string): [[number, number], [number, number]] {
+  const parts = key.split('/')
+  if (parts.length !== 3) {
+    throw new Error('Invalid geotile key format: ' + key)
+  }
+
+  const precision = parseInt(parts[0])
+  const x = parseInt(parts[1])
+  const y = parseInt(parts[2])
+
+  // Web Mercator tile bounds calculation (same as used by most web mapping services)
+  const n = Math.pow(2, precision)
+
+  // Longitude bounds
+  const west = (x / n) * 360 - 180
+  const east = ((x + 1) / n) * 360 - 180
+
+  // Latitude bounds using Web Mercator inverse
+  const latRad1 = Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n)))
+  const latRad2 = Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / n)))
+
+  const north = (latRad1 * 180) / Math.PI
+  const south = (latRad2 * 180) / Math.PI
+
+  return [[north, west], [south, east]]
+}
+
 
 
 const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
@@ -267,6 +294,20 @@ export default function MapExplorer() {
             })
           }
 
+          const medium = 100
+          const max = 2000
+          let clusterSize = 1
+
+          if (activeMarkerMode != 'counts') {
+            if (totalHits.value < 1000 || zoomState > 15) {
+              clusterSize = max
+            }
+            else if (totalHits.value < 10000 && zoomState > 9) {
+              clusterSize = medium
+            }
+        }
+          newParams.set('markerClusterSize', String(clusterSize));
+
           const res = await fetch(`/api/markers/${cell.precision}/${cell.x}/${cell.y}${newParams.toString() ? `?${newParams.toString()}` : ''}`, { signal: controllerRef.current.signal })
           const data = await res.json()
           return data.aggregations.grid.buckets
@@ -418,10 +459,87 @@ export default function MapExplorer() {
         return ({ tile: key, ...item })
       })
     )
-    const clusters = countItems.map((item: any) => {
+
+    type CountCluster = Record<string, any> & {
+      clusterCount: number
+      position: [number, number]
+      zoomTarget: [[number, number], [number, number]]
+      radius: number
+      bubbleRadiusPx: number
+    }
+
+    const buildClusterMeta = (item: any): Omit<CountCluster, 'radius' | 'bubbleRadiusPx'> => {
       const clusterCount = sourceViewOn ? item.doc_count : (item.group_count?.value ?? item.doc_count)
-      return { ...item, clusterCount, radius: calculateRadius(clusterCount, maxDocCount, minDocCount) }
-    })
+      const clusterBounds = geotileKeyToBoundsRaw(item.key)
+
+      const flattenedTopHits = item.groups?.buckets?.map((bucket: any) => bucket?.top?.hits?.hits?.[0]).filter(Boolean) ?? []
+      let latSum = 0
+      let lngSum = 0
+      flattenedTopHits.forEach((hit: any) => {
+        latSum += hit.fields.location?.[0]?.coordinates?.[1] ?? 0
+        lngSum += hit.fields.location?.[0]?.coordinates?.[0] ?? 0
+      })
+
+      const centroidLat = item?.centroid?.location?.lat
+      const centroidLng = item?.centroid?.location?.lon
+      const centroidPos: [number, number] | null =
+        typeof centroidLat === 'number' && typeof centroidLng === 'number' ? [centroidLat, centroidLng] : null
+
+      const fallbackCenter: [number, number] = clusterBounds
+        ? [
+            (clusterBounds[0][0] + clusterBounds[1][0]) / 2,
+            (clusterBounds[0][1] + clusterBounds[1][1]) / 2,
+          ]
+        : [0, 0]
+
+      // When markerClusterSize=1 we only get one top hit, which may be an outlier.
+      // Prefer the geotile bucket centroid (all docs in bucket) in that case.
+      const position: [number, number] = flattenedTopHits.length > 1
+        ? [latSum / flattenedTopHits.length, lngSum / flattenedTopHits.length]
+        : (centroidPos ?? (flattenedTopHits.length === 1
+          ? [latSum, lngSum]
+          : fallbackCenter))
+
+      const boundsHeight = clusterBounds?.[0]?.[0] != null && clusterBounds?.[1]?.[0] != null
+        ? (clusterBounds[0][0] - clusterBounds[1][0])
+        : 0
+      const boundsWidth = clusterBounds?.[1]?.[1] != null && clusterBounds?.[0]?.[1] != null
+        ? (clusterBounds[1][1] - clusterBounds[0][1])
+        : 0
+
+      const zoomTarget: [[number, number], [number, number]] = [
+        [position[0] + boundsHeight / 3, position[1] - boundsWidth / 3],
+        [position[0] - boundsHeight / 3, position[1] + boundsWidth / 3],
+      ]
+
+      return { ...item, clusterCount, position, zoomTarget }
+    }
+
+    const getBubbleRadiusPx = (clusterCount: number, radius: number) => {
+      // Keep this in sync with the icon sizing in render.
+      const extraDiameter = clusterCount > 99 ? clusterCount.toString().length / 4 : 0
+      const diameter = radius * 2 + extraDiameter
+      return diameter / 2 + 4 // padding to avoid "nearly touching" overlaps
+    }
+
+    const recomputeClusterRadii = (items: Array<Omit<CountCluster, 'radius' | 'bubbleRadiusPx'> | CountCluster>): CountCluster[] => {
+      let min = Infinity
+      let max = 0
+      items.forEach((c: any) => {
+        const count = c.clusterCount ?? 0
+        max = Math.max(max, count)
+        min = Math.min(min, count)
+      })
+      if (!Number.isFinite(min)) min = 0
+
+      return items.map((c: any) => {
+        const radius = calculateRadius(c.clusterCount, max, min)
+        return { ...c, radius, bubbleRadiusPx: getBubbleRadiusPx(c.clusterCount, radius) }
+      })
+    }
+
+    const rawClusters = countItems.map(buildClusterMeta)
+    const clusters: CountCluster[] = recomputeClusterRadii(rawClusters)
 
     //console.log("MARKERS", markers)
     //console.log("CLUSTERS", clusters)
@@ -622,35 +740,8 @@ export default function MapExplorer() {
 
 
 
-  // Function to convert geotile key to bounds
-  const geotileKeyToBounds = useCallback((key: string) => {
-    const parts = key.split('/');
-    if (parts.length !== 3) {
-      throw new Error('Invalid geotile key format: ' + key);
-    }
-
-    const precision = parseInt(parts[0]);
-    const x = parseInt(parts[1]);
-    const y = parseInt(parts[2]);
-
-
-    // Web Mercator tile bounds calculation (same as used by most web mapping services)
-    const n = Math.pow(2, precision);
-
-    // Longitude bounds
-    const west = (x / n) * 360 - 180;
-    const east = ((x + 1) / n) * 360 - 180;
-
-    // Latitude bounds using Web Mercator inverse
-    const latRad1 = Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n)));
-    const latRad2 = Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + 1) / n)));
-
-    const north = (latRad1 * 180) / Math.PI;
-    const south = (latRad2 * 180) / Math.PI;
-
-    const bounds = [[north, west], [south, east]] as [[number, number], [number, number]];
-    return bounds;
-  }, []);
+  // Stable ref for components expecting a callback.
+  const geotileKeyToBounds = useCallback(geotileKeyToBoundsRaw, []);
 
 
   const isPointInViewport = useCallback(
@@ -844,28 +935,8 @@ export default function MapExplorer() {
               if (item.doc_count) {
                 //console.log(item)
 
-                const clusterBounds = geotileKeyToBounds(item.key)
-
-                let latSum = 0, lngSum = 0;
-                const flattenedTopHits = item.groups.buckets.map((bucket: any) => bucket.top.hits.hits[0])
-                flattenedTopHits.forEach((hit: any) => {
-                  latSum += hit.fields.location[0].coordinates?.[1] ?? 0;
-                  lngSum += hit.fields.location[0].coordinates?.[0] ?? 0;
-                });
-                const avgLocation: [number, number] = [
-                  latSum / flattenedTopHits.length,
-                  lngSum / flattenedTopHits.length
-                ];
-
-
-                //const boundsWidth = 
-                const boundsHeight = clusterBounds[0][0] - clusterBounds[1][0]; // north - south
-                const boundsWidth = clusterBounds[1][1] - clusterBounds[0][1]; // east - west
-
-
-                // Zoom target must be centered around the average location if it's too far from the cell center
-                const zoomTarget = [[avgLocation[0] + boundsHeight / 3, avgLocation[1] - boundsWidth / 3],
-                [avgLocation[0] - boundsHeight / 3, avgLocation[1] + boundsWidth / 3]]
+                const avgLocation: [number, number] = item.position
+                const zoomTarget: [[number, number], [number, number]] = item.zoomTarget
 
 
 
@@ -874,12 +945,15 @@ export default function MapExplorer() {
                 const clusterIcon = new leaflet.DivIcon(getClusterMarker(count, item.radius * 2 + (count > 99 ? count.toString().length / 4 : 0),
                   item.radius * 2,
                   item.radius * 0.8))
+                const clusterBounds = typeof item.key === 'string' && !item.key.includes('+')
+                  ? geotileKeyToBoundsRaw(item.key)
+                  : null
 
                 return (
                   <Fragment key={`cluster-fragment-${item.key}`}>
-                    {debug && showGeotileGrid && <><Rectangle
+                    {debug && showGeotileGrid && clusterBounds && <><Rectangle
                       key={`cluster-rect-${item.key}`}
-                      bounds={clusterBounds!}
+                      bounds={clusterBounds}
                       pathOptions={{
                         color: '#00aa00',
                         weight: 2,
@@ -904,9 +978,10 @@ export default function MapExplorer() {
                       icon={clusterIcon}
                       eventHandlers={{
                         click: () => {
-                          // Zoom in to the cell bounds when cluster is clicked
                           if (mapInstance.current) {
                             mapInstance.current.fitBounds(zoomTarget, { maxZoom: 18 });
+                            // Ensure the view is centered on the cluster centroid/position.
+                            mapInstance.current.panTo(avgLocation, { animate: false });
                           }
                         },
                         keydown: (e: KeyboardEvent & { originalEvent?: KeyboardEvent }) => {
@@ -915,6 +990,7 @@ export default function MapExplorer() {
                             ;(e.originalEvent ?? e).preventDefault()
                             if (mapInstance.current) {
                               mapInstance.current.fitBounds(zoomTarget, { maxZoom: 18 });
+                              mapInstance.current.panTo(avgLocation, { animate: false });
                             }
                           }
                         }

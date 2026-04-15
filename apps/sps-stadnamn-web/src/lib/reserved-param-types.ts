@@ -34,6 +34,7 @@ export const SERVER_ALLOWED_SEARCH_PARAM_KEYS = [
   'sort',
   'id', // group id or uuid for result card
   'totalHits',
+  'markerClusterSize',
   'searchSort',
   'facetQuery', // Only used in wikiAdm - deprecated?
   'fulltext',

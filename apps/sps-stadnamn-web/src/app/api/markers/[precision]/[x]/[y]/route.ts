@@ -14,43 +14,7 @@ export async function GET(
   const { termFilters, reservedParams } = extractFacets(request)
   const { simple_query_string } = getQueryString(reservedParams)
   const perspective = reservedParams.perspective || 'all'
-  const totalHits = reservedParams.totalHits ? parseInt(reservedParams.totalHits) : undefined
-  const sourceView = reservedParams.sourceView === 'on'
-  const markerIdField = sourceView ? 'uuid' : 'group.id'
-  const precisionNumber = Number(precision)
 
-  const gridGranularity: Record<number, number> = {
-    0: 5,
-    1: 5,
-    2: 7,
-    3: 7,
-    4: 7,
-    5: 8,
-    6: 10,
-    7: 11,
-    8: 12,
-    9: 13,
-    10: 14,
-    11: 15,
-    12: 16,
-    13: 17,
-    14: 18,
-    15: 19,
-    16: 20,
-    17: 21,
-  }
-  
-
-  const precisionBreakpoints = (breakpointMap: Record<number, number>) => {
-    let size = 2
-    for (const [key, value] of Object.entries(breakpointMap)) {
-      if (precisionNumber > Number(key)) {
-        size = value
-      }
-    }
-    return size
-    
-  }
 
   const query: Record<string, any> = {
     size: 0,
@@ -76,27 +40,19 @@ export async function GET(
         geotile_grid: {
           field: "location",
           size: 200,
-          precision: gridGranularity[precisionNumber] || 1
+          precision: precision == "0" ? 5 : parseInt(precision) + 3
         },
         "aggs": {
-          "group_count": {
-            "cardinality": {
-              "field": markerIdField,
-              "precision_threshold": 3000
+          "centroid": {
+            "geo_centroid": {
+              "field": "location"
             }
           },
           "groups": {
             "terms": {
-              "field": markerIdField,
+              "field": "group.id",
               "order": { "max_placeScore": "desc" },
-              "size": (
-                totalHits &&
-                (
-                  (totalHits < 1000 && 1000) ||
-                  (totalHits < 10000 && precisionBreakpoints({ 10: 100, 11: 200, 13: 1000 })) ||
-                  precisionBreakpoints({ 10: 10, 11: 200, 13: 1000 })
-                )
-              ) || precisionBreakpoints({ 10: 5, 11: 100, 13: 500 })
+              size: reservedParams.markerClusterSize
             },
             "aggs": {
               "max_placeScore": {
@@ -125,6 +81,7 @@ export async function GET(
       query.query.bool.filter.push(...termFilters)
     }
   }
+  console.log("PERSPECTIVE", perspective)
 
 
   const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
