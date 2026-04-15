@@ -48,6 +48,11 @@ export async function GET(
               "field": "location"
             }
           },
+          "group_count": {
+            "cardinality": {
+              "field": "group.id"
+            }
+          },
           "groups": {
             "terms": {
               "field": "group.id",

@@ -286,9 +286,7 @@ export default function MapExplorer() {
             // Non-tree mode: fall back to the regular search-driven marker query.
             const existingParams = new URLSearchParams(searchQueryString)
             const baseParams = existingParams.toString() ? existingParams : new URLSearchParams()
-            if (searchFilterParamsString) {
-              baseParams.set('totalHits', totalHits.value)
-            }
+
             baseParams.forEach((value, key) => {
               newParams.append(key, value)
             })
@@ -297,6 +295,7 @@ export default function MapExplorer() {
           const medium = 100
           const max = 2000
           let clusterSize = 1
+          console.log("TOTAL HITS", totalHits.value)
 
           if (activeMarkerMode != 'counts') {
             if (totalHits.value < 1000 || zoomState > 15) {
@@ -345,11 +344,30 @@ export default function MapExplorer() {
         ? bucket.doc_count
         : (bucket.group_count?.value ?? bucket.doc_count)
 
+      const centroidLat = bucket?.centroid?.location?.lat
+      const centroidLng = bucket?.centroid?.location?.lon
+      const centroidPos: [number, number] | null =
+        typeof centroidLat === 'number' && typeof centroidLng === 'number' ? [centroidLat, centroidLng] : null
+
+      const topHitCoords = bucket?.groups?.buckets?.[0]?.top?.hits?.hits?.[0]?.fields?.location?.[0]?.coordinates
+      const topHitPos: [number, number] | null =
+        Array.isArray(topHitCoords) && topHitCoords.length === 2
+          ? [topHitCoords[1] as number, topHitCoords[0] as number]
+          : null
+
+      const EPS = 1e-6
+      const centroidMatchesTop =
+        activeMarkerMode === 'counts' &&
+        Boolean(centroidPos && topHitPos) &&
+        Math.abs(centroidPos![0] - topHitPos![0]) < EPS &&
+        Math.abs(centroidPos![1] - topHitPos![1]) < EPS
+
       if (
         zoomState > 15 ||
         activeMarkerMode === 'labels' ||
         activeMarkerMode === 'points' ||
-        clusterCount === 1
+        clusterCount === 1 ||
+        centroidMatchesTop
       ) {
 
 
@@ -396,7 +414,7 @@ export default function MapExplorer() {
           const top_hit: Record<string, any> = {
             ...group.top.hits.hits[0],
             // In cluster mode, singletons should render as black pin markers.
-            isClusterSingleton: activeMarkerMode === 'counts' && bucket.doc_count === 1,
+            isClusterSingleton: activeMarkerMode === 'counts' && (clusterCount === 1 || centroidMatchesTop),
           }
           const dedupeKey = sourceViewOn
             ? top_hit.fields?.uuid?.[0]
@@ -512,7 +530,12 @@ export default function MapExplorer() {
         [position[0] - boundsHeight / 3, position[1] + boundsWidth / 3],
       ]
 
-      return { ...item, clusterCount, position, zoomTarget }
+      return {
+        ...item,
+        clusterCount,
+        position,
+        zoomTarget,
+      }
     }
 
     const getBubbleRadiusPx = (clusterCount: number, radius: number) => {
@@ -942,9 +965,12 @@ export default function MapExplorer() {
 
 
                 const count = item.clusterCount ?? item.doc_count
-                const clusterIcon = new leaflet.DivIcon(getClusterMarker(count, item.radius * 2 + (count > 99 ? count.toString().length / 4 : 0),
+                const clusterIcon = new leaflet.DivIcon(getClusterMarker(
+                  count,
+                  item.radius * 2 + (count > 99 ? count.toString().length / 4 : 0),
                   item.radius * 2,
-                  item.radius * 0.8))
+                  item.radius * 0.8
+                ))
                 const clusterBounds = typeof item.key === 'string' && !item.key.includes('+')
                   ? geotileKeyToBoundsRaw(item.key)
                   : null
