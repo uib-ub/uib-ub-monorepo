@@ -1107,6 +1107,7 @@ export default function MapExplorer() {
               newParams.delete('init')
               newParams.delete('activePoint')
               newParams.delete('resultLimit')
+              newParams.delete('hideResults')
 
               newParams.set('point', `${point.lat},${point.lng}`)
               router.push(`?${newParams.toString()}`)

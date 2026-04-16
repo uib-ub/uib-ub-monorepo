@@ -3,7 +3,7 @@ import Menu from '@/app/menu';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import Clickable from '@/components/ui/clickable/clickable';
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, mobileSearchChromeWrapperTopStyle, panPointIntoView } from '@/lib/map-utils';
-import { useDatasetTagParam, useFacetParam, useFulltextOn, useFuzzyOn, useGroupParam, useInitParam, useMode, useOptionsOn, usePerspective, usePoint, usePointParam, useQParam, useSourceViewOn, useTreeParam } from '@/lib/param-hooks';
+import { useDatasetTagParam, useFacetParam, useFulltextOn, useFuzzyOn, useGroupParam, useInitParam, useMode, useNoGeoOn, useOptionsOn, usePerspective, usePoint, usePointParam, useQParam, useSourceViewOn, useTreeParam } from '@/lib/param-hooks';
 import { useSearchQuery } from '@/lib/search-params';
 import { formatNumber } from '@/lib/utils';
 import { GlobalContext } from '@/state/providers/global-provider';
@@ -38,6 +38,7 @@ export default function SearchForm() {
     const facet = useFacetParam()
     const fulltextOn = useFulltextOn()
     const datasetTag = useDatasetTagParam()
+    const noGeoOn = useNoGeoOn()
 
 
     const input = useRef<HTMLInputElement | null>(null)
@@ -213,6 +214,7 @@ export default function SearchForm() {
             {selectedGroup && <input type="hidden" name="init" value={selectedGroup} />}
             {/* results: integer – minimum is 5 when present. */}
             {optionsOn && <input type="hidden" name="options" value={'on'} />}
+            {noGeoOn && <input type="hidden" name="noGeo" value={'on'} />}
             
             {sourceViewOn && !group && <input type="hidden" name="sourceView" value={'on'} />}
             {!submittedPoint && !init && pointParam && <input type="hidden" name="point" value={pointParam || ''} />}

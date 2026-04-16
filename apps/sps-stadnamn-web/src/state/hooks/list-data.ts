@@ -8,11 +8,13 @@ import { calculateDistance } from '@/lib/map-utils';
 import { useSessionStore } from '../zustand/session-store';
 import { GlobalContext } from '../providers/global-provider';
 import { BATCH_SIZE, STARTING_BATCH_SIZE } from '@/lib/result-limits';
+import useAdmContextData from './adm-context-data';
 
 const listDataQuery = async ({
     pageParam = 0,
     searchQueryString,
     init,
+    contextAdmPairs,
     selectedGroup,
     point,
     searchSort,
@@ -24,6 +26,7 @@ const listDataQuery = async ({
     pageParam?: number;
     searchQueryString: string | null;
     init: string | null;
+    contextAdmPairs: Array<{ adm1: string; adm2: string }>;
     selectedGroup: string | null;
     point: [number, number] | null;
     searchSort: string | null;
@@ -49,6 +52,8 @@ const listDataQuery = async ({
             exclude,
             idField,
             selectedGroup,
+            contextAdmPairs,
+            init,
         })
     })
     if (!res.ok) {
@@ -91,9 +96,14 @@ export default function useListData() {
     const sourceViewOn = useSourceViewOn()
     const resultLimitNumber = useResultLimitNumber()
     const selectedGroup = group ? base64UrlToString(group) : null
+    const { contextAdmPairs, admContextStatus } = useAdmContextData()
     const snappedPosition = useSessionStore((s) => s.snappedPosition)
     const { isMobile } = useContext(GlobalContext)
     const mobilePreview = Boolean(init && isMobile && snappedPosition == 'bottom')
+
+    // In `noGeo` mode, list sorting relies on adm/cadastre context boosts.
+    // Avoid an initial fetch with empty context before `adm-context` has resolved.
+    const admContextReady = !noGeo || admContextStatus === 'success' || admContextStatus === 'error'
 
     // `SearchResults` reserves the last rendered slot for a "Vis meir" CTA (when there are more results).
     // So when `resultLimit` is set, we need to load `resultLimit - 1` actual result items to avoid "mangler".
@@ -114,11 +124,12 @@ export default function useListData() {
         isLoading,
         status
     } = useInfiniteQuery({
-        queryKey: ['listData', searchQueryString, searchSort, init, group, point, noGeo, sourceViewOn],
+        queryKey: ['listData', searchQueryString, searchSort, init, group, point, noGeo, sourceViewOn, contextAdmPairs],
         queryFn: ({ pageParam }: { pageParam: number }) => listDataQuery({
             pageParam,
             searchQueryString,
             init,
+            contextAdmPairs,
             selectedGroup,
             point,
             searchSort,
@@ -131,7 +142,7 @@ export default function useListData() {
         //placeholderData: (prevData: any) => prevData,
         initialPageParam: 0,
         getNextPageParam: (lastPage: any) => lastPage.nextCursor,
-        enabled: !mobilePreview,
+        enabled: !mobilePreview && admContextReady,
         refetchOnWindowFocus: false,
         staleTime: 1000 * 60 * 5, // 5 minutes
     })

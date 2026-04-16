@@ -78,8 +78,8 @@ export default function SearchResults() {
   // Whether to show the "Utan koordinatar" filter control in the options row.
   // Purpose: 
   const firstHasLocation = listData?.pages[0]?.data?.[0]?.fields?.location?.[0]?.coordinates?.length === 2
-  const showNoLocationToggle =
-    (!!init || !point) && // results without coordinates are irrelevant if you have a start point but no init
+  const showNoLocationToggle = true ||
+    !!point && // results without coordinates are irrelevant if you have a start point but no init
     !!noGeoGroupCount &&
     noGeoGroupCount > 0  && 
     (noGeoOn || firstHasLocation);
@@ -136,7 +136,7 @@ export default function SearchResults() {
           ) : null}
           { point && !init && (
             <Clickable
-              remove={['point']}
+              remove={['point', 'noGeo']}
               className="h-9 px-2 rounded-md bg-white border border-neutral-200 flex items-center gap-1 cursor-pointer max-w-full min-w-0"
             >
               <img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-6 h-6 mb-1 self-center" />
@@ -146,7 +146,7 @@ export default function SearchResults() {
           )}
 
           {/* Toolbar items share the same flex row as the chip so they wrap together. */}
-          {qParam && <SearchQueryDisplay
+          {(qParam || point) && <SearchQueryDisplay
             showNoLocationToggle={showNoLocationToggle}
             noGeoGroupCount={noGeoGroupCount ?? 0}
           />}
