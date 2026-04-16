@@ -82,7 +82,7 @@ export default function SearchResults() {
     !!point && // results without coordinates are irrelevant if you have a start point but no init
     !!noGeoGroupCount &&
     noGeoGroupCount > 0  && 
-    (!init || qParam) &&
+    (!init || !!qParam) &&
     (noGeoOn || firstHasLocation);
   const hasResultsError = !!(searchError || listError)
 
