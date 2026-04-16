@@ -78,10 +78,11 @@ export default function SearchResults() {
   // Whether to show the "Utan koordinatar" filter control in the options row.
   // Purpose: 
   const firstHasLocation = listData?.pages[0]?.data?.[0]?.fields?.location?.[0]?.coordinates?.length === 2
-  const showNoLocationToggle = true ||
+  const showNoLocationToggle =
     !!point && // results without coordinates are irrelevant if you have a start point but no init
     !!noGeoGroupCount &&
     noGeoGroupCount > 0  && 
+    (!init || qParam) &&
     (noGeoOn || firstHasLocation);
   const hasResultsError = !!(searchError || listError)
 
@@ -222,7 +223,7 @@ export default function SearchResults() {
                 );
               }
               else if (itemData) {
-                if (!init) {
+                if (!init || noGeoOn) {
                   body = (
                     <ResultCard
                       itemId={itemData.fields.uuid[0]}
@@ -240,7 +241,7 @@ export default function SearchResults() {
                 }
               }
               else if (listIsFetchingNextPage || listLoading) {
-                body = <>{(isMobile || !init || group)
+                body = <>{(isMobile || !init || noGeoOn || group)
                   ? <ResultCardSkeleton hasIiif={hasIiif} />
                   : <ResultItemSkeleton />
                 }</>
