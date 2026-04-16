@@ -67,7 +67,6 @@ export async function GET(request: Request) {
   }
 
   const [data, status] = await postQuery('all', query, 'dfs_query_then_fetch')
-  console.log("Data", data)
   const aggs: AdmContextAggResponse = data?.aggregations ?? { adm1: { buckets: [] } }
 
   return Response.json({ aggs }, { status })
