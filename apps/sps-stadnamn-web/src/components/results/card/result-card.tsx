@@ -487,7 +487,7 @@ export default function ResultCard({
                     <div className={`absolute flex items-end gap-2 ${isMobile ? 'top-3 right-3 flex-col items-end' : 'gap-2 items-center right-2 top-2'}`}>
                                                 <ClickableIcon
                             label="Lukk framheva gruppe"
-                            remove={["group", "activePoint", "activeYear", "activeName", "init", "resultLimit"]}
+                            remove={["activePoint", "activeYear", "activeName", "init", "resultLimit"]}
                             onClick={() => {
                                setSnappedPosition("bottom");
                             }}
