@@ -222,7 +222,7 @@ export default function SearchResults() {
                 );
               }
               else if (itemData) {
-                if (isMobile || !init || group) {
+                if (!init) {
                   body = (
                     <ResultCard
                       itemId={itemData.fields.uuid[0]}

@@ -57,8 +57,6 @@ export default function useAdmContextData() {
       contextAdmPairs.push({ adm1, adm2 })
     }
   }
-  console.log("Context Adm Pairs", contextAdmPairs)
-
   return {
     contextAdmPairs,
     admContextError: error,
