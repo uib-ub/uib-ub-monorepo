@@ -15,10 +15,12 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 
 type NavItem = { id: string; point: string | null } // point: "lat,lon"
+type HitById = Record<string, any>
 
-function extractNavItemsFromSearchResponse(data: any): NavItem[] {
+function extractNavDataFromSearchResponse(data: any): { items: NavItem[]; hitById: HitById } {
   const hits: any[] = data?.hits?.hits ?? []
   const items: NavItem[] = []
+  const hitById: HitById = {}
   for (const hit of hits) {
     const id = hit?.fields?.uuid?.[0]
     if (typeof id !== "string" || !id.trim()) continue
@@ -33,8 +35,9 @@ function extractNavItemsFromSearchResponse(data: any): NavItem[] {
         : null
 
     items.push({ id, point })
+    hitById[id] = hit
   }
-  return items
+  return { items, hitById }
 }
 
 export function useSubpostNavigation() {
@@ -88,8 +91,8 @@ export function useSubpostNavigation() {
       if (!res.ok) throw new Error(`list query failed: ${res.status}`)
 
       const data = await res.json()
-      const items = extractNavItemsFromSearchResponse(data)
-      return { items }
+      const { items, hitById } = extractNavDataFromSearchResponse(data)
+      return { items, hitById }
     },
     placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 5,
@@ -97,6 +100,7 @@ export function useSubpostNavigation() {
   })
 
   const items = fullListQuery.data?.items ?? []
+  const hitById = fullListQuery.data?.hitById ?? {}
   const { currentIndex, sameCoordinateIds } = useMemo(() => {
     const idx = currentId ? items.findIndex((it) => it.id === currentId) : -1
     if (idx === -1) return { currentIndex: -1, sameCoordinateIds: [] as string[] }
@@ -105,6 +109,11 @@ export function useSubpostNavigation() {
     const ids = items.filter((it) => it.point === currentPoint && it.id !== currentId).map((it) => it.id)
     return { currentIndex: idx, sameCoordinateIds: ids }
   }, [currentId, items])
+
+  const sameCoordinateHits = useMemo(() => {
+    if (!sameCoordinateIds.length) return [] as any[]
+    return sameCoordinateIds.map((id) => hitById[id]).filter(Boolean)
+  }, [hitById, sameCoordinateIds])
 
   const prevNext = useMemo(() => {
     if (!currentId || items.length <= 1 || currentIndex < 0) {
@@ -126,6 +135,7 @@ export function useSubpostNavigation() {
     items,
     currentIndex,
     sameCoordinateIds,
+    sameCoordinateHits,
     sameCoordinateCount: sameCoordinateIds.length,
     isFetching: fullListQuery.isFetching,
     ...prevNext,

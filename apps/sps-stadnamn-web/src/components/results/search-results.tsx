@@ -170,15 +170,15 @@ export default function SearchResults() {
           <ul id="result_list" aria-label= {sourceViewOn ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'} className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
             {subpostNav.isSubpostNavigation ? (
               <>
-                {subpostNav.sameCoordinateIds.map((id) => (
-                  <li key={`samecoord-${id}`} className="relative">
-                    <ResultCard itemId={id} />
+                {subpostNav.sameCoordinateHits.map((hit, i) => (
+                  <li key={`samecoord-${hit?.fields?.uuid?.[0] ?? i}`} className="relative">
+                    <ResultItem hit={hit} />
                   </li>
                 ))}
 
                 {subpostNav.isFetching && (
                   <li className="relative">
-                    <ResultCardSkeleton hasIiif={false} />
+                    <ResultItemSkeleton />
                   </li>
                 )}
               </>

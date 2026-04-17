@@ -8,7 +8,7 @@ import { useSourceViewOn } from "@/lib/param-hooks"
 import { useOverlayParams } from "@/lib/param-hooks"
 import Clickable from "@/components/ui/clickable/clickable"
 import useResultCardData from "@/state/hooks/result-card-data"
-import { PiCaretUpBold } from "react-icons/pi"
+import { PiArrowElbowLeftUpBold, PiArrowUp, PiArrowUpBold, PiCaretUpBold } from "react-icons/pi"
 import { PiCaretDownBold } from "react-icons/pi"
 import { TitleBadge } from "@/components/ui/badge"
 import Spinner from "@/components/svg/Spinner"
@@ -131,11 +131,11 @@ export default function ResultsHeader({ sameCoordinateCount }: { sameCoordinateC
                     <GroupedResultsToggle />
                     {showGroupClose && (
                         <ClickableIcon
-                            label="Lukk underoppslag"
+                            label="Overordna søk"
                             remove={["group", "sourceView"]}
                             className="btn btn-outline rounded-full text-neutral-900 p-2"
                         >
-                            <PiXBold aria-hidden="true" className="text-lg text-neutral-800" />
+                            <PiArrowElbowLeftUpBold aria-hidden="true" className="text-lg text-neutral-800" />
                         </ClickableIcon>
                     )}
                 </div>

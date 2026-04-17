@@ -5,7 +5,7 @@ import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import type { ParamProps } from "@/components/ui/clickable/param-types";
 import IconButton from "@/components/ui/icon-button";
 import { datasetTitles } from "@/config/metadata-config";
-import { useActivePoint, useCenterParam, useGroupParam, useHighlightPoint, useInitDecoded, useInitParam, usePoint, useSourceViewOn, useZoomParam } from "@/lib/param-hooks";
+import { useActivePoint, useCenterParam, useGroupParam, useHighlightPoint, useInitParam, usePoint, useSourceViewOn, useZoomParam } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { panPointIntoView } from "@/lib/map-utils";
 import { buildTreeParam } from "@/lib/tree-param";
@@ -14,7 +14,7 @@ import useResultCardData from "@/state/hooks/result-card-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { useContext, useState } from "react";
-import { PiCaretRightBold, PiCheck, PiLinkSimple, PiMagnifyingGlass, PiMapPin, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
+import { PiCaretRightBold, PiCheck, PiLinkSimple, PiMagnifyingGlass, PiMapPin, PiMapPinFill, PiMicroscope, PiPushPin, PiX, PiXBold } from "react-icons/pi";
 import Carousel from "@/components/results/carousel";
 import ResultCardTitle from "@/components/results/card/result-card-title";
 import { TextItemsSection } from "@/components/results/card/text-items-section";
@@ -23,6 +23,27 @@ import CoordinateTypeInfo from "@/components/results/card/coordinate-type-info";
 import { ResultCardSkeleton } from "@/components/results/result-skeletons";
 import DistanceBadge from "@/components/results/distance-badge";
 import { Badge, TitleBadge } from "@/components/ui/badge";
+
+function getLatLngFromLocationField(locationField: unknown): [number, number] | null {
+    // Search hits use `fields.location[0].coordinates` (like `ResultItem`).
+    // Group/doc lookups have historically used `fields.location.coordinates`.
+    const coords =
+        Array.isArray(locationField)
+            ? (locationField as any)?.[0]?.coordinates
+            : (locationField as any)?.coordinates;
+
+    if (
+        !Array.isArray(coords) ||
+        coords.length !== 2 ||
+        !Number.isFinite(Number(coords[0])) ||
+        !Number.isFinite(Number(coords[1]))
+    ) {
+        return null;
+    }
+
+    // Stored as [lon, lat]; map expects [lat, lon].
+    return [Number(coords[1]), Number(coords[0])];
+}
 
 function SosiInline({
     rawSosi,
@@ -129,6 +150,8 @@ function GroupBottomToolbar({
     const highlightPoint = useHighlightPoint();
     const center = useCenterParam();
     const zoom = useZoomParam();
+    const group = useGroupParam();
+    const init = useInitParam();
     const setSourceViewResetUrl = useSessionStore((s) => s.setSourceViewResetUrl);
 
     if (!groupData) return null;
@@ -144,10 +167,7 @@ function GroupBottomToolbar({
 
     const fields = groupData.fields || {};
 
-    const rawGroupCoordinates = fields?.location?.coordinates;
-    const groupLatLng: [number, number] | null = rawGroupCoordinates
-        ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])]
-        : null;
+    const groupLatLng = getLatLngFromLocationField((fields as any)?.location);
 
     const isActivePoint =
         !!highlightPoint &&
@@ -174,7 +194,8 @@ function GroupBottomToolbar({
         return `${base}/uuid/${token}`;
     })();
 
-    const similarInit = isMulti ? stringToBase64Url(groupData.id) : groupData.id;
+    const groupInitParamValue = isMulti ? stringToBase64Url(groupData.id) : groupData.id;
+    const isInit = Boolean(init && init === groupInitParamValue);
 
     const coordinateClick = () => {
         if (!groupLatLng) return;
@@ -194,19 +215,23 @@ function GroupBottomToolbar({
                 </span>
             ) : (
                 <>
-                    <CoordinateButton
-                        isActive={isActivePoint}
-                        onClick={coordinateClick}
-                        add={{ activePoint: pointValue }}
-                    />
-                    <ClickableIcon
-                        label="Finn liknande"
-                        add={{ init: similarInit, point: pointValue }}
-                        remove={["activePoint"]}
-                        className="btn btn-outline btn-compact rounded-full w-10 h-10 flex items-center justify-center border-neutral-200 bg-white shadow-none"
-                    >
-                        <PiMagnifyingGlass aria-hidden="true" className="text-base" />
-                    </ClickableIcon>
+                    {!init && (
+                        <CoordinateButton
+                            isActive={isActivePoint}
+                            onClick={coordinateClick}
+                            add={{ activePoint: pointValue }}
+                        />
+                    )}
+                    {!group && !isInit &&  (
+                        <ClickableIcon
+                            label="Vel som startpunkt"
+                            add={{ init: groupInitParamValue, point: pointValue }}
+                            remove={["activePoint"]}
+                            className="btn text-neutral-900 btn-outline btn-compact rounded-full w-10 h-10 flex items-center justify-center border-neutral-200 bg-white shadow-none"
+                        >
+                            <PiPushPin aria-hidden="true" className="text-base" />
+                        </ClickableIcon>
+                    )}
                 </>
             )}
         </>
@@ -219,7 +244,7 @@ function GroupBottomToolbar({
                     {toolbarItems}
                     {(groupTotal ?? 0) > 0 && (
                         <Clickable
-                            className="btn btn-outline btn-compact rounded-full items-center gap-2 !pr-2 flex h-10 pl-4 shadow-none"
+                            className="btn btn-outline btn-compact rounded-full items-center gap-2 font-semibold !pr-2 flex h-10 pl-4 shadow-none"
                             only={{
                                 sourceView: "on",
                                 group: stringToBase64Url(groupData.id),
@@ -231,8 +256,8 @@ function GroupBottomToolbar({
                                 setSourceViewResetUrl(currentUrl.current);
                             }}
                         >
-                            <span className="text-sm">Underpostar</span>
-                            <Badge count={groupTotal ?? 0} className="bg-primary-700 text-white" />
+                            Underpostar
+                            <Badge count={groupTotal ?? 0} className="bg-neutral-700 text-white px-2 py-0.5" />
                         </Clickable>
                     )}
                 </div>
@@ -256,7 +281,7 @@ function GroupBottomToolbar({
                     </Clickable>
                 </div>
             </div>
-            {isActivePoint && sourceViewOn && (
+            {isActivePoint && sourceViewOn && (!group || init) &&(
                 <div className="min-w-0 flex-1 rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1">
                     {coordinateType ? (
                         <CoordinateTypeInfo coordinateType={coordinateType} />
@@ -295,7 +320,6 @@ export default function ResultCard({
     const sourceViewOn = useSourceViewOn();
     const group = useGroupParam();
     const point = usePoint();
-    const initDecoded = useInitDecoded();
     const { isMobile } = useContext(GlobalContext);
     const init = useInitParam();
 
@@ -375,7 +399,7 @@ export default function ResultCard({
     const replaceSosiWithCadastre = Boolean(cadastreDisplayText) && (hasSosiGard || (hasSosiBruk && Boolean(secondaryCadastreNumber)));
 
 
-    const isInit = Boolean(initDecoded && itemId === initDecoded)
+    const isInit = Boolean(itemId && init && init === stringToBase64Url(itemId));
 
     
     // Scroll to top when init group changes (when clicking "vel" button)
@@ -397,10 +421,7 @@ export default function ResultCard({
 
 
     // Group coordinates are stored as [lon, lat]; convert to [lat, lon] for the map.
-    const rawGroupCoordinates = resultCardData?.fields?.location?.coordinates;
-    const groupLatLng: [number, number] | null = rawGroupCoordinates
-        ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])]
-        : null;
+    const groupLatLng = getLatLngFromLocationField((resultCardData?.fields as any)?.location);
     const activePointValue = groupLatLng ? `${groupLatLng[0]},${groupLatLng[1]}` : null;
 
     if (resultCardLoading) {
