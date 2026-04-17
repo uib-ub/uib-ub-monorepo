@@ -164,7 +164,9 @@ export default function MapToolbar() {
     const groupAdm1 = groupFields?.["group.adm1"]?.[0] || groupFields?.["adm1"]?.[0]
     const groupAdm2 = groupFields?.["group.adm2"]?.[0] || groupFields?.["adm2"]?.[0]
     const groupAdm = [groupAdm2, groupAdm1].filter(Boolean).join(", ")
-    const showGroupBanner = Boolean(group)
+    // The group label/adm is now shown in the results header; keep this banner only
+    // when results are collapsed (so it isn't duplicated).
+    const showGroupBanner = Boolean(group) && hideResultsOn
 
     const closeGroupBanner = () => {
         if (sourceViewResetUrl) {

@@ -298,7 +298,7 @@ function GroupBottomToolbarSingle({
                 </div>
             </div>
             {isActivePoint && (
-                <div className="flex items-center gap-2">
+                
                     <div className="min-w-0 flex-1 rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1">
                         {coordinateType ? (
                             <CoordinateTypeInfo coordinateType={coordinateType} />
@@ -309,10 +309,7 @@ function GroupBottomToolbarSingle({
                             </span>
                         )}
                     </div>
-                    <ClickableIcon label="Lukk koordinatinformasjon" remove={["activePoint"]} className="h-6 w-6 p-1 btn btn-outline rounded-full text-neutral-900" >
-                    <PiX className="text-sm" />
-                  </ClickableIcon>
-                  </div>
+
                 )}            
         </div>
     );
