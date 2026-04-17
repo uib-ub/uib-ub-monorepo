@@ -19,8 +19,6 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useCenterParam, useFulltextOn, useGroupParam, useHideResultsOn, useInitParam, useMapSettingsOn, useNoGeoOn, useOptionsOn, usePointParam, useQParam, useSourceViewOn, useTreeParam, useZoomParam } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import Clickable from "../ui/clickable/clickable"
-import ClickableIcon from "../ui/clickable/clickable-icon"
-import DynamicClickable from "../ui/clickable/dynamic-clickable"
 import NotificationStack from "../ui/notification-stack"
 import { cn } from "@/lib/utils"
 
@@ -149,40 +147,6 @@ export default function MapToolbar() {
         return () => removeNotification("point-hint")
     }, [addNotification, init, isMobile, point, removeNotification])
 
-    // If the map is not ready, don't show the toolbar
-    //if (!mapFunctionRef?.current) return null
-
-    const groupFields = groupResultCardData?.fields
-    const groupLabelFromData =
-        groupResultCardData?.label ||
-        groupFields?.["group.label"]?.[0] ||
-        groupFields?.["label"]?.[0]
-    const isGroupLabelLoading = Boolean(group) && !groupLabelFromData && (groupResultCardLoading || groupResultCardFetching)
-    const groupLabel =
-        groupLabelFromData ||
-        "Namnegruppe"
-    const groupAdm1 = groupFields?.["group.adm1"]?.[0] || groupFields?.["adm1"]?.[0]
-    const groupAdm2 = groupFields?.["group.adm2"]?.[0] || groupFields?.["adm2"]?.[0]
-    const groupAdm = [groupAdm2, groupAdm1].filter(Boolean).join(", ")
-    // The group label/adm is now shown in the results header; keep this banner only
-    // when results are collapsed (so it isn't duplicated).
-    const showGroupBanner = Boolean(group) && hideResultsOn
-
-    const closeGroupBanner = () => {
-        if (sourceViewResetUrl) {
-            clearSourceViewResetUrl()
-            router.push(sourceViewResetUrl)
-            return
-        }
-        const nextParams = new URLSearchParams()
-        if (q) nextParams.set("q", q)
-        if (center) nextParams.set("center", center)
-        if (zoom) nextParams.set("zoom", zoom)
-        if (point) nextParams.set("point", point)
-        if (fulltextOn) nextParams.set("fulltext", "on")
-        if (noGeoOn) nextParams.set("noGeo", "on")
-        router.push(`?${nextParams.toString()}`)
-    }
 
     return (
         <>
@@ -216,41 +180,6 @@ export default function MapToolbar() {
                     )}
                     style={isMobile ? { top: mobileControlsTop } : undefined}
                 >
-                    {showGroupBanner ? (
-                        <div
-                            className={cn(
-                                "h-12 rounded-md border border-neutral-200 bg-white/95 px-3 flex items-center gap-2 shadow-sm min-w-0",
-                                isMobile
-                                    ? "w-full max-w-none"
-                                    : cn(
-                                        "max-w-[calc(100vw-4rem)]",
-                                        "lg:w-[calc(100vw-30svw-40svw-2rem)]",
-                                        tree
-                                            ? "xl:max-w-[calc(100vw-25svw-40svw-2rem)]"
-                                            : "xl:max-w-[calc(100vw-25svw-25svw-2rem)]"
-                                    )
-                            )}
-                        >
-                            <div className={cn("min-w-0 flex-1 flex items-center gap-2 text-lg")}>
-                                {isGroupLabelLoading ? (
-                                    <>
-                                        <span className="sr-only">Lastar namnegruppe</span>
-                                        <span className="h-6 w-40 bg-neutral-900/10 rounded-full animate-pulse" aria-hidden="true" />
-                                    </>
-                                ) : (
-                                    <span className="font-semibold truncate min-w-0">{groupLabel}</span>
-                                )}
-                                {groupAdm ? <span className="text-neutral-700 truncate min-w-0 flex-1">{groupAdm}</span> : null}
-                            </div>
-                            <ClickableIcon
-                                label="Lukk namnegruppe"
-                                onClick={closeGroupBanner}
-                                className="ml-auto inline-flex items-center justify-center shrink-0"
-                            >
-                                <PiX className="text-neutral-800 text-3xl lg:text-2xl" aria-hidden="true" />
-                            </ClickableIcon>
-                        </div>
-                    ) : (
                         <Clickable
                             link
                             href="https://skjemaker.app.uib.no/view.php?id=16665712"
@@ -258,7 +187,7 @@ export default function MapToolbar() {
                         >
                             <span>Tilbakemelding</span>
                         </Clickable>
-                    )}
+                    
                 </div>
             ) : null}
 

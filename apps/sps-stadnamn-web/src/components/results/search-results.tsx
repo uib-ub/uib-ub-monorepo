@@ -31,9 +31,10 @@ import { ResultCardSkeleton, ResultItemSkeleton } from "@/components/results/res
 import { BATCH_SIZE, FIRST_VISIBLE_RESULTS, STARTING_BATCH_SIZE } from "@/lib/result-limits";
 import ResultsHeader from "./results-header";
 import ResultsListNavigator from "./results-list-navigator";
+import { useSubpostNavigation } from "./use-subpost-navigation";
 
 export default function SearchResults() {
-  const { searchError, groupTotalHits, docTotalHits, noGeoGroupCount, totalHits } = useSearchData()
+  const { searchError, groupTotalHits, docTotalHits, noGeoGroupCount, totalHits, searchLoading } = useSearchData()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
   const init = useInitParam()
   const group = useGroupParam()
@@ -55,6 +56,7 @@ export default function SearchResults() {
   const addNotification = useNotificationStore((s) => s.addNotification)
   const removeNotification = useNotificationStore((s) => s.removeNotification)
   const sourceViewResetUrl = useSessionStore((s) => s.sourceViewResetUrl)
+  const subpostNav = useSubpostNavigation()
 
 
   const {
@@ -86,6 +88,12 @@ export default function SearchResults() {
     (!init || !!qParam) &&
     (noGeoOn || firstHasLocation);
   const hasResultsError = !!(searchError || listError)
+  const isSameCoordinateMode = Boolean(sourceViewOn && init && group)
+  const hideSameCoordinateHeaderBar =
+    isSameCoordinateMode &&
+    typeof subpostNav.sameCoordinateCount === "number" &&
+    subpostNav.sameCoordinateCount <= 0 &&
+    !(searchLoading || listLoading)
 
   useEffect(() => {
     if (hasResultsError) {
@@ -102,7 +110,7 @@ export default function SearchResults() {
 
   return (
     <div ref={resultsContainerRef} className={isMobile ? 'mb-28' : 'mb-0'}>
-      {sourceViewOn && init && group && <ResultsListNavigator />}
+      {subpostNav.isSubpostNavigation && <ResultsListNavigator />}
       {init && (initResultCardLoading && !initResultCardData ? (
         <div className="relative">
           <ResultCardSkeleton hasIiif={initResultCardData?.iiifItems?.length > 0} />
@@ -119,10 +127,9 @@ export default function SearchResults() {
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
         </div>
-      ) : (
+      ) : hideSameCoordinateHeaderBar ? null : (
         <div className={`w-full flex flex-wrap items-center bg-neutral-50 py-2 px-2 gap-y-3 gap-x-2 text-neutral-950 min-w-0 overflow-hidden ${init ? 'border-t border-neutral-200' : ''}`}>
-          
-          <div className={`w-full flex flex-wrap`}> <ResultsHeader /></div>
+          <div className={`w-full flex flex-wrap`}> <ResultsHeader sameCoordinateCount={subpostNav.sameCoordinateCount} /></div>
           {!hideResultsOn && !group && (sourceViewOn || point || init) && <>
           {qParam ? (
             <Clickable
@@ -161,7 +168,21 @@ export default function SearchResults() {
       {!mobilePreview && !hideResultsOn && (
         <>
           <ul id="result_list" aria-label= {sourceViewOn ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'} className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
-            {Array.from({
+            {subpostNav.isSubpostNavigation ? (
+              <>
+                {subpostNav.sameCoordinateIds.map((id) => (
+                  <li key={`samecoord-${id}`} className="relative">
+                    <ResultCard itemId={id} />
+                  </li>
+                ))}
+
+                {subpostNav.isFetching && (
+                  <li className="relative">
+                    <ResultCardSkeleton hasIiif={false} />
+                  </li>
+                )}
+              </>
+            ) : Array.from({
               length: resultLimitNumber ||
                 Math.min(
                   resultCountExceptInit,
@@ -194,7 +215,6 @@ export default function SearchResults() {
               const localIndex = i - pageStartIndex
               const itemData = page?.data?.[localIndex]
               const hasIiif = !!itemData?.fields?.iiif?.[0]
-
 
               if (isNextButton) {
                 body = (

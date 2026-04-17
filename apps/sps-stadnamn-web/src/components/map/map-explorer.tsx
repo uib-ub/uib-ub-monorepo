@@ -102,6 +102,7 @@ export default function MapExplorer() {
   const mapSettingsOn = useMapSettingsOn()
   const point = usePoint()
   const activePoint = useActivePoint()
+  const highlightPoint = activePoint ?? point
   const urlRadius = useRadiusNumber()
   const displayRadius = useSessionStore((s) => s.displayRadius)
   const displayPoint = useSessionStore((s) => s.displayPoint)
@@ -274,12 +275,10 @@ export default function MapExplorer() {
   // Cluster mode
   // Zoom level < 8 - but visualized as labels. Necessary to avoid too large number of markers in border regions or coastal regions where the intersecting cell only covers a small piece of land.
   // Auto mode and ases where it's useful to se clusters of all results: query string or filter with few results
-  const hasQuery = Boolean(useQParam())
+  const qParam = useQParam()
+  const hasQuery = Boolean(qParam)
 
-
-  if (markerMode === 'circles') {
-    setMarkerMode('points')
-  }
+ 
 
 
   const activeMarkerMode = group ? 'points' : markerMode === 'auto'
@@ -1307,6 +1306,7 @@ export default function MapExplorer() {
               else {
                 const isAtPoint = Boolean(point && areSamePoint([lat, lng], point))
                 const isAtActivePoint = Boolean(activePoint && areSamePoint([lat, lng], activePoint))
+                const isAtHighlightPoint = Boolean(highlightPoint && areSamePoint([lat, lng], highlightPoint))
                 const isInit = Boolean(
                   initDecoded &&
                   (
@@ -1316,7 +1316,7 @@ export default function MapExplorer() {
                   )
                 )
 
-                if (isInit || isAtPoint || isAtActivePoint) {
+                if (isInit || isAtPoint || isAtActivePoint || isAtHighlightPoint) {
                   return
                 }
 

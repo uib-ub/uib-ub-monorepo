@@ -56,7 +56,13 @@ export default function Clickable({ children, remove, add, only, link, href, rep
         })
     }
 
-    const stringParams = normalizeSearchParams(newParams).toString()
+    // Avoid pushing a navigation when no params changed.
+    // (Some downstream hooks/rehydration logic is sensitive to redundant router updates.)
+    const nextParamsString = normalizeSearchParams(newParams).toString()
+    const currentParamsString = normalizeSearchParams(new URLSearchParams(searchParams)).toString()
+    const didParamsChange = nextParamsString !== currentParamsString
+
+    const stringParams = nextParamsString
 
     if (link) {
         return (
@@ -78,8 +84,14 @@ export default function Clickable({ children, remove, add, only, link, href, rep
             if (!(href || only || remove || add)) {
                 return
             }
+            if (!didParamsChange && !href) {
+                return
+            }
 
-            let newUrl = (href ? href : '/search') + stringParams && (only || remove || add) ? "?" + stringParams : href
+            const baseUrl = href ? href : '/search'
+            const withParams =
+                stringParams && (only || remove || add) ? `${baseUrl}?${stringParams}` : baseUrl
+            const newUrl = withParams
 
             
             if (replace) {

@@ -109,6 +109,19 @@ export function useActivePoint(): [number, number] | null {
     return validatePoint(activePoint)
 }
 
+/**
+ * Convenience hook for UI "active" state:
+ * - prefer `activePoint` when present
+ * - otherwise fall back to `point`
+ *
+ * This avoids calling hooks conditionally (Rules of Hooks).
+ */
+export function useHighlightPoint(): [number, number] | null {
+    const activePoint = useActivePoint()
+    const point = usePoint()
+    return activePoint ?? point
+}
+
 
 export function useTreeParam() {
     return useGetParam('tree')

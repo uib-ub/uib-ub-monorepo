@@ -7,17 +7,17 @@ import useSearchData from "@/state/hooks/search-data"
 import { useSourceViewOn } from "@/lib/param-hooks"
 import { useOverlayParams } from "@/lib/param-hooks"
 import Clickable from "@/components/ui/clickable/clickable"
-import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import useResultCardData from "@/state/hooks/result-card-data"
 import { PiCaretUpBold } from "react-icons/pi"
 import { PiCaretDownBold } from "react-icons/pi"
-import { PiXBold } from "react-icons/pi"
 import { TitleBadge } from "@/components/ui/badge"
 import Spinner from "@/components/svg/Spinner"
 import GroupedResultsToggle from "./grouped-results-toggle"
 import useListData from "@/state/hooks/list-data"
+import ClickableIcon from "@/components/ui/clickable/clickable-icon"
+import { PiXBold } from "react-icons/pi"
 
-export default function ResultsHeader() {
+export default function ResultsHeader({ sameCoordinateCount }: { sameCoordinateCount?: number | null }) {
     const { isMobile } = useContext(GlobalContext)
     const hideResultsOn = useHideResultsOn()
     const qParam = useQParam()
@@ -42,11 +42,30 @@ export default function ResultsHeader() {
     const groupAdmText = [groupAdm2, groupAdm1].filter(Boolean).join(", ")
 
     const title = sourceView
-        ? (init ? "Andre kjeldeoppslag" : (group ? "Underoppslag" : "Kjeldeoppslag"))
+        ? (init
+            ? (group ? "Same koordinat" : "Andre kjeldeoppslag")
+            : (group ? "Underpostar" : "Kjeldeoppslag"))
         : (init ? "Andre namnegrupper" : "Namnegrupper")
 
     const showGroupInfo = showGroupClose && (groupTitle || groupAdmText)
-    const showGroupInfoInlineDesktop = showGroupInfo && !isMobile
+    const showGroupAsTitleDesktop = Boolean(!isMobile && sourceView && group && !init && (groupTitle || groupAdmText))
+    const showGroupInfoInlineDesktop = showGroupInfo && !isMobile && !showGroupAsTitleDesktop
+
+    const isSameCoordinateMode = Boolean(sourceView && init && group)
+    const badgeCount = isSameCoordinateMode && typeof sameCoordinateCount === "number"
+        ? sameCoordinateCount
+        : (sourceView ? docTotalHits?.value ?? 0 : groupTotalHits?.value ?? 0) - (init ? 1 : 0)
+
+    // In "Same koordinat" mode, hide the entire header line if there are no matching items.
+    // (The init item is rendered separately, so 0 means nothing to show/expand.)
+    if (
+        isSameCoordinateMode &&
+        typeof sameCoordinateCount === "number" &&
+        sameCoordinateCount <= 0 &&
+        !(searchLoading || listLoading)
+    ) {
+        return null
+    }
 
     return (
         <div className="w-full">
@@ -75,7 +94,19 @@ export default function ResultsHeader() {
                             id={isMobile ? 'drawer-title' : 'right-title'}
                             className={`text-sm xl:text-base text-neutral-900 font-sans font-semibold ${init ? 'py-1' : ''} truncate`}
                         >
-                            {title}
+                            {showGroupAsTitleDesktop ? (
+                                <span className="min-w-0 truncate">
+                                    {groupTitle ? <span className="font-semibold">{groupTitle}</span> : null}
+                                    {groupAdmText ? (
+                                        <span className="text-neutral-700 font-normal">
+                                            {groupTitle ? " " : ""}
+                                            {groupAdmText}
+                                        </span>
+                                    ) : null}
+                                </span>
+                            ) : (
+                                title
+                            )}
                         </div>
 
                         {(searchLoading || listLoading) ? (
@@ -83,7 +114,7 @@ export default function ResultsHeader() {
                         ) : (
                             <TitleBadge
                                 className="text-sm bg-neutral-700 text-white"
-                                count={(sourceView ? docTotalHits?.value ?? 0 : groupTotalHits?.value ?? 0) - (init ? 1 : 0)}
+                                count={badgeCount}
                             />
                         )}
                     </div>

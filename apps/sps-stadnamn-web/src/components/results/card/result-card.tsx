@@ -5,7 +5,7 @@ import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import type { ParamProps } from "@/components/ui/clickable/param-types";
 import IconButton from "@/components/ui/icon-button";
 import { datasetTitles } from "@/config/metadata-config";
-import { useActivePoint, useCenterParam, useGroupParam, useInitDecoded, useInitParam, usePoint, useSourceViewOn, useZoomParam } from "@/lib/param-hooks";
+import { useActivePoint, useCenterParam, useGroupParam, useHighlightPoint, useInitDecoded, useInitParam, usePoint, useSourceViewOn, useZoomParam } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { panPointIntoView } from "@/lib/map-utils";
 import { buildTreeParam } from "@/lib/tree-param";
@@ -14,7 +14,7 @@ import useResultCardData from "@/state/hooks/result-card-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { useContext, useState } from "react";
-import { PiCaretRightBold, PiCheck, PiLinkSimple, PiMapPin, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
+import { PiCaretRightBold, PiCheck, PiLinkSimple, PiMagnifyingGlass, PiMapPin, PiMapPinFill, PiX, PiXBold } from "react-icons/pi";
 import Carousel from "@/components/results/carousel";
 import ResultCardTitle from "@/components/results/card/result-card-title";
 import { TextItemsSection } from "@/components/results/card/text-items-section";
@@ -67,8 +67,8 @@ function CoordinateButton({ isActive, className, ...rest }: CoordinateButtonProp
     return (
         <ClickableIcon
             label="Vis i kartet"
-            className={`inline-flex items-center justify-center w-8 h-8 rounded-full border btn btn-outline shrink-0 ${
-                isActive ? "border-accent-800 bg-accent-800 text-white" : "border-neutral-300"
+            className={`btn btn-outline btn-compact rounded-full w-10 h-10 flex items-center justify-center shrink-0 border-neutral-200 bg-white shadow-none ${
+                isActive ? "border-accent-800 bg-accent-800 text-white" : "text-neutral-900"
             } ${className ?? ""}`}
             {...rest}
         >
@@ -113,107 +113,36 @@ function focusPointWithoutZoomOut(
     panPointIntoView(map, point, isMobile, maxDrawer);
 }
 
-function GroupBottomToolbarMulti({
+function GroupBottomToolbar({
     groupData,
     groupTotal,
+    variant,
 }: {
     groupData: any;
     groupTotal?: number;
+    variant: "single" | "multi";
 }) {
     const sourceViewOn = useSourceViewOn();
     const { mapFunctionRef, isMobile, currentUrl } = useContext(GlobalContext);
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
-    const activePoint = useActivePoint();
-    const init = useInitParam()
-    const center = useCenterParam()
-    const zoom = useZoomParam()
-    const setSourceViewResetUrl = useSessionStore((s) => s.setSourceViewResetUrl)
-    if (!groupData || sourceViewOn || !groupTotal || groupTotal === 1) {
-        return null;
-    }
+    const highlightPoint = useHighlightPoint();
+    const center = useCenterParam();
+    const zoom = useZoomParam();
+    const setSourceViewResetUrl = useSessionStore((s) => s.setSourceViewResetUrl);
 
-    const rawGroupCoordinates = groupData?.fields?.location?.coordinates;
-    const groupLatLng: [number, number] | null = rawGroupCoordinates
-        ? [Number(rawGroupCoordinates[1]), Number(rawGroupCoordinates[0])]
-        : null;
-    const activePointValue = rawGroupCoordinates
-        ? `${rawGroupCoordinates[1]},${rawGroupCoordinates[0]}`
-        : null;
-    const isActivePoint =
-        !!activePoint &&
-        !!groupLatLng &&
-        Math.abs(activePoint[0] - groupLatLng[0]) < 0.000001 &&
-        Math.abs(activePoint[1] - groupLatLng[1]) < 0.000001;
+    if (!groupData) return null;
 
-    return (
-        <div className={`px-0 ml-auto mt-auto ${isMobile ? 'px-3' : 'px-2'}`}>
-            <div className="flex flex-row items-center gap-2">
-                {!groupLatLng ? (
-                    <span className="text-sm text-neutral-700 px-2 whitespace-nowrap">
-                        Utan koordinat
-                    </span>
-                ) : 
-                    <CoordinateButton
-                        isActive={isActivePoint}
-                        onClick={() => {
-                            focusPointWithoutZoomOut(mapFunctionRef.current, groupLatLng, isMobile, snappedPosition);
-                            if (isMobile && snappedPosition !== "bottom") {
-                                setSnappedPosition("bottom");
-                            }
-                        }}
-                        remove={["activePoint"]}
-                        add={{ init: groupData.id, point: activePointValue }}
-                    />
-                }
+    const isMulti = variant === "multi";
+    const isSingle = variant === "single";
 
-
-                
-                    
-
-                {groupTotal > 0 && (
-                    <Clickable
-                        className="btn btn-outline btn-compact rounded-full items-center gap-2 !pr-1 flex"
-                        only={{
-                            sourceView: "on",
-                            group: stringToBase64Url(groupData.id),
-                            center,
-                            zoom
-                        }}
-                        onClick={() => {
-                            if (!currentUrl.current) return
-                            setSourceViewResetUrl(currentUrl.current)
-                        }}
-                    >
-                        <span className="text-sm">Underoppslag</span><Badge count={groupTotal} className="bg-primary-700 text-white" />
-                    </Clickable>
-                )}
-            </div>
-        </div>
-    );
-}
-
-function GroupBottomToolbarSingle({
-    groupData,
-    isSingleSource,
-}: {
-    groupData: any;
-    isSingleSource: boolean;
-}) {
-    const { mapFunctionRef, isMobile } = useContext(GlobalContext);
-    const snappedPosition = useSessionStore((s) => s.snappedPosition);
-    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
-    const activePointCoords = useActivePoint();
-    const [linkCopied, setLinkCopied] = useState(false);
-    const init = useInitParam()
-
-    if (!groupData || !isSingleSource) {
-        return null;
+    // Keep the previous visibility rules.
+    if (isMulti) {
+        if (sourceViewOn) return null;
+        if (!groupTotal || groupTotal === 1) return null;
     }
 
     const fields = groupData.fields || {};
-    const datasets = groupData.datasets as string[] | undefined;
-    const dataset = Array.isArray(datasets) && datasets.length > 0 ? datasets[0] : undefined;
 
     const rawGroupCoordinates = fields?.location?.coordinates;
     const groupLatLng: [number, number] | null = rawGroupCoordinates
@@ -221,14 +150,19 @@ function GroupBottomToolbarSingle({
         : null;
 
     const isActivePoint =
-        !!activePointCoords &&
+        !!highlightPoint &&
         !!groupLatLng &&
-        Math.abs(activePointCoords[0] - groupLatLng[0]) < 0.000001 &&
-        Math.abs(activePointCoords[1] - groupLatLng[1]) < 0.000001;
+        Math.abs(highlightPoint[0] - groupLatLng[0]) < 0.000001 &&
+        Math.abs(highlightPoint[1] - groupLatLng[1]) < 0.000001;
+
+    const pointValue = groupLatLng ? `${groupLatLng[0]},${groupLatLng[1]}` : null;
 
     const coordinateType = Array.isArray((fields as any)["coordinateType"])
         ? (fields as any)["coordinateType"]?.[0]
         : (fields as any)?.coordinateType;
+
+    const datasets = groupData.datasets as string[] | undefined;
+    const dataset = Array.isArray(datasets) && datasets.length > 0 ? datasets[0] : undefined;
 
     const docUuid = (groupData as any)?.fields?.uuid?.[0] ?? null;
     const uuidUrl = (() => {
@@ -240,77 +174,100 @@ function GroupBottomToolbarSingle({
         return `${base}/uuid/${token}`;
     })();
 
-    const activePointValue = groupLatLng ? `${groupLatLng[0]},${groupLatLng[1]}` : null;
+    const similarInit = isMulti ? stringToBase64Url(groupData.id) : groupData.id;
+
+    const coordinateClick = () => {
+        if (!groupLatLng) return;
+        focusPointWithoutZoomOut(mapFunctionRef.current, groupLatLng, isMobile, snappedPosition);
+        if (isMulti) {
+            if (isMobile && snappedPosition !== "top") setSnappedPosition("middle");
+        } else {
+            if (isMobile && snappedPosition !== "bottom") setSnappedPosition("bottom");
+        }
+    };
+
+    const toolbarItems = (
+        <>
+            {!groupLatLng ? (
+                <span className="text-sm text-neutral-700 px-2 whitespace-nowrap">
+                    Utan koordinat
+                </span>
+            ) : (
+                <>
+                    <CoordinateButton
+                        isActive={isActivePoint}
+                        onClick={coordinateClick}
+                        add={{ activePoint: pointValue }}
+                    />
+                    <ClickableIcon
+                        label="Finn liknande"
+                        add={{ init: similarInit, point: pointValue }}
+                        remove={["activePoint"]}
+                        className="btn btn-outline btn-compact rounded-full w-10 h-10 flex items-center justify-center border-neutral-200 bg-white shadow-none"
+                    >
+                        <PiMagnifyingGlass aria-hidden="true" className="text-base" />
+                    </ClickableIcon>
+                </>
+            )}
+        </>
+    );
+
+    if (isMulti) {
+        return (
+            <div className={`px-0 ml-auto mt-auto ${isMobile ? "px-3" : "px-2"}`}>
+                <div className="flex flex-row items-center gap-2">
+                    {toolbarItems}
+                    {(groupTotal ?? 0) > 0 && (
+                        <Clickable
+                            className="btn btn-outline btn-compact rounded-full items-center gap-2 !pr-2 flex h-10 pl-4 shadow-none"
+                            only={{
+                                sourceView: "on",
+                                group: stringToBase64Url(groupData.id),
+                                center,
+                                zoom,
+                            }}
+                            onClick={() => {
+                                if (!currentUrl.current) return;
+                                setSourceViewResetUrl(currentUrl.current);
+                            }}
+                        >
+                            <span className="text-sm">Underpostar</span>
+                            <Badge count={groupTotal ?? 0} className="bg-primary-700 text-white" />
+                        </Clickable>
+                    )}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full px-3 mt-auto flex flex-col gap-2">
             <div className="flex items-center gap-2 flex-wrap">
-                
-                {isActivePoint && false && (
-                    <span className="basis-full h-0" aria-hidden="true" />
-                )}
-                <div className={`ml-auto flex items-center gap-2 ${isActivePoint ? "mt-1" : ""}`}>
-                    {groupLatLng && (
-                        <CoordinateButton
-                            isActive={isActivePoint}
-                            add={{ init: groupData.id, point: activePointValue }}
-                            onClick={() => {
-                                focusPointWithoutZoomOut(mapFunctionRef.current, groupLatLng, isMobile, snappedPosition);
-                                if (isMobile && snappedPosition !== "bottom") {
-                                    setSnappedPosition("bottom");
-                                }
-                            }}
-                        />
-                    )}
-                    {false &&<IconButton
-                        label={linkCopied ? "Lenke kopiert" : "Kopier lenke"}
-                        onClick={async () => {
-                            if (!uuidUrl || !navigator?.clipboard) return;
-                            await navigator.clipboard.writeText(uuidUrl);
-                            setLinkCopied(true);
-                            setTimeout(() => setLinkCopied(false), 2000);
-                        }}
-                        disabled={!uuidUrl}
-                        className={`inline-flex items-center justify-center w-8 h-8 rounded-full border btn btn-outline shrink-0 ${
-                            linkCopied
-                                ? "border-accent-800 bg-accent-800 text-white"
-                                : "border-neutral-300"
-                        }`}
-                    >
-                        {linkCopied ? (
-                            <PiCheck aria-hidden="true" className="text-lg" />
-                        ) : (
-                            <PiLinkSimple aria-hidden="true" className="text-lg" />
-                        )}
-                    </IconButton>}
+                <div className={`ml-auto flex items-center gap-3 ${isActivePoint ? "mt-1" : ""}`}>
+                    {toolbarItems}
                     <Clickable
                         link={true}
                         href={uuidUrl || ""}
                         disabled={!uuidUrl}
-                        className="inline-flex pr-2 items-center justify-center h-8 rounded-full border border-neutral-300 btn btn-outline shrink-0"
+                        className="btn btn-outline btn-compact rounded-full items-center gap-2 !pr-2 flex h-10 pl-4 shrink-0 border-neutral-200 bg-white shadow-none"
                     >
                         Detaljar
-                        <PiCaretRightBold
-                            aria-hidden="true"
-                            className="text-primary-700"
-                        />
+                        <PiCaretRightBold aria-hidden="true" className="text-primary-700" />
                     </Clickable>
                 </div>
             </div>
-            {isActivePoint && (
-                
-                    <div className="min-w-0 flex-1 rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1">
-                        {coordinateType ? (
-                            <CoordinateTypeInfo coordinateType={coordinateType} />
-                        ) : (
-                            <span className="text-sm text-neutral-700">
-                                Opphavleg koordinat i{" "}
-                                {dataset ? datasetTitles[dataset] || dataset : "kjelde"}
-                            </span>
-                        )}
-                    </div>
-
-                )}            
+            {isActivePoint && sourceViewOn && (
+                <div className="min-w-0 flex-1 rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1">
+                    {coordinateType ? (
+                        <CoordinateTypeInfo coordinateType={coordinateType} />
+                    ) : (
+                        <span className="text-sm text-neutral-700">
+                            Opphavleg koordinat i{" "}
+                            {dataset ? datasetTitles[dataset] || dataset : "kjelde"}
+                        </span>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
@@ -334,7 +291,6 @@ export default function ResultCard({
     const linkItems = resultCardData?.linkItems;
     const audioItems = resultCardData?.audioItems;
     const { sosiVocab } = useContext(GlobalContext);
-    const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const sourceViewOn = useSourceViewOn();
     const group = useGroupParam();
@@ -483,18 +439,16 @@ export default function ResultCard({
                 </div>}
                 {isInit && !(init && group) && (
                     <div className={`absolute flex items-end gap-2 ${isMobile ? 'top-3 right-3 flex-col items-end' : 'gap-2 items-center right-2 top-2'}`}>
-                                                <ClickableIcon
+                        <ClickableIcon
                             label="Lukk framheva gruppe"
                             remove={["activePoint", "activeYear", "activeName", "init", "resultLimit"]}
                             onClick={() => {
                                setSnappedPosition("bottom");
                             }}
-
                             className={`btn btn-outline rounded-full text-neutral-900 p-2`}
                         >
                             <PiXBold aria-hidden="true" className={`${'text-lg'} text-neutral-800`} />
                         </ClickableIcon>
-
                     </div>
                 )}
                 {!isInit && point && typeof distanceMeters === "number" && Number.isFinite(distanceMeters) && (
@@ -593,7 +547,7 @@ export default function ResultCard({
                                                     uuid: isBruk ? cadastre.within : docUuid,
                                                 }),
                                                 doc: docUuid,
-                                                activePoint: activePointValue,
+                                                point: activePointValue,
                                             }}
                                             onClick={handleEnterTreeFromBreadcrumb}
                                         >
@@ -652,8 +606,8 @@ export default function ResultCard({
             )}
 
             {!mobilePreview && <>
-                <GroupBottomToolbarMulti groupData={resultCardData} groupTotal={resultCardTotal} />
-                <GroupBottomToolbarSingle groupData={resultCardData} isSingleSource={hasSingleSource} />
+                <GroupBottomToolbar groupData={resultCardData} groupTotal={resultCardTotal} variant="multi" />
+                {hasSingleSource && <GroupBottomToolbar groupData={resultCardData} variant="single" />}
             </>}
 
         </div>
