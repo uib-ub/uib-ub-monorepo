@@ -30,6 +30,7 @@ import { ResultCardSkeleton, ResultItemSkeleton } from "@/components/results/res
 
 import { BATCH_SIZE, FIRST_VISIBLE_RESULTS, STARTING_BATCH_SIZE } from "@/lib/result-limits";
 import ResultsHeader from "./results-header";
+import ResultsListNavigator from "./results-list-navigator";
 
 export default function SearchResults() {
   const { searchError, groupTotalHits, docTotalHits, noGeoGroupCount, totalHits } = useSearchData()
@@ -101,7 +102,8 @@ export default function SearchResults() {
 
   return (
     <div ref={resultsContainerRef} className={isMobile ? 'mb-28' : 'mb-0'}>
-      {init && (initResultCardLoading ? (
+      {sourceViewOn && init && group && <ResultsListNavigator />}
+      {init && (initResultCardLoading && !initResultCardData ? (
         <div className="relative">
           <ResultCardSkeleton hasIiif={initResultCardData?.iiifItems?.length > 0} />
         </div>
@@ -112,7 +114,7 @@ export default function SearchResults() {
       ))}
 
 
-      {initResultCardLoading ? (
+      {initResultCardLoading && !initResultCardData ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>

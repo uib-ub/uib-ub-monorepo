@@ -1,7 +1,7 @@
 'use client'
 import { base64UrlToString } from '@/lib/param-utils';
 import { useSearchQuery } from '@/lib/search-params';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useGroupParam, useInitParam, useQParam, useSourceViewOn } from '@/lib/param-hooks';
 
@@ -53,7 +53,10 @@ export default function useResultCardData(itemId?: string | null, options?: UseR
         queryKey: ['result-card', id, effectiveSourceView, searchQueryString],
         queryFn: async () =>
             idDecoded ? resultCardDataQuery(idDecoded, effectiveSourceView, group) : null,
-        placeholderData: (itemId || init == id) ? undefined : (prevData: any) => prevData,
+        enabled: Boolean(idDecoded),
+        // Avoid "blink" when navigating between results (init changes): keep the previous
+        // card data rendered until the next one arrives.
+        placeholderData: keepPreviousData,
 
     })
 

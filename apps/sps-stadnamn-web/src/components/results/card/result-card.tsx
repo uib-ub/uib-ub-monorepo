@@ -344,6 +344,7 @@ export default function ResultCard({
     const point = usePoint();
     const initDecoded = useInitDecoded();
     const { isMobile } = useContext(GlobalContext);
+    const init = useInitParam();
 
     const toText = (value: unknown): string => {
         if (Array.isArray(value)) return value.filter(Boolean).join(" | ");
@@ -483,7 +484,7 @@ export default function ResultCard({
                     )}
                     
                 </div>}
-                {isInit && (
+                {isInit && !(init && group) && (
                     <div className={`absolute flex items-end gap-2 ${isMobile ? 'top-3 right-3 flex-col items-end' : 'gap-2 items-center right-2 top-2'}`}>
                                                 <ClickableIcon
                             label="Lukk framheva gruppe"
