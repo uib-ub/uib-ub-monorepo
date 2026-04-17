@@ -244,7 +244,7 @@ function GroupBottomToolbar({
                     {toolbarItems}
                     {(groupTotal ?? 0) > 0 && (
                         <Clickable
-                            className="btn btn-outline btn-compact rounded-full items-center gap-2 font-semibold !pr-2 flex h-10 pl-4 shadow-none"
+                            className="btn btn-outline btn-compact rounded-full items-center gap-2 !pr-2 flex h-10 pl-4 shadow-none"
                             only={{
                                 sourceView: "on",
                                 group: stringToBase64Url(groupData.id),
@@ -257,7 +257,7 @@ function GroupBottomToolbar({
                             }}
                         >
                             Underpostar
-                            <Badge count={groupTotal ?? 0} className="bg-neutral-700 text-white px-2 py-0.5" />
+                            <Badge count={groupTotal ?? 0} className="bg-neutral-200 text-black px-2 py-0.5" />
                         </Clickable>
                     )}
                 </div>

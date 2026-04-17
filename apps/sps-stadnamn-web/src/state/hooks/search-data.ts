@@ -61,7 +61,7 @@ export default function useSearchData() {
 
     const rawTotalHits = data?.hits?.total || null
 
-    // Explicit totals for namnegrupper (groups) vs individual documents (kjeldeoppslag)
+    // Explicit totals for namnegrupper (groups) vs individual documents (kjeldepostar)
     const groupTotalHits =
         (groupCount ?? null) !== null
             ? { value: groupCount, relation: 'eq' as const }

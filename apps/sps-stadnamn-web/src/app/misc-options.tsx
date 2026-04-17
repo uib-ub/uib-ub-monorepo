@@ -28,7 +28,7 @@ export default function MiscOptions() {
       <div className="flex flex-col">
         <span className="text-lg">Stadnamnsamlingar</span>
         <span className="text-sm text-neutral-700">
-          Vis berre kjeldeoppslag frå oppslagsverk og stadnamninnsamlingar
+          Vis berre kjeldepostar frå oppslagsverk og stadnamninnsamlingar
         </span>
       </div>
     </label>

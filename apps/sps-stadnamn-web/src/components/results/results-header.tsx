@@ -43,8 +43,8 @@ export default function ResultsHeader({ sameCoordinateCount }: { sameCoordinateC
 
     const title = sourceView
         ? (init
-            ? (group ? "Same koordinat" : "Andre kjeldeoppslag")
-            : (group ? "Underpostar" : "Kjeldeoppslag"))
+            ? (group ? "Same koordinat" : "Andre kjeldepostar")
+            : (group ? "Underpostar" : "Kjeldepostar"))
         : (init ? "Andre namnegrupper" : "Namnegrupper")
 
     const showGroupInfo = showGroupClose && (groupTitle || groupAdmText)

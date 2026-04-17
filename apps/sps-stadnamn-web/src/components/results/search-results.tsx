@@ -167,7 +167,7 @@ export default function SearchResults() {
 
       {!mobilePreview && !hideResultsOn && (
         <>
-          <ul id="result_list" aria-label= {sourceViewOn ? 'Fleire kjeldeoppslag' : 'Fleire namnegrupper'} className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
+          <ul id="result_list" aria-label= {sourceViewOn ? 'Fleire kjeldepostar' : 'Fleire namnegrupper'} className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
             {subpostNav.isSubpostNavigation ? (
               <>
                 {subpostNav.sameCoordinateHits.map((hit, i) => (

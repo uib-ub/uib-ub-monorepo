@@ -71,7 +71,7 @@ export default async function Home() {
     </span>
   </div>
   <div className="flex flex-col items-center gap-2">
-    <span className="uppercase tracking-widest text-neutral-900 lg:text-sm font-semibold">Kjeldeoppslag</span>
+    <span className="uppercase tracking-widest text-neutral-900 lg:text-sm font-semibold">Kjeldepostar</span>
     <span className="lg:text-3xl text-4xl text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
       {totalHits?.toLocaleString('nb-NO')}
     </span>
