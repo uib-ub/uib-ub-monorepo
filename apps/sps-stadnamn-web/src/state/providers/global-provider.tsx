@@ -95,9 +95,10 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
 
   // Set url for navigation back to search
   useEffect(() => {
-    if (searchParamsString && pathname == '/search') {
-      currentUrl.current = "/search?" + searchParamsString
-    }
+    if (pathname !== '/search') return
+    // Always update the "return to search" URL when we're on /search.
+    // If there are no params, the correct return is just "/search".
+    currentUrl.current = searchParamsString ? `/search?${searchParamsString}` : "/search"
   }, [searchParamsString, pathname])
 
 
