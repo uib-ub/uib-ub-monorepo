@@ -5,7 +5,7 @@ import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import type { ParamProps } from "@/components/ui/clickable/param-types";
 import IconButton from "@/components/ui/icon-button";
 import { datasetTitles } from "@/config/metadata-config";
-import { useActivePoint, useCenterParam, useDrawerSnap, useGroupParam, useHighlightPoint, useInitParam, usePoint, useSetDrawerSnap, useSourceViewOn, useZoomParam } from "@/lib/param-hooks";
+import { useActivePoint, useCenterParam, useGroupParam, useHighlightPoint, useInitParam, usePoint, useSourceViewOn, useZoomParam } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { panPointIntoView } from "@/lib/map-utils";
 import { buildTreeParam } from "@/lib/tree-param";
@@ -23,7 +23,6 @@ import CoordinateTypeInfo from "@/components/results/card/coordinate-type-info";
 import { ResultCardSkeleton } from "@/components/results/result-skeletons";
 import DistanceBadge from "@/components/results/distance-badge";
 import { Badge, TitleBadge } from "@/components/ui/badge";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 function getLatLngFromLocationField(locationField: unknown): [number, number] | null {
     // Search hits use `fields.location[0].coordinates` (like `ResultItem`).
@@ -146,14 +145,15 @@ function GroupBottomToolbar({
 }) {
     const sourceViewOn = useSourceViewOn();
     const { mapFunctionRef, isMobile, currentUrl } = useContext(GlobalContext);
-    const snappedPosition = useDrawerSnap();
-    const setSnappedPosition = useSetDrawerSnap();
+    const snappedPosition = useSessionStore((s) => s.snappedPosition);
+    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const highlightPoint = useHighlightPoint();
     const center = useCenterParam();
     const zoom = useZoomParam();
     const group = useGroupParam();
     const init = useInitParam();
     const setSourceViewResetUrl = useSessionStore((s) => s.setSourceViewResetUrl);
+
     if (!groupData) return null;
 
     const isMulti = variant === "multi";
@@ -196,7 +196,6 @@ function GroupBottomToolbar({
 
     const groupInitParamValue = isMulti ? stringToBase64Url(groupData.id) : groupData.id;
     const isInit = Boolean(init && init === groupInitParamValue);
-
 
     const coordinateClick = () => {
         if (!groupLatLng) return;
@@ -252,6 +251,10 @@ function GroupBottomToolbar({
                                 center,
                                 zoom,
                             }}
+                            onClick={() => {
+                                if (!currentUrl.current) return;
+                                setSourceViewResetUrl(currentUrl.current);
+                            }}
                         >
                             Underpostar
                             <Badge count={groupTotal ?? 0} className="bg-neutral-200 text-black px-2 py-0.5" />
@@ -265,7 +268,7 @@ function GroupBottomToolbar({
     return (
         <div className="w-full px-3 mt-auto flex flex-col gap-2">
             <div className="flex items-center gap-2 flex-wrap">
-                <div className={`ml-auto flex items-center gap-2 ${isActivePoint ? "mt-1" : ""}`}>
+                <div className={`ml-auto flex items-center gap-3 ${isActivePoint ? "mt-1" : ""}`}>
                     {toolbarItems}
                     <Clickable
                         link={true}
@@ -313,7 +316,7 @@ export default function ResultCard({
     const linkItems = resultCardData?.linkItems;
     const audioItems = resultCardData?.audioItems;
     const { sosiVocab } = useContext(GlobalContext);
-    const setSnappedPosition = useSetDrawerSnap();
+    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const sourceViewOn = useSourceViewOn();
     const group = useGroupParam();
     const point = usePoint();

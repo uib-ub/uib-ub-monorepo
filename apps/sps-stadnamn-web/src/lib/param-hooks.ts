@@ -17,7 +17,7 @@
 'use client'
 import { contentSettings } from "@/config/server-config"
 import { GlobalContext } from "@/state/providers/global-provider"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { useContext } from "react"
 import { base64UrlToString } from "./param-utils"
 import { SPECIAL_CASE_FACETS, type ReservedSearchParamKey } from "./reserved-param-types"
@@ -35,8 +35,6 @@ export const useGetAllParam = (keys: ParamHookKey) => {
     const searchParams = useSearchParams()
     return searchParams.getAll(keys) as string[]
 }
-
-export type MobileDrawerSnap = "bottom" | "middle" | "top"
 
 export function usePerspective() {
     const searchParams = useSearchParams()
@@ -226,45 +224,6 @@ export function useHideResultsOn() {
 
 export function useResultLimitParam() {
     return useGetParam('resultLimit')
-}
-
-export function useScrollParam() {
-    return useGetParam('scroll')
-}
-
-export function useDrawerParam() {
-    return useGetParam('drawer')
-}
-
-export function useDrawerSnap(): MobileDrawerSnap {
-    const v = useDrawerParam()
-    if (v === "bottom" || v === "middle" || v === "top") return v
-    return "bottom"
-}
-
-export function useSetDrawerSnap() {
-    const router = useRouter()
-    const pathname = usePathname()
-    const searchParams = useSearchParams()
-    const searchParamsString = searchParams.toString()
-
-    return (position: MobileDrawerSnap) => {
-        const nextParams = new URLSearchParams(searchParamsString)
-        nextParams.set("drawer", position)
-        const nextSearch = nextParams.toString()
-        router.replace(`${pathname}${nextSearch ? `?${nextSearch}` : ""}`, { scroll: false })
-    }
-}
-
-/**
- * Scroll anchor UUID (the result item currently "centered" in the results pane).
- * Stored in the URL as `scroll=<uuid>`.
- */
-export function useScrollAnchorUuid() {
-    const scroll = useScrollParam()
-    if (!scroll) return null
-    const v = String(scroll).trim()
-    return v.length > 0 ? v : null
 }
 
 

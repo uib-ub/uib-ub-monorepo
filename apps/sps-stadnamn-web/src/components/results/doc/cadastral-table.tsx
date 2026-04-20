@@ -17,7 +17,7 @@ import { useSessionStore } from '@/state/zustand/session-store'
 import { GlobalContext } from '@/state/providers/global-provider'
 import SubtleLink from '@/components/ui/clickable/subtle-link'
 import { panPointIntoView } from '@/lib/map-utils'
-import { useActivePoint, useCenterParam, useDrawerSnap, useZoomParam } from '@/lib/param-hooks'
+import { useActivePoint, useCenterParam, useZoomParam } from '@/lib/param-hooks'
 import { buildTreeParam } from '@/lib/tree-param'
 import { usePathname } from 'next/navigation'
 
@@ -36,7 +36,7 @@ interface CadastralTableProps {
 
 export default function CadastralTable({ dataset, uuid, list, groupId: parentGroupId, gnr, adm1, adm2, point, flush, showMarkers = true }: CadastralTableProps) {
   const { scrollToBrukRef, mapFunctionRef, isMobile } = useContext(GlobalContext)
-  const snappedPosition = useDrawerSnap()
+  const snappedPosition = useSessionStore((s) => s.snappedPosition)
   const activePointParam = useActivePoint()
   const rowRefs = useRef<Record<string, HTMLTableRowElement>>({})
   const clearTreeSavedQuery = useSessionStore((s) => s.clearTreeSavedQuery)

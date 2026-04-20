@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useNotificationStore } from "@/state/zustand/notification-store";
 import ClickableIcon from "./clickable/clickable-icon";
 import Clickable from "./clickable/clickable";
-import { useDrawerSnap, useSetDrawerSnap } from "@/lib/param-hooks";
+import { useSessionStore } from "@/state/zustand/session-store";
 
 /** Matches `#search-form` / home search input: `h-14` mobile, `h-12` desktop. */
 const snackbarSearchBarHeightClass = "h-14 lg:h-12";
@@ -65,8 +65,8 @@ export function Snackbar({
   const [expanded, setExpanded] = useState(false);
   const detailsId = useId();
   const dismissNotification = useNotificationStore((s) => s.dismissNotification);
-  const snappedPosition = useDrawerSnap();
-  const setSnappedPosition = useSetDrawerSnap();
+  const snappedPosition = useSessionStore((s) => s.snappedPosition);
+  const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
 
   const showDetails = Boolean(details);
   const showLink = !showDetails && Boolean(link);

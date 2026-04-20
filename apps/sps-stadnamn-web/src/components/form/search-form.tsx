@@ -4,7 +4,6 @@ import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import Clickable from '@/components/ui/clickable/clickable';
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, mobileSearchChromeWrapperTopStyle, panPointIntoView } from '@/lib/map-utils';
 import { useDatasetTagParam, useFacetParam, useFulltextOn, useFuzzyOn, useGroupParam, useInitParam, useMode, useNoGeoOn, useOptionsOn, usePerspective, usePoint, usePointParam, useQParam, useSourceViewOn, useTreeParam } from '@/lib/param-hooks';
-import { useDrawerSnap, useSetDrawerSnap } from '@/lib/param-hooks';
 import { useSearchQuery } from '@/lib/search-params';
 import { formatNumber } from '@/lib/utils';
 import { GlobalContext } from '@/state/providers/global-provider';
@@ -25,9 +24,9 @@ export default function SearchForm() {
     const autocompleteActiveIndex = useSessionStore((s: any) => s.autocompleteActiveIndex)
     const autocompleteHasResults = useSessionStore((s: any) => s.autocompleteHasResults)
     const setAutocompleteOpen = useSessionStore((s: any) => s.setAutocompleteOpen)
-    const setSnappedPosition = useSetDrawerSnap()
+    const setSnappedPosition = useSessionStore((s: any) => s.setSnappedPosition)
     const setDrawerOpen = useSessionStore((s) => s.setDrawerOpen)
-    const snappedPosition = useDrawerSnap()
+    const snappedPosition = useSessionStore((s: any) => s.snappedPosition)
     const currentPosition = useSessionStore((s: any) => s.currentPosition)
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
     const optionsOn = useOptionsOn()

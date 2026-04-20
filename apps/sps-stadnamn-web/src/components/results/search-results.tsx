@@ -9,9 +9,6 @@ import {
   usePoint,
   useQParam,
   useResultLimitNumber,
-  useDrawerSnap,
-  useSetDrawerSnap,
-  useScrollAnchorUuid,
   useSourceViewOn,
 } from "@/lib/param-hooks";
 import { base64UrlToString } from "@/lib/param-utils";
@@ -45,9 +42,11 @@ export default function SearchResults() {
   const sourceViewOn = useSourceViewOn()
   const { resultCardData: initResultCardData, resultCardLoading: initResultCardLoading } = useResultCardData()
   const initValue = init ? base64UrlToString(init) : null
-  const { isMobile, scrollableContentRef } = useContext(GlobalContext)
+  const snappedPosition = useSessionStore((s) => s.snappedPosition)
+  const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
+  const { isMobile, mapFunctionRef } = useContext(GlobalContext)
   const point = usePoint()
-  const { facetFilters, datasetFilters, searchQueryString } = useSearchQuery()
+  const { facetFilters, datasetFilters } = useSearchQuery()
   const filterCount = facetFilters.length + datasetFilters.length
   const noGeoOn = useNoGeoOn()
   const resultLimitNumber = useResultLimitNumber()
@@ -58,13 +57,6 @@ export default function SearchResults() {
   const removeNotification = useNotificationStore((s) => s.removeNotification)
   const sourceViewResetUrl = useSessionStore((s) => s.sourceViewResetUrl)
   const subpostNav = useSubpostNavigation()
-  const scrollFromUrl = useScrollAnchorUuid()
-  // One-way sync: capture initial scroll param once and restore at most once.
-  // Do NOT "chase" URL updates while the user is scrolling (feedback loop).
-  const initialScrollFromUrlRef = useRef<string | null>(scrollFromUrl)
-  const didRestoreScrollRef = useRef(false)
-  const didPopstateRef = useRef(false)
-  const prevRestoreContextRef = useRef<string | null>(null)
 
 
   const {
@@ -78,83 +70,6 @@ export default function SearchResults() {
     listStatus,
     mobilePreview,
   } = useListData()
-
-  useEffect(() => {
-    if (init) return
-    // Re-arm restore when navigating between result contexts (e.g. entering/leaving subposts),
-    // even when navigation is not a browser back/forward event.
-    //
-    // Important: do NOT include `scrollFromUrl` in this key, since it can change during
-    // user scrolling and would re-introduce feedback.
-    const key = `${sourceViewOn ? "source" : "group"}|${group ?? ""}|${searchQueryString}`
-    if (prevRestoreContextRef.current == null) {
-      prevRestoreContextRef.current = key
-      return
-    }
-    if (prevRestoreContextRef.current !== key) {
-      prevRestoreContextRef.current = key
-      didRestoreScrollRef.current = false
-      initialScrollFromUrlRef.current = null
-    }
-  }, [group, searchQueryString, sourceViewOn])
-
-  useEffect(() => {
-    if (init) return
-    const onPopstate = () => {
-      didPopstateRef.current = true
-      // Allow re-capturing/restoring scroll on browser back/forward navigation.
-      didRestoreScrollRef.current = false
-      initialScrollFromUrlRef.current = null
-    }
-    window.addEventListener("popstate", onPopstate)
-    return () => window.removeEventListener("popstate", onPopstate)
-  }, [])
-
-  useEffect(() => {
-    if (init) return
-    const initialScroll = initialScrollFromUrlRef.current
-    // On initial load / hydration / back-forward restore, the scroll param may arrive
-    // after first render. Capture the first non-null value once.
-    if (initialScroll == null && scrollFromUrl != null) {
-      initialScrollFromUrlRef.current = scrollFromUrl
-    }
-    const effectiveInitialScroll = initialScrollFromUrlRef.current
-    if (effectiveInitialScroll == null) return
-    if (listLoading) return
-    if (!(listStatus === "success" || (typeof listLoadedCount === "number" && listLoadedCount > 0))) return
-
-    if (didRestoreScrollRef.current) return
-    // The scroll container can briefly be null or have an unsettle scrollHeight when
-    // navigating within /search (e.g. group/subpost). Retry a few frames.
-    let cancelled = false
-    let attempts = 0
-    const maxAttempts = 20
-
-    const applyWhenReady = () => {
-      if (cancelled) return
-      const el = scrollableContentRef?.current
-      if (!el) {
-        if (++attempts <= maxAttempts) requestAnimationFrame(applyWhenReady)
-        return
-      }
-      didRestoreScrollRef.current = true
-      const target = el.querySelector<HTMLElement>(
-        `[data-scroll-uuid="${CSS.escape(effectiveInitialScroll)}"]`,
-      )
-      if (!target) {
-        // If the element isn't in the DOM yet, keep trying for a bit.
-        didRestoreScrollRef.current = false
-        if (++attempts <= maxAttempts) requestAnimationFrame(applyWhenReady)
-        return
-      }
-      target.scrollIntoView({ block: "start" })
-    }
-
-    requestAnimationFrame(applyWhenReady)
-    return () => {
-      cancelled = true
-    }
-  }, [scrollFromUrl, listLoading, listLoadedCount, listStatus, scrollableContentRef, searchQueryString])
 
 
 
@@ -256,11 +171,7 @@ export default function SearchResults() {
             {subpostNav.isSubpostNavigation ? (
               <>
                 {subpostNav.sameCoordinateHits.map((hit, i) => (
-                  <li
-                    key={`samecoord-${hit?.fields?.uuid?.[0] ?? i}`}
-                    className="relative"
-                    data-scroll-uuid={hit?.fields?.uuid?.[0] ?? undefined}
-                  >
+                  <li key={`samecoord-${hit?.fields?.uuid?.[0] ?? i}`} className="relative">
                     <ResultItem hit={hit} />
                   </li>
                 ))}
@@ -363,11 +274,7 @@ export default function SearchResults() {
               }
 
               return (
-                <li
-                  key={`result-${i}-${itemData?.fields?.uuid?.[0]}`}
-                  className="relative"
-                  data-scroll-uuid={itemData?.fields?.uuid?.[0] ?? undefined}
-                >
+                <li key={`result-${i}-${itemData?.fields?.uuid?.[0]}`} className="relative">
                   {body}
                 </li>
               )
