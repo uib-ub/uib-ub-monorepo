@@ -1,6 +1,6 @@
 'use client'
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
-import { useDebugGroupsOn, useDebugParamOn, useFacetParam, useGroupParam, useHideResultsOn, useInitParam, useMapSettingsOn, useMode, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useQParam, useSourceViewOn, useTreeParam } from "@/lib/param-hooks";
+import { useDebugGroupsOn, useDebugParamOn, useDrawerSnap, useFacetParam, useGroupParam, useHideResultsOn, useInitParam, useMapSettingsOn, useMode, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useQParam, useSetDrawerSnap, useSourceViewOn, useTreeParam } from "@/lib/param-hooks";
 import { useSearchQuery } from "@/lib/search-params";
 import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
@@ -30,6 +30,7 @@ import TableOptions from "@/components/table/table-options";
 import TreeWindow from "@/components/tree/tree-window";
 import { twMerge } from "tailwind-merge";
 import ResultsHeader from "@/components/results/results-header";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const Drawer = dynamic(() => import("@/components/ui/drawer"), {
     ssr: false
@@ -52,9 +53,9 @@ export interface DrawerProps {
 
 function ShowResultsButton() {
     const { totalHits } = useSearchData()
-    const { snappedPosition } = useSessionStore()
+    const snappedPosition = useDrawerSnap()
     const mode = useMode()
-    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
+    const setSnappedPosition = useSetDrawerSnap()
     if (snappedPosition == 'bottom') return null
     return <div className="p-3 fixed bottom-2 left-0 right-0 z-[3001]">
         <Clickable remove={["facet", "options"]}
@@ -70,7 +71,7 @@ function ShowResultsButton() {
 
 function DrawerWrapper({ children, resultCardData, ...rest }: DrawerProps) {
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
-    const snappedPosition = useSessionStore((s) => s.snappedPosition);
+    const snappedPosition = useDrawerSnap();
     const resetEnabled = useRef<boolean>(false);
     const facet = useFacetParam()
     const mapSettingsOn = useMapSettingsOn()
@@ -133,25 +134,124 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     const optionsOn = useOptionsOn()
     const hideResultsOn = useHideResultsOn()
     const init = useInitParam()
-
+    const router = useRouter()
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
+    const searchParamsString = searchParams.toString()
 
     const [showScrollToTop, setShowScrollToTop] = useState(false)
+    const hasWrittenScrollParamRef = useRef(false)
+    const writeScrollTimeoutRef = useRef<number | null>(null)
+    const userScrollActiveRef = useRef(false)
+    const userScrollResetTimeoutRef = useRef<number | null>(null)
 
     useEffect(() => {
         const el = scrollableContentRef?.current
-        if (!el || isMobile) return
+        if (!el) return
 
-        const onScroll = () => {
-            setShowScrollToTop(el.scrollTop > 300)
+        const markUserScrollActive = () => {
+            userScrollActiveRef.current = true
+            if (userScrollResetTimeoutRef.current) {
+                window.clearTimeout(userScrollResetTimeoutRef.current)
+            }
+            userScrollResetTimeoutRef.current = window.setTimeout(() => {
+                userScrollActiveRef.current = false
+            }, 800)
         }
 
+        const onScroll = () => {
+            const top = Math.max(0, Math.round(el.scrollTop))
+            if (!isMobile) {
+                setShowScrollToTop(top > 300)
+            }
+
+            // Debounced: persist scroll position in URL so back/forward restores correctly.
+            if (writeScrollTimeoutRef.current) {
+                window.clearTimeout(writeScrollTimeoutRef.current)
+            }
+            writeScrollTimeoutRef.current = window.setTimeout(() => {
+                // Only actual user scrolling should update the URL param.
+                // This avoids programmatic scrolls (e.g. restoring scroll after list render)
+                // from clobbering/removing the URL `scroll` value.
+                if (!userScrollActiveRef.current) return
+                // Don't set scroll anchors in "init" mode (init item is rendered separately).
+                if (init) return
+
+                // Use the *current* URL search string, not a potentially stale closure copy.
+                const params = new URLSearchParams(window.location.search)
+                const current = params.get("scroll")
+
+                const rootRect = el.getBoundingClientRect()
+                const candidates = Array.from(el.querySelectorAll<HTMLElement>("[data-scroll-uuid]"))
+                let bestUuid: string | null = null
+                let bestTop = Number.POSITIVE_INFINITY
+
+                for (const node of candidates) {
+                    const uuid = node.getAttribute("data-scroll-uuid")
+                    if (!uuid) continue
+                    const r = node.getBoundingClientRect()
+                    // only consider elements intersecting the scroll viewport
+                    if (r.bottom < rootRect.top || r.top > rootRect.bottom) continue
+                    // Pick the top-most visible item (closest to the scroll viewport top).
+                    const t = Math.max(rootRect.top, r.top)
+                    if (t < bestTop) {
+                        bestTop = t
+                        bestUuid = uuid
+                    }
+                }
+
+                const next = bestUuid
+                if (next === current || (next === null && current === null)) return
+
+                if (next == null) return
+                params.set("scroll", next)
+
+                const nextSearch = params.toString()
+                const nextUrl = `${pathname}${nextSearch ? `?${nextSearch}` : ""}`
+                hasWrittenScrollParamRef.current = true
+                router.replace(nextUrl, { scroll: false })
+            }, 150)
+        }
+
+        const onKeyDown = (e: KeyboardEvent) => {
+            // Common scroll keys. Only count it if the user is interacting with the page.
+            if (
+                e.key === "ArrowDown" ||
+                e.key === "ArrowUp" ||
+                e.key === "PageDown" ||
+                e.key === "PageUp" ||
+                e.key === "Home" ||
+                e.key === "End" ||
+                e.key === " " ||
+                e.key === "Spacebar"
+            ) {
+                markUserScrollActive()
+            }
+        }
+
+        // Inputs that indicate user intent to scroll.
+        el.addEventListener("wheel", markUserScrollActive, { passive: true })
+        el.addEventListener("touchstart", markUserScrollActive, { passive: true })
+        el.addEventListener("touchmove", markUserScrollActive, { passive: true })
+        window.addEventListener("keydown", onKeyDown)
         el.addEventListener('scroll', onScroll, { passive: true })
-        onScroll()
 
         return () => {
             el.removeEventListener('scroll', onScroll)
+            el.removeEventListener("wheel", markUserScrollActive)
+            el.removeEventListener("touchstart", markUserScrollActive)
+            el.removeEventListener("touchmove", markUserScrollActive)
+            window.removeEventListener("keydown", onKeyDown)
+            if (writeScrollTimeoutRef.current) {
+                window.clearTimeout(writeScrollTimeoutRef.current)
+                writeScrollTimeoutRef.current = null
+            }
+            if (userScrollResetTimeoutRef.current) {
+                window.clearTimeout(userScrollResetTimeoutRef.current)
+                userScrollResetTimeoutRef.current = null
+            }
         }
-    }, [scrollableContentRef, isMobile])
+    }, [scrollableContentRef, isMobile, pathname, router, searchParamsString])
 
     const scrollToTop = () => {
         scrollableContentRef?.current?.scrollTo({ top: 0, behavior: 'smooth' })
@@ -189,8 +289,8 @@ function RightWindow({ children }: { children: React.ReactNode }) {
 }
 
 export default function MapInterface() {
-    const snappedPosition = useSessionStore((s) => s.snappedPosition);
-    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
+    const snappedPosition = useDrawerSnap();
+    const setSnappedPosition = useSetDrawerSnap();
     const currentPosition = useSessionStore((s) => s.currentPosition);
     const setCurrentPosition = useSessionStore((s) => s.setCurrentPosition);
     const setDrawerOpen = useSessionStore((s) => s.setDrawerOpen);

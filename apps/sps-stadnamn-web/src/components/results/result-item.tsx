@@ -2,7 +2,7 @@
 import Clickable from '@/components/ui/clickable/clickable';
 import { datasetTitles } from '@/config/metadata-config';
 import { panPointIntoView } from '@/lib/map-utils';
-import { useInitDecoded, usePerspective, useSourceViewOn } from '@/lib/param-hooks';
+import { useDrawerSnap, useInitDecoded, usePerspective, useSourceViewOn } from '@/lib/param-hooks';
 import { stringToBase64Url } from '@/lib/param-utils';
 import { formatHighlight } from '@/lib/text-utils';
 import { GlobalContext } from '@/state/providers/global-provider';
@@ -20,7 +20,7 @@ export default function ResultItem({ hit, onClick, notClickable, ...rest }: { hi
     const itemRef = useRef<HTMLAnchorElement>(null)
     const docDataset = hit?._index?.split('-')?.[2]
     const { isMobile, mapFunctionRef, sosiVocab } = useContext(GlobalContext)
-    const snappedPosition = useSessionStore((s) => s.snappedPosition)
+    const snappedPosition = useDrawerSnap()
     const showScore = useDebugStore((s: any) => s.showScore)
     const setInitGroupLabel = useSessionStore((s) => s.setInitGroupLabel)
     const addNotification = useNotificationStore((s) => s.addNotification)

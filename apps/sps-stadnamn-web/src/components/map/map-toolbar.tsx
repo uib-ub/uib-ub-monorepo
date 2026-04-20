@@ -16,18 +16,18 @@ import { RoundIconButton, RoundIconClickable, RoundIconClickableWithBadge } from
 import { useRouter, useSearchParams } from "next/navigation"
 
 
-import { useCenterParam, useFulltextOn, useGroupParam, useHideResultsOn, useInitParam, useMapSettingsOn, useNoGeoOn, useOptionsOn, usePointParam, useQParam, useSourceViewOn, useTreeParam, useZoomParam } from "@/lib/param-hooks"
+import { useCenterParam, useDrawerSnap, useFulltextOn, useGroupParam, useHideResultsOn, useInitParam, useMapSettingsOn, useNoGeoOn, useOptionsOn, usePointParam, useQParam, useSetDrawerSnap, useSourceViewOn, useTreeParam, useZoomParam } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import Clickable from "../ui/clickable/clickable"
 import NotificationStack from "../ui/notification-stack"
 import { cn } from "@/lib/utils"
 
 export function FilterButton() {
-    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
+    const setSnappedPosition = useSetDrawerSnap()
     const { facetFilters, datasetFilters } = useSearchQuery()
     const filterCount = facetFilters.length + datasetFilters.length
     const optionsOn = useOptionsOn()
-    const snappedPosition = useSessionStore((s) => s.snappedPosition)
+    const snappedPosition = useDrawerSnap()
     const { isMobile } = useContext(GlobalContext)
 
 
@@ -55,12 +55,12 @@ export default function MapToolbar() {
     const { isMobile, mapFunctionRef } = useContext(GlobalContext)
     const searchParams = useSearchParams()
     const currentPosition = useSessionStore((s) => s.currentPosition)
-    const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
+    const setSnappedPosition = useSetDrawerSnap()
     const setMyLocation = useSessionStore((s) => s.setMyLocation)
     const addNotification = useNotificationStore((s) => s.addNotification)
     const removeNotification = useNotificationStore((s) => s.removeNotification)
     const notifications = useNotificationStore((s) => s.notifications)
-    const snappedPosition = useSessionStore((s) => s.snappedPosition)
+    const snappedPosition = useDrawerSnap()
     const { totalHits, searchBounds, searchLoading, searchError } = useSearchData()
     const mapSettingsOn = useMapSettingsOn()
     const tree = useTreeParam()
@@ -194,7 +194,7 @@ export default function MapToolbar() {
 
             {showMobileToolbarButtons && (
                 <div
-                    className={`flex gap-3 absolute z-[5000] ${isMobile
+                    className={`flex gap-2 absolute z-[5000] ${isMobile
                         ? 'right-3 flex-col'
                         : `right-3 flex-col top-14 mt-2 lg:top-auto lg:bottom-4 lg:m-0 lg:left-1/2 lg:right-auto lg:-translate-x-1/2 lg:flex-row`
                         }`}

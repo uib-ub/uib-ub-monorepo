@@ -64,6 +64,10 @@ export const SPECIAL_CASE_FACETS = ['name', 'year'] as const
     'mode',
     'page',
     'perPage',
+    // Persist the right-panel / drawer scroll position for back/forward restore.
+    'scroll',
+    // Mobile drawer snap position: bottom|middle|top.
+    'drawer',
     'mapSettings',
     'overlaySelector',
     'init',

@@ -10,8 +10,7 @@ import { useContext, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { panPointIntoView } from "@/lib/map-utils"
 import { GlobalContext } from "@/state/providers/global-provider"
-import { useSessionStore } from "@/state/zustand/session-store"
-import { useTreeParam } from "@/lib/param-hooks"
+import { useDrawerSnap, useTreeParam } from "@/lib/param-hooks"
 
 const getTreeData = async (dataset: string | null, adm1?: string | null, adm2?: string | null) => {
     const params = new URLSearchParams()
@@ -43,7 +42,7 @@ export default function TreeList({
 }) {
     const tree = useTreeParam()
     const { mapFunctionRef, isMobile } = useContext(GlobalContext)
-    const snappedPosition = useSessionStore((s) => s.snappedPosition)
+    const snappedPosition = useDrawerSnap()
 
     const { data: treeData } = useQuery({
         queryKey: ['treeData', dataset, adm1, adm2],

@@ -12,7 +12,7 @@ import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiInfoFill, PiMagnify
 import { useSearchParams } from "next/navigation";
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "../ui/clickable/clickable-icon";
-import { useSessionStore } from "@/state/zustand/session-store";
+import { useSetDrawerSnap } from "@/lib/param-hooks";
 import { useNotificationStore } from "@/state/zustand/notification-store";
 import Link from "next/link";
 import { useOverlaySelectorOn } from "@/lib/param-hooks";
@@ -34,7 +34,7 @@ export default function MapSettings() {
     setLabelCollisionDetectionEnabled
   } = useMapSettings();
   const searchParams = useSearchParams();
-  const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
+  const setSnappedPosition = useSetDrawerSnap();
   const addNotification = useNotificationStore((s) => s.addNotification);
   const removeNotification = useNotificationStore((s) => s.removeNotification);
   const debug = useDebugStore((s) => s.debug);

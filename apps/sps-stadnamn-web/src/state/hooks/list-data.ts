@@ -3,7 +3,7 @@ import { base64UrlToString } from '@/lib/param-utils';
 import { useSearchQuery } from '@/lib/search-params';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useContext, useEffect } from 'react';
-import { useInitParam, useGroupParam, useNoGeoOn, usePoint, useResultLimitNumber, useSourceViewOn, useSearchSortParam } from '@/lib/param-hooks';
+import { useDrawerSnap, useInitParam, useGroupParam, useNoGeoOn, usePoint, useResultLimitNumber, useSourceViewOn, useSearchSortParam } from '@/lib/param-hooks';
 import { calculateDistance } from '@/lib/map-utils';
 import { useSessionStore } from '../zustand/session-store';
 import { GlobalContext } from '../providers/global-provider';
@@ -97,7 +97,7 @@ export default function useListData() {
     const resultLimitNumber = useResultLimitNumber()
     const selectedGroup = group ? base64UrlToString(group) : null
     const { contextAdmPairs, admContextStatus } = useAdmContextData()
-    const snappedPosition = useSessionStore((s) => s.snappedPosition)
+    const snappedPosition = useDrawerSnap()
     const { isMobile } = useContext(GlobalContext)
     const mobilePreview = Boolean(init && isMobile && snappedPosition == 'bottom')
 
