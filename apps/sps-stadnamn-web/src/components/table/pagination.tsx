@@ -12,8 +12,8 @@ export default function Pagination() {
   // Get current values from URL or use defaults
   const perPage = usePerPageNumber()
   const page = usePageNumber()
-  const { totalHits } = useSearchData()
-  const totalPages = Math.ceil(totalHits?.value / perPage)
+  const { docTotalHits } = useSearchData()
+  const totalPages = Math.ceil((docTotalHits?.value ?? 0) / perPage)
   const cappedTotalPages = Math.min(totalPages, Math.ceil(10000 / perPage))
 
   const setPerPage = (newPerPage: number) => {
@@ -44,7 +44,7 @@ export default function Pagination() {
         </ClickableIcon>
 
         <span role="status" aria-live="polite" className='px-3 py-1 rounded-sm border-neutral-400 flex text-center'>
-          {(page - 1) * perPage + 1}-{page * perPage} av {totalHits?.value?.toLocaleString('no-NO')}{totalHits?.relation != 'eq' ? '+' : ''}
+          {(page - 1) * perPage + 1}-{page * perPage} av {docTotalHits?.value?.toLocaleString('no-NO')}{docTotalHits?.relation != 'eq' ? '+' : ''}
         </span>
 
         <ClickableIcon

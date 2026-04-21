@@ -24,7 +24,7 @@ import SearchQueryDisplay from "../results/search-query-display"
 
 export default function TableExplorer() {
     const perspective = usePerspective()
-    const { totalHits, searchLoading } = useSearchData()
+    const { docTotalHits, searchLoading } = useSearchData()
     const doc = useDocParam()
     const tree = useTreeParam()
     const { tableData, tableLoading } = useTableData()
@@ -78,13 +78,13 @@ export default function TableExplorer() {
 
 
     return <section aria-labelledby="table-explorer-title"><div className="flex items-baseline gap-2 px-4 p-2"><div id="table-explorer-title" className="text-xl !m-0 !p-0">Tabellvisning</div>
-        {!searchLoading && totalHits &&
+        {!searchLoading && docTotalHits &&
             <div
                 className="text-neutral-700 ml-4"
                 role="status"
                 aria-live="polite"
             >
-                {totalHits.value.toLocaleString('no-NO')} treff{totalHits.relation != 'eq' ? '+' : ''}
+                {docTotalHits.value.toLocaleString('no-NO')} treff{docTotalHits.relation != 'eq' ? '+' : ''}
             </div>
         }
         <div className="flex items-center flex-wrap gap-2 ml-auto">
@@ -185,7 +185,7 @@ export default function TableExplorer() {
                                         </tr>
 
                                     </Fragment>
-                                )) : Array.from({ length: totalHits?.value ? Math.min(totalHits.value, 10) : 10 }, (_, index_a) => (
+                                )) : Array.from({ length: docTotalHits?.value ? Math.min(docTotalHits.value, 10) : 10 }, (_, index_a) => (
                                     <tr key={index_a}>
                                         {Array.from({ length: visibleColumnsArray.length + 1 }, (_, index_b) => (
                                             <td key={index_b} className="!h-12">
@@ -211,7 +211,7 @@ export default function TableExplorer() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mx-2 pb-4 sm:justify-between">
-                {totalHits && totalHits.value > 10 && (
+                {docTotalHits && docTotalHits.value > 10 && (
                     <div className="order-2 sm:order-1">
                         <Pagination />
                     </div>
