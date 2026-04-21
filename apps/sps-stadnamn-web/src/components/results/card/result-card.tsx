@@ -205,11 +205,8 @@ function GroupBottomToolbar({
     const coordinateClick = () => {
         if (!groupLatLng) return;
         focusPointWithoutZoomOut(mapFunctionRef.current, groupLatLng, isMobile, snappedPosition);
-        if (isMulti) {
-            if (isMobile && snappedPosition !== "top") setSnappedPosition("middle");
-        } else {
-            if (isMobile && snappedPosition !== "bottom") setSnappedPosition("bottom");
-        }
+        if (isMobile && snappedPosition == "top") setSnappedPosition("middle");
+
     };
 
     const toolbarItems = (
