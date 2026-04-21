@@ -32,6 +32,7 @@ import { BATCH_SIZE, FIRST_VISIBLE_RESULTS, STARTING_BATCH_SIZE } from "@/lib/re
 import ResultsHeader from "./results-header";
 import ResultsListNavigator from "./results-list-navigator";
 import { useSubpostNavigation } from "./use-subpost-navigation";
+import { useResultsScrollRestore, useScrollIndexParam } from "@/components/results/scroll-hooks";
 
 export default function SearchResults() {
   const { searchError, groupTotalHits, docTotalHits, noGeoGroupCount, totalHits, searchLoading } = useSearchData()
@@ -42,9 +43,7 @@ export default function SearchResults() {
   const sourceViewOn = useSourceViewOn()
   const { resultCardData: initResultCardData, resultCardLoading: initResultCardLoading } = useResultCardData()
   const initValue = init ? base64UrlToString(init) : null
-  const snappedPosition = useSessionStore((s) => s.snappedPosition)
-  const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
-  const { isMobile, mapFunctionRef } = useContext(GlobalContext)
+  const { isMobile, scrollableContentRef } = useContext(GlobalContext)
   const point = usePoint()
   const { facetFilters, datasetFilters } = useSearchQuery()
   const filterCount = facetFilters.length + datasetFilters.length
@@ -55,9 +54,13 @@ export default function SearchResults() {
   const hideResultsOn = useHideResultsOn()
   const addNotification = useNotificationStore((s) => s.addNotification)
   const removeNotification = useNotificationStore((s) => s.removeNotification)
-  const sourceViewResetUrl = useSessionStore((s) => s.sourceViewResetUrl)
   const subpostNav = useSubpostNavigation()
-
+  const scrollIndex = useScrollIndexParam("scroll")
+  const { setRowRef, onLoadingChangeForIndex } = useResultsScrollRestore({
+    scrollIndex,
+    sourceViewOn: Boolean(sourceViewOn),
+    scrollableContentRef,
+  })
 
   const {
     listData,
@@ -70,9 +73,6 @@ export default function SearchResults() {
     listStatus,
     mobilePreview,
   } = useListData()
-
-
-
 
   // When `init` is present we render it separately, so "additional" means anything beyond the init item.
   const hasNoAdditionalResults =
@@ -117,7 +117,7 @@ export default function SearchResults() {
         </div>
       ) : initResultCardData && (
         <div className="relative" key={`init-${initValue}`}>
-          <ResultCard itemId={init} highlight={initResultCardData.highlight} hasIiif={initResultCardData?.iiifItems?.length > 0} mobilePreview={mobilePreview} />
+          <ResultCard itemId={initResultCardData.uuid} highlight={initResultCardData.highlight} hasIiif={initResultCardData?.iiifItems?.length > 0} mobilePreview={mobilePreview} />
         </div>
       ))}
 
@@ -167,7 +167,11 @@ export default function SearchResults() {
 
       {!mobilePreview && !hideResultsOn && (
         <>
-          <ul id="result_list" aria-label= {sourceViewOn ? 'Fleire kjeldepostar' : 'Fleire namnegrupper'} className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}>
+          <ul
+            id="result_list"
+            aria-label={sourceViewOn ? 'Fleire kjeldepostar' : 'Fleire namnegrupper'}
+            className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}
+          >
             {subpostNav.isSubpostNavigation ? (
               <>
                 {subpostNav.sameCoordinateHits.map((hit, i) => (
@@ -246,13 +250,27 @@ export default function SearchResults() {
               }
               else if (itemData) {
                 if (!init || noGeoOn) {
+                  const uuid = itemData.fields.uuid[0]
+                  const isActive = scrollIndex === i
                   body = (
-                    <ResultCard
-                      itemId={itemData.fields.uuid[0]}
-                      hasIiif={hasIiif}
-                      distanceMeters={itemData.distance}
-                      highlight={itemData.highlight}
-                    />
+                    <div
+                      ref={setRowRef(i)}
+                      data-result-uuid={uuid}
+                      className={
+                        isActive
+                          ? "outline outline-2 outline-offset-[-2px] outline-fuchsia-500 bg-fuchsia-50/20"
+                          : ""
+                      }
+                    >
+                      <ResultCard
+                        itemId={uuid}
+                        scrollIndex={i}
+                        hasIiif={hasIiif}
+                        distanceMeters={itemData.distance}
+                        highlight={itemData.highlight}
+                        onLoadingChange={onLoadingChangeForIndex(i)}
+                      />
+                    </div>
                   );
                 } else {
                   body = (

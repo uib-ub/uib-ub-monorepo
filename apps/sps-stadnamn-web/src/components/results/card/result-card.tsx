@@ -13,7 +13,8 @@ import { getBnr, getGnr } from "@/lib/utils";
 import useResultCardData from "@/state/hooks/result-card-data";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
-import { useContext, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useState, useContext, useEffect } from "react";
 import { PiCaretRightBold, PiCheck, PiLinkSimple, PiMagnifyingGlass, PiMapPin, PiMapPinFill, PiMicroscope, PiPushPin, PiX, PiXBold } from "react-icons/pi";
 import Carousel from "@/components/results/carousel";
 import ResultCardTitle from "@/components/results/card/result-card-title";
@@ -23,6 +24,7 @@ import CoordinateTypeInfo from "@/components/results/card/coordinate-type-info";
 import { ResultCardSkeleton } from "@/components/results/result-skeletons";
 import DistanceBadge from "@/components/results/distance-badge";
 import { Badge, TitleBadge } from "@/components/ui/badge";
+import { replaceScrollParamInHistory } from "@/components/results/scroll-hooks";
 
 function getLatLngFromLocationField(locationField: unknown): [number, number] | null {
     // Search hits use `fields.location[0].coordinates` (like `ResultItem`).
@@ -138,13 +140,16 @@ function GroupBottomToolbar({
     groupData,
     groupTotal,
     variant,
+    scrollIndex,
 }: {
     groupData: any;
     groupTotal?: number;
     variant: "single" | "multi";
+    scrollIndex?: number;
 }) {
+    const searchParams = useSearchParams();
     const sourceViewOn = useSourceViewOn();
-    const { mapFunctionRef, isMobile, currentUrl } = useContext(GlobalContext);
+    const { mapFunctionRef, isMobile } = useContext(GlobalContext);
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const highlightPoint = useHighlightPoint();
@@ -155,9 +160,9 @@ function GroupBottomToolbar({
     const setSourceViewResetUrl = useSessionStore((s) => s.setSourceViewResetUrl);
 
     if (!groupData) return null;
+    const scrollValue = typeof scrollIndex === "number" ? scrollIndex : null;
 
     const isMulti = variant === "multi";
-    const isSingle = variant === "single";
 
     // Keep the previous visibility rules.
     if (isMulti) {
@@ -219,13 +224,13 @@ function GroupBottomToolbar({
                         <CoordinateButton
                             isActive={isActivePoint}
                             onClick={coordinateClick}
-                            add={{ activePoint: pointValue }}
+                            add={{ activePoint: pointValue, scroll: scrollValue }}
                         />
                     )}
                     {!group && !isInit &&  (
                         <ClickableIcon
                             label="Vel som startpunkt"
-                            add={{ init: groupInitParamValue, point: pointValue }}
+                            add={{ init: groupInitParamValue, point: pointValue, scroll: scrollValue }}
                             remove={["activePoint"]}
                             className="btn text-neutral-900 btn-outline btn-compact rounded-full w-10 h-10 flex items-center justify-center border-neutral-200 bg-white shadow-none"
                         >
@@ -245,6 +250,7 @@ function GroupBottomToolbar({
                     {(groupTotal ?? 0) > 0 && (
                         <Clickable
                             className="btn btn-outline btn-compact rounded-full items-center gap-2 !pr-2 flex h-10 pl-4 shadow-none"
+                            // IMPORTANT: scroll should not be transferred to the sourceView URL
                             only={{
                                 sourceView: "on",
                                 group: stringToBase64Url(groupData.id),
@@ -252,8 +258,21 @@ function GroupBottomToolbar({
                                 zoom,
                             }}
                             onClick={() => {
-                                if (!currentUrl.current) return;
-                                setSourceViewResetUrl(currentUrl.current);
+                                // Keep the current list URL (reset target) synced with the clicked card.
+                                // But do NOT include `scroll` in the URL we navigate to (sourceView).
+                                const nextCurrent = new URLSearchParams(searchParams);
+                                if (scrollValue != null) {
+                                    nextCurrent.set("scroll", String(scrollValue));
+                                } else {
+                                    nextCurrent.delete("scroll");
+                                }
+                                const resetUrl = nextCurrent.toString() ? `/search?${nextCurrent.toString()}` : "/search";
+                                setSourceViewResetUrl(resetUrl);
+                                replaceScrollParamInHistory({
+                                    scrollIndex: scrollValue,
+                                    basePathname: "/search",
+                                    searchParams: nextCurrent,
+                                });
                             }}
                         >
                             Underpostar
@@ -274,6 +293,11 @@ function GroupBottomToolbar({
                         link={true}
                         href={uuidUrl || ""}
                         disabled={!uuidUrl}
+                        onClick={() => {
+                            // Ensure the current /search history entry remembers which card we came from,
+                            // without leaking `scroll` into the uuid route URL.
+                            replaceScrollParamInHistory({ scrollIndex: scrollValue });
+                        }}
                         className="btn btn-outline btn-compact rounded-full items-center gap-2 !pr-2 flex h-10 pl-4 shrink-0 border-neutral-200 bg-white shadow-none"
                     >
                         Detaljar
@@ -299,16 +323,20 @@ function GroupBottomToolbar({
 
 export default function ResultCard({
     itemId,
+    scrollIndex,
     hasIiif,
     distanceMeters,
     mobilePreview,
     highlight,
+    onLoadingChange,
 }: {
     itemId: string | null;
+    scrollIndex?: number;
     hasIiif?: boolean;
     distanceMeters?: number | null;
     mobilePreview?: boolean | undefined;
     highlight?: any;
+    onLoadingChange?: (loading: boolean) => void;
 }) {
     const { resultCardData, resultCardLoading, resultCardTotal } = useResultCardData(itemId);
     const iiifItems = resultCardData?.iiifItems;
@@ -322,6 +350,11 @@ export default function ResultCard({
     const point = usePoint();
     const { isMobile } = useContext(GlobalContext);
     const init = useInitParam();
+
+    useEffect(() => {
+        if (!onLoadingChange) return;
+        onLoadingChange(Boolean(resultCardLoading));
+    }, [onLoadingChange, resultCardLoading]);
 
     const toText = (value: unknown): string => {
         if (Array.isArray(value)) return value.filter(Boolean).join(" | ");
@@ -425,7 +458,7 @@ export default function ResultCard({
     const activePointValue = groupLatLng ? `${groupLatLng[0]},${groupLatLng[1]}` : null;
 
     if (resultCardLoading) {
-        return <ResultCardSkeleton hasIiif={hasIiif} />;
+        return <ResultCardSkeleton hasIiif={hasIiif} />
     }
 
     if (!sourceViewOn && !resultCardData?.["id"]) {
@@ -450,7 +483,9 @@ export default function ResultCard({
 
 
     return (
-        <div className={`relative flex min-w-0 flex-col  ${mobilePreview ? 'gap-1 flex-wrap pb-8 pt-3' : 'gap-3 py-4'}`}>
+        <div
+            className={`relative flex min-w-0 flex-col  ${mobilePreview ? 'gap-1 flex-wrap pb-8 pt-3' : 'gap-3 py-4'}`}
+        >
             <div className={`min-w-0 w-full flex flex-col px-3 ${mobilePreview ? 'gap-1 flex-wrap' : 'gap-3'}`}>
                 {datasets && datasets.length == 1 && <div className={`flex items-center gap-2 ${mobilePreview ? 'flex-wrap' : ''}`}>
                     {datasets && datasets.length == 1 && (
@@ -626,10 +661,12 @@ export default function ResultCard({
                 linkItems?.length > 0 && <LinkItemsSection linkItems={linkItems} />
             )}
 
-            {!mobilePreview && <>
-                <GroupBottomToolbar groupData={resultCardData} groupTotal={resultCardTotal} variant="multi" />
-                {hasSingleSource && <GroupBottomToolbar groupData={resultCardData} variant="single" />}
-            </>}
+            {!mobilePreview && (
+                <>
+                    <GroupBottomToolbar scrollIndex={scrollIndex} groupData={resultCardData} groupTotal={resultCardTotal} variant="multi" />
+                    {hasSingleSource && <GroupBottomToolbar scrollIndex={scrollIndex} groupData={resultCardData} variant="single" />}
+                </>
+            )}
 
         </div>
     );

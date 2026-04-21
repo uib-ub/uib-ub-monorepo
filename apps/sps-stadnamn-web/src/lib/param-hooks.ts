@@ -285,6 +285,10 @@ export function useWithinParam() {
     return useGetParam('within')
 }
 
+export function useScrollParam() {
+    return useGetParam('scroll')
+}
+
 
 export function useOverlayParams() {
     const searchParams = useSearchParams()

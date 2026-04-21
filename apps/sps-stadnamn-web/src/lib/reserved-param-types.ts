@@ -68,6 +68,7 @@ export const SPECIAL_CASE_FACETS = ['name', 'year'] as const
     'overlaySelector',
     'init',
     'activePoint',
+    'scroll',
     'tree',
     'center',
     'zoom',
