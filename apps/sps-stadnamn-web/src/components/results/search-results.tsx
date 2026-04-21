@@ -264,7 +264,7 @@ export default function SearchResults() {
                       }
                     >
                       <ResultCard
-                        itemId={uuid}
+                        itemId={itemData.fields.uuid[0]}
                         scrollIndex={i}
                         hasIiif={hasIiif}
                         distanceMeters={itemData.distance}
