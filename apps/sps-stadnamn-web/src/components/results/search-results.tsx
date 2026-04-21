@@ -59,6 +59,7 @@ export default function SearchResults() {
   const { setRowRef, onLoadingChangeForIndex } = useResultsScrollRestore({
     scrollIndex,
     sourceViewOn: Boolean(sourceViewOn),
+    initOn: Boolean(init),
     scrollableContentRef,
   })
 
@@ -258,7 +259,7 @@ export default function SearchResults() {
                       data-result-uuid={uuid}
                       className={
                         isActive
-                          ? "outline outline-2 outline-offset-[-2px] outline-fuchsia-500 bg-fuchsia-50/20"
+                          ? "bg-accent-50"
                           : ""
                       }
                     >

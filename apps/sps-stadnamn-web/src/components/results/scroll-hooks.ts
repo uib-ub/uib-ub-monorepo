@@ -43,6 +43,7 @@ export function replaceScrollParamInHistory(opts: {
 type ResultsScrollRestoreArgs = {
   scrollIndex: number | null;
   sourceViewOn: boolean;
+  initOn: boolean;
   scrollableContentRef?: React.RefObject<HTMLDivElement | null> | null;
 };
 
@@ -56,6 +57,7 @@ type ResultsScrollRestoreArgs = {
 export function useResultsScrollRestore({
   scrollIndex,
   sourceViewOn,
+  initOn,
   scrollableContentRef,
 }: ResultsScrollRestoreArgs) {
   const rowRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -68,6 +70,17 @@ export function useResultsScrollRestore({
   const didAutoScrollRef = useRef<number | null>(null);
   const initialScrollIndexRef = useRef<number | null>(null);
   const prevSourceViewOnRef = useRef<boolean>(false);
+  const prevInitOnRef = useRef<boolean>(false);
+  const didHistoryNavRef = useRef<boolean>(false);
+
+  // Mark browser back/forward within the same route (e.g. toggling init on/off via history).
+  useEffect(() => {
+    const onPopState = () => {
+      didHistoryNavRef.current = true;
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   const isHardReload = useMemo(() => {
     try {
@@ -93,8 +106,23 @@ export function useResultsScrollRestore({
     if (scrollIndex == null) return;
     initialScrollIndexRef.current = scrollIndex;
     didAutoScrollRef.current = null;
+    didHistoryNavRef.current = false;
     setLoadingTick((t) => t + 1);
   }, [sourceViewOn, scrollIndex]);
+
+  // Re-arm when init is removed due to history navigation (Vel som startpunkt -> back).
+  // We intentionally do not re-arm on the click that ADDS init.
+  useEffect(() => {
+    const prev = prevInitOnRef.current;
+    prevInitOnRef.current = Boolean(initOn);
+    if (!prev || initOn) return;
+    if (!didHistoryNavRef.current) return;
+    if (scrollIndex == null) return;
+    initialScrollIndexRef.current = scrollIndex;
+    didAutoScrollRef.current = null;
+    didHistoryNavRef.current = false;
+    setLoadingTick((t) => t + 1);
+  }, [initOn, scrollIndex]);
 
   // Re-arm when page is restored from bfcache.
   useEffect(() => {
