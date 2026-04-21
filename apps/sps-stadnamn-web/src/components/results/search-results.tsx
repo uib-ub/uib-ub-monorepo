@@ -45,7 +45,7 @@ export default function SearchResults() {
   const initValue = init ? base64UrlToString(init) : null
   const { isMobile, scrollableContentRef } = useContext(GlobalContext)
   const point = usePoint()
-  const { facetFilters, datasetFilters } = useSearchQuery()
+  const { facetFilters, datasetFilters, searchQueryString, searchQuery } = useSearchQuery()
   const filterCount = facetFilters.length + datasetFilters.length
   const noGeoOn = useNoGeoOn()
   const resultLimitNumber = useResultLimitNumber()
@@ -69,7 +69,6 @@ export default function SearchResults() {
     listError,
     listLoading,
     listFetchNextPage,
-    listHasNextPage,
     listIsFetchingNextPage,
     listStatus,
     mobilePreview,
@@ -118,7 +117,7 @@ export default function SearchResults() {
         </div>
       ) : initResultCardData && (
         <div className="relative" key={`init-${initValue}`}>
-          <ResultCard itemId={initResultCardData.uuid} highlight={initResultCardData.highlight} hasIiif={initResultCardData?.iiifItems?.length > 0} mobilePreview={mobilePreview} />
+          <ResultCard itemId={init} highlight={initResultCardData.highlight} hasIiif={initResultCardData?.iiifItems?.length > 0} mobilePreview={mobilePreview} />
         </div>
       ))}
 

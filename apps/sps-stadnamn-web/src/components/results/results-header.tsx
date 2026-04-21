@@ -18,7 +18,7 @@ import ClickableIcon from "@/components/ui/clickable/clickable-icon"
 import { PiXBold } from "react-icons/pi"
 
 export default function ResultsHeader({ sameCoordinateCount }: { sameCoordinateCount?: number | null }) {
-    const { isMobile } = useContext(GlobalContext)
+    const { isMobile, parentSearchUrl } = useContext(GlobalContext)
     const hideResultsOn = useHideResultsOn()
     const qParam = useQParam()
     const group = useGroupParam()
@@ -132,6 +132,7 @@ export default function ResultsHeader({ sameCoordinateCount }: { sameCoordinateC
                     {showGroupClose && (
                         <ClickableIcon
                             label="Overordna søk"
+                            href={parentSearchUrl.current || "/search"}
                             remove={["group", "sourceView"]}
                             className="btn btn-outline rounded-full text-neutral-900 p-2"
                         >
