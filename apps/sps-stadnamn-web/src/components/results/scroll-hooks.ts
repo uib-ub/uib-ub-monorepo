@@ -1,5 +1,7 @@
+import { GlobalContext } from "@/state/providers/global-provider";
+import { useSessionStore } from "@/state/zustand/session-store";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 function parseStrictNonNegativeInt(value: string | null): number | null {
   if (!value) return null;
@@ -72,6 +74,9 @@ export function useResultsScrollRestore({
   const prevSourceViewOnRef = useRef<boolean>(false);
   const prevInitOnRef = useRef<boolean>(false);
   const didHistoryNavRef = useRef<boolean>(false);
+  const { isMobile } = useContext(GlobalContext);
+  const snappedPosition = useSessionStore((s) => s.snappedPosition);
+  const shouldDelayRestore = isMobile && snappedPosition === "bottom";
 
   // Mark browser back/forward within the same route (e.g. toggling init on/off via history).
   useEffect(() => {
@@ -137,6 +142,7 @@ export function useResultsScrollRestore({
   }, [scrollIndex]);
 
   useEffect(() => {
+    if (shouldDelayRestore) return;
     const targetIndex = initialScrollIndexRef.current;
     if (targetIndex == null) return;
     if (didAutoScrollRef.current === targetIndex) return;
@@ -169,7 +175,7 @@ export function useResultsScrollRestore({
     }
 
     didAutoScrollRef.current = targetIndex;
-  }, [isHardReload, loadingTick, scrollableContentRef]);
+  }, [isHardReload, loadingTick, scrollableContentRef, shouldDelayRestore]);
 
   const setRowRef = useCallback((index: number) => {
     return (el: HTMLDivElement | null) => {
