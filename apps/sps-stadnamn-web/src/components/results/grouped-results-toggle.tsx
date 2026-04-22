@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useRef } from "react"
 import { GlobalContext } from "@/state/providers/global-provider"
-import { PiCaretLeftBold, PiCaretRightBold } from "react-icons/pi"
+import { PiArrowLeftBold, PiArrowRightBold, PiCaretLeftBold, PiCaretRightBold } from "react-icons/pi"
 import Clickable from "@/components/ui/clickable/clickable"
 import { useInitParam, useSourceViewOn, useGroupParam, useCenterParam, useZoomParam, useQParam, usePointParam, useFulltextOn, useNoGeoOn } from "@/lib/param-hooks"
 import useResultCardData from "@/state/hooks/result-card-data"
@@ -48,16 +48,16 @@ export default function GroupedResultsToggle() {
         <div className="relative flex items-center gap-2 text-sm">
             {sourceViewOn ? (
                 inGroupMode ? null : (
-                    <Clickable className="flex items-center gap-2" only={{ q, center, zoom, point, init: group || initResultCardData?.fields?.['group.id']?.[0] ? stringToBase64Url(initResultCardData.fields["group.id"][0]) : null, noGeo: noGeoOn ? 'on' : null }}>
-                        <PiCaretLeftBold aria-hidden="true" className="text-primary-700" />
+                    <Clickable className="flex items-center gap-2" only={{ q, center, zoom, point, noGeo: noGeoOn ? 'on' : null }}>
+                        <PiArrowLeftBold aria-hidden="true" className="text-primary-700" />
                         Gruppert søk
                     </Clickable>
                     
                 )
             )
             :
-            <Clickable className="flex items-center gap-2" add={{ sourceView: 'on', init: initResultCardData?.fields?.uuid?.[0] ? stringToBase64Url(initResultCardData.fields.uuid[0]) : null }}>
-            Avansert søk <PiCaretRightBold aria-hidden="true" className="text-primary-700"/>
+            <Clickable className="flex items-center gap-2" add={{ sourceView: 'on'}}>
+            Avansert søk <PiArrowRightBold aria-hidden="true" className="text-primary-700"/>
             </Clickable>
 
             }

@@ -9,7 +9,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import { useDebugStore } from "@/state/zustand/debug-store";
 import dynamic from "next/dynamic";
 import { useContext, useEffect, useRef, useState } from "react";
-import { PiCaretDownBold, PiCaretLeftBold, PiCaretUp, PiCaretUpBold, PiX } from "react-icons/pi";
+import { PiArrowUpBold, PiCaretDownBold, PiCaretLeftBold, PiCaretUp, PiCaretUpBold, PiX } from "react-icons/pi";
 import { overlayButtonShadowClass, RoundIconButton } from "@/components/ui/clickable/round-icon-button";
 import MapSettings from "@/components/map/map-settings";
 import { Badge, TitleBadge } from "@/components/ui/badge";
@@ -182,7 +182,7 @@ function RightWindow({ children }: { children: React.ReactNode }) {
                 label="Til toppen"
                 side="top"
             >
-                <PiCaretUp className="text-2xl" />
+                <PiArrowUpBold className="text-2xl" />
             </RoundIconButton>
         )}
     </div>

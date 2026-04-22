@@ -6,7 +6,7 @@ import {
     MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM,
 } from "@/lib/map-utils"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { PiCaretUp, PiCaretUpBold, PiFunnel } from "react-icons/pi"
+import { PiArrowUpBold, PiCaretUp, PiCaretUpBold, PiFunnel } from "react-icons/pi"
 import { RoundIconButton, RoundIconClickable, RoundIconClickableWithBadge } from "./clickable/round-icon-button"
 import Clickable from "./clickable/clickable"
 import { usePathname, useSearchParams } from "next/navigation"
@@ -471,7 +471,7 @@ export default function Drawer({
                         label="Til toppen"
                         side="top"
                     >
-                        <PiCaretUp className="text-2xl" />
+                        <PiArrowUpBold className="text-2xl" />
                     </RoundIconButton>
                 )}
 

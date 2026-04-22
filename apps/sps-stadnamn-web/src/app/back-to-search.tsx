@@ -3,7 +3,7 @@ import { GlobalContext } from "@/state/providers/global-provider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContext } from "react";
-import { PiCaretLeft } from "react-icons/pi";
+import { PiArrowLeftBold, PiCaretLeft } from "react-icons/pi";
 
 export default function BackToSearch() {
     const { currentUrl } = useContext(GlobalContext);
@@ -16,15 +16,13 @@ export default function BackToSearch() {
         currentUrl.current
     ) {
         return (
-            <div className="flex items-center justify-center py-4 ml-4 border-b border-neutral-200 gap-2 no-underline text-xl ">
                 <Link
                     href={currentUrl.current}
-                    className="flex items-center gap-2 no-underline text-xl"
+                    className="flex items-center gap-2 no-underline flex ml-auto xl:ml-4 btn btn-outline rounded-md items-center justify-center mr-2 gap-2 no-underline text-neutral-900"
                 >
-                    <PiCaretLeft className="text-2xl" />
-                    Stadnamnsøk
+                    <PiArrowLeftBold className="text-2xl" />
+                    <span className="sr-only xl:not-sr-only text-xl">Stadnamnsøk</span>
                 </Link>
-            </div>
         );
     }
     return null;
