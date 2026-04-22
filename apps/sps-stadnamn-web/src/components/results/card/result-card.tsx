@@ -16,7 +16,7 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import { useSearchParams } from "next/navigation";
 import { useState, useContext, useEffect } from "react";
 import { PiCaretRightBold, PiCheck, PiLinkSimple, PiMagnifyingGlass, PiMapPin, PiMapPinFill, PiMicroscope, PiPushPin, PiX, PiXBold } from "react-icons/pi";
-import Carousel from "@/components/results/carousel";
+import LazyCarousel from "@/components/results/lazy-carousel";
 import ResultCardTitle from "@/components/results/card/result-card-title";
 import { TextItemsSection } from "@/components/results/card/text-items-section";
 import { LinkItemsSection } from "@/components/results/card/link-items-section";
@@ -632,10 +632,7 @@ export default function ResultCard({
             </div>
             
 
-            {iiifItems?.length > 0 && <>
-                    <Carousel items={iiifItems} />
-                </>
-            }
+            {iiifItems?.length > 0 && <LazyCarousel items={iiifItems} />}
             {!mobilePreview && Array.isArray(audioItems) && audioItems.length > 0 && (
                 <AudioPlayerList
                     recordings={audioItems}
