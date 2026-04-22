@@ -224,16 +224,6 @@ function GroupBottomToolbar({
                             add={{ activePoint: pointValue, scroll: scrollValue }}
                         />
                     )}
-                    {!group && !isInit &&  (
-                        <ClickableIcon
-                            label="Vel som startpunkt"
-                            add={{ init: groupInitParamValue, point: pointValue, scroll: scrollValue }}
-                            remove={["activePoint"]}
-                            className="btn text-neutral-900 btn-outline btn-compact rounded-full w-10 h-10 flex items-center justify-center border-neutral-200 bg-white shadow-none"
-                        >
-                            <PiPushPin aria-hidden="true" className="text-base" />
-                        </ClickableIcon>
-                    )}
                 </>
             )}
         </>
@@ -284,7 +274,7 @@ function GroupBottomToolbar({
     return (
         <div className="w-full px-3 mt-auto flex flex-col gap-2">
             <div className="flex items-center gap-2 flex-wrap">
-                <div className={`ml-auto flex items-center gap-3 ${isActivePoint ? "mt-1" : ""}`}>
+                <div className={`ml-auto flex items-center gap-2 ${isActivePoint ? "mt-1" : ""}`}>
                     {toolbarItems}
                     <Clickable
                         link={true}
