@@ -4,7 +4,6 @@ import {
     MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM,
     mobileSearchChromeWrapperTopStyle,
     mobileStackBelowSearchChromeTopStyle,
-    panPointIntoView,
 } from "@/lib/map-utils"
 import useSearchData from "@/state/hooks/search-data"
 import useResultCardData from "@/state/hooks/result-card-data"
@@ -208,11 +207,11 @@ export default function MapToolbar() {
                         // Re-focus immediately on existing start point so repeated clicks
                         // still bring it into view even before geolocation resolves.
                         if (point && mapFunctionRef?.current) {
-                            panPointIntoView(mapFunctionRef.current, point, isMobile, true, true)
+                            mapFunctionRef.current.panTo?.([point[0], point[1]], { animate: false })
                         }
                         getMyLocation((location) => {
                             if (mapFunctionRef?.current) {
-                                panPointIntoView(mapFunctionRef.current, location, isMobile, true, true)
+                                mapFunctionRef.current.panTo?.([location[0], location[1]], { animate: false })
                             }
 
                             const currentQuery =
