@@ -1,5 +1,5 @@
 'use client'
-import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, panPointIntoView } from "@/lib/map-utils";
+import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH } from "@/lib/map-utils";
 import { useDebugGroupsOn, useDebugParamOn, useFacetParam, useGroupParam, useHideResultsOn, useInitParam, useMapSettingsOn, useMode, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useQParam, useSourceViewOn, useTreeParam } from "@/lib/param-hooks";
 import { useSearchQuery } from "@/lib/search-params";
 import useResultCardData from "@/state/hooks/result-card-data";
@@ -68,30 +68,11 @@ function ShowResultsButton() {
 
 
 
-function DrawerWrapper({ children, resultCardData, ...rest }: DrawerProps) {
-    const { isMobile, mapFunctionRef } = useContext(GlobalContext)
-    const snappedPosition = useSessionStore((s) => s.snappedPosition);
-    const resetEnabled = useRef<boolean>(false);
+function DrawerWrapper({ children, ...rest }: DrawerProps) {
+    const { isMobile } = useContext(GlobalContext)
     const facet = useFacetParam()
     const mapSettingsOn = useMapSettingsOn()
     const overlaySelectorOn = useOverlaySelectorOn()
-    const mode = useMode()
-
-    useEffect(() => {
-        if (!isMobile || mode == 'table' || !mapFunctionRef?.current) return
-        // When map settings or the overlay selector are open, avoid auto-panning the map
-        // so that explicit map interactions (like fitting to an overlay) are not overridden
-        // when the drawer position changes.
-        if (mapSettingsOn || overlaySelectorOn) return
-        const point = resultCardData?.coordinates
-        if (!point) return
-
-        const wasAdjusted = panPointIntoView(mapFunctionRef.current, [point[1], point[0]], true, snappedPosition === 'middle', resetEnabled.current)
-        if (wasAdjusted) {
-            resetEnabled.current = !resetEnabled.current
-        }
-
-    }, [isMobile, snappedPosition, resultCardData, mapFunctionRef, mode, mapSettingsOn, overlaySelectorOn])
 
     if (!isMobile) {
         return <>{children}</>

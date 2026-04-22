@@ -400,12 +400,81 @@ export const getMyLocation = (setMyLocation: (location: [number, number]) => voi
   }
 }
 
+export type MapViewportPadding = {
+  padLeft: number
+  padRight: number
+  padTop: number
+  padBottom: number
+}
+
+export function getMapViewportPadding(
+  map: any,
+  isMobile: boolean,
+  padRightFrac?: number,
+  padLeftFrac?: number,
+): MapViewportPadding | null {
+  if (!map?.getSize) return null
+  const size = map.getSize()
+
+  if (isMobile) {
+    // Mobile: assume drawer is at middle snap (`MAP_DRAWER_MAX_HEIGHT_SVH`) and compute
+    // the ACTUAL overlap with the map container in viewport space.
+    // This avoids under/over-estimating covered area when map container bottom offset changes.
+    let padBottom = Math.round(size.y * 0.5) // fallback when DOM APIs are unavailable
+    try {
+      const container = map.getContainer?.()
+      const rect = container?.getBoundingClientRect?.()
+      const viewportHeight =
+        (typeof window !== 'undefined' && (window.visualViewport?.height || window.innerHeight)) || 0
+      if (rect && viewportHeight > 0) {
+        const drawerHeightPx = (MAP_DRAWER_MAX_HEIGHT_SVH / 100) * viewportHeight
+        const drawerTopY = viewportHeight - drawerHeightPx
+        const overlapStartY = Math.max(rect.top, drawerTopY)
+        const overlapPx = Math.max(0, rect.bottom - overlapStartY)
+        padBottom = Math.round(Math.min(rect.height, overlapPx))
+      }
+    } catch {
+      // keep fallback
+    }
+
+    return {
+      padTop: Math.round(size.y * 0.08),
+      padLeft: Math.round(size.x * 0.05),
+      padRight: Math.round(size.x * 0.05),
+      padBottom,
+    }
+  }
+
+  // Desktop: keep left/right windows in account for visibility checks.
+  const padLeft = Math.round(size.x * (padLeftFrac ?? 0.25))
+  const padRight = Math.round(size.x * (padRightFrac ?? 0.25))
+  const yPad = Math.round(Math.min(120, size.y * 0.1))
+  return { padLeft, padRight, padTop: yPad, padBottom: yPad }
+}
+
+export function isLatLngInPaddedViewport(
+  map: any,
+  lat: number,
+  lng: number,
+  padding: MapViewportPadding
+): boolean {
+  if (!map?.getSize || !map?.latLngToContainerPoint) return false
+  const size = map.getSize()
+  const pt = map.latLngToContainerPoint([lat, lng])
+  return (
+    pt.x >= padding.padLeft &&
+    pt.x <= (size.x - padding.padRight) &&
+    pt.y >= padding.padTop &&
+    pt.y <= (size.y - padding.padBottom)
+  )
+}
+
 // Utility to pan a point into view with container-based padding for both mobile and desktop
 export function panPointIntoView(
   map: any,
   point: [number, number],
   isMobile: boolean,
-  maxDrawer?: boolean,
+  _maxDrawer?: boolean,
   reset?: boolean,
   padRightFrac?: number,
   padLeftFrac?: number
@@ -413,47 +482,49 @@ export function panPointIntoView(
   if (!map || !point) return false;
 
   const [lat, lng] = point;
-  const size = map.getSize();
-  const zoom = map.getZoom();
+  const padding = getMapViewportPadding(map, isMobile, padRightFrac, padLeftFrac)
+  if (!padding) return false
 
-  // Hard-coded paddings based on platform and drawer state
-  let padLeft = 0, padRight = 0, padTop = 0, padBottom = 0;
-  if (isMobile) {
-    // Small top and x padding always on mobile
-    padTop = Math.round(size.y * 0.08); // ~8%
-    const xPadFrac = 0.05;              // 5% left/right
-    padLeft = Math.round(size.x * xPadFrac);
-    padRight = Math.round(size.x * xPadFrac);
-    // Bottom reserved only when drawer is at max height
-    padBottom = maxDrawer ? Math.round(size.y * (MAP_DRAWER_MAX_HEIGHT_SVH / 100)) : 0;
-  } else {
-    // Desktop: left panel default 25svw (absent in tree view), right panel variable (default 25%, 40% in tree view)
-    padLeft = Math.round(size.x * (padLeftFrac ?? 0.25));
-    padRight = Math.round(size.x * (padRightFrac ?? 0.25));
-    const yPad = Math.round(Math.min(120, size.y * 0.1));
-    padTop = yPad;
-    padBottom = yPad;
-  }
+  const isInside = isLatLngInPaddedViewport(map, lat, lng, padding)
+  if (!reset && isInside) return false
 
-  // Check visibility within padded rectangle
-  const pt = map.latLngToContainerPoint([lat, lng]);
-  const insideHoriz = pt.x >= padLeft && pt.x <= (size.x - padRight);
-  const insideVert = pt.y >= padTop && pt.y <= (size.y - padBottom);
-
-  if (reset || !(insideHoriz && insideVert)) {
-    const eps = 1e-6;
-    map.fitBounds(
-      [[lat + eps, lng - eps], [lat - eps, lng + eps]],
-      {
-        paddingTopLeft: [padLeft, padTop],
-        paddingBottomRight: [padRight, padBottom],
-        maxZoom: zoom,
-        duration: 0.05
-      }
-    );
+  if (!isMobile) {
+    // Desktop: true center.
+    map.panTo?.([lat, lng], { animate: false })
     return true
   }
-  return false
+
+  // Mobile: keep the point centered in the visible (unpadded) viewport,
+  // assuming drawer middle coverage.
+  const size = map.getSize()
+  const centerTargetY = (padding.padTop + (size.y - padding.padBottom)) / 2
+  const centerTargetX = size.x / 2
+  const targetLatLng = map.containerPointToLatLng?.([centerTargetX, centerTargetY])
+
+  if (targetLatLng && map?.project && map?.unproject && map?.getZoom) {
+    const zoom = map.getZoom()
+    const projectedPoint = map.project([lat, lng], zoom)
+    const projectedTarget = map.project(targetLatLng, zoom)
+    const projectedCenter = map.project(map.getCenter(), zoom)
+
+    const dx = projectedPoint.x - projectedTarget.x
+    const dy = projectedPoint.y - projectedTarget.y
+    const newCenterProjected = {
+      x: projectedCenter.x + dx,
+      y: projectedCenter.y + dy,
+    }
+    const newCenter = map.unproject(newCenterProjected, zoom)
+    map.panTo?.(newCenter, { animate: false })
+    return true
+  }
+
+  // Fallback: at least keep it within the padded viewport.
+  map.panInside?.([lat, lng], {
+    paddingTopLeft: [padding.padLeft, padding.padTop],
+    paddingBottomRight: [padding.padRight, padding.padBottom],
+    animate: false,
+  })
+  return true
 }
 
 /**

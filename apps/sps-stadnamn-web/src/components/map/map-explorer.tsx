@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { getAreaLabelMarkerIcon, getBrukMarkerIcon, getClusterMarker, getInitAnchorMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 
-import { boundsFromZoomAndCenter, calculateRadius, getGridSize, getLabelBounds, MAP_DRAWER_BOTTOM_HEIGHT_REM, MOBILE_RESULTS_FOOTER_CLEARANCE_REM, MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM } from "@/lib/map-utils";
+import { boundsFromZoomAndCenter, calculateRadius, getGridSize, getLabelBounds, getMapViewportPadding, isLatLngInPaddedViewport, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
 import { useActivePoint, useCenterNumber, useDebugGroupsOn, useDocParam, useGroupParam, useMapSettingsOn, usePoint, useQParam, useRadiusNumber, useSourceViewOn, useTreeParam, useZoomNumber, useInitDecoded, useInitParam } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { parseTreeParam } from "@/lib/tree-param";
@@ -237,37 +237,11 @@ export default function MapExplorer() {
   const [hideMarkersDuringGridTransition, setHideMarkersDuringGridTransition] = useState(false)
 
   const getIsLatLngInPaddedViewport = useCallback((map: any) => {
-    if (!map?.getSize || !map?.latLngToContainerPoint) return null
-    const size = map.getSize()
-
-    let padLeft = 0, padRight = 0, padTop = 0, padBottom = 0
-    if (isMobile) {
-      // Mobile padding:
-      // - assume drawer snapped to bottom
-      // - keep some bottom clearance
-      // - double top padding to account for notifications
-      // - double x padding
-      padTop = Math.round(rootFontSize * (2 * (MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM + 0.5)))
-      const xPad = Math.round(size.x * 0.10)
-      padLeft = xPad
-      padRight = xPad
-      padBottom = Math.round(rootFontSize * MOBILE_RESULTS_FOOTER_CLEARANCE_REM)
-    } else {
-      padLeft = Math.round(size.x * 0.25)
-      padRight = Math.round(size.x * 0.25)
-      const yPad = Math.round(Math.min(120, size.y * 0.1))
-      padTop = yPad
-      padBottom = yPad
-    }
+    const padding = getMapViewportPadding(map, isMobile)
+    if (!padding) return null
 
     return (lat: number, lng: number) => {
-      const pt = map.latLngToContainerPoint([lat, lng])
-      return (
-        pt.x >= padLeft &&
-        pt.x <= (size.x - padRight) &&
-        pt.y >= padTop &&
-        pt.y <= (size.y - padBottom)
-      )
+      return isLatLngInPaddedViewport(map, lat, lng, padding)
     }
   }, [isMobile])
 
@@ -1166,7 +1140,10 @@ export default function MapExplorer() {
 
 
 
-              const newParams = new URLSearchParams(searchParams)
+              const newParams =
+                typeof window !== 'undefined'
+                  ? new URLSearchParams(window.location.search)
+                  : new URLSearchParams(searchParams)
               newParams.set('zoom', mapZoom)
               newParams.set('center', `${mapCenter.lat},${mapCenter.lng}`)
 

@@ -4,6 +4,7 @@ import {
     MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM,
     mobileSearchChromeWrapperTopStyle,
     mobileStackBelowSearchChromeTopStyle,
+    panPointIntoView,
 } from "@/lib/map-utils"
 import useSearchData from "@/state/hooks/search-data"
 import useResultCardData from "@/state/hooks/result-card-data"
@@ -16,7 +17,7 @@ import { RoundIconButton, RoundIconClickable, RoundIconClickableWithBadge } from
 import { useRouter, useSearchParams } from "next/navigation"
 
 
-import { useCenterParam, useFulltextOn, useGroupParam, useHideResultsOn, useInitParam, useMapSettingsOn, useNoGeoOn, useOptionsOn, usePointParam, useQParam, useSourceViewOn, useTreeParam, useZoomParam } from "@/lib/param-hooks"
+import { useCenterParam, useFulltextOn, useGroupParam, useHideResultsOn, useInitParam, useMapSettingsOn, useNoGeoOn, useOptionsOn, usePoint, useQParam, useSourceViewOn, useTreeParam, useZoomParam } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import Clickable from "../ui/clickable/clickable"
 import NotificationStack from "../ui/notification-stack"
@@ -74,7 +75,7 @@ export default function MapToolbar() {
     const noGeoOn = useNoGeoOn()
     const optionsOn = useOptionsOn()
     const hideResultsOn = useHideResultsOn()
-    const point = usePointParam()
+    const point = usePoint()
     const init = useInitParam()
     const sourceViewResetUrl = useSessionStore((s) => s.sourceViewResetUrl)
     const clearSourceViewResetUrl = useSessionStore((s) => s.clearSourceViewResetUrl)
@@ -85,6 +86,8 @@ export default function MapToolbar() {
     } = useResultCardData(group)
     const showNoCoordinatesNotice =
         !searchLoading && !searchBounds?.length && !searchError && totalHits?.value > 0
+    const hasNoCoordinatesNotice = notifications.some((item) => item.id === "no-coordinates")
+    const hasPointHint = notifications.some((item) => item.id === "point-hint")
 
     // Mobile: under search while drawer is collapsed; fixed bottom (above “Vis resultat”) when middle/top.
     const notificationTop = isMobile
@@ -112,7 +115,7 @@ export default function MapToolbar() {
     })()
     
     useEffect(() => {
-        if (showNoCoordinatesNotice) {
+        if (showNoCoordinatesNotice && !hasNoCoordinatesNotice) {
             addNotification({
                 id: "no-coordinates",
                 message: "Ingen treff med koordinater",
@@ -127,25 +130,23 @@ export default function MapToolbar() {
                     </Clickable>
                 ),
             })
-        } else {
+        } else if (!showNoCoordinatesNotice && hasNoCoordinatesNotice) {
             removeNotification("no-coordinates")
         }
-        return () => removeNotification("no-coordinates")
-    }, [addNotification, removeNotification, showNoCoordinatesNotice])
+    }, [addNotification, hasNoCoordinatesNotice, removeNotification, showNoCoordinatesNotice])
 
     useEffect(() => {
-        if (point && !init) {
+        if (point && !init && !hasPointHint) {
             addNotification({
                 id: "point-hint",
                 message: isMobile ? "Trykk og hold i kartet for å flytte startpunktet" : "Høgreklikk i kartet for å flytte startpunktet",
                 variant: "tooltip",
                 permanentDismiss: true,
             })
-        } else {
+        } else if ((!point || init) && hasPointHint) {
             removeNotification("point-hint")
         }
-        return () => removeNotification("point-hint")
-    }, [addNotification, init, isMobile, point, removeNotification])
+    }, [addNotification, hasPointHint, init, isMobile, point, removeNotification])
 
 
     return (
@@ -204,16 +205,29 @@ export default function MapToolbar() {
                 >
                 <RoundIconButton
                     onClick={() => {
+                        // Re-focus immediately on existing start point so repeated clicks
+                        // still bring it into view even before geolocation resolves.
+                        if (point && mapFunctionRef?.current) {
+                            panPointIntoView(mapFunctionRef.current, point, isMobile, true, true)
+                        }
                         getMyLocation((location) => {
-                            mapFunctionRef?.current?.setView(location, 15)
+                            if (mapFunctionRef?.current) {
+                                panPointIntoView(mapFunctionRef.current, location, isMobile, true, true)
+                            }
 
-                            const newUrl = new URLSearchParams(searchParams)
-                            newUrl.set('center', `${location[0]},${location[1]}`)
+                            const currentQuery =
+                                typeof window !== 'undefined'
+                                    ? new URLSearchParams(window.location.search)
+                                    : new URLSearchParams(searchParams)
+                            const newUrl = new URLSearchParams(currentQuery)
                             newUrl.set('point', `${location[0]},${location[1]}`)
+                            newUrl.delete('activePoint')
                             newUrl.delete('group')
                             newUrl.delete('init')
-                            //newUrl.set('zoom', '15')
-                            router.push(`?${newUrl.toString()}`)
+                            const nextQuery = newUrl.toString()
+                            if (nextQuery !== currentQuery.toString()) {
+                                router.push(`?${nextQuery}`, { scroll: false })
+                            }
                         })
                     }}
                     side="top"
