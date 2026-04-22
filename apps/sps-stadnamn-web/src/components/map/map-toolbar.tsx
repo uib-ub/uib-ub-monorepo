@@ -10,7 +10,7 @@ import useResultCardData from "@/state/hooks/result-card-data"
 import { GlobalContext } from "@/state/providers/global-provider"
 import { useSessionStore } from "@/state/zustand/session-store"
 import { useNotificationStore } from "@/state/zustand/notification-store"
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useRef } from "react"
 import { PiChatCircleText, PiFunnel, PiFunnelFill, PiGpsFix, PiMagnifyingGlassMinusFill, PiMagnifyingGlassPlusFill, PiStackPlus, PiX } from "react-icons/pi"
 import { RoundIconButton, RoundIconClickable, RoundIconClickableWithBadge } from "../ui/clickable/round-icon-button"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -87,6 +87,8 @@ export default function MapToolbar() {
         !searchLoading && !searchBounds?.length && !searchError && totalHits?.value > 0
     const hasNoCoordinatesNotice = notifications.some((item) => item.id === "no-coordinates")
     const hasPointHint = notifications.some((item) => item.id === "point-hint")
+    const noCoordinatesDismissedRef = useRef(false)
+    const prevHasNoCoordinatesNoticeRef = useRef(false)
 
     // Mobile: under search while drawer is collapsed; fixed bottom (above “Vis resultat”) when middle/top.
     const notificationTop = isMobile
@@ -114,7 +116,22 @@ export default function MapToolbar() {
     })()
     
     useEffect(() => {
-        if (showNoCoordinatesNotice && !hasNoCoordinatesNotice) {
+        // Reset manual-dismiss suppression once the underlying condition clears.
+        if (!showNoCoordinatesNotice) {
+            noCoordinatesDismissedRef.current = false
+        }
+
+        // If the notice disappears while condition is still true, treat it as
+        // a user dismissal and keep it hidden until condition changes.
+        if (
+            showNoCoordinatesNotice &&
+            prevHasNoCoordinatesNoticeRef.current &&
+            !hasNoCoordinatesNotice
+        ) {
+            noCoordinatesDismissedRef.current = true
+        }
+
+        if (showNoCoordinatesNotice && !hasNoCoordinatesNotice && !noCoordinatesDismissedRef.current) {
             addNotification({
                 id: "no-coordinates",
                 message: "Ingen treff med koordinater",
@@ -132,6 +149,7 @@ export default function MapToolbar() {
         } else if (!showNoCoordinatesNotice && hasNoCoordinatesNotice) {
             removeNotification("no-coordinates")
         }
+        prevHasNoCoordinatesNoticeRef.current = hasNoCoordinatesNotice
     }, [addNotification, hasNoCoordinatesNotice, removeNotification, showNoCoordinatesNotice])
 
     useEffect(() => {
