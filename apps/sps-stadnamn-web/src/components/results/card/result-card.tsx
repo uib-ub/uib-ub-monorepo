@@ -117,23 +117,9 @@ function focusPointWithoutZoomOut(
     snappedPosition: "bottom" | "middle" | "top",
 ) {
     if (!map) return;
-
-    const currentZoom = typeof map.getZoom === "function" ? (map.getZoom() as number) : undefined;
-    const targetZoom = Math.max(currentZoom ?? 15, 15);
-
-    // If the user is zoomed out, zoom in to a useful level without ever zooming out.
-    if (currentZoom === undefined || currentZoom < 15) {
-        map.flyTo?.(point, targetZoom, {
-            duration: 0.25,
-            maxZoom: 18,
-            padding: [50, 50],
-        });
-        return;
-    }
-
-    // Otherwise only pan when the point is outside the padded viewport.
+    // Pan-only: never zoom. Only pan if the point is outside the padded viewport.
     const maxDrawer = snappedPosition !== "bottom";
-    panPointIntoView(map, point, isMobile, maxDrawer);
+    panPointIntoView(map, point, isMobile, maxDrawer, false);
 }
 
 function GroupBottomToolbar({
