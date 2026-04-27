@@ -119,7 +119,7 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 {isTreeActive
                                     ? <PiTreeViewFill className="text-xl" aria-hidden="true" />
                                     : <PiTreeViewLight className="text-xl" aria-hidden="true" />}
-                                Matrikkelvising
+                                Hierarkisk vising
                             </Clickable>
                             <Clickable
                                 href="/search"

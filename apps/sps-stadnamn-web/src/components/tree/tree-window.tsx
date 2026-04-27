@@ -44,7 +44,7 @@ export default function TreeWindow() {
             <div className="sticky top-0 z-10 bg-white border-b border-neutral-300">
                 <div className="flex p-2 border-b border-neutral-200 shrink-0 items-center gap-2">
                     <div id="right-title" className="text-black text-xl mx-1 font-semibold">
-                        Matrikkelvising
+                        Hierarkisk vising
                     </div>
                     {treeSavedQuery && <div className="ml-auto flex items-center">
                         <Clickable

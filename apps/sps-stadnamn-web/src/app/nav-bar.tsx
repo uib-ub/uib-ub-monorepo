@@ -19,7 +19,7 @@ export default function NavBar({ handleBlur, ...props }: any) {
                 link
                 className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0"
             >
-                Matrikkelvising
+                Hierarkisk vising
             </Clickable>
             <Clickable onBlur={handleBlur} scroll={false} add={{ mode: 'table' }} link href="/search" className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0">Tabell</Clickable>
             <Link onBlur={handleBlur} scroll={false} className="py-3 lg:py-0 lg:my-1 lg:px-4 lg:mx-0" href="/iiif">Arkiv</Link>
