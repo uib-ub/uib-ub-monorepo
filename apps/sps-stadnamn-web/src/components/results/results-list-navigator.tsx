@@ -10,8 +10,17 @@ export default function ResultsListNavigator({
 }: {
   className?: string
 }) {
-  const { isMobile } = useContext(GlobalContext);
+  const { isMobile, mapFunctionRef } = useContext(GlobalContext);
   const { isSubpostNavigation, currentId, items, currentIndex, prevId, nextId, prevPoint, nextPoint, isFetching } = useSubpostNavigation()
+
+  const flyToPoint = (point: string | null) => {
+    if (!point || !mapFunctionRef.current) return
+    const [latRaw, lngRaw] = point.split(",")
+    const lat = Number(latRaw)
+    const lng = Number(lngRaw)
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return
+    mapFunctionRef.current.flyTo?.([lat, lng], 15)
+  }
 
   if (!isSubpostNavigation) return null
   if (!currentId) return null
@@ -22,8 +31,9 @@ export default function ResultsListNavigator({
     <nav aria-label="Naviger i resultat" className={`relative w-full bg-neutral-50 rounded-t-md flex items-center p-2 ${className ?? ""}`}>
       <ClickableIcon
         label="Førre"
-        add={{ init: prevId, point: prevPoint }}
-        remove={["activePoint", "activeYear", "activeName"]}
+        add={{ init: prevId, point: prevPoint, activePoint: prevPoint, center: prevPoint, zoom: "15" }}
+        remove={["activeYear", "activeName"]}
+        onClick={() => flyToPoint(prevPoint)}
         notClickable={!prevId || isFetching}
         className="btn btn-outline btn-compact rounded-full w-9 h-9 flex items-center justify-center border-neutral-200 bg-white"
       >
@@ -40,8 +50,9 @@ export default function ResultsListNavigator({
 
       <ClickableIcon
         label="Neste"
-        add={{ init: nextId, point: nextPoint }}
-        remove={["activePoint", "activeYear", "activeName"]}
+        add={{ init: nextId, point: nextPoint, activePoint: nextPoint, center: nextPoint, zoom: "15" }}
+        remove={["activeYear", "activeName"]}
+        onClick={() => flyToPoint(nextPoint)}
         notClickable={!nextId || isFetching}
         className="btn btn-outline btn-compact rounded-full w-9 h-9 flex items-center justify-center border-neutral-200 bg-white"
       >
