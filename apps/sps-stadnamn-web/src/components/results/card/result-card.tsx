@@ -135,7 +135,7 @@ function GroupBottomToolbar({
 }) {
     const searchParams = useSearchParams();
     const sourceViewOn = useSourceViewOn();
-    const { mapFunctionRef, isMobile } = useContext(GlobalContext);
+    const { mapFunctionRef, isMobile, currentUrl, parentSearchUrl } = useContext(GlobalContext);
     const snappedPosition = useSessionStore((s) => s.snappedPosition);
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
     const highlightPoint = useHighlightPoint();
@@ -241,6 +241,7 @@ function GroupBottomToolbar({
                                 }
                                 const resetUrl = nextCurrent.toString() ? `/search?${nextCurrent.toString()}` : "/search";
                                 setSourceViewResetUrl(resetUrl);
+                                parentSearchUrl.current = resetUrl;
                                 replaceScrollParamInHistory({
                                     scrollIndex: scrollValue,
                                     basePathname: "/search",
@@ -267,9 +268,39 @@ function GroupBottomToolbar({
                         href={uuidUrl || ""}
                         disabled={!uuidUrl}
                         onClick={() => {
-                            // Ensure the current /search history entry remembers which card we came from,
+                            // Ensure "back to search" URLs remember which row we came from,
                             // without leaking `scroll` into the uuid route URL.
-                            replaceScrollParamInHistory({ scrollIndex: scrollValue });
+                            const liveSearchParams =
+                                typeof window !== "undefined"
+                                    ? new URLSearchParams(window.location.search || "")
+                                    : new URLSearchParams(searchParams);
+                            const nextCurrent = new URLSearchParams(liveSearchParams);
+                            if (scrollValue != null) {
+                                nextCurrent.set("scroll", String(scrollValue));
+                            } else {
+                                nextCurrent.delete("scroll");
+                            }
+                            const nextCurrentUrl = nextCurrent.toString() ? `/search?${nextCurrent.toString()}` : "/search";
+                            currentUrl.current = nextCurrentUrl;
+
+                            // In source-view without a selected group, "Overordna søk" should keep
+                            // its own query context but still follow the selected row scroll.
+                            if (sourceViewOn && !group) {
+                                const [basePath, rawQuery = ""] = (parentSearchUrl.current || "/search").split("?");
+                                const nextParent = new URLSearchParams(rawQuery);
+                                if (scrollValue != null) {
+                                    nextParent.set("scroll", String(scrollValue));
+                                } else {
+                                    nextParent.delete("scroll");
+                                }
+                                parentSearchUrl.current = nextParent.toString() ? `${basePath}?${nextParent.toString()}` : basePath;
+                            }
+
+                            replaceScrollParamInHistory({
+                                scrollIndex: scrollValue,
+                                basePathname: "/search",
+                                searchParams: nextCurrent,
+                            });
                         }}
                         className="btn btn-outline btn-compact rounded-full items-center gap-2 !pr-2 flex h-10 pl-4 shrink-0 border-neutral-200 bg-white shadow-none"
                     >

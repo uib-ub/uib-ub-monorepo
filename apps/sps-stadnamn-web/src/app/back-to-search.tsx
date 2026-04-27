@@ -18,10 +18,10 @@ export default function BackToSearch() {
         return (
                 <Link
                     href={currentUrl.current}
-                    className="flex items-center gap-2 no-underline flex ml-auto xl:ml-4 btn btn-outline rounded-md items-center justify-center mr-2 gap-2 no-underline text-neutral-900"
+                    className="flex items-center gap-2 no-underline xl:py-1 xl:pl-2 xl:pr-4 xl:gap-1 flex ml-auto xl:ml-4 btn btn-outline rounded-md items-center justify-center mr-2 gap-2 no-underline text-neutral-900"
                 >
-                    <PiArrowLeftBold className="text-2xl" />
-                    <span className="sr-only xl:not-sr-only text-xl">Stadnamnsøk</span>
+                    <PiArrowLeftBold className="text-2xl xl:text-base" />
+                    <span className="sr-only xl:not-sr-only text-base">Stadnamnsøk</span>
                 </Link>
         );
     }
