@@ -2,31 +2,20 @@ export const metadata = { title: 'Søketips' }
 
 
 # Søketips
-Stadnamportalen samlar data frå både Språksamlingane sine arkiv og eksterne kjelder. Desse er alle presentert som [datasett](/info/datasets). 
+Stadnamn.no samlar data frå både Språksamlingane sine arkiv og eksterne kjelder. Desse er alle presentert som [datasett](/info/datasets). 
 
-## Gruppert søk
+## Stadnamnsøk
 I [stadnamnsøket](/search) grupperer vi <em>kjeldepostar</em> som ligg nær kvarandre geografisk i <em>namnegrupper</em>. Du kan velje namnegruppe ved å navigere ned med piltastene eller trykkje på søkjeforslaga som kjem når du skriv i søkjefeltet.
 
 Du kan òg velje namnegruppe ved å trykkje på etikettane i kartet. Når du har valt namnegruppe vil andre treff visast under «Fleire namnegrupper», sortert etter avstand frå treffet du veljer.
 Bytt til andre namnegrupper ved å trykkje knappane med teikjestiftikon. Når du har valt ei namnegruppe kan du filtrere dei underordna kjeldepostane etter år og namneform, eller trykkje på kartmarkørene i lista for å sjå detaljar om koordinatane.
-
-## Tabellvisning
-[Tabellvisninga](/search?mode=table) viser dei individuelle kjeldepostane utan gruppering. Du kan velje kva kolonner som visast, men merk at det varierer kva felt som er tilgjengelege for dei ulike datasetta.
-Her kan du også laste ned data som CSV, GeoJSON eller JSON.
-
-**NB: Tabellvisninga er eksperimentell. Rapporter gjerne feil og mangler i [skjemaet for tilbakemelding](https://skjemaker.app.uib.no/view.php?id=16665712)**
-
-## Hierarkisk vising
-Hierarkisk er førebels berre konfigurert for matriklane, og gir deg moglegheit til å bla i matriklane utan å måtte søke.
 
 
 ## Søkefelt
 I hovudsøkjefeltet søkjer du på stadnamn som inneheld alle orda du skriv inn, men ikkje nødvendigvis i same rekkefølgje – **Berg Nordre** vil òg gje treff på «Nordre Berg». Dersom søkjevisninga har ein knapp for å søkje i anna enn stadnamn, kan søket gje treff som inneheld berre eitt av orda du skriv inn.
 
 ## Matrikkelsøk
-
-Du kan bruke søkjefeltet til å søke etter **kommunenummer**, **gardsnummer** og **bruksnummer** ved å starte søkestrengen med eit tal.
-
+Du kan bruke søkjefeltet til å søkje etter **kommunenummer**, **gardsnummer** og **bruksnummer** ved å starte søkjestrengen med eit tal.
 
   **Eksempel:** `0403-12/12`  
   *(svarar til: kommune 0403, gardsnummer 12, bruksnummer 12)*
@@ -34,7 +23,7 @@ Du kan bruke søkjefeltet til å søke etter **kommunenummer**, **gardsnummer** 
   **Eksempel:** `0224-10.21b`  
   *(svarar til: kommune 0224, matrikkelnummer 10, løpenummer 21b)*
 
-Etter matrikkelsignaturen kan du òg legge til namnet du vil søke på.  
+Etter matrikkelsignaturen kan du òg legge til namnet du vil søkje på.  
 For eksempel: `0403-12/12 Berg` søkjer bruket **0403-12/12** med namnet **Berg**.
 
 
@@ -60,3 +49,17 @@ For å utelate ord frå søket, bruk - føre ordet. Til dømes vil søket **berg
 ### Nærleikssøk
 For å søkje etter to ord som er nær kvarandre, kan du setje hermeteikn rundt dei og leggje til **~** og eit tal som seier kor mange ord som kan stå mellom dei to orda. Til dømes vil søket **"berg nordre"~2** gje treff på «Berg Søndre og Nordre».
 
+
+## Tabellvisning
+[Tabellvisninga](/search?mode=table) viser dei individuelle kjeldepostane utan gruppering. Du kan velje kva kolonner som visast, men merk at det varierer kva felt som er tilgjengelege for dei ulike datasetta.
+Her kan du òg laste ned data som CSV, GeoJSON eller JSON. Du finn denne visinga i hovudmenyen, eller i varselsmeldingane som kjem når du berre får treff utan koordinatar.
+
+**NB: Tabellvisninga er eksperimentell. Rapporter gjerne feil og mangler i [skjemaet for tilbakemelding](https://skjemaker.app.uib.no/view.php?id=16665712)**
+
+## Hierarkisk vising
+[Hierarkisk vising](/search?tree=root) er førebels berre konfigurert for matriklane, og gir deg moglegheit til å bla i matriklane utan å måtte søkje. Du finn denne visinga
+i hovudmenyen, eller ved å trykkje på lenkene i brødsmulestiar for namneposter frå matriklane.
+
+## Avansert søk
+I det avanserte søket visast dei einskilde namnepostane utan gruppering, og du kan filtrere dei etter datasett, namneobjekttype og andre felt som finst i datasetta.
+Du kan òg velje om du vil søkje i namn eller i heile oppslaget (fulltekstsøk).
