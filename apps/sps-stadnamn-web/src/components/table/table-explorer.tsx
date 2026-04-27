@@ -77,7 +77,7 @@ export default function TableExplorer() {
 
 
 
-    return <section aria-labelledby="table-explorer-title"><div className="flex items-baseline gap-2 px-4 p-2"><div id="table-explorer-title" className="text-xl !m-0 !p-0">Tabellvisning</div>
+    return <section aria-labelledby="table-explorer-title"><div className="flex flex-wrap items-baseline gap-2 px-4 p-2"><div id="table-explorer-title" className="text-xl !m-0 !p-0">Tabellvisning</div>
         {!searchLoading && docTotalHits &&
             <div
                 className="text-neutral-700 ml-4"
