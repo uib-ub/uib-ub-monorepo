@@ -226,7 +226,7 @@ export default function StatusPage() {
 
             {/* Search field */}
             <div className="relative max-w-md">
-              <PiMagnifyingGlass className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-neutral-400 text-base" />
+              <PiMagnifyingGlass className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-neutral-700 text-base" />
               <input
                 type="text"
                 placeholder="Search indices..."
@@ -356,7 +356,7 @@ export default function StatusPage() {
           </div>
         ) : (
           <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 text-center">
-            <PiDatabase className="mx-auto text-3xl text-neutral-400 mb-3" />
+            <PiDatabase className="mx-auto text-3xl text-neutral-700 mb-3" />
             <h2 className="text-base font-semibold text-neutral-700 mb-1">No Indices Found</h2>
             <p className="text-sm text-neutral-700">No Elasticsearch indices are currently available.</p>
           </div>

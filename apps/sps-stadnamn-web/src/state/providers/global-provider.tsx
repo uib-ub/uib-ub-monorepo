@@ -1,6 +1,6 @@
 'use client'
 import { facetConfig } from '@/config/search-config';
-import { usePerspective } from '@/lib/param-hooks';
+import { usePerspective, useSourceViewOn } from '@/lib/param-hooks';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { createContext, useEffect, useRef, useState } from 'react';
 
@@ -11,6 +11,7 @@ interface FacetOption {
 
 export const GlobalContext = createContext({
   currentUrl: { current: null as string | null },
+  parentSearchUrl: { current: null as string | null },
   isMobile: false,
   facetOptions: {} as Record<string, Record<string, Partial<FacetOption>>>,
   updateFacetOption: (facetName: string, options: Partial<FacetOption>) => { },
@@ -30,6 +31,8 @@ export const GlobalContext = createContext({
 
 export default function GlobalProvider({ children, isMobile, sosiVocab, coordinateVocab }: { children: React.ReactNode, isMobile: boolean, sosiVocab: Record<string, any>, coordinateVocab: Record<string, any> }) {
   const currentUrl = useRef<string | null>(null);
+  const parentSearchUrl = useRef<string | null>(null);
+  const sourceViewOn = useSourceViewOn()
   const [facetOptions, setFacetOptions] = useState<Record<string, Record<string, Partial<FacetOption>>>>({});
   const perspective = usePerspective()
   const [preferredTabs, setPreferredTabs] = useState<Record<string, string>>({});
@@ -40,7 +43,7 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
   const inputValue = useRef<string>('');
   const initialUrl = useRef<string | null>(null);
   const highlightedGroup = useRef<string | null>(null);
-  const searchParamsString = searchParams.toString()
+  const allSearchParamsString = searchParams.toString()
   const pathname = usePathname()
   const mapFunctionRef = useRef<any>(null)
   const scrollableContentRef = useRef<HTMLDivElement | null>(null)
@@ -95,10 +98,15 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
 
   // Set url for navigation back to search
   useEffect(() => {
-    if (searchParamsString && pathname == '/search') {
-      currentUrl.current = "/search?" + searchParamsString
+    if (pathname !== '/search') return
+    // Always update the "return to search" URL when we're on /search.
+    // If there are no params, the correct return is just "/search".
+    const url = allSearchParamsString ? `/search?${allSearchParamsString}` : "/search"
+    currentUrl.current = url
+    if (!searchParams.get("group") && !sourceViewOn) {
+      parentSearchUrl.current = url
     }
-  }, [searchParamsString, pathname])
+  }, [allSearchParamsString, pathname])
 
 
   // Update localStorage when facet options change
@@ -149,6 +157,7 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
     <GlobalContext.Provider
       value={{
         currentUrl,
+        parentSearchUrl,
         mapFunctionRef,
         scrollableContentRef,
         scrollToBrukRef,

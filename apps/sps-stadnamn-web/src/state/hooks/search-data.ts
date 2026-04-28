@@ -53,9 +53,15 @@ export default function useSearchData() {
         data?.aggregations?.groups?.unique_group_ids?.value ??
         data?.aggregations?.groups?.value
 
+    const noGeoCount =
+        data?.aggregations?.no_location?.doc_count ?? null
+
+    const noGeoGroupCount =
+        data?.aggregations?.no_location_groups?.groups?.value ?? null
+
     const rawTotalHits = data?.hits?.total || null
 
-    // Explicit totals for namnegrupper (groups) vs individual documents (kjeldeoppslag)
+    // Explicit totals for namnegrupper (groups) vs individual documents (kjeldepostar)
     const groupTotalHits =
         (groupCount ?? null) !== null
             ? { value: groupCount, relation: 'eq' as const }
@@ -72,6 +78,8 @@ export default function useSearchData() {
         totalHits,
         groupTotalHits,
         docTotalHits,
+        noGeoCount,
+        noGeoGroupCount,
         searchError: error,
         searchLoading: isLoading,
         searchBounds: data?.limitedBounds || null,

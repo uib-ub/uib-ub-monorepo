@@ -105,7 +105,12 @@ const buildMultiMarker = (color: string, style: string) => {
 
 
 
-export function getLabelMarkerIcon(label: string, color: string, docCount?: number, selected?: boolean, hideLabel?: boolean, showPin?: boolean) {
+export function getLabelMarkerIcon(
+  label: string,
+  color: string,
+  docCount?: number,
+  showPin?: boolean,
+) {
   const colorValue = colorMapping[color] || color
   return {
     className: '',
@@ -114,7 +119,7 @@ export function getLabelMarkerIcon(label: string, color: string, docCount?: numb
           <div class="absolute -top-6 left-1/2 -translate-x-1/2">
             <div class="flex flex-col items-center">
               <div class="flex items-center ${color == 'white' ? 'text-black' : 'text-white'} tracking-wide whitespace-nowrap rounded-md text-center text-sm py-0.5 px-1.5 shadow-lg" style="background-color: ${color == 'accent' ? colorValue : `${colorValue}e6`}; border-color: ${colorValue}e6;">
-                <div class="max-w-32 min-w-0 block truncate">${label}</div>
+                <div class="${!showPin ? 'max-w-32 min-w-0 truncate' : ''} block ">${label}</div>
                 ${docCount ? `<span class="ml-1 text-xs bg-neutral-100  flex items-center py-0 my-0.5 text-neutral-950 rounded-full px-1 text-center font-normal">+${docCount}</span>` : ''}
               </div>
               ${showPin ? `<div class="w-0 h-0 drop-shadow-lg" style="border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid ${colorValue}; margin-top: 0px;"></div>` : ''}
@@ -169,8 +174,40 @@ export function getClusterMarker(docCount: number, width: number, height: number
 }
 
 
-export function getUnlabeledMarker(color: string, selected?: boolean) {
-  const sizeAdjustment = selected ? 1.5 : 1;
+type UnlabeledMarkerOptions = {
+  selected?: boolean
+  /** Draws a 2:1 ellipse ring behind the marker (used for active point). */
+  activeOval?: boolean
+}
+
+export function getUnlabeledMarker(color: string, selectedOrOptions?: boolean | UnlabeledMarkerOptions) {
+  const options: UnlabeledMarkerOptions =
+    typeof selectedOrOptions === 'boolean' ? { selected: selectedOrOptions } : (selectedOrOptions ?? {})
+
+  const sizeAdjustment = options.selected ? 1.5 : 1
+
+  // Active variant: define explicit size/anchor so the oval can be placed at the map point (the pin tip).
+  if (options.activeOval) {
+    const height = 32 * sizeAdjustment
+    // Pin SVG uses viewBox 13.229166 x 21.695834
+    const width = Math.round(height * (13.229166 / 21.695834))
+    const anchorX = Math.round(width / 2)
+    const anchorY = height
+
+    return {
+      className: '',
+      iconSize: [width, height],
+      iconAnchor: [anchorX, anchorY],
+      html: `<div role="button" tabindex="0" style="position: relative; width: ${width}px; height: ${height}px;">
+                <svg aria-hidden="true" width="20" height="10" viewBox="0 0 20 10"
+                  style="position:absolute; left:${anchorX}px; top:${anchorY}px; transform: translate(-50%, -50%); pointer-events:none; overflow: visible;">
+                  <ellipse cx="10" cy="5" rx="9" ry="4" fill="none" stroke="#0061ab" stroke-width="3" />
+                </svg>
+                ${buildMarker(color, `position:absolute;left:50%;bottom:0;height:${height}px;transform:translateX(-50%);`)}
+              </div>`
+    }
+  }
+
   return {
     className: '',
     html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: ${32 * sizeAdjustment}px;">
@@ -180,19 +217,18 @@ export function getUnlabeledMarker(color: string, selected?: boolean) {
 }
 
 /**
- * Special marker for the pinned init group.
- * Visually similar to other unlabeled pin markers, but slightly larger and
- * with an anchor symbol in the pin to mirror the "Vel namnegruppe" button.
+ * Current-location style marker (no label).
+ * Used to show the user's selected point on the map, without any text bubble.
  */
-export function getInitAnchorMarker() {
+export function getInitAnchorMarker(_label?: string, _active?: boolean) {
   return {
     className: '',
     html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: 32px;">
-                <img
-                  src="/markerPrimaryCheck.svg"
-                  alt=""
-                  aria-hidden="true"
-                  style="position:absolute; bottom:26px; height:32px" />
+              <img
+                src="/currentLocation.svg"
+                alt=""
+                aria-hidden="true"
+                style="position:absolute; bottom:26px; height:32px" />
             </div>`
   }
 }
@@ -208,6 +244,57 @@ export function getPointMarker(color: string, selected?: boolean) {
     html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; width: ${size}px; height: ${size}px; transform: translate(-50%, -50%);">
                 <div style="width: ${size}px; height: ${size}px; border-radius: 50%; background-color: ${fill}; border: 2px solid ${border}; box-shadow: 0 1px 4px rgba(0,0,0,0.2);"></div>
             </div>`
+  }
+}
+
+type BrukMarkerOptions = {
+  isActive?: boolean
+  isMulti?: boolean
+}
+
+export function getBrukMarkerIcon(value: string, options?: BrukMarkerOptions) {
+  const isActive = options?.isActive ?? false
+  const isMulti = options?.isMulti ?? false
+
+  const bg = isActive ? '#0061ab' : '#ffffff'
+  const fg = isActive ? '#ffffff' : '#000000'
+  const border = '#000000'
+
+  const baseSize = isActive ? 28 : 22
+  const textLength = value?.length ?? 0
+  const usePill = isMulti || textLength > 3
+
+  const height = baseSize
+  const width = usePill
+    ? Math.max(baseSize, baseSize + Math.max(0, textLength - 3) * 6)
+    : baseSize
+
+  const fontSize = isActive ? 13 : 12
+
+  return {
+    className: '',
+    html: `
+      <div role="button" tabindex="0" style="
+        min-width: ${width}px;
+        height: ${height}px;
+        padding: 0 4px;
+        border-radius: 0.25rem;
+        border: 1px solid ${border};
+        background: ${bg};
+        color: ${fg};
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: ${fontSize}px;
+        font-weight: 700;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        transform: translate(-50%, -50%);
+      ">
+        ${value}
+      </div>
+    `,
+    iconSize: [width, height] as [number, number],
+    iconAnchor: [0, 0] as [number, number],
   }
 }
 

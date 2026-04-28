@@ -1,11 +1,10 @@
 'use client'
 import Clickable from "@/components/ui/clickable/clickable";
-import { defaultMaxResultsParam } from "@/config/max-results";
-import { useMode } from "@/lib/param-hooks";
+import { useCenterParam, useTreeParam, useZoomParam, useQParam, useMode } from "@/lib/param-hooks";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useRef } from "react";
-import { PiArchive, PiChatCircleText, PiHouseFill, PiInfo, PiList, PiMapTrifoldFill, PiMapTrifoldLight, PiPersonArmsSpread, PiQuestion, PiTableFill, PiTableLight, PiTreeViewFill, PiTreeViewLight, PiX } from 'react-icons/pi';
+import { PiArchive, PiChatCircleText, PiDatabase, PiHouseFill, PiInfo, PiList, PiMapTrifoldFill, PiMapTrifoldLight, PiPersonArmsSpread, PiQuestion, PiTableFill, PiTableLight, PiTreeViewFill, PiTreeViewLight, PiX } from 'react-icons/pi';
 import { GlobalContext } from "../state/providers/global-provider";
 import { useSessionStore } from "../state/zustand/session-store";
 
@@ -15,20 +14,17 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
     const menuRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const { currentUrl, isMobile } = useContext(GlobalContext)
-    const fulltext = searchParams.get('fulltext')
+    const { isMobile } = useContext(GlobalContext)
     const mode = useMode()
     const modeOutsideSearch = pathname == '/search' ? mode : null
-    const tree = searchParams.get('tree')
+    const tree = useTreeParam()
     const isTreeActive = pathname === '/search' && !!tree
     const isMapActive = modeOutsideSearch === 'map' && !isTreeActive
     const isTableActive = modeOutsideSearch === 'table' && !isTreeActive
-    const router = useRouter()
-    const q = searchParams.get("q")
-    const datasetTag = searchParams.get("datasetTag")
+    const q = useQParam()
     const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
-    const zoom = searchParams.get('zoom')
-    const center = searchParams.get('center')
+    const zoom = useZoomParam()
+    const center = useCenterParam()
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -94,8 +90,7 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 href="/search"
                                 onClick={() => setMenuOpen(false)}
                                 aria-current={isMapActive ? 'page' : undefined}
-                                remove={['mode', 'tree', 'activePoint', 'group']}
-                                add={{ maxResults: defaultMaxResultsParam, init: searchParams.get('group') }}
+                                only={{ zoom, center }}
                                 className={`w-full flex items-center gap-2 px-4 py-3 transition-colors no-underline cursor-pointer text-xl text-left
                                 ${isMapActive
                                         ? 'bg-accent-800 text-white font-semibold'
@@ -124,7 +119,7 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                 {isTreeActive
                                     ? <PiTreeViewFill className="text-xl" aria-hidden="true" />
                                     : <PiTreeViewLight className="text-xl" aria-hidden="true" />}
-                                Matrikkelvising
+                                Hierarkisk vising
                             </Clickable>
                             <Clickable
                                 href="/search"
@@ -144,6 +139,13 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                                     : <PiTableLight className="text-xl" aria-hidden="true" />}
                                 Tabellvising
                             </Clickable>
+                            <Link scroll={false}
+                                className={`flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 ${pathname === '/iiif' ? 'bg-accent-800 text-white font-semibold' : ''}`}
+                                href="/iiif"
+                                aria-current={pathname === '/iiif' ? 'page' : undefined}
+                            >
+                                <PiArchive className="text-xl" aria-hidden="true" />Arkiv
+                            </Link>
                         </div>
                         <hr className="w-full h-px bg-neutral-200 border-0 my-0" />
                         <div className="flex flex-col gap-0 w-full pb-0">
@@ -154,26 +156,28 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                             >
                                 <PiQuestion className="text-xl" aria-hidden="true" />Søketips
                             </Link>
-                            <Link scroll={false}
-                                className="flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900"
+                            <Link
+                                scroll={false}
+                                className="flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 override-external-icon"
                                 href="https://skjemaker.app.uib.no/view.php?id=16665712"
                             >
                                 <PiChatCircleText className="text-xl" aria-hidden="true" />Tilbakemelding
                             </Link>
-                            <Link scroll={false}
-                                className={`flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 ${pathname === '/iiif' ? 'bg-accent-800 text-white font-semibold' : ''}`}
-                                href="/iiif"
-                                aria-current={pathname === '/iiif' ? 'page' : undefined}
-                            >
-                                <PiArchive className="text-xl" aria-hidden="true" />Arkiv
-                            </Link>
-                            <div className="flex flex-col w-full">
+                            <div className="flex flex-col w-full border-y border-neutral-200">
                                 <Link scroll={false}
                                     className={`flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 ${pathname === '/info' ? 'bg-accent-800 text-white font-semibold' : ''}`}
                                     href="/info"
                                     aria-current={pathname === '/info' ? 'page' : undefined}
                                 >
                                     <PiInfo className="text-xl" aria-hidden="true" />Informasjon
+                                </Link>
+                                {/* Datasett */}
+                                <Link scroll={false}
+                                    className={`flex items-center gap-2 px-4 py-3 pl-10 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 ${pathname === '/info/datasets' ? 'bg-accent-800 text-white font-semibold' : ''}`}
+                                    href="/info/datasets"
+                                    aria-current={pathname === '/info/datasets' ? 'page' : undefined}
+                                >
+                                    Datasett
                                 </Link>
                                 <Link scroll={false}
                                     className={`flex items-center gap-2 px-4 py-3 pl-10 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 ${pathname === '/info/privacy' ? 'bg-accent-800 text-white font-semibold' : ''}`}

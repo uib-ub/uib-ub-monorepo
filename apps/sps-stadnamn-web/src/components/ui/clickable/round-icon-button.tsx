@@ -5,8 +5,13 @@ import Clickable from "./clickable";
 import ClickableIcon from "./clickable-icon";
 import { TitleBadge } from "../badge";
 
-export const roundButtonStyling = "rounded-full bg-white text-neutral-900 p-2 lg:p-3" +
-    " [box-shadow:0_2px_8px_-1px_rgb(0_0_0_/_0.25),0_1px_3px_-1px_rgb(0_0_0_/_0.35),inset_0_1px_0_rgb(0_0_0_/_0.08)]";
+export const overlayButtonShadowClass = "[box-shadow:0_2px_8px_-1px_rgb(0_0_0_/_0.25),0_1px_3px_-1px_rgb(0_0_0_/_0.35),inset_0_1px_0_rgb(0_0_0_/_0.08)]";
+
+export const roundButtonStyling = "inline-flex items-center justify-center aspect-square shrink-0 rounded-full bg-white text-neutral-900 p-2 lg:p-3" +
+    " " + overlayButtonShadowClass;
+
+
+
 
 
 export function RoundIconButton({ children, href, label, className, ...rest }: { children: React.ReactNode, label: string, href?: string, className?: string, [x: string]: any }) {
@@ -68,14 +73,37 @@ export function RoundButton({ children, className, ...rest }: { children: React.
     );
 }
 
-export function RoundIconClickableWithBadge({ children, label, count, isActive, className, ...rest }: { children: React.ReactNode, label: string, count: number, isActive: boolean, className?: string, [x: string]: any }) {
+export function RoundIconClickableWithBadge({
+    children,
+    label,
+    count,
+    isActive,
+    className,
+    badgeVariant = "default",
+    ...rest
+}: {
+    children: React.ReactNode
+    label: string
+    count: number
+    isActive: boolean
+    className?: string
+    badgeVariant?: "default" | "compact"
+    [x: string]: any
+}) {
     return (
         <RoundIconClickable label={label} className={className} {...rest}>
             {children}
             {count > 0 && (
                 <TitleBadge
                     count={count}
-                    className={`text-xs absolute bottom-1.5 right-1.5 ${isActive ? 'bg-white border border-accent-800 text-accent-800' : 'bg-primary-700 text-white'}`}
+                    className={twMerge(
+                        // Default keeps existing (large button) placement unchanged.
+                        // Compact adjusts offsets for the reduced-size variant.
+                        badgeVariant === "compact"
+                            ? "text-xs absolute top-0 right-0 -translate-y-1/3 translate-x-1/3 bg-white text-neutral-900 border border-neutral-300 shadow-none"
+                            : "text-xs absolute top-0 right-0 -translate-y-1/6 translate-x-1/6 bg-white text-neutral-900 border border-neutral-300 shadow-none",
+                        isActive ? "border-neutral-400" : "",
+                    )}
                 />
             )}
         </RoundIconClickable>

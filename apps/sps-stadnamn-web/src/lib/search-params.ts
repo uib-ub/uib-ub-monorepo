@@ -1,6 +1,7 @@
 import { fieldConfig } from '@/config/search-config';
 import { useSearchParams } from 'next/navigation';
-import { usePerspective } from './param-hooks';
+import { useDatasetTagParam, useFulltextOn, useFuzzyOn, useGroupParam, usePerPageNumber, usePerspective, usePointParam, useQParam, useRadiusParam, useSourceViewOn, useTreeParam } from './param-hooks';
+import { isClientOnlySearchParamKey } from './reserved-param-types';
 
 
 
@@ -14,34 +15,42 @@ import { usePerspective } from './param-hooks';
 export function useSearchQuery() {
     const searchParams = useSearchParams()
     const perspective = usePerspective()
-    const validFields = ['q', ...Object.keys(fieldConfig[perspective])]
+    const validFields = new Set(Object.keys(fieldConfig[perspective]))
     const facetFilters: [string, string][] = []
     const datasetFilters: [string, string][] = []
     const searchQuery = new URLSearchParams()
-    const size = parseInt(searchParams.get('size') || "20")
-    const datasetTag = searchParams.get('datasetTag')
+    const size = usePerPageNumber()
+    const group = useGroupParam()
+    const sourceViewOn = useSourceViewOn()
+    const tree = useTreeParam()
+    const datasetTag = useDatasetTagParam()
+    const qParam = useQParam()
+    const fuzzyOn = useFuzzyOn()
+    const fulltextOn = useFulltextOn()
+    const radius = useRadiusParam()
+    const point = usePointParam()
 
 
 
 
     searchParams.forEach((value, key) => {
-        if (validFields.includes(key)) {
-            if (key == 'dataset') {
-                datasetFilters.push([key, value])
-            }
-            /*else if (key == 'datasetTag') {
-                datasetFilters.push([key, value])
-                
-            }*/
-            else if (key != 'q') {
-                searchQuery.append(key, value)
+        // In grouped/underoppslag view, `q` is UI state and should not affect API filters.
+        if (key == 'q' && !group) {
+            searchQuery.append('q', value)
+        }
+        if (key == 'dataset') {
+            datasetFilters.push([key, value])
+        }
+        else if (isClientOnlySearchParamKey(key)) {
+            return
+        }
+        else if (validFields.has(key)) {
+            searchQuery.append(key, value)
+            if (fieldConfig[perspective]?.[key]?.facet) {
                 facetFilters.push([key, value])
             }
-            else {
-                searchQuery.append(key, value)
-            }
         }
-        else if (!validFields.includes(key) && (key.startsWith('rawData') || key.startsWith('misc'))) {
+        else if ((key.startsWith('group.') || key.startsWith('rawData.') || key.startsWith('misc.'))) {
             searchQuery.append(key, value)
             facetFilters.push([key, value])
         } else {
@@ -49,7 +58,7 @@ export function useSearchQuery() {
             const comparisonMatch = key.match(/^(.+)_(gt|gte|lt|lte)$/);
             if (comparisonMatch) {
                 const [, fieldName] = comparisonMatch;
-                if (fieldName != 'boost' && validFields.includes(fieldName)) {
+                if (fieldName != 'boost' && validFields.has(fieldName)) {
                     searchQuery.append(key, value)
                     //facetFilters.push([key, value])
                 }
@@ -65,35 +74,36 @@ export function useSearchQuery() {
 
 
     const searchFilterParamsString = searchQuery.toString()
-    const urlDatasetTag = searchParams.get('datasetTag')
-    const tree = searchParams.get('tree')
+
     // Only include datasetTag in API query strings when it's relevant:
     // - always include non-tree datasetTags (e.g. 'deep', 'base')
     // - include 'tree' only when `tree` is present (tree param is the source of truth)
-    if (urlDatasetTag && (urlDatasetTag !== 'tree' || !!tree)) {
-        searchQuery.set('datasetTag', urlDatasetTag)
+    if (datasetTag && (datasetTag !== 'tree' || !!tree)) {
+        searchQuery.set('datasetTag', datasetTag)
     }
 
+    
+
     // Params that aren't considered filters
-    const fulltext = searchParams.get('fulltext')
-    if (fulltext && !tree && searchParams.get('q')) {
+    // Fulltext is silently enabled when a group is selected
+
+    if ((fulltextOn || group) && !tree && qParam) {
         searchQuery.set('fulltext', 'on')
     }
 
-    const fuzzy = searchParams.get('fuzzy')
-    if (fuzzy === 'on' && searchParams.get('q')) {
+    if (fuzzyOn && qParam) {
         searchQuery.set('fuzzy', 'on')
     }
 
-    const noGrouping = searchParams.get('noGrouping')
-    if (noGrouping === 'on') {
-        searchQuery.set('noGrouping', 'on')
+    if (sourceViewOn) {
+        searchQuery.set('sourceView', 'on')
+        if (group) {
+            searchQuery.set('group', group)
+        }
     }
 
-    if (searchParams.get('radius') && searchParams.get('point')) {
-        searchQuery.set('radius', searchParams.get('radius')!)
-        searchQuery.set('point', searchParams.get('point')!)
-    }
+
+
 
     const removeFilterParams = (key: string | string[], keep?: string[]) => {
         const outputUrl = new URLSearchParams(searchQuery)

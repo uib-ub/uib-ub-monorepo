@@ -4,7 +4,7 @@
  * @returns The base64url encoded string
  */
 export const stringToBase64Url = (str: string): string => {
-  if (!str.includes('_')) {
+  if (!str || !str.includes('_')) {
     return str
   }
   const bytes = new TextEncoder().encode(str);
@@ -13,7 +13,7 @@ export const stringToBase64Url = (str: string): string => {
 };
 
 export const base64UrlToString = (base64Url: string): string => {
-  if (base64Url.includes('-')) {
+  if (!base64Url || base64Url.includes('-')) {
     return base64Url
   }
   let base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");

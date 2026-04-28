@@ -1,6 +1,7 @@
 'use client'
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
+import { cn } from "@/lib/utils"
 import { ParamProps } from "./param-types"
 
 function normalizeSearchParams(params: URLSearchParams) {
@@ -24,9 +25,13 @@ function normalizeSearchParams(params: URLSearchParams) {
 export default function Clickable({ children, remove, add, only, link, href, replace, notClickable, ...rest }: ParamProps) {
     const searchParams = useSearchParams()
     const router = useRouter()
+
     if (notClickable) {
         return <div {...rest}>{children}</div>
     }
+
+    const { className, ...restProps } = rest
+    const clickableClassName = cn("cursor-pointer", className)
 
     const newParams = new URLSearchParams(only ? undefined : searchParams)
     if (only) {
@@ -51,23 +56,61 @@ export default function Clickable({ children, remove, add, only, link, href, rep
         })
     }
 
-    const stringParams = normalizeSearchParams(newParams).toString()
+    // Avoid pushing a navigation when no params changed.
+    // (Some downstream hooks/rehydration logic is sensitive to redundant router updates.)
+    const nextParamsString = normalizeSearchParams(newParams).toString()
+    const currentParamsString = normalizeSearchParams(new URLSearchParams(searchParams)).toString()
+    const didParamsChange = nextParamsString !== currentParamsString
+
+    const stringParams = nextParamsString
 
     if (link) {
-        return <Link replace={replace} href={`${href ? href : ''}${stringParams ? `?${stringParams}` : ''}`} {...rest}>{children}</Link>
+        return (
+            <Link
+                replace={replace}
+                href={`${href ? href : ''}${stringParams && (only || remove || add) ? `?${stringParams}` : ''}`}
+                className={clickableClassName}
+                {...restProps}
+            >
+                {children}
+            </Link>
+        )
     }
     else {
         const handleClick = (event: React.MouseEvent) => {
-            if (rest.onClick) {
-                rest.onClick(event)
+            if (restProps.onClick) {
+                restProps.onClick(event)
             }
+            if (!(href || only || remove || add)) {
+                return
+            }
+            if (!didParamsChange && !href) {
+                return
+            }
+
+            const baseUrl = href ? href : '/search'
+            const withParams =
+                stringParams && (only || remove || add) ? `${baseUrl}?${stringParams}` : baseUrl
+            const newUrl = withParams
+
+            
             if (replace) {
-                router.replace("?" + stringParams)
+                router.replace(newUrl || '')
             }
             else {
-                router.push("?" + stringParams)
+                router.push(newUrl || '', { scroll: false })
             }
+            
         }
-        return <button type="button" {...rest} onClick={handleClick} >{children}</button>
+        return (
+            <button
+                type="button"
+                className={clickableClassName}
+                {...restProps}
+                onClick={handleClick}
+            >
+                {children}
+            </button>
+        )
     }
 }

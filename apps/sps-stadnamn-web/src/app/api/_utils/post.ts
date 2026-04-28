@@ -7,6 +7,7 @@ export async function postQuery(perspective: string, query: any, search_type?: s
     let res
 
     const url = `${endpoint}search-stadnamn-${process.env.SN_ENV}-${perspective}/_search${search_type ? `?search_type=${search_type}` : ''}`
+    //console.log("URL", url)
 
 
     try {
@@ -19,7 +20,9 @@ export async function postQuery(perspective: string, query: any, search_type?: s
             },
             body: JSON.stringify(query)
         });
+        //console.log("RES", JSON.stringify(res, null, 2))
     }
+   
     catch (e) {
         console.error(e)
         return [{ error: e }, 500]

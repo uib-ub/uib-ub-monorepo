@@ -14,9 +14,9 @@ const spec = {
 
 ## Concepts
 
-**Kjeldeoppslag** (source record): a single record or document from a particular dataset. Has a \`uuid\` and belongs to one namnegruppe (\`group.id\`).
+**Kjeldepostar** (source record): a single record or document from a particular dataset. Has a \`uuid\` and belongs to one namnegruppe (\`group.id\`).
 
-**Namnegruppe** (name group): kjeldeoppslag with identical names or spelling variants of the same name, grouped by geographic proximity. \`group.id\` is the uuid of one of the members.
+**Namnegruppe** (name group): kjeldepostar with identical names or spelling variants of the same name, grouped by geographic proximity. \`group.id\` is the uuid of one of the members.
 
 **Special case — grunnord:** In the Norsk stadnamleksikon and Norge Gaardnavne - Grunnord (leks_g, rygh_g), \`group.id\` may be prefixed with \`grunnord_\` (e.g. \`grunnord_berg\`). These are lexical groups by root word (grunnord), not geographic namnegrupper: all entries that share the same base word. When calling /api/group with a \`grunnord_*\` id, the text query (\`q\`) is typically applied to filter within that root-word group.`
   },
@@ -97,9 +97,9 @@ const spec = {
       post: {
         tags: ["Map"],
         summary: "Map list results (by namnegruppe)",
-        description: `Returns one hit per namnegruppe — this is what powers the map sidebar list. Results are collapsed by \`group.id\`, so each hit represents one name group, not every kjeldeoppslag.
+        description: `Returns one hit per namnegruppe — this is what powers the map sidebar list. Results are collapsed by \`group.id\`, so each hit represents one name group, not every kjeldepostar.
 
-**Response:** \`hits.hits\` is an array; each item has \`fields\` with \`group.id\`, \`group.label\`, \`label\`, \`location\`, \`uuid\` (one representative document per group). \`hits.total\` gives the total number of groups. To get every kjeldeoppslag in a group, call GET /api/group?group={group.id} with the \`group.id\` from the hit.
+**Response:** \`hits.hits\` is an array; each item has \`fields\` with \`group.id\`, \`group.label\`, \`label\`, \`location\`, \`uuid\` (one representative document per group). \`hits.total\` gives the total number of groups. To get every kjeldepostar in a group, call GET /api/group?group={group.id} with the \`group.id\` from the hit.
 
 **Query params:** \`q\`, \`dataset\`, \`perspective\` (same as other search endpoints); facet filters can be passed as query params.
 
@@ -176,10 +176,10 @@ const spec = {
     "/api/search/table": {
       get: {
         tags: ["Table"],
-        summary: "Table search — all kjeldeoppslag",
-        description: `Returns a flat, paginated list of **all** matching kjeldeoppslag — one hit per document, no namnegruppe grouping. Use for tabular display, bulk operations, or when you need every attestation.
+        summary: "Table search — all kjeldepostar",
+        description: `Returns a flat, paginated list of **all** matching kjeldepostar — one hit per document, no namnegruppe grouping. Use for tabular display, bulk operations, or when you need every attestation.
 
-**Response:** \`hits.hits\` is an array of full documents (\`_source\` is returned). Each item is one kjeldeoppslag. \`hits.total.value\` and \`hits.total.relation\` (eq/gte) give the total count. Highlighting is applied when \`q\` is set and the UI requests it.
+**Response:** \`hits.hits\` is an array of full documents (\`_source\` is returned). Each item is one kjeldepostar. \`hits.total.value\` and \`hits.total.relation\` (eq/gte) give the total count. Highlighting is applied when \`q\` is set and the UI requests it.
 
 **Query params:** \`q\`, \`dataset\`, \`perspective\` (same as search UI); \`size\` (results per page, default 10), \`from\` (offset for pagination). Sort: \`asc\` and/or \`desc\` with comma-separated field names (e.g. \`asc=label.keyword\`). Facet filters from the search UI can be passed as query params.`,
         parameters: [
@@ -193,7 +193,7 @@ const spec = {
         ],
         responses: {
           "200": {
-            description: "Paginated list of kjeldeoppslag (one document per hit)",
+            description: "Paginated list of kjeldepostar (one document per hit)",
             content: {
               "application/json": {
                 schema: {
@@ -203,7 +203,7 @@ const spec = {
                       type: "object",
                       properties: {
                         total: { type: "object", properties: { value: { type: "integer" }, relation: { type: "string" } } },
-                        hits: { type: "array", items: { type: "object", description: "One kjeldeoppslag per item; _source contains full document." } }
+                        hits: { type: "array", items: { type: "object", description: "One kjeldepostar per item; _source contains full document." } }
                       }
                     }
                   }
@@ -218,7 +218,7 @@ const spec = {
       get: {
         tags: ["Table"],
         summary: "Download search results",
-        description: `Export matching kjeldeoppslag as JSON. Same query and facet params as search; you control which fields and how many rows.
+        description: `Export matching kjeldepostar as JSON. Same query and facet params as search; you control which fields and how many rows.
 
 **Parameters:** \`fields\` — comma-separated list of field names to return (e.g. \`label,uuid,location,adm1,adm2\`). If omitted, no fields are returned in each hit (only \`_source\` is absent; check backend). \`size\` — max number of results (default 10000). \`from\`, \`asc\`, \`desc\` as in table search.
 
@@ -245,9 +245,9 @@ const spec = {
       get: {
         tags: ["Documents"],
         summary: "Document lookup by UUID (query)",
-        description: `Fetch one kjeldeoppslag by its UUID. Optional \`dataset\` filter; omit to search across all datasets. If the document has redirects, a hit by redirect UUID is also resolved.
+        description: `Fetch one kjeldepostar by its UUID. Optional \`dataset\` filter; omit to search across all datasets. If the document has redirects, a hit by redirect UUID is also resolved.
 
-**Response:** Standard Elasticsearch hit: \`_source\` contains the full document (label, attestations, year, location, group, iiif, content, etc.). \`_source.group.id\` is the namnegruppe id (uuid of one member); use GET /api/group?group={group.id} to get all kjeldeoppslag in that group.
+**Response:** Standard Elasticsearch hit: \`_source\` contains the full document (label, attestations, year, location, group, iiif, content, etc.). \`_source.group.id\` is the namnegruppe id (uuid of one member); use GET /api/group?group={group.id} to get all kjeldepostar in that group.
 
 **Equivalent to** GET /uuid/{uuid}.json (path style). With the .json extension the server returns this JSON; without extension it returns the HTML document page for humans.`,
         parameters: [
@@ -267,7 +267,7 @@ const spec = {
       get: {
         tags: ["Documents"],
         summary: "Document lookup by UUID (JSON)",
-        description: `Same document as GET /api/doc?uuid={uuid}. Returns the kjeldeoppslag as JSON (Elasticsearch-style hit with \`_source\`). **An extension is required** for the API response; without it the server serves the HTML document page. For GeoJSON or JSON-LD use \`/uuid/{uuid}.geojson\` or \`/uuid/{uuid}.jsonld\`.`,
+        description: `Same document as GET /api/doc?uuid={uuid}. Returns the kjeldepostar as JSON (Elasticsearch-style hit with \`_source\`). **An extension is required** for the API response; without it the server serves the HTML document page. For GeoJSON or JSON-LD use \`/uuid/{uuid}.geojson\` or \`/uuid/{uuid}.jsonld\`.`,
         parameters: [
           { name: "uuid", in: "path", required: true, description: "Document UUID (without extension)", schema: { type: "string" } }
         ],
@@ -309,7 +309,7 @@ const spec = {
       get: {
         tags: ["Documents"],
         summary: "All documents in a namnegruppe",
-        description: `Returns every kjeldeoppslag in the given namnegruppe. Use this when you have a document (or a group.id from search) and want all source records in that name group.
+        description: `Returns every kjeldepostar in the given namnegruppe. Use this when you have a document (or a group.id from search) and want all source records in that name group.
 
 **Parameter \`group\`:** The namnegruppe id — i.e. the uuid of any one of the documents in the group (same as \`group.id\` on any member). May be base64url-encoded or raw. **Special case:** For lexicon/grunnord datasets, \`group\` can be a \`grunnord_*\` id (e.g. \`grunnord_berg\`) meaning "all entries with this root word"; pass it raw or base64-encoded (the route accepts both). In that case \`q\` is usually kept to filter by text within the root-word group.
 
@@ -324,7 +324,7 @@ const spec = {
         ],
         responses: {
           "200": {
-            description: "Object with sources[] (all kjeldeoppslag in the group) and optional topDoc/group metadata",
+            description: "Object with sources[] (all kjeldepostar in the group) and optional topDoc/group metadata",
             content: {
               "application/json": {
                 schema: {
@@ -344,7 +344,7 @@ const spec = {
       get: {
         tags: ["Map"],
         summary: "Map tile markers (by namnegruppe)",
-        description: `Returns one representative hit per namnegruppe for the given map tile. Used to draw markers on the map — each marker corresponds to one namnegruppe, not every kjeldeoppslag.
+        description: `Returns one representative hit per namnegruppe for the given map tile. Used to draw markers on the map — each marker corresponds to one namnegruppe, not every kjeldepostar.
 
 **Path:** \`zoom\`, \`x\`, \`y\` are geotile coordinates (e.g. from a tile layer). The backend aggregates by tile and then by \`group.id\`, so each bucket has one representative document per group in that tile.
 

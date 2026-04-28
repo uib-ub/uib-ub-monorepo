@@ -1,8 +1,7 @@
 'use client'
+import { useDatasetTagParam } from "@/lib/param-hooks";
 import { getValueByPath } from "@/lib/utils";
-import { expandedMaxResultsParam } from "@/config/max-results";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { PiMagnifyingGlass } from "react-icons/pi";
 
 interface FacetItem {
@@ -24,17 +23,12 @@ export default function FacetsInfobox({
   docDataset: string | null;
   filteredFacets: any[];
 }) {
-  const searchParams = useSearchParams();
-
+  const currentDatasetTag = useDatasetTagParam();
   if (!docDataset) return null;
 
   const buildSearchUrl = (params: Record<string, string>) => {
     const urlParams = new URLSearchParams();
-
-    urlParams.set('maxResults', expandedMaxResultsParam);
-
     // Preserve datasetTag if it exists in current URL
-    const currentDatasetTag = searchParams.get('datasetTag');
     if (currentDatasetTag) {
       urlParams.set('datasetTag', currentDatasetTag);
     }

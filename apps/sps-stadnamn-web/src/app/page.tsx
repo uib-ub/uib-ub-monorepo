@@ -6,10 +6,8 @@ import Link from 'next/link';
 import { datasetTitles, datasetPresentation, publishDates, datasetShortDescriptions } from '@/config/metadata-config';
 import Footer from '../components/layout/footer';
 import Form from "next/form";
-import React from 'react';
 import HomeNavCards from "./home-nav-cards";
-import { fetchStats } from "./api/_utils/stats";
-import { headers } from "next/headers";
+import { fetchStats } from "./api/_utils/stats";  
 import Header from "./header";
 
 export default async function Home() {
@@ -42,16 +40,16 @@ export default async function Home() {
     <div className="flex flex-col gap-6 lg:mt-32">
   <h1 className="self-center text-5xl text-neutral-950 sr-only md:not-sr-only !px-2 font-serif">Stadnamnsøk</h1>
   
-  <Form id="search-form" className="flex items-center justify-center gap-2 w-full" action="search">
+  <Form suppressHydrationWarning={true} id="search-form" className="flex items-center justify-center gap-2 w-full" action="search">
    
     <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
     <input 
+    suppressHydrationWarning={true}
       id="search_input" 
-      className="flex-1 rounded-lg h-14 lg:h-12 border border-gray-300 text-lg lg:text-base px-4 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all" 
+      className="flex-1 rounded-lg h-14 bg-white lg:h-12 border border-gray-300 text-lg lg:text-base px-4 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all" 
       name="q" 
       type="text"
     />
-    <input type="hidden" name="nav" value="maxResults"/>
     <button 
       className="bg-red-700 hover:bg-red-800 text-white rounded-lg h-14 lg:h-12 w-14 lg:w-12 flex items-center justify-center transition-colors duration-200 flex-shrink-0" 
       type="submit" 
@@ -73,7 +71,7 @@ export default async function Home() {
     </span>
   </div>
   <div className="flex flex-col items-center gap-2">
-    <span className="uppercase tracking-widest text-neutral-900 lg:text-sm font-semibold">Kjeldeoppslag</span>
+    <span className="uppercase tracking-widest text-neutral-900 lg:text-sm font-semibold">Kjeldepostar</span>
     <span className="lg:text-3xl text-4xl text-neutral-950" style={{ fontVariantNumeric: "tabular-nums" }}>
       {totalHits?.toLocaleString('nb-NO')}
     </span>

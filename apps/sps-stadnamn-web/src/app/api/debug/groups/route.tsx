@@ -6,10 +6,8 @@ export async function GET(request: Request) {
   const { reservedParams } = extractFacets(request)
   const { simple_query_string } = getQueryString(reservedParams)
 
-  // Get sort parameter from query string
-  const url = new URL(request.url)
-  const sortParam = url.searchParams.get('sort')
-  const sizeParam = url.searchParams.get('size')
+  const sortParam = reservedParams.sort
+  const sizeParam = reservedParams.size
   const size = sizeParam ? parseInt(sizeParam, 10) : 100
 
   // Use correct reserved params (from facets.ts)
