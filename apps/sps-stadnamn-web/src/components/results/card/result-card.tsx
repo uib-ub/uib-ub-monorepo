@@ -175,15 +175,7 @@ function GroupBottomToolbar({
     const datasets = groupData.datasets as string[] | undefined;
     const dataset = Array.isArray(datasets) && datasets.length > 0 ? datasets[0] : undefined;
 
-    const docUuid = (groupData as any)?.fields?.uuid?.[0] ?? null;
-    const uuidUrl = (() => {
-        if (!docUuid) return null;
-        const token = String(docUuid).trim();
-        const base = process.env.NODE_ENV == "development" ? "" : "https://stadnamn.no";
-        if (token.startsWith("http://") || token.startsWith("https://")) return token;
-        if (token.startsWith("/uuid/")) return `${base}${token}`;
-        return `${base}/uuid/${token}`;
-    })();
+    const uuid = groupData.fields?.uuid?.[0] ?? null;
 
     const groupInitParamValue = isMulti ? stringToBase64Url(groupData.id) : groupData.id;
     const isInit = Boolean(init && init === groupInitParamValue);
@@ -265,8 +257,7 @@ function GroupBottomToolbar({
                     {toolbarItems}
                     <Clickable
                         link={true}
-                        href={uuidUrl || ""}
-                        disabled={!uuidUrl}
+                        href={uuid ? `/uuid/${uuid}` : ""}
                         onClick={() => {
                             // Ensure "back to search" URLs remember which row we came from,
                             // without leaking `scroll` into the uuid route URL.
@@ -407,8 +398,8 @@ export default function ResultCard({
     const brukNumber = cadastre.bnr || cadastre.lnr;
     const isBruk = Boolean(brukNumber);
     const gardSegment = [parentNumber, cadastre.parentLabel].filter(Boolean).join(" ").trim();
+    const uuid = fields.uuid?.[0] ?? null;
     const finalCadastreSegment = [isBruk ? brukNumber : parentNumber, label].filter(Boolean).join(" ").trim() || (isBruk ? "Bruk" : "Gard");
-    const docUuid = toText((fields as any)?.uuid).split(" | ")[0].trim();
     const noWithinSubtitle = [adm2, adm1].filter(Boolean).join(", ");
     const titleLabel = label || "Utan namn";
     const flatSingleSubtitle = noWithinSubtitle || admText;
@@ -595,7 +586,7 @@ export default function ResultCard({
                                         isBruk && gardSegment && <span>{gardSegment}</span>
                                     )}
                                     {isBruk && gardSegment && <span className="text-neutral-700">/</span>}
-                                    {dataset && docUuid ? (
+                                    {dataset && uuid ? (
                                         <Clickable
                                             link
                                             className="breadcrumb-link"
@@ -604,9 +595,9 @@ export default function ResultCard({
                                                     dataset,
                                                     adm1,
                                                     adm2,
-                                                    uuid: isBruk ? cadastre.within : docUuid,
+                                                    uuid: isBruk ? cadastre.within : uuid,
                                                 }),
-                                                doc: docUuid,
+                                                doc: uuid,
                                                 point: activePointValue,
                                             }}
                                             onClick={handleEnterTreeFromBreadcrumb}
