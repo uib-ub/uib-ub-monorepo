@@ -96,6 +96,7 @@ export default defineNuxtConfig({
     "/UDEUT": { redirect: "/tb/UDEUT" },
     "/UHR": { redirect: "/tb/UHR" },
   },
+  compatibilityDate: "2025-01-23",
   nitro: {
     preset: "vercel",
   },
