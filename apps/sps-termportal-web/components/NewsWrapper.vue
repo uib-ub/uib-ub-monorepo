@@ -32,40 +32,9 @@
 </template>
 
 <script setup lang="ts">
-const appConfig = useAppConfig();
+const locale = useLocale();
 
-// TODO behaviour needs to be documented:
-// https://git.app.uib.no/spraksamlingane/terminologi/terminologi-content/-/blob/main/admin/system-behaviour.md
-const langOrder = computed(() => {
-  return useLocaleLangOrder().value.filter(lc =>
-    appConfig.language.locale.includes(lc),
-  );
-});
-
-// It uses the title to decide
-const query = `
-*[_type == "news"
-  && !(_id in path("drafts.**"))
-  && defined(date)
-  && dateTime(date) < dateTime(now())
-]{
-  date,
-  "title": coalesce(title${langOrder.value[0]}, title${langOrder.value[1]}, title${langOrder.value[2]}),
-  "titleLang": select(
-    defined(title${langOrder.value[0]}) => "${langOrder.value[0]}",
-    defined(title${langOrder.value[1]}) => "${langOrder.value[1]}",
-    "${langOrder.value[2]}"
-  ),
-  "content": coalesce(content${langOrder.value[0]}, content${langOrder.value[1]}, content${langOrder.value[2]}),
-  "contentLang": select(
-      defined(content${langOrder.value[0]}) => "${langOrder.value[0]}",
-      defined(content${langOrder.value[1]}) => "${langOrder.value[1]}",
-      "${langOrder.value[2]}"
-  )
-} | order(date desc)[0...3]
-`;
-
-const { data } = useLazySanityQuery(query);
+const { data } = useLazyFetch(`/api/news/${locale.value}`);
 </script>
 
 <style>

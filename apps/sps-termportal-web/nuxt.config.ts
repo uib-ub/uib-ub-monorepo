@@ -14,7 +14,7 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "shadcn-nuxt",
   ],
-  ssr: false,
+  ssr: true,
   app: {
     head: {
       title: "Termportalen",
@@ -113,10 +113,10 @@ export default defineNuxtConfig({
     // },
   },
   sanity: {
-    projectId: process.env.SANITY_PROJECT_ID,
+    projectId: process.env.NUXT_SANITY_PROJECT_ID,
     dataset: "production",
     apiVersion: "2023-10-09",
-    token: process.env.SANITY_API_TOKEN,
+    token: process.env.NUXT_SANITY_API_TOKEN,
     useCdn: true,
   },
   shadcn: {
