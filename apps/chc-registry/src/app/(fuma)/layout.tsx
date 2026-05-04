@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import { Open_Sans, EB_Garamond } from 'next/font/google';
 import { RootProvider } from 'fumadocs-ui/provider/next';
-import './globals.css';
 import { CloverI18nProvider } from '@/lib/clover-i18n';
 import { PaletteProvider } from '@/components/theme/palette-provider';
+import { TailwindIndicator } from '@/components/tailwind-indicator';
+
+import './globals.css';
 
 const openSans = Open_Sans({
   variable: '--font-open-sans',
@@ -28,7 +30,10 @@ export default function Layout({ children }: LayoutProps<'/'>) {
       >
         <CloverI18nProvider />
         <PaletteProvider>
-          <RootProvider>{children}</RootProvider>
+          <RootProvider>
+            {children}
+            <TailwindIndicator />
+          </RootProvider>
         </PaletteProvider>
       </body>
     </html>

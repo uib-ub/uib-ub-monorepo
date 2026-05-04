@@ -1,4 +1,4 @@
-import { IIIFManifest } from '../components/iiif-manifest';
+import { IIIFViewer } from '../components/iiif-viewer';
 
 /**
  * IIIF Manifest demo.
@@ -12,13 +12,13 @@ import { IIIFManifest } from '../components/iiif-manifest';
  * https://samvera-labs.github.io/clover-iiif/docs/i18n
  */
 
-export default function IIFManifestDemo() {
+export default function IIIFViewerDemo() {
   // Using a more reliable IIIF manifest for testing
   const manifestUrl = 'https://api.ub.uib.no/object/ubb-bs-ok-00919?as=iiif';
 
   return (
     <div className="w-full h-full">
-      <IIIFManifest iiifContent={manifestUrl} />
+      <IIIFViewer iiifContent={manifestUrl} />
     </div>
   );
 }

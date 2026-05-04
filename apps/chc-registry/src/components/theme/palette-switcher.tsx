@@ -1,15 +1,20 @@
 "use client"
 
-import * as React from "react"
-
+import { cva } from "class-variance-authority"
 import { usePalette, type Palette } from "@/components/theme/palette-provider"
+import { useEffect, useState } from 'react'
 import { cn } from "@/lib/utils"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
-const LABELS: Record<Palette, string> = {
-  grayscale: "Grayscale",
-  red: "Red",
-}
+const itemVariants = cva('size-6.5 p-1.5 text-fd-muted-foreground', {
+  variants: {
+    active: {
+      true: 'bg-fd-border text-fd-accent-foreground',
+      false: 'text-fd-muted-foreground',
+    },
+  },
+});
+
+const full = [['grayscale', 'bg-uib-neutral-400'] as const, ['red', 'bg-uib-red-500'] as const];
 
 type PaletteSwitcherProps = {
   className?: string
@@ -17,25 +22,30 @@ type PaletteSwitcherProps = {
 
 export function PaletteSwitcher({ className }: PaletteSwitcherProps) {
   const { palette, setPalette, availablePalettes } = usePalette()
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const container = cn(
+    'inline-flex items-center rounded-full border p-0 *:rounded-full',
+    className,
+  );
 
   return (
-    <ToggleGroup
-      type="single"
-      value={palette}
-      onValueChange={(value) => {
-        if (!value) return
-        setPalette(value as Palette)
-      }}
-      spacing={0}
-      aria-label="Color palette"
-      className={cn("text-xs", className)}
-    >
-      {availablePalettes.map((p) => (
-        <ToggleGroupItem key={p} value={p} aria-label={LABELS[p]}>
-          {LABELS[p]}
-        </ToggleGroupItem>
+    <div className={container} data-palette-toggle="">
+      {full.map(([key, color]) => (
+        <button
+          key={key}
+          aria-label={key}
+          className={cn(itemVariants({ active: palette === key }))}
+          onClick={() => setPalette(key)}
+        >
+          <span className={cn("block size-3 rounded-full", color)} />
+        </button>
       ))}
-    </ToggleGroup>
-  )
+    </div>
+  );
 }
 

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hero-card",
+  "title": "Hero Card",
+  "description": "Hero Card",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "files": [
+    {
+      "path": "src/registry/uib-ub/items/hero-card/components/hero-card.tsx",
+      "content": "import * as React from \"react\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\nconst heroCardVariants = cva(\n  /* \"grid grid-cols-1 md:grid-cols-2 gap-8 p-8 md:gap-16 md:p-16 md:[> img]:grid-col-start-1 md:[> div]:grid-col-start-2 bg-card text-card-background rounded-md\", */\n  [\n    \"grid grid-cols-[initial] grid-flow-row-dense md:grid-rows-1 md:grid-cols-2 p-8  md:px-16 md:py-8 bg-card text-card-background rounded-md\",\n    \"[grid-template-areas:'left''right'] md:[grid-template-areas:'left_right']\",\n    \"[&_h1,&_h2,&_h3,&_h4,&_h5,&_h6]:mt-0 pt-0] items-center\",\n    \"gap-[clamp(2rem,5.33vw,4rem)]\"\n  ],\n  {\n    variants: {\n      image: {\n        right: \"[&_img]:[grid-area:right] md:[&_img]:[grid-area:right] md:[&_div]:[grid-area:left]\",\n        left: \"[&_img]:[grid-area:left] md:[&_img]:[grid-area:left] md:[&_div]:[grid-area:right]\",\n      },\n    },\n    defaultVariants: { image: \"right\" },\n  }\n);\n\nfunction HeroCard({\n  className,\n  image = \"right\",\n  children,\n  ...props\n}: React.ComponentProps<\"div\"> & VariantProps<typeof heroCardVariants> & { children: React.ReactNode }) {\n  return (\n    <div\n      className={cn(heroCardVariants({ image, className }))}\n      {...props}\n    >\n      {children}\n    </div>\n  )\n}\n\n\n\nexport { HeroCard }",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

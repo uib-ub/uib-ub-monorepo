@@ -16,7 +16,18 @@ async function loadRegistryItems(): Promise<Registry['items'][]> {
     registryItemPaths.map(async (file) => {
       const importPath = path.resolve(__dirname, file);
       const importedModule = await import(importPath);
-      const items = (importedModule.default ?? importedModule.blocks) as Registry['items'];
+      const items = (
+        importedModule.default ??
+        importedModule.blocks ??
+        importedModule.themes
+      ) as Registry['items'] | undefined;
+
+      if (!Array.isArray(items)) {
+        throw new Error(
+          `Registry module "${file}" must export an items array as default, blocks, or themes.`,
+        );
+      }
+
       return items;
     }),
   );

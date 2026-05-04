@@ -23,7 +23,7 @@ const customTheme = {
 
 export const IIIFImage = ({ src, className }: { src: string, className?: string }) => {
   return (
-    <div className={cn('iiif-image-wrapper block w-full', className)}>
+    <div className={cn('iiif-image-wrapper block w-full h-96', className)}>
       <Image
         src={src}
         openSeadragonConfig={customTheme}

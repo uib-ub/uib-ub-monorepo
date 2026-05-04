@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export const IIIFManifestSkeleton = () => (
+export const IIIFViewerSkeleton = () => (
   <div className='absolute inset-0 flex items-center justify-center'>
     <Skeleton className='flex items-center justify-center w-full h-full fade-in'>
       Loading...
@@ -15,7 +15,7 @@ const Viewer = dynamic(
   () => import('@samvera/clover-iiif/viewer').then((Clover) => Clover.default),
   {
     ssr: false,
-    loading: IIIFManifestSkeleton,
+    loading: IIIFViewerSkeleton,
   },
 );
 
@@ -55,11 +55,11 @@ const options = {
   canvasHeight: 'auto',
   showIIIFBadge: false,
   customLoadingComponent: () => (
-    <IIIFManifestSkeleton />
+    <IIIFViewerSkeleton />
   ),
 };
 
-export const IIIFManifest = ({ iiifContent }: { iiifContent: string }) => {
+export const IIIFViewer = ({ iiifContent }: { iiifContent: string }) => {
   return (
     <div className='relative h-[70vh] w-full z-0'>
       <Viewer

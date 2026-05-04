@@ -1,0 +1,308 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+@import 'tw-animate-css';
+@import '../../registry/uib-ub/items/content-grid/components/styles/content-grid.css';
+
+/* UIB design tokens / palettes */
+@import '../../registry/uib-ub/items/theme/components/styles/uib-theme.css';
+/* @import '../../registry/uib-ub/items/theme/components/styles/ub-prose.css'; */
+@import '../../registry/uib-ub/items/theme/components/styles/palette-red.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);  
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.5rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: var(--color-neutral-200);
+  --color-card-active: var(--color-neutral-300);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: var(--color-red-600);
+  --primary-foreground: var(--color-red-900);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.2 0 0);
+  --chart-2: oklch(0.4 0 0);
+  --chart-3: oklch(0.6 0 0);
+  --chart-4: oklch(0.8 0 0);
+  --chart-5: oklch(0.3 0 0);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --color-card-active: var(--color-neutral-800);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: var(--theme-color-300);
+  --primary-foreground: var(--color-bg-6);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.95 0 0);
+  --chart-2: oklch(0.8 0 0);
+  --chart-3: oklch(0.65 0 0);
+  --chart-4: oklch(0.5 0 0);
+  --chart-5: oklch(0.75 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-fd-background text-fd-foreground;
+  }
+}
+
+
+/* UiB customizations */
+@utility ub-prose {
+  & :where(a:not(.not-ub-prose *, .not-ub-prose)):not(:where(h1 a, h2 a, h3 a, h4 a, h5 a, h6 a)) {
+    @apply underline-offset-4 decoration-2! decoration-primary! hover:no-underline hover:bg-link-color-bg-active hover:text-link-color-fg-active hover:inline-block hover:m-0 hover:p-0 outline-0;
+  }
+
+  & :where(p):not(.not-ub-prose, .not-ub-prose *) {
+    @apply text-body mb-4 mt-0;
+  }
+
+  & :where(.byline):not(.not-ub-prose, .not-ub-prose *) {
+    @apply fl-mb-4;
+    gap: clamp(var(--space-2-on-mobile), .667vw, var(--space-2-on-desktop));
+    p {
+      @apply text-body-small;
+    }
+  }
+
+  & h1 + p:not(.not-ub-prose, .not-ub-prose *) {
+    @apply text-lead fl-mt-6;
+  }
+
+  & :where(p.text-lead + p):not(.not-ub-prose, .not-ub-prose *) {
+    @apply fl-mt-10;
+  }
+  
+  & :where(h1):first-child {
+    @apply text-hero text-balance fl-mb-1;
+  }
+  & :where(h2):not(.not-ub-prose, .not-ub-prose *) {
+    @apply text-h2 fl-mt-10 fl-mb-4;
+  }
+  & :where(h3):not(.not-ub-prose, .not-ub-prose *) {
+    @apply text-h3 fl-mt-10 fl-mb-4;
+  }
+  & :where(h4):not(.not-ub-prose, .not-ub-prose *) {
+    @apply text-h4 fl-mt-10 fl-mb-2;
+  }
+  & :where(h5):not(.not-ub-prose, .not-ub-prose *) {
+    @apply text-h5 fl-mt-10 fl-mb-1;
+  }
+  & :where(h6):not(.not-ub-prose, .not-ub-prose *) {
+    @apply text-h6 fl-mt-10 fl-mb-1;
+  }
+
+  & :where(.byline):not(.not-ub-prose, .not-ub-prose *) {
+    @apply flex flex-col gap-1;
+
+    > * {
+      @apply m-0 p-0 text-body-small;
+    }
+  }
+  
+  & :where(figcaption):not(.not-ub-prose, .not-ub-prose *) { 
+    p:not(.not-ub-prose, .not-ub-prose *) {
+      @apply text-body-small;
+    }
+  }
+  
+  & :where(dl):not(.not-ub-prose, .not-ub-prose *) {
+    @apply text-body;
+  }
+  
+  & :where(dl.horisontal-list):not(.not-ub-prose, .not-ub-prose *) {
+    @apply flex flex-wrap gap-x-4 gap-y-2 border-y-2 border-x-neutral-200 fl-py-3 fl-mt-6 fl-mb-10;
+    > div {
+      @apply grow basis-[min-content] ;
+    }
+  }
+
+  dt, dd {
+    @apply p-0 m-0;
+  }
+}
+
+@utility text-hero {
+  font-size: clamp(var(--font-size-hero-on-mobile), 5cqw, var(--font-size-hero-on-desktop)); 
+  font-weight: 400;
+  line-height: 1.2;
+}
+@utility text-h1 {
+  font-size: clamp(var(--font-size-h1-on-mobile), 4cqw, var(--font-size-h1-on-desktop));
+  font-weight: 400;
+  line-height: 1.25;
+}
+@utility text-h2 {
+  font-size: clamp(var(--font-size-h2-on-mobile), 3.333cqw, var(--font-size-h2-on-desktop));
+  font-weight: 400;
+  line-height: 1.25;
+  @apply fl-mb-4 fl-mt-14;
+}
+@utility text-h3 {
+  font-size: clamp(var(--font-size-h3-on-mobile), 2.667cqw, var(--font-size-h3-on-desktop));
+  font-weight: 400;
+  line-height: 1.3;
+}
+@utility text-h4 {
+  font-size: clamp(var(--font-size-h4-on-mobile), 2cqw, var(--font-size-h4-on-desktop));
+  font-weight: 600;
+  line-height: 1.3;
+}
+@utility text-h5 {
+  font-size: clamp(var(--font-size-h5-on-mobile), 1.833cqw, var(--font-size-h5-on-desktop));
+  font-weight: 600;
+  line-height: 1.4;
+}
+@utility text-h6 {
+  font-size: clamp(var(--font-size-h6-on-mobile), 1.667cqw, var(--font-size-h6-on-desktop));
+  font-weight: 600;
+  line-height: 1.5;
+}
+@utility text-body {
+  font-size: clamp(var(--font-size-body-on-mobile), 1.667cqw, var(--font-size-body-on-desktop));
+}
+@utility text-body-small {
+  font-size: clamp(var(--font-size-body-small-on-mobile), 1.333cqw, var(--font-size-body-small-on-desktop));
+}
+@utility text-action {
+  font-size: clamp(var(--font-size-action-on-mobile), 1.667cqw, var(--font-size-action-on-desktop));
+}
+@utility text-lead {
+  font-size: clamp(var(--font-size-lead-on-mobile), 2cqw, var(--font-size-lead-on-desktop));
+  font-weight: 400;
+  line-height: 1.5;
+}
+@utility text-blockquote {
+  font-size: clamp(var(--font-size-blockquote-on-mobile), 2vw, var(--font-size-blockquote-on-desktop));
+  line-height: 1.5;
+}
+@utility fl-m-* {
+  margin: --value(--fl-space-*);
+}
+@utility fl-mx-* {
+  margin-inline: --value(--fl-space-*);
+}
+@utility fl-my-* {
+  margin-block: --value(--fl-space-*);
+}
+@utility fl-mt-* {
+  margin-top: --value(--fl-space-*);
+}
+@utility fl-mb-* {
+  margin-bottom: --value(--fl-space-*);
+}
+@utility fl-ml-* {
+  margin-left: --value(--fl-space-*);
+}
+@utility fl-mr-* {
+  margin-right: --value(--fl-space-*);
+}
+@utility fl-p-* {
+  padding: --value(--fl-space-*);
+}
+@utility fl-px-* {
+  padding-inline: --value(--fl-space-*);
+}
+@utility fl-py-* {
+  padding-block: --value(--fl-space-*);
+}
+@utility fl-pt-* {
+  padding-top: --value(--fl-space-*);
+}
+@utility fl-pb-* {
+  padding-bottom: --value(--fl-space-*);
+}
+@utility fl-pl-* {
+  padding-left: --value(--fl-space-*);
+}
+@utility fl-pr-* {
+  padding-right: --value(--fl-space-*);
+}
+@utility fl-gap-* {
+  gap: --value(--fl-space-*);
+}
+@utility fl-gap-x-* {
+  column-gap: --value(--fl-space-*);
+}
+@utility fl-gap-y-* {
+  row-gap: --value(--fl-space-*);
+}

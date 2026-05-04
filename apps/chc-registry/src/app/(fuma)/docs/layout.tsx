@@ -6,15 +6,15 @@ import { PaletteSwitcher } from '@/components/theme/palette-switcher';
 export default function Layout({ children }: LayoutProps<'/docs'>) {
   return (
     <DocsLayout
+      {...baseOptions()}
       tree={source.pageTree}
       sidebar={{
-        footer: <div className="items-center">
+        footer: <div className="flex justify-end">
           <PaletteSwitcher />
         </div>,
       }}
-      {...baseOptions()}
     >
       {children}
-    </DocsLayout>
+    </ DocsLayout>
   );
 }
