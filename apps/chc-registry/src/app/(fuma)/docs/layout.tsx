@@ -9,7 +9,7 @@ export default function Layout({ children }: LayoutProps<'/docs'>) {
       {...baseOptions()}
       tree={source.pageTree}
       sidebar={{
-        footer: <div className="flex justify-end">
+        footer: <div key="palette-switcher-footer" className="flex justify-end">
           <PaletteSwitcher />
         </div>,
       }}

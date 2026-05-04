@@ -48,7 +48,7 @@ export function ColorFormatSelector({
         <span className="font-medium">Format:</span>
         <SelectValue className="text-muted-foreground font-mono dark:bg-input-foreground" />
       </SelectTrigger>
-      <SelectContent align="end" className="rounded-xl dark:bg-muted-background dark:text-accent-foreground w-fit">
+      <SelectContent align="end" className="rounded-xl dark:bg-background dark:text-primary-foreground w-fit">
         {Object.entries(formats).map(([format, value]) => (
           <SelectItem
             key={format}
@@ -57,8 +57,8 @@ export function ColorFormatSelector({
               "gap-2 rounded-lg flex items-baseline justify-between",
               // Pointer highlight uses data-highlighted (see Base UI Select); descendants get
               // focus:**:text-accent-foreground from select.tsx unless we override with **: …
-              "dark:data-highlighted:text-secondary dark:data-highlighted:**:text-accent-foreground",
-              "dark:focus:text-accent-foreground dark:focus:**:text-accent-foreground",
+              "dark:data-highlighted:text-foreground dark:data-highlighted:**:text-foreground",
+              "dark:focus:text-foreground dark:focus:**:text-foreground",
             )}
           >
             <span className="font-medium">{format}</span>

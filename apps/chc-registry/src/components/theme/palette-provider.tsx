@@ -8,8 +8,8 @@ import {
   type ReactNode,
 } from "react";
 
-// Only provide "red" as an available palette option
-const PALETTES = ["grayscale", "red"] as const;
+// Provide both neutral and red palette options
+const PALETTES = ["neutral", "red"] as const;
 
 export type Palette = (typeof PALETTES)[number];
 
@@ -40,8 +40,11 @@ export function PaletteProvider({ children }: { children: ReactNode }) {
     if (typeof document === "undefined") return;
     const root = document.documentElement;
 
-    // Remove palette-red class, then add if needed (only "red" palette available)
-    root.classList.remove("palette-red");
+    // Keep only the active palette class on <html>
+    root.classList.remove("palette-neutral", "palette-red");
+    if (palette === "neutral") {
+      root.classList.add("palette-neutral");
+    }
     if (palette === "red") {
       root.classList.add("palette-red");
     }

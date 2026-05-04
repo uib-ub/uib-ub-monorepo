@@ -14,7 +14,7 @@ const itemVariants = cva('size-6.5 p-1.5 text-fd-muted-foreground', {
   },
 });
 
-const full = [['grayscale', 'bg-uib-neutral-400'] as const, ['red', 'bg-uib-red-500'] as const];
+const full = [['neutral', 'bg-uib-neutral-400'] as const, ['red', 'bg-uib-red-500'] as const];
 
 type PaletteSwitcherProps = {
   className?: string

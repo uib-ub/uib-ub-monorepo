@@ -6,7 +6,8 @@
 
 /* UIB design tokens / palettes */
 @import '../../registry/uib-ub/items/theme/components/styles/uib-theme.css';
-/* @import '../../registry/uib-ub/items/theme/components/styles/ub-prose.css'; */
+@import '../../registry/uib-ub/items/theme/components/styles/ub-prose.css';
+@import '../../registry/uib-ub/items/theme/components/styles/palette-neutral.css';
 @import '../../registry/uib-ub/items/theme/components/styles/palette-red.css';
 
 @custom-variant dark (&:is(.dark *));
