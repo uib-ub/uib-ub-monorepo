@@ -35,7 +35,11 @@ export async function GET(request: Request) {
         "must": simple_query_string || { "match_all": {} },
         "filter": [{
           "term": {
-            "group.id": groupValue
+            ...reservedParams.noGrouping ? {
+              "uuid": groupValue
+            } : {
+              "group.id": groupValue
+            }
           }
         }, ...termFilters]
       }
@@ -52,8 +56,6 @@ export async function GET(request: Request) {
     "track_total_hits": false,
     "_source": ["uuid", "label", "attestations", "year", "boost", "sosi", "content", "iiif", "recordings", "location", "boost", "placeScore", "group", "links", "coordinateType", "area", "misc.Enhetsnummer", "misc.MNR", "misc.LNR", "ssr", "within", "cadastre", "adm1", "adm2"],
   }
-
-
 
   const [data, status] = await postQuery(perspective, query, "dfs_query_then_fetch")
 

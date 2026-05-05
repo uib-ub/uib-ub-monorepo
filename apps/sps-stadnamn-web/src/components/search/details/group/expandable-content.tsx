@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { processHtmlContent } from "./group-utils";
+import { useSearchParams } from "next/navigation";
 
 interface ExpandableContentProps {
     html: string;
@@ -32,13 +33,15 @@ export const ExpandableContent = ({
         overflow: 'hidden'
     }
     if (!html && !text) return null;
+    const searchParams = useSearchParams()
+    const noGrouping = searchParams.get('noGrouping') === 'on'
 
     const processedHtml = html ? processHtmlContent(html, isExpanded) : null;
 
     return (
         <>
             <span style={clampStyle}>
-                {leading}
+                {!noGrouping && leading}
                 {processedHtml || text}
             </span>
             {isLong && showToggle && forceExpanded === undefined && (

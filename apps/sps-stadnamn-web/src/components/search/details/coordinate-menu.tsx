@@ -56,7 +56,7 @@ export default function CoordinateMenu() {
                 style={{ ['anchorName' as any]: anchorName }}
                 className={`btn btn-outline btn-compact flex items-center gap-2 h-10 min-w-0 shrink`}>
                 <div className="flex items-center gap-2 min-w-0">
-                    <PiMapPinFill className="text-lg text-neutral-600 flex-shrink-0" aria-hidden="true" />
+                    <PiMapPinFill className="text-lg text-neutral-700 flex-shrink-0" aria-hidden="true" />
                     {!isMobile && <span className="text-sm truncate block min-w-0">{docData._source.coordinateType ? coordinateVocab[docData._source.coordinateType]?.creator : datasetTitles[docDataset as string]}{!isOriginal && <span className="text-neutral-800"> (berika)</span>}</span>}
                 </div>
             </DynamicClickable>
@@ -95,7 +95,7 @@ export default function CoordinateMenu() {
                 </div>
             </div>
         </>
-    ) : <em className="text-sm text-neutral-500 flex items-center gap-2 p-2">
+    ) : <em className="text-sm text-neutral-700 flex items-center gap-2 p-2">
         {docData?._source.location ? "Utan koordinattype" : "Utan koordinater"}
     </em>
 }

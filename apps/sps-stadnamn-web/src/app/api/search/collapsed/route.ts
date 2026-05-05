@@ -9,6 +9,46 @@ export async function POST(request: Request) {
   const { termFilters, reservedParams } = extractFacets(request)
   const { highlight, simple_query_string } = getQueryString(reservedParams)
 
+  const sortPreference = reservedParams.searchSort === 'similarity' ? 'similarity' : 'distance'
+
+  const baseSort: any[] = []
+
+  if (reservedParams.datasetTag == 'base') {
+    baseSort.push({ 'group.id': "asc" }, { 'label.keyword': "asc" })
+  } else {
+    if (sortPreference === 'similarity') {
+      // Likskap: 1. score, 2. boost
+      if (reservedParams.q) {
+        baseSort.push({ _score: "desc" })
+      }
+      baseSort.push({
+        boost: {
+          order: "desc",
+          missing: "_last"
+        }
+      })
+    } else {
+      // Avstand: 1. avstand, 2. boost, 3. score
+      if (initLocation) {
+        baseSort.push({
+          _geo_distance: {
+            location: initLocation,
+            order: "asc"
+          }
+        })
+      }
+      baseSort.push({
+        boost: {
+          order: "desc",
+          missing: "_last"
+        }
+      })
+      if (reservedParams.q) {
+        baseSort.push({ _score: "desc" })
+      }
+    }
+  }
+
   const query: Record<string, any> = {
     "size": size || 10,
     ...from ? { from } : {},
@@ -18,29 +58,7 @@ export async function POST(request: Request) {
     "collapse": {
       "field": "group.id",
     },
-
-    "sort": reservedParams.datasetTag == 'base' ?
-      [{ 'group.id': "asc" }, { 'label.keyword': "asc" }]
-      : [
-
-
-        ...initLocation ? [{
-          _geo_distance: {
-            location: initLocation,
-            order: "asc"
-          }
-        }] : [],
-        ...reservedParams.q ? [{
-          _score: "desc"
-        }] : [],
-
-        {
-          boost: {
-            order: "desc",
-            missing: "_last"
-          }
-        },
-      ],
+    "sort": baseSort,
     "_source": false
   }
 

@@ -79,7 +79,16 @@ export function useSearchQuery() {
     if (fulltext && !tree && searchParams.get('q')) {
         searchQuery.set('fulltext', 'on')
     }
-    
+
+    const fuzzy = searchParams.get('fuzzy')
+    if (fuzzy === 'on' && searchParams.get('q')) {
+        searchQuery.set('fuzzy', 'on')
+    }
+
+    const noGrouping = searchParams.get('noGrouping')
+    if (noGrouping === 'on') {
+        searchQuery.set('noGrouping', 'on')
+    }
 
     if (searchParams.get('radius') && searchParams.get('point')) {
         searchQuery.set('radius', searchParams.get('radius')!)

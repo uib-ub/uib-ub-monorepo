@@ -2,6 +2,7 @@ import { useState, useContext, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchQuery } from '@/lib/search-params';
+import { expandedMaxResultsParam } from '@/config/max-results';
 
 import { PiFunnel } from 'react-icons/pi';
 import FacetToolbar from './facet-toolbar';
@@ -92,7 +93,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
     })
 
     if (searchParams.get('maxResults')) {
-      newParams.push(['maxResults', '10'])
+      newParams.push(['maxResults', expandedMaxResultsParam])
     }
 
 
@@ -213,7 +214,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
               <input aria-label="Søk i områdefilter" onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())}
                 className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2" />
               <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                <PiFunnel aria-hidden={true} className='text-neutral-500 text-xl' />
+                <PiFunnel aria-hidden={true} className='text-neutral-700 text-xl' />
               </span>
             </div>
 

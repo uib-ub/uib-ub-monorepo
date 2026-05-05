@@ -3,6 +3,23 @@ import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { ParamProps } from "./param-types"
 
+function normalizeSearchParams(params: URLSearchParams) {
+    const entries = Array.from(params.entries()).sort(
+        ([aKey, aVal], [bKey, bVal]) => {
+            const keyCompare = aKey.localeCompare(bKey, 'nb')
+            if (keyCompare !== 0) {
+                return keyCompare
+            }
+            return String(aVal).localeCompare(String(bVal), 'nb')
+        }
+    )
+
+    const normalized = new URLSearchParams()
+    for (const [key, value] of entries) {
+        normalized.append(key, value)
+    }
+    return normalized
+}
 
 export default function Clickable({ children, remove, add, only, link, href, replace, notClickable, ...rest }: ParamProps) {
     const searchParams = useSearchParams()
@@ -34,7 +51,7 @@ export default function Clickable({ children, remove, add, only, link, href, rep
         })
     }
 
-    const stringParams = newParams.toString()
+    const stringParams = normalizeSearchParams(newParams).toString()
 
     if (link) {
         return <Link replace={replace} href={`${href ? href : ''}${stringParams ? `?${stringParams}` : ''}`} {...rest}>{children}</Link>

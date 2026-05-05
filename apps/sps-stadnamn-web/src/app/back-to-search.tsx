@@ -22,7 +22,7 @@ export default function BackToSearch() {
                     className="flex items-center gap-2 no-underline text-xl"
                 >
                     <PiCaretLeft className="text-2xl" />
-                    Tilbake
+                    Stadnamnsøk
                 </Link>
             </div>
         );

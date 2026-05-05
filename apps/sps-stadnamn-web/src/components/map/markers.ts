@@ -42,6 +42,32 @@ const buildMarker = (color: string, style: string) => {
 
 }
 
+// Variant of the pin without the inner white dot, for custom center icons.
+const buildMarkerWithoutDot = (color: string, style: string) => {
+  const fill = colorMapping[color] || color
+  return `<svg aria-hidden="true"
+    viewBox="0 0 13.229166 21.695834"
+    version="1.1"
+    style="${style}"
+    id="svg5"
+    xmlns="http://www.w3.org/2000/svg">
+   <defs id="defs2" />
+   <g id="layer1">
+     <g id="g35914" transform="matrix(0.298402,0,0,0.298402,-0.96482737,5.8697336)">
+       <g id="g35909">
+         <path
+            id="path28141"
+            fill="${fill}"
+            style="stroke-width:7.55906"
+            stroke="white"
+            d="M 96,0 A 79.999998,79.999998 0 0 0 16,80 79.999998,79.999998 0 0 0 79.082031,158.16211 L 96,192 112.91797,158.16211 A 79.999998,79.999998 0 0 0 176,80 79.999998,79.999998 0 0 0 96,0 Z"
+            transform="scale(0.26458333)" />
+       </g>
+     </g>
+   </g>
+ </svg>`
+}
+
 
 const buildMultiMarker = (color: string, style: string) => {
   const fill = colorMapping[color] || color
@@ -101,6 +127,24 @@ export function getLabelMarkerIcon(label: string, color: string, docCount?: numb
   };
 }
 
+export function getAreaLabelMarkerIcon(label: string, docCount?: number) {
+  return {
+    className: '',
+    html: `
+        <div class="map-marker group" role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: 2rem;">
+          <div class="absolute -top-6 left-1/2 -translate-x-1/2">
+            <div class="flex flex-col items-center">
+              <div class="flex items-center tracking-wide whitespace-nowrap rounded-md text-center text-sm py-0.5 px-1.5 shadow-lg" style="background-color: rgba(222, 240, 255, 0.6); border-color: rgba(222, 240, 255, 0.6); color: #000000; font-weight: 700;">
+                <div class="max-w-32 min-w-0 block truncate">${label}</div>
+                ${docCount ? `<span class="ml-1 text-xs bg-neutral-100  flex items-center py-0 my-0.5 text-neutral-950 rounded-full px-1 text-center font-normal">+${docCount}</span>` : ''}
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>`
+  };
+}
+
 
 
 export function getHoverMarker(docCount: number, label: string, color: string) {
@@ -132,6 +176,24 @@ export function getUnlabeledMarker(color: string, selected?: boolean) {
     html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: ${32 * sizeAdjustment}px;">
                 ${buildMarker(color, `position:absolute;left-0;bottom:${26 * sizeAdjustment}px;height:${32 * sizeAdjustment}px`)}
                 </div>`
+  }
+}
+
+/**
+ * Special marker for the pinned init group.
+ * Visually similar to other unlabeled pin markers, but slightly larger and
+ * with an anchor symbol in the pin to mirror the "Vel namnegruppe" button.
+ */
+export function getInitAnchorMarker() {
+  return {
+    className: '',
+    html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: 32px;">
+                <img
+                  src="/markerPrimaryCheck.svg"
+                  alt=""
+                  aria-hidden="true"
+                  style="position:absolute; bottom:26px; height:32px" />
+            </div>`
   }
 }
 

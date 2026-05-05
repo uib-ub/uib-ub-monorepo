@@ -229,7 +229,6 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
               list={true}
               flush={true}
               groupId={(docData as any)?._source?.group?.id}
-              showGroupLink={false}
               showMarkers={false}
             />
           </div>

@@ -3,7 +3,7 @@ import MiscOptions from "@/app/misc-options"
 import Clickable from "@/components/ui/clickable/clickable"
 import { datasetTitles } from "@/config/metadata-config"
 import { facetConfig } from "@/config/search-config"
-import { useGroup, usePerspective } from "@/lib/param-hooks"
+import { useGroup, usePerspective, usePoint } from "@/lib/param-hooks"
 import { useSearchQuery } from "@/lib/search-params"
 import { getSkeletonLength } from "@/lib/utils"
 import useGroupData from "@/state/hooks/group-data"
@@ -32,7 +32,7 @@ const RadiusFilter = () => {
   const setDisplayPoint = useSessionStore((s) => s.setDisplayPoint)
   const displayPoint = useSessionStore((s) => s.displayPoint)
   const submittedRadius = searchParams.get('radius')
-  const point = searchParams.get('point') ? (searchParams.get('point')!.split(',').map(parseFloat) as [number, number]) : null
+  const point = usePoint()
 
   // Get the current location (either from point or group)
   const currentLocation = point || (groupData?.sources?.find((source: any) => source.location?.coordinates)?.location?.coordinates ?

@@ -63,7 +63,6 @@ const resources: FieldConfigItem = {
   valueMap: {
     "geo": "Koordinatar",
     "text": "Tekst",
-    "note": "Merknad",
     "image": "Skanna materiale",
     "phonetic": "Lydskrift",
     "audio": "Lyd"
@@ -79,7 +78,7 @@ const labelDefaults = {
   "altLabels": { label: "Andre namn", table, facet, result },
   "attestations": { label: "Kjeldeformer", table, result },
 }
-const required = { uuid, boost, label, dataset, resources }
+const required = { uuid, boost, label, dataset } //, resources }
 
 export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
 
@@ -99,6 +98,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
   },
   bsn: {
     ...required, adm, adm1, adm2,
+    resources,
     "rawData.komm": { label: "Kommentar" }, ...note,
     "rawData.loktype.type": { label: "Lokalitetstype", description: "Ustandardisert lokalitetstype", table, facet },
     "rawData.oppskr.os_navn": { label: "Oppskriver", facet },

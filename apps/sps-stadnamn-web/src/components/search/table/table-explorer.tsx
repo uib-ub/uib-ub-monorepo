@@ -65,6 +65,15 @@ export default function TableExplorer() {
 
 
     return <section aria-labelledby="table-explorer-title"><div className="flex items-baseline gap-2 px-4 p-2"><div id="table-explorer-title" className="text-xl !m-0 !p-0">Tabellvisning</div>
+        {!searchLoading && totalHits &&
+            <div
+                className="text-neutral-700 ml-4"
+                role="status"
+                aria-live="polite"
+            >
+                {totalHits.value.toLocaleString('no-NO')} treff{totalHits.relation != 'eq' ? '+' : ''}
+            </div>
+        }
 
 
         <Clickable className="flex items-center gap-2 btn btn-outline ml-auto" add={{ options: 'on' }}><PiFunnel className="text-lg" aria-hidden="true" /><span className="sr-only lg:not-sr-only">Filter</span>{filterCount > 0 && <TitleBadge className="bg-accent-100 text-accent-900 text-sm xl:text-base" count={filterCount} />}</Clickable>

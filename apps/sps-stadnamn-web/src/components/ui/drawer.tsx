@@ -1,8 +1,12 @@
 'use client'
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, MAP_DRAWER_TOP_SUBTRACT_REM } from "@/lib/map-utils"
-import { useEffect, useRef, useState } from "react"
-import { PiCaretUpBold } from "react-icons/pi"
-import { RoundIconButton } from "./clickable/round-icon-button"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { PiCaretUp, PiCaretUpBold, PiFunnel } from "react-icons/pi"
+import { RoundIconButton, RoundIconClickable, RoundIconClickableWithBadge } from "./clickable/round-icon-button"
+import Clickable from "./clickable/clickable"
+import { usePathname, useSearchParams } from "next/navigation"
+import { useSearchQuery } from "@/lib/search-params"
+import { FilterButton } from "../map/map-toolbar"
 
 
 
@@ -46,6 +50,17 @@ export default function Drawer({
     const outerRef = useRef<HTMLDivElement>(null)
     const effectiveScrollRef = scrollContainerRef || localScrollRef
     const gestureStartedScrollRef = useRef<boolean>(false)
+
+    const searchParams = useSearchParams()
+    const pathname = usePathname()
+    const isIiifRoute = pathname?.startsWith('/iiif')
+    const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
+    const labelFilter = searchParams.get('labelFilter') === 'on'
+    const options = searchParams.get('options') == 'on'
+    const mapSettings = searchParams.get('mapSettings') == 'on'
+    const { facetFilters, datasetFilters } = useSearchQuery()
+    const filterCount = facetFilters.length + datasetFilters.length
+    const showFilterButton = !isIiifRoute && !options && !mapSettings && !coordinateInfo && !labelFilter && snappedPosition != 'bottom'
 
 
 
@@ -346,6 +361,7 @@ export default function Drawer({
     const [scrolled, setScrolled] = useState(false)
     const [showScrollToTop, setShowScrollToTop] = useState(false)
 
+
     useEffect(() => {
         const el = effectiveScrollRef.current
         if (!el) return
@@ -414,11 +430,21 @@ export default function Drawer({
                 {showScrollToTop && (
                     <RoundIconButton
                         type="button"
-                        className="absolute right-6 bottom-20 z-[6001] rounded-full"
+                        className="absolute right-3 bottom-20 z-[6001] p-3"
                         onClick={scrollToTop}
                         label="Til toppen"
-                    ><PiCaretUpBold className="text-xl xl:text-base" /></RoundIconButton>
+                        side="top"
+                    >
+                        <PiCaretUp className="text-2xl" />
+                    </RoundIconButton>
                 )}
+
+                {showFilterButton && (
+                    <div className="absolute right-3 bottom-6 z-[6001]">
+                       <FilterButton />
+                    </div>
+                )}
+
             </section>
         </>
     )

@@ -31,6 +31,7 @@ const DynamicImageViewer = ({ images, manifestDataset, manifestId }: { images: R
   const currentPosition = useIIIFSessionStore((s) => s.currentPosition)
   const snappedPosition = useIIIFSessionStore((s) => s.snappedPosition)
   const drawerOpen = useIIIFSessionStore((s) => s.drawerOpen)
+  const navOpen = useIIIFSessionStore((s) => s.navOpen)
   const { isMobile } = useContext(GlobalContext)
 
   const beginLoading = useCallback((expectedPage?: number) => {
@@ -224,16 +225,20 @@ const DynamicImageViewer = ({ images, manifestDataset, manifestId }: { images: R
             label="Zoom ut">
             <PiMagnifyingGlassMinusBold className='text-xl xl:text-base' />
           </RoundIconButton></>}
-        <RoundIconButton
-          onClick={() => viewer.current?.viewport.goHome()}
-          label="Nullstill zoom">
-          <PiArrowClockwiseBold className='text-xl xl:text-base' />
-        </RoundIconButton>
-        <RoundIconButton
-          onClick={handleFullscreenClick}
-          label="Fullskjerm">
-          <PiCornersOutBold className='text-xl xl:text-base' />
-        </RoundIconButton>
+        {(!isMobile || !navOpen) && (
+          <RoundIconButton
+            onClick={() => viewer.current?.viewport.goHome()}
+            label="Nullstill zoom">
+            <PiArrowClockwiseBold className='text-xl xl:text-base' />
+          </RoundIconButton>
+        )}
+        {(!isMobile || !navOpen) && (
+          <RoundIconButton
+            onClick={handleFullscreenClick}
+            label="Fullskjerm">
+            <PiCornersOutBold className='text-xl xl:text-base' />
+          </RoundIconButton>
+        )}
       </div>}
 
       {numberOfPages > 1 && <div

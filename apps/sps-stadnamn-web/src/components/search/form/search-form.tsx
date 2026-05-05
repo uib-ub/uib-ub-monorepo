@@ -1,5 +1,6 @@
 'use client'
 import Menu from '@/app/menu';
+import { defaultMaxResultsParam } from '@/config/max-results';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, panPointIntoView } from '@/lib/map-utils';
 import { useMode, usePerspective } from '@/lib/param-hooks';
@@ -12,7 +13,7 @@ import { useSessionStore } from '@/state/zustand/session-store';
 import { useQuery } from '@tanstack/react-query';
 import Form from 'next/form';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { PiCaretLeftBold, PiMagnifyingGlass, PiMapPinFill, PiSliders, PiWall, PiX } from 'react-icons/pi';
 
@@ -45,7 +46,6 @@ export default function SearchForm() {
     const snappedPosition = useSessionStore((s: any) => s.snappedPosition)
     const currentPosition = useSessionStore((s: any) => s.currentPosition)
     const datasetTag = searchParams.get('datasetTag')
-    const router = useRouter()
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
     const options = searchParams.get('options')
 
@@ -59,18 +59,20 @@ export default function SearchForm() {
 
 
     const mode = useMode()
+    const isTableMode = mode === 'table'
 
     // Initialize from URL params - this is the source of truth
     const urlQuery = searchParams.get('q') || ''
     const [inputState, setInputState] = useState<string>(urlQuery)
-    const [point, setPoint] = useState<string>()
+    const [submittedPoint, setSubmittedPoint] = useState<string | null>(null)
     const [autocompleteFacetFilters, setAutocompleteFacetFilters] = useState<[string, string][]>(facetFilters)
     const [autocompleteDatasetFilters, setAutocompleteDatasetFilters] = useState<[string, string][]>(datasetFilters)
     const [activeIndex, setActiveIndex] = useState<number>(-1)
     const listRef = useRef<HTMLUListElement | null>(null)
 
     const { data, isLoading } = useQuery({
-        queryKey: ['autocomplete', inputState, datasetFilters],
+        queryKey: ['autocomplete', inputState, datasetFilters, isTableMode],
+        enabled: !isTableMode && !!inputState.trim(),
         placeholderData: (prevData: any) => prevData,
         queryFn: () => autocompleteQuery(searchFilterParamsString, inputState, isMobile, datasetFilters)
     })
@@ -138,7 +140,9 @@ export default function SearchForm() {
             setSelectedGroup(group)
             setInputState(inputString)
             if (coordinates?.length == 2) {
-                panPointIntoView(mapFunctionRef.current, [coordinates[1], coordinates[0]], isMobile, false)
+                const [lon, lat] = coordinates
+                panPointIntoView(mapFunctionRef.current, [lat, lon], isMobile, false)
+                setSubmittedPoint(`${lat},${lon}`)
             }
         }
 
@@ -177,6 +181,13 @@ export default function SearchForm() {
         setActiveIndex(-1)
     }, [inputState, autocompleteOpen])
 
+    // Close autocomplete when switching to table mode
+    useEffect(() => {
+        if (isTableMode && autocompleteOpen) {
+            setAutocompleteOpen(false)
+        }
+    }, [isTableMode, autocompleteOpen, setAutocompleteOpen])
+
     const selectOption = (index: number) => {
         if (!rankedHits.length) return
         if (index === 0) {
@@ -195,7 +206,9 @@ export default function SearchForm() {
             }
             const coords = hit.fields.location?.[0]?.coordinates
             if (coords?.length === 2) {
-                panPointIntoView(mapFunctionRef.current, [coords[1], coords[0]], isMobile, false)
+                const [lon, lat] = coords
+                panPointIntoView(mapFunctionRef.current, [lat, lon], isMobile, false)
+                setSubmittedPoint(`${lat},${lon}`)
             }
         }
 
@@ -273,7 +286,7 @@ export default function SearchForm() {
                     : 1)
         }}>
         <header className={`${isMobile && autocompleteOpen ? 'sr-only' : `flex flex-none ${isMobile ? 'w-14 h-14' : 'absolute top-2 left-2 h-12 w-auto'}`} ${(autocompleteOpen || menuOpen) ? '' : 'shadow-lg'} bg-neutral-50`}><Menu shadow autocompleteShowing={autocompleteOpen && data?.hits?.hits?.length > 0} /></header>
-        <Form ref={form} onSubmitCapture={() => setSelectedGroup(null)} action="/search" id="search-form" aria-label="Stadnamnsøk"
+        <Form ref={form} onSubmitCapture={() => { setSelectedGroup(null); setSubmittedPoint(null) }} action="/search" id="search-form" aria-label="Stadnamnsøk"
             className={`${isMobile ? 'h-14' : 'h-12'} ${isMobile && autocompleteOpen ? 'w-[100svw]' : isMobile ? 'w-[calc(100svw-3.5rem)]' : 'w-[calc(30svw-4rem)] lg:w-[calc(25svw-4rem)] absolute top-2 left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? `z-[7000] ${!isMobile && '!rounded-b-none'}` : 'z-[3001]'}`}
 
 
@@ -311,7 +324,7 @@ export default function SearchForm() {
                     aria-expanded={autocompleteOpen}
                     maxLength={200}
                     ref={input}
-                    name="q"
+                    name={inputState.trim() ? 'q' : undefined}
                     key={urlQuery}
                     defaultValue={urlQuery}
                     autoComplete="off"
@@ -322,7 +335,7 @@ export default function SearchForm() {
                         inputValue.current = v
                         setInputState(v)
                         setActiveIndex(-1)
-                        setAutocompleteOpen(!!v.trim())
+                        setAutocompleteOpen(!isTableMode && !!v.trim())
                     }}
                     onKeyDown={(e) => {
                         if (e.key === 'Escape') {
@@ -335,11 +348,11 @@ export default function SearchForm() {
                         const optionsCount = 1 + rankedHits.length
                         if (e.key === 'ArrowDown') {
                             e.preventDefault()
-                            if (!autocompleteOpen) setAutocompleteOpen(true)
+                            if (!autocompleteOpen && !isTableMode) setAutocompleteOpen(true)
                             setActiveIndex((prev) => ((prev + 1 + optionsCount) % optionsCount))
                         } else if (e.key === 'ArrowUp') {
                             e.preventDefault()
-                            if (!autocompleteOpen) setAutocompleteOpen(true)
+                            if (!autocompleteOpen && !isTableMode) setAutocompleteOpen(true)
                             setActiveIndex((prev) => ((prev - 1 + optionsCount) % optionsCount))
                         } else if (e.key === 'Enter') {
                             if (autocompleteOpen && activeIndex >= 0) {
@@ -355,24 +368,25 @@ export default function SearchForm() {
                 />
 
                 {searchParams.getAll('dataset')?.map((dataset, index) => <input type="hidden" key={index} name="dataset" value={dataset} />)}
-                {point && <input type="hidden" name="point" value={point} />}
+                {submittedPoint && <input type="hidden" name="point" value={submittedPoint} />}
                 {searchParams.get('datasetTag') && <input type="hidden" name="datasetTag" value={searchParams.get('datasetTag') || ''} />}
 
-                {inputState && !menuOpen &&
-                    <ClickableIcon label="Tøm" onClick={() => { clearQuery() }}>
+                {(inputState || searchParams.get('q')) && !menuOpen &&
+                    <ClickableIcon label="Tøm" remove={['q']} replace onClick={() => { clearQuery() }}>
                         <PiX className="text-3xl lg:text-2xl text-neutral-800 group-focus-within:text-neutral-800 m-1" /></ClickableIcon>}
                 <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800" aria-hidden="true" /></button>
             </div>
 
             {searchParams.get('facet') && <input type="hidden" name="facet" value={searchParams.get('facet') || ''} />}
             {selectedGroup && <input type="hidden" name="init" value={selectedGroup} />}
-            {/* results: integer – when init is set, 1 means only init group; >1 controls extra groups.
-                When no init, we set it to the initial page size so the URL reflects that multiple
-                results are visible. */}
-            <input type="hidden" name="maxResults" value="5" />
+            {/* results: integer – minimum is 5 when present. */}
             {options && <input type="hidden" name="options" value={'on'} />}
+            {searchParams.get('noGrouping') && <input type="hidden" name="noGrouping" value={'on'} />}
+            {!submittedPoint && searchParams.get('point') && <input type="hidden" name="point" value={searchParams.get('point') || ''} />}
+            <input type="hidden" name="maxResults" value={defaultMaxResultsParam} />
             {facetFilters.map(([key, value], index) => <input type="hidden" key={index} name={key} value={value} />)}
             {searchParams.get('fulltext') && <input type="hidden" name="fulltext" value={searchParams.get('fulltext') || ''} />}
+            {searchParams.get('fuzzy') && <input type="hidden" name="fuzzy" value={searchParams.get('fuzzy') || ''} />}
             {mode && mode != 'doc' && <input type="hidden" name="mode" value={mode || ''} />}
             {mode == 'doc' && preferredTabs[perspective] && preferredTabs[perspective] != 'map' && <input type="hidden" name="mode" value={preferredTabs[perspective] || ''} />}
             {autocompleteOpen && rankedHits.length > 0 && <ul id="autocomplete-results" ref={listRef} role="listbox" className={`absolute ${isMobile ? 'top-[3.5rem] left-0 w-full' : 'top-[3rem] -left-12 x-[30svw] lg:w-[calc(25svw-1rem)] shadow-lg rounded-lg rounded-t-none'} border-t border-neutral-200 max-h-[calc(100svh-4rem)] min-h-24 bg-neutral-50 overflow-y-auto overscroll-none xl-p-2 xl divide-y divide-neutral-300`}>
@@ -402,7 +416,7 @@ export default function SearchForm() {
                             aria-selected={activeIndex === 1 + data.hits.hits.findIndex((x: any) => x._id === hit._id)}>
                             {hit.fields.location?.length ? (
                                 <span className="flex items-center h-6 flex-shrink-0">
-                                    <PiMapPinFill aria-hidden="true" className="text-neutral-700" />
+                                    <PiMapPinFill aria-hidden="true" className="text-primary-700" />
                                 </span>
                             ) : null}
                             {hit._index.split('-')[2].endsWith('_g') && (

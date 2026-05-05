@@ -2,6 +2,7 @@ import Spinner from "@/components/svg/Spinner";
 import Clickable from "@/components/ui/clickable/clickable";
 import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { datasetTitles } from "@/config/metadata-config";
+import { defaultMaxResultsParam } from "@/config/max-results";
 import { fitBoundsToGroupSources } from "@/lib/map-utils";
 import { useGroup } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
@@ -11,24 +12,35 @@ import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useMemo, type ReactNode } from "react";
-import { PiArchive, PiCaretLeftBold, PiCaretRightBold, PiMapPin, PiPushPin, PiX } from "react-icons/pi";
+import { PiAnchor, PiAnchorSimple, PiArchive, PiCaretLeftBold, PiCaretRightBold, PiCheck, PiMapPin, PiMapTrifold, PiPushPin, PiX } from "react-icons/pi";
+import { detailsRenderer } from "@/lib/text-utils";
 import Carousel from "../../nav/results/carousel";
 import { TextTab } from "./text-tab";
 import { NamesSection } from "./names-section";
 import { FilteredSourcesTab } from "./sources-tab";
 import { matchesActiveYear, matchesActiveName, pushNameYear } from "./group-utils";
 
-export default function GroupInfo({ id, overrideGroupCode }: { id: string, overrideGroupCode?: string }) {
+export default function GroupInfo({
+    id,
+    overrideGroupCode,
+    distanceMeters,
+}: {
+    id: string;
+    overrideGroupCode?: string;
+    distanceMeters?: number | null;
+}) {
     const { groupData, groupLoading } = useGroupData(overrideGroupCode)
-    const prefTab = useSessionStore(state => state.prefTab)
-    const setPrefTab = useSessionStore(state => state.setPrefTab)
-    const openTabs = useSessionStore(state => state.openTabs)
-    const setOpenTabs = useSessionStore(state => state.setOpenTabs)
+    const snappedPosition = useSessionStore(state => state.snappedPosition)
+    const setSnappedPosition = useSessionStore(state => state.setSnappedPosition)
     const searchParams = useSearchParams()
     const searchDatasets = searchParams.getAll('dataset')
-    const { mapFunctionRef, scrollableContentRef } = useContext(GlobalContext)
-    const { initValue } = useGroup()
+    const { mapFunctionRef, scrollableContentRef, isMobile } = useContext(GlobalContext)
+    const { initValue, activeGroupValue } = useGroup()
     const activePoint = searchParams.get('activePoint')
+    const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
+    const labelFilter = searchParams.get('labelFilter') === 'on'
+    const noGrouping = searchParams.get('noGrouping') === 'on'
+    const isInit = initValue == groupData?.group?.id || initValue == groupData?.fields?.["uuid"]?.[0]
 
     const roundCoordString = (value: string, decimals: number) => {
         const n = Number(value)
@@ -47,6 +59,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
     // Read activeYear and activeName from URL params
     const activeYear = searchParams.get('activeYear')
     const activeName = searchParams.get('activeName')
+    const groupLabel = groupData?.fields?.label?.[0]
 
     // Scroll to top when init group changes (when clicking "vel" button)
     useEffect(() => {
@@ -61,12 +74,11 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         }
     }, [initValue, groupData?.group?.id, scrollableContentRef]);
 
-    const { iiifItems, textItems, audioItems, datasets, locations, uniqueCoordinates } = useMemo(() => {
+    const { iiifItems, textItems, audioItems, datasets, uniqueCoordinates } = useMemo(() => {
         const iiifItems: any[] = []
         const textItems: any[] = []
         const audioItems: any[] = []
-        const locations: any[] = []
-        const seenEnhetsid = new Set<string>()
+        const allCoordinates: any[] = []
         const datasets: Record<string, any[]> = {}
         const coordSet = new Set<string>()
 
@@ -114,7 +126,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                 audioItems.push(source)
             }
             if (source.location) {
-                locations.push(source)
+                allCoordinates.push(source)
                 // Collect unique coordinates
                 const lat = source.location?.coordinates?.[1]
                 const lng = source.location?.coordinates?.[0]
@@ -127,11 +139,28 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         })
 
 
-        return { iiifItems, textItems, audioItems, datasets, locations, uniqueCoordinates: Array.from(coordSet) }
+        return { iiifItems, textItems, audioItems, datasets, uniqueCoordinates: Array.from(coordSet) }
     }, [groupData, searchDatasets])
+
+    const markerCoords = groupData?.fields?.location?.[0]?.coordinates
+    const groupMarkerPosition: [number, number] | null =
+        (Array.isArray(markerCoords) && markerCoords.length >= 2)
+            ? (() => {
+                const lat = Number(markerCoords[1])
+                const lng = Number(markerCoords[0])
+                return Number.isFinite(lat) && Number.isFinite(lng) ? [lat, lng] : null
+            })()
+            : null
+    // Match the marker position after selecting this group ("Forankre namnegruppe").
+    // The new accent marker should be the group's marker coordinate.
+    const preferredFlyTarget: [number, number] | null = groupMarkerPosition
 
     const showNamesTab = useMemo(() => {
         // Replicate NamesTab's filter determinism: timeline or names without year
+        const totalSources = Object.values(datasets).reduce((sum, sources) => sum + sources.length, 0)
+        if (totalSources < 6) {
+            return false
+        }
         const nameToYears: Record<string, Set<string>> = {}
         Object.values(datasets).forEach((sources: any[]) => {
             sources.forEach((source: any) => {
@@ -166,6 +195,17 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         const totalUniqueNames = Object.keys(nameToYears).length
         const totalYears = yearsOrdered.length
 
+        // Don't show if the number of unique labels or the number of years is the same as the number of sources
+        if (totalUniqueNames === totalSources) {
+            return false
+        }
+        if (totalYears === totalSources) {
+            return false
+        }
+
+
+
+
         // Don't show filter if there's only one filter option total
         // (one year and one name, or one name with no years, or one year with no names)
         if (totalYears === 1 && totalUniqueNames === 1) {
@@ -194,7 +234,7 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         // Check if all sources match all active filters
         const hasActiveFilters = !!(activeYear || activeName)
         if (!hasActiveFilters) {
-            return showNamesTab // Show if there are multiple names/years to filter by
+            //return showNamesTab // Show if there are multiple names/years to filter by
         }
 
         // Count how many sources match the active filters
@@ -209,55 +249,13 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
         // If all sources match all filters, don't show the filter
         if (matchingCount === totalSources) {
-            return false
+            //return false
         }
 
         return showNamesTab
     }, [datasets, activeYear, activeName, showNamesTab])
 
-    useEffect(() => {
-        if (!groupData?.group) {
-            console.log("GROUP ISSUE", groupData);
-            return;
-        }
-        if (groupData?.group.id) {
-            const groupId = groupData.group.id;
-            const currentTab = openTabs[groupId];
 
-            // 1. Check if there's already a value stored at the id in openTabs
-            if (currentTab) {
-                // Verify the tab is still valid for this group
-                if (currentTab === 'sources') {
-                    return; // Keep the existing tab
-                }
-                if (currentTab === 'names' && showNamesTab) {
-                    return; // Keep the existing tab
-                }
-                if (currentTab === 'locations' && locations.length > 0) {
-                    return; // Keep the existing tab
-                }
-                // If current tab is names but not applicable, fall through to default below
-            }
-
-            // 2. Use prefTab if the group has the required content
-            if (prefTab === 'sources') {
-                setOpenTabs(groupId, 'sources');
-                return;
-            }
-            if (prefTab === 'names' && showNamesTab) {
-                setOpenTabs(groupId, 'names');
-                return;
-            }
-            if (prefTab === 'locations' && locations.length > 0) {
-                setOpenTabs(groupId, 'locations');
-                return;
-            }
-
-            // 3. Default to sources
-            setOpenTabs(groupId, 'sources');
-
-        }
-    }, [groupData, textItems.length, locations.length, openTabs, prefTab, setOpenTabs, showNamesTab])
 
 
     if (groupLoading) return (
@@ -266,73 +264,95 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
         </div>
     )
 
-    const isGrunnord = Object.keys(datasets).some((ds: any) => ds.includes('_g'))
     if (!groupData?.group?.id) {
         console.log("Group ID not found")
         const props = {
-            message: `Group ID not found: ${JSON.stringify(groupData)}`
+            message: `Group ID not found: ${JSON.stringify(groupData)}}`
         }
 
         fetch('/api/error', {
             method: 'POST',
             body: JSON.stringify(props)
         })
-        return <div className="p-2">Kunne ikkje lasta inn gruppe</div>
+        return <div className="p-2">Kunne ikkje lasta inn gruppe {JSON.stringify(groupData)} {overrideGroupCode}</div>
     }
 
 
     return (
-        <div id={id} className="relative flex min-w-0 flex-wrap items-center gap-2 pb-4">
+        <div id={id} className="relative flex min-w-0 flex-wrap items-center pb-4">
+            {noGrouping && (
+                <div className="min-w-0 px-3 w-full">
+                    <FilteredSourcesTab
+                        datasets={datasets}
+                        activeYear={activeYear}
+                        activeName={activeName}
+                        isInitGroup={activeGroupValue === groupData.group.id}
+                        distanceMeters={distanceMeters}
+                    />
+                </div>
+            )}
 
-            {
-                audioItems?.map((audioItem) => (
-                    <div key={audioItem.uuid + 'audio'}>
-                        {audioItem.recordings.map((recording: any, index: number) => (
-                            <div key={"audio-" + recording.uuid} className="flex items-center">
-                                <audio
-                                    controls
-                                    aria-label={`Lydopptak${audioItems.length > 1 ? ` ${index + 1} av ${audioItem.recordings.length}` : ''}`}
-                                    src={`https://iiif.spraksamlingane.no/iiif/audio/hord/${recording.file}`}
-                                    className="h-10 rounded-md
+            {!shouldShowLabelFilter && !coordinateInfo && <>
+
+                {
+                    audioItems?.map((audioItem) => (
+                        <div key={audioItem.uuid + 'audio'}>
+                            {audioItem.recordings.map((recording: any, index: number) => (
+                                <div key={"audio-" + recording.uuid} className="flex items-center p-2">
+                                    <audio
+                                        controls
+                                        aria-label={`Lydopptak${audioItems.length > 1 ? ` ${index + 1} av ${audioItem.recordings.length}` : ''}`}
+                                        src={`https://iiif.spraksamlingane.no/iiif/audio/hord/${recording.file}`}
+                                        className="h-10 rounded-md
                                     [&::-webkit-media-controls-enclosure]:bg-transparent 
                                     [&::-webkit-media-controls-current-time-display]:text-neutral-800 
                                     [&::-webkit-media-controls-time-remaining-display]:text-neutral-800"
-                                />
-                                <Link href={`/iiif/${recording.manifest}`} className="ml-1 p-2 rounded-full aspect-square">
-                                    <PiArchive className="text-md text-neutral-800" aria-hidden="true" />
-                                </Link>
-                            </div>
-                        ))}
-                    </div>
-                ))
-            }
-            {iiifItems?.length > 0 && !activePoint && <>
-                <Carousel items={iiifItems} />
-            </>
-            }
-            {textItems.length > 0 && !activePoint && <TextTab textItems={textItems} />}
-
-            <div className="min-w-0 w-full flex flex-col pb-4">
-                {/* Names section (includes timeline) - only show in init group when no activePoint filter is active */}
-                {shouldShowLabelFilter && initValue === groupData.group.id && !searchParams.get('activePoint') &&
-                    <div className="px-3 pt-2">
-                        <NamesSection datasets={datasets} />
-                    </div>
+                                    />
+                                    <Link href={`/iiif/${recording.manifest}`} className="ml-1 p-2 rounded-full aspect-square">
+                                        <PiArchive className="text-md text-neutral-800" aria-hidden="true" />
+                                    </Link>
+                                </div>
+                            ))}
+                        </div>
+                    ))
                 }
+                {iiifItems?.length > 0 && <>
+                    <Carousel items={iiifItems} />
+                </>
+                }
+                {textItems.length > 0 && <TextTab textItems={textItems} />}
 
-                {/* Active point filter display - only in init group. Sticky so it stays put; coordinate + nav in a right-aligned group so expandables below cannot affect their position. */}
-                {searchParams.get('activePoint') && initValue === groupData.group.id && (
+            </>}
+
+            <div className="min-w-0 w-full flex flex-col">
+                {/* Filtering / coordinate sticky headers */}
+                {labelFilter && !coordinateInfo && (
                     <div className="sticky top-0 z-10 w-full shrink-0 border-b border-neutral-100 bg-white px-3 pt-2 pb-2">
-                        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+                        <div className="flex min-w-0 items-center justify-between gap-3 gap-y-2">
+                            <div className="min-w-0 flex-1 flex items-center gap-2 text-base text-neutral-900">
+                                <span className="font-semibold truncate">
+                                    {groupLabel}
+                                </span>
+                                <span className="truncate text-neutral-900">
+                                    {detailsRenderer(groupData)}
+                                </span>
+                            </div>
                             <Clickable
-                                remove={['activePoint']}
+                                remove={['labelFilter', 'activeName', 'activeYear']}
                                 aria-label="Tilbake"
                                 className="inline-flex shrink-0 items-center gap-1.5 text-neutral-800 hover:text-neutral-900"
                             >
                                 <PiCaretLeftBold className="text-base shrink-0" aria-hidden="true" />
                                 <span className="whitespace-nowrap">Tilbake</span>
                             </Clickable>
-                            <div className="flex min-w-[8rem] flex-1 basis-0 flex-wrap items-center justify-end gap-x-3 gap-y-2 sm:basis-auto sm:flex-1">
+                        </div>
+                    </div>
+                )}
+
+                {coordinateInfo && (
+                    <div className="w-full shrink-0 border-b border-neutral-100 bg-white px-3 py-3">
+                        <div className="flex flex-col min-w-0 gap-y-3">
+                            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
                                 {(() => {
                                     const total = uniqueCoordinates.length
                                     const activeIndexRaw = uniqueCoordinates.findIndex((c) => c === activePoint)
@@ -378,20 +398,20 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
 
                                     return (
                                         <>
-                                            <span className="min-w-0 flex-1 truncate text-right text-base font-medium text-neutral-900" title={coordText}>
+                                            <span className="min-w-0 flex-1 truncate text-base text-neutral-900" title={coordText}>
                                                 {coordText}
                                             </span>
-                                            <div className="flex shrink-0 items-center gap-1.5">
+                                            {total > 1 && <div className="flex shrink-0 items-center gap-1.5">
                                                 <NavBtn label="Førre koordinat" targetIndex={Math.max(0, activeIndex - 1)} disabled={activeIndex === 0}>
                                                     <PiCaretLeftBold aria-hidden="true" />
                                                 </NavBtn>
-                                                <span className="text-neutral-700 text-sm tabular-nums w-9 text-center" aria-hidden="true">
-                                                    {activeIndex + 1}/{total}
+                                                <span className="text-neutral-700 text-sm tabular-nums text-center px-2" aria-hidden="true">
+                                                    {activeIndex + 1} av {total}
                                                 </span>
                                                 <NavBtn label="Neste koordinat" targetIndex={Math.min(total - 1, activeIndex + 1)} disabled={activeIndex === total - 1}>
                                                     <PiCaretRightBold aria-hidden="true" />
                                                 </NavBtn>
-                                            </div>
+                                            </div>}
                                         </>
                                     )
                                 })()}
@@ -400,85 +420,86 @@ export default function GroupInfo({ id, overrideGroupCode }: { id: string, overr
                     </div>
                 )}
 
-                {/* Sources always shown - min-w-0 so width is constrained by panel, not by expanded content */}
-                <div className="min-w-0 px-3">
-                    <FilteredSourcesTab
-                        datasets={datasets}
-                        activeYear={activeYear}
-                        activeName={activeName}
-                        isInitGroup={initValue === groupData.group.id}
-                    />
-                </div>
+                {/* Names section (includes timeline) - show for all eligible groups, hide only in coordinate view */}
+                {shouldShowLabelFilter && !coordinateInfo && (
+                    <div className={`px-3 ${initValue === groupData.group.id ? 'pt-2' : 'pt-6'}`}>
+                        <NamesSection
+                            datasets={datasets}
+                            groupCode={stringToBase64Url(groupData.group.id)}
+                        />
+                    </div>
+                )}
+
+                {/* min-w-0 so width is constrained by panel, not by expanded content */}
+                {!noGrouping && (
+                    <div className="min-w-0 px-3">
+                        <FilteredSourcesTab
+                            datasets={datasets}
+                            activeYear={activeYear}
+                            activeName={activeName}
+                            isInitGroup={activeGroupValue === groupData.group.id}
+                        />
+                    </div>
+                )}
             </div>
 
 
-            {initValue !== groupData.group.id && (
-                <div className="px-3 ml-auto mt-auto">
-                    <div className="flex flex-row items-center gap-2">
-                        
+            {!coordinateInfo && !labelFilter && !noGrouping && <div className="px-3 ml-auto mt-auto">
+                <div className="flex flex-row items-center gap-2">
 
-                        {(() => {
-                            const firstWithCoords = locations.find(
-                                (loc: any) => loc?.location?.coordinates?.length >= 2
-                            );
 
-                            if (!firstWithCoords) {
-                                return (
-                                    <span className="text-sm text-neutral-600 px-2 whitespace-nowrap">
-                                        Utan koordinat
-                                    </span>
-                                );
-                            }
-
-                            const [lng, lat] = firstWithCoords.location.coordinates;
-
-                            return (
-                                <ClickableIcon
-                                    label="Gå til koordinat"
-                                    onClick={() => {
-                                        mapFunctionRef.current?.flyTo(
-                                            [lat, lng],
-                                            15,
-                                            { duration: 0.25, maxZoom: 18, padding: [50, 50] }
-                                        );
-                                    }}
-                                    className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 bg-white text-neutral-800 hover:bg-neutral-100"
-                                >
-                                    <PiMapPin aria-hidden="true" className="text-2xl" />
-                                </ClickableIcon>
-                            );
-                        })()}
+                    {!preferredFlyTarget ?
+                        <span className="text-sm text-neutral-700 px-2 whitespace-nowrap">
+                            Utan koordinat
+                        </span>
+                        :
 
                         <ClickableIcon
-                            label="Vel namnegruppe"
+                            label="Kartfesting"
                             onClick={() => {
-                                // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
-                                // The subsequent URL param update can remount components quickly, so do this eagerly.
-                                if (scrollableContentRef.current) {
-                                    scrollableContentRef.current.scrollTo({
-                                        top: 0,
-                                        behavior: 'auto'
-                                    })
-                                }
-                                // Fit bounds to group sources when coordinates are available
-                                if (locations.some((loc: any) => loc?.location?.coordinates)) {
-                                    fitBoundsToGroupSources(mapFunctionRef.current, groupData);
+                                mapFunctionRef.current?.flyTo(
+                                    preferredFlyTarget,
+                                    15,
+                                    { duration: 0.25, maxZoom: 18, padding: [50, 50] }
+                                );
+                                if (isMobile && snappedPosition !== 'bottom') {
+                                    setSnappedPosition('bottom');
                                 }
                             }}
-                            remove={['group', 'activePoint', 'activeYear', 'activeName']}
-                            add={{
-                                // When pinning a group ("vel"), treat it as a fresh init selection:
-                                // reset results to 1 so previous expansions are not preserved.
-                                init: stringToBase64Url(groupData.group.id),
-                                maxResults: '1'
-                            }}
-                            className="btn btn-neutral inline-flex items-center justify-center w-12 h-12 rounded-full text-xl"
+                            remove={['group', 'activePoint']}
+                            add={{ group: initValue == activeGroupValue ? null : stringToBase64Url(groupData.group.id), activePoint: preferredFlyTarget?.toString(), coordinateInfo: 'on' }}
+                            className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
                         >
-                            <PiPushPin aria-hidden="true" className="text-2xl" />
+                            <PiMapTrifold aria-hidden="true" className="text-2xl text-neutral-800" />
+
                         </ClickableIcon>
-                    </div>
+                    }
+
+                    <ClickableIcon
+                        label={`${isInit ? "Fjern som startpunkt" : "Vel som startpunkt"}`}
+                        onClick={() => {
+                            // Ensure details panel scrolls to top when selecting ("Vel") a new init group.
+                            // The subsequent URL param update can remount components quickly, so do this eagerly.
+                            if (preferredFlyTarget) {
+                                mapFunctionRef.current?.flyTo(preferredFlyTarget, 15, { duration: 0.25, maxZoom: 18, padding: [50, 50] });
+                            }
+
+                        }}
+                        remove={['group', 'point', 'activePoint', 'activeYear', 'activeName']}
+                        add={{
+                            // When pinning a group ("vel"), treat it as a fresh init selection.
+                            q: searchParams.get('q') ? groupData.fields.label[0] : null,
+                            init: isInit ? null : noGrouping ? groupData.fields["uuid"][0] : stringToBase64Url(groupData.group.id),
+                            point: (!isInit && preferredFlyTarget) ? `${preferredFlyTarget?.[0]},${preferredFlyTarget?.[1]}` : null,
+                            maxResults: defaultMaxResultsParam
+                        }}
+                        className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-neutral-300 btn btn-outline"
+                    >
+                        {isInit ? <PiX aria-hidden="true" className="text-2xl text-neutral-800" /> : <PiCheck aria-hidden="true" className="text-2xl text-neutral-800" />}
+                    </ClickableIcon>
+
                 </div>
-            )}
+            </div>}
 
         </div>
     );

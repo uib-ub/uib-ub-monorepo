@@ -8,18 +8,24 @@ export async function GET(request: Request) {
   const perspective = reservedParams.perspective || 'all'  // == 'search' ? '*' : reservedParams.dataset;
   const { simple_query_string } = getQueryString(reservedParams)
 
-  const query: Record<string,any> = {
+  const query: Record<string, any> = {
     "track_total_hits": 10000000,
     "track_scores": false,
-    "size":  0,
-      "aggs": {
-        "viewport": {
-          "geo_bounds": {
-            "field": "location",
-            "wrap_longitude": true
-          },
-        }
+    "size": 0,
+    "aggs": {
+      "viewport": {
+        "geo_bounds": {
+          "field": "location",
+          "wrap_longitude": true
+        },
       },
+      // Count unique namnegrupper (group.id) for result count
+      "groups": {
+        "cardinality": {
+          "field": "group.id"
+        }
+      }
+    },
     "_source": false
   }
 

@@ -26,9 +26,6 @@ export default function StatusSection() {
     <div className={`flex gap-1 items-start`}>
 
 
-      <div className={`flex flex-wrap  xl:flex-row h-full gap-2`}>
-
-        {false && !isMobile && <ActiveFilters />}</div>
 
 
 

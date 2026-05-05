@@ -74,7 +74,7 @@ export default function TableOptions() {
                 onChange={(e) => setColumnFilter(e.target.value)}
             />
             <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                <PiFunnel aria-hidden={true} className='text-neutral-500 text-xl' />
+                <PiFunnel aria-hidden={true} className='text-neutral-700 text-xl' />
             </span>
         </div>
         { // Reset button if visible columns is different from default

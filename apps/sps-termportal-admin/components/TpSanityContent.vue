@@ -1,7 +1,7 @@
 <template>
-  <SanityContent :blocks="blocks" />
+  <SanityContent :value="blocks" />
 </template>
 
 <script setup>
-const props = defineProps({ blocks: { type: Array, required: true } });
+defineProps({ blocks: { type: Array, required: true } });
 </script>

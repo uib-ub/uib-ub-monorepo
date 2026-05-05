@@ -1,5 +1,8 @@
 'use client'
 import ClickableIcon from "@/components/ui/clickable/clickable-icon"
+import ToggleButton from "@/components/ui/toggle-button"
+import { stringToBase64Url } from "@/lib/param-utils"
+import useGroupData from "@/state/hooks/group-data"
 import { useSessionStore } from "@/state/zustand/session-store"
 import { useRouter, useSearchParams } from "next/navigation"
 import { PiMagnifyingGlass, PiXBold } from "react-icons/pi"
@@ -9,34 +12,23 @@ export default function SearchQueryDisplay() {
   const router = useRouter()
   const searchQ = searchParams.get('q')
   const init = searchParams.get('init')
-  const snappedPosition = useSessionStore((s) => s.snappedPosition)
-  const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
+  const { groupData: initGroupData } = useGroupData(init)
+  const qParam = searchParams.get('q')
+  const initHasCoordinates = !!initGroupData?.sources?.some((source: any) => source.location?.coordinates)
+  const searchSort = searchParams.get('searchSort')
 
-  const handleEdit = () => {
-    const input = document.getElementById('search-input') as HTMLInputElement
-    if (input) {
-      input.focus()
-      input.select()
-    }
-
-    // Change drawer position to bottom if it's middle
-    if (snappedPosition === 'middle') {
-      setSnappedPosition('bottom')
-    }
-  }
 
   // Check if query is single word (only letters) for fuzzy search toggle
-  const isSingleWord = searchQ ? /^\p{L}+~?$/u.test(searchQ) : false
-  const isFuzzy = searchQ?.includes('~') || false
-  const queryWithoutTilde = searchQ?.replace(/~$/, '') || ''
+  const isSingleWord = searchQ ? /^\p{L}+$/u.test(searchQ) : false
+  const isFuzzy = searchParams.get('fuzzy') === 'on'
   const fulltext = searchParams.get('fulltext')
 
   const handleFuzzyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newParams = new URLSearchParams(searchParams)
     if (e.target.checked) {
-      newParams.set('q', queryWithoutTilde + '~')
+      newParams.set('fuzzy', 'on')
     } else {
-      newParams.set('q', queryWithoutTilde)
+      newParams.delete('fuzzy')
     }
     router.push(`?${newParams.toString()}`)
   }
@@ -54,17 +46,10 @@ export default function SearchQueryDisplay() {
   if (!searchQ) return null
 
   return (
-    <section className={`p-3 flex flex-col gap-2 border-t border-neutral-200 ${init ? 'bg-neutral-50' : ''}`} aria-labelledby="search-query-title">
-      <div id="search-query-title" className="flex items-center gap-2 text-neutral-950 text-xl cursor-pointer" onClick={handleEdit}>
-        <PiMagnifyingGlass className="text-lg" aria-hidden="true" />
-        <strong>{searchQ}</strong>
-        <ClickableIcon label="Fjern søkeord" remove={['q']} className="ml-auto h-6 w-6 p-0 btn btn-outline rounded-full text-neutral-900">
-          <PiXBold />
-        </ClickableIcon>
-      </div>
-      <div className="flex items-center gap-4 mt-1 text-sm">
+    <section className={`p-3 flex flex-wrap gap-x-6 gap-y-3 items-center border-b border-neutral-200 bg-neutral-50`} aria-labelledby="search-query-title">
+      <div className="flex items-center gap-3 text-sm flex-wrap">
         {isSingleWord && (
-          <label className="flex items-center gap-2">
+          <label className="flex items-center gap-2 p-1">
             <input
               type="checkbox"
               checked={isFuzzy}
@@ -74,7 +59,7 @@ export default function SearchQueryDisplay() {
             Omtrentleg
           </label>
         )}
-        <label className="flex items-center gap-2">
+        <label className="flex items-center gap-2 p-1">
           <input
             type="checkbox"
             checked={!!fulltext}
@@ -83,6 +68,41 @@ export default function SearchQueryDisplay() {
           />
           Fulltekst
         </label>
+        
+        {qParam && initHasCoordinates && init && (
+              <div
+                className="ml-auto flex items-center gap-3 xl:gap-2 text-sm"
+                role="radiogroup"
+                aria-label="Sorter treff"
+              >
+                <ToggleButton
+                  small
+                  isSelected={!searchSort}
+                  onClick={() => {
+                    const newParams = new URLSearchParams(searchParams)
+                    newParams.delete('searchSort')
+                    router.push(`?${newParams.toString()}`)
+                  }}
+                  role="radio"
+                  ariaChecked={!searchSort}
+                >
+                  Avstand
+                </ToggleButton>
+                <ToggleButton
+                  small
+                  isSelected={searchSort === 'similarity'}
+                  onClick={() => {
+                    const newParams = new URLSearchParams(searchParams)
+                    newParams.set('searchSort', 'similarity')
+                    router.push(`?${newParams.toString()}`)
+                  }}
+                  role="radio"
+                  ariaChecked={searchSort === 'similarity'}
+                >
+                  Likskap
+                </ToggleButton>
+              </div>
+            )}
       </div>
     </section>
   )
