@@ -24,14 +24,16 @@ export default function MapSettings() {
     baseMap,
     overlayMaps,
     markerMode,
-    labelCollisionDetectionEnabled,
+    showSmallMarkersEnabled,
+    showOverlappingTextEnabled,
     setBaseMap,
     addOverlayMap,
     removeOverlayMap,
     moveOverlayMap,
     clearOverlayMaps,
     setMarkerMode,
-    setLabelCollisionDetectionEnabled
+    setShowSmallMarkersEnabled,
+    setShowOverlappingTextEnabled
   } = useMapSettings();
   const searchParams = useSearchParams();
   const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
@@ -209,44 +211,54 @@ export default function MapSettings() {
       {/* Marker Mode Section */}
       <section>
         <fieldset className="border-0 p-0 m-0">
-          <legend className="text-base text-neutral-900 pl-3 pr-2 py-2 w-full">
-            <div className="flex flex-wrap items-center gap-3 justify-between w-full">
-              <span className="text-lg text-neutral-800">Markørar</span>
-              <div className="flex flex-wrap gap-2">
-                {markerModes.map((mode) => {
-                  const selected = markerMode === mode.key;
-                  return (
-                    <ToggleButton
-                      key={mode.key}
-                      isSelected={selected}
-                      onClick={() => setMarkerMode(mode.key)}
-                      role="radio"
-                      ariaChecked={selected}
-                      ariaLabelledBy={`markermode-label-${mode.key}`}
+          <div className="mx-3 mb-1 rounded-md border border-neutral-200 p-2">
+            <div className="px-1 pb-2 text-lg text-neutral-800">Markørar</div>
+            <div className="flex flex-wrap items-center gap-2">
+              {markerModes.map((mode) => {
+                const selected = markerMode === mode.key;
+                return (
+                  <ToggleButton
+                    key={mode.key}
+                    isSelected={selected}
+                    onClick={() => setMarkerMode(mode.key)}
+                    role="radio"
+                    ariaChecked={selected}
+                    ariaLabelledBy={`markermode-label-${mode.key}`}
+                  >
+                    <span
+                      id={`markermode-label-${mode.key}`}
+                      className="whitespace-nowrap"
                     >
-                      <span
-                        id={`markermode-label-${mode.key}`}
-                        className="whitespace-nowrap"
-                      >
-                        {mode.label}
-                      </span>
-                    </ToggleButton>
-                  );
-                })}
-              </div>
+                      {mode.label}
+                    </span>
+                  </ToggleButton>
+                );
+              })}
             </div>
-          </legend>
-          <div className="px-3 pb-1">
-            <label className="inline-flex items-center gap-2 text-sm text-neutral-700 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={labelCollisionDetectionEnabled}
-                onChange={(e) => setLabelCollisionDetectionEnabled(e.target.checked)}
-                aria-label="Slå av eller på etikett-overlappshandtering"
-                className="h-4 w-4 accent-accent-800"
-              />
-              <span>Reduser overlappande etikettar</span>
-            </label>
+
+            <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-2">
+              <label className="inline-flex items-center gap-2 text-sm text-neutral-700 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={showSmallMarkersEnabled}
+                  onChange={(e) => setShowSmallMarkersEnabled(e.target.checked)}
+                  aria-label="Vis små markørar"
+                  className="h-4 w-4 accent-accent-800"
+                />
+                <span className="leading-none">Vis små markørar</span>
+              </label>
+
+              <label className="inline-flex items-center gap-2 text-sm text-neutral-700 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={showOverlappingTextEnabled}
+                  onChange={(e) => setShowOverlappingTextEnabled(e.target.checked)}
+                  aria-label="Vis overlappande tekst"
+                  className="h-4 w-4 accent-accent-800"
+                />
+                <span className="leading-none">Vis overlappande tekst</span>
+              </label>
+            </div>
           </div>
         </fieldset>
       </section>
@@ -254,33 +266,31 @@ export default function MapSettings() {
       {/* Basemap Section */}
       <section>
         <fieldset className="border-0 p-0 m-0">
-          <legend className="text-base text-neutral-900 pl-3 pr-2 py-2 w-full">
-            <div className="flex flex-wrap items-center gap-3 justify-between w-full">
-              <span className="text-lg text-neutral-800">Bakgrunnslag</span>
-              <div className="flex flex-wrap gap-2">
-                {orderedBaseLayerMaps.map((item) => {
-                  const selected = baseMap === item.key;
-                  return (
-                    <ToggleButton
-                      key={item.key}
-                      isSelected={selected}
-                      onClick={() => setBaseMap(item.key)}
-                      role="radio"
-                      ariaChecked={selected}
-                      ariaLabelledBy={`basemap-label-${item.key}`}
+          <div className="mx-3 mb-1 rounded-md border border-neutral-200 p-2">
+            <div className="px-1 pb-2 text-lg text-neutral-800">Bakgrunnslag</div>
+            <div className="flex flex-wrap items-center gap-2">
+              {orderedBaseLayerMaps.map((item) => {
+                const selected = baseMap === item.key;
+                return (
+                  <ToggleButton
+                    key={item.key}
+                    isSelected={selected}
+                    onClick={() => setBaseMap(item.key)}
+                    role="radio"
+                    ariaChecked={selected}
+                    ariaLabelledBy={`basemap-label-${item.key}`}
+                  >
+                    <span
+                      id={`basemap-label-${item.key}`}
+                      className="whitespace-nowrap"
                     >
-                      <span
-                        id={`basemap-label-${item.key}`}
-                        className="whitespace-nowrap"
-                      >
-                        {item.name}
-                      </span>
-                    </ToggleButton>
-                  );
-                })}
-              </div>
+                      {item.name}
+                    </span>
+                  </ToggleButton>
+                );
+              })}
             </div>
-          </legend>
+          </div>
         </fieldset>
       </section>
 
