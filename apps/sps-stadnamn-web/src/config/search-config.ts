@@ -474,7 +474,35 @@ const rawFieldConfig = {
   snor: {
     ...required, adm, adm1, adm2,
     ...identifiers,
-  }
+  },
+  etym: {
+    ...required,
+    ...labelDefaults,
+    // Admin / area (heuristic promotion)
+    adm,
+    adm1,
+    adm2,
+    adm3,
+    // Text search (we only populate content.note for now)
+    ...note,
+    // Useful ETYM-specific facets/results
+    "misc.setelId": { label: "SETEL_ID", result, table, facet, type: "integer" as const, numeric },
+    "misc.stadId": { label: "STAD_ID", result, table, facet, type: "integer" as const, numeric },
+    "misc.sourceCount": { label: "Tal på kjelder", table, facet, type: "integer" as const, numeric },
+    "misc.omradeCount": { label: "Tal på område", table, facet, type: "integer" as const, numeric },
+    // Optional deep-dive facets (from rawData arrays)
+    "rawData.OPPSLAG.NAMN": { label: "Oppslag", facet, table, keyword },
+    "rawData.OPPSLAG.NORMALISERT": { label: "Oppslag (normalisert)", facet, keyword },
+    "rawData.OPPSLAG.SPRAK_KODE": { label: "Språk", facet, keyword },
+    "rawData.STAD_ALT_NAMN.NAMN": { label: "Alternativt namn", facet, table, keyword },
+    "rawData.STAD_OMRADE.OMRADE_NAMN": { label: "Områdenamn", facet, table, keyword },
+    // Literature (note: multiple per SETEL_ID exists; still useful as filter)
+    "rawData.BIBLIOGRAFI.FORFATTAR": { label: "Forfattar", facet, table, keyword },
+    "rawData.BIBLIOGRAFI.TITTEL": { label: "Tittel", facet, table, keyword },
+    "rawData.BIBLIOGRAFI.FORFATTAR_TITTEL": { label: "Forfattar/tittel", facet, keyword },
+    // Show the flattened place note (stadfesting + lokalitet text) in results/table if you want:
+    // "content.note": { label: "Stadfesting / lokalitet", result, table, fulltext },
+  },
 } satisfies Record<string, DatasetFieldConfigWithNoReservedKeys>
 
 export const fieldConfig: Record<string, DatasetFieldConfig> = rawFieldConfig
