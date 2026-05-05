@@ -303,7 +303,7 @@ export default function DatasetBrowser() {
       <div className='xl:col-span-3'>
         <h2 className='!text-neutral-800 font-semibold !text-base !mt-0 !p-0 xl:!h-8 !mb-2 items-center flex !font-sans sr-only xl:not-sr-only'>Treff: {filteredDatasets.length} / {totalValidDatasets}</h2>
 
-        <ul className="flex flex-col w-full divide-y !p-0 !list-none">
+        <ul className="flex flex-col w-full divide-y divide-neutral-200 !p-0 !list-none">
           {filteredDatasets.filter(datasset => datasetPresentation[datasset]).map((itemDataset) => (
             <li key={itemDataset} className={`w-full !py-4 ${searchParams.get('dataset') == itemDataset ? 'bg-accent-50 border-accent-200' : ''}`}>
               <div className="grid grid-cols-[5rem_minmax(0,1fr)] xl:grid-cols-[10rem_minmax(0,1fr)] gap-x-4 items-start xl:items-stretch">

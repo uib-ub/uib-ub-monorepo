@@ -22,6 +22,7 @@ type MapSettings = {
   baseMap: string
   overlayMaps: string[]
   markerMode: string
+  labelCollisionDetectionEnabled: boolean
   setBaseMap: (baseMap: string) => void
   addOverlayMap: (mapKey: string) => void
   removeOverlayMap: (mapKey: string) => void
@@ -29,6 +30,7 @@ type MapSettings = {
   toggleOverlayMap: (mapKey: string) => void
   clearOverlayMaps: () => void
   setMarkerMode: (mode: string) => void
+  setLabelCollisionDetectionEnabled: (enabled: boolean) => void
   initializeSettings: () => void
 }
 
@@ -36,8 +38,11 @@ export const useMapSettings = create<MapSettings>()(
   persist(
     (set, get) => ({
       baseMap: defaultBaseMap,
-      overlayMaps: [],
+      // Default overlay: "Topografisk noregskart"
+      // Only applied for fresh installs (persisted settings still win).
+      overlayMaps: ['topo'],
       markerMode: 'auto',
+      labelCollisionDetectionEnabled: true,
       setBaseMap: (baseMap: string) =>
         set(() => ({
           baseMap
@@ -83,6 +88,7 @@ export const useMapSettings = create<MapSettings>()(
           overlayMaps: []
         })),
       setMarkerMode: (mode: string) => set({ markerMode: mode }),
+      setLabelCollisionDetectionEnabled: (enabled: boolean) => set({ labelCollisionDetectionEnabled: enabled }),
       initializeSettings: () => {
         const state = get()
         const normalizedBaseMap = normalizeBaseMapKey(state.baseMap)
@@ -106,7 +112,7 @@ export const useMapSettings = create<MapSettings>()(
     }),
     {
       name: MAP_SETTINGS_STORAGE_KEY,
-      version: 6,
+      version: 7,
       onRehydrateStorage: () => {
         if (typeof window !== 'undefined') {
           window.localStorage.removeItem(LEGACY_MAP_SETTINGS_STORAGE_KEY)
@@ -153,7 +159,8 @@ export const useMapSettings = create<MapSettings>()(
               .filter((key: any) => overlayLayerKeys.includes(key))
             return Array.from(new Set(allLegacy))
           }
-          return []
+          // Fresh installs (no persisted overlays): enable topo by default.
+          return overlayLayerKeys.includes('topo') ? ['topo'] : []
         })()
 
         // "circles" mode has been removed; normalize old persisted values.
@@ -162,13 +169,15 @@ export const useMapSettings = create<MapSettings>()(
             ...nextState,
             baseMap: migratedBaseMap as string,
             overlayMaps: migratedOverlays as string[],
-            markerMode: 'points'
+            markerMode: 'points',
+            labelCollisionDetectionEnabled: persistedState.labelCollisionDetectionEnabled ?? true
           }
         }
         return {
           ...nextState,
           baseMap: migratedBaseMap as string,
-          overlayMaps: migratedOverlays as string[]
+          overlayMaps: migratedOverlays as string[],
+          labelCollisionDetectionEnabled: persistedState.labelCollisionDetectionEnabled ?? true
         }
       }
     }

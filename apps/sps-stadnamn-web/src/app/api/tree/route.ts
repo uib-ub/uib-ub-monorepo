@@ -29,40 +29,33 @@ export async function GET(request: Request) {
 
     // Cadastral units (gård) are docs of their own. Subunits (bruk) have `within` pointing to the parent.
     // For tree navigation we list ONLY cadastral units, so we can use their own `uuid`, `location`, etc.
+    const gardFilter = {
+        bool: {
+            should: [
+                { term: { "sosi.keyword": "gard" } },
+                { term: { sosi: "gard" } },
+                { bool: { must_not: [{ exists: { field: "within" } }] } }
+            ],
+            minimum_should_match: 1
+        }
+    }
+
     const query = {
         size: 10000,
         track_scores: false,
         query: {
             bool: {
                 must: [
-                    { bool: { must_not: [{ exists: { field: "within" } }] } },
+                    gardFilter,
                     ...(adm1 ? [{ term: { "adm1.keyword": adm1 } }] : []),
                     ...(adm2 ? [{ term: { "adm2.keyword": adm2 } }] : [])
                 ],
                 ...(settings.filter ? { filter: [settings.filter] } : {})
             }
         },
-        sort: adm2 ?
-            settings.sort.map(field => {
-                const [parent, child] = field.split("__");
-                // If the field contains __, it's nested
-                if (child) {
-                    return {
-                        [`${parent}.${child}`]: {
-                            order: "asc",
-                            nested: {
-                                path: parent
-                            }
-                        }
-                    };
-                }
-                // If not nested, use simple sort
-                return {
-                    [field]: { order: "asc" }
-                };
-            }) :
+        sort:
             [{
-                [settings.aggSort]: { order: "asc" }
+                cadastralIndex: { order: "asc" }
             }],
         fields: [
             "uuid",
@@ -71,9 +64,13 @@ export async function GET(request: Request) {
             "adm1",
             "adm2",
             "group.id",
-            settings.parentName,
-            settings.subunit.replace("__", "."),
-            settings.aggSort
+            //"cadastralIndex", // for debugging
+            "parentName",
+            "knr",
+            "gnr",
+            "bnr",
+            "mnr",
+            "lnr"
         ],
         ...(adm2 ? {} : {
             collapse: {

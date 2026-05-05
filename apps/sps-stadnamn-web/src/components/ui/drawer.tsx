@@ -1,12 +1,19 @@
 'use client'
-import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH, MAP_DRAWER_TOP_SUBTRACT_REM } from "@/lib/map-utils"
+import {
+    MAP_DRAWER_BOTTOM_HEIGHT_REM,
+    MAP_DRAWER_MAX_HEIGHT_SVH,
+    MAP_DRAWER_TOP_SUBTRACT_REM,
+    MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM,
+} from "@/lib/map-utils"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { PiCaretUp, PiCaretUpBold, PiFunnel } from "react-icons/pi"
+import { PiArrowUpBold, PiCaretUp, PiCaretUpBold, PiFunnel } from "react-icons/pi"
 import { RoundIconButton, RoundIconClickable, RoundIconClickableWithBadge } from "./clickable/round-icon-button"
 import Clickable from "./clickable/clickable"
 import { usePathname, useSearchParams } from "next/navigation"
 import { useSearchQuery } from "@/lib/search-params"
 import { FilterButton } from "../map/map-toolbar"
+import { useInitParam, useMapSettingsOn, useMode, useOptionsOn, useSourceViewOn } from "@/lib/param-hooks"
+import { useNotificationStore } from "@/state/zustand/notification-store"
 
 
 
@@ -54,15 +61,14 @@ export default function Drawer({
     const searchParams = useSearchParams()
     const pathname = usePathname()
     const isIiifRoute = pathname?.startsWith('/iiif')
-    const coordinateInfo = searchParams.get('coordinateInfo') == 'on'
-    const labelFilter = searchParams.get('labelFilter') === 'on'
-    const options = searchParams.get('options') == 'on'
-    const mapSettings = searchParams.get('mapSettings') == 'on'
-    const { facetFilters, datasetFilters } = useSearchQuery()
-    const filterCount = facetFilters.length + datasetFilters.length
-    const showFilterButton = !isIiifRoute && !options && !mapSettings && !coordinateInfo && !labelFilter && snappedPosition != 'bottom'
+    const optionsOn = useOptionsOn()
+    const mapSettingsOn = useMapSettingsOn()
+    const sourceViewOn = useSourceViewOn()
+    const mode = useMode()
+    const notifications = useNotificationStore((s) => s.notifications)
+    const init = useInitParam()
 
-
+    const showFilterButton = (sourceViewOn || mode == 'table') && !isIiifRoute && !optionsOn && !mapSettingsOn
 
     const svhToRem = (svh: number) => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return 0
@@ -77,7 +83,22 @@ export default function Drawer({
         const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
         return windowHeight / rootFontSize
     }
-    const topRem = () => Math.max(0, viewportRem() - topSubtractRem) // reduce top height by topSubtractRem
+    // When there is a notification, drop the "top" snap so the drawer top sits flush
+    // against the bottom of the notification row (no gap).
+    //
+    // Drawer top edge in viewport coordinates is: 0.5rem + effectiveTopSubtractRem
+    // Notification row starts at: MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM (3.5rem)
+    // Notification row height is: 3.5rem (h-14)
+    // We want: drawerTop == notifTop + notifHeight  => 0.5 + effectiveTopSubtract == 2*MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM
+    const notificationRowHeightRem = 3.5
+    const desiredTopSubtractWithNotificationRem =
+        2 * MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM - 0.5
+    const extraTopSubtractRem =
+        notifications.length > 0
+            ? Math.max(0, desiredTopSubtractWithNotificationRem - topSubtractRem)
+            : 0
+    const effectiveTopSubtractRem = topSubtractRem + extraTopSubtractRem
+    const topRem = () => Math.max(0, viewportRem() - effectiveTopSubtractRem) // reduce top height by effectiveTopSubtractRem
     const approximately = (a: number, b: number, epsilon = 0.5) => Math.abs(a - b) < epsilon
     const snappedPositionRem = () => {
         if (snappedPosition === 'top') return topRem()
@@ -142,6 +163,17 @@ export default function Drawer({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [snappedPosition])
 
+    // When the notification stack appears/disappears while snapped at top,
+    // update the top snap height immediately (so it resets without requiring another snap).
+    useEffect(() => {
+        if (snappedPosition !== 'top') return
+        const target = topRem()
+        if (target && approximately(currentPosition, target) === false) {
+            setCurrentPosition(target)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [snappedPosition, notifications.length])
+
     // Simplified: rely solely on component handlers for gestures
 
     // Ensure opening animates from 0 to the saved snapped height
@@ -178,6 +210,10 @@ export default function Drawer({
             const container = outerRef.current
             if (!container) return
             const target = e.target as Node
+            // Clicking the notification/snackbar stack should not be treated as "outside the drawer".
+            if (target instanceof Element && target.closest('[data-notification-stack="true"]')) {
+                return
+            }
             if (!container.contains(target)) {
                 if (snappedPosition == 'middle') {
                     setSnappedPosition('bottom')
@@ -402,17 +438,17 @@ export default function Drawer({
                 aria-labelledby="drawer-title"
                 ref={outerRef}
                 className={`fixed w-full left-0 drawer ${snapped ? 'transition-[height] duration-300 ease-in-out' : ''} flex flex-col`}
-                style={{ bottom: '-0.5rem', height: `${drawerOpen ? currentPosition : 0}rem`, pointerEvents: drawerOpen ? 'auto' : 'none', zIndex: 6000, touchAction: atMiddle() ? 'auto' : 'none', overscrollBehaviorY: 'none' as any }}
+                style={{ bottom: '-0.5rem', height: `${drawerOpen ? currentPosition : 0}rem`, pointerEvents: drawerOpen ? 'auto' : 'none', zIndex: 6000, touchAction: (atMiddle() || atTop()) ? 'auto' : 'none', overscrollBehaviorY: 'none' as any }}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
             >
                 {/* Grip */}
                 <div
-                    className={`absolute top-0 left-1/2 -translate-x-1/2 order-b border-none border-primary-600 flex z-[6001] pb-2 px-4  rounded-b-lg  bg-white`}
+                    className={`absolute top-0 left-1/2 -translate-x-1/2 flex z-[6001] pb-2 px-4  rounded-b-lg  bg-transparent`}
                 >
 
-                    <div className={`${scrolled ? 'bg-neutral-600' : 'bg-neutral-300'} w-16 h-1.5 rounded-full m-1`}></div>
+                    <div className={`${scrolled ? 'bg-neutral-800' : 'bg-neutral-600'} w-16 h-1.5 rounded-full m-1`}></div>
 
                 </div>
                 {/* Scroll container: scrollable if the drawer is at the max height */}
@@ -435,12 +471,12 @@ export default function Drawer({
                         label="Til toppen"
                         side="top"
                     >
-                        <PiCaretUp className="text-2xl" />
+                        <PiArrowUpBold className="text-2xl" />
                     </RoundIconButton>
                 )}
 
-                {showFilterButton && (
-                    <div className="absolute right-3 bottom-6 z-[6001]">
+                {showFilterButton && (snappedPosition !== 'bottom' || !init) && (
+                    <div className={`absolute ${snappedPosition === 'bottom' ? 'right-3 bottom-6' : 'right-3 bottom-6'} z-[6001]`}>
                        <FilterButton />
                     </div>
                 )}

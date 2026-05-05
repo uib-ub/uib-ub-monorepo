@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     return { [field]: { order: 'asc' } };
   };
 
-  // Add sorting from URL parameters
+  // Add sorting from explicit column sort parameters (table mode)
   if (reservedParams.asc) {
     sortArray = reservedParams.asc.split(',').map(field => convertToNestedPath(field));
   } else if (reservedParams.desc) {
@@ -34,11 +34,32 @@ export async function GET(request: Request) {
         order: 'desc'
       }
     }));
-  }
+  } else {
+    // searchSort-based sorting (distance is the default)
+    const sortPreference = reservedParams.searchSort === 'similarity' ? 'similarity' : 'distance'
+    const point = reservedParams.point
+      ? reservedParams.point.split(',').map(parseFloat).reverse() as [number, number]
+      : null
 
-  // Fallback to default sorting if no sort parameters provided
-  if (!sortArray.length) {
-    sortArray = getSortArray(dataset)
+    if (sortPreference === 'similarity') {
+      if (reservedParams.q) {
+        sortArray.push({ _score: 'desc' })
+      }
+      sortArray.push({ boost: { order: 'desc', missing: '_last' } })
+    } else {
+      if (point) {
+        sortArray.push({ _geo_distance: { location: point, order: 'asc' } })
+      }
+      sortArray.push({ boost: { order: 'desc', missing: '_last' } })
+      if (reservedParams.q) {
+        sortArray.push({ _score: 'desc' })
+      }
+    }
+
+    // Fallback to default dataset sorting if nothing was added
+    if (!sortArray.length) {
+      sortArray = getSortArray(dataset)
+    }
   }
 
 
@@ -77,6 +98,35 @@ export async function GET(request: Request) {
     query.query = {
       "bool": {
         "must": { "match_all": {} }
+      }
+    }
+  }
+
+  // For cadastral child lookups (within=...), exclude parent garden docs from results.
+  if (reservedParams.within) {
+    const excludeGardFilter = {
+      bool: {
+        must_not: [
+          {
+            bool: {
+              should: [
+                { terms: { "sosi.keyword": ["gard"] } },
+                { terms: { sosi: ["gard"] } }
+              ],
+              minimum_should_match: 1
+            }
+          }
+        ]
+      }
+    }
+    const boolQuery = (query.query as any)?.bool
+    if (boolQuery) {
+      if (Array.isArray(boolQuery.filter)) {
+        boolQuery.filter.push(excludeGardFilter)
+      } else if (boolQuery.filter) {
+        boolQuery.filter = [boolQuery.filter, excludeGardFilter]
+      } else {
+        boolQuery.filter = [excludeGardFilter]
       }
     }
   }

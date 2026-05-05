@@ -1,6 +1,9 @@
 
+import type { ReservedSearchParamKey } from '@/lib/reserved-param-types';
+
 export interface FieldConfigItem {
   label?: string;
+  fields?: string[]; // Optional ES fields for virtual/composite facets
   result?: boolean; // Show in result list
   description?: string; // Description of field
   fulltext?: boolean; // Can be selected as search field
@@ -25,6 +28,9 @@ export interface FieldConfigItem {
   facetOperator?: 'AND' | 'OR'; // How multiple values for this facet are combined (default OR)
 }
 
+type DatasetFieldConfig = Record<string, FieldConfigItem>
+type DatasetFieldConfigWithNoReservedKeys = DatasetFieldConfig & Partial<Record<ReservedSearchParamKey, never>>
+
 interface FacetConfigItem extends FieldConfigItem {
   key: string;
 }
@@ -34,16 +40,25 @@ const [table, omitLabel, fulltext, facet, result, cadastreTable, featuredFacet, 
 const sosi = { label: "Namneobjekttype", description: "Stadtype etter SOSI-standarden", facet, table, result, noInfobox, keyword }
 const placeType = { label: "Lokalitetstype", table, facet, result, noInfobox }
 const cadastre = {
-  "within": { label: "Gard", result },
   "cadastre__gnr": { label: "Gardsnummer", result, sort: "asc" as const, type: "integer" as const },
-  "cadastre__bnr": { label: "Bruksnummer", result, sort: "asc" as const, type: "integer" as const }
+  "cadastre__bnr": { label: "Bruksnummer", result, sort: "asc" as const, type: "integer" as const },
 }
+const gnr = { label: "Gardsnummer", result, table, facet, sort: "asc" as const }
+const bnr = { label: "Bruksnummer", result, table, facet, sort: "asc" as const }
+const cadastreRaw = {gnr, bnr}
+const oldCadastre = {
+  mnr: { label: "Matrikkelnummer", result, table, facet, sort: "asc" as const },
+  lnr: { label: "Løpenummer", result, table, facet, sort: "asc" as const },
+}
+
+const knr = { label: "Kommunenummer", result, facet, sort: "asc" as const }
+
 const uuid = { label: "UUID", result }
-const label = { label: "Namn", result, facet }
+const label = { label: "Namn", result }
 const adm = { label: "Områdeinndeling", facet, specialFacet, noInfobox }
-const adm1 = { label: "Fylke", result } // Necessary for it to be included in fields
-const adm2 = { label: "Kommune", result } // Necessary for it to be included in fields
-const adm3 = { label: "Sogn, bydel eller tidlegare kommune", result }
+const adm1 = { label: "Fylke", result, facet } // Necessary for it to be included in fields
+const adm2 = { label: "Kommune", result, facet } // Necessary for it to be included in fields
+const adm3 = { label: "Sogn, bydel eller tidlegare kommune", result, facet }
 const snid = { label: "Stadnamn ID", facet, omitLabel, keyword }
 const gnidu = { label: "GNIDu", facet, result }
 const midu = { label: "MIDu", facet }
@@ -70,17 +85,19 @@ const resources: FieldConfigItem = {
 }
 
 const boost = { numeric }
-const dataset = { label: "Datasett" }
+const dataset = { label: "Datasett", facet, table }
 const coordinateType = { label: "Koordinattype", facet }
 const ssr = { label: "SSR Stadnummer", facet, keyword }
+const name = { label: "Namn", facet, keyword, fields: ["label.keyword", "altLabels.keyword", "attestations.label.keyword"] }
+const year = { label: "År", facet, fields: ["year", "attestations.year"] }
 
 const labelDefaults = {
   "altLabels": { label: "Andre namn", table, facet, result },
   "attestations": { label: "Kjeldeformer", table, result },
-}
-const required = { uuid, boost, label, dataset } //, resources }
+} satisfies DatasetFieldConfigWithNoReservedKeys
+const required = { uuid, boost, label, dataset, name, year} //, resources }
 
-export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
+const rawFieldConfig = {
 
   core_gnidu: {
     label
@@ -92,7 +109,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
   wikidata: {
     ...required, adm, adm1, adm2, sosi,
     "misc.placeType": { label: "Lokalitetstype", table, facet },
-    "misc.overordnetSted": { label: "Overordnet sted2", table, facet },
+    "misc.overordnetSted": { label: "Overordnet sted QID", table, facet },
     "misc.adm": { label: "Overordnet sted", table, facet },
     "misc.lokaltNavn": { label: "Lokalt navn", table, facet },
   },
@@ -125,6 +142,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     "rawData.oppskrivingsTid": { label: "Oppskrivingstid", table, facet },
     "rawData.bildeNr": { label: "Bildenummer", table, facet },
     ...cadastre,
+    ...cadastreRaw,
     ...identifiers,
   },
   rygh: {
@@ -132,16 +150,15 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     "misc.Lokalitetstype": { label: "Lokalitetstype", table, facet },
     "misc.Bind": { label: "Bind", table, facet },
     "misc.Side": { label: "Sidetall", table, facet, additionalParams: ["misc.Bind"] },
-    "misc.KNR": { label: "Kommunenummer", table, facet },
-    "misc.Gnr": { label: "Gardsnummer", table, facet, additionalParams: ["misc.KNR"] },
-    "misc.Bnr": { label: "Bruksnummer", table, facet, additionalParams: ["misc.KNR", "misc.Gnr"] },
+    knr,
+    ...cadastreRaw,
     ...identifiers,
 
   },
   rygh_g: {
     ...required, ...text,
-    "rawData.språk": { label: "Språk", facet },
-    "rawData.kjelde": { label: "Kjelde", facet },
+    "rawData.språk": { label: "Språk", facet, table},
+    "rawData.kjelde": { label: "Kjelde", facet, table },
   },
   leks: {
     ...required, adm, adm1, adm2, ...html,
@@ -157,40 +174,37 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
   },
   leks_g: {
     ...required, ...text,
-    "rawData.språk": { label: "Språk", facet },
-    "rawData.kjelde": { label: "Kjelde", facet },
+    "rawData.språk": { label: "Språk", facet, table },
+    "rawData.kjelde": { label: "Kjelde", facet, table },
   },
   mu1950: {
     ...required, adm, adm1, adm2, sosi,
     ...cadastre,
-    "within": { label: "Gard", result },
-    "knr": { label: "Knr", table, facet, result },
-    "misc.GNR": { label: "Gnr", table, facet, result, additionalParams: ["knr"] },
-    "misc.BNR": { label: "Bnr", table, facet, result, additionalParams: ["knr", "misc.GNR"] },
     "misc.Eigar": { label: "Eigar", table, facet, cadastreTable },
-    "misc.Mark": { label: "Skyldmark", table, facet },
-    "misc.Øre": { label: "Skyldøre", table, facet },
+    "misc.Mark": { label: "Skyldmark", table, facet, cadastreTable },
+    "misc.Øre": { label: "Skyldøre", table, facet, cadastreTable },
+    knr,
+    ...cadastreRaw,
     ...identifiers,
   },
   m1838: {
     ...required, sosi, adm,
-    "within": { label: "Gard" },
     "misc.MNR": { label: "Matrikkelnummer", result, table, facet },
     "knr": { label: "Kommunenummer", facet, result },
 
     "misc.LNR": { label: "Løpenummer", result, table, facet },
-    "miac.1723_MNR": { label: "Matrikkelnummer 1723", table, facet },
+    "misc.1723_MNR": { label: "Matrikkelnummer 1723", table, facet },
     "adm1": { label: "Amt", result },
     "adm2": { label: "Prestegjeld", result },
+    ...oldCadastre,
     ...identifiers,
 
   },
   m1886: {
     ...required, sosi, adm, adm1, adm2,
-    "knr": { label: "Kommunenummer", table, facet, result },
-    "misc.GNR": { label: "Gardsnummer", table, facet, result, additionalParams: ["knr"] },
-    "misc.BNR": { label: "Bruksnummer", table, facet, result, additionalParams: ["knr", "misc.GNR"] },
+    knr,
     ...cadastre,
+    ...cadastreRaw,
     ...identifiers,
   },
   skul: {
@@ -236,8 +250,8 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
   },
   ostf: {
     ...required, adm, adm1, adm2,
-    "rawData.Bindsortering": { label: "Bind", facet },
-    "rawData.GNID": { label: "GNID", facet, result },
+    "misc.Bindsortering": { label: "Bind", facet },
+    "misc.Lokalitetstype": { label: "Lokalitetstype", facet },
     ...identifiers,
   },
   tot: {
@@ -314,6 +328,7 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
   },
   geonames: {
     ...required, adm, adm1, adm2, sosi, placeType,
+    gnr, knr, ...cadastre,    
     "lang": { label: "Språk", facet },
     "misc.featureClass": { label: "Geonames feature class", facet },
     "misc.featureCode": { label: "Geonames feature code", facet },
@@ -329,6 +344,8 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
   },
   m2010: {
     ...required, adm, adm1, adm2, sosi,
+    knr,
+    ...cadastreRaw,
     ...identifiers
   },
   frogn: {
@@ -458,13 +475,15 @@ export const fieldConfig: Record<string, Record<string, FieldConfigItem>> = {
     ...required, adm, adm1, adm2,
     ...identifiers,
   }
-}
+} satisfies Record<string, DatasetFieldConfigWithNoReservedKeys>
+
+export const fieldConfig: Record<string, DatasetFieldConfig> = rawFieldConfig
 
 // First, store the original _index configuration
 // TODO: refactor so that required is not needed in the individual configs
 export const baseAllConfig: Record<string, FieldConfigItem> = {
   ...required, adm, wikiAdm, adm1, adm2, sosi, ...cadastre,
-  "dataset": { label: "Datasett", facet },
+  "dataset": { label: "Datasett", facet, table },
   "cadastralIndex": { label: "Hierarki" },
   ...text,
   ...html,
@@ -474,6 +493,7 @@ export const baseAllConfig: Record<string, FieldConfigItem> = {
 };
 
 fieldConfig.all = Object.entries(fieldConfig).reduce((acc, [dataset, fields]) => {
+  //console.log("ADDING FACET CONFIG FOR DATASET: ", dataset)
 
   Object.entries(fields).forEach(([key, config]) => {
     if (!config.label) return; // Skip fields without labels

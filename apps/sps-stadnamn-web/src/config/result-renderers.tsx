@@ -1,4 +1,4 @@
-import SourceLink from "@/components/search/details/group/source-link";
+import SourceLink from "@/components/results/card/source-link";
 import { formatHighlight } from "@/lib/text-utils";
 import { getFieldValue } from "@/lib/utils";
 import { Fragment } from "react";

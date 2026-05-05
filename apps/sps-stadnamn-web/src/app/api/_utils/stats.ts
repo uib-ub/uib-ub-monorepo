@@ -58,7 +58,7 @@ export async function fetchStats() {
     "query": {
       "bool": {
         "must_not": [
-          { "terms": { "group.id": ["noname"] } }
+          { "terms": { "group.id": ["suppressed", "noname"] } }
         ]
       }
     },
