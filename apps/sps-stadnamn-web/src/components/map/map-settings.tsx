@@ -7,14 +7,15 @@ import Clickable from "@/components/ui/clickable/clickable";
 import IconButton from "@/components/ui/icon-button";
 import dynamic from "next/dynamic";
 import { useDebugStore } from "@/state/zustand/debug-store";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiInfoFill, PiMagnifyingGlass, PiPlusBold, PiX } from "react-icons/pi";
 import { useSearchParams } from "next/navigation";
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "../ui/clickable/clickable-icon";
-import WarningMessage from "../search/details/group/warning-message";
 import { useSessionStore } from "@/state/zustand/session-store";
+import { useNotificationStore } from "@/state/zustand/notification-store";
 import Link from "next/link";
+import { useOverlaySelectorOn } from "@/lib/param-hooks";
 
 const MapDebugSettings = dynamic(() => import("./map-debug-settings"), { ssr: false });
 
@@ -23,18 +24,22 @@ export default function MapSettings() {
     baseMap,
     overlayMaps,
     markerMode,
+    labelCollisionDetectionEnabled,
     setBaseMap,
     addOverlayMap,
     removeOverlayMap,
     moveOverlayMap,
     clearOverlayMaps,
-    setMarkerMode
+    setMarkerMode,
+    setLabelCollisionDetectionEnabled
   } = useMapSettings();
   const searchParams = useSearchParams();
   const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
+  const addNotification = useNotificationStore((s) => s.addNotification);
+  const removeNotification = useNotificationStore((s) => s.removeNotification);
   const debug = useDebugStore((s) => s.debug);
   const [overlaySearch, setOverlaySearch] = useState('');
-  const overlaySelectorOpen = searchParams.get('overlaySelector') === 'on';
+  const overlaySelectorOn = useOverlaySelectorOn();
   const { mapFunctionRef } = useContext(GlobalContext);
 
   // Add state for h3 resolution
@@ -74,7 +79,22 @@ export default function MapSettings() {
     );
   }, []);
 
-  if (overlaySelectorOpen) {
+  useEffect(() => {
+    if (selectedOverlays.length > 2) {
+      addNotification({
+        id: "overlay-performance-warning",
+        message: "Fleire kartlag kan redusere ytinga",
+        permanentDismiss: true,
+        variant: "warning"
+      });
+    } else {
+      removeNotification("overlay-performance-warning");
+    }
+
+    return () => removeNotification("overlay-performance-warning");
+  }, [addNotification, removeNotification, selectedOverlays.length]);
+
+  if (overlaySelectorOn) {
     return (
         <section className="flex flex-col gap-8 pb-4 xl:px-2">
           <fieldset className="border-0 p-0 m-0">
@@ -185,7 +205,7 @@ export default function MapSettings() {
   }
 
   return (
-    <div className="flex flex-col gap-4 pb-4 xl:px-2">
+    <div className="flex flex-col gap-4 py-4 xl:px-2">
       {/* Marker Mode Section */}
       <section>
         <fieldset className="border-0 p-0 m-0">
@@ -216,6 +236,18 @@ export default function MapSettings() {
               </div>
             </div>
           </legend>
+          <div className="px-3 pb-1">
+            <label className="inline-flex items-center gap-2 text-sm text-neutral-700 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={labelCollisionDetectionEnabled}
+                onChange={(e) => setLabelCollisionDetectionEnabled(e.target.checked)}
+                aria-label="Slå av eller på etikett-overlappshandtering"
+                className="h-4 w-4 accent-accent-800"
+              />
+              <span>Reduser overlappande etikettar</span>
+            </label>
+          </div>
         </fieldset>
       </section>
 
@@ -270,13 +302,6 @@ export default function MapSettings() {
           </div>
           </div>
           <div className="px-2 py-1 flex flex-col gap-3">
-            {selectedOverlays.length > 2 && (
-              <WarningMessage
-                message="Mange ekstra kartlag kan gjere kartet tregare å bruke."
-                messageId="overlay-performance-warning"
-              />
-            )}
-
             {selectedOverlays.length > 0 && (
               <fieldset>
                 <legend className="sr-only">Aktive kartlag</legend>

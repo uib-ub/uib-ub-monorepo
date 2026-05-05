@@ -1,11 +1,10 @@
-import SourceLink from '@/components/search/details/group/source-link';
-import Clickable from '@/components/ui/clickable/clickable';
+import SourceLink from '@/components/results/card/source-link';
 import InfoPopover from '@/components/ui/info-popover';
-import LegacyChildren from '@/components/search/details/doc/legacy-children';
+import LegacyChildren from '@/components/results/doc/legacy-children';
 import parse from 'html-react-parser';
 import Link from 'next/link';
-import { Fragment, ReactElement } from 'react';
-import { PiInfoFill, PiMagnifyingGlass, PiWarningFill } from 'react-icons/pi';
+import { ReactElement } from 'react';
+import { PiInfoFill, PiWarningFill } from 'react-icons/pi';
 
 const getUniqueAltLabels = (source: any, prefLabel: string, altLabelKeys: string[]) => {
   const altLabels = altLabelKeys.map((key) => source[key]).filter((label: string) => label !== prefLabel && label);
@@ -20,24 +19,6 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
   rygh: (source: any) => {
 
     return <>
-      {source.cadastre?.length > 0 &&
-        <div className='flex flex-wrap gap-2'>
-
-          <h3 className="font-semibold !text-base !m-0 !p-0 !font-sans">Matrikkel:</h3>
-          {source.cadastre?.map((item: any, index: number) => {
-            const dataset = "rygh"
-            return <Fragment key={index}>
-
-              <Clickable link className="no-underline flex items-center" href="/search" only={{ dataset, "misc.KNR": source.misc.KNR }}>{source.misc.KNR} <PiMagnifyingGlass className='inline ml-1 text-primary-700' aria-hidden="true" /></Clickable>
-              {item.gnr && <>- <Clickable link className="no-underline flex items-center" href="/search" only={{ dataset, "misc.Gnr": item.gnr.toString(), "misc.KNR": source.misc.KNR }}>{item.gnr} <PiMagnifyingGlass className='inline ml-1 text-primary-700' aria-hidden="true" /></Clickable> </>}
-              {item.bnr && <>{"/"} <Clickable link className="no-underline flex items-center" href="/search" only={{ dataset, "misc.Bnr": item.bnr.toString(), "misc.KNR": source.misc.KNR }}>{item.bnr} <PiMagnifyingGlass className='inline ml-1 text-primary-700' aria-hidden="true" /></Clickable> </>}
-
-
-            </Fragment>
-          })}
-        </div>
-      }
-
       {source.content?.html && <div className="inline-flex flex-col inner-slate">
         <div className='border-b border-neutral-200 p-4 flex gap-2'>Bind {source.misc.Bind}, s. {source.misc.Side}{source.links?.map((link: any) => <div key={link}><SourceLink url={link} /></div>)}
           {false && source.content.html.includes("font-phonetic") && <span className='text-sm'><PiWarningFill className='inline mr-1 text-primary-700' aria-hidden="true" />Transkriberinga kan innehalde feil teikn, særleg i lydskrift</span>}</div>
@@ -49,7 +30,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
     </>
   },
   leks_etymology: (html: string) => { // Replace when the new encyclopedia is ready
-    return <>{parse(html.replace("/view/leks/doc/", "/search?dataset=leks&doc="))}</>
+    return <>{parse(html.replace("/view/leks/doc/", "/uuid/"))}</>
   },
   leks: (source: any) => {
     /*
@@ -72,7 +53,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
     return <>
       {source.content?.html && <div className="inline-flex flex-col gap-4 inner-slate">
         <div className='border-b border-neutral-200 p-4'><Link href="https://urn.nb.no/URN:NBN:no-nb_digibok_2008121704022" className='whitespace-nowrap inline'>norskstadnamnleksikon.no</Link></div>
-        <div className='space-y-2 inline px-4 pb-4'>{parse(source.content.html.replace("/view/leks/doc/", "/search?dataset=leks&doc="))}</div>
+        <div className='space-y-2 inline px-4 pb-4'>{parse(source.content.html.replace("/view/leks/doc/", "/uuid/"))}</div>
 
       </div>
       }
@@ -147,7 +128,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
       {source.misc?.merknad && <><strong className="text-neutral-900">Merknad: </strong>{source.misc?.merknad}</>}
       <div className="flex flex-wrap mt-3 gap-2">
         <Link href={source.link} className='rectangular-external-link'>Skanna</Link>
-        <Link href={source.misc.Lenke_til_digital_matrikkel} className='rectangular-external-link'>Digitalisert</Link>
+        <Link href={source.misc.Lenke_til_digital_matrikkel} className='rectangular-external-link'>Transkribert</Link>
       </div>
 
     </>
@@ -231,7 +212,7 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
   m2010: (source: any) => {
     return <>
       <div className='space-y-2'>
-        <strong>Opphavleg:</strong><InfoPopover>Oppslagsorda i GAB-registeret hadde alle store bokstavar, og fleire av dei inneheldt romartal. Tilpassingane Språksamlingane har gjort kan innehalde feil. </InfoPopover>&nbsp;&nbsp;
+        <strong>Opphavleg:</strong><InfoPopover>Oppslagsorda i GAB-registeret hadde berre store bokstavar, og fleire av dei inneheldt romartal. Det kan førekoma feil i tilpassingane Språksamlingane har gjort for å vise dei utan romartal og med både store og små bokstavar.</InfoPopover>&nbsp;&nbsp;
         {source.sosi == 'gard' ? source.misc.Gardsnamn : source.misc.Bruksnamn}
       </div>
     </>

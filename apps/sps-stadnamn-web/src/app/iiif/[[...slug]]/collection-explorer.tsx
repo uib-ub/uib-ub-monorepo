@@ -201,7 +201,7 @@ export default function CollectionExplorer({ manifest, isCollection, manifestDat
                     >
                         <div className='flex w-full pr-1 items-center bg-white group shadow-lg lg:rounded-md h-14 lg:h-12'>
                             <input
-                                id={"search-input-" + manifestUuid}
+                                id="search-input-iiif"
                                 type="text"
                                 aria-label="Søk i arkivsamling"
                                 name="q"

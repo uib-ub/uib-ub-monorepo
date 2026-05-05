@@ -10,7 +10,6 @@ export interface TreeSettingsItem {
   subunit: string,
   subunitLabel?: string,
   sort: string[], // Sort cadastral units
-  aggSort: string, // Sort aggregated divisions above the cadastral unit (e. g. municipalities)
   filter?: any,
   showNumber?: boolean,
   leaf: string,
@@ -25,33 +24,30 @@ export const treeSettings: Record<string, TreeSettingsItem> = {
     parentName: "misc.gardLabel",
     leaf: "misc.LNR",
     sort: ["cadastralIndex"],
-    aggSort: "link.keyword",
-    geoSort: "misc.LNR.keyword"
+    geoSort: "lnr.keyword"
   },
   m1886: {
     subunit: "cadastre__gnr",
     parentName: "misc.Gardsnamn",
     leaf: "cadastre__bnr",
-    sort: ["cadastre__gnr", "cadastre__bnr"],
-    aggSort: "misc.GNR.keyword",
-    geoSort: "misc.BNR.keyword"
+    sort: ["cadastralIndex"],
+    // Tree aggregation above farm-level should sort by municipality code.
+    geoSort: "bnr.keyword"
   },
   mu1950: {
     subunit: "cadastre__gnr",
     parentName: "misc.Gardsnamn",
     leaf: "cadastre__bnr",
-    sort: ["cadastre__gnr", "cadastre__bnr"],
-    aggSort: "knr.keyword",
+    sort: ["cadastralIndex"],
     showNumber: true,
-    geoSort: "misc.BNR.keyword"
+    geoSort: "bnr.keyword"
   },
   m2010: {
     subunit: "cadastre__gnr",
-    parentName: "misc.Gardsnamn",
+    parentName: "misc.gardLabel",
     leaf: "cadastre__bnr",
-    sort: ["cadastre__gnr", "cadastre__bnr"],
-    aggSort: "knr.keyword",
-    geoSort: "misc.BNR.keyword"
+    sort: ["cadastralIndex"],
+    geoSort: "bnr.keyword"
   },
   /*
   rygh: {
@@ -266,26 +262,7 @@ export const getSortArray = (dataset: string): (string | object)[] => {
   }
 
   if (datasetSettings.cadastre) {
-    sortArray.push({
-      "cadastre.gnr": {
-        "order": "asc", // or "desc" depending on your requirement
-        "mode": "min", // or "max", depending on how you want to sort multiple values within nested objects
-        "missing": "_last", // or "_last", depending on how you want to handle missing values
-        "nested": {
-          "path": "cadastre" // Specify the path to the nested field
-        }
-      }
-    })
-    sortArray.push({
-      "cadastre.bnr": {
-        "order": "asc", // or "desc", depending on your requirement
-        "mode": "min", // or "max", depending on how you want to sort multiple values within nested objects
-        "missing": "_first", // or "_last", depending on how you want to handle missing values
-        "nested": {
-          "path": "cadastre" // Specify the path to the nested field
-        }
-      }
-    })
+    sortArray.push("cadastralIndex")
   }
 
   return sortArray

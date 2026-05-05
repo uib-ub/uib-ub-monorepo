@@ -1,9 +1,66 @@
 // Helper function to calculate bounds from zoom level and center point
 export const EARTH_CIRCUMFERENCE = 40075016.686;
 
+// Haversine formula to calculate distance between two coordinates in meters
+export const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371000; // Earth's radius in meters
+    const φ1 = lat1 * Math.PI / 180;
+    const φ2 = lat2 * Math.PI / 180;
+    const Δφ = (lat2 - lat1) * Math.PI / 180;
+    const Δλ = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+        Math.cos(φ1) * Math.cos(φ2) *
+        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+};
+
 export const MAP_DRAWER_BOTTOM_HEIGHT_REM = 8
 export const MAP_DRAWER_MAX_HEIGHT_SVH = 60
 export const MAP_DRAWER_TOP_SUBTRACT_REM = 4
+
+/**
+ * Distance from the mobile search chrome wrapper’s top to the bottom of the search row.
+ * On mobile, menu + `#search-form` are both `h-14` with no `top-2` offset on the form
+ * (see search-form.tsx). Used to stack UI flush under the search row.
+ */
+export const MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM = 3.5
+
+/** Space above the fixed “Vis resultat” strip (`bottom-2` + `p-3` + `h-12`). */
+export const MOBILE_RESULTS_FOOTER_CLEARANCE_REM = 5.5
+
+export type MobileDrawerSnap = 'bottom' | 'middle' | 'top'
+
+/**
+ * `top` for the search chrome wrapper when `position: absolute` — keep in sync with search-form.tsx.
+ */
+export function mobileSearchChromeWrapperTopStyle(
+  currentPosition: number,
+  snappedPosition: MobileDrawerSnap,
+): string | undefined {
+  if (currentPosition <= MAP_DRAWER_BOTTOM_HEIGHT_REM) {
+    return undefined
+  }
+  if (snappedPosition === 'top') {
+    return '0rem'
+  }
+  return `calc(${-currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem * (1 - max(0, min(1, (${currentPosition}rem - 60svh) / (100svh - 60svh - 8rem)))))`
+}
+
+/**
+ * `top` for layers that should sit directly under the mobile search row (e.g. notification stack)
+ * while the search header moves with the drawer.
+ */
+export function mobileStackBelowSearchChromeTopStyle(
+  currentPosition: number,
+  snappedPosition: MobileDrawerSnap,
+): string {
+  const wrapperTop = mobileSearchChromeWrapperTopStyle(currentPosition, snappedPosition)
+  if (wrapperTop === undefined || wrapperTop === '0rem') {
+    return `${MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM}rem`
+  }
+  return `calc(${-currentPosition + MAP_DRAWER_BOTTOM_HEIGHT_REM}rem * (1 - max(0, min(1, (${currentPosition}rem - 60svh) / (100svh - 60svh - 8rem)))) + ${MOBILE_SEARCH_FIELD_BOTTOM_OFFSET_REM}rem)`
+}
 
 // Web-Mercator helpers (Leaflet's default CRS: EPSG:3857)
 const R = 6378137; // Earth radius used by Spherical Mercator (meters)
@@ -343,58 +400,131 @@ export const getMyLocation = (setMyLocation: (location: [number, number]) => voi
   }
 }
 
+export type MapViewportPadding = {
+  padLeft: number
+  padRight: number
+  padTop: number
+  padBottom: number
+}
+
+export function getMapViewportPadding(
+  map: any,
+  isMobile: boolean,
+  padRightFrac?: number,
+  padLeftFrac?: number,
+): MapViewportPadding | null {
+  if (!map?.getSize) return null
+  const size = map.getSize()
+
+  if (isMobile) {
+    // Mobile: assume drawer is at middle snap (`MAP_DRAWER_MAX_HEIGHT_SVH`) and compute
+    // the ACTUAL overlap with the map container in viewport space.
+    // This avoids under/over-estimating covered area when map container bottom offset changes.
+    let padBottom = Math.round(size.y * 0.5) // fallback when DOM APIs are unavailable
+    try {
+      const container = map.getContainer?.()
+      const rect = container?.getBoundingClientRect?.()
+      const viewportHeight =
+        (typeof window !== 'undefined' && (window.visualViewport?.height || window.innerHeight)) || 0
+      if (rect && viewportHeight > 0) {
+        const drawerHeightPx = (MAP_DRAWER_MAX_HEIGHT_SVH / 100) * viewportHeight
+        const drawerTopY = viewportHeight - drawerHeightPx
+        const overlapStartY = Math.max(rect.top, drawerTopY)
+        const overlapPx = Math.max(0, rect.bottom - overlapStartY)
+        padBottom = Math.round(Math.min(rect.height, overlapPx))
+      }
+    } catch {
+      // keep fallback
+    }
+
+    return {
+      padTop: Math.round(size.y * 0.08),
+      padLeft: Math.round(size.x * 0.05),
+      padRight: Math.round(size.x * 0.05),
+      padBottom,
+    }
+  }
+
+  // Desktop: keep left/right windows in account for visibility checks.
+  const padLeft = Math.round(size.x * (padLeftFrac ?? 0.25))
+  const padRight = Math.round(size.x * (padRightFrac ?? 0.25))
+  const yPad = Math.round(Math.min(120, size.y * 0.1))
+  return { padLeft, padRight, padTop: yPad, padBottom: yPad }
+}
+
+export function isLatLngInPaddedViewport(
+  map: any,
+  lat: number,
+  lng: number,
+  padding: MapViewportPadding
+): boolean {
+  if (!map?.getSize || !map?.latLngToContainerPoint) return false
+  const size = map.getSize()
+  const pt = map.latLngToContainerPoint([lat, lng])
+  return (
+    pt.x >= padding.padLeft &&
+    pt.x <= (size.x - padding.padRight) &&
+    pt.y >= padding.padTop &&
+    pt.y <= (size.y - padding.padBottom)
+  )
+}
+
 // Utility to pan a point into view with container-based padding for both mobile and desktop
 export function panPointIntoView(
   map: any,
   point: [number, number],
   isMobile: boolean,
-  maxDrawer?: boolean,
-  reset?: boolean
+  _maxDrawer?: boolean,
+  reset?: boolean,
+  padRightFrac?: number,
+  padLeftFrac?: number
 ) {
   if (!map || !point) return false;
 
   const [lat, lng] = point;
-  const size = map.getSize();
-  const zoom = map.getZoom();
+  const padding = getMapViewportPadding(map, isMobile, padRightFrac, padLeftFrac)
+  if (!padding) return false
 
-  // Hard-coded paddings based on platform and drawer state
-  let padLeft = 0, padRight = 0, padTop = 0, padBottom = 0;
-  if (isMobile) {
-    // Small top and x padding always on mobile
-    padTop = Math.round(size.y * 0.08); // ~8%
-    const xPadFrac = 0.05;              // 5% left/right
-    padLeft = Math.round(size.x * xPadFrac);
-    padRight = Math.round(size.x * xPadFrac);
-    // Bottom reserved only when drawer is at max height
-    padBottom = maxDrawer ? Math.round(size.y * (MAP_DRAWER_MAX_HEIGHT_SVH / 100)) : 0;
-  } else {
-    // Desktop: 25% left/right, small symmetric y padding
-    padLeft = Math.round(size.x * 0.25);
-    padRight = Math.round(size.x * 0.25);
-    const yPad = Math.round(Math.min(120, size.y * 0.1));
-    padTop = yPad;
-    padBottom = yPad;
-  }
+  const isInside = isLatLngInPaddedViewport(map, lat, lng, padding)
+  if (!reset && isInside) return false
 
-  // Check visibility within padded rectangle
-  const pt = map.latLngToContainerPoint([lat, lng]);
-  const insideHoriz = pt.x >= padLeft && pt.x <= (size.x - padRight);
-  const insideVert = pt.y >= padTop && pt.y <= (size.y - padBottom);
-
-  if (reset || !(insideHoriz && insideVert)) {
-    const eps = 1e-6;
-    map.fitBounds(
-      [[lat + eps, lng - eps], [lat - eps, lng + eps]],
-      {
-        paddingTopLeft: [padLeft, padTop],
-        paddingBottomRight: [padRight, padBottom],
-        maxZoom: zoom,
-        duration: 0.05
-      }
-    );
+  if (!isMobile) {
+    // Desktop: true center.
+    map.panTo?.([lat, lng], { animate: false })
     return true
   }
-  return false
+
+  // Mobile: keep the point centered in the visible (unpadded) viewport,
+  // assuming drawer middle coverage.
+  const size = map.getSize()
+  const centerTargetY = (padding.padTop + (size.y - padding.padBottom)) / 2
+  const centerTargetX = size.x / 2
+  const targetLatLng = map.containerPointToLatLng?.([centerTargetX, centerTargetY])
+
+  if (targetLatLng && map?.project && map?.unproject && map?.getZoom) {
+    const zoom = map.getZoom()
+    const projectedPoint = map.project([lat, lng], zoom)
+    const projectedTarget = map.project(targetLatLng, zoom)
+    const projectedCenter = map.project(map.getCenter(), zoom)
+
+    const dx = projectedPoint.x - projectedTarget.x
+    const dy = projectedPoint.y - projectedTarget.y
+    const newCenterProjected = {
+      x: projectedCenter.x + dx,
+      y: projectedCenter.y + dy,
+    }
+    const newCenter = map.unproject(newCenterProjected, zoom)
+    map.panTo?.(newCenter, { animate: false })
+    return true
+  }
+
+  // Fallback: at least keep it within the padded viewport.
+  map.panInside?.([lat, lng], {
+    paddingTopLeft: [padding.padLeft, padding.padTop],
+    paddingBottomRight: [padding.padRight, padding.padBottom],
+    animate: false,
+  })
+  return true
 }
 
 /**
@@ -408,12 +538,14 @@ export function fitBoundsToGroupSources(
   options?: {
     duration?: number;
     padding?: [number, number];
+    paddingTopLeft?: [number, number];
+    paddingBottomRight?: [number, number];
     maxZoom?: number;
   }
 ) {
   if (!mapInstance || !groupData) return;
 
-  const { duration = 0.25, padding = [50, 50], maxZoom = 18 } = options || {};
+  const { duration = 0.25, padding = [50, 50], paddingTopLeft, paddingBottomRight, maxZoom = 18 } = options || {};
 
   // Filter sources with valid coordinates
   const sourcesWithCoords = groupData.sources.filter(
@@ -431,20 +563,44 @@ export function fitBoundsToGroupSources(
       if (lng > maxLng) maxLng = lng;
     });
 
-    // Fly to bounds with padding
+    const fitOptions: Record<string, any> = { duration, maxZoom };
+    if (paddingTopLeft && paddingBottomRight) {
+      fitOptions.paddingTopLeft = paddingTopLeft;
+      fitOptions.paddingBottomRight = paddingBottomRight;
+    } else {
+      fitOptions.padding = padding;
+    }
+
     mapInstance.flyToBounds(
       [
         [minLat, minLng],
         [maxLat, maxLng]
       ],
-      { duration, padding, maxZoom }
+      fitOptions
     );
-  } else if (sourcesWithCoords.length === 1 || groupData.fields?.location?.[0]?.coordinates) {
+  } else if (
+    sourcesWithCoords.length === 1 ||
+    Array.isArray((groupData as any).coordinates) && (groupData as any).coordinates.length === 2 ||
+    groupData.fields?.location?.[0]?.coordinates
+  ) {
     // Default: fly to group location at zoom 15
-    const coords = sourcesWithCoords.length === 1
-      ? sourcesWithCoords[0].location.coordinates
-      : groupData.fields.location[0].coordinates;
-    mapInstance.flyTo([coords[1], coords[0]], 15, { duration });
+    const coords =
+      sourcesWithCoords.length === 1
+        ? sourcesWithCoords[0].location.coordinates
+        : (Array.isArray((groupData as any).coordinates) && (groupData as any).coordinates.length === 2
+          ? (groupData as any).coordinates
+          : groupData.fields.location[0].coordinates);
+    if (paddingTopLeft && paddingBottomRight) {
+      // Use flyToBounds with a tiny epsilon so asymmetric padding is applied for sidebar-aware centering
+      const lat = coords[1], lng = coords[0];
+      const eps = 1e-6;
+      mapInstance.flyToBounds(
+        [[lat + eps, lng - eps], [lat - eps, lng + eps]],
+        { duration, maxZoom: 15, paddingTopLeft, paddingBottomRight }
+      );
+    } else {
+      mapInstance.flyTo([coords[1], coords[0]], 15, { duration });
+    }
   }
 }
 

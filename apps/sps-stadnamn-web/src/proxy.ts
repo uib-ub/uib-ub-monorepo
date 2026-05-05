@@ -95,11 +95,11 @@ export async function proxy(request: NextRequest) {
 
         const newSearchParams = new URLSearchParams()
 
-        const searchParams = new URLSearchParams(url.search)
-        if (searchParams.get('q')) {
-            newSearchParams.set('q', searchParams.get('q')!)
+        const oldParams = new URLSearchParams(url.search)
+        if (oldParams.get('q')) {
+            newSearchParams.set('q', oldParams.get('q')!)
         }
-        searchParams.set('dataset', dataset)
+        newSearchParams.set('dataset', dataset)
 
         return Response.redirect(baseUrl + "/search?" + newSearchParams.toString(), 302)
     }

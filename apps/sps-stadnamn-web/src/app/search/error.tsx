@@ -55,6 +55,7 @@ export default function Error({
       url: fullUrl
     }
     plausible('error', { props })
+    console.log("error", error)
     setIsReported(true)
   }
 

@@ -1,9 +1,10 @@
 import { fetchDoc } from '@/app/api/_utils/actions'
-import CadastralTable from '@/components/search/details/doc/cadastral-table'
+import CadastralTable from '@/components/results/doc/cadastral-table'
 import CollapsibleHeading from '@/components/doc/collapsible-heading'
-import ErrorMessage from '@/components/error-message'
+import ErrorMessage from '@/components/ui/notifications/error-message'
 import Thumbnail from '@/components/image-viewer/thumbnail'
-import CoordinateInfo from '@/components/search/details/doc/coordinate-info'
+import CoordinateInfo from './coordinate-info'
+import CadastralSearchLinks from './cadastral-search-links'
 import { infoPageRenderers } from '@/config/info-renderers'
 import { datasetPresentation, datasetShortDescriptions, datasetTitles } from '@/config/metadata-config'
 import { facetConfig, fieldConfig } from '@/config/search-config'
@@ -14,10 +15,9 @@ import { headers } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'
 import { PiBracketsCurlyBold } from 'react-icons/pi'
 import sanitizeHtml from 'sanitize-html'
-import GroupList from './GroupList'
+import GroupAside from './group-aside'
 import OriginalData from './original-data'
 import ServerCadastreBreadcrumb from './server-cadastre-breadcrumb'
-import IconButton from '@/components/ui/icon-button'
 
 const normalizeText = (text: string) => text.replace(/\s+/g, ' ').trim()
 
@@ -113,6 +113,8 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
 
   const shouldShowCadastralSubdivisions =
     !!treeSettings[docDataset] && docData?._source?.sosi == 'gard'
+  const adm1 = Array.isArray(docData?._source?.adm1) ? docData?._source?.adm1?.[0] : docData?._source?.adm1
+  const adm2 = Array.isArray(docData?._source?.adm2) ? docData?._source?.adm2?.[0] : docData?._source?.adm2
 
   // `CadastralTable` fetches subunits itself; no need to prefetch children here.
 
@@ -129,8 +131,8 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
   // TODO: create tabs for info, json, geojson and jsonld
   return (
     <div className="page-info lg:grid lg:grid-cols-[1fr_24rem] lg:gap-12">
-      <div className="flex flex-col gap-6">
-        {docData?._source?.within && docDataset && <ServerCadastreBreadcrumb source={docData?._source} docDataset={docDataset} subunitName={treeSettings[docDataset]?.parentName} />}
+      <div className="flex flex-col gap-12">
+        {docData?._source?.within && docData?._source?.within !== docData?._source?.uuid && docDataset && <ServerCadastreBreadcrumb source={docData?._source} />}
         <div>
           <div className="!text-neutral-800 !uppercase !font-semibold !tracking-wider !text-sm !font-sans pb-4"> {datasetTitles[docDataset]}</div>
           <h1>{docData?._source?.label || docData?._source.uuid}</h1>
@@ -158,6 +160,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
           </div>
 
         </div>
+        <CadastralSearchLinks source={docData?._source} dataset={docDataset} />
         {infoPageRenderers[docDataset] ? infoPageRenderers[docDataset](docData?._source) : null}
 
 
@@ -229,6 +232,8 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
               list={true}
               flush={true}
               groupId={(docData as any)?._source?.group?.id}
+              adm1={adm1}
+              adm2={adm2}
               showMarkers={false}
             />
           </div>
@@ -274,7 +279,7 @@ export default async function LandingPage({ params }: { params: Promise<{ uuid: 
 
 
 
-        <GroupList docData={docData} />
+        <GroupAside docData={docData} />
 
 
 

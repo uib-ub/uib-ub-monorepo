@@ -4,7 +4,7 @@ import { useIIIFSessionStore } from '@/state/zustand/iiif-session-store';
 import OpenSeadragon from 'openseadragon';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { PiArrowClockwiseBold, PiCaretLeftFill, PiCaretRightFill, PiCornersOutBold, PiMagnifyingGlassMinusBold, PiMagnifyingGlassPlusBold, PiXBold } from 'react-icons/pi';
-import ErrorMessage from '../error-message';
+import ErrorMessage from '@/components/ui/notifications/error-message';
 import { RoundIconButton } from '../ui/clickable/round-icon-button';
 import IconButton from '../ui/icon-button';
 
