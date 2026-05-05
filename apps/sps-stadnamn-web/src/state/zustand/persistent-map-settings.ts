@@ -38,7 +38,9 @@ export const useMapSettings = create<MapSettings>()(
   persist(
     (set, get) => ({
       baseMap: defaultBaseMap,
-      overlayMaps: [],
+      // Default overlay: "Topografisk noregskart"
+      // Only applied for fresh installs (persisted settings still win).
+      overlayMaps: ['topo'],
       markerMode: 'auto',
       labelCollisionDetectionEnabled: true,
       setBaseMap: (baseMap: string) =>
@@ -157,7 +159,8 @@ export const useMapSettings = create<MapSettings>()(
               .filter((key: any) => overlayLayerKeys.includes(key))
             return Array.from(new Set(allLegacy))
           }
-          return []
+          // Fresh installs (no persisted overlays): enable topo by default.
+          return overlayLayerKeys.includes('topo') ? ['topo'] : []
         })()
 
         // "circles" mode has been removed; normalize old persisted values.
