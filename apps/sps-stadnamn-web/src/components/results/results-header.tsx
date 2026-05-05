@@ -129,16 +129,24 @@ export default function ResultsHeader({ sameCoordinateCount }: { sameCoordinateC
                     )}
 
                     <GroupedResultsToggle />
-                    {showGroupClose && (
+                    {showGroupClose && 
+                        (parentSearchUrl?.current ? (
                         <ClickableIcon
                             label="Overordna søk"
                             href={parentSearchUrl.current || "/search"}
-                            remove={["group", "sourceView"]}
                             className="btn btn-outline rounded-full text-neutral-900 p-2"
                         >
                             <PiArrowElbowLeftUpBold aria-hidden="true" className="text-lg text-neutral-800" />
                         </ClickableIcon>
-                    )}
+                        ) : 
+                        <ClickableIcon
+                            label="Overordna søk"
+                            remove={["group", "sourceView", "init"]}
+                            className="btn btn-outline rounded-full text-neutral-900 p-2"
+                        >
+                            <PiArrowElbowLeftUpBold aria-hidden="true" className="text-lg text-neutral-800" />
+                        </ClickableIcon>
+                        )}
                 </div>
             </div>
 
