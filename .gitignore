@@ -43,6 +43,7 @@ next-env.d.ts
 .DS_Store
 *.pem
 /.vscode
+/.cursor
 
 # debug
 logs
@@ -122,3 +123,4 @@ tsconfig.build.tsbuildinfo
 .cursorignore
 .continueignore
 .continue
+

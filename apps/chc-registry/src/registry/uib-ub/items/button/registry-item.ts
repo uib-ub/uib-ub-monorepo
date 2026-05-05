@@ -3,18 +3,17 @@ import type { Registry } from 'shadcn/schema';
 export const blocks: Registry['items'] = [
   {
     name: 'button',
-    type: 'registry:block',
+    type: 'registry:ui',
     title: 'Button',
     description: 'Button',
     files: [
       {
         path: 'uib-ub/items/button/components/button.tsx',
-        type: 'registry:component',
+        type: 'registry:ui',
       },
     ],
     dependencies: [
-      '@radix-ui/react-slot',
-      'next',
+      '@base-ui/react',
     ],
   },
   {

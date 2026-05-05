@@ -3,7 +3,7 @@ title: IIIF Image
 description: A IIIF image component
 ---
 
-## Preview
+
 
 <Tabs items={['preview', 'code']}>
   <Tab>
@@ -16,55 +16,56 @@ description: A IIIF image component
 
 ## Installation
 
-### CLI
-
-<Tabs items={['npm', 'pnpm']}>
+<Tabs items={['CLI', 'Manual']}>
   <Tab>
-    ```sh
+    <Tabs items={['npm', 'pnpm']}>
+      <Tab>
+        ```sh
 npx shadcn@latest add https://chc-registry.vercel.app/r/iiif-image.json
-    ```
+        ```
+      </Tab>
+      <Tab>
+        ```sh
+pnpm dlx shadcn@latest add https://chc-registry.vercel.app/r/iiif-image.json
+        ```
+      </Tab>
+    </Tabs>
   </Tab>
   <Tab>
-    ```sh 
-pnpm dlx shadcn@latest add https://chc-registry.vercel.app/r/iiif-image.json 
-    ```
-  </Tab>
-</Tabs>
+    <Steps>
 
-### Manual
+    <Step>Install the following dependencies</Step>
 
-<Steps>
-
-<Step>Install the following dependencies</Step>
-
-<Tabs items={['npm', 'pnpm']}>
-  <Tab>
-    ```sh
+    <Tabs items={['npm', 'pnpm']}>
+      <Tab>
+        ```sh
 npm install @samvera/clover-iiif
-    ```
-  </Tab>
-  <Tab>
-    ```sh 
+        ```
+      </Tab>
+      <Tab>
+        ```sh
 pnpm add @samvera/clover-iiif
-    ```
-  </Tab>
-</Tabs>
+        ```
+      </Tab>
+    </Tabs>
 
-<Step>Add a classname utility function</Step>
+    <Step>Add a classname utility function</Step>
 
-```tsx
+    ```tsx
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
 };
-```
+    ```
 
-<Step>Copy and paste the following code into your project</Step>
+    <Step>Copy and paste the following code into your project</Step>
 
-<ComponentSource name='iiif-image' />
+    <ComponentSource name='iiif-image' />
 
-<Step>Update the import paths to match your project setup</Step>
+    <Step>Update the import paths to match your project setup</Step>
 
-</Steps>
+    </Steps>
+  </Tab>
+</Tabs>

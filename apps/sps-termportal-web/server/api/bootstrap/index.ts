@@ -31,7 +31,6 @@ export default defineEventHandler(async (_) => {
       });
     })();
 
-    const queryTermbase = genTermbaseMetaQuery(runtimeConfig.public.base);
     const dataTermbase = esBootstrapData.termbase || (async () => {
       const queryTermbase = genTermbaseMetaQuery(runtimeConfig.public.base);
       return await $fetch(instance.url, {
@@ -63,61 +62,35 @@ export default defineEventHandler(async (_) => {
       });
     });
 
-    await $fetch(instance.url, {
-      method: "post",
-      body: queryTermbase,
-      headers: {
-        "Content-type": "application/sparql-query",
-        "Accept": "application/json",
-        "Authorization": `Basic ${instance.authHeader}`,
-      },
-    }).then((data) => {
-      const tmp = {};
-      data.results.bindings.forEach((entry) => {
-        const tbLabelLst = entry.page.value.split("-3A");
-        const tbLabel = tbLabelLst[tbLabelLst.length - 1];
-        if (!tmp[tbLabel]) {
-          tmp[tbLabel] = {};
+    const dataDomain = esBootstrapData.domain || (async () => {
+      const queryDomain = genDomainQuery(runtimeConfig.public.base);
+      return await $fetch(instance.url, {
+        method: "post",
+        body: queryDomain,
+        headers: {
+          "Content-type": "application/sparql-query",
+          "Accept": "application/ld+json",
+          "Authorization": `Basic ${instance.authHeader}`,
+        },
+      }).then((data) => {
+        return frameData(data, "skos:Concept", true);
+      }).then((data) => {
+        delete data["@context"];
+        return identifyData(data["@graph"]);
+      }).then((data) => {
+        const domainInfo = {};
+        for (const domain of appConfig.domain.topdomains) {
+          domainInfo[domain] = {};
+          domainInfo[domain].subdomains = parseRelationsRecursively(
+            data,
+            domain,
+            "narrower",
+            "subdomains",
+          );
         }
-        tmp[tbLabel].language
-            = entry.languages.value.split(",");
-
-        if (entry?.versionInfo) {
-          const viSplit = entry?.versionInfo.value.split(";;;");
-          tmp[tbLabel].versionEdition = viSplit[0];
-          tmp[tbLabel].versionNotesLink = viSplit[1];
-        }
+        return domainInfo;
       });
-      return tmp;
-    });
-
-    const queryDomain = genDomainQuery(runtimeConfig.public.base);
-    const dataDomain = await $fetch(instance.url, {
-      method: "post",
-      body: queryDomain,
-      headers: {
-        "Content-type": "application/sparql-query",
-        "Accept": "application/ld+json",
-        "Authorization": `Basic ${instance.authHeader}`,
-      },
-    }).then((data) => {
-      return frameData(data, "skos:Concept", true);
-    }).then((data) => {
-      delete data["@context"];
-      return identifyData(data["@graph"]);
-    }).then((data) => {
-      const domainInfo = {};
-      for (const domain of appConfig.domain.topdomains) {
-        domainInfo[domain] = {};
-        domainInfo[domain].subdomains = parseRelationsRecursively(
-          data,
-          domain,
-          "narrower",
-          "subdomains",
-        );
-      }
-      return domainInfo;
-    });
+    })();
 
     const combined = {
       lalo: dataLaLo,
@@ -127,7 +100,6 @@ export default defineEventHandler(async (_) => {
 
     const parsed = BootstrapData.safeParse(combined);
     if (!parsed.success) {
-      console.error("Validation failed:", parsed.error);
       return combined;
     }
     return parsed.data;

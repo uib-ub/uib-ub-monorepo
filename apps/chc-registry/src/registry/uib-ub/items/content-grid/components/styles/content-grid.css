@@ -1,80 +1,87 @@
 @layer components {
   .content-grid {
-    --gap: clamp(1rem, 6vw, 3rem);
+    --gap: clamp(16px, 3vw, 3rem);
     --full: minmax(var(--gap), 1fr);
-    --content: min(55ch, 100% - var(--gap) * 2);
-    --popout: minmax(1rem, 1.5rem);
-    --feature: minmax(0, 10rem);
-
+    --content: min(clamp(40rem, 62cqw, 50rem), 100% - var(--gap) * 2);
+    --popout: minmax(0, 2rem);
+    --feature: minmax(var(--gap), 28ch);
     display: grid;
-    container-name: content-grid;
-    container-type: inline-size;
-    row-gap: 0;
-    width: 100%;
     grid-template-columns:
       [full-start] var(--full)
       [feature-start] var(--feature)
       [popout-start] var(--popout)
       [content-start] var(--content) [content-end]
-      var(--popout) [popout-end]
+      var(--popout) [popout-end] 
       var(--feature) [feature-end]
       var(--full) [full-end];
-
-    * {
-      grid-column: content;
-      margin-block: 0.5rem !important;
+    
+    @container (width < 72rem) {
+      grid-template-columns:
+      [full-start] var(--full)
+      [feature-start] minmax(0, 1fr)
+      [popout-start] var(--popout)
+      [content-start] var(--content) [content-end]
+      var(--popout) [popout-end] 
+      minmax(0, 1fr) [feature-end]
+      var(--full) [full-end];
     }
-    h1, h2, h3, h4, h5, h6 {
-      margin-block: 0.25rem !important;
+
+    > * {
+      grid-column: content;
     }
 
     aside {
+      display: block;
       grid-column: 6/7;
-      font-size: var(--text-base);
-      line-height: var(--leading-snug);
+      font-size: var(--text-sm);
 
-      @container (width < 64rem) {
-        @apply border rounded-md;
+      p {
+        line-height: var(--leading-normal) !important;
+      }
+
+      @container (width < 72rem) {
+        @apply border rounded-md border-neutral-200;
         grid-column: content;
+        width: 100%;
         padding: 0.5rem;
         margin-block: 0.5rem !important;
       }
     }
 
     figure {
-      margin-block: 3.5rem;
+      @apply fl-mb-14! fl-mt-10!;
+      display: grid;
+      grid-template-columns: subgrid;
       
-      @container (width < 64rem) {
-        display: flex;
-        flex-direction: column;
-        grid-column: feature;
-      }
-      
-      @container (width >= 64rem) {
-        display: grid;
-        grid-template-rows: 1fr;
-        grid-column: feature;
-        grid-template-columns: subgrid;
-      }
-
       img, picture, .iiif-image-wrapper, .content {
         display: grid;
         grid-column: feature-start / content-end;
         grid-template-columns: subgrid;
+        
+        @container (width < 72rem) {
+          display: grid;
+          grid-template-rows: 1fr;
+          grid-column: feature;
+        }
       }
       
-      figcaption {
-        grid-column: 5/6;
+      figcaption{
+        grid-column: popout-end / feature-end;
         overflow-y: auto;
         margin-top: 0 !important;
         font-size: var(--text-sm);
         line-height: var(--leading-snug);
-
-        @container (width < 64rem) {
+        
+        /* @container (width < 72rem) {
           margin-top: 0.5rem !important;
+        } */
+        @container (width < 72rem) {
+          grid-column: feature;
+          p { @apply mt-3! mb-0!; }
         }
       }
     }
+
     .feature {
       grid-column: feature;
       grid-template-columns: subgrid;
@@ -83,5 +90,11 @@
       grid-column: full;
       grid-template-columns: subgrid;
     }
+    .popout {
+      grid-column: popout;
+      grid-template-columns: subgrid;
+    }
+
+    
   }
 }

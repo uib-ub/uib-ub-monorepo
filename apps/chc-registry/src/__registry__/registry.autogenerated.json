@@ -4,28 +4,89 @@
   "homepage": "https://chc-registry.vercel.app",
   "items": [
     {
-      "name": "button",
-      "type": "registry:block",
-      "title": "Button",
-      "description": "Button",
+      "name": "theme",
+      "title": "Theme",
+      "description": "Theme",
+      "files": [
+        {
+          "path": "src/registry/uib-ub/items/theme/components/styles/uib-theme.css",
+          "type": "registry:style"
+        },
+        {
+          "path": "src/registry/uib-ub/items/theme/components/styles/ub-prose.css",
+          "type": "registry:style"
+        },
+        {
+          "path": "src/registry/uib-ub/items/theme/components/styles/palette-red.css",
+          "type": "registry:style"
+        }
+      ],
+      "css": {
+        "@import \"tailwindcss\"": {},
+        "@import \"./styles/uib-theme.css\"": {},
+        "@import \"./styles/ub-prose.css\"": {},
+        "@import \"./styles/palette-red.css\"": {}
+      },
+      "type": "registry:component"
+    },
+    {
+      "name": "iiif-viewer",
+      "title": "IIIF Viewer",
+      "description": "IIIF Viewer",
       "dependencies": [
-        "@radix-ui/react-slot",
+        "@samvera/clover-iiif",
+        "next"
+      ],
+      "registryDependencies": [
+        "skeleton"
+      ],
+      "files": [
+        {
+          "path": "src/registry/uib-ub/items/iiif-viewer/components/iiif-viewer.tsx",
+          "type": "registry:component",
+          "target": "components/ui/chc/iiif-viewer.tsx"
+        }
+      ],
+      "type": "registry:block"
+    },
+    {
+      "name": "iiif-image",
+      "title": "IIIF Image",
+      "description": "IIIF Image",
+      "dependencies": [
+        "@samvera/clover-iiif",
         "next"
       ],
       "files": [
         {
-          "path": "src/registry/uib-ub/items/button/components/button.tsx",
-          "type": "registry:component"
+          "path": "src/registry/uib-ub/items/iiif-image/components/iiif-image.tsx",
+          "type": "registry:component",
+          "target": "components/ui/chc/iiif-image.tsx"
         }
-      ]
+      ],
+      "type": "registry:block"
+    },
+    {
+      "name": "hero-card",
+      "title": "Hero Card",
+      "description": "Hero Card",
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "files": [
+        {
+          "path": "src/registry/uib-ub/items/hero-card/components/hero-card.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "type": "registry:ui"
     },
     {
       "name": "content-grid",
-      "type": "registry:block",
       "title": "Content Grid",
       "description": "Content Grid",
       "dependencies": [
-        "@radix-ui/react-slot",
+        "radix-ui",
         "next"
       ],
       "files": [
@@ -41,44 +102,50 @@
       ],
       "css": {
         "@import \"../components/styles/content-grid.css\"": {}
-      }
+      },
+      "type": "registry:block"
     },
     {
-      "name": "iiif-image",
-      "type": "registry:block",
-      "title": "IIIF Image",
-      "description": "IIIF Image",
+      "name": "card",
+      "title": "Card",
+      "description": "Card",
+      "files": [
+        {
+          "path": "src/registry/uib-ub/items/card/components/card.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "type": "registry:ui"
+    },
+    {
+      "name": "button",
+      "title": "Button",
+      "description": "Button",
       "dependencies": [
-        "@samvera/clover-iiif",
-        "next"
+        "@base-ui/react"
       ],
       "files": [
         {
-          "path": "src/registry/uib-ub/items/iiif-image/components/iiif-image.tsx",
-          "type": "registry:component",
-          "target": "components/ui/chc/iiif-image.tsx"
+          "path": "src/registry/uib-ub/items/button/components/button.tsx",
+          "type": "registry:ui"
         }
-      ]
+      ],
+      "type": "registry:ui"
     },
     {
-      "name": "iiif-manifest",
-      "type": "registry:block",
-      "title": "IIIF Manifest",
-      "description": "IIIF Manifest",
+      "name": "accordion",
+      "title": "Accordion",
+      "description": "Accordion",
       "dependencies": [
-        "@samvera/clover-iiif",
-        "next"
-      ],
-      "registryDependencies": [
-        "skeleton"
+        "@base-ui/react"
       ],
       "files": [
         {
-          "path": "src/registry/uib-ub/items/iiif-manifest/components/iiif-manifest.tsx",
-          "type": "registry:component",
-          "target": "components/ui/chc/iiif-manifest.tsx"
+          "path": "src/registry/uib-ub/items/accordion/components/accordion.tsx",
+          "type": "registry:ui"
         }
-      ]
+      ],
+      "type": "registry:ui"
     }
   ]
 }

@@ -1,4 +1,5 @@
-import * as z from "zod";
+// import * as z from "zod";
+import { z } from "zod";
 
 const appConfig = useAppConfig();
 
@@ -26,14 +27,17 @@ export const LicensePageId = z.literal(
   Object.keys(appConfig.license) as Array<keyof typeof appConfig.license>,
 );
 
-const DomainSchema: z.ZodType<Record<string, string | null>> = z.lazy(() =>
-  z.record(z.string(), z.object({
-    subdomains: z.union([
-      z.null(),
-      z.lazy(() => DomainSchema),
-    ]),
-  })),
+type Domain = {
+  subdomains: Record<string, Domain> | null;
+};
+
+const DomainSchema: z.ZodType<Domain> = z.lazy(() =>
+  z.object({
+    subdomains: z.record(z.string(), DomainSchema).nullable(),
+  }),
 );
+
+const DomainsSchema = z.record(z.string(), DomainSchema);
 
 export const BootstrapData = z.object({
   lalo: z.object({
@@ -47,9 +51,9 @@ export const BootstrapData = z.object({
       language: z.array(LangCode),
       versionEdition: z.string().optional(),
       versionNotesLink: z.string().optional(),
-      concepts: z.string().optional()
+      concepts: z.string().optional(),
     })),
-  domain: DomainSchema,
+  domain: DomainsSchema,
 });
 
 export const Termbase = z.object({
