@@ -52,7 +52,7 @@ export default function MapSettings() {
     { key: 'auto', label: 'Automatisk' },
     { key: 'counts', label: 'Klynger' },
     { key: 'labels', label: 'Etikettar' },
-    { key: 'points', label: 'Punkter' },
+    { key: 'points', label: 'Punkt' },
   ];
   const orderedBaseLayerMaps = useMemo(() => {
     const defaultKey = defaultBaseMap || baseLayerMaps[0]?.key;
@@ -243,10 +243,10 @@ export default function MapSettings() {
                   type="checkbox"
                   checked={showSmallMarkersEnabled}
                   onChange={(e) => setShowSmallMarkersEnabled(e.target.checked)}
-                  aria-label="Vis små markørar"
+                  aria-label="Vis små punktmarkørar"
                   className="h-4 w-4 accent-accent-800"
                 />
-                <span className="leading-none">Vis små markørar</span>
+                <span className="leading-none">Vis små punktmarkørar</span>
               </label>
 
               <label className="inline-flex items-center gap-2 text-sm text-neutral-700 cursor-pointer select-none">
