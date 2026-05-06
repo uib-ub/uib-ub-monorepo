@@ -90,6 +90,7 @@ export default function MapExplorer() {
     initializeSettings,
   } = useMapSettings()
   const searchParams = useSearchParams()
+  const overlayPreviewKey = useSessionStore((s) => s.overlayPreviewKey)
   const { searchQueryString, searchFilterParamsString } = useSearchQuery()
   const urlZoom = useZoomNumber()
   const urlCenter = useCenterNumber()
@@ -1181,9 +1182,19 @@ export default function MapExplorer() {
                 {...baseMapLookup[baseMap].props}
               />
             )}
-            {(overlayMaps || []).map((overlayKey) => {
+            {(() => {
+              const selected = overlayMaps || []
+              const previewKey =
+                overlayPreviewKey && !selected.includes(overlayPreviewKey) ? overlayPreviewKey : null
+              const keysToRender = previewKey ? [...selected, previewKey] : selected
+
+              return keysToRender.map((overlayKey) => {
               const overlayMap = baseMapLookup[overlayKey]
               if (!overlayMap) return null
+              const isPreview = overlayKey === previewKey
+              const overlayOpacity = overlayMap.opacity ?? 1
+              const opacity = isPreview ? Math.min(overlayOpacity, 0.65) : overlayOpacity
+              const zIndex = isPreview ? 250 : 200
               if (overlayMap.wms) {
                 return (
                   <WMSTileLayer
@@ -1194,8 +1205,8 @@ export default function MapExplorer() {
                     format={overlayMap.wms.format ?? 'image/png'}
                     transparent={overlayMap.wms.transparent ?? true}
                     version={overlayMap.wms.version ?? '1.3.0'}
-                    opacity={overlayMap.opacity ?? 1}
-                    zIndex={200}
+                    opacity={opacity}
+                    zIndex={zIndex}
                   />
                 )
               }
@@ -1204,12 +1215,13 @@ export default function MapExplorer() {
                   key={`overlay-${overlayKey}`}
                   maxZoom={18}
                   maxNativeZoom={18}
-                  opacity={overlayMap.opacity ?? 1}
-                  zIndex={200}
+                  opacity={opacity}
+                  zIndex={zIndex}
                   {...overlayMap.props}
                 />
               )
-            })}
+            })
+            })()}
 
 
             {/* Draw geotile query results */}

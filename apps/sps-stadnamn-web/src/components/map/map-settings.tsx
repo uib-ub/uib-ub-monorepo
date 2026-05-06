@@ -7,9 +7,9 @@ import Clickable from "@/components/ui/clickable/clickable";
 import IconButton from "@/components/ui/icon-button";
 import dynamic from "next/dynamic";
 import { useDebugStore } from "@/state/zustand/debug-store";
-import { useContext, useEffect, useMemo, useState } from "react";
-import { PiCaretDownBold, PiCaretRightBold, PiCaretUpBold, PiInfoFill, PiMagnifyingGlass, PiPlusBold, PiX } from "react-icons/pi";
-import { useSearchParams } from "next/navigation";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { PiCaretDownBold, PiCaretUpBold, PiInfoFill, PiMagnifyingGlass, PiX } from "react-icons/pi";
+// (no next/navigation hooks needed here)
 import { GlobalContext } from "@/state/providers/global-provider";
 import ClickableIcon from "../ui/clickable/clickable-icon";
 import { useSessionStore } from "@/state/zustand/session-store";
@@ -37,12 +37,12 @@ export default function MapSettings() {
     setShowOverlappingTextEnabled,
     setOverlayReorderButtonsEnabled
   } = useMapSettings();
-  const searchParams = useSearchParams();
   const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
   const addNotification = useNotificationStore((s) => s.addNotification);
   const removeNotification = useNotificationStore((s) => s.removeNotification);
   const debug = useDebugStore((s) => s.debug);
   const [overlaySearch, setOverlaySearch] = useState('');
+  const [expandedOverlayKey, setExpandedOverlayKey] = useState<string | null>(null);
   const overlaySelectorOn = useOverlaySelectorOn();
   const { mapFunctionRef } = useContext(GlobalContext);
 
@@ -74,14 +74,28 @@ export default function MapSettings() {
     return availableOverlays.filter((item) => item.name.toLowerCase().includes(query));
   }, [overlaySearch, availableOverlays]);
   const overlayMetaByKey = useMemo(() => {
-    return overlayLayerMaps.reduce<Record<string, { name: string; provider?: string; info?: string }>>(
+    return overlayLayerMaps.reduce<Record<string, { name: string; provider?: string; description?: string; info?: string }>>(
       (acc, item) => {
-        acc[item.key] = { name: item.name, provider: item.provider, info: item.info };
+        acc[item.key] = {
+          name: item.name,
+          provider: item.provider,
+          description: item.description,
+          info: item.info
+        };
         return acc;
       },
       {}
     );
   }, []);
+  const getAttributionText = (attribution?: string) => {
+    if (!attribution) return "";
+    return attribution
+      .replace(/<[^>]*>/g, " ")
+      .replace(/&copy;/gi, "©")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  };
 
   useEffect(() => {
     if (selectedOverlays.length > 2) {
@@ -97,6 +111,20 @@ export default function MapSettings() {
 
     return () => removeNotification("overlay-performance-warning");
   }, [addNotification, removeNotification, selectedOverlays.length]);
+
+  const setOverlayPreviewKey = useSessionStore((s) => s.setOverlayPreviewKey);
+
+
+  const prevOverlaySelectorOnRef = useRef<boolean>(overlaySelectorOn);
+  useEffect(() => {
+    const prev = prevOverlaySelectorOnRef.current;
+    prevOverlaySelectorOnRef.current = overlaySelectorOn;
+
+    if (prev && !overlaySelectorOn) {
+      setOverlayPreviewKey(null);
+      setExpandedOverlayKey(null);
+    }
+  }, [overlaySelectorOn, setOverlayPreviewKey]);
 
   if (overlaySelectorOn) {
     return (
@@ -120,79 +148,117 @@ export default function MapSettings() {
                 <legend className="sr-only">Legg til overlegg</legend>
                 <ul className="flex flex-col divide-y divide-neutral-200 border border-neutral-200 rounded-md overflow-hidden">
                   {filteredOverlays.map((item) => {
+                    const isExpanded = expandedOverlayKey === item.key;
+                    const panelId = `overlay-panel-${item.key}`;
                     return (
                       <li
                         key={item.key}
-                        className="w-full px-3 py-2 flex justify-between items-center gap-2 bg-white"
+                        className="w-full bg-white relative"
                       >
-                        <div className="min-w-0 flex-1 flex items-start gap-2">
+                        <button
+                          type="button"
+                          className="w-full px-3 py-2 text-left flex items-center justify-between gap-2"
+                          aria-expanded={isExpanded}
+                          aria-controls={panelId}
+                          onClick={() => {
+                            if (isExpanded) {
+                              setExpandedOverlayKey(null);
+                              setOverlayPreviewKey(null);
+                            } else {
+                              setExpandedOverlayKey(item.key);
+                              setOverlayPreviewKey(item.key);
+                            }
+                          }}
+                        >
                           <span id={`overlay-label-${item.key}`} className="min-w-0 flex-1">
-                            <span className="flex items-center gap-1">
-                              <span className="block truncate text-neutral-900">{item.name}</span>
-                              {item.info && (
-                                <Link
-                                  href={item.info}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  aria-label={`Opne informasjon om ${item.name}`}
-                                  className="shrink-0 text-neutral-700 hover:text-neutral-900"
-                                >
-                                  <PiInfoFill className="inline text-base" aria-hidden="true" />
-                                </Link>
-                              )}
-                            </span>
+                            <span className="block truncate text-neutral-900">{item.name}</span>
                             {item.provider && (
                               <span className="block text-xs text-neutral-700 truncate">
                                 {item.provider}
                               </span>
                             )}
                           </span>
-                        </div>
-                        <Clickable
-                          aria-label={`Legg til overlegg ${item.name}`}
-                          remove={['overlaySelector']}
-                          className="btn btn-outline btn-sm whitespace-nowrap inline-flex items-center ml-2 flex-shrink-0 hover:bg-neutral-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-500"
-                          onClick={() => {
-                            addOverlayMap(item.key);
-                            setOverlaySearch('');
+                          <span className="shrink-0 text-neutral-800">
+                            {isExpanded ? (
+                              <PiCaretUpBold className="w-4 h-4" aria-hidden="true" />
+                            ) : (
+                              <PiCaretDownBold className="w-4 h-4" aria-hidden="true" />
+                            )}
+                          </span>
+                        </button>
 
-                            const map = mapFunctionRef?.current;
-                            const bounds = item.bounds;
-                            // set drawer position to middle
-                            setSnappedPosition('middle');
+                        {isExpanded && (
+                          <div id={panelId} className="px-3 pb-3 text-base text-neutral-900">
+                            {item.description ? (
+                              <div className="text-neutral-900">{item.description}</div>
+                            ) : null}
+                            {item.info ? (
+                              <div className={item.description ? "mt-2" : ""}>
+                                <Link
+                                  href={item.info}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  {getAttributionText(item.props.attribution)}
+                                </Link>
+                              </div>
+                            ) : (
+                              <div className="text-neutral-900">
+                                {getAttributionText(item.props.attribution)}
+                              </div>
+                            )}
 
-                            if (map && bounds) {
-                              try {
-                                const center = map.getCenter?.();
-                                const [[north, west], [south, east]] = bounds;
+                            <div className="mt-3 flex items-center justify-end gap-2">
+                              <Clickable
+                                aria-label={`Legg til overlegg ${item.name}`}
+                                remove={['overlaySelector']}
+                                className="btn btn-secondary btn-sm whitespace-nowrap inline-flex items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-500"
+                                onClick={() => {
+                                  addOverlayMap(item.key);
+                                  setOverlaySearch('');
+                                  setExpandedOverlayKey(null);
+                                  setOverlayPreviewKey(null);
 
-                                let isInside = false;
-                                if (center && typeof center.lat === 'number' && typeof center.lng === 'number') {
-                                  const { lat, lng } = center;
-                                  isInside =
-                                    lat <= north &&
-                                    lat >= south &&
-                                    lng >= west &&
-                                    lng <= east;
-                                }
+                                  const map = mapFunctionRef?.current;
+                                  const bounds = item.bounds;
+                                  // set drawer position to middle
+                                  setSnappedPosition('middle');
 
-                                if (!isInside) {
-                                  map.fitBounds(
-                                    [
-                                      [north, west],
-                                      [south, east]
-                                    ],
-                                    { maxZoom: 8, duration: 0.25 }
-                                  );
-                                }
-                              } catch (error) {
-                                console.warn('Failed to adjust map to overlay bounds', error);
-                              }
-                            }
-                          }}
-                        >
-                          <span className="ml-1 text-sm">Legg til</span>
-                        </Clickable>
+                                  if (map && bounds) {
+                                    try {
+                                      const center = map.getCenter?.();
+                                      const [[north, west], [south, east]] = bounds;
+
+                                      let isInside = false;
+                                      if (center && typeof center.lat === 'number' && typeof center.lng === 'number') {
+                                        const { lat, lng } = center;
+                                        isInside =
+                                          lat <= north &&
+                                          lat >= south &&
+                                          lng >= west &&
+                                          lng <= east;
+                                      }
+
+                                      if (!isInside) {
+                                        map.fitBounds(
+                                          [
+                                            [north, west],
+                                            [south, east]
+                                          ],
+                                          { maxZoom: 8, duration: 0.25 }
+                                        );
+                                      }
+                                    } catch (error) {
+                                      console.warn('Failed to adjust map to overlay bounds', error);
+                                    }
+                                  }
+                                }}
+                              >
+                                <span className="text-sm">Legg til</span>
+                              </Clickable>
+                            </div>
+                          </div>
+                        )}
                       </li>
                     );
                   })}
