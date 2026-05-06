@@ -72,7 +72,7 @@ export const datasetTitles: DatasetTitles = {
   seta: "Seternamnarkivet",
   osm: "OpenStreetMap 2019",
   wikidata: "Wikidata",
-  etym: "Etymologiregisteret"
+  //etym: "Etymologiregisteret"
 }
 
 export const datasetDescriptions: Record<string, string> = {
