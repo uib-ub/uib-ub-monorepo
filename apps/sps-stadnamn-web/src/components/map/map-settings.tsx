@@ -26,6 +26,7 @@ export default function MapSettings() {
     markerMode,
     showSmallMarkersEnabled,
     showOverlappingTextEnabled,
+    overlayReorderButtonsEnabled,
     setBaseMap,
     addOverlayMap,
     removeOverlayMap,
@@ -33,7 +34,8 @@ export default function MapSettings() {
     clearOverlayMaps,
     setMarkerMode,
     setShowSmallMarkersEnabled,
-    setShowOverlappingTextEnabled
+    setShowOverlappingTextEnabled,
+    setOverlayReorderButtonsEnabled
   } = useMapSettings();
   const searchParams = useSearchParams();
   const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition);
@@ -98,16 +100,15 @@ export default function MapSettings() {
 
   if (overlaySelectorOn) {
     return (
-        <section className="flex flex-col gap-8 pb-4 xl:px-2">
+        <section className="flex flex-col gap-8 pb-4 xl:px-2 pt-2">
           <fieldset className="border-0 p-0 m-0">
             <legend className="sr-only">Kartlag</legend>
             <div className="px-2 py-1 flex flex-col gap-3">
               <div className="w-full h-10 relative">
                 <input
-                  aria-label="Søk i overlegg som kan leggjast til"
+                  aria-label="Søk i overlegg"
                   value={overlaySearch}
                   onChange={(e) => setOverlaySearch(e.target.value)}
-                  placeholder="Søk i overlegg"
                   className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2"
                 />
                 <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
@@ -296,22 +297,13 @@ export default function MapSettings() {
 
       <section>
         <fieldset className="border-0 p-0 m-0">
-          <div className="flex gap-3 items-center">
-          <legend className="text-lg text-neutral-800 p-3 w-full justify-between">Andre kartlag</legend>
-          <div className="flex gap-2 px-2">
-          {selectedOverlays.length > 0 && <Clickable onClick={() => clearOverlayMaps()} className="btn btn-outline btn-sm whitespace-nowrap inline-flex items-center">
-            Nullstill
-          </Clickable>}
-          <Clickable
-                link
-                add={{ overlaySelector: "on" }}
-                className="btn btn-outline btn-sm whitespace-nowrap inline-flex items-center"
-              >
-                Legg til
-          </Clickable>
-          </div>
-          </div>
-          <div className="px-2 py-1 flex flex-col gap-3">
+          {selectedOverlays.length > 0 && (
+            <legend className="text-lg text-neutral-800 px-4 pt-3 pb-1">
+              Andre kartlag
+            </legend>
+          )}
+
+          <div className="px-4 pb-3 flex flex-col gap-3">
             {selectedOverlays.length > 0 && (
               <fieldset>
                 <legend className="sr-only">Aktive kartlag</legend>
@@ -321,24 +313,26 @@ export default function MapSettings() {
                     const title = meta?.name || overlayKey;
                     return (
                       <li key={overlayKey} className="p-2 flex items-start gap-3">
-                        <div className="flex flex-col gap-1">
-                          <IconButton
-                            label="Flytt kartlag opp"
-                            className="text-sm aspect-square btn btn-outline btn-sm p-1 h-6 w-6 min-h-0"
-                            onClick={() => moveOverlayMap(index, index - 1)}
-                            disabled={index === 0}
-                          >
-                            <PiCaretUpBold />
-                          </IconButton>
-                          <IconButton
-                            label="Flytt kartlag ned"
-                            className="text-sm aspect-square btn btn-outline btn-sm p-1 h-6 w-6 min-h-0"
-                            onClick={() => moveOverlayMap(index, index + 1)}
-                            disabled={index === selectedOverlays.length - 1}
-                          >
-                            <PiCaretDownBold />
-                          </IconButton>
-                        </div>
+                        {overlayReorderButtonsEnabled ? (
+                          <div className="flex flex-col gap-1">
+                            <IconButton
+                              label="Flytt kartlag opp"
+                              className="text-sm aspect-square btn btn-outline btn-sm p-1 h-6 w-6 min-h-0"
+                              onClick={() => moveOverlayMap(index, index - 1)}
+                              disabled={index === 0}
+                            >
+                              <PiCaretUpBold />
+                            </IconButton>
+                            <IconButton
+                              label="Flytt kartlag ned"
+                              className="text-sm aspect-square btn btn-outline btn-sm p-1 h-6 w-6 min-h-0"
+                              onClick={() => moveOverlayMap(index, index + 1)}
+                              disabled={index === selectedOverlays.length - 1}
+                            >
+                              <PiCaretDownBold />
+                            </IconButton>
+                          </div>
+                        ) : null}
                         <span className="min-w-0 flex-1">
                           <span className="flex items-center gap-1">
                             <span className="block truncate">{title}</span>
@@ -375,6 +369,33 @@ export default function MapSettings() {
                 </ul>
               </fieldset>
             )}
+
+            <div className="flex flex-wrap gap-3 items-center justify-end">
+              {selectedOverlays.length > 1 && (
+                <label className="inline-flex items-center gap-2 text-sm text-neutral-700 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={overlayReorderButtonsEnabled}
+                    onChange={(e) => setOverlayReorderButtonsEnabled(e.target.checked)}
+                    aria-label="Endre rekkjefølge"
+                    className="h-4 w-4 accent-accent-800"
+                  />
+                  <span className="leading-none whitespace-nowrap">Endre rekkjefølge</span>
+                </label>
+              )}
+              {selectedOverlays.length > 0 && (
+                <Clickable onClick={() => clearOverlayMaps()} className="btn btn-outline btn-sm whitespace-nowrap inline-flex items-center">
+                  Fjern alle
+                </Clickable>
+              )}
+              <Clickable
+                link
+                add={{ overlaySelector: "on" }}
+                className="btn btn-neutral btn-sm whitespace-nowrap inline-flex items-center"
+              >
+                Legg til fleire kartlag
+              </Clickable>
+            </div>
           </div>
         </fieldset>
       </section>

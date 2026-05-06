@@ -24,6 +24,7 @@ type MapSettings = {
   markerMode: string
   showSmallMarkersEnabled: boolean
   showOverlappingTextEnabled: boolean
+  overlayReorderButtonsEnabled: boolean
   setBaseMap: (baseMap: string) => void
   addOverlayMap: (mapKey: string) => void
   removeOverlayMap: (mapKey: string) => void
@@ -33,6 +34,7 @@ type MapSettings = {
   setMarkerMode: (mode: string) => void
   setShowSmallMarkersEnabled: (enabled: boolean) => void
   setShowOverlappingTextEnabled: (enabled: boolean) => void
+  setOverlayReorderButtonsEnabled: (enabled: boolean) => void
   initializeSettings: () => void
 }
 
@@ -46,6 +48,7 @@ export const useMapSettings = create<MapSettings>()(
       markerMode: 'auto',
       showSmallMarkersEnabled: false,
       showOverlappingTextEnabled: false,
+      overlayReorderButtonsEnabled: true,
       setBaseMap: (baseMap: string) =>
         set(() => ({
           baseMap
@@ -93,6 +96,7 @@ export const useMapSettings = create<MapSettings>()(
       setMarkerMode: (mode: string) => set({ markerMode: mode }),
       setShowSmallMarkersEnabled: (enabled: boolean) => set({ showSmallMarkersEnabled: enabled }),
       setShowOverlappingTextEnabled: (enabled: boolean) => set({ showOverlappingTextEnabled: enabled }),
+      setOverlayReorderButtonsEnabled: (enabled: boolean) => set({ overlayReorderButtonsEnabled: enabled }),
       initializeSettings: () => {
         const state = get()
         const normalizedBaseMap = normalizeBaseMapKey(state.baseMap)
@@ -116,7 +120,7 @@ export const useMapSettings = create<MapSettings>()(
     }),
     {
       name: MAP_SETTINGS_STORAGE_KEY,
-      version: 10,
+      version: 11,
       onRehydrateStorage: () => {
         if (typeof window !== 'undefined') {
           window.localStorage.removeItem(LEGACY_MAP_SETTINGS_STORAGE_KEY)
@@ -180,6 +184,7 @@ export const useMapSettings = create<MapSettings>()(
               persistedState.showManyOverlappingMarkersEnabled ??
               persistedState.smallStadnamnLabelsEnabled ??
               false,
+            overlayReorderButtonsEnabled: persistedState.overlayReorderButtonsEnabled ?? true,
           }
         }
         return {
@@ -192,6 +197,7 @@ export const useMapSettings = create<MapSettings>()(
             persistedState.showManyOverlappingMarkersEnabled ??
             persistedState.smallStadnamnLabelsEnabled ??
             false,
+          overlayReorderButtonsEnabled: persistedState.overlayReorderButtonsEnabled ?? true,
         }
       }
     }
