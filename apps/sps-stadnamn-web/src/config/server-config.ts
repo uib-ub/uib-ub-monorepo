@@ -233,6 +233,12 @@ export const contentSettings: Record<string, ContentSettingsItem> = {
     adm: 2,
     cadastre: false,
     sort: ["_score", "label.keyword"]
+  },
+  etym: {
+    display: 'table',
+    adm: 3,
+    cadastre: false,
+    sort: ["_score", "label.keyword"]
   }
 
 

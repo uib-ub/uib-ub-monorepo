@@ -52,6 +52,10 @@ export const useSessionStore = create<{
 	initGroupPoint: [number, number] | null,
 	setInitGroupLabel: (label: string | null, point: [number, number] | null) => void,
 
+	// Temporary, non-persisted overlay preview (used by map settings overlay selector).
+	overlayPreviewKey: string | null,
+	setOverlayPreviewKey: (key: string | null) => void,
+
 }>()((set) => ({
 	menuOpen: false,
 	setMenuOpen: (open) => set({ menuOpen: open }),
@@ -90,6 +94,9 @@ export const useSessionStore = create<{
 	initGroupPoint: null,
 	setInitGroupLabel: (label: string | null, point: [number, number] | null) =>
 		set({ initGroupLabel: label, initGroupPoint: point }),
+
+	overlayPreviewKey: null,
+	setOverlayPreviewKey: (key: string | null) => set({ overlayPreviewKey: key }),
 
 	autocompleteActiveIndex: -1,
 	setAutocompleteActiveIndex: (index: number) => set({ autocompleteActiveIndex: index }),

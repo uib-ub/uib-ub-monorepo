@@ -71,7 +71,8 @@ export const datasetTitles: DatasetTitles = {
   herad: "Heradsregisteret",
   seta: "Seternamnarkivet",
   osm: "OpenStreetMap 2019",
-  wikidata: "Wikidata"
+  wikidata: "Wikidata",
+  etym: "Etymologiregisteret"
 }
 
 export const datasetDescriptions: Record<string, string> = {
@@ -103,7 +104,8 @@ export const datasetDescriptions: Record<string, string> = {
   kven: "Datasettet kvenske stadnamn dokumenterer namnetradisjonar i Troms og Finnmark som vitnar om fleire hundre års busetjing og kulturell tilhøyrsle. Kvensk stadnamnteneste – Paikannimipalvelus redigerer og oppdaterer databasen som del av Språkrådet si stadnamnteneste. Områda med kvenske stadnamn har ofte fleirspråkleg namnebruk med kvenske, samiske og norske namn. Datasettet inneheld nærmare 8500 namneartiklar. Viktige kjelder er Sentralt stadnamnregister (SSR) med 4–5000 kvenske namn og ca. 12 400 namnesedlar samla inn av finske forskarar mellom 1970–1990, oppbevarte i Namnarkivet i Helsingfors med kopiar ved Universitetet i Tromsø og Kvensk stadnamnteneste.",
   snor: "Eit landsdekkjande datasett knytt til tilskotsordninga for innsamling og registrering av stadnamn. Databasen inneheld om lag 170 000 norske, samiske og kvenske stadnamn, og vart oppretta for å ta vare på og registrere stadnamn som elles ville gå tapt. Per 2025 inneheld basen namn frå 158 kommunar, der meir enn 95 kommunar har over 50 registrerte namn kvar. Alle innsamlings- og registreringsprosjekt som får støtte gjennom tilskotsordninga, må leggje inn stadnamna i denne databasen.",
   herad: "Heradsregisteret er ei omfattande samling i Norsk stadnamnarkiv som inneheld om lag 400 000 stadnamn frå heile Noreg. Kvar oppslag i registeret inneheld informasjon om namnet, uttalen, administrativ tilhøyrsle og kartreferansar. Tilleggsinformasjon om namnet eller lokaliteten er vanleg. Samlinga var grunnstamma i \"Den nasjonale stadnamnbasen\" og bidreg med unik dokumentasjon av norske stadnamn.",
-  seta: "Seternamnarkivet er ei omfattande samling som inneheld 50 000 namn på setrar. Samlinga var opphavleg organisert i to seddelsamlingar — ei ordna etter herad og ei for heile landet. Registeret vart skanna i samband med Dokumentasjonsprosjektet og inngjekk i skanna versjon som del av \"Den nasjonale stadnamnbasen\"."
+  seta: "Seternamnarkivet er ei omfattande samling som inneheld 50 000 namn på setrar. Samlinga var opphavleg organisert i to seddelsamlingar — ei ordna etter herad og ei for heile landet. Registeret vart skanna i samband med Dokumentasjonsprosjektet og inngjekk i skanna versjon som del av \"Den nasjonale stadnamnbasen\".",
+  etym: ""
 }
 
 export const datasetShortDescriptions: Record<string, string> = {
@@ -135,7 +137,9 @@ export const datasetShortDescriptions: Record<string, string> = {
   kven: "Kvenske stadnamn frå Troms og Finnmark, med nær 8 500 namneartiklar frå SSR og finske forskarar, og fleirspråkleg namnebruk.",
   snor: "Datasettet knytt til tilskotsordninga for innsamling og registrering av stadnamn. Databasen inneheld om lag 170 000 norske, samiske og kvenske stadnamn, og vart oppretta for å ta vare på namn som elles ville gå tapt.",
   herad: "Heradsregisteret er ein del av Norsk stadnamnarkiv, og var grunnstamma i \"Den nasjonale stadnamnbasen\" utvikla ved UiO.",
-  seta: "Seternamnarkivet inneheld 50 000 namn på setrar frå heile landet, digitalisert frå to historiske seddelsamlingar."
+  seta: "Seternamnarkivet inneheld 50 000 namn på setrar frå heile landet, digitalisert frå to historiske seddelsamlingar.",
+  etym: ""
+
 }
 
 
@@ -168,7 +172,8 @@ export const publishDates: Record<string, string> = {
   kven: "2025-04-24",
   snor: "2025-04-25",
   herad: "2025-04-25",
-  seta: "2025-04-25"
+  seta: "2025-04-25",
+  etym: "2026-05-05"
 }
 
 
@@ -378,6 +383,13 @@ export const datasetPresentation: DatasetPresentation = {
     attribution: "Språkrådet og Språksamlingane",
     license: licenses.ccby4,
   },
+  etym: {
+    img: "/datasets/etym.png",
+    alt: "Etymologiregisteret",
+    imageAttribution: "",
+    attribution: "Språksamlingane",
+    license: licenses.ccby4,
+  },
   herad: {
     img: "/datasets/Akersdalen_(1949).jpg",
     alt: "Akersdalen (seinare kalla Groruddalen), omtrent på den tida Aker vart innlemma i Oslo.",
@@ -479,6 +491,7 @@ export const datasetTypes: Record<string, string[]> = {
   frogn: ["collection"],
   kven: ["database", "collection"],
   snor: ["database", "collection"],
+  etym: ["database"],
 }
 
 // Workaround to include grunnord in Stadnamngransking-filter

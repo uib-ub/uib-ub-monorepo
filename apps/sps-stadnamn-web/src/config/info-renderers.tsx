@@ -236,6 +236,11 @@ export const infoPageRenderers: Record<string, null | ((source: any) => ReactEle
     return <>
       <LegacyChildren source={source} />
     </>
+  },
+  etym: (source: any) => {
+    return <>
+      {source.rawData.KOMMENTAR && <><strong className="text-neutral-900">Kommentar: </strong>{source.rawData.KOMMENTAR}</>}
+    </>
   }
 
 }

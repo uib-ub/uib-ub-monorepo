@@ -22,7 +22,9 @@ type MapSettings = {
   baseMap: string
   overlayMaps: string[]
   markerMode: string
-  labelCollisionDetectionEnabled: boolean
+  showSmallMarkersEnabled: boolean
+  showOverlappingTextEnabled: boolean
+  overlayReorderButtonsEnabled: boolean
   setBaseMap: (baseMap: string) => void
   addOverlayMap: (mapKey: string) => void
   removeOverlayMap: (mapKey: string) => void
@@ -30,7 +32,9 @@ type MapSettings = {
   toggleOverlayMap: (mapKey: string) => void
   clearOverlayMaps: () => void
   setMarkerMode: (mode: string) => void
-  setLabelCollisionDetectionEnabled: (enabled: boolean) => void
+  setShowSmallMarkersEnabled: (enabled: boolean) => void
+  setShowOverlappingTextEnabled: (enabled: boolean) => void
+  setOverlayReorderButtonsEnabled: (enabled: boolean) => void
   initializeSettings: () => void
 }
 
@@ -42,7 +46,9 @@ export const useMapSettings = create<MapSettings>()(
       // Only applied for fresh installs (persisted settings still win).
       overlayMaps: ['topo'],
       markerMode: 'auto',
-      labelCollisionDetectionEnabled: true,
+      showSmallMarkersEnabled: false,
+      showOverlappingTextEnabled: false,
+      overlayReorderButtonsEnabled: true,
       setBaseMap: (baseMap: string) =>
         set(() => ({
           baseMap
@@ -88,7 +94,9 @@ export const useMapSettings = create<MapSettings>()(
           overlayMaps: []
         })),
       setMarkerMode: (mode: string) => set({ markerMode: mode }),
-      setLabelCollisionDetectionEnabled: (enabled: boolean) => set({ labelCollisionDetectionEnabled: enabled }),
+      setShowSmallMarkersEnabled: (enabled: boolean) => set({ showSmallMarkersEnabled: enabled }),
+      setShowOverlappingTextEnabled: (enabled: boolean) => set({ showOverlappingTextEnabled: enabled }),
+      setOverlayReorderButtonsEnabled: (enabled: boolean) => set({ overlayReorderButtonsEnabled: enabled }),
       initializeSettings: () => {
         const state = get()
         const normalizedBaseMap = normalizeBaseMapKey(state.baseMap)
@@ -112,7 +120,7 @@ export const useMapSettings = create<MapSettings>()(
     }),
     {
       name: MAP_SETTINGS_STORAGE_KEY,
-      version: 7,
+      version: 11,
       onRehydrateStorage: () => {
         if (typeof window !== 'undefined') {
           window.localStorage.removeItem(LEGACY_MAP_SETTINGS_STORAGE_KEY)
@@ -170,14 +178,26 @@ export const useMapSettings = create<MapSettings>()(
             baseMap: migratedBaseMap as string,
             overlayMaps: migratedOverlays as string[],
             markerMode: 'points',
-            labelCollisionDetectionEnabled: persistedState.labelCollisionDetectionEnabled ?? true
+            showSmallMarkersEnabled: persistedState.showSmallMarkersEnabled ?? false,
+            showOverlappingTextEnabled:
+              persistedState.showOverlappingTextEnabled ??
+              persistedState.showManyOverlappingMarkersEnabled ??
+              persistedState.smallStadnamnLabelsEnabled ??
+              false,
+            overlayReorderButtonsEnabled: persistedState.overlayReorderButtonsEnabled ?? true,
           }
         }
         return {
           ...nextState,
           baseMap: migratedBaseMap as string,
           overlayMaps: migratedOverlays as string[],
-          labelCollisionDetectionEnabled: persistedState.labelCollisionDetectionEnabled ?? true
+          showSmallMarkersEnabled: persistedState.showSmallMarkersEnabled ?? false,
+          showOverlappingTextEnabled:
+            persistedState.showOverlappingTextEnabled ??
+            persistedState.showManyOverlappingMarkersEnabled ??
+            persistedState.smallStadnamnLabelsEnabled ??
+            false,
+          overlayReorderButtonsEnabled: persistedState.overlayReorderButtonsEnabled ?? true,
         }
       }
     }

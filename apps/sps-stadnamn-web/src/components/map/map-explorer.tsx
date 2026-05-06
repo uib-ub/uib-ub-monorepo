@@ -80,8 +80,17 @@ export default function MapExplorer() {
 
 
   const controllerRef = useRef(new AbortController());
-  const { baseMap, overlayMaps, markerMode, labelCollisionDetectionEnabled, setMarkerMode, initializeSettings } = useMapSettings()
+  const {
+    baseMap,
+    overlayMaps,
+    markerMode,
+    showSmallMarkersEnabled,
+    showOverlappingTextEnabled,
+    setMarkerMode,
+    initializeSettings,
+  } = useMapSettings()
   const searchParams = useSearchParams()
+  const overlayPreviewKey = useSessionStore((s) => s.overlayPreviewKey)
   const { searchQueryString, searchFilterParamsString } = useSearchQuery()
   const urlZoom = useZoomNumber()
   const urlCenter = useCenterNumber()
@@ -569,7 +578,7 @@ export default function MapExplorer() {
           }
 
           // Points mode and disabled collision handling: no overlap logic.
-          if (activeMarkerMode === 'points' || !labelCollisionDetectionEnabled) {
+          if (activeMarkerMode === 'points' || showOverlappingTextEnabled) {
             if (!labeledMarkersLookup[bucket.key]) {
               labeledMarkersLookup[bucket.key] = []
             }
@@ -801,7 +810,8 @@ export default function MapExplorer() {
     zoomState,
     sourceViewOn,
     hideMarkersDuringGridTransition,
-    labelCollisionDetectionEnabled,
+    showSmallMarkersEnabled,
+    showOverlappingTextEnabled,
     debug,
     // auto-fit dependencies
     doc,
@@ -1172,9 +1182,19 @@ export default function MapExplorer() {
                 {...baseMapLookup[baseMap].props}
               />
             )}
-            {(overlayMaps || []).map((overlayKey) => {
+            {(() => {
+              const selected = overlayMaps || []
+              const previewKey =
+                overlayPreviewKey && !selected.includes(overlayPreviewKey) ? overlayPreviewKey : null
+              const keysToRender = previewKey ? [...selected, previewKey] : selected
+
+              return keysToRender.map((overlayKey) => {
               const overlayMap = baseMapLookup[overlayKey]
               if (!overlayMap) return null
+              const isPreview = overlayKey === previewKey
+              const overlayOpacity = overlayMap.opacity ?? 1
+              const opacity = isPreview ? Math.min(overlayOpacity, 0.65) : overlayOpacity
+              const zIndex = isPreview ? 250 : 200
               if (overlayMap.wms) {
                 return (
                   <WMSTileLayer
@@ -1185,8 +1205,8 @@ export default function MapExplorer() {
                     format={overlayMap.wms.format ?? 'image/png'}
                     transparent={overlayMap.wms.transparent ?? true}
                     version={overlayMap.wms.version ?? '1.3.0'}
-                    opacity={overlayMap.opacity ?? 1}
-                    zIndex={200}
+                    opacity={opacity}
+                    zIndex={zIndex}
                   />
                 )
               }
@@ -1195,12 +1215,13 @@ export default function MapExplorer() {
                   key={`overlay-${overlayKey}`}
                   maxZoom={18}
                   maxNativeZoom={18}
-                  opacity={overlayMap.opacity ?? 1}
-                  zIndex={200}
+                  opacity={opacity}
+                  zIndex={zIndex}
                   {...overlayMap.props}
                 />
               )
-            })}
+            })
+            })()}
 
 
             {/* Draw geotile query results */}
@@ -1314,7 +1335,8 @@ export default function MapExplorer() {
                   </Tooltip>
                 ) : null
                 
-                const showLabel = activeMarkerMode != 'points' && (!hasQuery || activeMarkerMode === 'labels')
+                const isPointsMode = activeMarkerMode === 'points'
+                const showLabel = !isPointsMode && (!hasQuery || activeMarkerMode === 'labels')
                 const isDebugDuplicate = debug && Boolean((item as any)?.__debugDuplicate)
                 const supersededBy = debug ? ((item as any)?.__debugSupersededBy as ([number, number] | undefined)) : undefined
                 const isDebugNeighborDuplicate = debug && Boolean((item as any)?.__debugNeighborDuplicate)
@@ -1325,10 +1347,33 @@ export default function MapExplorer() {
                   ? 'accent'
                   : (isDebugDuplicate
                       ? (isDebugNeighborDuplicate ? 'primary' : 'black')
-                      : (showLabel ? 'white' : 'black'))
+                      : (isPointsMode ? 'black' : (showLabel ? 'white' : 'black')))
+
                 const icon = showLabel
-                  ? getLabelMarkerIcon(labelText, markerColor, childCount, false)
+                  ? getLabelMarkerIcon(labelText, markerColor, childCount, false, {
+                      smallText: showOverlappingTextEnabled,
+                    })
                   : getUnlabeledMarker(markerColor)
+
+                const smallCircleStyle = (() => {
+                  const fillColorByKey: Record<string, string> = {
+                    black: '#000000',
+                    primary: '#cf3c3a',
+                    accent: '#0061ab',
+                    white: '#ffffff',
+                  }
+                  const fillColor = fillColorByKey[markerColor] || '#000000'
+                  return {
+                    radius: isActiveDoc ? 7 : 5,
+                    pathOptions: {
+                      color: '#ffffff',
+                      weight: 2,
+                      opacity: 1,
+                      fillColor,
+                      fillOpacity: 1,
+                    } as any,
+                  }
+                })()
 
                 const debugDupMeta = (() => {
                   if (!isDebugDuplicate) return null
@@ -1410,16 +1455,28 @@ export default function MapExplorer() {
                       )
                     })}
 
-                          <Marker
-                            key={`result-${item.fields.uuid[0]}`}
-                            position={[lat, lng]}
-                            icon={new leaflet.DivIcon(icon)}
-                            zIndexOffset={isActiveDoc ? 200 : 0}
-                            riseOnHover={true}
-                            eventHandlers={selectDocHandler(item, [lat, lng], showLabel)}
-                          >
-                            {showLabel ? null : pointMarkerTooltip }
-                          </Marker>
+                          {isPointsMode && showSmallMarkersEnabled ? (
+                            <CircleMarker
+                              key={`result-smallcircle-${item.fields.uuid[0]}`}
+                              center={[lat, lng]}
+                              radius={smallCircleStyle.radius}
+                              pathOptions={smallCircleStyle.pathOptions}
+                              eventHandlers={selectDocHandler(item, [lat, lng], false)}
+                            >
+                              {pointMarkerTooltip}
+                            </CircleMarker>
+                          ) : (
+                            <Marker
+                              key={`result-${item.fields.uuid[0]}`}
+                              position={[lat, lng]}
+                              icon={new leaflet.DivIcon(icon)}
+                              zIndexOffset={isActiveDoc ? 200 : 0}
+                              riseOnHover={true}
+                              eventHandlers={selectDocHandler(item, [lat, lng], showLabel)}
+                            >
+                              {showLabel ? null : pointMarkerTooltip }
+                            </Marker>
+                          )}
 
                   </Fragment>
                 )
