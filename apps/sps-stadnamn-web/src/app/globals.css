@@ -515,6 +515,22 @@
   pointer-events: none !important;
 }
 
+/* Keep default cursor while idle; show cross-arrows only while map is dragged. */
+.leaflet-container.leaflet-grab {
+  cursor: default !important;
+}
+
+.leaflet-grab .leaflet-interactive,
+.leaflet-grab .leaflet-marker-draggable {
+  cursor: pointer !important;
+}
+
+.leaflet-dragging .leaflet-grab,
+.leaflet-dragging .leaflet-grab .leaflet-interactive,
+.leaflet-dragging .leaflet-marker-draggable {
+  cursor: move !important;
+}
+
 /* Custom point-marker hover tooltip: use label-only chip, no default bubble arrow. */
 .leaflet-tooltip.point-marker-tooltip {
   background: transparent;
