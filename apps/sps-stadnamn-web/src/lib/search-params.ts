@@ -95,11 +95,12 @@ export function useSearchQuery() {
         searchQuery.set('fuzzy', 'on')
     }
 
+    if (group) {
+        searchQuery.set('group', group)
+    }
+
     if (sourceViewOn) {
         searchQuery.set('sourceView', 'on')
-        if (group) {
-            searchQuery.set('group', group)
-        }
     }
 
 

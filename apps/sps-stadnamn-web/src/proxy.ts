@@ -63,6 +63,14 @@ export async function proxy(request: NextRequest) {
         if (!dataset.every(d => datasetTitles[d])) {
             return Response.redirect(baseUrl + "/search", 302)
         }
+
+        // Legacy URLs may include sourceView together with group.
+        // Group now defines subpost mode; keep sourceView only for advanced search.
+        if (url.searchParams.get("group") && url.searchParams.get("sourceView") === "on") {
+            const cleaned = new URL(url.toString())
+            cleaned.searchParams.delete("sourceView")
+            return Response.redirect(cleaned.toString(), 302)
+        }
         return
     }
 

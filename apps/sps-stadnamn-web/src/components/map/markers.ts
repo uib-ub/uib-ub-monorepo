@@ -244,11 +244,15 @@ export function getInitAnchorMarker(_label?: string, _active?: boolean) {
   return {
     className: '',
     html: `<div role="button" tabindex="0" style="display: flex; align-items: center; justify-content: center; position: relative; height: 32px;">
-              <img
-                src="/currentLocation.svg"
-                alt=""
-                aria-hidden="true"
-                style="position:absolute; bottom:26px; height:32px" />
+              <svg aria-hidden="true" viewBox="0 0 256 256" style="position:absolute; bottom:26px; height:32px;">
+                <rect width="256" height="256" fill="none"></rect>
+                <!-- Thin white outline for accessibility on noisy map backgrounds -->
+                <circle cx="128" cy="72" r="48" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></circle>
+                <line x1="128" y1="232" x2="128" y2="120" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></line>
+                <!-- Secondary-filled dot with dark stroke -->
+                <circle cx="128" cy="72" r="48" fill="#0061ab" stroke="#0061ab" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></circle>
+                <line x1="128" y1="232" x2="128" y2="120" fill="none" stroke="#0061ab" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></line>
+              </svg>
             </div>`
   }
 }

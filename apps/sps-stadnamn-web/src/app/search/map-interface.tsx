@@ -1,6 +1,6 @@
 'use client'
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH } from "@/lib/map-utils";
-import { useDebugGroupsOn, useDebugParamOn, useFacetParam, useGroupParam, useHideResultsOn, useInitParam, useMapSettingsOn, useMode, useNavigationViewOn, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useQParam, useSourceViewOn, useTreeParam } from "@/lib/param-hooks";
+import { useDebugGroupsOn, useDebugParamOn, useFacetParam, useGroupParam, useHideResultsOn, useInitParam, useMapSettingsOn, useMode, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useQParam, useSourceViewOn, useSubpostViewOn, useTreeParam } from "@/lib/param-hooks";
 import { useSearchQuery } from "@/lib/search-params";
 import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
@@ -145,9 +145,9 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     if (isMobile) {
         return <>{children}</>
     }
-    const hasNavigationContext = Boolean(sourceViewOn && group)
-    const collapseRightWindow = hideResultsOn && !init && !hasNavigationContext
-    const dockRightWindowToBottom = hideResultsOn && (!!init || hasNavigationContext)
+    const hasSubpostContext = Boolean(group)
+    const collapseRightWindow = hideResultsOn && !init && !hasSubpostContext
+    const dockRightWindowToBottom = hideResultsOn && (!!init || hasSubpostContext)
     const rightWindowTopClass = collapseRightWindow
         ? 'top-[calc(100svh-2.5rem)]'
         : dockRightWindowToBottom
@@ -203,7 +203,7 @@ export default function MapInterface() {
     const mode = useMode()
     const init = useInitParam()
     const group = useGroupParam()
-    const isNavigationView = useNavigationViewOn()
+    const isSubpostView = useSubpostViewOn()
 
     useEffect(() => {
         if (debugOn) {
@@ -214,7 +214,7 @@ export default function MapInterface() {
 
     const isDesktopMap = !isMobile && mode !== 'table'
 
-    const desktopMapButtons = isDesktopMap && sourceView && !isNavigationView && !optionsOn && !facet && !tree ? (
+    const desktopMapButtons = isDesktopMap && sourceView && !isSubpostView && !optionsOn && !facet && !tree ? (
         <div className="flex gap-2">
             {facetCount > 1 && (
                 <Clickable
@@ -266,7 +266,7 @@ export default function MapInterface() {
                         </div>
                     )}
 
-                    {!tableOptions && !facet && (sourceView || mode == 'table') && (
+                    {!tableOptions && !facet && ((sourceView || isSubpostView) || mode == 'table') && (
                         <>
                             {optionsOn &&
                                 (isMobile ? (
@@ -291,10 +291,10 @@ export default function MapInterface() {
 
                             <div
                                 id="options-panel"
-                                className={`flex flex-col divide-y divide-neutral-200 ${isMobile && isNavigationView ? "pb-36" : ""}`}
+                                className={`flex flex-col divide-y divide-neutral-200 ${isMobile && isSubpostView ? "pb-36" : ""}`}
                             >
                                 {group && <NamesSection />}
-                                {isNavigationView ? (
+                                {isSubpostView ? (
                                     <>
                                         <NavigationDatasetSection />
                                         <NavigationObjectTypeSection />

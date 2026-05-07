@@ -103,7 +103,8 @@ export default function GlobalProvider({ children, isMobile, sosiVocab, coordina
     // If there are no params, the correct return is just "/search".
     const url = allSearchParamsString ? `/search?${allSearchParamsString}` : "/search"
     currentUrl.current = url
-    if (!searchParams.get("group") && !sourceViewOn) {
+    const inTreeView = Boolean(searchParams.get("tree"))
+    if (!searchParams.get("group") && !sourceViewOn && !inTreeView) {
       parentSearchUrl.current = url
     }
   }, [allSearchParamsString, pathname])

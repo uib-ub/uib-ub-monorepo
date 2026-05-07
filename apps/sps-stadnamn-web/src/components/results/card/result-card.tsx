@@ -152,9 +152,10 @@ function GroupBottomToolbar({
 
     const isMulti = variant === "multi";
 
-    // Keep the previous visibility rules.
+    // In grouped/subpost mode we are already inside "Underpostar".
+    // Do not render another entry button.
     if (isMulti) {
-        if (sourceViewOn) return null;
+        if (sourceViewOn || group) return null;
         if (!groupTotal || groupTotal === 1) return null;
     }
 
@@ -226,9 +227,8 @@ function GroupBottomToolbar({
                     {(groupTotal ?? 0) > 0 && (
                         <Clickable
                             className="btn btn-outline btn-compact rounded-full items-center gap-2 !pr-2 flex h-10 pl-4 shadow-none"
-                            // IMPORTANT: scroll should not be transferred to the sourceView URL
+                            // IMPORTANT: scroll should not be transferred to the subpost URL
                             only={{
-                                sourceView: "on",
                                 group: stringToBase64Url(groupData.id),
                                 init: initialSourceUuid,
                                 point: pointValue,
@@ -237,7 +237,7 @@ function GroupBottomToolbar({
                             }}
                             onClick={() => {
                                 // Keep the current list URL (reset target) synced with the clicked card.
-                                // But do NOT include `scroll` in the URL we navigate to (sourceView).
+                                // But do NOT include `scroll` in the URL we navigate to (subpost).
                                 const nextCurrent = new URLSearchParams(searchParams);
                                 if (scrollValue != null) {
                                     nextCurrent.set("scroll", String(scrollValue));
@@ -448,14 +448,13 @@ export default function ResultCard({
     // Scroll to top when init group changes (when clicking "vel" button)
 
 
-    const treeSavedQuery = useSessionStore((s) => s.treeSavedQuery)
     const setTreeSavedQuery = useSessionStore((s) => s.setTreeSavedQuery)
 
     const handleEnterTreeFromBreadcrumb = () => {
-        if (treeSavedQuery) return
         if (typeof window === "undefined") return
         const currentSearch = window.location.search || ""
         if (!currentSearch) return
+        // Always refresh so "Stadnamnsøk" returns to the latest context.
         setTreeSavedQuery(currentSearch)
     }
 

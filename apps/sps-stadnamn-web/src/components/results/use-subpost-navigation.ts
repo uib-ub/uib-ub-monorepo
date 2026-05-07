@@ -1,11 +1,9 @@
 'use client'
 import {
   useGroupParam,
-  useInitDecoded,
   useInitParam,
   useNoGeoOn,
   useSearchSortParam,
-  useSourceViewOn,
 } from "@/lib/param-hooks"
 import { base64UrlToString } from "@/lib/param-utils"
 import { useSearchQuery } from "@/lib/search-params"
@@ -41,9 +39,7 @@ function extractNavDataFromSearchResponse(data: any): { items: NavItem[]; hitByI
 }
 
 export function useSubpostNavigation() {
-  const sourceViewOn = useSourceViewOn()
   const initParam = useInitParam()
-  const initDecoded = useInitDecoded()
   const group = useGroupParam()
   const selectedGroup = group ? base64UrlToString(group) : null
   const noGeo = useNoGeoOn()
@@ -53,8 +49,8 @@ export function useSubpostNavigation() {
   const { docTotalHits } = useSearchData()
 
   const admContextReady = !noGeo || admContextStatus === "success" || admContextStatus === "error"
-  const currentId = sourceViewOn ? initParam : initDecoded
-  const isSubpostNavigation = Boolean(sourceViewOn && currentId && selectedGroup)
+  const currentId = initParam
+  const isSubpostNavigation = Boolean(currentId && selectedGroup)
   const shouldFetchFullList = Boolean(isSubpostNavigation && admContextReady)
 
   const total = docTotalHits?.value ?? null

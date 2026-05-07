@@ -5,6 +5,7 @@ import { useQParam } from "@/lib/param-hooks"
 import { useGroupParam } from "@/lib/param-hooks"
 import useSearchData from "@/state/hooks/search-data"
 import { useSourceViewOn } from "@/lib/param-hooks"
+import { useSubpostViewOn } from "@/lib/param-hooks"
 import { useOverlayParams } from "@/lib/param-hooks"
 import Clickable from "@/components/ui/clickable/clickable"
 import useResultCardData from "@/state/hooks/result-card-data"
@@ -25,10 +26,11 @@ export default function ResultsHeader({ sameCoordinateCount }: { sameCoordinateC
     const { groupTotalHits, docTotalHits, searchLoading } = useSearchData()
     const { listLoading } = useListData()
     const sourceView = useSourceViewOn()
+    const isSubpostView = useSubpostViewOn()
     const { showResults } = useOverlayParams()
     const init = useInitParam()
 
-    const showGroupClose = Boolean(sourceView && group && !init)
+    const showGroupClose = Boolean(isSubpostView && !init)
     const { resultCardData: groupCardData } = useResultCardData(group, { forceGroupLookup: true })
 
     const groupFields = groupCardData?.fields || {}
@@ -41,19 +43,19 @@ export default function ResultsHeader({ sameCoordinateCount }: { sameCoordinateC
     const groupAdm2 = toText((groupFields as any).adm2)
     const groupAdmText = [groupAdm2, groupAdm1].filter(Boolean).join(", ")
 
-    const title = sourceView
+    const title = (sourceView || isSubpostView)
         ? (init
             ? "Andre treff"
             : (group ? "Underpostar" : "Kjeldepostar"))
         : (init ? "Andre treff" : "Namnegrupper")
 
     const showGroupInfo = showGroupClose && (groupTitle || groupAdmText)
-    const showGroupAsTitleDesktop = Boolean(!isMobile && sourceView && group && !init && (groupTitle || groupAdmText))
+    const showGroupAsTitleDesktop = Boolean(!isMobile && isSubpostView && !init && (groupTitle || groupAdmText))
     const showGroupInfoInlineDesktop = showGroupInfo && !isMobile && !showGroupAsTitleDesktop
 
     const badgeCount = Math.max(
         0,
-        (sourceView ? docTotalHits?.value ?? 0 : groupTotalHits?.value ?? 0) - (init ? 1 : 0)
+        ((sourceView || isSubpostView) ? docTotalHits?.value ?? 0 : groupTotalHits?.value ?? 0) - (init ? 1 : 0)
     )
 
     return (

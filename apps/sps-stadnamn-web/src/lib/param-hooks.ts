@@ -208,11 +208,14 @@ export function useSourceViewOn() {
     return useGetParam('sourceView') == 'on'
 }
 
-export function useNavigationViewOn() {
-    const sourceViewOn = useSourceViewOn()
+export function useSubpostViewOn() {
     const group = useGroupParam()
-    const init = useInitParam()
-    return Boolean(sourceViewOn && group && init)
+    return Boolean(group)
+}
+
+// Backward-compatible alias while call sites migrate.
+export function useNavigationViewOn() {
+    return useSubpostViewOn()
 }
 
 export function useFuzzyOn() {

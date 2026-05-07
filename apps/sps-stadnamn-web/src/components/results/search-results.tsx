@@ -10,6 +10,7 @@ import {
   useQParam,
   useResultLimitNumber,
   useSourceViewOn,
+  useSubpostViewOn,
 } from "@/lib/param-hooks";
 import { base64UrlToString } from "@/lib/param-utils";
 import { useSearchQuery } from "@/lib/search-params";
@@ -44,6 +45,7 @@ export default function SearchResults() {
   const group = useGroupParam()
   const qParam = useQParam()
   const sourceViewOn = useSourceViewOn()
+  const isSubpostView = useSubpostViewOn()
   const { resultCardData: initResultCardData, resultCardLoading: initResultCardLoading } = useResultCardData()
   const { resultCardData: navigationGroupCardData } = useResultCardData(group, { forceGroupLookup: true })
   const initValue = init ? base64UrlToString(init) : null
@@ -53,7 +55,7 @@ export default function SearchResults() {
   const filterCount = facetFilters.length + datasetFilters.length
   const noGeoOn = useNoGeoOn()
   const resultLimitNumber = useResultLimitNumber()
-  const resultCount = sourceViewOn ? docTotalHits?.value ?? 0 : groupTotalHits?.value ?? 0
+  const resultCount = (sourceViewOn || isSubpostView) ? docTotalHits?.value ?? 0 : groupTotalHits?.value ?? 0
   const resultCountExceptInit = resultCount - (init ? 1 : 0)
   const hideResultsOn = useHideResultsOn()
   const addNotification = useNotificationStore((s) => s.addNotification)
@@ -98,7 +100,7 @@ export default function SearchResults() {
   const hasResultsError = !!(searchError || listError)
   const showNavigationTopBar = subpostNav.isSubpostNavigation
   const shouldShowNavigationBody = true
-  const showLegacyUnderpostarWithoutInit = Boolean(sourceViewOn && group && !init)
+  const showLegacyUnderpostarWithoutInit = Boolean(isSubpostView && !init)
   const showNoResultsFallback = totalHits?.value === 0
   const navGroupFields = navigationGroupCardData?.fields || {}
   const navGroupToText = (value: unknown): string => {
@@ -181,7 +183,7 @@ export default function SearchResults() {
   }, [addNotification, hasResultsError, removeNotification])
 
   useEffect(() => {
-    if (!sourceViewOn || !group) return
+    if (!group) return
     let nextInitId: string | null = null
     let nextActivePoint: string | null = null
 
@@ -220,7 +222,7 @@ export default function SearchResults() {
 
     if (nextParams.toString() === searchParams.toString()) return
     router.replace(`?${nextParams.toString()}`, { scroll: false })
-  }, [group, init, listData, listLoading, router, searchParams, sourceViewOn, subpostNav.currentIndex, subpostNav.isFetching, subpostNav.items])
+  }, [group, init, listData, listLoading, router, searchParams, subpostNav.currentIndex, subpostNav.isFetching, subpostNav.items])
 
   useEffect(() => {
     if (!isJumpInputOpen) return
@@ -379,8 +381,16 @@ export default function SearchResults() {
               remove={['point', 'noGeo']}
               className="h-9 px-2 rounded-md bg-white border border-neutral-200 flex items-center gap-1 cursor-pointer max-w-full min-w-0"
             >
-              <img src="/currentLocation.svg" alt="" aria-hidden="true" className="w-6 h-6 mb-1 self-center" />
-              <span className="truncate flex-1 min-w-0 max-w-full block">Startpunkt</span>
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 256 256"
+                className="w-5 h-5 self-center shrink-0 text-accent-800"
+              >
+                <rect width="256" height="256" fill="none" />
+                <circle cx="128" cy="72" r="48" fill="#0061ab" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="16" />
+                <line x1="128" y1="232" x2="128" y2="120" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="16" />
+              </svg>
+              <span className="truncate flex-1 min-w-0 max-w-full block">Sluppet nål</span>
               <PiX className="text-lg" aria-hidden="true" />
             </Clickable>
           )}
@@ -399,7 +409,7 @@ export default function SearchResults() {
         <>
           <ul
             id="result_list"
-            aria-label={sourceViewOn ? 'Fleire kjeldepostar' : 'Fleire namnegrupper'}
+            aria-label={(sourceViewOn || isSubpostView) ? 'Fleire kjeldepostar' : 'Fleire namnegrupper'}
             className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}
           >
             {Array.from({
