@@ -90,7 +90,7 @@ type CoordinateButtonProps = {
 function CoordinateButton({ isActive, className, ...rest }: CoordinateButtonProps) {
     return (
         <Clickable
-            className={`btn btn-outline btn-compact rounded-full items-center gap-2 !pr-2 flex h-10 pl-4 shadow-none ${
+            className={`btn btn-outline btn-compact rounded-full items-center gap-2 !pr-4 flex h-10 pl-4 shadow-none ${
                 isActive ? "border-accent-800 bg-accent-800 text-white" : ""
             } ${className ?? ""}`}
             {...rest}
