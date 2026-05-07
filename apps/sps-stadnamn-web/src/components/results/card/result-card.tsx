@@ -89,25 +89,25 @@ type CoordinateButtonProps = {
 
 function CoordinateButton({ isActive, className, ...rest }: CoordinateButtonProps) {
     return (
-        <ClickableIcon
-            label="Vis i kartet"
-            className={`btn btn-outline btn-compact rounded-full w-10 h-10 flex items-center justify-center shrink-0 border-neutral-200 bg-white shadow-none ${
-                isActive ? "border-accent-800 bg-accent-800 text-white" : "text-neutral-900"
+        <Clickable
+            className={`btn btn-outline btn-compact rounded-full items-center gap-2 !pr-2 flex h-10 pl-4 shadow-none ${
+                isActive ? "border-accent-800 bg-accent-800 text-white" : ""
             } ${className ?? ""}`}
             {...rest}
         >
             {isActive ? (
                 <PiMapPinFill
                     aria-hidden="true"
-                    className="text-xl text-white"
+                    className="-ml-1 text-xl text-white"
                 />
             ) : (
                 <PiMapPin
                     aria-hidden="true"
-                    className="text-xl text-neutral-800"
+                    className="-ml-1 text-xl text-neutral-800"
                 />
             )}
-        </ClickableIcon>
+            Vis i kartet
+        </Clickable>
     );
 }
 
@@ -277,11 +277,11 @@ function GroupBottomToolbar({
                     )}
                 </div>
             )}
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap justify-end">
                 <div className="flex items-center gap-2 flex-wrap">
                     {toolbarItems}
                 </div>
-                <div className="ml-auto flex items-center">
+                <div className="flex items-center">
                     <Clickable
                         link={true}
                         href={uuid ? `/uuid/${uuid}` : ""}
