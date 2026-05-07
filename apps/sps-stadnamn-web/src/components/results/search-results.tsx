@@ -127,6 +127,7 @@ export default function SearchResults() {
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) return
     mapFunctionRef.current.flyTo?.([lat, lng], 15)
   }
+  const droppedPointValue = point ? `${point[0]},${point[1]}` : null
 
   const jumpToNavigationIndex = (targetIndex: number) => {
     const total = subpostNav.items.length
@@ -361,8 +362,42 @@ export default function SearchResults() {
         </div>
       ) : (
         <div className={`w-full flex flex-wrap items-center bg-neutral-50 py-2 px-2 gap-y-3 gap-x-2 text-neutral-950 min-w-0 overflow-hidden ${init ? 'border-t border-neutral-200' : ''}`}>
-          <div className={`w-full flex flex-wrap`}> <ResultsHeader sameCoordinateCount={subpostNav.sameCoordinateCount} /></div>
+          {!(point && !init) && (
+            <div className={`w-full flex flex-wrap`}>
+              <ResultsHeader sameCoordinateCount={subpostNav.sameCoordinateCount} />
+            </div>
+          )}
           {!hideResultsOn && !group && (sourceViewOn || point || init) && <>
+          {point && !init && (
+            <div className="w-full flex items-center gap-2 px-1">
+              <button
+                type="button"
+                onClick={() => flyToPoint(droppedPointValue)}
+                className="inline-flex items-center gap-2 min-w-0 text-left hover:text-accent-800 transition-colors"
+                aria-label="Gå til sluppet nål"
+              >
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 256 256"
+                  className="w-5 h-5 shrink-0 text-accent-800"
+                >
+                  <rect width="256" height="256" fill="none" />
+                  <circle cx="128" cy="72" r="48" fill="#0061ab" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="16" />
+                  <line x1="128" y1="232" x2="128" y2="120" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="16" />
+                </svg>
+                <span className="text-base xl:text-lg text-neutral-900 font-sans font-semibold truncate">
+                  Festa nål
+                </span>
+              </button>
+              <Clickable
+                remove={['point', 'noGeo']}
+                className="ml-auto inline-flex items-center justify-center w-9 h-9 rounded-full border border-neutral-300 bg-white hover:bg-neutral-100 text-neutral-800"
+                aria-label="Fjern sluppet nål"
+              >
+                <PiX className="text-xl" aria-hidden="true" />
+              </Clickable>
+            </div>
+          )}
           {qParam ? (
             <Clickable
               remove={['q', 'searchSort']}
@@ -376,24 +411,6 @@ export default function SearchResults() {
               <PiX className="text-lg" aria-hidden="true" />
             </Clickable>
           ) : null}
-          { point && !init && (
-            <Clickable
-              remove={['point', 'noGeo']}
-              className="h-9 px-2 rounded-md bg-white border border-neutral-200 flex items-center gap-1 cursor-pointer max-w-full min-w-0"
-            >
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 256 256"
-                className="w-5 h-5 self-center shrink-0 text-accent-800"
-              >
-                <rect width="256" height="256" fill="none" />
-                <circle cx="128" cy="72" r="48" fill="#0061ab" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="16" />
-                <line x1="128" y1="232" x2="128" y2="120" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="16" />
-              </svg>
-              <span className="truncate flex-1 min-w-0 max-w-full block">Sluppet nål</span>
-              <PiX className="text-lg" aria-hidden="true" />
-            </Clickable>
-          )}
 
           {/* Toolbar items share the same flex row as the chip so they wrap together. */}
           {(qParam || point) && <SearchQueryDisplay

@@ -15,7 +15,7 @@ import { GlobalContext } from "@/state/providers/global-provider";
 import { useSessionStore } from "@/state/zustand/session-store";
 import { useSearchParams } from "next/navigation";
 import { useState, useContext, useEffect } from "react";
-import { PiCaretRightBold, PiCheck, PiLinkSimple, PiMagnifyingGlass, PiMapPin, PiMapPinFill, PiMicroscope, PiPushPin, PiX, PiXBold } from "react-icons/pi";
+import { PiCaretRightBold, PiCheck, PiLinkSimple, PiMagnifyingGlass, PiMapPin, PiMapPinFill, PiMapPinSimple, PiMapPinSimpleFill, PiMicroscope, PiPushPin, PiX, PiXBold } from "react-icons/pi";
 import LazyCarousel from "@/components/results/lazy-carousel";
 import ResultCardTitle from "@/components/results/card/result-card-title";
 import { TextItemsSection } from "@/components/results/card/text-items-section";
@@ -505,8 +505,18 @@ export default function ResultCard({
                 {isInit && !(init && group) && (
                     <div className={`absolute flex items-end gap-2 ${isMobile ? 'top-3 right-3 flex-col items-end' : 'gap-2 items-center right-2 top-2'}`}>
                         <ClickableIcon
-                            label="Lukk framheva gruppe"
+                            label="Fest nål"
                             remove={["activePoint", "activeYear", "activeName", "init", "resultLimit"]}
+                            onClick={() => {
+                               setSnappedPosition("bottom");
+                            }}
+                            className={`btn btn-outline rounded-full text-neutral-900 p-2`}
+                        >
+                            <PiMapPinSimpleFill aria-hidden="true" className={`${'text-lg'} text-neutral-800`} />
+                        </ClickableIcon>
+                        <ClickableIcon
+                            label="Lukk framheva gruppe"
+                            remove={["activePoint", "activeYear", "activeName", "init", "resultLimit", "point"]}
                             onClick={() => {
                                setSnappedPosition("bottom");
                             }}

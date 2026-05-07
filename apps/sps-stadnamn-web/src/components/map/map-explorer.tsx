@@ -1081,7 +1081,7 @@ export default function MapExplorer() {
             },
 
             contextmenu: (event: any) => {
-              if (tree) return;
+              if (tree || group) return;
               const point = event.latlng
               // User actively chose a new point; hide the "how to move point" hint.
               dismissNotification("point-hint", true)
@@ -1865,7 +1865,7 @@ export default function MapExplorer() {
                 />
               </>
             )}
-            {point && !activePoint && !init && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
+            {point && !init && <Marker icon={new leaflet.DivIcon(getInitAnchorMarker())} position={point} />}
             {point && !activePoint && init && (() => {
               const cachedInitLabel =
                 initGroupLabel && initGroupPoint && areSamePoint(initGroupPoint, point)
