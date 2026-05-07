@@ -311,7 +311,7 @@ export default function MapExplorer() {
           }
 
           const medium = 100
-          const max = 1000
+          const max = 500
           let clusterSize = 2
 
           if (activeMarkerMode != 'counts') {
