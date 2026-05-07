@@ -208,6 +208,13 @@ export function useSourceViewOn() {
     return useGetParam('sourceView') == 'on'
 }
 
+export function useNavigationViewOn() {
+    const sourceViewOn = useSourceViewOn()
+    const group = useGroupParam()
+    const init = useInitParam()
+    return Boolean(sourceViewOn && group && init)
+}
+
 export function useFuzzyOn() {
     return useGetParam('fuzzy') == 'on'
 }

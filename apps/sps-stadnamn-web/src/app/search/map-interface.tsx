@@ -1,6 +1,6 @@
 'use client'
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, MAP_DRAWER_MAX_HEIGHT_SVH } from "@/lib/map-utils";
-import { useDebugGroupsOn, useDebugParamOn, useFacetParam, useGroupParam, useHideResultsOn, useInitParam, useMapSettingsOn, useMode, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useQParam, useSourceViewOn, useTreeParam } from "@/lib/param-hooks";
+import { useDebugGroupsOn, useDebugParamOn, useFacetParam, useGroupParam, useHideResultsOn, useInitParam, useMapSettingsOn, useMode, useNavigationViewOn, useOptionsOn, useOverlayParams, useOverlaySelectorOn, usePerspective, useQParam, useSourceViewOn, useTreeParam } from "@/lib/param-hooks";
 import { useSearchQuery } from "@/lib/search-params";
 import useResultCardData from "@/state/hooks/result-card-data";
 import useSearchData from "@/state/hooks/search-data";
@@ -19,6 +19,8 @@ import FacetSection from "@/components/facets/facet-section";
 import GroupedResultsToggle from "@/components/results/grouped-results-toggle";
 import SearchResults from "@/components/results/search-results";
 import NamesSection from "@/components/results/names-section";
+import NavigationDatasetSection from "@/components/results/navigation-dataset-section";
+import NavigationObjectTypeSection from "@/components/results/navigation-object-type-section";
 import { fieldConfig } from "@/config/search-config";
 import Spinner from "@/components/svg/Spinner";
 import ClientFacet from "@/components/facets/client-facet";
@@ -201,6 +203,7 @@ export default function MapInterface() {
     const mode = useMode()
     const init = useInitParam()
     const group = useGroupParam()
+    const isNavigationView = useNavigationViewOn()
 
     useEffect(() => {
         if (debugOn) {
@@ -211,7 +214,7 @@ export default function MapInterface() {
 
     const isDesktopMap = !isMobile && mode !== 'table'
 
-    const desktopMapButtons = isDesktopMap && sourceView && !optionsOn && !facet && !tree ? (
+    const desktopMapButtons = isDesktopMap && sourceView && !isNavigationView && !optionsOn && !facet && !tree ? (
         <div className="flex gap-2">
             {facetCount > 1 && (
                 <Clickable
@@ -286,9 +289,19 @@ export default function MapInterface() {
                                     </div>
                                 ))}
 
-                            <div id="options-panel" className="flex flex-col divide-y divide-neutral-200">
+                            <div
+                                id="options-panel"
+                                className={`flex flex-col divide-y divide-neutral-200 ${isMobile && isNavigationView ? "pb-36" : ""}`}
+                            >
                                 {group && <NamesSection />}
-                                <FacetSection />
+                                {isNavigationView ? (
+                                    <>
+                                        <NavigationDatasetSection />
+                                        <NavigationObjectTypeSection />
+                                    </>
+                                ) : (
+                                    <FacetSection />
+                                )}
                                 {isMobile && <ShowResultsButton />}
                             </div>
                         </>

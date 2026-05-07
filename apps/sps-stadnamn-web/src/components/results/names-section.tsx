@@ -207,10 +207,11 @@ export default function NamesSection() {
   if (!group) return null;
   if (!hasTimeline && onlyYearNames.length <= 1) return null;
 
-  const hasMore = yearsOrdered.length > 3;
+  const collapsedYearLimit = yearsOrdered.length === 4 ? 4 : 3;
+  const hasMore = yearsOrdered.length > collapsedYearLimit;
   const visibleYears = showAll
     ? yearsOrdered
-    : yearsOrdered.slice(0, 3);
+    : yearsOrdered.slice(0, collapsedYearLimit);
 
   return (
     <div className="w-full p-3 transition-colors bg-white">
@@ -308,7 +309,7 @@ export default function NamesSection() {
                 className="text-neutral-700 hover:text-accent-800 transition-colors text-sm py-1"
                 onClick={() => setShowAll((prev) => !prev)}
               >
-                {showAll ? 'Vis færre' : `Vis fleire (+${yearsOrdered.length - 3})`}
+                {showAll ? 'Vis færre' : `Vis fleire (+${yearsOrdered.length - collapsedYearLimit})`}
               </button>
             </div>
           )}
