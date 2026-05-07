@@ -19,31 +19,35 @@ import { GlobalContext } from "@/state/providers/global-provider";
 import { useNotificationStore } from "@/state/zustand/notification-store";
 import { useSessionStore } from "@/state/zustand/session-store";
 import Link from "next/link";
-import { useContext, useEffect, useRef } from "react";
-import { PiCaretLeftBold, PiMagnifyingGlass, PiQuestion, PiX, PiXBold } from "react-icons/pi";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useContext, useEffect, useRef, useState } from "react";
+import { PiArrowElbowLeftUpBold, PiCaretLeftBold, PiCaretRightBold, PiMagnifyingGlass, PiQuestion, PiX } from "react-icons/pi";
 import ResultCard from "@/components/results/card/result-card";
 import ActiveFilters from "@/components/results/active-filters";
 import ResultItem from "./result-item";
 import SearchQueryDisplay from "./search-query-display";
 import useListData from "@/state/hooks/list-data";
 import { ResultCardSkeleton, ResultItemSkeleton } from "@/components/results/result-skeletons";
+import Spinner from "@/components/svg/Spinner";
 
 import { BATCH_SIZE, FIRST_VISIBLE_RESULTS, STARTING_BATCH_SIZE } from "@/lib/result-limits";
 import ResultsHeader from "./results-header";
-import ResultsListNavigator from "./results-list-navigator";
 import { useSubpostNavigation } from "./use-subpost-navigation";
 import { useResultsScrollRestore, useScrollIndexParam } from "@/components/results/scroll-hooks";
 
 export default function SearchResults() {
   const { searchError, groupTotalHits, docTotalHits, noGeoGroupCount, totalHits, searchLoading } = useSearchData()
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const resultsContainerRef = useRef<HTMLDivElement>(null)
   const init = useInitParam()
   const group = useGroupParam()
   const qParam = useQParam()
   const sourceViewOn = useSourceViewOn()
   const { resultCardData: initResultCardData, resultCardLoading: initResultCardLoading } = useResultCardData()
+  const { resultCardData: navigationGroupCardData } = useResultCardData(group, { forceGroupLookup: true })
   const initValue = init ? base64UrlToString(init) : null
-  const { isMobile, scrollableContentRef } = useContext(GlobalContext)
+  const { isMobile, scrollableContentRef, parentSearchUrl, mapFunctionRef } = useContext(GlobalContext)
   const point = usePoint()
   const { facetFilters, datasetFilters, searchQueryString, searchQuery } = useSearchQuery()
   const filterCount = facetFilters.length + datasetFilters.length
@@ -75,8 +79,12 @@ export default function SearchResults() {
   } = useListData()
 
   // When `init` is present we render it separately, so "additional" means anything beyond the init item.
+  // Do not render the "Andre treff" section until we know how many additional results exist.
+  const hasCalculatedAdditionalResults = !init || listStatus === 'success'
   const hasNoAdditionalResults =
-    listStatus === 'success' && !!init && resultCountExceptInit <= 0
+    hasCalculatedAdditionalResults && !!init && resultCountExceptInit <= 0
+  const showAdditionalResultsSection =
+    hasCalculatedAdditionalResults && !hasNoAdditionalResults
 
   // Whether to show the "Utan koordinatar" filter control in the options row.
   // Purpose: 
@@ -88,12 +96,76 @@ export default function SearchResults() {
     (!init || !!qParam) &&
     (noGeoOn || firstHasLocation);
   const hasResultsError = !!(searchError || listError)
-  const isSameCoordinateMode = Boolean(sourceViewOn && init && group)
-  const hideSameCoordinateHeaderBar =
-    isSameCoordinateMode &&
-    typeof subpostNav.sameCoordinateCount === "number" &&
-    subpostNav.sameCoordinateCount <= 0 &&
-    !(searchLoading || listLoading)
+  const showNavigationTopBar = subpostNav.isSubpostNavigation
+  const shouldShowNavigationBody = true
+  const showLegacyUnderpostarWithoutInit = Boolean(sourceViewOn && group && !init)
+  const showNoResultsFallback = totalHits?.value === 0
+  const navGroupFields = navigationGroupCardData?.fields || {}
+  const navGroupToText = (value: unknown): string => {
+    if (Array.isArray(value)) return value.filter(Boolean).join(" | ")
+    return typeof value === "string" ? value : ""
+  }
+  const navGroupTitle = typeof navigationGroupCardData?.label === "string" ? navigationGroupCardData.label : ""
+  const navGroupAdm1 = navGroupToText((navGroupFields as any).adm1)
+  const navGroupAdm2 = navGroupToText((navGroupFields as any).adm2)
+  const navGroupAdmText = [navGroupAdm2, navGroupAdm1].filter(Boolean).join(", ")
+  const showTopBarNavigator = showNavigationTopBar && subpostNav.items.length > 1
+  const topBarNavBadge = subpostNav.currentIndex !== -1
+    ? `${subpostNav.currentIndex + 1} / ${subpostNav.items.length}`
+    : `– / ${subpostNav.items.length}`
+  const [isJumpInputOpen, setIsJumpInputOpen] = useState(false)
+  const [jumpInputValue, setJumpInputValue] = useState("")
+  const jumpInputRef = useRef<HTMLInputElement>(null)
+
+  const flyToPoint = (pointValue: string | null) => {
+    if (!pointValue || !mapFunctionRef.current) return
+    const [latRaw, lngRaw] = pointValue.split(",")
+    const lat = Number(latRaw)
+    const lng = Number(lngRaw)
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return
+    mapFunctionRef.current.flyTo?.([lat, lng], 15)
+  }
+
+  const jumpToNavigationIndex = (targetIndex: number) => {
+    const total = subpostNav.items.length
+    if (!total) return
+    if (!Number.isFinite(targetIndex)) return
+    const clamped = Math.min(total, Math.max(1, targetIndex))
+    const selectedItem = subpostNav.items[clamped - 1]
+    if (!selectedItem?.id) return
+
+    const nextParams = new URLSearchParams(searchParams.toString())
+    nextParams.set("init", selectedItem.id)
+    if (selectedItem.point) {
+      nextParams.set("point", selectedItem.point)
+      nextParams.set("activePoint", selectedItem.point)
+      nextParams.set("center", selectedItem.point)
+      nextParams.set("zoom", "15")
+      flyToPoint(selectedItem.point)
+    } else {
+      nextParams.delete("activePoint")
+    }
+    nextParams.delete("activeYear")
+    nextParams.delete("activeName")
+    router.push(`?${nextParams.toString()}`, { scroll: false })
+  }
+
+  const openJumpInput = () => {
+    const currentDisplayIndex = subpostNav.currentIndex >= 0 ? subpostNav.currentIndex + 1 : 1
+    setJumpInputValue(String(currentDisplayIndex))
+    setIsJumpInputOpen(true)
+  }
+
+  const closeJumpInput = () => {
+    setIsJumpInputOpen(false)
+  }
+
+  const submitJumpInput = () => {
+    const parsed = Number.parseInt(jumpInputValue, 10)
+    if (!Number.isFinite(parsed)) return
+    jumpToNavigationIndex(parsed)
+    setIsJumpInputOpen(false)
+  }
 
   useEffect(() => {
     if (hasResultsError) {
@@ -108,10 +180,168 @@ export default function SearchResults() {
     return () => removeNotification("results-fetch-error")
   }, [addNotification, hasResultsError, removeNotification])
 
+  useEffect(() => {
+    if (!sourceViewOn || !group) return
+    let nextInitId: string | null = null
+    let nextActivePoint: string | null = null
+
+    if (!init) {
+      if (listLoading) return
+      const firstHit = listData?.pages?.[0]?.data?.[0]
+      const firstHitId = firstHit?.fields?.uuid?.[0]
+      if (typeof firstHitId !== "string" || !firstHitId.trim()) return
+      nextInitId = firstHitId
+
+      const firstCoords = firstHit?.fields?.location?.[0]?.coordinates
+      if (
+        Array.isArray(firstCoords) &&
+        firstCoords.length === 2 &&
+        Number.isFinite(Number(firstCoords[0])) &&
+        Number.isFinite(Number(firstCoords[1]))
+      ) {
+        nextActivePoint = `${firstCoords[1]},${firstCoords[0]}`
+      }
+    } else {
+      if (subpostNav.isFetching) return
+      if (subpostNav.currentIndex !== -1) return
+      const firstNavItem = subpostNav.items[0]
+      if (!firstNavItem?.id) return
+      nextInitId = firstNavItem.id
+      nextActivePoint = firstNavItem.point
+    }
+
+    const nextParams = new URLSearchParams(searchParams.toString())
+    nextParams.set("init", nextInitId)
+    if (nextActivePoint) {
+      nextParams.set("activePoint", nextActivePoint)
+    } else {
+      nextParams.delete("activePoint")
+    }
+
+    if (nextParams.toString() === searchParams.toString()) return
+    router.replace(`?${nextParams.toString()}`, { scroll: false })
+  }, [group, init, listData, listLoading, router, searchParams, sourceViewOn, subpostNav.currentIndex, subpostNav.isFetching, subpostNav.items])
+
+  useEffect(() => {
+    if (!isJumpInputOpen) return
+    jumpInputRef.current?.focus()
+    jumpInputRef.current?.select()
+  }, [isJumpInputOpen])
+
   return (
     <div ref={resultsContainerRef} className={isMobile ? 'mb-28' : 'mb-0'}>
-      {subpostNav.isSubpostNavigation && <ResultsListNavigator />}
-      {init && (initResultCardLoading && !initResultCardData ? (
+      {showNavigationTopBar && (
+        <div className="w-full bg-neutral-50 rounded-t-md border-b border-neutral-200 px-2 py-2">
+          <div className="w-full flex items-center">
+            <div className="flex items-center gap-2 xl:px-1 flex-1 min-w-0">
+              <div className="flex items-center gap-2 min-w-0">
+                {navGroupTitle ? (
+                  <span className="text-base xl:text-lg font-semibold truncate min-w-0">{navGroupTitle}</span>
+                ) : (
+                  <span className="text-base xl:text-lg text-neutral-900 font-sans font-semibold truncate">Underpostar</span>
+                )}
+                {isJumpInputOpen ? (
+                  <div className="flex items-center gap-1">
+                    <label htmlFor="jump-to-number-input" className="sr-only">Gå til nummer</label>
+                    <input
+                      ref={jumpInputRef}
+                      id="jump-to-number-input"
+                      type="number"
+                      min={1}
+                      max={subpostNav.items.length}
+                      value={jumpInputValue}
+                      onChange={(e) => setJumpInputValue(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault()
+                          submitJumpInput()
+                        }
+                        if (e.key === "Escape") {
+                          e.preventDefault()
+                          closeJumpInput()
+                        }
+                      }}
+                      className="h-7 w-20 rounded-md border border-neutral-300 px-2 text-sm"
+                      aria-label={`Gå til nummer mellom 1 og ${subpostNav.items.length}`}
+                    />
+                    <button
+                      type="button"
+                      onClick={submitJumpInput}
+                      className="inline-flex h-7 px-2 items-center justify-center rounded-md bg-neutral-700 text-white text-xs font-semibold hover:bg-neutral-800"
+                    >
+                      Gå
+                    </button>
+                    <button
+                      type="button"
+                      onClick={closeJumpInput}
+                      className="inline-flex h-7 px-2 items-center justify-center rounded-md border border-neutral-300 bg-white text-xs font-semibold text-neutral-700 hover:bg-neutral-100"
+                    >
+                      Avbryt
+                    </button>
+                  </div>
+                ) : subpostNav.isFetching ? (
+                  <span className="inline-flex min-w-[1.75rem] h-6 items-center justify-center">
+                    <Spinner status="Laster navigering" className="text-base text-primary-700" />
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={openJumpInput}
+                    className="inline-flex min-w-[1.75rem] h-6 px-2 items-center justify-center rounded-full bg-neutral-700 text-white text-sm font-semibold tabular-nums hover:bg-neutral-800"
+                    aria-label="Gå til nummer i navigering"
+                  >
+                    {topBarNavBadge}
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="ml-auto flex items-center gap-2">
+              {showTopBarNavigator && (
+                <>
+                  <ClickableIcon
+                    label="Førre"
+                    add={{ init: subpostNav.prevId, point: subpostNav.prevPoint, activePoint: subpostNav.prevPoint, center: subpostNav.prevPoint, zoom: "15" }}
+                    remove={["activeYear", "activeName"]}
+                    onClick={() => flyToPoint(subpostNav.prevPoint)}
+                    notClickable={!subpostNav.prevId || subpostNav.isFetching}
+                    className="btn btn-outline btn-compact rounded-full w-9 h-9 flex items-center justify-center border-neutral-200 bg-white shadow-none"
+                  >
+                    <PiCaretLeftBold aria-hidden="true" className="text-base" />
+                  </ClickableIcon>
+                  <ClickableIcon
+                    label="Neste"
+                    add={{ init: subpostNav.nextId, point: subpostNav.nextPoint, activePoint: subpostNav.nextPoint, center: subpostNav.nextPoint, zoom: "15" }}
+                    remove={["activeYear", "activeName"]}
+                    onClick={() => flyToPoint(subpostNav.nextPoint)}
+                    notClickable={!subpostNav.nextId || subpostNav.isFetching}
+                    className="btn btn-outline btn-compact rounded-full w-9 h-9 flex items-center justify-center border-neutral-200 bg-white shadow-none"
+                  >
+                    <PiCaretRightBold aria-hidden="true" className="text-base" />
+                  </ClickableIcon>
+                </>
+              )}
+              {parentSearchUrl?.current ? (
+                <ClickableIcon
+                  label="Overordna søk"
+                  href={parentSearchUrl.current || "/search"}
+                  className="btn btn-outline rounded-full text-neutral-900 p-2"
+                >
+                  <PiArrowElbowLeftUpBold aria-hidden="true" className="text-lg text-neutral-800" />
+                </ClickableIcon>
+              ) : (
+                <ClickableIcon
+                  label="Overordna søk"
+                  remove={["group", "sourceView", "init"]}
+                  className="btn btn-outline rounded-full text-neutral-900 p-2"
+                >
+                  <PiArrowElbowLeftUpBold aria-hidden="true" className="text-lg text-neutral-800" />
+                </ClickableIcon>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      {shouldShowNavigationBody && init && (initResultCardLoading && !initResultCardData ? (
         <div className="relative">
           <ResultCardSkeleton hasIiif={initResultCardData?.iiifItems?.length > 0} />
         </div>
@@ -122,12 +352,12 @@ export default function SearchResults() {
       ))}
 
 
-      {initResultCardLoading && !initResultCardData ? (
+      {shouldShowNavigationBody && showAdditionalResultsSection && !showLegacyUnderpostarWithoutInit && (initResultCardLoading && !initResultCardData ? (
         <div className="w-full border-t border-neutral-200 py-2 px-3 flex items-center gap-2">
           <div className="w-4 h-4 bg-neutral-900/10 rounded-full animate-pulse"></div>
           <div className="h-4 bg-neutral-900/10 rounded-full animate-pulse" style={{ width: '10rem' }}></div>
         </div>
-      ) : hideSameCoordinateHeaderBar ? null : (
+      ) : (
         <div className={`w-full flex flex-wrap items-center bg-neutral-50 py-2 px-2 gap-y-3 gap-x-2 text-neutral-950 min-w-0 overflow-hidden ${init ? 'border-t border-neutral-200' : ''}`}>
           <div className={`w-full flex flex-wrap`}> <ResultsHeader sameCoordinateCount={subpostNav.sameCoordinateCount} /></div>
           {!hideResultsOn && !group && (sourceViewOn || point || init) && <>
@@ -162,31 +392,17 @@ export default function SearchResults() {
           />}
           </>}
         </div>
-      )}
-      
+      ))}
 
-      {!mobilePreview && !hideResultsOn && (
+      
+      {showAdditionalResultsSection && !showLegacyUnderpostarWithoutInit && !mobilePreview && !hideResultsOn && (
         <>
           <ul
             id="result_list"
             aria-label={sourceViewOn ? 'Fleire kjeldepostar' : 'Fleire namnegrupper'}
             className={`flex flex-col divide-y divide-neutral-200 border-y border-neutral-200`}
           >
-            {subpostNav.isSubpostNavigation ? (
-              <>
-                {subpostNav.sameCoordinateHits.map((hit, i) => (
-                  <li key={`samecoord-${hit?.fields?.uuid?.[0] ?? i}`} className="relative">
-                    <ResultItem hit={hit} />
-                  </li>
-                ))}
-
-                {subpostNav.isFetching && (
-                  <li className="relative">
-                    <ResultItemSkeleton />
-                  </li>
-                )}
-              </>
-            ) : Array.from({
+            {Array.from({
               length: resultLimitNumber ||
                 Math.min(
                   resultCountExceptInit,
@@ -249,7 +465,8 @@ export default function SearchResults() {
                 );
               }
               else if (itemData) {
-                if (!init || noGeoOn) {
+                const renderCardResult = !init || noGeoOn
+                if (renderCardResult) {
                   const uuid = itemData.fields.uuid[0]
                   const isActive = scrollIndex === i
                   body = (
@@ -299,50 +516,51 @@ export default function SearchResults() {
             })}
 
           </ul>
-          {(isMobile ||
-            searchError ||
-            listError ||
-            totalHits?.value == 0 ||
-            hasNoAdditionalResults) && (
-              <div className={`flex flex-col gap-4 py-4 pb-8 xl:pb-4`}>
-                {filterCount > 0 && (
-                  <div className="mx-2 mb-4">
-                    <ActiveFilters />
-                  </div>
-                )}
-
-                {/* Empty states */}
-                {!hasResultsError &&
-                  <div className="flex justify-center flex-col gap-4">
-                    {
-                      group && totalHits?.value == 0 && <div className="flex justify-center">
-                      <div className="flex flex-col items-center gap-4 text-neutral-950">
-                        <p className="text-neutral-950">Ingen resultat i denne namnegruppa</p>
-                        <Clickable className="flex items-center gap-2 btn btn-neutral" remove={['group', 'sourceView']}>
-                          <PiMagnifyingGlass aria-hidden="true" className="text-white"/>
-                          Søk i alle namnegrupper
-                        </Clickable>
-                      </div>
-                    </div>}
-                    <div
-                      className="flex flex-col items-center gap-2 text-neutral-950"
-                    >
-                      <Link
-                        scroll={false}
-                        href="/help"
-                        className="flex items-center gap-2 px-4 py-3 rounded-md transition-colors no-underline text-neutral-900 hover:bg-accent-100"
-                      >
-                        <PiQuestion className="text-xl" aria-hidden="true" />
-                        Søketips
-                      </Link>
-                    </div>
-                  </div>
-                }
-
-                
-              </div>
-            )}
         </>
+      )}
+      {((isMobile ||
+        searchError ||
+        listError ||
+        showNoResultsFallback ||
+        hasNoAdditionalResults) &&
+        (!showLegacyUnderpostarWithoutInit || showNoResultsFallback)) && (
+        <div className={`flex flex-col gap-4 py-4 pb-8 xl:pb-4`}>
+          {filterCount > 0 && (
+            <div className="mx-2 mb-4">
+              <ActiveFilters />
+            </div>
+          )}
+
+          {/* Empty states */}
+          {!hasResultsError &&
+            <div className="flex justify-center flex-col gap-4">
+              {
+                group && showNoResultsFallback && <div className="flex justify-center">
+                <div className="flex flex-col items-center gap-4 text-neutral-950">
+                  <p className="text-neutral-950">Ingen resultat i denne namnegruppa</p>
+                  <Clickable className="flex items-center gap-2 btn btn-neutral" remove={['group', 'sourceView']}>
+                    <PiMagnifyingGlass aria-hidden="true" className="text-white"/>
+                    Søk i alle namnegrupper
+                  </Clickable>
+                </div>
+              </div>}
+              <div
+                className="flex flex-col items-center gap-2 text-neutral-950"
+              >
+                <Link
+                  scroll={false}
+                  href="/help"
+                  className="flex items-center gap-2 px-4 py-3 rounded-md transition-colors no-underline text-neutral-900 hover:bg-accent-100"
+                >
+                  <PiQuestion className="text-xl" aria-hidden="true" />
+                  Søketips
+                </Link>
+              </div>
+            </div>
+          }
+
+          
+        </div>
       )}
     </div>
   )

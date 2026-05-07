@@ -36,7 +36,7 @@ const listDataQuery = async ({
     from: number;
 }) => {
 
-    const sortPoint = !selectedGroup && point ? [point[1], point[0]] as [number, number] : null
+    const sortPoint = point ? [point[1], point[0]] as [number, number] : null
     const exclude = init || null
     // In selectedGroup mode, list items are source records, so exclude by uuid.
     const idField = selectedGroup ? 'uuid' : (sourceViewOn ? 'uuid' : 'group.id')

@@ -3,14 +3,15 @@ import ClickableIcon from "@/components/ui/clickable/clickable-icon";
 import { GlobalContext } from "@/state/providers/global-provider";
 import { useSubpostNavigation } from "./use-subpost-navigation";
 import { useContext } from "react";
-import { PiCaretLeftBold, PiCaretRightBold, PiXBold } from "react-icons/pi";
+import { PiArrowElbowLeftUpBold, PiCaretLeftBold, PiCaretRightBold } from "react-icons/pi";
+import Spinner from "@/components/svg/Spinner";
 
 export default function ResultsListNavigator({
   className,
 }: {
   className?: string
 }) {
-  const { isMobile, mapFunctionRef } = useContext(GlobalContext);
+  const { isMobile, mapFunctionRef, parentSearchUrl } = useContext(GlobalContext);
   const { isSubpostNavigation, currentId, items, currentIndex, prevId, nextId, prevPoint, nextPoint, isFetching } = useSubpostNavigation()
 
   const flyToPoint = (point: string | null) => {
@@ -42,7 +43,7 @@ export default function ResultsListNavigator({
 
       <span className="text-sm xl:text-base text-neutral-900 font-sans font-semibold tabular-nums whitespace-nowrap min-w-[4.5rem] text-center">
         {isFetching
-          ? `… / ${items.length}`
+          ? <span className="inline-flex items-center justify-center w-full"><Spinner status="Laster navigering" className="text-base text-primary-700" /></span>
           : hasCurrent
             ? `${currentIndex + 1} / ${items.length}`
             : `– / ${items.length}`}
@@ -60,13 +61,23 @@ export default function ResultsListNavigator({
       </ClickableIcon>
 
       <div className={`absolute inset-y-0 ${isMobile ? "right-3" : "right-2"} flex items-center`}>
-        <ClickableIcon
-          label="Lukk navigering"
-          remove={["activePoint", "activeYear", "activeName", "init", "resultLimit"]}
-          className="btn btn-outline rounded-full text-neutral-900 p-2"
-        >
-          <PiXBold aria-hidden="true" className="text-lg text-neutral-800" />
-        </ClickableIcon>
+        {parentSearchUrl?.current ? (
+          <ClickableIcon
+            label="Overordna søk"
+            href={parentSearchUrl.current || "/search"}
+            className="btn btn-outline rounded-full text-neutral-900 p-2"
+          >
+            <PiArrowElbowLeftUpBold aria-hidden="true" className="text-lg text-neutral-800" />
+          </ClickableIcon>
+        ) : (
+          <ClickableIcon
+            label="Overordna søk"
+            remove={["activePoint", "activeYear", "activeName", "group", "sourceView", "init", "resultLimit"]}
+            className="btn btn-outline rounded-full text-neutral-900 p-2"
+          >
+            <PiArrowElbowLeftUpBold aria-hidden="true" className="text-lg text-neutral-800" />
+          </ClickableIcon>
+        )}
       </div>
     </nav>
   );

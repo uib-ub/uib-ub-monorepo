@@ -43,29 +43,18 @@ export default function ResultsHeader({ sameCoordinateCount }: { sameCoordinateC
 
     const title = sourceView
         ? (init
-            ? (group ? "Same koordinat" : "Andre kjeldepostar")
+            ? "Andre treff"
             : (group ? "Underpostar" : "Kjeldepostar"))
-        : (init ? "Andre namnegrupper" : "Namnegrupper")
+        : (init ? "Andre treff" : "Namnegrupper")
 
     const showGroupInfo = showGroupClose && (groupTitle || groupAdmText)
     const showGroupAsTitleDesktop = Boolean(!isMobile && sourceView && group && !init && (groupTitle || groupAdmText))
     const showGroupInfoInlineDesktop = showGroupInfo && !isMobile && !showGroupAsTitleDesktop
 
-    const isSameCoordinateMode = Boolean(sourceView && init && group)
-    const badgeCount = isSameCoordinateMode && typeof sameCoordinateCount === "number"
-        ? sameCoordinateCount
-        : (sourceView ? docTotalHits?.value ?? 0 : groupTotalHits?.value ?? 0) - (init ? 1 : 0)
-
-    // In "Same koordinat" mode, hide the entire header line if there are no matching items.
-    // (The init item is rendered separately, so 0 means nothing to show/expand.)
-    if (
-        isSameCoordinateMode &&
-        typeof sameCoordinateCount === "number" &&
-        sameCoordinateCount <= 0 &&
-        !(searchLoading || listLoading)
-    ) {
-        return null
-    }
+    const badgeCount = Math.max(
+        0,
+        (sourceView ? docTotalHits?.value ?? 0 : groupTotalHits?.value ?? 0) - (init ? 1 : 0)
+    )
 
     return (
         <div className="w-full">

@@ -11,7 +11,8 @@ export async function GET(request: Request) {
   const query: Record<string, any> = {
     "track_total_hits": 10000000,
     "track_scores": false,
-    "size": 0,
+    "size": 1000,
+    "fields": ["uuid"],
     "aggs": {
       "viewport": {
         "geo_bounds": {

@@ -88,7 +88,6 @@ export default function ServerFacet() {
     params.delete('zoom')
     params.delete('center')
     params.delete('doc')
-    params.delete('group')
     params.delete('init')
 
     existingValues
@@ -148,7 +147,6 @@ export default function ServerFacet() {
     params.delete('zoom');
     params.delete('center');
     params.delete('doc');
-    params.delete('group');
     params.delete('init');
 
     const negativeValue = `!${value}`;

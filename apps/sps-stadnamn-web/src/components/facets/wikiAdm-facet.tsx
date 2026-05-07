@@ -52,7 +52,6 @@ export default function WikiAdmFacet() {
     params.delete('zoom');
     params.delete('center');
     params.delete('doc');
-    params.delete('group');
     params.delete('init');
 
     // Get current wikiAdm values

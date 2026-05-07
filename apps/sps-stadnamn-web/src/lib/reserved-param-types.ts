@@ -76,6 +76,7 @@ export const SPECIAL_CASE_FACETS = ['name', 'year'] as const
     'debugGroups',
     'noGeo', // passed in request body
     'hideResults',
+    'hideNavigation',
     'resultLimit'
 
 

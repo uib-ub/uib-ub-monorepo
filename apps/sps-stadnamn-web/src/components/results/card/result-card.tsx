@@ -25,6 +25,7 @@ import { ResultCardSkeleton } from "@/components/results/result-skeletons";
 import DistanceBadge from "@/components/results/distance-badge";
 import { Badge, TitleBadge } from "@/components/ui/badge";
 import { replaceScrollParamInHistory } from "@/components/results/scroll-hooks";
+import { useSubpostNavigation } from "@/components/results/use-subpost-navigation";
 
 function getLatLngFromLocationField(locationField: unknown): [number, number] | null {
     // Search hits use `fields.location[0].coordinates` (like `ResultItem`).
@@ -144,6 +145,7 @@ function GroupBottomToolbar({
     const group = useGroupParam();
     const init = useInitParam();
     const setSourceViewResetUrl = useSessionStore((s) => s.setSourceViewResetUrl);
+    const subpostNav = useSubpostNavigation();
 
     if (!groupData) return null;
     const scrollValue = typeof scrollIndex === "number" ? scrollIndex : null;
@@ -176,6 +178,7 @@ function GroupBottomToolbar({
     const dataset = Array.isArray(datasets) && datasets.length > 0 ? datasets[0] : undefined;
 
     const uuid = groupData.fields?.uuid?.[0] ?? null;
+    const initialSourceUuid = typeof uuid === "string" && uuid.trim() ? uuid : null;
 
     const groupInitParamValue = isMulti ? stringToBase64Url(groupData.id) : groupData.id;
     const isInit = Boolean(init && init === groupInitParamValue);
@@ -186,6 +189,14 @@ function GroupBottomToolbar({
         if (isMobile && snappedPosition == "top") setSnappedPosition("middle");
 
     };
+
+    const showInlineNavigator = Boolean(
+        sourceViewOn &&
+        group &&
+        init &&
+        subpostNav.isSubpostNavigation &&
+        subpostNav.items.length > 1
+    );
 
     const toolbarItems = (
         <>
@@ -219,6 +230,8 @@ function GroupBottomToolbar({
                             only={{
                                 sourceView: "on",
                                 group: stringToBase64Url(groupData.id),
+                                init: initialSourceUuid,
+                                point: pointValue,
                                 center,
                                 zoom,
                             }}
@@ -252,9 +265,23 @@ function GroupBottomToolbar({
 
     return (
         <div className="w-full px-3 mt-auto flex flex-col gap-2">
+            {isActivePoint && sourceViewOn && (!group || init) &&(
+                <div className="min-w-0 flex-1 py-2 my-1">
+                    {coordinateType ? (
+                        <CoordinateTypeInfo coordinateType={coordinateType} />
+                    ) : (
+                        <span className="text-sm text-neutral-700">
+                            Opphavleg koordinat i{" "}
+                            {dataset ? datasetTitles[dataset] || dataset : "kjelde"}
+                        </span>
+                    )}
+                </div>
+            )}
             <div className="flex items-center gap-2 flex-wrap">
-                <div className={`ml-auto flex items-center gap-2 ${isActivePoint ? "mt-1" : ""}`}>
+                <div className="flex items-center gap-2 flex-wrap">
                     {toolbarItems}
+                </div>
+                <div className="ml-auto flex items-center">
                     <Clickable
                         link={true}
                         href={uuid ? `/uuid/${uuid}` : ""}
@@ -300,18 +327,6 @@ function GroupBottomToolbar({
                     </Clickable>
                 </div>
             </div>
-            {isActivePoint && sourceViewOn && (!group || init) &&(
-                <div className="min-w-0 flex-1 rounded-md border border-neutral-200 bg-neutral-50 px-2 py-1">
-                    {coordinateType ? (
-                        <CoordinateTypeInfo coordinateType={coordinateType} />
-                    ) : (
-                        <span className="text-sm text-neutral-700">
-                            Opphavleg koordinat i{" "}
-                            {dataset ? datasetTitles[dataset] || dataset : "kjelde"}
-                        </span>
-                    )}
-                </div>
-            )}
         </div>
     );
 }

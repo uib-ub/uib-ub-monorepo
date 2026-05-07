@@ -114,6 +114,8 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     const optionsOn = useOptionsOn()
     const hideResultsOn = useHideResultsOn()
     const init = useInitParam()
+    const sourceViewOn = useSourceViewOn()
+    const group = useGroupParam()
 
 
     const [showScrollToTop, setShowScrollToTop] = useState(false)
@@ -141,8 +143,9 @@ function RightWindow({ children }: { children: React.ReactNode }) {
     if (isMobile) {
         return <>{children}</>
     }
-    const collapseRightWindow = hideResultsOn && !init
-    const dockRightWindowToBottom = hideResultsOn && !!init
+    const hasNavigationContext = Boolean(sourceViewOn && group)
+    const collapseRightWindow = hideResultsOn && !init && !hasNavigationContext
+    const dockRightWindowToBottom = hideResultsOn && (!!init || hasNavigationContext)
     const rightWindowTopClass = collapseRightWindow
         ? 'top-[calc(100svh-2.5rem)]'
         : dockRightWindowToBottom
