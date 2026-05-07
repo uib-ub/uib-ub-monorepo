@@ -173,7 +173,7 @@ export const publishDates: Record<string, string> = {
   snor: "2025-04-25",
   herad: "2025-04-25",
   seta: "2025-04-25",
-  etym: "2026-05-05"
+  //etym: "2026-05-05"
 }
 
 
