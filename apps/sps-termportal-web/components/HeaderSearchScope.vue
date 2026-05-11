@@ -10,5 +10,5 @@
 
 <script setup lang="ts">
 const searchInterface = useSearchInterface();
-const locale = useLocale();
+const { locale } = useI18n();
 </script>

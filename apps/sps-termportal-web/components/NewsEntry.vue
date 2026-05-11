@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-const locale = useLocale();
+const { locale } = useI18n();
 
 const props = defineProps({
   title: { type: String, required: true },

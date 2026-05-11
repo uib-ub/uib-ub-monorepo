@@ -44,7 +44,7 @@
 <script setup lang="ts">
 const appConfig = useAppConfig();
 const route = useRoute();
-const locale = useLocale();
+const { locale } = useI18n();
 const termbase = route.params.termbase as string;
 const conceptId = route.params.id as string;
 

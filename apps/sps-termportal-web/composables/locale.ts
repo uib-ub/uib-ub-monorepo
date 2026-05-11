@@ -1,12 +1,5 @@
-import { useI18n } from "vue-i18n";
-
-export const useLocale = () => {
-  const i18n = useI18n();
-  return i18n.locale as Ref<LocalLangCode>;
-};
-
 export const useLocaleLangOrder = () => {
-  const locale = useLocale();
+  const { locale } = useI18n();
   const appConfig = useAppConfig();
   const langOrder = toRef(() => [
     ...appConfig.language.order.update[locale.value],
@@ -68,7 +61,7 @@ export const useOrderedTermbases = () => {
 
 export function localizeSnomedVersionLabel() {
   const bootstrapData = useBootstrapData();
-  const locale = useLocale();
+  const { locale } = useI18n();
   const date = new Date(bootstrapData.value.termbase.SNOMEDCT.versionEdition);
   const options = {
     year: "numeric",

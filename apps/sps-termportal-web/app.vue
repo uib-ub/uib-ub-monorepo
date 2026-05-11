@@ -18,13 +18,11 @@
 </template>
 
 <script setup>
-import { useI18n } from "vue-i18n";
-
-const i18n = useI18n();
+const { locale } = useI18n();
 
 useHead({
   htmlAttrs: {
-    lang: i18n.locale,
+    lang: locale,
   },
   script: [
     {
@@ -44,7 +42,6 @@ useHead({
 const route = useRoute();
 const searchBarWasFocused = useSearchBarWasFocused();
 const allowSearchFetch = useAllowSearchFetch();
-const skipLink = ref();
 
 onMounted(() => {
   /*

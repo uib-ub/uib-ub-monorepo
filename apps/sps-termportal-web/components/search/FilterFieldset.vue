@@ -8,9 +8,6 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-
-const i18n = useI18n();
 const searchInterface = useSearchInterface();
 
 const props = defineProps<{
@@ -20,9 +17,9 @@ const props = defineProps<{
 const displaytitle = () => {
   if (props.filterKey === "context") {
     if (searchInterface.value.useDomain) {
-      return i18n.t("global.domain.domainCap", 0);
+      return $t("global.domain.domainCap", 0);
     }
-    return i18n.t("global.termbase", 0);
+    return $t("global.termbase", 0);
   }
   return props.title;
 };

@@ -31,14 +31,11 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-
 const appConfig = useAppConfig();
 const termpostViewOnlyLangs = appConfig.language.dataDisplayOnly;
 
 const bootstrapData = useBootstrapData();
 const localeLangOrder = useLocaleLangOrder();
-const i18n = useI18n();
 
 const searchLanguageTermbase = useSearchLanguageTermbase();
 const searchTranslateTermbase = useSearchTranslateTermbase();
@@ -52,12 +49,12 @@ const optionsLanguage = computed(() => {
   );
   const options = [
     {
-      label: i18n.t("global.lang.all") + ` (${intersection.length})`,
+      label: $t("global.lang.all") + ` (${intersection.length})`,
       value: "all",
     },
   ].concat(
     intersection.map((lang) => {
-      return { label: i18n.t("global.lang." + lang), value: lang };
+      return { label: $t("global.lang." + lang), value: lang };
     }),
   );
   return options;
@@ -70,12 +67,12 @@ const optionsTranslate = computed(() => {
   );
   const options = [
     {
-      label: i18n.t("global.lang.none"),
+      label: $t("global.lang.none"),
       value: "none",
     },
   ].concat(
     intersection.map((lang) => {
-      return { label: i18n.t("global.lang." + lang), value: lang };
+      return { label: $t("global.lang." + lang), value: lang };
     }),
   );
   return options;

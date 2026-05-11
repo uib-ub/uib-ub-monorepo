@@ -18,7 +18,8 @@
       class="cursor-pointer flex h-full w-14 items-center justify-center rounded-r-[6px] bg-tpblue-400 text-white transition duration-200 ease-in-out hover:bg-blue-700 focus:bg-blue-700 focus:outline-none active:bg-blue-800"
       type="button"
       :aria-label="$t('searchBar.searchButtonLabel')"
-      @click="execSearch"
+      @click="
+        execSearch"
     >
       <Icon
         name="ic:outline-search"
@@ -30,9 +31,6 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-
-const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
 const searchInterface = useSearchInterface();
@@ -55,7 +53,7 @@ const search = async (event) => {
 const placeholder = computed(() => {
   const language
     = searchInterface.value.language !== "all"
-      ? ` ${i18n.t("searchBar.inLanguage")} ${i18n.t(
+      ? ` ${$t("searchBar.inLanguage")} ${$t(
         `global.lang.${searchInterface.value.language}`,
         2,
       )}`
@@ -78,18 +76,18 @@ const placeholder = computed(() => {
     // selected domains
       ? topDomains.length === 1
       // one domain selected
-        ? ` ${i18n.t("searchBar.inOneDomain")} ${domains.join(", ")}`
+        ? ` ${$t("searchBar.inOneDomain")} ${domains.join(", ")}`
         // more than one domain
-        : ` ${i18n.t("searchBar.inDomains")} ${domains.join(", ")}`
+        : ` ${$t("searchBar.inDomains")} ${domains.join(", ")}`
       // all domains
-      : ` ${i18n.t("searchBar.inAllDomains")}`
+      : ` ${$t("searchBar.inAllDomains")}`
     // termbase
     : searchInterface.value.termbase.length !== 0
     // specified termbase(s)
-      ? ` ${i18n.t("searchBar.in")} ${termbases.join(", ")}`
+      ? ` ${$t("searchBar.in")} ${termbases.join(", ")}`
       // all termbases
-      : ` ${i18n.t("searchBar.inAllTermbases")} `;
-  return i18n.t("searchBar.search") + language + context;
+      : ` ${$t("searchBar.inAllTermbases")} `;
+  return $t("searchBar.search") + language + context;
 });
 
 const clearText = () => {

@@ -39,12 +39,9 @@
 </template>
 
 <script setup>
-import { useI18n } from "vue-i18n";
-
 const appConfig = useAppConfig();
 const termpostViewOnlyLangs = appConfig.language.dataDisplayOnly;
 
-const i18n = useI18n();
 const searchInterface = useSearchInterface();
 const localeLangOrder = useLocaleLangOrder();
 const orderedTermbases = useOrderedTermbases();
@@ -60,12 +57,12 @@ const optionsLanguage = computed(() => {
   );
   const options = [
     {
-      label: i18n.t("global.lang.all") + ` (${intersection.length})`,
+      label: $t("global.lang.all") + ` (${intersection.length})`,
       value: "all",
     },
   ].concat(
     intersection.map((lang) => {
-      return { label: i18n.t("global.lang." + lang), value: lang };
+      return { label: $t("global.lang." + lang), value: lang };
     }),
   );
   return options;
@@ -79,12 +76,12 @@ const optionsTranslate = computed(() => {
   );
   const options = [
     {
-      label: i18n.t("global.lang.none"),
+      label: $t("global.lang.none"),
       value: "none",
     },
   ].concat(
     intersection.map((lang) => {
-      return { label: i18n.t("global.lang." + lang), value: lang };
+      return { label: $t("global.lang." + lang), value: lang };
     }),
   );
   return options;
@@ -94,12 +91,12 @@ const optionsTermbase = computed(() => {
   const filteredTermbases = deriveSearchOptions("termbase", "all");
   const options = [
     {
-      label: i18n.t("global.samling.all") + ` (${filteredTermbases.length})`,
+      label: $t("global.samling.all") + ` (${filteredTermbases.length})`,
       value: "all",
     },
   ].concat(
     filteredTermbases.map((tb) => {
-      return { label: i18n.t("global.samling." + tb), value: tb };
+      return { label: $t("global.samling." + tb), value: tb };
     }),
   );
   return options;

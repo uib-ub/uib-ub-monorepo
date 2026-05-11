@@ -108,9 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { Value } from "sass";
-
-const locale = useLocale();
+const { locale } = useI18n();
 
 const aboutKey = computed(() => `om_main_${locale.value}`);
 const { data: about, refresh: refreshAbout } = await useAsyncData(aboutKey.value, () => {

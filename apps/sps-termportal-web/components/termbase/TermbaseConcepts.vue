@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-const locale = useLocale();
+const { locale } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const breakpoint = useBreakpoint();

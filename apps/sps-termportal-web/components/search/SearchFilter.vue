@@ -6,7 +6,7 @@
   >
     <div class="flex justify-between pb-2 pr-1 pt-1 text-2xl">
       <div class="flex space-x-4">
-        <h2>{{ $t("searchFilter.filter") }}</h2>
+        <h2>{{ $t('searchFilter.filter') }}</h2>
         <UtilsTransitionOpacity>
           <div
             v-if="searchDataPending.aggregate"
@@ -61,8 +61,6 @@
 <script setup lang="ts">
 import { resetSearchFilterSelection, useFetchSearchData, useGenSearchOptions } from "#imports";
 
-import { useI18n } from "vue-i18n";
-
 const appConfig = useAppConfig();
 
 const bootstrapData = useBootstrapData();
@@ -73,7 +71,6 @@ const localeLangOrder = useLocaleLangOrder();
 const searchInterface = useSearchInterface();
 const searchDataPending = useSearchDataPending();
 const searchFilterSelection = useSearchFilterSelection();
-const i18n = useI18n();
 
 defineProps({
   placement: { type: String, default: "default" },
@@ -93,7 +90,7 @@ const filterSelected = computed(() => {
 const filterSections = () => {
   return [
     {
-      title: i18n.t("global.language"),
+      title: $t("global.language"),
       key: "lang",
       data: intersectUnique(
         localeLangOrder.value,
@@ -117,7 +114,7 @@ const filterSections = () => {
 
     },
     {
-      title: i18n.t("searchFilter.termproperty"),
+      title: $t("searchFilter.termproperty"),
       key: "predicate",
       data: intersectUnique(
         appConfig.data.predicates,
@@ -125,7 +122,7 @@ const filterSections = () => {
       ),
     },
     {
-      title: i18n.t("searchFilter.matching"),
+      title: $t("searchFilter.matching"),
       key: "matching",
       data: intersectUnique(
         appConfig.data.matching,

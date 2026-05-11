@@ -157,7 +157,5 @@
 </template>
 
 <script setup lang="ts">
-const locale = useLocale();
-
-const expandNews = ref<Array<string>>([]);
+const { locale } = useI18n();
 </script>

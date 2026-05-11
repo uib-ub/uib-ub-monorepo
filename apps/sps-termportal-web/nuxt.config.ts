@@ -1,6 +1,3 @@
-import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "url";
-import VueI18nVitePlugin from "@intlify/unplugin-vue-i18n/vite";
 import { v4 as uuidv4 } from "uuid";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
@@ -12,6 +9,7 @@ export default defineNuxtConfig({
     "@nuxt/icon",
     "@nuxtjs/sanity",
     "@nuxtjs/tailwindcss",
+    "@nuxtjs/i18n",
     "shadcn-nuxt",
   ],
   ssr: true,
@@ -100,18 +98,14 @@ export default defineNuxtConfig({
   nitro: {
     preset: "vercel",
   },
-  vite: {
-    plugins: [
-      VueI18nVitePlugin({
-        include: [
-          resolve(dirname(fileURLToPath(import.meta.url)), "./locales/*.json"),
-        ],
-      }),
+  i18n: {
+    strategy: "no_prefix",
+    defaultLocale: "nb",
+    locales: [
+      { code: "nb", name: "Bokmål", file: "nb.json" },
+      { code: "nn", name: "Nynorsk", file: "nn.json" },
+      { code: "en", name: "Engelsk", file: "en.json" },
     ],
-    // https://github.com/nuxt/nuxt/issues/24901
-    // define: {
-    //   __NUXT_ASYNC_CONTEXT__: false,
-    // },
   },
   sanity: {
     projectId: process.env.NUXT_SANITY_PROJECT_ID,
@@ -124,9 +118,4 @@ export default defineNuxtConfig({
     prefix: "",
     componentDir: "./components/ui",
   },
-  // htmlValidator: {
-  //  usePrettier: true,
-  //  logLevel: "verbose",
-  //  failOnError: false,
-  // },
 });

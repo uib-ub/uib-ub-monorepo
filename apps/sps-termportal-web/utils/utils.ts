@@ -1,5 +1,3 @@
-import { useI18n } from "vue-i18n";
-
 /**
  * Return unique intersection of two Arrays, sorted by order of first.
  *
@@ -195,18 +193,6 @@ export function flattenDict(dict: object, nestingKey: string, level = 0): string
   }
   return items;
 }
-
-export const getLangOptions = () => {
-  const appConfig = useAppConfig();
-  const locales = appConfig.language.locale;
-  const i18n = useI18n();
-  return locales.map(loc => ({
-    label: loc,
-    command: () => {
-      i18n.locale.value = loc;
-    },
-  }));
-};
 
 export function idOrUriToRoute(
   termbaseId: TermbaseId,

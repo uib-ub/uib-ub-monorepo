@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-const locale = useLocale();
+const { locale } = useI18n();
 
 const { data } = useLazyFetch(`/api/news/${locale.value}`);
 </script>
