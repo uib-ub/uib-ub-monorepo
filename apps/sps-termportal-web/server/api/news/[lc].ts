@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
   const appConfig = useAppConfig();
 
-  const locale = event?.context?.params?.locale ? event?.context?.params?.locale : "nb";
+  const locale = event.context.params.lc || "nb";
   const langOrder = [
     ...appConfig.language.order.update[locale],
     ...appConfig.language.order.default.filter(

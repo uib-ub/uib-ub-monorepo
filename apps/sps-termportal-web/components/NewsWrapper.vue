@@ -33,8 +33,13 @@
 
 <script setup lang="ts">
 const { locale } = useI18n();
+const { data } = await useFetch(() => `/api/news/${locale.value}`, {
+  key: `news_${locale.value}`,
+  headers: import.meta.server
+    ? { cookie: "session=" + useRuntimeConfig().apiKey }
+    : undefined,
 
-const { data } = useLazyFetch(`/api/news/${locale.value}`);
+});
 </script>
 
 <style>
