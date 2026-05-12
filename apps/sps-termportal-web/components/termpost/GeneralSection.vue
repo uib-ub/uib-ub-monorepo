@@ -120,7 +120,7 @@
 
 <script setup lang="ts">
 const route = useRoute();
-const locale = useLocale();
+const { locale } = useI18n();
 const { getLaLo } = useLazyLocale();
 const termbase = route.params.termbase as string;
 const appConfig = useAppConfig();

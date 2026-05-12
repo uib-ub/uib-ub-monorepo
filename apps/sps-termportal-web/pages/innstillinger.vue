@@ -34,25 +34,24 @@
           </div>
           <div class="flex flex-col gap-0.5 pt-2">
             <div
-              v-for="lang in locales"
-              :key="'rbv' + lang"
+              v-for="loc in locales"
+              :key="'rbv' + loc.code"
               class="align-items-center group flex w-fit"
             >
               <input
-                :id="'rb-' + lang"
-                v-model="i18n.locale.value"
+                :id="'rb-' + loc.code"
                 type="radio"
                 class="peer outline-none"
-                :value="lang"
-                @keydown.enter="setLocale(lang)"
+                :value="loc.code"
+                @keydown.enter="setLocale(loc.code)"
               >
               <label
-                :for="'rb-' + lang"
+                :for="'rb-' + loc.code"
                 class="tp-transition-shadow flex gap-2 rounded-[7px] border border-transparent px-1.5 py-1 pr-3 group-hover:cursor-pointer group-hover:border group-hover:border-tpblue-300 peer-focus:border peer-focus:border-tpblue-300 peer-focus:shadow-tphalo"
-                @click="setLocale(lang)"
+                @click="setLocale(loc.code)"
               >
                 <Icon
-                  v-if="i18n.locale.value === lang"
+                  v-if="locale === loc.code"
                   class="text-tpblue-400"
                   name="akar-icons:radio-fill"
                   aria-hidden="true"
@@ -66,21 +65,21 @@
                   size="1.4em"
                 />
                 <span class="text-base text-black">
-                  {{ $t("global.lang." + lang) }}</span></label>
+                  {{ $t("global.lang." + loc.code) }}</span></label>
             </div>
           </div>
           <select
             v-if="false"
             id="locale-select"
-            v-model="i18n.locale.value"
+            v-model="locale"
             class="tp-search-dd cursor-pointer py-1"
           >
             <option
-              v-for="lang in locales"
-              :key="lang"
-              :value="lang"
+              v-for="loc in locales"
+              :key="loc.code"
+              :value="loc.code"
             >
-              {{ $t("global.lang." + lang) }}
+              {{ $t("global.lang." + loc.code) }}
             </option>
           </select>
         </section>
@@ -157,19 +156,11 @@
 </template>
 
 <script setup>
-import { useI18n } from "vue-i18n";
 import { pushDataLangDispEvent } from "~/utils/analyticsEvents";
 
-const appConfig = useAppConfig();
-const locales = appConfig.language.locale;
-
-const i18n = useI18n();
+const { locale, locales, setLocale } = useI18n();
 const dataDisplayLanguages = useDataDisplayLanguages();
 const localeLangOrder = useLocaleLangOrder();
-
-function setLocale(language) {
-  i18n.locale.value = language;
-}
 
 function toggleLang(language) {
   pushDataLangDispEvent(dataDisplayLanguages.value, language);

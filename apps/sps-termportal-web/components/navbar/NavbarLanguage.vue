@@ -28,7 +28,7 @@
     <Menu
       id="langMenu"
       ref="langMenu"
-      :model="langOptions"
+      :model="locales"
       :popup="true"
     >
       <template #start>
@@ -41,10 +41,11 @@
           class="p-menuitem-link"
           v-bind="props.action"
           :aria-current="locale === item.label"
+          @click="setLocale(item.code)"
         >
           <div class="p-menuitem-text space-x-2">
             <span class="">
-              {{ $t("global.lang." + item.label) }}
+              {{ $t("global.lang." + item.code) }}
             </span>
             <span aria-hidden="true">
               <Icon
@@ -62,8 +63,7 @@
 </template>
 
 <script setup lang="ts">
-const locale = useLocale();
+const { locale, locales, setLocale } = useI18n();
 
 const langMenu = ref();
-const langOptions = ref(getLangOptions());
 </script>

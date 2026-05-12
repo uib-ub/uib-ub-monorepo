@@ -8,5 +8,5 @@
 </template>
 
 <script setup lang="ts">
-const locale = useLocale();
+const { locale } = useI18n();
 </script>

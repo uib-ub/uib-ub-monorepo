@@ -23,7 +23,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 
-const locale = useLocale();
+const { locale } = useI18n();
 const appConfig = useAppConfig();
 
 const props = defineProps<{

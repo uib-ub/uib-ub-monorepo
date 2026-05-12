@@ -140,10 +140,6 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-
-const i18n = useI18n();
-
 const props = defineProps({
   data: { type: Array, required: true },
   prop: { type: String, default: undefined },
@@ -165,9 +161,9 @@ const mainValue = (data) => {
         const key = value.split("/").slice(-1)[0];
         if (key !== "startingLanguage") {
           return (
-            i18n.t(`global.equivalence.${key}`)
+            $t(`global.equivalence.${key}`)
             + " "
-            + i18n.t(`global.lang.${props.meta.startingLanguage}`, 0)
+            + $t(`global.lang.${props.meta.startingLanguage}`, 0)
           );
         }
         else {

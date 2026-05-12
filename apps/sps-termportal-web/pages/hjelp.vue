@@ -73,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-const locale = useLocale();
+const { locale } = useI18n();
 
 const mainKey = computed(() => `help_main_${locale.value}`);
 const { data: main, refresh: refreshMain } = await useAsyncData(mainKey.value, () => {

@@ -25,9 +25,9 @@
       >
         <div class="basis-7/12">
           <ContentRenderer
-            v-if="page"
-            :key="key"
-            :value="page"
+            v-if="data"
+            :key="`welcome_${locale}`"
+            :value="data"
             class="content-wrapper"
           />
         </div>
@@ -42,12 +42,12 @@
 </template>
 
 <script setup lang="ts">
-const locale = useLocale();
+const { locale } = useI18n();
 
-const key = computed(() => `welcome_${locale.value}`);
-const { data: page, refresh } = await useAsyncData(key.value, () => {
-  return queryCollection("docs").path(`/web/${locale.value}/welcome`).first();
-});
-
-watch(() => locale.value, () => refresh());
+const { data } = await useAsyncData(
+  () => `welcome_${locale.value}`,
+  () => {
+    return queryCollection("docs").path(`/web/${locale.value}/welcome`).first();
+  },
+);
 </script>

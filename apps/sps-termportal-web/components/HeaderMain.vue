@@ -66,7 +66,7 @@
 import { HeaderSize } from "~/types/enums";
 
 const route = useRoute();
-const locale = useLocale();
+const { locale } = useI18n();
 const orderedTermbases = useOrderedTermbases();
 
 const headerSize = HeaderSize;

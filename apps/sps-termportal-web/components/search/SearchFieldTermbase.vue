@@ -31,9 +31,6 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-
-const i18n = useI18n();
 const route = useRoute();
 const router = useRouter();
 const searchInterface = useSearchInterface();
@@ -62,14 +59,14 @@ const search = async (event) => {
 const termbaselabel = getLaLo(`${props.termbaseId}-3A${props.termbaseId}`);
 const placeholder = computed(() => {
   return (
-    i18n.t("searchBar.search")
+    $t("searchBar.search")
     + (searchLanguageTermbase.value !== "all"
-      ? ` ${i18n.t("searchBar.inLanguage")} ${i18n.t(
+      ? ` ${$t("searchBar.inLanguage")} ${$t(
         `global.lang.${searchLanguageTermbase.value}`,
         2,
       )}`
       : "")
-    + ` ${i18n.t("searchBar.in")} `
+    + ` ${$t("searchBar.in")} `
     + termbaselabel
   );
 });

@@ -41,9 +41,6 @@
 <script setup lang="ts">
 import { useFetchSearchData, useGenSearchOptions } from "#imports";
 
-import { useI18n } from "vue-i18n";
-
-const i18n = useI18n();
 const searchFilterSelection = useSearchFilterSelection();
 const searchDataStats = useSearchDataStats();
 const searchDataPending = useSearchDataPending();
@@ -60,7 +57,7 @@ const label = () => {
     return getLaLo(props.fvalue);
   }
   else {
-    return i18n.t(`global.${props.ftype}.${props.fvalue}`);
+    return $t(`global.${props.ftype}.${props.fvalue}`);
   }
 };
 </script>

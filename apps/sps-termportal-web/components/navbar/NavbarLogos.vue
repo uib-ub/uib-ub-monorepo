@@ -47,7 +47,7 @@
 import AppLink from "termportal-ui/components/AppLink.vue";
 import { HeaderSize } from "~/types/enums";
 
-const locale = useLocale();
+const { locale } = useI18n();
 
 const headerSize = HeaderSize;
 defineProps<{

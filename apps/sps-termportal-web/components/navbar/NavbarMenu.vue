@@ -56,26 +56,28 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-
-const i18n = useI18n();
-const locale = useLocale();
+const { locale, locales, setLocale } = useI18n();
 
 const menu = ref();
 
 const menuOptions = computed(() => [
   {
-    label: `${i18n.t("navBar.navigation")}`,
+    label: $t("navBar.navigation"),
     items: [
-      { label: `${i18n.t("global.termbase", 2)}`, to: "/termbaser" },
-      { label: `${i18n.t("navBar.hjelp")}`, to: "/hjelp" },
-      { label: `${i18n.t("navBar.om")}`, to: "/om" },
-      { label: `${i18n.t("navBar.innstillinger")}`, to: "/innstillinger" },
+      { label: $t("global.termbase", 2), to: "/termbaser" },
+      { label: $t("navBar.hjelp"), to: "/hjelp" },
+      { label: $t("navBar.om"), to: "/om" },
+      { label: $t("navBar.innstillinger"), to: "/innstillinger" },
     ],
   },
   {
-    label: `${i18n.t("navBar.language")}`,
-    items: getLangOptions(),
+    label: $t("navBar.language"),
+    items: locales.value.map(loc => ({
+      label: loc.code,
+      command: () => {
+        setLocale(loc.code);
+      } })),
+
   },
 ]);
 </script>

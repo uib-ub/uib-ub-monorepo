@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-const locale = useLocale();
+const { locale } = useI18n();
 const orderedTermbases = useOrderedTermbases();
 const { getLaLo } = useLazyLocale();
 </script>
