@@ -1,8 +1,7 @@
 'use client'
-import { useDocIndex, useGroup } from '@/lib/param-hooks';
+import { useDocParam } from '@/lib/param-hooks';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
-import useGroupData from './group-data';
 
 
 const docDataQuery = async (docUuid: string, docParams?: { docData: Record<string, any>, docDataset?: string }) => {
@@ -36,18 +35,12 @@ const docDataQuery = async (docUuid: string, docParams?: { docData: Record<strin
 
 export default function useDocData(docParams?: { docData: Record<string, any>, docDataset?: string }) {
     const searchParams = useSearchParams()
-    const { groupData } = useGroupData()
-    const docIndex = useDocIndex()
-    const { activeGroupCode } = useGroup()
-    const doc = searchParams.get('doc')
-
-
-    const docUuid = searchParams.get('doc') || groupData?.[docIndex]?._source?.uuid
+    const doc = useDocParam()
 
     const { data, error: docError, isLoading: docLoading, isRefetching: docRefetching, isFetchedAfterMount: docFetchedAfterMount } = useQuery({
-        queryKey: ['doc', activeGroupCode, doc, docIndex, docUuid],
+        queryKey: ['doc', doc],
         placeholderData: (prevData) => prevData,
-        queryFn: async () => docUuid ? docDataQuery(docUuid, docParams) : null
+        queryFn: async () => doc ? docDataQuery(doc, docParams) : null
     })
 
     const { docData, docAdm, docDataset, docGroup } = data || {}

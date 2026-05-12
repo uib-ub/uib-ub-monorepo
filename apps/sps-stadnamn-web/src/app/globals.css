@@ -88,8 +88,11 @@
   }
 
   * {
-    scrollbar-color: #8e8580 transparent;
-    scrollbar-width: thin;
+    scrollbar-color: theme('colors.neutral.800') theme('colors.neutral.50');
+  }
+
+  .hidden-scrollbar {
+    scrollbar-width: none;    
   }
 
   input[type='checkbox'],
@@ -107,7 +110,7 @@
   }
 
   mark {
-    @apply bg-accent-200 border border-accent-900 rounded-sm px-1;
+    @apply bg-accent-300/70 text-neutral-950 font-semibold rounded-[2px] border-0 px-0;
   }
 
   a[href^="http"]:not(.no-underline):not(.override-external-icon):not([aria-label]):not(a[href^="https://stadnamn.no"]):not(a[href^="https://stadnamn.no"]):after,
@@ -128,10 +131,14 @@
 
 
   .carta-marina::before {
-    @apply fixed top-0 left-0 z-[-1] h-[100vh] w-full;
+    @apply absolute inset-0 z-[-1] h-full w-full;
     content: '';
     @apply bg-[url('/Carta_Marina_compressed.webp')] bg-cover bg-no-repeat bg-[center_40%];
     animation: fadeIn 2s ease-in forwards;
+  }
+
+  .carta-marina {
+    isolation: isolate;
   }
 
 
@@ -518,6 +525,18 @@
 }
 
 .leaflet-tooltip.point-marker-tooltip::before {
+  display: none;
+}
+
+.leaflet-tooltip.init-marker-tooltip {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  pointer-events: none;
+}
+
+.leaflet-tooltip.init-marker-tooltip::before {
   display: none;
 }
 

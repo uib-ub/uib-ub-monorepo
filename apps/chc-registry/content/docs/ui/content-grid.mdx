@@ -4,6 +4,8 @@ description: A Content Grid component
 full: true
 ---
 
+A CSS grid based layout using named lines, container queries and fluid typography that can be used to display articles, blog posts, etc. in a full width container. *Behavior in non full width context is not guaranteed... yet.*
+
 ## Preview
 
 <Tabs items={['preview', 'code']}>
@@ -17,40 +19,74 @@ full: true
 
 ## Installation
 
-### CLI
 
-<Tabs items={['npm', 'pnpm']}>
-  <Tab>
-    ```sh
-npx shadcn@latest add https://chc-registry.vercel.app/r/content-grid.json
-    ```
-  </Tab>
-  <Tab>
-    ```sh 
-pnpm dlx shadcn@latest add https://chc-registry.vercel.app/r/content-grid.json 
-    ```
-  </Tab>
+<Tabs defaultValue='cli'>
+<TabsList>
+  <TabsTrigger value='cli'>Command</TabsTrigger>
+  <TabsTrigger value='manual'>Manual</TabsTrigger>
+</TabsList>
+<TabsContent value='cli'>
+    <Tabs items={['npm', 'pnpm']}>
+      <Tab>
+        ```sh
+    npx shadcn@latest add https://chc-registry.vercel.app/r/content-grid.json
+        ```
+      </Tab>
+      <Tab>
+        ```sh 
+    pnpm dlx shadcn@latest add https://chc-registry.vercel.app/r/content-grid.json 
+        ```
+      </Tab>
+    </Tabs>
+    
+
+  </TabsContent>
+  <TabsContent value='manual'>
+    <Steps>
+      <Step>Add a classname utility function</Step>
+
+      ```tsx
+      import { clsx, type ClassValue } from 'clsx';
+      import { twMerge } from 'tailwind-merge';
+
+      export const cn = (...inputs: ClassValue[]) => {
+        return twMerge(clsx(inputs));
+      };
+      ```
+
+      <Step>Copy and paste the following code into your project</Step>
+
+      <ComponentSource name='content-grid' />
+
+      <Step>Update the import paths to match your project setup</Step>
+    </Steps>
+  </TabsContent>
 </Tabs>
 
-### Manual
+## Usage
 
-<Steps>
+The Content Grid component is a wrapper that allows you to display content in a grid layout. It is designed to be used in a container with a full width, and will automatically adjust the grid layout based on the container width, e.g. using container queries.
 
-<Step>Add a classname utility function</Step>
+### Basic Usage
 
 ```tsx
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { ContentGrid } from '@/components/ui/chc/content-grid';
 
-export const cn = (...inputs: ClassValue[]) => {
-  return twMerge(clsx(inputs));
-};
+<div className='@container max-h-[50vh] overflow-y-auto'>
+  <ContentGrid>
+    <h1>Content Grid</h1>
+    <p>Content Grid is a component that displays content in a grid layout.</p>
+  </ContentGrid>
+</div>
 ```
 
-<Step>Copy and paste the following code into your project</Step>
+### Usage class
 
-<ComponentSource name='content-grid' />
-
-<Step>Update the import paths to match your project setup</Step>
-
-</Steps>
+```tsx
+<div className='@container max-h-[50vh] overflow-y-auto'>
+  <div className='content-grid'>
+    <h1>Content Grid</h1>
+    <p>Content Grid is a component that displays content in a grid layout.</p>
+  </div>
+</div>
+```

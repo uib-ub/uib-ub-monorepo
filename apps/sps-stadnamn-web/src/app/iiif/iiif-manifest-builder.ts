@@ -12,6 +12,23 @@ const iiifCorsHeaders: Record<string, string> = {
   "Access-Control-Max-Age": "86400",
 }
 
+function forceArrays(value: any): any {
+  // Recursively turn string values into arrays while preserving the shape of language maps.
+  // Important: arrays must remain arrays (Object.entries on arrays would create "0", "1", ... keys).
+
+  if (Array.isArray(value)) {
+    return value.map((v) => (typeof v === 'string' ? v : forceArrays(v)))
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, val]) => [key, forceArrays(val)]))
+  }
+
+  if (typeof value === 'string') return [value]
+
+  return value ?? []
+}
+
 function withIiifCorsHeaders(headers?: HeadersInit) {
   const h = new Headers(headers)
   for (const [k, v] of Object.entries(iiifCorsHeaders)) h.set(k, v)
@@ -151,7 +168,7 @@ export async function buildManifest(request: Request, type: string) {
         }
       },
       "sort": ["order"],
-      "_source": ["uuid", "type", "label"]
+      "_source": ["uuid", "type", "label", "summary"]
     }
     const [items, status] = await postQuery('iiif_*', items_query)
 
@@ -162,12 +179,12 @@ export async function buildManifest(request: Request, type: string) {
       "id": `${baseUrl}/iiif/collection/${doc._source.uuid}`,
       "rights": license.url,
       "type": source.type,
-      "label": source.label,
+      "label": forceArrays(source.label),
       "items": []
     }
 
     if (source.summary) {
-      collection_manifest["summary"] = source.summary
+      collection_manifest["summary"] = forceArrays(source.summary)
     }
 
 
@@ -175,7 +192,7 @@ export async function buildManifest(request: Request, type: string) {
       return {
         "id": `${baseUrl}/iiif/${item._source.type.toLowerCase()}/${item._source.uuid}`,
         "type": item._source.type,
-        "label": item._source.label,
+        "label": forceArrays(item._source.label),
       }
     })
 
@@ -191,7 +208,7 @@ export async function buildManifest(request: Request, type: string) {
       "partOf": [{ "id": `${baseUrl}/iiif/collection/${doc._source.partOf}`, "type": "Collection" }],
       "rights": license.url,
       "type": "Manifest",
-      "label": source.label,
+      "label": forceArrays(source.label),
     }
 
     if (source.summary) {
@@ -205,7 +222,7 @@ export async function buildManifest(request: Request, type: string) {
       manifest["seeAlso"] = source.alternativeManifests.map((manifest: any) => ({
         "id": `${baseUrl}/iiif/manifest/${manifest.uuid}`,
         "type": "Dataset",
-        "label": manifest.label
+        "label": forceArrays(manifest.label)
       }))
     }
 

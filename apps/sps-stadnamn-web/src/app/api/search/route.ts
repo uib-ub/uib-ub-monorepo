@@ -24,6 +24,33 @@ export async function GET(request: Request) {
         "cardinality": {
           "field": "group.id"
         }
+      },
+      // Count unique namnegrupper (group.id) for docs without coordinates
+      "no_location_groups": {
+        "filter": {
+          "bool": {
+            "must_not": [
+              { "exists": { "field": "location" } }
+            ]
+          }
+        },
+        "aggs": {
+          "groups": {
+            "cardinality": {
+              "field": "group.id"
+            }
+          }
+        }
+      },
+      // Count documents without coordinates (no location field)
+      "no_location": {
+        "filter": {
+          "bool": {
+            "must_not": [
+              { "exists": { "field": "location" } }
+            ]
+          }
+        }
       }
     },
     "_source": false

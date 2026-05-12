@@ -22,6 +22,9 @@ type MapSettings = {
   baseMap: string
   overlayMaps: string[]
   markerMode: string
+  showSmallMarkersEnabled: boolean
+  showOverlappingTextEnabled: boolean
+  overlayReorderButtonsEnabled: boolean
   setBaseMap: (baseMap: string) => void
   addOverlayMap: (mapKey: string) => void
   removeOverlayMap: (mapKey: string) => void
@@ -29,6 +32,9 @@ type MapSettings = {
   toggleOverlayMap: (mapKey: string) => void
   clearOverlayMaps: () => void
   setMarkerMode: (mode: string) => void
+  setShowSmallMarkersEnabled: (enabled: boolean) => void
+  setShowOverlappingTextEnabled: (enabled: boolean) => void
+  setOverlayReorderButtonsEnabled: (enabled: boolean) => void
   initializeSettings: () => void
 }
 
@@ -36,8 +42,13 @@ export const useMapSettings = create<MapSettings>()(
   persist(
     (set, get) => ({
       baseMap: defaultBaseMap,
-      overlayMaps: [],
+      // Default overlay: "Topografisk noregskart"
+      // Only applied for fresh installs (persisted settings still win).
+      overlayMaps: ['topo'],
       markerMode: 'auto',
+      showSmallMarkersEnabled: false,
+      showOverlappingTextEnabled: false,
+      overlayReorderButtonsEnabled: true,
       setBaseMap: (baseMap: string) =>
         set(() => ({
           baseMap
@@ -83,6 +94,9 @@ export const useMapSettings = create<MapSettings>()(
           overlayMaps: []
         })),
       setMarkerMode: (mode: string) => set({ markerMode: mode }),
+      setShowSmallMarkersEnabled: (enabled: boolean) => set({ showSmallMarkersEnabled: enabled }),
+      setShowOverlappingTextEnabled: (enabled: boolean) => set({ showOverlappingTextEnabled: enabled }),
+      setOverlayReorderButtonsEnabled: (enabled: boolean) => set({ overlayReorderButtonsEnabled: enabled }),
       initializeSettings: () => {
         const state = get()
         const normalizedBaseMap = normalizeBaseMapKey(state.baseMap)
@@ -106,7 +120,7 @@ export const useMapSettings = create<MapSettings>()(
     }),
     {
       name: MAP_SETTINGS_STORAGE_KEY,
-      version: 6,
+      version: 11,
       onRehydrateStorage: () => {
         if (typeof window !== 'undefined') {
           window.localStorage.removeItem(LEGACY_MAP_SETTINGS_STORAGE_KEY)
@@ -153,7 +167,8 @@ export const useMapSettings = create<MapSettings>()(
               .filter((key: any) => overlayLayerKeys.includes(key))
             return Array.from(new Set(allLegacy))
           }
-          return []
+          // Fresh installs (no persisted overlays): enable topo by default.
+          return overlayLayerKeys.includes('topo') ? ['topo'] : []
         })()
 
         // "circles" mode has been removed; normalize old persisted values.
@@ -162,13 +177,27 @@ export const useMapSettings = create<MapSettings>()(
             ...nextState,
             baseMap: migratedBaseMap as string,
             overlayMaps: migratedOverlays as string[],
-            markerMode: 'points'
+            markerMode: 'points',
+            showSmallMarkersEnabled: persistedState.showSmallMarkersEnabled ?? false,
+            showOverlappingTextEnabled:
+              persistedState.showOverlappingTextEnabled ??
+              persistedState.showManyOverlappingMarkersEnabled ??
+              persistedState.smallStadnamnLabelsEnabled ??
+              false,
+            overlayReorderButtonsEnabled: persistedState.overlayReorderButtonsEnabled ?? true,
           }
         }
         return {
           ...nextState,
           baseMap: migratedBaseMap as string,
-          overlayMaps: migratedOverlays as string[]
+          overlayMaps: migratedOverlays as string[],
+          showSmallMarkersEnabled: persistedState.showSmallMarkersEnabled ?? false,
+          showOverlappingTextEnabled:
+            persistedState.showOverlappingTextEnabled ??
+            persistedState.showManyOverlappingMarkersEnabled ??
+            persistedState.smallStadnamnLabelsEnabled ??
+            false,
+          overlayReorderButtonsEnabled: persistedState.overlayReorderButtonsEnabled ?? true,
         }
       }
     }

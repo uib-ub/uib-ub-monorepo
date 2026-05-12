@@ -8,23 +8,35 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { LinksRecord } from '@/utils/xata';
-import { xata } from '@/utils/xataClient';
+import { ES_INDEX, getEsClient } from '@/utils/es';
+import { linkSchema, type Link } from '@/utils/link-schema';
 import { ExternalLinkIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 
-async function getData() {
+async function getData(): Promise<Link[]> {
   'use server'
-  return await xata.db.links.sort('created', 'desc').getAll()
+  const client = getEsClient()
+  const result = await client.search({
+    index: ES_INDEX,
+    size: 1000,
+    sort: [{ created: 'desc' }],
+  })
+
+  return result.hits.hits
+    .map((hit) => {
+      const parsed = linkSchema.safeParse(hit._source)
+      return parsed.success ? parsed.data : null
+    })
+    .filter((link): link is Link => link !== null)
 }
 
 const Links = async () => {
-  const data: LinksRecord[] = await getData();
+  const data = await getData();
 
   return (
     <div className='flex flex-col gap-4'>
-      {data ? data.map((link: LinksRecord) => (
-        <div key={link.id} className='flex gap-4 border rounded-lg overflow-hidden'>
+      {data ? data.map((link) => (
+        <div key={link.path} className='flex gap-4 border rounded-lg overflow-hidden'>
           <div className='px-5 py-4'>
             <div className='font-black text:md md:text-2xl break-all'>{link.title ?? link.originalURL}</div>
             <div className='flex flex-wrap align-baseline gap-2 text-sm'>

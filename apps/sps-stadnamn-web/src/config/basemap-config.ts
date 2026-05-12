@@ -17,6 +17,8 @@ export interface BaseMap {
     key: string;
     name: string;
     provider?: string;
+    description?: string;
+    license?: string;
     bright?: boolean;
     coverage: MapLayerCoverage;
     center?: [number, number];
@@ -65,6 +67,8 @@ export const baseMaps: BaseMap[] = [
     {
         key: 'topo',
         name: 'Topografisk noregskart',
+        description: 'Topografisk grunnkart for Noreg, med data frå N50 til N2000, FKB, matrikkel, høgde- og djupnedata. Fargekartografi tilpassa webbruk.',
+        license: 'Åpne data (CC BY 4.0)',
         info: 'https://kartkatalog.geonorge.no/metadata/topografisk-norgeskart-wmts--cache/8f381180-1a47-4453-bee7-9a3d64843efa',
         provider: 'Kartverket',
         coverage: 'regional',
@@ -79,6 +83,8 @@ export const baseMaps: BaseMap[] = [
     {
         key: 'topograatone',
         name: 'Topografisk gråtonekart',
+        description: 'Gråtonevariant av Topografisk noregskart med same datagrunnlag som topo-laget, tilpassa webvising.',
+        license: 'Åpne data (CC BY 4.0)',
         info: 'https://kartkatalog.geonorge.no/metadata/topografisk-norgeskart-wmts--cache/8f381180-1a47-4453-bee7-9a3d64843efa',
         provider: 'Kartverket',
         coverage: 'regional',
@@ -93,6 +99,8 @@ export const baseMaps: BaseMap[] = [
     {
         key: 'toporaster',
         name: 'Topografisk noregskart (raster)',
+        description: 'Topografisk rasterkart med innhald frå N50 til N2000 og N5.',
+        license: 'Åpne data (CC BY 4.0)',
         info: 'https://kartkatalog.geonorge.no/metadata/topografisk-norgeskart-wmts--cache/8f381180-1a47-4453-bee7-9a3d64843efa',
         provider: 'Kartverket',
         coverage: 'regional',
@@ -106,6 +114,8 @@ export const baseMaps: BaseMap[] = [
     {
         key: 'sjokartraster',
         name: 'Sjøkart (raster)',
+        description: 'Sjøkartraster med sjøkartdata frå overseglingskart, hovudkart, kystkart, hamnekart og Svalbardkart. Ikkje eigna til navigasjon.',
+        license: 'Åpne data (CC BY 4.0)',
         info: 'https://kartkatalog.geonorge.no/metadata/sjokartraster-wmts--cache/8f381180-1a47-4453-bee7-9a3d64843efa',
         provider: 'Kartverket',
         coverage: 'regional',
@@ -120,6 +130,8 @@ export const baseMaps: BaseMap[] = [
     {
         key: 'historiske_kart_amt1',
         name: 'Historiske kart (amtskart)',
+        description: 'Georefererte historiske amtskart (1:200 000), den første landsdekkande kartserien som vart selt i Noreg. Første blad kom i 1826, og serien vart publisert over om lag 90 år.',
+        license: 'Åpne data (CC BY 4.0)',
         info: "https://kartkatalog.geonorge.no/metadata/historiske-kart-wms/f0ef87bf-91a1-4f00-b864-9655d3d7c1de",
         provider: 'Kartverket',
         coverage: 'regional',
@@ -139,6 +151,8 @@ export const baseMaps: BaseMap[] = [
     {
         key: 'matrikkelkart',
         name: 'Matrikkelen - Eiendomskart Teig',
+        description: 'Utdrag frå Matrikkelen med eigedomsteigar, grenser, grensepunkt og teigareal med kvalitetsopplysningar. Eigna for kartvising og geografiske analysar av eigedomsdata. Merk: Kartet visast berre når du er zooma inn.',
+        license: 'Åpne data (CC BY 4.0)',
         info: "https://kartkatalog.geonorge.no/metadata/matrikkelen-eiendomskart-teig/74340c24-1c8a-4454-b813-bfe498e80f16",
         provider: 'Kartverket',
         coverage: 'regional',
@@ -159,6 +173,7 @@ export const baseMaps: BaseMap[] = [
         name: 'Basiskart Svalbard',
         provider: 'Norsk Polarinstitutt',
         info: 'https://kartkatalog.geonorge.no/metadata/np-basiskart-svalbard-wmts-3857/485822c4-eb86-42f8-988a-6008a75ffd5f',
+        license: 'Åpne data (CC BY 4.0)',
         coverage: 'regional',
         center: centerPoints.Svalbard,
         // Approximate bounds for Svalbard

@@ -1,0 +1,50 @@
+'use client'
+import { useDatasetTagParam, useDocParam, useGroupParam, useMode } from '@/lib/param-hooks';
+import { useSearchQuery } from '@/lib/search-params';
+import useSearchData from '@/state/hooks/search-data';
+import { PiInfoFill, PiWarningFill } from 'react-icons/pi';
+import SortSelector from '@/components/table/sort-selector';
+
+export default function StatusSection() {
+  const { searchBounds, searchLoading, searchError, totalHits } = useSearchData()
+  const mode = useMode()
+  const doc = useDocParam()
+  const group = useGroupParam()
+  const datasetTag = useDatasetTagParam()
+  const { facetFilters, datasetFilters } = useSearchQuery()
+
+
+
+  return <div className={`flex flex-col gap-2 ${mode == 'map' ? '' : 'px-2 pt-4 pb-2'}`}>
+    <div className={`flex gap-1 items-start`}>
+
+    </div>
+    {mode == 'list' && (!doc && !group) && datasetTag != 'base' && <div className="flex flex-wrap xl:flex-row h-full p-2 px-6 gap-1"><SortSelector /></div>}
+
+    {mode == 'map' && (!searchLoading && !searchBounds?.length && !searchError && totalHits?.value > 0) &&
+      <div
+        role="status"
+        aria-live="polite"
+        className="bg-neutral-700 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit"
+      >
+        <PiInfoFill className="inline text-xl" aria-hidden="true" /> Ingen treff med koordinater
+      </div>
+    }
+
+
+    {(!searchLoading && !searchError && totalHits?.value == 0) ? <div role="status" aria-live="polite" className="bg-neutral-900 rounded-md h-12 px-4 text-white opacity-90 flex gap-2 items-center w-fit"><PiInfoFill className="inline text-xl" aria-hidden="true" /> Ingen treff</div> : null}
+
+    {searchError && <div role="status" aria-live="polite" className="bg-primary-700 rounded-md h-12 px-4 text-white opacity-90 flex gap-4 items-center w-fit">
+      <PiWarningFill className="inline text-xl" aria-hidden="true" />
+      <span>Kunne ikkje hente søkeresultat</span>
+    </div>
+    }
+    {!searchBounds && !searchError && !searchLoading && totalHits > 0 && mode == 'map' && <div role="status" aria-live="polite" className="bg-primary-700 h-12 px-4 rounded-md text-white opacity-90 flex gap-4 items-center w-fit">
+      <PiWarningFill className="inline text-xl" aria-hidden="true" />
+      <span>Kunne ikkje hente koordinater</span>
+    </div>}
+
+
+  </div>
+}
+

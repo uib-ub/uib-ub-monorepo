@@ -32,12 +32,12 @@
     "src"
   ],
   "dependencies": {
-    "jsonld": "^8.3.3"
+    "jsonld": "^9.0.0"
   },
   "devDependencies": {
     "eslint-config": "*",
     "jest": "^29.7.0",
-    "ts-jest": "^29.1.0",
+    "ts-jest": "^29.4.9",
     "typescript": "^5.9.2",
     "typescript-config": "*"
   },

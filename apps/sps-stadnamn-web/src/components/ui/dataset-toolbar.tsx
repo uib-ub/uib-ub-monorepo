@@ -16,7 +16,7 @@ export default function DatasetToolbar({ itemDataset }: { itemDataset: string })
 
     return <nav className="flex flex-wrap gap-2">
         <Link aria-current={(pathname == '/search' && mode == 'map') ? 'page' : false}
-            href={`/search?dataset=${itemDataset}`}
+            href={`/search?dataset=${itemDataset}&sourceView=on`}
             className="btn btn-outline btn-compact">
             <PiMagnifyingGlass aria-hidden="true" /> Søk
         </Link>

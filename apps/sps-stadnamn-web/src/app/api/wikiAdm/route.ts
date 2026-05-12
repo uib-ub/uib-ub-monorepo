@@ -4,7 +4,7 @@ import { getQueryString } from "../_utils/query-string"
 
 export async function GET(request: Request) {
     const { termFilters, reservedParams } = extractFacets(request)
-    const dataset = reservedParams.dataset || 'all'
+    const dataset = reservedParams.perspective || 'all'
     const { simple_query_string } = getQueryString(reservedParams)
 
     const query: Record<string, any> = {

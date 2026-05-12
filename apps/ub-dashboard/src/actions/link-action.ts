@@ -1,5 +1,6 @@
 "use server"
-import { xata } from '@/utils/xataClient';
+import { ES_INDEX, getEsClient } from '@/utils/es';
+import { linkSchema } from '@/utils/link-schema';
 import { nanoid } from 'nanoid';
 import { revalidatePath } from "next/cache";
 import QRCode from 'qrcode';
@@ -11,8 +12,6 @@ const generateQR = async (text: string) => {
   } catch (err) {
     console.error(err)
   }
-  // This is unreachable but needed for TypeScript type checking
-  // The loop always exits via return (success) or throw (all retries failed)
   throw new Error('QR code generation failed')
 }
 
@@ -22,11 +21,11 @@ export async function createShortLink(prevState: CreateShortLinkState, formData:
   "use server";
 
   try {
-    const schema = z.object({
+    const inputSchema = z.object({
       title: z.string().min(1, 'Title is required'),
       originalURL: z.string().url().min(1, 'URL is required').max(2048, 'URL is too long'),
     })
-    const data = schema.parse({
+    const data = inputSchema.parse({
       title: formData.get("title"),
       originalURL: formData.get("originalURL"),
     })
@@ -38,30 +37,39 @@ export async function createShortLink(prevState: CreateShortLinkState, formData:
 
       const domain = "ub-urls.vercel.app"
       const path = nanoid(8)
-      const date = new Date()
+      const now = new Date().toISOString()
       const qr = await generateQR(`https://${domain}/${path}`)
 
-      await xata.db.links.create({
-        originalURL: data.originalURL,
-        title: data.title ?? null,
-        domain,
-        qr,
+      const document = linkSchema.parse({
         path,
-        created: date,
-        modified: date,
-      });
+        originalURL: data.originalURL,
+        qr,
+        domain,
+        views: 0,
+        redirectType: 302,
+        created: now,
+        modified: now,
+        title: data.title ?? null,
+      })
+
+      const client = getEsClient()
+      await client.index({
+        index: ES_INDEX,
+        id: path,
+        document,
+        op_type: 'create',
+        refresh: 'wait_for',
+      })
 
       revalidatePath("/link-shortener");
       return { message: `Created short link and QR` }
     } catch (err) {
-      // If QR generation fails, generateQR will throw an error, preventing database write
       const errorMessage = err instanceof Error && err.message.includes('QR code generation')
         ? "Failed to generate QR code. Link not created."
         : "Failed to create short link!"
       return { message: errorMessage };
     }
   } catch (err) {
-    // Handle Zod validation errors
     if (err instanceof z.ZodError) {
       const firstError = err.issues[0]
       return { message: `Invalid input: ${firstError.message}` }

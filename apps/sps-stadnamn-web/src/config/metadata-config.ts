@@ -64,14 +64,15 @@ export const datasetTitles: DatasetTitles = {
   ft1910: "Folketeljinga 1910",
   m2010: "Matrikkelen 2010",
   frogn: "Frognmaterialet",
-  gjerd: "Gjerdrumundersøkelsen",
+  gjerd: "Gjerdrumundersøkinga",
   sorum: "Sørummaterialet",
   kven: "Kvenske stedsnavn",
   snor: "Stadnamn i Noreg (Språkrådet)",
   herad: "Heradsregisteret",
   seta: "Seternamnarkivet",
   osm: "OpenStreetMap 2019",
-  wikidata: "Wikidata"
+  wikidata: "Wikidata",
+  //etym: "Etymologiregisteret"
 }
 
 export const datasetDescriptions: Record<string, string> = {
@@ -79,7 +80,7 @@ export const datasetDescriptions: Record<string, string> = {
   all: "Søk på tvers av alle datasett i Stadnamnportalen.",
   wikidata: "",
   ssr: "Sentralt stadnamnregister (SSR), Kartverket sitt offisielle register over stadnamn i Noreg. Språksamlingane hentar inn data minst ein gong i året, og organiserer oppslaga etter stadnamnnummer.",
-  bsn: "Bustadnamnregisteret vart oppretta på 1950-talet og inneheld informasjon om namn på om lag 190 000 bustader (gardar, bruk og plassar) frå ti fylke i landet. Registeret består av om lag 109 000 arkivsedlar. Kvar seddel inneheld òg informasjon om fylke, kommune, gardsnummer og bruksnummer. Stadene er georefererte ut frå Kartverket si moderne matrikkel – så nøyaktig som mogleg.",
+  bsn: "Bustadnamnregisteret vart oppretta på 1950-talet og inneheld informasjon om namn på om lag 190 000 bustader (gardar, bruk og plassar) frå dei fleste fylkene i landet. Registeret består av om lag 109 000 arkivsedlar. Kvar seddel inneheld òg informasjon om fylke, kommune, gardsnummer og bruksnummer. Stadene er georefererte ut frå Kartverket si moderne matrikkel – så nøyaktig som mogleg.",
   hord: "Hordanamn er ei samling av stadnamn, særleg smånamn på åkrar, utmark, lier, tjern og fjell m.m. I alt 179 000 stadnamn frå det tidlegare Hordaland fylke er å finne i samlinga, fordelt på rundt 185 000 oppslag. Det er mogleg å sjå informasjon om kvart stadnamn og sjå plasseringa til namnet i kartet. Uttale er ofte oppgjeven, og i mange tilfelle er det òg mogleg å lytte til den lokale uttalen.",
   rygh: "Digitalisert utgåve av Oluf Rygh sitt standardverk for stadnamn i Noreg, opphavleg gjeve ut i 18 bind i åra 1897–1924. Oppslagsverket inneheld busetnadsnamn frå heile Noreg, unnateke Finnmark. Utgjevinga omfattar om lag 69 000 bustadnamn, derav ca. 3 700 namnegardsnamn, 44 500 gardsnamn, 16 000 bruksnamn, 4 000 forsvunne namn og 1 000 namn på sokn og herad. Kvart gardsnamn er oppgjeve med uttale og følgt gjennom tidene med språkvitskapleg tolking.",
   ostf: "Bustadnamn i Østfold er ei utgjeving over busetnadsnamna (bustadnamna) i Østfold heradsvis (22 herad etter den gamle inndelinga). Namneforskarane Tom Schmidt og Margit Harsson ved Seksjon for namnegransking (UiO) stod for redigering og utgjeving av serien, som byggjer på eit originalmanus av namnegranskaren Kåre Hoel (1922–1989). Serien vart gjeven ut mellom 1994 og 2021 og består av i alt 20 bind. Verket er ei sterkt utvida og revidert utgåve av Oluf Ryghs Norske Gaardnavne (bind 1 Smaalenenes Amt, 1897). Rygh avgrensa seg i hovudsak til namn på matrikkelgardane, men her er òg namn på andre busetnader tekne med, og gardsnamna får ei grundig behandling – både språkvitskapleg og kulturhistorisk.",
@@ -103,7 +104,8 @@ export const datasetDescriptions: Record<string, string> = {
   kven: "Datasettet kvenske stadnamn dokumenterer namnetradisjonar i Troms og Finnmark som vitnar om fleire hundre års busetjing og kulturell tilhøyrsle. Kvensk stadnamnteneste – Paikannimipalvelus redigerer og oppdaterer databasen som del av Språkrådet si stadnamnteneste. Områda med kvenske stadnamn har ofte fleirspråkleg namnebruk med kvenske, samiske og norske namn. Datasettet inneheld nærmare 8500 namneartiklar. Viktige kjelder er Sentralt stadnamnregister (SSR) med 4–5000 kvenske namn og ca. 12 400 namnesedlar samla inn av finske forskarar mellom 1970–1990, oppbevarte i Namnarkivet i Helsingfors med kopiar ved Universitetet i Tromsø og Kvensk stadnamnteneste.",
   snor: "Eit landsdekkjande datasett knytt til tilskotsordninga for innsamling og registrering av stadnamn. Databasen inneheld om lag 170 000 norske, samiske og kvenske stadnamn, og vart oppretta for å ta vare på og registrere stadnamn som elles ville gå tapt. Per 2025 inneheld basen namn frå 158 kommunar, der meir enn 95 kommunar har over 50 registrerte namn kvar. Alle innsamlings- og registreringsprosjekt som får støtte gjennom tilskotsordninga, må leggje inn stadnamna i denne databasen.",
   herad: "Heradsregisteret er ei omfattande samling i Norsk stadnamnarkiv som inneheld om lag 400 000 stadnamn frå heile Noreg. Kvar oppslag i registeret inneheld informasjon om namnet, uttalen, administrativ tilhøyrsle og kartreferansar. Tilleggsinformasjon om namnet eller lokaliteten er vanleg. Samlinga var grunnstamma i \"Den nasjonale stadnamnbasen\" og bidreg med unik dokumentasjon av norske stadnamn.",
-  seta: "Seternamnarkivet er ei omfattande samling som inneheld 50 000 namn på setrar. Samlinga var opphavleg organisert i to seddelsamlingar — ei ordna etter herad og ei for heile landet. Registeret vart skanna i samband med Dokumentasjonsprosjektet og inngjekk i skanna versjon som del av \"Den nasjonale stadnamnbasen\"."
+  seta: "Seternamnarkivet er ei omfattande samling som inneheld 50 000 namn på setrar. Samlinga var opphavleg organisert i to seddelsamlingar — ei ordna etter herad og ei for heile landet. Registeret vart skanna i samband med Dokumentasjonsprosjektet og inngjekk i skanna versjon som del av \"Den nasjonale stadnamnbasen\".",
+  etym: ""
 }
 
 export const datasetShortDescriptions: Record<string, string> = {
@@ -111,7 +113,7 @@ export const datasetShortDescriptions: Record<string, string> = {
   all: "Søk på tvers av alle datasett i Stadnamnportalen.",
   ssr: "Kartverket sitt offisielle register over stadnamn i Noreg. Språksamlingane hentar inn data minst ein gong i året, og organiserer oppslaga etter stadnamnnummer.",
   wikidata: "",
-  bsn: "Oppretta på 1950-talet, inneheld informasjon om namn på om lag 190 000 bustader frå ti fylke i Noreg.",
+  bsn: "Oppretta på 1950-talet, inneheld informasjon om namn på om lag 190 000 bustader frå dei fleste fylkene i Noreg.",
   hord: "Ei samling av 179 000 stadnamn frå tidlegare Hordaland fylke, inkludert smånamn for åkrar, utmark, lier, tjørn og fjell.",
   rygh: "Digitalisert utgåve av Oluf Rygh sitt standardverk for stadnamn i Noreg, opphavleg gjeve ut i 18 bind i åra 1897–1924.",
   ostf: "Ein 20-binds serie gjeven ut mellom 1994 og 2021, som dekkjer bustadnamn i det tidlegare Østfold fylke.",
@@ -135,7 +137,9 @@ export const datasetShortDescriptions: Record<string, string> = {
   kven: "Kvenske stadnamn frå Troms og Finnmark, med nær 8 500 namneartiklar frå SSR og finske forskarar, og fleirspråkleg namnebruk.",
   snor: "Datasettet knytt til tilskotsordninga for innsamling og registrering av stadnamn. Databasen inneheld om lag 170 000 norske, samiske og kvenske stadnamn, og vart oppretta for å ta vare på namn som elles ville gå tapt.",
   herad: "Heradsregisteret er ein del av Norsk stadnamnarkiv, og var grunnstamma i \"Den nasjonale stadnamnbasen\" utvikla ved UiO.",
-  seta: "Seternamnarkivet inneheld 50 000 namn på setrar frå heile landet, digitalisert frå to historiske seddelsamlingar."
+  seta: "Seternamnarkivet inneheld 50 000 namn på setrar frå heile landet, digitalisert frå to historiske seddelsamlingar.",
+  etym: ""
+
 }
 
 
@@ -168,7 +172,8 @@ export const publishDates: Record<string, string> = {
   kven: "2025-04-24",
   snor: "2025-04-25",
   herad: "2025-04-25",
-  seta: "2025-04-25"
+  seta: "2025-04-25",
+  //etym: "2026-05-05"
 }
 
 
@@ -378,6 +383,13 @@ export const datasetPresentation: DatasetPresentation = {
     attribution: "Språkrådet og Språksamlingane",
     license: licenses.ccby4,
   },
+  etym: {
+    img: "/datasets/etym.png",
+    alt: "Etymologiregisteret",
+    imageAttribution: "",
+    attribution: "Språksamlingane",
+    license: licenses.ccby4,
+  },
   herad: {
     img: "/datasets/Akersdalen_(1949).jpg",
     alt: "Akersdalen (seinare kalla Groruddalen), omtrent på den tida Aker vart innlemma i Oslo.",
@@ -479,6 +491,7 @@ export const datasetTypes: Record<string, string[]> = {
   frogn: ["collection"],
   kven: ["database", "collection"],
   snor: ["database", "collection"],
+  etym: ["database"],
 }
 
 // Workaround to include grunnord in Stadnamngransking-filter

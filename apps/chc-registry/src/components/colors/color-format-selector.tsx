@@ -10,6 +10,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -28,27 +29,40 @@ export function ColorFormatSelector({
   }
 
   return (
-    <Select value={format} onValueChange={setFormat}>
+    <Select
+      value={format}
+      onValueChange={(nextFormat) => {
+        if (nextFormat) {
+          setFormat(nextFormat)
+        }
+      }}
+    >
       <SelectTrigger
         size="sm"
         className={cn(
-          "bg-secondary text-secondary-foreground border-secondary shadow-none",
+          "border-border bg-background text-foreground shadow-none hover:bg-accent/40 dark:bg-input-foreground dark:hover:bg-input/10",
           className
         )}
         {...props}
       >
-        <span className="font-medium">Format: </span>
-        <span className="text-muted-foreground font-mono">{format}</span>
+        <span className="font-medium">Format:</span>
+        <SelectValue className="text-muted-foreground font-mono dark:bg-input-foreground" />
       </SelectTrigger>
-      <SelectContent align="end" className="rounded-xl">
+      <SelectContent align="end" className="rounded-xl dark:bg-background dark:text-primary-foreground w-fit">
         {Object.entries(formats).map(([format, value]) => (
           <SelectItem
             key={format}
             value={format}
-            className="gap-2 rounded-lg [&>span]:flex [&>span]:items-center [&>span]:gap-2"
+            className={cn(
+              "gap-2 rounded-lg flex items-baseline justify-between",
+              // Pointer highlight uses data-highlighted (see Base UI Select); descendants get
+              // focus:**:text-accent-foreground from select.tsx unless we override with **: …
+              "dark:data-highlighted:text-foreground dark:data-highlighted:**:text-foreground",
+              "dark:focus:text-foreground dark:focus:**:text-foreground",
+            )}
           >
             <span className="font-medium">{format}</span>
-            <span className="text-muted-foreground font-mono text-xs">
+            <span className="font-mono text-xs">
               {value}
             </span>
           </SelectItem>

@@ -6,6 +6,6 @@ export default function ContentLayout({ children, name, route }: { children: Rea
     <main id="main" tabIndex={-1} className="bg-white px-4 pt-12 pb-16 lg:px-16  lg:pb-24 page-info flex-grow flex-1 w-full" >
       {children}
     </main>
-    <Footer addBackground />
+    <Footer />
   </>
 }
