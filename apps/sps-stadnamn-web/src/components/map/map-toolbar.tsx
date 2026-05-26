@@ -56,7 +56,6 @@ export default function MapToolbar() {
     const searchParams = useSearchParams()
     const currentPosition = useSessionStore((s) => s.currentPosition)
     const setSnappedPosition = useSessionStore((s) => s.setSnappedPosition)
-    const setMyLocation = useSessionStore((s) => s.setMyLocation)
     const addNotification = useNotificationStore((s) => s.addNotification)
     const removeNotification = useNotificationStore((s) => s.removeNotification)
     const notifications = useNotificationStore((s) => s.notifications)
@@ -65,24 +64,8 @@ export default function MapToolbar() {
     const mapSettingsOn = useMapSettingsOn()
     const tree = useTreeParam()
     const router = useRouter()
-    const sourceViewOn = useSourceViewOn()
-    const group = useGroupParam()
-    const q = useQParam()
-    const center = useCenterParam()
-    const zoom = useZoomParam()
-    const fulltextOn = useFulltextOn()
-    const noGeoOn = useNoGeoOn()
-    const optionsOn = useOptionsOn()
-    const hideResultsOn = useHideResultsOn()
     const point = usePoint()
     const init = useInitParam()
-    const sourceViewResetUrl = useSessionStore((s) => s.sourceViewResetUrl)
-    const clearSourceViewResetUrl = useSessionStore((s) => s.clearSourceViewResetUrl)
-    const {
-        resultCardData: groupResultCardData,
-        resultCardLoading: groupResultCardLoading,
-        resultCardFetching: groupResultCardFetching,
-    } = useResultCardData(group)
     const showNoCoordinatesNotice =
         !searchLoading && !searchBounds?.length && !searchError && totalHits?.value > 0
     const hasNoCoordinatesNotice = notifications.some((item) => item.id === "no-coordinates")
@@ -266,6 +249,14 @@ export default function MapToolbar() {
                 </RoundIconClickable>
                 {!isMobile && (
                     <>
+                    <RoundIconButton
+                            onClick={() => mapFunctionRef?.current?.zoomOut(2)}
+                            side="top"
+                            label="Zoom ut"
+                            className="w-12 h-12"
+                        >
+                            <PiMagnifyingGlassMinusFill className="text-2xl" />
+                        </RoundIconButton>
                         <RoundIconButton
                             onClick={() => mapFunctionRef?.current?.zoomIn(2)}
                             side="top"
@@ -275,14 +266,7 @@ export default function MapToolbar() {
                             <PiMagnifyingGlassPlusFill className="text-2xl" />
                         </RoundIconButton>
 
-                        <RoundIconButton
-                            onClick={() => mapFunctionRef?.current?.zoomOut(2)}
-                            side="top"
-                            label="Zoom ut"
-                            className="w-12 h-12"
-                        >
-                            <PiMagnifyingGlassMinusFill className="text-2xl" />
-                        </RoundIconButton>
+                        
                     </>
 
                 )}

@@ -221,7 +221,27 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
                 ) : null}
 
                 {/* Download button (hidden on mobile when neighbour nav is open) */}
-                {(!isMobile || !navOpen || isCollection) && ((isCollection ? (manifest.childCount?.images && manifest.length == manifest.childCount?.manifests) : true)) && <AlertDialog>
+                {(!isMobile || !navOpen || isCollection) && ((isCollection ? (manifest.childCount?.images && manifest.length == manifest.childCount?.manifests) : true)) && (manifest.audio ? (
+                    <RoundIconButton
+                        label="Last ned"
+                        onClick={async () => {
+                            const url = `https://iiif.spraksamlingane.no/iiif/audio/stadnamn/${(manifestDataset || manifest.dataset || '').toUpperCase()}/${manifest.audio.uuid}.${manifest.audio.format}`
+                            const res = await fetch(url)
+                            const blob = await res.blob()
+                            const a = document.createElement('a')
+                            a.href = URL.createObjectURL(blob)
+                            const labelRaw = manifest.audio.label
+                            const filename = typeof labelRaw === 'string'
+                                ? labelRaw
+                                : String(resolveLanguage(labelRaw) || manifest.audio.uuid)
+                            a.download = filename
+                            a.click()
+                            URL.revokeObjectURL(a.href)
+                        }}
+                    >
+                        <PiDownloadSimpleBold className="text-xl xl:text-base" />
+                    </RoundIconButton>
+                ) : <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <RoundIconButton
                             label="Last ned">
@@ -286,7 +306,7 @@ export default function IIIFNeighbourNav({ manifest, isMobile, manifestDataset }
                             </AlertDialogFooter>
                         )}
                     </AlertDialogContent>
-                </AlertDialog>}
+                </AlertDialog>)}
 
                 {showBackToSearch && backToSearchHref && (
                     <RoundIconButton
