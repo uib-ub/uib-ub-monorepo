@@ -1,7 +1,8 @@
 import { facetConfig } from '@/config/search-config';
 import { useSearchQuery } from '@/lib/search-params';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import VirtualKeyboard from '@/components/form/virtual-keyboard';
 import { PiCaretDownBold, PiCaretRight, PiCaretRightBold, PiCaretUpBold, PiMagnifyingGlass } from 'react-icons/pi';
 
 import { datasetShortDescriptions, datasetTitles } from '@/config/metadata-config';
@@ -40,7 +41,8 @@ export default function DatasetFacet() {
   const [facetAggregation, setFacetAggregation] = useState<any | undefined>(undefined);
   const [facetLoading, setFacetLoading] = useState(true);
   const [facetSearch, setFacetSearch] = useState('');
-  const [clientSearch, setClientSearch] = useState(''); // For fields that have labels defined in the config files
+  const [clientSearch, setClientSearch] = useState('');
+  const clientSearchRef = useRef<HTMLInputElement>(null); // For fields that have labels defined in the config files
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
   const availableFacets = useMemo(() => facetConfig[perspective], [perspective]);
   const [sortMode, setSortMode] = useState<'doc_count' | 'asc' | 'desc'>(availableFacets && availableFacets[0]?.sort || 'doc_count');
@@ -128,15 +130,15 @@ export default function DatasetFacet() {
       <div id="dataset-facet-content" className='flex flex-col gap-2'>
 
         {!isCadastral && <div className='flex gap-2 px-2 pt-1'>
-          <div className='w-full h-10 relative'>
-            <input aria-label="Søk i fasett" onChange={(e) => setClientSearch(e.target.value)}
-              className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2" />
-            <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-              <PiMagnifyingGlass aria-hidden={true} className='text-neutral-700 text-xl' />
-            </span>
+          <div className='flex w-full h-10 border rounded-md border-neutral-300 items-center px-2 gap-1'>
+            <PiMagnifyingGlass aria-hidden={true} className='text-neutral-700 text-xl shrink-0' />
+            <input
+              ref={clientSearchRef}
+              aria-label="Søk i fasett"
+              onChange={(e) => setClientSearch(e.target.value)}
+              className="w-full h-full focus:outline-none bg-transparent" />
+            <VirtualKeyboard inputRef={clientSearchRef} />
           </div>
-
-
         </div>}
 
       </div>

@@ -1,8 +1,9 @@
 "use client"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { PiMagnifyingGlass } from "react-icons/pi"
+import VirtualKeyboard from "@/components/form/virtual-keyboard"
 
 export default function DefinitionBrowser() {
 
@@ -11,7 +12,8 @@ export default function DefinitionBrowser() {
     const [definitions, setDefinitions] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(null)
-    const [size, setSize] = useState(12)  // Initial number of results to show
+    const [size, setSize] = useState(12)
+    const inputRef = useRef<HTMLInputElement>(null)
     const vocabPage = pathname.split('/').pop()
     const vocab = vocabPage == "definitions" ? "*" : vocabPage
 
@@ -47,12 +49,14 @@ export default function DefinitionBrowser() {
                     <PiMagnifyingGlass className="text-xl shrink-0 text-neutral-700 group-focus-within:text-neutral-800 ml-3" aria-hidden="true"/>
                     
                     <input
+                        ref={inputRef}
                         aria-labelledby="search"
                         className='bg-transparent px-3 py-2 focus:outline-none w-full text-base'
                         type="text"
                         value={searchTerm}
                         onChange={handleSearchChange}
                     />
+                    <VirtualKeyboard inputRef={inputRef} />
                 </div>
             </div>
             <ul className="flex flex-wrap gap-2 list-none !px-0">

@@ -9,6 +9,7 @@ import { formatNumber } from '@/lib/utils';
 import { GlobalContext } from '@/state/providers/global-provider';
 import { useSessionStore } from '@/state/zustand/session-store';
 import AutocompleteDropdown from './autocomplete-dropdown';
+import VirtualKeyboard from './virtual-keyboard';
 import Form from 'next/form';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -29,6 +30,7 @@ export default function SearchForm() {
     const snappedPosition = useSessionStore((s: any) => s.snappedPosition)
     const currentPosition = useSessionStore((s: any) => s.currentPosition)
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
+    const [keyboardOpen, setKeyboardOpen] = useState(false)
     const optionsOn = useOptionsOn()
     const group = useGroupParam()
     const fuzzyOn = useFuzzyOn()
@@ -150,7 +152,7 @@ export default function SearchForm() {
         }}>
         <header className={`${isMobile && autocompleteOpen ? 'sr-only' : `flex flex-none ${isMobile ? 'w-14 h-14' : 'absolute top-2 left-2 h-12 w-auto'}`} ${(autocompleteOpen || menuOpen) ? '' : 'shadow-lg'} bg-neutral-50`}><Menu shadow autocompleteShowing={autocompleteOpen && autocompleteHasResults} /></header>
         <Form ref={form} suppressHydrationWarning={true} onSubmitCapture={() => { setSelectedGroup(null); setSubmittedPoint(null) }} action="/search" id="search-form" aria-label="Stadnamnsøk"
-            className={`${isMobile ? 'h-14' : 'h-12'} ${isMobile && autocompleteOpen ? 'w-[100svw]' : isMobile ? 'w-[calc(100svw-3.5rem)]' : 'w-[calc(100svw-4rem)] lg:w-[calc(30svw-4rem)] xl:w-[calc(25svw-4rem)] absolute top-2 left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? `z-[7000] ${!isMobile && '!rounded-b-none'}` : 'z-[3001]'}`}
+            className={`${isMobile ? 'h-14' : 'h-12'} ${isMobile && autocompleteOpen ? 'w-[100svw]' : isMobile ? 'w-[calc(100svw-3.5rem)]' : 'w-[calc(100svw-4rem)] lg:w-[calc(30svw-4rem)] xl:w-[calc(25svw-4rem)] absolute top-2 left-[3.5rem]'} ${(autocompleteOpen || menuOpen || keyboardOpen) ? `z-[7000] ${!isMobile && '!rounded-b-none'}` : 'z-[3001]'}`}
 
 
             onSubmit={() => {
@@ -207,6 +209,7 @@ export default function SearchForm() {
                 {(inputState || urlQuery || group) && !menuOpen &&
                     <ClickableIcon label="Tøm" remove={ ['q', 'resultLimit']} replace onClick={() => { clearQuery() }}>
                         <PiX className="text-3xl lg:text-2xl text-neutral-800 group-focus-within:text-neutral-800 m-1" /></ClickableIcon>}
+                <VirtualKeyboard inputRef={input} onOpenChange={setKeyboardOpen} />
                 <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800" aria-hidden="true" /></button>
             </div>
 
