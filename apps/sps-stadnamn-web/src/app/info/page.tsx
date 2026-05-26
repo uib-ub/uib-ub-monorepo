@@ -6,10 +6,10 @@ export const metadata = { title: 'Info' }
 export default function InfoPage() {
   return (
     <div className="prose max-w-none">
-      <h1>Om Stadnamnportalen</h1>
+      <h1>Om stadnamn.no</h1>
 
       <p>
-        Stadnamnportalen er ei samla vising av alle digitale kjelder til stadnamn i Språksamlingane.
+        Stadnamn.no er ei samla vising av alle digitale kjelder til stadnamn i Språksamlingane.
         På lenger sikt er det meininga at alle institusjonar som ynskjer å bidra med digitale
         stadnamn, kan få data lagt til.
       </p>

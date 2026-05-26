@@ -46,12 +46,12 @@ export default async function Updates({ searchParams }: { searchParams: Promise<
                     <>
                         <h1>Historikk: {datasetTitles[dataset]}</h1>
 
-                        <p>Endringshistorikk for datasettet {datasetTitles[dataset]} etter at det ble publisert i Stadnamnportalen.</p>
+                        <p>Endringshistorikk for datasettet {datasetTitles[dataset]} etter at det vart publisert på Stadnamn.no.</p>
                         Lagt til: {format_timestamp(publishDates[dataset])}
-                        <h2>Oppdateringer:</h2>
+                        <h2>Oppdateringar:</h2>
                     </>
                     :
-                    data.length > 1 && <h1>Oppdateringer</h1>
+                    data.length > 1 && <h1>Oppdateringar</h1>
                 }
 
                 {data.length > 1 ? <ul className="!list-none !p-0">
@@ -65,7 +65,7 @@ export default async function Updates({ searchParams }: { searchParams: Promise<
 
                     )}
                 </ul>
-                    : <p>Ingen oppdateringer</p>
+                    : <p>Ingen oppdateringar</p>
 
                 }
                 <div className="mt-6 flex gap-3 flex-col">
