@@ -1,14 +1,13 @@
 import UiBLogo from "@/components/svg/UiBLogo"
-import { PiMapTrifold, PiMapTrifoldFill } from 'react-icons/pi';
-import { PiMagnifyingGlass } from 'react-icons/pi';
+import { PiMapTrifoldFill } from 'react-icons/pi';
 import Image from 'next/image';
 import Link from 'next/link';
 import { datasetTitles, datasetPresentation, publishDates, datasetShortDescriptions } from '@/config/metadata-config';
 import Footer from '../components/layout/footer';
-import Form from "next/form";
 import HomeNavCards from "./home-nav-cards";
-import { fetchStats } from "./api/_utils/stats";  
+import { fetchStats } from "./api/_utils/stats";
 import Header from "./header";
+import HomeSearchInput from "./home-search-input";
 
 export default async function Home() {
   const { iiifStats, datasets, totalHits, groupCount } = await fetchStats()
@@ -40,24 +39,7 @@ export default async function Home() {
     <div className="flex flex-col gap-6 lg:mt-32">
   <h1 className="self-center text-5xl text-neutral-950 sr-only md:not-sr-only !px-2 font-serif">Stadnamnsøk</h1>
   
-  <Form suppressHydrationWarning={true} id="search-form" className="flex items-center justify-center gap-2 w-full" action="search">
-   
-    <label htmlFor="search_input" className="sr-only">Søk i alle stedsnavn</label>
-    <input 
-    suppressHydrationWarning={true}
-      id="search_input" 
-      className="flex-1 rounded-lg h-14 bg-white lg:h-12 border border-gray-300 text-lg lg:text-base px-4 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all" 
-      name="q" 
-      type="text"
-    />
-    <button 
-      className="bg-red-700 hover:bg-red-800 text-white rounded-lg h-14 lg:h-12 w-14 lg:w-12 flex items-center justify-center transition-colors duration-200 flex-shrink-0" 
-      type="submit" 
-      aria-label="Søk"
-    >
-      <PiMagnifyingGlass className="text-3xl lg:text-2xl" aria-hidden="true" />
-    </button>
-  </Form>
+  <HomeSearchInput />
   </div>
 
 
