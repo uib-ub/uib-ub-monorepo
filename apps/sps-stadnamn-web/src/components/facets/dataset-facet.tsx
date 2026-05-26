@@ -130,7 +130,7 @@ export default function DatasetFacet() {
       <div id="dataset-facet-content" className='flex flex-col gap-2'>
 
         {!isCadastral && <div className='flex gap-2 px-2 pt-1'>
-          <div className='flex w-full h-10 border rounded-md border-neutral-300 items-center px-2 gap-1'>
+          <div className='flex w-full h-10 border rounded-md border-neutral-300 items-center px-2 gap-1 relative'>
             <PiMagnifyingGlass aria-hidden={true} className='text-neutral-700 text-xl shrink-0' />
             <input
               ref={clientSearchRef}

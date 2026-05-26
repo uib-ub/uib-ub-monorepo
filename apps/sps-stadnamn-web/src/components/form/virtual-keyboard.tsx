@@ -1,20 +1,19 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
-import { PiKeyboard } from 'react-icons/pi'
+import { GlobalContext } from '@/state/providers/global-provider'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { PiKeyboard, PiX } from 'react-icons/pi'
 
-const CHAR_GROUPS = [
-    [['Æ', 'æ', 'Ø', 'ø', 'Å', 'å']],
-    [['Á', 'á', 'Ŋ', 'ŋ', 'Đ', 'đ', 'Ŧ', 'ŧ'], ['Ž', 'ž']],
-    [['Þ', 'þ', 'ð']],
-    [['Ä', 'ä', 'Ö', 'ö']],
-]
+// Sami first (Sami alphabet order), then Norwegian, then other Nordic
+const CHARS = ['Á','á','Đ','đ','Ŋ','ŋ','Ŧ','ŧ','Ž','ž','Æ','æ','Ø','ø','Å','å','Ä','ä','Ö','ö','Þ','þ','ð']
 
 interface Props {
     inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>
     onOpenChange?: (open: boolean) => void
+    searchBar?: boolean
 }
 
-export default function VirtualKeyboard({ inputRef, onOpenChange }: Props) {
+export default function VirtualKeyboard({ inputRef, onOpenChange, searchBar }: Props) {
+    const { isMobile } = useContext(GlobalContext)
     const [open, setOpen] = useState(false)
     const panelRef = useRef<HTMLDivElement>(null)
     const triggerRef = useRef<HTMLButtonElement>(null)
@@ -62,8 +61,14 @@ export default function VirtualKeyboard({ inputRef, onOpenChange }: Props) {
         el.setSelectionRange(start + char.length, start + char.length)
     }
 
+    const panelClass = searchBar
+        ? isMobile
+            ? 'top-[3.5rem] left-0 w-full'
+            : 'top-[3rem] -left-12 w-[calc(100%+3rem)] lg:w-[calc(30svw-1rem)] xl:w-[calc(25svw-1rem)]'
+        : 'left-0 top-full mt-1'
+
     return (
-        <div className="relative flex items-center">
+        <div className="flex items-center">
             <button
                 ref={triggerRef}
                 type="button"
@@ -81,30 +86,30 @@ export default function VirtualKeyboard({ inputRef, onOpenChange }: Props) {
                 <div
                     ref={panelRef}
                     role="dialog"
-                    aria-label="Spesialtegn"
-                    className="absolute top-full right-0 mt-1 bg-white border border-neutral-200 rounded-md shadow-lg p-2 z-[7500]"
-                    style={{ minWidth: 'max-content' }}
+                    aria-label="Spesialteikn"
+                    className={`absolute ${panelClass} bg-white border border-neutral-200 rounded-md shadow-lg p-2 z-[7500]`}
                 >
-                    <div className="flex flex-col gap-2">
-                        {CHAR_GROUPS.map((group, gi) => (
-                            <div key={gi} className={`flex flex-col gap-1 ${gi > 0 ? 'border-t border-neutral-100 pt-2' : ''}`}>
-                                {group.map((row, ri) => (
-                                    <div key={ri} className="flex gap-1">
-                                        {row.map((char) => (
-                                            <button
-                                                key={char}
-                                                type="button"
-                                                aria-label={`Set inn ${char}`}
-                                                onMouseDown={(e) => e.preventDefault()}
-                                                onClick={() => insertChar(char)}
-                                                className="w-8 h-8 border border-neutral-200 rounded text-sm hover:bg-neutral-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-500"
-                                            >
-                                                {char}
-                                            </button>
-                                        ))}
-                                    </div>
-                                ))}
-                            </div>
+                    <button
+                        type="button"
+                        aria-label="Lukk tastatur"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => toggle(false)}
+                        className="absolute top-1 right-1 p-0.5 text-neutral-400 hover:text-neutral-700 rounded"
+                    >
+                        <PiX className="text-sm" aria-hidden="true" />
+                    </button>
+                    <div className="flex flex-wrap gap-1 pr-6">
+                        {CHARS.map((char) => (
+                            <button
+                                key={char}
+                                type="button"
+                                aria-label={`Set inn ${char}`}
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={() => insertChar(char)}
+                                className="w-8 h-8 border border-neutral-200 rounded text-sm hover:bg-neutral-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary-500"
+                            >
+                                {char}
+                            </button>
                         ))}
                     </div>
                 </div>
