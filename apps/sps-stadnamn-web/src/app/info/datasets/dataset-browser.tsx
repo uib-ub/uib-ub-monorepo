@@ -5,7 +5,8 @@ import { fieldConfig } from '@/config/search-config';
 import { GlobalContext } from '@/state/providers/global-provider';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
+import VirtualKeyboard from '@/components/form/virtual-keyboard';
 import { PiCaretDownBold, PiCaretUpBold, PiMagnifyingGlass } from 'react-icons/pi';
 import DatasetStats from './dataset-stats';
 interface FieldWithDatasets {
@@ -43,6 +44,7 @@ export default function DatasetBrowser() {
 
   const [filteredDatasets, setFilteredDatasets] = useState<string[]>([])
   const { isMobile } = useContext(GlobalContext)
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   const allFields = Object.values(fieldConfig.all).reduce<FieldWithDatasets[]>((acc, field) => {
     if (!field.label || !field.datasets) return acc;
@@ -177,6 +179,7 @@ export default function DatasetBrowser() {
           <PiMagnifyingGlass className="text-xl shrink-0 text-neutral-700 group-focus-within:text-neutral-800 ml-3" aria-hidden="true" />
           <label htmlFor="titleSearch" className="sr-only">Søk i datasett</label>
           <input
+            ref={searchInputRef}
             id='titleSearch'
             className='bg-transparent px-3 py-2 focus:outline-none flex w-full shrink text-base'
             type="text"
@@ -189,6 +192,7 @@ export default function DatasetBrowser() {
               }
             }}
           />
+          <VirtualKeyboard inputRef={searchInputRef} />
         </div>
 
         <div className="flex gap-4 mt-2">

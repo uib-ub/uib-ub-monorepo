@@ -1,22 +1,21 @@
 'use client'
 import Menu from '@/app/menu';
 import ClickableIcon from '@/components/ui/clickable/clickable-icon';
-import Clickable from '@/components/ui/clickable/clickable';
 import { MAP_DRAWER_BOTTOM_HEIGHT_REM, mobileSearchChromeWrapperTopStyle, panPointIntoView } from '@/lib/map-utils';
-import { useDatasetTagParam, useFacetParam, useFulltextOn, useFuzzyOn, useGroupParam, useInitParam, useMode, useNoGeoOn, useOptionsOn, usePerspective, usePoint, usePointParam, useQParam, useSourceViewOn, useTreeParam } from '@/lib/param-hooks';
+import { useDatasetTagParam, useFacetParam, useFulltextOn, useFuzzyOn, useGroupParam, useInitParam, useMode, useNoGeoOn, useOptionsOn, usePerspective, usePointParam, useQParam, useSourceViewOn, useTreeParam } from '@/lib/param-hooks';
 import { useSearchQuery } from '@/lib/search-params';
 import { formatNumber } from '@/lib/utils';
 import { GlobalContext } from '@/state/providers/global-provider';
 import { useSessionStore } from '@/state/zustand/session-store';
 import AutocompleteDropdown from './autocomplete-dropdown';
+import VirtualKeyboard from './virtual-keyboard';
 import Form from 'next/form';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { PiCaretLeftBold, PiMagnifyingGlass, PiSliders, PiX } from 'react-icons/pi';
 export default function SearchForm() {
     const pathname = usePathname()
-    const router = useRouter()
     const searchParams = useSearchParams()
     const { isMobile, preferredTabs, inputValue, mapFunctionRef } = useContext(GlobalContext)
     const menuOpen = useSessionStore((s: any) => s.menuOpen)
@@ -29,6 +28,7 @@ export default function SearchForm() {
     const snappedPosition = useSessionStore((s: any) => s.snappedPosition)
     const currentPosition = useSessionStore((s: any) => s.currentPosition)
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
+    const [keyboardOpen, setKeyboardOpen] = useState(false)
     const optionsOn = useOptionsOn()
     const group = useGroupParam()
     const fuzzyOn = useFuzzyOn()
@@ -150,7 +150,7 @@ export default function SearchForm() {
         }}>
         <header className={`${isMobile && autocompleteOpen ? 'sr-only' : `flex flex-none ${isMobile ? 'w-14 h-14' : 'absolute top-2 left-2 h-12 w-auto'}`} ${(autocompleteOpen || menuOpen) ? '' : 'shadow-lg'} bg-neutral-50`}><Menu shadow autocompleteShowing={autocompleteOpen && autocompleteHasResults} /></header>
         <Form ref={form} suppressHydrationWarning={true} onSubmitCapture={() => { setSelectedGroup(null); setSubmittedPoint(null) }} action="/search" id="search-form" aria-label="Stadnamnsøk"
-            className={`${isMobile ? 'h-14' : 'h-12'} ${isMobile && autocompleteOpen ? 'w-[100svw]' : isMobile ? 'w-[calc(100svw-3.5rem)]' : 'w-[calc(100svw-4rem)] lg:w-[calc(30svw-4rem)] xl:w-[calc(25svw-4rem)] absolute top-2 left-[3.5rem]'} ${(autocompleteOpen || menuOpen) ? `z-[7000] ${!isMobile && '!rounded-b-none'}` : 'z-[3001]'}`}
+            className={`${isMobile ? 'h-14' : 'h-12'} ${isMobile && autocompleteOpen ? 'w-[100svw]' : isMobile ? 'w-[calc(100svw-3.5rem)]' : 'w-[calc(100svw-4rem)] lg:w-[calc(30svw-4rem)] xl:w-[calc(25svw-4rem)] absolute top-2 left-[3.5rem]'} ${(autocompleteOpen || menuOpen || keyboardOpen) ? `z-[7000] ${!isMobile && '!rounded-b-none'}` : 'z-[3001]'}`}
 
 
             onSubmit={() => {
@@ -207,6 +207,7 @@ export default function SearchForm() {
                 {(inputState || urlQuery || group) && !menuOpen &&
                     <ClickableIcon label="Tøm" remove={ ['q', 'resultLimit']} replace onClick={() => { clearQuery() }}>
                         <PiX className="text-3xl lg:text-2xl text-neutral-800 group-focus-within:text-neutral-800 m-1" /></ClickableIcon>}
+                <VirtualKeyboard inputRef={input} onOpenChange={setKeyboardOpen} searchBar />
                 <button className="mr-1 p-1" type="submit" aria-label="Søk"> <PiMagnifyingGlass className="text-3xl lg:text-2xl shrink-0 text-neutral-800" aria-hidden="true" /></button>
             </div>
 

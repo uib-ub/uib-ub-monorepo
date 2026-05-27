@@ -215,16 +215,18 @@ const DynamicImageViewer = ({ images, manifestDataset, manifestId }: { images: R
         </div>
       ) : null}
       {(!isMobile || snappedPosition != 'middle') && <div className={`absolute right-0 flex z-[1000] gap-2 p-2 text-white`}>
-        {!isMobile && <><RoundIconButton
+        {!isMobile && <>
+          <RoundIconButton
+            onClick={() => viewer.current?.viewport.zoomBy(0.5)}
+            label="Zoom ut">
+            <PiMagnifyingGlassMinusBold className='text-xl xl:text-base' />
+          </RoundIconButton>
+          <RoundIconButton
           onClick={() => viewer.current?.viewport.zoomBy(1.5)}
           label="Zoom inn">
           <PiMagnifyingGlassPlusBold className='text-xl xl:text-base' />
         </RoundIconButton>
-          <RoundIconButton
-            onClick={() => viewer.current?.viewport.zoomBy(0.667)}
-            label="Zoom ut">
-            <PiMagnifyingGlassMinusBold className='text-xl xl:text-base' />
-          </RoundIconButton></>}
+          </>}
         {(!isMobile || !navOpen) && (
           <RoundIconButton
             onClick={() => viewer.current?.viewport.goHome()}

@@ -77,7 +77,7 @@ export const datasetTitles: DatasetTitles = {
 
 export const datasetDescriptions: Record<string, string> = {
   core_group_debug: "",
-  all: "Søk på tvers av alle datasett i Stadnamnportalen.",
+  all: "Søk på tvers av alle datasett på stadnamn.no",
   wikidata: "",
   ssr: "Sentralt stadnamnregister (SSR), Kartverket sitt offisielle register over stadnamn i Noreg. Språksamlingane hentar inn data minst ein gong i året, og organiserer oppslaga etter stadnamnnummer.",
   bsn: "Bustadnamnregisteret vart oppretta på 1950-talet og inneheld informasjon om namn på om lag 190 000 bustader (gardar, bruk og plassar) frå dei fleste fylkene i landet. Registeret består av om lag 109 000 arkivsedlar. Kvar seddel inneheld òg informasjon om fylke, kommune, gardsnummer og bruksnummer. Stadene er georefererte ut frå Kartverket si moderne matrikkel – så nøyaktig som mogleg.",
@@ -110,7 +110,7 @@ export const datasetDescriptions: Record<string, string> = {
 
 export const datasetShortDescriptions: Record<string, string> = {
   core_group_debug: "",
-  all: "Søk på tvers av alle datasett i Stadnamnportalen.",
+  all: "Søk på tvers av alle datasett på stadnamn.no",
   ssr: "Kartverket sitt offisielle register over stadnamn i Noreg. Språksamlingane hentar inn data minst ein gong i året, og organiserer oppslaga etter stadnamnnummer.",
   wikidata: "",
   bsn: "Oppretta på 1950-talet, inneheld informasjon om namn på om lag 190 000 bustader frå dei fleste fylkene i Noreg.",

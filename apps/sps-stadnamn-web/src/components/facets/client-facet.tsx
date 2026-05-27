@@ -1,4 +1,5 @@
-import { useState, useContext, useMemo } from 'react';
+import { useState, useContext, useMemo, useRef } from 'react';
+import VirtualKeyboard from '@/components/form/virtual-keyboard';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchQuery } from '@/lib/search-params';
@@ -16,6 +17,7 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
   const perspective = usePerspective()
   const { removeFilterParams, facetFilters } = useSearchQuery()
   const [facetSearchQuery, setFacetSearchQuery] = useState('');
+  const facetSearchRef = useRef<HTMLInputElement>(null);
   const paramsExceptFacet = useMemo(() => removeFilterParams(facetName), [removeFilterParams, facetName])
   const searchParams = useSearchParams()
   const showSourceToggle = searchParams.getAll('dataset').length === 1 || searchParams.has('adm')
@@ -253,15 +255,15 @@ export default function ClientFacet({ facetName }: { facetName: string }) {
             </div>
           )}
           <div className='flex gap-2 px-2 pt-1'>
-            <div className='relative w-full h-10'>
-              <input aria-label="Søk i områdefilter" onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())}
-                className="pl-8 w-full border rounded-md border-neutral-300 h-full px-2" />
-              <span className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                <PiFunnel aria-hidden={true} className='text-neutral-700 text-xl' />
-              </span>
+            <div className='flex w-full h-10 border rounded-md border-neutral-300 items-center px-2 gap-1 relative'>
+              <PiFunnel aria-hidden={true} className='text-neutral-700 text-xl shrink-0' />
+              <input
+                ref={facetSearchRef}
+                aria-label="Søk i områdefilter"
+                onChange={(e) => setFacetSearchQuery(e.target.value.toLowerCase())}
+                className="w-full h-full focus:outline-none bg-transparent" />
+              <VirtualKeyboard inputRef={facetSearchRef} />
             </div>
-
-
           </div>
           <FacetToolbar />
           {facetAggregation?.buckets && !facetIsLoading ?
