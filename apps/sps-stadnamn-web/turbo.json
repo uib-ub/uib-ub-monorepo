@@ -14,7 +14,7 @@
       ],
       "env": [
         "NODE_ENV",
-        "SN_ENV",
+        "STADNAMN_ES_ENV",
         "STADNAMN_ES_ENDPOINT",
         "STADNAMN_ES_TOKEN",
         "ES_TOKEN_TEST",

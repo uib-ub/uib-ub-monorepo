@@ -382,7 +382,7 @@ export function extractFacets(request: Request) {
       "bool": {
         "should": datasets.map(tag => ({
           "term": {
-            "_index": `search-stadnamn-${process.env.SN_ENV}-${tag}`
+            "_index": `search-stadnamn-${process.env.STADNAMN_ES_ENV}-${tag}`
           }
         })),
         "minimum_should_match": 1

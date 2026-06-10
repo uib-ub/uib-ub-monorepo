@@ -77,7 +77,7 @@ export async function fetchStats() {
               
             ],
             "must_not": [
-              { "terms": { "_index": baseWordDatasets.map((dataset) => `search-stadnamn-${process.env.SN_ENV}-${dataset}`) } },
+              { "terms": { "_index": baseWordDatasets.map((dataset) => `search-stadnamn-${process.env.STADNAMN_ES_ENV}-${dataset}`) } },
               { "terms": { "group.id": ["suppressed", "noname"] } }
             ]
           }

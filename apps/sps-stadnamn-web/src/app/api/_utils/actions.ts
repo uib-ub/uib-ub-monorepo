@@ -19,7 +19,7 @@ export async function fetchDoc(params: { uuid: string | string[], dataset?: stri
         }
     }
 
-    const res = await fetch(`${endpoint}search-stadnamn-${process.env.SN_ENV}-${dataset ? dataset : '*'}/_search`, {
+    const res = await fetch(`${endpoint}search-stadnamn-${process.env.STADNAMN_ES_ENV}-${dataset ? dataset : '*'}/_search`, {
         cache: 'force-cache',
         next: {
             tags: ['all']

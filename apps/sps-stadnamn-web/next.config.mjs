@@ -6,7 +6,7 @@ const nextConfig = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   transpilePackages: ['next-mdx-remote'],
   env: {
-    NEXT_PUBLIC_SN_ENV: process.env.SN_ENV,
+    NEXT_PUBLIC_STADNAMN_ES_ENV: process.env.STADNAMN_ES_ENV,
   },
   redirects: async () => {
     return [

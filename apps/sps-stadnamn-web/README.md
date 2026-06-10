@@ -22,7 +22,7 @@ https://git.app.uib.no/spraksamlingane/stadnamn/iiif.spraksamlingane.no
 
 The following environment variables are used in the application:
 
-* SN_ENV
+* STADNAMN_ES_ENV
     - local: for the local deveopment environment
     - dev: for the more stable dev deployment
     - prod: production

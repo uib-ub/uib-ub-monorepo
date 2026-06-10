@@ -20,7 +20,7 @@ export default function Error({
   const searchParams = useSearchParams()
   const search = searchParams.toString()
   const fullUrl = `${pathname}${search ? `?${search}` : ''}`
-  const SN_ENV = process.env.NEXT_PUBLIC_SN_ENV;
+  const STADNAMN_ES_ENV = process.env.NEXT_PUBLIC_STADNAMN_ES_ENV;
 
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function Error({
         <div className="space-y-4">
 
           {/* TODO: remove true */}
-          {(SN_ENV === 'dev' || SN_ENV === 'local') && <div className="inner-slate bg-white p-4 rounded-md">
+          {(STADNAMN_ES_ENV === 'dev' || STADNAMN_ES_ENV === 'local') && <div className="inner-slate bg-white p-4 rounded-md">
             Showing stack trace in development or preview environment
             <p className="font-mono text-sm text-neutral-700 break-words" lang="en">{error?.message}</p>
             <pre>

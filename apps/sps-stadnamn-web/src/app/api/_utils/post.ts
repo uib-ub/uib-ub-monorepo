@@ -6,7 +6,7 @@ export async function postQuery(perspective: string, query: any, search_type?: s
     const token = process.env.STADNAMN_ES_TOKEN
     let res
 
-    const url = `${endpoint}search-stadnamn-${process.env.SN_ENV}-${perspective}/_search${search_type ? `?search_type=${search_type}` : ''}`
+    const url = `${endpoint}search-stadnamn-${process.env.STADNAMN_ES_ENV}-${perspective}/_search${search_type ? `?search_type=${search_type}` : ''}`
     //console.log("URL", url)
 
 
