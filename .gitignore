@@ -123,4 +123,5 @@ tsconfig.build.tsbuildinfo
 .cursorignore
 .continueignore
 .continue
+.claude
 
