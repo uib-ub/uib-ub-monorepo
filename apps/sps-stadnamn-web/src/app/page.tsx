@@ -96,7 +96,7 @@ export default async function Home() {
   </div>
   </div>
   <div className="flex flex-col items-center gap-24 relative z-20 px-4 py-24 bg-neutral-50/75 w-full">
-  <section className="flex flex-col container gap-6" aria-labelledby="recently_added">
+  <section data-nosnippet className="flex flex-col container gap-6" aria-labelledby="recently_added">
     <h2 id="recently_added" className="font-semibold font-serif text-3xl text-neutral-950 text-center">Sist lagt til</h2>
     <ul className="flex flex-col gap-6 lg:grid lg:grid-cols-2">
       {newest.map((card, index) => (
@@ -127,7 +127,7 @@ export default async function Home() {
       ))}
     </ul>
 </section>
-  <section className="flex flex-col container gap-6" aria-labelledby="dataset_showcase">
+  <section data-nosnippet className="flex flex-col container gap-6" aria-labelledby="dataset_showcase">
     <h2 id="dataset_showcase" className="font-semibold font-serif text-3xl text-neutral-950 text-center">Utvalde datasett</h2>
     <ul className="flex flex-col gap-6 lg:grid lg:grid-cols-2">
       {cards.map((card, index) => (
