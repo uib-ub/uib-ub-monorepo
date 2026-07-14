@@ -172,7 +172,7 @@ export function htmlify(data: string): string {
     const pars = data
       .split("\n\n")
       .filter(p => p)
-      .map(p => `<p>${p}</p>`)
+      .map(p => `<p>${p.replace(/\n/g, "<br>")}</p>`)
       .join("");
     return pars;
   }
