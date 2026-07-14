@@ -79,7 +79,7 @@
       <UtilsTableLegend>
         <UtilsTableLegendEntry
           legend-key="Domene"
-          legend-value="En advarsel betyr at mindre enn tre navner er definert."
+          legend-value="En advarsel betyr at mindre enn tre navn er definert."
         />
       </UtilsTableLegend>
     </div>
