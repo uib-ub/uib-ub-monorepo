@@ -102,8 +102,6 @@ import { langRtoL, intersectUnique } from "#imports";
 
 const { getLaLo } = useLazyLocale();
 
-const breakpoint = useBreakpoint();
-
 const localeLangOrder = useLocaleLangOrder();
 
 const searchInterface = useSearchInterface();

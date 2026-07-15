@@ -23,11 +23,9 @@
             class="flex overflow-hidden lg:block"
           >
             <div
-              ref="termbaseTextRef"
               class="flex flex-col-reverse space-y-2 lg:block lg:flex-col"
             >
               <div
-                ref="termbaseInfoBoxRef"
                 class="relative z-10 mt-6 bg-white lg:float-right lg:mb-2 lg:ml-3 lg:mt-0"
               >
                 <TermbaseInfoBox
@@ -35,11 +33,13 @@
                   :termbase-id="termbase"
                 />
               </div>
-              <p
-                v-for="p in description"
-                :key="p"
-                v-html="p"
-              />
+              <div class="space-y-2">
+                <p
+                  v-for="p in description"
+                  :key="p"
+                  v-html="p"
+                />
+              </div>
             </div>
           </div>
         </main>
@@ -64,9 +64,6 @@ const route = useRoute();
 const termbase = computed(() => getTermbaseFromParam());
 const localeLangOrder = useLocaleLangOrder();
 const { getLaLo } = useLazyLocale();
-
-const termbaseInfoBoxRef = ref<HTMLElement | null>(null);
-const termbaseTextRef = ref<HTMLElement | null>(null);
 
 const { data } = await useLazyFetch<Termbase>(`/api/termbase/${termbase.value}`, {
   key: `termbase_${termbase.value}`,

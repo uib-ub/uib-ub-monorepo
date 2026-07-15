@@ -64,6 +64,7 @@
 
 <script setup lang="ts">
 import { FetchType } from "~/types/enums";
+import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
 
 const appConfig = useAppConfig();
 
@@ -71,7 +72,7 @@ const route = useRoute();
 const searchData = useSearchData();
 const allowSearchFetch = useAllowSearchFetch();
 const showSearchFilter = useShowSearchFilter();
-const breakpoint = useBreakpoint();
+const breakpoints = useBreakpoints(breakpointsTailwind);
 const searchDataStats = useSearchDataStats();
 const countFetchedMatches = computed(() => {
   return countSearchEntries(searchData.value);
@@ -143,6 +144,10 @@ watch(
 );
 
 onMounted(() => {
+  // display filter if screen size larger than lg
+  nextTick(() => {
+    showSearchFilter.value = breakpoints.greater("lg").value;
+  });
   considerSearchFetching(FetchType.Inital);
 
   /*
@@ -152,11 +157,6 @@ onMounted(() => {
   i.e. when search route is visited directly
   */
   if (searchInterface.value.term === null) {
-    // display filter if screen size larger than lg
-    if (appConfig.ui.wideBreakpoints.includes(breakpoint.value)) {
-      showSearchFilter.value = true;
-    }
-
     for (const [key, value] of Object.entries(appConfig.search.options)) {
       // Only set state if present in route
       // term can be empty string so the undefined check is neccessary

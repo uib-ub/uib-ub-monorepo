@@ -15,12 +15,9 @@
             {{ $t("global.all") }}
           </button>
         </li>
-        <li
-          v-for="charEntry in displayAggData?.firstChar"
-          :key="charEntry[0]"
-        >
+        <li v-for="charEntry in displayAggData?.firstChar" :key="charEntry[0]">
           <button
-            class="px-[4px] py-0.5 text-lg underline-offset-2 hover:underline cursor-pointer"
+            class="px-1 py-0.5 text-lg underline-offset-2 hover:underline cursor-pointer"
             :class="{
               'font-semibold underline': query.char[0] === charEntry[0],
             }"
@@ -40,12 +37,9 @@
         <li
           v-for="concept in displayData.slice(col[0], col[1])"
           :key="concept.link"
-          class="w-[20rem] truncate xs:w-[27rem] sm:w-70 md:w-86 lg:w-108"
+          class="w-[20rem] truncate xs:w-108 sm:w-70 md:w-86 lg:w-108"
         >
-          <TermbaseConceptLink
-            :concept="concept"
-            :pending="pending"
-          />
+          <TermbaseConceptLink :concept="concept" :pending="pending" />
         </li>
       </ol>
     </div>
@@ -63,10 +57,12 @@
 </template>
 
 <script setup lang="ts">
+import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
+
 const { locale } = useI18n();
 const route = useRoute();
 const router = useRouter();
-const breakpoint = useBreakpoint();
+const breakpoints = useBreakpoints(breakpointsTailwind);
 
 const props = defineProps({
   termbaseId: { type: String, required: true },
@@ -80,9 +76,9 @@ const query = ref<{ char: [string | null, number]; page: number }>({
 // Set correct query props when navigating to tb page
 // Needs to be before the watcher picks up changes
 if (
-  route.query.page
-  && typeof route.query.page === "string"
-  && parseInt(route.query.page) < 9000
+  route.query.page &&
+  typeof route.query.page === "string" &&
+  parseInt(route.query.page) < 9000
 ) {
   query.value.page = parseInt(route.query.page);
 }
@@ -110,8 +106,7 @@ watch(
         char,
       });
       // Don't trigger event when going back or when reset is triggered automatically
-    }
-    else if (query.value.page !== 0) {
+    } else if (query.value.page !== 0) {
       pushTermbaseConceptListNavigationEvent(props.termbaseId, "page", {
         page: query.value.page,
         char,
@@ -121,15 +116,13 @@ watch(
 );
 
 const generalConfig = {
-  min: { columnCount: 1, columnLength: 20 },
+  min: { columnCount: 1, columnLength: 15 },
   max: { columnCount: 2, columnLength: 15 },
 };
 
+const isSmall = breakpoints.smallerOrEqual("sm");
 const breakpointDisplayConfig = computed(() => {
-  let configKey = "max";
-  if (import.meta.client) {
-    configKey = ["min", "xs"].includes(breakpoint.value) ? "min" : "max";
-  }
+  const configKey = isSmall.value ? "min" : "max";
 
   const breakpointConfig: {
     numberLst: [number, number][];
@@ -145,18 +138,15 @@ const breakpointDisplayConfig = computed(() => {
   }
 
   // update how many concepts are displayed in one page
-  breakpointConfig.displayConcepts
-    = generalConfig[configKey].columnCount
-      * generalConfig[configKey].columnLength;
+  breakpointConfig.displayConcepts =
+    generalConfig[configKey].columnCount *
+    generalConfig[configKey].columnLength;
 
   return breakpointConfig;
 });
 
 const breakpointFetchConfig = computed(() => {
-  let configKey = "max";
-  if (import.meta.client) {
-    configKey = ["min", "xs"].includes(breakpoint.value) ? "min" : "max";
-  }
+  const configKey = isSmall.value ? "min" : "max";
 
   const breakpointConfig: {
     fetchConcepts: number;
@@ -173,9 +163,9 @@ const breakpointFetchConfig = computed(() => {
   };
 
   // calculate number of concepts to fetch
-  breakpointConfig.fetchConcepts
-    = generalConfig[configKey].columnCount
-      * generalConfig[configKey].columnLength;
+  breakpointConfig.fetchConcepts =
+    generalConfig[configKey].columnCount *
+    generalConfig[configKey].columnLength;
 
   return breakpointConfig;
 });
@@ -195,7 +185,7 @@ const { data: conceptsAggData } = await useLazyFetch(
 const displayAggData = computed(() => {
   const tmp = {
     totalCount: conceptsAggData.value?.total_count.value,
-    firstChar: conceptsAggData.value?.unique_values.buckets.map(bucket => [
+    firstChar: conceptsAggData.value?.unique_values.buckets.map((bucket) => [
       bucket.key,
       bucket.doc_count,
     ]),
