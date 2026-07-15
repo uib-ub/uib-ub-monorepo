@@ -40,10 +40,7 @@ export const useSearchDataCount = () => useState("searchDataCount", () => {});
 export const useSearchDataStats = () =>
   useState<SearchDataStats>("searchDataStats", () => ({}));
 
-export const useShowSearchFilter = () =>
-  useState<boolean>("showSearchFilter", () =>
-    useAppConfig().ui.wideBreakpoints.includes(useBreakpoint().value),
-  );
+export const useShowSearchFilter = () => useState<boolean>("showSearchFilter", () => false);
 
 export const useSearchFilterSelection = () =>
   useState<SearchFilterData>("searchFilterSelection", () => ({
