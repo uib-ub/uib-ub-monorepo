@@ -17,7 +17,7 @@ function highlightMatch(matchedTerm: string, searchOptions: SearchOptions): stri
       case "startsWith-ci":
       case "endsWith-ci": {
         const originalMatchCase = extractOriginalCase(matchedTerm, searchTerm);
-        const highlightedTerm = matchedTerm.replace(originalMatchCase, `<mark>${originalMatchCase}</mark>`);
+        const highlightedTerm = matchedTerm.replaceAll(originalMatchCase, `<mark>${originalMatchCase}</mark>`);
         return highlightedTerm;
       }
       default: {
