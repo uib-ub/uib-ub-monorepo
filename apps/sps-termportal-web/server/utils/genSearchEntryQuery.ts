@@ -27,6 +27,7 @@ export function getTermData(term: string) {
 }
 
 export function getLanguageData(searchOptions: SearchOptions): string[] {
+  const appConfig = useAppConfig();
   if (searchOptions.language[0] !== "all") {
     if (searchOptions.situation.startsWith("filter")) {
       const tmplcs = searchOptions.language.map((lc) => {
@@ -47,7 +48,7 @@ export function getLanguageData(searchOptions: SearchOptions): string[] {
     }
   }
   else {
-    return [""];
+    return [...appConfig.language.order.default];
   }
 }
 
@@ -56,23 +57,7 @@ function getLanguageWhere(
   match: Matching | "all" | "allPatterns",
   lang: string,
 ): string {
-  if (match === "all") {
-    if (!lang) {
-      return subqueries(match).where.replace("{languageFilter}", "");
-    }
-    else {
-      return subqueries(match).where.replace(
-        "{languageFilter}",
-        `FILTER ( langmatches(lang(?lit), "${lang}") )`,
-      );
-    }
-  }
-  else if (!lang) {
-    return subqueries(match).where.replace("{language}", "");
-  }
-  else {
-    return subqueries(match).where.replace("{language}", `"lang:${lang}"`);
-  }
+  return subqueries(match).where.replace("{language}", `"lang:${lang}"`);
 }
 
 export function getPredicateValues(predicates: LabelPredicate[]): string {
@@ -174,14 +159,15 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
     where: string,
   ) => {
     const subquery = `
-        {
-          SELECT ?label ?literal ?l ?context ?samling (?sc + ${
-            subqueries(match)?.score
-          } as ?score) ?uri ?predicate ${translate}
+        { SELECT ?label ?literal ?l ?context ?samling (?sc + ${subqueries(match)?.score} as ?sco)
+                 ?uri ?predicate ${translate}
                  ("${match}" as ?matching)
           WHERE {
-            { SELECT * {
+            { SELECT *
+              {
                 ${where}
+
+
                 ${subqueries(match)?.filter}
                 ?uri ${predFilter} ?label ;
                      ${context[1]} ?con .
@@ -194,14 +180,10 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
             }
             ?uri ?predicate ?label .
             ?uri skosp:memberOf ?sam .
-            BIND ( replace( str(?sam), "${
-              runtimeConfig.public.base
-            }", "") as ?samling).
+            BIND ( replace( str(?sam), "${runtimeConfig.public.base}", "") as ?samling).
             BIND ( lang(?lit) as ?l ).
             BIND ( str(?lit) as ?literal ).
-            BIND ( replace(str(?con), "${
-              runtimeConfig.public.base
-            }", "") as ?context).
+            BIND ( replace(str(?con), "${runtimeConfig.public.base}", "") as ?context).
           }
         }`;
 
@@ -209,6 +191,7 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
   };
 
   const subqueryArray: string[] = [];
+
   for (const match of searchOptions.matching) {
     const whereArray: string[] = [];
 
@@ -231,7 +214,7 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
   const queryEntries = () => `
     ${queryPrefix()}
   
-    SELECT DISTINCT ?uri ?predicate ?literal ?score ?context ?samling ${translate}
+    SELECT DISTINCT ?uri ?predicate ?literal (AVG(?sco) AS ?score) ?context ?samling ${translate}
            (group_concat( lcase(?l); separator="," ) as ?lang)
            ?matching
     WHERE {
@@ -240,8 +223,8 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
         }
       }
     }
-    GROUP BY ?uri ?predicate ?literal ?score ?matching ?context ?samling ${translate}
-    ORDER BY DESC(?score) lcase(?literal) DESC(?predicate)
+    GROUP BY ?uri ?predicate ?literal ?matching ?context ?samling ${translate}
+    ORDER BY lcase(?literal) DESC(?score) DESC(?predicate)
     LIMIT ${searchOptions.limit}`;
 
   return queryEntries();
