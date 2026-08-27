@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
       type: "_search",
       body: {
         _source: [
-          "id",
+          "@id",
           `displayLabel.${body.language}.value`,
           `displayLabel.${body.language}.language`,
         ],

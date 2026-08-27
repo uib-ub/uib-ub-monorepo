@@ -15,7 +15,10 @@
             {{ $t("global.all") }}
           </button>
         </li>
-        <li v-for="charEntry in displayAggData?.firstChar" :key="charEntry[0]">
+        <li
+          v-for="charEntry in displayAggData?.firstChar"
+          :key="charEntry[0]"
+        >
           <button
             class="px-1 py-0.5 text-lg underline-offset-2 hover:underline cursor-pointer"
             :class="{
@@ -39,7 +42,10 @@
           :key="concept.link"
           class="w-[20rem] truncate xs:w-108 sm:w-70 md:w-86 lg:w-108"
         >
-          <TermbaseConceptLink :concept="concept" :pending="pending" />
+          <TermbaseConceptLink
+            :concept="concept"
+            :pending="pending"
+          />
         </li>
       </ol>
     </div>
@@ -76,9 +82,9 @@ const query = ref<{ char: [string | null, number]; page: number }>({
 // Set correct query props when navigating to tb page
 // Needs to be before the watcher picks up changes
 if (
-  route.query.page &&
-  typeof route.query.page === "string" &&
-  parseInt(route.query.page) < 9000
+  route.query.page
+  && typeof route.query.page === "string"
+  && parseInt(route.query.page) < 9000
 ) {
   query.value.page = parseInt(route.query.page);
 }
@@ -106,7 +112,8 @@ watch(
         char,
       });
       // Don't trigger event when going back or when reset is triggered automatically
-    } else if (query.value.page !== 0) {
+    }
+    else if (query.value.page !== 0) {
       pushTermbaseConceptListNavigationEvent(props.termbaseId, "page", {
         page: query.value.page,
         char,
@@ -138,9 +145,9 @@ const breakpointDisplayConfig = computed(() => {
   }
 
   // update how many concepts are displayed in one page
-  breakpointConfig.displayConcepts =
-    generalConfig[configKey].columnCount *
-    generalConfig[configKey].columnLength;
+  breakpointConfig.displayConcepts
+    = generalConfig[configKey].columnCount
+      * generalConfig[configKey].columnLength;
 
   return breakpointConfig;
 });
@@ -163,9 +170,9 @@ const breakpointFetchConfig = computed(() => {
   };
 
   // calculate number of concepts to fetch
-  breakpointConfig.fetchConcepts =
-    generalConfig[configKey].columnCount *
-    generalConfig[configKey].columnLength;
+  breakpointConfig.fetchConcepts
+    = generalConfig[configKey].columnCount
+      * generalConfig[configKey].columnLength;
 
   return breakpointConfig;
 });
@@ -185,7 +192,7 @@ const { data: conceptsAggData } = await useLazyFetch(
 const displayAggData = computed(() => {
   const tmp = {
     totalCount: conceptsAggData.value?.total_count.value,
-    firstChar: conceptsAggData.value?.unique_values.buckets.map((bucket) => [
+    firstChar: conceptsAggData.value?.unique_values.buckets.map(bucket => [
       bucket.key,
       bucket.doc_count,
     ]),
@@ -208,7 +215,7 @@ const { data, pending } = await useLazyFetch(
 const displayData = computed(() => {
   const tmp = data.value?.map((concept) => {
     return {
-      link: "/tb" + idOrUriToRoute(props.termbaseId, concept.id),
+      link: "/tb" + idOrUriToRoute(props.termbaseId, concept["@id"]),
       label: concept?.displayLabel?.[locale.value]?.value,
       language: concept?.displayLabel?.[locale.value]?.language,
     };
