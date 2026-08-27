@@ -58,5 +58,5 @@ export default defineEventHandler(async (event) => {
       return parseConceptData(result, uri);
     });
   }
-  catch (e) {}
+  catch (e) { console.error(e); }
 });
