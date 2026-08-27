@@ -11,7 +11,10 @@
           :key="`termbase_${termbase}_${bootstrapData ? Object.keys(bootstrapData.termbase).length : 'none'}_${data ? data.identifier : 'none'}`"
           class="md:max-w-3xl lg:max-w-4xl"
         >
-          <h1 id="main" class="pb-3 pt-5 text-2xl">
+          <h1
+            id="main"
+            class="pb-3 pt-5 text-2xl"
+          >
             <AppLink to="#main">
               {{ getLaLo(termbase + "-3A" + termbase) }}
             </AppLink>
@@ -21,15 +24,25 @@
               <div
                 class="relative z-10 mt-6 bg-white lg:float-right lg:mb-2 lg:ml-3 lg:mt-0"
               >
-                <TermbaseInfoBox :data="data" :termbase-id="termbase" />
+                <TermbaseInfoBox
+                  :data="data"
+                  :termbase-id="termbase"
+                />
               </div>
               <div class="space-y-2">
-                <p v-for="p in description" :key="p" v-html="p" />
+                <p
+                  v-for="p in description"
+                  :key="p"
+                  v-html="p"
+                />
               </div>
             </div>
           </div>
         </main>
-        <TermbaseSearch v-if="data" :termbase-id="termbase" />
+        <TermbaseSearch
+          v-if="data"
+          :termbase-id="termbase"
+        />
         <TermbaseConcepts
           v-if="data"
           :key="'concepts' + termbase"
@@ -57,14 +70,12 @@ const { data } = await useLazyFetch<Termbase>(
       : undefined,
   },
 );
-console.warn(data);
 
 const description = computed(() => {
   for (const lang of localeLangOrder.value) {
     const localLangcode = lang as LocalLangCode;
     const desc = data.value?.description?.[localLangcode];
     if (desc) {
-      console.warn(desc);
       return desc.split("\n\n");
     }
   }
@@ -75,7 +86,8 @@ function getTermbaseFromParam() {
   const termbase = route.params.termbase;
   if (typeof termbase === "string") {
     return termbase;
-  } else {
+  }
+  else {
     return termbase[0];
   }
 }

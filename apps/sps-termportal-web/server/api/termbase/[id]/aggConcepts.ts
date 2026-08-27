@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
           },
           total_count: {
             value_count: {
-              field: "id",
+              field: "@id",
             },
           },
         },
