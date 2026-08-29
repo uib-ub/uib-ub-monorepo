@@ -117,16 +117,6 @@ function getConceptId(termbase: TermbaseId, idArray: string[]): string {
 }
 const mainConceptId = getConceptId(props.termbaseId, props.conceptIdArray);
 
-watch(
-  termpostRef,
-  () => {
-    if (window.MathJax && window.MathJax.typesetPromise) {
-      window.MathJax.typesetPromise();
-    }
-  },
-  { immediate: true },
-);
-
 const controller = new AbortController();
 const timer = setTimeout(() => {
   controller.abort();
@@ -237,5 +227,11 @@ onBeforeUnmount(() => {
   if (!data.value?.[props.mainConceptId] && !controller.signal.aborted) {
     controller.abort();
   }
+});
+
+onMounted(() => {
+  watch(termpostRef, () => {
+    window.MathJax?.typesetPromise?.();
+  });
 });
 </script>
