@@ -3,7 +3,7 @@ import { defineNuxtPlugin } from "#app";
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(VueMatomo, {
-    host: "https://webstats.uib.no/",
+    host: "https://webstats.app.uib.no/",
     siteId: 83,
     router: nuxtApp.$router,
     enableLinkTracking: true,
