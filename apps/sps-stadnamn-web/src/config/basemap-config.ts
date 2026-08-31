@@ -198,7 +198,7 @@ export const baseMaps: BaseMap[] = [
         coverage: 'global',
         props: {
             url: cartoTileUrl('light_nolabels'),
-            attribution: '&copy; <a class="override-external-icon" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors<br/> &copy; <a class="override-external-icon" href="https://carto.com/attributions">CARTO</a>'
+            attribution: '&copy; <a class="override-external-icon" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a class="override-external-icon" href="https://carto.com/attributions">CARTO</a>'
         }
 
     },
@@ -211,7 +211,7 @@ export const baseMaps: BaseMap[] = [
         coverage: 'global',
         props: {
             url: cartoTileUrl('rastertiles/voyager_nolabels'),
-            attribution: '&copy; <a class="override-external-icon" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors<br/> &copy; <a class="override-external-icon" href="https://carto.com/attributions">CARTO</a>'
+            attribution: '&copy; <a class="override-external-icon" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a class="override-external-icon" href="https://carto.com/attributions">CARTO</a>'
         }
     }, /*
     {
