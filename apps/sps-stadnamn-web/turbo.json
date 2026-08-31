@@ -17,6 +17,7 @@
         "SN_ENV",
         "STADNAMN_ES_ENDPOINT",
         "STADNAMN_ES_TOKEN",
+        "CARTO_TOKEN",
         "ES_TOKEN_TEST",
         "ES_TOKEN",
         "ES_ENDPOINT",

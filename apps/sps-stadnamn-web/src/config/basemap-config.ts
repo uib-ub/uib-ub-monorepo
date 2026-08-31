@@ -1,6 +1,9 @@
+const cartoTileUrl = (style: string) =>
+    `https://{s}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}{r}.png?key=${process.env.CARTO_TOKEN}`
+
 // Default bakgrunnskart bør heller endres hvis man søker i et datasett med annen geografisk dekning enn Norge. 
 export const backgroundMap = {
-    url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
+    url: cartoTileUrl('light_nolabels'),
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
 }
 
@@ -194,7 +197,7 @@ export const baseMaps: BaseMap[] = [
         bright: true,
         coverage: 'global',
         props: {
-            url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
+            url: cartoTileUrl('light_nolabels'),
             attribution: '&copy; <a class="override-external-icon" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors<br/> &copy; <a class="override-external-icon" href="https://carto.com/attributions">CARTO</a>'
         }
 
@@ -207,7 +210,7 @@ export const baseMaps: BaseMap[] = [
         maxNativeZoom: 20,
         coverage: 'global',
         props: {
-            url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png',
+            url: cartoTileUrl('rastertiles/voyager_nolabels'),
             attribution: '&copy; <a class="override-external-icon" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors<br/> &copy; <a class="override-external-icon" href="https://carto.com/attributions">CARTO</a>'
         }
     }, /*

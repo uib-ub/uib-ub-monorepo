@@ -159,7 +159,7 @@ export default function Menu({ shadow, autocompleteShowing }: { shadow?: boolean
                             <Link
                                 scroll={false}
                                 className="flex items-center gap-2 px-4 py-3 w-full transition-colors no-underline hover:bg-accent-100 text-neutral-900 override-external-icon"
-                                href="https://skjemaker.app.uib.no/view.php?id=16665712"
+                                href="https://dialog.uib.no/UIB-61"
                             >
                                 <PiChatCircleText className="text-xl" aria-hidden="true" />Tilbakemelding
                             </Link>

@@ -91,7 +91,7 @@ export default function Error({
               Last sida på nytt
 
             </button>
-            <Link href="https://skjemaker.app.uib.no/view.php?id=16665712" target="_blank" rel="noopener" className="btn text-white flex-1 flex items-center justify-center gap-2"
+            <Link href="https://dialog.uib.no/UIB-61" target="_blank" rel="noopener" className="btn text-white flex-1 flex items-center justify-center gap-2"
               onClick={handleReport}
             >
               Rapporter

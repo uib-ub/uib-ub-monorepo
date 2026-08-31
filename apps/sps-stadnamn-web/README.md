@@ -28,6 +28,7 @@ The following environment variables are used in the application:
     - prod: production
 * STADNAMN_ES_ENDPOINT: the elasticsearch endpoint. Find the current one in vercel. Development versions may use a different cluster.
 * STADNAMN_ES_TOKEN: find it in vercel, or create a new API key in elasticsearch
+* CARTO_TOKEN: API key for the CARTO raster basemap tiles
 
 Define the variables in apps/sps-stadnamn-web/.env.local
 
