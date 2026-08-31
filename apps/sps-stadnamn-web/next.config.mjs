@@ -7,6 +7,7 @@ const nextConfig = {
   transpilePackages: ['next-mdx-remote'],
   env: {
     NEXT_PUBLIC_SN_ENV: process.env.SN_ENV,
+    CARTO_TOKEN: process.env.CARTO_TOKEN,
   },
   redirects: async () => {
     return [
