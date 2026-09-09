@@ -135,7 +135,7 @@ const DynamicImageViewer = ({ images, manifestDataset, manifestId }: { images: R
 
       } else {
         beginLoading(0);
-        viewer.current.open(tileSources);
+        viewer.current.open(tileSources.map(tileSource => ({ tileSource })));
         viewer.current.viewport.goHome();
       }
     } catch (e: any) {

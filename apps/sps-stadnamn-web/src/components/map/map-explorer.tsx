@@ -6,7 +6,7 @@ import { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState
 import { getAreaLabelMarkerIcon, getBrukMarkerIcon, getClusterMarker, getInitAnchorMarker, getLabelMarkerIcon, getUnlabeledMarker } from "./markers";
 
 import { boundsFromZoomAndCenter, calculateRadius, getGridSize, getLabelBounds, getMapViewportPadding, isLatLngInPaddedViewport, MAP_DRAWER_BOTTOM_HEIGHT_REM } from "@/lib/map-utils";
-import { useActivePoint, useCenterNumber, useDebugGroupsOn, useDocParam, useGroupParam, useMapSettingsOn, usePoint, useQParam, useRadiusNumber, useSourceViewOn, useTreeParam, useZoomNumber, useInitDecoded, useInitParam } from "@/lib/param-hooks";
+import { useActivePoint, useCenterNumber, useDebugGroupsOn, useDocParam, useGroupParam, usePoint, useQParam, useRadiusNumber, useSourceViewOn, useTreeParam, useZoomNumber, useInitDecoded, useInitParam } from "@/lib/param-hooks";
 import { stringToBase64Url } from "@/lib/param-utils";
 import { parseTreeParam } from "@/lib/tree-param";
 import { getBnr, indexToCode } from "@/lib/utils";
@@ -108,7 +108,6 @@ export default function MapExplorer() {
   const tree = useTreeParam()
   const treeState = useMemo(() => parseTreeParam(tree), [tree])
   const setDrawerContent = useSessionStore((s) => s.setDrawerContent)
-  const mapSettingsOn = useMapSettingsOn()
   const point = usePoint()
   const activePoint = useActivePoint()
   const highlightPoint = activePoint ?? point
@@ -1071,9 +1070,11 @@ export default function MapExplorer() {
           useMapEvents({
             movestart: () => {
               tapHoldRef.current = null
-              const attribution = map.attributionControl;
-              if (attribution) {
-                attribution.getContainer().style.display = mapSettingsOn ? "block" : "none";
+              if (isMobile) {
+                const attributionContainer = map.attributionControl?.getContainer()
+                if (attributionContainer) {
+                  attributionContainer.style.display = "none"
+                }
               }
             },
 
@@ -1167,7 +1168,7 @@ export default function MapExplorer() {
         return (
 
           <>
-            <AttributionControl prefix={false} position={isMobile ? "bottomleft" : "bottomright"} />
+            <AttributionControl prefix={false} position="bottomright" />
             <EventHandlers />
 
             {baseMap && baseMapLookup[baseMap] && (

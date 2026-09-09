@@ -183,7 +183,7 @@ export default function MapToolbar() {
                 >
                         <Clickable
                             link
-                            href="https://skjemaker.app.uib.no/view.php?id=16665712"
+                            href="https://dialog.uib.no/UIB-61"
                             className="btn btn-outline rounded-md inline-flex items-center gap-2 override-external-icon transition-none w-fit lg:h-12 lg:px-6 xl:text-lg"
                         >
                             <span>Tilbakemelding</span>
