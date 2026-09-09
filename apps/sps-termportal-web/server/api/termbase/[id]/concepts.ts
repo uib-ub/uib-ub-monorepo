@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
 
   if (event.context.params) {
     const query = {
-      index: `search-termp-w-${event.context.params.id}`,
+      index: `search-termp-w-tb-${event.context.params.id}`,
       type: "_search",
       body: {
         _source: [
