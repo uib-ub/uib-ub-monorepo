@@ -161,8 +161,7 @@
             :class="appConfigColorStatus.ok.class"
           />
           <p>
-            Termgroup has been registered in the activity - signifying its
-            members have been updated.
+            Termgruppen er registrert i aktiviteten - medlemmene er oppdatert.
           </p>
         </div>
         <div class="flex space-x-4 items-center">
@@ -172,16 +171,17 @@
             class=""
             :class="appConfigColorStatus.error.class"
           />
-          <p>Termgroup has not been registered in the activity.</p>
+          <p>
+            Termgruppen har ikke blitt registrert i aktiviteten - medlemmene er ikke oppdatert.
+          </p>
         </div>
       </div>
     </section>
-
     <!-- Members -->
     <TermgroupMembers
-      v-if="selectedTermbase"
-      :key="selectedTermbase?.contact.map((contact) => contact._id).join('-')"
-      :termbases="selectedTermbase?.contact.map((contact) => contact._id)"
+      v-if="selectedTermgroup"
+      :key="selectedTermgroup?.contact.map((contact) => contact._id).join('-')"
+      :termbases="selectedTermgroup?.contact.map((contact) => contact._id)"
       class="max-w-5xl"
     />
   </main>
