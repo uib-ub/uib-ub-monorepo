@@ -1,5 +1,5 @@
 <template>
-  <div class="flex min-h-screen flex-col">
+  <div class="flex min-h-screen flex-col max-w-full overflow-x-auto">
     <HeaderMain />
     <div
       class="flex grow"
@@ -20,6 +20,6 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const route = useRoute();
 </script>
