@@ -144,9 +144,9 @@ watch(
 );
 
 onMounted(() => {
-  // display filter if screen size larger than lg
+  // display filter if it's rendered in the sidebar (xl and up)
   nextTick(() => {
-    showSearchFilter.value = breakpoints.greater("lg").value;
+    showSearchFilter.value = breakpoints.greaterOrEqual("xl").value;
   });
   considerSearchFetching(FetchType.Inital);
 
