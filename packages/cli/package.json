@@ -1,0 +1,43 @@
+{
+  "name": "cli",
+  "version": "0.0.0",
+  "description": "CLI tools for the uib-ub monorepo (assets pipeline, ingest)",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "cli": "dist/index.js"
+  },
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check-types": "tsc --noEmit",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -rf node_modules",
+    "cli": "node dist/index.js",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.5",
+    "@types/node": "^20.10.6",
+    "eslint-config": "*",
+    "typescript": "^5.9.2",
+    "typescript-config": "*",
+    "vitest": "^1.2.1"
+  },
+  "dependencies": {
+    "@svgr/core": "^8.1.0",
+    "@svgr/plugin-jsx": "^8.1.0",
+    "adm-zip": "^0.5.16",
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "ora": "^8.0.1",
+    "prettier": "^3.0.3",
+    "svg-pathdata": "^9.0.0",
+    "svgo": "^3.0.2"
+  }
+}

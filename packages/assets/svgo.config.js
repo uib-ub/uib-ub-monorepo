@@ -1,9 +1,15 @@
-const autocrop = require('svgo-autocrop');
-
 module.exports = {
   plugins: [
+    {
+      name: "inlineStyles",
+      params: {
+        // Also inline selectors used by more than one element (e.g. .st1 on
+        // all paths of a negative logo), so no <style> blocks remain.
+        onlyMatchedOnce: false,
+      },
+    },
+    // Run after inlineStyles so inlined styles become proper attributes
     "convertStyleToAttrs",
-    "inlineStyles",
     "removeDimensions",
     {
       name: "prefixIds",
@@ -16,19 +22,19 @@ module.exports = {
         removeNone: true,
       },
     },
-    { // Run autocrop last (you'll get less issues if autocrop runs after the svgo's default 'convertTransform' and 'convertShapeToPath' plugins)
-      ...autocrop,
-      params: {
-        autocrop: true,
-        includeWidthAndHeightAttributes: false, // Same as enabling 'removeDimensions' plugin (and disabling 'removeViewBox' plugin).
-
-        //removeClass: true, // Remove 'class' attribute if encountered.
-        //removeStyle: true, // Remove 'style'/'font-family' attribute if encountered.
-        removeDeprecated: true, // Remove deprecated attributes - like <svg version/baseProfile>/etc.
-
-        //setColor: 'currentColor', // Replace any colors encountered with 'currentColor'.
-        //setColorIssue: 'fail' // Fail if more than one color encountered.
-      }
-    },
+    // Clean up shapes, transforms and coordinate precision before autocrop
+    "convertShapeToPath",
+    "convertTransform",
+    "convertPathData",
+    "removeComments",
+    "removeMetadata",
+    // Crop the viewBox to the artwork's bounding box. This is a marker:
+    // optimize.ts swaps it for the geometric autocrop plugin implemented
+    // in packages/cli/src/assets/autocrop.ts (it needs the cli's
+    // dependencies, which this config cannot require). It replaced the
+    // svgo-autocrop package, which measured rendered pixels in headless
+    // Chrome and silently cropped any logo wider than the browser's
+    // default 800px viewport.
+    { name: "autocrop-geometric" },
   ],
 };
