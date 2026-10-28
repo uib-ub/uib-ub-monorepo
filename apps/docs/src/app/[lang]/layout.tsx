@@ -3,7 +3,7 @@ import { FC, ReactNode } from 'react'
 import { Layout, Navbar, Footer, LocaleSwitch, LastUpdated } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
-import { UibIcon, UibUbEn } from 'assets'
+import { UibMarkNegativeNo, UibMarkPositiveNo, UibUbLockupNegativeCenteredEn, UibUbLockupPositiveCenteredEn } from 'assets'
 import { getDictionary, getDirection } from '../_dictionaries/get-dictionary'
 import '@/app/globals.css'
 
@@ -32,7 +32,8 @@ const RootLayout: FC<LayoutProps> = async ({ children, params }: LayoutProps) =>
     <Navbar
       logo={
         <div style={{ display: 'flex', gap: '.5em' }}>
-          <UibIcon className='fill-current' style={{ width: '1.5em', height: '1.5em' }} />
+          <UibMarkNegativeNo className='hidden dark:inline' style={{ width: '1.5em', height: '1.5em' }} />
+          <UibMarkPositiveNo className='dark:hidden' style={{ width: '1.5em', height: '1.5em' }} />
           <span>{dictionary.logo.title}</span>
         </div>
       }
@@ -44,7 +45,8 @@ const RootLayout: FC<LayoutProps> = async ({ children, params }: LayoutProps) =>
   const footer = (
     <Footer>
       <div style={{ display: 'flex', gap: '.5em', alignItems: 'center' }}>
-        <UibUbEn className='fill-current' style={{ width: '25em', height: 'auto' }} />
+        <UibUbLockupNegativeCenteredEn className='hidden dark:inline' style={{ width: '25em', height: 'auto' }} />
+        <UibUbLockupPositiveCenteredEn className='dark:hidden' style={{ width: '25em', height: 'auto' }} />
       </div>
     </Footer>
   )
