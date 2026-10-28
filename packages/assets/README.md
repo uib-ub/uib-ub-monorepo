@@ -73,6 +73,11 @@ Every output name follows an explicit grammar:
 Deprecated assets keep the grammar too (`iiif-lockup-old`,
 `uib-ub-lockup-en`) — the preview badges them.
 
+## Publishing
+
+Publishing as `@uib-ub/logos` to the org's GitLab npm registry is planned
+but intentionally not started — see [PUBLISH.md](./PUBLISH.md).
+
 ## Config format
 
 Each org declares where its assets come from and maps every source file to an
