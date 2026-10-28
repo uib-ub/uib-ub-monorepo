@@ -9,6 +9,7 @@ export default defineAppConfig({
       "Kunst_design_arkitektur",
       "Lærerutdanning",
     ],
+    noDomainKey: "INGEN DOMENE",
   },
   ui: {
     color: {
