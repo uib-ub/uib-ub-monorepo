@@ -1,12 +1,8 @@
 {
   "extends": "typescript-config/react-library.json",
-  "include": [
-    "./src/**/*",
-  ],
-  "exclude": [
-    "dist",
-    "build",
-    "src/**/*.spec.ts",
-    "node_modules"
-  ],
+  "compilerOptions": {
+    "resolveJsonModule": true
+  },
+  "include": ["./src/**/*", "./preview/**/*", "./assets.config.json"],
+  "exclude": ["dist", "build", "src/**/*.spec.ts", "node_modules"]
 }

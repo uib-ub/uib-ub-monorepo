@@ -1,0 +1,410 @@
+{
+  "$comment": "Assets pipeline config. The asset mapping is the single source of truth for output names and doubles as the selection filter for zip sources: only mapped files are extracted, unmapped files are reported. Source types: zip (download + extract), files (individual urls), local (no fetch, svg managed by hand in src/assets). An asset with neither 'file' nor 'url' is local even inside a zip/files org: its svg is hand-managed in src/assets. Output naming grammar: {org}-{type}-{polarity?}-{layout?}-{lang?} where type is lockup | mark | initials | icon | wordmark. currentColor variants drop the polarity segment.",
+  "orgs": {
+    "uib": {
+      "label": "Universitetet i Bergen",
+      "docs": "https://manual.uib.no/profilmanual/last-ned-logo/",
+      "source": {
+        "type": "zip",
+        "url": "https://ka.uib.no/Linker/Logoer/logo/UiB-logo_PDF.zip"
+      },
+      "assets": [
+        {
+          "file": "PDF/UiB_PositivMidtstilt.pdf",
+          "output": "uib-lockup-positive-centered-no"
+        },
+        {
+          "file": "PDF/UiB_PositivVenstrestilt.pdf",
+          "output": "uib-lockup-positive-left-no"
+        },
+        {
+          "file": "PDF/UiB_Positiv2linjer.pdf",
+          "output": "uib-lockup-positive-twolines-no"
+        },
+        {
+          "file": "PDF/UiB_PositivInitialord.pdf",
+          "output": "uib-initials-positive-no"
+        },
+        {
+          "file": "PDF/UiB_PositivEmblem.pdf",
+          "output": "uib-mark-positive-no"
+        },
+        {
+          "file": "PDF/UiB_NegativMidtstilt.pdf",
+          "output": "uib-lockup-negative-centered-no"
+        },
+        {
+          "file": "PDF/UiB_NegativVenstrestilt.pdf",
+          "output": "uib-lockup-negative-left-no"
+        },
+        {
+          "file": "PDF/UiB_Negativ2linjer.pdf",
+          "output": "uib-lockup-negative-twolines-no"
+        },
+        {
+          "file": "PDF/UiB_NegativInitialord.pdf",
+          "output": "uib-initials-negative-no"
+        },
+        {
+          "file": "PDF/UiB_NegativEmblem.pdf",
+          "output": "uib-mark-negative-no"
+        },
+        {
+          "file": "PDF/Engelsk/UiB_PositivMidtstilt_ENG.pdf",
+          "output": "uib-lockup-positive-centered-en"
+        },
+        {
+          "file": "PDF/Engelsk/UiB_PositivVenstrestilt_ENG.pdf",
+          "output": "uib-lockup-positive-left-en"
+        },
+        {
+          "file": "PDF/Engelsk/UiB_Positiv2linjer_ENG.pdf",
+          "output": "uib-lockup-positive-twolines-en"
+        },
+        {
+          "file": "PDF/Engelsk/UiB_NegativMidtstilt_ENG.pdf",
+          "output": "uib-lockup-negative-centered-en"
+        },
+        {
+          "file": "PDF/Engelsk/UiB_NegativVenstrestilt_ENG.pdf",
+          "output": "uib-lockup-negative-left-en"
+        },
+        {
+          "file": "PDF/Engelsk/UiB_Negativ2linjer_ENG.pdf",
+          "output": "uib-lockup-negative-twolines-en"
+        }
+      ]
+    },
+    "uib-ub": {
+      "label": "Universitetsbiblioteket i Bergen",
+      "docs": "https://manual.uib.no/profilmanual/last-ned-logo/",
+      "source": {
+        "type": "zip",
+        "url": "https://ka.uib.no/Linker/Logoer/andre/UiB-Logo-UB.zip"
+      },
+      "assets": [
+        {
+          "file": "SVG/UB_PositivMidtstilt_NOR.svg",
+          "output": "uib-ub-lockup-positive-centered-no"
+        },
+        {
+          "file": "SVG/UB_PositivMidtstilt_ENG.svg",
+          "output": "uib-ub-lockup-positive-centered-en"
+        },
+        {
+          "file": "SVG/UB_NegativMidtstilt_NOR.svg",
+          "output": "uib-ub-lockup-negative-centered-no"
+        },
+        {
+          "file": "SVG/UB_NegativMidtstilt_ENG.svg",
+          "output": "uib-ub-lockup-negative-centered-en"
+        },
+        {
+          "output": "uib-ub-marcus"
+        }
+      ]
+    },
+    "uib-um": {
+      "label": "Universitetsmuseet i Bergen",
+      "docs": "https://manual.uib.no/profilmanual/last-ned-logo/",
+      "source": {
+        "type": "zip",
+        "url": "https://ka.uib.no/Linker/Logoer/andre/UiB-Logo-UM.zip"
+      },
+      "assets": [
+        {
+          "file": "PDF/UM_PositivMidtstilt_NOR.pdf",
+          "output": "uib-um-lockup-positive-centered-no"
+        },
+        {
+          "file": "PDF/UM_PositivMidtstilt_ENG.pdf",
+          "output": "uib-um-lockup-positive-centered-en"
+        },
+        {
+          "file": "PDF/UM_NegativMidtstilt_NOR.pdf",
+          "output": "uib-um-lockup-negative-centered-no"
+        },
+        {
+          "file": "PDF/UM_NegativMidtstilt_ENG.pdf",
+          "output": "uib-um-lockup-negative-centered-en"
+        },
+        {
+          "file": "PDF/UM_NegativVenstrestilt_NOR.pdf",
+          "output": "uib-um-lockup-negative-left-no"
+        },
+        {
+          "file": "PDF/UM_NegativVenstrestilt_ENG.pdf",
+          "output": "uib-um-lockup-negative-left-en"
+        }
+      ]
+    },
+    "hvl": {
+      "label": "Høgskulen på Vestlandet",
+      "docs": "https://www.hvl.no/om/presserom/design-og-logo/",
+      "source": {
+        "type": "files"
+      },
+      "assets": [
+        {
+          "url": "https://www.hvl.no/siteassets/hvl-internett/bilde/logo/hvl_logo_cmyk.ai.zip",
+          "file": "HVL_logo_cmyk.ai",
+          "output": "hvl-lockup-positive-no"
+        },
+        {
+          "url": "https://www.hvl.no/siteassets/hvl-internett/bilde/logo/hvl_logo_en_cmyk.ai.zip",
+          "file": "HVL_logo_En_cmyk.ai",
+          "output": "hvl-lockup-positive-en"
+        },
+        {
+          "url": "https://www.hvl.no/siteassets/hvl-internett/bilde/logo/hvl_logo_neg.ai.zip",
+          "file": "HVL_logo_neg.ai",
+          "output": "hvl-lockup-negative-no"
+        },
+        {
+          "url": "https://www.hvl.no/siteassets/hvl-internett/bilde/logo/hvl_logo_en_neg.ai.zip",
+          "file": "HVL_logo_En_neg.ai",
+          "output": "hvl-lockup-negative-en"
+        }
+      ]
+    },
+    "uio": {
+      "label": "Universitetet i Oslo",
+      "docs": "https://www.uio.no/om/designmanual/profilelementer/logo/",
+      "source": {
+        "type": "files"
+      },
+      "assets": [
+        {
+          "url": "https://www.uio.no/om/designmanual/profilelementer/logo/formell-logo/04_uio_full_logo_no_pos.svg",
+          "file": "04_uio_full_logo_no_pos.svg",
+          "output": "uio-lockup-positive-no"
+        },
+        {
+          "url": "https://www.uio.no/om/designmanual/profilelementer/logo/formell-logo/04_uio_full_logo_no_neg.svg",
+          "file": "04_uio_full_logo_no_neg.svg",
+          "output": "uio-lockup-negative-no"
+        },
+        {
+          "url": "https://www.uio.no/om/designmanual/profilelementer/logo/formell-logo/04_uio_full_logo_no_pos.svg",
+          "file": "04_uio_full_logo_no_pos.svg",
+          "output": "uio-lockup-no",
+          "currentColor": true
+        },
+        {
+          "url": "https://www.uio.no/om/designmanual/profilelementer/logo/formell-logo-engelsk/04_uio_full_logo_eng_pos.svg",
+          "file": "04_uio_full_logo_eng_pos.svg",
+          "output": "uio-lockup-positive-en"
+        },
+        {
+          "url": "https://www.uio.no/om/designmanual/profilelementer/logo/formell-logo-engelsk/03_uio_full_logo_eng_neg.svg",
+          "file": "03_uio_full_logo_eng_neg.svg",
+          "output": "uio-lockup-negative-en"
+        },
+        {
+          "url": "https://www.uio.no/om/designmanual/profilelementer/logo/formell-logo-engelsk/04_uio_full_logo_eng_pos.svg",
+          "file": "04_uio_full_logo_eng_pos.svg",
+          "output": "uio-lockup-en",
+          "currentColor": true
+        },
+        {
+          "url": "https://www.uio.no/om/designmanual/profilelementer/logo/segl/04_uio_segl_pos.svg",
+          "file": "04_uio_segl_pos.svg",
+          "output": "uio-mark",
+          "currentColor": true
+        },
+        {
+          "url": "https://www.uio.no/om/designmanual/profilelementer/logo/segl/04_uio_segl_pos.svg",
+          "file": "04_uio_segl_pos.svg",
+          "output": "uio-mark-positive"
+        },
+        {
+          "url": "https://www.uio.no/om/designmanual/profilelementer/logo/segl/03_uio_segl_neg.svg",
+          "file": "03_uio_segl_neg.svg",
+          "output": "uio-mark-negative"
+        }
+      ]
+    },
+    "nb": {
+      "label": "Nasjonalbiblioteket i Norge",
+      "docs": "https://www.nb.no/design/",
+      "source": {
+        "type": "zip",
+        "url": "https://www.nb.no/content/uploads/2026/10/Logofiler-Nasjonalbiblioteket.zip"
+      },
+      "assets": [
+        {
+          "file": "Logofiler Nasjonalbiblioteket/Emblem/SVG (Web)/NB Emblem – Sort.svg",
+          "output": "nb-mark-positive"
+        },
+        {
+          "file": "Logofiler Nasjonalbiblioteket/Emblem/SVG (Web)/NB Emblem – Hvit.svg",
+          "output": "nb-mark-negative"
+        },
+        {
+          "file": "Logofiler Nasjonalbiblioteket/Emblem/SVG (Web)/NB Emblem – Sort.svg",
+          "output": "nb-mark",
+          "currentColor": true
+        },
+        {
+          "file": "Logofiler Nasjonalbiblioteket/Lockup/SVG (Web)/NB Logo – Sort.svg",
+          "output": "nb-lockup-positive-no"
+        },
+        {
+          "file": "Logofiler Nasjonalbiblioteket/Lockup/SVG (Web)/NB Logo – Hvit.svg",
+          "output": "nb-lockup-negative-no"
+        },
+        {
+          "file": "Logofiler Nasjonalbiblioteket/Lockup/SVG (Web)/NB Logo – Sort.svg",
+          "output": "nb-lockup-no",
+          "currentColor": true
+        },
+        {
+          "file": "Logofiler Nasjonalbiblioteket/Lockup/SVG (Web)/NB Logo – Fersken.svg",
+          "output": "nb-lockup-fersken-no"
+        },
+        {
+          "file": "Logofiler Nasjonalbiblioteket/Lockup/SVG (Web)/NB Logo - Aubergine.svg",
+          "output": "nb-lockup-aubergine-no"
+        },
+        {
+          "file": "Logofiler Nasjonalbiblioteket/Lockup/SVG (Web)/Engelsk/NB Logo Engelsk – Fersken.svg",
+          "output": "nb-lockup-fersken-en"
+        },
+        {
+          "file": "Logofiler Nasjonalbiblioteket/Lockup/SVG (Web)/Engelsk/NB Logo Engelsk - Aubergine.svg",
+          "output": "nb-lockup-aubergine-en"
+        },
+        {
+          "file": "Logofiler Nasjonalbiblioteket/Emblem/SVG (Web)/NB Emblem – Fersken.svg",
+          "output": "nb-mark-fersken"
+        },
+        {
+          "file": "Logofiler Nasjonalbiblioteket/Emblem/SVG (Web)/NB Emblem – Aubergine.svg",
+          "output": "nb-mark-aubergine"
+        }
+      ]
+    },
+    "iiif": {
+      "label": "International Image Interoperability Framework",
+      "docs": "https://iiif.io/get-involved/outreach-materials/",
+      "source": {
+        "type": "files"
+      },
+      "assets": [
+        {
+          "url": "https://drive.google.com/uc?export=download&id=1yP53SzFrBUqjIPiIVhreZ-hSaQfF4fXM",
+          "file": "iiif-logo.svg",
+          "output": "iiif-lockup"
+        },
+        {
+          "url": "https://drive.google.com/uc?export=download&id=10vjnz9OSssWNEy_ky6Unu1YjbUdQ2vUI",
+          "file": "iiif_bw.svg",
+          "output": "iiif-lockup-bw",
+          "currentColor": true
+        }
+      ]
+    },
+    "cmi": {
+      "label": "CMI",
+      "source": {
+        "type": "local"
+      },
+      "assets": [
+        {
+          "output": "cmi-lockup-en"
+        }
+      ]
+    },
+    "nch": {
+      "label": "NCH",
+      "source": {
+        "type": "local"
+      },
+      "assets": [
+        {
+          "output": "nch-lockup-en"
+        }
+      ]
+    },
+    "fritt-ord": {
+      "label": "Fritt Ord",
+      "docs": "https://frittord.no/nb/om/logoer",
+      "source": {
+        "type": "files"
+      },
+      "assets": [
+        {
+          "url": "https://frittord.no/attachments/59b1490a9f2540fc40e0e25f6e49ec9b9760315f/172-20200422094722639219.ps",
+          "file": "fritt-ord-svart-liggende.ps",
+          "output": "fritt-ord-lockup-positive-no"
+        },
+        {
+          "url": "https://frittord.no/attachments/59b1490a9f2540fc40e0e25f6e49ec9b9760315f/172-20200422094722639219.ps",
+          "file": "fritt-ord-svart-liggende.ps",
+          "output": "fritt-ord-lockup-no",
+          "currentColor": true
+        },
+        {
+          "url": "https://frittord.no/attachments/6d5fb5e1a39a28bcca6974cf659004d56ea76881/173-20200422094724677732.ps",
+          "file": "fritt-ord-hvit-liggende.ps",
+          "output": "fritt-ord-lockup-negative-no"
+        },
+        {
+          "url": "https://frittord.no/attachments/dee92bbf7579c6cc74c5bce77bb9d02a3a734604/177-20200422094726205891.ps",
+          "file": "fritt-ord-svart.ps",
+          "output": "fritt-ord-lockup-positive-centered-no"
+        },
+        {
+          "url": "https://frittord.no/attachments/dee92bbf7579c6cc74c5bce77bb9d02a3a734604/177-20200422094726205891.ps",
+          "file": "fritt-ord-svart.ps",
+          "output": "fritt-ord-lockup-centered-no",
+          "currentColor": true
+        },
+        {
+          "url": "https://frittord.no/attachments/0ede871703fd02aecceff9ddd5c9a9841004094c/170-20200422094721814622.ps",
+          "file": "fritt-ord-hvit.ps",
+          "output": "fritt-ord-lockup-negative-centered-no"
+        },
+        {
+          "url": "https://frittord.no/attachments/6b26c5110cf3c6edbc0fefc22e60a65bdd97364c/169-20200427210001539093.ps",
+          "file": "fritt-ord-cmyk-liggende.ps",
+          "output": "fritt-ord-lockup-cmyk-no"
+        },
+        {
+          "url": "https://frittord.no/attachments/3dd0f0b597de2616c6e35e65dfb08ccfb477d600/178-20200427205931217284.eps",
+          "file": "fritt-ord-cmyk.eps",
+          "output": "fritt-ord-lockup-cmyk-centered-no"
+        }
+      ]
+    },
+    "uis": {
+      "label": "Universitetet i Stavanger",
+      "docs": "https://www.uis.no/nb/om-uis/pressebilde-og-uis-logo",
+      "source": {
+        "type": "local"
+      },
+      "assets": [
+        {
+          "output": "uis-icon"
+        }
+      ]
+    },
+    "termportalen": {
+      "label": "Termportalen",
+      "source": {
+        "type": "local"
+      },
+      "assets": [
+        {
+          "output": "termportalen-lockup"
+        },
+        {
+          "output": "termportalen-mark"
+        },
+        {
+          "output": "termportalen-wordmark"
+        }
+      ]
+    }
+  }
+}

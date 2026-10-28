@@ -1,0 +1,451 @@
+* {
+  box-sizing: border-box;
+}
+
+/* <figure> cards carry browser-default margins that stop them from
+   filling their grid cell — reset them. */
+figure {
+  margin: 0;
+}
+
+:root {
+  color-scheme: light;
+  --page-bg: #f4f4f5;
+  --page-fg: #18181b;
+  --chrome-border: #d4d4d8;
+}
+
+:root[data-mode="dark"] {
+  color-scheme: dark;
+  --page-bg: #18181b;
+  --page-fg: #f4f4f5;
+  --chrome-border: #3f3f46;
+}
+
+body {
+  margin: 0;
+  padding: 2rem;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background: var(--page-bg);
+  color: var(--page-fg);
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  margin: -2rem -2rem 1.5rem;
+  background: var(--page-bg);
+  border-bottom: 1px solid var(--chrome-border);
+}
+
+.toolbar h1 {
+  font-size: 1rem;
+  margin: 0 0.5rem 0 0;
+}
+
+.toolbar button {
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--chrome-border);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.toolbar button.active {
+  background: var(--page-fg);
+  border-color: var(--page-fg);
+  color: var(--page-bg);
+}
+
+.layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar {
+  position: sticky;
+  /* toolbar height: 0.75rem padding + ~2.1rem controls + border */
+  top: 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 15rem;
+  flex-shrink: 0;
+}
+
+.sidebar input {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--chrome-border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  background: transparent;
+  color: inherit;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.filter-group h2 {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+  margin: 0 0 0.3rem;
+}
+
+.filter-group button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.filter-group button:hover {
+  border-color: var(--chrome-border);
+}
+
+.filter-group button.active {
+  background: var(--page-fg);
+  color: var(--page-bg);
+}
+
+.filter-label {
+  overflow-wrap: anywhere;
+}
+
+.filter-count {
+  font-size: 0.7rem;
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 800px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: static;
+    width: 100%;
+  }
+}
+
+.hint {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin: 0 0 1rem;
+}
+
+.org-group {
+  margin: 0 0 2rem;
+}
+
+.org-group-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin: 0 0 0.75rem;
+  border-bottom: 1px solid var(--chrome-border);
+  padding-bottom: 0.4rem;
+}
+
+.org-group-header h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.org-group-docs {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.org-group-count {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  margin-left: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols, 3), 1fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.card {
+  border: 1px solid var(--chrome-border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.card:hover,
+.card:focus-visible {
+  border-color: var(--page-fg);
+  outline: none;
+}
+
+/* Per-capability backgrounds. currentColor in adaptive logos resolves
+   against the card's text color. */
+.card-positive,
+.card-adaptive {
+  background: #fff;
+  color: #18181b;
+}
+
+.card-negative {
+  background: #1f2937;
+  color: #f9fafb;
+}
+
+:root[data-mode="dark"] .card-adaptive {
+  background: #1f2937;
+  color: #f9fafb;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Fill the remaining card height so cards use their whole cell */
+  flex: 1;
+  min-height: 8rem;
+}
+
+/* The svgs carry a viewBox but no width/height. Fill the logo box and
+   let preserveAspectRatio letterbox the artwork inside it, so every
+   logo centers in its cell without distorting. */
+.logo svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Card footer: asset name on its own line, tags below, separated
+   from the logo area by a hairline. */
+.card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--chrome-border);
+}
+
+.card-name {
+  font-size: 0.75rem;
+  font-family: ui-monospace, monospace;
+  word-break: break-all;
+  opacity: 0.9;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.badge {
+  font-family: system-ui, sans-serif;
+  font-size: 0.65rem;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.badge-org {
+  opacity: 0.6;
+}
+
+.badge-current-color {
+  border-style: dashed;
+}
+
+.badge-deprecated,
+.badge-warn {
+  color: #b45309;
+  border-color: #b45309;
+  opacity: 0.9;
+}
+
+:root[data-mode="dark"] .badge-deprecated,
+:root[data-mode="dark"] .badge-warn {
+  color: #fbbf24;
+  border-color: #fbbf24;
+}
+
+.deprecated-name {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.toolbar-separator {
+  width: 1px;
+  height: 1.4rem;
+  background: var(--chrome-border);
+  margin: 0 0.25rem;
+}
+
+/* Fullscreen preview modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgb(0 0 0 / 0.6);
+}
+
+.modal-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: min(72rem, 100%);
+  height: min(48rem, 100%);
+  padding: 3rem;
+  border: 1px solid var(--chrome-border);
+  border-radius: 0.75rem;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.modal-close:hover {
+  opacity: 1;
+}
+
+.modal-logo {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.modal-logo svg {
+  width: 100%;
+  height: 100%;
+}
+
+.modal-card figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  font-size: 0.85rem;
+  font-family: ui-monospace, monospace;
+  word-break: break-all;
+  opacity: 0.85;
+}
+
+/* Empty state when no logo matches the filters */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 5rem 2rem;
+  text-align: center;
+  border: 1px dashed var(--chrome-border);
+  border-radius: 0.5rem;
+}
+
+.empty-art {
+  font-family: ui-monospace, monospace;
+  font-size: 3rem;
+  opacity: 0.5;
+  /* gentle bob so the shrug feels alive */
+  animation: empty-bob 3s ease-in-out infinite;
+}
+
+@keyframes empty-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-0.4rem) rotate(2deg);
+  }
+}
+
+.empty-state h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.empty-state p {
+  margin: 0;
+  max-width: 28rem;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.empty-reset {
+  margin-top: 0.5rem;
+  padding: 0.45rem 1.2rem;
+  border: 1px solid var(--page-fg);
+  border-radius: 999px;
+  background: var(--page-fg);
+  color: var(--page-bg);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.empty-reset:hover {
+  opacity: 0.85;
+}
