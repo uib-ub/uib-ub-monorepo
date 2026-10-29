@@ -17,18 +17,22 @@
           v-if="merged"
           :termbase="merged"
         />
-        <div class="space-y-4">
+        <div
+          v-if="merged?.id && merged.conceptCount > 0"
+          class="space-y-4"
+        >
           <h2 class="text-2xl font-semibold">
             Terminologi
           </h2>
           <div class="space-y-8">
             <TermbaseDomains
-              v-if="merged?.id && merged.conceptCount > 0"
               heading-level="h3"
               :termbase="merged"
             />
             <div>
-              <AppLink to="#tb-brk">
+              <AppLink
+                to="#tb-brk"
+              >
                 <h3
                   id="tb-brk"
                   class="text-2xl mb-2"
@@ -37,20 +41,20 @@
                 </h3>
               </AppLink>
               <TermbaseSubjectValues
-                v-if="merged?.id && merged.conceptCount > 0"
                 :key="`subjects${merged?.id}`"
                 heading-level="h4"
                 :termbase="merged"
               />
               <TermbaseSubjectConceptList
-                v-if="merged?.id && merged.conceptCount > 0"
                 :key="`subjects_concepts${merged?.id}`"
                 heading-level="h4"
                 :termbase="merged"
               />
             </div>
             <div class="">
-              <AppLink to="#tb-spraak">
+              <AppLink
+                to="#tb-spraak"
+              >
                 <h3
                   id="tb-spraak"
                   class="text-2xl mb-2"
@@ -59,24 +63,20 @@
                 </h3>
               </AppLink>
               <TermbaseLanguageCoverage
-                v-if="merged?.id && merged.conceptCount > 0"
                 :key="`languageCoverage${merged?.id}`"
                 heading-level="h4"
                 :termbase-id="merged?.id"
               />
               <TermbaseTerms
-                v-if="merged?.id && merged.conceptCount > 0"
                 heading-level="h4"
                 :termbase="merged"
               />
               <TermbaseDefinitionsExisting
-                v-if="merged?.id && merged.conceptCount > 0"
                 :key="`defs${merged?.id}`"
                 heading-level="h4"
                 :termbase="merged"
               />
               <TermbaseDefinitionsMissing
-                v-if="merged?.id && merged.conceptCount > 0"
                 :key="`qualityMissingDefs${merged?.id}`"
                 heading-level="h4"
                 :termbase="merged"
@@ -92,20 +92,17 @@
                 </h3>
               </AppLink>
               <TermbaseRelations
-                v-if="merged?.id && merged.conceptCount > 0"
                 :key="`relations${merged?.id}`"
                 heading-level="h4"
                 :termbase="merged"
               />
               <TermbaseSemanticRelations
-                v-if="merged?.id && merged.conceptCount > 0"
                 :key="`semanticrelations${merged?.id}`"
                 heading-level="h4"
                 :termbase="merged"
               />
             </div>
             <TermbaseNotes
-              v-if="merged?.id && merged.conceptCount > 0"
               heading-level="h3"
               :termbase="merged"
             />
@@ -139,7 +136,7 @@ const contentRef = ref();
 
 const mainRef = ref();
 
-const { data: dbdata } = await useLazyFetch("/api/tb/all/termbase_overview", {
+const { data: dbdata } = useLazyFetch("/api/tb/all/termbase_overview", {
   query: { internal: true },
 });
 
@@ -180,89 +177,101 @@ function calcLastActivity(timespan: object) {
 }
 
 const merged = computed(() => {
-  const dbdatatb = dbdata.value?.filter(tb => tb.id.value == route.params.id);
+  if (dbdata.value && cmsdata.value) {
+    const dbdatatb = dbdata.value?.filter(tb => tb.id.value == route.params.id);
 
-  const enriched = dbdatatb?.map((e) => {
-    const tmp = {
-      label: e.label.value,
-      id: e.id.value,
-      conceptCount: e.concepts.value,
-      conceptCountPublished: e.conceptsPublished.value,
-      status: numberStatus(matchid(cmsdata, e, "status")),
-      labels: matchid(cmsdata, e, "labelsOk"),
-      descriptions: matchid(cmsdata, e, "descriptionsOk"),
-      license: getLicense(e?.license?.value),
-      agreement: matchid(cmsdata, e, "licenseAgreementStatus"),
-      staff: matchid(cmsdata, e, "responsibleStaff"),
-      domain: matchid(cmsdata, e, "domain"),
-      note: matchid(cmsdata, e, "note"),
-      type: matchid(cmsdata, e, "type"),
-      contact: matchid(cmsdata, e, "contact"),
-      reminderInterval: matchid(cmsdata, e, "reminderInterval"),
-      lastActivity:
+    const enriched = dbdatatb?.map((e) => {
+      const tmp = {
+        label: e.label.value,
+        id: e.id.value,
+        conceptCount: e.concepts.value,
+        conceptCountPublished: e.conceptsPublished.value,
+        hasMissingDomain: e.hasMissingDomain.value == "true",
+        status: numberStatus(matchid(cmsdata, e, "status")),
+        labels: matchid(cmsdata, e, "labelsOk"),
+        descriptions: matchid(cmsdata, e, "descriptionsOk"),
+        license: getLicense(e?.license?.value),
+        agreement: matchid(cmsdata, e, "licenseAgreementStatus"),
+        staff: matchid(cmsdata, e, "responsibleStaff"),
+        domain: matchid(cmsdata, e, "domain"),
+        note: matchid(cmsdata, e, "note"),
+        type: matchid(cmsdata, e, "type"),
+        contact: matchid(cmsdata, e, "contact"),
+        reminderInterval: matchid(cmsdata, e, "reminderInterval"),
+        lastActivity:
         matchid(cmsdata, e, "lastActivity")?.length > 0
           ? matchid(cmsdata, e, "lastActivity")[0]
           : null,
-      lastActivityDays:
+        lastActivityDays:
         matchid(cmsdata, e, "lastActivity")?.length > 0
           ? calcLastActivity(matchid(cmsdata, e, "lastActivity")[0]?.timespan)
           : null,
-      get reminderCalc() {
-        if (tmp.reminderInterval && tmp.lastActivityDays !== null) {
-          return -(tmp.reminderInterval - tmp.lastActivityDays);
-        }
-        else {
-          return null;
-        }
-      },
-      _id: matchid(cmsdata, e, "_id"),
-    };
-    return tmp;
-  });
+        get reminderCalc() {
+          if (tmp.reminderInterval && tmp.lastActivityDays !== null) {
+            return -(tmp.reminderInterval - tmp.lastActivityDays);
+          }
+          else {
+            return null;
+          }
+        },
+        _id: matchid(cmsdata, e, "_id"),
+      };
+      return tmp;
+    });
 
-  // get termbases that are not present in the wiki
-  if (enriched && cmsdata.value) {
-    const ids = dbdata.value.map(e => e.id.value);
-    for (const entry of cmsdata.value) {
-      if (!ids.includes(entry.id)) {
-        const data = {
-          label: entry.label,
-          id: entry.id,
-          status: numberStatus(entry.status),
-          labels: entry.labelsOk,
-          descriptions: entry.descriptionsOk,
-          license: "",
-          conceptCount: 0,
-          conceptCountPublished: 0,
-          agreement: entry.licenseAgreementStatus,
-          staff: entry.responsibleStaff,
-          domain: entry.domain,
-          note: entry.note,
-          type: entry.type,
-          contact: entry.contact,
-          reminderInterval: entry.reminderInterval,
-          lastActivity:
+    // get termbases that are not present in the wiki
+    if (enriched && cmsdata.value) {
+      const ids = dbdata.value.map(e => e.id.value);
+      for (const entry of cmsdata.value) {
+        if (!ids.includes(entry.id)) {
+          const data = {
+            label: entry.label,
+            id: entry.id,
+            status: numberStatus(entry.status),
+            labels: entry.labelsOk,
+            descriptions: entry.descriptionsOk,
+            license: "",
+            hasMissingDomain: false,
+            conceptCount: 0,
+            conceptCountPublished: 0,
+            agreement: entry.licenseAgreementStatus,
+            staff: entry.responsibleStaff,
+            domain: entry.domain,
+            note: entry.note,
+            type: entry.type,
+            contact: entry.contact,
+            reminderInterval: entry.reminderInterval,
+            lastActivity:
             entry.lastActivity.length > 0 ? entry.lastActivity[0] : null,
-          lastActivityDays:
+            lastActivityDays:
             entry.lastActivity.length > 0
               ? calcLastActivity(entry.lastActivity[0]?.timespan)
               : null,
-          get reminderCalc() {
-            if (data.reminderInterval && data.lastActivityDays !== null) {
-              const diff = -(data.reminderInterval - data.lastActivityDays);
-              return -(data.reminderInterval - data.lastActivityDays);
-            }
-            else {
-              return null;
-            }
-          },
-          _id: entry._id,
-        };
-        enriched.push(data);
+            get reminderCalc() {
+              if (data.reminderInterval && data.lastActivityDays !== null) {
+                const diff = -(data.reminderInterval - data.lastActivityDays);
+                return -(data.reminderInterval - data.lastActivityDays);
+              }
+              else {
+                return null;
+              }
+            },
+            _id: entry._id,
+          };
+          enriched.push(data);
+        }
       }
     }
-  }
 
-  return enriched?.[0];
+    // return enriched?.[0];
+    const tb = enriched?.[0];
+    return {
+      ...tb,
+      ...{ blocker: checkBlocker([], tb) },
+    };
+  }
+  else {
+    return {};
+  }
 });
 </script>

@@ -173,7 +173,7 @@
               <Icon
                 name="material-symbols:circle"
                 size="1.2em"
-                class="mr-1 mb-[4px]"
+                class="mr-1 -mb-1"
                 :class="getReminderColorClass(termbase)"
               />
             </dd>
@@ -213,6 +213,11 @@
         </ul>
       </div>
     </div>
+    <TermbaseBlocker
+      v-if="termbase?.blocker && termbase?.blocker?.status !== 'ok'"
+      :termbases="[termbase]"
+      :inline="false"
+    />
     <div
       v-if="termbase?.note"
       class="max-w-3xl"

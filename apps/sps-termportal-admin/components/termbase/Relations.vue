@@ -1,5 +1,7 @@
 <template>
   <UtilsTableWrapper
+    v-if="termbase?.conceptCount > 0"
+    class="max-w-6xl"
     :heading-level="headingLevel"
     :pending="pending"
   >

@@ -91,7 +91,7 @@
               "
               name="fa6-solid:triangle-exclamation"
               size="1.2em"
-              class="ml-[5px] mt-[3px]"
+              class="ml-1.25 mt-0.75"
               :class="
                 data.blocker.status === 'hard'
                   ? appConfig.ui.color.status.error.class
@@ -501,6 +501,7 @@ const merged = computed(() => {
         id: e.id.value,
         conceptCount: e.concepts.value,
         conceptCountPublished: e.conceptsPublished.value,
+        hasMissingDomain: e.hasMissingDomain.value == "true",
         status: numberStatus(matchid(cmsdata, e, "status")),
         labels: matchid(cmsdata, e, "labelsOk"),
         descriptions: matchid(cmsdata, e, "descriptionsOk"),
@@ -546,6 +547,7 @@ const merged = computed(() => {
           labels: entry.labelsOk,
           descriptions: entry.descriptionsOk,
           license: "",
+          hasMissingDomain: false,
           agreement: entry.licenseAgreementStatus,
           staff: entry.responsibleStaff,
           domain: entry.domain,
@@ -576,7 +578,7 @@ const merged = computed(() => {
 
     const blocker = enriched?.map(tb => ({
       ...tb,
-      ...{ blocker: checkBlocker(tb) },
+      ...{ blocker: checkBlocker(dupeIds.value, tb) },
     }));
     return blocker;
   }
@@ -584,68 +586,6 @@ const merged = computed(() => {
     return null;
   }
 });
-
-function checkBlocker(tb) {
-  const blocker = { hard: {}, soft: {}, status: "ok" };
-  if (tb.status) {
-    const statusNumber = Number(tb.status[0]);
-
-    if (dupeIds.value.includes(tb.id)) {
-      blocker.hard.id = "Duplicate ID present.";
-    }
-
-    // 2. planlagt or further
-    if (statusNumber > 1) {
-      // soft
-      if (!tb.staff) {
-        blocker.soft.staff = "No responsible staff assigned.";
-      }
-    }
-    // 3. initialisert or further
-    if (statusNumber > 2) {
-      // hard
-      if (!tb.id) {
-        blocker.hard.id = "No ID defined.";
-      }
-      // soft
-      if (!tb.domain && statusNumber < 4) {
-        blocker.soft.domain = "No domain provided.";
-      }
-    }
-    // 4. opprettet or further
-    if (statusNumber > 3) {
-      // hard
-      if (!tb.license) {
-        blocker.hard.license = "No license registered.";
-      }
-      if (!tb.agreement || tb.agreement === "ingen") {
-        blocker.hard.agreement = "No agreement registered.";
-      }
-      if (!tb.labels) {
-        blocker.hard.labels = "Labels not approved.";
-      }
-      if (!tb.descriptions) {
-        blocker.hard.descriptions = "Descriptions not approved.";
-      }
-      if (!tb.domain && statusNumber < 5) {
-        blocker.hard.domain = "No domain provided.";
-      }
-    }
-
-    if (Object.keys(blocker.hard).length > 0) {
-      blocker.status = "hard";
-    }
-    else if (Object.keys(blocker.soft).length > 0) {
-      blocker.status = "soft";
-    }
-  }
-  else {
-    blocker.hard.status = "No termbase status registered";
-    blocker.status = "hard";
-  }
-
-  return blocker;
-}
 
 const statuses = computed(() => {
   const statusArray = merged.value?.map((tb) => {
