@@ -1,5 +1,6 @@
 <template>
   <UtilsTableWrapper
+    class="max-w-6xl"
     :heading-level="headingLevel"
     :pending="pending"
   >

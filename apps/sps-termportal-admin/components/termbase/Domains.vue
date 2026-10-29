@@ -7,13 +7,12 @@
       Domener
     </template>
     <template #description>
-      Domener i publiserte termposter.
+      Domener i termposter.
     </template>
-    <div class="max-w-xl">
+    <div class="max-w-2xl">
       <DataTable
         v-if="displayData && displayData.length > 0"
         ref="datatable"
-        v-model:filters="filters"
         :value="displayData"
         removable-sort
         sort-field="domain"
@@ -43,9 +42,9 @@
               v-if="data?.labelsLen < 3"
               name="fa6-solid:triangle-exclamation"
               size="1.2em"
-              class="ml-[6px] mt-[3px]"
+              class="ml-1.5 mt-0.75"
               :class="
-                data.published
+                data.domainPublished
                   ? appConfig.ui.color.status.error.class
                   : appConfig.ui.color.status.warning.class
               "
@@ -54,13 +53,13 @@
           </template>
         </Column>
         <Column
-          field="published"
-          header="publisert"
+          field="domainPublished"
+          header="Domene publisert"
           data-type="boolean"
         >
           <template #body="{ data }">
             <div class="flex align-items-center gap-2">
-              <span>{{ data.published ? "Ja" : "Nei" }}</span>
+              <span>{{ data.domainPublished ? "Ja" : "Nei" }}</span>
             </div>
           </template>
           <template #filter="{ filterModel, filterCallback }">
@@ -71,8 +70,13 @@
           </template>
         </Column>
         <Column
-          field="concepts"
-          header="Antall"
+          field="conceptsPublishedCount"
+          header="Termposter publisert"
+          sortable
+        />
+        <Column
+          field="conceptsUnpublishedCount"
+          header="Termposter upublisert"
           sortable
         />
       </DataTable>
@@ -81,24 +85,28 @@
           legend-key="Domene"
           legend-value="En advarsel betyr at mindre enn tre navn er definert."
         />
+        <UtilsTableLegendEntry
+          legend-key="Termposter"
+          legend-value="Statusen viser publiseringsinnstillingen for hver termpost. Hvis termbasen ikke er publisert, vil ingen av termpostene være offentlig tilgjengelige, uavhengig av individuelle innstillinger."
+        />
       </UtilsTableLegend>
     </div>
   </UtilsTableWrapper>
 </template>
 
 <script setup lang="ts">
-import { FilterMatchMode } from "primevue/api";
-
 const appConfig = useAppConfig();
 
 const datatable = ref();
 
 const props = defineProps({ termbase: { type: Object, required: true } });
 
-const { data: domainData } = await useLazyFetch("/api/domain/all/domain_overview", {
+const { data: domainData } = useLazyFetch("/api/domain/all/domain_overview", {
   query: { internal: true },
 });
-const { data: tbDomainData, pending } = useLazyFetch(`/api/tb/${props.termbase.id}/domains`);
+const { data: tbDomainData, pending } = useLazyFetch(`/api/tb/${props.termbase.id}/domains`, {
+  query: { internal: true },
+});
 
 const displayData = computed(() => {
   if (domainData.value && tbDomainData.value) {
@@ -108,9 +116,14 @@ const displayData = computed(() => {
     );
 
     const tbData = tbDomainData.value?.reduce((acc, domain) => {
-      acc[domain.id.value] = { count: domain.count.value, parents: domain.parents.value.split(", ") };
+      const id = typeof domain.id === "string" ? domain.id : domain.id.value;
+      const count = typeof domain.count === "number" ? domain.count : parseInt(domain.count.value);
+      const publishedCount = typeof domain.publishedCount === "number" ? domain.publishedCount : parseInt(domain.publishedCount.value);
+      const parentsStr = typeof domain.parents === "string" ? domain.parents : domain.parents.value;
+      acc[id] = { count, publishedCount, parents: parentsStr ? parentsStr.split(", ") : [] };
       return acc;
     }, {} as Record<string, number>);
+
     const tbDataDomainIds = Object.keys(tbData)
       .concat(Object.values(tbData)
         .flatMap(domain => domain.parents));
@@ -121,19 +134,31 @@ const displayData = computed(() => {
       return {
         id: domain.id,
         label: domain?.nb || domain?.nn || domain?.en,
-        published: domain.published,
+        domainPublished: domain.published,
         labelsLen: domain.labelsLen,
-        concepts: Object.keys(tbData).includes(domain.id) ? tbData[domain.id].count : null,
+        conceptsPublishedCount: Object.keys(tbData).includes(domain.id) ? tbData[domain.id].publishedCount : null,
+        conceptsUnpublishedCount: Object.keys(tbData).includes(domain.id) ? tbData[domain.id].count - tbData[domain.id].publishedCount : null,
         order: domain.order,
         hierarchy: domain.hierarchy };
     });
 
+    const noDomainKey = appConfig.domains.noDomainKey;
+    if (tbDataDomainIds.includes(noDomainKey)) {
+      merged.push({
+        id: "",
+        label: noDomainKey,
+        domainPublished: false,
+        labelsLen: 3,
+        conceptsPublishedCount: tbData[noDomainKey].publishedCount,
+        conceptsUnpublishedCount: tbData[noDomainKey].count - tbData[noDomainKey].publishedCount,
+        order: 0,
+        hierarchy: "^0$",
+
+      });
+    }
+
     return merged;
   }
   return [];
-});
-
-const filters = ref({
-  published: { value: null, matchMode: FilterMatchMode.EQUALS },
 });
 </script>
