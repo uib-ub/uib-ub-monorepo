@@ -10,9 +10,7 @@
         ".output/**",
         "storybook-static/**"
       ],
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "inputs": [
         "$TURBO_DEFAULT$",
         ".env.production.local",
@@ -21,38 +19,23 @@
         ".env"
       ]
     },
-    "sps-termportal-web#generate": {
-      "outputs": [
-        "dist/**"
-      ]
-    },
     "test": {
-      "outputs": [
-        "coverage/**"
-      ],
+      "outputs": ["coverage/**"],
       "dependsOn": []
     },
     "lint": {},
     "dev": {
       "cache": false,
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "transit": {
-      "dependsOn": [
-        "^transit"
-      ]
+      "dependsOn": ["^transit"]
     },
     "check-types": {
-      "dependsOn": [
-        "transit"
-      ]
+      "dependsOn": ["transit"]
     },
     "clean": {
-      "dependsOn": [
-        "transit"
-      ]
+      "dependsOn": ["transit"]
     }
   }
 }
