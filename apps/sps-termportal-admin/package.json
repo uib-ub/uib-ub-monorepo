@@ -22,7 +22,7 @@
     "@nuxtjs/sanity": "2.3.0",
     "@nuxtjs/tailwindcss": "7.0.0-beta.1",
     "@sanity/client": "7.22.0",
-    "@sanity/vision": "5.23.0",
+    "@sanity/vision": "5.8.0",
     "@seidhr/sanity-plugin-timespan-input": "4.0.4",
     "@sidebase/nuxt-auth": "1.1.0",
     "@types/jsonld": "1.5.15",
