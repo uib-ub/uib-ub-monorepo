@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxtjs/i18n",
     "shadcn-nuxt",
+    "nuxt-security",
   ],
   ssr: true,
   app: {
@@ -113,6 +114,23 @@ export default defineNuxtConfig({
     apiVersion: "2023-10-09",
     token: process.env.NUXT_SANITY_API_TOKEN,
     useCdn: true,
+  },
+  security: {
+    xssValidator: {
+      escapeHtml: false,
+    },
+    headers: {
+      contentSecurityPolicy: {
+        "script-src": [
+          "'self'",
+          "https:",
+          "'unsafe-inline'",
+          "'strict-dynamic'",
+          "'wasm-unsafe-eval'",
+          "'nonce-{{nonce}}'",
+        ],
+      },
+    },
   },
   shadcn: {
     prefix: "",
