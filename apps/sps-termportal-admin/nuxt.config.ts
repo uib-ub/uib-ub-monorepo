@@ -1,7 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   extends: ["termportal-ui"],
-  modules: ["@sidebase/nuxt-auth", "@nuxt/content", "@nuxtjs/sanity", "@nuxt/eslint", "@nuxt/icon"],
+  modules: [
+    "@sidebase/nuxt-auth",
+    "@nuxt/content",
+    "@nuxtjs/sanity",
+    "@nuxt/eslint",
+    "@nuxt/icon",
+    "nuxt-security",
+  ],
   ssr: false,
   devtools: { enabled: true },
   app: {
@@ -89,5 +96,19 @@ export default defineNuxtConfig({
     apiVersion: "2023-10-09",
     token: process.env.SANITY_API_TOKEN,
     useCdn: true,
+  },
+  security: {
+    headers: {
+      contentSecurityPolicy: {
+        "script-src": [
+          "'self'",
+          "https:",
+          "'unsafe-inline'",
+          "'strict-dynamic'",
+          "'wasm-unsafe-eval'",
+          "'nonce-{{nonce}}'",
+        ],
+      },
+    },
   },
 });

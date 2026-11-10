@@ -35,6 +35,7 @@
     "jsonld": "9.0.0",
     "next-auth": "4.21.1",
     "nuxt": "3.19.3",
+    "nuxt-security": "2.7.0",
     "prettier": "3.8.3",
     "prettier-plugin-tailwindcss": "0.8.0",
     "primevue": "3.35.0",
