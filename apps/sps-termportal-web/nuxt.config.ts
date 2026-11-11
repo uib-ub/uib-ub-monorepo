@@ -127,6 +127,7 @@ export default defineNuxtConfig({
           "'self'",
           "https:",
           "'wasm-unsafe-eval'",
+          "'nonce-{{nonce}}'",
         ],
       },
       crossOriginEmbedderPolicy: isPreview ? false : "credentialless",
