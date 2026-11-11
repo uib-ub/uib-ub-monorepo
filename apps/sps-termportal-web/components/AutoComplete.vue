@@ -223,7 +223,7 @@
   </div>
 </template>
 
-<script setup>
+<script>
 import Button from "primevue/button";
 import ChevronDownIcon from "primevue/icons/chevrondown";
 import TimesIcon from "primevue/icons/times";
