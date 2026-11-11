@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 
+const isPreview = process.env.VERCEL_ENV === "preview";
+
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   extends: ["termportal-ui"],
@@ -127,6 +129,7 @@ export default defineNuxtConfig({
           "'wasm-unsafe-eval'",
         ],
       },
+      crossOriginEmbedderPolicy: isPreview ? false : "credentialless",
     },
   },
   shadcn: {

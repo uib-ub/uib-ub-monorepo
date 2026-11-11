@@ -1,3 +1,5 @@
+const isPreview = process.env.VERCEL_ENV === "preview";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   extends: ["termportal-ui"],
@@ -106,6 +108,7 @@ export default defineNuxtConfig({
           "'wasm-unsafe-eval'",
         ],
       },
+      crossOriginEmbedderPolicy: isPreview ? false : "credentialless",
     },
   },
 });
