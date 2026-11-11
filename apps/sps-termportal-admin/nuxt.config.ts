@@ -103,10 +103,7 @@ export default defineNuxtConfig({
         "script-src": [
           "'self'",
           "https:",
-          "'unsafe-inline'",
-          "'strict-dynamic'",
           "'wasm-unsafe-eval'",
-          "'nonce-{{nonce}}'",
         ],
       },
     },
