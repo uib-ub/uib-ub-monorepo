@@ -1,4 +1,4 @@
-<script>
+<script setup>
 import BaseComponent from "primevue/basecomponent";
 import { useStyle } from "primevue/usestyle";
 import { ObjectUtils } from "primevue/utils";
@@ -147,8 +147,8 @@ const classes = {
     {
       "p-highlight": instance.isSelected(option),
       "p-focus":
-        instance.focusedOptionIndex
-        === instance.getOptionIndex(i, getItemOptions),
+        instance.focusedOptionIndex ===
+        instance.getOptionIndex(i, getItemOptions),
       "p-disabled": instance.isOptionDisabled(option),
     },
   ],
