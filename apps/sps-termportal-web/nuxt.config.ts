@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 
+const isPreview = process.env.VERCEL_ENV === "preview";
+
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   extends: ["termportal-ui"],
@@ -11,6 +13,7 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxtjs/i18n",
     "shadcn-nuxt",
+    "nuxt-security",
   ],
   ssr: true,
   app: {
@@ -113,6 +116,22 @@ export default defineNuxtConfig({
     apiVersion: "2023-10-09",
     token: process.env.NUXT_SANITY_API_TOKEN,
     useCdn: true,
+  },
+  security: {
+    xssValidator: {
+      escapeHtml: false,
+    },
+    headers: {
+      contentSecurityPolicy: {
+        "script-src": [
+          "'self'",
+          "https:",
+          "'wasm-unsafe-eval'",
+          "'nonce-{{nonce}}'",
+        ],
+      },
+      crossOriginEmbedderPolicy: isPreview ? false : "credentialless",
+    },
   },
   shadcn: {
     prefix: "",

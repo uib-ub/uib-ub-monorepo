@@ -5,7 +5,7 @@
     "build": {
       "outputs": [".nuxt/**", ".output/**"],
       "dependsOn": ["^build"],
-      "env": []
+      "env": ["COMPATIBILITY_DATE", "SANITY_API_TOKEN", "SANITY_PROJECT_ID"]
     }
   }
 }

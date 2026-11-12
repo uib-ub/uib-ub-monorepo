@@ -1,19 +1,13 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "extends": [
-    "//"
-  ],
+  "extends": ["//"],
   "tasks": {
     "build": {
-      "outputs": [
-        ".nuxt/**",
-        ".output/**"
-      ],
-      "dependsOn": [
-        "^build"
-      ],
+      "outputs": [".nuxt/**", ".output/**"],
+      "dependsOn": ["^build"],
       "env": [
         "AUTH_ORIGIN",
+        "COMPATIBILITY_DATE",
         "NUXT_AUTH_SECRET",
         "NUXT_DATAPORTEN_AUTHORIZED_USERS",
         "NUXT_DATAPORTEN_CLIENT_ID",
