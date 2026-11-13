@@ -102,11 +102,9 @@ export default defineNuxtConfig({
   security: {
     headers: {
       contentSecurityPolicy: {
-        "script-src": [
-          "'nonce-{{nonce}}'",
-          "'strict-dynamic'",
-          "'wasm-unsafe-eval'",
-        ],
+        "script-src": isPreview
+          ? ["'self'", "https:", "'unsafe-inline'", "'wasm-unsafe-eval'"]
+          : ["'nonce-{{nonce}}'", "'strict-dynamic'", "'wasm-unsafe-eval'"],
         "img-src": [
           "'self'",
           "data:",
