@@ -107,6 +107,16 @@ export default defineNuxtConfig({
           "'strict-dynamic'",
           "'wasm-unsafe-eval'",
         ],
+        "img-src": [
+          "'self'",
+          "data:",
+          "https://wiki.terminologi.no",
+          "https://cdn.jsdelivr.net",
+        ],
+        "font-src": [
+          "'self'",
+          "https://cdn.jsdelivr.net",
+        ],
       },
       crossOriginEmbedderPolicy: isPreview ? false : "credentialless",
     },
