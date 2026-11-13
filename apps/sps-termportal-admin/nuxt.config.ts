@@ -103,10 +103,19 @@ export default defineNuxtConfig({
     headers: {
       contentSecurityPolicy: {
         "script-src": [
-          "'self'",
-          "https:",
-          "'wasm-unsafe-eval'",
           "'nonce-{{nonce}}'",
+          "'strict-dynamic'",
+          "'wasm-unsafe-eval'",
+        ],
+        "img-src": [
+          "'self'",
+          "data:",
+          "https://wiki.terminologi.no",
+          "https://cdn.jsdelivr.net",
+        ],
+        "font-src": [
+          "'self'",
+          "https://cdn.jsdelivr.net",
         ],
       },
       crossOriginEmbedderPolicy: isPreview ? false : "credentialless",
