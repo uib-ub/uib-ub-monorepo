@@ -103,10 +103,9 @@ export default defineNuxtConfig({
     headers: {
       contentSecurityPolicy: {
         "script-src": [
-          "'self'",
-          "https:",
-          "'wasm-unsafe-eval'",
           "'nonce-{{nonce}}'",
+          "'strict-dynamic'",
+          "'wasm-unsafe-eval'",
         ],
       },
       crossOriginEmbedderPolicy: isPreview ? false : "credentialless",
