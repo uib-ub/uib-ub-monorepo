@@ -229,9 +229,59 @@ onBeforeUnmount(() => {
   }
 });
 
-onMounted(() => {
-  watch(termpostRef, () => {
-    window.MathJax?.typesetPromise?.();
-  });
+let isRendering = false;
+let lastRenderedId = '';
+
+const renderMathJax = async () => {
+  if (isRendering || lastRenderedId === mainConceptId || !termpostRef.value) {
+    return;
+  }
+
+  isRendering = true;
+  try {
+    // Load MathJax if needed
+    if (!window.MathJax?.typesetPromise && window.MathJax?.options) {
+      await new Promise<void>((resolve) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js';
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => resolve();
+        document.head.appendChild(script);
+      });
+    }
+
+    // Wait for MathJax to be ready and render
+    if (window.MathJax?.startup?.promise) {
+      await window.MathJax.startup.promise;
+    }
+    if (window.MathJax?.typesetPromise) {
+      await window.MathJax.typesetPromise([termpostRef.value]);
+      lastRenderedId = mainConceptId;
+    }
+  } catch (e) {
+    console.error('MathJax render error:', e);
+  } finally {
+    isRendering = false;
+  }
+};
+
+onMounted(async () => {
+  // Wait for data to load
+  let attempts = 0;
+  while (!mainConcept.value && attempts < 30) {
+    await new Promise(r => setTimeout(r, 100));
+    attempts++;
+  }
+  await nextTick();
+  await nextTick();
+  await renderMathJax();
+});
+
+watch(() => props.termbaseId + props.conceptIdArray.join('/'), async () => {
+  await nextTick();
+  await nextTick();
+  await new Promise(r => setTimeout(r, 500));
+  await renderMathJax();
 });
 </script>
