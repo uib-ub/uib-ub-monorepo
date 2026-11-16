@@ -13,6 +13,7 @@
       ref="termbaseMenu"
       :model="termbaseOptions"
       :popup="true"
+      class="termbase-menu"
     >
       <template #item="{ item, props }">
         <NuxtLink
@@ -47,3 +48,19 @@ const termbaseOptions = computed(() =>
   }),
 );
 </script>
+
+<style>
+#termbaseMenu {
+  max-height: 60vh !important;
+  width: 320px !important;
+  min-width: 320px !important;
+  max-width: 320px !important;
+}
+
+#termbaseMenu_list {
+  max-height: 60vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scroll-behavior: smooth;
+}
+</style>
