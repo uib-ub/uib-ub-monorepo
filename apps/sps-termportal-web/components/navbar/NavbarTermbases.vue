@@ -51,16 +51,16 @@ const termbaseOptions = computed(() =>
 
 <style>
 #termbaseMenu {
-  max-height: 60vh !important;
-  width: 320px !important;
-  min-width: 320px !important;
-  max-width: 320px !important;
+  max-height: 66vh;
+  width: 320px;
+  min-width: 320px;
+  max-width: 320px;
+  overflow: hidden;
 }
 
 #termbaseMenu_list {
-  max-height: 60vh !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
+  max-height: 66vh;
+  overflow: hidden auto;
   scroll-behavior: smooth;
 }
 </style>
