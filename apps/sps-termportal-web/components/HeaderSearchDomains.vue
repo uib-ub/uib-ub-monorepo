@@ -70,7 +70,7 @@
     <div>
       <div
         v-if="panel"
-        class="absolute z-20 mt-[6px] max-w-fit rounded-b-[7px] border border-gray-300 border-t-white bg-white shadow-lg"
+        class="absolute z-20 mt-1.5 max-w-fit rounded-b-[7px] border border-gray-300 border-t-white bg-white shadow-lg"
         :style="{ width: `${topWrapper.offsetWidth}px` }"
       >
         <div class="absolute right-0 top-0 flex justify-between h-8 mr-1 mt-1 space-x-2 text-xl">
@@ -82,7 +82,7 @@
           >
             <IconReset
               size="1.3em"
-              class="translate-y-[1px]"
+              class="translate-y-px"
             />
           </button>
           <button
@@ -151,13 +151,14 @@ const bootstrapData = useBootstrapData();
 const specifiedDomains = computed(() =>
   Object.keys(searchInterface.value.domain),
 );
-const activeDomains = computed(() =>
-  specifiedDomains.value.filter(
+const activeDomains = computed(() => {
+  const active = specifiedDomains.value.filter(
     domain => searchInterface.value.domain[domain],
-  ),
-);
+  );
+  return active.sort((a, b) => appConfig.domain.topdomains.indexOf(a) - appConfig.domain.topdomains.indexOf(b));
+});
 const panelTopdomains = computed(() =>
-  intersectUnique(Object.keys(bootstrapData.value.domain), activeDomains.value),
+  intersectUnique(activeDomains.value, Object.keys(bootstrapData.value.domain)),
 );
 
 const domainSelected = computed(() => {

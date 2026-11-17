@@ -13,6 +13,7 @@
       ref="termbaseMenu"
       :model="termbaseOptions"
       :popup="true"
+      class="termbase-menu"
     >
       <template #item="{ item, props }">
         <NuxtLink
@@ -38,6 +39,18 @@ const { getLaLo } = useLazyLocale();
 
 const orderedTermbases = useOrderedTermbases();
 const termbaseMenu = ref();
+
+// PrimeVue Menu tracks keyboard focus via aria-activedescendant and does not
+// scroll the active item into view, so do it here.
+watch(
+  () => termbaseMenu.value?.focusedOptionIndex,
+  (id) => {
+    if (id && id !== -1) {
+      document.getElementById(id)?.scrollIntoView({ block: "nearest" });
+    }
+  },
+);
+
 const termbaseOptions = computed(() =>
   orderedTermbases.value.map((tb) => {
     return {
@@ -47,3 +60,16 @@ const termbaseOptions = computed(() =>
   }),
 );
 </script>
+
+<style>
+#termbaseMenu {
+  width: 320px;
+  min-width: 320px;
+  max-width: 320px;
+}
+
+#termbaseMenu_list {
+  max-height: 66vh;
+  overflow-y: auto;
+}
+</style>
