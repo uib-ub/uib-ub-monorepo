@@ -28,28 +28,9 @@ export function getTermData(term: string) {
 
 export function getLanguageData(searchOptions: SearchOptions): string[] {
   const appConfig = useAppConfig();
-  if (searchOptions.language[0] !== "all") {
-    if (searchOptions.situation.startsWith("filter")) {
-      const tmplcs = searchOptions.language.map((lc) => {
-        if (lc === "en-gb") {
-          return "en-GB";
-        }
-        else if (lc === "en-us") {
-          return "en-US";
-        }
-        else {
-          return lc;
-        }
-      });
-      return tmplcs;
-    }
-    else {
-      return searchOptions.language;
-    }
-  }
-  else {
-    return [...appConfig.language.order.default];
-  }
+  return searchOptions.language[0] !== "all"
+    ? searchOptions.language
+    : [...appConfig.language.order.default];
 }
 
 function getLanguageWhere(
@@ -139,17 +120,11 @@ export function genSearchEntryQuery(searchOptions: SearchOptions): string {
   };
 
   const translate = searchOptions.translate !== "none" ? "?translate" : "";
-  // handles situation where 'en' is selected as target language and en-gb should be picked up
-  // works under the assumption that there are not 'en' AND 'en-gb' in same concept
   const translateOptional
     = searchOptions.translate !== "none"
       ? `OPTIONAL { ?uri skosxl:prefLabel ?label2 .
     ?label2 skosxl:literalForm ?translate .
-    FILTER ( lang(?translate) = "${searchOptions.translate}" ${
-      searchOptions.translate === "en"
-        ? "|| lang(?translate) = 'en-GB'"
-        : ""
-    })
+    FILTER ( lang(?translate) = "${searchOptions.translate}" )
     }`
       : "";
 
