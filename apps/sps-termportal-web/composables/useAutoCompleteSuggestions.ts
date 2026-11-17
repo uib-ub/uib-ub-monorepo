@@ -22,9 +22,9 @@ export default async function (
       pushAutocompleteEvents(options);
       const params = new URLSearchParams(options).toString();
 
-      data.value = await $fetch(`/api/search/autocomplete?${params}`, {
+      data.value = (await $fetch(`/api/search/autocomplete?${params}`, {
         retry: 1,
-      });
+      })) || [];
       data.value.unshift(searchterm);
     }
     else {
