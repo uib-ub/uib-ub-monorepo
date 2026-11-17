@@ -5,7 +5,7 @@
       :aria-label="`${$t('navBar.language')}: ${$t('global.lang.' + locale)}`"
       aria-haspopup="true"
       aria-controls="langMenu"
-      @click="langMenu.toggle"
+      @click="(e) => langMenu?.toggle?.(e)"
     >
       <div
         class="relative"

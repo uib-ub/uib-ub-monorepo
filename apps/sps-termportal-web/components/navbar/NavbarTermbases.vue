@@ -4,7 +4,7 @@
       class="tp-hover-focus group border-transparent px-2 py-1 hover:text-gray-700 focus:text-gray-700"
       aria-haspopup="menu"
       aria-controls="termbaseMenu"
-      @click="() => termbaseMenu.value?.toggle?.()"
+      @click="(e) => termbaseMenu?.toggle?.(e)"
     >
       {{ $t("global.termbase", 2) }}
     </button>

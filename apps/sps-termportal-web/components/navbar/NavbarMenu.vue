@@ -6,7 +6,7 @@
       aria-controls="overlayMenu"
       :aria-label="$t('navBar.menuButtonShow')"
       :title="$t('navBar.menuButtonShow')"
-      @click="menu.toggle"
+      @click="(e) => menu?.toggle?.(e)"
     >
       <Icon
         name="tabler:menu-2"
