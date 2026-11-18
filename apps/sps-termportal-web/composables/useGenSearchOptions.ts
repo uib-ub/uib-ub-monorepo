@@ -38,7 +38,7 @@ export default function (situation: FetchType, options?: SearchOptions) {
     term: searchInterface.value.term || "",
     language: [
       searchInterface.value.language,
-      ...(searchInterface.value.language === "en" ? ["en-GB", "en-US"] : []),
+      ...(searchInterface.value.language === "en" ? ["en-gb", "en-us"] : []),
     ], // jena seems to store them in this format
     translate: searchInterface.value.translate,
     termbase: searchInterface.value.termbase,

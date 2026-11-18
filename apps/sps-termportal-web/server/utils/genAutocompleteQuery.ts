@@ -27,7 +27,7 @@ export function genAutocompleteQuery(
       return "";
     }
     else if (languageCode === "en") {
-      return `FILTER ( lang(?lit) = "en" || lang(?lit) = "en-GB" || lang(?lit) = "en-US" )`;
+      return `FILTER ( lang(?lit) = "en" || lang(?lit) = "en-gb" || lang(?lit) = "en-us" )`;
     }
     else {
       return `FILTER ( lang(?lit) = "${languageCode}")`;
