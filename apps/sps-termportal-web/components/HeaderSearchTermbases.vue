@@ -47,6 +47,7 @@
     <div
       v-if="panel"
       class="absolute z-20 mt-[6px] rounded-b-[7px] border border-gray-300 border-t-white bg-white p-2 shadow-lg"
+      :style="{ width: `${width}px` }"
     >
       <div class="absolute right-0 top-0 h-8 mr-1 mt-1 flex space-x-2 text-xl">
         <button
@@ -72,7 +73,8 @@
         {{ $t("global.termbase", 2) }}
       </div>
       <div
-        class="grid auto-rows-max grid-cols-1 md:grid-cols-2 gap-x-2 gap-y-1 lg:grid-cols-3"
+        class="grid auto-rows-max grid-cols-1 md:grid-cols-2 gap-x-2 gap-y-1 lg:grid-cols-3 overflow-y-auto"
+        :style="{ maxHeight: listMaxHeight }"
       >
         <div
           v-for="tb of orderedTermbases"
@@ -130,6 +132,14 @@ const panel = ref();
 const wrapper = ref(null);
 
 onClickOutside(wrapper, () => (panel.value = false));
+
+// The panel can be placed anywhere on the page, so limit the list height
+// to the space left between the panel and the bottom of the viewport.
+const { bottom, width } = useElementBounding(wrapper);
+const { height: windowHeight } = useWindowSize();
+const listMaxHeight = computed(
+  () => `${Math.max(160, windowHeight.value - bottom.value - 80)}px`,
+);
 </script>
 
 <style scoped>

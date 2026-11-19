@@ -70,7 +70,7 @@
     <div>
       <div
         v-if="panel"
-        class="absolute z-20 mt-1.5 max-w-fit rounded-b-[7px] border border-gray-300 border-t-white bg-white shadow-lg"
+        class="absolute z-20 mt-1.5 rounded-b-[7px] border border-gray-300 border-t-white bg-white shadow-lg"
         :style="{ width: `${topWrapper.offsetWidth}px` }"
       >
         <div class="absolute right-0 top-0 flex justify-between h-8 mr-1 mt-1 space-x-2 text-xl">
@@ -93,13 +93,19 @@
             <IconClose />
           </button>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 overflow-y-auto"
+          :style="{ maxHeight: panelMaxHeight }"
+        >
           <div
-            v-for="topdomain of panelTopdomains"
+            v-for="(topdomain, index) of panelTopdomains"
             :key="topdomain"
             class="px-3 py-2"
           >
-            <div class="pb-2 text-lg">
+            <div
+              class="pb-2 text-lg"
+              :class="headingClearance(index)"
+            >
               {{ $t("global.domain." + topdomain) }}
             </div>
             <ul>
@@ -179,6 +185,16 @@ const deactivatedDomains = computed(() => {
   );
 });
 
+// Only the heading in the top right grid cell sits under the reset/close
+// buttons. Which cell that is depends on the column count (1, 2 or 3).
+function headingClearance(index: number) {
+  return [
+    index === 0 ? "pr-20" : "",
+    index === 0 ? "md:pr-0" : index === 1 ? "md:pr-20" : "md:pr-0",
+    index === 2 ? "lg:pr-20" : "lg:pr-0",
+  ];
+}
+
 function resetSubdomainOptions() {
   const searchInterface = useSearchInterface();
   const topDomains = Object.keys(bootstrapData.value.domain);
@@ -190,6 +206,14 @@ function resetSubdomainOptions() {
 }
 
 onClickOutside(wrapper, () => (panel.value = false));
+
+// The panel can be in the middle of the page (landing page) or at the top (navbar).
+// Limit the list height to the space left between the panel and the bottom of the viewport.
+const { bottom } = useElementBounding(wrapper);
+const { height: windowHeight } = useWindowSize();
+const panelMaxHeight = computed(
+  () => `${Math.max(160, windowHeight.value - bottom.value - 40)}px`,
+);
 
 function updateTopdomain(pdomain: string) {
   if (searchInterface.value.domain[pdomain]) {
