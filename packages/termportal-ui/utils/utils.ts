@@ -15,3 +15,13 @@ PREFIX euvoc: <http://publications.europa.eu/ontology/euvoc#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX ns: <http://spraksamlingane.no/terminlogi/named/>
 `;
+
+export function normalizeLcForFuseki(langCode: string): string {
+  // Convert i18n format (lowercase) to database/SPARQL format (RFC 5646)
+  // en-gb → en-GB, en-us → en-US
+  return langCode.replace(/-(gb|us)$/, (match) => match.toUpperCase());
+}
+
+export function normalizeLcsForFuseki(langCodes: string[]): string[] {
+  return langCodes.map(normalizeLcForFuseki);
+}

@@ -26,9 +26,29 @@ useHead({
   },
   script: [
     {
-      src: "/mathjax-config.js",
-      type: "text/javascript",
-      defer: true,
+      innerHTML: `window.MathJax = window.MathJax && window.MathJax._ ? window.MathJax : ${JSON.stringify({
+        options: {
+          menuOptions: {
+            settings: { assistiveMml: true, collapsible: false, explorer: true },
+          },
+          enableExplorer: true,
+          a11y: {
+            speech: true,
+            braille: false,
+            subtitles: true,
+            viewBraille: false,
+            backgroundColor: "Blue",
+            backgroundOpacity: 12,
+            foregroundColor: "Black",
+            magnification: "Keyboard",
+            magnify: "400%",
+            keyMagnifier: true,
+            mouseMagnifier: false,
+            align: "top",
+          },
+        },
+      })};`,
+      tagPosition: "head",
     },
     {
       id: "MathJax-script",

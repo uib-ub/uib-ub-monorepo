@@ -1,3 +1,5 @@
+import { normalizeLcsForFuseki } from "termportal-ui/utils/utils";
+
 export function sanitizeTerm(term: string) {
   return term
     .replace(/-|\(|\)|<|>|\[|\]|\/|,\s*$|\*|~|'|"|_/g, " ")
@@ -29,8 +31,8 @@ export function getTermData(term: string) {
 export function getLanguageData(searchOptions: SearchOptions): string[] {
   const appConfig = useAppConfig();
   return searchOptions.language[0] !== "all"
-    ? searchOptions.language
-    : [...appConfig.language.order.default];
+    ? normalizeLcsForFuseki(searchOptions.language)
+    : normalizeLcsForFuseki([...appConfig.language.order.default]);
 }
 
 function getLanguageWhere(
