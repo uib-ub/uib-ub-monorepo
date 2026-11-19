@@ -232,6 +232,24 @@ onBeforeUnmount(() => {
 let isRendering = false;
 let lastRenderedId = '';
 
+// MathJax is loaded once by app.vue; wait for it instead of loading it again.
+const waitForMathJax = async (timeoutMs = 15000) => {
+  const deadline = Date.now() + timeoutMs;
+  while (!window.MathJax?.startup?.promise) {
+    if (Date.now() > deadline) {
+      return false;
+    }
+    await new Promise(r => setTimeout(r, 100));
+  }
+  await Promise.race([
+    window.MathJax.startup.promise,
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('MathJax startup timed out')), Math.max(deadline - Date.now(), 0)),
+    ),
+  ]);
+  return true;
+};
+
 const renderMathJax = async () => {
   if (isRendering || lastRenderedId === mainConceptId || !termpostRef.value) {
     return;
@@ -239,23 +257,7 @@ const renderMathJax = async () => {
 
   isRendering = true;
   try {
-    // Load MathJax if needed
-    if (!window.MathJax?.typesetPromise && window.MathJax?.options) {
-      await new Promise<void>((resolve) => {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js';
-        script.async = true;
-        script.onload = () => resolve();
-        script.onerror = () => resolve();
-        document.head.appendChild(script);
-      });
-    }
-
-    // Wait for MathJax to be ready and render
-    if (window.MathJax?.startup?.promise) {
-      await window.MathJax.startup.promise;
-    }
-    if (window.MathJax?.typesetPromise) {
+    if ((await waitForMathJax()) && window.MathJax?.typesetPromise) {
       await window.MathJax.typesetPromise([termpostRef.value]);
       lastRenderedId = mainConceptId;
     }
