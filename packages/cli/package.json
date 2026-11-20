@@ -27,7 +27,7 @@
     "eslint-config": "*",
     "typescript": "^5.9.2",
     "typescript-config": "*",
-    "vitest": "^1.2.1"
+    "vitest": "^4.1.12"
   },
   "dependencies": {
     "@svgr/core": "^8.1.0",
