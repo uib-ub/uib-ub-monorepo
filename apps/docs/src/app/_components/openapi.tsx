@@ -55,7 +55,6 @@ export const ClientWrapper = () => {
           searchHotKey: 'l',
           theme: 'none',
           defaultOpenAllTags: true,
-          isLoading: isLoading,
           onLoaded: handleLoaded,
         }}
       />

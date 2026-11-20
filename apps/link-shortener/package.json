@@ -13,20 +13,20 @@
     "start": "next start"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "8.12.2",
+    "@elastic/elasticsearch": "8.19.2",
     "@heroicons/react": "2.2.0",
-    "next": "16.2.4",
+    "next": "16.4.6",
     "react": "19.2.5",
     "react-dom": "19.2.5",
-    "zod": "3.22.4"
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "@types/node": "22",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "eslint": "9.32.0",
+    "eslint": "9.39.5",
     "eslint-config": "*",
-    "typescript": "5.9.2",
+    "typescript": "5.9.3",
     "typescript-config": "*"
   }
 }
