@@ -141,6 +141,27 @@ const { data, error } = await useLazyAsyncData("concept" + mainConceptId, () =>
   }),
 );
 
+if (props.mainp) {
+  watch(
+    error,
+    (err) => {
+      if (err?.statusCode === 404) {
+        navigateTo(
+          {
+            path: "/ikke-funnet",
+            query: {
+              termbase: props.termbaseId,
+              concept: props.conceptIdArray.join("/"),
+            },
+          },
+          { replace: true },
+        );
+      }
+    },
+    { immediate: true },
+  );
+}
+
 const mainConcept = computed(() => {
   return data.value?.concept?.[mainConceptId];
 });

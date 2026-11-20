@@ -33,6 +33,7 @@ export default defineEventHandler(async (event) => {
 
   const query = genConceptQuery(base, termbaseId, id);
 
+  let notFound = false;
   const controller = new AbortController();
   const timer = setTimeout(() => {
     controller.abort();
@@ -53,10 +54,23 @@ export default defineEventHandler(async (event) => {
       return value;
     });
 
-    return frameData(data, "skos:Concept").then((result) => {
+    // Empty result: no concept with this id exists
+    if (!data || (!data["@graph"] && !data["@id"])) {
+      notFound = true;
+    }
+    else {
+      const result = await frameData(data, "skos:Concept");
       delete result["@context"];
-      return parseConceptData(result, uri);
-    });
+      const parsed = parseConceptData(result, uri);
+      if (parsed.concept[uri]) {
+        return parsed;
+      }
+      notFound = true;
+    }
   }
   catch (e) { console.error(e); }
+
+  if (notFound) {
+    throw createError({ statusCode: 404, statusMessage: "Concept not found" });
+  }
 });
