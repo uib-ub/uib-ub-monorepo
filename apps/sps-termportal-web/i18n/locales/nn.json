@@ -233,6 +233,14 @@
     "termpost": "Termposten",
     "data": "Opne data"
   },
+  "notFound": {
+    "title": "Sida vart ikkje funnen",
+    "page": "Sida du leitar etter finst ikkje.",
+    "termbase": "Termbasen «{id}» finst ikkje.",
+    "concept": "Termposten «{concept}» finst ikkje i termbasen {termbase}.",
+    "toTermbase": "Gå til termbasesida",
+    "toFrontpage": "Gå til framsida"
+  },
   "om": {
     "title": "Om Termportalen",
     "aboutUs": "Om oss",

@@ -232,6 +232,14 @@
     "termpost": "Terminological entries",
     "data": "Open data"
   },
+  "notFound": {
+    "title": "Page not found",
+    "page": "The page you are looking for does not exist.",
+    "termbase": "The termbase \"{id}\" does not exist.",
+    "concept": "The term entry \"{concept}\" does not exist in the termbase {termbase}.",
+    "toTermbase": "Go to the termbase page",
+    "toFrontpage": "Go to the front page"
+  },
   "om": {
     "title": "About Termportalen",
     "aboutUs": "About us",
