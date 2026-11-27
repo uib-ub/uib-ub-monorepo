@@ -13,7 +13,6 @@ const SvgUioMarkPositive = (
     viewBox="229 231 233 233"
     xmlSpace="preserve"
     enableBackground="new 0 0 691.4 694.87"
-    fill="currentColor"
     ref={ref}
     {...props}
   >

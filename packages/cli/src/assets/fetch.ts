@@ -27,6 +27,11 @@ async function download(url: string): Promise<Buffer> {
   return Buffer.from(await response.arrayBuffer());
 }
 
+/** Normalize zip paths so NFC config entries match NFD macOS zip members. */
+function zipPath(name: string): string {
+  return name.replace(/\\/g, '/').normalize('NFC');
+}
+
 export async function fetchOrg(ctx: Ctx, orgKey: string): Promise<FetchReport> {
   const org = ctx.config.orgs[orgKey];
   if (!org) throw new Error(`Unknown org: ${orgKey}`);
@@ -55,12 +60,13 @@ export async function fetchOrg(ctx: Ctx, orgKey: string): Promise<FetchReport> {
       if (isZip) {
         // Per-asset zip: extract the mapped file from it
         const zip = new AdmZip(buffer);
+        const wanted = zipPath(asset.file!);
         const entry = zip
           .getEntries()
           .find(
             (candidate) =>
               !isJunkEntry(candidate.entryName) &&
-              candidate.entryName.replace(/\\/g, '/') === asset.file,
+              zipPath(candidate.entryName) === wanted,
           );
         if (!entry) {
           report.missing.push(`${asset.url!}#${asset.file}`);
@@ -119,14 +125,16 @@ export async function fetchOrg(ctx: Ctx, orgKey: string): Promise<FetchReport> {
     .getEntries()
     .filter((entry) => !isJunkEntry(entry.entryName));
   const entryByName = new Map(
-    entries.map((entry) => [entry.entryName.replace(/\\/g, '/'), entry]),
+    entries.map((entry) => [zipPath(entry.entryName), entry]),
   );
 
   const mappedFiles = new Set(
-    org.assets.filter((asset) => !isLocalAsset(org, asset)).map((asset) => asset.file!),
+    org.assets
+      .filter((asset) => !isLocalAsset(org, asset))
+      .map((asset) => zipPath(asset.file!)),
   );
   for (const entry of entries) {
-    const name = entry.entryName.replace(/\\/g, '/');
+    const name = zipPath(entry.entryName);
     if (!mappedFiles.has(name)) {
       report.unmapped.push(name);
     }
@@ -134,7 +142,7 @@ export async function fetchOrg(ctx: Ctx, orgKey: string): Promise<FetchReport> {
 
   for (const asset of org.assets) {
     if (isLocalAsset(org, asset)) continue;
-    const entry = entryByName.get(asset.file!);
+    const entry = entryByName.get(zipPath(asset.file!));
     if (!entry) {
       report.missing.push(asset.file!);
       continue;
