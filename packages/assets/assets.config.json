@@ -389,6 +389,242 @@
         }
       ]
     },
+    "oslomet": {
+      "label": "OsloMet",
+      "docs": "https://oslomet.fotoware.cloud/fotoweb/archives/5005-OsloMet-logo/",
+      "source": {
+        "type": "files"
+      },
+      "assets": [
+        {
+          "url": "https://oslomet.fotoware.cloud/fotoweb/archives/5005-OsloMet-logo/Folder%2052/Logomedsignatur_gul_OsloMet.ai.info/__renditions/ORIGINAL",
+          "file": "Logomedsignatur_gul_OsloMet.ai",
+          "output": "oslomet-lockup-positive"
+        },
+        {
+          "output": "oslomet-lockup-negative"
+        }
+      ]
+    },
+    "uit": {
+      "label": "UiT Norges arktiske universitet",
+      "docs": "https://uit.no/ansatte/kommunikasjonstips/grafisk/profilmanual/sub?p_document_id=861333",
+      "source": {
+        "type": "files"
+      },
+      "assets": [
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Bokmaal.zip",
+          "file": "UiT logo Bokmål/UiT logo PDF for trykk Bokmål/UiT_Logo_Bok_Bla_RGB.pdf",
+          "output": "uit-lockup-positive-no"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Bokmaal.zip",
+          "file": "UiT logo Bokmål/UiT logo PDF for trykk Bokmål/UiT_Logo_Bok_Hvit.pdf",
+          "output": "uit-lockup-negative-no"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Bokmaal.zip",
+          "file": "UiT logo Bokmål/UiT logo PDF for trykk Bokmål/UiT_Logo_Bok_Bla_RGB.pdf",
+          "output": "uit-lockup-no",
+          "currentColor": true
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Bokmaal.zip",
+          "file": "UiT logo Bokmål/UiT logo PDF for trykk Bokmål/UiT_Logo_Bok_2l_Bla_RGB.pdf",
+          "output": "uit-lockup-positive-twolines-no"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Bokmaal.zip",
+          "file": "UiT logo Bokmål/UiT logo PDF for trykk Bokmål/UiT_Logo_Bok_2l_Hvit.pdf",
+          "output": "uit-lockup-negative-twolines-no"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Bokmaal.zip",
+          "file": "UiT logo Bokmål/UiT logo PDF for trykk Bokmål/UiT_Segl_Bok_Blå_RGB.pdf",
+          "output": "uit-mark-positive-no"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Bokmaal.zip",
+          "file": "UiT logo Bokmål/UiT logo PDF for trykk Bokmål/UiT_Segl_Bok_Hvit.pdf",
+          "output": "uit-mark-negative-no"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Bokmaal.zip",
+          "file": "UiT logo Bokmål/UiT logo PDF for trykk Bokmål/UiT_Segl_Bok_Blå_RGB.pdf",
+          "output": "uit-mark-no",
+          "currentColor": true
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Engelsk.zip",
+          "file": "UiT logo Engelsk/UiT logo PDF for trykk Engelsk/UiT_Logo_Eng_Bla_RGB.pdf",
+          "output": "uit-lockup-positive-en"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Engelsk.zip",
+          "file": "UiT logo Engelsk/UiT logo PDF for trykk Engelsk/UiT_Logo_Eng_Hvit.pdf",
+          "output": "uit-lockup-negative-en"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Engelsk.zip",
+          "file": "UiT logo Engelsk/UiT logo PDF for trykk Engelsk/UiT_Logo_Eng_Bla_RGB.pdf",
+          "output": "uit-lockup-en",
+          "currentColor": true
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Engelsk.zip",
+          "file": "UiT logo Engelsk/UiT logo PDF for trykk Engelsk/UiT_Logo_Eng_2l_Bla_RGB.pdf",
+          "output": "uit-lockup-positive-twolines-en"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Engelsk.zip",
+          "file": "UiT logo Engelsk/UiT logo PDF for trykk Engelsk/UiT_Logo_Eng_2l_Hvit.pdf",
+          "output": "uit-lockup-negative-twolines-en"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Engelsk.zip",
+          "file": "UiT logo Engelsk/UiT logo PDF for trykk Engelsk/UiT_Segl_Eng_Blå_RBG.pdf",
+          "output": "uit-mark-positive-en"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Engelsk.zip",
+          "file": "UiT logo Engelsk/UiT logo PDF for trykk Engelsk/UiT_Segl_Eng_Hvit.pdf",
+          "output": "uit-mark-negative-en"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Engelsk.zip",
+          "file": "UiT logo Engelsk/UiT logo PDF for trykk Engelsk/UiT_Segl_Eng_Blå_RBG.pdf",
+          "output": "uit-mark-en",
+          "currentColor": true
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Nynorsk.zip",
+          "file": "UiT logo Nynorsk/UiT logo PDF for trykk Nynorsk/UiT_Logo_Nyn_Bla_RGB.pdf",
+          "output": "uit-lockup-positive-nn"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Nynorsk.zip",
+          "file": "UiT logo Nynorsk/UiT logo PDF for trykk Nynorsk/UiT_Logo_Nyn_Hvit.pdf",
+          "output": "uit-lockup-negative-nn"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Nynorsk.zip",
+          "file": "UiT logo Nynorsk/UiT logo PDF for trykk Nynorsk/UiT_Logo_Nyn_Bla_RGB.pdf",
+          "output": "uit-lockup-nn",
+          "currentColor": true
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Nynorsk.zip",
+          "file": "UiT logo Nynorsk/UiT logo PDF for trykk Nynorsk/UiT_Logo_Nyn_2l_Bla_RGB.pdf",
+          "output": "uit-lockup-positive-twolines-nn"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Nynorsk.zip",
+          "file": "UiT logo Nynorsk/UiT logo PDF for trykk Nynorsk/UiT_Logo_Nyn_2l_Hvit.pdf",
+          "output": "uit-lockup-negative-twolines-nn"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Nynorsk.zip",
+          "file": "UiT logo Nynorsk/UiT logo PDF for trykk Nynorsk/UiT_Segl_Nyn_Blå_RGB.pdf",
+          "output": "uit-mark-positive-nn"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Nynorsk.zip",
+          "file": "UiT logo Nynorsk/UiT logo PDF for trykk Nynorsk/UiT_Segl_Nyn_Hvit.pdf",
+          "output": "uit-mark-negative-nn"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Nynorsk.zip",
+          "file": "UiT logo Nynorsk/UiT logo PDF for trykk Nynorsk/UiT_Segl_Nyn_Blå_RGB.pdf",
+          "output": "uit-mark-nn",
+          "currentColor": true
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Samisk.zip",
+          "file": "UiT logo Samisk/UiT logo PDF for trykk Samisk/UiT_Logo_Sam_Bla_RGB.pdf",
+          "output": "uit-lockup-positive-se"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Samisk.zip",
+          "file": "UiT logo Samisk/UiT logo PDF for trykk Samisk/UiT_Logo_Sam_Hvit.pdf",
+          "output": "uit-lockup-negative-se"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Samisk.zip",
+          "file": "UiT logo Samisk/UiT logo PDF for trykk Samisk/UiT_Logo_Sam_Bla_RGB.pdf",
+          "output": "uit-lockup-se",
+          "currentColor": true
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Samisk.zip",
+          "file": "UiT logo Samisk/UiT logo PDF for trykk Samisk/UiT_Logo_Sam_2l_Bla_RGB.pdf",
+          "output": "uit-lockup-positive-twolines-se"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Samisk.zip",
+          "file": "UiT logo Samisk/UiT logo PDF for trykk Samisk/UiT_Logo_Sam_2l_Hvit.pdf",
+          "output": "uit-lockup-negative-twolines-se"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Samisk.zip",
+          "file": "UiT logo Samisk/UiT logo PDF for trykk Samisk/UiT_Segl_Sam_Blå_RGB.pdf",
+          "output": "uit-mark-positive-se"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Samisk.zip",
+          "file": "UiT logo Samisk/UiT logo PDF for trykk Samisk/UiT_Segl_Sam_Hvit.pdf",
+          "output": "uit-mark-negative-se"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Samisk.zip",
+          "file": "UiT logo Samisk/UiT logo PDF for trykk Samisk/UiT_Segl_Sam_Blå_RGB.pdf",
+          "output": "uit-mark-se",
+          "currentColor": true
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Kvensk.zip",
+          "file": "UiT logo Kvensk/UiT logo PDF for trykk Kvensk/UiT_Logo_Kve_Bla_RGB.pdf",
+          "output": "uit-lockup-positive-fkv"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Kvensk.zip",
+          "file": "UiT logo Kvensk/UiT logo PDF for trykk Kvensk/UiT_Logo_Kve_Hvit.pdf",
+          "output": "uit-lockup-negative-fkv"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Kvensk.zip",
+          "file": "UiT logo Kvensk/UiT logo PDF for trykk Kvensk/UiT_Logo_Kve_Bla_RGB.pdf",
+          "output": "uit-lockup-fkv",
+          "currentColor": true
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Kvensk.zip",
+          "file": "UiT logo Kvensk/UiT logo PDF for trykk Kvensk/UiT_Logo_Kve_2l_Bla_RGB.pdf",
+          "output": "uit-lockup-positive-twolines-fkv"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Kvensk.zip",
+          "file": "UiT logo Kvensk/UiT logo PDF for trykk Kvensk/UiT_Logo_Kve_2l_Hvit.pdf",
+          "output": "uit-lockup-negative-twolines-fkv"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Kvensk.zip",
+          "file": "UiT logo Kvensk/UiT logo PDF for trykk Kvensk/UiT_Segl_Kve_Blå_RBG.pdf",
+          "output": "uit-mark-positive-fkv"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Kvensk.zip",
+          "file": "UiT logo Kvensk/UiT logo PDF for trykk Kvensk/UiT_Segl_Kve_Hvit.pdf",
+          "output": "uit-mark-negative-fkv"
+        },
+        {
+          "url": "https://uit.no/ressurs/uit/profil2019/logo/UiT_logo_Kvensk.zip",
+          "file": "UiT logo Kvensk/UiT logo PDF for trykk Kvensk/UiT_Segl_Kve_Blå_RBG.pdf",
+          "output": "uit-mark-fkv",
+          "currentColor": true
+        }
+      ]
+    },
     "termportalen": {
       "label": "Termportalen",
       "source": {
